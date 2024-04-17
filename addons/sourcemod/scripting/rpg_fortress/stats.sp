@@ -19,7 +19,7 @@ void Stats_EnableCharacter(int client)
 {
 	KeyValues kv = Saves_Kv("stats");
 
-	char buffer[32];
+	char buffer[64];
 	if(Saves_ClientCharId(client, buffer, sizeof(buffer)))
 		kv.JumpToKey(buffer);
 
@@ -35,6 +35,20 @@ void Stats_EnableCharacter(int client)
 	Intelligence[client] = kv.GetNum("intelligence");
 	Capacity[client] = kv.GetNum("capacity");
 	XP[client] = kv.GetNum("xp");
+
+	delete Mastery[client];
+
+	if(kv.JumpToKey("mastery") && kv.GotoFirstSubKey(false))
+	{
+		Mastery[client] = new StringMap();
+
+		do
+		{
+			kv.GetSectionName(buffer, sizeof(buffer));
+			Mastery[client].SetValue(buffer, kv.GetNum(NULL_STRING));
+		}
+		while(kv.GotoNextKey(false));
+	}
 }
 
 void Stats_GiveXP(int client, int xp)
@@ -69,6 +83,21 @@ static void SaveClientStats(int client)
 		kv.SetNum("intelligence", Intelligence[client]);
 		kv.SetNum("capacity", Capacity[client]);
 		kv.SetNum("xp", XP[client]);
+
+		kv.DeleteKey("mastery");
+
+		if(Mastery[client] && kv.JumpToKey("mastery", true))
+		{
+			int value;
+			StringMapSnapshot snap = Mastery[client].Snapshot();
+			int length = snap.Length;
+			for(int i; i < length; i++)
+			{
+				snap.GetKey(i, buffer, sizeof(buffer));
+				if(Mastery[client].GetValue(buffer, value) && value > 0)
+					kv.SetNum(buffer, value);
+			}
+		}
 	}
 }
 
@@ -215,6 +244,7 @@ void Stats_SetFormMastery(int client, const char[] name, int mastery)
 	Mastery[client].SetValue(name, mastery);
 }
 
+/*
 static float AgilityMulti(int amount)
 {
 	return 3.73333*Pow(amount + 16.0, -0.475);
@@ -230,10 +260,9 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 		Attributes_SetMulti(entity, 6, multi);
 		Attributes_SetMulti(entity, 96, multi);
 	}
-	/*
 	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
 	{
-		int stat = 0;//Stats_Dexterity(client);
+		int stat = Stats_Dexterity(client);
 		if(stat)
 		{
 			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
@@ -255,21 +284,13 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
 		}
 	}
-	*/
 }
+*/
 
 void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 {
 	map.SetValue("26", RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	map.SetValue("252", Stats_KnockbackResist(client));
-}
-
-int Stats_BaseHealth(int client, int &base = 0, int &bonus = 0)
-{
-	base = 50;
-	bonus = 0;
-
-	return base + bonus;
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
@@ -468,7 +489,7 @@ float Stats_KnockbackResist(int client)
 
 	return 1.0 / (0.5 + ti + (lv * 0.05));
 	*/
-	return 1.0;
+	return 1.0 / (0.5 + (Stats_Structure(client) * 0.0005));
 }
 
 static int UpgradeCost(int client)

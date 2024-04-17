@@ -139,6 +139,7 @@ void RPG_PluginStart()
 	LoadTranslations("rpgfortress.phrases");
 
 	Dungeon_PluginStart();
+	Editor_PluginStart();
 	Fishing_PluginStart();
 	Games_PluginStart();
 	Store_Reset();

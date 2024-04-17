@@ -237,6 +237,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #endif
 	
 #if defined RPG
+	if(Editor_SayCommand(client))
+		return Plugin_Handled;
+	
 	if(TextStore_SayCommand(client))
 		return Plugin_Handled;
 	

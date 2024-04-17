@@ -11,19 +11,17 @@ methodmap EditMenu < Menu
 	}
 	public bool Display(int client, Function callback)
 	{
-		EditorMenu[client] = callback;
 		bool result = view_as<Menu>(this).Display(client, MENU_TIME_FOREVER);
-		if(!result)
-			EditorMenu[client] = INVALID_FUNCTION;
+		if(result)
+			EditorMenu[client] = callback;
 		
 		return result;
 	}
 	public bool DisplayAt(int client, int first_item, Function callback)
 	{
-		EditorMenu[client] = callback;
 		bool result = view_as<Menu>(this).DisplayAt(client, first_item, MENU_TIME_FOREVER);
-		if(!result)
-			EditorMenu[client] = INVALID_FUNCTION;
+		if(result)
+			EditorMenu[client] = callback;
 		
 		return result;
 	}
@@ -32,6 +30,28 @@ methodmap EditMenu < Menu
 void Editor_PluginStart()
 {
 	RegAdminCmd("rpg_editor", Editor_Command, ADMFLAG_ROOT, "Enter editing mode");
+}
+
+void Editor_SayCommand(int client)
+{
+	if(EditorMenu[client] != INVALID_FUNCTION)
+	{
+		char buffer[512];
+		GetCmdArgString(buffer, sizeof(buffer));
+		ReplaceString(buffer, sizeof(buffer), "\"", "");
+
+		Function func = EditorMenu[client];
+
+		Call_StartFunction(null, func);
+		Call_PushCell(client);
+		Call_PushString(buffer);
+		Call_Finish();
+	}
+}
+
+Function Editor_MenuFunc(int client)
+{
+	return EditorMenu[client];
 }
 
 static Action Editor_Command(int client, int args)
@@ -104,9 +124,4 @@ static void MainMenuHandler(int client, const char[] buffer)
 	{
 		Zones_EditorMenu(client);
 	}
-}
-
-static void ZoneMenu(int client)
-{
-
 }

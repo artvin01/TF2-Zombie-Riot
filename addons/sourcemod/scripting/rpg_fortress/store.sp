@@ -1709,8 +1709,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3002, 0.0));
 		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3000, 0.0));
-
-		Stats_SetWeaponStats(client, entity, slot);
 	}
 	return entity;
 }

@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 static ArrayList ActiveZones;
 
 void Zones_PluginStart()
@@ -60,7 +62,7 @@ void Zones_ConfigSetup()
 	if(kv.GotoFirstSubKey())
 	{
 		char name[64];
-		float pos[3], vec[3];
+		float pos[3], mins[3], maxs[3];
 		
 		do
 		{
@@ -69,10 +71,19 @@ void Zones_ConfigSetup()
 				entity = CreateEntityByName("trigger_rpgzone");
 				if(entity != -1)
 				{
-					kv.GetVector("origin", pos);
+					kv.GetVector("point1", pos);
+					kv.GetVector("point2", maxs);
+
+					for(int i; i < sizeof(maxs); i++)
+					{
+						maxs[i] = fabs(pos[i] - maxs[i]) / 2.0;
+						mins[i] = -maxs[i];
+						pos[i] -= maxs[i];
+					}
+
 					DispatchKeyValueVector(entity, "origin", pos);
 					DispatchKeyValue(entity, "spawnflags", "3");
-					DispatchKeyValue(entity, "targetname", "rpg_fortress");
+					DispatchKeyValue(entity, "targetname", name);
 
 					DispatchSpawn(entity);
 					ActivateEntity(entity);    
@@ -81,19 +92,17 @@ void Zones_ConfigSetup()
 					SetEntProp(entity, Prop_Send, "m_nSolidType", 2);
 					SetEntityCollisionGroup(entity, 5);
 					
-					kv.GetVector("mins", vec);
-					SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", vec);
-					SetEntPropVector(entity, Prop_Send, "m_vecMins", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", mins);
+					SetEntPropVector(entity, Prop_Send, "m_vecMins", mins);
 					
-					kv.GetVector("maxs", vec);
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", vec);
-					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", vec);
+					SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxs);
+					SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxs);
 
-					kv.GetVector("telepos", vec);
-					SetEntPropVector(entity, Prop_Data, "m_vecTelePos", vec);
+					kv.GetVector("telepos", mins);
+					SetEntPropVector(entity, Prop_Data, "m_vecTelePos", mins);
 
-					kv.GetVector("teleang", vec);
-					SetEntPropVector(entity, Prop_Data, "m_vecTeleAng", vec);
+					kv.GetVector("teleang", mins);
+					SetEntPropVector(entity, Prop_Data, "m_vecTeleAng", mins);
 
 					kv.GetString("item", buffer, sizeof(buffer));
 					SetEntPropString(entity, Prop_Data, "m_nItemKey", buffer);
@@ -109,66 +118,6 @@ void Zones_ConfigSetup()
 	}
 
 	delete kv;
-}
-
-void Zones_EditorMenu(int client, const char[] name = "")
-{
-	char buffer[PLATFORM_MAX_PATH];
-	RPG_BuildPath(buffer, sizeof(buffer), "zones");
-	KeyValues kv = new KeyValues("Zones");
-	kv.ImportFromFile(buffer);
-
-	EditMenu menu = new EditMenu();
-
-	if(name[0])
-	{
-		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
-		
-		if(kv.GotoFirstSubKey())
-		{
-			float pos[3], vec[3];
-			
-			do
-			{
-				kv.GetSectionName(buffer, sizeof(buffer));
-				menu.AddItem(buffer, buffer);
-			}
-			while(kv.GotoNextKey());
-		}
-		else
-		{
-			menu.AddItem("", "None", ITEMDRAW_DISABLED);
-		}
-
-		menu.Display(client, NamePicker);
-	}
-	else
-	{
-		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
-		
-		if(kv.GotoFirstSubKey())
-		{
-			do
-			{
-				kv.GetSectionName(buffer, sizeof(buffer));
-				menu.AddItem(buffer, buffer);
-			}
-			while(kv.GotoNextKey());
-		}
-		else
-		{
-			menu.AddItem("", "None", ITEMDRAW_DISABLED);
-		}
-
-		menu.Display(client, NamePicker);
-	}
-
-	delete kv;
-}
-
-static void NamePicker(int client, const char[] buffer)
-{
-
 }
 
 static void OnEnter(int entity, const char[] name)
@@ -349,4 +298,261 @@ public Action Zones_TeleportTouch(int entity, int target)
 		}
 	}
 	return Plugin_Continue;
+}
+
+void Zones_EditorMenu(int client)
+{
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "zones");
+	KeyValues kv = new KeyValues("Zones");
+	kv.ImportFromFile(buffer);
+
+	EditMenu menu = new EditMenu();
+
+	if(CurrentZoneEditing[client][0])
+	{
+		kv.JumpToKey(CurrentZoneEditing[client], true);
+
+		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
+		
+		float pos1[3], pos2[3], telepos[3], vec1[3], vec2[3];
+		kv.GetVector("point1", pos1);
+		kv.GetVector("point2", pos2);
+		kv.GetVector("telepos", telepos);
+
+		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f (Click to Set)", pos1[0], pos1[1], pos1[2]);
+		menu.AddItem("point1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f (Click to Set)", pos2[0], pos2[1], pos2[2]);
+		menu.AddItem("point2", buffer);
+
+		if(telepos[0])
+		{
+			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f (Click to Remove)", telepos[0], telepos[1], telepos[2]);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "Teleport: None (Click to Set)");
+		}
+		menu.AddItem("telepos", buffer);
+
+		kv.GetString("item", buffer, sizeof(buffer));
+		if(buffer[0] && !TextStore_IsValidName(buffer))
+		{
+			Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}\n ", buffer);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Item Key: \"%s\" (Type in chat, Click to Remove)\n ", buffer);
+		}
+		menu.AddItem("item", buffer);
+
+		menu.AddItem("delete", "Delete Zone");
+
+		for(int i; i < 3; i++)
+		{
+			/*
+				Trigger Box
+			*/
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] = pos2[i];
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] = pos1[i];
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 5.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Point 1 Box
+			*/
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] += 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] -= 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Point 2 Box
+			*/
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] += 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] -= 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Teleport Box
+			*/
+			if(telepos[0])
+			{
+				vec1 = telepos;
+				vec1[0] -= 23.5;
+				vec1[1] -= 23.5;
+				vec2 = vec1;
+
+				vec2[i] += i == 2 ? 95.0 : 57.0;
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SendToClient(client);
+				
+				vec1 = telepos;
+				vec2[0] += 23.5;
+				vec2[1] += 23.5;
+				vec2[2] += 95.0;
+				vec2 = vec1;
+
+				vec2[i] -= i == 2 ? 95.0 : 57.0;
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SendToClient(client);
+			}
+		}
+		
+		menu.ExitBackButton = true;
+		menu.Display(client, NamePicker);
+
+		delete TimerZoneEditing[client];
+		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else
+	{
+		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
+		
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				kv.GetSectionName(buffer, sizeof(buffer));
+				menu.AddItem(buffer, buffer);
+			}
+			while(kv.GotoNextKey());
+		}
+		else
+		{
+			menu.AddItem("", "None", ITEMDRAW_DISABLED);
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, NamePicker);
+	}
+
+	delete kv;
+}
+
+static Action Timer_RefreshHud(Handle timer, int client)
+{
+	TimerZoneEditing[client] = null;
+	if(Editor_MenuFunc(client) != AdjustZone)
+		return Plugin_Stop;
+	
+	Zones_EditorMenu(client);
+	return Plugin_Continue;
+}
+
+static void NamePicker(int client, const char[] buffer)
+{
+	if(StrEqual(buffer, "back"))
+	{
+		Editor_MainMenu(client);
+		return;
+	}
+
+	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), buffer);
+	Zones_EditorMenu(client);
+}
+
+static void AdjustZone(int client, const char[] buffer)
+{
+	if(StrEqual(buffer, "back"))
+	{
+		delete TimerZoneEditing[client];
+		CurrentZoneEditing[client][0] = 0;
+		Zones_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "zones");
+	KeyValues kv = new KeyValues("Zones");
+	kv.ImportFromFile(filepath);
+
+	if(kv.JumpToKey(CurrentZoneEditing[client]))
+	{
+		if(StrEqual(buffer, "point1"))
+		{
+			
+		}
+		else if(StrEqual(buffer, "point2"))
+		{
+			
+		}
+		else if(StrEqual(buffer, "telepos"))
+		{
+			float pos[3];
+			kv.GetVector("telepos", pos);
+			if(pos[0])
+			{
+				kv.DeleteKey("telepos");
+			}
+			else
+			{
+				GetClientAbsOrigin(client, pos);
+				kv.SetVector("telepos", pos);
+				
+				GetClientAbsAngles(client, pos);
+				pos[0] = 0.0;
+				pos[1] = (RoundFloat(pos[1]) / 45) * 45.0;
+				pos[2] = 0.0;
+				kv.SetVector("teleang", pos);
+			}
+		}
+		else if(StrEqual(buffer, "item"))
+		{
+			kv.DeleteKey("item");
+		}
+		else if(StrEqual(buffer, "delete"))
+		{
+			kv.DeleteThis();
+			delete TimerZoneEditing[client];
+			CurrentZoneEditing[client][0] = 0;
+		}
+		else
+		{
+			kv.SetString("item", buffer);
+		}
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+
+	Zones_EditorMenu(client);
 }

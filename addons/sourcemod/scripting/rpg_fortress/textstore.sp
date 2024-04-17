@@ -593,6 +593,20 @@ static void LoadItems(int client)
 	Traffic_LoadItems(client);
 }
 
+bool TextStore_IsValidName(const char[] name)
+{
+	int length = TextStore_GetItems();
+	for(int i; i < length; i++)
+	{
+		static char buffer[64];
+		TextStore_GetItemName(i, buffer, sizeof(buffer));
+		if(StrEqual(buffer, name, false))
+			return true;
+	}
+
+	return false;
+}
+
 int TextStore_GetItemCount(int client, const char[] name)
 {
 	if(StrEqual(name, ITEM_CASH, false))
@@ -2012,6 +2026,7 @@ static void ShowMenu(int client, int page = 0)
 	}
 }
 
+/*
 static int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle hndl)
 {
 	if(!StoreWeapon[elem1][0])
@@ -2028,6 +2043,7 @@ static int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle 
 	
 	return elem1 > elem2 ? 1 : -1;
 }
+*/
 
 static int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int choice)
 {
