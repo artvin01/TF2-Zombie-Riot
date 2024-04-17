@@ -10,7 +10,9 @@ static StringMap Mastery[MAXTF2PLAYERS];
 void Stats_PluginStart()
 {
 	RegConsoleCmd("rpg_stats", Stats_ShowStats, "Shows your RPG stats");
+	RegConsoleCmd("rpg_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 }
 
 void Stats_ClientCookiesCached(int client)
@@ -62,8 +64,7 @@ void Stats_ClearCustomStats(int entity)
 	Agility[entity] = 0;
 	Luck[entity] = 0;
 	Level[entity] = 0;
-
-	
+/*OLD CODE
 	BackpackBonus2[entity] = 0;
 	Strength2[entity] = 0;
 	Precision2[entity] = 0;
@@ -74,7 +75,7 @@ void Stats_ClearCustomStats(int entity)
 	Capacity2[entity] = 0;
 	Agility2[entity] = 0;
 	Luck2[entity] = 0;
-	f_DamageMultiWeaponApplied[entity] = 0.0;
+*/
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)

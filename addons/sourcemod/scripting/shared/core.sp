@@ -2450,7 +2450,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #endif
 
 #if defined RPG
-	RPGStore_SetWeaponDamageToDefault(weapon, client);
+	RPGStore_SetWeaponDamageToDefault(weapon, client, classname);
 #endif
 	Action action = Plugin_Continue;
 	Function func = EntityFuncAttack[weapon];
@@ -2581,7 +2581,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 	}
 	return action;
 }
-#endif	// Non-RTS
+#endif	// ZR & RPG
 
 #if defined ZR
 public void SDKHook_TeamSpawn_SpawnPost(int entity)

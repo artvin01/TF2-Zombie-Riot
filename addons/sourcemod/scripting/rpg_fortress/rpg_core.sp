@@ -54,6 +54,7 @@ int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
 
 //This is for keeping track of what weapons have what stats already applied to them.
+/* OLD CODE
 int BackpackBonus2[MAXENTITIES];
 int Strength2[MAXENTITIES];
 int Precision2[MAXENTITIES];
@@ -64,8 +65,7 @@ int Intelligence2[MAXENTITIES];
 int Capacity2[MAXENTITIES];
 int Agility2[MAXENTITIES];
 int Luck2[MAXENTITIES];
-float f_DamageMultiWeaponApplied[MAXENTITIES];
-
+*/
 
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
@@ -92,6 +92,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/music.sp"
 #include "rpg_fortress/party.sp"
 #include "rpg_fortress/quests.sp"
+#include "rpg_fortress/saves.sp"
 #include "rpg_fortress/spawns.sp"
 #include "rpg_fortress/stats.sp"
 #include "rpg_fortress/store.sp"

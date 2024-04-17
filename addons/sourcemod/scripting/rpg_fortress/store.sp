@@ -1712,7 +1712,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 	if(EntityIsAWeapon)
 	{
-		RPGStore_SetWeaponDamageToDefault(entity, client);
+		RPGStore_SetWeaponDamageToDefault(entity, client, info.Classname, true);
 		
 		if(b_DungeonContracts_SlowerAttackspeed[client])
 		{
@@ -1867,7 +1867,7 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 	return false;
 }
 
-void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 0)
+void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] classname, bool first = false)
 {
 	/*
 		Todo:
@@ -1877,17 +1877,16 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 
 		hard but needed, im very unsure how to do this though.
 
 	*/
-	float damageBase = RpgConfig_GetWeaponDamage(weapon);
+	int damageType;
+
+	//float damageBase = RpgConfig_GetWeaponDamage(weapon);
 	if(i_IsWandWeapon[weapon])
 	{
 		damageType = 3;
-		damageBase = 65.0;
+		//damageBase = 65.0;
 	}
 	else
 	{
-		char classname[36];
-		GetEntityClassname(weapon, classname, sizeof(classname));
-			
 		if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)	
 		{
 			damageType = 1;
@@ -1897,12 +1896,31 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 
 			damageType = 2;
 		}
 	}
+	
+	static float PreviousValue[MAXENTITIES];
+	float value = RPGStats_FlatDamageSetStats(client, damageType);
+
+	// Set a new value if we changed
+	if(first || value != PreviousValue[weapon])
+	{
+		if(!first)
+		{
+			// Second time we modified, remove what we previously had
+			value /= PreviousValue[weapon];
+		}
+
+		Attributes_SetMulti(weapon, 2, value);
+		PreviousValue[client] = value;
+		PrintToChatAll("New Damage Multi: %f", value);
+	}
+
+	/*OLD CODE
 	float DecimalForDamage = 1.0 / damageBase;
-	
-	
 	Attributes_Set(weapon, 1000, DecimalForDamage);
 	//weapon starts out with excatly 1 damage.
 	int StattDifference;
+
+
 	int check = 10;	// Any
 	switch(damageType)
 	{
@@ -1911,28 +1929,30 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 
 			StattDifference = Stats_Strength(client) - Strength2[weapon];
 			check = 2;	// Melee
 		}
-
 		case 2:
 		{
 			StattDifference = Stats_Precision(client) - Precision2[weapon];
 			check = 7;	// Primary / Secondary
 		}
-
 		case 3:
 		{
 			StattDifference = Stats_Artifice(client) - Artifice2[weapon];
 			check = 8;	// Mage
 		}
 	}
+
 	PrintToChatAll("StattDifference %i",StattDifference);
 	if(StattDifference == 0)
 	{
 		return;
 	}
+
+
 	char classname[36];
 	GetEntityClassname(weapon, classname, sizeof(classname));
 	if(CheckEntitySlotIndex(check, TF2_GetClassnameSlot(classname), weapon))
 	{
+
 		float AttributeDifferenceToApply;
 		AttributeDifferenceToApply = RPGStats_FlatDamageSetStats(client, damageType, StattDifference);
 		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
@@ -1943,10 +1963,13 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, int damageType = 
 		f_DamageMultiWeaponApplied[weapon] = AttributeDifferenceToApply;
 		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
 		Attributes_SetMulti(weapon, 2, AttributeDifferenceToApply);
+		
 		//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
 	}
+
 	Strength2[weapon] = Stats_Strength(client);
 	Precision2[weapon] = Stats_Precision(client);
 	Artifice2[weapon] = Stats_Artifice(client);
 	Agility2[weapon] = Stats_Agility(client);
+*/
 }

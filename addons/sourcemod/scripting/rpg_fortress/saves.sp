@@ -2,11 +2,22 @@
 #pragma newdecls required
 
 static KeyValues SaveKv;
-static char CharacterName[MAXTF2PLAYERS][64];
+static char CharacterId[MAXTF2PLAYERS][32];
 
 void Saves_PluginStart()
 {
 	RegConsoleCmd("rpg_character", Saves_Command, "View your characters");
+	RegConsoleCmd("sm_character", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_characters", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_characters", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_save", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_save", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_saves", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_saves", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_char", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_char", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_chars", Saves_Command, "View your characters", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_chars", Saves_Command, "View your characters", FCVAR_HIDDEN);
 }
 
 void Saves_ConfigSetup()
@@ -41,7 +52,282 @@ KeyValues Saves_KV(const char[] section)
 	return SaveKv;
 }
 
-void Saves_ClientCharName(int client, char[] buffer, int length)
+bool Saves_HasCharacter(int client)
 {
-	strcopy(buffer, length, CharacterName[client]);
+	return view_as<bool>(CharacterId[client][0]);
+}
+
+int Saves_ClientCharId(int client, char[] buffer, int length)
+{
+	return strcopy(buffer, length, CharacterId[client]);
+}
+
+static Action Saves_Command(int client, int args)
+{
+	if(client)
+	{
+		Saves_MainMenu(client);
+	}
+	return Plugin_Handled;
+}
+
+void Saves_MainMenu(int client)
+{
+	Race race;
+
+	KeyValues kv = Saves_KV("characters");
+	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
+	{
+
+	}
+	else
+	{
+		Menu menu = new Menu(CharacterSelectH);
+		menu.SetTitle("RPG Fortress\n \nCharacter Selection:\n ");
+
+		int chars;
+
+		char buffer1[32], buffer2[32], steamid[32];
+		if(GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid)) && strlen(steamid) > 9)
+		{
+			if(kv.GotoFirstSubKey())
+			{
+				do
+				{
+					kv.GetString("owner", buffer1, sizeof(buffer1));
+					if(StrEqual(buffer1, steamid))
+					{
+						Races_GetRaceByIndex(kv.GetNum("race"), race);
+						kv.GetString("title", buffer1, sizeof(buffer1));
+						kv.GetString("model", buffer2, sizeof(buffer2));
+
+						if(buffer1[0])
+						{
+							Format(buffer1, sizeof(buffer1), "Level %d \"%s\" %s %s", kv.GetNum("level"), buffer1, race.Name, buffer2);
+						}
+						else
+						{
+							FormatEx(buffer1, sizeof(buffer1), "Level %d %s %s", kv.GetNum("level"), race.Name, buffer2);
+						}
+						
+						kv.GetSectionName(buffer2, sizeof(buffer2));
+						menu.AddItem(buffer2, buffer1);
+						chars++;
+					}
+				}
+				while(kv.GotoNextKey());
+			}
+
+			for(; chars < 3; chars++)
+			{
+				menu.AddItem("", "New Character");
+			}
+
+			menu.Pagination = 0;
+			menu.ExitButton = false;
+			menu.Display(client, MENU_TIME_FOREVER);
+		}
+		else
+		{
+			menu.AddItem("", "Connecting to Steam...", ITEMDRAW_DISABLED);
+
+			menu.ExitButton = false;
+			menu.Display(client, 2);
+		}
+	}
+}
+
+static int CharacterSelectH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menu.GetItem(choice, id, sizeof(id));
+
+			if(id[0])
+			{
+				CharacterMenu(client, id);
+			}
+			else
+			{
+				CreateCharacter(client);
+			}
+		}
+	}
+
+	return 0;
+}
+
+static void CharacterMenu(int client, const char[] id)
+{
+	KeyValues kv = Saves_KV("characters");
+	if(kv.JumpToKey(id))
+	{
+		char buffer1[32], buffer2[32], buffer3[32];
+
+		Race race;
+		Races_GetRaceByIndex(kv.GetNum("race"), race);
+		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
+		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
+		FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
+
+		Menu menu = new Menu(CharacterMenuH);
+
+		menu.SetTitle("RPG Fortress\n \nCharacter Selection:\n \n" ...
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
+
+		menu.AddItem(id, "Select Character");
+		menu.AddItem(id, "Delete Character");
+
+		menu.ExitBackButton = true;
+		menu.ExitButton = false;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+static int CharacterMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				Saves_MainMenu(client);
+		}
+		case MenuAction_Select:
+		{
+			char id[32];
+			menu.GetItem(choice, id, sizeof(id));
+
+			switch(choice)
+			{
+				case 0:	// Select
+				{
+					strcopy(CharacterId[client], sizeof(CharacterId[]), id);
+
+					// TODO: Initialize Stats, Etc.
+
+					if(!IsPlayerAlive(client))
+					{
+						if(GetClientTeam(client) == TFTeam_Red)
+						{
+							TF2_RespawnPlayer(client);
+						}
+						else
+						{
+							ChangeClientTeam(client, TFTeam_Red);
+						}
+					}
+				}
+				case 1:	// Delete
+				{
+					// TODO: Are you sure? menu
+				}
+			}
+		}
+	}
+
+	return 0;
+}
+
+static void CreateCharacter(int client)
+{
+	static const int Cooldown = 86400; // 24 hours
+
+	char steamid[32], id[32];
+	int time = GetTime();
+	int timestamp = time / Cooldown;
+	GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
+	FormatEx(id, sizeof(id), "%d-%s", timestamp, steamid);
+
+	KeyValues kv = Saves_KV("characters");
+	if(kv.JumpToKey(id))
+	{
+		PrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
+	}
+	else
+	{
+		kv.JumpToKey(id, true);
+		kv.SetString("owner", steamid);
+		
+		switch(TF2_GetPlayerClass(client))
+		{
+			case TFClass_Scout:
+				kv.SetString("model", "Scout");
+			
+			case TFClass_Soldier:
+				kv.SetString("model", "Soldier");
+			
+			case TFClass_Pyro:
+				kv.SetString("model", "Pyro");
+			
+			case TFClass_DemoMan:
+				kv.SetString("model", "Demoman");
+			
+			case TFClass_Heavy:
+				kv.SetString("model", "Heavy");
+			
+			case TFClass_Engineer:
+				kv.SetString("model", "Engineer");
+			
+			case TFClass_Sniper:
+				kv.SetString("model", "Sniper");
+			
+			case TFClass_Spy:
+				kv.SetString("model", "Spy");
+			
+			case TFClass_Medic:
+				kv.SetString("model", "Medic");
+		}
+
+		kv.SetNum("lastsave", time);
+
+		ModifiyCharacter(client, id);
+	}
+}
+
+static void ModifiyCharacter(int client, const char[] id)
+{
+	KeyValues kv = Saves_KV("characters");
+	if(kv.JumpToKey(id))
+	{
+		char buffer1[32], buffer2[32], buffer3[32];
+
+		Race race;
+		Races_GetRaceByIndex(kv.GetNum("race"), race);
+		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
+		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
+		FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
+
+		Menu menu = new Menu(CharacterMenuH);
+
+		menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
+
+		Format(buffer1, sizeof(buffer1), "Level %d", kv.GetNum("level"));
+		menu.AddItem(NULL_STRING, buffer1, ITEMDRAW_DISABLED);
+
+		menu.AddItem(NULL_STRING, "Race");
+		menu.AddItem(NULL_STRING, "Outfit");
+		menu.AddItem(NULL_STRING, "3");
+		menu.AddItem(NULL_STRING, "4");
+		menu.AddItem(NULL_STRING, "5");
+		menu.AddItem(NULL_STRING, "6");
+		menu.AddItem(NULL_STRING, "7");
+		menu.AddItem(NULL_STRING, buffer1, ITEMDRAW_SPACER);
+
+		menu.AddItem(NULL_STRING, "Finish Character");
+
+		menu.Pagination = 0;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
 }

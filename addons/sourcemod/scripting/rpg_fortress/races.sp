@@ -274,9 +274,13 @@ void Races_ConfigSetup()
 	delete kv;
 }
 
-stock void Races_GetRaceByIndex(int index, Race race)
+stock bool Races_GetRaceByIndex(int index, Race race)
 {
+	if(index < 1 || Races.Length >= index)
+		return false;
+	
 	Races.GetArray(index, race);
+	return true;
 }
 
 stock bool Races_GetClientInfo(int client, Race race = {}, Form form = {})

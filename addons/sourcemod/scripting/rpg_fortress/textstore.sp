@@ -309,7 +309,7 @@ void TextStore_PluginStart()
 	RegAdminCmd("rpg_givemeall", TextStore_GiveMeAllCommand, ADMFLAG_ROOT);
 }
 
-public Action TextStore_HelpCommand(int client, int args)
+static Action TextStore_HelpCommand(int client, int args)
 {
 	ReplyToCommand(client, "[SM] Use /inv <item name> to search for an item");
 	if(client)
@@ -318,7 +318,7 @@ public Action TextStore_HelpCommand(int client, int args)
 	return Plugin_Handled;
 }
 
-public Action TextStore_GiveMeAllCommand(int client, int args)
+static Action TextStore_GiveMeAllCommand(int client, int args)
 {
 	if(client)
 	{
@@ -366,7 +366,7 @@ void TextStore_ConfigSetup()
 	RequestFrame(TextStore_ConfigSetupFrame);
 }
 
-public void TextStore_ConfigSetupFrame()
+static void TextStore_ConfigSetupFrame()
 {
 	HashCheck();
 	for(int client = 1; client <= MaxClients; client++)
@@ -550,7 +550,7 @@ public Action TextStore_OnClientLoad(int client, char file[PLATFORM_MAX_PATH])
 	return Plugin_Continue;
 }
 
-public void TextStore_LoadFrame(int userid)
+static void TextStore_LoadFrame(int userid)
 {
 	int client = GetClientOfUserId(userid);
 	if(client)
@@ -756,7 +756,7 @@ public Action TextStore_OnSellItem(int client, int item, int cash, int &count, i
 	return Plugin_Handled;
 }
 
-public void TextStore_ShowSellMenu(int client)
+static void TextStore_ShowSellMenu(int client)
 {
 	if(InStore[client][0])
 	{
@@ -862,7 +862,7 @@ bool TextStore_SayCommand(int client)
 	return true;
 }
 
-public int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, int choice)
+static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -976,11 +976,12 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	menu.AddItem("rpg_stats", 		"Player Stats");
-	menu.AddItem("rpg_spawns", 		"Spawn Stats");
-	menu.AddItem("rpg_party", 		"Party");
-	menu.AddItem("rpg_help", 		"Search");
-	menu.AddItem("rpg_settings", 	"Settings");
+	menu.AddItem("rpg_stats",	"Player Stats");
+	menu.AddItem("rpg_spawns",	"Spawn Stats");
+	menu.AddItem("rpg_party",	"Party");
+	menu.AddItem("rpg_help",	"Search");
+	menu.AddItem("rpg_character",	"Characters");
+	menu.AddItem("rpg_settings",	"Settings");
 	return Plugin_Changed;
 }
 
@@ -1092,7 +1093,7 @@ public Action TextStore_OnBuyItem(int client, int item, int cash, int &count, in
 	return Plugin_Handled;
 }
 
-public void TextStore_ShowBuyMenu(int client)
+static void TextStore_ShowBuyMenu(int client)
 {
 	if(InStore[client][0])
 	{
@@ -1193,7 +1194,7 @@ public void TextStore_ShowBuyMenu(int client)
 	}
 }
 
-public int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int choice)
+static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -1532,7 +1533,7 @@ bool Textstore_CanSeeItem(int entity, int client)
 	return (ItemOwner[entity] == client);// || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
 }
 
-public Action DroppedTextSetTransmit(int entity, int client)
+static Action DroppedTextSetTransmit(int entity, int client)
 {
 	if(Textstore_CanSeeItem(i_TextEntity[entity][0], client))
 		return Plugin_Continue;
@@ -1540,7 +1541,7 @@ public Action DroppedTextSetTransmit(int entity, int client)
 	return Plugin_Handled;
 }
 
-public Action DroppedItemSetTransmit(int entity, int client)
+static Action DroppedItemSetTransmit(int entity, int client)
 {
 	if(Textstore_CanSeeItem(entity, client))
 		return Plugin_Continue;
@@ -1773,7 +1774,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 	return false;
 }
 
-public Action TextStore_ItemTimer(Handle timer)
+static Action TextStore_ItemTimer(Handle timer)
 {
 	float gameTime = GetGameTime();
 
@@ -1797,8 +1798,16 @@ public Action TextStore_ItemTimer(Handle timer)
 
 void TextStore_PlayerRunCmd(int client)
 {
-	if((InMenu[client] || GetClientMenu(client) == MenuSource_None) && IsPlayerAlive(client))
+	if((InMenu[client] || GetClientMenu(client) == MenuSource_None))
 	{
+		if(!IsPlayerAlive(client))
+		{
+			if(!Saves_HasCharacter(client))
+				Saves_MainMenu(client);
+			
+			return;
+		}
+		
 		if(InMenu[client])
 		{
 			switch(MenuType[client])
@@ -2006,7 +2015,7 @@ static void ShowMenu(int client, int page = 0)
 	}
 }
 
-public int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle hndl)
+static int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle hndl)
 {
 	if(!StoreWeapon[elem1][0])
 		return 1;
@@ -2023,7 +2032,7 @@ public int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle 
 	return elem1 > elem2 ? 1 : -1;
 }
 
-public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int choice)
+static int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -2090,7 +2099,7 @@ public int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int 
 	return 0;
 }
 
-public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int choice)
+static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -2170,7 +2179,7 @@ public int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 	return 0;
 }
 
-public int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int choice)
+static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
