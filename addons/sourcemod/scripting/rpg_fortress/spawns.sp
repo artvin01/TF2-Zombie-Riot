@@ -545,6 +545,8 @@ static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {
+	return;
+	/*
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "spawns");
 	KeyValues kv = new KeyValues("Spawns");
@@ -594,9 +596,9 @@ void Spawns_EditorMenu(int client)
 
 		for(int i; i < 3; i++)
 		{
-			/*
-				Trigger Box
-			*/
+			
+			//	Trigger Box
+			
 			vec1 = pos1;
 			vec2 = pos1;
 
@@ -613,9 +615,9 @@ void Spawns_EditorMenu(int client)
 			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
-			/*
-				Point 1 Box
-			*/
+			
+			//	Point 1 Box
+			
 			vec1 = pos1;
 			vec2 = pos1;
 
@@ -632,9 +634,9 @@ void Spawns_EditorMenu(int client)
 			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
 			TE_SendToClient(client);
 
-			/*
-				Point 2 Box
-			*/
+			
+			//	Point 2 Box
+			
 			vec1 = pos2;
 			vec2 = pos2;
 
@@ -651,9 +653,9 @@ void Spawns_EditorMenu(int client)
 			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
-			/*
-				Teleport Box
-			*/
+			
+			//	Teleport Box
+			
 			if(telepos[0])
 			{
 				vec1 = telepos;
@@ -708,4 +710,5 @@ void Spawns_EditorMenu(int client)
 	}
 
 	delete kv;
+	*/
 }

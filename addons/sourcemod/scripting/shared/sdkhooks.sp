@@ -978,8 +978,15 @@ public void OnPostThink(int client)
 				blue = form.Form_RGBA[2];
 				Alpha = form.Form_RGBA[3];
 			}
+			
+			char c_CurrentMana[255];
+			IntToString(Current_Mana[client],c_CurrentMana, sizeof(c_CurrentMana));
+
+			int offset = Current_Mana[client] < 0 ? 1 : 0;
+			ThousandString(c_CurrentMana[offset], sizeof(c_CurrentMana) - offset);
+
 			if(form.Name[0])
-				Format(buffer, sizeof(buffer), "%s: %d\n%s", form.Name, Current_Mana[client], buffer);
+				Format(buffer, sizeof(buffer), "%s: %s\n%s", form.Name, c_CurrentMana, buffer);
 			else
 				Format(buffer, sizeof(buffer), "%t\n%s", "Capacity", Current_Mana[client], buffer);
 #endif
@@ -2709,11 +2716,14 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			StatsForDrainMulti += StatsForDrainMultiAdd;
 			Stats_Artifice(client, StatsForDrainMultiAdd);
 			StatsForDrainMulti += StatsForDrainMultiAdd;
+			Stats_Endurance(client, StatsForDrainMultiAdd);
+			StatsForDrainMulti += StatsForDrainMultiAdd;
 
 			//We take the base drain rate and multiply it by all the base stats.
 			Drain *= float(StatsForDrainMulti);
 
 			Drain *= 0.05; //drains are too high!
+			Drain *= 0.33;
 			
 			//if it isnt 0, do nothing
 			//some forms may have generation! who knows.

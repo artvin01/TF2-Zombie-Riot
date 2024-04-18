@@ -116,7 +116,7 @@ void Stats_UpdateHud(int client)
 		float total = float(Stats_Capacity(client) * 50);
 		if(Current_Mana[client] > total)
 		{
-			Current_Mana[client] = RoundToNearest(max_mana[client]);
+			Current_Mana[client] = total;
 		}
 		max_mana[client] = total;
 		i_MaxStamina[client] = RoundToNearest(float(Stats_Structure(client)) * 1.5);
@@ -295,6 +295,13 @@ void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 
 	float speed = 300.0 + float(Stats_Agility(client));
 	map.SetValue("107", RemoveExtraSpeed(class, speed));
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	
+	map.SetValue("205", form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	map.SetValue("206", form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)

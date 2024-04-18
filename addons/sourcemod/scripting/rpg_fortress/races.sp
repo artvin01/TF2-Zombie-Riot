@@ -51,6 +51,8 @@ enum struct Form
 	float ArtificeMulti[2];
 	float EnduranceMulti[2];
 	float StructureMulti[2];
+	float DamageResistance[2];
+
 	float IntelligenceMulti[2];
 	int LuckAdd[2];
 	int AgilityAdd[2];
@@ -88,6 +90,9 @@ enum struct Form
 
 		this.StructureMulti[0] = kv.GetFloat("Min_Structure", 1.0);
 		this.StructureMulti[1] = kv.GetFloat("Max_Structure", 1.0);
+
+		this.DamageResistance[0] = kv.GetFloat("Min_DamageRes", 1.0);
+		this.DamageResistance[1] = kv.GetFloat("Max_DamageRes", 1.0);
 
 		this.IntelligenceMulti[0] = kv.GetFloat("Min_Intelligence", 1.0);
 		this.IntelligenceMulti[1] = kv.GetFloat("Max_Intelligence", 1.0);
@@ -134,6 +139,8 @@ enum struct Form
 		this.Upgrade = 0;
 		this.Mastery = 0;
 		this.Func_Requirement = INVALID_FUNCTION;
+		this.Func_FormActivate = INVALID_FUNCTION;
+		this.Func_FormDeactivate = INVALID_FUNCTION;
 
 		this.DrainRate[0] = 0.0;
 		this.DrainRate[1] = 0.0;
@@ -152,6 +159,9 @@ enum struct Form
 
 		this.StructureMulti[0] = 1.0;
 		this.StructureMulti[1] = 1.0;
+
+		this.DamageResistance[0] = 1.0;
+		this.DamageResistance[1] = 1.0;
 
 		this.IntelligenceMulti[0] = 1.0;
 		this.IntelligenceMulti[1] = 1.0;
