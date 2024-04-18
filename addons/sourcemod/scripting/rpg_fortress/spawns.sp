@@ -539,3 +539,173 @@ public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
 	}
 	return 0;
 }
+
+static Handle TimerSpawnEditing[MAXTF2PLAYERS];
+static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
+
+void Spawns_EditorMenu(int client)
+{
+	char buffer[PLATFORM_MAX_PATH];
+	RPG_BuildPath(buffer, sizeof(buffer), "spawns");
+	KeyValues kv = new KeyValues("Spawns");
+	kv.ImportFromFile(buffer);
+
+	EditMenu menu = new EditMenu();
+
+	if(CurrentZoneEditing[client][0])
+	{
+		kv.JumpToKey(CurrentZoneEditing[client], true);
+
+		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
+		
+		float pos1[3], pos2[3], telepos[3], vec1[3], vec2[3];
+		kv.GetVector("point1", pos1);
+		kv.GetVector("point2", pos2);
+		kv.GetVector("telepos", telepos);
+
+		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f (Click to Set)", pos1[0], pos1[1], pos1[2]);
+		menu.AddItem("point1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f (Click to Set)", pos2[0], pos2[1], pos2[2]);
+		menu.AddItem("point2", buffer);
+
+		if(telepos[0])
+		{
+			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f (Click to Remove)", telepos[0], telepos[1], telepos[2]);
+		}
+		else
+		{
+			FormatEx(buffer, sizeof(buffer), "Teleport: None (Click to Set)");
+		}
+		menu.AddItem("telepos", buffer);
+
+		kv.GetString("item", buffer, sizeof(buffer));
+		if(buffer[0] && !TextStore_IsValidName(buffer))
+		{
+			Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}\n ", buffer);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Item Key: \"%s\" (Type in chat, Click to Remove)\n ", buffer);
+		}
+		menu.AddItem("item", buffer);
+
+		menu.AddItem("delete", "Delete Zone");
+
+		for(int i; i < 3; i++)
+		{
+			/*
+				Trigger Box
+			*/
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] = pos2[i];
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] = pos1[i];
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Point 1 Box
+			*/
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] += 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos1;
+			vec2 = pos1;
+
+			vec2[i] -= 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Point 2 Box
+			*/
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] += 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			vec1 = pos2;
+			vec2 = pos2;
+
+			vec2[i] -= 5.0;
+
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SendToClient(client);
+
+			/*
+				Teleport Box
+			*/
+			if(telepos[0])
+			{
+				vec1 = telepos;
+				vec1[0] -= 23.5;
+				vec1[1] -= 23.5;
+				vec2 = vec1;
+
+				vec2[i] += i == 2 ? 95.0 : 57.0;
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SendToClient(client);
+				
+				vec1 = telepos;
+				vec2[0] += 23.5;
+				vec2[1] += 23.5;
+				vec2[2] += 95.0;
+				vec2 = vec1;
+
+				vec2[i] -= i == 2 ? 95.0 : 57.0;
+
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SendToClient(client);
+			}
+		}
+		
+		menu.ExitBackButton = true;
+		menu.Display(client, NamePicker);
+
+		delete TimerZoneEditing[client];
+		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else
+	{
+		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
+		
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				kv.GetSectionName(buffer, sizeof(buffer));
+				menu.AddItem(buffer, buffer);
+			}
+			while(kv.GotoNextKey());
+		}
+		else
+		{
+			menu.AddItem("", "None", ITEMDRAW_DISABLED);
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, NamePicker);
+	}
+
+	delete kv;
+}
