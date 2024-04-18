@@ -27,6 +27,7 @@ bool DisabledDownloads[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 int RaceIndex[MAXTF2PLAYERS];
+int i_TransformationSelected[MAXTF2PLAYERS];
 int i_TransformationLevel[MAXTF2PLAYERS];
 float f_TransformationDelay[MAXTF2PLAYERS]; 	//if he takess too long and cancels it, itll just drop the progress.
 
@@ -74,7 +75,6 @@ int Luck2[MAXENTITIES];
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
-bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXTF2PLAYERS];
 
@@ -129,6 +129,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
 #include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 */
+#include "rpg_fortress/custom/transform_expidonsan.sp"
 
 void RPG_PluginStart()
 {
@@ -190,6 +191,7 @@ void RPG_PluginEnd()
 	}
 
 	Party_PluginEnd();
+	Saves_PluginEnd();
 }
 
 void RPG_MapStart()
@@ -197,10 +199,12 @@ void RPG_MapStart()
 	Zero2(f3_SpawnPosition);
 	Fishing_OnMapStart();
 	Medigun_PersonOnMapStart();
+	Zones_MapStart();
 
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	Wand_Map_Precache();
+	Transform_Expidonsa_MapStart();
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
@@ -347,6 +351,7 @@ void RPG_ClientDisconnect(int client)
 	TextStore_ClientDisconnect(client);
 //	MudrockShieldDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
+	f_TransformationDelay[client] = 0.0;
 }
 
 void RPG_ClientDisconnect_Post()
@@ -365,9 +370,10 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	Zones_EntityCreated(entity, classname);
 }
 
-void RPG_PlayerRunCmdPost(int client)
+void RPG_PlayerRunCmdPost(int client, int buttons)
 {
 	TextStore_PlayerRunCmd(client);
+	Editor_PlayerRunCmd(client, buttons);
 	Fishing_PlayerRunCmd(client);
 	Garden_PlayerRunCmd(client);
 	Music_PlayerRunCmd(client);
@@ -513,13 +519,18 @@ void WeaponAttackResourceReduction(int client, int weapon)
 {
 	float ResourceCostAttack = Attributes_Get(weapon, 4003, 0.0);
 	float StaminaCostAttack = Attributes_Get(weapon, 4004, 0.0);
+	int StatsForStaminaMulti;
+	int StatsForStaminaMultiAdd;
 	if(ResourceCostAttack != 0.0)
 	{
 
 	}
 	if(StaminaCostAttack != 0.0)
 	{
-
+		Stats_Strength(client, StatsForStaminaMultiAdd);
+		StatsForStaminaMulti += StatsForStaminaMultiAdd;
+		StaminaCostAttack *= StatsForStaminaMulti;
+		RPGCore_StaminaReduction(weapon, client, RoundToNearest(StaminaCostAttack));
 	}
 }
 
@@ -527,17 +538,36 @@ void WeaponAttackResourceReduction(int client, int weapon)
 void RPGCore_StaminaReduction(int weapon, int client, int amount)
 {
 	i_CurrentStamina[client] -= amount;
-	if(i_CurrentStamina[client] <= 0)
+	if(i_CurrentStamina[client] < 0)
 	{
 		i_CurrentStamina[client] = 0;
 		//Give them a huge attack delay.
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 5.0); 
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(EntIndexToEntRef(client));
+		RequestFrame(RPGCore_StaminaReduction_Puishment, pack);
 	}
 }
 
+													
+void RPGCore_StaminaReduction_Puishment(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity) && IsValidClient(client))
+	{
+		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + 3.0);
+		SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 3.0);
+	}
+	delete pack;
+}
 
 void RPGCore_StaminaAddition(int client, int amount)
 {
+	if(amount < 1)
+		amount = 1;
+
 	i_CurrentStamina[client] += amount;
 	if(i_CurrentStamina[client] > i_MaxStamina[client])
 	{
@@ -552,7 +582,8 @@ void RPGCore_ResourceReduction(int client, int amount)
 	{
 		Current_Mana[client] = 0;
 		//De-Transform logic.
-		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAG_SLOWDOWN);
+		De_TransformClient(client);
+		TF2_StunPlayer(client, 5.0, 0.25, TF_STUNFLAGS_LOSERSTATE|TF_STUNFLAG_SLOWDOWN);
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{

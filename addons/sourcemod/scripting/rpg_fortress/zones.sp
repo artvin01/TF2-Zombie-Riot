@@ -30,6 +30,11 @@ static void OnDestroy(int entity)
 	UnhookSingleEntityOutput(entity, "OnEndTouchAll", Zones_EndTouchAll);
 }
 
+void Zones_MapStart()
+{
+	PrecacheModel("models/error.mdl");
+}
+
 void Zones_ResetAll()
 {
 	Zones_ConfigSetup();
@@ -73,7 +78,14 @@ void Zones_ConfigSetup()
 
 					for(int i; i < sizeof(maxs); i++)
 					{
-						maxs[i] = fabs(pos[i] - maxs[i]) / 2.0;
+						if(pos[i] < maxs[i])
+						{
+							float val = pos[i];
+							pos[i] = maxs[i];
+							maxs[i] = val;
+						}
+
+						maxs[i] = (pos[i] - maxs[i]) / 2.0;
 						mins[i] = -maxs[i];
 						pos[i] -= maxs[i];
 					}
@@ -196,9 +208,19 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
 		if(pos[0])
 		{
-			float ang[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
-			TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
+			GetEntPropString(entity, Prop_Data, "m_nItemKey", name, sizeof(name));
+			if(caller <= MaxClients && name[0] && TextStore_GetItemCount(caller, name) < 1)
+			{
+				ShowGameText(caller, _, 0, "You need \"%s\" to enter", name);
+			}
+			else
+			{
+				float ang[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
+				TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
+				if(caller <= MaxClients)
+					TF2_StunPlayer(caller, 0.3, 1.0, TF_STUNFLAG_SLOWDOWN);
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -315,10 +337,11 @@ void Zones_EditorMenu(int client)
 
 		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
 		
-		float pos1[3], pos2[3], telepos[3], vec1[3], vec2[3];
+		float pos1[3], pos2[3], telepos[3], teleang[3], vec1[3], vec2[3];
 		kv.GetVector("point1", pos1);
 		kv.GetVector("point2", pos2);
 		kv.GetVector("telepos", telepos);
+		kv.GetVector("telepos", teleang);
 
 		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f (Click to Set)", pos1[0], pos1[1], pos1[2]);
 		menu.AddItem("point1", buffer);
@@ -328,7 +351,7 @@ void Zones_EditorMenu(int client)
 
 		if(telepos[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f (Click to Remove)", telepos[0], telepos[1], telepos[2]);
+			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f %.1f (Click to Remove)", telepos[0], telepos[1], telepos[2], teleang[1]);
 		}
 		else
 		{
@@ -359,7 +382,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] = pos2[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos2;
@@ -367,7 +390,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] = pos1[i];
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -378,7 +401,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] += 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos1;
@@ -386,7 +409,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] -= 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {255, 0, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -397,7 +420,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] += 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			vec1 = pos2;
@@ -405,7 +428,7 @@ void Zones_EditorMenu(int client)
 
 			vec2[i] -= 5.0;
 
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
+			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 30.0, 10.0, 0, 0.0, {0, 255, 255, 255}, 0);
 			TE_SendToClient(client);
 
 			/*
@@ -420,24 +443,24 @@ void Zones_EditorMenu(int client)
 
 				vec2[i] += i == 2 ? 95.0 : 57.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
 				TE_SendToClient(client);
 				
 				vec1 = telepos;
-				vec2[0] += 23.5;
-				vec2[1] += 23.5;
-				vec2[2] += 95.0;
+				vec1[0] += 23.5;
+				vec1[1] += 23.5;
+				vec1[2] += 95.0;
 				vec2 = vec1;
 
 				vec2[i] -= i == 2 ? 95.0 : 57.0;
 
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
+				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 20.0, 20.0, 0, 0.0, {255, 255, 0, 255}, 0);
 				TE_SendToClient(client);
 			}
 		}
 		
 		menu.ExitBackButton = true;
-		menu.Display(client, NamePicker);
+		menu.Display(client, AdjustZone);
 
 		delete TimerZoneEditing[client];
 		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
@@ -504,7 +527,7 @@ static void AdjustZone(int client, const char[] buffer)
 	KeyValues kv = new KeyValues("Zones");
 	kv.ImportFromFile(filepath);
 
-	if(kv.JumpToKey(CurrentZoneEditing[client]))
+	if(kv.JumpToKey(CurrentZoneEditing[client], true))
 	{
 		if(StrEqual(buffer, "point1"))
 		{

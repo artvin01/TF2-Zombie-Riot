@@ -2403,7 +2403,7 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #endif
 
 #if defined RPG
-	RPG_PlayerRunCmdPost(client);
+	RPG_PlayerRunCmdPost(client, buttons);
 #endif
 }
 
@@ -2457,6 +2457,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 
 #if defined RPG
 	RPGStore_SetWeaponDamageToDefault(weapon, client, classname);
+	WeaponAttackResourceReduction(client, weapon);
 #endif
 	Action action = Plugin_Continue;
 	Function func = EntityFuncAttack[weapon];

@@ -43,7 +43,7 @@ enum struct Form
 	int Level;
 	int Upgrade;
 	int Mastery;
-	Function Func;
+	Function Func_Requirement;
 	float DrainRate[2];
 
 	float StrengthMulti[2];
@@ -54,6 +54,9 @@ enum struct Form
 	float IntelligenceMulti[2];
 	int LuckAdd[2];
 	int AgilityAdd[2];
+	Function Func_FormActivate;
+	Function Func_FormDeactivate;
+	int Form_RGBA[4];
 
 	void SetupKV(KeyValues kv)
 	{
@@ -62,7 +65,11 @@ enum struct Form
 		this.Level = kv.GetNum("Form Level");
 		this.Upgrade = kv.GetNum("Form Upgrade Cost");
 		this.Mastery = kv.GetNum("Mastery Max Level");
-		this.Func = KvGetFunction(kv, "Form Function Requirement");
+		this.Func_Requirement = KvGetFunction(kv, "Form Function Requirement");
+		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
+		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");
+
+		kv.GetColor4("Form_RGBA", this.Form_RGBA);
 
 		this.DrainRate[0] = kv.GetFloat("Min Capacity Drain");
 		this.DrainRate[1] = kv.GetFloat("Max Capacity Drain");
@@ -126,7 +133,7 @@ enum struct Form
 		this.Level = 0;
 		this.Upgrade = 0;
 		this.Mastery = 0;
-		this.Func = INVALID_FUNCTION;
+		this.Func_Requirement = INVALID_FUNCTION;
 
 		this.DrainRate[0] = 0.0;
 		this.DrainRate[1] = 0.0;
@@ -280,7 +287,7 @@ void Races_ConfigSetup()
 
 stock bool Races_GetRaceByIndex(int index, Race race)
 {
-	if(index < 1 || Races.Length >= index)
+	if(index < 0 || index >= Races.Length)
 		return false;
 	
 	Races.GetArray(index, race);

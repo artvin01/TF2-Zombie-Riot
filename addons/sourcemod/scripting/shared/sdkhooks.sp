@@ -866,6 +866,7 @@ public void OnPostThink(int client)
 		int red = 200;
 		int green = 200;
 		int blue = 200;
+		int Alpha = 255;
 
 #if defined ZR
 		if(has_mage_weapon[client])
@@ -969,6 +970,14 @@ public void OnPostThink(int client)
 			red = 200;
 			green = 200;
 			blue = 255;
+			Alpha = 255;
+			if(i_TransformationLevel[client] > 0)
+			{
+				red = form.Form_RGBA[0];
+				green = form.Form_RGBA[1];
+				blue = form.Form_RGBA[2];
+				Alpha = form.Form_RGBA[3];
+			}
 			if(form.Name[0])
 				Format(buffer, sizeof(buffer), "%s: %d\n%s", form.Name, Current_Mana[client], buffer);
 			else
@@ -1084,7 +1093,7 @@ public void OnPostThink(int client)
 		}
 		if(buffer[0])
 		{
-			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, 255);
+			SetHudTextParams(HudX, HudY, 0.81, red, green, blue, Alpha);
 			ShowSyncHudText(client,  SyncHud_WandMana, "%s", buffer);
 		}
 	}
@@ -1094,6 +1103,7 @@ public void OnPostThink(int client)
 
 #if defined RPG
 		RPG_UpdateHud(client);
+		RPG_Sdkhooks_StaminaBar(client);
 #endif
 
 #if defined ZR
@@ -1409,9 +1419,6 @@ public void OnPostThink(int client)
 		SetEntProp(client, Prop_Send, "m_iHideHUD", GetEntProp(client, Prop_Send, "m_iHideHUD") | HIDEHUD_BUILDING_STATUS | HIDEHUD_CLOAK_AND_FEIGN);
 		if(HudBuffer[0])
 			PrintKeyHintText(client,"%s", HudBuffer);
-#elseif defined RPG
-		RPG_Sdkhooks_StaminaBar(client);
-
 #endif
 	}
 #if defined ZR
@@ -2668,11 +2675,14 @@ void ArmorDisplayClientColor(int client, int armor)
 #if defined RPG
 void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
+	//Regenerate stamina over time at all times!
+	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 50);
+	
 	//firstly regen any resource!
-	if((f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
+	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
 		//if outside of battle and not in transformations that drain resource, regenerate resource.
-		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 40.0));
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 80.0));
 	}
 	else
 	{
@@ -2687,7 +2697,24 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			//They are in a transformation!
 			//do drain logic here!
 			float Drain = 0.0;
+			Form form;
+			Races_GetClientInfo(client, _, form);
+			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
 
+			int StatsForDrainMulti;
+			int StatsForDrainMultiAdd;
+			Stats_Precision(client, StatsForDrainMultiAdd);
+			StatsForDrainMulti += StatsForDrainMultiAdd;
+			Stats_Strength(client, StatsForDrainMultiAdd);
+			StatsForDrainMulti += StatsForDrainMultiAdd;
+			Stats_Artifice(client, StatsForDrainMultiAdd);
+			StatsForDrainMulti += StatsForDrainMultiAdd;
+
+			//We take the base drain rate and multiply it by all the base stats.
+			Drain *= float(StatsForDrainMulti);
+
+			Drain *= 0.05; //drains are too high!
+			
 			//if it isnt 0, do nothing
 			//some forms may have generation! who knows.
 			if(Drain != 0.0)
@@ -2701,7 +2728,12 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	}
 }
 
-
+/*
+	#define CHAR_FULL	"█"
+	#define CHAR_PARTFULL	"▓"
+	#define CHAR_PARTEMPTY	"▒"
+	#define CHAR_EMPTY	"░"
+*/
 void RPG_Sdkhooks_StaminaBar(int client)
 {
 	char buffer[32];
@@ -2712,11 +2744,11 @@ void RPG_Sdkhooks_StaminaBar(int client)
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 		}
-		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/60.0))
+		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/80.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 		}
-		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/30.0))
+		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/20.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 		}
@@ -2730,9 +2762,9 @@ void RPG_Sdkhooks_StaminaBar(int client)
 			Format(buffer, sizeof(buffer), "%s\n", buffer);
 		}
 	}
-	int red = 200;
-	int green = 80;
-	int blue = 80;
+	int red = 255;
+	int green = 165;
+	int blue = 0;
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }

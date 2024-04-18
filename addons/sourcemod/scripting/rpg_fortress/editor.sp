@@ -32,20 +32,39 @@ void Editor_PluginStart()
 	RegAdminCmd("rpg_editor", Editor_Command, ADMFLAG_ROOT, "Enter editing mode");
 }
 
-void Editor_SayCommand(int client)
+bool Editor_SayCommand(int client)
+{
+	if(EditorMenu[client] == INVALID_FUNCTION)
+		return false;
+	
+	char buffer[512];
+	GetCmdArgString(buffer, sizeof(buffer));
+	ReplaceString(buffer, sizeof(buffer), "\"", "");
+
+	Function func = EditorMenu[client];
+
+	Call_StartFunction(null, func);
+	Call_PushCell(client);
+	Call_PushString(buffer);
+	Call_Finish();
+	return true;
+}
+
+void Editor_PlayerRunCmd(int client, int buttons)
 {
 	if(EditorMenu[client] != INVALID_FUNCTION)
 	{
-		char buffer[512];
-		GetCmdArgString(buffer, sizeof(buffer));
-		ReplaceString(buffer, sizeof(buffer), "\"", "");
-
-		Function func = EditorMenu[client];
-
-		Call_StartFunction(null, func);
-		Call_PushCell(client);
-		Call_PushString(buffer);
-		Call_Finish();
+		static bool holding[MAXTF2PLAYERS];
+		if(holding[client])
+		{
+			if(!(buttons & IN_ATTACK3))
+				holding[client] = false;
+		}
+		else if(buttons & IN_ATTACK3)
+		{
+			holding[client] = true;
+			SetEntityMoveType(client, GetEntityMoveType(client) == MOVETYPE_NOCLIP ? MOVETYPE_WALK : MOVETYPE_NOCLIP);
+		}
 	}
 }
 
@@ -111,7 +130,7 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 void Editor_MainMenu(int client)
 {
 	EditMenu menu = new EditMenu();
-	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\n ");
+	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress special attack to toggle noclip\n ");
 
 	menu.AddItem("zones", "Zones");
 

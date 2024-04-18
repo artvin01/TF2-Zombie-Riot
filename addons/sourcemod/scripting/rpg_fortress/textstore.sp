@@ -681,7 +681,7 @@ void TextStore_ZoneEnter(int client, const char[] name)
 			StoreList.SetArray(name, store, sizeof(store));
 		}
 
-		if(store.Key[0] && !TextStore_GetItemCount(client, store.Key))
+		if(store.Key[0] && TextStore_GetItemCount(client, store.Key) < 1)
 		{
 			SPrintToChat(client, "You require \"%s\" to use this shop", store.Key);
 		}
@@ -1869,7 +1869,7 @@ static void ShowMenu(int client, int page = 0)
 
 			menu.SetTitle("RPG Fortress\n \nSkills:");
 
-			static const int MaxSkills = 6;
+			static const int MaxSkills = 5;
 
 			int amount;
 			float gameTime = GetGameTime();
@@ -1918,9 +1918,30 @@ static void ShowMenu(int client, int page = 0)
 				menu.RemoveItem(amount);
 			}
 
-			menu.AddItem("-1", "", ITEMDRAW_SPACER);
-			menu.AddItem("-1", "Transformation");
+			menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
+			bool CanTransform = true;
+			if(f_TransformationDelay[client] > GetGameTime())
+				CanTransform = false;
+
+			static Race race;
+			static Form form;
+			if(Races_GetRaceByIndex(RaceIndex[client], race))
+			{
+				if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
+				{
+					race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+				}
+				else
+				{
+					CanTransform = false;
+					form.Default();
+				}	
+			}
+			
+			Format(form.Name, sizeof(form.Name), "%s [M%d]", form.Name, Stats_GetFormMastery(client, form.Name));
+			menu.AddItem("-1", form.Name, CanTransform ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem("-2", "Transform Settings");
+			menu.AddItem("-3", "Main Menu");
 
 			menu.Pagination = 0;
 			menu.ExitButton = true;
@@ -1931,8 +1952,25 @@ static void ShowMenu(int client, int page = 0)
 			Menu menu = new Menu(TextStore_TransformMenu);
 
 			menu.SetTitle("RPG Fortress\n \nTransform Settings:");
+			
+			Race race;
+			if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
+			{
+				char data[16], buffer[64];
 
-			menu.AddItem("", "Add Stuff Here Artvin!");
+				Form form;
+				int length = race.Forms.Length;
+				for(int i; i < length; i++)
+				{
+					race.Forms.GetArray(i, form);
+					IntToString(i, data, sizeof(data));
+					FormatEx(buffer, sizeof(buffer), "%s | Mastery [%d]", form.Name, Stats_GetFormMastery(client, form.Name));
+					menu.AddItem(data, buffer, i_TransformationSelected[client] == (i + 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+				}
+			}
+			
+			if(!menu.ItemCount)
+				menu.AddItem("0", "None", ITEMDRAW_DISABLED);
 
 			menu.Pagination = 0;
 			menu.ExitButton = true;
@@ -2005,7 +2043,8 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_QUESTBOOK:
 		{
-			InMenu[client] = Quests_BookMenu(client);
+			InMenu[client] = false;
+			Quests_BookMenu(client);
 		}
 		case MENU_BUILDING:
 		{
@@ -2139,13 +2178,19 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 				{
 					case -1:
 					{
-						// Transformation
+						// Transform player into the selected state!
+						TransformButton(client);
 					}
 					case -2:
 					{
 						MenuType[client] = MENU_TRANSFORM;
 						RefreshAt[client] = 1.0;
 						InMenu[client] = false;
+						return 0;
+					}
+					case -3:
+					{
+						FakeClientCommandEx(client, "sm_store");
 						return 0;
 					}
 					default:
@@ -2209,15 +2254,10 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 		}
 		case MenuAction_Select:
 		{
-			if(IsPlayerAlive(client))
-			{
-				char num[16];
-				menu.GetItem(choice, num, sizeof(num));
-
-				int index = StringToInt(num);
-
-				// Stuff Here Artvin
-			}
+			char num[16];
+			menu.GetItem(choice, num, sizeof(num));
+			
+			i_TransformationSelected[client] = StringToInt(num) + 1;
 
 			ShowMenu(client);
 		}
@@ -2244,5 +2284,55 @@ stock void TextStore_Inspect(int client)
 			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
+	}
+}
+
+static void TransformButton(int client)
+{
+	if(f_TransformationDelay[client] > GetGameTime())
+	{
+		return;
+	}
+	Race race;
+	if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
+	{
+		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
+		{
+			if(i_TransformationSelected[client] == i_TransformationLevel[client])
+			{
+				De_TransformClient(client);
+				return;
+			}
+			i_TransformationLevel[client] = i_TransformationSelected[client];
+			Form form;
+			race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
+			
+			if(form.Func_FormActivate != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, form.Func_FormActivate);
+				Call_PushCell(client);
+				Call_Finish();
+			}
+			Store_ApplyAttribs(client);
+		}
+	}
+}
+
+void De_TransformClient(int client)
+{
+	Race race;
+	if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
+	{
+		Form form;
+		race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
+		i_TransformationLevel[client] = 0;
+		f_TransformationDelay[client] = GetGameTime() + 5.0;
+		if(form.Func_FormDeactivate != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, form.Func_FormDeactivate);
+			Call_PushCell(client);
+			Call_Finish();
+		}
+		Store_ApplyAttribs(client);
 	}
 }

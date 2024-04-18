@@ -34,6 +34,11 @@ void Saves_ConfigSetup()
 	SaveKv.ExportToFile(buffer);
 }
 
+void Saves_PluginEnd()
+{
+	Saves_SaveClient(0);
+}
+
 void Saves_SaveClient(int client)
 {
 	static char buffer[PLATFORM_MAX_PATH];
@@ -109,6 +114,7 @@ static void EnableCharacter(int client, const char[] id)
 			}
 
 			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
+			RaceIndex[client] = kv.GetNum("race");
 
 			Stats_EnableCharacter(client);
 		}
@@ -178,18 +184,23 @@ static Action Saves_Command(int client, int args)
 
 void Saves_MainMenu(int client)
 {
+	if(!SaveKv)	// Lateload Fix
+		return;
+	
 	Race race;
 
-	char buffer1[32];
+	char buffer1[32], buffer2[32];
 
 	KeyValues kv = Saves_Kv("characters");
 	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
 	{
+		Races_GetRaceByIndex(RaceIndex[client], race);
 		kv.GetString("title", buffer1, sizeof(buffer1), "Normal");
+		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
 
 		Menu menu = new Menu(CharacterInfoH);
 		menu.SetTitle("RPG Fortress\n \nCharacter:\n \n" ...
-		"Level %d\nUnspent XP %d\nTrait: %s", Level[client], XP[client], buffer1);
+		"Race: %s\nOutfit: %s\nTrait: %sLevel %d\nUnspent XP %d", race.Name, buffer1, buffer2, Level[client], XP[client]);
 
 		menu.AddItem(NULL_STRING, "Change Characters", ITEMDRAW_SPACER);
 		menu.AddItem(NULL_STRING, "Change Characters");
@@ -203,8 +214,8 @@ void Saves_MainMenu(int client)
 
 		int chars;
 
-		char buffer2[32], steamid[32];
-		if(GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid)) && strlen(steamid) > 9)
+		char steamid[32];
+		if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)) && strlen(steamid) > 9)
 		{
 			if(kv.GotoFirstSubKey())
 			{
@@ -319,6 +330,7 @@ static void CharacterMenu(int client, const char[] id)
 		"Race: %s\nOutfit: %s\nTrait: %s\nLevel %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
 
 		menu.AddItem(id, "Select Character");
+		menu.AddItem(id, "Modifiy Character");
 		menu.AddItem(id, "Delete Character");
 
 		menu.ExitBackButton = true;
@@ -363,18 +375,22 @@ static int CharacterMenuH(Menu menuaaaa, MenuAction action, int client, int choi
 						}
 					}
 				}
-				case 1:	// Delete
+				case 1:	// Modifiy
+				{
+					ModifiyCharacter(client, id);
+				}
+				case 2:	// Delete
 				{
 					Menu menu = new Menu(DeleteCharacterH);
 
 					menu.SetTitle("RPG Fortress\n \nAre you sure you want to delete this character?\nThis action can not be undone.\n ");
 
-					menu.AddItem("", "", ITEMDRAW_SPACER);
-					menu.AddItem("", "", ITEMDRAW_SPACER);
-					menu.AddItem("", "", ITEMDRAW_SPACER);
-					menu.AddItem("", "Yes, delete");
-					menu.AddItem("", "", ITEMDRAW_SPACER);
-					menu.AddItem("", "No, keep");
+					menu.AddItem(id, "", ITEMDRAW_SPACER);
+					menu.AddItem(id, "", ITEMDRAW_SPACER);
+					menu.AddItem(id, "", ITEMDRAW_SPACER);
+					menu.AddItem(id, "Yes, delete");
+					menu.AddItem(id, "", ITEMDRAW_SPACER);
+					menu.AddItem(id, "No, keep");
 
 					menu.ExitBackButton = true;
 					menu.ExitButton = false;
@@ -434,7 +450,7 @@ static void CreateCharacter(int client)
 	char steamid[32], id[32];
 	int time = GetTime();
 	int timestamp = time / Cooldown;
-	GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
+	GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid));
 	FormatEx(id, sizeof(id), "%d-%s", timestamp, steamid);
 
 	KeyValues kv = Saves_Kv("characters");
@@ -443,7 +459,7 @@ static void CreateCharacter(int client)
 		kv.GetString("owner", steamid, sizeof(steamid));
 		if(StrContains(steamid, "delete", false) == -1)
 		{
-			PrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
+			SPrintToChat(client, "You already recently created a character, delete that character or try again in %d minutes!", (((time / Cooldown) - timestamp + 1) * Cooldown) / 60);
 		}
 		else
 		{
@@ -511,7 +527,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Race race;
 				for(int i; Races_GetRaceByIndex(i, race); i++)
 				{
-					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key))
+					if(!race.Key[0] || TextStore_GetItemCount(client, race.Key) < 1)
 					{
 						menu.AddItem(id, race.Name);
 					}
@@ -521,6 +537,9 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 						menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 					}
 				}
+
+				if(!menu.ItemCount)
+					menu.AddItem(id, "No Races??????", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.ExitButton = false;

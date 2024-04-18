@@ -113,12 +113,13 @@ void Stats_UpdateHud(int client)
 
 	if(IsPlayerAlive(client))
 	{
-		float total = float(Stats_Capacity(client) * 5);
+		float total = float(Stats_Capacity(client) * 50);
 		if(Current_Mana[client] > total)
 		{
 			Current_Mana[client] = RoundToNearest(max_mana[client]);
 		}
 		max_mana[client] = total;
+		i_MaxStamina[client] = RoundToNearest(float(Stats_Structure(client)) * 1.5);
 	}
 
 	if(buffer[0] || HasKeyHintHud[client])
@@ -291,6 +292,9 @@ void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 {
 	map.SetValue("26", RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	map.SetValue("252", Stats_KnockbackResist(client));
+
+	float speed = 300.0 + float(Stats_Agility(client));
+	map.SetValue("107", RemoveExtraSpeed(class, speed));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)

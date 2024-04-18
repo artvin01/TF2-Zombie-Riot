@@ -341,7 +341,7 @@ public Address GetStudioHdr(int index)
 	return Address_Null;
 }	
 
-void SnapEyeAngles(int client, float viewAngles[3])
+void SnapEyeAngles(int client, const float viewAngles[3])
 {
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }

@@ -991,20 +991,11 @@ void Store_ApplyAttribs(int client)
 	
 	StringMap map = new StringMap();
 
-	float MovementSpeed = 330.0;
-
 	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
 
-	//CC DIFFICULTY, 15% SLOWER!
-	if(b_DungeonContracts_SlowerMovespeed[client])
-	{
-		MovementSpeed *= 0.85; 
-	}
-
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
-	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 999.0);	// instant build
@@ -1200,14 +1191,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
 	}
 	
-	entity = SpawnWeapon(client, "tf_weapon_pistol", 25, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
-	if(entity > MaxClients)
-		RequestFrame(SetBackpackName, EntIndexToEntRef(entity));
-	
-	entity = SpawnWeapon(client, "tf_weapon_pistol", 26, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 3);
-	if(entity > MaxClients)
-		RequestFrame(SetQuestBookName, EntIndexToEntRef(entity));
-
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		int count;
@@ -1713,20 +1696,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	return entity;
 }
 
-public void SetBackpackName(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(entity != INVALID_ENT_REFERENCE)
-		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Backpack");
-}
-
-public void SetQuestBookName(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(entity != INVALID_ENT_REFERENCE)
-		strcopy(StoreWeapon[entity], sizeof(StoreWeapon[]), "Quest Book");
-}
-
 void Clip_SaveAllWeaponsClipSizes(int client)
 {
 	int iea, weapon;
@@ -1889,7 +1858,6 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 		}
 
 		PreviousValue[weapon] = value;
-		PrintToChatAll("New Damage Multi: %f", value);
 	}
 
 	/*OLD CODE

@@ -915,7 +915,7 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 		}
 		case MenuAction_Cancel:
 		{
-			if(choice != MenuCancel_Disconnected)
+			if(choice == MenuCancel_Exit)
 				TextStore_Inspect(client);
 		}
 		case MenuAction_Select:
