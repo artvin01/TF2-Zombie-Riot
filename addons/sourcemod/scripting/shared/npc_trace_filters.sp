@@ -65,6 +65,22 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 #endif
+#if defined RPG
+	if(GetTeam(iExclude) == GetTeam(entity))
+	{
+		if(entity > 0 && entity <= MaxClients) 
+		{
+			if(!RPGCore_PlayerCanPVP(iExclude,entity))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+#endif
 
 	if(!b_NpcHasDied[iExclude])
 	{

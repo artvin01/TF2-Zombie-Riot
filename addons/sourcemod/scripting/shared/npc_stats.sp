@@ -4386,6 +4386,9 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 
 stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool target_invul = false)
 {
+	if(enemy <= 0)
+		return false;
+		
 	if(IsValidEntity(enemy))
 	{
 		if(b_IsVehicle[enemy])
@@ -4443,9 +4446,13 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 #if defined RPG
-				if(!RPGCore_PlayerCanPVP(index, enemy))
-#endif
+				if(RPGCore_PlayerCanPVP(index, enemy))
+					return true;
+				else
 					return false;
+#else
+				return false;
+#endif
 			}
 #endif
 

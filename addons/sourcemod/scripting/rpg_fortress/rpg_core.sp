@@ -136,6 +136,7 @@ void RPG_PluginStart()
 	HudSettings_Cookies = new Cookie("zr_hudsetting", "hud settings", CookieAccess_Protected);
 	HudSettingsExtra_Cookies = new Cookie("zr_hudsettingextra", "hud settings Extra", CookieAccess_Protected);
 	RegAdminCmd("sm_give_xp", Command_GiveXp, ADMFLAG_ROOT, "Give XP to the Person");
+	RegAdminCmd("sm_enable_pvp", Command_EnablePVP, ADMFLAG_ROOT, "Enable PVP");
 	
 	LoadTranslations("rpgfortress.phrases");
 
@@ -469,6 +470,50 @@ static void HudSettings_ClientCookiesCached(int client)
 		b_HudLowHealthShake[client] = true;
 		b_HudHitMarker[client] = true;
 	}
+}
+
+public Action Command_EnablePVP(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_enable_pvp <target>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(b_PlayerIsPVP[targets[target]])
+		{
+			PrintToChat(targets[target], "disabled PVP on %N!", targets[target]);
+			PrintToChat(client, "disabled PVP on %N!", targets[target]);
+			b_PlayerIsPVP[targets[target]] = false;
+		}
+		else
+		{
+			PrintToChat(targets[target], "Enabled PVP on %N!", targets[target]);
+			PrintToChat(client, "Enabled PVP on %N!", targets[target]);
+			b_PlayerIsPVP[targets[target]] = true;
+		}
+	}
+	
+	return Plugin_Handled;
 }
 
 public Action Command_GiveXp(int client, int args)

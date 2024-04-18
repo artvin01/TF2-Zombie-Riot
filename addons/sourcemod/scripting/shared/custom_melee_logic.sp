@@ -388,7 +388,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
-	if(target > 0 && !b_NpcHasDied[target])
+	if(target > 0 && !b_NpcHasDied[target] || target <= MaxClients)
 	{
 		switch(weapon_index)
 		{
