@@ -114,6 +114,7 @@ void Editor_MainMenu(int client)
 	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\n ");
 
 	menu.AddItem("zones", "Zones");
+	menu.AddItem("spawns", "Spawns");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -123,5 +124,9 @@ static void MainMenuHandler(int client, const char[] buffer)
 	if(StrContains(buffer, "zones") != -1)
 	{
 		Zones_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "spawns") != -1)
+	{
+		Spawns_EditorMenu(client);
 	}
 }
