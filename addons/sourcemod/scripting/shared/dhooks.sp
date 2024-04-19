@@ -243,13 +243,15 @@ stock void DHook_HookStripWeapon(int entity)
 
 public MRESReturn DHook_IterateAttributesPre(Address pThis, DHookParam hParams)
 {
-	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
+//	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
+	bool StoreToAddresshelpme;
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_IterateAttributesPost(Address pThis, DHookParam hParams)
 {
-	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
+//	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
+	bool StoreToAddresshelpme;
 	return MRES_Ignored;
 }
 
