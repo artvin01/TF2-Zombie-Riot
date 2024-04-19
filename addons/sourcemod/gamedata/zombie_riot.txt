@@ -79,6 +79,7 @@
 			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
+				//inined?
 				"library"	"server"
 				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
 				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xC4\x22\x00\x00"
@@ -92,9 +93,10 @@
 			}
 			"CTFPlayer::RemoveAllOwnedEntitiesFromWorld"
 			{
+				//String "Halloween.PlayerEscapedUnderworld" and "escaped_loot_island"
 				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer31RemoveAllOwnedEntitiesFromWorldEb"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\xE8\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A"
+				"linux64"		"@_ZN9CTFPlayer31RemoveAllOwnedEntitiesFromWorldEb"
+				"windows64"	"\x48\x89\x5C\x24\x10\x56\x48\x83\xEC\x20\x0F\xB6\xF2"
 			}
 			"CBaseEntity::SetLocalOrigin" // String aBadSetlocalori,   Bad SetLocalOrigin(%f,%f,%f) on %s\n
 			{
@@ -141,6 +143,7 @@
 			}
 			"CObjectSentrygun::MakeCarriedObject" // offset aPlayerCarryobj , with "userid" and "object" go up and find Xref, find the one with only 2 calls and no strings.
 			{
+				//inlined?
 				"library"	"server"
 				"linux"		"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
 				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
@@ -148,7 +151,7 @@
 			"Studio_FindAttachment"
 			{
 				//sentry_on_go_active -> CBaseAnimating::LookupAttachment -> Studio_FindAttachment
-				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8B\xF2\x48\x8B\xF9\x48\x85\xC9"
+				"windows64"		"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8B\xF2\x48\x8B\xF9\x48\x85\xC9"
 				"linux64"		"@_Z21Studio_FindAttachmentPK10CStudioHdrPKc"
 			}
 			"CTFGameRules::CalcPlayerScore"
@@ -165,14 +168,13 @@
 			}
 			"CTFBotProxy::InputSpawn"
 			{
-				//unfindable?
+				//Inlined
 				"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
 				"linux"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
 			}		
-			// search string: "match"
 			"BotManager::MaintainBotQuota"
 			{
-				//unfindable?
+				//Inlined
 				"windows"   "\x55\x8B\xEC\x81\xEC\x14\x01\x00\x00\xA1"
 				"linux"     "@_ZN13CTFBotManager16MaintainBotQuotaEv"
 			}
@@ -225,14 +227,15 @@
 			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
-				//unfindable?
+				//Inlined.
 				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x28\x01\x00\x00\xA1\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
 			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x83\xBE\xD8\x03\x00\x00\xFF"
-				"linux"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
+				// string "Halloween.EyeballBossStunned" and "Max Eyeball DPS taken = %3.2f\n"
+				"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
+				"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
 			}			
 			"CBaseAnimating::GetAttachment"
 			// bool ( int iAttachment, Vector &absOrigin, QAngle &absAngles )
