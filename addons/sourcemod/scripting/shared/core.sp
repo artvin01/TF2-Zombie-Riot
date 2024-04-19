@@ -814,7 +814,6 @@ Handle g_hUpdateCollisionBox;
 // Handle g_hJumpAcrossGap;
 Handle g_hGetVectors;
 Handle g_hLookupActivity;
-Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;

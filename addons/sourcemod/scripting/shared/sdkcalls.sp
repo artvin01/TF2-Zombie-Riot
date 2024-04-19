@@ -68,14 +68,14 @@ void SDKCall_Setup()
 	//	Thanks to nosoop for pointing soemthing like this out to me
 	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
 	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "NextBotCreatePlayerBot<CTFBot>");
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFBotProxy::InputSpawn");
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
 	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);   // bool bReportFakeClient
 	PrepSDKCall_SetReturnInfo(SDKType_CBasePlayer, SDKPass_Pointer); // CTFBot*
 	gH_BotAddCommand = EndPrepSDKCall();
 
 	if(!gH_BotAddCommand)
-		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
+		SetFailState("[Gamedata] Unable to prepare SDKCall for CTFBotProxy::InputSpawn");
 
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
