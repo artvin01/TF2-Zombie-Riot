@@ -200,9 +200,9 @@
 			"CTFPlayer::SpeakConceptIfAllowed()"
 			{
 				// unique string xref "disguiseclass:%s"
-				"library"	"server"
+				"library"		"server"
 				"linux64"		"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcjP16IRecipientFilter"
-				"windows64"	"\x48\x89\x5C\x24\x10\x4C\x89\x4C\x24\x20\x4C\x89\x44\x24\x18\x55"
+				"windows64"		"\x48\x89\x5C\x24\x10\x4C\x89\x4C\x24\x20\x4C\x89\x44\x24\x18\x55"
 			}
 			"CTFPlayer::ManageRegularWeapons()"
 			{
