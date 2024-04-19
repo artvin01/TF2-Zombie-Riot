@@ -1,4 +1,5 @@
-#GAMEMODE DEAD. 64bit UPDATE ENTIRELY KILLED THIS AS OF NOW AND I CANNOT FIND A FIX OR SOLUTION TO MANY ISSUES THAT HAVE ARISED.
+# GAMEMODE DEAD.
+64bit UPDATE ENTIRELY KILLED THIS AS OF NOW AND I CANNOT FIND A FIX OR SOLUTION TO MANY ISSUES THAT HAVE ARISED.
 im sorry but i just cannot be bothered anymore to fix all this stuff everytime some update comes around.
 
 examples of what just went missing:
