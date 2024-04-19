@@ -820,8 +820,6 @@ Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
-Handle g_hLookupBone;
-Handle g_hGetBonePosition;
 DynamicHook g_DHookMedigunPrimary; 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
