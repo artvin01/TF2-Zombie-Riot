@@ -79,10 +79,12 @@
 			}
 			"CTFPlayer::GetChargeEffectBeingProvided"
 			{
-				//inined?
+				// "add_uber_time" -> CTFPlayerShared::SetChargeEffect
+				// CTFPlayerShared::SetChargeEffect called by CTFPlayerShared::RecalculateChargeEffects
+				// CTFPlayerShared::RecalculateChargeEffects calls CTFPlayer::GetChargeEffectBeingProvided
 				"library"	"server"
-				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xC4\x22\x00\x00"
+				"linux64"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
+				"windows64"	"\x40\x53\x48\x83\xEC\x50\x48\x8D\x81\x20\x27\x00\x00"
 			}
 			"CTFPlayer::RegenThink"
 			{
@@ -137,16 +139,19 @@
 			}
 			"CObjectDispenser::MakeCarriedObject" //offset aBuildingDispen ; "Building_Dispenser.Idle"  one with 5 calls
 			{
+				// windows64 may be inaccurate!!!
 				"library"	"server"
 				"linux64"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
 				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8D\x05\x0A\x2A\x4B\x00"
 			}
 			"CObjectSentrygun::MakeCarriedObject" // offset aPlayerCarryobj , with "userid" and "object" go up and find Xref, find the one with only 2 calls and no strings.
 			{
-				//inlined?
+				// IDK, use CBaseObject::MakeCarriedObject possibly
+				// (\x48\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\x48\x89\x6C\x24\x18\x57\x48\x83\xEC\x20\x80\xB9\x74\x0C\x00\x00\x01)
+				
 				"library"	"server"
-				"linux"		"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
-				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
+				"linux64"	"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
+				//"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
 			}
 			"Studio_FindAttachment"
 			{
@@ -166,17 +171,25 @@
 				"linux64"		"@_ZN11CBaseObject16FinishedBuildingEv"
 				"windows64"	"\x48\x89\x5C\x24\x10\x57\x48\x81\xEC\xA0\x00\x00\x00\xB2\x01"
 			}
-			"CTFBotProxy::InputSpawn"
+			"NextBotCreatePlayerBot<CTFBot>"
 			{
-				//Inlined
-				"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
-				"linux"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
-			}		
+				// To Artvin: Inlined indeed, however I have many function alternatives
+				// CTFBotManager::MaintainBotQuota (\x40\x53\x48\x81\xEC\x50\x01\x00\x00\x48\x8B\x05\xB0\x08\x7D\x00)
+				// CTFBotProxy::InputSpawn (Just use tf_bot_proxy)
+				// CPopulationManager::AllocateBots (\x4C\x8B\xDC\x49\x89\x4B\x08\x41\x54\x48\x83\xEC\x50)
+				// CTFBotSpawner::Spawn (\x4C\x89\x44\x24\x18\x48\x89\x4C\x24\x08\x55\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\xE8\xFE\xFF\xFF)
+				
+				
+				"library"	"server"
+				//"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
+				"linux64"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
+			}
 			"BotManager::MaintainBotQuota"
 			{
-				//Inlined
-				"windows"   "\x55\x8B\xEC\x81\xEC\x14\x01\x00\x00\xA1"
-				"linux"     "@_ZN13CTFBotManager16MaintainBotQuotaEv"
+				// "CreatePlayerBot: Unable to create bot %"
+				"library"	"server"
+				"linux64"	"@_ZN13CTFBotManager16MaintainBotQuotaEv"
+				"windows64"	"\x40\x53\x48\x81\xEC\x50\x01\x00\x00\x48\x8B\x05\xB0\x08\x7D\x00"
 			}
 			// String "deploy_buff_banner" only one exists
 			"CTFBuffItem::RaiseFlag" 
@@ -227,7 +240,9 @@
 			}
 			"NextBotGroundLocomotion::UpdateGroundConstraint"
 			{
-				//Inlined.
+				// Inlined into NextBotGroundLocomotion::Update
+				// What you want to do for this then?
+				// Possibly hook multiple functions or just Update
 				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x28\x01\x00\x00\xA1\x2A\x2A\x2A\x2A"
 				"linux"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
 			}
@@ -256,15 +271,16 @@
 			{
 				//string "melee_range_multiplier"
   			  	"library"    "server"
-    			"linux64"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
+				"linux64"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
 				"windows64"	"\x48\x89\x74\x24\x18\x55\x57\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\xA0\xF6\xFF\xFF"
 			}
 			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
 			{
-				// From Mikusch, but now unfindable in 64x ?
+				// "server_changelevel_failed" -> (Large Function) CTeamplayRoundBasedRules::CTeamplayRoundBasedRules
+				// CTeamplayRoundBasedRules calls ResetPlayerAndTeamReadyState
 				"library"	"server"
-				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-				"windows"	"\x55\x8B\xEC\x51\x56\x57\x8B\xF9\xC6\x45\xFF\x00\x33\xF6"
+				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
+				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x33\xFF\x48\x8B\xD9"
 			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
