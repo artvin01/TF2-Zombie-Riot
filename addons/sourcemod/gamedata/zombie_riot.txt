@@ -253,13 +253,15 @@
 				//"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
 				"linux64"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
 			}
-			"BotManager::MaintainBotQuota"
-			{
-				// "CreatePlayerBot: Unable to create bot %"
-				"library"	"server"
-				"linux64"	"@_ZN13CTFBotManager16MaintainBotQuotaEv"
-				"windows64"	"\x40\x53\x48\x81\xEC\x50\x01\x00\x00\x48\x8B\x05\xB0\x08\x7D\x00"
-			}
+		//	"BotManager::MaintainBotQuota"
+		//	{
+		//		// "CreatePlayerBot: Unable to create bot %"
+		//		"library"	"server"
+		//		"linux64"	"@_ZN13CTFBotManager16MaintainBotQuotaEv"
+		//		"windows64"	"\x40\x53\x48\x81\xEC\x50\x01\x00\x00\x48\x8B\x05\xB0\x08\x7D\x00"
+		//		
+		//		
+		//	}
 			// String "deploy_buff_banner" only one exists
 			"CTFBuffItem::RaiseFlag" 
 			{
@@ -352,6 +354,9 @@
 			{
 				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x80\xB9\x65\x04\x00\x00\x00\x48\x8B\xFA\x48\x8B\xD9\x75\x2A\x48\x83\xB9\xC0\x05\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x48\x85\xC0\x74\x2A\x48\x8B\xCB\xE8\x2A\x2A\x2A\x2A\x48\x8B\x8B\xC0\x05\x00\x00\x48\x85\xC9\x74\x2A\x48\x83\x39\x00\x74\x2A\x48\x8B\xD7\xE8\x2A\x2A\x2A\x2A"
 				"linux64"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
+				
+				"windows"	"\x55\x8B\xEC\x8B\x01\x8D\x55\xD0\x83\xEC\x30\x8B\x80\x5C\x03\x00\x00\x53\x52\xFF\x75\x08\xFF\xD0\xFF\x75\x10"
+				"linux"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
 			}	
 			"CTFPlayerShared::PulseRageBuff()"
 			{
@@ -359,6 +364,10 @@
 				"library"	"server"
 				"linux64"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
 				"windows64"	"\x48\x8B\xC4\x56\x41\x54"
+				
+				"linux"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
+				"windows"		"\x55\x8B\xEC\x83\xEC\x14\x33\xC0"
+				
 			}
 			"CTFWeaponBaseMelee::DoSwingTraceInternal"
 			{
@@ -366,6 +375,10 @@
   			  	"library"    "server"
 				"linux64"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
 				"windows64"	"\x48\x89\x74\x24\x18\x55\x57\x41\x55\x41\x56\x41\x57\x48\x8D\xAC\x24\xA0\xF6\xFF\xFF"
+				
+				"linux"      "@_ZN18CTFWeaponBaseMelee20DoSwingTraceInternalER10CGameTracebP10CUtlVectorIS0_10CUtlMemoryIS0_iEE"
+				"windows"	"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x38\x05\x00\x00"
+				
 			}
 			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
 			{
@@ -374,6 +387,9 @@
 				"library"	"server"
 				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
 				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x33\xFF\x48\x8B\xD9"
+				
+				"linux"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
+				"windows"	"\x8B\x4C\x24\x0C\x0F\xB6\x44\x24\x08"
 			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
@@ -381,6 +397,9 @@
 				"library"	"server"
 				"linux64"		"@_ZN17CTFGCServerSystem15PreClientUpdateEv"
 				"windows64"	"\x40\x53\x55\x56\x41\x56\x41\x57\x48\x83\xEC\x30"
+				
+				"linux"		"@_ZN17CTFGCServerSystem15PreClientUpdateEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x28\x53\x56\x8B\xD9"
 			}
 		}
 		"Functions"

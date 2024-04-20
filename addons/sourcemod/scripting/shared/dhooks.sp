@@ -67,7 +67,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 
 	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-	
+	/*
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
 	{
 		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
@@ -79,6 +79,7 @@ void DHook_Setup()
 	}
 
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
+	*/
 	
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);

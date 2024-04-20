@@ -84,6 +84,7 @@ void SDKCall_Setup()
 
 	//	Thanks to nosoop for pointing soemthing like this out to me
 	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
+	/*
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "NextBotCreatePlayerBot<CTFBot>");
 	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
@@ -93,6 +94,7 @@ void SDKCall_Setup()
 
 	if(!gH_BotAddCommand)
 		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
+	*/
 
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
@@ -160,7 +162,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
-	
+	/*
 #if defined ZR
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
@@ -172,6 +174,7 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
 #endif
+	*/
 	
 	//from kenzzer
 	
