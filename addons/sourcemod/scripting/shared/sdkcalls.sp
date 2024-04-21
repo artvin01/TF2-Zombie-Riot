@@ -203,7 +203,7 @@ void SDKCall_Setup()
 	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
 	if(!SDKResetPlayerAndTeamReadyState)
 		LogError("[Gamedata] Could not find CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
-		*/
+*/		
 #endif
 	
 	delete gamedata;
@@ -486,7 +486,6 @@ stock void Manual_Impulse_101(int client, int health)
 #if defined ZR
 void SDKCall_ResetPlayerAndTeamReadyState()
 {
-	return;
 	if(SDKResetPlayerAndTeamReadyState)
 	{
 		Address address = DHook_CTeamplayRoundBasedRules();

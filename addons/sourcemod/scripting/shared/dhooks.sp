@@ -111,7 +111,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
-//	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", _, DHook_ResetPlayerAnTeadmReadyStatePost);
+//	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", DHook_ResetPlayerAndTeamReadyStatePre);
 #endif
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
@@ -123,12 +123,7 @@ void DHook_Setup()
 #if defined ZR
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
-	/*
-	g_DHookOnModifyRage = GetDHooksDefinition(gamedata, "CBaseObject::CheckUpgradeOnHit");
 
-	DHookEnableDetour(g_DHookOnModifyRage, false, OnModifyRagePre);
-	*/
-	DHook_CreateDetour(gamedata, "CBaseObject::CheckUpgradeOnHit.ZrUseBugFixCase6969", DHook_CheckUpgradeOnHitPre, DHook_CheckUpgradeOnHitPost);
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 #endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
@@ -310,9 +305,12 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
 static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
+int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
 
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
+	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	StartLagCompResetValues();
 	Dont_Move_Building = true;
 	Dont_Move_Allied_Npc = false;
@@ -342,6 +340,7 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
 		}
 	}
+	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
 	return MRES_Ignored;
 }
 #endif
@@ -2059,19 +2058,6 @@ int SetEntityTransmitState(int entity, int newFlags)
 	return flags;
 }
 
-//prevent upgrades in ZR
-int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
-public MRESReturn DHook_CheckUpgradeOnHitPre(int entity)
-{
-	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
-	return MRES_Ignored;
-}
-public MRESReturn DHook_CheckUpgradeOnHitPost(int entity)
-{
-	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
-	return MRES_Ignored;
-}
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
@@ -2108,7 +2094,7 @@ Address DHook_CTeamplayRoundBasedRules()
 	return CTeamplayRoundBasedRules;
 }
 
-static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
+static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
 {
 	GetTimerAndNullifyMusicMVM();
 	CTeamplayRoundBasedRules = address;
