@@ -47,7 +47,7 @@ void ConVar_PluginStart()
 	
 	ConVar_Add("nb_blind", "1.0"); //for bot
 	ConVar_Add("tf_bot_quota_mode", "normal"); //for bot
-	ConVar_Add("tf_bot_quota", "2");
+//	ConVar_Add("tf_bot_quota", "2");
 	
 	ConVar_Add("sv_quota_stringcmdspersecond", "1000"); //IF FOR SOME REASON THE SERVER LAGS MASIVELY, PUT IT BACK TO 40/100 AT MOST! some cunt is abusing.
 	

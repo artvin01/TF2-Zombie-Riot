@@ -2809,20 +2809,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 	public int LookupActivity(const char[] activity)
 	{
+		/*
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
 			return -1;
 		
 		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
-		return value;
-	}
-	public int LookupSequence(const char[] sequence)
-	{
-		Address pStudioHdr = this.GetModelPtr();
-		if(pStudioHdr == Address_Null)
-			return -1;
-			
-		return SDKCall(g_hLookupSequence, pStudioHdr, sequence);
+		*/
+
+		return 5959;
 	}
 	public void Update()
 	{
@@ -3056,10 +3051,8 @@ public void NPC_Base_InitGamedata()
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
-	// thanks to Dysphie#4094 on discord for help
-	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
-
-//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
+//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+	//Find solution and alternative.
 	
 	//SDKCalls
 	//This call is used to get an entitys center position
@@ -3100,22 +3093,9 @@ public void NPC_Base_InitGamedata()
 	// Output : Activity index or ACT_INVALID if not found.
 	//-----------------------------------------------------------------------------
 	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupActivity");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
-	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
-	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
 
 	delete gamedata;
 

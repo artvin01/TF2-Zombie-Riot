@@ -85,7 +85,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
+//	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::ShouldQuickBuild", DHookCallback_CBaseObject_ShouldQuickBuild_Pre, _);
 #endif
@@ -95,7 +95,6 @@ void DHook_Setup()
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
-	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
@@ -168,6 +167,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
 	
 	delete gamedata_lag_comp;
+	/*
 	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
 	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
@@ -188,6 +188,7 @@ void DHook_Setup()
 		}
 	}
 	delete edictgamedata;
+	*/
 }
 
 
@@ -244,15 +245,13 @@ stock void DHook_HookStripWeapon(int entity)
 
 public MRESReturn DHook_IterateAttributesPre(Address pThis, DHookParam hParams)
 {
-//	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
-	bool StoreToAddresshelpme;
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), true, NumberType_Int8);
 	return MRES_Ignored;
 }
 
 public MRESReturn DHook_IterateAttributesPost(Address pThis, DHookParam hParams)
 {
-//	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
-	bool StoreToAddresshelpme;
+	StoreToAddress(pThis + view_as<Address>(m_bOnlyIterateItemViewAttributes), false, NumberType_Int8);
 	return MRES_Ignored;
 }
 

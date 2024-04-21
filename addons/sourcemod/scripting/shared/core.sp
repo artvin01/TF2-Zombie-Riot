@@ -18,7 +18,7 @@
 #include <cbasenpc>
 #include <tf2utils>
 #if !defined UseDownloadTable
-#include <filenetwork>
+//#include <filenetwork>
 #endif
 //#include <profiler>
 #include <sourcescramble>
@@ -787,15 +787,11 @@ Handle g_hUpdateCollisionBox;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
 Handle g_hGetVectors;
-Handle g_hLookupActivity;
-Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR
-Handle g_hLookupBone;
-Handle g_hGetBonePosition;
 DynamicHook g_DHookMedigunPrimary; 
 #endif
 //Death
@@ -1905,7 +1901,7 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
-	AdjustBotCount();
+//	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;

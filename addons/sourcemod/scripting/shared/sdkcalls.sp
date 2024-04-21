@@ -63,23 +63,6 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
-#if defined ZR
-	//CBaseAnimating::LookupBone( const char *szName )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if ((g_hLookupBone = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::LookupBone signature!");
-	
-	//void CBaseAnimating::GetBonePosition ( int iBone, Vector &origin, QAngle &angles )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetBonePosition");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if ((g_hGetBonePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::GetBonePosition signature!");
-#endif
-
 	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
 
 	//	Thanks to nosoop for pointing soemthing like this out to me
@@ -377,17 +360,6 @@ void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
-#if defined ZR
-void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
-{
-	int iBone = SDKCall(g_hLookupBone, client, BoneName);
-	if(iBone == -1)
-		return;
-		
-	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
-}
-#endif
-
 void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 {
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
@@ -429,7 +401,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 #if !defined NOG
 	SpawningBot = true;
 #endif
-
+	
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name

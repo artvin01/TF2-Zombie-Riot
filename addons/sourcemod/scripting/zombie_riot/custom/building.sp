@@ -6531,17 +6531,6 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	return MRES_Ignored;
 }
 
-// set  Data_prop m_pPhysicsObject  to 1 in here
-
-public MRESReturn Dhook_FirstSpawn_Pre(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
-
-public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
 /*
 float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
