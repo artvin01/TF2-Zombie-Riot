@@ -4658,7 +4658,6 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
