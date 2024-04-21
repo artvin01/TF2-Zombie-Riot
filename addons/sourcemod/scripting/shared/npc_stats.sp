@@ -2817,7 +2817,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
 		*/
 
-		return 5959;
+		return 2;
 	}
 	public void Update()
 	{
@@ -3051,8 +3051,8 @@ public void NPC_Base_InitGamedata()
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
-//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
-	//Find solution and alternative.
+	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
+	//this isnt directly the same function, but it should act the same.
 	
 	//SDKCalls
 	//This call is used to get an entitys center position
@@ -3086,14 +3086,6 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
-	//-----------------------------------------------------------------------------
-	// Purpose: Looks up an activity by name.
-	// Input  : label - Name of the activity to look up, ie "ACT_IDLE"
-	// Output : Activity index or ACT_INVALID if not found.
-	//-----------------------------------------------------------------------------
-	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
-
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
 

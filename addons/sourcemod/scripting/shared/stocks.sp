@@ -765,10 +765,10 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	
 		// "stored_as_integer" is absent from the attribute schema if its type is "string".
 		// TF2ED_GetAttributeDefinitionString returns false if it can't find the given string.
-		if(!TF2Econ_GetAttributeDefinitionString(currentAttrib, "stored_as_integer", valueType, sizeof(valueType)))
-			continue;
+//		if(!TF2Econ_GetAttributeDefinitionString(currentAttrib, "stored_as_integer", valueType, sizeof(valueType)))
+//			continue;
 	
-		TF2Econ_GetAttributeDefinitionString(currentAttrib, "description_format", valueFormat, sizeof(valueFormat));
+//		TF2Econ_GetAttributeDefinitionString(currentAttrib, "description_format", valueFormat, sizeof(valueFormat));
 	
 		// Since we already know what we're working with and what we're looking for, we can manually handpick
 		// the most significative chars to check if they match. Eons faster than doing StrEqual or StrContains.

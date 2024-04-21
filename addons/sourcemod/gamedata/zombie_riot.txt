@@ -52,7 +52,7 @@
 				"windows64"	"\x40\x53\x48\x83\xEC\x20\x48\x83\x3D\x42\x00\x82\x00\x00"
 				
 				"linux"		"@_ZN11CBaseObject16ShouldQuickBuildEv"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x0C\x53\x57\x8B\xF9\x8B\x07\x8B\x80\xF4\x05\x00\x00"
+				"windows"	"\x83\x3D\x2A\x2A\x2A\x2A\x00\x56\x8B\xF1\x74\x2A\x8B\x06"
 			}
 			"CTFNavMesh::ComputeBlockedArea"
 			{
@@ -64,6 +64,16 @@
 				"linux"		"@_ZN10CTFNavMesh19ComputeBlockedAreasEv"
 				"windows"		"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\xE8\x09\x00\x00"
 
+			}
+			"NextBotGroundLocomotion::UpdateGroundConstraint"
+			{
+				//inlined in windows 64, but it doesnt matter we dont directly need it.
+				"library"		"server"
+				"linux64"		"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
+				"windows64"		"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x28\x01\x00\x00\x56\x57\x8B\xF9\x33\xD2"
+				
+				"linux"			"@_ZN23NextBotGroundLocomotion22UpdateGroundConstraintEv"
+				"windows"		"\x53\x8B\xDC\x83\xEC\x08\x83\xE4\xF0\x83\xC4\x04\x55\x8B\x6B\x04\x89\x6C\x24\x04\x8B\xEC\x81\xEC\x28\x01\x00\x00\x56\x57\x8B\xF9\x33\xD2"
 			}
 			"CBaseCombatWeapon::FinishReload()"
 			{
@@ -119,7 +129,7 @@
 				
 				
 				"linux"		"@_ZN9CTFPlayer28GetChargeEffectBeingProvidedEv"
-				"windows"	"\x40\x53\x48\x83\xEC\x50\x48\x8D\x81\x20\x27\x00\x00"
+				"windows"	"\x55\x8B\xEC\x51\x56\x8B\xF1\x8D\x86\xC4\x22\x00\x00"
 			}
 			"CTFPlayer::RegenThink"
 			{
@@ -203,15 +213,21 @@
 				"library"	"server"
 				"linux64"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
 				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x74\x24\x10\x57\x48\x83\xEC\x20\x48\x8D\x05\x0A\x2A\x4B\x00"
+				
+				
+				"linux"		"@_ZN11CBaseObject17MakeCarriedObjectEP9CTFPlayer"
+				"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x8B\x86\x0C\x0B\x00\x00"
 			}
 			"CObjectSentrygun::MakeCarriedObject" // offset aPlayerCarryobj , with "userid" and "object" go up and find Xref, find the one with only 2 calls and no strings.
 			{
-				// IDK, use CBaseObject::MakeCarriedObject possibly
+				// , use CBaseObject::MakeCarriedObject possibly, go backwards from it, guess which of the two without a string.
 				// (\x48\x85\xD2\x0F\x84\x2A\x2A\x2A\x2A\x48\x89\x6C\x24\x18\x57\x48\x83\xEC\x20\x80\xB9\x74\x0C\x00\x00\x01)
 				
 				"library"	"server"
 				"linux64"	"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
-				//"windows"	"\x55\x8B\xEC\x56\x8B\xF1\x80\xBE\x04\x0B\x00\x00\x00"
+				
+				"linux"	"@_ZN16CObjectSentrygun17MakeCarriedObjectEP9CTFPlayer"
+				"windows"	"\x55\x8B\xEC\x51\x56\x57\xFF\x75\x08\x8B\xF1\xE8\x2A\x2A\x2A\x2A\x8B\x86\x04\x0B\x00\x00"
 			}
 			"Studio_FindAttachment"
 			{
@@ -253,16 +269,6 @@
 				//"windows"   "\x55\x8B\xEC\x56\x57\x68\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A"
 				"linux64"     "@_Z22NextBotCreatePlayerBotI6CTFBotEPT_PKcb"
 			}
-		//	"BotManager::MaintainBotQuota"
-		//	{
-		//		// "CreatePlayerBot: Unable to create bot %"
-		//		"library"	"server"
-		//		"linux64"	"@_ZN13CTFBotManager16MaintainBotQuotaEv"
-		//		"windows64"	"\x40\x53\x48\x81\xEC\x50\x01\x00\x00\x48\x8B\x05\xB0\x08\x7D\x00"
-		//		
-		//		
-		//	}
-			// String "deploy_buff_banner" only one exists
 			"CTFBuffItem::RaiseFlag" 
 			{
 				"linux64" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
@@ -458,6 +464,17 @@
 					{
 						"type"	"int"
 					}
+				}
+			}
+			"NextBotGroundLocomotion::UpdateGroundConstraint"
+			{
+				"signature"	"NextBotGroundLocomotion::UpdateGroundConstraint"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"address"
+				"arguments"
+				{
+				
 				}
 			}
 			"CTFBuffItem::RaiseFlag"

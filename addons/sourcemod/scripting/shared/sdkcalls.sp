@@ -145,7 +145,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
-	/*
+
 #if defined ZR
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
@@ -157,7 +157,7 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
 #endif
-	*/
+
 	
 	//from kenzzer
 	

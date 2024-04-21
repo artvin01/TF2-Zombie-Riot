@@ -842,11 +842,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1] || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1])
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1]/* || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1]*/)
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2] || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2]/* || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2]*/)
 		{
 			return false;
 		}
