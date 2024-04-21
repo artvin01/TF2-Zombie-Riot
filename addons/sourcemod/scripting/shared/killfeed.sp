@@ -51,6 +51,7 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
+	return;
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -220,6 +221,7 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 
 void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
+	return;
 	int botNum;
 	bool priority;
 	KillFeed feed;
@@ -407,6 +409,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 
 static void ShowNextFeed()
 {
+	return;
 	int lowLength = LowList.Length;
 	int highLength = HighList.Length;
 	if(lowLength || highLength)
