@@ -10,6 +10,8 @@ there are some things missing as its still a WIP fix:
 
 -Bob the second not listenign to commands
 
+-EDAlloc remover, i.e. edicts being reserved.
+
 some more...
 
 # TF2 Zombie Riot
