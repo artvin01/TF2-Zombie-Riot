@@ -1,17 +1,11 @@
-# GAMEMODE DEAD.
-64bit UPDATE ENTIRELY KILLED THIS AS OF NOW AND I CANNOT FIND A FIX OR SOLUTION TO MANY ISSUES THAT HAVE ARISED.
-im sorry but i just cannot be bothered anymore to fix all this stuff everytime some update comes around.
+# WARNING! READ!
 
-examples of what just went missing:
-TF2 bots, using them for killfeed without showing in the browser
-Making tf2 bots not get kicked instantly
-I had code that prevents npcs stepping on projectiles, i cant access the code anymore to prevent it as it just isnt there anymore or is hidden
-some MVM logic that i cant stop anymore
-Apperantly also picking up buildings via my way
-Preventing removal of all buildings when you disconnect
-Preventing losing uber or rage meters when youre not medic or soldier
-Resetting info regarding animations on bots, but i might just be blind for this one
-
+USE 32 BIT SERVER AS OF NOW!
+this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
+there are some things missing as its still a WIP fix:
+Killfeed bots
+MVM hud setting resetting
+some more...
 
 # TF2 Zombie Riot
 
