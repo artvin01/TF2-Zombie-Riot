@@ -189,6 +189,7 @@ void DHook_Setup()
 	}
 	delete edictgamedata;
 	*/
+	int ED_AllocCommentedOut;
 }
 
 

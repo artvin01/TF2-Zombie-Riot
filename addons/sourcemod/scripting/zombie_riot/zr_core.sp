@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//#define UseDownloadTable
+#define UseDownloadTable
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
@@ -2459,7 +2459,7 @@ stock bool isPlayerMad(int client) {
 stock void GetTimerAndNullifyMusicMVM()
 {
 	return;
-	
+
 	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
 
 	if(!IsValidEntity(EntityTimerWhat))
