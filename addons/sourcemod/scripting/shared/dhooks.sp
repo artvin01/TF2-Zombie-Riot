@@ -18,7 +18,6 @@ static bool IsRespawning;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 static Address CTeamplayRoundBasedRules = Address_Null;
-static DynamicHook g_DhookCheckUpgradeOnHit; 
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
@@ -42,13 +41,16 @@ static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
 static int m_Item;
-
+//Handle dHookCheckUpgradeOnHit;
 /*
 // Offsets from mikusch but edited
 static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
+
+//#include <dhooks_gameconf_shim>
+
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
 
@@ -63,6 +65,16 @@ void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
+	if (!gamedata) 
+	{
+		SetFailState("Failed to load gamedata (zombie_riot).");
+	} 
+	/*
+	else if (!ReadDHooksDefinitions("zombie_riot")) 
+	{
+		SetFailState("Failed to read DHooks definitions (zombie_riot).");
+	}
+	*/
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 
@@ -111,7 +123,12 @@ void DHook_Setup()
 #if defined ZR
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
-	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
+	/*
+	g_DHookOnModifyRage = GetDHooksDefinition(gamedata, "CBaseObject::CheckUpgradeOnHit");
+
+	DHookEnableDetour(g_DHookOnModifyRage, false, OnModifyRagePre);
+	*/
+	DHook_CreateDetour(gamedata, "CBaseObject::CheckUpgradeOnHit.ZrUseBugFixCase6969", DHook_CheckUpgradeOnHitPre, DHook_CheckUpgradeOnHitPost);
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 #endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
@@ -1981,12 +1998,6 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	}
 	return MRES_Ignored;
 	
-}
-
-void Upgrade_Check_OnEntityCreated(int client)
-{
-	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
-	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
 }
 
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)

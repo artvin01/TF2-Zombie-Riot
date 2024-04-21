@@ -386,7 +386,7 @@
 				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
 				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x33\xFF\x48\x8B\xD9"
 				
-				"linux"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
+				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
 				"windows"	"\x8B\x4C\x24\x0C\x0F\xB6\x44\x24\x08"
 			}
 			"CTFGCServerSystem::PreClientUpdate"
@@ -401,8 +401,16 @@
 			}
 			"LookupActivity" //random guessing.
 			{
+				//this function looks nothing like the one in linux, its littearlly guessing good luck.
+				"library"	"server"
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x53"
 				"linux"		"@_Z14LookupActivityP10CStudioHdrPKc"
+			}
+			"CBaseObject::CheckUpgradeOnHit.ZrUseBugFixCase6969"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x0C\x53\x57\x8B\xF9\x8B\x07\x8B\x80\xF4\x05\x00\x00"
+				"linux"		"@_ZN11CBaseObject17CheckUpgradeOnHitEP9CTFPlayer"
 			}
 		}
 		"Functions"
@@ -750,10 +758,10 @@
 				"return" 		"void"
 				"this" 			"entity"
 			}
-			"CBaseObject::CheckUpgradeOnHit" 
+			"CBaseObject::CheckUpgradeOnHit.ZrUseBugFixCase6969" 
 			{
-				"offset" 		"CBaseObject::CheckUpgradeOnHit" 
-				"hooktype" 		"entity"
+				"signature"		"CBaseObject::CheckUpgradeOnHit.ZrUseBugFixCase6969"
+				"callconv"		"thiscall"
 				"return" 		"bool"
 				"this" 			"entity"
 			}
@@ -853,11 +861,6 @@
 		}
 		"Offsets"
 		{
-			"CBaseObject::CheckUpgradeOnHit"		
-			{		
-				"windows"	"365"		
-				"linux"		"367"
-			}
 			"CBaseEntity::WorldSpaceCenter"		
 			{		
 				"windows"	"155"		
@@ -902,11 +905,6 @@
 			{
 				"windows"	"283"
 				"linux"		"289"
-			}
-			"CBaseObject::MakeCarriedObject"	//CBaseObject::MakeCarriedObject(CTFPlayer *)
-			{
-				"windows"	"387"
-				"linux"		"389"
 			}
 			"CBasePlayer::EquipWearable"
 			{

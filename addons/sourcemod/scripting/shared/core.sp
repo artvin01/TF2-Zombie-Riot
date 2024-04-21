@@ -3025,10 +3025,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
 
-#if defined ZR
-			Upgrade_Check_OnEntityCreated(entity);
-#endif
-
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
