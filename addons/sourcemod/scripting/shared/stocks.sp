@@ -765,10 +765,10 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 	
 		// "stored_as_integer" is absent from the attribute schema if its type is "string".
 		// TF2ED_GetAttributeDefinitionString returns false if it can't find the given string.
-//		if(!TF2Econ_GetAttributeDefinitionString(currentAttrib, "stored_as_integer", valueType, sizeof(valueType)))
-//			continue;
+		if(!TF2Econ_GetAttributeDefinitionString(currentAttrib, "stored_as_integer", valueType, sizeof(valueType)))
+			continue;
 	
-//		TF2Econ_GetAttributeDefinitionString(currentAttrib, "description_format", valueFormat, sizeof(valueFormat));
+		TF2Econ_GetAttributeDefinitionString(currentAttrib, "description_format", valueFormat, sizeof(valueFormat));
 	
 		// Since we already know what we're working with and what we're looking for, we can manually handpick
 		// the most significative chars to check if they match. Eons faster than doing StrEqual or StrContains.
@@ -4658,7 +4658,6 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	

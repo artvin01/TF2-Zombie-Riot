@@ -18,7 +18,7 @@
 #include <cbasenpc>
 #include <tf2utils>
 #if !defined UseDownloadTable
-//#include <filenetwork>
+#include <filenetwork>
 #endif
 //#include <profiler>
 #include <sourcescramble>
@@ -761,6 +761,7 @@ bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 
+Handle g_hLookupActivity;
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored_NoTeam[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];

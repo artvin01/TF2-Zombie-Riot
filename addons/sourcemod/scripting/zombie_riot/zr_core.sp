@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define UseDownloadTable
+//#define UseDownloadTable
 
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
@@ -2458,13 +2458,17 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
-	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+	return;
+	
+	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
+
+	if(!IsValidEntity(EntityTimerWhat))
 		return;
 	
-	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
-		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
 	}
 	else
 	{

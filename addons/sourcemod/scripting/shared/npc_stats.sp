@@ -2809,15 +2809,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 	public int LookupActivity(const char[] activity)
 	{
-		/*
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
 			return -1;
 		
 		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
-		*/
 
-		return 2;
+		return value;
 	}
 	public void Update()
 	{
@@ -3078,6 +3076,20 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
 	
+
+	//-----------------------------------------------------------------------------
+	// Purpose: Looks up an activity by name.
+	// Input  : label - Name of the activity to look up, ie "ACT_IDLE"
+	// Output : Activity index or ACT_INVALID if not found.
+	//-----------------------------------------------------------------------------
+	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupActivity");
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
+	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
+	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
+	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
 	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*) 
 	StartPrepSDKCall(SDKCall_Entity);
