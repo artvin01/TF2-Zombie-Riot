@@ -18,9 +18,8 @@
 #include <cbasenpc>
 #include <tf2utils>
 #if !defined UseDownloadTable
-//#include <filenetwork>
-#endif#
-int filenetworkCommentedOut
+#include <filenetwork>
+#endif
 //#include <profiler>
 #include <sourcescramble>
 //#include <handledebugger>
