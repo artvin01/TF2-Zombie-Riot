@@ -130,6 +130,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/wand/weapon_sword_wand.sp"
 */
 #include "rpg_fortress/custom/transform_expidonsan.sp"
+#include "rpg_fortress/custom/transform_iberian.sp"
 
 void RPG_PluginStart()
 {
@@ -206,6 +207,7 @@ void RPG_MapStart()
 
 	Wand_Map_Precache();
 	Transform_Expidonsa_MapStart();
+	Transform_Iberian_MapStart();
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();

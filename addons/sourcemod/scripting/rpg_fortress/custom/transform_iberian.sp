@@ -4,8 +4,8 @@ static int iref_Halo[MAXPLAYERS+1][2];
 
 void Transform_Iberian_MapStart()
 {
-	PrecacheSound("player/taunt_wormshhg.wav");
-	PrecacheSound("ambient/levels/labs/electric_explosion4.wav");
+	PrecacheSound("player/taunt_yeti_appear_snow.wav");
+	PrecacheSound("replay/enterperformancemode.wav");
 }
 
 public void Iberian_Activation_Enable_form_1(int client)
@@ -24,16 +24,16 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 	{
 		case 1:
 		{
-			EmitSoundToAll("player/taunt_wormshhg.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitSoundToAll("player/taunt_yeti_appear_snow.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 		case 2:
 		{
-			EmitSoundToAll("ambient/levels/labs/electric_explosion4.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitSoundToAll("replay/enterperformancemode.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
 	DataPack pack;
-	Timer_Expidonsan_Transform[client] = CreateDataTimer(0.5, TimerExpidonsan_Transform, pack, TIMER_REPEAT);
+	Timer_Expidonsan_Transform[client] = CreateDataTimer(0.5, TimerIberian_Transform, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
 	i_TransformInitLevel[client] = i_TransformationLevel[client];
 	
@@ -53,7 +53,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
 			flPos[2] += 10.0;
-			int particle_halo = ParticleEffectAt(flPos, "unusual_symbols_parent_lightning", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_sixthsense_teamcolor_blue", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head");
@@ -66,7 +66,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
 			flPos[2] += 25.0;
-			int particle_halo = ParticleEffectAt(flPos, "unusual_sparkletree_gold_starglow", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "scout_dodge_red", 0.0);
 			iref_Halo[client][1] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head");
@@ -75,7 +75,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 }
 
 
-public Action TimerExpidonsan_Transform(Handle timer, DataPack pack)
+public Action TimerIberian_Transform(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();
