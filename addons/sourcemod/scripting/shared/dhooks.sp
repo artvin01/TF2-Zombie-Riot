@@ -16,7 +16,6 @@ static int GetChargeEffectBeingProvided;
 //static bool Disconnecting;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
-static Address CTeamplayRoundBasedRules = Address_Null;
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
