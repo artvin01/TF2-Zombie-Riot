@@ -761,6 +761,7 @@ bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 
+Handle g_hLookupActivity;
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored_NoTeam[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
@@ -787,15 +788,11 @@ Handle g_hUpdateCollisionBox;
 //DynamicHook g_hAlwaysTransmit;
 // Handle g_hJumpAcrossGap;
 Handle g_hGetVectors;
-Handle g_hLookupActivity;
-Handle g_hLookupSequence;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR
-Handle g_hLookupBone;
-Handle g_hGetBonePosition;
 DynamicHook g_DHookMedigunPrimary; 
 #endif
 //Death
@@ -1494,6 +1491,7 @@ public void OnMapStart()
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet2.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet3.wav");
+	PrecacheSound("npc/assassin/ball_zap1.wav");
 	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
@@ -1536,6 +1534,7 @@ public void OnMapStart()
 	Zero(Mana_Regen_Delay);
 	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
+	Zero(f_InBattleDelay);
 #endif
 
 	SDKHooks_ClearAll();
@@ -1903,7 +1902,7 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
-	AdjustBotCount();
+//	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;
@@ -1979,6 +1978,7 @@ public void OnClientDisconnect(int client)
 
 #if defined ZR
 	f_InBattleHudDisableDelay[client] = 0.0;
+	f_InBattleDelay[client] = 0.0;
 	i_HealthBeforeSuit[client] = 0;
 	f_ClientArmorRegen[client] = 0.0;
 	b_HoldingInspectWeapon[client] = false;
@@ -3025,10 +3025,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
-
-#if defined ZR
-			Upgrade_Check_OnEntityCreated(entity);
-#endif
 
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{

@@ -33,6 +33,10 @@
 		"en"	"Nightmares Evolve"
 		"pt"	"Pesadelos Evolvem"
 	}
+	"Losted Ingots"
+	{
+		"en" "Losted Ingots"
+	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"

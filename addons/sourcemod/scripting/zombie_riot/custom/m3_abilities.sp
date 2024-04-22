@@ -546,7 +546,7 @@ public void BuilderMenu(int client)
 
 		SetGlobalTransTarget(client);
 		
-		menu.SetTitle("%t", "Builder Extra Gear Menu");
+		menu.SetTitle("%t", "Extra Menu");
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Mark Building For Deletion");
 		menu.AddItem("-1", buffer);
@@ -556,6 +556,9 @@ public void BuilderMenu(int client)
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Destroy all your non-Mounted Buildings");
 		menu.AddItem("-3", buffer);
+									
+		FormatEx(buffer, sizeof(buffer), "%t", "Bring up Class Change Menu");
+		menu.AddItem("-4", buffer);
 									
 		menu.ExitButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -599,6 +602,13 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 						DestroyAllBuildings_ClientSelf(client);
 					}
 				}
+				case -4:
+				{
+					if(IsValidClient(client))
+					{
+						ShowVGUIPanel(client, GetTeam(client) == TFTeam_Red ? "class_red" : "class_blue");
+					}
+				}
 				default:
 				{
 					delete menu;
@@ -621,7 +631,7 @@ public void DestroyAllBuildings_ClientSelf(int client)
 	SetGlobalTransTarget(client);
 
 	static char buffer[64];
-	menu.SetTitle("%t", "UnClaim Current Marked Building Sure");
+	menu.SetTitle("%t", "Destroy all your non-Mounted Buildings Sure");
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Yes");
 	menu.AddItem("-1", buffer);

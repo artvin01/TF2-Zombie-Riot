@@ -52,6 +52,7 @@ float f3_AvoidOverrideMaxNorm[MAXENTITIES][3];
 float f_AvoidObstacleNavTime[MAXENTITIES];
 float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
+float b_AvoidObstacleType_Time[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
@@ -2808,20 +2809,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 	public int LookupActivity(const char[] activity)
 	{
+		
 		Address pStudioHdr = this.GetModelPtr();
 		if(pStudioHdr == Address_Null)
 			return -1;
 		
 		int value = SDKCall(g_hLookupActivity, pStudioHdr, activity);
 		return value;
-	}
-	public int LookupSequence(const char[] sequence)
-	{
-		Address pStudioHdr = this.GetModelPtr();
-		if(pStudioHdr == Address_Null)
-			return -1;
-			
-		return SDKCall(g_hLookupSequence, pStudioHdr, sequence);
 	}
 	public void Update()
 	{
@@ -2954,7 +2948,18 @@ methodmap CClotBody < CBaseCombatCharacter
 
 		//increace the size of the avoid box by 2x
 
-		if(!b_AvoidObstacleType[this.index] && !(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+		int IgnoreObstacles = 0;
+
+		if(b_AvoidObstacleType_Time[this.index] > GetGameTime())
+			IgnoreObstacles = 1;
+
+		if(b_AvoidObstacleType[this.index])
+			IgnoreObstacles = 2;
+#if defined ZR
+		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+			IgnoreObstacles = 2;
+#endif
+		if(IgnoreObstacles == 0)
 		{
 			float ModelSize = GetEntPropFloat(this.index, Prop_Send, "m_flModelScale");
 			//avoid obstacle code scales with modelsize, we dont want that.
@@ -2978,6 +2983,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
+			if(IgnoreObstacles == 2)
+			{
+				//was in obstacle avoid before, reuse.
+				//some stairs really dont like navs, so they think they are on no nav and then try to avoid stairs, oof!
+				//this is a good solution, if any stairs are bigger
+
+				//unused.
+				b_AvoidObstacleType_Time[this.index] = GetGameTime() + 0.0;
+			}
 			//if in tower defense, never avoid.
 			this.GetBaseNPC().SetBodyMaxs({1.0,1.0,1.0});
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
@@ -3035,10 +3049,8 @@ public void NPC_Base_InitGamedata()
 	
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
-	// thanks to Dysphie#4094 on discord for help
 	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::UpdateGroundConstraint", Dhook_UpdateGroundConstraint_Pre, Dhook_UpdateGroundConstraint_Post);
-
-//	DHook_CreateDetour(gamedata, "NextBotGroundLocomotion::ResolveCollision", Dhook_ResolveCollision_Pre, Dhook_ResolveCollision_Post);
+	//this isnt directly the same function, but it should act the same.
 	
 	//SDKCalls
 	//This call is used to get an entitys center position
@@ -3065,20 +3077,13 @@ public void NPC_Base_InitGamedata()
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
 	
 
-	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*) 
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::GetVectors");
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
 	//-----------------------------------------------------------------------------
 	// Purpose: Looks up an activity by name.
 	// Input  : label - Name of the activity to look up, ie "ACT_IDLE"
 	// Output : Activity index or ACT_INVALID if not found.
 	//-----------------------------------------------------------------------------
 	//int LookupActivity( CStudioHdr *pstudiohdr, const char *label )
+	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupActivity");
 	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
@@ -3086,15 +3091,15 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
 	if((g_hLookupActivity = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupActivity");
 
+	//CBaseEntity::GetVectors(Vector*, Vector*, Vector*) 
+	StartPrepSDKCall(SDKCall_Entity);
+	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseEntity::GetVectors");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
+	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 
 	g_hGetSolidMask			= DHookCreateEx(gamedata, "IBody::GetSolidMask",	   HookType_Raw, ReturnType_Int,   ThisPointer_Address, IBody_GetSolidMask);
-
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "LookupSequence");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//pStudioHdr
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);		//label
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);	//return index
-	if((g_hLookupSequence = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for LookupSequence");
 
 	delete gamedata;
 
@@ -4043,9 +4048,9 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 	{
 		return false;
 	}
+	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 
 #if defined ZR
-	int bot_entidx = loco.GetBot().GetNextBotCombatCharacter();
 	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 	{
 		//during tower defense, pretend all enemies are non collideable.
@@ -7693,6 +7698,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_CannotBeStunned[entity] = false;
 	b_CannotBeKnockedUp[entity] = false;
 	b_CannotBeSlowed[entity] = false;
+	b_AvoidObstacleType_Time[entity] = 0.0;
 
 	b_NextRangedBarrage_OnGoing[entity] = false;
 	fl_NextTeleport[entity] = 0.0;
@@ -9232,8 +9238,64 @@ bool DelayPathing(int npcpather)
 {
 	if(f_DelayComputingOfPath[npcpather] < GetGameTime())
 		return true;
+	
+	if(b_AvoidObstacleType[npcpather])
+	{
+		//they are currently treading carefully.
+		//check if its a stair
+		float CurrentLocation[3];
+		GetEntPropVector(npcpather, Prop_Data, "m_vecAbsOrigin", CurrentLocation);
+		float VecHullMin[3];
+		VecHullMin = f3_AvoidOverrideMinNorm[npcpather];
+		float VecHullMax[3];
+		VecHullMax = f3_AvoidOverrideMaxNorm[npcpather];
+		VecHullMin[2] -= 15.0;
+		VecHullMax[0] *= 1.35;
+		VecHullMax[1] *= 1.35;
+		VecHullMax[2] *= 1.35;
+		VecHullMin[0] *= 1.35;
+		VecHullMin[1] *= 1.35;
+
+		if(IsBoxStairCase(CurrentLocation, VecHullMin, VecHullMax))
+		{
+			return true;
+		}
+	}
 
 	return false;
+}
+bool BoxStairResult;
+stock bool IsBoxStairCase(const float pos1[3],const float mins[3],const float maxs[3])
+{
+	BoxStairResult = false;
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers_StairTrigger, _);
+	return BoxStairResult;
+}
+
+public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int client)
+{
+	char classname[32];
+	if(!GetEntityClassname(entity, classname, sizeof(classname)))
+		return true;
+
+	if((!StrContains(classname, "trigger_multiple")))
+	{
+		char name[32];
+		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)) && StrEqual(name, "zr_anti_stair_abuse"))
+		{
+			Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+			bool didHit = TR_DidHit(trace);
+			delete trace;
+			
+			if (didHit)
+			{
+				BoxStairResult = true;
+				return false;
+			}
+		}
+	}
+	
+	return true;
 }
 
 void AddDelayPather(int npcpather, const float DistanceCheap[3])
@@ -9242,7 +9304,7 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 
 	if(b_thisNpcIsARaid[npcpather])
 	{
-		AddComputingDelay = 0.1;
+		AddComputingDelay += 0.2;
 		f_DelayComputingOfPath[npcpather] = GetGameTime() + AddComputingDelay;
 	}
 	else
@@ -9254,11 +9316,11 @@ void AddDelayPather(int npcpather, const float DistanceCheap[3])
 		float Length2 = GetVectorDistance(DistanceCheap_pather, DistanceCheap);
 		if(Length2 < 500.0)// close enough, update pather often.
 		{
-			AddComputingDelay = 0.3;
+			AddComputingDelay += 0.3;
 		}
 		else
 		{
-			AddComputingDelay = 0.3 + (Length2 * 0.0005);
+			AddComputingDelay += 0.3 + (Length2 * 0.0005);
 		}
 
 		if(Length1 > 0.0)

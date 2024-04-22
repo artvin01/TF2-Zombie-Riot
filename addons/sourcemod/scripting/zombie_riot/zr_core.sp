@@ -174,7 +174,8 @@ enum
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
-	WEAPON_GRENADEHUD = 98
+	WEAPON_GRENADEHUD = 98,
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -278,6 +279,7 @@ bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
+float f_InBattleDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -310,6 +312,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
+float f_Armor_BreakSoundDelay[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -527,6 +530,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
 {
@@ -767,6 +771,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	ResetMapStartWest();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -839,6 +844,7 @@ void ZR_ClientPutInServer(int client)
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
+	f_Armor_BreakSoundDelay[client] = 0.0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
@@ -2453,13 +2459,17 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
-	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+	return;
+
+	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
+
+	if(!IsValidEntity(EntityTimerWhat))
 		return;
 	
-	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
-		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
 	}
 	else
 	{

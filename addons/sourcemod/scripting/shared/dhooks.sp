@@ -18,7 +18,6 @@ static bool IsRespawning;
 static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 static Address CTeamplayRoundBasedRules = Address_Null;
-static DynamicHook g_DhookCheckUpgradeOnHit; 
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
 
@@ -42,13 +41,16 @@ static DynamicHook HookItemIterateAttribute;
 static ArrayList RawEntityHooks;
 static int m_bOnlyIterateItemViewAttributes;
 static int m_Item;
-
+//Handle dHookCheckUpgradeOnHit;
 /*
 // Offsets from mikusch but edited
 static int g_OffsetWeaponMode;
 static int g_OffsetWeaponInfo;
 static int g_OffsetWeaponPunchAngle;
 */
+
+//#include <dhooks_gameconf_shim>
+
 stock Handle CheckedDHookCreateFromConf(Handle game_config, const char[] name) {
     Handle res = DHookCreateFromConf(game_config, name);
 
@@ -63,11 +65,21 @@ void DHook_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("zombie_riot");
 	
+	if (!gamedata) 
+	{
+		SetFailState("Failed to load gamedata (zombie_riot).");
+	} 
+	/*
+	else if (!ReadDHooksDefinitions("zombie_riot")) 
+	{
+		SetFailState("Failed to read DHooks definitions (zombie_riot).");
+	}
+	*/
 	
 	DHook_CreateDetour(gamedata, "CTFPlayer::CanAirDash", DHook_CanAirDashPre);
 
 	//https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-	
+	/*
 	if (!(gH_MaintainBotQuota = DHookCreateDetour(Address_Null, CallConv_THISCALL, ReturnType_Void, ThisPointer_Address)))
 	{
 		SetFailState("Failed to create detour for BotManager::MaintainBotQuota");
@@ -79,12 +91,13 @@ void DHook_Setup()
 	}
 
 	gH_MaintainBotQuota.Enable(Hook_Pre, Detour_MaintainBotQuota);
+	*/
 	
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
+//	DHook_CreateDetour(gamedata, "CTFPlayer::Taunt", DHook_TauntPre, DHook_TauntPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::ShouldQuickBuild", DHookCallback_CBaseObject_ShouldQuickBuild_Pre, _);
 #endif
@@ -94,23 +107,19 @@ void DHook_Setup()
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
 	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
-	DHook_CreateDetour(gamedata, "CBaseObject::FirstSpawn", Dhook_FirstSpawn_Pre, Dhook_FirstSpawn_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
+//	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
+//	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
+
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
-	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", _, DHook_ResetPlayerAndTeamReadyStatePost);
+
+//	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", DHook_ResetPlayerAndTeamReadyStatePre);
+//  64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
 #endif
-
-	//thanks to https://github.com/nosoop/SM-TFCustomAttributeStarterPack/blob/6e8ffcc929553f8906f0b32d92b649c32681cd1e/scripting/attr_buff_override.sp#L53
-	//nosoop
-
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
 	DHook_CreateDetour(gamedata, "CTFGCServerSystem::PreClientUpdate", DHook_PreClientUpdatePre, DHook_PreClientUpdatePost);
-
-//	DHook_CreateDetour(gamedata, "EconEntity_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
-//	DHook_CreateDetour(gamedata, "EconItemInterface_OnOwnerKillEaterEventNoPartner", DHook_BlockEcon);
 	
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
@@ -118,7 +127,7 @@ void DHook_Setup()
 #if defined ZR
 	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
-	g_DhookCheckUpgradeOnHit = DHook_CreateVirtual(gamedata, "CBaseObject::CheckUpgradeOnHit");
+
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
 #endif
 	g_detour_CTFGrenadePipebombProjectile_PipebombTouch = CheckedDHookCreateFromConf(gamedata, "CTFGrenadePipebombProjectile::PipebombTouch");
@@ -174,6 +183,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
 	
 	delete gamedata_lag_comp;
+	/*
 	GameData edictgamedata = LoadGameConfigFile("edict_limiter");
 	//	https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
 	//	Due to zr's nature of spawning lots of enemies, it can cause issues if they die way too fast, this is a fix.
@@ -194,6 +204,8 @@ void DHook_Setup()
 		}
 	}
 	delete edictgamedata;
+	*/
+	int ED_AllocCommentedOut;
 }
 
 
@@ -297,9 +309,12 @@ void OnWrenchCreated(int entity)
 	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
 }
 static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
+int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
 
 public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
 {	
+	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
+	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	StartLagCompResetValues();
 	Dont_Move_Building = true;
 	Dont_Move_Allied_Npc = false;
@@ -329,6 +344,7 @@ public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param
 			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
 		}
 	}
+	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
 	return MRES_Ignored;
 }
 #endif
@@ -847,11 +863,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1] || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1])
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1]/* || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1]*/)
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2] || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2])
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2]/* || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2]*/)
 		{
 			return false;
 		}
@@ -1987,12 +2003,6 @@ MRESReturn OnWeaponReplenishClipPre(int weapon) // Not when the player press rel
 	
 }
 
-void Upgrade_Check_OnEntityCreated(int client)
-{
-	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Pre, client, DHook_CheckUpgradeOnHitPre);
-	g_DhookCheckUpgradeOnHit.HookEntity(Hook_Post, client, DHook_CheckUpgradeOnHitPost);
-}
-
 void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
@@ -2052,19 +2062,6 @@ int SetEntityTransmitState(int entity, int newFlags)
 	return flags;
 }
 
-//prevent upgrades in ZR
-int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
-public MRESReturn DHook_CheckUpgradeOnHitPre(int entity)
-{
-	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
-	return MRES_Ignored;
-}
-public MRESReturn DHook_CheckUpgradeOnHitPost(int entity)
-{
-	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
-	return MRES_Ignored;
-}
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
@@ -2080,19 +2077,48 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 //We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
 
 #if defined ZR
+bool PersonInitiatedHornBlow[MAXTF2PLAYERS];
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(IsValidClient(client))
+	{
+		PersonInitiatedHornBlow[client] = true;
+	}
 	return MRES_Ignored;
 }
 
+/*
+	Issue: Dhook_RaiseFlag_Pre broke in the 64bit update, so i had to do this workaround :(
+
+*/
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
-	/*
 	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
-	if(IsValidClient(client))
-		f_BannerDurationActive[client] = GetGameTime() + 1.1;
-	*/
+
+	if(PersonInitiatedHornBlow[client])
+	{
+		int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+		if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+		{
+			int animation = 21; //should be default idle, modded viewmodels are fucked ig lol
+			SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		}
+		
+		//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
+		i_ExtraPlayerPoints[client] += 15;
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon))
+		{
+			AncientBannerActivate(client, weapon);
+			BuffBannerActivate(client, weapon);
+			BuffBattilonsActivate(client, weapon);
+		}
+		RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
+		Attributes_Set(weapon, 698, 0.0); // disable weapon switch
+	}
+	PersonInitiatedHornBlow[client] = false;
 	return MRES_Supercede;
 }
 
@@ -2101,15 +2127,16 @@ Address DHook_CTeamplayRoundBasedRules()
 	return CTeamplayRoundBasedRules;
 }
 
-static MRESReturn DHook_ResetPlayerAndTeamReadyStatePost(Address address)
+static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
 {
 	GetTimerAndNullifyMusicMVM();
 	CTeamplayRoundBasedRules = address;
 	return MRES_Ignored;
 }
 
-public MRESReturn Dhook_RaiseFlag_Post(int entity)
+public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
+	/*
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
@@ -2128,6 +2155,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBattilonsActivate(client, weapon);
 	}
 	RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
+	*/
 
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch

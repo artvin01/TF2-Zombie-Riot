@@ -188,7 +188,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 
-	GetBoneAnglesAndPos(viewmodelModel, "effect_hand_r", flPos, flAng);
+	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	flAng[0] += 80.0;
 
 	float vecSwingForward[3];
@@ -210,7 +210,7 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 
 	//Setup first invis particle here.
 	
-	GetBoneAnglesAndPos(viewmodelModel, "effect_hand_r", flPos, flAng);
+	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 	flAng[0] += 70.0;
 
 	GetAngleVectors(flAng, vecSwingForward, NULL_VECTOR, NULL_VECTOR);

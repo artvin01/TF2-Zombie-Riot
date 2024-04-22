@@ -3317,6 +3317,17 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
+stock void ManualTF2Util_SetPlayerActiveWeapon(int client, int weapon)
+{
+	TF2Util_SetPlayerActiveWeapon(client, weapon);
+	/*
+	char buffer[64];
+	GetEntityClassname(weapon, buffer, sizeof(buffer));
+	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
+	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
+	OnWeaponSwitchPost(client, weapon);
+	*/
+}
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
 {
@@ -3366,6 +3377,13 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+}
+
+public void RemoveInvul(int client)
+{
+	f_ClientInvul[client] = 0.0;
+	TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
+	TF2_RemoveCondition(client, TFCond_MegaHeal);
 }
 
 stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
@@ -4651,7 +4669,6 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
