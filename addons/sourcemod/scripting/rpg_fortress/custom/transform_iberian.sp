@@ -2,23 +2,23 @@ static Handle Timer_Expidonsan_Transform[MAXPLAYERS+1] = {null, ...};
 static int i_TransformInitLevel[MAXPLAYERS+1];
 static int iref_Halo[MAXPLAYERS+1][2];
 
-void Transform_Expidonsa_MapStart()
+void Transform_Iberian_MapStart()
 {
 	PrecacheSound("player/taunt_wormshhg.wav");
 	PrecacheSound("ambient/levels/labs/electric_explosion4.wav");
 }
 
-public void Halo_Activation_Enable_form_1(int client)
+public void Iberian_Activation_Enable_form_1(int client)
 {
-	Halo_Activation_Enable_Global(client, 1);
+	Iberian_Activation_Enable_Global(client, 1);
 }
 
-public void Halo_Activation_Enable_form_2(int client)
+public void Iberian_Activation_Enable_form_2(int client)
 {
-	Halo_Activation_Enable_Global(client, 2);
+	Iberian_Activation_Enable_Global(client, 2);
 }
 
-public void Halo_Activation_Enable_Global(int client, int level)
+public void Iberian_Activation_Enable_Global(int client, int level)
 {
 	switch(level)
 	{
