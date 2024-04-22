@@ -99,7 +99,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		return true;
 	}
 	
-	if((LastTime[entity] + 5.0) > gameTime && GetTeam(entity) != TFTeam_Red)
+	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
 	
 	int low = -1;
@@ -168,6 +168,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			
 			trigger = TriggerDamage(victim, Element_Nervous);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Nervous;
 			ElementDamage[victim][Element_Nervous] += damage;
 			if(ElementDamage[victim][Element_Nervous] > trigger)
@@ -250,7 +251,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
 						return;
 				}
 
@@ -258,6 +259,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			
 			trigger = TriggerDamage(victim, Element_Chaos);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Chaos;
 			ElementDamage[victim][Element_Chaos] += damage;
 			if(ElementDamage[victim][Element_Chaos] > trigger)
@@ -318,6 +320,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 		{
 			int trigger = TriggerDamage(victim, Element_Cyro);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Cyro;
 			ElementDamage[victim][Element_Cyro] += damage;
 			if(ElementDamage[victim][Element_Cyro] > trigger)
