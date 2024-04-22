@@ -2750,6 +2750,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
+		Elemental_ClearDamage(entity);
 #endif
 
 #if defined RPG

@@ -2278,13 +2278,21 @@
 	}
 	"The Standchen"
 	{
-		"en"	"The Ständchen"
+		"en"	"De Ständchen"
 		"chi"	"[韵文]"
 	}
 	"The Standchen Pap"
 	{
-		"en"	"The Ständchen Zugabe"
+		"en"	"De Ständchen Zugabe"
 		"chi"	"[[韵文]]"
+	}
+	"The Standchen AltPap"
+	{
+		"en"	"De Ständchen de Disharmonie"
+	}
+	"The Standchen AltPap 2"
+	{
+		"en"	"De Ständchen de Stille"
 	}
 	"Combo Kits"
 	{

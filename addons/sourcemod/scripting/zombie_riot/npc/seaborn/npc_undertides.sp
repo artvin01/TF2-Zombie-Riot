@@ -205,7 +205,7 @@ public void UnderTides_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(enemy[i], npc.index, npc.index, 57.0, DMG_BULLET);
 					// 380 * 0.15
 
-					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 57);
+					Elemental_AddNervousDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
 
 					if(!i)

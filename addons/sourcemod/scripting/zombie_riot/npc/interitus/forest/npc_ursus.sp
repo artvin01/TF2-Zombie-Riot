@@ -196,7 +196,7 @@ static void ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 450 : 300);
+						Elemental_AddChaosDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 450 : 300);
 					}
 				}
 

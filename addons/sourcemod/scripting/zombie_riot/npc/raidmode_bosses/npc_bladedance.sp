@@ -311,7 +311,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 200);
+				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
 			}
 		}
 	}

@@ -268,7 +268,7 @@ void AnarchyBehemothSelfDefense(AnarchyBehemoth npc, float gameTime, int target,
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 60);
+					Elemental_AddChaosDamage(target, npc.index, 60);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

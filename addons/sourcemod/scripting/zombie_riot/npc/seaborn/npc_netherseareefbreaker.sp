@@ -300,7 +300,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							npc.PlayMeleeHitSound();
 
 							if(npc.m_bCarrier)
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.2));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.2));
 						}
 					}
 

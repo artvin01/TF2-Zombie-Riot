@@ -348,7 +348,7 @@ public Action FirstToTalk_TimerAttack(Handle timer, DataPack pack)
 			SDKHooks_TakeDamage(victim, npc.index, npc.index, 90.0, DMG_BULLET);
 			// 600 x 0.15
 			
-			SeaSlider_AddNeuralDamage(victim, npc.index, 36);
+			Elemental_AddNervousDamage(victim, npc.index, 36);
 			// 600 x 0.4 x 0.15
 		}
 	}

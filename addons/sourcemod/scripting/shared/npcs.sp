@@ -1545,7 +1545,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
 		Debuff_added = true;
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "⌅%s", Debuff_Adder);
+		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⌅%s", Debuff_Adder_right);
 	}
 	if(f_EmpowerStateOther[victim] > GameTime) //Do not show fusion self buff.
 	{
@@ -1618,104 +1618,113 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	bool armor_added = false;
-	if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
-	{
-		float percentage = npc.m_flMeleeArmor * 100.0;
-		percentage *= fl_Extra_MeleeArmor[victim];
-		percentage *= fl_TotalArmor[victim];
-		if(f_MultiDamageTaken[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken[victim];
-		}
-		if(f_MultiDamageTaken_Flat[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken_Flat[victim];
-		}
-		int testvalue = 1;
-		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
-
-#if defined ZR
-		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-		{
-			percentage *= 0.85;
-		}
-		
-		if(!NpcStats_IsEnemySilenced(victim))
-		{
-			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-			{
-				percentage *= Medival_Difficulty_Level;
-			}
-		}
-		if(weapon > 0 && attacker > 0)
-			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
-#endif
-		if(VausMagicaShieldLogicEnabled(victim))
-			percentage *= 0.25;
-		
-
-		
-		if(percentage < 10.0)
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
-		}
-		else
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
-		}
-		armor_added = true;
-	}
 	
-	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
-	{
-		float percentage = npc.m_flRangedArmor * 100.0;
-		percentage *= fl_Extra_RangedArmor[victim];
-		percentage *= fl_TotalArmor[victim];
-		if(f_MultiDamageTaken[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken[victim];
-		}
-		if(f_MultiDamageTaken_Flat[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken_Flat[victim];
-		}
-		int testvalue = 1;
-		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
-
-#if defined ZR
-		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-		{
-			percentage *= 0.85;
-		}
-		
-		if(!NpcStats_IsEnemySilenced(victim))
-		{
-			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-			{
-				percentage *= Medival_Difficulty_Level;
-			}
-		}
-
-		if(VausMagicaShieldLogicEnabled(victim))
-			percentage *= 0.25;
-
-#endif
-
-		if(percentage < 10.0)
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
-		}
-		else
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
-		}
-		armor_added = true;
-	}
 	if(b_NpcIsInvulnerable[victim])
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s %t",Debuff_Adder, "Invulnerable Npc");
-		armor_added = true;		
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
+		armor_added = true;
 	}
+	else if(Elemental_HurtHud(victim, Debuff_Adder))
+	{
+		armor_added = true;
+	}
+	else
+	{
+		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
+		{
+			float percentage = npc.m_flMeleeArmor * 100.0;
+			percentage *= fl_Extra_MeleeArmor[victim];
+			percentage *= fl_TotalArmor[victim];
+			if(f_MultiDamageTaken[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken[victim];
+			}
+			if(f_MultiDamageTaken_Flat[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken_Flat[victim];
+			}
+			int testvalue = 1;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+
+	#if defined ZR
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
+			{
+				percentage *= 0.85;
+			}
+			
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+				{
+					percentage *= Medival_Difficulty_Level;
+				}
+			}
+			if(weapon > 0 && attacker > 0)
+				percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+	#endif
+			if(VausMagicaShieldLogicEnabled(victim))
+				percentage *= 0.25;
+			
+
+			
+			if(percentage < 10.0)
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "[♈ %.2f%%]", percentage);
+			}
+			else
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "[♈ %.0f%%]", percentage);
+			}
+			armor_added = true;
+		}
+
+		if(NpcHadArmorType(victim, 1))
+		{
+			float percentage = npc.m_flRangedArmor * 100.0;
+			percentage *= fl_Extra_RangedArmor[victim];
+			percentage *= fl_TotalArmor[victim];
+			if(f_MultiDamageTaken[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken[victim];
+			}
+			if(f_MultiDamageTaken_Flat[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken_Flat[victim];
+			}
+			int testvalue = 1;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+
+	#if defined ZR
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
+			{
+				percentage *= 0.85;
+			}
+			
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+				{
+					percentage *= Medival_Difficulty_Level;
+				}
+			}
+
+			if(VausMagicaShieldLogicEnabled(victim))
+				percentage *= 0.25;
+
+	#endif
+
+			if(percentage < 10.0)
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+			}
+			else
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+			}
+			armor_added = true;
+		}
+	}
+
 	if(armor_added)
 	{
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s%s\n", Debuff_Adder_left,Debuff_Adder,Debuff_Adder_right);
