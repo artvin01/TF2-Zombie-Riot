@@ -347,6 +347,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 		{
 			int trigger = TriggerDamage(victim, Element_Necrosis);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Necrosis;
 			ElementDamage[victim][Element_Necrosis] += damage;
 			if(ElementDamage[victim][Element_Necrosis] > trigger)
