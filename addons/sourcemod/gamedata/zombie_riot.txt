@@ -271,6 +271,7 @@
 			}
 			"CTFBuffItem::RaiseFlag" 
 			{
+				"library"	"server"
 				"linux64" 	"@_ZN11CTFBuffItem9RaiseFlagEv"
 				"windows64" 	"\x48\x89\x5C\x24\x20\x56\x48\x83\xEC\x30\x8D\x82\x55\xFF\xFF\xFF"
 				
@@ -280,6 +281,7 @@
 			// string "Weapon_BuffBanner.HornBlue" is a func WITHOUT "models/workshop/weapons/c_models/c_para"
 			"CTFBuffItem::BlowHorn" 
 			{
+				"library"	"server"
 				"linux64" 	"@_ZN11CTFBuffItem8BlowHornEv"
 				"windows64" 	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x30\x48\x8B\xF9\xE8\x2A\x2A\x2A\x2A\x48\x8B\xD8\x48\x85\xC0\x0F\x84\x2A\x2A\x2A\x2A\x48\x8B\x00"
 				
@@ -338,6 +340,7 @@
 			}
 			"CBaseAnimating::ResetSequenceInfo" //( )
 			{
+				"library"	"server"
 				// string "Halloween.EyeballBossStunned" and "Max Eyeball DPS taken = %3.2f\n"
 				"windows64"	"\x41\x56\x48\x83\xEC\x20\x48\x8B\x05\xBB\x38\xB4\x00"
 				"linux64"		"@_ZN14CBaseAnimating17ResetSequenceInfoEv"
@@ -350,6 +353,7 @@
 			// aVehicleDriverE ; "vehicle_driver_eyes"
 			// 4 calls, get the 2nd one
 			{
+				"library"	"server"
 				"windows64"	"\x48\x89\x5C\x24\x08\x57\x48\x83\xEC\x20\x80\xB9\x65\x04\x00\x00\x00\x48\x8B\xFA\x48\x8B\xD9\x75\x2A\x48\x83\xB9\xC0\x05\x00\x00\x00\x75\x2A\xE8\x2A\x2A\x2A\x2A\x48\x85\xC0\x74\x2A\x48\x8B\xCB\xE8\x2A\x2A\x2A\x2A\x48\x8B\x8B\xC0\x05\x00\x00\x48\x85\xC9\x74\x2A\x48\x83\x39\x00\x74\x2A\x48\x8B\xD7\xE8\x2A\x2A\x2A\x2A"
 				"linux64"		"@_ZN14CBaseAnimating13GetAttachmentEiR6VectorR6QAngle"
 				

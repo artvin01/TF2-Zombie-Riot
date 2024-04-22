@@ -106,12 +106,16 @@ void DHook_Setup()
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
+		DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
-	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", _, Dhook_RaiseFlag_Post);
+//	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
+//	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
+
 	DHook_CreateDetour(gamedata, "CTFBuffItem::BlowHorn", _, Dhook_BlowHorn_Post);
 	DHook_CreateDetour(gamedata, "CTFPlayerShared::PulseRageBuff()", Dhook_PulseFlagBuff,_);
+
 //	DHook_CreateDetour(gamedata, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState", DHook_ResetPlayerAndTeamReadyStatePre);
+//  64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
 #endif
 	DHook_CreateDetour(gamedata, "CTFWeaponBaseMelee::DoSwingTraceInternal", DHook_DoSwingTracePre, _);
 	DHook_CreateDetour(gamedata, "CWeaponMedigun::CreateMedigunShield", DHook_CreateMedigunShieldPre, _);
@@ -2073,19 +2077,48 @@ public MRESReturn Detour_MaintainBotQuota(int pThis)
 //We want to disable them auto switching weapons during this, the reason being is that it messes with out custom equip logic, bad!
 
 #if defined ZR
+bool PersonInitiatedHornBlow[MAXTF2PLAYERS];
 public MRESReturn Dhook_BlowHorn_Post(int entity)
 {
 	Attributes_Set(entity, 698, 1.0); // disable weapon switch
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(IsValidClient(client))
+	{
+		PersonInitiatedHornBlow[client] = true;
+	}
 	return MRES_Ignored;
 }
 
+/*
+	Issue: Dhook_RaiseFlag_Pre broke in the 64bit update, so i had to do this workaround :(
+
+*/
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
-	/*
 	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
-	if(IsValidClient(client))
-		f_BannerDurationActive[client] = GetGameTime() + 1.1;
-	*/
+
+	if(PersonInitiatedHornBlow[client])
+	{
+		int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+		if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
+		{
+			int animation = 21; //should be default idle, modded viewmodels are fucked ig lol
+			SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		}
+		
+		//They successfully blew the horn! give them abit of credit for that! they helpinnnnnnn... yay
+		i_ExtraPlayerPoints[client] += 15;
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon))
+		{
+			AncientBannerActivate(client, weapon);
+			BuffBannerActivate(client, weapon);
+			BuffBattilonsActivate(client, weapon);
+		}
+		RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
+		Attributes_Set(weapon, 698, 0.0); // disable weapon switch
+	}
+	PersonInitiatedHornBlow[client] = false;
 	return MRES_Supercede;
 }
 
@@ -2101,8 +2134,9 @@ static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
 	return MRES_Ignored;
 }
 
-public MRESReturn Dhook_RaiseFlag_Post(int entity)
+public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
+	/*
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel)) //For some reason it plays the horn anim again, just set it to idle!
@@ -2121,6 +2155,7 @@ public MRESReturn Dhook_RaiseFlag_Post(int entity)
 		BuffBattilonsActivate(client, weapon);
 	}
 	RequestFrame(DelayEffectOnHorn, EntIndexToEntRef(client));
+	*/
 
 	
 	Attributes_Set(entity, 698, 0.0); // disable weapon switch
