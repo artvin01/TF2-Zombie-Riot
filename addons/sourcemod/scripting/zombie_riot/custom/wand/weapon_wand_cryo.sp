@@ -26,7 +26,7 @@ static float Cryo_M2_Radius_Pap2 = 600.0;
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Cryo_M2_Cooldown = 15.0;	//M2 Cooldown
 
-static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
+//static float Cryo_FreezeRequirement = 0.30; //% of target's max health M1 must do in order to trigger the freeze
 static float Cryo_FreezeDuration = 1.5; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap1 = 2.0; //Duration to freeze zombies when the threshold is surpassed
 static float Cryo_FreezeDuration_Pap2 = 2.5; //Duration to freeze zombies when the threshold is surpassed
@@ -212,8 +212,7 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 	{
 		if (!Cryo_Slowed[victim])
 		{
-			float Health_After_Hurt = float(GetEntProp(victim, Prop_Data, "m_iHealth"));
-			Elemental_AddCyroDamage(target, owner, Health_Before_Hurt - Health_After_Hurt, Cryo_SlowType[entity]);
+			Elemental_AddCyroDamage(victim, entity, RoundFloat(damage), Cryo_SlowType[entity]);
 		}
 	}
 }
@@ -362,7 +361,7 @@ public void Cryo_Touch(int entity, int target)
 				}
 			}
 			
-			float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			//float Health_Before_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 
 			int owner = EntRefToEntIndex(i_WandOwner[entity]);
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
@@ -378,11 +377,11 @@ public void Cryo_Touch(int entity, int target)
 			
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, {0.0,0.0,0.0}, VicLoc, _, ZR_DAMAGE_ICE); // 2048 is DMG_NOGIB?
 			
-			float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
+			//float Health_After_Hurt = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			
 			if (!Cryo_Frozen[target] && !Cryo_Slowed[target])
 			{
-				Elemental_AddCyroDamage(target, owner, Health_Before_Hurt - Health_After_Hurt, Cryo_SlowType[entity]);
+				Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity]), Cryo_SlowType[entity]);
 			}
 			
 			Cryo_AlreadyHit[entity][target] = true;

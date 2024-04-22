@@ -12,7 +12,7 @@ enum
 	Element_MAX
 }
 
-static int ElementDamage[MAXENTITES][Element_MAX];
+static int ElementDamage[MAXENTITIES][Element_MAX];
 
 // OnEntityCreated
 void Elemental_ClearDamage(int entity)
@@ -65,7 +65,7 @@ static int TriggerDamage(int entity)
 
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
-	int damage = damagebase * fl_Extra_Damage[attacker];
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients)
 	{
 		Armor_DebuffType[victim] = 1;
@@ -111,10 +111,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				trigger = TriggerDamage(victim);
 			}
 
-			NervousDamage[victim] += damage;
-			if(NervousDamage[victim] > trigger)
+			ElementDamage[victim][Element_Nervous] += damage;
+			if(ElementDamage[victim][Element_Nervous] > trigger)
 			{
-				NervousDamage[victim] = 0;
+				ElementDamage[victim][Element_Nervous] = 0;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
 				if(GetTeam(victim) == TFTeam_Red)
@@ -204,18 +204,18 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				trigger = TriggerDamage(victim);
 			}
 
-			ChaosDamage[victim] += damage;
-			if(ChaosDamage[victim] > trigger)
+			ElementDamage[victim][Element_Chaos] += damage;
+			if(ElementDamage[victim][Element_Chaos] > trigger)
 			{
-				ChaosDamage[victim] = 0;
+				ElementDamage[victim][Element_Chaos] = 0;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
 
 				IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
 
-				float damage = GetTeam(victim) == TFTeam_Red ? 10.0 : 25.0;
-				if(BurnDamage[victim] < damage)
-					BurnDamage[victim] = damage;
+				float burn = GetTeam(victim) == TFTeam_Red ? 10.0 : 25.0;
+				if(BurnDamage[victim] < burn)
+					BurnDamage[victim] = burn;
 			}
 		}
 	}
@@ -271,13 +271,13 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 				trigger = TriggerDamage(victim);
 			}
 
-			CyroDamage[victim] += damage;
-			if(CyroDamage[victim] > trigger)
+			ElementDamage[victim][Element_Cyro] += damage;
+			if(ElementDamage[victim][Element_Cyro] > trigger)
 			{
-				CyroDamage[victim] = 0;
+				ElementDamage[victim][Element_Cyro] = 0;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + (9.5 + (type * 0.5));
 
-				Cryo_FreezeZombie(target, type);
+				Cryo_FreezeZombie(victim, type);
 			}
 		}
 	}
