@@ -363,7 +363,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				Elemental_AddChaosDamage(target, npc.index, 90);
+				Elemental_AddCyroDamage(target, npc.index, 90, 1);
 			} 
 		}
 	}
