@@ -160,7 +160,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
 						return;
 				}
 
