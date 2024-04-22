@@ -303,6 +303,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
+float f_Armor_BreakSoundDelay[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -829,6 +830,7 @@ void ZR_ClientPutInServer(int client)
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
+	f_Armor_BreakSoundDelay[client] = 0.0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
@@ -2443,13 +2445,17 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
-	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+	return;
+
+	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
+
+	if(!IsValidEntity(EntityTimerWhat))
 		return;
 	
-	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
-		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
 	}
 	else
 	{

@@ -787,6 +787,7 @@ bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 
+Handle g_hLookupActivity;
 int b_BoundingBoxVariant[MAXENTITIES];
 bool b_ThisEntityIgnored_NoTeam[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
@@ -1534,6 +1535,7 @@ public void OnMapStart()
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet2.wav");
 	PrecacheSound("physics/metal/metal_box_impact_bullet3.wav");
+	PrecacheSound("npc/assassin/ball_zap1.wav");
 	PrecacheSound("misc/halloween/spell_overheal.wav");
 	PrecacheSound("weapons/gauss/fire1.wav");
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
@@ -1936,7 +1938,7 @@ public void OnClientPutInServer(int client)
 	SDKHook_HookClient(client);
 
 #if defined ZR
-	AdjustBotCount();
+//	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
 	f_ClientReviveDelay[client] = 0.0;
@@ -3087,11 +3089,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
-
-#if defined ZR || defined RPG
-			Upgrade_Check_OnEntityCreated(entity);
-#endif
-
 			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 			{
 				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)

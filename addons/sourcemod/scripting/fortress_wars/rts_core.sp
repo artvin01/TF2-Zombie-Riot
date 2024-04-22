@@ -222,7 +222,7 @@ void RTS_PlayerResupply(int client)
 		int active = SpawnWeapon(client, "tf_weapon_pistol", 209, 1, 0, {128, 301, 821, 2}, {1.0, 1.0, 1.0, 0.0}, 4);
 		int last = SpawnWeapon(client, "tf_weapon_wrench", 197, 1, 0, {128, 821, 2}, {1.0, 1.0, 0.0}, 3);
 
-		TF2Util_SetPlayerActiveWeapon(client, active);
+		ManualTF2Util_SetPlayerActiveWeapon(client, active);
 		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", last);
 	}
 */

@@ -803,7 +803,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	TF2Util_SetPlayerActiveWeapon(client, swap);
+	ManualTF2Util_SetPlayerActiveWeapon(client, swap);
 }
 
 void Store_SwapItems(int client)
@@ -885,7 +885,7 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					TF2Util_SetPlayerActiveWeapon(client, nextE);
+					ManualTF2Util_SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -900,7 +900,7 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					TF2Util_SetPlayerActiveWeapon(client, weapon);
+					ManualTF2Util_SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
@@ -2127,37 +2127,21 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -3: //Move Armor Hud Up
 				{
 					f_ArmorHudOffsetX[client] -= 0.005;
-					if(f_ArmorHudOffsetX[client] < -1.0)
-					{
-						f_ArmorHudOffsetX[client] = -1.0;
-					}
 					ReShowArmorHud(client);
 				}
 				case -4: //Move Armor Hud Down
 				{
 					f_ArmorHudOffsetX[client] += 0.005;
-					if(f_ArmorHudOffsetX[client] > -0.085)
-					{
-						f_ArmorHudOffsetX[client] = -0.085;
-					}
 					ReShowArmorHud(client);
 				}
 				case -5: //Move Armor Hud Left
 				{
 					f_ArmorHudOffsetY[client] -= 0.005;
-					if(f_ArmorHudOffsetY[client] < -1.0)
-					{
-						f_ArmorHudOffsetY[client] = -1.0;
-					}
 					ReShowArmorHud(client);
 				}
 				case -6: //Move Armor Hud right
 				{
 					f_ArmorHudOffsetY[client] += 0.005;
-					if(f_ArmorHudOffsetY[client] > 1.0)
-					{
-						f_ArmorHudOffsetY[client] = 1.0;
-					}
 					ReShowArmorHud(client);
 				}
 				case -7: //ResetARmorHud To default
@@ -2176,41 +2160,21 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -9: //Move Armor Hud Up
 				{
 					f_HurtHudOffsetX[client] -= 0.005;
-					if(f_HurtHudOffsetX[client] < -1.0)
-					{
-						f_HurtHudOffsetX[client] = -1.0;
-					}
 					ReShowHurtHud(client);
 				}
 				case -10: //Move Armor Hud Down
 				{
 					f_HurtHudOffsetX[client] += 0.005;
-					if(f_HurtHudOffsetX[client] > -0.085)
-					{
-						f_HurtHudOffsetX[client] = -0.085;
-					}
 					ReShowHurtHud(client);
 				}
 				case -11: //Move Armor Hud Left
 				{
 					f_HurtHudOffsetY[client] -= 0.005;
-					if(f_HurtHudOffsetY[client] < 0.1)
-					{
-						f_HurtHudOffsetY[client] = 0.1;
-					}
 					ReShowHurtHud(client);
 				}
 				case -12: //Move Armor Hud right
 				{
-					if(f_HurtHudOffsetY[client] < 0.1)
-					{
-						f_HurtHudOffsetY[client] = 0.1;
-					}
 					f_HurtHudOffsetY[client] += 0.005;
-					if(f_HurtHudOffsetY[client] > 0.995)
-					{
-						f_HurtHudOffsetY[client] = 0.995;
-					}
 					ReShowHurtHud(client);
 				}
 				case -13: //ResetARmorHud To default
@@ -2229,41 +2193,21 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -15: //Move Armor Hud Up
 				{
 					f_WeaponHudOffsetX[client] -= 0.005;
-					if(f_WeaponHudOffsetX[client] < -1.0)
-					{
-						f_WeaponHudOffsetX[client] = -1.0;
-					}
 					ReShowWeaponHud(client);
 				}
 				case -16: //Move Armor Hud Down
 				{
 					f_WeaponHudOffsetX[client] += 0.005;
-					if(f_WeaponHudOffsetX[client] > 1.0)
-					{
-						f_WeaponHudOffsetX[client] = 1.0;
-					}
 					ReShowWeaponHud(client);
 				}
 				case -17: //Move Armor Hud Left
 				{
 					f_WeaponHudOffsetY[client] -= 0.005;
-					if(f_WeaponHudOffsetY[client] < 0.10)
-					{
-						f_WeaponHudOffsetY[client] = 0.10;
-					}
 					ReShowWeaponHud(client);
 				}
 				case -18: //Move Armor Hud right
 				{
-					if(f_WeaponHudOffsetY[client] < 0.10)
-					{
-						f_WeaponHudOffsetY[client] = 0.10;
-					}
 					f_WeaponHudOffsetY[client] += 0.005;
-					if(f_WeaponHudOffsetY[client] > 1.0)
-					{
-						f_WeaponHudOffsetY[client] = 1.0;
-					}
 					ReShowWeaponHud(client);
 				}
 				case -19: //ResetARmorHud To default
@@ -2281,41 +2225,21 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 				case -21: //Move Armor Hud Up
 				{
 					f_NotifHudOffsetX[client] -= 0.005;
-					if(f_NotifHudOffsetX[client] < -1.0)
-					{
-						f_NotifHudOffsetX[client] = -1.0;
-					}
 					ReShowNotifHud(client);
 				}
 				case -22: //Move Armor Hud Down
 				{
 					f_NotifHudOffsetX[client] += 0.005;
-					if(f_NotifHudOffsetX[client] > 1.0)
-					{
-						f_NotifHudOffsetX[client] = 1.0;
-					}
 					ReShowNotifHud(client);
 				}
 				case -23: //Move Armor Hud Left
 				{
 					f_NotifHudOffsetY[client] -= 0.005;
-					if(f_NotifHudOffsetY[client] < 0.10)
-					{
-						f_NotifHudOffsetY[client] = 0.10;
-					}
 					ReShowNotifHud(client);
 				}
 				case -24: //Move Armor Hud right
 				{
-					if(f_NotifHudOffsetY[client] < 0.10)
-					{
-						f_NotifHudOffsetY[client] = 0.10;
-					}
 					f_NotifHudOffsetY[client] += 0.005;
-					if(f_NotifHudOffsetY[client] > 1.0)
-					{
-						f_NotifHudOffsetY[client] = 1.0;
-					}
 					ReShowNotifHud(client);
 				}
 				case -25: 

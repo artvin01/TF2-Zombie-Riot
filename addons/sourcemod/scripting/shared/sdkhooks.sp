@@ -1330,7 +1330,11 @@ public void OnPostThink(int client)
 		int armor = abs(Armor_Charge[armorEnt]);
 		for(int i=6; i>0; i--)
 		{
-			if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+			if(Armor_Charge[armorEnt] == 0)
+			{
+				Format(buffer, sizeof(buffer), "%s%s", buffer, "--");
+			}
+			else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
@@ -1850,13 +1854,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
 					Armor_Charge[armorEnt] = 0;
 					damage = float(damage_recieved_after_calc);
+
+					//armor is broken!
+					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
+					{
+						f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
+						EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
+						//\sound\npc\assassin\ball_zap1.wav
+					}
 				}
 				else
 				{
 					Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
 					damage = 0.0;
 					damage += float(dmg_through_armour);
-			//		Though_Armor = true;
 				}
 			}
 

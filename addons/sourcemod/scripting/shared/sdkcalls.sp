@@ -63,20 +63,6 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
-	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-
-	//	Thanks to nosoop for pointing soemthing like this out to me
-	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFBotProxy::InputSpawn");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);   // bool bReportFakeClient
-	PrepSDKCall_SetReturnInfo(SDKType_CBasePlayer, SDKPass_Pointer); // CTFBot*
-	gH_BotAddCommand = EndPrepSDKCall();
-
-	if(!gH_BotAddCommand)
-		SetFailState("[Gamedata] Unable to prepare SDKCall for CTFBotProxy::InputSpawn");
-
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
@@ -143,7 +129,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
-	
+
 #if defined ZR
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
@@ -155,6 +141,7 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
 	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
 #endif
+
 	
 	//from kenzzer
 	
@@ -194,11 +181,13 @@ void SDKCall_Setup()
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
 #if defined ZR
+/*
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
 	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
 	if(!SDKResetPlayerAndTeamReadyState)
 		LogError("[Gamedata] Could not find CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
+*/		
 #endif
 	
 	delete gamedata;
@@ -396,7 +385,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 #if !defined NOG
 	SpawningBot = true;
 #endif
-
+	
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
