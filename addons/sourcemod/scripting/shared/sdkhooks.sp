@@ -2222,7 +2222,7 @@ public void OnWeaponSwitchPost(int client, int weapon)
 
 #if defined RPG
 	//Attributes_Set(client, 698, 1.0);
-	SetEntProp(client, Prop_Send, "m_bWearingSuit", false);
+	SetEntProp(client, Prop_Send, "m_bWearingSuit", true); //Disables weapon switching????
 #endif
 
 }

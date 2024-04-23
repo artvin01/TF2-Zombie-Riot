@@ -570,17 +570,31 @@ void WeaponAttackResourceReduction(int client, int weapon)
 {
 	float ResourceCostAttack = Attributes_Get(weapon, 4003, 0.0);
 	float StaminaCostAttack = Attributes_Get(weapon, 4004, 0.0);
-	int StatsForStaminaMulti;
-	int StatsForStaminaMultiAdd;
+	int StatsForCalcMulti;
+	int StatsForCalcMultiAdd;
 	if(ResourceCostAttack != 0.0)
 	{
-
+		if(i_IsWandWeapon[weapon])
+		{
+			Stats_Artifice(client, StatsForCalcMultiAdd);
+			StatsForCalcMulti += StatsForCalcMultiAdd;
+			ResourceCostAttack *= float(StatsForCalcMulti);
+		}
+		else
+		{
+			Stats_Precision(client, StatsForCalcMultiAdd);
+			StatsForCalcMulti += StatsForCalcMultiAdd;
+			ResourceCostAttack *= float(StatsForCalcMulti);
+		}
+		ResourceCostAttack *= 0.5;
+		RPGCore_ResourceReduction(client, RoundToNearest(ResourceCostAttack));
 	}
+	StatsForCalcMulti = 0;
 	if(StaminaCostAttack != 0.0)
 	{
-		Stats_Strength(client, StatsForStaminaMultiAdd);
-		StatsForStaminaMulti += StatsForStaminaMultiAdd;
-		StaminaCostAttack *= StatsForStaminaMulti;
+		Stats_Strength(client, StatsForCalcMultiAdd);
+		StatsForCalcMulti += StatsForCalcMultiAdd;
+		StaminaCostAttack *= float(StatsForCalcMulti);
 		StaminaCostAttack *= 0.5;
 		RPGCore_StaminaReduction(weapon, client, RoundToNearest(StaminaCostAttack));
 	}

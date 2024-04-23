@@ -116,7 +116,7 @@ void Stats_UpdateHud(int client)
 		float total = float(Stats_Capacity(client) * 50);
 		if(Current_Mana[client] > total)
 		{
-			Current_Mana[client] = total;
+			Current_Mana[client] = RoundToNearest(total);
 		}
 		max_mana[client] = total;
 		i_MaxStamina[client] = RoundToNearest(float(Stats_Structure(client)) * 1.5);
