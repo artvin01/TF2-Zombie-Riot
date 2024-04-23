@@ -67,6 +67,7 @@ public void Weapon_Default_Wand_pap2(int client, int weapon, bool crit)
 		speed *= Attributes_Get(weapon, 475, 1.0);
 	
 		float time = 500.0/speed;
+	
 		time *= Attributes_Get(weapon, 101, 1.0);
 		time *= Attributes_Get(weapon, 102, 1.0);
 		
