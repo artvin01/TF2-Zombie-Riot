@@ -38,10 +38,14 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 	i_TransformInitLevel[client] = i_TransformationLevel[client];
 	
 	if(IsValidEntity(iref_Halo[client][0]))
-		RemoveEntity(iref_Halo[client][0]);
+	{
+		CreateTimer(0.1, Timer_RemoveEntityParticle, iref_Halo[client][0], TIMER_FLAG_NO_MAPCHANGE);
+	}
 
 	if(IsValidEntity(iref_Halo[client][1]))
-		RemoveEntity(iref_Halo[client][1]);
+	{
+		CreateTimer(0.1, Timer_RemoveEntityParticle, iref_Halo[client][1], TIMER_FLAG_NO_MAPCHANGE);
+	}
 
 	float flPos[3];
 	float flAng[3];
@@ -52,24 +56,19 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 		if(level == 1 || level == 2)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			flPos[2] += 10.0;
 			int particle_halo = ParticleEffectAt(flPos, "unusual_sixthsense_teamcolor_blue", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
-			SetParent(viewmodelModel, particle_halo, "head");
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-			flPos[2] += 20.0;
-			ParticleEffectAt(flPos, "bombinomicon_flash", 1.0);
+			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-5.0});
 		}
 		if(level == 2)
 		{
-
-			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			flPos[2] += 25.0;
-			int particle_halo = ParticleEffectAt(flPos, "scout_dodge_red", 0.0);
-			iref_Halo[client][1] = EntIndexToEntRef(particle_halo);
-			AddEntityToThirdPersonTransitMode(client, particle_halo);
-			SetParent(viewmodelModel, particle_halo, "head");
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] += 70.0;
+			int particler = ParticleEffectAt(flPos, "scout_dodge_blue", 0.0);
+			SetParent(client, particler);
+			iref_Halo[client][1] = EntIndexToEntRef(particler);
+			AddEntityToThirdPersonTransitMode(client, particler);
 		}
 	}
 }
@@ -84,16 +83,12 @@ public Action TimerIberian_Transform(Handle timer, DataPack pack)
 		//To remove the particle without it lasting, unparent, then teleport off the map.
 		if(IsValidEntity(iref_Halo[client][0]))
 		{
-			AcceptEntityInput(iref_Halo[client][0], "ClearParent");
-			TeleportEntity(iref_Halo[client][0], {16000.0,16000.0,16000.0});
-			CreateTimer(0.1, Timer_RemoveEntity, iref_Halo[client][0], TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.1, Timer_RemoveEntityParticle, iref_Halo[client][0], TIMER_FLAG_NO_MAPCHANGE);
 			iref_Halo[client][0] = -1;
 		}
 		if(IsValidEntity(iref_Halo[client][1]))
 		{
-			AcceptEntityInput(iref_Halo[client][1], "ClearParent");
-			TeleportEntity(iref_Halo[client][1], {16000.0,16000.0,16000.0});
-			CreateTimer(0.1, Timer_RemoveEntity, iref_Halo[client][1], TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(0.1, Timer_RemoveEntityParticle, iref_Halo[client][1], TIMER_FLAG_NO_MAPCHANGE);
 			iref_Halo[client][1] = -1;
 		}
 
@@ -103,3 +98,5 @@ public Action TimerIberian_Transform(Handle timer, DataPack pack)
 	}	
 	return Plugin_Continue;
 }
+
+

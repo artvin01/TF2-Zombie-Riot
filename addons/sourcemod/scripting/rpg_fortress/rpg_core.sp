@@ -131,6 +131,8 @@ Cookie HudSettingsExtra_Cookies;
 */
 #include "rpg_fortress/custom/transform_expidonsan.sp"
 #include "rpg_fortress/custom/transform_iberian.sp"
+#include "rpg_fortress/custom/transform_merc_human.sp"
+#include "rpg_fortress/custom/transform_ruianian.sp"
 
 void RPG_PluginStart()
 {
@@ -208,6 +210,8 @@ void RPG_MapStart()
 	Wand_Map_Precache();
 	Transform_Expidonsa_MapStart();
 	Transform_Iberian_MapStart();
+	Transform_MercHuman_MapStart();
+	Transform_Ruianian_MapStart();
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
@@ -577,6 +581,7 @@ void WeaponAttackResourceReduction(int client, int weapon)
 		Stats_Strength(client, StatsForStaminaMultiAdd);
 		StatsForStaminaMulti += StatsForStaminaMultiAdd;
 		StaminaCostAttack *= StatsForStaminaMulti;
+		StaminaCostAttack *= 0.5;
 		RPGCore_StaminaReduction(weapon, client, RoundToNearest(StaminaCostAttack));
 	}
 }

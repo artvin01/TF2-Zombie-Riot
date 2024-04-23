@@ -2705,7 +2705,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	else
 	{
 		//if they are in battle, regenerate resource much slower.
-		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 200.0));
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 400.0));
 	}
 
 	if(DrainForm)
@@ -2718,9 +2718,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			Form form;
 			Races_GetClientInfo(client, _, form);
 			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
-			Drain *= 0.15; //drains are too high!
-			Drain *= 0.05; //drains are too high!
-			Drain *= 0.33; //drains are too high!
+			Drain *= 0.01; //drains are too high!
 
 			int StatsForDrainMulti;
 			int StatsForDrainMultiAdd;

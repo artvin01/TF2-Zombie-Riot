@@ -1052,6 +1052,17 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	}
 	return Plugin_Stop;
 }
+public Action Timer_RemoveEntityParticle(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		AcceptEntityInput(entid, "ClearParent");
+		TeleportEntity(entid, {16000.0,16000.0,16000.0});
+		CreateTimer(0.1, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
+}
 
 public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
 {
