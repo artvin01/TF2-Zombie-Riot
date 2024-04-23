@@ -2320,6 +2320,10 @@ static void TransformButton(int client)
 
 void De_TransformClient(int client)
 {
+	if(i_TransformationLevel[client] <= 0)
+	{
+		return;
+	}
 	Race race;
 	if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
 	{
