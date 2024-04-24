@@ -76,7 +76,7 @@ static int TriggerDamage(int entity, int type)
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
 
-	int divide = GetTeam(entity) == TFTeam_Red ? 2 : 3;	// Allied NPCs get a buff
+	int divide = 3;
 
 	if(b_thisNpcIsARaid[entity])
 	{
