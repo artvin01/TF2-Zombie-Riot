@@ -181,6 +181,38 @@ void NPCDeath(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
+	
+	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	float CombinedDamagesPre;
+	float CombinedDamages;
+	int BaseDamage;
+	float Multiplier;
+	Stats_Strength(int client, BaseDamage, 0, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+
+	Stats_Precision(int client, BaseDamage, 0, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+
+	Stats_Artifice(int client, BaseDamage, 0, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+	//Get the highest statt you can find.
+	float Stats_GetCurrentFormMastery;
+	Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
+
+	//todo: Make it also work if your level is low enough!
+	if(float(MaxHealth) > Stats_GetCurrentFormMastery * 1.5)
+	{
+		float MasteryCurrent = Stats_GetCurrentFormMastery(client)
+		MasteryCurrent += 0.1;
+		Stats_SetCurrentFormMastery(client, MasteryCurrent);
+		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
+	}
 }
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

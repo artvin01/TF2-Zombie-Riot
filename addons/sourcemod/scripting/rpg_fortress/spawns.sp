@@ -545,8 +545,6 @@ static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {
-	return;
-	/*
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "spawns");
 	KeyValues kv = new KeyValues("Spawns");
@@ -558,7 +556,7 @@ void Spawns_EditorMenu(int client)
 	{
 		kv.JumpToKey(CurrentZoneEditing[client], true);
 
-		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
+		menu.SetTitle("Spawns\n%s\n ", CurrentZoneEditing[client]);
 		
 		float pos1[3], pos2[3], telepos[3], vec1[3], vec2[3];
 		kv.GetVector("point1", pos1);
@@ -710,5 +708,4 @@ void Spawns_EditorMenu(int client)
 	}
 
 	delete kv;
-	*/
 }

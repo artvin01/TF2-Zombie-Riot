@@ -103,29 +103,29 @@ enum struct Form
 		this.AgilityAdd[0] = kv.GetNum("Min_Agility");
 		this.AgilityAdd[1] = kv.GetNum("Max_Agility");
 	}
-	float GetFloatStat(int stat, int mastery)
+	float GetFloatStat(int stat, float mastery)
 	{
 		float minval = GetItemInArray(this, stat);
 		float maxval = GetItemInArray(this, stat + 1);
 		
-		if(this.Mastery < 1)
+		if(this.Mastery < 1.0)
 			return maxval;
 		
-		float percent = float(mastery) / float(this.Mastery);
+		float percent = mastery / this.Mastery;
 		if(percent > 1.0)
 			percent = 1.0;
 		
 		return minval + ((maxval - minval) * percent);
 	}
-	int GetIntStat(int stat, int mastery)
+	int GetIntStat(int stat, float mastery)
 	{
 		int minval = GetItemInArray(this, stat);
 		int maxval = GetItemInArray(this, stat + 1);
 
-		if(this.Mastery < 1)
+		if(this.Mastery < 1.0)
 			return maxval;
 		
-		float percent = float(mastery) / float(this.Mastery);
+		float percent = mastery / this.Mastery;
 		if(percent > 1.0)
 			percent = 1.0;
 

@@ -45,7 +45,7 @@ void Stats_EnableCharacter(int client)
 		do
 		{
 			kv.GetSectionName(buffer, sizeof(buffer));
-			Mastery[client].SetValue(buffer, kv.GetNum(NULL_STRING));
+			Mastery[client].SetValue(buffer, kv.GetFloat(NULL_STRING));
 		}
 		while(kv.GotoNextKey(false));
 	}
@@ -95,7 +95,7 @@ static void SaveClientStats(int client)
 			{
 				snap.GetKey(i, buffer, sizeof(buffer));
 				if(Mastery[client].GetValue(buffer, value) && value > 0)
-					kv.SetNum(buffer, value);
+					kv.SetFloat(buffer, value);
 			}
 		}
 	}
@@ -228,16 +228,42 @@ void Stats_GetCustomStats(int entity, int attrib, float value)
 	}
 }
 
-int Stats_GetFormMastery(int client, const char[] name)
+float Stats_GetCurrentFormMastery(int client)
 {
-	int mastery;
+	float mastery;
+	
+	Form form;
+	if(Races_GetClientInfo(client, _, form))
+	{
+		if(Mastery[client])
+			Mastery[client].GetValue(form.Name, mastery);
+	}
+
+	return mastery;
+}
+
+float Stats_GetFormMastery(int client, const char[] name)
+{
+	float mastery;
 	if(Mastery[client])
 		Mastery[client].GetValue(name, mastery);
 	
 	return mastery;
 }
 
-void Stats_SetFormMastery(int client, const char[] name, int mastery)
+void Stats_SetCurrentFormMastery(int client, float mastery)
+{
+	Form form;
+	if(Races_GetClientInfo(client, _, form))
+	{
+		if(!Mastery[client])
+			Mastery[client] = new StringMap();
+		
+		Mastery[client].SetValue(form.Name, mastery);
+	}
+}
+
+void Stats_SetFormMastery(int client, const char[] name, float mastery)
 {
 	if(!Mastery[client])
 		Mastery[client] = new StringMap();
