@@ -2454,7 +2454,7 @@
 	}
 	"The Standchen Desc AltPap 2"
 	{
-		"en"	"Deals an additional 30% true damage if an enemy is under an elemental effect."
+		"en"	"Deals an additional 30% pure damage if an enemy is under an elemental effect."
 	}
 	"Sensal Desc"
 	{
