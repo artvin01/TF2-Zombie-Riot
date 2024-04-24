@@ -196,7 +196,7 @@ enum struct ItemInfo
 			PrecacheSound(this.WeaponSoundOverrideString, true);
 		}
 
-		char buffer[64];
+		char buffer[256];
 		kv.GetString("func_attack", buffer, sizeof(buffer));
 		this.FuncAttack = GetFunctionByName(null, buffer);
 		
@@ -224,7 +224,7 @@ enum struct ItemInfo
 		this.Melee_Allows_Headshots 		= view_as<bool>(kv.GetNum("melee_can_headshot", 0));
 		this.Attack3AbilitySlot			= kv.GetNum("attack_3_ability_slot");
 		
-		static char buffers[64][32];
+		static char buffers[32][16];
 		kv.GetString("attributes", buffer, sizeof(buffer));
 		this.Attribs = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[])) / 2;
 		for(int i; i < this.Attribs; i++)
