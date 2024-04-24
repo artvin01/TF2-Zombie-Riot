@@ -2287,6 +2287,27 @@ stock void TextStore_Inspect(int client)
 	}
 }
 
+void ReApplyTransformation(int client)
+{
+	if(i_TransformationLevel[client] <= 0)
+	{
+		return;
+	}
+	Race race;
+	if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
+	{
+		Form form;
+		race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
+		
+		if(form.Func_FormActivate != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, form.Func_FormActivate);
+			Call_PushCell(client);
+			Call_Finish();
+		}
+		Store_ApplyAttribs(client);
+	}
+}
 static void TransformButton(int client)
 {
 	if(f_TransformationDelay[client] > GetGameTime())

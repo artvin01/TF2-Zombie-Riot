@@ -1235,6 +1235,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	TextStore_GiveAll(client);
 	
 	Manual_Impulse_101(client, health);
+	ReApplyTransformation(client);
 }
 
 void Delete_Clip(int ref)
