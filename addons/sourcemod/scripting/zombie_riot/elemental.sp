@@ -69,6 +69,9 @@ static int TriggerDamage(int entity, int type)
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
 			
+			if(b_thisNpcIsARaid[entity])
+				return 50000;
+			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		}
 	}
