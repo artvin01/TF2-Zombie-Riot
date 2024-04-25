@@ -251,6 +251,15 @@ float Stats_GetFormMastery(int client, const char[] name)
 	return mastery;
 }
 
+float Stats_GetFormMaxMastery(int client, const char[] name)
+{
+	float mastery;
+	if(Mastery[client])
+		Mastery[client].GetValue(name, mastery);
+	
+	return mastery;
+}
+
 void Stats_SetCurrentFormMastery(int client, float mastery)
 {
 	Form form;

@@ -186,6 +186,10 @@ void NPCDeath(int entity)
 	int client;
 	while(RpgCore_CountClientsWorthyForKillCredit(entity, client) <= MaxClients)
 	{
+		//only a 10% chance!
+		if(GetRandomFloat(0.0, 1.0) >= 0.1)
+			continue;
+
 		float CombinedDamagesPre;
 		float CombinedDamages;
 		int BaseDamage;
@@ -213,6 +217,10 @@ void NPCDeath(int entity)
 		if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
 		{
 			float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+			if(GetRandomFloat(0.0, 1.0) <= 0.1)
+			{
+				MasteryCurrent += GetRandomFloat(0.4, 0.8);
+			}
 			MasteryCurrent += 0.1;
 			Stats_SetCurrentFormMastery(client, MasteryCurrent);
 			//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.

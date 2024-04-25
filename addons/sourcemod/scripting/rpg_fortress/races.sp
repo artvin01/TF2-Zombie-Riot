@@ -42,7 +42,7 @@ enum struct Form
 	char Name[64];
 	int Level;
 	int Upgrade;
-	int Mastery;
+	float Mastery;
 	Function Func_Requirement;
 	float DrainRate[2];
 
@@ -66,7 +66,7 @@ enum struct Form
 
 		this.Level = kv.GetNum("Form Level");
 		this.Upgrade = kv.GetNum("Form Upgrade Cost");
-		this.Mastery = kv.GetNum("Mastery Max Level");
+		this.Mastery = kv.Getfloat("Mastery Max Level");
 		this.Func_Requirement = KvGetFunction(kv, "Form Function Requirement");
 		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
 		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");

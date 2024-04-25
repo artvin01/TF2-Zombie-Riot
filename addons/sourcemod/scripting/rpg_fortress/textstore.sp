@@ -1938,7 +1938,7 @@ static void ShowMenu(int client, int page = 0)
 				}	
 			}
 			
-			Format(form.Name, sizeof(form.Name), "%s [M%d]", form.Name, Stats_GetFormMastery(client, form.Name));
+			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f]", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 			menu.AddItem("-1", form.Name, CanTransform ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem("-2", "Transform Settings");
 			menu.AddItem("-3", "Main Menu");
@@ -1964,7 +1964,7 @@ static void ShowMenu(int client, int page = 0)
 				{
 					race.Forms.GetArray(i, form);
 					IntToString(i, data, sizeof(data));
-					FormatEx(buffer, sizeof(buffer), "%s | Mastery [%d]", form.Name, Stats_GetFormMastery(client, form.Name));
+					FormatEx(buffer, sizeof(buffer), "%s | Mastery [%.1f/%.1f]", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 					menu.AddItem(data, buffer, i_TransformationSelected[client] == (i + 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 				}
 			}
