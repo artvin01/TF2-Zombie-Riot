@@ -1561,8 +1561,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 
 	float GameTime = GetGameTime();
-
-#if defined ZR
 	if(f_ClientInvul[victim] > GameTime) //Treat this as if they were a teuton, complete and utter immunity to everything in existance.
 	{
 		return Plugin_Handled;
@@ -1591,6 +1589,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
+#if defined ZR
 	if(dieingstate[victim] > 0)
 	{
 		if(flHealth < 1)
@@ -1605,13 +1604,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;
 	}
 	else
+#endif
 	{
 		if(victim == attacker)
 			return Plugin_Handled;
 	}
 	
+#if defined ZR
 	Replicate_Damage_Medications(victim, damage, damagetype);
-	
+#endif
 	if(damagetype & DMG_FALL)
 	{
 #if defined RPG
@@ -1635,7 +1636,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	else if(attacker <= MaxClients && attacker > 0 && attacker != 0)
 	{
 #if defined RPG
-		if(!(PlayerCanPVP(attacker,victim)))
+		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
 #endif
 			return Plugin_Handled;	
 	}
@@ -1644,8 +1645,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		LastHitRef[victim] = EntIndexToEntRef(attacker);
 	}
 	
+#if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+#endif
 	{
+#if defined ZR
 		if(!b_ThisNpcIsSawrunner[attacker])
 		{
 			if(damage < 10000.0)
@@ -1654,13 +1658,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 		else
+#endif
 		{
 			damage *= 2.0;
 		}
 	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 #if defined RPG
-	f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
 	if(f_FlatDamagePiercing[attacker] != 1.0)
 	{
@@ -1679,6 +1684,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 
+#if defined ZR
 	if(Medival_Difficulty_Level != 0.0)
 	{
 		float difficulty_math = Medival_Difficulty_Level;
@@ -1687,6 +1693,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		
 		damage *= difficulty_math + 1.0; //More damage !! only upto double.
 	}
+#endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
 		damage *= f_MultiDamageTaken[victim];
@@ -1696,17 +1703,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= f_MultiDamageTaken_Flat[victim];
 	}
 	
+#if defined ZR
 	//freeplay causes more damage taken.
 	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 	}
+#endif
 	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+#if defined ZR
 	if(!b_ThisNpcIsSawrunner[attacker])
-#endif	// ZR & RPG
-	
+#endif
 	{
-		
 #if defined ZR
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	
@@ -2704,9 +2712,19 @@ void ArmorDisplayClientColor(int client, int armor)
 void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
 	//Regenerate stamina over time at all times!
-	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 50);
+	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 25);
 	
 	//firstly regen any resource!
+	if(f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())
+	{
+		//regen health if they werent in battle!
+		int healing_Amount;
+		
+		healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 1.0, 0.0, HEAL_SELFHEAL);	
+
+		if(healing_Amount)
+			ApplyHealEvent(client, healing_Amount);
+	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
 		//if outside of battle and not in transformations that drain resource, regenerate resource.

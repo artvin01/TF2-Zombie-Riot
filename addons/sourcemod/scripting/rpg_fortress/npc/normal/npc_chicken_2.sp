@@ -58,7 +58,7 @@ methodmap StartChicken < CClotBody
 	
 	public StartChicken(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,36.0}));
+		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{16.0,16.0,36.0}));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -100,7 +100,7 @@ methodmap StartChicken < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetVariantInt(1);
+		SetVariantInt(7);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 

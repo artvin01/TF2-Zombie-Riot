@@ -152,6 +152,10 @@ methodmap MadRoost < CClotBody
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
+
+		
+		SetVariantInt(7);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		return npc;
 	}

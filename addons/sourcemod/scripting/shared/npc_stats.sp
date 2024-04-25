@@ -5596,7 +5596,7 @@ public void NpcBaseThink(int iNPC)
 			{
 				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
-	#if defined ZR
+#if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -5619,7 +5619,7 @@ public void NpcBaseThink(int iNPC)
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 				}
 				else
-	#endif
+#endif
 				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
