@@ -81,6 +81,29 @@ methodmap StartChicken < CClotBody
 
 		npc.m_bisWalking = false;
 
+		int skin = GetRandomInt(0, 1);
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_nugget_noggin/sf14_nugget_noggin.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_fowl_fists/sf14_fowl_fists.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/sf14_talon_trotters/sf14_talon_trotters.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+
 		func_NPCDeath[npc.index] = StartChicken_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = StartChicken_OnTakeDamage;
 		func_NPCThink[npc.index] = StartChicken_ClotThink;
