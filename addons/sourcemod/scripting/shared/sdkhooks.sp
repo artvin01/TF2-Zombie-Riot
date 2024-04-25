@@ -1490,6 +1490,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	ArmorDisplayClient(victim);
 	
 #endif
+	f_FlatDamagePiercing[attacker] = 1.0;
 	i_HexCustomDamageTypes[victim] = 0;
 }
 
@@ -1658,9 +1659,18 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
-
 #if defined RPG
+	f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
 	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
+	if(f_FlatDamagePiercing[attacker] != 1.0)
+	{
+		FlatDamageResistance *= f_FlatDamagePiercing[attacker];
+	}
+	if(IsValidEntity(weapon))
+	{
+		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
+		FlatDamageResistance *= FlatDamageResistance;
+	}
 	float damageMinimum = (damage * 0.05);
 	damage -= FlatDamageResistance;
 	if(damage < damageMinimum)

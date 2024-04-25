@@ -59,6 +59,7 @@ int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
 
 float f_ClientSinceLastHitNpc[MAXENTITIES][MAXTF2PLAYERS];
+float f_FlatDamagePiercing[MAXENTITIES];
 
 //This is for keeping track of what weapons have what stats already applied to them.
 /* OLD CODE

@@ -97,6 +97,8 @@ static void SaveClientStats(int client)
 				if(Mastery[client].GetValue(buffer, value) && value > 0.0)
 					kv.SetFloat(buffer, value);
 			}
+
+			delete snap;
 		}
 	}
 }
@@ -273,6 +275,7 @@ void Stats_SetCurrentFormMastery(int client, float mastery)
 			mastery = form.Mastery;
 		}
 		Mastery[client].SetValue(form.Name, mastery);
+		SaveClientStats(client);
 	}
 }
 
@@ -282,6 +285,7 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 		Mastery[client] = new StringMap();
 	
 	Mastery[client].SetValue(name, mastery);
+	SaveClientStats(client);
 }
 
 /*
@@ -689,7 +693,7 @@ float RPGStats_FlatDamageResistance(int client)
 {
 	int total;
 	total = Stats_Endurance(client);
-	return (float(total) * 1.85);
+	return (float(total) * 1.35);
 }
 
 static void UpdateLevel(int client)

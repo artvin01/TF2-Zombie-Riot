@@ -1236,11 +1236,13 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined RPG 
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
+		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
 		RPGCore_AddClientToHurtList(victim, inflictor);
 	}
 	else if(attacker > 0 && attacker <= MaxClients)
 	{
-		RPGCore_AddClientToHurtList(victim, attacker);
+		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
+		RPGCore_AddClientToHurtList(victim, inflictor);
 	}
 #endif
 	if(SlayNpc)

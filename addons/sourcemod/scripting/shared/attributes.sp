@@ -11,7 +11,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4003, 4004://rpg specific
+		case 4003, 4004, 4005://rpg specific
 		{
 			return true;
 		}

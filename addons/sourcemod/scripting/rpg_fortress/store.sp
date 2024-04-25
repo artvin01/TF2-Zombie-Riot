@@ -1816,11 +1816,8 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 {
 	/*
 		Todo:
-		use Stats_SetWeaponStats for this
-		Make sure it can be constantly updated with itself without using other attributes,
-		i.e. saving the old attribute and then adding new by comparing new stats to the old ones.
-		hard but needed, im very unsure how to do this though.
-
+		f_FlatDamagePiercing[attacker] = 1.0;
+		Use this for PVP, perhaps its a stat? makes spam fire weapons not shit in pvp.
 	*/
 	int damageType;
 
