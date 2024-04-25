@@ -58,6 +58,8 @@ int Capacity[MAXENTITIES];
 int Agility[MAXENTITIES];
 int Luck[MAXENTITIES];
 
+float f_ClientSinceLastHitNpc[MAXENTITIES][MAXTF2PLAYERS];
+
 //This is for keeping track of what weapons have what stats already applied to them.
 /* OLD CODE
 int BackpackBonus2[MAXENTITIES];
@@ -679,4 +681,30 @@ bool RPGCore_PlayerCanPVP(int attacker, int victim)
 		return true;
 	}
 	return false;
+}
+
+
+void RPGCore_AddClientToHurtList(int entity, int client)
+{
+	f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
+}
+
+
+int RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
+{
+	for(client; client++; client <= MaxClients)
+	{
+		if(!IsValidClient(client))
+			continue;
+
+		if(f_ClientSinceLastHitNpc[entity][client] < GetGameTime())
+			continue;
+		
+		//Code for if its in party here:
+
+		//no distance check.
+		//no level check as of now.
+		return client;
+	}
+	return 99999;
 }
