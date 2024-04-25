@@ -66,7 +66,7 @@ enum struct Form
 
 		this.Level = kv.GetNum("Form Level");
 		this.Upgrade = kv.GetNum("Form Upgrade Cost");
-		this.Mastery = kv.Getfloat("Mastery Max Level");
+		this.Mastery = kv.GetFloat("Mastery Max Level");
 		this.Func_Requirement = KvGetFunction(kv, "Form Function Requirement");
 		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
 		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");
@@ -137,7 +137,7 @@ enum struct Form
 
 		this.Level = 0;
 		this.Upgrade = 0;
-		this.Mastery = 0;
+		this.Mastery = 0.0;
 		this.Func_Requirement = INVALID_FUNCTION;
 		this.Func_FormActivate = INVALID_FUNCTION;
 		this.Func_FormDeactivate = INVALID_FUNCTION;

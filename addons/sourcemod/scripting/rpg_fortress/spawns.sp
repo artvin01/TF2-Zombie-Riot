@@ -145,7 +145,7 @@ void Spawns_ConfigSetup()
 	while(kv.GotoNextKey());
 
 	delete kv;
-	
+
 	if(!h_SpawnTimer && SpawnList.Length)
 		h_SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
 }
@@ -218,6 +218,8 @@ void Spawns_EnableZone(int client, const char[] name)
 
 void Spawns_DisableZone(const char[] name)
 {
+	PrintToChatAll("Spawns_DisableZone::%s", name);
+	
 	ArrayList list = new ArrayList();
 
 	int length = SpawnList.Length;
@@ -356,12 +358,13 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				}
 
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
-
+/*
 				if(!b_IsAloneOnServer)
 				{
 					b_npcspawnprotection[entity] = true;
 					CreateTimer(5.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 				}
+*/
 			}
 		}
 	}
@@ -391,14 +394,10 @@ void Apply_Text_Above_Npc(int entity,int strength, int health)
 	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 
 	NPC_GetNameById(i_NpcInternalId[entity], buffer, sizeof(buffer));
-	OffsetFromHead[2] += 10.0;
+//	OffsetFromHead[2] += 10.0;
 	npc.m_iTextEntity1 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
-				
-	OffsetFromHead[2] += 10.0;
-	npc.m_iTextEntity2 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
-
 	Format(buffer, sizeof(buffer), "%d / %d", health, health);
-	OffsetFromHead[2] -= 20.0;
+	OffsetFromHead[2] -= 10.0;
 	npc.m_iTextEntity3 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
 }
 
@@ -562,23 +561,18 @@ void Spawns_EditorMenu(int client)
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustSpawnKey);
-
-		Zones_RenderZone(client, CurrentZoneEditing[client]);
-
-		delete TimerSpawnEditing[client];
-		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
 	}
 	else if(CurrentSpawnEditing[client][0])
 	{
 		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
 		KeyValues kv = new KeyValues("Spawns");
 		kv.ImportFromFile(buffer1);
+		kv.JumpToKey(CurrentZoneEditing[client]);
 		kv.JumpToKey(CurrentSpawnEditing[client]);
 
 		menu.SetTitle("Spawns\n%s - %s\nClick to set it's value:\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
-		kv.GetSectionName(buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Position: %s", buffer1);
+		FormatEx(buffer2, sizeof(buffer2), "Position: %s", CurrentSpawnEditing[client]);
 		menu.AddItem("pos", buffer2);
 
 		kv.GetString("name", buffer1, sizeof(buffer1));
@@ -594,9 +588,9 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("angle", buffer2);
 
 		FormatEx(buffer2, sizeof(buffer2), "Max Alive: %d", kv.GetNum("count", 1));
-		menu.AddItem("boss", buffer2);
+		menu.AddItem("count", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Spawn Time: %.1f", kv.GetNum("time"));
+		FormatEx(buffer2, sizeof(buffer2), "Spawn Time: %.1f", kv.GetFloat("time"));
 		menu.AddItem("time", buffer2);
 
 		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
@@ -668,11 +662,6 @@ void Spawns_EditorMenu(int client)
 		menu.Display(client, AdjustSpawn);
 		
 		delete kv;
-
-		Zones_RenderZone(client, CurrentZoneEditing[client]);
-
-		delete TimerSpawnEditing[client];
-		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
 	}
 	else if(CurrentZoneEditing[client][0])
 	{
@@ -735,10 +724,10 @@ static Action Timer_RefreshHud(Handle timer, int client)
 {
 	TimerSpawnEditing[client] = null;
 	Function func = Editor_MenuFunc(client);
-	if(func != SpawnPicker && func != AdjustSpawn)
+	if(func != SpawnPicker)
 		return Plugin_Stop;
 	
-	Zones_EditorMenu(client);
+	Spawns_EditorMenu(client);
 	return Plugin_Continue;
 }
 
@@ -792,6 +781,7 @@ static void AdjustSpawn(int client, const char[] key)
 	RPG_BuildPath(filepath, sizeof(filepath), "spawns");
 	KeyValues kv = new KeyValues("Spawns");
 	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentZoneEditing[client], true);
 	kv.JumpToKey(CurrentSpawnEditing[client], true);
 
 	if(StrEqual(key, "pos"))
@@ -801,6 +791,7 @@ static void AdjustSpawn(int client, const char[] key)
 		GetClientPointVisible(client, _, _, _, pos);
 		FormatEx(buffer, sizeof(buffer), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
 		kv.SetSectionName(buffer);
+		strcopy(CurrentSpawnEditing[client], sizeof(CurrentSpawnEditing[]), buffer);
 	}
 	else if(StrEqual(key, "boss"))
 	{
@@ -831,7 +822,6 @@ static void AdjustSpawn(int client, const char[] key)
 	else if(StrEqual(key, "delete"))
 	{
 		kv.DeleteThis();
-		delete TimerSpawnEditing[client];
 		CurrentSpawnEditing[client][0] = 0;
 	}
 	else
@@ -872,6 +862,7 @@ static void AdjustSpawnKey(int client, const char[] key)
 	RPG_BuildPath(filepath, sizeof(filepath), "spawns");
 	KeyValues kv = new KeyValues("Spawns");
 	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentZoneEditing[client], true);
 	kv.JumpToKey(CurrentSpawnEditing[client], true);
 
 	if(key[0])

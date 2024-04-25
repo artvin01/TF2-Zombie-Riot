@@ -78,7 +78,7 @@ int Luck2[MAXENTITIES];
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
-int i_NpcIsUnderSpawnProtectionInfluence[MAXTF2PLAYERS];
+int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
 
 static char MapConfig[64];
 
@@ -689,10 +689,18 @@ void RPGCore_AddClientToHurtList(int entity, int client)
 	f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
 }
 
+/*
+	int client;
 
-int RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
+	while(RpgCore_CountClientsWorthyForKillCredit(entity, client) <= MaxClients)
+	{
+
+	}
+*/
+bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 {
-	for(client; client++; client <= MaxClients)
+	// Start by adding 1; limit; keep adding 1
+	for(client++; client <= MaxClients; client++)
 	{
 		if(!IsValidClient(client))
 			continue;
@@ -704,7 +712,51 @@ int RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 
 		//no distance check.
 		//no level check as of now.
-		return client;
+		return true;
 	}
-	return 99999;
+
+	return false;
+}
+
+void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
+{
+	//only a 10% chance!
+	if(GetRandomFloat(0.0, 1.0) >= 0.1)
+		return;
+
+	float CombinedDamagesPre;
+	float CombinedDamages;
+	int BaseDamage;
+	float Multiplier;
+	int bonus;
+	Stats_Strength(client, BaseDamage, bonus, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+
+	Stats_Precision(client, BaseDamage, bonus, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+
+	Stats_Artifice(client, BaseDamage, bonus, Multiplier);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	if(CombinedDamagesPre > CombinedDamages)
+		CombinedDamages = CombinedDamagesPre;
+	//Get the highest statt you can find.
+	float f_Stats_GetCurrentFormMastery;
+	f_Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
+
+	//todo: Make it also work if your level is low enough!
+	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
+	{
+		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+		if(GetRandomFloat(0.0, 1.0) <= 0.1)
+		{
+			MasteryCurrent += GetRandomFloat(0.4, 0.8);
+		}
+		MasteryCurrent += 0.1;
+		Stats_SetCurrentFormMastery(client, MasteryCurrent);
+		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
+	}
 }

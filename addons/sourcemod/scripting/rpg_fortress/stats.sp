@@ -268,6 +268,10 @@ void Stats_SetCurrentFormMastery(int client, float mastery)
 		if(!Mastery[client])
 			Mastery[client] = new StringMap();
 		
+		if(mastery > form.Mastery)
+		{
+			mastery = form.Mastery;
+		}
 		Mastery[client].SetValue(form.Name, mastery);
 	}
 }

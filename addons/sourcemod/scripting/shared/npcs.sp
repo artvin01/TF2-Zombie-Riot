@@ -1222,7 +1222,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
-#if defined ZR
+#if defined ZR 
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
 		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
@@ -1233,6 +1233,16 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	
+#if defined RPG 
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		RPGCore_AddClientToHurtList(victim, inflictor);
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		RPGCore_AddClientToHurtList(victim, attacker);
+	}
+#endif
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);

@@ -6725,10 +6725,11 @@ int GetSolidMask(int npc)
 #if defined ZR
 	if(GetTeam(npc) == TFTeam_Red)
 		Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
-	else
+else
 		Solidity = (MASK_NPCSOLID);
 #else
-	Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
+//This is RPG
+	Solidity = (MASK_NPCSOLID);
 #endif
 	if(b_IgnorePlayerCollisionNPC[npc])
 	{

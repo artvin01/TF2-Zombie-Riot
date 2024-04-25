@@ -70,6 +70,7 @@ void Zones_Rebuild()
 		RemoveEntity(entity);
 	}
 	
+	ZonesKv.Rewind();
 	if(ZonesKv.GotoFirstSubKey())
 	{
 		char name[64];
@@ -100,7 +101,7 @@ void Zones_Rebuild()
 					}
 
 					DispatchKeyValueVector(entity, "origin", pos);
-					DispatchKeyValue(entity, "spawnflags", "3");
+					DispatchKeyValue(entity, "spawnflags", "1");
 					DispatchKeyValue(entity, "targetname", name);
 
 					DispatchSpawn(entity);
