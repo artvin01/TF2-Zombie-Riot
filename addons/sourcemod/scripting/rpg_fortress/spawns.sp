@@ -46,9 +46,7 @@ enum struct SpawnEnum
 
 		this.LowLevelClientAreaCount = 0;
 
-		this.Index = StringToInt(this.Item1);
-		if(!this.Index)
-			this.Index = NPC_GetByPlugin(this.Item1);
+		this.Index = NPC_GetByPlugin(this.Item1);
 		
 		this.Angle = kv.GetFloat("angle", -1.0);
 		this.Count = kv.GetNum("count", 1);
@@ -541,162 +539,187 @@ public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
 }
 
 static Handle TimerSpawnEditing[MAXTF2PLAYERS];
+static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
+static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {
-	char buffer[PLATFORM_MAX_PATH];
-	RPG_BuildPath(buffer, sizeof(buffer), "spawns");
-	KeyValues kv = new KeyValues("Spawns");
-	kv.ImportFromFile(buffer);
+	CvarDisableThink.BoolValue = true;
+
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
 
 	EditMenu menu = new EditMenu();
 
-	if(CurrentZoneEditing[client][0])
+	if(CurrentKeyEditing[client][0])
 	{
-		kv.JumpToKey(CurrentZoneEditing[client], true);
-
-		menu.SetTitle("Spawns\n%s\n ", CurrentZoneEditing[client]);
+		menu.SetTitle("Spawns\n%s - %s\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
-		float pos1[3], pos2[3], telepos[3], vec1[3], vec2[3];
-		kv.GetVector("point1", pos1);
-		kv.GetVector("point2", pos2);
-		kv.GetVector("telepos", telepos);
+		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
 
-		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f (Click to Set)", pos1[0], pos1[1], pos1[2]);
-		menu.AddItem("point1", buffer);
+		menu.AddItem("", "Set To Default");
 
-		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f (Click to Set)", pos2[0], pos2[1], pos2[2]);
-		menu.AddItem("point2", buffer);
-
-		if(telepos[0])
-		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f (Click to Remove)", telepos[0], telepos[1], telepos[2]);
-		}
-		else
-		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: None (Click to Set)");
-		}
-		menu.AddItem("telepos", buffer);
-
-		kv.GetString("item", buffer, sizeof(buffer));
-		if(buffer[0] && !TextStore_IsValidName(buffer))
-		{
-			Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}\n ", buffer);
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Item Key: \"%s\" (Type in chat, Click to Remove)\n ", buffer);
-		}
-		menu.AddItem("item", buffer);
-
-		menu.AddItem("delete", "Delete Zone");
-
-		for(int i; i < 3; i++)
-		{
-			
-			//	Trigger Box
-			
-			vec1 = pos1;
-			vec2 = pos1;
-
-			vec2[i] = pos2[i];
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			vec1 = pos2;
-			vec2 = pos2;
-
-			vec2[i] = pos1[i];
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {255, 255, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			
-			//	Point 1 Box
-			
-			vec1 = pos1;
-			vec2 = pos1;
-
-			vec2[i] += 5.0;
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			vec1 = pos1;
-			vec2 = pos1;
-
-			vec2[i] -= 5.0;
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {255, 0, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			
-			//	Point 2 Box
-			
-			vec1 = pos2;
-			vec2 = pos2;
-
-			vec2[i] += 5.0;
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			vec1 = pos2;
-			vec2 = pos2;
-
-			vec2[i] -= 5.0;
-
-			TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 5.0, 1.0, 0, 0.0, {0, 255, 255, 255}, 0);
-			TE_SendToClient(client);
-
-			
-			//	Teleport Box
-			
-			if(telepos[0])
-			{
-				vec1 = telepos;
-				vec1[0] -= 23.5;
-				vec1[1] -= 23.5;
-				vec2 = vec1;
-
-				vec2[i] += i == 2 ? 95.0 : 57.0;
-
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
-				TE_SendToClient(client);
-				
-				vec1 = telepos;
-				vec2[0] += 23.5;
-				vec2[1] += 23.5;
-				vec2[2] += 95.0;
-				vec2 = vec1;
-
-				vec2[i] -= i == 2 ? 95.0 : 57.0;
-
-				TE_SetupBeamPoints(vec1, vec2, Shared_BEAM_Laser, 0, 0, 0, 1.0, 2.0, 2.0, 0, 0.0, {0, 255, 255, 255}, 0);
-				TE_SendToClient(client);
-			}
-		}
-		
 		menu.ExitBackButton = true;
-		menu.Display(client, NamePicker);
+		menu.Display(client, AdjustSpawnKey);
 
-		delete TimerZoneEditing[client];
-		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+		Zones_RenderZone(client, CurrentZoneEditing[client]);
+
+		delete TimerSpawnEditing[client];
+		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
 	}
-	else
+	else if(CurrentSpawnEditing[client][0])
 	{
-		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
+		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
+		KeyValues kv = new KeyValues("Spawns");
+		kv.ImportFromFile(buffer1);
+		kv.JumpToKey(CurrentSpawnEditing[client]);
+
+		menu.SetTitle("Spawns\n%s - %s\nClick to set it's value:\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
-		if(kv.GotoFirstSubKey())
+		kv.GetSectionName(buffer1, sizeof(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Position: %s", buffer1);
+		menu.AddItem("pos", buffer2);
+
+		kv.GetString("name", buffer1, sizeof(buffer1));
+		bool valid = NPC_GetByPlugin(buffer1) != -1;
+		FormatEx(buffer2, sizeof(buffer2), "NPC Plugin: \"%s\"%s", buffer1, valid ? "" : " {WARNING: NPC does not exist}");
+		menu.AddItem("name", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Is Boss: %d", kv.GetNum("boss"));
+		menu.AddItem("boss", buffer2);
+
+		int angle = kv.GetNum("angle", -1);
+		FormatEx(buffer2, sizeof(buffer2), "Angle: %s%d", angle == -1 ? "Random " : "", angle);
+		menu.AddItem("angle", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Alive: %d", kv.GetNum("count", 1));
+		menu.AddItem("boss", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Spawn Time: %.1f", kv.GetNum("time"));
+		menu.AddItem("time", buffer2);
+
+		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Level: %d", kv.GetNum("low_level"));
+		menu.AddItem("low_level", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
+		menu.AddItem("high_level", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Health: %d", kv.GetNum("low_health"));
+		menu.AddItem("low_health", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
+		menu.AddItem("high_health", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min XP: %d", kv.GetNum("low_xp"));
+		menu.AddItem("low_xp", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
+		menu.AddItem("high_xp", buffer2);
+
+		menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Cash: %d", kv.GetNum("low_cash"));
+		menu.AddItem("low_cash", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
+		menu.AddItem("high_cash", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
+		menu.AddItem("high_drops", buffer2);
+
+		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_1", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: %f", kv.GetFloat("drop_chance_1", 1.0));
+		menu.AddItem("drop_chance_1", buffer2);
+
+		kv.GetString("drop_name_2", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_2", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: %f", kv.GetFloat("drop_chance_2", 1.0));
+		menu.AddItem("drop_chance_2", buffer2);
+
+		kv.GetString("drop_name_3", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_3", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: %f", kv.GetFloat("drop_chance_3", 1.0));
+		menu.AddItem("drop_chance_3", buffer2);
+
+		kv.GetString("drop_name_4", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 4: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_4", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 4: %f", kv.GetFloat("drop_chance_4", 1.0));
+		menu.AddItem("drop_chance_4", buffer2);
+
+		menu.AddItem("delete", "Delete Spawn");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawn);
+		
+		delete kv;
+
+		Zones_RenderZone(client, CurrentZoneEditing[client]);
+
+		delete TimerSpawnEditing[client];
+		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else if(CurrentZoneEditing[client][0])
+	{
+		menu.SetTitle("Spawns\n%s\nSelect a spawn:\n ", CurrentZoneEditing[client]);
+
+		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
+		KeyValues kv = new KeyValues("Spawns");
+		kv.ImportFromFile(buffer1);
+
+		menu.AddItem("", "Create New (or type in position)");
+		
+		if(kv.JumpToKey(CurrentZoneEditing[client]) && kv.GotoFirstSubKey())
 		{
 			do
 			{
-				kv.GetSectionName(buffer, sizeof(buffer));
-				menu.AddItem(buffer, buffer);
+				kv.GetSectionName(buffer1, sizeof(buffer1));
+				kv.GetString("name", buffer2, sizeof(buffer2));
+				Format(buffer2, sizeof(buffer2), "%s - %s", buffer2, buffer1);
+				menu.AddItem(buffer1, buffer2);
 			}
 			while(kv.GotoNextKey());
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, SpawnPicker);
+
+		delete kv;
+
+		Zones_RenderZone(client, CurrentZoneEditing[client]);
+
+		delete TimerSpawnEditing[client];
+		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else
+	{
+		menu.SetTitle("Spawns\nSelect a zone:\n ");
+
+		KeyValues zones = Zones_GetKv();
+		
+		if(zones.GotoFirstSubKey())
+		{
+			do
+			{
+				zones.GetSectionName(buffer1, sizeof(buffer1));
+				menu.AddItem(buffer1, buffer1);
+			}
+			while(zones.GotoNextKey());
 		}
 		else
 		{
@@ -704,8 +727,176 @@ void Spawns_EditorMenu(int client)
 		}
 
 		menu.ExitBackButton = true;
-		menu.Display(client, NamePicker);
+		menu.Display(client, ZonePicker);
+	}
+}
+
+static Action Timer_RefreshHud(Handle timer, int client)
+{
+	TimerSpawnEditing[client] = null;
+	Function func = Editor_MenuFunc(client);
+	if(func != SpawnPicker && func != AdjustSpawn)
+		return Plugin_Stop;
+	
+	Zones_EditorMenu(client);
+	return Plugin_Continue;
+}
+
+static void ZonePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CvarDisableThink.BoolValue = false;
+		Editor_MainMenu(client);
+		return;
 	}
 
+	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
+	Spawns_EditorMenu(client);
+}
+
+static void SpawnPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		delete TimerSpawnEditing[client];
+		CurrentZoneEditing[client][0] = 0;
+		Editor_MainMenu(client);
+		return;
+	}
+
+	if(key[0])
+	{
+		strcopy(CurrentSpawnEditing[client], sizeof(CurrentSpawnEditing[]), key);
+	}
+	else
+	{
+		float pos[3];
+		GetClientPointVisible(client, _, _, _, pos);
+		Format(CurrentSpawnEditing[client], sizeof(CurrentSpawnEditing[]), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+	}
+
+	Spawns_EditorMenu(client);
+}
+
+static void AdjustSpawn(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSpawnEditing[client][0] = 0;
+		Spawns_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "spawns");
+	KeyValues kv = new KeyValues("Spawns");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentSpawnEditing[client], true);
+
+	if(StrEqual(key, "pos"))
+	{
+		char buffer[64];
+		float pos[3];
+		GetClientPointVisible(client, _, _, _, pos);
+		FormatEx(buffer, sizeof(buffer), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+		kv.SetSectionName(buffer);
+	}
+	else if(StrEqual(key, "boss"))
+	{
+		kv.SetNum("boss", kv.GetNum("boss") ? 0 : 1);
+	}
+	else if(StrEqual(key, "angle"))
+	{
+		int angle = kv.GetNum("angle");
+		if(angle == -1)
+		{
+			angle = 0;
+		}
+		else if(angle > 179)
+		{
+			angle = -135;
+		}
+		else if(angle == -45)
+		{
+			angle = -1;
+		}
+		else
+		{
+			angle += 45;
+		}
+
+		kv.SetNum("angle", angle);
+	}
+	else if(StrEqual(key, "delete"))
+	{
+		kv.DeleteThis();
+		delete TimerSpawnEditing[client];
+		CurrentSpawnEditing[client][0] = 0;
+	}
+	else
+	{
+		delete kv;
+		
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		Spawns_EditorMenu(client);
+		return;
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
 	delete kv;
+	
+	int i = -1;
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+	{
+		if(hFromSpawnerIndex[i] != -1)
+			NPC_Despawn(i);
+	}
+
+	Spawns_ConfigSetup();
+	Zones_Rebuild();
+	Spawns_EditorMenu(client);
+}
+
+static void AdjustSpawnKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Spawns_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "spawns");
+	KeyValues kv = new KeyValues("Spawns");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentSpawnEditing[client], true);
+
+	if(key[0])
+	{
+		kv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	int i = -1;
+	while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
+	{
+		if(hFromSpawnerIndex[i] != -1)
+			NPC_Despawn(i);
+	}
+
+	Spawns_ConfigSetup();
+	Zones_Rebuild();
+	Spawns_EditorMenu(client);
 }

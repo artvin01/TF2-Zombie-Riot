@@ -181,7 +181,7 @@ void NPCDeath(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 	}
-	
+	/*
 	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 	float CombinedDamagesPre;
 	float CombinedDamages;
@@ -213,6 +213,7 @@ void NPCDeath(int entity)
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
 	}
+	*/
 }
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

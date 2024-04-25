@@ -265,6 +265,7 @@ void RPG_ConfigSetup(const char[] mapname)
 	if(!found)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
 
+	Zones_ConfigSetup();
 	Crafting_ConfigSetup();
 	Dungeon_ConfigSetup();
 	Fishing_ConfigSetup();

@@ -88,13 +88,13 @@ static void SaveClientStats(int client)
 
 		if(Mastery[client] && kv.JumpToKey("mastery", true))
 		{
-			int value;
+			float value;
 			StringMapSnapshot snap = Mastery[client].Snapshot();
 			int length = snap.Length;
 			for(int i; i < length; i++)
 			{
 				snap.GetKey(i, buffer, sizeof(buffer));
-				if(Mastery[client].GetValue(buffer, value) && value > 0)
+				if(Mastery[client].GetValue(buffer, value) && value > 0.0)
 					kv.SetFloat(buffer, value);
 			}
 		}

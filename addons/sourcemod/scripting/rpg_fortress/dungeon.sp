@@ -102,9 +102,7 @@ enum struct WaveEnum
 		this.Delay = StringToFloat(buffer);
 
 		kv.GetString("name", buffer, length);
-		this.Index = StringToInt(buffer);
-		if(!this.Index)
-			this.Index = NPC_GetByPlugin(buffer);
+		this.Index = NPC_GetByPlugin(buffer);
 
 		kv.GetVector("pos", this.Pos);
 		this.Angle = kv.GetFloat("angle", -1.0);
