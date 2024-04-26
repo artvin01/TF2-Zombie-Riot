@@ -111,7 +111,7 @@ methodmap Miner_Enemy < CClotBody
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
-		f3_SpawnPosition[npc.index][2] = vecPos[2];
+		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamage, Miner_Enemy_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_Think, Miner_Enemy_ClotThink);
