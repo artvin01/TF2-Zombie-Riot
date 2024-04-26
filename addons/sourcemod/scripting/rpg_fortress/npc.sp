@@ -366,11 +366,14 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 					}
 				}
 
-				char HealthString[512];
-				Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
+				char HealthString[64];
+				IntToString(Health,HealthString, sizeof(HealthString));
+				int offset = Health < 0 ? 1 : 0;
+				ThousandString(HealthString[offset], sizeof(HealthString) - offset);
 
 				if(IsValidEntity(npc.m_iTextEntity3))
 				{
+					
 					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 				}
 			}

@@ -990,8 +990,10 @@ void Store_ApplyAttribs(int client)
 	TFClassType ClassForStats = WeaponClass[client];
 	
 	StringMap map = new StringMap();
-
-	Format(c_TagName[client],sizeof(c_TagName[]),"Newbie");
+	
+	Race race;
+	Races_GetRaceByIndex(RaceIndex[client], race);
+	Format(c_TagName[client],sizeof(c_TagName[]),race.Name);
 	i_TagColor[client] =	{255,255,255,255};
 	Stats_SetBodyStats(client, ClassForStats, map);
 

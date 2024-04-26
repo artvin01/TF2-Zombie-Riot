@@ -1883,13 +1883,8 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	char level[32];
 	Format(level, sizeof(level), "Level %d", Level[victim]);
 
-	if(IsValidEntity(npc.m_iTextEntity3))
-	{
-		char HealthString[512];
-		Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
-			
-		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-	}
+	RPGSpawns_UpdateHealthNpc(victim);
+
 	float HudY = -1.0;
 	float HudOffset = 0.05;
 

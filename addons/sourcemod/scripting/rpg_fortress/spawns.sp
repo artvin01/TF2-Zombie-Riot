@@ -396,11 +396,32 @@ void Apply_Text_Above_Npc(int entity,int strength, int health)
 	NPC_GetNameById(i_NpcInternalId[entity], buffer, sizeof(buffer));
 //	OffsetFromHead[2] += 10.0;
 	npc.m_iTextEntity1 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
-	Format(buffer, sizeof(buffer), "%d / %d", health, health);
 	OffsetFromHead[2] -= 10.0;
 	npc.m_iTextEntity3 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
+	RPGSpawns_UpdateHealthNpc(entity);
 }
 
+void RPGSpawns_UpdateHealthNpc(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(!IsValidEntity(npc.m_iTextEntity3))
+		return;
+		
+	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
+	char HealthString[64];
+	IntToString(Health,HealthString, sizeof(HealthString));
+	int offset = Health < 0 ? 1 : 0;
+	ThousandString(HealthString[offset], sizeof(HealthString) - offset);
+	DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	int red;
+	int green;
+	int blue;
+	DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);
+	char sColor[32];
+	Format(sColor, sizeof(sColor), " %d %d %d %d ", red, green, blue, 255);
+	DispatchKeyValue(npc.m_iTextEntity3,     "color", sColor);
+}
 static int GetScaledRate(const int rates[2], int power, int maxpower)
 {
 	return rates[LOW] + ((rates[HIGH] - rates[LOW]) * power / maxpower);
