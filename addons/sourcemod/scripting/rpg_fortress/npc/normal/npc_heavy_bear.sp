@@ -345,8 +345,6 @@ public void HeavyBear_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeavyBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, HeavyBear_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
