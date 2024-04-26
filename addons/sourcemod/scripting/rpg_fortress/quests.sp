@@ -81,8 +81,7 @@ void Quests_EnableZone(int client, const char[] name)
 	do
 	{
 		static char buffer[PLATFORM_MAX_PATH];
-		QuestKv.GetSectionName(buffer, sizeof(buffer));
-		QuestKv.GetString("zone", buffer, sizeof(buffer), buffer);
+		QuestKv.GetString("zone", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
 			int entity = EntRefToEntIndex(QuestKv.GetNum("_entref", INVALID_ENT_REFERENCE));
@@ -925,3 +924,214 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 	}
 	return 0;
 }
+/*
+static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentSectionEditing[MAXTF2PLAYERS][64];
+static char CurrentQuestEditing[MAXTF2PLAYERS][64];
+static char CurrentNPCEditing[MAXTF2PLAYERS][64];
+static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+
+void Quests_EditorMenu(int client)
+{
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+
+	EditMenu menu = new EditMenu();
+
+	if(CurrentKeyEditing[client][0])
+	{
+		menu.SetTitle("Spawns\n%s - %s\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
+		
+		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+		menu.AddItem("", "Set To Default");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawnKey);
+	}
+	else if(CurrentSpawnEditing[client][0])
+	{
+		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
+		KeyValues kv = new KeyValues("Spawns");
+		kv.ImportFromFile(buffer1);
+		kv.JumpToKey(CurrentZoneEditing[client]);
+		kv.JumpToKey(CurrentSpawnEditing[client]);
+
+		menu.SetTitle("Spawns\n%s - %s\nClick to set it's value:\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
+		
+		FormatEx(buffer2, sizeof(buffer2), "Position: %s", CurrentSpawnEditing[client]);
+		menu.AddItem("pos", buffer2);
+
+		kv.GetString("name", buffer1, sizeof(buffer1));
+		bool valid = NPC_GetByPlugin(buffer1) != -1;
+		FormatEx(buffer2, sizeof(buffer2), "NPC Plugin: \"%s\"%s", buffer1, valid ? "" : " {WARNING: NPC does not exist}");
+		menu.AddItem("name", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Is Boss: %d", kv.GetNum("boss"));
+		menu.AddItem("boss", buffer2);
+
+		int angle = kv.GetNum("angle", -1);
+		FormatEx(buffer2, sizeof(buffer2), "Angle: %s%d", angle == -1 ? "Random " : "", angle);
+		menu.AddItem("angle", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Alive: %d", kv.GetNum("count", 1));
+		menu.AddItem("count", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Spawn Time: %.1f", kv.GetFloat("time"));
+		menu.AddItem("time", buffer2);
+
+		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Level: %d", kv.GetNum("low_level"));
+		menu.AddItem("low_level", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
+		menu.AddItem("high_level", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Health: %d", kv.GetNum("low_health"));
+		menu.AddItem("low_health", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
+		menu.AddItem("high_health", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min XP: %d", kv.GetNum("low_xp"));
+		menu.AddItem("low_xp", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
+		menu.AddItem("high_xp", buffer2);
+
+		menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
+
+		FormatEx(buffer2, sizeof(buffer2), "Min Cash: %d", kv.GetNum("low_cash"));
+		menu.AddItem("low_cash", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
+		menu.AddItem("high_cash", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
+		menu.AddItem("high_drops", buffer2);
+
+		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_1", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: %f", kv.GetFloat("drop_chance_1", 1.0));
+		menu.AddItem("drop_chance_1", buffer2);
+
+		kv.GetString("drop_name_2", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_2", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: %f", kv.GetFloat("drop_chance_2", 1.0));
+		menu.AddItem("drop_chance_2", buffer2);
+
+		kv.GetString("drop_name_3", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_3", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: %f", kv.GetFloat("drop_chance_3", 1.0));
+		menu.AddItem("drop_chance_3", buffer2);
+
+		kv.GetString("drop_name_4", buffer1, sizeof(buffer1));
+		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 4: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("drop_name_4", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 4: %f", kv.GetFloat("drop_chance_4", 1.0));
+		menu.AddItem("drop_chance_4", buffer2);
+
+		menu.AddItem("delete", "Delete Spawn");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawn);
+		
+		delete kv;
+	}
+	else if(CurrentZoneEditing[client][0])
+	{
+		menu.SetTitle("Spawns\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
+
+		QuestKv.Rewind();
+		QuestKv.GotoFirstSubKey();
+		do
+		{
+			QuestKv.GetString("zone", buffer1, sizeof(buffer1));
+			if(strlen(CurrentZoneEditing[client]) < 2 || StrEqual(CurrentZoneEditing[client], buffer1, false))
+			{
+				QuestKv.GetSectionName(buffer1, sizeof(buffer1));
+				menu.AddItem(buffer1, buffer1);
+			}
+		}
+		while(QuestKv.GotoNextKey());
+
+		menu.ExitBackButton = true;
+		menu.Display(client, NPCPicker);
+
+		if(strlen(CurrentZoneEditing[client]) > 1)
+			Zones_RenderZone(client, CurrentZoneEditing[client]);
+
+		delete TimerSpawnEditing[client];
+		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else
+	{
+		menu.SetTitle("Quests\nSelect a zone:\n ");
+
+		KeyValues zones = Zones_GetKv();
+
+		menu.AddItem("", "Any", ITEMDRAW_DISABLED);
+		
+		if(zones.GotoFirstSubKey())
+		{
+			do
+			{
+				zones.GetSectionName(buffer1, sizeof(buffer1));
+				menu.AddItem(buffer1, buffer1);
+			}
+			while(zones.GotoNextKey());
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, ZonePicker);
+	}
+}
+
+static Action Timer_RefreshHud(Handle timer, int client)
+{
+	TimerSpawnEditing[client] = null;
+	Function func = Editor_MenuFunc(client);
+	if(func != SpawnPicker)
+		return Plugin_Stop;
+	
+	Quests_EditorMenu(client);
+	return Plugin_Continue;
+}
+
+static void ZonePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		Editor_MainMenu(client);
+		return;
+	}
+
+	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
+	Quests_EditorMenu(client);
+}
+
+static void NPCPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentZoneEditing[client][0] = 0;
+		Editor_MainMenu(client);
+		return;
+	}
+
+	strcopy(CurrentNPCEditing[client], sizeof(CurrentNPCEditing[]), key);
+	Quests_EditorMenu(client);
+}
+*/
