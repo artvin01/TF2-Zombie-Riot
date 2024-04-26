@@ -924,6 +924,7 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 	}
 	return 0;
 }
+
 /*
 static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentSectionEditing[MAXTF2PLAYERS][64];
@@ -951,11 +952,7 @@ void Quests_EditorMenu(int client)
 	}
 	else if(CurrentSpawnEditing[client][0])
 	{
-		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
-		KeyValues kv = new KeyValues("Spawns");
-		kv.ImportFromFile(buffer1);
-		kv.JumpToKey(CurrentZoneEditing[client]);
-		kv.JumpToKey(CurrentSpawnEditing[client]);
+		QuestKv.Rewind();
 
 		menu.SetTitle("Spawns\n%s - %s\nClick to set it's value:\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
@@ -979,69 +976,6 @@ void Quests_EditorMenu(int client)
 
 		FormatEx(buffer2, sizeof(buffer2), "Spawn Time: %.1f", kv.GetFloat("time"));
 		menu.AddItem("time", buffer2);
-
-		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
-
-		FormatEx(buffer2, sizeof(buffer2), "Min Level: %d", kv.GetNum("low_level"));
-		menu.AddItem("low_level", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
-		menu.AddItem("high_level", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Min Health: %d", kv.GetNum("low_health"));
-		menu.AddItem("low_health", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
-		menu.AddItem("high_health", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Min XP: %d", kv.GetNum("low_xp"));
-		menu.AddItem("low_xp", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
-		menu.AddItem("high_xp", buffer2);
-
-		menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
-
-		FormatEx(buffer2, sizeof(buffer2), "Min Cash: %d", kv.GetNum("low_cash"));
-		menu.AddItem("low_cash", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
-		menu.AddItem("high_cash", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
-		menu.AddItem("high_drops", buffer2);
-
-		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Drop 1: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
-		menu.AddItem("drop_name_1", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Drop 1: %f", kv.GetFloat("drop_chance_1", 1.0));
-		menu.AddItem("drop_chance_1", buffer2);
-
-		kv.GetString("drop_name_2", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Drop 2: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
-		menu.AddItem("drop_name_2", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Drop 2: %f", kv.GetFloat("drop_chance_2", 1.0));
-		menu.AddItem("drop_chance_2", buffer2);
-
-		kv.GetString("drop_name_3", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Drop 3: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
-		menu.AddItem("drop_name_3", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Drop 3: %f", kv.GetFloat("drop_chance_3", 1.0));
-		menu.AddItem("drop_chance_3", buffer2);
-
-		kv.GetString("drop_name_4", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Drop 4: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
-		menu.AddItem("drop_name_4", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Drop 4: %f", kv.GetFloat("drop_chance_4", 1.0));
-		menu.AddItem("drop_chance_4", buffer2);
 
 		menu.AddItem("delete", "Delete Spawn");
 
