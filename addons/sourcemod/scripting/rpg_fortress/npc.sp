@@ -34,10 +34,10 @@ void NPC_ConfigSetup()
 	MadChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();
 	HeavyBear_OnMapStart_NPC();
-
-/*
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
+
+/*
 	Miner_Enemy_OnMapStart_NPC();
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
@@ -466,10 +466,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
-
-/*
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
+/*
 #include "rpg_fortress/npc/normal/npc_miner.sp"
 
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"

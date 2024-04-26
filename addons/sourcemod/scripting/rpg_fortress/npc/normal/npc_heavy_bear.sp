@@ -101,7 +101,7 @@ methodmap HeavyBear < CClotBody
 	}
 	
 	
-	public HeavyBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public HeavyBear(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		HeavyBear npc = view_as<HeavyBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
 		

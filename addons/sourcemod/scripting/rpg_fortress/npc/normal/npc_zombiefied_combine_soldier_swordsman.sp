@@ -114,7 +114,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public ZombiefiedCombineSwordsman(int client, float vecPos[3], float vecAng[3], bool ally)
+	public ZombiefiedCombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		

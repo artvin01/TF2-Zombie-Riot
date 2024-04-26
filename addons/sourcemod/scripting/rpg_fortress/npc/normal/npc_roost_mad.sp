@@ -105,7 +105,7 @@ methodmap MadRoost < CClotBody
 	}
 	
 	
-	public MadRoost(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MadRoost(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MadRoost npc = view_as<MadRoost>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.8", "300", ally, false));
 		

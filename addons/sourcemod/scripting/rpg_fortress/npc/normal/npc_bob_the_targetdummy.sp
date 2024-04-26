@@ -31,7 +31,7 @@ methodmap BobTheTargetDummy < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public BobTheTargetDummy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BobTheTargetDummy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BobTheTargetDummy npc = view_as<BobTheTargetDummy>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		

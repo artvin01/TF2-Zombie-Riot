@@ -29,7 +29,7 @@ methodmap FarmBear < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public FarmBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public FarmBear(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		//Hardcode them being allies, it would make no sense if they were enemies.
 		FarmBear npc = view_as<FarmBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", true, false,_,_,_));

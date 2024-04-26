@@ -88,7 +88,7 @@ methodmap Miner_Enemy < CClotBody
 	}
 	
 	
-	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 		

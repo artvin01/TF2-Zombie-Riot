@@ -215,7 +215,7 @@ methodmap EnemyFatherGrigori < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public EnemyFatherGrigori(int client, float vecPos[3], float vecAng[3], bool ally)
+	public EnemyFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
