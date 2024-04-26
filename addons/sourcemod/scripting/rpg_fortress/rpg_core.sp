@@ -761,3 +761,8 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
 	}
 }
+
+void RPGCore_SetFlatDamagePiercing(int entity, float value)
+{
+	f_FlatDamagePiercing[entity] = value;
+}

@@ -1426,7 +1426,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+		if((!b_npcspawnprotection[victim]/* || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)*/))
 #else
 		if(!b_npcspawnprotection[victim])
 #endif
@@ -1750,7 +1750,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
-#endif	// ZR
+#endif
 	{
 		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 
@@ -1771,8 +1771,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				HudOffset += 0.035;
 			}
 		}
-#endif	// ZR
-
+#endif
 		float HudY = -1.0;
 
 #if defined ZR || defined RPG
@@ -1795,7 +1794,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 #if defined RPG
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
+		RPGSpawns_UpdateHealthNpc(victim);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
 #else
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
 #endif
@@ -1810,7 +1811,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 #if defined ZR
 		if(!raidboss_active)
-#endif	// ZR
+#endif
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
@@ -1878,7 +1879,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 	}
 #endif
-
+/*
 #if defined RPG
 	char level[32];
 	Format(level, sizeof(level), "Level %d", Level[victim]);
@@ -1898,6 +1899,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	NPC_GetNameById(i_NpcInternalId[victim], buffer, sizeof(buffer));
 	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, buffer, Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
 #endif
+*/
 }
 
 stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)

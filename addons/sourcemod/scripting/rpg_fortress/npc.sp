@@ -32,11 +32,10 @@ void NPC_ConfigSetup()
 
 	StartChicken_OnMapStart_NPC();
 	MadChicken_OnMapStart_NPC();
-
-/*
-	StartChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();
 	HeavyBear_OnMapStart_NPC();
+
+/*
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
 	Miner_Enemy_OnMapStart_NPC();
@@ -246,6 +245,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
+		distance *= 2.0; //need to double distance beacuse of how distance works now via navmesh and all.
 		if(b_NpcIsInADungeon[npc.index])
 		{
 			distance = 99999.9;
@@ -464,9 +464,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
-/*
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
+
+/*
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
 #include "rpg_fortress/npc/normal/npc_miner.sp"

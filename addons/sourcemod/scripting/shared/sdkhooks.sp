@@ -1647,6 +1647,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker] && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
+#else
+	if((damagetype & DMG_DROWN) && (!(i_HexCustomDamageTypes[victim] & ZR_STAIR_ANTI_ABUSE_DAMAGE)))
 #endif
 	{
 #if defined ZR
@@ -2712,7 +2714,7 @@ void ArmorDisplayClientColor(int client, int armor)
 void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
 	//Regenerate stamina over time at all times!
-	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 25);
+	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 45);
 	
 	//firstly regen any resource!
 	if(f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())

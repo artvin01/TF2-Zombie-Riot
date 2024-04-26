@@ -242,6 +242,13 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void StartChicken_NPCDeath(int entity)
 {
 	StartChicken npc = view_as<StartChicken>(entity);
+	
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
 }
 
 

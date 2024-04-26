@@ -7614,6 +7614,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	Expidonsa_SetToZero(entity);
 #endif
 
+#if defined RPG
+	RPGCore_SetFlatDamagePiercing(entity,1.0);
+#endif
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;

@@ -334,7 +334,9 @@ void Stats_SetWeaponStats(int client, int entity, int slot)
 void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
 {
 	map.SetValue("26", RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
-	map.SetValue("252", Stats_KnockbackResist(client));
+	map.SetValue("252", 0.0/*Stats_KnockbackResist(client)*/);
+	//Give complete immunity to all normal knockback.
+	//in RPG we will give knockback another way.
 
 	float speed = 300.0 + float(Stats_Agility(client));
 	map.SetValue("107", RemoveExtraSpeed(class, speed));
