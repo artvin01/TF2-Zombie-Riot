@@ -134,6 +134,7 @@ void Editor_MainMenu(int client)
 
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
+	menu.AddItem("quests", "Quests");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -147,5 +148,9 @@ static void MainMenuHandler(int client, const char[] buffer)
 	else if(StrContains(buffer, "spawns") != -1)
 	{
 		Spawns_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "quests") != -1)
+	{
+		Quests_EditorMenu(client);
 	}
 }

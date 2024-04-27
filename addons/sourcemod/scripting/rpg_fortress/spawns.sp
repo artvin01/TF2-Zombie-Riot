@@ -571,7 +571,39 @@ void Spawns_EditorMenu(int client)
 
 	EditMenu menu = new EditMenu();
 
-	if(CurrentKeyEditing[client][0])
+	if(StrEqual(CurrentKeyEditing[client], "copy"))
+	{
+		menu.SetTitle("Spawns\n%s - %s\nSelect spawn to copy from (can type name too):\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
+		
+		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
+		KeyValues kv = new KeyValues("Spawns");
+		kv.ImportFromFile(buffer1);
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				if(kv.GotoFirstSubKey())
+				{
+					kv.GetSectionName(buffer1, sizeof(buffer1));
+					do
+					{
+						kv.GetString("name", buffer2, sizeof(buffer2));
+						Format(buffer2, sizeof(buffer2), "%s;%s", buffer1, buffer2);
+						menu.AddItem(buffer2, buffer2);
+					}
+					while(kv.GotoNextKey());
+					kv.GoBack();
+				}
+			}
+			while(kv.GotoNextKey());
+		}
+
+		delete kv;
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawnCopy);
+	}
+	else if(CurrentKeyEditing[client][0])
 	{
 		menu.SetTitle("Spawns\n%s - %s\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
@@ -911,4 +943,36 @@ static void AdjustSpawnKey(int client, const char[] key)
 	Spawns_ConfigSetup();
 	Zones_Rebuild();
 	Spawns_EditorMenu(client);
+}
+
+static void AdjustSpawnCopy(int client, const char[] key)
+{
+	char buffers[2][64];
+	if(ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[])) != 2)
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Spawns_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "spawns");
+	KeyValues main = new KeyValues("Spawns");
+	main.ImportFromFile(filepath);
+	
+	if(main.JumpToKey(buffers[0]) && main.JumpToKey(buffers[1]))
+	{
+		KeyValues other = new KeyValues(buffers[1]);
+		other.Import(main);
+		
+		main.Rewind();
+		main.JumpToKey(CurrentZoneEditing[client], true);
+		main.JumpToKey(CurrentSpawnEditing[client], true);
+		main.Import(other);
+
+		main.Rewind();
+		main.ExportToFile(filepath);
+	}
+
+	delete main;
 }
