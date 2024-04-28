@@ -109,6 +109,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/npc_despawn_zone.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
+#include "rpg_fortress/custom/weapon_samurai_sword.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -215,6 +216,7 @@ void RPG_MapStart()
 	Transform_Iberian_MapStart();
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
+	SamuraiSword_Map_Precache();
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();

@@ -712,3 +712,51 @@ static void UpdateLevel(int client)
 
 	Level[client] = stats / 10;
 }
+
+
+void RPGStats_GiveTempomaryStatsToItem(int weaponindx, int statindx, int StatAmount, float duration)
+{
+	DataPack pack;
+	CreateDataTimer(duration, RPGStats_GiveTempomaryStatsToItemTimer, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(weaponindx));	
+	pack.WriteCell(statindx);		
+	pack.WriteCell(StatAmount);	
+	RpgStats_GrantStatsViaIndex(weaponindx, statindx, StatAmount);
+}
+
+public Action RPGStats_GiveTempomaryStatsToItemTimer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int weaponindex = EntRefToEntIndex(pack.ReadCell());
+	int statindx = pack.ReadCell();
+	int StatAmount = pack.ReadCell();
+	StatAmount *= -1;
+	//invert
+	if(IsValidEntity(weaponindex))
+	{
+		RpgStats_GrantStatsViaIndex(weaponindex, statindx, StatAmount);
+	}
+
+	return Plugin_Stop;
+}
+
+void RpgStats_GrantStatsViaIndex(int entity, int statindx, int StatAmount)
+{
+	switch(statindx)
+	{
+		case 1:
+			Strength[entity] += StatAmount;
+		case 2:
+			Precision[entity] += StatAmount;
+		case 3:
+			Artifice[entity] += StatAmount;
+		case 4:
+			Endurance[entity] += StatAmount;
+		case 5:
+			Structure[entity] += StatAmount;
+		case 6:
+			Intelligence[entity] += StatAmount;
+		case 7:
+			Capacity[entity] += StatAmount;
+	}
+}
