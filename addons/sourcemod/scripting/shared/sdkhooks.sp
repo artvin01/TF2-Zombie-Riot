@@ -2788,17 +2788,22 @@ void RPG_Sdkhooks_StaminaBar(int client)
 {
 	char buffer[32];
 	int Stamina = i_CurrentStamina[client];
-	for(int i=6; i>0; i--)
+	int MaxStamina = i_MaxStamina[client];
+	int MaxBars = 6;
+	float BarPercentage;
+	BarPercentage = 1.0 / float(MaxBars);
+	//todo: Fix the bars being offset really wierdly
+	for(int i=MaxBars; i>0; i--)
 	{
-		if(Stamina >= i_MaxStamina[client]*(i*0.1666))
+		if(Stamina >= zzzz*(i*BarPercentage))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 		}
-		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/80.0))
+		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/60.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 		}
-		else if(Stamina > i_MaxStamina[client]*(i*0.1666 - 1.0/20.0))
+		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/30.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 		}
@@ -2812,6 +2817,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 			Format(buffer, sizeof(buffer), "%s\n", buffer);
 		}
 	}
+	Format(buffer, sizeof(buffer), "%s\nPR:%.0f", buffer, (float(i_CurrentStamina[client]) / float(i_MaxStamina[client])) * 100.0);
 	int red = 255;
 	int green = 165;
 	int blue = 0;
