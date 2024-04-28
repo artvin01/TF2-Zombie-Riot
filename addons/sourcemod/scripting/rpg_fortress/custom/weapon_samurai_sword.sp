@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SAMURAI_SWORD_PARRY 	"playgamesound weapons/samurai/tf_katana_impact_object_02.wav"
+#define SAMURAI_SWORD_PARRY 	"weapons/samurai/tf_katana_impact_object_02.wav"
 
 void SamuraiSword_Map_Precache()
 {
@@ -25,8 +25,8 @@ public void Weapon_SamuraiParry(int client, int weapon, bool crit, int slot)
 	}
 	int StatsForCalcMultiAdd;
 	Stats_Endurance(client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd /= 3;
 	//get base endurance for cost
-
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -35,10 +35,9 @@ public void Weapon_SamuraiParry(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
 		return;
 	}
-	
+	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
 	StatsForCalcMultiAdd = Stats_Endurance(client);
 	//subtract Stamina
-	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
 	Ability_Apply_Cooldown(client, slot, 3.0);
 	RPGStats_GiveTempomaryStatsToItem(weapon, 4, StatsForCalcMultiAdd, 0.5);
 	EmitSoundToAll(SAMURAI_SWORD_PARRY, client, _, 65, _, 0.45);
