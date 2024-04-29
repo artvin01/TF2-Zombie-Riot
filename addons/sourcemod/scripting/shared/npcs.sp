@@ -1653,9 +1653,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	else
 	{
+		float percentage;
 		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
 		{
-			float percentage = npc.m_flMeleeArmor * 100.0;
+			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
 			if(f_MultiDamageTaken[victim] != 1.0)
@@ -1669,11 +1670,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			int testvalue = 1;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
-	#if defined ZR
+#if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
 				percentage *= 0.85;
 			}
+#endif
 		}
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
@@ -1737,7 +1739,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			int testvalue = 1;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
-	#if defined ZR
+#if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
 				percentage *= 0.85;
@@ -1754,7 +1756,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 
-	#endif
+#endif
 
 			if(percentage < 10.0)
 			{
