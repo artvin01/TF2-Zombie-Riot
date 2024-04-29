@@ -1338,11 +1338,11 @@ public void OnPostThink(int client)
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/60.0))
+			else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 			}
-			else if(armor > Armor_Max*(i*0.1666 - 1.0/30.0))
+			else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
 			{
 				Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 			}
@@ -2794,16 +2794,16 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	BarPercentage = 1.0 / float(MaxBars);
 	//todo: Fix the bars being offset really wierdly
 	for(int i=MaxBars; i>0; i--)
-	{
+	{ 	
 		if(Stamina >= MaxStamina*(i*BarPercentage))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 		}
-		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/60.0))
+		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/15.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 		}
-		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/30.0))
+		else if(Stamina > MaxStamina*(i*BarPercentage - 1.0/10.0))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 		}
@@ -2817,7 +2817,6 @@ void RPG_Sdkhooks_StaminaBar(int client)
 			Format(buffer, sizeof(buffer), "%s\n", buffer);
 		}
 	}
-	Format(buffer, sizeof(buffer), "%s\nPR:%.0f", buffer, (float(i_CurrentStamina[client]) / float(i_MaxStamina[client])) * 100.0);
 	int red = 255;
 	int green = 165;
 	int blue = 0;
