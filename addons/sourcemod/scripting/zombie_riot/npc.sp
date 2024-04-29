@@ -473,7 +473,7 @@ void NPC_ConfigSetup()
 	TheHunter_Setup();
 }
 
-stock int NPC_Add(NPCData data)
+int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
@@ -692,7 +692,6 @@ void NPCDeath(int entity)
 				Call_PushCell(baseboss_index);
 				Call_PushCell(entity);
 				Call_Finish();
-				//todo: convert all on death and on take damage to this.
 			}
 		}
 	}
@@ -703,7 +702,6 @@ void NPCDeath(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 		return;
-		//todo: convert all on death and on take damage to this.
 	}
 }
 

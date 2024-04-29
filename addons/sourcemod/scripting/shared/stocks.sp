@@ -369,6 +369,16 @@ stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, in
 	}
 }
 
+stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul = INVALID_FUNCTION)
+{
+	char buffer[64];
+	kv.GetString(string, buffer, sizeof(buffer));
+	if(buffer[0])
+		return GetFunctionByName(null, buffer);
+
+	return defaul;
+}
+
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
 
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
@@ -681,7 +691,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-#if defined ZR
+#if defined ZR || defined RPG
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
@@ -723,7 +733,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
-#if defined ZR
+#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 #endif
 	return entity;
@@ -1039,6 +1049,17 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	if(IsValidEntity(entity))
 	{
 		RemoveEntity(entity);
+	}
+	return Plugin_Stop;
+}
+public Action Timer_RemoveEntityParticle(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		AcceptEntityInput(entid, "ClearParent");
+		TeleportEntity(entid, {16000.0,16000.0,16000.0});
+		CreateTimer(0.1, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return Plugin_Stop;
 }
@@ -2662,19 +2683,23 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-#if defined ZR
 int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+#else
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2)
+#endif
 		{
 			if(alive == 0)
 			{
 				amount++;
 				continue;
 			}
+#if defined ZR
 			else
 			{
 				if(alive == 1) //check if just not teuton
@@ -2694,13 +2719,14 @@ int CountPlayersOnRed(int alive = 0)
 					}
 				}
 			}
+#endif
 		}
 	}
 	
 	return amount;
 	
 }
-#endif
+
 
 int CountPlayersOnServer()
 {
@@ -3550,14 +3576,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3566,14 +3585,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
 	//	b_TextEntityToOwner[textentityMade] = client;
@@ -4340,8 +4352,6 @@ void PrecachePlayerGiveGiveResponseVoice()
 
 void MakePlayerGiveResponseVoice(int client, int status)
 {
-	if(b_IsPlayerNiko[client])
-		return;
 	
 	int ClassShown = view_as<int>(CurrentClass[client]);
 
@@ -4977,4 +4987,9 @@ stock bool FailTranslation(const char[] phrase)
 	
 	LogError("Translation '%s' does not exist", phrase);
 	return true;
+}
+
+any GetItemInArray(any[] array, int pos)
+{
+	return array[pos];
 }

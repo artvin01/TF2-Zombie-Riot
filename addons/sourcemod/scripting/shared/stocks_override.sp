@@ -312,7 +312,9 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 		{
 			if(entity <= MaxClients)
 			{
-				Custom_SetAbsVelocity(entity, angles);
+				float angles2[3];
+				angles2 = angles;
+				SnapEyeAngles(entity, angles2);
 			}
 			else
 			{

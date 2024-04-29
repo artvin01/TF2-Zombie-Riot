@@ -150,7 +150,6 @@ int TeamClass[MAX_TEAMS];
 Function FuncSkills[MAXENTITIES];
 StatEnum Stats[MAXENTITIES];
 Function FuncSound[MAXENTITIES][Sound_MAX];
-ConVar CvarInfiniteCash;
 
 #include "fortress_wars/classes.sp"
 #include "fortress_wars/object.sp"

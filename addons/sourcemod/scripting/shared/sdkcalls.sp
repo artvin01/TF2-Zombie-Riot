@@ -18,7 +18,7 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-#if defined ZR
+#if defined ZR || defined RPG
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
@@ -63,22 +63,6 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
-	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-
-	//	Thanks to nosoop for pointing soemthing like this out to me
-	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
-	/*
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "NextBotCreatePlayerBot<CTFBot>");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);   // bool bReportFakeClient
-	PrepSDKCall_SetReturnInfo(SDKType_CBasePlayer, SDKPass_Pointer); // CTFBot*
-	gH_BotAddCommand = EndPrepSDKCall();
-
-	if(!gH_BotAddCommand)
-		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
-	*/
-
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
@@ -116,7 +100,7 @@ void SDKCall_Setup()
 	if(!g_hImpulse)
 		LogError("[Gamedata] Could not find CBasePlayer::CheatImpulseCommands");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayerShared::RecalculatePlayerBodygroups");
 	if((g_hRecalculatePlayerBodygroups = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFPlayerShared::RecalculatePlayerBodygroups");
@@ -223,8 +207,8 @@ stock void SDKCall_GetShootSound(int entity, int index, char[] buffer, int lengt
 
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
-#if defined ZR
-int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+#if defined ZR || defined RPG
+stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
 		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
@@ -288,8 +272,8 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 }
 */
 
-#if defined ZR
-void SDKCall_RecalculatePlayerBodygroups(int index)
+#if defined ZR || defined RPG
+stock void SDKCall_RecalculatePlayerBodygroups(int index)
 {
 	if(g_hRecalculatePlayerBodygroups)
 	{
@@ -329,7 +313,7 @@ public Address GetStudioHdr(int index)
 	return Address_Null;
 }	
 
-void SnapEyeAngles(int client, float viewAngles[3])
+void SnapEyeAngles(int client, const float viewAngles[3])
 {
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }
@@ -365,7 +349,7 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
@@ -419,7 +403,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-#if defined ZR
+#if defined ZR || defined RPG
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)

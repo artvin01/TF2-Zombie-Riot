@@ -24,14 +24,14 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 float Medival_Difficulty_Level = 0.0;
-int i_KillsMade[MAXTF2PLAYERS];
-int i_Backstabs[MAXTF2PLAYERS];
-int i_Headshots[MAXTF2PLAYERS];	
 bool b_ThisNpcIsSawrunner[MAXENTITIES];
 bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
 bool b_thisNpcHasAnOutline[MAXENTITIES];
 #endif
+int i_KillsMade[MAXTF2PLAYERS];
+int i_Backstabs[MAXTF2PLAYERS];
+int i_Headshots[MAXTF2PLAYERS];	
 
 #if !defined RTS
 int TeamFreeForAll = 50;
@@ -1475,13 +1475,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				}	
 			}
 			speed_for_return *= slowdown_amount;
-		}
-#if defined RPG
-		if (b_DungeonContracts_ZombieSpeedTimes3[this.index])
-		{
-			speed_for_return *= 3.0;
-		}	
-#endif				
+		}		
 
 		return speed_for_return;
 	}
@@ -3076,7 +3070,6 @@ public void NPC_Base_InitGamedata()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Virtual, "CBaseAnimating::RefreshCollisionBounds");
 	if ((g_hUpdateCollisionBox = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::RefreshCollisionBounds offset!"); 
 	
-
 	//-----------------------------------------------------------------------------
 	// Purpose: Looks up an activity by name.
 	// Input  : label - Name of the activity to look up, ie "ACT_IDLE"
@@ -3336,8 +3329,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		CleanAllAppliedEffects_BombImplanter(pThis, true);
 #endif
 
-#if !defined RTS
+#if defined EXPIDONSA_BASE
 		VausMagicaRemoveShield(pThis);
+#endif
+
+#if !defined RTS
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
 
@@ -3826,23 +3822,23 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 	return MRES_Ignored;
 }
 
-#if defined ZR
-void NPC_StartPathing(int entity)
+#if defined ZR || defined RPG
+stock void NPC_StartPathing(int entity)
 {
 	view_as<CClotBody>(entity).StartPathing();
 }
 
-void NPC_StopPathing(int entity)
+stock void NPC_StopPathing(int entity)
 {
 	view_as<CClotBody>(entity).StopPathing();
 }
 
-void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
+stock void NPC_SetGoalVector(int entity, const float vec[3], bool ignore_time = false)
 {
 	view_as<CClotBody>(entity).SetGoalVector(vec, ignore_time);
 }
 
-void NPC_SetGoalEntity(int entity, int target)
+stock void NPC_SetGoalEntity(int entity, int target)
 {
 	if(i_IsABuilding[target] || b_IsVehicle[target])
 	{
@@ -4371,6 +4367,9 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 
 stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool target_invul = false)
 {
+	if(enemy <= 0)
+		return false;
+		
 	if(IsValidEntity(enemy))
 	{
 		if(b_IsVehicle[enemy])
@@ -4427,7 +4426,14 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 #else
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
+#if defined RPG
+				if(RPGCore_PlayerCanPVP(index, enemy))
+					return true;
+				else
+					return false;
+#else
 				return false;
+#endif
 			}
 #endif
 
@@ -5590,7 +5596,7 @@ public void NpcBaseThink(int iNPC)
 			{
 				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
-	#if defined ZR
+#if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -5613,7 +5619,7 @@ public void NpcBaseThink(int iNPC)
 					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
 				}
 				else
-	#endif
+#endif
 				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
@@ -6722,7 +6728,8 @@ int GetSolidMask(int npc)
 	else
 		Solidity = (MASK_NPCSOLID);
 #else
-	Solidity = (MASK_NPCSOLID|MASK_PLAYERSOLID);
+//This is RPG
+	Solidity = (MASK_NPCSOLID);
 #endif
 	if(b_IgnorePlayerCollisionNPC[npc])
 	{
@@ -7603,10 +7610,13 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_AvoidObstacleNavTime[entity] = 0.0;
 #endif
 
-#if !defined RTS
+#if defined EXPIDONSA_BASE
 	Expidonsa_SetToZero(entity);
 #endif
 
+#if defined RPG
+	RPGCore_SetFlatDamagePiercing(entity,1.0);
+#endif
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
@@ -7850,8 +7860,6 @@ public void ArrowStartTouch(int arrow, int entity)
 		{
 #if defined ZR
 			Elemental_AddNervousDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
-#elseif defined RPG
-			Stats_AddNeuralDamage(entity, owner, i_NervousImpairmentArrowAmount[arrow]);
 #endif
 		}
 #if defined ZR

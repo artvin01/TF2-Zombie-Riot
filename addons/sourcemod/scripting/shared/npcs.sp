@@ -518,9 +518,12 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				{
 					value *= Attributes_FindOnWeapon(attacker, weapon, 2, true, 1.0);	  //For normal weapons
 					
+					value *= Attributes_FindOnWeapon(attacker, weapon, 1000, true, 1.0); //For any
+					
 					value *= Attributes_FindOnWeapon(attacker, weapon, 410, true, 1.0); //For wand
 					
 					value *= Attributes_FindOnWeapon(attacker, weapon, 71, true, 1.0); //For wand
+
 				}
 				else
 #endif
@@ -615,7 +618,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	{
 		f_TraceAttackWasTriggeredSameFrame[victim] = GetGameTime();
 		i_HasBeenHeadShotted[victim] = false;
-#if defined ZR
+#if defined ZR || defined RPG
 		if(damagetype & DMG_BULLET)
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
@@ -676,10 +679,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 			if((hitgroup == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]) || Blitzed_By_Riot)
 			{
+#if defined ZR 
 				if(b_ThisNpcIsSawrunner[victim])
 				{
 					damage *= 2.0;
 				}
+#endif	// ZR
 
 				damage *= f_HeadshotDamageMultiNpc[victim];
 				if(i_HeadshotAffinity[attacker] == 1)
@@ -722,6 +727,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					played_headshotsound_already_Pitch[attacker] = pitch;
 				}
 				
+#if defined ZR 
 				if(i_ArsenalBombImplanter[weapon] > 0)
 				{
 					float damage_save = 50.0;
@@ -745,6 +751,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					Apply_Particle_Teroriser_Indicator(victim);
 					damage = 0.0;
 				}
+#endif	// ZR
 				played_headshotsound_already[attacker] = GetGameTime();
 
 				if(!Blitzed_By_Riot) //dont play headshot sound if blized.
@@ -777,6 +784,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
+#endif	// ZR
+#if defined ZR
 			else
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
@@ -811,8 +820,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-		}
 #endif	// ZR
+		}
 	}
 	return Plugin_Changed;
 }
@@ -980,7 +989,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			//Decide Damage falloff ourselves.
 #endif
 
-#if !defined RTS
+#if defined ZR || defined NOG
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
 #endif
@@ -1213,7 +1222,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
-#if defined ZR
+#if defined ZR 
 	if(inflictor > 0 && inflictor <= MaxClients)
 	{
 		b_RaptureZombie[victim] = b_RaptureZombie[inflictor];
@@ -1224,6 +1233,18 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	
+#if defined RPG 
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+		RPGCore_AddClientToHurtList(victim, inflictor);
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
+		RPGCore_AddClientToHurtList(victim, inflictor);
+	}
+#endif
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1405,7 +1426,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if((!b_npcspawnprotection[victim] || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)))
+		if((!b_npcspawnprotection[victim]/* || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)*/))
 #else
 		if(!b_npcspawnprotection[victim])
 #endif
@@ -1552,11 +1573,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⍋%s", Debuff_Adder_right);
 	}
+#if defined ZR
 	if(VausMagicaShieldLeft(victim) > 0)
 	{
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
+#endif
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
 		Debuff_added = true;
@@ -1651,17 +1674,37 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			{
 				percentage *= 0.85;
 			}
-			
-			if(!NpcStats_IsEnemySilenced(victim))
-			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					percentage *= Medival_Difficulty_Level;
-				}
-			}
-			if(weapon > 0 && attacker > 0)
-				percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
-	#endif
+		}
+		if(weapon > 0 && attacker > 0)
+			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+
+		if(VausMagicaShieldLogicEnabled(victim))
+			percentage *= 0.25;
+	
+		
+		if(percentage < 10.0)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+		}
+		armor_added = true;
+	}
+	
+	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
+	{
+		float percentage = npc.m_flRangedArmor * 100.0;
+		percentage *= fl_Extra_RangedArmor[victim];
+		percentage *= fl_TotalArmor[victim];
+		if(f_MultiDamageTaken[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken[victim];
+		}
+		if(f_MultiDamageTaken_Flat[victim] != 1.0)
+		{
+			percentage *= f_MultiDamageTaken_Flat[victim];
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 			
@@ -1735,7 +1778,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
-#endif	// ZR
+#endif
 	{
 		float HudOffset = ZR_DEFAULT_HUD_OFFSET;
 
@@ -1756,11 +1799,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				HudOffset += 0.035;
 			}
 		}
-#endif	// ZR
-
+#endif
 		float HudY = -1.0;
 
-#if defined ZR
+#if defined ZR || defined RPG
 		HudY += f_HurtHudOffsetY[attacker];
 		HudOffset += f_HurtHudOffsetX[attacker];
 #endif	// ZR
@@ -1779,8 +1821,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
-
+#if defined RPG
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
+		RPGSpawns_UpdateHealthNpc(victim);
+		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+#else
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+#endif
 		
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1792,7 +1839,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 #if defined ZR
 		if(!raidboss_active)
-#endif	// ZR
+#endif
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s-%s", ExtraHudHurt, c_DmgDelt);
 		}
@@ -1860,6 +1907,27 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 	}
 #endif
+/*
+#if defined RPG
+	char level[32];
+	Format(level, sizeof(level), "Level %d", Level[victim]);
+
+	RPGSpawns_UpdateHealthNpc(victim);
+
+	float HudY = -1.0;
+	float HudOffset = 0.05;
+
+	HudY += f_HurtHudOffsetY[attacker];
+	HudOffset += f_HurtHudOffsetX[attacker];
+
+	SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
+		
+	//RPG cannot support translations! due to test and its used everywhere.
+	char buffer[64];
+	NPC_GetNameById(i_NpcInternalId[victim], buffer, sizeof(buffer));
+	ShowSyncHudText(attacker, SyncHud, "%s\n%s\n%d / %d\n%s-%0.f", level, buffer, Health, MaxHealth, Debuff_Adder, f_damageAddedTogether[attacker]);
+#endif
+*/
 }
 
 stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 0)
@@ -2156,6 +2224,11 @@ void NPC_DeadEffects(int entity)
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			
+#if defined RPG
+			Quests_AddKill(client, entity);
+			Spawns_NPCDeath(entity, client, WeaponLastHit);
+#endif
+
 			Attributes_OnKill(client, WeaponLastHit);
 		}
 	}
@@ -2352,14 +2425,7 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 #if defined RPG
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_STUNSTICK:
-		{
-			Weapon_TakeDamage_StunStick(victim, damagetype);
-		}
-		case WEAPON_SILENCESTICK:
-		{
-			Weapon_TakeDamage_SilenceStick(victim, attacker, damagetype);
-		}
+
 	}
 #endif
 
@@ -2845,21 +2911,18 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 					{
 						damage *= 1.25;
 					}	
-					if(!b_IsPlayerNiko[attacker])
 #endif					
+					if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
 					{
-						if(!(GetClientButtons(attacker) & IN_DUCK)) //This shit only works sometimes, i blame tf2 for this.
-						{
-							Animation_Retry[attacker] = 4;
-							RequestFrame(Try_Backstab_Anim_Again, EntIndexToEntRef(attacker));
-							TE_Start("PlayerAnimEvent");
-							Animation_Setting[attacker] = 1;
-							Animation_Index[attacker] = 33;
-							TE_WriteEnt("m_hPlayer",attacker);
-							TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
-							TE_WriteNum("m_nData", Animation_Index[attacker]);
-							TE_SendToAll();
-						}
+						Animation_Retry[attacker] = 4;
+						RequestFrame(Try_Backstab_Anim_Again, EntIndexToEntRef(attacker));
+						TE_Start("PlayerAnimEvent");
+						Animation_Setting[attacker] = 1;
+						Animation_Index[attacker] = 33;
+						TE_WriteEnt("m_hPlayer",attacker);
+						TE_WriteNum("m_iEvent", Animation_Setting[attacker]);
+						TE_WriteNum("m_nData", Animation_Index[attacker]);
+						TE_SendToAll();
 					}
 #if defined ZR
 					if(b_FaceStabber[attacker])
@@ -2966,12 +3029,6 @@ bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damag
 	{
 		if(i_IsABuilding[inflictor])
 		{
-#if defined RPG
-			if(RpgHasSentry(attacker)) //BUFF SENTRIES DUE TO NO PERKS IN ESCAPE!!!
-			{
-				damage = SentryDamageRpg(attacker);
-			}
-#endif
 			if(Increaced_Sentry_damage_Low[inflictor] > GameTime)
 			{
 				damage *= 1.15;
