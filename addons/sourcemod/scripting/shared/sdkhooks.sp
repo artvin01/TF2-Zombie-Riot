@@ -944,11 +944,11 @@ public void OnPostThink(int client)
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/15.0))
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 				}
-				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+				else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/10.0))
 				{
 					Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 				}
