@@ -218,7 +218,7 @@ public void SeaPredator_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.1));
+						Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.1));
 						// 450 x 0.1 x 0.15
 						// 550 x 0.1 x 0.15
 					}

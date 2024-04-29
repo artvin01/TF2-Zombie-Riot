@@ -1750,7 +1750,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damage *= 0.90;
 		}
 #if defined ZR
-		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[attacker] > GameTime))
+		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[inflictor] > GameTime))
 		{
 			damage *= 0.5; //half the damage when small.
 		}

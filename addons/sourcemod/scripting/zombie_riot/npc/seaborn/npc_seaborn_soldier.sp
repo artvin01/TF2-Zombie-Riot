@@ -187,7 +187,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 22);
+						Elemental_AddNervousDamage(target, npc.index, 22);
 
 						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
 						{
