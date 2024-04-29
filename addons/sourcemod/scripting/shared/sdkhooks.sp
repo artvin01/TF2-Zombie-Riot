@@ -2795,7 +2795,7 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	//todo: Fix the bars being offset really wierdly
 	for(int i=MaxBars; i>0; i--)
 	{
-		if(Stamina >= zzzz*(i*BarPercentage))
+		if(Stamina >= MaxStamina*(i*BarPercentage))
 		{
 			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 		}
