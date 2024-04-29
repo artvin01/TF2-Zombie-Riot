@@ -322,7 +322,7 @@ methodmap NaziPanzer < CClotBody
 		return npc;
 	}
 	
-	public 4Flamer(Handle &trace, int target)
+	public bool DoSwingTraceFlamer(Handle &trace, int target)
 	{
 		// Setup a volume for the melee weapon to be swung - approx size, so 125 melee behave the same.
 		static float vecSwingMins[3]; vecSwingMins = view_as<float>({-125.0, -100.0, -150.0});

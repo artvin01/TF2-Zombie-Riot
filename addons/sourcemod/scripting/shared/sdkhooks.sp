@@ -1490,7 +1490,9 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	ArmorDisplayClient(victim);
 	
 #endif
+#if defined RPG
 	f_FlatDamagePiercing[attacker] = 1.0;
+#endif
 	i_HexCustomDamageTypes[victim] = 0;
 }
 

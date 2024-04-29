@@ -2,8 +2,6 @@
 #pragma newdecls required
 //
 
-#define EXPIDONSA_BASE
-
 #define MAX_EXPI_ENERGY_EFFECTS 71
 
 int i_ExpidonsaEnergyEffect[MAXENTITIES][MAX_EXPI_ENERGY_EFFECTS];
