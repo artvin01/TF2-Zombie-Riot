@@ -1678,27 +1678,28 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= 0.85;
 			}
 #endif
-		}
+
 #if defined ZR
-		if(weapon > 0 && attacker > 0)
-			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+			if(weapon > 0 && attacker > 0)
+				percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 #endif
 
 #if defined ZR
-		if(VausMagicaShieldLogicEnabled(victim))
-			percentage *= 0.25;
+			if(VausMagicaShieldLogicEnabled(victim))
+				percentage *= 0.25;
 #endif
-	
 		
-		if(percentage < 10.0)
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+			
+			if(percentage < 10.0)
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+			}
+			else
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+			}
+			armor_added = true;
 		}
-		else
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
-		}
-		armor_added = true;
 	}
 	
 	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
