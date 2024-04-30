@@ -187,6 +187,9 @@ void Saves_MainMenu(int client)
 	if(!SaveKv)	// Lateload Fix
 		return;
 	
+	if(Actor_InChatMenu(client))
+		return;
+
 	Race race;
 
 	char buffer1[32], buffer2[32];

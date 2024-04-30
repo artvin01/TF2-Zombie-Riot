@@ -668,6 +668,8 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 
 		LogError("Could not find item '%s'", name);
 	}
+
+	Quests_MarkBookDirty(client);
 }
 
 void TextStore_ZoneEnter(int client, const char[] name)
@@ -1614,23 +1616,18 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 		Backpack.GetArray(i, pack);
 		if(pack.Owner == client)
 		{
-			if(death)
+			if(pack.Item == -1)
 			{
-				DropItem(client, pack.Item, pos, pack.Amount);
-
-				if(pack.Item == -1)
+				if(death)
 				{
+					DropItem(client, pack.Item, pos, pack.Amount);
 					cash = pack.Amount;
 				}
 				else
 				{
-					amount += pack.Amount;
+					cash = 1;
+					TextStore_Cash(client, pack.Amount);
 				}
-			}
-			else if(pack.Item == -1)
-			{
-				cash = 1;
-				TextStore_Cash(client, pack.Amount);
 			}
 			else
 			{
@@ -1645,23 +1642,15 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 
 	if(death)
 	{
-		if(cash && amount)
-		{
-			SPrintToChat(client, "You have dropped %d credits and %d items", cash, amount);
-		}
-		else if(cash)
-		{
+		if(cash)
 			SPrintToChat(client, "You have dropped %d credits", cash);
-		}
-		else if(amount)
-		{
-			SPrintToChat(client, "You have dropped %d items", amount);
-		}
 	}
 	else if(message && cash)
 	{
 		SPrintToChat(client, "You backpack was deposited");
 	}
+
+	Quests_MarkBookDirty(client);
 }
 
 bool TextStore_Interact(int client, int entity, bool reload)
@@ -1818,6 +1807,12 @@ void TextStore_PlayerRunCmd(int client)
 			
 			return;
 		}
+
+		if(Actor_InChatMenu(client, false))
+		{
+			Actor_ReopenMenu(client);
+			return;
+		}
 		
 		if(InMenu[client])
 		{
@@ -1838,6 +1833,11 @@ void TextStore_PlayerRunCmd(int client)
 							RefreshAt[client] += 1.0;
 						}
 					}
+				}
+				case MENU_QUESTBOOK:
+				{
+					if(!Quests_BookMenuDirty(client))
+						return;
 				}
 				default:
 				{
@@ -2043,8 +2043,7 @@ static void ShowMenu(int client, int page = 0)
 		}
 		case MENU_QUESTBOOK:
 		{
-			InMenu[client] = false;
-			Quests_BookMenu(client);
+			InMenu[client] = Quests_BookMenu(client);
 		}
 		case MENU_BUILDING:
 		{
@@ -2083,6 +2082,11 @@ static int TextStore_WeaponSort(int elem1, int elem2, const int[] array, Handle 
 	return elem1 > elem2 ? 1 : -1;
 }
 */
+
+void TextStore_UnmarkInMenu(int client)
+{
+	InMenu[client] = false;
+}
 
 static int TextStore_BackpackMenu(Menu menu, MenuAction action, int client, int choice)
 {

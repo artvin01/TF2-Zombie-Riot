@@ -137,6 +137,9 @@ public Action Party_Command(int client, int args)
 
 static void ShowMenu(int client)
 {
+	if(Actor_InChatMenu(client))
+		return;
+	
 	Menu menu = new Menu(Party_MenuHandle);
 	menu.SetTitle("RPG Fortress\n \nParty:");
 

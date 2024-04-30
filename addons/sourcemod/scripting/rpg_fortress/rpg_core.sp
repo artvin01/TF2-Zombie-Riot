@@ -89,7 +89,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/npc.sp"	// Global NPC List
 
 #include "rpg_fortress/races.sp"
-//#include "rpg_fortress/actor.sp"
+#include "rpg_fortress/actor.sp"
 #include "rpg_fortress/crafting.sp"
 #include "rpg_fortress/dungeon.sp"
 #include "rpg_fortress/editor.sp"

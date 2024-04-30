@@ -1647,10 +1647,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
 		armor_added = true;
 	}
+#if defined ZR
 	else if(Elemental_HurtHud(victim, Debuff_Adder))
 	{
 		armor_added = true;
 	}
+#endif
 	else
 	{
 		float percentage;
@@ -1677,12 +1679,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 #endif
 		}
+
+#if defined ZR
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+#endif
 
+#if defined MAX_EXPI_ENERGY_EFFECTS
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
-	
+#endif
 		
 		if(percentage < 10.0)
 		{
@@ -1707,9 +1713,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(f_MultiDamageTaken_Flat[victim] != 1.0)
 		{
 			percentage *= f_MultiDamageTaken_Flat[victim];
+
+#if defined MAX_EXPI_ENERGY_EFFECTS
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
-			
+#endif	
 
 			
 			if(percentage < 10.0)
@@ -1752,7 +1760,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 					percentage *= Medival_Difficulty_Level;
 				}
 			}
+#endif
 
+#if defined MAX_EXPI_ENERGY_EFFECTS
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 
@@ -1940,10 +1950,13 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 #if defined ZR
 	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
 		return true;
+#endif
 
+#if defined MAX_EXPI_ENERGY_EFFECTS
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
 		return true;

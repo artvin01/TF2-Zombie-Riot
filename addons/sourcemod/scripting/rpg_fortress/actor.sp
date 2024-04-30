@@ -61,7 +61,7 @@ void Actor_ConfigSetup()
 	while(ActorKv.GotoNextKey());
 }
 
-void Actor_EnableZone(int client, const char[] name)
+void Actor_EnterZone(int client, const char[] name)
 {
 	ActorKv.Rewind();
 	ActorKv.GotoFirstSubKey();
@@ -78,7 +78,7 @@ void Actor_EnableZone(int client, const char[] name)
 				ActorKv.GetVector("pos", pos);
 				ActorKv.GetVector("ang", ang);
 				
-				buffer[0] = view_as<char>(ActorKv[0]);
+				buffer[0] = view_as<char>(ActorKv);
 				entity = NPC_CreateByName("npc_actor", client, pos, ang, TFTeam_Red, buffer);
 				
 				ActorKv.SetNum("_entref", EntIndexToEntRef(entity));
@@ -93,18 +93,18 @@ void Actor_EnableZone(int client, const char[] name)
 				SDKHook(particle, SDKHook_SetTransmit, QuestIndicatorTransmit);
 				b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
 				b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
-				b_NpcHasQuestForPlayer[entity][client] = Quests_ShouldShowPointer(client);
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
 			}
 			else
 			{
-				b_NpcHasQuestForPlayer[entity][client] = Quests_ShouldShowPointer(client);
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
 			}
 		}
 	}
 	while(ActorKv.GotoNextKey());
 }
 
-public Action QuestIndicatorTransmit(int entity, int client)
+static Action QuestIndicatorTransmit(int entity, int client)
 {
 //	return Plugin_Handled;
 	int owner = EntRefToEntIndex(b_ParticleToOwner[entity]);
@@ -122,7 +122,7 @@ public Action QuestIndicatorTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-void Quests_DisableZone(const char[] name)
+void Actor_DisableZone(const char[] name)
 {
 	ActorKv.Rewind();
 	ActorKv.GotoFirstSubKey();
@@ -154,8 +154,12 @@ void Quests_DisableZone(const char[] name)
 	while(ActorKv.GotoNextKey());
 }
 
+/* Must be first interactable */
 bool Actor_Interact(int client, int entity)
 {
+	if(CurrentChat[client][0])
+		return true;
+	
 	ActorKv.Rewind();
 	ActorKv.GotoFirstSubKey();
 	do
@@ -163,7 +167,6 @@ bool Actor_Interact(int client, int entity)
 		if(EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE)) == entity)
 		{
 			ActorKv.GetSectionName(CurrentNPC[client], sizeof(CurrentNPC[]));
-			//TextStore_DepositBackpack(client, false);
 			MainMenu(client);
 			return true;
 		}
@@ -231,7 +234,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 				{
 					ActorKv.GetSectionName(buffer, sizeof(buffer));
 					int need = ActorKv.GetNum(NULL_STRING);
-					int count = TextStore_GetItemCount(buffer);
+					int count = TextStore_GetItemCount(client, buffer);
 					if(need < 0)
 					{
 						if(count >= -need)
@@ -290,8 +293,37 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 	return true;
 }
 
+bool Actor_InChatMenu(int client, bool message = true)
+{
+	bool inChat = view_as<bool>(CurrentChat[client][0]);
+	if(inChat && message)
+		PrintToChat(client, "[SM] You can not use this command right now");
+	
+	return inChat;
+}
+
+void Actor_ReopenMenu(int client)
+{
+	ActorKv.Rewind();
+	if(ActorKv.JumpToKey(CurrentNPC[client]))
+	{
+		int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
+		if(ActorKv.JumpToKey("Chats") && ActorKv.JumpToKey(CurrentChat[client]))
+		{
+			OpenChatLineKv(client, entity, true);
+		}
+	}
+}
+
 static void MainMenu(int client)
 {
+	if(CurrentChat[client][0])
+	{
+		// Should never call anyways
+		Actor_ReopenMenu(client);
+		return;
+	}
+
 	ActorKv.Rewind();
 	if(ActorKv.JumpToKey(CurrentNPC[client]))
 	{
@@ -304,7 +336,7 @@ static void MainMenu(int client)
 			{
 				if(CheckCondKv(client))
 				{
-					OpenChatLineKv(client);
+					OpenChatLineKv(client, entity, false);
 					break;
 				}
 				
@@ -328,11 +360,78 @@ static void MainMenu(int client)
 	}
 }
 
-static void OpenChatLineKv(int client, int entity)
+static bool ShouldShowPointerKv(int client)
+{
+	bool result;
+	if(ActorKv.JumpToKey("Chats"))
+	{
+		if(ActorKv.GotoFirstSubKey())
+		{
+			static char buffer[64];
+
+			for(int i; i < 999; i++)
+			{
+				if(CheckCondKv(client))
+				{
+					// Simple text, don't show icon
+					if(ActorKv.GetNum("simple"))
+						break;
+					
+					if(ActorKv.JumpToKey("options"))
+					{
+						if(ActorKv.GotoFirstSubKey())
+						{
+							do
+							{
+								bool cond = CheckCondKv(client);
+								if(cond)
+								{
+									result = true;
+									break;
+								}
+							}
+							while(ActorKv.GotoNextKey());
+
+							ActorKv.GoBack();
+						}
+
+						ActorKv.GoBack();
+					}
+
+					break;
+				}
+				
+				ActorKv.GetString("altchat", buffer, sizeof(buffer));
+				if(buffer[0] == ';')
+				{
+					break;
+				}
+				else if(buffer[0])
+				{
+					ActorKv.GoBack();
+					if(!ActorKv.JumpToKey(buffer))
+						break;
+				}
+				else if(!ActorKv.GotoNextKey())
+				{
+					break;
+				}
+			}
+
+			ActorKv.GoBack();
+		}
+
+		ActorKv.GoBack();
+	}
+
+	return result;
+}
+
+static void OpenChatLineKv(int client, int entity, bool noActions)
 {
 	static char buffer1[256];
 
-	if(entity != -1)
+	if(!noActions && entity != -1)
 	{
 		ActorKv.GetString("sound", buffer1, sizeof(buffer1));
 		if(buffer1[0])
@@ -347,6 +446,9 @@ static void OpenChatLineKv(int client, int entity)
 			}
 		}
 	}
+
+	if(!noActions && ActorKv.GetNum("deposit"))
+		TextStore_DepositBackpack(client, false, true);
 
 	if(ActorKv.GetNum("simple"))
 	{
@@ -396,8 +498,21 @@ static void OpenChatLineKv(int client, int entity)
 			ActorKv.GoBack();
 		}
 
-		if(!options)
+		if(options)
+		{
+			ForcedMenu[client] = true;
+			SetEntityMoveType(client, MOVETYPE_NONE);
+		}
+		else
+		{
 			menu.AddItem(NULL_STRING, "...");
+
+			if(ForcedMenu[client])
+			{
+				ForcedMenu[client] = false;
+				SetEntityMoveType(client, MOVETYPE_WALK);
+			}
+		}
 		
 		menu.ExitButton = false;
 		menu.Display(client, options ? MENU_TIME_FOREVER : 30);
@@ -422,30 +537,32 @@ static int MenuHandle(Menu menu2, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			bool forced = ForcedMenu[client];
-			ForcedMenu[client] = false;
-
-			if(forced && choice == MenuCancel_Interrupted)
+			if(choice == MenuCancel_Disconnected)
 			{
-				MainMenu(client);
-			}
-			else
-			{
+				ForcedMenu[client] = false;
 				CurrentNPC[client][0] = 0;
+				CurrentChat[client][0] = 0;
 			}
 		}
 		case MenuAction_Select:
 		{
-			ForcedMenu[client] = false;
+			if(ForcedMenu[client])
+			{
+				ForcedMenu[client] = false;
+				SetEntityMoveType(client, MOVETYPE_WALK);
+			}
 
 			ActorKv.Rewind();
 			if(ActorKv.JumpToKey(CurrentNPC[client]))
 			{
-				int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
+				//int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 				if(ActorKv.JumpToKey("Chats") && ActorKv.JumpToKey(CurrentChat[client]))
 				{
+					return 0;
 				}
 			}
+
+			CurrentChat[client][0] = 0;
 		}
 	}
 	return 0;

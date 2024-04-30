@@ -557,6 +557,9 @@ public Action Stats_ShowStats(int client, int args)
 {
 	if(client)
 	{
+		if(Actor_InChatMenu(client))
+			return Plugin_Handled;
+		
 		int cost = UpgradeCost(client);
 		bool canSkill = XP[client] >= cost;
 

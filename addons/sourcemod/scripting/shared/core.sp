@@ -3493,15 +3493,15 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					return false;
 			}
 #endif
-					
+			
 #if defined RPG
+			if(Actor_Interact(client, entity))
+				return true;
+			
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
 				return true;
 			
 			if(Tinker_Interact(client, entity, weapon))
-				return true;
-
-			if(Quests_Interact(client, entity))
 				return true;
 			
 			if(Dungeon_Interact(client, entity))

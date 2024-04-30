@@ -287,6 +287,9 @@ public Action SettingsStore_Command(int client, int args)
 {
 	if(client)
 	{
+		if(Actor_InChatMenu(client))
+			return Plugin_Handled;
+		
 		ReShowSettingsHud(client);
 	}
 	return Plugin_Handled;
