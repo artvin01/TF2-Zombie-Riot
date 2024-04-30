@@ -1647,10 +1647,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
 		armor_added = true;
 	}
+#if defined ZR
 	else if(Elemental_HurtHud(victim, Debuff_Adder))
 	{
 		armor_added = true;
 	}
+#endif
 	else
 	{
 		float percentage;
@@ -1677,11 +1679,15 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 #endif
 		}
+#if defined ZR
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
+#endif
 
+#if defined ZR
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
+#endif
 	
 		
 		if(percentage < 10.0)
