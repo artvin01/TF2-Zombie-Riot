@@ -1917,10 +1917,13 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 #if defined ZR
 	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
 		return true;
+#endif
 
+#if defined MAX_EXPI_ENERGY_EFFECTS
 	if(VausMagicaShieldLogicEnabled(victim))
 		return true;
 #endif
+
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
 		return true;

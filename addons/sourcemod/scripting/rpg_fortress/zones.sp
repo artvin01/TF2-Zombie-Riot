@@ -145,11 +145,11 @@ static void OnEnter(int entity, const char[] name)
 	}
 	else if(entity > 0 && entity <= MaxClients)
 	{
+		Actor_EnterZone(entity, name);
 		Crafting_ClientEnter(entity, name);
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
-		Quests_EnableZone(entity, name);
 		Spawns_ClientEnter(entity, name);
 		TextStore_ZoneEnter(entity, name);		
 	}
@@ -190,9 +190,9 @@ static void OnDisable(const char[] name)
 	}
 	else*/
 	{
+		Actor_DisableZone(name);
 		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
-		Quests_DisableZone(name);
 		Spawns_DisableZone(name);
 		TextStore_ZoneAllLeave(name);
 		Tinker_DisableZone(name);
