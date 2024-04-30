@@ -1590,8 +1590,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Continue;	
 		}
 	}
-	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 #if defined ZR
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0)
 	{
 		if(flHealth < 1)
@@ -1678,7 +1678,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(IsValidEntity(weapon))
 	{
 		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
-		FlatDamageResistance *= FlatDamageResistance;
+		FlatDamageResistance *= DamagePiercing;
 	}
 	float damageMinimum = (damage * 0.05);
 	damage -= FlatDamageResistance;
@@ -1714,12 +1714,12 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= f_FreeplayDamageExtra;
 	}
 #endif
-	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 #if defined ZR
 	if(!b_ThisNpcIsSawrunner[attacker])
 #endif
 	{
 #if defined ZR
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	
 		if(IsValidEntity(Victim_weapon))

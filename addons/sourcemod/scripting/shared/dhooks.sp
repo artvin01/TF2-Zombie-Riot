@@ -1868,7 +1868,6 @@ public MRESReturn DHook_TauntPre(int client, DHookParam param)
 
 	return MRES_Ignored;
 }
-*7
 public MRESReturn DHook_TauntPost(int client, DHookParam param)
 {
 	//Set class back to what it was
@@ -1878,7 +1877,6 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 #endif
 
 // g_bWarnedAboutMaxplayersInMVM
-/*
 public MRESReturn PreClientUpdatePre(Handle hParams)
 {
 //	CvarTfMMMode.IntValue = 1;
