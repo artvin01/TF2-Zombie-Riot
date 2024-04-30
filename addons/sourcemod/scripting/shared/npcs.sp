@@ -1679,16 +1679,16 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 #endif
 		}
-
 #if defined ZR
 		if(weapon > 0 && attacker > 0)
 			percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 #endif
 
-#if defined MAX_EXPI_ENERGY_EFFECTS
+#if defined ZR
 		if(VausMagicaShieldLogicEnabled(victim))
 			percentage *= 0.25;
 #endif
+	
 		
 		if(percentage < 10.0)
 		{
@@ -1713,71 +1713,38 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(f_MultiDamageTaken_Flat[victim] != 1.0)
 		{
 			percentage *= f_MultiDamageTaken_Flat[victim];
-
-#if defined MAX_EXPI_ENERGY_EFFECTS
-			if(VausMagicaShieldLogicEnabled(victim))
-				percentage *= 0.25;
-#endif	
-
-			
-			if(percentage < 10.0)
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "[♈ %.2f%%]", percentage);
-			}
-			else
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "[♈ %.0f%%]", percentage);
-			}
-			armor_added = true;
 		}
-
-		if(NpcHadArmorType(victim, 1))
-		{
-			float percentage = npc.m_flRangedArmor * 100.0;
-			percentage *= fl_Extra_RangedArmor[victim];
-			percentage *= fl_TotalArmor[victim];
-			if(f_MultiDamageTaken[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken[victim];
-			}
-			if(f_MultiDamageTaken_Flat[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken_Flat[victim];
-			}
-			int testvalue = 1;
-			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+		int testvalue = 1;
+		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
-			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-			{
-				percentage *= 0.85;
-			}
-			
-			if(!NpcStats_IsEnemySilenced(victim))
-			{
-				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
-				{
-					percentage *= Medival_Difficulty_Level;
-				}
-			}
-#endif
-
-#if defined MAX_EXPI_ENERGY_EFFECTS
-			if(VausMagicaShieldLogicEnabled(victim))
-				percentage *= 0.25;
-
-#endif
-
-			if(percentage < 10.0)
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
-			}
-			else
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
-			}
-			armor_added = true;
+		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
+		{
+			percentage *= 0.85;
 		}
+		
+		if(!NpcStats_IsEnemySilenced(victim))
+		{
+			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+			{
+				percentage *= Medival_Difficulty_Level;
+			}
+		}
+
+		if(VausMagicaShieldLogicEnabled(victim))
+			percentage *= 0.25;
+
+#endif
+
+		if(percentage < 10.0)
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+		}
+		else
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+		}
+		armor_added = true;
 	}
 
 	if(armor_added)
