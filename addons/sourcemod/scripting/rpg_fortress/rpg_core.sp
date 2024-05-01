@@ -37,6 +37,7 @@ char c_TagName[MAXTF2PLAYERS][64];
 int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
 float Animal_Happy[MAXTF2PLAYERS][10][3];
+float f3_PositionArrival[MAXENTITIES][3];
 
 bool b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
@@ -272,6 +273,7 @@ void RPG_ConfigSetup(const char[] mapname)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
 
 	Zones_ConfigSetup();
+	Actor_ConfigSetup();
 	Crafting_ConfigSetup();
 	Dungeon_ConfigSetup();
 	Fishing_ConfigSetup();

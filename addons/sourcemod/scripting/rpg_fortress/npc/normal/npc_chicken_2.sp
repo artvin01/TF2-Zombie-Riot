@@ -117,7 +117,6 @@ methodmap StartChicken < CClotBody
 
 //TODO 
 //Rewrite
-static float f3_PositionArrival[MAXENTITIES][3];
 public void StartChicken_ClotThink(int iNPC)
 {
 	StartChicken npc = view_as<StartChicken>(iNPC);

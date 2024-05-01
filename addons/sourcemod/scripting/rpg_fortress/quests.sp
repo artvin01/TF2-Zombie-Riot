@@ -52,7 +52,7 @@ void Quests_MarkBookDirty(int client)
 	BookDirty[client] = true;
 }
 
-bool Quests_CanTurnIn(int client, const char[] name, char[] title = "", int length = 0)
+bool Quests_CanTurnIn(int client, const char[] name)
 {
 	bool result;
 
@@ -61,7 +61,7 @@ bool Quests_CanTurnIn(int client, const char[] name, char[] title = "", int leng
 	{
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
-			result = CanTurnInQuest(client, id, title, length);
+			result = CanTurnInQuest(client, id);
 	}
 	
 	return result;
@@ -202,6 +202,23 @@ static bool CanTurnInQuest(int client, const char[] id, char[] title = "", int l
 	return (canTurnIn || CvarRPGInfiniteLevelAndAmmo.BoolValue);
 }
 
+int Quests_GetStatus(int client, const char[] name)
+{
+	static char id[64];
+	if(Saves_ClientCharId(client, id, sizeof(id)))
+	{
+		QuestKv.Rewind();
+		if(QuestKv.JumpToKey(name))
+		{
+			KeyValues kv = Saves_Kv("quests");
+			kv.JumpToKey(name, true);
+			return kv.GetNum(id);
+		}
+	}
+
+	return -1;
+}
+
 bool Quests_StartQuest(int client, const char[] name)
 {
 	static char id[64];
@@ -217,7 +234,6 @@ bool Quests_StartQuest(int client, const char[] name)
 			if(previous != Status_InProgress)
 			{
 				SPrintToChat(client, "New Quest: %s", name);
-
 				kv.SetNum(id, Status_InProgress);
 
 				if(previous != Status_Canceled && QuestKv.JumpToKey("start"))
@@ -253,13 +269,16 @@ bool Quests_CancelQuest(int client, const char[] name)
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
 		{
-			SPrintToChat(client, "Quest Finished: %s", name);
-
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
-			kv.SetNum(id, Status_Canceled);
+			
+			if(kv.GetNum(id) == Status_InProgress)
+			{
+				SPrintToChat(client, "Quest Finished: %s", name);
+				kv.SetNum(id, Status_Canceled);
+				Quests_MarkBookDirty(client);
+			}
 
-			Quests_MarkBookDirty(client);
 			return true;
 		}
 	}
@@ -269,74 +288,78 @@ bool Quests_CancelQuest(int client, const char[] name)
 
 bool Quests_TurnIn(int client, const char[] name)
 {
-	static char id[64], name[64];
+	static char id[64], buffer[64];
 	if(Saves_ClientCharId(client, id, sizeof(id)))
 	{
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
 		{
-			SPrintToChat(client, "Quest Finished: %s", name);
-
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
-			kv.SetNum(id, Status_Completed);
 
-			if(QuestKv.JumpToKey("give"))
+			if(kv.GetNum(id) != Status_Completed)
 			{
-				if(QuestKv.GotoFirstSubKey(false))
+				SPrintToChat(client, "Quest Finished: %s", name);
+				kv.SetNum(id, Status_Completed);
+
+				if(QuestKv.JumpToKey("give"))
 				{
-					do
+					if(QuestKv.GotoFirstSubKey(false))
 					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						TextStore_AddItemCount(client, name, -QuestKv.GetNum(NULL_STRING, 1));
-					}
-					while(QuestKv.GotoNextKey(false));
-
-					QuestKv.GoBack();
-				}
-
-				QuestKv.GoBack();
-			}
-
-			if(QuestKv.JumpToKey("kill"))
-			{
-				kv = Saves_Kv("quests");
-				kv.JumpToKey("_kills", true);
-
-				if(QuestKv.GotoFirstSubKey(false))
-				{
-					do
-					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						if(kv.JumpToKey(name))
+						do
 						{
-							kv.SetNum(id, kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
-							kv.GoBack();
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							TextStore_AddItemCount(client, buffer, -QuestKv.GetNum(NULL_STRING, 1));
 						}
+						while(QuestKv.GotoNextKey(false));
+
+						QuestKv.GoBack();
 					}
-					while(QuestKv.GotoNextKey(false));
 
 					QuestKv.GoBack();
 				}
 
-				QuestKv.GoBack();
-			}
-
-			if(QuestKv.JumpToKey("reward"))
-			{
-				if(QuestKv.GotoFirstSubKey(false))
+				if(QuestKv.JumpToKey("kill"))
 				{
-					do
+					kv = Saves_Kv("quests");
+					kv.JumpToKey("_kills", true);
+
+					if(QuestKv.GotoFirstSubKey(false))
 					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						TextStore_AddItemCount(client, name, QuestKv.GetNum(NULL_STRING, 1));
+						do
+						{
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							if(kv.JumpToKey(buffer))
+							{
+								kv.SetNum(id, kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
+								kv.GoBack();
+							}
+						}
+						while(QuestKv.GotoNextKey(false));
+
+						QuestKv.GoBack();
 					}
-					while(QuestKv.GotoNextKey(false));
+
+					QuestKv.GoBack();
 				}
+
+				if(QuestKv.JumpToKey("reward"))
+				{
+					if(QuestKv.GotoFirstSubKey(false))
+					{
+						do
+						{
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1));
+						}
+						while(QuestKv.GotoNextKey(false));
+					}
+				}
+
+				Saves_SaveClient(client);
+				Quests_MarkBookDirty(client);
 			}
 
-			Saves_SaveClient(client);
-			Quests_MarkBookDirty(client);
 			return true;
 		}
 	}

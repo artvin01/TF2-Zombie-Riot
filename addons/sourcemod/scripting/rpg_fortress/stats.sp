@@ -660,7 +660,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 						Capacity[client]++;
 				}
 
-				UpdateLevel(client);
+				Stats_UpdateLevel(client);
 			}
 
 			SaveClientStats(client);
@@ -701,7 +701,7 @@ float RPGStats_FlatDamageResistance(int client)
 	return (float(total) * 1.35);
 }
 
-static void UpdateLevel(int client)
+void Stats_UpdateLevel(int client)
 {
 	int stats = Strength[client]
 		+ Precision[client]

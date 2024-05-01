@@ -84,7 +84,6 @@ methodmap FarmBear < CClotBody
 
 //TODO 
 //Rewrite
-static float f3_PositionArrival[MAXENTITIES][3];
 public void FarmBear_ClotThink(int iNPC)
 {
 	FarmBear npc = view_as<FarmBear>(iNPC);

@@ -462,6 +462,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 	return result;
 }
 
+#include "rpg_fortress/npc/npc_actor.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"

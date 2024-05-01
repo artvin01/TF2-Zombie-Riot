@@ -595,6 +595,12 @@ static void LoadItems(int client)
 
 bool TextStore_IsValidName(const char[] name)
 {
+	if(StrEqual(name, ITEM_CASH, false))
+		return true;
+	
+	if(StrEqual(name, ITEM_XP, false))
+		return true;
+	
 	int length = TextStore_GetItems();
 	for(int i; i < length; i++)
 	{
@@ -611,6 +617,9 @@ int TextStore_GetItemCount(int client, const char[] name)
 {
 	if(StrEqual(name, ITEM_CASH, false))
 		return TextStore_Cash(client);
+	
+	if(StrEqual(name, ITEM_XP, false))
+		return XP[client];
 	
 	int amount = -1;
 	

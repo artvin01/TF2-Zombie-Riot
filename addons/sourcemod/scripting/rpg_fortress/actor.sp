@@ -11,6 +11,8 @@ static int b_OwnerToParticle[MAXENTITIES];
 
 void Actor_ConfigSetup()
 {
+	// TODO: Delete actor NPCs
+
 	delete ActorKv;
 
 	char buffer[PLATFORM_MAX_PATH];
@@ -22,7 +24,7 @@ void Actor_ConfigSetup()
 	ActorKv.GotoFirstSubKey();
 	do
 	{
-		ActorKv.GetString("model", buffer, sizeof(buffer), "error.mdl");
+		ActorKv.GetString("model", buffer, sizeof(buffer), COMBINE_CUSTOM_MODEL);
 		if(!buffer[0])
 			continue;
 		
@@ -167,7 +169,7 @@ bool Actor_Interact(int client, int entity)
 		if(EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE)) == entity)
 		{
 			ActorKv.GetSectionName(CurrentNPC[client], sizeof(CurrentNPC[]));
-			MainMenu(client);
+			StartChat(client);
 			return true;
 		}
 	}
@@ -216,7 +218,44 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 			{
 				do
 				{
-					
+					ActorKv.GetSectionName(buffer, sizeof(buffer));
+					switch(ActorKv.GetNum(NULL_STRING))
+					{
+						case 0:	// Not Started
+						{
+							if(Quests_GetStatus(client, buffer) >= Status_InProgress)
+							{
+								failed = true;
+								break;
+							}
+						}
+						case 1:	// In Progress
+						{
+							if(Quests_GetStatus(client, buffer) != Status_InProgress ||
+								Quests_CanTurnIn(client, buffer))
+							{
+								failed = true;
+								break;
+							}
+						}
+						case 2:	// Can Turn In
+						{
+							if(Quests_GetStatus(client, buffer) != Status_InProgress ||
+								!Quests_CanTurnIn(client, buffer))
+							{
+								failed = true;
+								break;
+							}
+						}
+						case 3:	// Completed
+						{
+							if(Quests_GetStatus(client, buffer) != Status_Completed)
+							{
+								failed = true;
+								break;
+							}
+						}
+					}
 				}
 				while(ActorKv.GotoNextKey());
 
@@ -315,9 +354,13 @@ void Actor_ReopenMenu(int client)
 	}
 }
 
-static void MainMenu(int client)
+static void StartChat(int client, const char[] override = "")
 {
-	if(CurrentChat[client][0])
+	if(override[0])
+	{
+		CurrentChat[client][0] = 0;
+	}
+	else if(CurrentChat[client][0])
 	{
 		// Should never call anyways
 		Actor_ReopenMenu(client);
@@ -328,35 +371,55 @@ static void MainMenu(int client)
 	if(ActorKv.JumpToKey(CurrentNPC[client]))
 	{
 		int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
-		if(ActorKv.JumpToKey("Chats") && ActorKv.GotoFirstSubKey())
+		if(ActorKv.JumpToKey("Chats"))
 		{
-			static char buffer[64];
+			bool found;
 
-			for(int i; i < 999; i++)
+			if(override[0])
 			{
-				if(CheckCondKv(client))
+				found = ActorKv.JumpToKey(override);
+			}
+			else
+			{
+				found = ActorKv.GotoFirstSubKey();
+			}
+
+			if(found)
+			{
+				static char buffer[64];
+
+				for(int i; i < 999; i++)
 				{
-					OpenChatLineKv(client, entity, false);
-					break;
-				}
-				
-				ActorKv.GetString("altchat", buffer, sizeof(buffer));
-				if(buffer[0] == ';')
-				{
-					break;
-				}
-				else if(buffer[0])
-				{
-					ActorKv.GoBack();
-					if(!ActorKv.JumpToKey(buffer))
+					if(CheckCondKv(client))
+					{
+						OpenChatLineKv(client, entity, false);
+						return;
+					}
+					
+					ActorKv.GetString("altchat", buffer, sizeof(buffer));
+					if(buffer[0] == ';')
+					{
 						break;
-				}
-				else if(!ActorKv.GotoNextKey())
-				{
-					break;
+					}
+					else if(buffer[0])
+					{
+						ActorKv.GoBack();
+						if(!ActorKv.JumpToKey(buffer))
+							break;
+					}
+					else if(!ActorKv.GotoNextKey())
+					{
+						break;
+					}
 				}
 			}
 		}
+	}
+
+	if(ForcedMenu[client])
+	{
+		ForcedMenu[client] = false;
+		SetEntityMoveType(client, MOVETYPE_WALK);
 	}
 }
 
@@ -429,7 +492,7 @@ static bool ShouldShowPointerKv(int client)
 
 static void OpenChatLineKv(int client, int entity, bool noActions)
 {
-	static char buffer1[256];
+	static char buffer1[256], buffer2[64];
 
 	if(!noActions && entity != -1)
 	{
@@ -447,8 +510,57 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		}
 	}
 
-	if(!noActions && ActorKv.GetNum("deposit"))
-		TextStore_DepositBackpack(client, false, true);
+	if(!noActions && ActorKv.JumpToKey("actions"))
+	{
+		if(ActorKv.GetNum("deposit"))
+			TextStore_DepositBackpack(client, false, true);
+		
+		if(ActorKv.JumpToKey("setquest"))
+		{
+			if(ActorKv.GotoFirstSubKey())
+			{
+				do
+				{
+					ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+					switch(ActorKv.GetNum(NULL_STRING))
+					{
+						case 0:
+							Quests_StartQuest(client, buffer1);
+						
+						case 1:
+							Quests_CancelQuest(client, buffer1);
+						
+						case 2:
+							Quests_TurnIn(client, buffer1);
+					}
+				}
+				while(ActorKv.GotoNextKey());
+
+				ActorKv.GoBack();
+			}
+
+			ActorKv.GoBack();
+		}
+		
+		if(ActorKv.JumpToKey("giveitem"))
+		{
+			if(ActorKv.GotoFirstSubKey())
+			{
+				do
+				{
+					ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+					TextStore_AddItemCount(client, buffer1, ActorKv.GetNum(NULL_STRING));
+				}
+				while(ActorKv.GotoNextKey());
+
+				ActorKv.GoBack();
+			}
+
+			ActorKv.GoBack();
+		}
+
+		ActorKv.GoBack();
+	}
 
 	if(ActorKv.GetNum("simple"))
 	{
@@ -461,8 +573,6 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 	}
 	else
 	{
-		static char buffer2[64];
-
 		ActorKv.GetString("text", buffer1, sizeof(buffer1));
 		FormatText(client, buffer1, sizeof(buffer1));
 
@@ -517,11 +627,6 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		menu.ExitButton = false;
 		menu.Display(client, options ? MENU_TIME_FOREVER : 30);
 	}
-
-	if(!noActions)
-	{
-		
-	}
 }
 
 static void FormatText(int client, char[] text, int length)
@@ -532,13 +637,13 @@ static void FormatText(int client, char[] text, int length)
 	ReplaceString(text, length, "{playername}", buffer);
 }
 
-static int MenuHandle(Menu menu2, MenuAction action, int client, int choice)
+static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
 		case MenuAction_End:
 		{
-			delete menu2;
+			delete menu;
 		}
 		case MenuAction_Cancel:
 		{
@@ -551,39 +656,54 @@ static int MenuHandle(Menu menu2, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			char buffer[64];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+
+			if(buffer[0])
+			{
+				ActorKv.Rewind();
+				if(ActorKv.JumpToKey(CurrentNPC[client]))
+				{
+					//int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
+					if(ActorKv.JumpToKey("Chats") &&
+						ActorKv.JumpToKey(CurrentChat[client]) &&
+						ActorKv.JumpToKey("options") &&
+						ActorKv.JumpToKey(buffer))
+					{
+
+						ActorKv.GetString("chat", buffer, sizeof(buffer));
+						if(buffer[0])
+						{
+							StartChat(client, buffer);
+							return 0;
+						}
+					}
+				}
+			}
+
 			if(ForcedMenu[client])
 			{
 				ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
 
-			ActorKv.Rewind();
-			if(ActorKv.JumpToKey(CurrentNPC[client]))
-			{
-				//int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
-				if(ActorKv.JumpToKey("Chats") && ActorKv.JumpToKey(CurrentChat[client]))
-				{
-					return 0;
-				}
-			}
-
 			CurrentChat[client][0] = 0;
 		}
 	}
+
 	return 0;
 }
 
-/*
 static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentSectionEditing[MAXTF2PLAYERS][64];
-static char CurrentQuestEditing[MAXTF2PLAYERS][64];
+static char CurrentChatEditing[MAXTF2PLAYERS][64];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentNPCEditing[MAXTF2PLAYERS][64];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
-void Quests_EditorMenu(int client)
+void Actor_EditorMenu(int client)
 {
-	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH], buffer3[64];
 
 	EditMenu menu = new EditMenu();
 
@@ -601,10 +721,49 @@ void Quests_EditorMenu(int client)
 	{
 		// Edit questline item
 	}
-	else if(CurrentQuestEditing[client][0])
+	else if(CurrentChatEditing[client][0])
 	{
-		// Questline details
-		// View reward/give/etc with amount of entries
+		ActorKv.Rewind();
+		ActorKv.JumpToKey(CurrentNPCEditing[client]);
+		//bool missing = !ActorKv.JumpToKey(CurrentChatEditing[client]);
+
+		menu.SetTitle("Quests\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
+
+		menu.AddItem("", "WIP AAAAA", ITEMDRAW_DISABLED);
+		
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustNPCKey);
+	}
+	else if(StrEqual(CurrentKeyEditing[client], "model"))
+	{
+		menu.SetTitle("Quests\n%s\n ", CurrentNPCEditing[client]);
+		
+		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+		menu.AddItem("", "Combine Police");
+		menu.AddItem("models/player/scout.mdl", "Scout");
+		menu.AddItem("models/player/soldier.mdl", "Soldier");
+		menu.AddItem("models/player/pyro.mdl", "Pyro");
+		menu.AddItem("models/player/demo.mdl", "Demoman");
+		menu.AddItem("models/player/heavy.mdl", "Heavy");
+
+		menu.AddItem("models/player/engineer.mdl", "Engineer");
+		menu.AddItem("models/player/medic.mdl", "Medic");
+		menu.AddItem("models/player/sniper.mdl", "Sniper");
+		menu.AddItem("models/player/spy.mdl", "Spy");
+		menu.AddItem("models/alyx.mdl", "Alyx");
+		menu.AddItem("models/barney.mdl", "Barney");
+		menu.AddItem("models/eli.mdl", "Eli");
+
+		menu.AddItem("models/gman.mdl", "G-Man");
+		menu.AddItem("models/monk.mdl", "Father");
+		menu.AddItem("models/kleiner.mdl", "Kleiner");
+		menu.AddItem("models/vortigaunt.mdl", "Vortigaunt");
+		menu.AddItem("models/humans/group01/male_07.mdl", "Male07");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustNPCKey);
 	}
 	else if(StrEqual(CurrentKeyEditing[client], "zone"))
 	{
@@ -640,22 +799,29 @@ void Quests_EditorMenu(int client)
 		ActorKv.Rewind();
 		bool missing = !ActorKv.JumpToKey(CurrentNPCEditing[client]);
 
-		menu.SetTitle("Quests\n%s\nClick to set it's value:\n ", CurrentNPCEditing[client]);
+		menu.SetTitle("Actor\n%s\nClick to set it's value:\n ", CurrentNPCEditing[client]);
 
 		if(!missing)
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.JumpToKey("Chats"))
 			{
-				do
+				if(ActorKv.GotoFirstSubKey())
 				{
-					ActorKv.GetSectionName(buffer1, sizeof(buffer1));
-					menu.AddItem(buffer1, buffer1);
+					do
+					{
+						ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+						AutoGenerateChatSuffixKv(buffer1, buffer3, sizeof(buffer3));
+						menu.AddItem(buffer1, buffer3);
+					}
+					while(ActorKv.GotoNextKey());
+
+					ActorKv.GoBack();
 				}
-				while(ActorKv.GotoNextKey());
+
 				ActorKv.GoBack();
 			}
 
-			menu.AddItem("new", "New Quest (NOT FINISHED :3)\n ", ITEMDRAW_DISABLED);
+			menu.AddItem("back", "New Chat (Type in Chat)\n ", ITEMDRAW_DISABLED);
 		}
 		
 		if(missing)
@@ -668,67 +834,72 @@ void Quests_EditorMenu(int client)
 		}
 		
 		FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"%s", buffer1, Zones_GetKv().JumpToKey(buffer1) ? "" : " {WARNING: Zone does not exist}");
-		menu.AddItem("zone", buffer2);
+		menu.AddItem("_zone", buffer2);
 
-		ActorKv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
-		FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"%s", buffer1, FileExists(buffer1) ? "" : " {WARNING: Model does not exist}");
-		menu.AddItem("model", buffer2);
+		ActorKv.GetString("model", buffer1, sizeof(buffer1), COMBINE_CUSTOM_MODEL);
+		FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"%s", buffer1, FileExists(buffer1, true) ? "" : " {WARNING: Model does not exist}");
+		menu.AddItem("_model", buffer2);
 
 		FormatEx(buffer2, sizeof(buffer2), "Scale: %f", ActorKv.GetFloat("scale", 1.0));
-		menu.AddItem("scale", buffer2);
+		menu.AddItem("_scale", buffer2);
 
 		float vec[3];
 		ActorKv.GetVector("pos", vec);
 		FormatEx(buffer2, sizeof(buffer2), "Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("pos", buffer2);
+		menu.AddItem("_pos", buffer2);
 
 		ActorKv.GetVector("ang", vec);
 		FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("ang", buffer2);
+		menu.AddItem("_ang", buffer2);
 
-		ActorKv.GetString("sound_talk", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Talk Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_talk", buffer2);
-
-		ActorKv.GetString("sound_leave", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Leave Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_leave", buffer2);
+		ActorKv.GetString("anim_idle", buffer1, sizeof(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Idle Animation: \"%s\"", buffer1);
+		menu.AddItem("_anim_idle", buffer2);
 
 		if(!missing)
 		{
-			ActorKv.GetString("anim_idle", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Idle Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_idle", buffer2);
+			ActorKv.GetString("anim_walk", buffer1, sizeof(buffer1));
+			FormatEx(buffer2, sizeof(buffer2), "Walk Animation: \"%s\"", buffer1);
+			menu.AddItem("_anim_walk", buffer2);
 
 			ActorKv.GetString("anim_talk", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Talk Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_talk", buffer2);
+			menu.AddItem("_anim_talk", buffer2);
 
 			ActorKv.GetString("anim_leave", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Leave Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_leave", buffer2);
+			menu.AddItem("_anim_leave", buffer2);
+
+			FormatEx(buffer2, sizeof(buffer2), "Wander Delay: %f", ActorKv.GetFloat("walk_delay"));
+			menu.AddItem("_walk_delay", buffer2);
+
+			FormatEx(buffer2, sizeof(buffer2), "Wander Speed: %.1f", ActorKv.GetFloat("walk_speed"));
+			menu.AddItem("_walk_speed", buffer2);
+
+			FormatEx(buffer2, sizeof(buffer2), "Wander Radius: %.1f", ActorKv.GetFloat("walk_range"));
+			menu.AddItem("_walk_range", buffer2);
 
 			ActorKv.GetString("wear1", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"", buffer1);
-			menu.AddItem("wear1", buffer2);
+			menu.AddItem("_wear1", buffer2);
 
 			ActorKv.GetString("wear2", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"", buffer1);
-			menu.AddItem("wear2", buffer2);
+			menu.AddItem("_wear2", buffer2);
 
 			ActorKv.GetString("wear3", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"", buffer1);
-			menu.AddItem("wear3", buffer2);
-
-			menu.AddItem("delete", "Delete NPC");
+			menu.AddItem("_wear3", buffer2);
 		}
+
+		menu.AddItem("_delete", "Delete NPC");
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPC);
 	}
 	else if(CurrentZoneEditing[client][0])
 	{
-		menu.SetTitle("Quests\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
+		menu.SetTitle("Actor\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
 
 		ActorKv.Rewind();
 		ActorKv.GotoFirstSubKey();
@@ -755,7 +926,7 @@ void Quests_EditorMenu(int client)
 	}
 	else
 	{
-		menu.SetTitle("Quests\n \nImportant Note:\nQuestline names have to be unique or they will be synced!\n \nSelect a zone:\n ");
+		menu.SetTitle("Actor\n \nSelect a zone:\n ");
 
 		KeyValues zones = Zones_GetKv();
 
@@ -776,13 +947,133 @@ void Quests_EditorMenu(int client)
 	}
 }
 
+static int AutoGenerateChatSuffixKv(const char[] name, char[] display, int length)
+{
+	char buffer[32], data[128];
+	if(ActorKv.JumpToKey("cond"))
+	{
+		if(ActorKv.JumpToKey("race"))
+		{
+			if(ActorKv.GotoFirstSubKey())
+			{
+				bool more;
+
+				do
+				{
+					ActorKv.GetSectionName(buffer, sizeof(buffer));
+					
+					if(more)
+					{
+						strcopy(data, sizeof(data), buffer);
+					}
+					else
+					{
+						strcopy(buffer, sizeof(buffer), "Racist");
+						more = true;
+					}
+				}
+				while(ActorKv.GotoNextKey());
+				
+				ActorKv.GoBack();
+			}
+
+			ActorKv.GoBack();
+		}
+
+		if(ActorKv.JumpToKey("quest"))
+		{
+			if(ActorKv.GotoFirstSubKey())
+			{
+				int more;
+				
+				do
+				{
+					more++;
+
+					if(more > 1)
+						break;
+
+					ActorKv.GetSectionName(buffer, sizeof(buffer));
+					switch(ActorKv.GetNum(NULL_STRING))
+					{
+						case 0:
+							Format(data, sizeof(data), "Not Started %s%s%s", buffer, data[0] ? ", " : "", data);
+						
+						case 1:
+							Format(data, sizeof(data), "In Progress %s%s%s", buffer, data[0] ? ", " : "", data);
+						
+						case 2:
+							Format(data, sizeof(data), "Objectives Done %s%s%s", buffer, data[0] ? ", " : "", data);
+						
+						case 3:
+							Format(data, sizeof(data), "Turned In %s%s%s", buffer, data[0] ? ", " : "", data);
+					}
+				}
+				while(ActorKv.GotoNextKey());
+
+				if(more > 1)
+					Format(data, sizeof(data), "%s, Other Quests", data);
+
+				ActorKv.GoBack();
+			}
+
+			ActorKv.GoBack();
+		}
+
+		if(ActorKv.JumpToKey("item"))
+		{
+			if(ActorKv.GotoFirstSubKey())
+			{
+				int more;
+				
+				do
+				{
+					more++;
+
+					if(more > 1)
+						break;
+
+					ActorKv.GetSectionName(buffer, sizeof(buffer));
+					int need = ActorKv.GetNum(NULL_STRING);
+					
+					if(need != 1)
+						Format(buffer, sizeof(buffer), "%s x%d", buffer, need);
+				}
+				while(ActorKv.GotoNextKey());
+				
+				ActorKv.GoBack();
+
+				if(more > 1)
+				{
+					Format(data, sizeof(data), "%s%sItems", data, data[0] ? ", " : "");
+				}
+				else
+				{
+					Format(data, sizeof(data), "%s%s%s", data, data[0] ? ", " : "", buffer);
+				}
+
+			}
+
+			ActorKv.GoBack();
+		}
+
+		int value = ActorKv.GetNum("level");
+		Format(data, sizeof(data), "%s%sLv %d", data, data[0] ? ", " : "", value);
+	}
+
+	if(data[0])
+		return Format(display, length, "%s (%s)", name, data);
+	
+	return strcopy(display, length, name);
+}
+
 static Action Timer_RefreshHud(Handle timer, int client)
 {
 	TimerZoneEditing[client] = null;
 	if(Editor_MenuFunc(client) != NPCPicker)
 		return Plugin_Stop;
 	
-	Quests_EditorMenu(client);
+	Actor_EditorMenu(client);
 	return Plugin_Continue;
 }
 
@@ -795,7 +1086,7 @@ static void ZonePicker(int client, const char[] key)
 	}
 
 	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
-	Quests_EditorMenu(client);
+	Actor_EditorMenu(client);
 }
 
 static void NPCPicker(int client, const char[] key)
@@ -808,7 +1099,7 @@ static void NPCPicker(int client, const char[] key)
 	}
 
 	strcopy(CurrentNPCEditing[client], sizeof(CurrentNPCEditing[]), key);
-	Quests_EditorMenu(client);
+	Actor_EditorMenu(client);
 }
 
 static void AdjustNPC(int client, const char[] key)
@@ -816,7 +1107,7 @@ static void AdjustNPC(int client, const char[] key)
 	if(StrEqual(key, "back"))
 	{
 		CurrentNPCEditing[client][0] = 0;
-		Quests_EditorMenu(client);
+		Actor_EditorMenu(client);
 		return;
 	}
 
@@ -827,34 +1118,40 @@ static void AdjustNPC(int client, const char[] key)
 		ActorKv.SetString("zone", CurrentZoneEditing[client]);
 	}
 
-	if(StrEqual(key, "pos"))
+	if(StrEqual(key, "_pos"))
 	{
 		float pos[3];
 		GetClientPointVisible(client, _, _, _, pos);
 		ActorKv.SetVector("pos", pos);
 	}
-	else if(StrEqual(key, "ang"))
+	else if(StrEqual(key, "_ang"))
 	{
 		float ang[3];
 		GetClientEyeAngles(client, ang);
 		ActorKv.SetVector("ang", ang);
 	}
-	else if(StrEqual(key, "delete"))
+	else if(StrEqual(key, "_delete"))
 	{
 		ActorKv.DeleteThis();
 		CurrentNPCEditing[client][0] = 0;
 	}
+	else if(key[0] == '_')
+	{
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key[1]);
+		Actor_EditorMenu(client);
+		return;
+	}
 	else
 	{
-		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
-		Quests_EditorMenu(client);
+		strcopy(CurrentChatEditing[client], sizeof(CurrentChatEditing[]), key);
+		Actor_EditorMenu(client);
 		return;
 	}
 
-	SaveQuestsKv();
-	Quests_ConfigSetup();
+	SaveActorKv();
+	Actor_ConfigSetup();
 	Zones_Rebuild();
-	Quests_EditorMenu(client);
+	Actor_EditorMenu(client);
 }
 
 static void AdjustNPCKey(int client, const char[] key)
@@ -862,7 +1159,7 @@ static void AdjustNPCKey(int client, const char[] key)
 	if(StrEqual(key, "back"))
 	{
 		CurrentKeyEditing[client][0] = 0;
-		Quests_EditorMenu(client);
+		Actor_EditorMenu(client);
 		return;
 	}
 
@@ -880,17 +1177,17 @@ static void AdjustNPCKey(int client, const char[] key)
 
 	CurrentKeyEditing[client][0] = 0;
 
-	SaveQuestsKv();
-	Quests_ConfigSetup();
+	SaveActorKv();
+	Actor_ConfigSetup();
 	Zones_Rebuild();
-	Quests_EditorMenu(client);
+	Actor_EditorMenu(client);
 }
 
-static void SaveQuestsKv()
+static void SaveActorKv()
 {
 	char buffer[PLATFORM_MAX_PATH];
-	RPG_BuildPath(buffer, sizeof(buffer), "quests");
-
+	RPG_BuildPath(buffer, sizeof(buffer), "actor");
+	
 	ActorKv.Rewind();
 	ActorKv.GotoFirstSubKey();
 
@@ -903,4 +1200,3 @@ static void SaveQuestsKv()
 	ActorKv.Rewind();
 	ActorKv.ExportToFile(buffer);
 }
-*/
