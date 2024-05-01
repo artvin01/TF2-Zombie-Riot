@@ -110,7 +110,7 @@ methodmap MadRoost < CClotBody
 		MadRoost npc = view_as<MadRoost>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.8", "300", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "holymackerel");
+		//KillFeed_SetKillIcon(npc.index, "holymackerel");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

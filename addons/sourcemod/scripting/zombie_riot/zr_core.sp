@@ -786,6 +786,7 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			/*
 			if(IsFakeClient(client))
 			{
 				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
@@ -793,6 +794,7 @@ public Action GlobalTimer(Handle timer)
 					MoveBotToSpectator(client);
 				}
 			}
+			*/
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -2447,7 +2449,7 @@ stock bool isPlayerMad(int client) {
 stock void GetTimerAndNullifyMusicMVM()
 {
 	return;
-
+/*
 	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
 
 	if(!IsValidEntity(EntityTimerWhat))
@@ -2462,7 +2464,7 @@ stock void GetTimerAndNullifyMusicMVM()
 	{
 		return;
 	}
-	
+	*/
 }
 
 bool PlayerIsInNpcBattle(int client)

@@ -77,6 +77,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 	if(!enabled)
 	{
+#if defined ZR
 		zr_downloadconfig.GetString(buffer, sizeof(buffer));
 		if(buffer[0])
 		{
@@ -91,6 +92,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			enabled = kv;
 			enabled.JumpToKey("Default");
 		}
+#endif
 	}
 #endif
 

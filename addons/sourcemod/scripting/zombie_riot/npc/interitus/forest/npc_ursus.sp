@@ -90,7 +90,7 @@ methodmap Ursus < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

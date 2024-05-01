@@ -1223,7 +1223,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 
 #if defined ZR || defined RPG
 #include "shared/custom_melee_logic.sp"
-#include "shared/killfeed.sp"
+//#include "shared/killfeed.sp"
 #include "shared/thirdperson.sp"
 #include "shared/viewchanges.sp"
 #endif
@@ -1397,7 +1397,7 @@ public void OnPluginStart()
 #endif
 
 #if defined ZR || defined RPG
-	KillFeed_PluginStart();
+	//KillFeed_PluginStart();
 	Thirdperson_PluginStart();
 #endif
 
@@ -1900,7 +1900,7 @@ public void OnClientPostAdminCheck(int client)
 public void OnClientPutInServer(int client)
 {
 #if defined ZR || defined RPG
-	KillFeed_ClientPutInServer(client);
+	//KillFeed_ClientPutInServer(client);
 #endif
 
 	b_IsPlayerABot[client] = false;
@@ -1993,7 +1993,7 @@ public void OnClientDisconnect(int client)
 	FileNetwork_ClientDisconnect(client);
 
 #if defined ZR || defined RPG
-	KillFeed_ClientDisconnect(client);
+	//KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	Current_Mana[client] = 0;
 #endif
@@ -2803,7 +2803,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 #if defined ZR || defined RPG
-		KillFeed_EntityCreated(entity);
+		//KillFeed_EntityCreated(entity);
 #endif
 
 #if defined ZR

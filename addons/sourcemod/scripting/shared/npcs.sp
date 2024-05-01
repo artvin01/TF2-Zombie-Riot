@@ -784,7 +784,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-#endif	// ZR
+		}
+#endif
 #if defined ZR
 			else
 			{
@@ -821,7 +822,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				return Plugin_Changed;
 			}
 #endif	// ZR
-		}
 	}
 	return Plugin_Changed;
 }

@@ -489,7 +489,7 @@ int NPC_GetCount()
 	return NPCList.Length;
 }
 
-int NPC_GetNameById(int id, char[] buffer, int length)
+stock int NPC_GetNameById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);

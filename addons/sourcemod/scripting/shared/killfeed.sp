@@ -52,6 +52,7 @@ static Handle FeedTimer;
 void AdjustBotCount()
 {
 	return;
+	/*
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -78,6 +79,7 @@ void AdjustBotCount()
 			break;
 		}
 	}
+	*/
 }
 
 void KillFeed_PluginStart()
@@ -177,7 +179,7 @@ void KillFeed_EntityCreated(int entity)
 	KillIcon[entity][0] = 0;
 }
 
-stock void KillFeed_SetKillIcon(int entity, const char[] icon)
+stock void //KillFeed_SetKillIcon(int entity, const char[] icon)
 {
 	strcopy(KillIcon[entity], sizeof(KillIcon[]), icon);
 }
@@ -222,9 +224,10 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 }
 #endif
 
-void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
+void //KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
 	return;
+	/*
 	int botNum;
 	bool priority;
 	KillFeed feed;
@@ -408,11 +411,13 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 
 	if(!FeedTimer)
 		ShowNextFeed();
+	*/
 }
 
 static void ShowNextFeed()
 {
 	return;
+	/*
 	int lowLength = LowList.Length;
 	int highLength = HighList.Length;
 	if(lowLength || highLength)
@@ -516,11 +521,12 @@ static void ShowNextFeed()
 			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));
 
 		// Need time to change the bot's display name
-		FeedTimer = CreateTimer(botUsed ? 0.3 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
+		FeedTimer = CreateTimer(botUsed ? 0.3 : 0.0, //KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
 	}
+	*/
 }
 
-public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
+public Action //KillFeed_ShowTimer(Handle timer, ArrayList list)
 {
 	FeedTimer = null;
 

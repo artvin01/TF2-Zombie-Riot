@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if defined ZR
+#if defined ZR || defined NOG
 // Stuff that's used only for ZR but npc_stats
 // needs so it can't go into the zr_core.sp
 enum
@@ -3242,7 +3242,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			client = EntRefToEntIndex(LastHitRef[pThis]);
 		}
 
-		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
+		//KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 #endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!

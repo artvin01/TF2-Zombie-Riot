@@ -193,7 +193,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 20.0;
 						
-						KillFeed_SetKillIcon(npc.index, "taunt_spy");
+						//KillFeed_SetKillIcon(npc.index, "taunt_spy");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						npc.PlayMeleeHitSound();

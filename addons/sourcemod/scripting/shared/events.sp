@@ -432,7 +432,7 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 #if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
-
+		/*
 		// Resets the hand/arm pos for melee weapons 
 		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
 		//come out from behind and it litterally looks like a dick
@@ -445,6 +445,9 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		index = npc.LookupPoseParameter("r_arm");
 		if(index >= 0)
 			npc.SetPoseParameter(index, 0.0);
+
+			THis now crashes in 64bit? perhaps?
+		*/
 	}
 }
 
@@ -459,9 +462,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #elseif defined RPG
-	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
@@ -475,9 +478,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		DestroyDispenser(client);
 
-		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-		if(obj != INVALID_ENT_REFERENCE)
-			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
+//		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
+	//	if(obj != INVALID_ENT_REFERENCE)
+			//KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
 	}
 	else
 	{

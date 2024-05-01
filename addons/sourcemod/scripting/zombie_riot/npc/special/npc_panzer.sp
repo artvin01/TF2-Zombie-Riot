@@ -503,7 +503,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 				TR_GetEndPosition(vecHit, swingTrace);
 				if(target > 0) 
 				{
-					KillFeed_SetKillIcon(npc.index, "taunt_sniper");
+					//KillFeed_SetKillIcon(npc.index, "taunt_sniper");
 
 					float damage = 5.0;
 					
@@ -557,7 +557,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					if(target > 0) 
 					{
-						KillFeed_SetKillIcon(npc.index, "degreaser");
+						//KillFeed_SetKillIcon(npc.index, "degreaser");
 
 						float damage = 20.0;
 						
@@ -611,7 +611,7 @@ public void NaziPanzer_ClotThink(int iNPC)
 						TR_GetEndPosition(vecHit, swingTrace);
 						if(target > 0) 
 						{
-							KillFeed_SetKillIcon(npc.index, "steel_fists");
+							//KillFeed_SetKillIcon(npc.index, "steel_fists");
 
 							float damage = 50.0;
 							
