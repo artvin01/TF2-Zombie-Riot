@@ -336,7 +336,6 @@ int i_WhatLevelForHudIsThisClientAt[MAXTF2PLAYERS];
 //bool Wand_Fired;
 
 float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
-float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 float f_InBattleDelay[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
@@ -349,6 +348,7 @@ TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
 #if defined ZR
+float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 float DeleteAndRemoveAllNpcs = 5.0;
 

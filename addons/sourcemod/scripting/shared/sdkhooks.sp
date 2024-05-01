@@ -1720,6 +1720,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 	{
 #if defined ZR
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	
 		if(IsValidEntity(Victim_weapon))
