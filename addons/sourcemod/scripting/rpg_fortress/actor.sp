@@ -517,6 +517,11 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		menu.ExitButton = false;
 		menu.Display(client, options ? MENU_TIME_FOREVER : 30);
 	}
+
+	if(!noActions)
+	{
+		
+	}
 }
 
 static void FormatText(int client, char[] text, int length)
