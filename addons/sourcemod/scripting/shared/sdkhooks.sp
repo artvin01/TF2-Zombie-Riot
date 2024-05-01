@@ -1590,8 +1590,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Continue;	
 		}
 	}
-	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 #if defined ZR
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	if(dieingstate[victim] > 0)
 	{
 		if(flHealth < 1)
@@ -1619,7 +1619,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 #if defined RPG
 		damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
-#else
+#elseif defined ZR
 		damage *= 0.45;	//Reduce falldmg by passive overall
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
@@ -1678,7 +1678,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(IsValidEntity(weapon))
 	{
 		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
-		FlatDamageResistance *= FlatDamageResistance;
+		FlatDamageResistance *= DamagePiercing;
 	}
 	float damageMinimum = (damage * 0.05);
 	damage -= FlatDamageResistance;
@@ -1714,8 +1714,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		damage *= f_FreeplayDamageExtra;
 	}
 #endif
-	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 #if defined ZR
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(!b_ThisNpcIsSawrunner[attacker])
 #endif
 	{
@@ -2503,9 +2503,11 @@ void UpdatePlayerFakeModel(int client)
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	
+#if defined ZR || defined RPG
 		SDKCall_RecalculatePlayerBodygroups(client);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
+#endif
 	}
 }
 

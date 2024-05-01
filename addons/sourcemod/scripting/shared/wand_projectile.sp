@@ -354,7 +354,9 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+#if defined ZR || defined RPG
 	func_WandOnTouch[body.index] = INVALID_FUNCTION;
+#endif
 	return;
 }
 

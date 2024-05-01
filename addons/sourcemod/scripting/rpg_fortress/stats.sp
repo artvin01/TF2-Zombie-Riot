@@ -701,7 +701,7 @@ float RPGStats_FlatDamageResistance(int client)
 	return (float(total) * 1.35);
 }
 
-static void UpdateLevel(int client)
+void UpdateLevel(int client)
 {
 	int stats = Strength[client]
 		+ Precision[client]
