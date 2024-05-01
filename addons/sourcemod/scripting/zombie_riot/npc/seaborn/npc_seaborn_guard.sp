@@ -96,7 +96,7 @@ methodmap SeabornGuard < CClotBody
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_CUSTOM_WALK_SWORD");
-		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
+		//KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

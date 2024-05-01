@@ -109,12 +109,12 @@ public void EndSpeaker3_ClotThink(int iNPC)
 					int entity = -1;
 					if(npc.m_hBuffs & BUFF_SPEWER)
 					{
-						KillFeed_SetKillIcon(npc.index, "syringegun_medic");
+						//KillFeed_SetKillIcon(npc.index, "syringegun_medic");
 						npc.FireRocket(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					}
 					else
 					{
-						KillFeed_SetKillIcon(npc.index, "huntsman");
+						//KillFeed_SetKillIcon(npc.index, "huntsman");
 						entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					}
 
@@ -147,7 +147,7 @@ public void EndSpeaker3_ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								attack *= 15.0;
 							
-							KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+							//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 						}
 					}

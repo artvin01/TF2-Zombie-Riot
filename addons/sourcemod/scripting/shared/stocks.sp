@@ -3557,6 +3557,7 @@ int BrushToEntity(int brush)
 
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
+	UpdateLevel(client);
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
 	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
 	if(deleteText)
@@ -4989,7 +4990,7 @@ stock bool FailTranslation(const char[] phrase)
 	return true;
 }
 
-any GetItemInArray(any[] array, int pos)
+stock any GetItemInArray(any[] array, int pos)
 {
 	return array[pos];
 }

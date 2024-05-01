@@ -110,7 +110,7 @@ methodmap MadChicken < CClotBody
 		MadChicken npc = view_as<MadChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.75", "300", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "fists");
+		//KillFeed_SetKillIcon(npc.index, "fists");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

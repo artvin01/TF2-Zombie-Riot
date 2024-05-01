@@ -564,7 +564,7 @@ public Action Stats_ShowStats(int client, int args)
 		bool canSkill = XP[client] >= cost;
 
 		Menu menu = new Menu(Stats_ShowStatsH);
-		menu.SetTitle("RPG Fortress\n \nLevel: %d\nExperience: %d / %d", Level[client], XP[client], cost);
+		menu.SetTitle("RPG Fortress\n \nLvl: %d\nExperience: %d / %d", Level[client], XP[client], cost);
 
 		char buffer[64];
 		int amount, bonus;
@@ -701,7 +701,7 @@ float RPGStats_FlatDamageResistance(int client)
 	return (float(total) * 1.35);
 }
 
-static void UpdateLevel(int client)
+void UpdateLevel(int client)
 {
 	int stats = Strength[client]
 		+ Precision[client]

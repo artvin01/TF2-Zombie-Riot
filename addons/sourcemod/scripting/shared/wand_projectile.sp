@@ -10,7 +10,7 @@ void WandStocks_Map_Precache()
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
 
-void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
 }
@@ -354,7 +354,9 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+#if defined ZR || defined RPG
 	func_WandOnTouch[body.index] = INVALID_FUNCTION;
+#endif
 	return;
 }
 

@@ -457,7 +457,7 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						KillFeed_SetKillIcon(npc.index, "family_business");
+						//KillFeed_SetKillIcon(npc.index, "family_business");
 						
 						npc.FaceTowards(vecTarget, 400.0);
 						if(target > MaxClients)
@@ -496,7 +496,7 @@ static void ClotThink(int iNPC)
 
 						npc.m_flNextMeleeAttack = gameTime + 0.4;
 
-						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+						//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 			}
@@ -508,7 +508,7 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						KillFeed_SetKillIcon(npc.index, "panic_attack");
+						//KillFeed_SetKillIcon(npc.index, "panic_attack");
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -545,7 +545,7 @@ static void ClotThink(int iNPC)
 
 						npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+						//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 			}
@@ -555,7 +555,7 @@ static void ClotThink(int iNPC)
 
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					KillFeed_SetKillIcon(npc.index, "minigun");
+					//KillFeed_SetKillIcon(npc.index, "minigun");
 					
 					npc.FaceTowards(vecTarget, 4000.0);
 					if(target > MaxClients)
@@ -601,7 +601,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 			case 6:	// Rocket
@@ -639,7 +639,7 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						KillFeed_SetKillIcon(npc.index, "iron_bomber");
+						//KillFeed_SetKillIcon(npc.index, "iron_bomber");
 						
 						npc.PlayGrenadeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -660,7 +660,7 @@ static void ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					KillFeed_SetKillIcon(npc.index, "minigun");
+					//KillFeed_SetKillIcon(npc.index, "minigun");
 					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
 
 					npc.FaceTowards(WorldSpaceVec, 8000.0);
@@ -700,7 +700,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 		}

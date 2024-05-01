@@ -1619,7 +1619,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 #if defined RPG
 		damage *= 400.0 / float(SDKCall_GetMaxHealth(victim));
-#else
+#elseif defined ZR
 		damage *= 0.45;	//Reduce falldmg by passive overall
 		if(RaidbossIgnoreBuildingsLogic(1))
 		{
@@ -1715,6 +1715,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	}
 #endif
 #if defined ZR
+	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 	if(!b_ThisNpcIsSawrunner[attacker])
 #endif
 	{
@@ -1920,7 +1921,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			makeexplosion(victim, victim, startPosition, "", 0, 0);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
-			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
@@ -1930,7 +1931,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 
-			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
@@ -2047,7 +2048,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					SetEntityRenderColor(victim, 255, 255, 255, 10);
 				}
 
-				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
+				//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				return Plugin_Handled;
 			}
 			else
@@ -2503,9 +2504,11 @@ void UpdatePlayerFakeModel(int client)
 	int PlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(PlayerModel > 0)
 	{	
+#if defined ZR || defined RPG
 		SDKCall_RecalculatePlayerBodygroups(client);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
+#endif
 	}
 }
 

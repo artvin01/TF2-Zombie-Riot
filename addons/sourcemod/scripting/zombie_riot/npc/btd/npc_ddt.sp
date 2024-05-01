@@ -142,7 +142,7 @@ methodmap DDT < CClotBody
 		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

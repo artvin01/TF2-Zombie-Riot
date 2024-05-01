@@ -98,7 +98,7 @@ methodmap SeaSlider < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK_ON_FIRE");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

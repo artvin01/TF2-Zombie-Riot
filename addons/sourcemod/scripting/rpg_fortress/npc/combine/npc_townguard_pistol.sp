@@ -34,7 +34,7 @@ methodmap TownGuardPistol < BaseSquad
 		
 		i_NpcInternalId[npc.index] = TOWNGUARD_PISTOL;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "pistol");
+		//KillFeed_SetKillIcon(npc.index, "pistol");
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

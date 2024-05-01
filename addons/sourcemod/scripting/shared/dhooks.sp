@@ -23,7 +23,7 @@ static DynamicHook g_DHookScoutSecondaryFire;
 static bool IsRespawning;
 static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
-static DynamicDetour gH_MaintainBotQuota = null;
+//static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
 static DynamicHook g_DHookGrenade_Detonate; //from mikusch but edited
 static DynamicHook g_DHookFireballExplode; //from mikusch but edited
@@ -210,7 +210,7 @@ void DHook_Setup()
 	}
 	delete edictgamedata;
 	*/
-	int ED_AllocCommentedOut;
+//	int ED_AllocCommentedOut;
 }
 
 
@@ -1518,12 +1518,13 @@ public MRESReturn DHook_ForceRespawn(int client)
 {
 	if(IsFakeClient(client))
 	{
+		/*
 #if !defined RTS
 		int team = KillFeed_GetBotTeam(client);
 		if(GetClientTeam(client) != team)
 			ChangeClientTeam(client, team);
 #endif
-
+		*/
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
 	}
@@ -2144,14 +2145,14 @@ Address DHook_CTeamplayRoundBasedRules()
 {
 	return CTeamplayRoundBasedRules;
 }
-
+/*
 static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
 {
 	GetTimerAndNullifyMusicMVM();
 	CTeamplayRoundBasedRules = address;
 	return MRES_Ignored;
 }
-
+*/
 public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
 	/*

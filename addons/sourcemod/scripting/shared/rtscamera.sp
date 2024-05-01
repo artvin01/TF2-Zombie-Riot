@@ -1941,7 +1941,7 @@ stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3
 	return true;
 }
 
-bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
+stock bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
 {
 	bool result;
 	if(BindingKey[client] != -1)

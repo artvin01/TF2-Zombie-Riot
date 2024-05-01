@@ -304,7 +304,7 @@ void RPG_BuildPath(char[] buffer, int length, const char[] name)
 void RPG_PutInServer(int client)
 {
 	CountPlayersOnRed();
-	AdjustBotCount();
+//	AdjustBotCount();
 
 	int userid = GetClientUserId(client);
 	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);
