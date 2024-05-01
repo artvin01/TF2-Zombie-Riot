@@ -510,7 +510,7 @@ stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, f
 float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
 {
 	float DamageBonusLogic = 1.0;
-	if((Flags & MULTIDMG_BLEED))
+	if((Flags & MULTIDMG_BUILDER))
 	{
 		if(client > 0)
 		{
@@ -528,11 +528,12 @@ float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, in
 	{
 		DamageBonusLogic *= Attributes_Get(weapon, 1, 1.0); //only base damage
 	}
+
 	if((Flags & MULTIDMG_MAGIC_WAND))
 	{
 		DamageBonusLogic *= Attributes_Get(weapon, 410, 1.0); //wand damage multi
 	}
-	else
+	else if(!(Flags & MULTIDMG_BUILDER))
 	{
 		DamageBonusLogic *= Attributes_Get(weapon, 2, 1.0); //non wand dmg multi
 	}
