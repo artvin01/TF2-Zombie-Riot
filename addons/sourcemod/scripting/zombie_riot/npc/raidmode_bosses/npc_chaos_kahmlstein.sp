@@ -1798,7 +1798,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_3, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
+	//KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
 
 	if(NpcStats_IsEnemySilenced(entity))
 		kick = false;
@@ -1838,7 +1838,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	}
 	delete pack;
 
-	KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
+	//KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 }
 
 

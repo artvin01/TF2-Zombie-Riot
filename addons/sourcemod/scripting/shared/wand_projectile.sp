@@ -10,7 +10,7 @@ void WandStocks_Map_Precache()
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
 
-void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
 {
 	func_WandOnTouch[projectile] = Function;
 }

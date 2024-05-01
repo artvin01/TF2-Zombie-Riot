@@ -4990,7 +4990,7 @@ stock bool FailTranslation(const char[] phrase)
 	return true;
 }
 
-any GetItemInArray(any[] array, int pos)
+stock any GetItemInArray(any[] array, int pos)
 {
 	return array[pos];
 }

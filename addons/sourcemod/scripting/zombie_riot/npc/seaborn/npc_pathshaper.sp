@@ -85,7 +85,7 @@ methodmap Pathshaper < CClotBody
 		
 		SetVariantInt(31);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");

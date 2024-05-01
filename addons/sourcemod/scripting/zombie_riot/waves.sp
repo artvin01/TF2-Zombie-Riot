@@ -2390,9 +2390,9 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			KillFeed_ForceClear();
+		//	KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
-
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2401,6 +2401,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 		case 2:	// Waiting
 		{
@@ -2413,9 +2414,9 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			KillFeed_ForceClear();
+			//KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
-			
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2424,6 +2425,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 	}
 }

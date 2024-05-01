@@ -130,7 +130,7 @@ methodmap SeabornSpecialist < CClotBody
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_CUSTOM_WALK_LUCIAN");
-		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
+		//KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 
 		if(teleported)
 		{

@@ -123,7 +123,7 @@ methodmap RaidbossBladedance < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
 		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
 

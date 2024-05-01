@@ -9,7 +9,7 @@ methodmap CombineSMG < CombinePolice
 		
 		i_NpcInternalId[npc.index] = COMBINE_SMG;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "smg");
+		//KillFeed_SetKillIcon(npc.index, "smg");
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

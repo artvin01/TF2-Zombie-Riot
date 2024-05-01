@@ -147,7 +147,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		{
 			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
 			{
-				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
+				//KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
 				float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
 				float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
@@ -259,7 +259,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						KillFeed_SetKillIcon(npc.index, "wrench");
+						//KillFeed_SetKillIcon(npc.index, "wrench");
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);
