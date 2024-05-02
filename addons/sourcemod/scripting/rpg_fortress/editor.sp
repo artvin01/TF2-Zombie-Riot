@@ -136,8 +136,8 @@ void Editor_MainMenu(int client)
 	menu.AddItem("reloadstore", "Reload Text Store\n ");
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
-	//menu.AddItem("quests", "Quests");
 	menu.AddItem("actor", "Actors");
+	menu.AddItem("quests", "Quests");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -146,9 +146,7 @@ static void MainMenuHandler(int client, const char[] buffer)
 {
 	if(StrContains(buffer, "reloadrpg") != -1)
 	{
-		char plugin[128];
-		GetPluginFilename(null, plugin, sizeof(plugin));
-		ServerCommand("sm plugins reload %s", plugin);
+		RequestFrame(ReloadPlugin);
 	}
 	else if(StrContains(buffer, "reloadstore") != -1)
 	{
@@ -166,4 +164,15 @@ static void MainMenuHandler(int client, const char[] buffer)
 	{
 		Quests_EditorMenu(client);
 	}
+	else if(StrContains(buffer, "actor") != -1)
+	{
+		Actor_EditorMenu(client);
+	}
+}
+
+static void ReloadPlugin()
+{
+	char plugin[128];
+	GetPluginFilename(null, plugin, sizeof(plugin));
+	ServerCommand("sm plugins reload %s", plugin);
 }

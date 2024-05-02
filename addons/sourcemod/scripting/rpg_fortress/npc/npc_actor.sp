@@ -22,7 +22,7 @@ int NPCActor_ID()
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
-	return NPCActor(client, vecPos, vecAng, view_as<KeyValues>(data[0]));
+	return NPCActor(client, vecPos, vecAng, Actor_KV());
 }
 
 methodmap NPCActor < CClotBody

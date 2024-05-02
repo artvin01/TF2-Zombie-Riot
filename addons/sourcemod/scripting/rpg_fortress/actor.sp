@@ -62,6 +62,11 @@ void Actor_ConfigSetup()
 	while(ActorKv.GotoNextKey());
 }
 
+KeyValues Actor_KV()
+{
+	return ActorKv;
+}
+
 void Actor_EnterZone(int client, const char[] name)
 {
 	ActorKv.Rewind();
@@ -79,22 +84,23 @@ void Actor_EnterZone(int client, const char[] name)
 				ActorKv.GetVector("pos", pos);
 				ActorKv.GetVector("ang", ang);
 				
-				buffer[0] = view_as<char>(ActorKv);
-				entity = NPC_CreateByName("npc_actor", client, pos, ang, TFTeam_Red, buffer);
-				
-				ActorKv.SetNum("_entref", EntIndexToEntRef(entity));
+				entity = NPC_CreateByName("npc_actor", client, pos, ang, TFTeam_Red);
+				if(entity != -1)
+				{
+					ActorKv.SetNum("_entref", EntIndexToEntRef(entity));
 
-				pos[2] += 110.0;
+					pos[2] += 110.0;
 
-				int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
-				
-				SetEntPropVector(particle, Prop_Data, "m_angRotation", ang);
+					int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
+					
+					SetEntPropVector(particle, Prop_Data, "m_angRotation", ang);
 
-				SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
-				SDKHook(particle, SDKHook_SetTransmit, QuestIndicatorTransmit);
-				b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
-				b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
-				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
+					SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
+					SDKHook(particle, SDKHook_SetTransmit, QuestIndicatorTransmit);
+					b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
+					b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
+					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
+				}
 			}
 			else
 			{
@@ -1012,7 +1018,7 @@ void Actor_EditorMenu(int client)
 						do
 						{
 							ActorKv.GetSectionName(buffer1, sizeof(buffer1));
-							Format(buffer2, sizeof(buffer2), "Give %d \"%s\"", ActorKv.GetNum(NULL_STRING), buffer1);
+							Format(buffer2, sizeof(buffer2), "Give %d \"%s\"%s", ActorKv.GetNum(NULL_STRING), buffer1, TextStore_IsValidName(buffer1) ? "" : " {WARNING: Item does not exist}");
 							Format(buffer1, sizeof(buffer1), "giveitem;%s", buffer1);
 							menu.AddItem(buffer1, buffer2);
 						}
@@ -1029,163 +1035,165 @@ void Actor_EditorMenu(int client)
 			menu.Display(client, AdjustActions);
 		}
 	}
-	// NPC - Chat - altchat
-	else if(StrEqual(CurrentKeyEditing[client], "altchat"))
-	{
-		ActorKv.Rewind();
-		ActorKv.JumpToKey(CurrentNPCEditing[client]);
-		ActorKv.JumpToKey("Chats");
-		ActorKv.GotoFirstSubKey();
-		
-		menu.SetTitle("Actors\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
-		
-		menu.AddItem("", "Check Next");
-		menu.AddItem(";", "No Chat");
-
-		do
-		{
-			ActorKv.GetSectionName(buffer1, sizeof(buffer1));
-			menu.AddItem(buffer1, buffer1);
-		}
-		while(ActorKv.GotoNextKey());
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustChatKey);
-	}
-	// NPC - Chat - altchat
-	else if(StrEqual(CurrentKeyEditing[client], "text"))
-	{
-		ActorKv.Rewind();
-		ActorKv.JumpToKey(CurrentNPCEditing[client]);
-		ActorKv.JumpToKey("Chats");
-		ActorKv.JumpToKey(CurrentChatEditing[client]);
-
-		ActorKv.GetString("text", buffer1, sizeof(buffer1));
-		menu.SetTitle("%s\n ", buffer1);
-		
-		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
-		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustChatKey);
-	}
-	// NPC - Chat - key
-	else if(CurrentKeyEditing[client][0])
-	{
-		menu.SetTitle("Actors\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
-		
-		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
-		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
-
-		menu.AddItem("", "Set To Default");
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustChatKey);
-	}
-	// NPC - Chat
 	else if(CurrentChatEditing[client][0])
 	{
-		ActorKv.Rewind();
-		ActorKv.JumpToKey(CurrentNPCEditing[client]);
-		bool missing = !ActorKv.JumpToKey("Chats");
-		if(!missing)
-			missing = !ActorKv.JumpToKey(CurrentChatEditing[client]);
-
-		menu.SetTitle("Actors\n%s - %s\nClick to set it's value:\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
-
-		FormatEx(buffer2, sizeof(buffer2), "Edit Dialogue");
-		menu.AddItem("text", buffer2);
-
-		ActorKv.GetString("sound", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Sound: \"%s\"%s", buffer1, SoundExists(buffer1) ? "" : " {WARNING: Sound does not exist}");
-		menu.AddItem("sound", buffer2);
-
-		bool simple = view_as<bool>(ActorKv.GetNum("simple"));
-		FormatEx(buffer2, sizeof(buffer2), "Style: %s", simple ? "Worldtext" : "Menu");
-		menu.AddItem("simple", buffer2);
-
-		if(!missing)
+		// NPC - Chat - altchat
+		if(StrEqual(CurrentKeyEditing[client], "altchat"))
 		{
-			ActorKv.GetString("altchat", buffer1, sizeof(buffer1));
-			if(buffer1[0] == ';')
-			{
-				FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: No Chat");
-			}
-			else if(buffer1[0])
-			{
-				FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: \"%s\"", buffer1);
-			}
-			else if(ActorKv.GotoNextKey())
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.GotoFirstSubKey();
+			
+			menu.SetTitle("Actors\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
+			
+			menu.AddItem("", "Check Next");
+			menu.AddItem(";", "No Chat");
+
+			do
 			{
 				ActorKv.GetSectionName(buffer1, sizeof(buffer1));
-				FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: Check Next (\"%s\")", buffer1);
-				ActorKv.GoBack();
-				ActorKv.JumpToKey(CurrentChatEditing[client]);
+				menu.AddItem(buffer1, buffer1);
 			}
-			else
+			while(ActorKv.GotoNextKey());
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustChatKey);
+		}
+		// NPC - Chat - altchat
+		else if(StrEqual(CurrentKeyEditing[client], "text"))
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.JumpToKey(CurrentChatEditing[client]);
+
+			ActorKv.GetString("text", buffer1, sizeof(buffer1));
+			menu.SetTitle("%s\n ", buffer1);
+			
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+			menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustChatKey);
+		}
+		else if(CurrentKeyEditing[client][0])
+		{
+			menu.SetTitle("Actors\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
+			
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+			menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+			menu.AddItem("", "Set To Default");
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustChatKey);
+		}
+		// NPC - Chat
+		else
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			bool missing = !ActorKv.JumpToKey("Chats");
+			if(!missing)
+				missing = !ActorKv.JumpToKey(CurrentChatEditing[client]);
+
+			menu.SetTitle("Actors\n%s - %s\nClick to set it's value:\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
+
+			FormatEx(buffer2, sizeof(buffer2), "Edit Dialogue");
+			menu.AddItem("text", buffer2);
+
+			ActorKv.GetString("sound", buffer1, sizeof(buffer1));
+			FormatEx(buffer2, sizeof(buffer2), "Sound: \"%s\"%s", buffer1, SoundExists(buffer1) ? "" : " {WARNING: Sound does not exist}");
+			menu.AddItem("sound", buffer2);
+
+			bool simple = view_as<bool>(ActorKv.GetNum("simple"));
+			FormatEx(buffer2, sizeof(buffer2), "Style: %s", simple ? "Worldtext" : "Menu");
+			menu.AddItem("simple", buffer2);
+
+			if(!missing)
 			{
-				FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: Check Next (No Chat)");
+				ActorKv.GetString("altchat", buffer1, sizeof(buffer1));
+				if(buffer1[0] == ';')
+				{
+					FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: No Chat");
+				}
+				else if(buffer1[0])
+				{
+					FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: \"%s\"", buffer1);
+				}
+				else if(ActorKv.GotoNextKey())
+				{
+					ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+					FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: Check Next (\"%s\")", buffer1);
+					ActorKv.GoBack();
+					ActorKv.JumpToKey(CurrentChatEditing[client]);
+				}
+				else
+				{
+					FormatEx(buffer2, sizeof(buffer2), "On Cond Fail: Check Next (No Chat)");
+				}
+				
+				menu.AddItem("altchat", buffer2);
+
+				int count;
+				if(ActorKv.JumpToKey("options"))
+				{
+					if(ActorKv.GotoFirstSubKey())
+					{
+						do
+						{
+							count++;
+						}
+						while(ActorKv.GotoNextKey());
+
+						ActorKv.GoBack();
+					}
+
+					ActorKv.GoBack();
+				}
+
+				FormatEx(buffer2, sizeof(buffer2), "Chat Options (%d Options)", count);
+				menu.AddItem("_options", buffer2, simple ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+				count = 0;
+				if(ActorKv.JumpToKey("actions"))
+				{
+					if(ActorKv.GotoFirstSubKey())
+					{
+						do
+						{
+							if(ActorKv.GotoFirstSubKey(false))
+							{
+								do
+								{
+									count++;
+								}
+								while(ActorKv.GotoNextKey(false));
+
+								ActorKv.GoBack();
+							}
+						}
+						while(ActorKv.GotoNextKey());
+
+						ActorKv.GoBack();
+					}
+
+					ActorKv.GoBack();
+				}
+
+				FormatEx(buffer2, sizeof(buffer2), "Chat Actions (%d Actions)", count);
+				menu.AddItem("_actions", buffer2);
+
+				AutoGenerateChatSuffixKv("Conditions", buffer3, sizeof(buffer3));
+				menu.AddItem("_cond", buffer3);
 			}
 			
-			menu.AddItem("altchat", buffer2);
-
-			int count;
-			if(ActorKv.JumpToKey("options"))
-			{
-				if(ActorKv.GotoFirstSubKey())
-				{
-					do
-					{
-						count++;
-					}
-					while(ActorKv.GotoNextKey());
-
-					ActorKv.GoBack();
-				}
-
-				ActorKv.GoBack();
-			}
-
-			FormatEx(buffer2, sizeof(buffer2), "Chat Options (%d Options)", count);
-			menu.AddItem("_options", buffer2, simple ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-
-			count = 0;
-			if(ActorKv.JumpToKey("actions"))
-			{
-				if(ActorKv.GotoFirstSubKey())
-				{
-					do
-					{
-						if(ActorKv.GotoFirstSubKey(false))
-						{
-							do
-							{
-								count++;
-							}
-							while(ActorKv.GotoNextKey(false));
-
-							ActorKv.GoBack();
-						}
-					}
-					while(ActorKv.GotoNextKey());
-
-					ActorKv.GoBack();
-				}
-
-				ActorKv.GoBack();
-			}
-
-			FormatEx(buffer2, sizeof(buffer2), "Chat Actions (%d Actions)", count);
-			menu.AddItem("_actions", buffer2);
-
-			AutoGenerateChatSuffixKv("Conditions", buffer3, sizeof(buffer3));
-			menu.AddItem("_cond", buffer3);
+			menu.AddItem("delete", "Delete");
+			
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustChat);
 		}
-		
-		menu.AddItem("delete", "Delete");
-		
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustChat);
 	}
 	// NPC - model
 	else if(StrEqual(CurrentKeyEditing[client], "model"))
@@ -1357,7 +1365,9 @@ void Actor_EditorMenu(int client)
 	// 
 	else if(CurrentZoneEditing[client][0])
 	{
-		menu.SetTitle("Actors\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
+		menu.SetTitle("Actors\n%s\n ", CurrentZoneEditing[client]);
+
+		menu.AddItem("new", "Type in chat to create a new NPC", ITEMDRAW_DISABLED);
 
 		ActorKv.Rewind();
 		ActorKv.GotoFirstSubKey();
@@ -1552,7 +1562,7 @@ static void NPCPicker(int client, const char[] key)
 	if(StrEqual(key, "back"))
 	{
 		CurrentZoneEditing[client][0] = 0;
-		Editor_MainMenu(client);
+		Actor_EditorMenu(client);
 		return;
 	}
 
@@ -1586,6 +1596,8 @@ static void AdjustNPC(int client, const char[] key)
 	{
 		float ang[3];
 		GetClientEyeAngles(client, ang);
+		ang[0] = 0.0;
+		ang[2] = 0.0;
 		ActorKv.SetVector("ang", ang);
 	}
 	else if(StrEqual(key, "_delete"))

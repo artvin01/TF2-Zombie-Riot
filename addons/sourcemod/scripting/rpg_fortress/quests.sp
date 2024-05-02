@@ -500,12 +500,9 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 	return 0;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentSectionEditing[MAXTF2PLAYERS][64];
 static char CurrentQuestEditing[MAXTF2PLAYERS][64];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentNPCEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Quests_EditorMenu(int client)
 {
@@ -515,204 +512,145 @@ void Quests_EditorMenu(int client)
 
 	if(CurrentKeyEditing[client][0])
 	{
-		// Set item amount
-		// Click (0) to remove
+		menu.SetTitle("Actors\n%s - %s\n ", CurrentQuestEditing[client], CurrentSectionEditing[client]);
+
+		bool invalid;
+		if(StrEqual(CurrentSectionEditing[client], "kill"))
+		{
+			if(NPC_GetByPlugin(CurrentKeyEditing[client]) == -1)
+			{
+				FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: NPC does not exist}", CurrentKeyEditing[client]);
+				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+				invalid = true;
+			}
+		}
+		else if(!TextStore_IsValidName(CurrentKeyEditing[client]))
+		{
+			FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: Item does not exist}", CurrentKeyEditing[client]);
+			menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+			invalid = true;
+		}
+
+		if(!invalid)
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+			menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustQuestSectionKey);
 	}
 	else if(CurrentSectionEditing[client][0])
 	{
-		// View item and amounts
-		// Type to add 1 new item
-	}
-	else if(CurrentKeyEditing[client][0])
-	{
-		// Edit questline item
-	}
-	else if(CurrentQuestEditing[client][0])
-	{
-		// Questline details
-		// View reward/give/etc with amount of entries
-	}
-	else if(StrEqual(CurrentKeyEditing[client], "zone"))
-	{
-		menu.SetTitle("Quests\n%s\n ", CurrentNPCEditing[client]);
-		
-		KeyValues kv = Zones_GetKv();
-		kv.GotoFirstSubKey();
+		QuestKv.JumpToKey(CurrentQuestEditing[client]);
+		bool missing = !QuestKv.JumpToKey(CurrentSectionEditing[client]);
 
-		do
+		menu.SetTitle("Quests\n%s - %s\n ", CurrentQuestEditing[client], CurrentSectionEditing[client]);
+
+		menu.AddItem("", "Type to add an item", ITEMDRAW_DISABLED);
+
+		if(!missing && QuestKv.GotoFirstSubKey(false))
 		{
-			kv.GetSectionName(buffer1, sizeof(buffer1));
-			menu.AddItem(buffer1, buffer1);
-		}
-		while(kv.GotoNextKey());
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPCKey);
-	}
-	else if(CurrentKeyEditing[client][0])
-	{
-		menu.SetTitle("Quests\n%s\n ", CurrentNPCEditing[client]);
-		
-		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
-		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
-
-		menu.AddItem("", "Set To Default");
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPCKey);
-	}
-	else if(CurrentNPCEditing[client][0])
-	{
-		QuestKv.Rewind();
-		bool missing = !QuestKv.JumpToKey(CurrentNPCEditing[client]);
-
-		menu.SetTitle("Quests\n%s\nClick to set it's value:\n ", CurrentNPCEditing[client]);
-
-		if(!missing)
-		{
-			if(QuestKv.GotoFirstSubKey())
+			if(StrEqual(CurrentSectionEditing[client], "kill"))
 			{
 				do
 				{
 					QuestKv.GetSectionName(buffer1, sizeof(buffer1));
-					menu.AddItem(buffer1, buffer1);
+					Format(buffer2, sizeof(buffer2), "%s x%d%s", buffer1, QuestKv.GetNum(NULL_STRING), NPC_GetByPlugin(buffer1) != -1 ? "" : " {WARNING: NPC does not exist}");
+					menu.AddItem(buffer1, buffer2);
 				}
-				while(QuestKv.GotoNextKey());
-				QuestKv.GoBack();
+				while(QuestKv.GotoNextKey(false));
 			}
-
-			menu.AddItem("new", "New Quest (NOT FINISHED :3)\n ", ITEMDRAW_DISABLED);
-		}
-		
-		if(missing)
-		{
-			strcopy(buffer1, sizeof(buffer1), CurrentZoneEditing[client]);
-		}
-		else
-		{
-			QuestKv.GetString("zone", buffer1, sizeof(buffer1));
-		}
-		
-		FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"%s", buffer1, Zones_GetKv().JumpToKey(buffer1) ? "" : " {WARNING: Zone does not exist}");
-		menu.AddItem("zone", buffer2);
-
-		QuestKv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
-		FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"%s", buffer1, FileExists(buffer1) ? "" : " {WARNING: Model does not exist}");
-		menu.AddItem("model", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Scale: %f", QuestKv.GetFloat("scale", 1.0));
-		menu.AddItem("scale", buffer2);
-
-		float vec[3];
-		QuestKv.GetVector("pos", vec);
-		FormatEx(buffer2, sizeof(buffer2), "Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("pos", buffer2);
-
-		QuestKv.GetVector("ang", vec);
-		FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("ang", buffer2);
-
-		QuestKv.GetString("sound_talk", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Talk Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_talk", buffer2);
-
-		QuestKv.GetString("sound_leave", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Leave Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_leave", buffer2);
-
-		if(!missing)
-		{
-			QuestKv.GetString("anim_idle", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Idle Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_idle", buffer2);
-
-			QuestKv.GetString("anim_talk", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Talk Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_talk", buffer2);
-
-			QuestKv.GetString("anim_leave", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Leave Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_leave", buffer2);
-
-			QuestKv.GetString("wear1", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"", buffer1);
-			menu.AddItem("wear1", buffer2);
-
-			QuestKv.GetString("wear2", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"", buffer1);
-			menu.AddItem("wear2", buffer2);
-
-			QuestKv.GetString("wear3", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"", buffer1);
-			menu.AddItem("wear3", buffer2);
-
-			menu.AddItem("delete", "Delete NPC");
+			else
+			{
+				do
+				{
+					QuestKv.GetSectionName(buffer1, sizeof(buffer1));
+					Format(buffer2, sizeof(buffer2), "%s x%d%s", buffer1, QuestKv.GetNum(NULL_STRING), TextStore_IsValidName(buffer1) ? "" : " {WARNING: Item does not exist}");
+					menu.AddItem(buffer1, buffer2);
+				}
+				while(QuestKv.GotoNextKey(false));
+			}
 		}
 
 		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPC);
+		menu.Display(client, AdjustQuestSection);
 	}
-	else if(CurrentZoneEditing[client][0])
+	else if(CurrentQuestEditing[client][0])
 	{
-		menu.SetTitle("Quests\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
+		QuestKv.JumpToKey(CurrentQuestEditing[client]);
 
+		menu.SetTitle("Quests\n%s\n ", CurrentQuestEditing[client]);
+
+		Format(buffer1, sizeof(buffer1), "Start Quest Give Items (%d Entries)", CountEntries("start"));
+		menu.AddItem("start", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Turn In Quest Rewards (%d Entries)\n ", CountEntries("reward"));
+		menu.AddItem("reward", buffer1);
+
+		menu.AddItem("reward", "Objectives:", ITEMDRAW_DISABLED);
+
+		Format(buffer1, sizeof(buffer1), "Equip Item (%d Entries)\n ", CountEntries("equip"));
+		menu.AddItem("equip", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Kill NPC (%d Entries)\n ", CountEntries("kill"));
+		menu.AddItem("kill", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Give Item (%d Entries)\n ", CountEntries("give"));
+		menu.AddItem("give", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Have Item (%d Entries)\n ", CountEntries("obtain"));
+		menu.AddItem("obtain", buffer1);
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustQuest);
+	}
+	else
+	{
+		menu.SetTitle("Quests\nSelect a quest:\n ");
+
+		menu.AddItem("new", "Type in chat to create a new Quest", ITEMDRAW_DISABLED);
+		
 		QuestKv.Rewind();
-		QuestKv.GotoFirstSubKey();
-		do
+		if(QuestKv.GotoFirstSubKey())
 		{
-			QuestKv.GetString("zone", buffer1, sizeof(buffer1));
-			if(strlen(CurrentZoneEditing[client]) < 2 || StrEqual(CurrentZoneEditing[client], buffer1, false))
+			do
 			{
 				QuestKv.GetSectionName(buffer1, sizeof(buffer1));
 				menu.AddItem(buffer1, buffer1);
 			}
+			while(QuestKv.GotoNextKey());
 		}
-		while(QuestKv.GotoNextKey());
 
 		menu.ExitBackButton = true;
-		menu.Display(client, NPCPicker);
-
-		if(strlen(CurrentZoneEditing[client]) > 1)
-		{
-			Zones_RenderZone(client, CurrentZoneEditing[client]);
-			delete TimerZoneEditing[client];
-			TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
-		}
+		menu.Display(client, QuestPicker);
 	}
-	else
+}
+
+static int CountEntries(const char[] section)
+{
+	int count;
+
+	if(QuestKv.JumpToKey(section))
 	{
-		menu.SetTitle("Quests\n \nImportant Note:\nQuestline names have to be unique or they will be synced!\n \nSelect a zone:\n ");
-
-		KeyValues zones = Zones_GetKv();
-
-		menu.AddItem(" ", "All Zones");
-		
-		if(zones.GotoFirstSubKey())
+		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
 			{
-				zones.GetSectionName(buffer1, sizeof(buffer1));
-				menu.AddItem(buffer1, buffer1);
+				count++;
 			}
-			while(zones.GotoNextKey());
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
 		}
 
-		menu.ExitBackButton = true;
-		menu.Display(client, ZonePicker);
+		QuestKv.GoBack();
 	}
+
+	return count;
 }
 
-static Action Timer_RefreshHud(Handle timer, int client)
-{
-	TimerZoneEditing[client] = null;
-	if(Editor_MenuFunc(client) != NPCPicker)
-		return Plugin_Stop;
-	
-	Quests_EditorMenu(client);
-	return Plugin_Continue;
-}
-
-static void ZonePicker(int client, const char[] key)
+static void QuestPicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
@@ -720,70 +658,53 @@ static void ZonePicker(int client, const char[] key)
 		return;
 	}
 
-	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
+	strcopy(CurrentQuestEditing[client], sizeof(CurrentQuestEditing[]), key);
 	Quests_EditorMenu(client);
 }
 
-static void NPCPicker(int client, const char[] key)
+static void AdjustQuest(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
-		CurrentZoneEditing[client][0] = 0;
-		Editor_MainMenu(client);
-		return;
-	}
-
-	strcopy(CurrentNPCEditing[client], sizeof(CurrentNPCEditing[]), key);
-	Quests_EditorMenu(client);
-}
-
-static void AdjustNPC(int client, const char[] key)
-{
-	if(StrEqual(key, "back"))
-	{
-		CurrentNPCEditing[client][0] = 0;
+		CurrentQuestEditing[client][0] = 0;
 		Quests_EditorMenu(client);
 		return;
 	}
 
 	QuestKv.Rewind();
-	if(!QuestKv.JumpToKey(CurrentNPCEditing[client]))
-	{
-		QuestKv.JumpToKey(CurrentNPCEditing[client], true);
-		QuestKv.SetString("zone", CurrentZoneEditing[client]);
-	}
+	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
 
-	if(StrEqual(key, "pos"))
-	{
-		float pos[3];
-		GetClientPointVisible(client, _, _, _, pos);
-		QuestKv.SetVector("pos", pos);
-	}
-	else if(StrEqual(key, "ang"))
-	{
-		float ang[3];
-		GetClientEyeAngles(client, ang);
-		QuestKv.SetVector("ang", ang);
-	}
-	else if(StrEqual(key, "delete"))
+	if(StrEqual(key, "delete"))
 	{
 		QuestKv.DeleteThis();
-		CurrentNPCEditing[client][0] = 0;
+		CurrentQuestEditing[client][0] = 0;
 	}
 	else
 	{
-		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), key);
 		Quests_EditorMenu(client);
 		return;
 	}
 
 	SaveQuestsKv();
 	Quests_ConfigSetup();
-	Zones_Rebuild();
 	Quests_EditorMenu(client);
 }
 
-static void AdjustNPCKey(int client, const char[] key)
+static void AdjustQuestSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Quests_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+	Quests_EditorMenu(client);
+}
+
+static void AdjustQuestSectionKey(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
@@ -793,7 +714,8 @@ static void AdjustNPCKey(int client, const char[] key)
 	}
 
 	QuestKv.Rewind();
-	QuestKv.JumpToKey(CurrentNPCEditing[client], true);
+	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
+	QuestKv.JumpToKey(CurrentSectionEditing[client], true);
 
 	if(key[0])
 	{
@@ -808,7 +730,6 @@ static void AdjustNPCKey(int client, const char[] key)
 
 	SaveQuestsKv();
 	Quests_ConfigSetup();
-	Zones_Rebuild();
 	Quests_EditorMenu(client);
 }
 
