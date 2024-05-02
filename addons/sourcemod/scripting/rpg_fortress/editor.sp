@@ -132,16 +132,29 @@ void Editor_MainMenu(int client)
 	EditMenu menu = new EditMenu();
 	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress special attack to toggle noclip\n ");
 
+	menu.AddItem("reloadrpg", "Reload RPG Fortress");
+	menu.AddItem("reloadstore", "Reload Text Store\n ");
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
 	menu.AddItem("quests", "Quests");
+	menu.AddItem("actor", "Actors");
 
 	menu.Display(client, MainMenuHandler);
 }
 
 static void MainMenuHandler(int client, const char[] buffer)
 {
-	if(StrContains(buffer, "zones") != -1)
+	if(StrContains(buffer, "reloadrpg") != -1)
+	{
+		char plugin[128];
+		GetPluginFilename(null, plugin, sizeof(plugin));
+		ServerCommand("sm plugins reload %s", plugin);
+	}
+	else if(StrContains(buffer, "reloadstore") != -1)
+	{
+		ServerCommand("sm plugins reload textstore");
+	}
+	else if(StrContains(buffer, "zones") != -1)
 	{
 		Zones_EditorMenu(client);
 	}

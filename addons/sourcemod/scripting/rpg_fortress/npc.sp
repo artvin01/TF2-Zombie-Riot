@@ -30,6 +30,7 @@ void NPC_ConfigSetup()
 	data.Func = INVALID_FUNCTION;
 	NPCList.PushArray(data);
 
+	NPCActor_Setup();
 	StartChicken_OnMapStart_NPC();
 	MadChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();

@@ -4,6 +4,7 @@
 static char IdleAnim[MAXENTITIES][32];
 static char TalkAnim[MAXENTITIES][32];
 static char LeaveAnim[MAXENTITIES][32];
+static int NPCIndex;
 
 void NPCActor_Setup()
 {
@@ -11,7 +12,12 @@ void NPCActor_Setup()
 	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_actor");
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCIndex = NPC_Add(data);
+}
+
+int NPCActor_ID()
+{
+	return NPCIndex;
 }
 
 static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
@@ -138,6 +144,10 @@ void NPCActor_TalkEnd(int iNPC)
 {
 	NPCActor npc = view_as<NPCActor>(iNPC);
 	npc.m_iTargetAlly = -1;
+
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextMeleeAttack < gameTime)
+		npc.m_flNextMeleeAttack = gameTime + (npc.m_flAttackHappens * GetRandomFloat(0.85, 1.15));
 }
 
 static void ClotThink(int iNPC)
