@@ -136,7 +136,7 @@ void Editor_MainMenu(int client)
 	menu.AddItem("reloadstore", "Reload Text Store\n ");
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
-	menu.AddItem("quests", "Quests");
+	//menu.AddItem("quests", "Quests");
 	menu.AddItem("actor", "Actors");
 
 	menu.Display(client, MainMenuHandler);
