@@ -52,6 +52,12 @@ void Quests_MarkBookDirty(int client)
 	BookDirty[client] = true;
 }
 
+KeyValues Quests_KV()
+{
+	QuestKv.Rewind();
+	return QuestKv;
+}
+
 bool Quests_CanTurnIn(int client, const char[] name)
 {
 	bool result;

@@ -731,6 +731,9 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 }
 
 static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentTrueBottomEditing[MAXTF2PLAYERS][64];
+static char CurrentSubKeyEditing[MAXTF2PLAYERS][64];
+static char CurrentSubSectionEditing[MAXTF2PLAYERS][64];
 static char CurrentSectionEditing[MAXTF2PLAYERS][64];
 static char CurrentChatEditing[MAXTF2PLAYERS][64];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
@@ -742,27 +745,221 @@ void Actor_EditorMenu(int client)
 	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH], buffer3[64];
 
 	EditMenu menu = new EditMenu();
-/*
-	if(CurrentKeyEditing[client][0])
+
+	// NPC - Chat - cond
+	if(StrEqual(CurrentSectionEditing[client], "cond"))
 	{
-		// Set item amount
-		// Click (0) to remove
-	}
-	else if(StrEqual(CurrentSectionEditing[client], "actions"))
-	{
+		ActorKv.Rewind();
+		ActorKv.JumpToKey(CurrentNPCEditing[client]);
+		ActorKv.JumpToKey("Chats");
+		ActorKv.JumpToKey(CurrentChatEditing[client]);
+		
+		CondMenu(client, menu, CurrentSubSectionEditing[client], CurrentKeyEditing[client]);
+		
 		if(CurrentKeyEditing[client][0])
 		{
+			menu.Display(client, AdjustCondSectionKey);
+		}
+		else if(CurrentSubSectionEditing[client][0])
+		{
+			menu.Display(client, AdjustCondSection);
+		}
+		else
+		{
+			menu.Display(client, AdjustCond);
+		}
+	}
+	else if(StrEqual(CurrentSectionEditing[client], "options"))
+	{
+		// NPC - Chat - options - subsec - cond
+		if(StrEqual(CurrentKeyEditing[client], "cond"))
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.JumpToKey(CurrentChatEditing[client]);
+			ActorKv.JumpToKey(CurrentSectionEditing[client]);
+			ActorKv.JumpToKey(CurrentSubSectionEditing[client]);
+			
+			CondMenu(client, menu, CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client]);
+			
+			if(CurrentTrueBottomEditing[client][0])
+			{
+				menu.Display(client, AdjustOptionsSectionCondSectionKey);
+			}
+			else if(CurrentSubKeyEditing[client][0])
+			{
+				menu.Display(client, AdjustOptionsSectionCondSection);
+			}
+			else
+			{
+				menu.Display(client, AdjustOptionsSectionCond);
+			}
+		}
+		// NPC - Chat - options - subsec - chat
+		else if(StrEqual(CurrentKeyEditing[client], "chat"))
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.GotoFirstSubKey();
+			
+			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+			
+			menu.AddItem("", "End Chat");
+
+			do
+			{
+				ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+				menu.AddItem(buffer1, buffer1);
+			}
+			while(ActorKv.GotoNextKey());
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustOptionsSectionKey);
+		}
+		// NPC - Chat - options - subsec
+		else if(CurrentSubSectionEditing[client][0])
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.JumpToKey(CurrentChatEditing[client]);
+			ActorKv.JumpToKey(CurrentSectionEditing[client]);
+			bool missing = !ActorKv.JumpToKey(CurrentSubSectionEditing[client]);
+
+			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+
+			ActorKv.GetString("chat", buffer1, sizeof(buffer1), "End Chat");
+			FormatEx(buffer2, sizeof(buffer2), "Set Chat To: \"%s\"", buffer1);
+			menu.AddItem("chat", buffer2);
+
+			if(!missing)
+			{
+				AutoGenerateChatSuffixKv("Conditions", buffer2, sizeof(buffer2));
+				menu.AddItem("cond", buffer2);
+			}
+
+			menu.AddItem("delete", "Delete");
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustOptionsSection);
 
 		}
+		// NPC - Chat - options
 		else
 		{
 			ActorKv.Rewind();
 			ActorKv.JumpToKey(CurrentNPCEditing[client]);
 			ActorKv.JumpToKey("Chats");
 			ActorKv.JumpToKey(CurrentChatEditing[client]);
-			bool missing = !ActorKv.JumpToKey("actions");
+			bool missing = !ActorKv.JumpToKey(CurrentSectionEditing[client]);
 
-			menu.SetTitle("Actors\n%s - %s\nType in chat ", CurrentNPCEditing[client], CurrentChatEditing[client]);
+			menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+			menu.AddItem("new", "New Option (Type in Chat)", ITEMDRAW_DISABLED);
+
+			if(!missing)
+			{
+				if(ActorKv.GotoFirstSubKey())
+				{
+					do
+					{
+						ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+						AutoGenerateChatSuffixKv(buffer1, buffer3, sizeof(buffer3));
+						menu.AddItem(buffer1, buffer3);
+					}
+					while(ActorKv.GotoNextKey());
+
+					ActorKv.GoBack();
+				}
+
+				ActorKv.GoBack();
+			}
+
+			menu.ExitBackButton = true;
+			menu.Display(client, AdjustOptions);
+		}
+	}
+	else if(StrEqual(CurrentSectionEditing[client], "actions"))
+	{
+		if(StrEqual(CurrentSubSectionEditing[client], "setquest"))
+		{
+			// NPC - Chat - actions - setquest - key
+			if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+
+				menu.AddItem("0", "Cancel Quest");
+				menu.AddItem("1", "Start Quest");
+				menu.AddItem("2", "Finish Quest");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustActionsSectionKey);
+			}
+			// NPC - Chat - actions - setquest - key
+			else
+			{
+				menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+				FormatEx(buffer1, sizeof(buffer1), "Type to add an entry for \"%s\"", CurrentSubSectionEditing[client]);
+				menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+				KeyValues kv = Quests_KV();
+				kv.GotoFirstSubKey();
+
+				do
+				{
+					kv.GetSectionName(buffer1, sizeof(buffer1));
+					menu.AddItem(buffer1, buffer1);
+				}
+				while(kv.GotoNextKey());
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustActionsSection);
+			}
+		}
+		else if(CurrentSubSectionEditing[client][0])
+		{
+			// NPC - Chat - actions - subsec - key
+			if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustActionsSectionKey);
+			}
+			// NPC - Chat - actions - subsec
+			else
+			{
+				menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+				FormatEx(buffer1, sizeof(buffer1), "Type to add an entry for \"%s\"", CurrentSubSectionEditing[client]);
+				menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustActionsSection);
+			}
+		}
+		// NPC - Chat - actions
+		else
+		{
+			ActorKv.Rewind();
+			ActorKv.JumpToKey(CurrentNPCEditing[client]);
+			ActorKv.JumpToKey("Chats");
+			ActorKv.JumpToKey(CurrentChatEditing[client]);
+			bool missing = !ActorKv.JumpToKey(CurrentSectionEditing[client]);
+
+			menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+			menu.AddItem("setquest", "Add Quest Change");
+			menu.AddItem("giveitem", "Add Item Change");
 
 			if(ActorKv.GetNum("deposit"))
 			{
@@ -815,7 +1012,7 @@ void Actor_EditorMenu(int client)
 						do
 						{
 							ActorKv.GetSectionName(buffer1, sizeof(buffer1));
-							Format(buffer2, sizeof(buffer2), "Give %d \"%s\"", kv.GetNum(NULL_STRING), buffer1);
+							Format(buffer2, sizeof(buffer2), "Give %d \"%s\"", ActorKv.GetNum(NULL_STRING), buffer1);
 							Format(buffer1, sizeof(buffer1), "giveitem;%s", buffer1);
 							menu.AddItem(buffer1, buffer2);
 						}
@@ -832,7 +1029,8 @@ void Actor_EditorMenu(int client)
 			menu.Display(client, AdjustActions);
 		}
 	}
-	else */if(StrEqual(CurrentKeyEditing[client], "altchat"))
+	// NPC - Chat - altchat
+	else if(StrEqual(CurrentKeyEditing[client], "altchat"))
 	{
 		ActorKv.Rewind();
 		ActorKv.JumpToKey(CurrentNPCEditing[client]);
@@ -854,6 +1052,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustChatKey);
 	}
+	// NPC - Chat - altchat
 	else if(StrEqual(CurrentKeyEditing[client], "text"))
 	{
 		ActorKv.Rewind();
@@ -870,6 +1069,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustChatKey);
 	}
+	// NPC - Chat - key
 	else if(CurrentKeyEditing[client][0])
 	{
 		menu.SetTitle("Actors\n%s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client]);
@@ -882,6 +1082,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustChatKey);
 	}
+	// NPC - Chat
 	else if(CurrentChatEditing[client][0])
 	{
 		ActorKv.Rewind();
@@ -977,13 +1178,16 @@ void Actor_EditorMenu(int client)
 			FormatEx(buffer2, sizeof(buffer2), "Chat Actions (%d Actions)", count);
 			menu.AddItem("_actions", buffer2);
 
-			AutoGenerateChatSuffixKv("Conditions", buffer2, sizeof(buffer2));
-			menu.AddItem("_cond", buffer2);
+			AutoGenerateChatSuffixKv("Conditions", buffer3, sizeof(buffer3));
+			menu.AddItem("_cond", buffer3);
 		}
+		
+		menu.AddItem("delete", "Delete");
 		
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustChat);
 	}
+	// NPC - model
 	else if(StrEqual(CurrentKeyEditing[client], "model"))
 	{
 		menu.SetTitle("Actors\n%s\n ", CurrentNPCEditing[client]);
@@ -1015,6 +1219,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPCKey);
 	}
+	// NPC - zone
 	else if(StrEqual(CurrentKeyEditing[client], "zone"))
 	{
 		menu.SetTitle("Actors\n%s\n ", CurrentNPCEditing[client]);
@@ -1032,6 +1237,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPCKey);
 	}
+	// NPC - key
 	else if(CurrentKeyEditing[client][0])
 	{
 		menu.SetTitle("Actors\n%s\n ", CurrentNPCEditing[client]);
@@ -1044,6 +1250,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPCKey);
 	}
+	// NPC
 	else if(CurrentNPCEditing[client][0])
 	{
 		ActorKv.Rewind();
@@ -1147,6 +1354,7 @@ void Actor_EditorMenu(int client)
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPC);
 	}
+	// 
 	else if(CurrentZoneEditing[client][0])
 	{
 		menu.SetTitle("Actors\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
@@ -1454,7 +1662,7 @@ static void AdjustChat(int client, const char[] key)
 	else if(StrEqual(key, "delete"))
 	{
 		ActorKv.DeleteThis();
-		CurrentNPCEditing[client][0] = 0;
+		CurrentChatEditing[client][0] = 0;
 	}
 	else if(key[0] == '_')
 	{
@@ -1499,6 +1707,530 @@ static void AdjustChatKey(int client, const char[] key)
 	}
 
 	CurrentKeyEditing[client][0] = 0;
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustActions(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+
+	if(StrEqual(key, "deposit"))
+	{
+		ActorKv.SetNum("deposit", ActorKv.GetNum("deposit") ? 0 : 1);
+	}
+	else if(StrEqual(key, "delete"))
+	{
+		ActorKv.DeleteThis();
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else if(StrContains(key, ";") != -1)
+	{
+		char buffers[2][64];
+		ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		ActorKv.JumpToKey(buffers[0]);
+		ActorKv.DeleteKey(buffers[1]);
+	}
+	else
+	{
+		strcopy(CurrentSubSectionEditing[client], sizeof(CurrentSubSectionEditing[]), key);
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustActionsSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSubSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+	Actor_EditorMenu(client);
+}
+
+static void AdjustActionsSectionKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+
+	if(key[0])
+	{
+		ActorKv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		ActorKv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+	CurrentSubSectionEditing[client][0] = 0;
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustOptions(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentSubSectionEditing[client], sizeof(CurrentSubSectionEditing[]), key);
+	Actor_EditorMenu(client);
+	return;
+}
+
+static void AdjustOptionsSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSubSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+
+	if(StrEqual(key, "delete"))
+	{
+		ActorKv.DeleteThis();
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else
+	{
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustOptionsSectionKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+
+	if(key[0])
+	{
+		ActorKv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		ActorKv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustOptionsSectionCond(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);		// options
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
+	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
+
+	AdjustCondShared(client, CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client], key);
+}
+
+static void AdjustOptionsSectionCondSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSubKeyEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentTrueBottomEditing[client], sizeof(CurrentTrueBottomEditing[]), key);
+	Actor_EditorMenu(client);
+}
+
+static void AdjustOptionsSectionCondSectionKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentTrueBottomEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);		// options
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
+	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
+	ActorKv.JumpToKey(CurrentSubKeyEditing[client], true);
+
+	if(key[0])
+	{
+		ActorKv.SetString(CurrentTrueBottomEditing[client], key);
+	}
+	else
+	{
+		ActorKv.DeleteKey(CurrentTrueBottomEditing[client]);
+	}
+
+	CurrentTrueBottomEditing[client][0] = 0;
+	CurrentSubKeyEditing[client][0] = 0;
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void CondMenu(int client, EditMenu menu, const char[] subsection, const char[] key)
+{
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+	
+	if(StrEqual(subsection, "quest"))
+	{
+		// cond - quest - key
+		if(key[0])
+		{
+			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", key);
+			menu.AddItem("0", buffer1, ITEMDRAW_DISABLED);
+
+			menu.AddItem("0", "Not Started Quest");
+			menu.AddItem("1", "In Progress Quest");
+			menu.AddItem("2", "Objectives Done Quest");
+			menu.AddItem("3", "Turned In Quest");
+
+			menu.ExitBackButton = true;
+		}
+		// cond - quest - key
+		else
+		{
+			menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+			FormatEx(buffer1, sizeof(buffer1), "Type to add an entry for \"%s\"", subsection);
+			menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+			KeyValues kv = Quests_KV();
+			kv.GotoFirstSubKey();
+
+			do
+			{
+				kv.GetSectionName(buffer1, sizeof(buffer1));
+				menu.AddItem(buffer1, buffer1);
+			}
+			while(kv.GotoNextKey());
+
+			menu.ExitBackButton = true;
+		}
+	}
+	else if(subsection[0])
+	{
+		// cond - subsec - key
+		if(key[0])
+		{
+			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
+
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", key);
+			menu.AddItem("0", buffer1, ITEMDRAW_DISABLED);
+
+			menu.ExitBackButton = true;
+		}
+		// cond - subsec
+		else
+		{
+			menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+			FormatEx(buffer1, sizeof(buffer1), "Type to add an entry for \"%s\"", subsection);
+			menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+			menu.ExitBackButton = true;
+		}
+	}
+	// cond
+	else
+	{
+		bool missing = !ActorKv.JumpToKey("cond");
+
+		menu.SetTitle("Actors\n%s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client]);
+
+		menu.AddItem("quest", "Add Quest Check");
+		menu.AddItem("item", "Add Item Check");
+		menu.AddItem("race", "Add Race Check");
+
+		int level = ActorKv.GetNum("level");
+		if(level > 0)
+		{
+			Format(buffer2, sizeof(buffer2), "Must Be Level %d", level);
+			menu.AddItem("level", buffer2);
+		}
+		else
+		{
+			menu.AddItem("level", "Add Level Check");
+		}
+
+		if(!missing)
+		{
+			if(ActorKv.JumpToKey("quest"))
+			{
+				if(ActorKv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+						switch(ActorKv.GetNum(NULL_STRING))
+						{
+							case 0:
+								Format(buffer2, sizeof(buffer2), "Not Started \"%s\"", buffer1);
+							
+							case 1:
+								Format(buffer2, sizeof(buffer2), "In Progress \"%s\"", buffer1);
+							
+							case 2:
+								Format(buffer2, sizeof(buffer2), "Objectives Done \"%s\"", buffer1);
+							
+							case 3:
+								Format(buffer2, sizeof(buffer2), "Turned In \"%s\"", buffer1);
+							
+							default:
+								Format(buffer2, sizeof(buffer2), "INVALID \"%s\"", buffer1);
+						}
+
+						Format(buffer1, sizeof(buffer1), "quest;%s", buffer1);
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(ActorKv.GotoNextKey(false));
+
+					ActorKv.GoBack();
+				}
+
+				ActorKv.GoBack();
+			}
+
+			if(ActorKv.JumpToKey("item"))
+			{
+				if(ActorKv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+
+						int amount = ActorKv.GetNum(NULL_STRING);
+						if(amount > 0)
+						{
+							Format(buffer2, sizeof(buffer2), "Need %d \"%s\"", amount, buffer1);
+						}
+						else if(amount < 0)
+						{
+							Format(buffer2, sizeof(buffer2), "Need Less Than %d \"%s\"", -amount, buffer1);
+						}
+						else
+						{
+							Format(buffer2, sizeof(buffer2), "Don't Have \"%s\"", buffer1);
+						}
+
+						Format(buffer1, sizeof(buffer1), "item;%s", buffer1);
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(ActorKv.GotoNextKey(false));
+
+					ActorKv.GoBack();
+				}
+
+				ActorKv.GoBack();
+			}
+
+			if(ActorKv.JumpToKey("race"))
+			{
+				if(ActorKv.GotoFirstSubKey())
+				{
+					do
+					{
+						ActorKv.GetSectionName(buffer1, sizeof(buffer1));
+						
+						if(ActorKv.GetNum(NULL_STRING))
+						{
+							Format(buffer2, sizeof(buffer2), "Must Be \"%s\"", buffer1);
+						}
+						else
+						{
+							Format(buffer2, sizeof(buffer2), "Don't Be \"%s\"", buffer1);
+						}
+
+						Format(buffer1, sizeof(buffer1), "race;%s", buffer1);
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(ActorKv.GotoNextKey());
+					
+					ActorKv.GoBack();
+				}
+
+				ActorKv.GoBack();
+			}
+		}
+	}
+
+	menu.ExitBackButton = true;
+}
+
+static void AdjustCondShared(int client, char section[64], char subsection[64], const char[] key)
+{
+	if(StrEqual(key, "delete"))
+	{
+		ActorKv.DeleteThis();
+		section[0] = 0;
+	}
+	else if(StrContains(key, ";") != -1)
+	{
+		char buffers[2][64];
+		ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+		ActorKv.JumpToKey(buffers[0]);
+		ActorKv.DeleteKey(buffers[1]);
+	}
+	else
+	{
+		strcopy(subsection, sizeof(subsection), key);
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	SaveActorKv();
+	Actor_ConfigSetup();
+	Zones_Rebuild();
+	Actor_EditorMenu(client);
+}
+
+static void AdjustCond(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+
+	AdjustCondShared(client, CurrentSectionEditing[client], CurrentSubSectionEditing[client], key);
+}
+
+static void AdjustCondSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSubSectionEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+	Actor_EditorMenu(client);
+}
+
+static void AdjustCondSectionKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Actor_EditorMenu(client);
+		return;
+	}
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+
+	if(key[0])
+	{
+		ActorKv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		ActorKv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+	CurrentSubSectionEditing[client][0] = 0;
 
 	SaveActorKv();
 	Actor_ConfigSetup();
