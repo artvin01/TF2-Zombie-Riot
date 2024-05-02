@@ -211,7 +211,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100.0;
+					float damage = 150.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

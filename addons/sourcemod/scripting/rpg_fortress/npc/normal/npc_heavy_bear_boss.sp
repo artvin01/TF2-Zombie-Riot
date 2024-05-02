@@ -218,7 +218,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 150.0;
+					float damage = 300.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -226,7 +226,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 						if(npc.m_iAttacksTillMegahit > 3)
 						{
 							npc.m_iAttacksTillMegahit = 0;
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 1.3, DMG_CLUB);
 							Custom_Knockback(npc.index, target, 500.0);
 						}
 						else
