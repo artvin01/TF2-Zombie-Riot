@@ -77,6 +77,7 @@ void Actor_EnterZone(int client, const char[] name)
 		ActorKv.GetString("zone", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
+			PrintToChatAll("Actor_EnterZone::%s", name);
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity == INVALID_ENT_REFERENCE)
 			{
@@ -139,6 +140,7 @@ void Actor_DisableZone(const char[] name)
 		ActorKv.GetString("zone", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
+			PrintToChatAll("Actor_DisableZone::%s", name);
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity != INVALID_ENT_REFERENCE)
 			{
