@@ -705,7 +705,6 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 						ActorKv.JumpToKey("options") &&
 						ActorKv.JumpToKey(buffer))
 					{
-
 						ActorKv.GetString("chat", buffer, sizeof(buffer));
 						if(buffer[0])
 						{
@@ -714,6 +713,10 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 						}
 					}
 				}
+				
+				char buffertmp[64];
+				ActorKv.GetSectionName(buffertmp, sizeof(buffertmp));
+				PrintToChatAll("ERRORED AT '%s' (%s)", buffertmp, buffer);
 			}
 
 			if(ForcedMenu[client])
@@ -2158,7 +2161,7 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 static void AdjustCondShared(int client, char section[64], char subsection[64], const char[] key)
 {
 	PrintToChatAll("AdjustCondShared::%s:%s:%s", section, subsection, key);
-	
+
 	if(StrEqual(key, "delete"))
 	{
 		ActorKv.DeleteThis();
