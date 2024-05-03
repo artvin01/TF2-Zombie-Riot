@@ -549,10 +549,10 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 					switch(ActorKv.GetNum(NULL_STRING))
 					{
 						case 0:
-							Quests_StartQuest(client, buffer1);
+							Quests_CancelQuest(client, buffer1);
 						
 						case 1:
-							Quests_CancelQuest(client, buffer1);
+							Quests_StartQuest(client, buffer1);
 						
 						case 2:
 							Quests_TurnIn(client, buffer1);
