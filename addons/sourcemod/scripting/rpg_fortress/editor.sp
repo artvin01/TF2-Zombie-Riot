@@ -146,6 +146,12 @@ static void MainMenuHandler(int client, const char[] buffer)
 {
 	if(StrContains(buffer, "reloadrpg") != -1)
 	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client))
+				ForcePlayerSuicide(client);
+		}
+
 		RequestFrame(ReloadPlugin);
 	}
 	else if(StrContains(buffer, "reloadstore") != -1)
