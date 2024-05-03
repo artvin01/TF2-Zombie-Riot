@@ -387,42 +387,29 @@ bool Quests_BookMenu(int client)
 
 	int pages;
 	
-	static char steamid[64], name[64], buffer[512];
+	static char steamid[64], buffer[256];
 	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		QuestKv.Rewind();
 		QuestKv.GotoFirstSubKey();
 		do
 		{
-			QuestKv.GetSectionName(name, sizeof(name));
-			if(QuestKv.GotoFirstSubKey())
+			QuestKv.GetSectionName(buffer, sizeof(buffer));
+			
+			KeyValues kv = Saves_Kv("quests");
+			if(kv.JumpToKey(buffer))
 			{
-				do
+				if(kv.GetNum(steamid) == Status_InProgress)
 				{
-					KeyValues kv = Saves_Kv("quests");
-					if(kv.JumpToKey(name))
-					{
-						QuestKv.GetSectionName(buffer, sizeof(buffer));
-						if(kv.JumpToKey(buffer))
-						{
-							if(kv.GetNum(steamid) == Status_InProgress)
-							{
-								pages++;
+					pages++;
 
-								if((BookPage[client] / 2) != (pages / 2))
-									continue;
+					if((BookPage[client] / 2) != (pages / 2))
+						continue;
 
-								Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
-								CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
-								Format(buffer, sizeof(buffer), "%s\n ", buffer);
-								menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
-							}
-						}
-					}
+					CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
+					Format(buffer, sizeof(buffer), "%s\n ", buffer);
+					menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 				}
-				while(QuestKv.GotoNextKey());
-
-				QuestKv.GoBack();
 			}
 		}
 		while(QuestKv.GotoNextKey());
