@@ -2157,6 +2157,8 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 
 static void AdjustCondShared(int client, char section[64], char subsection[64], const char[] key)
 {
+	PrintToChatAll("AdjustCondShared::%s:%s:%s", section, subsection, key);
+	
 	if(StrEqual(key, "delete"))
 	{
 		ActorKv.DeleteThis();
