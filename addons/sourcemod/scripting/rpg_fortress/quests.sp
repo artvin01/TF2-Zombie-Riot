@@ -584,16 +584,16 @@ void Quests_EditorMenu(int client)
 
 		menu.AddItem("reward", "Objectives:", ITEMDRAW_DISABLED);
 
-		Format(buffer1, sizeof(buffer1), "Equip Item (%d Entries)\n ", CountEntries("equip"));
+		Format(buffer1, sizeof(buffer1), "Equip Item (%d Entries)", CountEntries("equip"));
 		menu.AddItem("equip", buffer1);
 
-		Format(buffer1, sizeof(buffer1), "Kill NPC (%d Entries)\n ", CountEntries("kill"));
+		Format(buffer1, sizeof(buffer1), "Kill NPC (%d Entries)", CountEntries("kill"));
 		menu.AddItem("kill", buffer1);
 
-		Format(buffer1, sizeof(buffer1), "Give Item (%d Entries)\n ", CountEntries("give"));
+		Format(buffer1, sizeof(buffer1), "Give Item (%d Entries)", CountEntries("give"));
 		menu.AddItem("give", buffer1);
 
-		Format(buffer1, sizeof(buffer1), "Have Item (%d Entries)\n ", CountEntries("obtain"));
+		Format(buffer1, sizeof(buffer1), "Have Item (%d Entries)", CountEntries("obtain"));
 		menu.AddItem("obtain", buffer1);
 
 		menu.ExitBackButton = true;
