@@ -517,12 +517,6 @@ void Quests_EditorMenu(int client)
 		bool invalid;
 		if(StrEqual(CurrentSectionEditing[client], "kill"))
 		{
-			if(NPC_GetByPlugin(CurrentKeyEditing[client]) == -1)
-			{
-				FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: NPC does not exist}", CurrentKeyEditing[client]);
-				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
-				invalid = true;
-			}
 		}
 		else if(!TextStore_IsValidName(CurrentKeyEditing[client]))
 		{
@@ -556,7 +550,7 @@ void Quests_EditorMenu(int client)
 				do
 				{
 					QuestKv.GetSectionName(buffer1, sizeof(buffer1));
-					Format(buffer2, sizeof(buffer2), "%s x%d%s", buffer1, QuestKv.GetNum(NULL_STRING), NPC_GetByPlugin(buffer1) != -1 ? "" : " {WARNING: NPC does not exist}");
+					Format(buffer2, sizeof(buffer2), "%s x%d", buffer1, QuestKv.GetNum(NULL_STRING));
 					menu.AddItem(buffer1, buffer2);
 				}
 				while(QuestKv.GotoNextKey(false));
