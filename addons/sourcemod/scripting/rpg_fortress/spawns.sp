@@ -104,7 +104,7 @@ enum struct SpawnEnum
 	}
 }
 
-static int hFromSpawnerIndex[MAXENTITIES];
+static int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 static ArrayList SpawnList;
 static Handle h_SpawnTimer;
 static int SpawnCycle;
