@@ -832,19 +832,16 @@ void Actor_EditorMenu(int client)
 			ActorKv.JumpToKey("Chats");
 			ActorKv.JumpToKey(CurrentChatEditing[client]);
 			ActorKv.JumpToKey(CurrentSectionEditing[client]);
-			bool missing = !ActorKv.JumpToKey(CurrentSubSectionEditing[client]);
+			ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
 
 			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
 
 			ActorKv.GetString("chat", buffer1, sizeof(buffer1), "End Chat");
-			FormatEx(buffer2, sizeof(buffer2), "Set Chat To: \"%s\"", buffer1);
+			FormatEx(buffer2, sizeof(buffer2), "Set NPC Chat To: \"%s\"", buffer1);
 			menu.AddItem("chat", buffer2);
 
-			if(!missing)
-			{
-				AutoGenerateChatSuffixKv("Conditions", buffer2, sizeof(buffer2));
-				menu.AddItem("cond", buffer2);
-			}
+			AutoGenerateChatSuffixKv("Conditions", buffer2, sizeof(buffer2));
+			menu.AddItem("cond", buffer2);
 
 			menu.AddItem("delete", "Delete");
 
