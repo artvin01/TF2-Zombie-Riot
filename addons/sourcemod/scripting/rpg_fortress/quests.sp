@@ -536,6 +536,7 @@ void Quests_EditorMenu(int client)
 	}
 	else if(CurrentSectionEditing[client][0])
 	{
+		QuestKv.Rewind();
 		QuestKv.JumpToKey(CurrentQuestEditing[client]);
 		bool missing = !QuestKv.JumpToKey(CurrentSectionEditing[client]);
 
@@ -572,6 +573,7 @@ void Quests_EditorMenu(int client)
 	}
 	else if(CurrentQuestEditing[client][0])
 	{
+		QuestKv.Rewind();
 		QuestKv.JumpToKey(CurrentQuestEditing[client]);
 
 		menu.SetTitle("Quests\n%s\n ", CurrentQuestEditing[client]);
