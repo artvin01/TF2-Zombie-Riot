@@ -541,7 +541,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		
 		if(ActorKv.JumpToKey("setquest"))
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.GotoFirstSubKey(false))
 			{
 				do
 				{
@@ -558,7 +558,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 							Quests_TurnIn(client, buffer1);
 					}
 				}
-				while(ActorKv.GotoNextKey());
+				while(ActorKv.GotoNextKey(false));
 
 				ActorKv.GoBack();
 			}
@@ -568,14 +568,14 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		
 		if(ActorKv.JumpToKey("giveitem"))
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.GotoFirstSubKey(false))
 			{
 				do
 				{
 					ActorKv.GetSectionName(buffer1, sizeof(buffer1));
 					TextStore_AddItemCount(client, buffer1, ActorKv.GetNum(NULL_STRING));
 				}
-				while(ActorKv.GotoNextKey());
+				while(ActorKv.GotoNextKey(false));
 
 				ActorKv.GoBack();
 			}
