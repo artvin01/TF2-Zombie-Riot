@@ -711,9 +711,11 @@ static void AdjustQuestSectionKey(int client, const char[] key)
 	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
 	QuestKv.JumpToKey(CurrentSectionEditing[client], true);
 
-	if(key[0])
+	int value = StringToInt(key);
+
+	if(value > 0)
 	{
-		QuestKv.SetString(CurrentKeyEditing[client], key);
+		QuestKv.SetNum(CurrentKeyEditing[client], value);
 	}
 	else
 	{
