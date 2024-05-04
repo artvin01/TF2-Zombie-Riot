@@ -142,8 +142,9 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	
 	if(ClassChangeTo <= TFClass_Unknown)
 	{
-		ClassChangeTo = TFClass_Scout;
+		return Plugin_Handled;
 	}
+	
 	if(FailedInstachange)
 	{
 		CurrentClass[client] = ClassChangeTo;
