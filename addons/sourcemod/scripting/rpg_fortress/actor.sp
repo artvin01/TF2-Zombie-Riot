@@ -527,11 +527,11 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 			if(StrContains(buffer1, ".mp3") == -1 && StrContains(buffer1, ".wav") == -1)
 			{
-				EmitSoundToClient(client, buffer1, entity);
+				EmitGameSoundToClient(client, buffer1, entity);
 			}
 			else
 			{
-				EmitGameSoundToClient(client, buffer1, entity);
+				EmitSoundToClient(client, buffer1, entity);
 			}
 		}
 	}
