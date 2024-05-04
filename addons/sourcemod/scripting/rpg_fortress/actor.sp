@@ -790,8 +790,8 @@ void Actor_EditorMenu(int client)
 			ActorKv.JumpToKey(CurrentNPCEditing[client]);
 			ActorKv.JumpToKey("Chats");
 			ActorKv.JumpToKey(CurrentChatEditing[client]);
-			ActorKv.JumpToKey(CurrentSectionEditing[client]);
-			ActorKv.JumpToKey(CurrentSubSectionEditing[client]);
+			ActorKv.JumpToKey(CurrentSectionEditing[client], true);		// options
+			ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
 			
 			CondMenu(client, menu, CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client]);
 			
@@ -1919,6 +1919,7 @@ static void AdjustOptionsSectionCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
 
 	AdjustCondShared(client, CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client], key);
+	PrintToChatAll("'%s' == '%s'", CurrentSubKeyEditing[client], key);
 }
 
 static void AdjustOptionsSectionCondSection(int client, const char[] key)
@@ -2206,6 +2207,7 @@ static void AdjustCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
 
 	AdjustCondShared(client, CurrentSectionEditing[client], CurrentSubSectionEditing[client], key);
+	PrintToChatAll("'%s' == '%s'", CurrentSubKeyEditing[client], key);
 }
 
 static void AdjustCondSection(int client, const char[] key)
