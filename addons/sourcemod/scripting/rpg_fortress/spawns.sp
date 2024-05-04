@@ -709,6 +709,7 @@ void Spawns_EditorMenu(int client)
 		FormatEx(buffer2, sizeof(buffer2), "Drop 4: %f", kv.GetFloat("drop_chance_4", 1.0));
 		menu.AddItem("drop_chance_4", buffer2);
 
+		menu.AddItem("copy", "Copy From Spawn");
 		menu.AddItem("delete", "Delete Spawn");
 
 		menu.ExitBackButton = true;
