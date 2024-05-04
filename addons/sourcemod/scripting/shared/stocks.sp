@@ -3594,9 +3594,6 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		Format(buffer, sizeof(buffer), "LVL %d", Level[client]);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
-	//	b_TextEntityToOwner[textentityMade] = client;
-	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
-	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
 	}
 	if(IsValidEntity(textentity2))
 	{
@@ -3633,7 +3630,106 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		
 		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
 	}
+	if(IsValidEntity(textentity3))
+	{
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+		DispatchKeyValue(textentity3, "message", c_Powerlevel);
+		char sColor[32];
+		
+
+		// form.Name
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", color4[0], color4[1], color4[2], color4[3]);
+		DispatchKeyValue(textentity3,     "color", sColor);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 130.0;
+
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		int textentityMade = SpawnFormattedWorldText(c_Powerlevel, OffsetFromHead, 10, color4, client, false);
+		
+		i_TextEntity[client][2] = EntIndexToEntRef(textentityMade);
+	}
 }
+
+float RPGStocks_CalculatePowerLevel(int client)
+{
+	int amount, bonus;
+	float multi;
+
+	int total;
+	float BigTotal;
+	total = Stats_Strength(client, amount, bonus, multi);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Precision(client, amount, bonus, multi);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Artifice(client, amount, bonus, multi);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Endurance(client, amount, bonus, multi);
+	total *= 2;
+	BigTotal += float(total);
+
+	total = Stats_Structure(client, amount, bonus, multi);
+	total *= 4;
+	BigTotal += float(total);
+
+	total = Stats_Capacity(client, amount, bonus, multi);
+	total *= 3;
+	BigTotal += float(total);
+
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	float ResMulti;
+	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	
+	BigTotal *= (1.0 / ResMulti);
+
+	//These stats are abit different
+	total = Stats_Agility(client, amount, bonus, multi);
+	total *= 30;
+	BigTotal += float(total);
+	//luck doesnt exist
+
+	return BigTotal;
+}
+
 /*
 public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 {

@@ -661,6 +661,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 				}
 
 				Stats_UpdateLevel(client);
+				UpdateLevelAbovePlayerText(client);
 			}
 
 			SaveClientStats(client);

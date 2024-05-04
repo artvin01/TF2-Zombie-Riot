@@ -2320,6 +2320,7 @@ void ReApplyTransformation(int client)
 		}
 		Store_ApplyAttribs(client);
 	}
+	UpdateLevelAbovePlayerText(client);
 }
 static void TransformButton(int client)
 {
@@ -2350,6 +2351,7 @@ static void TransformButton(int client)
 			Store_ApplyAttribs(client);
 		}
 	}
+	UpdateLevelAbovePlayerText(client);
 }
 
 void De_TransformClient(int client)
@@ -2373,4 +2375,5 @@ void De_TransformClient(int client)
 		}
 		Store_ApplyAttribs(client);
 	}
+	UpdateLevelAbovePlayerText(client);
 }
