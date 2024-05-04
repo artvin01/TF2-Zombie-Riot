@@ -3560,6 +3560,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	Stats_UpdateLevel(client);
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
 	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
+	int textentity3 = EntRefToEntIndex(i_TextEntity[client][2]);
 	if(deleteText)
 	{
 		if(IsValidEntity(textentity))
@@ -3570,6 +3571,10 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		{
 			RemoveEntity(textentity2);
 		}
+		if(IsValidEntity(textentity3))
+		{
+			RemoveEntity(textentity3);
+		}
 	}
 	if(deleteText)
 		return;
@@ -3577,7 +3582,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		Format(buffer, sizeof(buffer), "LVL %d", Level[client]);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3586,7 +3591,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		Format(buffer, sizeof(buffer), "Level %d", Level[client]);
+		Format(buffer, sizeof(buffer), "LVL %d", Level[client]);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
 	//	b_TextEntityToOwner[textentityMade] = client;

@@ -442,7 +442,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//potentially newly added ? or might not get set ?
 		//Just set it to true at all times.
 
-#if defined ZR
+#if defined ZR || defined RPG
 		if(Ally == TFTeam_Red)
 			SetEntityCollisionGroup(npc, 24);
 

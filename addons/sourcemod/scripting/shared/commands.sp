@@ -140,6 +140,11 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	GetCmdArgString(Bufferlol,sizeof(Bufferlol));
 	TFClassType ClassChangeTo = TF2_GetClass(Bufferlol);
 	
+	if(ClassChangeTo <= TFClass_Unknown)
+	{
+		return Plugin_Handled;
+	}
+	
 	if(FailedInstachange)
 	{
 		CurrentClass[client] = ClassChangeTo;
