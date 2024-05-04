@@ -976,4 +976,9 @@ static void AdjustSpawnCopy(int client, const char[] key)
 	}
 
 	delete main;
+
+	CurrentKeyEditing[client][0] = 0;
+	Spawns_ConfigSetup();
+	Zones_Rebuild();
+	Spawns_EditorMenu(client);
 }
