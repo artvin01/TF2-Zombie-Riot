@@ -80,7 +80,6 @@ void ViewChange_MapStart()
 
 void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 {
-	return;
 	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
 	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
 	ViewChange_PlayerModel(client);
@@ -109,7 +108,6 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 
 void ViewChange_PlayerModel(int client)
 {
-	return;
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(IsValidEntity(ViewmodelPlayerModel))
 	{
@@ -174,7 +172,6 @@ void ViewChange_PlayerModel(int client)
 
 void ViewChange_Switch(int client, int active, const char[] buffer = "")
 {
-	return;
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
@@ -351,7 +348,6 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 }
 void MedicAdjustModel(int client)
 {
-	return;
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(!IsValidEntity(ViewmodelPlayerModel))
 		return;
@@ -385,7 +381,6 @@ void MedicAdjustModel(int client)
 
 void ViewChange_DeleteHands(int client)
 {
-	return;
 	int entity = EntRefToEntIndex(HandRef[client]);
 	if(entity > MaxClients)
 		TF2_RemoveWearable(client, entity);
@@ -395,7 +390,6 @@ void ViewChange_DeleteHands(int client)
 
 int ViewChange_UpdateHands(int client, TFClassType class)
 {
-	return -1;
 	int entity = EntRefToEntIndex(HandRef[client]);
 	if(entity <= MaxClients)
 	{
@@ -422,7 +416,6 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 
 void HidePlayerWeaponModel(int client, int entity)
 {
-	return;
 	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
 //	SetEntProp(entity, Prop_Send, "m_bBeingRepurposedForTaunt", 1);
