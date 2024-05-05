@@ -38,9 +38,10 @@ void NPC_ConfigSetup()
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
 	Miner_Enemy_OnMapStart_NPC();
+	DeepMiner_OnMapStart_NPC();
+	HeavyExcavator_OnMapStart_NPC();
 
 /*
-	Miner_Enemy_OnMapStart_NPC();
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
 	PoisonZombie_OnMapStart_NPC();
@@ -471,6 +472,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
 #include "rpg_fortress/npc/normal/npc_miner.sp"
+#include "rpg_fortress/npc/normal/npc_deep_miner.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_excavator.sp"
 
 /*
 

@@ -41,7 +41,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 
-public void Miner_Enemy_OnMapStart_NPC()
+public void DeepMiner_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -50,18 +50,18 @@ public void Miner_Enemy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Stone Miner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stone_miner");
+	strcopy(data.Name, sizeof(data.Name), "Deep Miner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_deep_miner");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Miner_Enemy(client, vecPos, vecAng, ally);
+	return DeepMiner(client, vecPos, vecAng, ally);
 }
 
-methodmap Miner_Enemy < CClotBody
+methodmap DeepMiner < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -98,9 +98,9 @@ methodmap Miner_Enemy < CClotBody
 	}
 	
 	
-	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], int ally)
+	public DeepMiner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
+		DeepMiner npc = view_as<DeepMiner>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		//KillFeed_SetKillIcon(npc.index, "pickaxe");
@@ -117,16 +117,16 @@ methodmap Miner_Enemy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		SetVariantInt(8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
-		SetVariantInt(8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		func_NPCDeath[npc.index] = Miner_Enemy_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Miner_Enemy_OnTakeDamage;
-		func_NPCThink[npc.index] = Miner_Enemy_ClotThink;
+		func_NPCDeath[npc.index] = DeepMiner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DeepMiner_OnTakeDamage;
+		func_NPCThink[npc.index] = DeepMiner_ClotThink;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -135,14 +135,18 @@ methodmap Miner_Enemy < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/all_class_reddit_alt_soldier_hat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/grfs_soldier.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum22_kazan_karategi/sum22_kazan_karategi.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -154,9 +158,9 @@ methodmap Miner_Enemy < CClotBody
 
 //TODO 
 //Rewrite
-public void Miner_Enemy_ClotThink(int iNPC)
+public void DeepMiner_ClotThink(int iNPC)
 {
-	Miner_Enemy npc = view_as<Miner_Enemy>(iNPC);
+	DeepMiner npc = view_as<DeepMiner>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -206,7 +210,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 200.0;
+					float damage = 270.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -316,13 +320,13 @@ public void Miner_Enemy_ClotThink(int iNPC)
 }
 
 
-public Action Miner_Enemy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DeepMiner_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Miner_Enemy npc = view_as<Miner_Enemy>(victim);
+	DeepMiner npc = view_as<DeepMiner>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -334,9 +338,9 @@ public Action Miner_Enemy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Miner_Enemy_NPCDeath(int entity)
+public void DeepMiner_NPCDeath(int entity)
 {
-	Miner_Enemy npc = view_as<Miner_Enemy>(entity);
+	DeepMiner npc = view_as<DeepMiner>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

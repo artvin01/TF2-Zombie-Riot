@@ -4,30 +4,30 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static char g_DeathSounds[][] = {
-	"vo/soldier_paincrticialdeath01.mp3",
-	"vo/soldier_paincrticialdeath02.mp3",
-	"vo/soldier_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
 };
 
 static char g_HurtSound[][] = {
-	")vo/soldier_painsharp01.mp3",
-	")vo/soldier_painsharp02.mp3",
-	")vo/soldier_painsharp03.mp3",
-	")vo/soldier_painsharp04.mp3",
-	")vo/soldier_painsharp05.mp3",
+	")vo/heavy_painsharp01.mp3",
+	")vo/heavy_painsharp02.mp3",
+	")vo/heavy_painsharp03.mp3",
+	")vo/heavy_painsharp04.mp3",
+	")vo/heavy_painsharp05.mp3",
 };
 
 static char g_IdleSound[][] = {
-	")vo/soldier_jeers03.mp3",	
-	")vo/soldier_jeers04.mp3",	
-	")vo/soldier_jeers06.mp3",
-	")vo/soldier_jeers09.mp3",	
+	")vo/heavy_jeers03.mp3",	
+	")vo/heavy_jeers04.mp3",	
+	")vo/heavy_jeers06.mp3",
+	")vo/heavy_jeers09.mp3",	
 };
 
 static char g_IdleAlertedSounds[][] = {
-	")vo/taunts/soldier_taunts16.mp3",
-	")vo/taunts/soldier_taunts18.mp3",
-	")vo/taunts/soldier_taunts19.mp3",
+	")vo/taunts/heavy_taunts16.mp3",
+	")vo/taunts/heavy_taunts18.mp3",
+	")vo/taunts/heavy_taunts19.mp3",
 };
 
 static char g_MeleeHitSounds[][] = {
@@ -41,7 +41,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 
-public void Miner_Enemy_OnMapStart_NPC()
+public void HeavyExcavator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -50,18 +50,18 @@ public void Miner_Enemy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Stone Miner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stone_miner");
+	strcopy(data.Name, sizeof(data.Name), "Heavy Excavator");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_excavator");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Miner_Enemy(client, vecPos, vecAng, ally);
+	return HeavyExcavator(client, vecPos, vecAng, ally);
 }
 
-methodmap Miner_Enemy < CClotBody
+methodmap HeavyExcavator < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -98,14 +98,14 @@ methodmap Miner_Enemy < CClotBody
 	}
 	
 	
-	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], int ally)
+	public HeavyExcavator(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
+		HeavyExcavator npc = view_as<HeavyExcavator>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_,_));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		//KillFeed_SetKillIcon(npc.index, "pickaxe");
 
-		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_bisWalking = false;
@@ -117,16 +117,16 @@ methodmap Miner_Enemy < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		SetVariantInt(8);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
-		SetVariantInt(8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-
-		func_NPCDeath[npc.index] = Miner_Enemy_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = Miner_Enemy_OnTakeDamage;
-		func_NPCThink[npc.index] = Miner_Enemy_ClotThink;
+		func_NPCDeath[npc.index] = HeavyExcavator_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = HeavyExcavator_OnTakeDamage;
+		func_NPCThink[npc.index] = HeavyExcavator_ClotThink;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -135,14 +135,18 @@ methodmap Miner_Enemy < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/all_class_reddit_alt_soldier_hat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum20_sophisticated_smoker/sum20_sophisticated_smoker_heavy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/eotl_sheavyshirt/eotl_sheavyshirt.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -154,9 +158,9 @@ methodmap Miner_Enemy < CClotBody
 
 //TODO 
 //Rewrite
-public void Miner_Enemy_ClotThink(int iNPC)
+public void HeavyExcavator_ClotThink(int iNPC)
 {
-	Miner_Enemy npc = view_as<Miner_Enemy>(iNPC);
+	HeavyExcavator npc = view_as<HeavyExcavator>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -186,7 +190,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 230.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", 230.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -206,7 +210,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 200.0;
+					float damage = 330.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -285,7 +289,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_MP_RUN_MELEE");
+					npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 				}
 			}
 			case 1:
@@ -299,7 +303,7 @@ public void Miner_Enemy_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 
 					npc.PlayMeleeSound();
 					
@@ -316,13 +320,13 @@ public void Miner_Enemy_ClotThink(int iNPC)
 }
 
 
-public Action Miner_Enemy_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HeavyExcavator_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	Miner_Enemy npc = view_as<Miner_Enemy>(victim);
+	HeavyExcavator npc = view_as<HeavyExcavator>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -334,9 +338,9 @@ public Action Miner_Enemy_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Miner_Enemy_NPCDeath(int entity)
+public void HeavyExcavator_NPCDeath(int entity)
 {
-	Miner_Enemy npc = view_as<Miner_Enemy>(entity);
+	HeavyExcavator npc = view_as<HeavyExcavator>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
