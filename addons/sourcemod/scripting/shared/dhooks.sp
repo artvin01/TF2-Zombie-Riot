@@ -1473,18 +1473,15 @@ void DHook_ClientDisconnectPost()
 }
 */
 
+#if defined ZR
 void DHook_RespawnPlayer(int client)
 {
-#if defined ZR
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 	IsRespawning = false;
-#elseif !defined RTS
-	TF2_RespawnPlayer(client);
-	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
-#endif
 }
+#endif
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {

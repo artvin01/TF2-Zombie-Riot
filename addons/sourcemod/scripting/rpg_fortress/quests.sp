@@ -210,6 +210,8 @@ static bool CanTurnInQuest(int client, const char[] id, char[] title = "", int l
 
 int Quests_GetStatus(int client, const char[] name)
 {
+	int value = -1;
+
 	static char id[64];
 	if(Saves_ClientCharId(client, id, sizeof(id)))
 	{
@@ -218,11 +220,22 @@ int Quests_GetStatus(int client, const char[] name)
 		{
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
-			return kv.GetNum(id);
+			value = kv.GetNum(id);
+			
+			if(value == Status_Completed)
+			{
+				int repeat = QuestKv.GetNum("repeattime");
+				if(repeat > 0)
+				{
+					Format(id, sizeof(id), "%s_t", id);
+					if(kv.GetNum(id) < (GetTime() - repeat))
+						value = Status_NotStarted;
+				}
+			}
 		}
 	}
 
-	return -1;
+	return value;
 }
 
 bool Quests_StartQuest(int client, const char[] name)
@@ -307,6 +320,9 @@ bool Quests_TurnIn(int client, const char[] name)
 			{
 				SPrintToChat(client, "Quest Finished: %s", name);
 				kv.SetNum(id, Status_Completed);
+				
+				Format(buffer, sizeof(buffer), "%s_t", id);
+				kv.SetNum(buffer, GetTime());
 
 				if(QuestKv.JumpToKey("give"))
 				{
@@ -502,14 +518,17 @@ void Quests_EditorMenu(int client)
 		menu.SetTitle("Actors\n%s - %s\n ", CurrentQuestEditing[client], CurrentSectionEditing[client]);
 
 		bool invalid;
-		if(StrEqual(CurrentSectionEditing[client], "kill"))
+		if(CurrentSectionEditing[client][0])
 		{
-		}
-		else if(!TextStore_IsValidName(CurrentKeyEditing[client]))
-		{
-			FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: Item does not exist}", CurrentKeyEditing[client]);
-			menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
-			invalid = true;
+			if(StrEqual(CurrentSectionEditing[client], "kill"))
+			{
+			}
+			else if(!TextStore_IsValidName(CurrentKeyEditing[client]))
+			{
+				FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: Item does not exist}", CurrentKeyEditing[client]);
+				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+				invalid = true;
+			}
 		}
 
 		if(!invalid)
@@ -519,7 +538,7 @@ void Quests_EditorMenu(int client)
 		}
 
 		menu.ExitBackButton = true;
-		menu.Display(client, AdjustQuestSectionKey);
+		menu.Display(client, AdjustQuestSharedKey);
 	}
 	else if(CurrentSectionEditing[client][0])
 	{
@@ -564,6 +583,10 @@ void Quests_EditorMenu(int client)
 		QuestKv.JumpToKey(CurrentQuestEditing[client]);
 
 		menu.SetTitle("Quests\n%s\n ", CurrentQuestEditing[client]);
+
+		int repeat = QuestKv.GetNum("repeattime");
+		Format(buffer1, sizeof(buffer1), "Repeat Time: (%.4f Hours)", repeat / 3600.0);
+		menu.AddItem("_repeattime", buffer1);
 
 		Format(buffer1, sizeof(buffer1), "Start Quest Give Items (%d Entries)", CountEntries("start"));
 		menu.AddItem("start", buffer1);
@@ -662,6 +685,11 @@ static void AdjustQuest(int client, const char[] key)
 		QuestKv.DeleteThis();
 		CurrentQuestEditing[client][0] = 0;
 	}
+	else if(key[0] == '_')
+	{
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key[1]);
+		Quests_EditorMenu(client);
+	}
 	else
 	{
 		strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), key);
@@ -687,7 +715,7 @@ static void AdjustQuestSection(int client, const char[] key)
 	Quests_EditorMenu(client);
 }
 
-static void AdjustQuestSectionKey(int client, const char[] key)
+static void AdjustQuestSharedKey(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
@@ -698,7 +726,8 @@ static void AdjustQuestSectionKey(int client, const char[] key)
 
 	QuestKv.Rewind();
 	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
-	QuestKv.JumpToKey(CurrentSectionEditing[client], true);
+	if(CurrentSectionEditing[client][0])
+		QuestKv.JumpToKey(CurrentSectionEditing[client], true);
 
 	int value = StringToInt(key);
 

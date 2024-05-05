@@ -505,11 +505,11 @@ static bool SoundExists(const char[] sound)
 	{
 		if(StrContains(sound, ".mp3") == -1 && StrContains(sound, ".wav") == -1)
 		{
-			return PrecacheSound(sound);
+			return PrecacheScriptSound(sound);
 		}
 		else
 		{
-			return PrecacheScriptSound(sound);
+			return PrecacheSound(sound);
 		}
 	}
 
@@ -1918,7 +1918,7 @@ static void AdjustOptionsSectionCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);	// Reply
 	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
 
-	AdjustCondShared(client, CurrentSubKeyEditing[client], CurrentTrueBottomEditing[client], key);
+	AdjustCondShared(client, CurrentKeyEditing[client], CurrentSubKeyEditing[client], key);
 	PrintToChatAll("'%s' == '%s'", CurrentSubKeyEditing[client], key);
 }
 
