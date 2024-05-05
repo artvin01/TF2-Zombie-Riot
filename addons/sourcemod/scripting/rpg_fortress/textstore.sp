@@ -1876,7 +1876,16 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_SpellMenu);
 
-			menu.SetTitle("RPG Fortress\n \nSkills:");
+			char TitleChar[64];
+			char LVLBuffer[64];
+			IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
+			ThousandString(LVLBuffer, sizeof(LVLBuffer));
+			float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+			char c_Powerlevel[255];
+			Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+			Format(TitleChar, sizeof(TitleChar), "RPG Fortress\nPower: %s\nLVL: %s\n \nSkills:", c_Powerlevel,LVLBuffer);
+			menu.SetTitle("%s",TitleChar);
 
 			static const int MaxSkills = 5;
 

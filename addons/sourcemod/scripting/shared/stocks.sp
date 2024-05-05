@@ -3579,10 +3579,13 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 	if(deleteText)
 		return;
 		
+	char LVLBuffer[64];
+	IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
+	ThousandString(LVLBuffer, sizeof(LVLBuffer));
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		Format(buffer, sizeof(buffer), "LVL %d", Level[client]);
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3591,7 +3594,7 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		Format(buffer, sizeof(buffer), "LVL %d", Level[client]);
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
 	}

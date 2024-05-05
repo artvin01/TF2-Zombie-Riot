@@ -564,7 +564,17 @@ public Action Stats_ShowStats(int client, int args)
 		bool canSkill = XP[client] >= cost;
 
 		Menu menu = new Menu(Stats_ShowStatsH);
-		menu.SetTitle("RPG Fortress\n \nLvl: %d\nExperience: %d / %d", Level[client], XP[client], cost);
+		
+		char LVLBuffer[64];
+		IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
+		ThousandString(LVLBuffer, sizeof(LVLBuffer));
+		char XPBuffer[64];
+		IntToString(XP[client],XPBuffer, sizeof(XPBuffer));
+		ThousandString(XPBuffer, sizeof(XPBuffer));
+		char costBuffer[64];
+		IntToString(cost,costBuffer, sizeof(costBuffer));
+		ThousandString(costBuffer, sizeof(costBuffer));
+		menu.SetTitle("RPG Fortress\n \nLvl: %s\nXP: %s / %s", LVLBuffer, XPBuffer, costBuffer);
 
 		char buffer[64];
 		int amount, bonus;

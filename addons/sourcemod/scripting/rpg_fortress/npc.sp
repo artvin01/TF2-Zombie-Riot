@@ -374,7 +374,6 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 
 				if(IsValidEntity(npc.m_iTextEntity3))
 				{
-					
 					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
 				}
 			}
