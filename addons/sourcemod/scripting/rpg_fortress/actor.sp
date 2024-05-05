@@ -77,7 +77,6 @@ void Actor_EnterZone(int client, const char[] name)
 		ActorKv.GetString("zone", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
-			PrintToChatAll("Actor_EnterZone::%s", name);
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity == INVALID_ENT_REFERENCE)
 			{
@@ -140,7 +139,6 @@ void Actor_DisableZone(const char[] name)
 		ActorKv.GetString("zone", buffer, sizeof(buffer));
 		if(StrEqual(buffer, name, false))
 		{
-			PrintToChatAll("Actor_DisableZone::%s", name);
 			int entity = EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE));
 			if(entity != INVALID_ENT_REFERENCE)
 			{
@@ -189,7 +187,7 @@ bool Actor_Interact(int client, int entity)
 static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 {
 	fail[0] = 0;
-
+	
 	if(ActorKv.JumpToKey("cond"))
 	{
 		bool failed;
@@ -198,7 +196,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 
 		if(ActorKv.JumpToKey("race"))
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.GotoFirstSubKey(false))
 			{
 				static Race race;
 
@@ -213,7 +211,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 						break;
 					}
 				}
-				while(ActorKv.GotoNextKey());
+				while(ActorKv.GotoNextKey(false));
 				
 				ActorKv.GoBack();
 			}
@@ -223,7 +221,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 
 		if(!failed && ActorKv.JumpToKey("quest"))
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.GotoFirstSubKey(false))
 			{
 				do
 				{
@@ -266,7 +264,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 						}
 					}
 				}
-				while(ActorKv.GotoNextKey());
+				while(ActorKv.GotoNextKey(false));
 
 				ActorKv.GoBack();
 			}
@@ -276,7 +274,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 
 		if(!failed && ActorKv.JumpToKey("item"))
 		{
-			if(ActorKv.GotoFirstSubKey())
+			if(ActorKv.GotoFirstSubKey(false))
 			{
 				do
 				{
@@ -314,7 +312,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 						break;
 					}
 				}
-				while(ActorKv.GotoNextKey());
+				while(ActorKv.GotoNextKey(false));
 				
 				ActorKv.GoBack();
 			}
@@ -716,10 +714,6 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 						}
 					}
 				}
-				
-				char buffertmp[64];
-				ActorKv.GetSectionName(buffertmp, sizeof(buffertmp));
-				PrintToChatAll("ERRORED AT '%s' (%s)", buffertmp, buffer);
 			}
 
 			if(ForcedMenu[client])
@@ -1522,14 +1516,16 @@ static int AutoGenerateChatSuffixKv(const char[] name, char[] display, int lengt
 				{
 					Format(data, sizeof(data), "%s%s%s", data, data[0] ? ", " : "", buffer);
 				}
-
 			}
 
 			ActorKv.GoBack();
 		}
 
 		int value = ActorKv.GetNum("level");
-		Format(data, sizeof(data), "%s%sLv %d", data, data[0] ? ", " : "", value);
+		if(value)
+			Format(data, sizeof(data), "%s%sLv %d", data, data[0] ? ", " : "", value);
+
+		ActorKv.GoBack();
 	}
 
 	if(data[0])
@@ -1919,7 +1915,6 @@ static void AdjustOptionsSectionCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentKeyEditing[client], true);		// cond
 
 	AdjustCondShared(client, CurrentKeyEditing[client], CurrentSubKeyEditing[client], key);
-	PrintToChatAll("'%s' == '%s'", CurrentSubKeyEditing[client], key);
 }
 
 static void AdjustOptionsSectionCondSection(int client, const char[] key)
@@ -2164,8 +2159,6 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 
 static void AdjustCondShared(int client, char section[64], char subsection[64], const char[] key)
 {
-	PrintToChatAll("AdjustCondShared::%s:%s:%s", section, subsection, key);
-
 	if(StrEqual(key, "delete"))
 	{
 		ActorKv.DeleteThis();
@@ -2207,7 +2200,6 @@ static void AdjustCond(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
 
 	AdjustCondShared(client, CurrentSectionEditing[client], CurrentSubSectionEditing[client], key);
-	PrintToChatAll("'%s' == '%s'", CurrentSubKeyEditing[client], key);
 }
 
 static void AdjustCondSection(int client, const char[] key)

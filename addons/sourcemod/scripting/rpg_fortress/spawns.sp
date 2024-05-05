@@ -218,8 +218,6 @@ void Spawns_EnableZone(int client, const char[] name)
 
 void Spawns_DisableZone(const char[] name)
 {
-	PrintToChatAll("Spawns_DisableZone::%s", name);
-	
 	ArrayList list = new ArrayList();
 
 	int length = SpawnList.Length;
@@ -443,9 +441,10 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 			{
 				if(XP[entity] > 0)
 				{
-					int level = Level[client];	// -2, -1, 0, +1, +2
-					if((level - 3) < Level[entity] && (level + 3) > Level[entity])
-						Stats_GiveXP(client, XP[entity]);
+				//	int level = Level[client];	// -2, -1, 0, +1, +2
+				//	if((level - 3) < Level[entity] && (level + 3) > Level[entity])
+					Stats_GiveXP(client, XP[entity]);
+					SPrintToChat(client, "You gained %d XP", XP[entity]);
 				}
 				/*
 				if(i_CreditsOnKill[entity])
@@ -565,8 +564,6 @@ static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {
-	CvarDisableThink.BoolValue = true;
-
 	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
 
 	EditMenu menu = new EditMenu();
@@ -789,7 +786,6 @@ static void ZonePicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
-		CvarDisableThink.BoolValue = false;
 		Editor_MainMenu(client);
 		return;
 	}

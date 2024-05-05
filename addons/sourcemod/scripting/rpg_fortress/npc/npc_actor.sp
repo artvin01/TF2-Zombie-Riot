@@ -170,11 +170,11 @@ static void ClotThink(int iNPC)
 	if(target > 0)
 	{
 		WorldSpaceCenter(target, f3_PositionArrival[npc.index]);
-		npc.FaceTowards(f3_PositionArrival[npc.index], 500.0);
+		npc.FaceTowards(f3_PositionArrival[npc.index], 1000.0);
 	}
 	else if(npc.m_flNextRangedAttack > gameTime)
 	{
-		npc.FaceTowards(f3_PositionArrival[npc.index], 500.0);
+		npc.FaceTowards(f3_PositionArrival[npc.index], 1000.0);
 	}
 	else if(npc.m_flNextMeleeAttack < gameTime)
 	{

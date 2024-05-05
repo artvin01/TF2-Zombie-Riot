@@ -447,13 +447,15 @@ static void AdjustZone(int client, const char[] buffer)
 		if(StrEqual(buffer, "point1"))
 		{
 			float pos[3];
-			GetClientPointVisible(client, _, _, _, pos);
+			GetClientAbsOrigin(client, pos);
+			//GetClientPointVisible(client, _, _, _, pos);
 			ZonesKv.SetVector("point1", pos);
 		}
 		else if(StrEqual(buffer, "point2"))
 		{
 			float pos[3];
-			GetClientPointVisible(client, _, _, _, pos);
+			GetClientAbsOrigin(client, pos);
+			//GetClientPointVisible(client, _, _, _, pos);
 			ZonesKv.SetVector("point2", pos);
 		}
 		else if(StrEqual(buffer, "telepos"))

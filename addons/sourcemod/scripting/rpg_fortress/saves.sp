@@ -431,8 +431,16 @@ static int DeleteCharacterH(Menu menu, MenuAction action, int client, int choice
 			if(choice == 3)
 			{
 				KeyValues kv = Saves_Kv("characters");
-				if(kv.JumpToKey(id))
-					kv.SetString("owner", "DELETED");
+				kv.DeleteKey(id);
+
+				kv = Saves_Kv("stats");
+				kv.DeleteKey(id);
+
+				Quests_DeleteChar(id);
+				Dungeon_DeleteChar(id);
+
+				//if(kv.JumpToKey(id))
+				//	kv.SetString("owner", "DELETED");
 
 				Saves_MainMenu(client);
 			}

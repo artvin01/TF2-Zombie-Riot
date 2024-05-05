@@ -13,6 +13,66 @@ static KeyValues QuestKv;
 static int BookPage[MAXTF2PLAYERS];
 static bool BookDirty[MAXTF2PLAYERS];
 
+void Quests_PluginStart()
+{
+	RegAdminCmd("rpg_givekill", QuestsKillDebug, ADMFLAG_ROOT, "Give X kills from X NPC");
+	RegAdminCmd("rpg_clearquests", QuestsClearDebug, ADMFLAG_ROOT, "Remove all quest status");
+}
+
+static Action QuestsKillDebug(int client, int args)
+{
+	if(!client)
+	{
+
+	}
+	else if(args == 1 || args == 2)
+	{
+		char name[64];
+		GetCmdArg(1, name, sizeof(name));
+
+		int amount = 999;
+		if(args == 2)
+			amount = GetCmdArgInt(2);
+		
+		KeyValues kv = Saves_Kv("quests");
+		kv.JumpToKey("_kills", true);
+		kv.JumpToKey(name, true);
+
+		char id[64];
+		if(Saves_ClientCharId(client, id, sizeof(id)))
+		{
+			kv.SetNum(id, kv.GetNum(id) + amount);
+			Quests_MarkBookDirty(client);
+			SReplyToCommand(client, "Gave %d kills for %s", amount, name);
+		}
+		else
+		{
+			SReplyToCommand(client, "No save state");
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: rpg_givekill <name> [amount]");
+	}
+
+	return Plugin_Handled;
+}
+
+static Action QuestsClearDebug(int client, int args)
+{
+	char id[64];
+	if(client && Saves_ClientCharId(client, id, sizeof(id)))
+	{
+		Quests_DeleteChar(id);
+		SReplyToCommand(client, "Cleared all quest status");
+	}
+	else
+	{
+	}
+
+	return Plugin_Handled;
+}
+
 void Quests_ConfigSetup()
 {
 	delete QuestKv;
@@ -22,6 +82,31 @@ void Quests_ConfigSetup()
 	QuestKv = new KeyValues("Quests");
 	QuestKv.SetEscapeSequences(true);
 	QuestKv.ImportFromFile(buffer);
+}
+
+void Quests_DeleteChar(const char[] id)
+{
+	KeyValues kv = Saves_Kv("quests");
+	
+	if(kv.GotoFirstSubKey())
+	{
+		do
+		{
+			kv.DeleteKey(id);
+
+			if(kv.GotoFirstSubKey())
+			{
+				do
+				{
+					kv.DeleteKey(id);
+				}
+				while(kv.GotoNextKey());
+
+				kv.GoBack();
+			}
+		}
+		while(kv.GotoNextKey());
+	}
 }
 
 void Quests_AddKill(int client, int entity)
@@ -228,7 +313,7 @@ int Quests_GetStatus(int client, const char[] name)
 				if(repeat > 0)
 				{
 					Format(id, sizeof(id), "%s_t", id);
-					if(kv.GetNum(id) < (GetTime() - repeat))
+					if(kv.GetNum(id) < (GetTime() - repeat - 40))
 						value = Status_NotStarted;
 				}
 			}
@@ -585,7 +670,18 @@ void Quests_EditorMenu(int client)
 		menu.SetTitle("Quests\n%s\n ", CurrentQuestEditing[client]);
 
 		int repeat = QuestKv.GetNum("repeattime");
-		Format(buffer1, sizeof(buffer1), "Repeat Time: (%.4f Hours)", repeat / 3600.0);
+		if(repeat < 1)
+		{
+			Format(buffer1, sizeof(buffer1), "Repeat: Once Only");
+		}
+		else if(repeat > 40)
+		{
+			Format(buffer1, sizeof(buffer1), "Repeat: In %.4f Hours", repeat / 3600.0);
+		}
+		else
+		{
+			Format(buffer1, sizeof(buffer1), "Repeat: Always");
+		}
 		menu.AddItem("_repeattime", buffer1);
 
 		Format(buffer1, sizeof(buffer1), "Start Quest Give Items (%d Entries)", CountEntries("start"));
@@ -607,6 +703,8 @@ void Quests_EditorMenu(int client)
 
 		Format(buffer1, sizeof(buffer1), "Have Item (%d Entries)", CountEntries("obtain"));
 		menu.AddItem("obtain", buffer1);
+
+		menu.AddItem("delete", "Delete");
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustQuest);
@@ -728,8 +826,16 @@ static void AdjustQuestSharedKey(int client, const char[] key)
 	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
 	if(CurrentSectionEditing[client][0])
 		QuestKv.JumpToKey(CurrentSectionEditing[client], true);
-
-	int value = StringToInt(key);
+	
+	int value;
+	if(StrEqual(CurrentKeyEditing[client], "repeattime"))
+	{
+		value = RoundFloat(StringToFloat(key) * 3600.0);
+	}
+	else
+	{
+		value = StringToInt(key);
+	}
 
 	if(value > 0)
 	{

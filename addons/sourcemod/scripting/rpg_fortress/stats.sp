@@ -244,6 +244,22 @@ float Stats_GetCurrentFormMastery(int client)
 	return mastery;
 }
 
+bool Stats_GetCurrentFormMasteryMax(int client)
+{
+	Form form;
+	if(Races_GetClientInfo(client, _, form))
+	{
+		float mastery;
+
+		if(Mastery[client])
+			Mastery[client].GetValue(form.Name, mastery);
+		
+		return mastery >= form.Mastery;
+	}
+
+	return true;
+}
+
 float Stats_GetFormMastery(int client, const char[] name)
 {
 	float mastery;

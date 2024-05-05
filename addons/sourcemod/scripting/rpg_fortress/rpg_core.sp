@@ -726,6 +726,9 @@ bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 
 void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 {
+	if(Stats_GetCurrentFormMasteryMax(client))
+		return;
+
 	//only a 5% chance!
 	if(GetRandomFloat(0.0, 1.0) >= 0.05)
 		return;
@@ -757,11 +760,14 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
 	{
 		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+		float MasteryAdd;
 		if(GetRandomFloat(0.0, 1.0) <= 0.05)
 		{
-			MasteryCurrent += GetRandomFloat(0.2, 0.3);
+			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
-		MasteryCurrent += GetRandomFloat(0.09, 0.11);
+		MasteryAdd += GetRandomFloat(0.09, 0.11);
+		MasteryCurrent += MasteryAdd;
+		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
 	}

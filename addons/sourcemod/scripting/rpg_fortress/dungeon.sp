@@ -623,6 +623,29 @@ void Dungeon_ConfigSetup()
 	delete kv;
 }
 
+void Dungeon_DeleteChar(const char[] id)
+{
+	KeyValues kv = Saves_Kv("dungeon");
+	
+	if(kv.GotoFirstSubKey())
+	{
+		do
+		{
+			if(kv.GotoFirstSubKey())
+			{
+				do
+				{
+					kv.DeleteKey(id);
+				}
+				while(kv.GotoNextKey());
+
+				kv.GoBack();
+			}
+		}
+		while(kv.GotoNextKey());
+	}
+}
+
 int Dungeon_GetClientRank(int client, const char[] name, const char[] stage)
 {
 	int rank;
