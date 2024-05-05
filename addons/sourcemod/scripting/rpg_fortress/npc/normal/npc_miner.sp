@@ -49,6 +49,16 @@ public void Miner_Enemy_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stone Miner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stone_miner");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Miner_Enemy(client, vecPos, vecAng, ally);
 }
 
 methodmap Miner_Enemy < CClotBody
@@ -91,9 +101,7 @@ methodmap Miner_Enemy < CClotBody
 	public Miner_Enemy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Miner_Enemy npc = view_as<Miner_Enemy>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "300", ally, false,_,_,_,_));
-		
-		i_NpcInternalId[npc.index] = MINER_NPC;
-		
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		//KillFeed_SetKillIcon(npc.index, "pickaxe");
 
@@ -113,8 +121,9 @@ methodmap Miner_Enemy < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, Miner_Enemy_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, Miner_Enemy_ClotThink);
+		func_NPCDeath[npc.index] = Miner_Enemy_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Miner_Enemy_OnTakeDamage;
+		func_NPCThink[npc.index] = Miner_Enemy_ClotThink;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -185,14 +194,16 @@ public void Miner_Enemy_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 10.0;
+					float damage = 200.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -221,13 +232,18 @@ public void Miner_Enemy_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -322,8 +338,6 @@ public void Miner_Enemy_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, Miner_Enemy_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, Miner_Enemy_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

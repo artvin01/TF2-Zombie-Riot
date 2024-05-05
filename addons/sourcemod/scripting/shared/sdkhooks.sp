@@ -2752,7 +2752,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			Form form;
 			Races_GetClientInfo(client, _, form);
 			Drain = form.GetFloatStat(Form::DrainRate, Stats_GetFormMastery(client, form.Name));
-			Drain *= 0.01; //drains are too high!
+			Drain *= 0.015; //drains are too high!
 
 			int StatsForDrainMulti;
 			int StatsForDrainMultiAdd;

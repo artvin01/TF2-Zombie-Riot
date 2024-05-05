@@ -724,7 +724,7 @@ void Stats_UpdateLevel(int client)
 		+ Agility[client]
 		+ Luck[client];
 
-	Level[client] = stats / 10;
+	Level[client] = stats / 5;
 }
 
 
