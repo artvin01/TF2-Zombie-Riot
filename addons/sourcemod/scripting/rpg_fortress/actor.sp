@@ -17,7 +17,6 @@ void Actor_ConfigSetup()
 	char buffer[PLATFORM_MAX_PATH];
 	RPG_BuildPath(buffer, sizeof(buffer), "actor");
 	ActorKv = new KeyValues("Actor");
-	ActorKv.SetEscapeSequences(true);
 	ActorKv.ImportFromFile(buffer);
 
 	ActorKv.GotoFirstSubKey();
@@ -94,12 +93,21 @@ void Actor_EnterZone(int client, const char[] name)
 					int particle = ParticleEffectAt(pos, "powerup_icon_regen", 0.0);
 					
 					SetEntPropVector(particle, Prop_Data, "m_angRotation", ang);
+					
+					DataPack pack;
+					CreateDataTimer(0.3, TeleportTextTimer, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+					pack.WriteCell(EntIndexToEntRef(particle));
+					pack.WriteCell(EntIndexToEntRef(entity));
+					pack.WriteFloat(0.0);
+					pack.WriteFloat(0.0);
+					pack.WriteFloat(110.0);
 
 					SetEdictFlags(particle, GetEdictFlags(particle) &~ FL_EDICT_ALWAYS);
 					SDKHook(particle, SDKHook_SetTransmit, QuestIndicatorTransmit);
 					b_ParticleToOwner[particle] = EntIndexToEntRef(entity);
 					b_OwnerToParticle[entity] = EntIndexToEntRef(particle);
 					b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
+					
 				}
 			}
 			else
@@ -152,7 +160,7 @@ void Actor_DisableZone(const char[] name)
 				{
 					RemoveEntity(brush);
 				}
-				RemoveEntity(entity);
+				NPC_Despawn(entity);
 			}
 			
 			ActorKv.SetNum("_entref", INVALID_ENT_REFERENCE);
@@ -173,9 +181,14 @@ bool Actor_Interact(int client, int entity)
 	{
 		if(EntRefToEntIndex(ActorKv.GetNum("_entref", INVALID_ENT_REFERENCE)) == entity)
 		{
+			if(Editor_MenuFunc(client) != INVALID_FUNCTION)
+			{
+				OpenEditorFrom(client);
+				return true;
+			}
+
 			ActorKv.GetSectionName(CurrentNPC[client], sizeof(CurrentNPC[]));
 			CurrentRef[client] = EntIndexToEntRef(client);
-			NPCActor_TalkStart(entity, client);
 			StartChat(client);
 			return true;
 		}
@@ -588,20 +601,24 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 
 	if(ActorKv.GetNum("simple"))
 	{
+		NPCActor_TalkStart(entity, client, 5.0);
+
 		if(entity != -1)
 		{
 			ActorKv.GetString("text", buffer1, sizeof(buffer1));
 			FormatText(client, buffer1, sizeof(buffer1));
-			NpcSpeechBubble(entity, buffer1, 5, {255, 255, 255, 255}, {0.0, 0.0, 60.0}, "");
+			NpcSpeechBubble(entity, buffer1, 5, {255, 255, 255, 255}, {0.0, 0.0, 90.0}, "");
 		}
 	}
 	else
 	{
+		NPCActor_TalkStart(entity, client);
+
 		ActorKv.GetString("text", buffer1, sizeof(buffer1));
 		FormatText(client, buffer1, sizeof(buffer1));
 
 		Menu menu = new Menu(MenuHandle);
-		menu.SetTitle(buffer1);
+		menu.SetTitle("%s\n \n%s\n ", CurrentNPC[client], buffer1);
 
 		bool options;
 		if(ActorKv.JumpToKey("options"))
@@ -660,6 +677,8 @@ static void FormatText(int client, char[] text, int length)
 
 	GetClientName(client, buffer, sizeof(buffer));
 	ReplaceString(text, length, "{playername}", buffer);
+
+	ReplaceString(text, length, "\\n", "\n");
 }
 
 static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
@@ -745,6 +764,19 @@ static char CurrentChatEditing[MAXTF2PLAYERS][64];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentNPCEditing[MAXTF2PLAYERS][64];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+
+static void OpenEditorFrom(int client)
+{
+	ActorKv.GetString("zone", CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]));
+	ActorKv.GetSectionName(CurrentNPCEditing[client], sizeof(CurrentNPCEditing[]));
+	CurrentKeyEditing[client][0] = 0;
+	CurrentChatEditing[client][0] = 0;
+	CurrentSectionEditing[client][0] = 0;
+	CurrentSubSectionEditing[client][0] = 0;
+	CurrentSubKeyEditing[client][0] = 0;
+	CurrentTrueBottomEditing[client][0] = 0;
+	Actor_EditorMenu(client);
+}
 
 void Actor_EditorMenu(int client)
 {
@@ -832,7 +864,7 @@ void Actor_EditorMenu(int client)
 			ActorKv.JumpToKey("Chats");
 			ActorKv.JumpToKey(CurrentChatEditing[client]);
 			ActorKv.JumpToKey(CurrentSectionEditing[client]);
-			ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+			ActorKv.JumpToKey(CurrentSubSectionEditing[client]);
 
 			menu.SetTitle("Actors\n%s - %s - %s - %s\n ", CurrentNPCEditing[client], CurrentChatEditing[client], CurrentSectionEditing[client], CurrentSubSectionEditing[client]);
 
@@ -914,10 +946,19 @@ void Actor_EditorMenu(int client)
 				KeyValues kv = Quests_KV();
 				kv.GotoFirstSubKey();
 
+				bool first;
 				do
 				{
 					kv.GetSectionName(buffer1, sizeof(buffer1));
-					menu.AddItem(buffer1, buffer1);
+					if(first)
+					{
+						menu.InsertItem(0, buffer1, buffer1);
+					}
+					else
+					{
+						first = true;
+						menu.AddItem(buffer1, buffer1);
+					}
 				}
 				while(kv.GotoNextKey());
 
@@ -1066,6 +1107,8 @@ void Actor_EditorMenu(int client)
 			ActorKv.JumpToKey(CurrentChatEditing[client]);
 
 			ActorKv.GetString("text", buffer1, sizeof(buffer1));
+			PrintToConsole(client, buffer1);
+			ReplaceString(buffer1, sizeof(buffer1), "\\n", "\n");
 			menu.SetTitle("%s\n ", buffer1);
 			
 			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
@@ -1101,7 +1144,7 @@ void Actor_EditorMenu(int client)
 			menu.AddItem("text", buffer2);
 
 			ActorKv.GetString("sound", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Sound: \"%s\"%s", buffer1, SoundExists(buffer1) ? "" : " {WARNING: Sound does not exist}");
+			FormatEx(buffer2, sizeof(buffer2), "Sound: \"%s\"%s", buffer1, (!buffer1[0] || SoundExists(buffer1)) ? "" : " {WARNING: Sound does not exist}");
 			menu.AddItem("sound", buffer2);
 
 			bool simple = view_as<bool>(ActorKv.GetNum("simple"));
@@ -1229,15 +1272,7 @@ void Actor_EditorMenu(int client)
 	{
 		menu.SetTitle("Actors\n%s\n ", CurrentNPCEditing[client]);
 		
-		KeyValues kv = Zones_GetKv();
-		kv.GotoFirstSubKey();
-
-		do
-		{
-			kv.GetSectionName(buffer1, sizeof(buffer1));
-			menu.AddItem(buffer1, buffer1);
-		}
-		while(kv.GotoNextKey());
+		Zones_GenerateZoneList(client, menu);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPCKey);
@@ -1393,19 +1428,10 @@ void Actor_EditorMenu(int client)
 	{
 		menu.SetTitle("Actors\n \nSelect a zone:\n ");
 
-		KeyValues zones = Zones_GetKv();
-
-		menu.AddItem(" ", "All Zones");
+		menu.AddItem(" ", "All Zones\n ");
 		
-		if(zones.GotoFirstSubKey())
-		{
-			do
-			{
-				zones.GetSectionName(buffer1, sizeof(buffer1));
-				menu.AddItem(buffer1, buffer1);
-			}
-			while(zones.GotoNextKey());
-		}
+		bool first = true;
+		Zones_GenerateZoneList(client, menu, first);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, ZonePicker);
@@ -1618,8 +1644,6 @@ static void AdjustNPC(int client, const char[] key)
 	}
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1647,8 +1671,6 @@ static void AdjustNPCKey(int client, const char[] key)
 	CurrentKeyEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1689,8 +1711,6 @@ static void AdjustChat(int client, const char[] key)
 	}
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1720,8 +1740,6 @@ static void AdjustChatKey(int client, const char[] key)
 	CurrentKeyEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1753,19 +1771,16 @@ static void AdjustActions(int client, const char[] key)
 	{
 		char buffers[2][64];
 		ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		ActorKv.JumpToKey(buffers[0]);
-		ActorKv.DeleteKey(buffers[1]);
+		if(ActorKv.JumpToKey(buffers[0]))
+			ActorKv.DeleteKey(buffers[1]);
 	}
 	else
 	{
 		strcopy(CurrentSubSectionEditing[client], sizeof(CurrentSubSectionEditing[]), key);
-		Actor_EditorMenu(client);
-		return;
+		ActorKv.JumpToKey(key, true);
 	}
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1811,8 +1826,6 @@ static void AdjustActionsSectionKey(int client, const char[] key)
 	CurrentSubSectionEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1826,8 +1839,24 @@ static void AdjustOptions(int client, const char[] key)
 	}
 
 	strcopy(CurrentSubSectionEditing[client], sizeof(CurrentSubSectionEditing[]), key);
+
+	ActorKv.Rewind();
+	ActorKv.JumpToKey(CurrentNPCEditing[client], true);
+	ActorKv.JumpToKey("Chats", true);
+	ActorKv.JumpToKey(CurrentChatEditing[client], true);
+	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
+	ActorKv.JumpToKey(CurrentSubSectionEditing[client], true);
+
+	ActorKv.SetString("_temp", "1");
+	/*
+	PrintToChatAll("AdjustOptions::%s:%s:%s:%s", CurrentNPCEditing[client],
+	CurrentChatEditing[client],
+	CurrentSectionEditing[client],
+	CurrentSubSectionEditing[client]);
+	*/
+	
+	SaveActorKv();
 	Actor_EditorMenu(client);
-	return;
 }
 
 static void AdjustOptionsSection(int client, const char[] key)
@@ -1859,8 +1888,6 @@ static void AdjustOptionsSection(int client, const char[] key)
 	}
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1892,8 +1919,6 @@ static void AdjustOptionsSectionKey(int client, const char[] key)
 	CurrentKeyEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1961,8 +1986,6 @@ static void AdjustOptionsSectionCondSectionKey(int client, const char[] key)
 	CurrentSubKeyEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -1998,10 +2021,19 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 			KeyValues kv = Quests_KV();
 			kv.GotoFirstSubKey();
 
+			bool first;
 			do
 			{
 				kv.GetSectionName(buffer1, sizeof(buffer1));
-				menu.AddItem(buffer1, buffer1);
+				if(first)
+				{
+					menu.InsertItem(0, buffer1, buffer1);
+				}
+				else
+				{
+					first = true;
+					menu.AddItem(buffer1, buffer1);
+				}
 			}
 			while(kv.GotoNextKey());
 
@@ -2179,8 +2211,6 @@ static void AdjustCondShared(int client, char section[64], char subsection[64], 
 	}
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -2244,8 +2274,6 @@ static void AdjustCondSectionKey(int client, const char[] key)
 	CurrentSubSectionEditing[client][0] = 0;
 
 	SaveActorKv();
-	Actor_ConfigSetup();
-	Zones_Rebuild();
 	Actor_EditorMenu(client);
 }
 
@@ -2272,4 +2300,7 @@ static void SaveActorKv()
 		if(i_NpcInternalId[i] == NPCActor_ID())
 			NPC_Despawn(i);
 	}
+
+	Actor_ConfigSetup();
+	Zones_Rebuild();
 }

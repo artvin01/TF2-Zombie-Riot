@@ -7607,10 +7607,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
 	b_ThisNpcIsImmuneToNuke[entity] = false;
-	c_NpcName[entity][0] = 0;
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
 #endif
+	c_NpcName[entity][0] = 0;
 
 #if defined EXPIDONSA_BASE
 	Expidonsa_SetToZero(entity);
@@ -7618,6 +7618,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 
 #if defined RPG
 	RPGCore_SetFlatDamagePiercing(entity,1.0);
+	XP[entity] = 0;
+	i_CreditsOnKill[entity] = 0;
+	Level[entity] = 0;
 #endif
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;

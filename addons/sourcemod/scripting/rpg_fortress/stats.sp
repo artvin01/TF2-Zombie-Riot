@@ -6,6 +6,13 @@
 static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int SaveIn[MAXTF2PLAYERS];
 static StringMap Mastery[MAXTF2PLAYERS];
+static int StatStrength[MAXTF2PLAYERS];
+static int StatPrecision[MAXTF2PLAYERS];
+static int StatArtifice[MAXTF2PLAYERS];
+static int StatEndurance[MAXTF2PLAYERS];
+static int StatStructure[MAXTF2PLAYERS];
+static int StatIntelligence[MAXTF2PLAYERS];
+static int StatCapacity[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
 {
@@ -23,17 +30,13 @@ void Stats_EnableCharacter(int client)
 	if(Saves_ClientCharId(client, buffer, sizeof(buffer)))
 		kv.JumpToKey(buffer);
 
-	BackpackBonus[client] = 0;
-	Agility[client] = 0;
-	Luck[client] = 0;
-
-	Strength[client] = kv.GetNum("strength");
-	Precision[client] = kv.GetNum("precision");
-	Artifice[client] = kv.GetNum("artifice");
-	Endurance[client] = kv.GetNum("endurnace");
-	Structure[client] = kv.GetNum("structure");
-	Intelligence[client] = kv.GetNum("intelligence");
-	Capacity[client] = kv.GetNum("capacity");
+	StatStrength[client] = kv.GetNum("strength");
+	StatPrecision[client] = kv.GetNum("precision");
+	StatArtifice[client] = kv.GetNum("artifice");
+	StatEndurance[client] = kv.GetNum("endurnace");
+	StatStructure[client] = kv.GetNum("structure");
+	StatIntelligence[client] = kv.GetNum("intelligence");
+	StatCapacity[client] = kv.GetNum("capacity");
 	XP[client] = kv.GetNum("xp");
 
 	delete Mastery[client];
@@ -49,6 +52,8 @@ void Stats_EnableCharacter(int client)
 		}
 		while(kv.GotoNextKey(false));
 	}
+	
+	Stats_UpdateLevel(client);
 }
 
 void Stats_GiveXP(int client, int xp)
@@ -75,13 +80,13 @@ static void SaveClientStats(int client)
 	{
 		kv.JumpToKey(buffer, true);
 
-		kv.SetNum("strength", Strength[client]);
-		kv.SetNum("precision", Precision[client]);
-		kv.SetNum("artifice", Artifice[client]);
-		kv.SetNum("endurnace", Endurance[client]);
-		kv.SetNum("structure", Structure[client]);
-		kv.SetNum("intelligence", Intelligence[client]);
-		kv.SetNum("capacity", Capacity[client]);
+		kv.SetNum("strength", StatStrength[client]);
+		kv.SetNum("precision", StatPrecision[client]);
+		kv.SetNum("artifice", StatArtifice[client]);
+		kv.SetNum("endurnace", StatEndurance[client]);
+		kv.SetNum("structure", StatStructure[client]);
+		kv.SetNum("intelligence", StatIntelligence[client]);
+		kv.SetNum("capacity", StatCapacity[client]);
 		kv.SetNum("xp", XP[client]);
 
 		kv.DeleteKey("mastery");
@@ -142,7 +147,7 @@ void Stats_ClearCustomStats(int entity)
 	Capacity[entity] = 0;
 	Agility[entity] = 0;
 	Luck[entity] = 0;
-	Level[entity] = 0;
+//	Level[entity] = 0;
 }
 
 void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
@@ -194,7 +199,7 @@ void Stats_DescItem(char[] desc, int[] attrib, float[] value, int attribs)
 	}
 }
 
-void Stats_GetCustomStats(int entity, int attrib, float value)
+void Stats_SetCustomStats(int entity, int attrib, float value)
 {
 	switch(attrib)
 	{
@@ -304,74 +309,32 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 	SaveClientStats(client);
 }
 
-/*
-static float AgilityMulti(int amount)
+void Stats_ApplyAttribsPre(int client)
 {
-	return 3.73333*Pow(amount + 16.0, -0.475);
+	Stats_ClearCustomStats(client);
 }
 
-void Stats_SetWeaponStats(int client, int entity, int slot)
+void Stats_ApplyAttribsPost(int client, TFClassType class)
 {
-	if(Agility[client])
-	{
-		float multi = AgilityMulti(Agility[client]);
-		//Agility code.
-
-		Attributes_SetMulti(entity, 6, multi);
-		Attributes_SetMulti(entity, 96, multi);
-	}
-	if(slot < TFWeaponSlot_Melee || i_IsWrench[entity])
-	{
-		int stat = Stats_Dexterity(client);
-		if(stat)
-		{
-			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
-		}
-	}
-	else if(i_IsWandWeapon[entity])
-	{
-		int stat = Stats_Intelligence(client);
-		if(stat)
-		{
-			Attributes_SetMulti(entity, 410, 1.0 + (stat / 50.0));
-		}
-	}
-	else if(slot == TFWeaponSlot_Melee)
-	{
-		int stat = Stats_Strength(client);
-		if(stat)
-		{
-			Attributes_SetMulti(entity, 2, 1.0 + (stat / 50.0));
-		}
-	}
-}
-*/
-
-void Stats_SetBodyStats(int client, TFClassType class, StringMap map)
-{
-	map.SetValue("26", RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
-	map.SetValue("252", 0.0/*Stats_KnockbackResist(client)*/);
+	Attributes_SetAdd(client, 26, RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
+	Attributes_Set(client, 252, 0.0/*Stats_KnockbackResist(client)*/);
 	//Give complete immunity to all normal knockback.
 	//in RPG we will give knockback another way.
 
 	float speed = 300.0 + float(Stats_Agility(client));
-	map.SetValue("107", RemoveExtraSpeed(class, speed));
+	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
 
 	static Race race;
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 	
-	map.SetValue("205", form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
-	map.SetValue("206", form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_SetMulti(client, 205, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
+	Attributes_SetMulti(client, 206, form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name)));
 }
 
 int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
 {
-	int strength = 5;
-	if(strength > 20)
-		strength = 20;
-	
-	base = strength;
+	base = 15;
 	bonus = BackpackBonus[client];
 
 	int i, entity;
@@ -389,8 +352,8 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseStrength + Strength[client];
-	bonus = 0;
+	base = BaseStrength + StatStrength[client];
+	bonus = Strength[client];
 	multi = race.StrengthMulti * form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -408,8 +371,8 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BasePrecision + Precision[client];
-	bonus = 0;
+	base = BasePrecision + StatPrecision[client];
+	bonus = Precision[client];
 	multi = race.PrecisionMulti * form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -427,8 +390,8 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseArtifice + Artifice[client];
-	bonus = 0;
+	base = BaseArtifice + StatArtifice[client];
+	bonus = Artifice[client];
 	multi = race.ArtificeMulti * form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -446,8 +409,8 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseEndurance + Endurance[client];
-	bonus = 0;
+	base = BaseEndurance + StatEndurance[client];
+	bonus = Endurance[client];
 	multi = race.EnduranceMulti * form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -465,8 +428,8 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseStructure + Structure[client];
-	bonus = 0;
+	base = BaseStructure + StatStructure[client];
+	bonus = Structure[client];
 	multi = race.StructureMulti * form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -484,8 +447,8 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multi =
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseIntelligence + Intelligence[client];
-	bonus = 0;
+	base = BaseIntelligence + StatIntelligence[client];
+	bonus = Intelligence[client];
 	multi = race.IntelligenceMulti * form.GetFloatStat(Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
@@ -502,8 +465,8 @@ int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	static Race race;
 	Races_GetClientInfo(client, race);
 
-	base = BaseCapacity + Capacity[client];
-	bonus = 0;
+	base = BaseCapacity + StatCapacity[client];
+	bonus = Capacity[client];
 	multi = race.CapacityMulti;
 
 	int i, entity;
@@ -521,8 +484,8 @@ int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseAgility + Agility[client];
-	bonus = form.GetIntStat(Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
+	base = BaseAgility;
+	bonus = Agility[client] + form.GetIntStat(Form::AgilityAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.AgilityMulti;
 
 	int i, entity;
@@ -540,8 +503,8 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	base = BaseLuck + Luck[client];
-	bonus = form.GetIntStat(Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
+	base = BaseLuck;
+	bonus = Luck[client] + form.GetIntStat(Form::LuckAdd, Stats_GetFormMastery(client, form.Name));
 	multi = race.LuckMulti;
 
 	int i, entity;
@@ -665,25 +628,25 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 				switch(choice)
 				{
 					case 0:
-						Strength[client]++;
+						StatStrength[client]++;
 					
 					case 1:
-						Precision[client]++;
+						StatPrecision[client]++;
 					
 					case 2:
-						Artifice[client]++;
+						StatArtifice[client]++;
 					
 					case 3:
-						Endurance[client]++;
+						StatEndurance[client]++;
 					
 					case 4:
-						Structure[client]++;
+						StatStructure[client]++;
 					
 					case 5:
-						Intelligence[client]++;
+						StatIntelligence[client]++;
 					
 					case 6:
-						Capacity[client]++;
+						StatCapacity[client]++;
 				}
 
 				Stats_UpdateLevel(client);
@@ -730,15 +693,13 @@ float RPGStats_FlatDamageResistance(int client)
 
 void Stats_UpdateLevel(int client)
 {
-	int stats = Strength[client]
-		+ Precision[client]
-		+ Artifice[client]
-		+ Endurance[client]
-		+ Structure[client]
-		+ Intelligence[client]
-		+ Capacity[client]
-		+ Agility[client]
-		+ Luck[client];
+	int stats = StatStrength[client]
+		+ StatPrecision[client]
+		+ StatArtifice[client]
+		+ StatEndurance[client]
+		+ StatStructure[client]
+		+ StatIntelligence[client]
+		+ StatCapacity[client];
 
 	Level[client] = stats / 5;
 }
@@ -770,7 +731,7 @@ public Action RPGStats_GiveTempomaryStatsToItemTimer(Handle timer, DataPack pack
 	return Plugin_Stop;
 }
 
-void RpgStats_GrantStatsViaIndex(int entity, int statindx, int StatAmount)
+static void RpgStats_GrantStatsViaIndex(int entity, int statindx, int StatAmount)
 {
 	switch(statindx)
 	{

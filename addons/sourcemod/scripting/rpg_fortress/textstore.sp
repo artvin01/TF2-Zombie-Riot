@@ -1659,6 +1659,9 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 		SPrintToChat(client, "You backpack was deposited");
 	}
 
+	if(InMenu[client] && MenuType[client] == MENU_BACKPACK)
+		CancelClientMenu(client);
+
 	Quests_MarkBookDirty(client);
 }
 
@@ -1981,6 +1984,9 @@ static void ShowMenu(int client, int page = 0)
 				for(int i; i < length; i++)
 				{
 					race.Forms.GetArray(i, form);
+					if(form.Questline[0] && Quests_GetStatus(client, form.Questline) != Status_Completed)
+						continue;
+					
 					IntToString(i, data, sizeof(data));
 					FormatEx(buffer, sizeof(buffer), "%s | Mastery [%.1f/%.1f]", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 					menu.AddItem(data, buffer, i_TransformationSelected[client] == (i + 1) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -1998,7 +2004,7 @@ static void ShowMenu(int client, int page = 0)
 		{
 			Menu menu = new Menu(TextStore_BackpackMenu);
 
-			int amount;
+			int amount = -1;
 			bool found;
 			int length = Backpack.Length;
 			for(int i; i < length; i++)
@@ -2045,8 +2051,6 @@ static void ShowMenu(int client, int page = 0)
 
 			if(!found)
 				menu.AddItem(NULL_STRING, "Empty", ITEMDRAW_DISABLED);
-
-			amount -= 2;
 			
 			int i;
 			while(TF2_GetItem(client, length, i))

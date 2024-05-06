@@ -582,7 +582,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 					{
 						if(tinker.Attrib[a] < 0)
 						{
-							Stats_GetCustomStats(entity, tinker.Attrib[a], tinker.Value[a]);
+							Stats_SetCustomStats(entity, tinker.Attrib[a], tinker.Value[a]);
 						}
 						else
 						{
@@ -627,7 +627,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 				{
 					if(weapon.Forge[i] < 0)
 					{
-						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
+						Stats_SetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
 					}
 					else if(weapon.Forge[i])
 					{

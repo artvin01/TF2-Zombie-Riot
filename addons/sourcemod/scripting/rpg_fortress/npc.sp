@@ -40,6 +40,8 @@ void NPC_ConfigSetup()
 	Miner_Enemy_OnMapStart_NPC();
 	DeepMiner_OnMapStart_NPC();
 	HeavyExcavator_OnMapStart_NPC();
+	CaveGuardsman_OnMapStart_NPC();
+	NemanBoss_OnMapStart_NPC();
 
 /*
 	HeadcrabZombie_OnMapStart_NPC();
@@ -190,7 +192,6 @@ void NPCDeath(int entity)
 	{
 		RpgCore_OnKillGiveMastery(client, MaxHealth);
 	}
-	
 }
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -214,6 +215,12 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 stock void NPC_Despawn(int entity)
 {
+	/*
+	if(i_NpcInternalId[entity] == NPCActor_ID())
+		LogStackTrace("Actor Despawned");
+	
+	PrintToChatAll("NPC_Despawn::%d", i_NpcInternalId[entity]);
+	*/
 	if(IsValidEntity(entity))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
@@ -439,12 +446,12 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 stock bool ShouldNpcJumpAtThisClient(int client)
 {
 	bool AllowJump = true;
-	/*
+	
 	if(AbilityGroundPoundReturnFloat(client) > GetGameTime())
 	{
 		AllowJump = false;
 	}
-	*/
+	
 	return AllowJump;
 }
 
@@ -474,6 +481,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_miner.sp"
 #include "rpg_fortress/npc/normal/npc_deep_miner.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_excavator.sp"
+#include "rpg_fortress/npc/normal/npc_cave_guardsman.sp"
+#include "rpg_fortress/npc/normal/npc_neman.sp"
 
 /*
 

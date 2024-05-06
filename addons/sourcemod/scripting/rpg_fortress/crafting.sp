@@ -4,37 +4,129 @@
 enum struct CraftEnum
 {
 	char Zone[32];
-	char Item[48];
-}
+	ArrayList List;
 
-static ArrayList CraftList;
+	char Model[PLATFORM_MAX_PATH];
+	float Pos[3];
+	float Ang[3];
+	float Scale;
 
-void Crafting_ConfigSetup()
-{
-	char buffer[PLATFORM_MAX_PATH];
-	RPG_BuildPath(buffer, sizeof(buffer), "crafting");
-	KeyValues kv = new KeyValues("Crafting");
-	kv.ImportFromFile(buffer);
-	
-	delete CraftList;
-	CraftList = new ArrayList(sizeof(CraftEnum));
+	int EntRef;
 
-	CraftEnum craft;
-
-	if(kv.GotoFirstSubKey())
+	void SetupKV(KeyValues kv)
 	{
-		do
+		kv.GetSectionName(this.Model, sizeof(this.Model));
+		ExplodeStringFloat(this.Model, " ", this.Pos, sizeof(this.Pos));
+
+		this.List = new ArrayList(ByteCountToCells(64));
+		if(kv.JumpToKey("Blueprints"))
 		{
-			kv.GetSectionName(craft.Zone, sizeof(craft.Zone));
 			if(kv.GotoFirstSubKey(false))
 			{
 				do
 				{
-					kv.GetSectionName(craft.Item, sizeof(craft.Item));
-					CraftList.PushArray(craft);
+					kv.GetSectionName(this.Model, sizeof(this.Model));
+					this.List.PushString(this.Model);
 				}
 				while(kv.GotoNextKey(false));
+
+				kv.GoBack();
 			}
+
+			kv.GoBack();
+		}
+
+		kv.GetVector("ang", this.Ang);
+		this.Scale = kv.GetFloat("scale", 1.0);
+		kv.GetString("model", this.Model, sizeof(this.Model));
+		kv.GetString("zone", this.Zone, sizeof(this.Zone));
+		if(!this.Model[0])
+			strcopy(this.Model, sizeof(this.Model), "error.mdl");
+		
+		PrecacheModel(this.Model);
+	}
+	
+	void Despawn()
+	{
+		if(this.EntRef != -1)
+		{
+			int entity = EntRefToEntIndex(this.EntRef);
+			if(entity != -1)
+				RemoveEntity(entity);
+						
+			this.EntRef = -1;
+		}
+	}
+	
+	void Spawn()
+	{
+		if(EntRefToEntIndex(this.EntRef) == -1)
+		{
+			int entity = CreateEntityByName("prop_dynamic_override");
+			if(IsValidEntity(entity))
+			{
+				DispatchKeyValue(entity, "targetname", "rpg_fortress");
+				DispatchKeyValue(entity, "model", this.Model);
+				DispatchKeyValueFloat(entity, "modelscale", this.Scale);
+				DispatchKeyValue(entity, "solid", "6");
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
+				DispatchSpawn(entity);
+				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
+
+				b_is_a_brush[entity] = true;
+				b_BrushToOwner[entity] = EntIndexToEntRef(entity);
+
+				this.EntRef = EntIndexToEntRef(entity);
+			}
+		}
+	}
+}
+
+static ArrayList CraftList;
+static StringMap BluePrints;
+static int CurrentMenu[MAXTF2PLAYERS];
+static int CurrentPrint[MAXTF2PLAYERS];
+static char CurrentRecipe[MAXTF2PLAYERS][64];
+
+void Crafting_ConfigSetup()
+{
+	char buffer[PLATFORM_MAX_PATH];
+	
+	if(BluePrints)
+	{
+		StringMapSnapshot snap = BluePrints.Snapshot();
+
+		delete snap;
+	}
+
+	CraftEnum craft;
+	
+	if(CraftList)
+	{
+		int length = CraftList.Length;
+		for(int i; i < length; i++)
+		{
+			CraftList.GetArray(i, craft);
+			delete craft.List;
+		}
+		delete CraftList;
+	}
+
+	CraftList = new ArrayList(sizeof(CraftEnum));
+	
+	RPG_BuildPath(buffer, sizeof(buffer), "crafting");
+	KeyValues kv = new KeyValues("Crafting");
+	kv.ImportFromFile(buffer);
+
+	if(kv.GotoFirstSubKey())
+	{
+		craft.EntRef = -1;
+
+		do
+		{
+			craft.SetupKV(kv);
+			CraftList.PushArray(craft);
 		}
 		while(kv.GotoNextKey());
 	}
@@ -42,7 +134,7 @@ void Crafting_ConfigSetup()
 	delete kv;
 }
 
-void Crafting_ClientEnter(int client, const char[] zone)
+void Crafting_EnableZone(const char[] zone)
 {
 	if(CraftList)
 	{
@@ -53,23 +145,14 @@ void Crafting_ClientEnter(int client, const char[] zone)
 			CraftList.GetArray(i, craft);
 			if(StrEqual(craft.Zone, zone))
 			{
-				int length2 = TextStore_GetItems();
-				for(int a; a < length2; a++)
-				{
-					static char buffer[48];
-					TextStore_GetItemName(a, buffer, sizeof(buffer));
-					if(StrEqual(buffer, craft.Item, false))
-					{
-						TextStore_SetInv(client, a, 1);
-						break;
-					}
-				}
+				craft.Spawn();
+				CraftList.SetArray(i, craft);
 			}
 		}
 	}
 }
 
-void Crafting_ClientLeave(int client, const char[] zone)
+void Crafting_DisableZone(const char[] zone)
 {
 	if(CraftList)
 	{
@@ -80,56 +163,66 @@ void Crafting_ClientLeave(int client, const char[] zone)
 			CraftList.GetArray(i, craft);
 			if(StrEqual(craft.Zone, zone))
 			{
-				int length2 = TextStore_GetItems();
-				for(int a; a < length2; a++)
-				{
-					static char buffer[48];
-					TextStore_GetItemName(a, buffer, sizeof(buffer));
-					if(StrEqual(buffer, craft.Item, false))
-					{
-						TextStore_SetInv(client, a, 0);
-						break;
-					}
-				}
+				craft.Despawn();
+				CraftList.SetArray(i, craft);
 			}
 		}
 	}
 }
 
-void Crafting_AllowedFishing(int client, bool allowed)
+bool Crafting_Interact(int client, int entity)
 {
-	static bool InWater[MAXTF2PLAYERS];
-	if(InWater[client])
+	int ref = EntIndexToEntRef(entity);
+	int length = CraftList.Length;
+	for(int i; i < length; i++)
 	{
-		if(!allowed)
+		static CraftEnum craft;
+		CraftList.GetArray(i, craft);
+		if(craft.EntRef == ref)
 		{
-			int length = TextStore_GetItems();
-			for(int i; i < length; i++)
-			{
-				static char buffer[48];
-				TextStore_GetItemName(i, buffer, sizeof(buffer));
-				if(StrEqual(buffer, "Water Source", false))
-				{
-					TextStore_SetInv(client, i, 0);
-					InWater[client] = false;
-					break;
-				}
-			}
+			CurrentMenu[client] = i;
+			CraftMenu(client);
+			return true;
 		}
 	}
-	else if(allowed)
+
+	return false;
+}
+
+static void CraftMenu(int client)
+{
+	static CraftEnum craft;
+	CraftList.GetArray(CurrentMenu[client], craft);
+
+	Menu menu = new Menu(CraftMenuH);
+
+	int length = craft.List;
+	for(int i; i < length; i++)
 	{
-		int length = TextStore_GetItems();
-		for(int i; i < length; i++)
+		craft.List.GetString(craft.Model, sizeof(craft.Model));
+		menu.AddItem(craft.Model, craft.Model);
+	}
+
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+static int CraftMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
 		{
-			static char buffer[48];
-			TextStore_GetItemName(i, buffer, sizeof(buffer));
-			if(StrEqual(buffer, "Water Source", false))
-			{
-				TextStore_SetInv(client, i, 1);
-				InWater[client] = true;
-				break;
-			}
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char num[16];
+			menu.GetItem(choice, num, sizeof(num));
+			
+			i_TransformationSelected[client] = StringToInt(num) + 1;
+
+			ShowMenu(client);
 		}
 	}
+	return 0;
 }

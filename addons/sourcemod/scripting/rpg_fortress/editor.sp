@@ -154,7 +154,7 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 void Editor_MainMenu(int client)
 {
 	EditMenu menu = new EditMenu();
-	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress special attack to toggle noclip\n ");
+	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress reload/interact an object to pull up it's editor menu\nPress special attack to toggle noclip\n ");
 
 	menu.AddItem("reloadrpg", "Reload RPG Fortress");
 	menu.AddItem("reloadstore", "Reload Text Store");
@@ -169,12 +169,15 @@ void Editor_MainMenu(int client)
 		FormatEx(buffer, sizeof(buffer), "Pick-From Range: %d HU\n ", PickRange[client]);
 	}
 	
-	menu.AddItem("pickrange", );
+	menu.AddItem("pickrange", buffer);
 
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
 	menu.AddItem("actor", "Actors");
 	menu.AddItem("quests", "Quests");
+	menu.AddItem("garden", "Gardens");
+	menu.AddItem("mining", "Mines");
+	menu.AddItem("fishing", "Fishing");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -217,6 +220,8 @@ static void MainMenuHandler(int client, const char[] buffer)
 			default:
 				PickRange[client] = 0;
 		}
+
+		Editor_MainMenu(client);
 	}
 	else if(StrContains(buffer, "zones") != -1)
 	{
@@ -233,6 +238,18 @@ static void MainMenuHandler(int client, const char[] buffer)
 	else if(StrContains(buffer, "actor") != -1)
 	{
 		Actor_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "garden") != -1)
+	{
+		Garden_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "mining") != -1)
+	{
+		Mining_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "fishing") != -1)
+	{
+		Fishing_EditorMenu(client);
 	}
 }
 

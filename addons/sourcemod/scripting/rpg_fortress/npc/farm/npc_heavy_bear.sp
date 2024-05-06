@@ -232,7 +232,7 @@ bool HeavyBear_Interact(int client, int weapon)
 				if(amount < 1)
 				{
 					TF2_RemoveItem(client, weapon);
-					TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+					SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 				}
 
 				switch(Farm_Animal_Food_Type)
@@ -270,7 +270,7 @@ bool HeavyBear_Interact(int client, int weapon)
 			else
 			{
 				TF2_RemoveItem(client, weapon);
-				TF2Util_SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+				SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 			}
 		}
 		else

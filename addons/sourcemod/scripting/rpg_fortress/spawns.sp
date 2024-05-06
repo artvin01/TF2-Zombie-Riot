@@ -104,7 +104,6 @@ enum struct SpawnEnum
 	}
 }
 
-static int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 static ArrayList SpawnList;
 static Handle h_SpawnTimer;
 static int SpawnCycle;
@@ -446,7 +445,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 					Stats_GiveXP(client, XP[entity]);
 					SPrintToChat(client, "You gained %d XP", XP[entity]);
 				}
-				/*
+				
 				if(i_CreditsOnKill[entity])
 				{
 					if(i_CreditsOnKill[entity] > 49)
@@ -463,7 +462,6 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
 					}
 				}
-				*/
 				
 				spawn.DoAllDrops(target, pos, Level[entity]);
 			}
@@ -557,36 +555,49 @@ public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static Handle TimerSpawnEditing[MAXTF2PLAYERS];
+static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Spawns_EditorMenu(int client)
 {
-	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH], buffer3[48];
 
 	EditMenu menu = new EditMenu();
 
 	if(StrEqual(CurrentKeyEditing[client], "copy"))
 	{
-		menu.SetTitle("Spawns\n%s - %s\nSelect spawn to copy from (can type name too):\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
+		menu.SetTitle("Spawns\n%s - %s\nSelect spawn to copy from:\n ", CurrentZoneEditing[client], CurrentSpawnEditing[client]);
 		
 		RPG_BuildPath(buffer1, sizeof(buffer1), "spawns");
 		KeyValues kv = new KeyValues("Spawns");
 		kv.ImportFromFile(buffer1);
 		if(kv.GotoFirstSubKey())
 		{
+			bool first;
 			do
 			{
+				kv.GetSectionName(buffer1, sizeof(buffer1));
 				if(kv.GotoFirstSubKey())
 				{
-					kv.GetSectionName(buffer1, sizeof(buffer1));
 					do
 					{
-						kv.GetString("name", buffer2, sizeof(buffer2));
+						kv.GetSectionName(buffer2, sizeof(buffer2));
 						Format(buffer2, sizeof(buffer2), "%s;%s", buffer1, buffer2);
-						menu.AddItem(buffer2, buffer2);
+
+						kv.GetString("name", buffer3, sizeof(buffer3));
+						Format(buffer3, sizeof(buffer3), "%s (%s)", buffer3, buffer2);
+
+						if(first && Zones_IsActive(buffer1))
+						{
+							menu.InsertItem(0, buffer2, buffer3);
+						}
+						else
+						{
+							first = true;
+							menu.AddItem(buffer2, buffer3);
+						}
 					}
 					while(kv.GotoNextKey());
 					kv.GoBack();
@@ -675,7 +686,7 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("high_drops", buffer2);
 
 		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
 		FormatEx(buffer2, sizeof(buffer2), "Drop 1: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
 		menu.AddItem("drop_name_1", buffer2);
 
@@ -683,7 +694,7 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("drop_chance_1", buffer2);
 
 		kv.GetString("drop_name_2", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
 		FormatEx(buffer2, sizeof(buffer2), "Drop 2: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
 		menu.AddItem("drop_name_2", buffer2);
 
@@ -691,7 +702,7 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("drop_chance_2", buffer2);
 
 		kv.GetString("drop_name_3", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
 		FormatEx(buffer2, sizeof(buffer2), "Drop 3: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
 		menu.AddItem("drop_name_3", buffer2);
 
@@ -699,7 +710,7 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("drop_chance_3", buffer2);
 
 		kv.GetString("drop_name_4", buffer1, sizeof(buffer1));
-		valid = (buffer1[0] && TextStore_IsValidName(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
 		FormatEx(buffer2, sizeof(buffer2), "Drop 4: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
 		menu.AddItem("drop_name_4", buffer2);
 
@@ -743,28 +754,14 @@ void Spawns_EditorMenu(int client)
 
 		Zones_RenderZone(client, CurrentZoneEditing[client]);
 
-		delete TimerSpawnEditing[client];
-		TimerSpawnEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+		//delete TimerZoneEditing[client];
+		//TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
 	}
 	else
 	{
 		menu.SetTitle("Spawns\nSelect a zone:\n ");
 
-		KeyValues zones = Zones_GetKv();
-		
-		if(zones.GotoFirstSubKey())
-		{
-			do
-			{
-				zones.GetSectionName(buffer1, sizeof(buffer1));
-				menu.AddItem(buffer1, buffer1);
-			}
-			while(zones.GotoNextKey());
-		}
-		else
-		{
-			menu.AddItem("", "None", ITEMDRAW_DISABLED);
-		}
+		Zones_GenerateZoneList(client, menu);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, ZonePicker);
@@ -773,7 +770,7 @@ void Spawns_EditorMenu(int client)
 
 static Action Timer_RefreshHud(Handle timer, int client)
 {
-	TimerSpawnEditing[client] = null;
+	TimerZoneEditing[client] = null;
 	Function func = Editor_MenuFunc(client);
 	if(func != SpawnPicker)
 		return Plugin_Stop;
@@ -798,7 +795,7 @@ static void SpawnPicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
-		delete TimerSpawnEditing[client];
+		delete TimerZoneEditing[client];
 		CurrentZoneEditing[client][0] = 0;
 		Editor_MainMenu(client);
 		return;
@@ -947,6 +944,7 @@ static void AdjustSpawnCopy(int client, const char[] key)
 	char buffers[2][64];
 	if(ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[])) != 2)
 	{
+		PrintToChatAll("AdjustSpawnCopy:%s::Failed", key);
 		CurrentKeyEditing[client][0] = 0;
 		Spawns_EditorMenu(client);
 		return;
@@ -969,6 +967,10 @@ static void AdjustSpawnCopy(int client, const char[] key)
 
 		main.Rewind();
 		main.ExportToFile(filepath);
+	}
+	else
+	{
+		PrintToChatAll("AdjustSpawnCopy:%s::FailedJump", key);
 	}
 
 	delete main;

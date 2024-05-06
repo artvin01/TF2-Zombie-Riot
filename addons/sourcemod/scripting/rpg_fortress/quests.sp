@@ -672,7 +672,7 @@ void Quests_EditorMenu(int client)
 		int repeat = QuestKv.GetNum("repeattime");
 		if(repeat < 1)
 		{
-			Format(buffer1, sizeof(buffer1), "Repeat: Once Only");
+			Format(buffer1, sizeof(buffer1), "Repeat: None");
 		}
 		else if(repeat > 40)
 		{

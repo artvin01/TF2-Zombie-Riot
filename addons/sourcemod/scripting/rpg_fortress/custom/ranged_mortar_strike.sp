@@ -15,40 +15,70 @@ void Mortar_MapStart()
 public float AbilityMortarRanged(int client, int index, char name[48])
 {
 	KeyValues kv = TextStore_GetItemKv(index);
-	if(kv)
+	if(!kv)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-		{
-			static char classname[36];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee && !i_IsWandWeapon[weapon] && !i_IsWrench[weapon])
-			{
-				Ability_MortarRanged(client, 1, weapon);
-				return (GetGameTime() + 40.0);
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
-				return 0.0;
-			}
-		}
-
-	//	if(kv.GetNum("consume", 1))
-
+		return 0.0;
 	}
-	return 0.0;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon))
+	{
+		return 0.0;
+	}
+
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
+		return 0.0;
+	}
+
+	int StatsForCalcMultiAdd;
+	Stats_Precision(client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd *= 2;
+	//get base endurance for cost
+	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
+		return 0.0;
+	}
+
+	int StatsForCalcMultiAdd_Capacity;
+
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
+
+	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana");
+		return 0.0;
+	}
+	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
+	RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
+
+	StatsForCalcMultiAdd = Stats_Precision(client);
+
+	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
+
+	damageDelt *= 3.0;
+
+	Ability_MortarRanged(client, 1, weapon, damageDelt);
+	return (GetGameTime() + 10.0);
 }
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 static float f_Damage[MAXTF2PLAYERS];
 
 
 
-public void Ability_MortarRanged(int client, int level, int weapon)
+public void Ability_MortarRanged(int client, int level, int weapon, float damage)
 {
-	float damage = Config_GetDPSOfEntity(weapon);
-	
 	if(damage < 1.0)
 	{
 		f_Damage[client] = 1.0;
@@ -87,7 +117,7 @@ public void BuildingMortarAction(int client)
 	color[2] = 0;
 	color[3] = 255;
 									
-	if (TF2_GetClientTeam(client) == TFTeam_Blue)
+	if (GetTeam(client) == TFTeam_Blue)
 	{
 		color[2] = 255;
 		color[0] = 0;

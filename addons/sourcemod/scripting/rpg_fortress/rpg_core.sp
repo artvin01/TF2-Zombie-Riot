@@ -24,8 +24,6 @@ int BaseMaxExperiencePerLevel;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
-int Level[MAXENTITIES];
-int XP[MAXENTITIES];
 int RaceIndex[MAXTF2PLAYERS];
 int i_TransformationSelected[MAXTF2PLAYERS];
 int i_TransformationLevel[MAXTF2PLAYERS];
@@ -38,6 +36,7 @@ int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
 float Animal_Happy[MAXTF2PLAYERS][10][3];
 float f3_PositionArrival[MAXENTITIES][3];
+int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 
 bool b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
@@ -116,19 +115,19 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_wand_fire_ball.sp"
 #include "rpg_fortress/custom/wand/weapon_short_teleport.sp"
 #include "rpg_fortress/custom/wand/weapon_icicles.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
-#include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
 #include "rpg_fortress/custom/ground_aircutter.sp"	
 #include "rpg_fortress/custom/ranged_quick_reflex.sp"
 #include "rpg_fortress/custom/ranged_sentrythrow.sp"
-#include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 */
+#include "rpg_fortress/custom/ground_pound_melee.sp"
+#include "rpg_fortress/custom/ranged_mortar_strike.sp"
+#include "rpg_fortress/custom/weapon_wand_fire_ball.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
@@ -161,6 +160,7 @@ void RPG_PluginStart()
 	TextStore_PluginStart();
 	Traffic_PluginStart();
 	Zones_PluginStart();
+	Quests_PluginStart();
 
 	CountPlayersOnRed();
 	Medigun_PluginStart();
@@ -219,14 +219,15 @@ void RPG_MapStart()
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
 	SamuraiSword_Map_Precache();
+	GroundSlam_Map_Precache();
+	Mortar_MapStart();
+	Wand_FireBall_Map_Precache();
+
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
-	GroundSlam_Map_Precache();
-	Wand_FireBall_Map_Precache();
 	Wand_Short_Teleport_Map_Precache();
-	Mortar_MapStart();
 	BoomStick_MapPrecache();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
@@ -381,6 +382,7 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	i_NpcFightOwner[entity] = false;
 	f_SingerBuffedFor[entity] = 0.0;
 	StoreWeapon[entity][0] = 0;
+	hFromSpawnerIndex[entity] = -1;
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);

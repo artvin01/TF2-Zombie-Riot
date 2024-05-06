@@ -587,6 +587,13 @@ float f_WeaponHudOffsetY[MAXTF2PLAYERS];
 float f_NotifHudOffsetX[MAXTF2PLAYERS];
 float f_NotifHudOffsetY[MAXTF2PLAYERS];
 
+
+#if defined RPG
+int Level[MAXENTITIES];
+int XP[MAXENTITIES];
+int i_CreditsOnKill[MAXENTITIES];
+#endif
+
 #if defined ZR || defined RPG
 int i_Damage_dealt_in_total[MAXTF2PLAYERS];
 bool IsInsideManageRegularWeapons;
@@ -3501,6 +3508,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 			if(TextStore_Interact(client, entity, Is_Reload_Button))
 				return true;
 			
+			if(Mining_Interact(client, entity, weapon))
+				return true;
+			
 			if(Tinker_Interact(client, entity, weapon))
 				return true;
 			
@@ -3516,6 +3526,12 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #if defined RPG
 		else
 		{
+			if(Fishing_Interact(client, weapon))
+				return true;
+			
+			if(Mining_Interact(client, entity, weapon))
+				return true;
+			
 			if(Garden_Interact(client, vecEndOrigin))
 				return true;
 		}

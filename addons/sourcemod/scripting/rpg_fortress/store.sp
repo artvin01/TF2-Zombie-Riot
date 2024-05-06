@@ -265,7 +265,19 @@ enum struct ItemInfo
 		kv.GetString("func_onbuy", buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
 
-		this.Slot = kv.GetNum("slot", -1);
+		this.Slot = kv.GetNum("slot", -2);
+		if(this.Slot == -2)
+		{
+			if(this.Classname[0])
+			{
+				this.Slot = TF2_GetClassnameSlot(this.Classname);
+			}
+			else
+			{
+				this.Slot = -1;
+			}
+		}
+
 		strcopy(this.Custom_Name, sizeof(this.Custom_Name), name);
 		
 		this.EntRef = INVALID_ENT_REFERENCE;
@@ -314,7 +326,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 	{
 		EquippedItems.GetArray(i, info);
 		if(info.Owner == client && info.Store == index)
-			return false;
+			return true;
 	}
 
 	info.SetupKV(kv, name);
@@ -989,6 +1001,7 @@ void Store_ApplyAttribs(int client)
 		return;
 
 	Attributes_RemoveAll(client);
+	Stats_ApplyAttribsPre(client);
 	
 	TFClassType ClassForStats = WeaponClass[client];
 	
@@ -998,7 +1011,6 @@ void Store_ApplyAttribs(int client)
 	Races_GetRaceByIndex(RaceIndex[client], race);
 	Format(c_TagName[client],sizeof(c_TagName[]),race.Name);
 	i_TagColor[client] =	{255,255,255,255};
-	Stats_SetBodyStats(client, ClassForStats, map);
 
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 
@@ -1109,7 +1121,7 @@ void Store_ApplyAttribs(int client)
 			int index = StringToInt(buffer1);
 			if(index < 0)
 			{
-				Stats_GetCustomStats(client, index, value);
+				Stats_SetCustomStats(client, index, value);
 			}
 			else if(Attributes_Set(entity, index, value))
 			{
@@ -1117,6 +1129,8 @@ void Store_ApplyAttribs(int client)
 			}
 		}
 	}
+
+	Stats_ApplyAttribsPost(client, ClassForStats);
 
 	while(TF2_GetWearable(client, entity))
 	{
@@ -1198,8 +1212,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
-		int count;
-		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 
@@ -1210,24 +1222,24 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			EquippedItems.GetArray(i, info);
 			if(info.Owner == client)
 			{
-				if(info.Classname[0])
+				if(info.Classname[0] && info.Slot < 3)
 				{
-					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
-					{
-						if(hasPDA)
-							continue;
-						
-						hasPDA = true;
-					}
-
 					Store_GiveItem(client, i, use, found);
-					if(++count > 6)
-					{
-						SetGlobalTransTarget(client);
-						PrintToChat(client, "%t", "At Weapon Limit");
-						break;
-					}
+					length = EquippedItems.Length;
+				}
+			}
+		}
 
+		length = EquippedItems.Length;
+		for(int i; i < length; i++)
+		{
+			static ItemInfo info;
+			EquippedItems.GetArray(i, info);
+			if(info.Owner == client)
+			{
+				if(info.Classname[0] && info.Slot > 2)
+				{
+					Store_GiveItem(client, i, use, found);
 					length = EquippedItems.Length;
 				}
 			}
@@ -1514,7 +1526,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 					if(use)
 					{
-						TF2Util_SetPlayerActiveWeapon(client, entity);
+						SetPlayerActiveWeapon(client, entity);
 						use = false;
 					}
 				}
@@ -1571,7 +1583,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			if(use)
 			{
-				TF2Util_SetPlayerActiveWeapon(client, entity);
+				SetPlayerActiveWeapon(client, entity);
 				use = false;
 			}
 		}
@@ -1610,7 +1622,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							if(info.Attrib[a] < 0)
 							{
-								Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
+								Stats_SetCustomStats(entity, info.Attrib[a], info.Value[a]);
 								continue;
 							}
 
@@ -1645,7 +1657,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							if(info.Attrib2[a] < 0)
 							{
-								Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
+								Stats_SetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
 								continue;
 							}
 
@@ -1921,4 +1933,28 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	Artifice2[weapon] = Stats_Artifice(client);
 	Agility2[weapon] = Stats_Agility(client);
 */
+}
+
+bool Store_SwitchToWeaponSlot(int client, int slot)
+{
+	int length = EquippedItems.Length;
+	for(int i; i < length; i++)
+	{
+		static ItemInfo info;
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client)
+		{
+			if(info.Classname[0] && info.Slot == slot)
+			{
+				int entity = EntRefToEntIndex(info.EntRef);
+				if(entity != -1)
+				{
+					SetPlayerActiveWeapon(client, entity);
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
 }

@@ -34,40 +34,52 @@ void GroundSlam_Map_Precache()
 public float AbilityGroundSlam(int client, int index, char name[48])
 {
 	KeyValues kv = TextStore_GetItemKv(index);
-	if(kv)
+	if(!kv)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-		{
-			static char classname[36];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
-			{
-				Ability_OnAbility_Ground_Pound(client, 1, weapon);
-				return (GetGameTime() + 40.0);
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
-				return 0.0;
-			}
-		}
-
-	//	if(kv.GetNum("consume", 1))
-
+		return 0.0;
 	}
-	return 0.0;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon))
+	{
+		return 0.0;
+	}
+
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
+		return 0.0;
+	}
+
+	
+	int StatsForCalcMultiAdd;
+	Stats_Strength(client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd /= 2;
+	//get base endurance for cost
+	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
+		return 0.0;
+	}
+	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd = Stats_Strength(client);
+
+	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
+
+	damageDelt *= 3.0;
+
+	Ability_OnAbility_Ground_Pound(client, 1, weapon, damageDelt);
+	return (GetGameTime() + 10.0);
 }
 
-public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon)
-{
-	float damage;
-	
-	damage = Config_GetDPSOfEntity(weapon);
-
-	damage *= 3.0;		
-
+public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, float damage)
+{	
 	f_OriginalDamage[client] = damage;
 	client_slammed_how_many_times[client] = 0;
 	client_slammed_how_many_times_limit[client] = (level * 2);
@@ -140,7 +152,7 @@ public Action contact_ground_shockwave(int client)
 		
 		GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp);
 		
-		client_slammed_pos[client] = GetAbsOriginOld(client);
+		GetAbsOrigin(client, client_slammed_pos[client]);
 		client_slammed_pos[client][2] += 5.0;
 		
 		float vecSwingEnd[3];

@@ -146,7 +146,6 @@ static void OnEnter(int entity, const char[] name)
 	else if(entity > 0 && entity <= MaxClients)
 	{
 		Actor_EnterZone(entity, name);
-		Crafting_ClientEnter(entity, name);
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
 		Music_ZoneEnter(entity, name);
@@ -162,7 +161,6 @@ static void OnLeave(int entity, const char[] name)
 	}
 	else if(entity > 0 && entity <= MaxClients)
 	{
-		Crafting_ClientLeave(entity, name);
 		Garden_ClientLeave(entity, name);
 		Spawns_ClientLeave(entity, name);
 		TextStore_ZoneLeave(entity, name);	
@@ -176,6 +174,7 @@ static void OnEnable(int entity, const char[] name)
 	}
 	else*/
 	{
+		Crafting_EnableZone(name);
 		Dungeon_EnableZone(name);
 		Mining_EnableZone(name);
 		Spawns_EnableZone(entity, name);
@@ -191,6 +190,7 @@ static void OnDisable(const char[] name)
 	else*/
 	{
 		Actor_DisableZone(name);
+		Crafting_DisableZone(name);
 		Dungeon_DisableZone(name);
 		Mining_DisableZone(name);
 		Spawns_DisableZone(name);
@@ -333,11 +333,11 @@ static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 void Zones_EditorMenu(int client)
 {
 	char buffer[PLATFORM_MAX_PATH];
-	ZonesKv.Rewind();
 	EditMenu menu = new EditMenu();
 
 	if(CurrentZoneEditing[client][0])
 	{
+		ZonesKv.Rewind();
 		ZonesKv.JumpToKey(CurrentZoneEditing[client], true);
 
 		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
@@ -389,23 +389,75 @@ void Zones_EditorMenu(int client)
 	{
 		menu.SetTitle("Zones\nType in chat to create a new zone\n ");
 		
-		if(ZonesKv.GotoFirstSubKey())
-		{
-			do
-			{
-				ZonesKv.GetSectionName(buffer, sizeof(buffer));
-				menu.AddItem(buffer, buffer);
-			}
-			while(ZonesKv.GotoNextKey());
-		}
-		else
-		{
-			menu.AddItem("", "None", ITEMDRAW_DISABLED);
-		}
+		Zones_GenerateZoneList(client, menu);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, NamePicker);
 	}
+}
+
+void Zones_GenerateZoneList(int client, EditMenu menu, bool &first = false)
+{
+	char buffer[64];
+	
+	ZonesKv.Rewind();
+	if(ZonesKv.GotoFirstSubKey())
+	{
+		do
+		{
+			ZonesKv.GetSectionName(buffer, sizeof(buffer));
+			if(Zones_WithinRangeKv(client))
+			{
+				if(first)
+				{
+					menu.InsertItem(0, buffer, buffer);
+				}
+				else
+				{
+					menu.AddItem(buffer, buffer);
+				}
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s (Outside)", buffer);
+				menu.AddItem(buffer, buffer);
+			}
+
+			first = true;
+		}
+		while(ZonesKv.GotoNextKey());
+	}
+	else
+	{
+		menu.AddItem("", "None", ITEMDRAW_DISABLED);
+	}
+}
+
+bool Zones_WithinRangeKv(int client)
+{
+	float pos[3];
+	ZonesKv.GetVector("point1", pos);
+	if(!pos[0])
+		return true;
+	
+	if(Editor_WithinRange(client, pos))
+		return true;
+	
+	ZonesKv.GetVector("point2", pos);
+	if(!pos[0])
+		return true;
+	
+	if(Editor_WithinRange(client, pos))
+		return true;
+	
+	ZonesKv.GetVector("telepos", pos);
+	if(pos[0])
+	{
+		if(Editor_WithinRange(client, pos))
+			return true;
+	}
+	
+	return false;
 }
 
 static Action Timer_RefreshHud(Handle timer, int client)

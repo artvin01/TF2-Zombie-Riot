@@ -45,6 +45,7 @@ enum struct Form
 	float Mastery;
 	Function Func_Requirement;
 	float DrainRate[2];
+	char Questline[64];
 
 	float StrengthMulti[2];
 	float PrecisionMulti[2];
@@ -70,6 +71,8 @@ enum struct Form
 		this.Func_Requirement = KvGetFunction(kv, "Form Function Requirement");
 		this.Func_FormActivate = KvGetFunction(kv, "Form Activation Func");
 		this.Func_FormDeactivate = KvGetFunction(kv, "Form Disable Func");
+		
+		kv.GetString("Questline", this.Questline, sizeof(this.Questline));
 
 		kv.GetColor4("Form_RGBA", this.Form_RGBA);
 

@@ -803,7 +803,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	ManualTF2Util_SetPlayerActiveWeapon(client, swap);
+	SetPlayerActiveWeapon(client, swap);
 }
 
 void Store_SwapItems(int client)
@@ -885,7 +885,7 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					ManualTF2Util_SetPlayerActiveWeapon(client, nextE);
+					SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -900,7 +900,7 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					ManualTF2Util_SetPlayerActiveWeapon(client, weapon);
+					SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}

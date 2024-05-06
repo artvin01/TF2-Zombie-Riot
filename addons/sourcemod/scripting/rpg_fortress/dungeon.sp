@@ -725,7 +725,7 @@ static void ShowMenu(int client, int page)
 			int time = RoundToFloor(GetGameTime() - dungeon.StartTime);
 			if(time >= 0)
 			{
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nTime Elapsed: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(null), time / 60, time % 60);
+				menu.SetTitle("RPG Fortress\n \nChaos Surgence:\n%s △%d\nTime Elapsed: %d:%02d\n ", dungeon.CurrentStage, dungeon.TierLevel(null), time / 60, time % 60);
 
 				for(int target = 1; target <= MaxClients; target++)
 				{
@@ -763,7 +763,7 @@ static void ShowMenu(int client, int page)
 
 				ArrayList slots = new ArrayList ();
 				int tier = dungeon.TierLevel(slots);
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, tier, time / 60, time % 60);
+				menu.SetTitle("RPG Fortress\n \nChaos Surgence:\n%s △%d\nStarts In: %d:%02d\n ", dungeon.CurrentStage, tier, time / 60, time % 60);
 
 				dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage));
 
@@ -950,11 +950,11 @@ static void ShowMenu(int client, int page)
 		{
 			if(client == leader)
 			{
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:");
+				menu.SetTitle("RPG Fortress\n \nChaos Surgence:");
 			}
 			else
 			{
-				menu.SetTitle("RPG Fortress\n \nContingency Contract:\nYour Party Leader is %N", leader);
+				menu.SetTitle("RPG Fortress\n \nChaos Surgence:\nYour Party Leader is %N", leader);
 			}
 
 			StringMapSnapshot snap = dungeon.StageList.Snapshot();
@@ -1085,7 +1085,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							dungeon.ModList = new ArrayList();
 						
 						dungeon.CurrentHost = client;
-						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
+						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 10.0 : QUEUE_TIME);
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
 
 						for(int target = 1; target <= MaxClients; target++)
@@ -1499,20 +1499,23 @@ public Action Dungeon_Timer(Handle timer)
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}
 
-								static StageEnum stage;
-								if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+								if(dungeon.ModList)
 								{
-									size = dungeon.ModList.Length;
-									for(int b; b < size; b++)
+									static StageEnum stage;
+									if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 									{
-										if(stage.ModList.GetArray(dungeon.ModList.Get(b), mod))
+										size = dungeon.ModList.Length;
+										for(int b; b < size; b++)
 										{
-											Level[entity] += mod.Level;
-											mod.CallOnSpawn(entity);
+											if(stage.ModList.GetArray(dungeon.ModList.Get(b), mod))
+											{
+												Level[entity] += mod.Level;
+												mod.CallOnSpawn(entity);
+											}
 										}
 									}
 								}
-
+								
 								Apply_Text_Above_Npc(entity, wave.Rarity, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
 							}
 

@@ -58,9 +58,8 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_update_frequency", "0.1"); // default:0
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
-	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
-	
 #if defined ZR
+	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
 	ConVar_Add("mp_disable_respawn_times", "1.0");
 //	ConVar_Add("tf_mvm_defenders_team_size", "16");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
@@ -104,6 +103,9 @@ void ConVar_PluginStart()
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
 
+#if defined RPG
+	ConVar_Add("tf_clamp_back_speed", "0.9"); // default: 0.9 Ty to miku for showing me
+#endif
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 

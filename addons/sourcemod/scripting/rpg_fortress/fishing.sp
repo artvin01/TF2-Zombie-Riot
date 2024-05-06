@@ -1,13 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MAX_FISH_TIER 8
+#define MAX_FISH_TIER 7
 
 static const char FishingLevels[MAX_FISH_TIER][] =
 {
 	"Leaf (0)",
 	"Feather (1)",
-	"Silk (2)",
 	"Silk (2)",
 	"Wire (3)",
 	"IV Cable (4)",
@@ -214,6 +213,28 @@ static void GetNearestPond(const float pos[3], char[] found, int leng)
 	delete snap;
 }
 
+bool Fishing_Interact(int client, int weapon)
+{
+	bool rod = (weapon != -1 && EntityFuncAttack[weapon] == Fishing_RodM1);
+	if(GetEntProp(client, Prop_Send, "m_nWaterLevel") > 0)
+	{
+		if(rod)
+			return false;
+		
+		if(!Store_SwitchToWeaponSlot(client, 4))
+			SPrintToChat(client, "You must equip a fishing rod!");
+		
+		return true;
+	}
+	else if(rod)
+	{
+		Store_SwitchToWeaponSlot(client, 2);
+		return true;
+	}
+
+	return false;
+}
+
 void Fishing_PlayerRunCmd(int client)
 {
 	float gameTime = GetGameTime();
@@ -230,8 +251,6 @@ void Fishing_PlayerRunCmd(int client)
 		{
 			AllowFishing = 2; //Allow fishing but dont reset the float
 		}
-
-		Crafting_AllowedFishing(client, AllowFishing == 1);
 
 		if(AllowFishing > 0)
 		{
@@ -323,6 +342,14 @@ void Fishing_PlayerRunCmd(int client)
 			{
 				f_ClientWasFishingDelayCheck[client] = gameTime + 6.0;
 				SPrintToChat(client, "There seems to be no fish attracted to your fishing rod... try another one!");
+			}
+		}
+		else
+		{
+			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(weapon != -1 && EntityFuncAttack[weapon] == Fishing_RodM1)
+			{
+				Store_SwitchToWeaponSlot(client, 2);
 			}
 		}
 	}
@@ -549,4 +576,513 @@ public void Fishing_RodM2(int client, int weapon)
 		}
 	}
 	PrintHintText(client,"These fish apear at your current desired tier: [%i]", Desired_FishingTier[client]);
+}
+
+static char CurrentKeyEditing[MAXTF2PLAYERS][64];
+static char CurrentRarityEditing[MAXTF2PLAYERS][64];
+static char CurrentSectionEditing[MAXTF2PLAYERS][64];
+static int CurrentMenuEditing[MAXTF2PLAYERS];
+
+void Fishing_EditorMenu(int client)
+{
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+
+	EditMenu menu = new EditMenu();
+
+	switch(CurrentMenuEditing[client])
+	{
+		case 1:	// Fishing Spots
+		{
+			if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Fishing\nFishing Spots - %s - %s\n ", CurrentSectionEditing[client], CurrentRarityEditing[client]);
+				
+				if(FishList.ContainsKey(CurrentKeyEditing[client]))
+				{
+					FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				}
+				else
+				{
+					Format(buffer1, sizeof(buffer1), "\"%s\" {WARNING: Fish does not exist}", buffer1);
+				}
+
+				menu.AddItem("0", buffer1);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustSpotKey);
+			}
+			else if(CurrentRarityEditing[client][0])
+			{
+				RPG_BuildPath(buffer1, sizeof(buffer1), "fishing");
+				KeyValues kv = new KeyValues("Fishing");
+				kv.ImportFromFile(buffer1);
+				kv.JumpToKey("Positions");
+				kv.JumpToKey(CurrentSectionEditing[client]);
+				bool missing = !kv.JumpToKey(CurrentRarityEditing[client]);
+
+				menu.SetTitle("Fishing\nFishing Spots - %s - %s\nClick to set it's value:\n ", CurrentSectionEditing[client], CurrentRarityEditing[client]);
+				
+				menu.AddItem("", "Type to add a fish", ITEMDRAW_DISABLED);
+
+				int total;
+
+				if(!missing && kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						total += kv.GetNum(NULL_STRING);
+					}
+					while(kv.GotoNextKey(false));
+
+					kv.GoBack();
+				}
+
+				if(!missing && kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						int count = kv.GetNum(NULL_STRING);
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+
+						if(FishList.ContainsKey(buffer1))
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s x%d (%.2f%%)", buffer1, count, float(count) * 100.0 / float(total));
+						}
+						else
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s {WARNING: Fish does not exist}", buffer1);
+						}
+
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(kv.GotoNextKey(false));
+
+					kv.GoBack();
+				}
+
+				menu.AddItem("delete", "Delete Rarity");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustSpotSection);
+				
+				delete kv;
+			}
+			else if(CurrentSectionEditing[client][0])
+			{
+				RPG_BuildPath(buffer1, sizeof(buffer1), "fishing");
+				KeyValues kv = new KeyValues("Fishing");
+				kv.ImportFromFile(buffer1);
+				kv.JumpToKey("Positions");
+				bool missing = !kv.JumpToKey(CurrentSectionEditing[client]);
+
+				menu.SetTitle("Fishing\nFishing Spots - %s\nClick to set it's value:\n ", CurrentSectionEditing[client]);
+				
+				if(!missing && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						int count;
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+
+						if(kv.GotoFirstSubKey(false))
+						{
+							do
+							{
+								count++;
+							}
+							while(kv.GotoNextKey(false));
+
+							kv.GoBack();
+						}
+
+						FormatEx(buffer2, sizeof(buffer2), "Rarity %s (%d Drops)", buffer1, count);
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(kv.GotoNextKey());
+
+					kv.GoBack();
+				}
+
+				menu.AddItem("0", "Type a rarity number to create a new section", ITEMDRAW_DISABLED);
+
+				float vec[3];
+				kv.GetVector("pos", vec);
+				FormatEx(buffer2, sizeof(buffer2), "Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
+				menu.AddItem("pos", buffer2);
+
+				menu.AddItem("delete", "Delete Spot");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustSpot);
+				
+				delete kv;
+			}
+			else
+			{
+				menu.SetTitle("Fishing\nFishing Spots\nSelect a spot:\n ");
+
+				RPG_BuildPath(buffer1, sizeof(buffer1), "fishing");
+				KeyValues kv = new KeyValues("Fishing");
+				kv.ImportFromFile(buffer1);
+				
+				menu.AddItem("", "Type to create a new spot", ITEMDRAW_DISABLED);
+
+				float pos[3];
+				GetClientAbsOrigin(client, pos);
+				GetNearestPond(pos, buffer2, sizeof(buffer2));
+				
+				bool first;
+				if(kv.JumpToKey("Positions") && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+						if(StrEqual(buffer1, buffer2))
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s (Closest)", buffer1);
+							if(first)
+							{
+								menu.InsertItem(0, buffer1, buffer2);
+							}
+							else
+							{
+								menu.AddItem(buffer1, buffer2);
+							}
+						}
+						else
+						{
+							menu.AddItem(buffer1, buffer1);
+							first = true;
+						}
+					}
+					while(kv.GotoNextKey());
+				}
+
+				menu.ExitBackButton = true;
+				menu.Display(client, FishPicker);
+
+				delete kv;
+			}
+		}
+		case 2:	// Fish Listing
+		{
+			if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Spawns\nFish Listing - %s\n ", CurrentSectionEditing);
+				
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustFishKey);
+			}
+			else if(CurrentSectionEditing[client][0])
+			{
+				RPG_BuildPath(buffer1, sizeof(buffer1), "fishing");
+				KeyValues kv = new KeyValues("Fishing");
+				kv.ImportFromFile(buffer1);
+				kv.JumpToKey("Fishes");
+				bool missing = !kv.JumpToKey(CurrentSectionEditing[client]);
+
+				menu.SetTitle("Fishing\nFish Listing - %s\nClick to set it's value:\n ", CurrentSectionEditing[client]);
+				
+				if(!TextStore_IsValidName(CurrentSectionEditing[client]))
+					menu.AddItem("delete", "{WARNING: Item does not exist}\n ");
+				
+				static const char Types[][] =
+				{
+					"0 (Fish)",
+					"1 (Nature)",
+					"2 (Landfill)",
+					"3 (Lootboxes)"
+				};
+
+				int type = kv.GetNum("type");
+				if(!missing && type >= 0 && type < sizeof(Types))
+				{
+					FormatEx(buffer2, sizeof(buffer2), "Type: %s", Types[type]);
+				}
+				else
+				{
+					FormatEx(buffer2, sizeof(buffer2), "Type: %d (Unknown)", type);
+				}
+
+				menu.AddItem("type", buffer2);
+
+				FormatEx(buffer2, sizeof(buffer2), "Rarity: %d", kv.GetNum("rarity"));
+				menu.AddItem("rarity", buffer2);
+
+				menu.AddItem("delete", "Delete Fish");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustFish);
+				
+				delete kv;
+			}
+			else
+			{
+				menu.SetTitle("Fishing\nFish Listing\nSelect a fish:\n ");
+
+				RPG_BuildPath(buffer1, sizeof(buffer1), "fishing");
+				KeyValues kv = new KeyValues("Fishing");
+				kv.ImportFromFile(buffer1);
+				
+				menu.AddItem("", "Type to create a new fish", ITEMDRAW_DISABLED);
+				
+				if(kv.JumpToKey("Fishes") && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+
+						if(TextStore_IsValidName(buffer1))
+						{
+							strcopy(buffer2, sizeof(buffer2), buffer1);
+						}
+						else
+						{
+							Format(buffer2, sizeof(buffer2), "%s {WARNING: Item does not exist}", buffer1);
+						}
+
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(kv.GotoNextKey());
+				}
+
+				menu.ExitBackButton = true;
+				menu.Display(client, FishPicker);
+
+				delete kv;
+			}
+		}
+		default:
+		{
+			menu.SetTitle("Fishing\n ");
+
+			menu.AddItem("2", "Fish Listing");
+			menu.AddItem("1", "Fishing Spots");
+
+			menu.ExitBackButton = true;
+			menu.Display(client, MenuPicker);
+		}
+	}
+}
+
+static void MenuPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		Editor_MainMenu(client);
+		return;
+	}
+
+	CurrentMenuEditing[client] = StringToInt(key);
+	Fishing_EditorMenu(client);
+}
+
+static void FishPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentMenuEditing[client] = 0;
+		Editor_MainMenu(client);
+		return;
+	}
+
+	strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), key);
+	Fishing_EditorMenu(client);
+}
+
+static void AdjustFish(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Fishes", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+
+	if(StrEqual(key, "delete"))
+	{
+		kv.DeleteThis();
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else
+	{
+		delete kv;
+		
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	Fishing_ConfigSetup();
+	Fishing_EditorMenu(client);
+}
+
+static void AdjustFishKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Fishes", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+
+	int value = StringToInt(key);
+	if(value >= 0)
+	{
+		kv.SetNum(CurrentKeyEditing[client], value);
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	Fishing_ConfigSetup();
+	Fishing_EditorMenu(client);
+}
+
+static void AdjustSpot(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Positions", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+
+	if(StrEqual(key, "pos"))
+	{
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		kv.SetVector("pos", pos);
+	}
+	else if(StrEqual(key, "delete"))
+	{
+		kv.DeleteThis();
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else
+	{
+		delete kv;
+		
+		strcopy(CurrentRarityEditing[client], sizeof(CurrentRarityEditing[]), key);
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	Fishing_ConfigSetup();
+	Fishing_EditorMenu(client);
+}
+
+static void AdjustSpotSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentRarityEditing[client][0] = 0;
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Positions", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+	kv.JumpToKey(CurrentRarityEditing[client], true);
+
+	if(StrEqual(key, "delete"))
+	{
+		kv.DeleteThis();
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else
+	{
+		delete kv;
+		
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	Fishing_ConfigSetup();
+	Fishing_EditorMenu(client);
+}
+
+static void AdjustSpotKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Fishing_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "fishing");
+	KeyValues kv = new KeyValues("Fishing");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Positions", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+	kv.JumpToKey(CurrentRarityEditing[client], true);
+
+	int value = StringToInt(key);
+	if(value > 0)
+	{
+		kv.SetNum(CurrentKeyEditing[client], value);
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	Fishing_ConfigSetup();
+	Fishing_EditorMenu(client);
 }

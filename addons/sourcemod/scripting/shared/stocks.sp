@@ -3343,7 +3343,7 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
-stock void ManualTF2Util_SetPlayerActiveWeapon(int client, int weapon)
+stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
 	/*

@@ -77,12 +77,12 @@ methodmap NPCActor < CClotBody
 		{
 			npc.m_flNextMeleeAttack = GetGameTime(npc.index) + npc.m_flAttackHappens;
 			npc.m_flAttackHappens_bullshit = kv.GetFloat("walk_range") / 2.0;
-			npc.m_flSpeed = 0.0;
+			npc.m_flSpeed = kv.GetFloat("walk_speed");
 		}
 		else
 		{
 			npc.m_flNextMeleeAttack = FAR_FUTURE;
-			npc.m_flSpeed = kv.GetFloat("walk_speed");
+			npc.m_flSpeed = 0.0;
 		}
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -134,10 +134,11 @@ methodmap NPCActor < CClotBody
 	}
 }
 
-void NPCActor_TalkStart(int iNPC, int client)
+void NPCActor_TalkStart(int iNPC, int client, float time = 60.0)
 {
 	NPCActor npc = view_as<NPCActor>(iNPC);
 	npc.m_iTargetAlly = client;
+	npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + time;
 }
 
 void NPCActor_TalkEnd(int iNPC)
@@ -165,7 +166,7 @@ static void ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
-	int target = npc.m_iTargetAlly;
+	int target = npc.m_flGetClosestTargetTime > gameTime ? npc.m_iTargetAlly : 0;
 
 	if(target > 0)
 	{
@@ -184,17 +185,27 @@ static void ClotThink(int iNPC)
 
 		f3_PositionArrival[npc.index][0] += GetRandomFloat(-npc.m_flAttackHappens_bullshit, npc.m_flAttackHappens_bullshit);
 		f3_PositionArrival[npc.index][1] += GetRandomFloat(-npc.m_flAttackHappens_bullshit, npc.m_flAttackHappens_bullshit);
-		f3_PositionArrival[npc.index][2] += 20.0;
+		f3_PositionArrival[npc.index][2] += 40.0;
 		
 		Handle ToGroundTrace = TR_TraceRayFilterEx(f3_PositionArrival[npc.index], view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		TR_GetEndPosition(f3_PositionArrival[npc.index], ToGroundTrace);
 		delete ToGroundTrace;
+		f3_PositionArrival[npc.index][2] += 20.0;
 
 		npc.m_bisWalking = true;
 		npc.SetActivity(c_HeadPlaceAttachmentGibName[npc.index]);
-
-		npc.SetGoalVector(f3_PositionArrival[npc.index]);
+		/*
+		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+		float Pos[3];
+		Pos = f3_PositionArrival[npc.index];
+		Pos[2] += 20.0;
+		TE_SetupBeamPoints(f3_PositionArrival[npc.index], Pos, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+		TE_SendToAll();
+		*/
+		
 		npc.StartPathing();
+		npc.SetGoalVector(f3_PositionArrival[npc.index]);
+	//	PrintToChatAll("npc.m_flSpeed %f",npc.m_flSpeed);
 
 		npc.m_flNextMeleeAttack = gameTime + (npc.m_flAttackHappens * GetRandomFloat(0.85, 1.15));
 	}
