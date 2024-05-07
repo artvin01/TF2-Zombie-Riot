@@ -5,6 +5,7 @@
 
 static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int SaveIn[MAXTF2PLAYERS];
+static int InputMulti[MAXTF2PLAYERS];
 static StringMap Mastery[MAXTF2PLAYERS];
 static int StatStrength[MAXTF2PLAYERS];
 static int StatPrecision[MAXTF2PLAYERS];
@@ -38,6 +39,7 @@ void Stats_EnableCharacter(int client)
 	StatIntelligence[client] = kv.GetNum("intelligence");
 	StatCapacity[client] = kv.GetNum("capacity");
 	XP[client] = kv.GetNum("xp");
+	InputMulti[client] = kv.GetNum("input", 1);
 
 	delete Mastery[client];
 
@@ -88,6 +90,7 @@ static void SaveClientStats(int client)
 		kv.SetNum("intelligence", StatIntelligence[client]);
 		kv.SetNum("capacity", StatCapacity[client]);
 		kv.SetNum("xp", XP[client]);
+		kv.SetNum("input", InputMulti[client]);
 
 		kv.DeleteKey("mastery");
 
@@ -553,7 +556,7 @@ public Action Stats_ShowStats(int client, int args)
 		char costBuffer[64];
 		IntToString(cost,costBuffer, sizeof(costBuffer));
 		ThousandString(costBuffer, sizeof(costBuffer));
-		menu.SetTitle("RPG Fortress\n \nLvl: %s\nXP: %s / %s", LVLBuffer, XPBuffer, costBuffer);
+		menu.SetTitle("RPG Fortress\n \nLevel: %s\nXP: %s / %s (x%d)", LVLBuffer, XPBuffer, costBuffer, InputMulti[client]);
 
 		char buffer[64];
 		int amount, bonus;
@@ -592,15 +595,17 @@ public Action Stats_ShowStats(int client, int args)
 		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 		total = Stats_Luck(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d]\n ", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+
+		menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		menu.AddItem(NULL_STRING, "Decrease Input Multi", InputMulti[client] < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
 	return Plugin_Handled;
 }
-
 
 public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice)
 {
@@ -617,36 +622,60 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 		}
 		case MenuAction_Select:
 		{
-			for(int i; i < 1; i++)
+			for(int i; i < InputMulti[client]; i++)
 			{
-				int cost = UpgradeCost(client);
-				if(XP[client] < cost)
-					break;
-				
-				Stats_GiveXP(client, -cost);
+				if(choice < 9)
+				{
+					int cost = UpgradeCost(client);
+					if(XP[client] < cost)
+						break;
+					
+					Stats_GiveXP(client, -cost);
+				}
 
 				switch(choice)
 				{
 					case 0:
+					{
 						StatStrength[client]++;
-					
+					}
 					case 1:
+					{
 						StatPrecision[client]++;
-					
+					}
 					case 2:
+					{
 						StatArtifice[client]++;
-					
+					}
 					case 3:
+					{
 						StatEndurance[client]++;
-					
+					}
 					case 4:
+					{
 						StatStructure[client]++;
-					
+					}
 					case 5:
+					{
 						StatIntelligence[client]++;
-					
+					}
 					case 6:
+					{
 						StatCapacity[client]++;
+					}
+					case 9:
+					{
+						InputMulti[client] *= 10;
+						break;
+					}
+					case 10:
+					{
+						InputMulti[client] /= 10;
+						if(InputMulti[client] < 1)
+							InputMulti[client] = 1;
+						
+						break;
+					}
 				}
 
 				Stats_UpdateLevel(client);

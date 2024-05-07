@@ -638,18 +638,18 @@ int TextStore_GetItemCount(int client, const char[] name)
 	return amount;
 }
 
-void TextStore_AddItemCount(int client, const char[] name, int amount)
+void TextStore_AddItemCount(int client, const char[] name, int amount, bool silent = false)
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
 		TextStore_Cash(client, amount);
-		if(amount > 0)
+		if(amount > 0 && !silent)
 			SPrintToChat(client, "You gained %d credits", amount);
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
 		Stats_GiveXP(client, amount);
-		if(amount > 0)
+		if(amount > 0 && !silent)
 			SPrintToChat(client, "You gained %d XP", amount);
 	}
 	else
@@ -663,14 +663,20 @@ void TextStore_AddItemCount(int client, const char[] name, int amount)
 			{
 				TextStore_GetInv(client, i, length);
 				TextStore_SetInv(client, i, length + amount, amount >= length ? 0 : -1);
-				if(amount == 1)
+				if(silent)
 				{
-					SPrintToChat(client, "You gained %s", name);
+
+				}
+				else if(amount == 1)
+				{
+					SPrintToChat(client, "You gained %s", buffer);
 				}
 				else if(amount > 1)
 				{
-					SPrintToChat(client, "You gained %s x%d", name, amount);
+					SPrintToChat(client, "You gained %s x%d", buffer, amount);
 				}
+
+				Quests_MarkBookDirty(client);
 				return;
 			}
 		}
