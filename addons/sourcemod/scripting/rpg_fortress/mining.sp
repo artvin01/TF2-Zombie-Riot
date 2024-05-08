@@ -720,7 +720,7 @@ void Mining_EditorMenu(int client)
 		menu.AddItem("s3_tier", buffer2);
 
 		menu.AddItem("copy", "Copy From");
-		menu.AddItem("delete", "Delete");
+		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustSpawn);

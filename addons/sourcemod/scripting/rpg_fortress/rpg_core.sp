@@ -41,6 +41,7 @@ int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 bool b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
 int i_MaxStamina[MAXTF2PLAYERS];
+float f_ClientTargetedByNpc[MAXTF2PLAYERS];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
@@ -107,8 +108,8 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
 #include "rpg_fortress/traffic.sp"
+#include "rpg_fortress/worldtext.sp"
 #include "rpg_fortress/zones.sp"
-#include "rpg_fortress/npc_despawn_zone.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
 /*
@@ -175,12 +176,14 @@ void RPG_PluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
+			/*
 			if(StrEqual(buffer, "zr_base_npc"))
 			{
 				NPC_Despawn(i);
 				continue;
 			}
-			else if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
+			else */
+			if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
 			{
 				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrEqual(buffer, "rpg_fortress"))
@@ -208,11 +211,13 @@ void RPG_PluginEnd()
 void RPG_MapStart()
 {
 	Zero2(f3_SpawnPosition);
+	Zero(f_ClientTargetedByNpc);
 	Fishing_OnMapStart();
 	Medigun_PersonOnMapStart();
 	Zones_MapStart();
 
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	Wand_Map_Precache();
 	Transform_Expidonsa_MapStart();
@@ -282,22 +287,17 @@ void RPG_ConfigSetup(const char[] mapname)
 	Games_ConfigSetup();
 	Garden_ConfigSetup();
 	Mining_ConfigSetup();
-	Music_ConfigSetup();
 	Quests_ConfigSetup();
 	Races_ConfigSetup();
 	Saves_ConfigSetup();
 	Spawns_ConfigSetup();
 	Tinker_ConfigSetup();
+	Worldtext_ConfigSetup();
 	
 	TextStore_ConfigSetup();
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG ... "/%s/soundscript.txt", MapConfig);
 	LoadSoundScript(buffer);
-}
-
-stock bool RPG_IsMap(const char[] name)
-{
-	return StrContains(MapConfig, name, false) != -1;
 }
 
 void RPG_BuildPath(char[] buffer, int length, const char[] name)
@@ -413,6 +413,17 @@ void CheckAlivePlayers(int killed = 0)
 {
 	Dungeon_CheckAlivePlayers(killed);
 }
+public Action GlobalTimer(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Spawns_CheckBadClient(client);
+		}
+	}
+	return Plugin_Continue;
+}
 
 public Action CheckClientConvars(Handle timer)
 {
@@ -436,6 +447,7 @@ public Action CheckClientConvars(Handle timer)
 				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //snd_musicvolume
 				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //snd_ducktovolume
 			}
+			Spawns_CheckBadClient(client);
 		}
 	}
 	return Plugin_Continue;
@@ -566,12 +578,14 @@ public Action Command_GiveXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
-			Stats_GiveXP(targets[target], money);
+			int xp = money;
+			Stats_GiveXP(targets[target], xp);
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
-			Stats_GiveXP(targets[target], money);
+			int xp = money;
+			Stats_GiveXP(targets[target], xp);
 		}
 	}
 	
@@ -780,4 +794,14 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 void RPGCore_SetFlatDamagePiercing(int entity, float value)
 {
 	f_FlatDamagePiercing[entity] = value;
+}
+
+void RPGCore_ClientTargetedByNpc(int client, float time)
+{
+	f_ClientTargetedByNpc[client] = GetGameTime() + time;
+}
+
+float RPGCore_ClientTargetedByNpcReturn(int client)
+{
+	return f_ClientTargetedByNpc[client];
 }

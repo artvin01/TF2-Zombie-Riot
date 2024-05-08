@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define QUEUE_TIME	90.0
+#define QUEUE_TIME	60.0
 
 static const char RoundRetryWin[][] =
 {
@@ -1261,17 +1261,11 @@ static void StartDungeon(const char[] name)
 					}
 				}
 			}
-
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(StrEqual(InDungeon[client], name))
-				{
-					TF2_RespawnPlayer(client);
-				}
-			}
 			
 			for(int c; c < dungeon.PlayerCount; c++)
 			{
+				TF2_RespawnPlayer(clients[c]);
+
 				if(stage.MusicTier > tier)
 				{
 					if(stage.MusicEasy[0])

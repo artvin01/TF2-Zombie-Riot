@@ -58,9 +58,13 @@ void Stats_EnableCharacter(int client)
 	Stats_UpdateLevel(client);
 }
 
-void Stats_GiveXP(int client, int xp)
+void Stats_GiveXP(int client, int &xp)
 {
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+
+	int maxXP = BaseMaxExperience + (BaseMaxExperiencePerLevel * XP[client]);
+	if(XP[client] > maxXP)
+		XP[client] = maxXP;
 
 	if(XP[client] > SaveIn[client])
 	{
@@ -123,19 +127,29 @@ void Stats_UpdateHud(int client)
 
 	if(IsPlayerAlive(client))
 	{
-		float total = float(Stats_Capacity(client) * 50);
+		float total = RPGStats_RetrieveMaxEnergy(Stats_Capacity(client));
 		if(Current_Mana[client] > total)
 		{
 			Current_Mana[client] = RoundToNearest(total);
 		}
 		max_mana[client] = total;
-		i_MaxStamina[client] = RoundToNearest(float(Stats_Structure(client)) * 1.5);
+		i_MaxStamina[client] = RPGStats_RetrieveMaxStamina(Stats_Structure(client));
 	}
 
 	if(buffer[0] || HasKeyHintHud[client])
 		PrintKeyHintText(client, buffer);
 	
 	HasKeyHintHud[client] = view_as<bool>(buffer[0]);
+}
+
+int RPGStats_RetrieveMaxStamina(int stucture)
+{
+	return RoundToNearest(float(stucture) * 1.5);
+}
+
+float RPGStats_RetrieveMaxEnergy(int capacity)
+{
+	return float(capacity) * 50.0;
 }
 
 void Stats_ClearCustomStats(int entity)
@@ -550,6 +564,9 @@ public Action Stats_ShowStats(int client, int args)
 		char LVLBuffer[64];
 		IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
 		ThousandString(LVLBuffer, sizeof(LVLBuffer));
+		if(Level[client] >= BaseMaxLevel)
+			strcopy(LVLBuffer, sizeof(LVLBuffer), "MAX");
+		
 		char XPBuffer[64];
 		IntToString(XP[client],XPBuffer, sizeof(XPBuffer));
 		ThousandString(XPBuffer, sizeof(XPBuffer));
@@ -626,11 +643,15 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 			{
 				if(choice < 9)
 				{
+					if(Level[client] >= BaseMaxLevel)
+						break;
+					
 					int cost = UpgradeCost(client);
 					if(XP[client] < cost)
 						break;
 					
-					Stats_GiveXP(client, -cost);
+					cost = -cost;
+					Stats_GiveXP(client, cost);
 				}
 
 				switch(choice)
@@ -717,7 +738,7 @@ float RPGStats_FlatDamageResistance(int client)
 {
 	int total;
 	total = Stats_Endurance(client);
-	return (float(total) * 1.35);
+	return (float(total) * 1.75);
 }
 
 void Stats_UpdateLevel(int client)

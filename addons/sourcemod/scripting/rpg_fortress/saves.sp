@@ -77,14 +77,64 @@ static void EnableCharacter(int client, const char[] id)
 {
 	if(!CharacterId[client][0])
 	{
+		char buffer1[64], buffer2[64];
+
 		KeyValues kv = Saves_Kv("characters");
 		if(kv.JumpToKey(id))
 		{
-			char buffer1[64], buffer2[64];
+			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
+			RaceIndex[client] = kv.GetNum("race");
 
-			int uniques, count;
-			int length = TextStore_GetItems(uniques);
+			kv.GetString("model", buffer1, sizeof(buffer1));
+			switch(buffer1[2])
+			{
+				case 'o':	// Scout
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
+				}
+				case 'l':	// Soldier
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Soldier);
+				}
+				case 'r':	// Pyro
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Pyro);
+				}
+				case 'm':	// Demoman
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_DemoMan);
+				}
+				case 'a':	// Heavy
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Heavy);
+				}
+				case 'g':	// Engineer
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Engineer);
+				}
+				case 'i':	// Sniper
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Sniper);
+				}
+				case 'y':	// Spy
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Spy);
+				}
+				default:	// Medic
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Medic);
+				}
+			}
 
+			Stats_EnableCharacter(client);
+		}
+
+		int uniques, count;
+		int length = TextStore_GetItems(uniques);
+		
+		kv = Saves_Kv("characters");
+		if(kv.JumpToKey(id))
+		{
 			if(kv.JumpToKey("equipped"))
 			{
 				if(kv.GotoFirstSubKey(false))
@@ -112,11 +162,6 @@ static void EnableCharacter(int client, const char[] id)
 
 				kv.GoBack();
 			}
-
-			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
-			RaceIndex[client] = kv.GetNum("race");
-
-			Stats_EnableCharacter(client);
 		}
 	}
 }

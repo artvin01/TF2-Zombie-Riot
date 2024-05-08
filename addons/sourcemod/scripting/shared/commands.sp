@@ -20,9 +20,13 @@ void Commands_PluginStart()
 	AddCommandListener(OnSayCommand, "say_team");
 
 #if defined ZR
-	AddCommandListener(OnJoinClass, "joinclass");
 	AddCommandListener(Command_Voicemenu, "voicemenu");
 #endif
+
+#if defined ZR || defined RPG
+	AddCommandListener(OnJoinClass, "joinclass");
+#endif
+
 }
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
@@ -98,7 +102,11 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		
 		//This is an extra slot, incase you want to use it for anything.
 	}
-	
+#elseif defined RPG
+	if(StrEqual(buffer, "+inspect_server", false))
+	{
+		TextStore_Inspect(client);
+	}
 #endif
 	return Plugin_Continue;
 }
@@ -119,13 +127,11 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	if(!client)
 		return Plugin_Continue;
 
-#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
 		FailedInstachange = true;
-#endif
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;
@@ -171,7 +177,16 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	PrintToChat(client, "You changed classes immedietly!");
 	return Plugin_Handled;
 }
+#endif
 
+#if defined RPG
+public Action OnJoinClass(int client, const char[] command, int args)
+{
+	if(client && GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"))
+		return Plugin_Handled;
+	
+	return Plugin_Continue;
+}
 #endif
 
 public void Removeinvul1frame(int ref)

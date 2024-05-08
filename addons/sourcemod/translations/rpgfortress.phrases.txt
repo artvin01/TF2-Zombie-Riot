@@ -6,4 +6,9 @@
 		"#format"	"{1:d}}"
 		"en" 		"Capacity: [{1}]"
 	}
+	"Zombie In Battle Logic Setting"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"In Battle Time: [{1}]"
+	}
 }

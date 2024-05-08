@@ -71,9 +71,7 @@ public void SDKHook_ScoreThink(int entity)
 	
 	static int offset_Damage = -1;
 	static int offset_Damage_Boss = -1;
-#if defined ZR
 	static int offset_Cash = -1;
-#endif
 	static int offset_Healing = -1;
 
 
@@ -89,7 +87,6 @@ public void SDKHook_ScoreThink(int entity)
 	if(offset_Damage_Boss == -1) 
 		offset_Damage_Boss = FindSendPropInfo("CTFPlayerResource", "m_iDamageBoss");
 
-#if defined ZR
 	//Current cash (laugh at the horder)
 	if(offset_Cash == -1) 
 		offset_Cash = FindSendPropInfo("CTFPlayerResource", "m_iCurrencyCollected");
@@ -97,22 +94,27 @@ public void SDKHook_ScoreThink(int entity)
 	int CashCurrentlyOwned[MAXTF2PLAYERS];
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR
 		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
-	}
+#else
+		CashCurrentlyOwned[client] = TextStore_Cash(client);
 #endif
+	}
 
 	//healing done
 	if(offset_Healing == -1) 
 		offset_Healing = FindSendPropInfo("CTFPlayerResource", "m_iHealing");
 	
+#if defined ZR
 	SetEntDataArray(entity, offset, PlayerPoints, MaxClients + 1);
+#else
+	SetEntDataArray(entity, offset, Level, MaxClients + 1);
+#endif
+
 	SetEntDataArray(entity, offset_Damage, i_Damage_dealt_in_total, MaxClients + 1);
 	SetEntDataArray(entity, offset_Damage_Boss, i_PlayerDamaged, MaxClients + 1);
 	SetEntDataArray(entity, offset_Healing, Healing_done_in_total, MaxClients + 1);
-
-#if defined ZR
 	SetEntDataArray(entity, offset_Cash, CashCurrentlyOwned, MaxClients + 1);
-#endif
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2382,47 +2384,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 }
 
 
-void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
-{
-	SetGlobalTransTarget(client);
-	switch(TypeOfAbuse)
-	{
-		case 0:
-		{
-			f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
-			PrintToChat(client, "%t", "Npc Stuck Spot Warning");
-			damage = 0.0;
-			if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
-			{
-				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
-				f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
-			}
-			else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
-			{
-				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
-				damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
-				f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
-			}
-		}
-		case 1:
-		{
-			PrintToChat(client, "%t", "Npc Stuck Spot Warning Stairs");
-			damage = 0.0;
-			if(f_ClientWasTooLongInsideHurtZoneStairs[client] < GetGameTime())
-			{
-				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 5.0;
-				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
-			}
-			else if(f_ClientWasTooLongInsideHurtZoneStairs[client] <= GetGameTime() + 3.0)
-			{
-				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 3.0;
-				damage = f_ClientWasTooLongInsideHurtZoneDamageStairs[client];
-				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] *= 2.0;
-			}
-		}
-	}
-}
-
 void ApplyLastmanOrDyingOverlay(int client)
 {
 	DoOverlay(client, "debug/yuv");
@@ -2494,6 +2455,47 @@ public Action Timer_CauseFadeInAndFadeDelete(Handle timer)
 	return Plugin_Stop;
 }
 #endif	// ZR
+
+void NpcStuckZoneWarning(int client, float &damage, int TypeOfAbuse = 0)
+{
+	SetGlobalTransTarget(client);
+	switch(TypeOfAbuse)
+	{
+		case 0:
+		{
+			f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZone[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamage[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZone[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZone[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamage[client];
+				f_ClientWasTooLongInsideHurtZoneDamage[client] *= 2.0;
+			}
+		}
+		case 1:
+		{
+			PrintToChat(client, "%t", "Npc Stuck Spot Warning Stairs");
+			damage = 0.0;
+			if(f_ClientWasTooLongInsideHurtZoneStairs[client] < GetGameTime())
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 5.0;
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] = float(SDKCall_GetMaxHealth(client)) * 0.025;
+			}
+			else if(f_ClientWasTooLongInsideHurtZoneStairs[client] <= GetGameTime() + 3.0)
+			{
+				f_ClientWasTooLongInsideHurtZoneStairs[client] = GetGameTime() + 3.0;
+				damage = f_ClientWasTooLongInsideHurtZoneDamageStairs[client];
+				f_ClientWasTooLongInsideHurtZoneDamageStairs[client] *= 2.0;
+			}
+		}
+	}
+}
 //problem: tf2 code lazily made it only work for clients, the server doesnt get this information updated all the time now.
 #define SKIN_ZOMBIE			5
 #define SKIN_ZOMBIE_SPY		SKIN_ZOMBIE + 18

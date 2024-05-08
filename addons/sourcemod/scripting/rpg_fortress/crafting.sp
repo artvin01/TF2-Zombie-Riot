@@ -7,9 +7,14 @@ enum struct CraftEnum
 	ArrayList List;
 
 	char Model[PLATFORM_MAX_PATH];
+	char Idle[64];
 	float Pos[3];
 	float Ang[3];
 	float Scale;
+	
+	char Wear1[PLATFORM_MAX_PATH];
+	char Wear2[PLATFORM_MAX_PATH];
+	char Wear3[PLATFORM_MAX_PATH];
 
 	int EntRef;
 
@@ -37,6 +42,7 @@ enum struct CraftEnum
 		}
 
 		kv.GetVector("ang", this.Ang);
+		kv.GetString("anim_idle", this.Idle, 64);
 		this.Scale = kv.GetFloat("scale", 1.0);
 		kv.GetString("model", this.Model, sizeof(this.Model));
 		kv.GetString("zone", this.Zone, sizeof(this.Zone));
@@ -44,6 +50,18 @@ enum struct CraftEnum
 			strcopy(this.Model, sizeof(this.Model), "error.mdl");
 		
 		PrecacheModel(this.Model);
+		
+		kv.GetString("wear1", this.Wear1, PLATFORM_MAX_PATH);
+		if(this.Wear1[0])
+			PrecacheModel(this.Wear1);
+		
+		kv.GetString("wear2", this.Wear2, PLATFORM_MAX_PATH);
+		if(this.Wear2[0])
+			PrecacheModel(this.Wear2);
+		
+		kv.GetString("wear3", this.Wear3, PLATFORM_MAX_PATH);
+		if(this.Wear3[0])
+			PrecacheModel(this.Wear3);
 	}
 	
 	void Despawn()
@@ -52,8 +70,14 @@ enum struct CraftEnum
 		{
 			int entity = EntRefToEntIndex(this.EntRef);
 			if(entity != -1)
+			{
+				int brush = EntRefToEntIndex(b_OwnerToBrush[entity]);
+				if(brush != -1)
+					RemoveEntity(brush);
+				
 				RemoveEntity(entity);
-						
+			}
+
 			this.EntRef = -1;
 		}
 	}
@@ -67,15 +91,36 @@ enum struct CraftEnum
 			{
 				DispatchKeyValue(entity, "targetname", "rpg_fortress");
 				DispatchKeyValue(entity, "model", this.Model);
-				DispatchKeyValueFloat(entity, "modelscale", this.Scale);
-				DispatchKeyValue(entity, "solid", "6");
+				//DispatchKeyValueFloat(entity, "modelscale", this.Scale);
+				//DispatchKeyValue(entity, "solid", "2");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
 				DispatchSpawn(entity);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
-				b_is_a_brush[entity] = true;
-				b_BrushToOwner[entity] = EntIndexToEntRef(entity);
+				SetEntityCollisionGroup(entity, 2);
+
+				int brush = SpawnSeperateCollisionBox(entity);
+				//Just reuse it.
+				b_BrushToOwner[brush] = EntIndexToEntRef(entity);
+				b_OwnerToBrush[entity] = EntIndexToEntRef(brush);
+				
+				if(this.Wear1[0])
+					GivePropAttachment(entity, this.Wear1);
+				
+				if(this.Wear2[0])
+					GivePropAttachment(entity, this.Wear2);
+				
+				if(this.Wear3[0])
+					GivePropAttachment(entity, this.Wear3);
+				
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+				
+				SetVariantString(this.Idle);
+				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
+				
+				SetVariantString(this.Idle);
+				AcceptEntityInput(entity, "SetAnimation", entity, entity);
 
 				this.EntRef = EntIndexToEntRef(entity);
 			}
@@ -85,7 +130,7 @@ enum struct CraftEnum
 
 static ArrayList CraftList;
 static StringMap BluePrints;
-static int CurrentMenu[MAXTF2PLAYERS];
+static int CurrentMenu[MAXTF2PLAYERS] = {-1, ...};
 static int CurrentPrint[MAXTF2PLAYERS];
 static char CurrentRecipe[MAXTF2PLAYERS][64];
 
@@ -206,6 +251,25 @@ void Crafting_ConfigSetup()
 	delete kv;
 }
 
+bool Crafting_LookAtTable(int client)
+{
+	int entity = GetClientPointVisible(client);
+	if(entity > 0)
+	{
+		int ref = EntIndexToEntRef(entity);
+		int length = CraftList.Length;
+		for(int i; i < length; i++)
+		{
+			static CraftEnum craft;
+			CraftList.GetArray(i, craft);
+			if(craft.EntRef == ref)
+				return true;
+		}
+	}
+
+	return false;
+}
+
 void Crafting_EnableZone(const char[] zone)
 {
 	if(CraftList)
@@ -244,24 +308,27 @@ void Crafting_DisableZone(const char[] zone)
 
 bool Crafting_Interact(int client, int entity)
 {
-	int ref = EntIndexToEntRef(entity);
-	int length = CraftList.Length;
-	for(int i; i < length; i++)
+	if(CurrentMenu[client] == -1)
 	{
-		static CraftEnum craft;
-		CraftList.GetArray(i, craft);
-		if(craft.EntRef == ref)
+		int ref = EntIndexToEntRef(entity);
+		int length = CraftList.Length;
+		for(int i; i < length; i++)
 		{
-			if(Editor_MenuFunc(client) != INVALID_FUNCTION)
+			static CraftEnum craft;
+			CraftList.GetArray(i, craft);
+			if(craft.EntRef == ref)
 			{
-				OpenEditorFrom(client, craft);
+				if(Editor_MenuFunc(client) != INVALID_FUNCTION)
+				{
+					OpenEditorFrom(client, craft);
+					return true;
+				}
+
+				CurrentMenu[client] = i;
+				CurrentPrint[client] = -1;
+				CraftMenu(client);
 				return true;
 			}
-
-			CurrentMenu[client] = i;
-			CurrentPrint[client] = -1;
-			CraftMenu(client);
-			return true;
 		}
 	}
 
@@ -282,7 +349,7 @@ static void CraftMenu(int client)
 		map.GetValue(CurrentRecipe[client], map);
 		StringMapSnapshot snap = map.Snapshot();
 
-		bool failed, failed5;
+		bool nonMoney, failed, failed5, failed10;
 		int amount;
 		char cost[128], result[128];
 		strcopy(cost, sizeof(cost), "Cost:");
@@ -303,6 +370,12 @@ static void CraftMenu(int client)
 				if(count < (amount * 5))
 					failed5 = true;
 				
+				if(count < (amount * 10))
+					failed10 = true;
+				
+				if(!nonMoney && !StrEqual(craft.Model, ITEM_CASH, false))
+					nonMoney = true;
+
 				Format(cost, sizeof(cost), "%s\n%s (%d / %d)", cost, craft.Model, count, amount);
 			}
 			else if(amount < 0)
@@ -325,8 +398,18 @@ static void CraftMenu(int client)
 		Menu menu = new Menu(CraftRecipe);
 		menu.SetTitle("RPG Fortress\n \nCrafting: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
 
-		menu.AddItem("1", "Craft x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem("5", "Craft x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		if(nonMoney)
+		{
+			menu.AddItem("1", "Craft x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("5", "Craft x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("10", "Craft x10", failed10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		}
+		else
+		{
+			menu.AddItem("1", "Buy x1", failed ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("5", "Buy x5", failed5 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem("10", "Buy x10", failed10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		}
 
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
@@ -340,7 +423,7 @@ static void CraftMenu(int client)
 		StringMapSnapshot snap = map.Snapshot();
 
 		Menu menu = new Menu(SelectRecipe);
-		menu.SetTitle("RPG Fortress\n \nCrafting: %s\n ", craft.Model);
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n ", craft.Model);
 
 		int length = snap.Length;
 		for(int i; i < length; i++)
@@ -357,7 +440,7 @@ static void CraftMenu(int client)
 	else
 	{
 		Menu menu = new Menu(SelectBlueprint);
-		menu.SetTitle("RPG Fortress\n \nCrafting\n ");
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop\n ");
 
 		int length = craft.List.Length;
 		for(int i; i < length; i++)
@@ -530,7 +613,7 @@ void Crafting_EditorMenu(int client)
 	{
 		case 1:	// Crafting Tables
 		{
-			if(StrEqual(CurrentKeyEditing[client][0], "zone"))
+			if(StrEqual(CurrentKeyEditing[client], "zone"))
 			{
 				menu.SetTitle("Crafting\nCrafting Tables - %s\n ", CurrentRecipeEditing[client]);
 				
@@ -604,11 +687,27 @@ void Crafting_EditorMenu(int client)
 				FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"", buffer1);
 				menu.AddItem("_zone", buffer2);
 
+				kv.GetString("anim_idle", buffer1, sizeof(buffer1));
+				FormatEx(buffer2, sizeof(buffer2), "Animation: \"%s\"", buffer1);
+				menu.AddItem("_anim_idle", buffer2);
+
 				kv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
-				FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"", buffer1);
+				FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"%s", buffer1, FileExists(buffer1, true) ? "" : " {WARNING: Model does not exist}");
 				menu.AddItem("_model", buffer2);
 
-				menu.AddItem("_delete", "Delete Table");
+				kv.GetString("wear1", buffer1, sizeof(buffer1));
+				FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
+				menu.AddItem("_wear1", buffer2);
+
+				kv.GetString("wear2", buffer1, sizeof(buffer1));
+				FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
+				menu.AddItem("_wear2", buffer2);
+
+				kv.GetString("wear3", buffer1, sizeof(buffer1));
+				FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s",buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
+				menu.AddItem("_wear3", buffer2);
+
+				menu.AddItem("_delete", "Delete (Type \"_delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, AdjustTable);
@@ -706,7 +805,7 @@ void Crafting_EditorMenu(int client)
 					while(kv.GotoNextKey(false));
 				}
 
-				menu.AddItem("delete", "Delete Recipe");
+				menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, AdjustRecipe);
@@ -733,7 +832,7 @@ void Crafting_EditorMenu(int client)
 					while(kv.GotoNextKey());
 				}
 
-				menu.AddItem("delete", "Delete Blueprint");
+				menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, RecipePicker);

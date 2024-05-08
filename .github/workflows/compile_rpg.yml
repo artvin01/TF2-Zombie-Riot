@@ -1,4 +1,4 @@
-name: Compile NOG
+name: Compile RPG
 
 on:
   push:
@@ -76,5 +76,5 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
+          spcomp -O2 -v2 -i "include" -o rpg_fortress.smx rpg_fortress.sp
         working-directory: ${{ env.SCRIPTS_PATH }}

@@ -1115,6 +1115,10 @@ methodmap CClotBody < CBaseCombatCharacter
 			else
 			{
 				i_Target[this.index] = EntIndexToEntRef(iInt);
+#if defined RPG
+				if(iInt <= MaxClients && iInt > 0)
+					RPGCore_ClientTargetedByNpc(iInt, 8.0);
+#endif
 			}
 		}
 	}
@@ -3231,19 +3235,19 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	if(!b_NpcHasDied[pThis])
 	{
 
-#if defined ZR
 		int client;
+#if defined ZR
 		if(Saga_EnemyDoomed(pThis))
 		{
 			client = Saga_EnemyDoomedBy(pThis);
 		}
 		else
+#endif
 		{
 			client = EntRefToEntIndex(LastHitRef[pThis]);
 		}
 
 		//KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
-#endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
@@ -3253,7 +3257,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
-#if defined ZR
+#if defined ZR || defined RPG
 		int Health = -GetEntProp(pThis, Prop_Data, "m_iHealth");
 
 		if(client > 0 && client <= MaxClients)
@@ -9922,4 +9926,114 @@ void MakeObjectIntangeable(int entity)
 	SetEntityCollisionGroup(entity, 1); //Dont Touch Anything.
 	SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
 	SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
+}
+
+
+static int BadSpotPoints[MAXTF2PLAYERS];
+void Spawns_CheckBadClient(int client)
+{
+#if defined ZR
+	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
+	{
+		BadSpotPoints[client] = 0;
+		return;
+	}
+#else
+	if(!IsPlayerAlive(client))
+	{
+		BadSpotPoints[client] = 0;
+		return;
+	}
+#endif
+#if defined RPG
+	if(RPGCore_ClientTargetedByNpcReturn(client) < GetGameTime())
+	{
+		BadSpotPoints[client] = 0;
+		return;
+	}
+#endif
+	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
+	{
+		// In air or water
+		BadSpotPoints[client]++;
+		return;
+	}
+
+#if defined ZR
+	if(Waves_InSetup())
+		return;
+#endif
+
+	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
+	int GroundEntity = EntRefToEntIndex(RefGround);
+	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
+	{
+		//client is ontop of something, dont do more, they have some way to be put down.
+		return;
+	}
+
+
+	int bad;
+
+	float pos1[3], pos2[3];
+	WorldSpaceCenter(client, pos1);
+	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 100.0, false, true);
+	if(area == NULL_AREA)
+	{
+		// Not near a nav mesh, bad
+		bad = 5;
+		BadSpotPoints[client] += 5;
+	}
+	else
+	{
+		int npcs;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			{
+				WorldSpaceCenter(client, pos2);
+				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
+				if(startArea == NULL_AREA)
+					continue;	// NPC on a bad nav??
+
+				if(!TheNavMesh.BuildPath(startArea, area, pos1))
+				{
+					bad++;
+					BadSpotPoints[client]++;
+				}
+				
+				if(npcs++ > 4)
+					break;
+			}
+		}
+	}
+
+	if(bad > 4)
+	{
+		if(BadSpotPoints[client] > 29)
+		{
+			float damage = 5.0;
+			NpcStuckZoneWarning(client, damage, 0);	
+			if(damage >= 0.25)
+			{
+				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
+			}
+		}
+	}
+	else if(BadSpotPoints[client] > 0)
+	{
+		BadSpotPoints[client]--;
+	}
+
+	/*
+	public native bool BuildPath( CNavArea startArea, 
+		CNavArea goalArea, 
+		const float goalPos[3], 
+		NavPathCostFunctor costFunc = INVALID_FUNCTION,
+		CNavArea &closestArea = NULL_AREA, 
+		float maxPathLength = 0.0,
+		int teamID = TEAM_ANY,
+		bool ignoreNavBlockers = false);
+	*/
 }

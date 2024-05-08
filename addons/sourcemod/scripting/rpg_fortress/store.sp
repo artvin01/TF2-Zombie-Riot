@@ -1852,12 +1852,18 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 	{
 		if(first)
 		{
-			Attributes_SetMulti(weapon, 2, value);
+			if(i_IsWandWeapon[weapon])
+				Attributes_SetMulti(weapon, 410, value);
+			else
+				Attributes_SetMulti(weapon, 2, value);
 		}
 		else
 		{
 			// Second time we modified, remove what we previously had
-			Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon]);
+			if(i_IsWandWeapon[weapon])
+				Attributes_SetMulti(weapon, 410, value / PreviousValue[weapon]);
+			else
+				Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon]);
 		}
 
 		PreviousValue[weapon] = value;
@@ -1945,4 +1951,43 @@ bool Store_SwitchToWeaponSlot(int client, int slot)
 	}
 
 	return false;
+}
+
+
+public float Ammo_HealingSpell(int client, int index, char name[48])
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		HealEntityGlobal(client, client, kv.GetFloat("totalheal"), kv.GetFloat("overheal"), kv.GetFloat("healoverduration"), HEAL_SELFHEAL);
+
+		if(kv.GetNum("staminaregenlevel") > 0)
+			RPGCore_StaminaAddition(client, RPGStats_RetrieveMaxStamina(kv.GetNum("staminaregenlevel")));
+
+		if(kv.GetNum("energyregenlevel") > 0)
+			RPGCore_ResourceAddition(client, RoundToNearest(RPGStats_RetrieveMaxEnergy(kv.GetNum("energyregenlevel"))));
+
+		if(kv.GetNum("consume", 1))
+		{
+			int amount;
+			TextStore_GetInv(client, index, amount);
+			TextStore_SetInv(client, index, amount - 1, amount < 2 ? 0 : -1);
+			if(amount < 2)
+				name[0] = 0;
+
+			kv.GetString("return", name, sizeof(name));
+			if(name[0])
+				TextStore_AddItemCount(client, name, 1);
+		}
+		else
+		{
+			kv.GetString("return", name, sizeof(name));
+		}
+
+		static char buffer[PLATFORM_MAX_PATH];
+		kv.GetString("sound", buffer, sizeof(buffer));
+		if(buffer[0])
+			ClientCommand(client, "playgamesound %s", buffer);
+	}
+	return FAR_FUTURE;
 }

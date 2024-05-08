@@ -13,9 +13,38 @@ static int ExtraLevel[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
+	RegServerCmd("zr_showfilenetlist", DebugCommand);
+
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+}
+
+static Action DebugCommand(int args)
+{
+	char buffer[PLATFORM_MAX_PATH];
+
+	if(SoundList)
+	{
+		int length = SoundList.Length;
+		for(int i; i < length; i++)
+		{
+			SoundList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	if(ExtraList)
+	{
+		int length = ExtraList.Length;
+		for(int i; i < length; i++)
+		{
+			ExtraList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	return Plugin_Handled;
 }
 
 void FileNetwork_MapEnd()

@@ -601,10 +601,10 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 
 	if(ActorKv.GetNum("simple"))
 	{
-		NPCActor_TalkStart(entity, client, 5.0);
-
-		if(entity != -1)
+		if(entity != -1 && !noActions)
 		{
+			NPCActor_TalkStart(entity, client, 5.0);
+
 			ActorKv.GetString("text", buffer1, sizeof(buffer1));
 			FormatText(client, buffer1, sizeof(buffer1));
 			NpcSpeechBubble(entity, buffer1, 5, {255, 255, 255, 255}, {0.0, 0.0, 90.0}, "");
@@ -612,7 +612,8 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 	}
 	else
 	{
-		NPCActor_TalkStart(entity, client);
+		if(entity != -1 && !noActions)
+			NPCActor_TalkStart(entity, client);
 
 		ActorKv.GetString("text", buffer1, sizeof(buffer1));
 		FormatText(client, buffer1, sizeof(buffer1));
@@ -875,7 +876,7 @@ void Actor_EditorMenu(int client)
 			AutoGenerateChatSuffixKv("Conditions", buffer2, sizeof(buffer2));
 			menu.AddItem("cond", buffer2);
 
-			menu.AddItem("delete", "Delete");
+			menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 			menu.ExitBackButton = true;
 			menu.Display(client, AdjustOptionsSection);
@@ -1229,7 +1230,7 @@ void Actor_EditorMenu(int client)
 				menu.AddItem("_cond", buffer3);
 			}
 			
-			menu.AddItem("delete", "Delete");
+			menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 			
 			menu.ExitBackButton = true;
 			menu.Display(client, AdjustChat);
@@ -1377,19 +1378,19 @@ void Actor_EditorMenu(int client)
 			menu.AddItem("_walk_range", buffer2);
 
 			ActorKv.GetString("wear1", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"", buffer1);
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear1", buffer2);
 
 			ActorKv.GetString("wear2", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"", buffer1);
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"\"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear2", buffer2);
 
 			ActorKv.GetString("wear3", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"", buffer1);
+			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear3", buffer2);
 		}
 
-		menu.AddItem("_delete", "Delete NPC");
+		menu.AddItem("_delete", "Delete (Type \"_delete\")", ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustNPC);

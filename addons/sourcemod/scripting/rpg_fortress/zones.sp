@@ -13,6 +13,10 @@ void Zones_PluginStart()
 	.DefineVectorField("m_vecTeleAng")
 	.DefineStringField("m_nItemKey")
 	.DefineStringField("m_nQuestKey")
+	.DefineStringField("m_nMusicFile")
+	.DefineIntField("m_iMusicDuration")
+	.DefineFloatField("m_fMusicVolume")
+	.DefineBoolField("m_bMusicCustom")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -74,12 +78,12 @@ void Zones_Rebuild()
 	ZonesKv.Rewind();
 	if(ZonesKv.GotoFirstSubKey())
 	{
-		char name[64];
+		char buffer[PLATFORM_MAX_PATH];
 		float pos[3], mins[3], maxs[3];
 		
 		do
 		{
-			if(ZonesKv.GetSectionName(name, sizeof(name)))
+			if(ZonesKv.GetSectionName(buffer, sizeof(buffer)))
 			{
 				entity = CreateEntityByName("trigger_rpgzone");
 				if(entity != -1)
@@ -103,7 +107,7 @@ void Zones_Rebuild()
 
 					DispatchKeyValueVector(entity, "origin", pos);
 					DispatchKeyValue(entity, "spawnflags", "1");
-					DispatchKeyValue(entity, "targetname", name);
+					DispatchKeyValue(entity, "targetname", buffer);
 
 					DispatchSpawn(entity);
 					ActivateEntity(entity);    
@@ -124,11 +128,30 @@ void Zones_Rebuild()
 					ZonesKv.GetVector("teleang", mins);
 					SetEntPropVector(entity, Prop_Data, "m_vecTeleAng", mins);
 
-					ZonesKv.GetString("item", name, sizeof(name));
-					SetEntPropString(entity, Prop_Data, "m_nItemKey", name);
+					ZonesKv.GetString("item", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nItemKey", buffer);
 
-					ZonesKv.GetString("quest", name, sizeof(name));
-					SetEntPropString(entity, Prop_Data, "m_nQuestKey", name);
+					ZonesKv.GetString("quest", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nQuestKey", buffer);
+					
+					int custom = ZonesKv.GetNum("download");
+					ZonesKv.GetString("sound", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nMusicFile", buffer);
+					SetEntProp(entity, Prop_Data, "m_iMusicDuration", ZonesKv.GetNum("duration"));
+					SetEntPropFloat(entity, Prop_Data, "m_fMusicVolume", ZonesKv.GetFloat("volume", 1.0));
+					SetEntProp(entity, Prop_Data, "m_bMusicCustom", custom);
+
+					if(buffer[0])
+					{
+						if(custom)
+						{
+							PrecacheSoundCustom(buffer, _, custom);
+						}
+						else
+						{
+							PrecacheSound(buffer);
+						}
+					}
 
 					view_as<CClotBody>(entity).UpdateCollisionBox();
 
@@ -141,18 +164,18 @@ void Zones_Rebuild()
 	}
 }
 
-static void OnEnter(int entity, const char[] name)
+static void OnEnter(int entity, const char[] name, int zone)
 {
 	if(!b_NpcHasDied[entity]) //An npc just touched it!
 	{
-		NPC_Despawn_Zone(entity, name);
+		//NPC_Despawn_Zone(entity, name);
 	}
 	else if(entity > 0 && entity <= MaxClients)
 	{
 		Actor_EnterZone(entity, name);
 		Games_ClientEnter(entity, name);
 		Garden_ClientEnter(entity, name);
-		Music_ZoneEnter(entity, name);
+		Music_ZoneEnter(entity, zone);
 		Spawns_ClientEnter(entity, name);
 		TextStore_ZoneEnter(entity, name);		
 	}
@@ -183,6 +206,7 @@ static void OnEnable(int entity, const char[] name)
 		Mining_EnableZone(name);
 		Spawns_EnableZone(entity, name);
 		Tinker_EnableZone(name);
+		Worldtext_EnableZone(name);
 	}
 }
 
@@ -200,6 +224,7 @@ static void OnDisable(const char[] name)
 		Spawns_DisableZone(name);
 		TextStore_ZoneAllLeave(name);
 		Tinker_DisableZone(name);
+		Worldtext_DisableZone(name);
 	}
 }
 
@@ -223,12 +248,12 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		GetEntPropString(entity, Prop_Data, "m_nQuestKey", name, sizeof(name));
 		if(caller <= MaxClients && name[0] && Quests_GetStatus(caller, name) != Status_Completed)
 		{
-			ShowGameText(caller, _, 0, "You complete \"%s\" to enter", name);
+			ShowGameText(caller, _, 0, "You need complete \"%s\" quest to enter.", name);
 			return Plugin_Continue;
 		}
 
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
-			OnEnter(caller, name);
+			OnEnter(caller, name, entity);
 
 		float pos[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
@@ -376,40 +401,68 @@ void Zones_EditorMenu(int client)
 
 		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f", pos2[0], pos2[1], pos2[2]);
 		menu.AddItem("point2", buffer);
-
-		if(telepos[0])
+		
+		ZonesKv.GetString("sound", buffer, sizeof(buffer));
+		if(buffer[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f %.1f", telepos[0], telepos[1], telepos[2], teleang[1]);
+			Format(buffer, sizeof(buffer), "Music File: \"%s\"%s", buffer, PrecacheSound(buffer) ? "" : " {WARNING: Sound does not exist}");
+			menu.AddItem("sound", buffer);
+			
+			Format(buffer, sizeof(buffer), "Music Time: %d", ZonesKv.GetNum("duration"));
+			menu.AddItem("duration", buffer);
+			
+			Format(buffer, sizeof(buffer), "Music Volume: %f", ZonesKv.GetFloat("volume", 1.0));
+			menu.AddItem("volume", buffer);
+			
+			int custom = ZonesKv.GetNum("download");
+			if(custom)
+			{
+				Format(buffer, sizeof(buffer), "Music Custom: Download Priority %d", custom);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "Music Custom: Is Base Game");
+			}
+			menu.AddItem("download", buffer);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: None");
-		}
-		menu.AddItem("telepos", buffer);
+			menu.AddItem("sound", "Music File: \"\"");
 
-		ZonesKv.GetString("quest", buffer, sizeof(buffer));
-		if(buffer[0] && !Quests_KV().JumpToKey(buffer))
-		{
-			Format(buffer, sizeof(buffer), "Quest Key: \"%s\" {WARNING: Quest does not exist}\n ", buffer);
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Quest Key: \"%s\"\n ", buffer);
-		}
-		menu.AddItem("quest", buffer);
+			if(telepos[0])
+			{
+				FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f %.1f", telepos[0], telepos[1], telepos[2], teleang[1]);
+			}
+			else
+			{
+				FormatEx(buffer, sizeof(buffer), "Teleport: None");
+			}
+			menu.AddItem("telepos", buffer);
 
-		ZonesKv.GetString("item", buffer, sizeof(buffer));
-		if(buffer[0] && !TextStore_IsValidName(buffer))
-		{
-			Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}\n ", buffer);
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Item Key: \"%s\"\n ", buffer);
-		}
-		menu.AddItem("item", buffer);
+			ZonesKv.GetString("quest", buffer, sizeof(buffer));
+			if(buffer[0] && !Quests_KV().JumpToKey(buffer))
+			{
+				Format(buffer, sizeof(buffer), "Quest Key: \"%s\" {WARNING: Quest does not exist}", buffer);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "Quest Key: \"%s\"", buffer);
+			}
+			menu.AddItem("quest", buffer);
 
-		menu.AddItem("delete", "Delete Zone");
+			ZonesKv.GetString("item", buffer, sizeof(buffer));
+			if(buffer[0] && !TextStore_IsValidName(buffer))
+			{
+				Format(buffer, sizeof(buffer), "Item Key: \"%s\" {WARNING: Item does not exist}", buffer);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "Item Key: \"%s\"", buffer);
+			}
+			menu.AddItem("item", buffer);
+		}
+
+		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 		
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustZone);

@@ -461,6 +461,8 @@ void Garden_EditorMenu(int client)
 			while(kv.GotoNextKey(false));
 		}
 
+		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
+
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustGarden);
 		

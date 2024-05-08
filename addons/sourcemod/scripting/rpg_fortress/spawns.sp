@@ -287,6 +287,17 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		{
 			float gameTime = GetGameTime();
 
+			float time = spawn.Time;
+			int clients;
+			for(int i; i < sizeof(spawn.Touching); i++)
+			{
+				if(spawn.Touching[i])
+					clients++;
+			}
+
+			if(clients > 1)
+				time /= float(clients);
+
 			int limit = spawn.Count - alive;
 			for(int i; i < limit; i++)
 			{
@@ -444,12 +455,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 			if(client == target || Party_IsClientMember(client, target))
 			{
 				if(XP[entity] > 0)
-				{
-				//	int level = Level[client];	// -2, -1, 0, +1, +2
-				//	if((level - 3) < Level[entity] && (level + 3) > Level[entity])
-					Stats_GiveXP(client, XP[entity]);
-					SPrintToChat(client, "You gained %d XP", XP[entity]);
-				}
+					TextStore_AddItemCount(target, ITEM_XP, XP[entity]);
 				
 				if(i_CreditsOnKill[entity])
 				{
@@ -730,7 +736,7 @@ void Spawns_EditorMenu(int client)
 		menu.AddItem("drop_chance_4", buffer2);
 
 		menu.AddItem("copy", "Copy From Spawn");
-		menu.AddItem("delete", "Delete Spawn");
+		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 		menu.ExitBackButton = true;
 		menu.Display(client, AdjustSpawn);

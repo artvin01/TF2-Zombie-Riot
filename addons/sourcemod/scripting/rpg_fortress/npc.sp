@@ -72,9 +72,6 @@ int NPC_Add(NPCData data)
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
 
-	if(!TranslationPhraseExists(data.Name))
-		LogError("Translation '%s' does not exist", data.Name);
-
 	return NPCList.PushArray(data);
 }
 

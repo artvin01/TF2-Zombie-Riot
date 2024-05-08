@@ -660,7 +660,7 @@ void Fishing_EditorMenu(int client)
 					kv.GoBack();
 				}
 
-				menu.AddItem("delete", "Delete Rarity");
+				menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, AdjustSpotSection);
@@ -710,7 +710,7 @@ void Fishing_EditorMenu(int client)
 				FormatEx(buffer2, sizeof(buffer2), "Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
 				menu.AddItem("pos", buffer2);
 
-				menu.AddItem("delete", "Delete Spot");
+				menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, AdjustSpot);
@@ -812,7 +812,7 @@ void Fishing_EditorMenu(int client)
 				FormatEx(buffer2, sizeof(buffer2), "Rarity: %d", kv.GetNum("rarity"));
 				menu.AddItem("rarity", buffer2);
 
-				menu.AddItem("delete", "Delete Fish");
+				menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
 				menu.Display(client, AdjustFish);

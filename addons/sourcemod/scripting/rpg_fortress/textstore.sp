@@ -648,9 +648,10 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 	}
 	else if(StrEqual(name, ITEM_XP, false))
 	{
-		Stats_GiveXP(client, amount);
-		if(amount > 0 && !silent)
-			SPrintToChat(client, "You gained %d XP", amount);
+		int xp = amount;
+		Stats_GiveXP(client, xp);
+		if(xp > 0 && !silent)
+			SPrintToChat(client, "You gained %d XP", xp);
 	}
 	else
 	{
@@ -759,7 +760,7 @@ void TextStore_ZoneAllLeave(const char[] name)
 
 public Action TextStore_OnSellItem(int client, int item, int cash, int &count, int &sell)
 {
-	if(InStore[client][0])
+	if(InStore[client][0] || Crafting_LookAtTable(client))
 	{
 		if(item < 0)
 			return Plugin_Continue;
@@ -779,14 +780,14 @@ public Action TextStore_OnSellItem(int client, int item, int cash, int &count, i
 	}
 	else
 	{
-		SPrintToChat(client, "You must sell this in a shop or market!");
+		SPrintToChat(client, "You must sell this looking at a shop keeper or being in a market!");
 	}
 	return Plugin_Handled;
 }
 
 static void TextStore_ShowSellMenu(int client)
 {
-	if(InStore[client][0])
+	if(InStore[client][0] || Crafting_LookAtTable(client))
 	{
 		KeyValues kv = TextStore_GetItemKv(MarketItem[client]);
 		if(kv)
@@ -937,7 +938,7 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 				}
 				case 6:
 				{
-					if(InStore[client][0])
+					if(InStore[client][0] || Crafting_LookAtTable(client))
 					{
 						KeyValues kv = TextStore_GetItemKv(MarketItem[client]);
 						if(kv)
@@ -1646,7 +1647,9 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 			}
 			else
 			{
-				cash = 1;
+				if(!death)
+					cash = 1;
+				
 				TextStore_GetInv(client, pack.Item, amount);
 				TextStore_SetInv(client, pack.Item, pack.Amount + amount);
 			}
@@ -1685,7 +1688,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				int strength;
 				if(ItemIndex[entity] != -1)
 				{
-					weight = GetBackpackSize(client) - 2;
+					weight = GetBackpackSize(client) - 1;
 
 					int i;
 					while(TF2_GetItem(client, strength, i))
@@ -1701,13 +1704,9 @@ bool TextStore_Interact(int client, int entity, bool reload)
 					ClientCommand(client, "playgamesound items/medshotno1.wav");
 					ShowGameText(client, "ico_notify_highfive", 0, "You can't carry any more items (%d / %d)", weight, strength);
 
-					if(Level[client] < 6)
+					if(Level[client] < 10)
 					{
 						SPrintToChat(client, "TIP: Head over to a shop to deposit your backpack");
-					}
-					else if(Level[client] == 10)
-					{
-						SPrintToChat(client, "TIP: You can carry 10 more items for each elite level up");
 					}
 					else if(Level[client] < 30)
 					{
@@ -1783,7 +1782,7 @@ bool TextStore_Interact(int client, int entity, bool reload)
 			}
 			return true;
 		}
-		else if(Level[client] < 8)
+		else if(Level[client] < 10)
 		{
 			SPrintToChat(client, "TIP: Press RELOAD (R) to pick up an item");
 			return true;
@@ -1896,7 +1895,7 @@ static void ShowMenu(int client, int page = 0)
 			Format(TitleChar, sizeof(TitleChar), "RPG Fortress\nPower: %s\nLVL: %s\n \nSkills:", c_Powerlevel,LVLBuffer);
 			menu.SetTitle("%s",TitleChar);
 
-			static const int MaxSkills = 5;
+			static const int MaxSkills = 6;
 
 			int amount;
 			float gameTime = GetGameTime();
@@ -1968,7 +1967,7 @@ static void ShowMenu(int client, int page = 0)
 			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f]", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 			menu.AddItem("-1", form.Name, CanTransform ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem("-2", "Transform Settings");
-			menu.AddItem("-3", "Main Menu");
+			//menu.AddItem("-3", "Main Menu");
 
 			menu.Pagination = 0;
 			menu.ExitButton = true;
@@ -2036,7 +2035,7 @@ static void ShowMenu(int client, int page = 0)
 					
 					if(pack.Item == -1)
 					{
-						if(amount)
+						if(amount != -1)
 						{
 							menu.InsertItem(0, index, name);
 						}
@@ -2087,6 +2086,7 @@ static void ShowMenu(int client, int page = 0)
 		}
 		default:
 		{
+			MenuType[client] = MENU_SPELLS;
 			InMenu[client] = false;
 		}
 	}
@@ -2311,7 +2311,7 @@ stock void TextStore_Inspect(int client)
 			MenuType[client] = MENU_QUESTBOOK;
 			RefreshAt[client] = 1.0;
 		}
-		case MENU_QUESTBOOK, MENU_TRANSFORM, MENU_BUILDING:
+		default://case MENU_QUESTBOOK, MENU_TRANSFORM, MENU_BUILDING:
 		{
 			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;

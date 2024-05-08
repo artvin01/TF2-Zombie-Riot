@@ -178,7 +178,8 @@ void Editor_MainMenu(int client)
 	menu.AddItem("garden", "Gardens");
 	menu.AddItem("mining", "Mines");
 	menu.AddItem("fishing", "Fishing");
-	menu.AddItem("crafting", "Crafting");
+	menu.AddItem("crafting", "Craft/Shop");
+	menu.AddItem("worldtext", "Worldtext");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -255,6 +256,10 @@ static void MainMenuHandler(int client, const char[] buffer)
 	else if(StrContains(buffer, "crafting") != -1)
 	{
 		Crafting_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "worldtext") != -1)
+	{
+		Worldtext_EditorMenu(client);
 	}
 }
 

@@ -1,6 +1,6 @@
 
 static float Duration_Pound[MAXTF2PLAYERS];
-static float Is_Duration_Pound[MAXTF2PLAYERS];
+static float Is_Duration_Pound[MAXENTITIES];
 
 
 float AbilityGroundPoundReturnFloat(int client)
@@ -17,6 +17,7 @@ static float client_slammed_pos[MAXTF2PLAYERS][3];
 static float client_slammed_forward[MAXTF2PLAYERS][3];
 static float client_slammed_right[MAXTF2PLAYERS][3];
 static float f_OriginalDamage[MAXTF2PLAYERS];
+static bool b_GroundPoundHit[MAXTF2PLAYERS][MAXENTITIES];
 
 
 #define spirite "spirites/zerogxplode.spr"
@@ -29,6 +30,7 @@ void GroundSlam_Map_Precache()
 	PrecacheSound("ambient/atmosphere/terrain_rumble1.wav", true);
 	PrecacheSound("ambient/explosions/explode_9.wav", true);
 	Zero(Duration_Pound);
+	Zero2(b_GroundPoundHit);
 }
 
 public float AbilityGroundSlam(int client, int index, char name[48])
@@ -72,10 +74,10 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
-	damageDelt *= 1.25;
+	damageDelt *= 2.2;
 
 	Ability_OnAbility_Ground_Pound(client, 1, weapon, damageDelt);
-	return (GetGameTime() + 10.0);
+	return (GetGameTime() + 15.0);
 }
 
 public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, float damage)
@@ -126,6 +128,12 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 	Is_Duration_Pound[client] = GetGameTime() + 5.0;
 		
 	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);
+
+	for(int entity=1; entity<=MaxClients; entity++)
+	{
+		b_GroundPoundHit[client][entity] = false;
+	}
+	
 	EmitSoundToAll("weapons/physcannon/energy_sing_flyby2.wav", client, SNDCHAN_STATIC, 80, _, 0.9);
 	f_ImmuneToFalldamage[client] = GetGameTime() + 0.5;
 }
@@ -177,7 +185,8 @@ public Action contact_ground_shockwave(int client)
 		if(IsValidEntity(weapon))
 		{
 			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
-			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false);
+			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false,_,_,_,_,GroundPoundMeleeHitOnce);
+	
 		}
 		EmitSoundToAll("ambient/atmosphere/terrain_rumble1.wav", client, SNDCHAN_STATIC, 80, _, 0.9);
 		CreateEarthquake(vecSwingEnd, 0.5, 350.0, 16.0, 255.0);
@@ -189,6 +198,16 @@ public Action contact_ground_shockwave(int client)
 	return Plugin_Continue;
 }
 
+float GroundPoundMeleeHitOnce(int entity, int victim, float damage, int weapon)
+{
+	if(b_GroundPoundHit[entity][victim])
+	{
+		damage *= -1.0;
+		return damage;
+	}
+	b_GroundPoundHit[entity][victim] = true;
+	return damage;
+}
 
 public Action shockwave_explosions(Handle timer, int client)
 {
@@ -212,7 +231,7 @@ public Action shockwave_explosions(Handle timer, int client)
 		if(IsValidEntity(weapon))
 		{
 			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
-			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false);
+			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false,_,_,_,_,GroundPoundMeleeHitOnce);
 		}
 
 		if(client_slammed_how_many_times[client] > client_slammed_how_many_times_limit[client])

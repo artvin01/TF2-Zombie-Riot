@@ -502,9 +502,7 @@ bool Quests_BookMenu(int client)
 			{
 				if(kv.GetNum(steamid) == Status_InProgress)
 				{
-					pages++;
-
-					if((BookPage[client] / 2) != (pages / 2))
+					if(BookPage[client] != ((pages++) / 2))
 						continue;
 
 					CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
@@ -533,7 +531,7 @@ bool Quests_BookMenu(int client)
 			menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
 		}
 		
-		if((pages / 2) > (BookPage[client] / 2))
+		if((pages / 2) > BookPage[client])
 		{
 			menu.AddItem(NULL_STRING, "Next");
 		}
