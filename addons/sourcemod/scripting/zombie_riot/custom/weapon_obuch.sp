@@ -1,15 +1,19 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SOUND_AUTOAIM_IMPACT_FLESH_1 		"weapons/bat_baseball_hit_flesh.wav"
 
+
+void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds or something.
+{
+	PrecacheSound("weapons/bat_baseball_hit_flesh.wav");
+}
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
 
 	ApplyTempAttrib(weapon, 6, 0.8, 0.1);
 	ApplyTempAttrib(weapon, 2, 1.1, 0.1);
 	ApplyTempAttrib(attacker, 206, 0.95, 0.1);
-	EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9, 120);
+	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", entity, SNDCHAN_STATIC, 80, _, 0.9, 120);
 }
 
 /*

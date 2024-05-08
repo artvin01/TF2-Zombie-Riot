@@ -761,6 +761,7 @@ void ZR_MapStart()
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
+	ObuchHammer_Map_Precache();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
