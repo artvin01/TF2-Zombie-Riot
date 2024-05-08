@@ -129,7 +129,7 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 		
 	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);
 
-	for(int entity=1; entity<=MaxClients; entity++)
+	for(int entity=1; entity<=MAXENTITIES; entity++)
 	{
 		b_GroundPoundHit[client][entity] = false;
 	}

@@ -254,16 +254,20 @@ void Crafting_ConfigSetup()
 bool Crafting_LookAtTable(int client)
 {
 	int entity = GetClientPointVisible(client);
-	if(entity > 0)
+	if(entity > 0 && b_is_a_brush[entity])
 	{
-		int ref = EntIndexToEntRef(entity);
-		int length = CraftList.Length;
-		for(int i; i < length; i++)
+		entity = BrushToEntity(entity);
+		if(entity != -1)
 		{
-			static CraftEnum craft;
-			CraftList.GetArray(i, craft);
-			if(craft.EntRef == ref)
-				return true;
+			int ref = EntIndexToEntRef(entity);
+			int length = CraftList.Length;
+			for(int i; i < length; i++)
+			{
+				static CraftEnum craft;
+				CraftList.GetArray(i, craft);
+				if(craft.EntRef == ref)
+					return true;
+			}
 		}
 	}
 
@@ -308,27 +312,27 @@ void Crafting_DisableZone(const char[] zone)
 
 bool Crafting_Interact(int client, int entity)
 {
-	if(CurrentMenu[client] == -1)
+	int ref = EntIndexToEntRef(entity);
+	int length = CraftList.Length;
+	for(int i; i < length; i++)
 	{
-		int ref = EntIndexToEntRef(entity);
-		int length = CraftList.Length;
-		for(int i; i < length; i++)
+		static CraftEnum craft;
+		CraftList.GetArray(i, craft);
+		if(craft.EntRef == ref)
 		{
-			static CraftEnum craft;
-			CraftList.GetArray(i, craft);
-			if(craft.EntRef == ref)
+			if(Editor_MenuFunc(client) != INVALID_FUNCTION)
 			{
-				if(Editor_MenuFunc(client) != INVALID_FUNCTION)
-				{
-					OpenEditorFrom(client, craft);
-					return true;
-				}
-
-				CurrentMenu[client] = i;
-				CurrentPrint[client] = -1;
-				CraftMenu(client);
+				OpenEditorFrom(client, craft);
 				return true;
 			}
+
+			if(CurrentMenu[client] != -1)
+				CancelClientMenu(client);
+			
+			CurrentMenu[client] = i;
+			CurrentPrint[client] = -1;
+			CraftMenu(client);
+			return true;
 		}
 	}
 

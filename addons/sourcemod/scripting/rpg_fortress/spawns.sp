@@ -442,8 +442,8 @@ static int GetScaledRate(const int rates[2], int power, int maxpower)
 
 void Spawns_NPCDeath(int entity, int client, int weapon)
 {
-	static float pos[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	static float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 
 	static SpawnEnum spawn;
 	if(hFromSpawnerIndex[entity] >= 0)
@@ -454,6 +454,14 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 		{
 			if(client == target || Party_IsClientMember(client, target))
 			{
+				if(client != target)
+				{
+					static float pos2[3];
+					GetClientAbsOrigin(target, pos2);
+					if(GetVectorDistance(pos1, pos2, true) > 1000000.0)	// 1000 HU
+						continue;
+				}
+
 				if(XP[entity] > 0)
 					TextStore_AddItemCount(target, ITEM_XP, XP[entity]);
 				
@@ -461,20 +469,20 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 				{
 					if(i_CreditsOnKill[entity] > 49)
 					{
-						TextStore_DropCash(target, pos, i_CreditsOnKill[entity]);
+						TextStore_DropCash(target, pos1, i_CreditsOnKill[entity]);
 					}
 					else if(i_CreditsOnKill[entity] > 14)
 					{
 						if(GetURandomInt() % 2)
-							TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 2);
+							TextStore_DropCash(target, pos1, i_CreditsOnKill[entity] * 2);
 					}
 					else if(!(GetURandomInt() % 5))
 					{
-						TextStore_DropCash(target, pos, i_CreditsOnKill[entity] * 5);
+						TextStore_DropCash(target, pos1, i_CreditsOnKill[entity] * 5);
 					}
 				}
 				
-				spawn.DoAllDrops(target, pos, Level[entity]);
+				spawn.DoAllDrops(target, pos1, Level[entity]);
 			}
 		}
 	}

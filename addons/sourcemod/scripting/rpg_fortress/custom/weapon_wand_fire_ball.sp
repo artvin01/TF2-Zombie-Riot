@@ -47,7 +47,7 @@ public float AbilityFireball(int client, int index, char name[48])
 
 	int StatsForCalcMultiAdd;
 	Stats_Artifice(client, StatsForCalcMultiAdd);
-	StatsForCalcMultiAdd *= 2;
+	StatsForCalcMultiAdd;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
@@ -70,7 +70,7 @@ public float AbilityFireball(int client, int index, char name[48])
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana");
 		return 0.0;
 	}
-	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
+	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
 	RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
 	
 	StatsForCalcMultiAdd = Stats_Precision(client);

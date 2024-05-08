@@ -82,6 +82,7 @@ static void EnableCharacter(int client, const char[] id)
 		KeyValues kv = Saves_Kv("characters");
 		if(kv.JumpToKey(id))
 		{
+			mp_disable_respawn_times.ReplicateToClient(client, "0");
 			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
 			RaceIndex[client] = kv.GetNum("race");
 
@@ -208,7 +209,10 @@ static void SaveCharacter(int client, bool remove)
 		}
 
 		if(remove)
+		{
 			CharacterId[client][0] = 0;
+			mp_disable_respawn_times.ReplicateToClient(client, "1");
+		}
 	}
 
 	if(remove)

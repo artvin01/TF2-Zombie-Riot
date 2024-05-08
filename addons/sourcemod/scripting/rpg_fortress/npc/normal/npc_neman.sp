@@ -212,7 +212,7 @@ public void NemanBoss_ClotThink(int iNPC)
 	}
 	else
 	{
-		speed = 245.0;
+		speed = 255.0;
 	}
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", speed, gameTime);
 	
@@ -234,7 +234,7 @@ public void NemanBoss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 400.0;
+					float damage = 700.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -302,10 +302,6 @@ public void NemanBoss_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
-		{
-			npc.m_iState = 1; //Engage in Close Range Destruction.
-		}
 		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			npc.m_iState = 2; //Throw a projectile
@@ -313,6 +309,10 @@ public void NemanBoss_ClotThink(int iNPC)
 		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flDoingSpecial < gameTime)
 		{
 			npc.m_iState = 3; //Throw a projectile
+		}
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
 		else 
 		{
@@ -372,7 +372,7 @@ public void NemanBoss_ClotThink(int iNPC)
 					npc.PlayRangedAttackSecondarySound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					
-					npc.FireParticleRocket(vecTarget, 350.0 , 600.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 650.0 , 600.0 , 100.0 , "raygun_projectile_blue");
 					npc.AddGesture("ACT_MP_THROW");
 
 					npc.m_iTarget = Enemy_I_See;
@@ -474,7 +474,7 @@ void NemanBoss_InitiateLightning(int iNPC, int enemy)
 	WritePackFloat(pack, vPredictedPos[0]);
 	WritePackFloat(pack, vPredictedPos[1]);
 	WritePackFloat(pack, vPredictedPos[2]);
-	WritePackFloat(pack, 750.0);
+	WritePackFloat(pack, 1250.0);
 		
 	spawnRing_Vectors(vPredictedPos, NEMAN_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, NEMAN_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
 }

@@ -560,7 +560,6 @@ enum struct DungeonEnum
 	}
 }
 
-static ConVar mp_disable_respawn_times;
 static Handle SyncHud;
 static Handle DungeonTimer;
 static StringMap DungeonList;
@@ -572,7 +571,6 @@ static int LastResult[MAXENTITIES];
 void Dungeon_PluginStart()
 {
 	SyncHud = CreateHudSynchronizer();
-	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 }
 
 void Dungeon_ConfigSetup()

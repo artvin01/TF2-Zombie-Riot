@@ -21,6 +21,7 @@ int BaseUpdateStats;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
+ConVar mp_disable_respawn_times;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
@@ -167,6 +168,8 @@ void RPG_PluginStart()
 	Medigun_PluginStart();
 	RpgPluginStart_Store();
 	RequestFrame(CheckIfAloneOnServer);
+	
+	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 }
 
 void RPG_PluginEnd()

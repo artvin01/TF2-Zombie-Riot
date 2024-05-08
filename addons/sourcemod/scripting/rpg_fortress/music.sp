@@ -193,7 +193,7 @@ void Music_PlayerRunCmd(int client)
 			{
 				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
 				NextSoundIn[client] = time + OverrideTime[client];
-				CurrentZone[client][0] = 0;
+				CurrentZone[client] = -1;
 			}
 			else if(CurrentZone[client] != -1)
 			{

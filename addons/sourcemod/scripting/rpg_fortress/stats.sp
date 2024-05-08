@@ -95,6 +95,7 @@ static void SaveClientStats(int client)
 		kv.SetNum("capacity", StatCapacity[client]);
 		kv.SetNum("xp", XP[client]);
 		kv.SetNum("input", InputMulti[client]);
+		kv.SetNum("level", Level[client]);
 
 		kv.DeleteKey("mastery");
 
