@@ -1029,6 +1029,7 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
+		ForcePlayerSuicide(client);
 	//	DestroyDispenser(client);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;

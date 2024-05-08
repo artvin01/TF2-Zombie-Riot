@@ -95,6 +95,7 @@ enum struct WaveEnum
 	int Level;
 	int Health;
 	int Rarity;
+	int HPRegen;
 
 	void SetupEnum(KeyValues kv, char[] buffer, int length)
 	{
@@ -110,6 +111,7 @@ enum struct WaveEnum
 		this.Level = kv.GetNum("level");
 		this.Health = kv.GetNum("health");
 		this.Rarity = kv.GetNum("rarity");
+		this.HPRegen = kv.GetNum("hpregen");
 	}
 }
 
@@ -1497,6 +1499,11 @@ public Action Dungeon_Timer(Handle timer)
 									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.75);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
+								}
+								if(wave.HPRegen)
+								{
+									wave.HPRegen = RoundToCeil(float(wave.HPRegen) * float(dungeon.PlayerCount) * 0.75);
+									i_HpRegenInBattle[entity] = wave.HPRegen;
 								}
 
 								if(dungeon.ModList)

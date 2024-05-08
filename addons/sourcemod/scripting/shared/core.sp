@@ -592,6 +592,7 @@ float f_NotifHudOffsetY[MAXTF2PLAYERS];
 int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 int i_CreditsOnKill[MAXENTITIES];
+int i_HpRegenInBattle[MAXENTITIES];
 #endif
 
 #if defined ZR || defined RPG
@@ -3509,6 +3510,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				return true;
 			
 			if(Mining_Interact(client, entity, weapon))
+				return true;
+			
+			if(Crafting_Interact(client, entity))
 				return true;
 			
 			if(Tinker_Interact(client, entity, weapon))

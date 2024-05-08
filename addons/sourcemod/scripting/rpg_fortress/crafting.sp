@@ -252,6 +252,12 @@ bool Crafting_Interact(int client, int entity)
 		CraftList.GetArray(i, craft);
 		if(craft.EntRef == ref)
 		{
+			if(Editor_MenuFunc(client) != INVALID_FUNCTION)
+			{
+				OpenEditorFrom(client, craft);
+				return true;
+			}
+
 			CurrentMenu[client] = i;
 			CurrentPrint[client] = -1;
 			CraftMenu(client);
@@ -489,7 +495,7 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 					map.GetValue(craft.Model, amount);
 
 					if(amount)
-						TextStore_AddItemCount(client, craft.Model, -(amount * multi));
+						TextStore_AddItemCount(client, craft.Model, -(amount * multi), true);
 				}
 			}
 
@@ -498,4 +504,550 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 		}
 	}
 	return 0;
+}
+
+static char CurrentKeyEditing[MAXTF2PLAYERS][64];
+static char CurrentRecipeEditing[MAXTF2PLAYERS][64];
+static char CurrentSectionEditing[MAXTF2PLAYERS][64];
+static int CurrentMenuEditing[MAXTF2PLAYERS];
+
+static void OpenEditorFrom(int client, const CraftEnum craft)
+{
+	CurrentMenuEditing[client] = 1;
+	strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), craft.Zone);
+	CurrentRecipeEditing[client][0] = 0;
+	CurrentKeyEditing[client][0] = 0;
+	Crafting_EditorMenu(client);
+}
+
+void Crafting_EditorMenu(int client)
+{
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH];
+
+	EditMenu menu = new EditMenu();
+
+	switch(CurrentMenuEditing[client])
+	{
+		case 1:	// Crafting Tables
+		{
+			if(StrEqual(CurrentKeyEditing[client][0], "zone"))
+			{
+				menu.SetTitle("Crafting\nCrafting Tables - %s\n ", CurrentRecipeEditing[client]);
+				
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("", buffer1);
+
+				Zones_GenerateZoneList(client, menu);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustTableKey);
+			}
+			else if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nCrafting Tables - %s\n ", CurrentRecipeEditing[client]);
+				
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("", buffer1);
+
+				menu.AddItem("", "Set To Default");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustTableKey);
+			}
+			else if(CurrentRecipeEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nCrafting Tables - %s\nClick to set it's value:\n ", CurrentRecipeEditing[client]);
+				
+				RPG_BuildPath(buffer1, sizeof(buffer1), "crafting");
+				KeyValues kv = new KeyValues("Crafting");
+				kv.ImportFromFile(buffer1);
+				kv.JumpToKey("Tables");
+				bool missing = !kv.JumpToKey(CurrentRecipeEditing[client]);
+
+				if(!missing && kv.JumpToKey("Blueprints"))
+				{
+					if(kv.GotoFirstSubKey(false))
+					{
+						do
+						{
+							kv.GetSectionName(buffer1, sizeof(buffer1));
+							if(BluePrints.ContainsKey(buffer1))
+							{
+								strcopy(buffer2, sizeof(buffer2), buffer1);
+							}
+							else
+							{
+								FormatEx(buffer2, sizeof(buffer2), "%s {WARNING: Blueprint does not exist}", buffer1);
+							}
+
+							menu.AddItem(buffer1, buffer2);
+						}
+						while(kv.GotoNextKey(false));
+
+						kv.GoBack();
+					}
+
+					kv.GoBack();
+				}
+
+				menu.AddItem("0", "Type to add a blueprint", ITEMDRAW_DISABLED);
+
+				FormatEx(buffer2, sizeof(buffer2), "Position: %s", CurrentRecipeEditing[client]);
+				menu.AddItem("_pos", buffer2);
+				
+				float vec[3];
+				kv.GetVector("ang", vec);
+				FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
+				menu.AddItem("_ang", buffer2);
+
+				kv.GetString("zone", buffer1, sizeof(buffer1), missing ? CurrentSectionEditing[client] : "");
+				FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"", buffer1);
+				menu.AddItem("_zone", buffer2);
+
+				kv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
+				FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"", buffer1);
+				menu.AddItem("_model", buffer2);
+
+				menu.AddItem("_delete", "Delete Table");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustTable);
+				
+				delete kv;
+			}
+			else if(CurrentSectionEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nCrafting Tables - %s\nSelect a table:\n ", CurrentSectionEditing[client]);
+
+				RPG_BuildPath(buffer1, sizeof(buffer1), "crafting");
+				KeyValues kv = new KeyValues("Crafting");
+				kv.ImportFromFile(buffer1);
+				
+				menu.AddItem("", "Create New Table");
+				
+				if(kv.JumpToKey("Tables") && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetString("zone", buffer1, sizeof(buffer1));
+						if(strlen(CurrentSectionEditing[client]) < 2 || StrEqual(buffer1, CurrentSectionEditing[client]))
+						{
+							kv.GetSectionName(buffer1, sizeof(buffer1));
+							menu.AddItem(buffer1, buffer1);
+						}
+					}
+					while(kv.GotoNextKey());
+				}
+
+				menu.ExitBackButton = true;
+				menu.Display(client, TablePicker);
+
+				delete kv;
+			}
+			else
+			{
+				menu.SetTitle("Crafting\nCrafting Tables\nSelect a zone:\n ");
+
+				menu.AddItem(" ", "All Zones");
+
+				Zones_GenerateZoneList(client, menu);
+
+				menu.ExitBackButton = true;
+				menu.Display(client, SectionPicker);
+			}
+		}
+		case 2:	// Blueprints
+		{
+			if(CurrentKeyEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nBlueprints - %s - %s\nClick to set it's value:\n ", CurrentSectionEditing[client], CurrentRecipeEditing[client]);
+				
+				FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+				menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+				menu.AddItem("", "(>0 Cost, <0 Gain, =0 Tool)", ITEMDRAW_DISABLED);
+
+				menu.AddItem("", "Remove Item");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustRecipeKey);
+			}
+			else if(CurrentRecipeEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nBlueprints - %s - %s\nClick to set it's value:\n ", CurrentSectionEditing[client], CurrentRecipeEditing[client]);
+				
+				RPG_BuildPath(buffer1, sizeof(buffer1), "crafting");
+				KeyValues kv = new KeyValues("Crafting");
+				kv.ImportFromFile(buffer1);
+
+				menu.AddItem("", "Type to add an new item", ITEMDRAW_DISABLED);
+				
+				if(kv.JumpToKey("Blueprints") && kv.JumpToKey(CurrentSectionEditing[client]) && kv.JumpToKey(CurrentRecipeEditing[client]) && kv.GotoFirstSubKey(false))
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+						int amount = kv.GetNum(NULL_STRING);
+						if(amount > 0)
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s (Cost x%d)", buffer1, amount);
+						}
+						else if(amount < 0)
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s (Gain x%d)", buffer1, -amount);
+						}
+						else
+						{
+							FormatEx(buffer2, sizeof(buffer2), "%s (Tool)", buffer1);
+						}
+						
+						menu.AddItem(buffer1, buffer2);
+					}
+					while(kv.GotoNextKey(false));
+				}
+
+				menu.AddItem("delete", "Delete Recipe");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, AdjustRecipe);
+				
+				delete kv;
+			}
+			else if(CurrentSectionEditing[client][0])
+			{
+				menu.SetTitle("Crafting\nBlueprints - %s\nSelect a recipe:\n ", CurrentSectionEditing[client]);
+
+				RPG_BuildPath(buffer1, sizeof(buffer1), "crafting");
+				KeyValues kv = new KeyValues("Crafting");
+				kv.ImportFromFile(buffer1);
+				
+				menu.AddItem("", "Type to create a new recipe", ITEMDRAW_DISABLED);
+				
+				if(kv.JumpToKey("Blueprints") && kv.JumpToKey(CurrentSectionEditing[client]) && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+						menu.AddItem(buffer1, buffer1);
+					}
+					while(kv.GotoNextKey());
+				}
+
+				menu.AddItem("delete", "Delete Blueprint");
+
+				menu.ExitBackButton = true;
+				menu.Display(client, RecipePicker);
+
+				delete kv;
+			}
+			else
+			{
+				menu.SetTitle("Crafting\nBlueprints\nSelect a blueprint:\n ");
+
+				RPG_BuildPath(buffer1, sizeof(buffer1), "crafting");
+				KeyValues kv = new KeyValues("Crafting");
+				kv.ImportFromFile(buffer1);
+				
+				menu.AddItem("", "Type to create a new blueprint", ITEMDRAW_DISABLED);
+				
+				if(kv.JumpToKey("Blueprints") && kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetSectionName(buffer1, sizeof(buffer1));
+						menu.AddItem(buffer1, buffer1);
+					}
+					while(kv.GotoNextKey());
+				}
+
+				menu.ExitBackButton = true;
+				menu.Display(client, SectionPicker);
+
+				delete kv;
+			}
+		}
+		default:
+		{
+			menu.SetTitle("Crafting\n ");
+
+			menu.AddItem("2", "Blueprints");
+			menu.AddItem("1", "Crafting Tables");
+
+			menu.ExitBackButton = true;
+			menu.Display(client, MenuPicker);
+		}
+	}
+}
+
+static void MenuPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		Editor_MainMenu(client);
+		return;
+	}
+
+	CurrentMenuEditing[client] = StringToInt(key);
+	Crafting_EditorMenu(client);
+}
+
+static void SectionPicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentMenuEditing[client] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), key);
+	Crafting_EditorMenu(client);
+}
+
+static void RecipePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	if(StrEqual(key, "delete"))
+	{
+		char filepath[PLATFORM_MAX_PATH];
+		RPG_BuildPath(filepath, sizeof(filepath), "crafting");
+		KeyValues kv = new KeyValues("Crafting");
+		kv.ImportFromFile(filepath);
+		if(kv.JumpToKey("Blueprints"))
+		{
+			kv.DeleteKey(CurrentSectionEditing[client]);
+			kv.Rewind();
+			kv.ExportToFile(filepath);
+		}
+
+		delete kv;
+		CurrentSectionEditing[client][0] = 0;
+	}
+	else
+	{
+		strcopy(CurrentRecipeEditing[client], sizeof(CurrentRecipeEditing[]), key);
+	}
+
+	Crafting_EditorMenu(client);
+}
+
+static void AdjustRecipe(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentRecipeEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	if(StrEqual(key, "delete"))
+	{
+		char filepath[PLATFORM_MAX_PATH];
+		RPG_BuildPath(filepath, sizeof(filepath), "crafting");
+		KeyValues kv = new KeyValues("Crafting");
+		kv.ImportFromFile(filepath);
+		if(kv.JumpToKey("Blueprints") && kv.JumpToKey(CurrentSectionEditing[client]))
+		{
+			kv.DeleteKey(CurrentRecipeEditing[client]);
+			kv.Rewind();
+			kv.ExportToFile(filepath);
+			ReloadKv();
+		}
+
+		delete kv;
+		CurrentRecipeEditing[client][0] = 0;
+	}
+	else
+	{
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+	}
+	
+	Crafting_EditorMenu(client);
+}
+
+static void AdjustRecipeKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "crafting");
+	KeyValues kv = new KeyValues("Crafting");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Blueprints", true);
+	kv.JumpToKey(CurrentSectionEditing[client], true);
+	kv.JumpToKey(CurrentRecipeEditing[client], true);
+
+	if(key[0])
+	{
+		kv.SetNum(CurrentKeyEditing[client], StringToInt(key));
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	ReloadKv();
+	Crafting_EditorMenu(client);
+}
+
+static void TablePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	if(key[0])
+	{
+		strcopy(CurrentRecipeEditing[client], sizeof(CurrentRecipeEditing[]), key);
+	}
+	else
+	{
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		FormatEx(CurrentRecipeEditing[client], sizeof(CurrentRecipeEditing[]), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+	}
+
+	Crafting_EditorMenu(client);
+}
+
+static void AdjustTable(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentRecipeEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "crafting");
+	KeyValues kv = new KeyValues("Crafting");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Tables", true);
+	
+	if(!kv.JumpToKey(CurrentRecipeEditing[client]))
+	{
+		kv.JumpToKey(CurrentRecipeEditing[client], true);
+		kv.SetString("zone", CurrentSectionEditing[client]);
+	}
+
+	if(StrEqual(key, "_pos"))
+	{
+		char buffer[64];
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		FormatEx(buffer, sizeof(buffer), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+		kv.SetSectionName(buffer);
+		strcopy(CurrentRecipeEditing[client], sizeof(CurrentRecipeEditing[]), buffer);
+	}
+	else if(StrEqual(key, "_ang"))
+	{
+		float ang[3];
+		GetClientEyeAngles(client, ang);
+		ang[0] = 0.0;
+		ang[2] = 0.0;
+		kv.SetVector("ang", ang);
+	}
+	else if(StrEqual(key, "_delete"))
+	{
+		kv.DeleteThis();
+		CurrentRecipeEditing[client][0] = 0;
+	}
+	else if(key[0] == '_')
+	{
+		delete kv;
+		
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key[1]);
+		Crafting_EditorMenu(client);
+		return;
+	}
+	else
+	{
+		kv.JumpToKey("Blueprints", true);
+
+		if(kv.GetNum(key))
+		{
+			kv.DeleteKey(key);
+		}
+		else
+		{
+			kv.SetNum(key, 1);
+		}
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	ReloadKv();
+	Crafting_EditorMenu(client);
+}
+
+static void AdjustTableKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Crafting_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "crafting");
+	KeyValues kv = new KeyValues("Crafting");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey("Tables", true);
+	kv.JumpToKey(CurrentRecipeEditing[client], true);
+
+	if(key[0])
+	{
+		kv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	ReloadKv();
+	Crafting_EditorMenu(client);
+}
+
+static void ReloadKv()
+{
+	static CraftEnum craft;
+	int length = CraftList.Length;
+	for(int i; i < length; i++)
+	{
+		CraftList.GetArray(i, craft);
+		craft.Despawn();
+	}
+
+	Crafting_ConfigSetup();
+	Zones_Rebuild();
 }

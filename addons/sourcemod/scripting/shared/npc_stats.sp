@@ -5487,6 +5487,15 @@ public void NpcBaseThink(int iNPC)
 		}
 	}
 #endif
+#if defined RPG
+	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	{
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
+
+		HealEntityGlobal(iNPC, iNPC, float(i_HpRegenInBattle[iNPC]), 1.0, 0.0, HEAL_SELFHEAL);
+		RPGNpc_UpdateHpHud(iNPC);
+	}
+#endif
 
 	if(b_EntityInCrouchSpot[iNPC])
 	{
@@ -7620,6 +7629,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_SetFlatDamagePiercing(entity,1.0);
 	XP[entity] = 0;
 	i_CreditsOnKill[entity] = 0;
+	i_HpRegenInBattle[entity] = 0;
 	Level[entity] = 0;
 #endif
 	f_HeadshotDamageMultiNpc[entity] = 1.0;

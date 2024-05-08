@@ -12,6 +12,7 @@ void Zones_PluginStart()
 	.DefineVectorField("m_vecTelePos")
 	.DefineVectorField("m_vecTeleAng")
 	.DefineStringField("m_nItemKey")
+	.DefineStringField("m_nQuestKey")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -126,6 +127,9 @@ void Zones_Rebuild()
 					ZonesKv.GetString("item", name, sizeof(name));
 					SetEntPropString(entity, Prop_Data, "m_nItemKey", name);
 
+					ZonesKv.GetString("quest", name, sizeof(name));
+					SetEntPropString(entity, Prop_Data, "m_nQuestKey", name);
+
 					view_as<CClotBody>(entity).UpdateCollisionBox();
 
 					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW); 
@@ -209,6 +213,20 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 	if(caller > 0 && caller <= MAXENTITIES)
 	{
 		char name[64];
+		GetEntPropString(entity, Prop_Data, "m_nItemKey", name, sizeof(name));
+		if(caller <= MaxClients && name[0] && TextStore_GetItemCount(caller, name) < 1)
+		{
+			ShowGameText(caller, _, 0, "You need \"%s\" to enter", name);
+			return Plugin_Continue;
+		}
+		
+		GetEntPropString(entity, Prop_Data, "m_nQuestKey", name, sizeof(name));
+		if(caller <= MaxClients && name[0] && Quests_GetStatus(caller, name) != Status_Completed)
+		{
+			ShowGameText(caller, _, 0, "You complete \"%s\" to enter", name);
+			return Plugin_Continue;
+		}
+
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnEnter(caller, name);
 
@@ -216,19 +234,11 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		GetEntPropVector(entity, Prop_Data, "m_vecTelePos", pos);
 		if(pos[0])
 		{
-			GetEntPropString(entity, Prop_Data, "m_nItemKey", name, sizeof(name));
-			if(caller <= MaxClients && name[0] && TextStore_GetItemCount(caller, name) < 1)
-			{
-				ShowGameText(caller, _, 0, "You need \"%s\" to enter", name);
-			}
-			else
-			{
-				float ang[3];
-				GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
-				TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
-				if(caller <= MaxClients)
-					TF2_StunPlayer(caller, 0.3, 1.0, TF_STUNFLAG_SLOWDOWN);
-			}
+			float ang[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
+			TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
+			if(caller <= MaxClients)
+				TF2_StunPlayer(caller, 0.3, 1.0, TF_STUNFLAG_SLOWDOWN);
 		}
 	}
 	return Plugin_Continue;
@@ -328,6 +338,7 @@ public Action Zones_TeleportTouch(int entity, int target)
 }
 
 static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Zones_EditorMenu(int client)
@@ -335,12 +346,24 @@ void Zones_EditorMenu(int client)
 	char buffer[PLATFORM_MAX_PATH];
 	EditMenu menu = new EditMenu();
 
-	if(CurrentZoneEditing[client][0])
+	if(CurrentKeyEditing[client][0])
+	{
+		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
+		
+		FormatEx(buffer, sizeof(buffer), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+		menu.AddItem("", buffer, ITEMDRAW_DISABLED);
+
+		menu.AddItem("", "Set To Default");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustZoneKey);
+	}
+	else if(CurrentZoneEditing[client][0])
 	{
 		ZonesKv.Rewind();
 		ZonesKv.JumpToKey(CurrentZoneEditing[client], true);
 
-		menu.SetTitle("Zones\n%s\n ", CurrentZoneEditing[client]);
+		menu.SetTitle("Zones\n%s\nClick to set it's value:\n ", CurrentZoneEditing[client]);
 		
 		float pos1[3], pos2[3], telepos[3], teleang[3];
 		ZonesKv.GetVector("point1", pos1);
@@ -348,21 +371,32 @@ void Zones_EditorMenu(int client)
 		ZonesKv.GetVector("telepos", telepos);
 		ZonesKv.GetVector("telepos", teleang);
 
-		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f (Click to Set)", pos1[0], pos1[1], pos1[2]);
+		FormatEx(buffer, sizeof(buffer), "Point 1: %.0f %.0f %.0f", pos1[0], pos1[1], pos1[2]);
 		menu.AddItem("point1", buffer);
 
-		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f (Click to Set)", pos2[0], pos2[1], pos2[2]);
+		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f", pos2[0], pos2[1], pos2[2]);
 		menu.AddItem("point2", buffer);
 
 		if(telepos[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f %.1f (Click to Remove)", telepos[0], telepos[1], telepos[2], teleang[1]);
+			FormatEx(buffer, sizeof(buffer), "Teleport: %.0f %.0f %.0f %.1f", telepos[0], telepos[1], telepos[2], teleang[1]);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Teleport: None (Click to Set)");
+			FormatEx(buffer, sizeof(buffer), "Teleport: None");
 		}
 		menu.AddItem("telepos", buffer);
+
+		ZonesKv.GetString("quest", buffer, sizeof(buffer));
+		if(buffer[0] && !Quests_KV().JumpToKey(buffer))
+		{
+			Format(buffer, sizeof(buffer), "Quest Key: \"%s\" {WARNING: Quest does not exist}\n ", buffer);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "Quest Key: \"%s\"\n ", buffer);
+		}
+		menu.AddItem("quest", buffer);
 
 		ZonesKv.GetString("item", buffer, sizeof(buffer));
 		if(buffer[0] && !TextStore_IsValidName(buffer))
@@ -371,7 +405,7 @@ void Zones_EditorMenu(int client)
 		}
 		else
 		{
-			Format(buffer, sizeof(buffer), "Item Key: \"%s\" (Type in chat, Click to Remove)\n ", buffer);
+			Format(buffer, sizeof(buffer), "Item Key: \"%s\"\n ", buffer);
 		}
 		menu.AddItem("item", buffer);
 
@@ -530,10 +564,6 @@ static void AdjustZone(int client, const char[] buffer)
 				ZonesKv.SetVector("teleang", pos);
 			}
 		}
-		else if(StrEqual(buffer, "item"))
-		{
-			ZonesKv.DeleteKey("item");
-		}
 		else if(StrEqual(buffer, "delete"))
 		{
 			ZonesKv.DeleteThis();
@@ -542,7 +572,9 @@ static void AdjustZone(int client, const char[] buffer)
 		}
 		else
 		{
-			ZonesKv.SetString("item", buffer);
+			strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), buffer);
+			Zones_EditorMenu(client);
+			return;
 		}
 	}
 	
@@ -553,6 +585,38 @@ static void AdjustZone(int client, const char[] buffer)
 	ZonesKv.ExportToFile(filepath);
 
 	Zones_Rebuild();
+	Zones_EditorMenu(client);
+}
+
+static void AdjustZoneKey(int client, const char[] buffer)
+{
+	if(StrEqual(buffer, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Zones_EditorMenu(client);
+		return;
+	}
+
+	ZonesKv.Rewind();
+	ZonesKv.JumpToKey(CurrentZoneEditing[client], true);
+
+	if(buffer[0])
+	{
+		ZonesKv.SetString(CurrentKeyEditing[client], buffer);
+	}
+	else
+	{
+		ZonesKv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "zones");
+
+	ZonesKv.Rewind();
+	ZonesKv.ExportToFile(filepath);
+
 	Zones_EditorMenu(client);
 }
 

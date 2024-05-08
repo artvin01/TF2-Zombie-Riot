@@ -42,6 +42,10 @@ void NPC_ConfigSetup()
 	HeavyExcavator_OnMapStart_NPC();
 	CaveGuardsman_OnMapStart_NPC();
 	NemanBoss_OnMapStart_NPC();
+	ExtremeHeatDigger_OnMapStart_NPC();
+	Driller_OnMapStart_NPC();
+	CaveBowmen_OnMapStart_NPC();
+	AutomaticCaveDefense_OnMapStart_NPC();
 
 /*
 	HeadcrabZombie_OnMapStart_NPC();
@@ -196,6 +200,19 @@ void NPCDeath(int entity)
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(IsValidEntity(attacker))
+	{
+		CClotBody npcBase = view_as<CClotBody>(victim);
+		if(GetTeam(attacker) != GetTeam(victim))
+		{
+			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
+
+			if(npcBase.m_iTarget == -1) //Only set it if they actaully have no target.
+			{
+				npcBase.m_iTarget = attacker;
+			}
+		}
+	}
 	Function func = func_NPCOnTakeDamage[victim];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -375,16 +392,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 						npc.SetActivity(StandStill);
 					}
 				}
-
-				char HealthString[64];
-				IntToString(Health,HealthString, sizeof(HealthString));
-				int offset = Health < 0 ? 1 : 0;
-				ThousandString(HealthString[offset], sizeof(HealthString) - offset);
-
-				if(IsValidEntity(npc.m_iTextEntity3))
-				{
-					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-				}
+				RPGNpc_UpdateHpHud(npc.index);
 			}
 		}
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -443,6 +451,20 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 	}
 }
 
+void RPGNpc_UpdateHpHud(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(IsValidEntity(npc.m_iTextEntity3))
+	{
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		char HealthString[64];
+		IntToString(Health,HealthString, sizeof(HealthString));
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(HealthString[offset], sizeof(HealthString) - offset);
+		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	}
+}
+
 stock bool ShouldNpcJumpAtThisClient(int client)
 {
 	bool AllowJump = true;
@@ -483,9 +505,12 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_heavy_excavator.sp"
 #include "rpg_fortress/npc/normal/npc_cave_guardsman.sp"
 #include "rpg_fortress/npc/normal/npc_neman.sp"
+#include "rpg_fortress/npc/normal/npc_extreme_heat_digger.sp"
+#include "rpg_fortress/npc/normal/npc_driller.sp"
+#include "rpg_fortress/npc/normal/npc_cave_bowmen.sp"
+#include "rpg_fortress/npc/normal/npc_auto_cave_defense.sp"
 
 /*
-
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"

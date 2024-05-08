@@ -178,6 +178,7 @@ void Editor_MainMenu(int client)
 	menu.AddItem("garden", "Gardens");
 	menu.AddItem("mining", "Mines");
 	menu.AddItem("fishing", "Fishing");
+	menu.AddItem("crafting", "Crafting");
 
 	menu.Display(client, MainMenuHandler);
 }
@@ -250,6 +251,10 @@ static void MainMenuHandler(int client, const char[] buffer)
 	else if(StrContains(buffer, "fishing") != -1)
 	{
 		Fishing_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "crafting") != -1)
+	{
+		Crafting_EditorMenu(client);
 	}
 }
 

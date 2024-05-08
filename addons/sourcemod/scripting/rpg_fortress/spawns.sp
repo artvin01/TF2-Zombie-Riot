@@ -21,6 +21,7 @@ enum struct SpawnEnum
 	int Health[2];
 	int XP[2];
 	int Cash[2];
+	int HPRegen[2];
 	float DropMulti;
 	
 	char Item1[48];
@@ -58,11 +59,13 @@ enum struct SpawnEnum
 		this.Health[LOW] = kv.GetNum("low_health");
 		this.XP[LOW] = kv.GetNum("low_xp");
 		this.Cash[LOW] = kv.GetNum("low_cash");
+		this.HPRegen[LOW] = kv.GetNum("low_hpregen");
 
 		this.Level[HIGH] = kv.GetNum("high_level");
 		this.Health[HIGH] = kv.GetNum("high_health");
 		this.XP[HIGH] = kv.GetNum("high_xp");
 		this.Cash[HIGH] = kv.GetNum("high_cash");
+		this.HPRegen[HIGH] = kv.GetNum("high_hpregen");
 
 		kv.GetString("drop_name_1", this.Item1, 48);
 		if(this.Item1[0])
@@ -340,6 +343,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				
 				Level[entity] = spawn.Level[LOW] + strength;
 				XP[entity] = GetScaledRate(spawn.XP, strength, diff);
+				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
+				i_HpRegenInBattle[entity] = GetScaledRate(spawn.HPRegen, strength, diff);
 				b_thisNpcIsABoss[entity] = spawn.Boss;
 
 				int health;
@@ -682,8 +687,15 @@ void Spawns_EditorMenu(int client)
 		FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
 		menu.AddItem("high_cash", buffer2);
 
+		FormatEx(buffer2, sizeof(buffer2), "Min Hp Regen: %d", kv.GetNum("low_hpregen"));
+		menu.AddItem("low_hpregen", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "High Hp Regen: %d", kv.GetNum("high_hpregen"));
+		menu.AddItem("high_hpregen", buffer2);
+
 		FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
 		menu.AddItem("high_drops", buffer2);
+		
 
 		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
 		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));

@@ -372,7 +372,7 @@ public void NemanBoss_ClotThink(int iNPC)
 					npc.PlayRangedAttackSecondarySound();
 					npc.FaceTowards(vecTarget, 20000.0);
 					
-					npc.FireParticleRocket(vecTarget, 300.0 , 600.0 , 100.0 , "raygun_projectile_blue");
+					npc.FireParticleRocket(vecTarget, 350.0 , 600.0 , 100.0 , "raygun_projectile_blue");
 					npc.AddGesture("ACT_MP_THROW");
 
 					npc.m_iTarget = Enemy_I_See;

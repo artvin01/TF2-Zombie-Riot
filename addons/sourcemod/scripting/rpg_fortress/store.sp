@@ -5,23 +5,11 @@
 
 static const int SlotLimits[] =
 {
-	1,	// 0	Head
-	1,	// 1	Chest
-	1,	// 2	Leggings
-	1,	// 3	Shoes
-	1,	// 4	Monkey Knowledge
-	1,	// 5
-	1,	// 6	Extra Gear
-	1,	// 7	Grenade/Potion
-	1,	// 8	Buildings
-	1,	// 9
-	1,	// 10
-	1,	// 11
-	1,	// 12
-	1,	// 13
-	1,	// 14
-	1,	// 15
-	1	// 16
+	1,	// 0	Primary
+	1,	// 1	Secondary
+	1,	// 2	Melee
+	1,	// 3	Pickaxe
+	1	// 4	Fishing Gear
 };
 
 enum struct ItemInfo

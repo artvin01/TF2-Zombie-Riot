@@ -885,7 +885,7 @@ static void FishPicker(int client, const char[] key)
 	if(StrEqual(key, "back"))
 	{
 		CurrentMenuEditing[client] = 0;
-		Editor_MainMenu(client);
+		Fishing_EditorMenu(client);
 		return;
 	}
 
