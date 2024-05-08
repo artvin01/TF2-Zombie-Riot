@@ -191,7 +191,7 @@ public void SeaReaper_ClotThink(int iNPC)
 
 		if(npc.Anger)
 		{
-			KillFeed_SetKillIcon(npc.index, "saw_kill");
+			//KillFeed_SetKillIcon(npc.index, "saw_kill");
 			spawnRing_Vectors(vecMe, 100.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, 0.4, 6.0, 0.1, 1, 1000.0);
 			Explode_Logic_Custom(0.0, -1, npc.index, -1, vecMe, 400.0, _, _, true, _, false, _, SeaRepear_ExplodePost);
 		}
@@ -231,14 +231,14 @@ public void SeaReaper_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+						//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 37.5 : 30.0, DMG_CLUB);
 						// 400 x 0.15 x 0.5
 						// 500 x 0.15 x 0.5
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.m_bElite ? 4 : 3);
+						Elemental_AddNervousDamage(target, npc.index, npc.m_bElite ? 4 : 3);
 						// 400 x 0.1 x 0.15 x 0.5
 						// 500 x 0.1 x 0.15 x 0.5
 					}
@@ -279,7 +279,7 @@ public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int we
 {
 	float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 	ParticleEffectAt(vic_vec, "water_bulletsplash01", 1.5);
-	SeaSlider_AddNeuralDamage(victim, attacker, view_as<SeaReaper>(attacker).m_bElite ? 15 : 12);
+	Elemental_AddNervousDamage(victim, attacker, view_as<SeaReaper>(attacker).m_bElite ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15
 }

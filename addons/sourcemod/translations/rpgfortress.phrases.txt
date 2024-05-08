@@ -1,0 +1,9 @@
+
+"Phrases"
+{
+	"Capacity"
+	{
+		"#format"	"{1:d}}"
+		"en" 		"Capacity: [{1}]"
+	}
+}

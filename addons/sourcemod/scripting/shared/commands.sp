@@ -39,11 +39,14 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	}
 #endif
 	
+#if defined RTS_CAMERA
 	if(RTSCamera_ClientCommandKeyValues(client, buffer))
 	{
 		return Plugin_Handled;
 	}
-	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
+#endif
+
+	if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
@@ -116,11 +119,13 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	if(!client)
 		return Plugin_Continue;
 
+#if defined ZR
 	if(TeutonType[client] != TEUTON_NONE)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
 		FailedInstachange = true;
+#endif
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;
@@ -235,6 +240,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #endif
 	
 #if defined RPG
+	if(Editor_SayCommand(client))
+		return Plugin_Handled;
+	
 	if(TextStore_SayCommand(client))
 		return Plugin_Handled;
 	

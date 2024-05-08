@@ -27,7 +27,7 @@ methodmap BarrackChampion < BarrackBody
 		BarrackChampion npc = view_as<BarrackChampion>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
+		//KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackChampion_NPCDeath;
 		func_NPCThink[npc.index] = BarrackChampion_ClotThink;

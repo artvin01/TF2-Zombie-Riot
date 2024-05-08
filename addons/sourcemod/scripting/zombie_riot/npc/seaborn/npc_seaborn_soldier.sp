@@ -96,7 +96,7 @@ methodmap SeabornSoldier < CClotBody
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "demokatana");
+		//KillFeed_SetKillIcon(npc.index, "demokatana");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -187,7 +187,7 @@ public void SeabornSoldier_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 110.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 22);
+						Elemental_AddNervousDamage(target, npc.index, 22);
 
 						if(!NpcStats_IsEnemySilenced(npc.index) && !IsValidEnemy(npc.index, target))	// Killed target, spawn 3 copies
 						{

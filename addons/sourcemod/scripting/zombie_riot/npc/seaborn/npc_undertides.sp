@@ -189,7 +189,7 @@ public void UnderTides_ClotThink(int iNPC)
 
 		if(npc.m_flNextRangedSpecialAttack < gameTime)	// Great Tide
 		{
-			KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+			//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 			int enemy[16];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));
@@ -205,7 +205,7 @@ public void UnderTides_ClotThink(int iNPC)
 					SDKHooks_TakeDamage(enemy[i], npc.index, npc.index, 57.0, DMG_BULLET);
 					// 380 * 0.15
 
-					SeaSlider_AddNeuralDamage(enemy[i], npc.index, 57);
+					Elemental_AddNervousDamage(enemy[i], npc.index, 57);
 					// 380 * 0.15
 
 					if(!i)
@@ -223,7 +223,7 @@ public void UnderTides_ClotThink(int iNPC)
 		}
 		else if(npc.m_flNextRangedAttack < gameTime)	// Collapse
 		{
-			KillFeed_SetKillIcon(npc.index, "syringegun_medic");
+			//KillFeed_SetKillIcon(npc.index, "syringegun_medic");
 
 			int enemy[8];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));
@@ -256,7 +256,7 @@ public void UnderTides_ClotThink(int iNPC)
 		}
 		else
 		{
-			KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+			//KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 			
 			int enemy[2];
 			GetHighDefTargets(npc, enemy, sizeof(enemy));

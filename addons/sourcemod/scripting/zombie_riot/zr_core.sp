@@ -209,7 +209,6 @@ ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
-ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
@@ -248,7 +247,6 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
-int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;
@@ -269,18 +267,12 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
-int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
-bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
-float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
-float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
-float f_InBattleDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -296,7 +288,6 @@ float Armor_regen_delay[MAXTF2PLAYERS];
 ConVar CvarSvRollagle; // sv_rollangle
 int i_SvRollAngle[MAXTF2PLAYERS];
 
-Handle SyncHud_ArmorCounter;
 	
 int CashSpent[MAXTF2PLAYERS];
 int CashSpentGivePostSetup[MAXTF2PLAYERS];
@@ -342,14 +333,9 @@ float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
-int PlayerPoints[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
 
-int Healing_done_in_total[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
-int i_PlayerDamaged[MAXTF2PLAYERS];
-int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
 int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
@@ -406,6 +392,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
+#include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
 #include "zombie_riot/freeplay.sp"
 #include "zombie_riot/items.sp"
@@ -413,6 +400,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/spawns.sp"
+#include "zombie_riot/store.sp"
+#include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -718,7 +707,6 @@ void ZR_MapStart()
 	Wand_Calcium_Map_Precache();
 //	Wand_Black_Fire_Map_Precache();
 	Wand_Chlorophite_Map_Precache();
-	MapStart_CustomMeleePrecache();
 	MagicRestore_MapStart();
 	Wind_Staff_MapStart();
 	Nailgun_Map_Precache();
@@ -801,6 +789,7 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			/*
 			if(IsFakeClient(client))
 			{
 				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
@@ -808,6 +797,7 @@ public Action GlobalTimer(Handle timer)
 					MoveBotToSpectator(client);
 				}
 			}
+			*/
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -2461,19 +2451,23 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
-	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+	return;
+/*
+	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
+
+	if(!IsValidEntity(EntityTimerWhat))
 		return;
 	
-	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
-		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
 	}
 	else
 	{
 		return;
 	}
-	
+	*/
 }
 
 bool PlayerIsInNpcBattle(int client)

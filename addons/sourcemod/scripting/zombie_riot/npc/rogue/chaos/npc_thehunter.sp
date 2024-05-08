@@ -70,7 +70,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
-		KillFeed_SetKillIcon(npc.index, "machina");
+//		//KillFeed_SetKillIcon(npc.index, "machina");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

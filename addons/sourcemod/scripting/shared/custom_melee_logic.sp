@@ -388,7 +388,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
-	if(target > 0 && !b_NpcHasDied[target])
+	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
 		{
@@ -603,28 +603,20 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
-
 		if(Item_Index != 155)
 		{
-			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}
 		else
 		{
-			damage = 30.0;
-			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = 30.0;	
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
 			damage *= 0.5;
 #endif
-
 		}
-		
-			
-		damage *= Attributes_Get(weapon, 1, 1.0);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])

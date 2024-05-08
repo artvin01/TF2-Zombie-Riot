@@ -290,7 +290,7 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 40);
+					Elemental_AddCyroDamage(target, npc.index, 40, 1);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

@@ -91,7 +91,7 @@ methodmap IsharmlaTrans < CClotBody
 		
 		i_NpcWeight[npc.index] = 6;
 		npc.SetActivity("ACT_MP_STAND_ITEM1");
-		KillFeed_SetKillIcon(npc.index, "headtaker");
+		//KillFeed_SetKillIcon(npc.index, "headtaker");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

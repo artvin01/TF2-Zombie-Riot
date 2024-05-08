@@ -51,6 +51,8 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
+	return;
+	/*
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -77,6 +79,7 @@ void AdjustBotCount()
 			break;
 		}
 	}
+	*/
 }
 
 void KillFeed_PluginStart()
@@ -117,6 +120,7 @@ void KillFeed_ClientPutInServer(int client)
 	}
 }
 
+#if defined ZR
 void MoveBotToSpectator(int client)
 {
 	if(FeedTimer == null && GetTeam(client) == TFTeam_Red)
@@ -127,6 +131,8 @@ void MoveBotToSpectator(int client)
 		b_IsPlayerABot[client] = true;
 	}
 }
+#endif
+
 void KillFeed_ClientDisconnect(int client)
 {
 	for(int i; i < sizeof(Bots); i++)
@@ -173,7 +179,7 @@ void KillFeed_EntityCreated(int entity)
 	KillIcon[entity][0] = 0;
 }
 
-void KillFeed_SetKillIcon(int entity, const char[] icon)
+stock void //KillFeed_SetKillIcon(int entity, const char[] icon)
 {
 	strcopy(KillIcon[entity], sizeof(KillIcon[]), icon);
 }
@@ -183,7 +189,7 @@ int KillFeed_GetBotTeam(int client)
 	return ForceTeam[client];
 }
 
-void KillFeed_ForceClear()
+stock void KillFeed_ForceClear()
 {
 	LowList.Clear();
 	HighList.Clear();
@@ -218,8 +224,10 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 }
 #endif
 
-void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
+void //KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int weapon, int damagetype, bool silent = false)
 {
+	return;
+	/*
 	int botNum;
 	bool priority;
 	KillFeed feed;
@@ -403,10 +411,13 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 
 	if(!FeedTimer)
 		ShowNextFeed();
+	*/
 }
 
 static void ShowNextFeed()
 {
+	return;
+	/*
 	int lowLength = LowList.Length;
 	int highLength = HighList.Length;
 	if(lowLength || highLength)
@@ -510,11 +521,12 @@ static void ShowNextFeed()
 			(!feed.attacker_name[0] || (feed.attacker_team == feedmain.attacker_team && StrEqual(feed.attacker_name, feedmain.attacker_name))));
 
 		// Need time to change the bot's display name
-		FeedTimer = CreateTimer(botUsed ? 0.3 : 0.0, KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
+		FeedTimer = CreateTimer(botUsed ? 0.3 : 0.0, //KillFeed_ShowTimer, list, TIMER_DATA_HNDL_CLOSE);
 	}
+	*/
 }
 
-public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
+public Action //KillFeed_ShowTimer(Handle timer, ArrayList list)
 {
 	FeedTimer = null;
 

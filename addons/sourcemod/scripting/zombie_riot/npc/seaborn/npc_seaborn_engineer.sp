@@ -147,7 +147,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		{
 			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
 			{
-				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
+				//KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
 				float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
 				float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
@@ -158,7 +158,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
 				if(repair < 1)
 				{
-					SeaSlider_AddNeuralDamage(npc.m_iTargetAlly, npc.index, 75);
+					Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
 				}
 				else
 				{
@@ -259,11 +259,11 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						KillFeed_SetKillIcon(npc.index, "wrench");
+						//KillFeed_SetKillIcon(npc.index, "wrench");
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 15);
+						Elemental_AddNervousDamage(target, npc.index, 15);
 					}
 				}
 

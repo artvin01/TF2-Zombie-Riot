@@ -123,7 +123,7 @@ methodmap RaidbossBladedance < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
 		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
 
@@ -311,7 +311,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 200);
+				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
 			}
 		}
 	}

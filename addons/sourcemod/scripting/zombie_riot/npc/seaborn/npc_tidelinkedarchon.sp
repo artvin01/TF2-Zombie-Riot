@@ -83,7 +83,7 @@ methodmap TidelinkedArchon < CClotBody
 
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
-		KillFeed_SetKillIcon(npc.index, "bread_bite");
+		//KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -234,7 +234,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 6000.0 : 300.0, DMG_CLUB);
 						// 600 x 0.5
 
-						SeaSlider_AddNeuralDamage(target, npc.index, 150);
+						Elemental_AddNervousDamage(target, npc.index, 150);
 						// 600 x 0.5 x 0.5
 					}
 				}

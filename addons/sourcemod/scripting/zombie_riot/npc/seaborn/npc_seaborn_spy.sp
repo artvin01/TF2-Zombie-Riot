@@ -211,7 +211,7 @@ public void SeabornSpy_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						KillFeed_SetKillIcon(npc.index, npc.m_bCamo ? "backstab" : "knife");
+						//KillFeed_SetKillIcon(npc.index, npc.m_bCamo ? "backstab" : "knife");
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bCamo ? 300.0 : 100.0, DMG_CLUB);

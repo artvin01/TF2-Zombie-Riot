@@ -1069,7 +1069,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
 	{
 		b_BuildingHasDied[entity] = true;
-		KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
+		//KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
 	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
@@ -6531,17 +6531,6 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	return MRES_Ignored;
 }
 
-// set  Data_prop m_pPhysicsObject  to 1 in here
-
-public MRESReturn Dhook_FirstSpawn_Pre(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
-
-public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
 /*
 float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
