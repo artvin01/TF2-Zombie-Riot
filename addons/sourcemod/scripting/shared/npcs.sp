@@ -2402,6 +2402,11 @@ stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, in
 		{
 			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}	
+		case WEAPON_OBUCH_HAMMER:
+		{
+			Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
+		}
+
 	}
 #endif
 
