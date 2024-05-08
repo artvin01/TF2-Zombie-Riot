@@ -165,6 +165,7 @@ void RPG_PluginStart()
 	CountPlayersOnRed();
 	Medigun_PluginStart();
 	RpgPluginStart_Store();
+	RequestFrame(CheckIfAloneOnServer);
 }
 
 void RPG_PluginEnd()
@@ -369,6 +370,7 @@ void RPG_ClientDisconnect(int client)
 //	MudrockShieldDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
 	f_TransformationDelay[client] = 0.0;
+	RequestFrame(CheckIfAloneOnServer);
 }
 
 void RPG_ClientDisconnect_Post()

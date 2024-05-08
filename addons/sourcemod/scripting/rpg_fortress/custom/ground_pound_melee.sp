@@ -72,7 +72,7 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
-	damageDelt *= 3.0;
+	damageDelt *= 1.25;
 
 	Ability_OnAbility_Ground_Pound(client, 1, weapon, damageDelt);
 	return (GetGameTime() + 10.0);
@@ -80,6 +80,13 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 
 public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, float damage)
 {	
+	
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+	if(!IsValidEntity(viewmodelModel))
+		return;
+		
 	f_OriginalDamage[client] = damage;
 	client_slammed_how_many_times[client] = 0;
 	client_slammed_how_many_times_limit[client] = (level * 2);
@@ -97,21 +104,21 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 		
 	float flPos_l[3]; // original
 	float flAng_l[3]; // original
-	GetAttachment(client, "foot_L", flPos, flAng);
+	GetAttachment(viewmodelModel, "foot_L", flPos, flAng);
 			
 
 	i_weaponused[client] = EntIndexToEntRef(weapon);
 	particle[client] = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 15.0);
 			
-	SetParent(client, particle[client], "foot_L");
+	SetParent(viewmodelModel, particle[client], "foot_L");
 	
 	particle[client] = EntIndexToEntRef(particle[client]);
 
-	GetAttachment(client, "foot_R", flPos_l, flAng_l);
+	GetAttachment(viewmodelModel, "foot_R", flPos_l, flAng_l);
 			
 	particle_1[client] = ParticleEffectAt(flPos_l, "raygun_projectile_red_crit", 15.0);
 			
-	SetParent(client, particle_1[client], "foot_R");
+	SetParent(viewmodelModel, particle_1[client], "foot_R");
 
 	particle_1[client] = EntIndexToEntRef(particle_1[client]);
 

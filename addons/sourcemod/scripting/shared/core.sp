@@ -1973,7 +1973,9 @@ public void OnClientPutInServer(int client)
 	RPG_PutInServer(client);
 
 	if(AreClientCookiesCached(client)) //Ingore this. This only bugs it out, just force it, who cares.
-		OnClientCookiesCached(client);	
+		OnClientCookiesCached(client);
+		
+	RequestFrame(CheckIfAloneOnServer);	
 #endif
 
 	QueryClientConVar(client, "snd_musicvolume", ConVarCallback);
@@ -2056,6 +2058,7 @@ public void OnClientDisconnect_Post(int client)
 #endif
 
 #if defined RPG
+	RequestFrame(CheckIfAloneOnServer);
 	RPG_ClientDisconnect_Post();
 #endif
 }
@@ -3316,7 +3319,7 @@ public void OnEntityDestroyed(int entity)
 	}
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void CheckIfAloneOnServer()
 {
 	CountPlayersOnRed();
@@ -3326,7 +3329,12 @@ public void CheckIfAloneOnServer()
 
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR 
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+#endif
+#if defined RPG 
+		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
+#endif
 		{
 			players += 1;
 			player_alone = client;
@@ -3337,6 +3345,7 @@ public void CheckIfAloneOnServer()
 		b_IsAloneOnServer = true;	
 	}
 
+#if defined ZR 
 	if (players < 4 && players > 0)
 	{
 		if (Bob_Exists)
@@ -3354,6 +3363,7 @@ public void CheckIfAloneOnServer()
 		NPC_Despawn_bob(EntRefToEntIndex(Bob_Exists_Index));
 		Bob_Exists_Index = -1;
 	}
+#endif
 }
 #endif
 
