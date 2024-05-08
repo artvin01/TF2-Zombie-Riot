@@ -396,7 +396,7 @@ static void CraftMenu(int client)
 		delete snap;
 
 		Menu menu = new Menu(CraftRecipe);
-		menu.SetTitle("RPG Fortress\n \nCrafting: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
 
 		if(nonMoney)
 		{

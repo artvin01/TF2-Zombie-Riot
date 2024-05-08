@@ -531,7 +531,7 @@ bool Quests_BookMenu(int client)
 			menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
 		}
 		
-		if((pages / 2) > BookPage[client])
+		if(((pages - 1) / 2) > BookPage[client])
 		{
 			menu.AddItem(NULL_STRING, "Next");
 		}
