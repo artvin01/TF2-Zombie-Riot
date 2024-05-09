@@ -47,15 +47,13 @@ public float AbilityFireball(int client, int index, char name[48])
 	if(Stats_Intelligence(client) < 25)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
 		return 0.0;
 	}
 
 	int StatsForCalcMultiAdd;
 	Stats_Artifice(client, StatsForCalcMultiAdd);
-	StatsForCalcMultiAdd /= 2;
+	StatsForCalcMultiAdd /= 4;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
@@ -68,7 +66,7 @@ public float AbilityFireball(int client, int index, char name[48])
 
 	int StatsForCalcMultiAdd_Capacity;
 
-	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 3;
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
 
 	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
 	{
@@ -81,11 +79,11 @@ public float AbilityFireball(int client, int index, char name[48])
 	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
 	RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
 	
-	StatsForCalcMultiAdd = Stats_Precision(client);
+	StatsForCalcMultiAdd = Stats_Artifice(client);
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
-	damageDelt *= 2.0;
+	damageDelt *= 1.6;
 
 	Weapon_Wand_FireBallSpell(client, 1, weapon, damageDelt);
 	return (GetGameTime() + 15.0);

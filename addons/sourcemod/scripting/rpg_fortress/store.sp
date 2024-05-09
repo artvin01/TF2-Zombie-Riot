@@ -1241,6 +1241,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	Manual_Impulse_101(client, health);
 	ReApplyTransformation(client);
+	RPGCore_StaminaAddition(client, 999999999);
+	RPGCore_ResourceAddition(client, 999999999);
 }
 
 void Delete_Clip(int ref)

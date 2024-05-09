@@ -59,9 +59,7 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 	if(Stats_Intelligence(client) < 25)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
 		return 0.0;
 	}
 	

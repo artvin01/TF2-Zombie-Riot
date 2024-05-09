@@ -37,15 +37,13 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 	if(Stats_Intelligence(client) < 25)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
 		return 0.0;
 	}
 
 	int StatsForCalcMultiAdd;
 	Stats_Precision(client, StatsForCalcMultiAdd);
-	StatsForCalcMultiAdd /= 2;
+	StatsForCalcMultiAdd /= 4;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
@@ -58,7 +56,7 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 
 	int StatsForCalcMultiAdd_Capacity;
 
-	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 3;
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
 
 	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
 	{
@@ -93,7 +91,7 @@ public void Ability_MortarRanged(int client, int level, int weapon, float damage
 	}
 	else
 	{
-		f_Damage[client] = (damage * 6);
+		f_Damage[client] = damage;
 	}	
 	WeaponToFire[client] = EntIndexToEntRef(weapon);
 	BuildingMortarAction(client);

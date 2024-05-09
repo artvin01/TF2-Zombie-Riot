@@ -242,7 +242,7 @@ void Saves_MainMenu(int client)
 
 	Race race;
 
-	char buffer1[32], buffer2[32];
+	char buffer1[64], buffer2[32];
 
 	KeyValues kv = Saves_Kv("characters");
 	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
@@ -274,8 +274,8 @@ void Saves_MainMenu(int client)
 			{
 				do
 				{
-					kv.GetString("owner", buffer1, sizeof(buffer1));
-					if(StrEqual(buffer1, steamid))
+					kv.GetString("owner", buffer2, sizeof(buffer2));
+					if(StrEqual(buffer2, steamid))
 					{
 						Races_GetRaceByIndex(kv.GetNum("race"), race);
 						kv.GetString("title", buffer1, sizeof(buffer1));

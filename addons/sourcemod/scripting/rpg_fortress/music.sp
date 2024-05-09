@@ -42,6 +42,7 @@ static float OverrideVolume[MAXTF2PLAYERS];
 
 void Music_ZoneEnter(int client, int entity)
 {
+	// TODO: Set all oberservers too
 	static char newSong[PLATFORM_MAX_PATH];
 	GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
 	if(newSong[0])

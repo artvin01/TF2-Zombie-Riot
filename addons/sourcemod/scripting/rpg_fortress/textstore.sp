@@ -301,6 +301,7 @@ void TextStore_PluginStart()
 {
 	CreateTimer(2.0, TextStore_ItemTimer, _, TIMER_REPEAT);
 	RegConsoleCmd("rpg_help", TextStore_HelpCommand, _, FCVAR_HIDDEN);
+	RegConsoleCmd("rpg_quests", TextStore_QuestCommand, _, FCVAR_HIDDEN);
 	RegAdminCmd("rpg_givemeall", TextStore_GiveMeAllCommand, ADMFLAG_ROOT);
 }
 
@@ -310,6 +311,13 @@ static Action TextStore_HelpCommand(int client, int args)
 	if(client)
 		FakeClientCommandEx(client, "sm_store");
 	
+	return Plugin_Handled;
+}
+
+static Action TextStore_QuestCommand(int client, int args)
+{
+	MenuType[client] = MENU_QUESTBOOK;
+	RefreshAt[client] = 1.0;
 	return Plugin_Handled;
 }
 
@@ -1005,10 +1013,11 @@ public Action TextStore_OnMainMenu(int client, Menu menu)
 	if(!InStore[client][0])
 		menu.RemoveItem(0);
 	
-	menu.AddItem("rpg_stats",	"Player Stats");
-	menu.AddItem("rpg_spawns",	"Spawn Stats");
+	menu.InsertItem(InStore[client][0] ? 2 : 1, "rpg_stats",	"Skill Points");
+	menu.InsertItem(InStore[client][0] ? 3 : 2, "rpg_quests",	"Active Quests");
 	menu.AddItem("rpg_party",	"Party");
-	menu.AddItem("rpg_help",	"Search");
+	menu.AddItem("rpg_spawns",	"Spawn Stats");
+	//menu.AddItem("rpg_help",	"Search");
 	menu.AddItem("rpg_character",	"Characters");
 	menu.AddItem("rpg_settings",	"Settings");
 	return Plugin_Changed;
@@ -1671,7 +1680,7 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 		}
 		else
 		{
-			SPrintToChat(client, "You have unspent XP, open Player Stats");
+			SPrintToChat(client, "You have unspent XP, open Skill Points (/stats)");
 		}
 	}
 
@@ -1958,7 +1967,7 @@ static void ShowMenu(int client, int page = 0)
 				menu.RemoveItem(amount);
 			}
 
-			menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
+			//menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
 			bool CanTransform = true;
 			if(f_TransformationDelay[client] > GetGameTime())
 				CanTransform = false;
@@ -1978,10 +1987,10 @@ static void ShowMenu(int client, int page = 0)
 				}	
 			}
 			
-			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f]", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
+			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f]\n ", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 			menu.AddItem("-1", form.Name, CanTransform ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem("-2", "Transform Settings");
-			//menu.AddItem("-3", "Main Menu");
+			menu.AddItem("-4", "View Backpack");
 
 			menu.Pagination = 0;
 			menu.ExitButton = true;
@@ -2214,6 +2223,8 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 		}
 		case MenuAction_Select:
 		{
+			InMenu[client] = false;
+
 			if(IsPlayerAlive(client))
 			{
 				char num[16];
@@ -2231,12 +2242,17 @@ static int TextStore_SpellMenu(Menu menu, MenuAction action, int client, int cho
 					{
 						MenuType[client] = MENU_TRANSFORM;
 						RefreshAt[client] = 1.0;
-						InMenu[client] = false;
 						return 0;
 					}
 					case -3:
 					{
 						FakeClientCommandEx(client, "sm_store");
+						return 0;
+					}
+					case -4:
+					{
+						MenuType[client] = MENU_BACKPACK;
+						RefreshAt[client] = 1.0;
 						return 0;
 					}
 					default:
@@ -2317,12 +2333,12 @@ void TextStore_Inspect(int client)
 	{
 		case MENU_SPELLS:
 		{
-			MenuType[client] = MENU_BACKPACK;
+			FakeClientCommandEx(client, "sm_store");
 			RefreshAt[client] = 1.0;
 		}
 		case MENU_BACKPACK:
 		{
-			MenuType[client] = MENU_QUESTBOOK;
+			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
 		case MENU_QUESTBOOK:
