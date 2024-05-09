@@ -388,6 +388,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			SetTeam(npc, Ally);	
 		}
+		if(Ally_Invince)
+		{
+			b_ThisEntityIgnored[npc] = true;
+		}
 		b_NpcIgnoresbuildings[npc] = IgnoreBuildings;
 #endif
 		AddEntityToLagCompList(npc);
