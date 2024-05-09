@@ -199,7 +199,7 @@ public void CaveBowmen_ClotThink(int iNPC)
 				float vPredictedPos[3];
 				PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed, _,vPredictedPos);
 				npc.FaceTowards(vPredictedPos, 30000.0);
-				npc.FireArrow(vPredictedPos, 750.0, projectile_speed);
+				npc.FireArrow(vPredictedPos, 850.0, projectile_speed);
 			}
 		}
 	}

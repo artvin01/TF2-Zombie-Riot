@@ -2776,7 +2776,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			if(Drain != 0.0)
 			{
 				if(Drain > 0.0)
-					RPGCore_ResourceReduction(client, RoundToNearest(Drain));
+					RPGCore_ResourceReduction(client, RoundToNearest(Drain), true);
 				else
 					RPGCore_ResourceAddition(client, RoundToNearest(Drain * -1.0)); //the drain actually gives resource! inverse!
 			}

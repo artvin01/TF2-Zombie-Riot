@@ -2283,7 +2283,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif
 
 #if defined RPG
-		FakeClientCommandEx(client, "sm_store");
+		FakeClientCommandEx(client, "menuselect 0");
 #endif
 	}
 	

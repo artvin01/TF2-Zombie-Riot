@@ -203,7 +203,7 @@ public void AutomaticCaveDefense_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", 260.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", 270.0, gameTime);
 	
 	
 	if(npc.m_flAttackHappens)
@@ -224,7 +224,7 @@ public void AutomaticCaveDefense_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 1350.0;
+					float damage = 2700.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

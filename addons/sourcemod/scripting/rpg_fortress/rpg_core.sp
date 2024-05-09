@@ -672,13 +672,15 @@ void RPGCore_StaminaAddition(int client, int amount)
 	}
 }
 
-void RPGCore_ResourceReduction(int client, int amount)
+void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 {
 	static Race race;	
 	static Form form;
 	Races_GetClientInfo(client, race, form);
 
-	float multi = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+	float multi = 1.0;
+	if(!isformdrain)
+		multi = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
 	
 	Current_Mana[client] -= RoundToNearest(float(amount) * (1.0 / multi));
 	if(Current_Mana[client] <= 0)
