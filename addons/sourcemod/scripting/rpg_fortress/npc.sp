@@ -270,10 +270,10 @@ stock void NPC_Despawn(int entity)
 stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
+	distance *= 1.5; //increace range due to nav mesh
 	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
-		distance *= 2.0; //need to double distance beacuse of how distance works now via navmesh and all.
 		if(b_NpcIsInADungeon[npc.index])
 		{
 			distance = 99999.9;
