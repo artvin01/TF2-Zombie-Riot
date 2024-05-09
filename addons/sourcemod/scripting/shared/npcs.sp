@@ -2949,11 +2949,12 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			}
 		}
 	}
-#if defined ZR
 	else if(b_IsABow[weapon])
 	{
 		//arrows ignore inflictor?
+#if defined ZR
 		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker];
+#endif
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
 		{		
@@ -2977,7 +2978,6 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			}
 		}
 	}
-#endif
 	return false;
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)

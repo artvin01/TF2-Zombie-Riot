@@ -401,7 +401,7 @@ static void CraftMenu(int client)
 
 		Menu menu = new Menu(CraftRecipe);
 	//	menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
-		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n ", cost, result);
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop: \n%s\n \n%s\n ", cost, result);
 
 		if(nonMoney)
 		{

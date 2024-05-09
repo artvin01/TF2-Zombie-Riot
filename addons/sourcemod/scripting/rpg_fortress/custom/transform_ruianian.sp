@@ -58,7 +58,7 @@ public void Ruianian_Activation_Enable_Global(int client, int level)
 		if(level == 1 || level == 2)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			int particle_halo = ParticleEffectAt(flPos, "unusual_star_parent", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_orbitingstar_parent", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head");
