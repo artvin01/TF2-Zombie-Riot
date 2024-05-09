@@ -1871,9 +1871,9 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	//Set class back to what it was
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
-}
+}*/
 #endif
-
+/*
 // g_bWarnedAboutMaxplayersInMVM
 public MRESReturn PreClientUpdatePre(Handle hParams)
 {
@@ -1889,7 +1889,6 @@ public MRESReturn PreClientUpdatePost(Handle hParams)
 	return MRES_Ignored;
 }
 */
-
 #if defined ZR
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
@@ -2023,60 +2022,7 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
 }
-#endif	// ZR
-
-void Hook_DHook_UpdateTransmitState(int entity)
-{
-	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
-}
-
-public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
-{
-	if(b_IsEntityNeverTranmitted[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
-	}
-	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#if !defined RTS
-	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
-#if defined ZR
-	else if(b_thisNpcHasAnOutline[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
-	else
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
-	}
-	return MRES_Supercede;
-}
-
-int SetEntityTransmitState(int entity, int newFlags)
-{
-	if (!IsValidEdict(entity))
-	{
-		return 0;
-	}
-
-	int flags = GetEdictFlags(entity);
-	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
-	flags |= newFlags;
-	SetEdictFlags(entity, flags);
-
-	return flags;
-}
+#endif	// Non-RTS
 
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
@@ -2378,3 +2324,56 @@ static MRESReturn DHookCallback_CBaseObject_ShouldQuickBuild_Pre(int obj, DHookR
 	return MRES_Supercede;
 }
 #endif
+
+void Hook_DHook_UpdateTransmitState(int entity)
+{
+	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
+}
+
+public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
+{
+	if(b_IsEntityNeverTranmitted[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
+	}
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#if !defined RTS
+	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
+	else
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	}
+	return MRES_Supercede;
+}
+
+int SetEntityTransmitState(int entity, int newFlags)
+{
+	if (!IsValidEdict(entity))
+	{
+		return 0;
+	}
+
+	int flags = GetEdictFlags(entity);
+	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
+	flags |= newFlags;
+	SetEdictFlags(entity, flags);
+
+	return flags;
+}
