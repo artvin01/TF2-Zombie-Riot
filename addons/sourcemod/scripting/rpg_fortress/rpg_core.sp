@@ -168,8 +168,9 @@ void RPG_PluginStart()
 	Medigun_PluginStart();
 	RpgPluginStart_Store();
 	RequestFrame(CheckIfAloneOnServer);
-	
+
 	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
+	mp_disable_respawn_times.Flags &= ~(FCVAR_NOTIFY|FCVAR_REPLICATED);
 }
 
 void RPG_PluginEnd()

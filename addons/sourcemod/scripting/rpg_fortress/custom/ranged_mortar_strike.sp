@@ -34,9 +34,18 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Ranged Weapon.");
 		return 0.0;
 	}
+	if(Stats_Intelligence(client) < 25)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		return 0.0;
+	}
 
 	int StatsForCalcMultiAdd;
 	Stats_Precision(client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd /= 2;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
@@ -49,7 +58,7 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 
 	int StatsForCalcMultiAdd_Capacity;
 
-	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 3;
 
 	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
 	{
@@ -66,10 +75,10 @@ public float AbilityMortarRanged(int client, int index, char name[48])
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
-	damageDelt *= 3.0;
+	damageDelt *= 2.2;
 
 	Ability_MortarRanged(client, 1, weapon, damageDelt);
-	return (GetGameTime() + 10.0);
+	return (GetGameTime() + 15.0);
 }
 static float f_MarkerPosition[MAXTF2PLAYERS][3];
 static float f_Damage[MAXTF2PLAYERS];

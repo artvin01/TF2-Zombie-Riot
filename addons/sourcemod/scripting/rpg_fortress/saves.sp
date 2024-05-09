@@ -175,7 +175,8 @@ static void SaveCharacter(int client, bool remove)
 		if(kv.JumpToKey(CharacterId[client]))
 		{
 			kv.SetNum("lastsave", GetTime());
-
+			kv.SetNum("level", Level[client]);
+			
 			kv.DeleteKey("equipped");
 			kv.JumpToKey("equipped", true);
 
@@ -252,7 +253,7 @@ void Saves_MainMenu(int client)
 
 		Menu menu = new Menu(CharacterInfoH);
 		menu.SetTitle("RPG Fortress\n \nCharacter:\n \n" ...
-		"Race: %s\nOutfit: %s\nTrait: %sLevel %d\nUnspent XP %d", race.Name, buffer1, buffer2, Level[client], XP[client]);
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nUnspent XP: %d", race.Name, buffer2, buffer1, Level[client], XP[client]);
 
 		menu.AddItem(NULL_STRING, "Change Characters", ITEMDRAW_SPACER);
 		menu.AddItem(NULL_STRING, "Change Characters");
@@ -379,7 +380,7 @@ static void CharacterMenu(int client, const char[] id)
 		Menu menu = new Menu(CharacterMenuH);
 
 		menu.SetTitle("RPG Fortress\n \nCharacter Selection:\n \n" ...
-		"Race: %s\nOutfit: %s\nTrait: %s\nLevel %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
 
 		menu.AddItem(id, "Select Character");
 		menu.AddItem(id, "Modifiy Character");

@@ -341,7 +341,7 @@ void Fishing_PlayerRunCmd(int client)
 			else
 			{
 				f_ClientWasFishingDelayCheck[client] = gameTime + 6.0;
-				SPrintToChat(client, "There seems to be no fish attracted to your fishing rod... try another one!");
+				//SPrintToChat(client, "There seems to be no fish attracted to your fishing rod... try another one!");
 			}
 		}
 		else

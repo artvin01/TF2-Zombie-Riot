@@ -56,6 +56,14 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 		return 0.0;
 	}
 
+	if(Stats_Intelligence(client) < 25)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		return 0.0;
+	}
 	
 	int StatsForCalcMultiAdd;
 	Stats_Strength(client, StatsForCalcMultiAdd);
@@ -129,7 +137,7 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 		
 	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);
 
-	for(int entity=1; entity<=MAXENTITIES; entity++)
+	for(int entity=1; entity<MAXENTITIES; entity++)
 	{
 		b_GroundPoundHit[client][entity] = false;
 	}

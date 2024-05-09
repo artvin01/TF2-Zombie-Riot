@@ -44,10 +44,18 @@ public float AbilityFireball(int client, int index, char name[48])
 		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
 		return 0.0;
 	}
+	if(Stats_Intelligence(client) < 25)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "You are not Intelligent enough.");
+		return 0.0;
+	}
 
 	int StatsForCalcMultiAdd;
 	Stats_Artifice(client, StatsForCalcMultiAdd);
-	StatsForCalcMultiAdd;
+	StatsForCalcMultiAdd /= 2;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{
@@ -60,7 +68,7 @@ public float AbilityFireball(int client, int index, char name[48])
 
 	int StatsForCalcMultiAdd_Capacity;
 
-	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 3;
 
 	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
 	{
@@ -80,7 +88,7 @@ public float AbilityFireball(int client, int index, char name[48])
 	damageDelt *= 2.0;
 
 	Weapon_Wand_FireBallSpell(client, 1, weapon, damageDelt);
-	return (GetGameTime() + 5.0);
+	return (GetGameTime() + 15.0);
 }
 
 public void Weapon_Wand_FireBallSpell(int client, int weapon, int level, float damage)

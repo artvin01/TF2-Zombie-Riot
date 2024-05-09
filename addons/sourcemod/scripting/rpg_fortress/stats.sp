@@ -95,7 +95,6 @@ static void SaveClientStats(int client)
 		kv.SetNum("capacity", StatCapacity[client]);
 		kv.SetNum("xp", XP[client]);
 		kv.SetNum("input", InputMulti[client]);
-		kv.SetNum("level", Level[client]);
 
 		kv.DeleteKey("mastery");
 
@@ -545,7 +544,7 @@ float Stats_KnockbackResist(int client)
 	return 1.0 / (0.5 + (Stats_Structure(client) * 0.0005));
 }
 
-static int UpgradeCost(int client)
+int UpgradeCost(int client)
 {
 	return BaseUpgradeCost + (Level[client] * BaseUpgradeScale);
 }
@@ -593,27 +592,27 @@ public Action Stats_ShowStats(int client, int args)
 		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Endurance(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.1f] + %d = [%d] (-%.0f Flat Res)", amount, multi, bonus, total, RPGStats_FlatDamageResistance(client));
+		FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.1f] + %d = [%d] (%.0f Flat RES)", amount, multi, bonus, total, RPGStats_FlatDamageResistance(client));
 		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Structure(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.1f] + %d = [%d] (Stamina + HP)", amount, multi, bonus, total, RPGStats_RetrieveMaxStamina(total));
 		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Intelligence(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.1f] + %d = [%d] (Skills)", amount, multi, bonus, total);
 		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Capacity(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.1f] + %d = [%d] (%0.f Energy)", amount, multi, bonus, total, RPGStats_RetrieveMaxEnergy(total));
 		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 		total = Stats_Agility(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.1f] + %d = [%d]", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.1f] + %d = [%d] (%.0f%% Speed)", amount, multi, bonus, total, 100.0 + (total / 300.0));
 		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 		total = Stats_Luck(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d]\n ", amount, multi, bonus, total);
+		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d] (%.0f%% Drops)", amount, multi, bonus, total, 100.0 + (total / 300.0));
 		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 		menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);

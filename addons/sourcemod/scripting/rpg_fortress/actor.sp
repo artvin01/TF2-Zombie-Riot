@@ -577,6 +577,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 			}
 
 			ActorKv.GoBack();
+			
+			if(entity != -1)
+				b_NpcHasQuestForPlayer[entity][client] = ShouldShowPointerKv(client);
 		}
 		
 		if(ActorKv.JumpToKey("giveitem"))

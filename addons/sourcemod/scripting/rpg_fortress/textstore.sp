@@ -1665,7 +1665,14 @@ void TextStore_DepositBackpack(int client, bool death, bool message = false)
 	}
 	else if(message && cash)
 	{
-		SPrintToChat(client, "You backpack was deposited");
+		if((GetURandomInt() % 5) || XP[client] < (UpgradeCost(client) * 10))
+		{
+			SPrintToChat(client, "You backpack was deposited");
+		}
+		else
+		{
+			SPrintToChat(client, "You have unspent XP, open Player Stats");
+		}
 	}
 
 	if(InMenu[client] && MenuType[client] == MENU_BACKPACK)
@@ -1717,9 +1724,16 @@ bool TextStore_Interact(int client, int entity, bool reload)
 				{
 					ClientCommand(client, "playgamesound items/gift_pickup.wav");
 					
-					int amount = strength - weight;
-					if(ItemIndex[entity] == -1 || amount > ItemCount[entity])
-						amount = ItemCount[entity];
+					int amount = ItemCount[entity];
+					if(ItemIndex[entity] != -1)
+					{
+						int over = weight + (itemWeight * amount);
+						while(amount > 0 && over > strength)
+						{
+							amount--;
+							over -= itemWeight;
+						}
+					}
 					
 					bool found;
 					static BackpackEnum pack;
@@ -2297,7 +2311,7 @@ static int TextStore_TransformMenu(Menu menu, MenuAction action, int client, int
 	return 0;
 }
 
-stock void TextStore_Inspect(int client)
+void TextStore_Inspect(int client)
 {
 	switch(MenuType[client])
 	{
@@ -2309,6 +2323,12 @@ stock void TextStore_Inspect(int client)
 		case MENU_BACKPACK:
 		{
 			MenuType[client] = MENU_QUESTBOOK;
+			RefreshAt[client] = 1.0;
+		}
+		case MENU_QUESTBOOK:
+		{
+			FakeClientCommandEx(client, "sm_store");
+			MenuType[client] = MENU_SPELLS;
 			RefreshAt[client] = 1.0;
 		}
 		default://case MENU_QUESTBOOK, MENU_TRANSFORM, MENU_BUILDING:
