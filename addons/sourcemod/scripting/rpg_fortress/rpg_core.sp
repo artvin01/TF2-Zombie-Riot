@@ -760,8 +760,16 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		return;
 
 	//only a 5% chance!
-	if(GetRandomFloat(0.0, 1.0) >= 0.1)
-		return;
+	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
+	{
+		if(GetRandomFloat(0.0, 1.0) >= 0.2)
+			return;
+	}
+	else if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
+	{
+		if(GetRandomFloat(0.0, 1.0) >= 0.1)
+			return;
+	}
 
 	float CombinedDamagesPre;
 	float CombinedDamages;

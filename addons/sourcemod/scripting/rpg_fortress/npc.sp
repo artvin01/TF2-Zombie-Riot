@@ -46,6 +46,8 @@ void NPC_ConfigSetup()
 	Driller_OnMapStart_NPC();
 	CaveBowmen_OnMapStart_NPC();
 	AutomaticCaveDefense_OnMapStart_NPC();
+	CaveEnslaver_OnMapStart_NPC();
+	EnslavedMiner_OnMapStart_NPC();
 
 /*
 	HeadcrabZombie_OnMapStart_NPC();
@@ -506,6 +508,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_driller.sp"
 #include "rpg_fortress/npc/normal/npc_cave_bowmen.sp"
 #include "rpg_fortress/npc/normal/npc_auto_cave_defense.sp"
+#include "rpg_fortress/npc/normal/npc_cave_enslaver.sp"
+#include "rpg_fortress/npc/normal/npc_enslaved_miner.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
