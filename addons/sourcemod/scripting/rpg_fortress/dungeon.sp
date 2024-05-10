@@ -1134,6 +1134,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 
 void Dungeon_ResetEntity(int entity)
 {
+	ClearDungeonStats(entity);
 	InDungeon[entity][0] = 0;
 }
 
@@ -1335,6 +1336,7 @@ static void CleanDungeon(const char[] name, bool victory)
 						clients[amount++] = client;
 						InDungeon[client][0] = 0;
 						f3_SpawnPosition[client] = dungeon.RespawnPos;
+						ClearDungeonStats(client);
 						CreateTimer(8.25, Dungeon_EndMusicTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 						CreateTimer(8.25, Dungeon_RespawnTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
