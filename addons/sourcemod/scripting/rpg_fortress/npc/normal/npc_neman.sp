@@ -212,7 +212,10 @@ public void NemanBoss_ClotThink(int iNPC)
 	}
 	else
 	{
-		speed = 255.0;
+		if(b_thisNpcIsABoss[npc.index])
+			speed = 190.0;
+		else
+			speed = 255.0;
 	}
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_STAND_MELEE_ALLCLASS", speed, gameTime);
 	
@@ -235,6 +238,9 @@ public void NemanBoss_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 700.0;
+
+					if(b_thisNpcIsABoss[npc.index])
+						damage = 4500.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -264,7 +270,22 @@ public void NemanBoss_ClotThink(int iNPC)
 	{
 		if(npc.m_flReloadDelay < gameTime)
 		{
-			npc.m_flReloadDelay = 0.0;
+			if(b_thisNpcIsABoss[npc.index])
+			{
+				if(npc.m_iOverlordComboAttack > 0)
+				{
+					npc.m_iOverlordComboAttack -= 1;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 0.5;
+				}
+				else
+				{
+					npc.m_flReloadDelay = 0.0;
+				}
+			}
+			else
+			{
+				npc.m_flReloadDelay = 0.0;
+			}
 			if(IsValidEntity(npc.m_iWearable5))
 				RemoveEntity(npc.m_iWearable5);
 
@@ -302,7 +323,7 @@ public void NemanBoss_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextRangedSpecialAttack < gameTime)
+		else if(npc.m_flNextRangedSpecialAttack < gameTime)
 		{
 			npc.m_iState = 2; //Throw a projectile
 		}
@@ -371,8 +392,16 @@ public void NemanBoss_ClotThink(int iNPC)
 					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 1.2;
 					npc.PlayRangedAttackSecondarySound();
 					npc.FaceTowards(vecTarget, 20000.0);
-					
-					npc.FireParticleRocket(vecTarget, 650.0 , 600.0 , 100.0 , "raygun_projectile_blue");
+					float damage = 450.0;
+
+					if(b_thisNpcIsABoss[npc.index])
+					{
+						npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 0.5;
+						damage = 3500.0;
+
+					}
+
+					npc.FireParticleRocket(vecTarget, damage , 600.0 , 100.0 , "raygun_projectile_blue");
 					npc.AddGesture("ACT_MP_THROW");
 
 					npc.m_iTarget = Enemy_I_See;
@@ -394,6 +423,11 @@ public void NemanBoss_ClotThink(int iNPC)
 						npc.RemoveGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 						npc.AddActivityViaSequence("taunt_the_fist_bump");
 					}
+
+					
+					if(b_thisNpcIsABoss[npc.index])
+						npc.m_iOverlordComboAttack = 4;
+
 					npc.StopPathing();
 					npc.m_bisWalking = false;
 					float flPos[3];
@@ -463,20 +497,32 @@ void NemanBoss_InitiateLightning(int iNPC, int enemy)
 {
 	float vPredictedPos[3];
 
+	float ChargeTimeSpan = NEMAN_CHARGE_SPAN;
+	float ChargeTime = NEMAN_CHARGE_TIME;
+	if(b_thisNpcIsABoss[iNPC])
+	{
+		ChargeTimeSpan *= 0.5;
+		ChargeTime *= 0.5;
+	}
+
 	NemanBoss npc = view_as<NemanBoss>(iNPC);
-	PredictSubjectPosition(npc, enemy,_,_,vPredictedPos);
+	float projectile_speed = 300.0;
+	PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed, _,vPredictedPos);
 	vPredictedPos[2] -= 40.0;
 	//its abit too high up.
 	Handle pack;
-	CreateDataTimer(NEMAN_CHARGE_SPAN, Smite_Timer_Neman, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(ChargeTimeSpan, Smite_Timer_Neman, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(iNPC));
 	WritePackFloat(pack, 0.0);
 	WritePackFloat(pack, vPredictedPos[0]);
 	WritePackFloat(pack, vPredictedPos[1]);
 	WritePackFloat(pack, vPredictedPos[2]);
-	WritePackFloat(pack, 1250.0);
+	if(b_thisNpcIsABoss[iNPC])
+		WritePackFloat(pack, 4000.0);
+	else
+		WritePackFloat(pack, 1250.0);
 		
-	spawnRing_Vectors(vPredictedPos, NEMAN_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, NEMAN_CHARGE_TIME, 6.0, 0.1, 1, 1.0);
+	spawnRing_Vectors(vPredictedPos, NEMAN_FIRST_LIGHTNING_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, ChargeTime, 6.0, 0.1, 1, 1.0);
 }
 
 public Action Smite_Timer_Neman(Handle Smite_Logic, DataPack pack)
@@ -488,7 +534,13 @@ public Action Smite_Timer_Neman(Handle Smite_Logic, DataPack pack)
 	{
 		return Plugin_Stop;
 	}
-		
+
+	float ChargeTime = NEMAN_CHARGE_TIME;
+	if(b_thisNpcIsABoss[entity])
+	{
+		ChargeTime *= 0.5;
+	}
+
 	float NumLoops = ReadPackFloat(pack);
 	float spawnLoc[3];
 	for (int GetVector = 0; GetVector < 3; GetVector++)
@@ -498,7 +550,7 @@ public Action Smite_Timer_Neman(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
-	if (NumLoops >= NEMAN_CHARGE_TIME)
+	if (NumLoops >= ChargeTime)
 	{
 		float secondLoc[3];
 		for (int replace = 0; replace < 3; replace++)
@@ -539,7 +591,7 @@ public Action Smite_Timer_Neman(Handle Smite_Logic, DataPack pack)
 		
 		ResetPack(pack);
 		WritePackCell(pack, EntIndexToEntRef(entity));
-		WritePackFloat(pack, NumLoops + NEMAN_CHARGE_TIME);
+		WritePackFloat(pack, NumLoops + ChargeTime);
 		WritePackFloat(pack, spawnLoc[0]);
 		WritePackFloat(pack, spawnLoc[1]);
 		WritePackFloat(pack, spawnLoc[2]);

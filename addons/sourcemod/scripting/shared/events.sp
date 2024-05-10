@@ -511,6 +511,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #if defined RPG
 	TextStore_DepositBackpack(client, true);
 	UpdateLevelAbovePlayerText(client, true);
+	De_TransformClient(client);
 #endif
 
 #if defined ZR || defined RPG

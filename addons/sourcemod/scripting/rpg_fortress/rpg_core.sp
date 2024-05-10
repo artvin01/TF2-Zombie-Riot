@@ -122,12 +122,9 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_short_teleport.sp"
 #include "rpg_fortress/custom/wand/weapon_icicles.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
-#include "rpg_fortress/custom/ground_aircutter.sp"	
-#include "rpg_fortress/custom/ranged_quick_reflex.sp"
 #include "rpg_fortress/custom/ranged_sentrythrow.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
 */
@@ -135,6 +132,9 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/weapon_wand_fire_ball.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "rpg_fortress/custom/weapon_short_teleport.sp"
+#include "rpg_fortress/custom/ground_aircutter.sp"	
+#include "rpg_fortress/custom/ranged_quick_reflex.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
@@ -238,20 +238,20 @@ void RPG_MapStart()
 	Wand_FireBall_Map_Precache();
 	BrickWeapon_Map_Precache();
 	Abiltity_Mudrock_Shield_Shield_PluginStart();
+	AirCutter_Map_Precache();
+	QuickReflex_MapStart();
+	Wand_Short_Teleport_Map_Precache();
 
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
-	Wand_Short_Teleport_Map_Precache();
 	BoomStick_MapPrecache();
 	Wand_Arts_MapStart();
 
 	Wand_IcicleShard_Map_Precache();
 	SentryThrow_MapStart();
-	QuickReflex_MapStart();
 	BeserkerRageGain_Map_Precache();
-	AirCutter_Map_Precache();
 	*/
 
 	

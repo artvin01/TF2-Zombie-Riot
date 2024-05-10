@@ -1969,7 +1969,8 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 		if(kv.GetNum("energyregenlevel") > 0)
 			RPGCore_ResourceAddition(client, RoundToNearest(RPGStats_RetrieveMaxEnergy(kv.GetNum("energyregenlevel"))));
 
-		if(kv.GetNum("consume", 1))
+		int consume_Arg = kv.GetNum("consume", 1);
+		if(consume_Arg == 1)
 		{
 			int amount;
 			TextStore_GetInv(client, index, amount);
@@ -1981,7 +1982,7 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 			if(name[0])
 				TextStore_AddItemCount(client, name, 1);
 		}
-		else
+		else if(consume_Arg == 0)
 		{
 			kv.GetString("return", name, sizeof(name));
 		}
@@ -1990,6 +1991,11 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 		kv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
 			ClientCommand(client, "playgamesound %s", buffer);
+
+		if(consume_Arg > 1)
+		{
+			return GetGameTime() + float(consume_Arg);
+		}
 	}
 	return FAR_FUTURE;
 }

@@ -1096,7 +1096,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							dungeon.ModList = new ArrayList();
 						
 						dungeon.CurrentHost = client;
-						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 10.0 : QUEUE_TIME);
+						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
 
 						for(int target = 1; target <= MaxClients; target++)
@@ -1175,6 +1175,7 @@ void Dungeon_ClientDisconnect(int client, bool alive = false)
 			mp_disable_respawn_times.ReplicateToClient(client, "0");
 
 		InDungeon[client][0] = 0;
+		ClearDungeonStats(client);
 		Dungeon_CheckAlivePlayers(client);
 	}
 }
@@ -1666,8 +1667,9 @@ public void Dungeon_Spawn_DoubleHpRegen(int entity)
 
 public void Dungeon_Spawn_FlatRes(int entity)
 {
-	Endurance[client] += 285;
+	Endurance[entity] += 285;
 }
+
 public void Dungeon_Spawn_BuffBosses1(int entity)
 {
 	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
@@ -1692,16 +1694,32 @@ public void Dungeon_Spawn_BuffBosses2(int entity)
 
 public void Dungeon_Spawn_MegaEnslaver(int entity)
 {
-	CClotBody npc = view_as<CClotBody>(entity);
-	npc.m_iOverlordComboAttack = 1;
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_slave_master"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		npc.m_iOverlordComboAttack = 1;
+	}
 }
 
-public void Dungeon_Spawn_MegaEnslaver(int entity)
+public void Dungeon_Cave_Super_Ai(int entity)
 {
-	CClotBody npc = view_as<CClotBody>(entity);
-	npc.m_iOverlordComboAttack = 1;
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(StrEqual(npc_classname, "npc_auto_cave_defense"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		health = RoundToNearest(float(health) * 1.50);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.10;
+		fl_Extra_Speed[entity] *= 1.10;
+		Endurance[entity] += 650;
+	}
 }
-
 
 public void Dungeon_40_Percent_More_Cooldown(int entity)
 {
@@ -1723,12 +1741,12 @@ public void Dungeon_Spawn_ChaosMiner(ArrayList list)
 	if(!wave.Index)
 	{
 		wave.Delay = 200.0;
-		wave.name = "npc_chaos_miner";
+		wave.Index = NPC_GetByPlugin("npc_chaos_miner");
 		wave.Pos = {-5143.458984, -5173.052734, -1487.338745};
 		wave.Angle = -130.0;
 		wave.Boss = true;
 		wave.Level = 750;
-		wave.Health = 1000000;
+		wave.Health = 1500000;
 		wave.Rarity = 1;
 		wave.HPRegen= 0;
 
@@ -1739,4 +1757,14 @@ public void Dungeon_Spawn_ChaosMiner(ArrayList list)
 		wave.CustomName = "??????";
 	}
 	list.PushArray(wave);
+}
+
+public void ClearDungeonStats(int entity)
+{
+	if(entity < MAXTF2PLAYERS)
+	{
+		b_DungeonContracts_LongerCooldown[entity] = false;
+		b_DungeonContracts_SlowerAttackspeed[entity] = false;
+		b_DungeonContracts_SlowerMovespeed[entity] = false;
+	}
 }

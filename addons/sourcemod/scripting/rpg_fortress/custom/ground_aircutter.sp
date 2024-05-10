@@ -23,41 +23,56 @@ void AirCutter_Map_Precache()
 	PrecacheSound(AIRCUTTER_KICKUP_1);
 }
 
+
 public float AirCutterAbility(int client, int index, char name[48])
 {
 	KeyValues kv = TextStore_GetItemKv(index);
-	if(kv)
+	if(!kv)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-		{
-			static char classname[36];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee && !i_IsWandWeapon[weapon])
-			{
-				if(Stats_Strength(client) >= 25)
-				{
-					return (GetGameTime() + Ability_AirCutter(client, 1, weapon));	
-				}
-				else
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Strength [25]");
-					return 0.0;
-				}
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
-				return 0.0;
-			}
-		}
-
-	//	if(kv.GetNum("consume", 1))
-
+		return 0.0;
 	}
-	return 0.0;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon))
+	{
+		return 0.0;
+	}
+
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if (TF2_GetClassnameSlot(classname) != TFWeaponSlot_Melee || i_IsWandWeapon[weapon])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Melee Weapon.");
+		return 0.0;
+	}
+
+	if(Stats_Intelligence(client) < 65)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [65]");
+		return 0.0;
+	}
+	
+	int StatsForCalcMultiAdd_stam;
+	Stats_Strength(client, StatsForCalcMultiAdd_stam);
+	StatsForCalcMultiAdd_stam /= 4;
+	//get base endurance for cost
+	if(i_CurrentStamina[client] < StatsForCalcMultiAdd_stam)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
+		return 0.0;
+	}
+	float time = Ability_AirCutter(client, 1, weapon);
+	if(time > 0.0)
+	{
+		RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd_stam);
+	}
+
+	return (GetGameTime() + time);
 }
 
 static float OldPosSave[MAXENTITIES][3];
@@ -101,6 +116,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 
 		ApplyTempAttrib(weapon, 6, 0.25, AIRCUTTER_AIRTIME);
 		ApplyTempAttrib(weapon, 2, 0.5, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4004, 0.15, AIRCUTTER_AIRTIME);
 		EmitSoundToAll(AIRCUTTER_KICKUP_1, client, _, 75, _, 0.60);
 		TF2_AddCondition(client, TFCond_DefenseBuffed, 3.0);
 		f_TargetAirtimeTeleportDelay[client] = GetGameTime();
@@ -116,7 +132,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		i_NpcToTarget[target] = client;
 		//There is no need to ent ref this, the code fires every frame, and the same index cannot be used for 1 second.
 		SDKHook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
-		return 35.0;
+		return 25.0;
 	}
 	else
 	{
@@ -132,7 +148,7 @@ public void Npc_AirCutter_Launch(int iNPC)
 	if(b_AirCutterNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenterOld(iNPC);
+		WorldSpaceCenter(iNPC, VicLoc);
 		VicLoc[2] += 350.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}

@@ -65,7 +65,7 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 	
 	int StatsForCalcMultiAdd;
 	Stats_Strength(client, StatsForCalcMultiAdd);
-	StatsForCalcMultiAdd /= 2;
+	StatsForCalcMultiAdd /= 4;
 	//get base endurance for cost
 	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
 	{

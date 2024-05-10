@@ -75,6 +75,8 @@ void Saves_ClientDisconnect(int client)
 
 static void EnableCharacter(int client, const char[] id)
 {
+	//dont show transforms.
+	i_TransformationSelected[client] = 0;
 	if(!CharacterId[client][0])
 	{
 		char buffer1[64], buffer2[64];

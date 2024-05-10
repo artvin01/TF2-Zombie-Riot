@@ -23,49 +23,76 @@ void Wand_Short_Teleport_Map_Precache()
 public float AbilityShortTeleport(int client, int index, char name[48])
 {
 	KeyValues kv = TextStore_GetItemKv(index);
-	if(kv)
+	if(!kv)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(IsValidEntity(weapon))
-		{
-			static char classname[36];
-			GetEntityClassname(weapon, classname, sizeof(classname));
-			if (i_IsWandWeapon[weapon])
-			{
-				if(Stats_Intelligence(client) >= 20)
-				{
-					float time = Weapon_Wand_ShortTeleport(client, weapon, 1);
-					return (GetGameTime() + time);
-				}
-				else
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [20]");
-					return 0.0;
-				}
-			}
-			else
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
-				return 0.0;
-			}
-		}
-
-	//	if(kv.GetNum("consume", 1))
-
+		return 0.0;
 	}
-	return 0.0;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon))
+	{
+		return 0.0;
+	}
+
+	static char classname[36];
+	GetEntityClassname(weapon, classname, sizeof(classname));
+	if (!i_IsWandWeapon[weapon])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "Not usable Without a Magic Wand.");
+		return 0.0;
+	}
+	if(Stats_Intelligence(client) < 65)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [65]");
+		return 0.0;
+	}
+
+	int StatsForCalcMultiAdd;
+	Stats_Artifice(client, StatsForCalcMultiAdd);
+	StatsForCalcMultiAdd /= 4;
+	//get base endurance for cost
+	if(i_CurrentStamina[client] < StatsForCalcMultiAdd)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
+		return 0.0;
+	}
+
+	int StatsForCalcMultiAdd_Capacity;
+
+	StatsForCalcMultiAdd_Capacity = StatsForCalcMultiAdd * 2;
+
+	if(Current_Mana[client] < StatsForCalcMultiAdd_Capacity)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana");
+		return 0.0;
+	}
+	
+	int StatsForCalcMultiAdd_dmg;
+	StatsForCalcMultiAdd_dmg = Stats_Artifice(client);
+
+	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd_dmg);
+
+	damageDelt *= 2.2;
+
+	float time = Weapon_Wand_ShortTeleport(client, weapon, 1, damageDelt);
+	if(time > 0.0)
+	{
+		RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
+		RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
+	}
+	return (GetGameTime() + time);
 }
 
-float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
+float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 {
-
-	float damage;
-	
-	damage = Config_GetDPSOfEntity(weapon);
-
-	damage *= 2.0;
 		
 	static float startPos[3];
 	GetClientEyePosition(client, startPos);
@@ -115,6 +142,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 		delete hTrace;
 		float damage_1;
 		float VictimPos[3];
+		float CalculateExplosiveDamage[3];
 		float damage_reduction = 1.0;
 		damage_1 = damage;
 		float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF;
@@ -125,9 +153,11 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level)
 			if(!ST_HitEntitiesTeleportTrace[entity_traced])
 				break;
 
-			VictimPos = WorldSpaceCenterOld(ST_HitEntitiesTeleportTrace[entity_traced]);
+			WorldSpaceCenter(ST_HitEntitiesTeleportTrace[entity_traced], VictimPos);
 
-			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamageForceOld(abspos, VictimPos, 5000.0), VictimPos, false);	
+			CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0, CalculateExplosiveDamage);
+
+			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamage, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD = 4.0;
 		}
