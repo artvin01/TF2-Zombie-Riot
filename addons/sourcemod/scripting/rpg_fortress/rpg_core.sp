@@ -114,6 +114,8 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/zones.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
+#include "rpg_fortress/custom/weapon_brick.sp"
+#include "zombie_riot/custom/homing_projectile_logic.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -233,6 +235,7 @@ void RPG_MapStart()
 	GroundSlam_Map_Precache();
 	Mortar_MapStart();
 	Wand_FireBall_Map_Precache();
+	BrickWeapon_Map_Precache();
 
 	/*
 	HealingPotion_Map_Start();
