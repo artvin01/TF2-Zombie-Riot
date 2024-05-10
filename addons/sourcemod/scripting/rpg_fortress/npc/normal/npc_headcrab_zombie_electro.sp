@@ -118,7 +118,7 @@ methodmap HeadcrabZombieElectro < CClotBody
 		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE_ELECTRO;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "huntsman");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 	//	npc.SetActivity("ACT_WALK");
 
@@ -210,9 +210,9 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						//KillFeed_SetKillIcon(npc.index, "huntsman");
+						KillFeed_SetKillIcon(npc.index, "huntsman");
 						
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						

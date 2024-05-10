@@ -1922,7 +1922,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			makeexplosion(victim, victim, startPosition, "", 0, 0);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
-			//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
@@ -1932,7 +1932,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 
-			//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
@@ -2049,7 +2049,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					SetEntityRenderColor(victim, 255, 255, 255, 10);
 				}
 
-				//KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
+				KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, autoRevive);
 				return Plugin_Handled;
 			}
 			else

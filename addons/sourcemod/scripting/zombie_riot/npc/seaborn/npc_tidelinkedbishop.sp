@@ -66,7 +66,7 @@ methodmap TidelinkedBishop < CClotBody
 
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
-		//KillFeed_SetKillIcon(npc.index, "huntsman");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

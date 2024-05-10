@@ -108,7 +108,7 @@ methodmap AutomaticCaveDefense < CClotBody
 		AutomaticCaveDefense npc = view_as<AutomaticCaveDefense>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "300", ally, false,_,_,_,_));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "pickaxe");
+		KillFeed_SetKillIcon(npc.index, "pickaxe");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);

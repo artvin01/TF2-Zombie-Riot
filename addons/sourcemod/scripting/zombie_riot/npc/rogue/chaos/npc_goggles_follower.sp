@@ -570,7 +570,7 @@ methodmap GogglesFollower < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_STAND_ITEM2");
-		//KillFeed_SetKillIcon(npc.index, "huntsman");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

@@ -106,7 +106,7 @@ methodmap HeavyBearMinion < CClotBody
 		HeavyBearMinion npc = view_as<HeavyBearMinion>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "0.75", "300", ally, false,_,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

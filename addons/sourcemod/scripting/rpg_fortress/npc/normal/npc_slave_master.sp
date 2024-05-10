@@ -107,7 +107,7 @@ methodmap SlaveMaster < CClotBody
 		SlaveMaster npc = view_as<SlaveMaster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.05", "300", ally, false,_,_,_,_));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "pickaxe");
+		KillFeed_SetKillIcon(npc.index, "pickaxe");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);

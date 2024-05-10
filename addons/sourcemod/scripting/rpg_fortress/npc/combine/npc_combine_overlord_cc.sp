@@ -16,7 +16,7 @@ methodmap CombineOverlordCC < CombineSoldier
 		
 		i_NpcInternalId[npc.index] = COMBINE_OVERLORD_CC;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "firedeath");
+		KillFeed_SetKillIcon(npc.index, "firedeath");
 
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -107,11 +107,11 @@ public void CombineOverlordCC_ClotThink(int iNPC)
 						BurnTarget(npc, target);
 
 						// E2 L20 = 150, E2 L25 = 165
-						//KillFeed_SetKillIcon(npc.index, "sword");
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Level[npc.index] * ((npc.m_hCCFlags & CC_FLAG_MELEEDAMAGE) ? 6.0 : 3.0), DMG_CLUB, -1, _, vecTarget);
 						npc.PlaySwordHit();
 
-						//KillFeed_SetKillIcon(npc.index, "firedeath");
+						KillFeed_SetKillIcon(npc.index, "firedeath");
 					}
 				}
 

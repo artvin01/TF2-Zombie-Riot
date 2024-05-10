@@ -106,7 +106,7 @@ methodmap CaveEnslaver < CClotBody
 		CaveEnslaver npc = view_as<CaveEnslaver>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "300", ally, false,_,_,_,_));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "pickaxe");
+		KillFeed_SetKillIcon(npc.index, "pickaxe");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);

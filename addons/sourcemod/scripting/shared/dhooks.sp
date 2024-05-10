@@ -1515,13 +1515,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 {
 	if(IsFakeClient(client))
 	{
-		/*
 #if !defined RTS
 		int team = KillFeed_GetBotTeam(client);
 		if(GetClientTeam(client) != team)
 			ChangeClientTeam(client, team);
 #endif
-		*/
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
 	}

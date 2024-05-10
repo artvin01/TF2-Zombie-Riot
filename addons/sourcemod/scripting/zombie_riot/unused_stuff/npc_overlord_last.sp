@@ -185,7 +185,7 @@ methodmap OverlordRogue < CClotBody
 		
 		i_NpcInternalId[npc.index] = OVERLORD_ROGUE;
 		i_NpcWeight[npc.index] = 99;
-		//KillFeed_SetKillIcon(npc.index, "firedeath");
+		KillFeed_SetKillIcon(npc.index, "firedeath");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -436,7 +436,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 						
 						if(target > 0) 
 						{
-							//KillFeed_SetKillIcon(npc.index, "sword");
+							KillFeed_SetKillIcon(npc.index, "sword");
 
 							if(target <= MaxClients)
 								SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
@@ -446,7 +446,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 							Custom_Knockback(npc.index, target, 200.0);
 							// Hit particle
 
-							//KillFeed_SetKillIcon(npc.index, "firedeath");
+							KillFeed_SetKillIcon(npc.index, "firedeath");
 							
 							if(target > MaxClients)
 							{

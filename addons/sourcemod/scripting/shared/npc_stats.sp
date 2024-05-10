@@ -3247,7 +3247,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			client = EntRefToEntIndex(LastHitRef[pThis]);
 		}
 
-		//KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
+		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;

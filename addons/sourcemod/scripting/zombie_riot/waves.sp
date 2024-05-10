@@ -2414,7 +2414,7 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			//KillFeed_ForceClear();
+			KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
 			/*
 			for(int client = 1; client <= MaxClients; client++)

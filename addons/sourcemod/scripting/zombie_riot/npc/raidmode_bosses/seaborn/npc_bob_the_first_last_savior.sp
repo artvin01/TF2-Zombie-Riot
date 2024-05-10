@@ -267,7 +267,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		
-		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MUDROCK_RAGE");
@@ -1017,7 +1017,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					npc.m_iAttackType = 0;
 
-					//KillFeed_SetKillIcon(npc.index, "sword");
+					KillFeed_SetKillIcon(npc.index, "sword");
 
 					int HowManyEnemeisAoeMelee = 64;
 					Handle swingTrace;
@@ -1075,7 +1075,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(PlaySound)
 						npc.PlayMeleeSound();
 
-					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 			case 10:	// DEPLOY_MANHACK - Frame 32
@@ -2020,7 +2020,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	//KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
+	KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
 
 	if(NpcStats_IsEnemySilenced(entity))
 		kick = false;
@@ -2060,7 +2060,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	}
 	delete pack;
 
-	//KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
+	KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 }
 
 

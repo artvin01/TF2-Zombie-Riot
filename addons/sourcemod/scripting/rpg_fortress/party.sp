@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MAX_PARTY_SIZE	4
+#define MAX_PARTY_SIZE	6
 
 static int PartyLeader[MAXTF2PLAYERS];
 static int PartyInvitedBy[MAXTF2PLAYERS];

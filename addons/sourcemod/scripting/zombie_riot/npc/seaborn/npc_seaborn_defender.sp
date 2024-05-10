@@ -83,7 +83,7 @@ methodmap SeabornDefender < CClotBody
 		
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_CUSTOM_WALK_SPEAR");
-		//KillFeed_SetKillIcon(npc.index, "splendid_screen");
+		KillFeed_SetKillIcon(npc.index, "splendid_screen");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
