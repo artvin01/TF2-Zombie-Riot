@@ -231,6 +231,11 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(!npc.m_iAttacksTillMegahit)
+	{
+		return;
+	}
 	if(!npc.Anger)
 	{
 		npc.Anger = true;
@@ -246,7 +251,7 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 800.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 300.0, gameTime);
+	Npc_Base_Thinking(iNPC, 1500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -424,6 +429,7 @@ public Action ChaosAfflictedMiner_OnTakeDamage(int victim, int &attacker, int &i
 	{
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + RoundToNearest(damage));
 	}
+	npc.m_iAttacksTillMegahit += 1;
 	return Plugin_Changed;
 }
 
@@ -447,13 +453,15 @@ public void ChaosAfflictedMiner_OnTakeDamagePost(int victim, int attacker, int i
 			int spawn_index = NPC_CreateByName("npc_chaos_afflicted_miner", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				ChaosAfflictedMiner npc1 = view_as<ChaosAfflictedMiner>(spawn_index);
 				Level[spawn_index] = Level[victim];
 				i_OwnerToGoTo[spawn_index] = EntIndexToEntRef(victim);
 				Apply_Text_Above_Npc(spawn_index,0, maxhealth);
 				CreateTimer(0.1, TimerChaosAfflictedMinerInitiateStuff, EntIndexToEntRef(spawn_index), TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-				npc.Anger = true;
+				npc1.Anger = true;
+				npc1.m_iAttacksTillMegahit = 1;
 			}
 		}
 	}
