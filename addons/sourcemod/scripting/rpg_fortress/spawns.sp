@@ -505,15 +505,18 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 					xp -= give;
 				}
 
-				TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
+				if(client != targets[targetCount])
+					TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
 			}
 			else
 			{
 				for(int i; i < targetCount; i++)
 				{
-					TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
+					if(client != targets[i])
+						TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
 				}
 			}
+			TextStore_AddItemCount(client, ITEM_XP, XP[entity]);
 		}
 	}
 

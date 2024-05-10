@@ -279,7 +279,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			distance = 99999.9;
 		}
 		int entity_found = GetClosestTarget(npc.index, false, distance);
-		if(npc.m_flGetClosestTargetNoResetTime < gameTime) //We want to make sure that their aggro doesnt get reset instantly!
+		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
 			{
