@@ -236,10 +236,12 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 		npc.Anger = true;
 		i_HealthMainMaster = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	}
-
-	if(!npc.m_iAttacksTillMegahit)
+	if(b_thisNpcIsABoss[iNPC])
 	{
-		return;
+		if(!npc.m_iAttacksTillMegahit)
+		{
+			return;
+		}
 	}
 	if(i_HealthMainMaster <= 0.0)
 	{

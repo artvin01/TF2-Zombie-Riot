@@ -58,13 +58,22 @@ void Stats_EnableCharacter(int client)
 	Stats_UpdateLevel(client);
 }
 
-void Stats_GiveXP(int client, int &xp)
+int RPGStats_MaxXPAllowed(int client)
 {
-	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	return (BaseMaxExperience + (BaseMaxExperiencePerLevel * Level[client]));
+}
+int Stats_GiveXP(int client, int &xp, bool quest = false)
+{
+	int maxXP = RPGStats_MaxXPAllowed(client);
 
-	int maxXP = BaseMaxExperience + (BaseMaxExperiencePerLevel * XP[client]);
-	if(XP[client] > maxXP)
-		XP[client] = maxXP;
+	int XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+	if(XP[client] < maxXP || quest)
+		XP[client] += XPToGive;
+	else
+	{
+		SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Quests are exluded from this.", maxXP);
+		XPToGive = 0;
+	}
 
 	if(XP[client] > SaveIn[client])
 	{
@@ -75,6 +84,7 @@ void Stats_GiveXP(int client, int &xp)
 	{
 		SaveIn[client] -= XP[client];
 	}
+	return XPToGive;
 }
 
 static void SaveClientStats(int client)
@@ -339,6 +349,12 @@ void Stats_ApplyAttribsPost(int client, TFClassType class)
 	//in RPG we will give knockback another way.
 
 	float speed = 300.0 + float(Stats_Agility(client));
+	
+	//CC DIFFICULTY, 15% SLOWER!
+	if(b_DungeonContracts_SlowerMovespeed[client])
+	{
+		speed *= 0.85; 
+	}
 	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
 
 	static Race race;

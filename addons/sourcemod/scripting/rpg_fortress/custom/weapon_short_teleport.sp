@@ -80,7 +80,7 @@ public float AbilityShortTeleport(int client, int index, char name[48])
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd_dmg);
 
-	damageDelt *= 2.2;
+	damageDelt *= 1.4;
 
 	float time = Weapon_Wand_ShortTeleport(client, weapon, 1, damageDelt);
 	if(time > 0.0)

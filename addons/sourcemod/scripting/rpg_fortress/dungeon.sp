@@ -1498,17 +1498,35 @@ public Action Dungeon_Timer(Handle timer)
 								b_thisNpcIsABoss[entity] = wave.Boss;
 								b_NpcIsInADungeon[entity] = true;
 								strcopy(InDungeon[entity], sizeof(InDungeon[]), name);
+
+								float PlayerCountScaling = float(dungeon.PlayerCount);
+
+
+								PlayerCountScaling *= 0.45;
+								if(PlayerCountScaling < 0.75)
+								{
+									PlayerCountScaling = 0.75;
+								}
 								
+								if(dungeon.PlayerCount == 1)
+								{
+									PlayerCountScaling = 0.65;
+								}
+								if(dungeon.PlayerCount == 2)
+								{
+									PlayerCountScaling = 0.85;
+								}
+
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = RoundToCeil(float(wave.Health) * float(dungeon.PlayerCount) * 0.75);
+									wave.Health = RoundToCeil(float(wave.Health) * PlayerCountScaling * 0.75);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}
 								if(wave.HPRegen)
 								{
-									wave.HPRegen = RoundToCeil(float(wave.HPRegen) * float(dungeon.PlayerCount) * 0.75);
+									wave.HPRegen = RoundToCeil(float(wave.HPRegen) * PlayerCountScaling * 0.55);
 									i_HpRegenInBattle[entity] = wave.HPRegen;
 								}
 
@@ -1734,19 +1752,19 @@ public void Dungeon_15_Percent_Slower_MoveSpeed(int entity)
 {
 	b_DungeonContracts_SlowerMovespeed[entity] = true;
 }
-
+ 
 public void Dungeon_Spawn_ChaosMiner(ArrayList list)
 {
 	static WaveEnum wave;
 	if(!wave.Index)
 	{
 		wave.Delay = 200.0;
-		wave.Index = NPC_GetByPlugin("npc_chaos_miner");
+		wave.Index = NPC_GetByPlugin("npc_chaos_afflicted_miner");
 		wave.Pos = {-5143.458984, -5173.052734, -1487.338745};
 		wave.Angle = -130.0;
-		wave.Boss = true;
+		wave.Boss = false;
 		wave.Level = 750;
-		wave.Health = 1500000;
+		wave.Health = 500000;
 		wave.Rarity = 1;
 		wave.HPRegen= 0;
 

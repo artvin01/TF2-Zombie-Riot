@@ -4576,11 +4576,6 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-	//CC DIFFICULTY, 15% SLOWER!
-	if(b_DungeonContracts_SlowerMovespeed[client])
-	{
-		MovementSpeed *= 0.85; 
-	}
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 

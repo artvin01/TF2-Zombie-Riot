@@ -5492,7 +5492,7 @@ public void NpcBaseThink(int iNPC)
 	}
 #endif
 #if defined RPG
-	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 
