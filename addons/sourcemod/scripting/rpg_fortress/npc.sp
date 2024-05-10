@@ -208,7 +208,7 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		{
 			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
 
-			if(npcBase.m_iTarget == -1) //Only set it if they actaully have no target.
+			if(!IsValidEnemy(npc.index, npcBase.m_iTarget)) //Only set it if they actaully have no target.
 			{
 				npcBase.m_iTarget = attacker;
 			}
