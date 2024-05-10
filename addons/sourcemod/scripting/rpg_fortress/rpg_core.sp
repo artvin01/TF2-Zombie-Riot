@@ -81,6 +81,7 @@ int Luck2[MAXENTITIES];
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
+bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
 
