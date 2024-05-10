@@ -310,7 +310,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 					break;
 				
 				count++;
-				spawn.NextSpawnTime += spawn.Time;
+				spawn.NextSpawnTime += time;
 			}
 			
 			if(count)
@@ -388,7 +388,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 	}
 }
 
-void Apply_Text_Above_Npc(int entity,int strength, int health)
+stock void Apply_Text_Above_Npc(int entity,int strength, int health)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	char buffer[128];
@@ -450,6 +450,8 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 	{
 		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
 		
+		int targetCount;
+		int[] targets = new int[MaxClients];
 		for(int target = 1; target <= MaxClients; target++)
 		{
 			if(client == target || Party_IsClientMember(client, target))
@@ -462,27 +464,34 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 						continue;
 				}
 
-				if(XP[entity] > 0)
-					TextStore_AddItemCount(target, ITEM_XP, XP[entity]);
-				
-				if(i_CreditsOnKill[entity])
-				{
-					if(i_CreditsOnKill[entity] > 49)
-					{
-						TextStore_DropCash(target, pos1, i_CreditsOnKill[entity]);
-					}
-					else if(i_CreditsOnKill[entity] > 14)
-					{
-						if(GetURandomInt() % 2)
-							TextStore_DropCash(target, pos1, i_CreditsOnKill[entity] * 2);
-					}
-					else if(!(GetURandomInt() % 5))
-					{
-						TextStore_DropCash(target, pos1, i_CreditsOnKill[entity] * 5);
-					}
-				}
-				
-				spawn.DoAllDrops(target, pos1, Level[entity]);
+				targets[targetCount++] = target;
+			}
+		}
+
+		if(i_CreditsOnKill[entity])
+		{
+			if(i_CreditsOnKill[entity] > 49)
+			{
+				TextStore_DropCash(client, pos1, i_CreditsOnKill[entity]);
+			}
+			else if(i_CreditsOnKill[entity] > 14)
+			{
+				if(GetURandomInt() % 2)
+					TextStore_DropCash(client, pos1, i_CreditsOnKill[entity] * 2);
+			}
+			else if(!(GetURandomInt() % 5))
+			{
+				TextStore_DropCash(client, pos1, i_CreditsOnKill[entity] * 5);
+			}
+		}
+		
+		spawn.DoAllDrops(client, pos1, Level[entity]);
+
+		if(XP[entity] > 0)
+		{
+			for(int i; i < targetCount; i++)
+			{
+				TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
 			}
 		}
 	}
@@ -574,7 +583,7 @@ public int Spawns_CommandH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
+//static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
 static char CurrentSpawnEditing[MAXTF2PLAYERS][64];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
@@ -793,7 +802,7 @@ void Spawns_EditorMenu(int client)
 		menu.Display(client, ZonePicker);
 	}
 }
-
+/*
 static Action Timer_RefreshHud(Handle timer, int client)
 {
 	TimerZoneEditing[client] = null;
@@ -804,7 +813,7 @@ static Action Timer_RefreshHud(Handle timer, int client)
 	Spawns_EditorMenu(client);
 	return Plugin_Continue;
 }
-
+*/
 static void ZonePicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
@@ -821,7 +830,7 @@ static void SpawnPicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
-		delete TimerZoneEditing[client];
+		//delete TimerZoneEditing[client];
 		CurrentZoneEditing[client][0] = 0;
 		Editor_MainMenu(client);
 		return;

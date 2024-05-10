@@ -577,6 +577,8 @@ static int CraftRecipe(Menu menu, MenuAction action, int client, int choice)
 
 			if(!failed)
 			{
+				ClientCommand(client, "playgamesound mvm/mvm_money_pickup.wav");
+				
 				for(int i; i < length; i++)
 				{
 					snap.GetKey(i, craft.Model, sizeof(craft.Model));

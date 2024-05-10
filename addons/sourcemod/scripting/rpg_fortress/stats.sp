@@ -700,9 +700,10 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 				}
 
 				Stats_UpdateLevel(client);
-				UpdateLevelAbovePlayerText(client);
 			}
 
+			ClientCommand(client, "playgamesound ui/mm_medal_click.wav");
+			UpdateLevelAbovePlayerText(client);
 			SaveClientStats(client);
 			Stats_ShowStats(client, 0);
 		}

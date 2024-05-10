@@ -1568,7 +1568,7 @@ static void DropItem(int client, int index, float pos[3], int amount)
 
 bool Textstore_CanSeeItem(int entity, int client)
 {
-	return (ItemOwner[entity] == client);// || Party_IsClientMember(ItemOwner[entity], client) || ItemLifetime[entity] < (GetGameTime() + 15.0));
+	return (ItemOwner[entity] == client || Party_IsClientMember(ItemOwner[entity], client));// || ItemLifetime[entity] < (GetGameTime() + 15.0));
 }
 
 static Action DroppedTextSetTransmit(int entity, int client)

@@ -118,10 +118,21 @@ void Quests_AddKill(int client, int entity)
 	kv.JumpToKey("_kills", true);
 	kv.JumpToKey(name, true);
 
+	static float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client == target || Party_IsClientMember(client, target))
 		{
+			if(client != target)
+			{
+				static float pos2[3];
+				GetClientAbsOrigin(target, pos2);
+				if(GetVectorDistance(pos1, pos2, true) > 1000000.0)	// 1000 HU
+					continue;
+			}
+
 			static char id[64];
 			if(Saves_ClientCharId(target, id, sizeof(id)))
 			{
@@ -337,6 +348,7 @@ bool Quests_StartQuest(int client, const char[] name)
 			int previous = kv.GetNum(id);
 			if(previous != Status_InProgress)
 			{
+				ClientCommand(client, "playgamesound ui/quest_decode.wav");
 				SPrintToChat(client, "New Quest: %s", name);
 				kv.SetNum(id, Status_InProgress);
 
@@ -403,6 +415,17 @@ bool Quests_TurnIn(int client, const char[] name)
 
 			if(kv.GetNum(id) != Status_Completed)
 			{
+				static const char sounds[][] =
+				{
+					"one",
+					"two",
+					"three",
+					"four",
+					"five",
+					"six"
+				};
+
+				ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", sounds[GetURandomInt() % sizeof(sounds)]);
 				SPrintToChat(client, "Quest Finished: %s", name);
 				kv.SetNum(id, Status_Completed);
 				

@@ -129,7 +129,7 @@ void Garden_Interact(int client, const float pos[3])
 		{
 			if(Editor_MenuFunc(client) != INVALID_FUNCTION)
 			{
-				OpenEditorFrom(client, index);
+				OpenEditorFrom(client);
 				return;
 			}
 
@@ -352,6 +352,8 @@ public int Garden_PlantHandle(Menu menu, MenuAction action, int client, int choi
 						
 						TextStore_SetInv(client, index, amount - 1);
 						UpdateTrace[client] = 0.0;
+
+						ClientCommand(client, "playgamesound ui/item_soda_can_drop.wav");
 					}
 				}
 			}
@@ -411,6 +413,8 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 					}
 				}
 			}
+
+			ClientCommand(client, "playgamesound ui/item_soda_can_pickup.wav");
 			
 			garden.ReadyIn[client] = 0.0;
 			GardenList.SetArray(InMenu[client], garden);
@@ -425,7 +429,7 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
-static void OpenEditorFrom(int client, int index)
+static void OpenEditorFrom(int client)
 {
 	GardenEnum garden;
 	GardenList.GetArray(InMenu[client], garden);
