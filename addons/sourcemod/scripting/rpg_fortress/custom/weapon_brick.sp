@@ -15,7 +15,7 @@ void BrickWeapon_Map_Precache()
 
 public void Weapon_ThrowBrick(int client, int weapon, bool crit, int slot)
 {
-	float damage = 65.0;
+	float damage = 50.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 	b_IsABow[weapon] = true;
 
