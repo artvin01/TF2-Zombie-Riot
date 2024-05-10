@@ -489,9 +489,30 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 		if(XP[entity] > 0)
 		{
-			for(int i; i < targetCount; i++)
+			bool lowXPShare = Party_XPLowShare(client);
+			
+			if(lowXPShare && targetCount > 1)
 			{
-				TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
+				SortCustom1D(targets, targetCount, ClientLowLevelSort);
+
+				targetCount--;
+
+				int xp = XP[entity];
+				for(int i; i < targetCount; i++)
+				{
+					int give = xp * 3 / 4;
+					TextStore_AddItemCount(targets[i], ITEM_XP, give);
+					xp -= give;
+				}
+
+				TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
+			}
+			else
+			{
+				for(int i; i < targetCount; i++)
+				{
+					TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
+				}
 			}
 		}
 	}
@@ -500,6 +521,17 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 	
 	if(weapon != -1)
 		Tinker_GainXP(client, weapon);
+}
+
+static int ClientLowLevelSort(int elem1, int elem2, const int[] array, Handle hndl)
+{
+	if(Level[elem1] < Level[elem2])
+		return -1;
+	
+	if(Level[elem1] > Level[elem2] || elem1 < elem2)
+		return 1;
+	
+	return -1;
 }
 
 static void RollItemDrop(int client, const char[] name, float chance, float pos[3])

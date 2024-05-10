@@ -718,6 +718,10 @@ bool RPGCore_PlayerCanPVP(int attacker, int victim)
 	{
 		return true;
 	}
+	
+	if(Party_FriendlyFire(attacker, victim))
+		return true;
+	
 	return false;
 }
 
