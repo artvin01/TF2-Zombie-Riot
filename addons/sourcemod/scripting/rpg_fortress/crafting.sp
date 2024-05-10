@@ -355,7 +355,7 @@ static void CraftMenu(int client)
 
 		bool nonMoney, failed, failed5, failed10;
 		int amount;
-		char cost[128], result[128];
+		char cost[192], result[64];
 		strcopy(cost, sizeof(cost), "Cost:");
 		strcopy(result, sizeof(result), "Result:");
 
@@ -400,7 +400,8 @@ static void CraftMenu(int client)
 		delete snap;
 
 		Menu menu = new Menu(CraftRecipe);
-		menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
+	//	menu.SetTitle("RPG Fortress\n \nCraft & Shop: %s\n \n%s\n \n%s\n ", CurrentRecipe[client], cost, result);
+		menu.SetTitle("RPG Fortress\n \nCraft & Shop: \n%s\n \n%s\n ", cost, result);
 
 		if(nonMoney)
 		{

@@ -43,6 +43,10 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 
+static char g_AngerSounds[][] = {
+	"vo/compmode/cm_heavy_matchwon_10.mp3",
+	"vo/compmode/cm_heavy_pregametie_02.mp3",
+};
 
 
 public void SlaveMaster_OnMapStart_NPC()
@@ -53,6 +57,7 @@ public void SlaveMaster_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_AngerSounds));   i++) { PrecacheSound(g_AngerSounds[i]);   }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Slave Master");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_slave_master");
@@ -100,6 +105,12 @@ methodmap SlaveMaster < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
+	public void PlayAngerSound() {
+	
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+
+	}
 	
 	
 	public SlaveMaster(int client, float vecPos[3], float vecAng[3], int ally)
@@ -124,6 +135,8 @@ methodmap SlaveMaster < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+		npc.Anger = false;
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SlaveMaster_OnTakeDamagePost);
 		
 		func_NPCDeath[npc.index] = SlaveMaster_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SlaveMaster_OnTakeDamage;
@@ -136,11 +149,11 @@ methodmap SlaveMaster < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/sniper/desert_marauder.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/drg_brainiac_goggles.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/cc_summer2015_commissars_coat/cc_summer2015_commissars_coat.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
@@ -188,10 +201,41 @@ public void SlaveMaster_ClotThink(int iNPC)
 		return;
 	}
 	
+	if(npc.Anger)
+	{
+		int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+		if(Health >= maxHealth)
+		{
+			npc.Anger = false;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+			}
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
+			}
+			if(IsValidEntity(npc.m_iWearable3))
+			{
+				SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable3, 255, 255, 255, 255);
+			}
+		}
+	}
+	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 270.0, gameTime);
+	if(npc.Anger)
+		Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 300.0, gameTime);
+	else
+		Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 270.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -211,7 +255,7 @@ public void SlaveMaster_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 3500.0;
+					float damage = 4000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -312,6 +356,9 @@ public void SlaveMaster_ClotThink(int iNPC)
 
 				//	npc.m_flDoingAnimation = gameTime + 0.6;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					if(npc.Anger)
+						npc.m_flNextMeleeAttack = gameTime + 1.0;
+
 					npc.m_bisWalking = true;
 				}
 			}
@@ -356,3 +403,36 @@ public void SlaveMaster_NPCDeath(int entity)
 }
 
 
+
+
+public void SlaveMaster_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+{
+	SlaveMaster npc = view_as<SlaveMaster>(victim);
+
+	int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+	if(maxHealth/4 >= Health && !npc.Anger) //Anger after half hp/400 hp
+	{
+		npc.Anger = true; //	>:(
+		npc.PlayAngerSound();
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 100, 100, 255);
+		}
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 255, 100, 100, 255);
+		}
+		if(IsValidEntity(npc.m_iWearable3))
+		{
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 255, 100, 100, 255);
+		}
+		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+	}
+}

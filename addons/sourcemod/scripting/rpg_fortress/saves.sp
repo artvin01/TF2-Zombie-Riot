@@ -564,7 +564,7 @@ static void CreateCharacter(int client)
 		}
 
 		kv.SetNum("lastsave", time);
-		kv.SetString("title", "Alpha-Build");
+		kv.SetString("title", "Beta");
 
 		ModifiyCharacter(client, id);
 	}

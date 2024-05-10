@@ -56,7 +56,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 		if(level == 1 || level == 2)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			int particle_halo = ParticleEffectAt(flPos, "unusual_sixthsense_teamcolor_blue", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_genplasmos_b_glow2", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-5.0});

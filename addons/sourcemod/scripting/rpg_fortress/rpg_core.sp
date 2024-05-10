@@ -43,6 +43,7 @@ bool b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
 int i_MaxStamina[MAXTF2PLAYERS];
 float f_ClientTargetedByNpc[MAXTF2PLAYERS];
+float f_MasteryTextHint[MAXTF2PLAYERS];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
@@ -354,6 +355,7 @@ void RPG_ClientDisconnect(int client)
 
 	DisabledDownloads[client] = false;
 	b_PlayerIsPVP[client] = false;
+	f_MasteryTextHint[client] = 0.0;
 
 	char buffer[128];		
 
@@ -722,7 +724,8 @@ bool RPGCore_PlayerCanPVP(int attacker, int victim)
 
 void RPGCore_AddClientToHurtList(int entity, int client)
 {
-	f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
+	if(client <= MaxClients)
+		f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
 }
 
 /*
@@ -759,18 +762,6 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	if(Stats_GetCurrentFormMasteryMax(client))
 		return;
 
-	//only a 5% chance!
-	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
-	{
-		if(GetRandomFloat(0.0, 1.0) >= 0.2)
-			return;
-	}
-	else if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
-	{
-		if(GetRandomFloat(0.0, 1.0) >= 0.1)
-			return;
-	}
-
 	float CombinedDamagesPre;
 	float CombinedDamages;
 	int BaseDamage;
@@ -790,9 +781,29 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	CombinedDamagesPre = float(BaseDamage) * Multiplier;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
-	//Get the highest statt you can find.
+
 	float f_Stats_GetCurrentFormMastery;
 	f_Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
+
+	//only a 5% chance!
+	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
+	{
+		if(GetRandomFloat(0.0, 1.0) >= 0.2)
+			return;
+	}
+	else if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
+	{
+		if(GetRandomFloat(0.0, 1.0) >= 0.1)
+			return;
+	}
+	else
+	{
+		if(f_MasteryTextHint[client] < GetGameTime())
+			SPrintToChat(client, "This enemy cannot give you mastery.");
+
+		f_MasteryTextHint[client] = GetGameTime() + 5.0;
+	}
+	//Get the highest statt you can find.
 
 	//todo: Make it also work if your level is low enough!
 	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
