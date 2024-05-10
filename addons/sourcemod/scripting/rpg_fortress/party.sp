@@ -161,7 +161,6 @@ static void ShowMenu(int client)
 		return;
 	
 	Menu menu = new Menu(Party_MenuHandle);
-	menu.SetTitle("RPG Fortress\n \nParty:");
 
 	static char index[16], buffer[96];
 	if(PartyLeader[client])
@@ -206,7 +205,7 @@ static void ShowMenu(int client)
 		}
 
 		int count = menu.ItemCount - 1;
-		menu.SetTitle("RPG Fortress\n \nParty:\n(%d / %d)", count, MAX_PARTY_SIZE);
+		menu.SetTitle("RPG Fortress\n \nParty (%d / %d)", count, MAX_PARTY_SIZE);
 
 		if(count < MAX_PARTY_SIZE && PartyLeader[client] == client)
 		{
@@ -224,6 +223,8 @@ static void ShowMenu(int client)
 	}
 	else
 	{
+		menu.SetTitle("RPG Fortress\n \nParty:");
+
 		for(int target = 1; target <= MaxClients; target++)
 		{
 			if(IsValidClient(target) && IsInvitedBy(client, target))
