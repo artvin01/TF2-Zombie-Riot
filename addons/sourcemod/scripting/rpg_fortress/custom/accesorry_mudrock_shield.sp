@@ -87,17 +87,8 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 			int MaxHealth = SDKCall_GetMaxHealth(victim);
 			int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
-			float PercentageHeal = 0.10;
+			float PercentageHeal = 0.2;
 			
-			if(Stats_Strength(victim) > 30) //Give melee more
-			{
-				PercentageHeal = 0.15;
-			}
-			else if(Stats_Strength(victim) > 45) //Give melee more
-			{
-				PercentageHeal = 0.20;
-			}
-
 			int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
 
 			if(NewHealth > MaxHealth)

@@ -1670,24 +1670,16 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+
+	//dmg bonus before flat res!
+	damage *= fl_Extra_Damage[attacker];
 #if defined RPG
+	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+	{
+		return Plugin_Handled;	
+	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
-	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
-	if(f_FlatDamagePiercing[attacker] != 1.0)
-	{
-		FlatDamageResistance *= f_FlatDamagePiercing[attacker];
-	}
-	if(IsValidEntity(weapon))
-	{
-		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
-		FlatDamageResistance *= DamagePiercing;
-	}
-	float damageMinimum = (damage * 0.05);
-	damage -= FlatDamageResistance;
-	if(damage < damageMinimum)
-	{
-		damage = damageMinimum;
-	}
+	RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 #endif
 
 #if defined ZR
@@ -1761,7 +1753,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.8;
 		}
-		damage *= fl_Extra_Damage[attacker];
 		
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
@@ -2828,5 +2819,26 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	int blue = 0;
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
+}
+
+
+void RPGSdkhooks_FlatRes(int victim, int attacker, int weapon, float &damage)
+{
+	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
+	if(f_FlatDamagePiercing[attacker] != 1.0)
+	{
+		FlatDamageResistance *= f_FlatDamagePiercing[attacker];
+	}
+	if(IsValidEntity(weapon))
+	{
+		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
+		FlatDamageResistance *= DamagePiercing;
+	}
+	float damageMinimum = (damage * 0.05);
+	damage -= FlatDamageResistance;
+	if(damage < damageMinimum)
+	{
+		damage = damageMinimum;
+	}
 }
 #endif

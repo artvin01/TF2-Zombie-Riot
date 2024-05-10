@@ -116,6 +116,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
 #include "rpg_fortress/custom/weapon_brick.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
+#include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -128,7 +129,6 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/ranged_quick_reflex.sp"
 #include "rpg_fortress/custom/ranged_sentrythrow.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
-#include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 */
 #include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
@@ -236,6 +236,7 @@ void RPG_MapStart()
 	Mortar_MapStart();
 	Wand_FireBall_Map_Precache();
 	BrickWeapon_Map_Precache();
+	Abiltity_Mudrock_Shield_Shield_PluginStart();
 
 	/*
 	HealingPotion_Map_Start();
@@ -243,7 +244,6 @@ void RPG_MapStart()
 	Wand_Lightning_Map_Precache();
 	Wand_Short_Teleport_Map_Precache();
 	BoomStick_MapPrecache();
-	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
 
 	Wand_IcicleShard_Map_Precache();

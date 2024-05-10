@@ -131,6 +131,7 @@ methodmap SlaveMaster < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		npc.m_iOverlordComboAttack = 0;
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
@@ -256,6 +257,18 @@ public void SlaveMaster_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 4000.0;
+					if(npc.m_iOverlordComboAttack >= 1)
+					{
+						float maxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
+						float DmgCalc;
+
+						DmgCalc = Health / maxHealth;
+
+						DmgCalc *= 0.5;
+
+						damage *= DmgCalc;
+					}
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

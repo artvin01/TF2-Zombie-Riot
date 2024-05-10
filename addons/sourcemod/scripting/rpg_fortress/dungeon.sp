@@ -1612,3 +1612,127 @@ static stock int RandomStaticSeed(int seed, int rand)
 /*
 	func_onspawn
 */
+
+
+public void Dungeon_Spawn_25HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 5 / 4;
+	
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_50HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	
+	health = RoundToNearest(float(health) * 1.5);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_75HP(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	
+	health = RoundToNearest(float(health) * 1.75);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+}
+
+public void Dungeon_Spawn_DmgBonus10(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.10;
+}
+
+public void Dungeon_Spawn_DmgBonus20(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.20;
+}
+
+public void Dungeon_Spawn_DmgBonus25(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.25;
+}
+
+public void Dungeon_Spawn_DoubleHpRegen(int entity)
+{
+	i_HpRegenInBattle[entity] *= 2;
+}
+
+public void Dungeon_Spawn_FlatRes(int entity)
+{
+	Endurance[client] += 285;
+}
+public void Dungeon_Spawn_BuffBosses1(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	
+	health = RoundToNearest(float(health) * 1.1);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 1.1;
+	fl_Extra_Speed[entity] *= 1.1;
+}
+
+public void Dungeon_Spawn_BuffBosses2(int entity)
+{
+	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	
+	health = RoundToNearest(float(health) * 1.2);
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+	SetEntProp(entity, Prop_Data, "m_iHealth", health);
+	fl_Extra_Damage[entity] *= 1.2;
+	fl_Extra_Speed[entity] *= 1.2;
+}
+
+public void Dungeon_Spawn_MegaEnslaver(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	npc.m_iOverlordComboAttack = 1;
+}
+
+public void Dungeon_Spawn_MegaEnslaver(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	npc.m_iOverlordComboAttack = 1;
+}
+
+
+public void Dungeon_40_Percent_More_Cooldown(int entity)
+{
+	b_DungeonContracts_LongerCooldown[entity] = true;
+}
+
+public void Dungeon_30_Percent_Slower_Attackspeed(int entity)
+{
+	b_DungeonContracts_SlowerAttackspeed[entity] = true;
+}
+public void Dungeon_15_Percent_Slower_MoveSpeed(int entity)
+{
+	b_DungeonContracts_SlowerMovespeed[entity] = true;
+}
+
+public void Dungeon_Spawn_ChaosMiner(ArrayList list)
+{
+	static WaveEnum wave;
+	if(!wave.Index)
+	{
+		wave.Delay = 200.0;
+		wave.name = "npc_chaos_miner";
+		wave.Pos = {-5143.458984, -5173.052734, -1487.338745};
+		wave.Angle = -130.0;
+		wave.Boss = true;
+		wave.Level = 750;
+		wave.Health = 1000000;
+		wave.Rarity = 1;
+		wave.HPRegen= 0;
+
+		wave.ExtraMeleeRes = 1.0;
+		wave.ExtraRangedRes = 1.0;
+		wave.ExtraSpeed = 1.0;
+		wave.ExtraDamage = 1.0;
+		wave.CustomName = "??????";
+	}
+	list.PushArray(wave);
+}

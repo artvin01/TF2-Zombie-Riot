@@ -738,7 +738,10 @@ float RPGStats_FlatDamageSetStats(int client, int damageType = 0, int total = -9
 float RPGStats_FlatDamageResistance(int client)
 {
 	int total;
-	total = Stats_Endurance(client);
+	if(client <= MaxClients)
+		total = Stats_Endurance(client);
+	else
+		total = Endurance[client];
 	return (float(total) * 1.75);
 }
 
