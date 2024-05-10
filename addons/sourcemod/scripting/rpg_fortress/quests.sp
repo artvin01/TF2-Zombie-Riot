@@ -111,12 +111,12 @@ void Quests_DeleteChar(const char[] id)
 
 void Quests_AddKill(int client, int entity)
 {
-	char name[64];
-	NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
+	//char name[64];
+	//NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
 
 	KeyValues kv = Saves_Kv("quests");
 	kv.JumpToKey("_kills", true);
-	kv.JumpToKey(name, true);
+	kv.JumpToKey(c_NpcName[entity], true);
 
 	static float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);

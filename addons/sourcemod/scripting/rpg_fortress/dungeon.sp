@@ -100,6 +100,7 @@ enum struct WaveEnum
 	float ExtraRangedRes;
 	float ExtraSpeed;
 	float ExtraDamage;
+	char CustomName[64];
 
 	void SetupEnum(KeyValues kv, char[] buffer, int length)
 	{
@@ -121,6 +122,7 @@ enum struct WaveEnum
 		this.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
 		this.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 		this.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
+		kv.GetString("custom_name", this.CustomName, sizeof(this.CustomName));
 	}
 }
 
@@ -1511,6 +1513,9 @@ public Action Dungeon_Timer(Handle timer)
 								fl_Extra_RangedArmor[entity] = wave.ExtraRangedRes;
 								fl_Extra_Speed[entity] = wave.ExtraSpeed;
 								fl_Extra_Damage[entity] = wave.ExtraDamage;
+
+								if(wave.CustomName[0])
+									strcopy(c_NpcName[entity], sizeof(c_NpcName[]), wave.CustomName);
 
 								if(dungeon.ModList)
 								{
