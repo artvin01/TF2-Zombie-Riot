@@ -231,15 +231,15 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 	{
 		return;
 	}
-
-	if(!npc.m_iAttacksTillMegahit)
-	{
-		return;
-	}
 	if(!npc.Anger)
 	{
 		npc.Anger = true;
 		i_HealthMainMaster = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	}
+
+	if(!npc.m_iAttacksTillMegahit)
+	{
+		return;
 	}
 	if(i_HealthMainMaster <= 0.0)
 	{
@@ -247,6 +247,7 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 	}
 	SetEntProp(npc.index, Prop_Data, "m_iHealth", i_HealthMainMaster);
 	ChaosAfflictedMiner_OnTakeDamagePost(npc.index, 0, 0, 0.0, 0); 
+	RPGNpc_UpdateHpHud(npc.index);
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
@@ -300,6 +301,7 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		npc.m_bisWalking = true;
 		float vecTarget[3];
 		WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		float vecSelf[3];
@@ -396,6 +398,7 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 					npc.AddGesture("ACT_MP_THROW");
 
 					npc.m_iTarget = Enemy_I_See;
+					npc.m_bisWalking = true;
 				}
 			}
 		}

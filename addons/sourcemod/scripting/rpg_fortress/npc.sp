@@ -208,7 +208,7 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		{
 			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
 
-			if(!IsValidEnemy(npc.index, npcBase.m_iTarget)) //Only set it if they actaully have no target.
+			if(!IsValidEnemy(npcBase.index, npcBase.m_iTarget)) //Only set it if they actaully have no target.
 			{
 				npcBase.m_iTarget = attacker;
 			}
@@ -279,7 +279,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			distance = 99999.9;
 		}
 		int entity_found = GetClosestTarget(npc.index, false, distance);
-		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
+		if(npc.m_flGetClosestTargetNoResetTime < gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
 			{
