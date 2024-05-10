@@ -1516,6 +1516,8 @@ public Action Dungeon_Timer(Handle timer)
 
 								if(wave.CustomName[0])
 									strcopy(c_NpcName[entity], sizeof(c_NpcName[]), wave.CustomName);
+								
+								StrCat(c_NpcName[entity], sizeof(c_NpcName[]), "!");
 
 								if(dungeon.ModList)
 								{
