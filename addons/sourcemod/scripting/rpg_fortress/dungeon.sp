@@ -96,6 +96,10 @@ enum struct WaveEnum
 	int Health;
 	int Rarity;
 	int HPRegen;
+	float ExtraMeleeRes;
+	float ExtraRangedRes;
+	float ExtraSpeed;
+	float ExtraDamage;
 
 	void SetupEnum(KeyValues kv, char[] buffer, int length)
 	{
@@ -112,6 +116,11 @@ enum struct WaveEnum
 		this.Health = kv.GetNum("health");
 		this.Rarity = kv.GetNum("rarity");
 		this.HPRegen = kv.GetNum("hpregen");
+
+		this.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
+		this.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
+		this.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
+		this.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 	}
 }
 
@@ -1497,6 +1506,11 @@ public Action Dungeon_Timer(Handle timer)
 									wave.HPRegen = RoundToCeil(float(wave.HPRegen) * float(dungeon.PlayerCount) * 0.75);
 									i_HpRegenInBattle[entity] = wave.HPRegen;
 								}
+
+								fl_Extra_MeleeArmor[entity] = wave.ExtraMeleeRes;
+								fl_Extra_RangedArmor[entity] = wave.ExtraRangedRes;
+								fl_Extra_Speed[entity] = wave.ExtraSpeed;
+								fl_Extra_Damage[entity] = wave.ExtraDamage;
 
 								if(dungeon.ModList)
 								{
