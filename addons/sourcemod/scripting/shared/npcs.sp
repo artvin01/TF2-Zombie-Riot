@@ -2214,6 +2214,7 @@ void NPC_DeadEffects(int entity)
 #endif
 			
 #if defined RPG
+			Stats_SetHasKill(client, c_NpcName[entity]);
 			Quests_AddKill(client, entity);
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif

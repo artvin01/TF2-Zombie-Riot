@@ -7,6 +7,7 @@ static bool HasKeyHintHud[MAXTF2PLAYERS];
 static int SaveIn[MAXTF2PLAYERS];
 static int InputMulti[MAXTF2PLAYERS];
 static StringMap Mastery[MAXTF2PLAYERS];
+static ArrayList HasKilled[MAXTF2PLAYERS];
 static int StatStrength[MAXTF2PLAYERS];
 static int StatPrecision[MAXTF2PLAYERS];
 static int StatArtifice[MAXTF2PLAYERS];
@@ -54,6 +55,16 @@ void Stats_EnableCharacter(int client)
 		}
 		while(kv.GotoNextKey(false));
 	}
+
+	if(kv.JumpToKey("haskilled") && kv.GotoFirstSubKey(false))
+	{
+		do
+		{
+			kv.GetSectionName(buffer, sizeof(buffer));
+			Stats_SetHasKill(client, buffer);
+		}
+		while(kv.GotoNextKey(false));
+	}
 	
 	Stats_UpdateLevel(client);
 }
@@ -64,15 +75,31 @@ int RPGStats_MaxXPAllowed(int client)
 }
 int Stats_GiveXP(int client, int &xp, bool quest = false)
 {
-	int maxXP = RPGStats_MaxXPAllowed(client);
-
-	int XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
-	if(XP[client] < maxXP || quest)
-		XP[client] += XPToGive;
-	else
+	int XPToGive;
+	if(xp > 0)
 	{
-		SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Quests are exluded from this.", maxXP);
-		XPToGive = 0;
+		int maxXP = RPGStats_MaxXPAllowed(client);
+
+		XPToGive = RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
+		if(quest)
+		{
+			maxXP *= 3.0;
+		}
+		
+		if(XP[client] < maxXP)
+			XP[client] += XPToGive;
+		else
+		{
+			if(quest)
+			{
+				SPrintToChat(client, "You have hit the XP cap of %i at your level. Quests will no longer grant you XP, use your XP.", maxXP);
+			}
+			else
+			{
+				SPrintToChat(client, "You have hit the XP cap of %i at your level, you wont get anymore XP untill you spend it. Quests have a higher cap by 3x.", maxXP);
+			}
+			XPToGive = 0;
+		}
 	}
 
 	if(XP[client] > SaveIn[client])
@@ -91,7 +118,7 @@ static void SaveClientStats(int client)
 {
 	KeyValues kv = Saves_Kv("stats");
 
-	char buffer[32];
+	char buffer[64];
 	if(Saves_ClientCharId(client, buffer, sizeof(buffer)))
 	{
 		kv.JumpToKey(buffer, true);
@@ -121,6 +148,20 @@ static void SaveClientStats(int client)
 			}
 
 			delete snap;
+
+			kv.GoBack();
+		}
+
+		if(HasKilled[client] && kv.JumpToKey("haskilled", true))
+		{
+			int length = HasKilled[client].Length;
+			for(int i; i < length; i++)
+			{
+				HasKilled[client].GetString(i, buffer, sizeof(buffer));
+				kv.SetNum(buffer, 1);
+			}
+
+			kv.GoBack();
 		}
 	}
 }
@@ -129,6 +170,7 @@ void Stats_ClientDisconnect(int client)
 {
 	HasKeyHintHud[client] = false;
 	delete Mastery[client];
+	delete HasKilled[client];
 }
 
 void Stats_UpdateHud(int client)
@@ -334,6 +376,22 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 	
 	Mastery[client].SetValue(name, mastery);
 	SaveClientStats(client);
+}
+
+bool Stats_GetHasKill(int client, const char[] name)
+{
+	if(HasKilled[client])
+		return HasKilled[client].FindString(name) != -1;
+	
+	return false;
+}
+
+void Stats_SetHasKill(int client, const char[] name)
+{
+	if(!HasKilled[client])
+		HasKilled[client] = new ArrayList(ByteCountToCells(64));
+	
+	HasKilled[client].PushString(name);
 }
 
 void Stats_ApplyAttribsPre(int client)
@@ -666,6 +724,7 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 					if(XP[client] < cost)
 						break;
 					
+					// Removes XP
 					cost = -cost;
 					Stats_GiveXP(client, cost);
 				}

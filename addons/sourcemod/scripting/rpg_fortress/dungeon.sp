@@ -328,7 +328,7 @@ enum struct StageEnum
 
 	float GetDropChance(int level, int luck, int tier, char name[48], float chance = 1.0, int required = 0)
 	{
-		if(!name[0] || required > tier)
+		if(!name[0] || required > tier || level < this.Level)
 			return 0.0;
 		
 		if(StrEqual(name, ITEM_XP, false))
@@ -359,7 +359,8 @@ enum struct StageEnum
 		{
 			for(int i; i < amount; i++)
 			{
-				TextStore_AddItemCount(clients[i], name, 1);
+				if(Level[clients[i]] >= this.Level)
+					TextStore_AddItemCount(clients[i], name, 1);
 			}
 		}
 	}
@@ -370,6 +371,9 @@ enum struct StageEnum
 
 		for(int i; i < amount; i++)
 		{
+			if(Level[clients[i]] < this.Level)
+				continue;
+			
 			luck += Stats_Luck(clients[i]);
 
 			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
@@ -1057,9 +1061,10 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						else	// Join/Leave Lobby
 						{
 							bool alreadyIn = StrEqual(InDungeon[client], DungeonMenu[client]);
+							bool party = Party_GetPartyLeader(client) == client;
 							for(int target = 1; target <= MaxClients; target++)
 							{
-								if(client == target || Party_IsClientMember(target, client))
+								if(client == target || (party && Party_IsClientMember(target, client)))
 								{
 									Dungeon_ClientDisconnect(target, true);
 
@@ -1099,9 +1104,10 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
 
+						bool party = Party_GetPartyLeader(client) == client;
 						for(int target = 1; target <= MaxClients; target++)
 						{
-							if(client == target || Party_IsClientMember(target, client))
+							if(client == target || (party && Party_IsClientMember(target, client)))
 							{
 								Dungeon_ClientDisconnect(target, true);
 

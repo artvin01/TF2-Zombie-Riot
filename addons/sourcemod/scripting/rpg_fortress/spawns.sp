@@ -448,6 +448,9 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 	static SpawnEnum spawn;
 	if(hFromSpawnerIndex[entity] >= 0)
 	{
+		//75% of the enemy LVL
+		int minlevel = Level[entity] * 3 / 4;
+
 		SpawnList.GetArray(hFromSpawnerIndex[entity], spawn);
 		
 		int targetCount;
@@ -458,13 +461,16 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 			{
 				if(client != target)
 				{
+					if(Level[target] < minlevel && !Stats_GetHasKill(target, c_NpcName[entity]))
+						continue;
+					
 					static float pos2[3];
 					GetClientAbsOrigin(target, pos2);
 					if(GetVectorDistance(pos1, pos2, true) > 1000000.0)	// 1000 HU
 						continue;
+					
+					targets[targetCount++] = target;
 				}
-
-				targets[targetCount++] = target;
 			}
 		}
 
@@ -489,6 +495,8 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 		if(XP[entity] > 0)
 		{
+			TextStore_AddItemCount(client, ITEM_XP, XP[entity]);
+
 			bool lowXPShare = Party_XPLowShare(client);
 			
 			if(lowXPShare && targetCount > 1)
@@ -505,18 +513,15 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 					xp -= give;
 				}
 
-				if(client != targets[targetCount])
-					TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
+				TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
 			}
 			else
 			{
 				for(int i; i < targetCount; i++)
 				{
-					if(client != targets[i])
-						TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
+					TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
 				}
 			}
-			TextStore_AddItemCount(client, ITEM_XP, XP[entity]);
 		}
 	}
 

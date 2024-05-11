@@ -1847,11 +1847,25 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 		}
 	}
 	
-	static float PreviousValue[MAXENTITIES];
+	static float PreviousValue[MAXENTITIES][5];
+	//5 stats at once
 	float value = RPGStats_FlatDamageSetStats(client, damageType) / damageBase;
 
 	// Set a new value if we changed
-	if(first || value != PreviousValue[weapon])
+
+	/* 
+		// 4004 is stamina cost
+		// 4003 is capacity cost
+		// 97 Reload speed
+		// 6 Attack speed
+
+
+		// 2 normal damage
+		// 410, mage damage
+	*/
+
+	// Damage Bonus
+	if(first || value != PreviousValue[weapon][0])
 	{
 		if(first)
 		{
@@ -1864,72 +1878,94 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 		{
 			// Second time we modified, remove what we previously had
 			if(i_IsWandWeapon[weapon])
-				Attributes_SetMulti(weapon, 410, value / PreviousValue[weapon]);
+				Attributes_SetMulti(weapon, 410, value / PreviousValue[weapon][0]);
 			else
-				Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon]);
+				Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon][0]);
 		}
 
-		PreviousValue[weapon] = value;
+		PreviousValue[weapon][0] = value;
 	}
 
-	/*OLD CODE
-	float DecimalForDamage = 1.0 / damageBase;
-	Attributes_Set(weapon, 1000, DecimalForDamage);
-	//weapon starts out with excatly 1 damage.
-	int StattDifference;
-
-
-	int check = 10;	// Any
-	switch(damageType)
+	float AgilityScaling;
+	//200 is the max, any higher and you break limits.
+	AgilityScaling = float(Stats_Agility(client)) / 200.0;
+	AgilityScaling *= -1.0;
+	AgilityScaling += 1.0;
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][1])
 	{
-		case 1:
+		if(Attributes_Has(weapon, 6))
 		{
-			StattDifference = Stats_Strength(client) - Strength2[weapon];
-			check = 2;	// Melee
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 6, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 6, value / PreviousValue[weapon][1]);
+			}
 		}
-		case 2:
-		{
-			StattDifference = Stats_Precision(client) - Precision2[weapon];
-			check = 7;	// Primary / Secondary
-		}
-		case 3:
-		{
-			StattDifference = Stats_Artifice(client) - Artifice2[weapon];
-			check = 8;	// Mage
-		}
+
+		PreviousValue[weapon][1] = value;
 	}
 
-	PrintToChatAll("StattDifference %i",StattDifference);
-	if(StattDifference == 0)
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][2])
 	{
-		return;
-	}
-
-
-	char classname[36];
-	GetEntityClassname(weapon, classname, sizeof(classname));
-	if(CheckEntitySlotIndex(check, TF2_GetClassnameSlot(classname), weapon))
-	{
-
-		float AttributeDifferenceToApply;
-		AttributeDifferenceToApply = RPGStats_FlatDamageSetStats(client, damageType, StattDifference);
-		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
-		if(f_DamageMultiWeaponApplied[weapon] != 0.0)
+		if(Attributes_Has(weapon, 97))
 		{
-
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 97, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 97, value / PreviousValue[weapon][2]);
+			}
 		}
-		f_DamageMultiWeaponApplied[weapon] = AttributeDifferenceToApply;
-		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
-		Attributes_SetMulti(weapon, 2, AttributeDifferenceToApply);
-		
-		//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
+
+		PreviousValue[weapon][2] = value;
 	}
 
-	Strength2[weapon] = Stats_Strength(client);
-	Precision2[weapon] = Stats_Precision(client);
-	Artifice2[weapon] = Stats_Artifice(client);
-	Agility2[weapon] = Stats_Agility(client);
-*/
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][3])
+	{
+		if(Attributes_Has(weapon, 4004))
+		{
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 4004, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 4004, value / PreviousValue[weapon][3]);
+			}
+		}
+
+		PreviousValue[weapon][3] = value;
+	}
+
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][4])
+	{
+		if(Attributes_Has(weapon, 4003))
+		{
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 4003, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 4003, value / PreviousValue[weapon][4]);
+			}
+		}
+
+		PreviousValue[weapon][4] = value;
+	}
 }
 
 bool Store_SwitchToWeaponSlot(int client, int slot)

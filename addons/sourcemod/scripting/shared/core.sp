@@ -3239,8 +3239,12 @@ void Set_Projectile_CollisionFrame(int ref)
 		SetEntityCollisionGroup(entity, 27);
 		
 #if defined RPG
-		//set team to 0 while in pvp?
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", 0);
+		int attacker = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(RPGCore_PlayerCanPVP(attacker, attacker))
+		{
+			//set team to blue while in pvp, so all interactions work just fine, but only do this while in PVP.
+			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+		}
 #endif
 	}
 }

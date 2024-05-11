@@ -121,12 +121,17 @@ void Quests_AddKill(int client, int entity)
 	static float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 
+	int minlevel = Level[entity] * 3 / 4;
+
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client == target || Party_IsClientMember(client, target))
 		{
 			if(client != target)
 			{
+				if(Level[target] < minlevel && !Stats_GetHasKill(target, c_NpcName[entity]))
+					continue;
+				
 				static float pos2[3];
 				GetClientAbsOrigin(target, pos2);
 				if(GetVectorDistance(pos1, pos2, true) > 1000000.0)	// 1000 HU
