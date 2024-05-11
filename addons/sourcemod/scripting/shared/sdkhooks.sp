@@ -2067,7 +2067,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
 		}
 	}
-
+	
 	return Plugin_Changed;
 }
 #if defined ZR
