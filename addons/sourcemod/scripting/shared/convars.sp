@@ -105,6 +105,7 @@ void ConVar_PluginStart()
 
 #if defined RPG
 	ConVar_Add("tf_clamp_back_speed", "0.9"); // default: 0.9 Ty to miku for showing me
+	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me
 #endif
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);

@@ -23,7 +23,7 @@ public void Weapon_ThrowBrick(int client, int weapon, bool crit, int slot)
 	float fAng[3], fPos[3];
 	GetClientEyeAngles(client, fAng);
 	GetClientEyePosition(client, fPos);
-	EmitSoundToAll("weapons/slam/throw.wav", weapon, SNDCHAN_WEAPON, 90, _, 1.0);
+	EmitSoundToAll("weapons/slam/throw.wav", weapon, SNDCHAN_WEAPON, 80, _, 1.0);
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 
@@ -97,39 +97,39 @@ void PlayBrickSound(int entity)
 	{
 		case 1:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard1.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		case 2:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard2.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		case 3:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard3.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		case 4:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard4.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		case 5:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard5.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 		case 6:
 		{
-			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
-			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 90, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
+			EmitSoundToAll("physics/concrete/rock_impact_hard6.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 		}
 	}
 }
