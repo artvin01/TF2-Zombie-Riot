@@ -3237,6 +3237,11 @@ void Set_Projectile_CollisionFrame(int ref)
 	if(GetTeam(entity) != view_as<int>(TFTeam_Blue))
 	{
 		SetEntityCollisionGroup(entity, 27);
+		
+#if defined RPG
+		//set team to 0 while in pvp?
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", 0);
+#endif
 	}
 }
 public void Delete_instantly(int entity)

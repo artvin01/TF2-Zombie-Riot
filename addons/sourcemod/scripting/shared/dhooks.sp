@@ -868,11 +868,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1]/* || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1]*/)
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2]/* || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2]*/)
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
 		{
 			return false;
 		}
@@ -880,7 +880,16 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
+#if defined RPG
+		if(ent1 < MaxClients && ent2 < MaxClients)
+		{
+			if(RPGCore_PlayerCanPVP(ent1, ent2))
+				return true;
+		}
 		return false;
+#else
+		return false;
+#endif
 	}	
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
@@ -897,7 +906,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-
 #if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
@@ -999,7 +1007,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			//dont colldide with wsame team if its
 			else if(GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
+
+#endif	
 			}
 #if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
@@ -1011,12 +1025,22 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			//ally projectiles do not collide with players unless they only go for players
 			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
+#endif	
 			}
 			//ignores everything else if it only collides with players
 			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
+#endif	
 			}
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
@@ -1027,11 +1051,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif	// Non-RTS
-
 #if defined RTS
-		else if(!b_NpcHasDied[entity1])
+		if(!b_NpcHasDied[entity1])
 #else	
-		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
+		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
@@ -1077,7 +1100,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif
-
 	}
 	return result;	
 }

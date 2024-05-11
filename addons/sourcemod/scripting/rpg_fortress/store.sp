@@ -1001,6 +1001,7 @@ void Store_ApplyAttribs(int client)
 	i_TagColor[client] =	{255,255,255,255};
 
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
+	GetClientName(client, c_NpcName[client], sizeof(c_NpcName[]));
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 999.0);	// instant build

@@ -467,6 +467,7 @@ public void ChaosAfflictedMiner_OnTakeDamagePost(int victim, int attacker, int i
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				npc1.Anger = true;
 				npc1.m_iAttacksTillMegahit = 1;
+				strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), c_NpcName[victim]);
 			}
 		}
 	}

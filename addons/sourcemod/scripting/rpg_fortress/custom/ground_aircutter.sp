@@ -108,7 +108,9 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		f_TankGrabbedStandStill[target] = GetGameTime(target) + AIRCUTTER_AIRTIME;
 		f_TargetAirtime[target] = GetGameTime() + AIRCUTTER_AIRTIME; //Kick up for way less time.
 		b_DoNotUnStuck[client] = true;
-		FreezeNpcInTime(target,AIRCUTTER_AIRTIME + 0.5);
+		if(target > MaxClients)
+			FreezeNpcInTime(target,AIRCUTTER_AIRTIME + 0.5);
+
 		//Give abit extra time so they can run away
 		b_TraceFire[client] = false;
 		i_EntityToAlwaysMeleeHit[client] = target;
@@ -116,6 +118,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 
 		ApplyTempAttrib(weapon, 6, 0.25, AIRCUTTER_AIRTIME);
 		ApplyTempAttrib(weapon, 2, 0.5, AIRCUTTER_AIRTIME);
+		ApplyTempAttrib(weapon, 4005, 0.5, AIRCUTTER_AIRTIME);
 		ApplyTempAttrib(weapon, 4004, 0.15, AIRCUTTER_AIRTIME);
 		EmitSoundToAll(AIRCUTTER_KICKUP_1, client, _, 75, _, 0.60);
 		TF2_AddCondition(client, TFCond_DefenseBuffed, 3.0);
@@ -125,7 +128,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
 
 		SDKUnhook(target, SDKHook_Think, Npc_AirCutter_Launch);
-		if(!b_CannotBeKnockedUp[target])
+		if(!b_CannotBeKnockedUp[target] && target > MaxClients)
 			SDKHook(target, SDKHook_Think, Npc_AirCutter_Launch);
 
 		i_NpcToTarget[client] = target;
@@ -216,7 +219,9 @@ public void Npc_AirCutter_Launch_client(int client)
 				}
 			}			
 			SetEntityMoveType(client, MOVETYPE_WALK);
-			npc.SetVelocity({ 0.0, 0.0, 0.0 });
+			if(target > MaxClients)
+				npc.SetVelocity({ 0.0, 0.0, 0.0 });
+
 			b_DoNotUnStuck[client] = false;
 			i_NpcToTarget[client] = 0;
 			LookAtTarget(client, target);

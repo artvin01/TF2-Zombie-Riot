@@ -2052,7 +2052,22 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 #endif	// ZR
-	
+	int ClientAttacker;
+	if(IsValidClient(inflictor))
+		ClientAttacker = inflictor;
+	else if(IsValidClient(attacker))
+		ClientAttacker = attacker;
+
+	if(ClientAttacker > 0)
+	{
+		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
+		if(IsValidEntity(weapon))
+		{
+			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
+			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+
 	return Plugin_Changed;
 }
 #if defined ZR

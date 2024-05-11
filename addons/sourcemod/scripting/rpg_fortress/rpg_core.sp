@@ -718,6 +718,19 @@ void RPGCore_ResourceAddition(int client, int amount)
 
 bool RPGCore_PlayerCanPVP(int attacker, int victim)
 {
+	if(attacker > MaxClients)
+	{
+		attacker = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
+	}
+	if(attacker > MaxClients)
+		return false;
+
+	if(attacker < 0)
+		return false;
+
+	if(attacker == victim)
+		return false;
+		
 	if(b_PlayerIsPVP[attacker] && b_PlayerIsPVP[victim])
 	{
 		return true;

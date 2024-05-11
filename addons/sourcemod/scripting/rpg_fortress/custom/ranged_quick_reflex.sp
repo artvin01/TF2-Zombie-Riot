@@ -62,7 +62,7 @@ public float AbilityQuickReflex(int client, int index, char name[48])
 	
 	Ability_QuickReflex(client, 1, weapon);
 	
-	return (GetGameTime() + 45.0);
+	return (GetGameTime() + 25.0);
 }
 
 public void Ability_QuickReflex(int client, int level, int weapon)

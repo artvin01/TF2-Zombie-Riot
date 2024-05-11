@@ -527,7 +527,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
-
+	 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"

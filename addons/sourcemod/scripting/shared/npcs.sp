@@ -1371,7 +1371,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
-		return;
+	{
+		if(!IsValidClient(victim))
+			return;
+	}
 
 	if(!c_NpcName[victim][0])
 		return;

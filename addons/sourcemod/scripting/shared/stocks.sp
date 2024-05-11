@@ -2595,7 +2595,14 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 #endif
 	else if(other_entity <= MaxClients)
 	{
-		return -1;
+#if defined RPG
+		if(RPGCore_PlayerCanPVP(owner_projectile, other_entity))
+			return other_entity;
+		else
+			return -1;
+#else
+			return -1;
+#endif	
 	}
 //	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
 	else if(!b_NpcHasDied[other_entity]) //way less cheap, lets see how that goes.

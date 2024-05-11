@@ -146,7 +146,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 		float damage_reduction = 1.0;
 		damage_1 = damage;
 		float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF;
-		float Teleport_CD = 10.0;
+		float Teleport_CD = 15.0;
 
 		for (int entity_traced = 0; entity_traced < MAXENTITIES; entity_traced++)
 		{
@@ -159,7 +159,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 
 			SDKHooks_TakeDamage(ST_HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_BLAST, weapon, CalculateExplosiveDamage, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
-			Teleport_CD = 4.0;
+			Teleport_CD = 10.0;
 		}
 		FinishLagCompensation_Base_boss();
 		abspos[2] += 40.0;
