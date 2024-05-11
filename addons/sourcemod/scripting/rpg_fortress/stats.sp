@@ -101,6 +101,10 @@ int Stats_GiveXP(int client, int &xp, bool quest = false)
 			XPToGive = 0;
 		}
 	}
+	else
+	{
+		XP[client] += xp;
+	}
 
 	if(XP[client] > SaveIn[client])
 	{
@@ -112,6 +116,11 @@ int Stats_GiveXP(int client, int &xp, bool quest = false)
 		SaveIn[client] -= XP[client];
 	}
 	return XPToGive;
+}
+
+float AgilityMulti(int amount)
+{
+	return 3.73333*Pow(amount + 16.0, -0.475);
 }
 
 static void SaveClientStats(int client)
@@ -406,7 +415,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class)
 	//Give complete immunity to all normal knockback.
 	//in RPG we will give knockback another way.
 
-	float speed = 300.0 + float(Stats_Agility(client));
+	float speed = 300.0 + float(Stats_Agility(client) * 2);
 	
 	//CC DIFFICULTY, 15% SLOWER!
 	if(b_DungeonContracts_SlowerMovespeed[client])

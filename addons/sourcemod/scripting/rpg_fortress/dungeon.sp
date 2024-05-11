@@ -1669,19 +1669,19 @@ public void Dungeon_Spawn_75HP(int entity)
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
 }
 
-public void Dungeon_Spawn_DmgBonus10(int entity)
-{
-	fl_Extra_Damage[entity] *= 1.10;
-}
-
-public void Dungeon_Spawn_DmgBonus20(int entity)
-{
-	fl_Extra_Damage[entity] *= 1.20;
-}
-
 public void Dungeon_Spawn_DmgBonus25(int entity)
 {
 	fl_Extra_Damage[entity] *= 1.25;
+}
+
+public void Dungeon_Spawn_DmgBonus40(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.40;
+}
+
+public void Dungeon_Spawn_DmgBonus60(int entity)
+{
+	fl_Extra_Damage[entity] *= 1.60;
 }
 
 public void Dungeon_Spawn_DoubleHpRegen(int entity)
@@ -1691,7 +1691,7 @@ public void Dungeon_Spawn_DoubleHpRegen(int entity)
 
 public void Dungeon_Spawn_FlatRes(int entity)
 {
-	Endurance[entity] += 285;
+	Endurance[entity] += 645;
 }
 
 public void Dungeon_Spawn_BuffBosses1(int entity)
@@ -1725,6 +1725,13 @@ public void Dungeon_Spawn_MegaEnslaver(int entity)
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
 		npc.m_iOverlordComboAttack = 1;
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		
+		health = RoundToNearest(float(health) * 1.5);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.2;
+		fl_Extra_Speed[entity] *= 1.1;
 	}
 }
 
@@ -1768,9 +1775,9 @@ public void Dungeon_Spawn_ChaosMiner(ArrayList list)
 		wave.Index = NPC_GetByPlugin("npc_chaos_afflicted_miner");
 		wave.Pos = {-5143.458984, -5173.052734, -1487.338745};
 		wave.Angle = -130.0;
-		wave.Boss = false;
+		wave.Boss = true;
 		wave.Level = 750;
-		wave.Health = 500000;
+		wave.Health = 650000;
 		wave.Rarity = 1;
 		wave.HPRegen= 0;
 

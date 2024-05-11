@@ -236,7 +236,7 @@ public void ChaosAfflictedMiner_ClotThink(int iNPC)
 		npc.Anger = true;
 		i_HealthMainMaster = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	}
-	if(b_thisNpcIsABoss[iNPC])
+	if(!b_NpcIsInADungeon[npc.index])
 	{
 		if(!npc.m_iAttacksTillMegahit)
 		{
@@ -468,6 +468,7 @@ public void ChaosAfflictedMiner_OnTakeDamagePost(int victim, int attacker, int i
 				npc1.Anger = true;
 				npc1.m_iAttacksTillMegahit = 1;
 				strcopy(c_NpcName[spawn_index], sizeof(c_NpcName[]), c_NpcName[victim]);
+				RPGCore_CopyStatsOver(victim, spawn_index);
 			}
 		}
 	}

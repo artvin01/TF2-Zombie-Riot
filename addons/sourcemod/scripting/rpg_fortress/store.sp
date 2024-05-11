@@ -1888,9 +1888,7 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 
 	float AgilityScaling;
 	//200 is the max, any higher and you break limits.
-	AgilityScaling = float(Stats_Agility(client)) / 200.0;
-	AgilityScaling *= -1.0;
-	AgilityScaling += 1.0;
+	AgilityScaling = AgilityMulti(Stats_Agility(client));
 	value = AgilityScaling;
 	if(first || value != PreviousValue[weapon][1])
 	{

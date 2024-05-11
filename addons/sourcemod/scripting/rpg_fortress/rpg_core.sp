@@ -857,3 +857,11 @@ float RPGCore_ClientTargetedByNpcReturn(int client)
 {
 	return f_ClientTargetedByNpc[client];
 }
+
+void RPGCore_CopyStatsOver(int npc_owner, int npc_target)
+{
+	fl_Extra_Damage[npc_target] = fl_Extra_Damage[npc_owner];
+	fl_Extra_Damage[npc_target] = fl_Extra_Damage[npc_owner];
+	fl_Extra_Speed[npc_target] = fl_Extra_Speed[npc_owner];
+	Endurance[npc_target] = Endurance[npc_owner];
+}
