@@ -329,12 +329,18 @@ enum struct StageEnum
 	float GetDropChance(int level, int luck, int tier, char name[48], float chance = 1.0, int required = 0)
 	{
 		if(!name[0] || required > tier || level < this.Level)
-			return 0.0;
+		{
+			if(level != 0)
+				return 0.0;
+		}
 		
 		if(StrEqual(name, ITEM_XP, false))
 		{
 			if(level > this.MaxLevel || !this.XP)
-				return 0.0;
+			{
+				if(level != 0)
+					return 0.0;
+			}
 			
 			Format(name, sizeof(name), "%d XP", this.XP * (10 + tier) / 10);
 			return 1.0;
@@ -360,7 +366,9 @@ enum struct StageEnum
 			for(int i; i < amount; i++)
 			{
 				if(Level[clients[i]] >= this.Level)
+				{
 					TextStore_AddItemCount(clients[i], name, 1);
+				}
 			}
 		}
 	}
