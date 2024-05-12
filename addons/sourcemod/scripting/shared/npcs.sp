@@ -989,9 +989,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			//Decide Damage falloff ourselves.
 #endif
 
-#if defined ZR || defined NOG
+#if defined ZR || defined NOG || defined RPG
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
+#if defined ZR || defined NOG
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+#endif
 #endif
 
 #if defined ZR
@@ -1653,14 +1655,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
 		armor_added = true;
 	}
-#if defined ZR
-	else if(Elemental_HurtHud(victim, Debuff_Adder))
-	{
-		armor_added = true;
-	}
-#endif
 	else
 	{
+#if defined ZR
+		if(Elemental_HurtHud(victim, Debuff_Adder))
+		{
+			armor_added = true;
+		}
+#endif
 		float percentage;
 		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
 		{
@@ -1706,52 +1708,52 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 			armor_added = true;
 		}
-	}
-	
-	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
-	{
-		float percentage = npc.m_flRangedArmor * 100.0;
-		percentage *= fl_Extra_RangedArmor[victim];
-		percentage *= fl_TotalArmor[victim];
-		if(f_MultiDamageTaken[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken[victim];
-		}
-		if(f_MultiDamageTaken_Flat[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken_Flat[victim];
-		}
-		int testvalue = 1;
-		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
-
-#if defined ZR
-		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-		{
-			percentage *= 0.85;
-		}
 		
-		if(!NpcStats_IsEnemySilenced(victim))
+		if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
 		{
-			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+			percentage = npc.m_flRangedArmor * 100.0;
+			percentage *= fl_Extra_RangedArmor[victim];
+			percentage *= fl_TotalArmor[victim];
+			if(f_MultiDamageTaken[victim] != 1.0)
 			{
-				percentage *= Medival_Difficulty_Level;
+				percentage *= f_MultiDamageTaken[victim];
 			}
-		}
+			if(f_MultiDamageTaken_Flat[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken_Flat[victim];
+			}
+			int testvalue = 1;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
-		if(VausMagicaShieldLogicEnabled(victim))
-			percentage *= 0.25;
+	#if defined ZR
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
+			{
+				percentage *= 0.85;
+			}
+			
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+				{
+					percentage *= Medival_Difficulty_Level;
+				}
+			}
 
-#endif
+			if(VausMagicaShieldLogicEnabled(victim))
+				percentage *= 0.25;
 
-		if(percentage < 10.0)
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+	#endif
+
+			if(percentage < 10.0)
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+			}
+			else
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+			}
+			armor_added = true;
 		}
-		else
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
-		}
-		armor_added = true;
 	}
 
 	if(armor_added)

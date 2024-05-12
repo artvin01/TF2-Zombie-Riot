@@ -118,6 +118,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_brick.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
+#include "rpg_fortress/custom/weapon_passanger.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -241,6 +242,7 @@ void RPG_MapStart()
 	AirCutter_Map_Precache();
 	QuickReflex_MapStart();
 	Wand_Short_Teleport_Map_Precache();
+	Passanger_Wand_MapStart();
 
 	/*
 	HealingPotion_Map_Start();
