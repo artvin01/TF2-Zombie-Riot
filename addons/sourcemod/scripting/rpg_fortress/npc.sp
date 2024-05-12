@@ -50,10 +50,10 @@ void NPC_ConfigSetup()
 	EnslavedMiner_OnMapStart_NPC();
 	ChaosAfflictedMiner_OnMapStart_NPC();
 	SlaveMaster_OnMapStart_NPC();
-
-/*
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
+
+/*
 	PoisonZombie_OnMapStart_NPC();
 	ExplosiveHeadcrabZombie_OnMapStart_NPC();
 	ZombiefiedCombineSwordsman_OnMapStart_NPC();
@@ -515,9 +515,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_slave_master.sp"
 #include "rpg_fortress/npc/normal/npc_chaos_afflicted_miner.sp"
 
-/*
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
+/*
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"

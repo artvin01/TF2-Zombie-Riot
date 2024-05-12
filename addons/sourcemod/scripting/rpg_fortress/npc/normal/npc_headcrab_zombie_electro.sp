@@ -67,6 +67,16 @@ public void HeadcrabZombieElectro_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));	i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 
 	PrecacheModel("models/zombie/classic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Electro Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab_zombie_electro");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return HeadcrabZombieElectro(client, vecPos, vecAng, ally);
 }
 
 methodmap HeadcrabZombieElectro < CClotBody
@@ -132,12 +142,14 @@ methodmap HeadcrabZombieElectro < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
 
+		func_NPCDeath[npc.index] = HeadcrabZombieElectro_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = HeadcrabZombieElectro_OnTakeDamage;
+		func_NPCThink[npc.index] = HeadcrabZombieElectro_ClotThink;
+
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeadcrabZombieElectro_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, HeadcrabZombieElectro_ClotThink);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
@@ -187,7 +199,7 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 140.0, gameTime);
+	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 200.0, gameTime);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -205,7 +217,7 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 30.0;
+					float damage = 8500.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -231,27 +243,33 @@ public void HeadcrabZombieElectro_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3];
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 
 				npc.PlayRangedSound();
-				npc.FireArrow(vecTarget, 45.0, 800.0);
+				npc.FireArrow(vecTarget, 10000.0, 800.0);
 			}
 		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
