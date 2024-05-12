@@ -244,6 +244,8 @@ void RPG_MapStart()
 	Wand_Short_Teleport_Map_Precache();
 	Passanger_Wand_MapStart();
 
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
+
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
@@ -866,4 +868,27 @@ void RPGCore_CopyStatsOver(int npc_owner, int npc_target)
 	fl_Extra_Damage[npc_target] = fl_Extra_Damage[npc_owner];
 	fl_Extra_Speed[npc_target] = fl_Extra_Speed[npc_owner];
 	Endurance[npc_target] = Endurance[npc_owner];
+}
+
+
+bool RPGCore_ClientCanTransform(int client)
+{
+	if(f_TransformationDelay[client] > GetGameTime())
+		return false;
+
+	static Race race;
+	static Form form;
+	if(Races_GetRaceByIndex(RaceIndex[client], race))
+	{
+		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
+		{
+			race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+		}
+		else
+		{
+			return false;
+			form.Default();
+		}	
+	}
+	return true;
 }

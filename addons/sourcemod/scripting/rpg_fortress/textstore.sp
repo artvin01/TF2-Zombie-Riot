@@ -1968,10 +1968,7 @@ static void ShowMenu(int client, int page = 0)
 			}
 
 			//menu.AddItem("-3", "Main Menu", ITEMDRAW_SPACER);
-			bool CanTransform = true;
-			if(f_TransformationDelay[client] > GetGameTime())
-				CanTransform = false;
-
+			bool CanTransform = RPGCore_ClientCanTransform(client);
 			static Race race;
 			static Form form;
 			if(Races_GetRaceByIndex(RaceIndex[client], race))
@@ -1982,12 +1979,11 @@ static void ShowMenu(int client, int page = 0)
 				}
 				else
 				{
-					CanTransform = false;
 					form.Default();
 				}	
 			}
 			
-			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f]\n ", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
+			Format(form.Name, sizeof(form.Name), "%s [M%.1f/%.1f] (E)\n ", form.Name, Stats_GetFormMastery(client, form.Name), form.Mastery);
 			menu.AddItem("-1", form.Name, CanTransform ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 			menu.AddItem("-2", "Transform Settings");
 			menu.AddItem("-4", "View Backpack");
@@ -2377,7 +2373,7 @@ void ReApplyTransformation(int client)
 	}
 	UpdateLevelAbovePlayerText(client);
 }
-static void TransformButton(int client)
+void TransformButton(int client)
 {
 	if(f_TransformationDelay[client] > GetGameTime())
 	{
@@ -2409,6 +2405,7 @@ static void TransformButton(int client)
 	UpdateLevelAbovePlayerText(client);
 }
 
+
 void De_TransformClient(int client)
 {
 	if(i_TransformationLevel[client] <= 0)
@@ -2429,6 +2426,8 @@ void De_TransformClient(int client)
 			Call_Finish();
 		}
 		Store_ApplyAttribs(client);
+		
+		EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_AUTO, 80, _, 1.0);	
 	}
 	UpdateLevelAbovePlayerText(client);
 }

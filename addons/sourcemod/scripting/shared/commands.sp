@@ -2,9 +2,11 @@
 #pragma newdecls required
 
 #if defined ZR
-float f_MedicCallIngore[MAXTF2PLAYERS];
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
+#endif
+#if defined RPG || defined ZR
+float f_MedicCallIngore[MAXTF2PLAYERS];
 #endif
 
 void Commands_PluginStart()
@@ -19,7 +21,7 @@ void Commands_PluginStart()
 	AddCommandListener(OnSayCommand, "say");
 	AddCommandListener(OnSayCommand, "say_team");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	AddCommandListener(Command_Voicemenu, "voicemenu");
 #endif
 
@@ -107,6 +109,13 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	{
 		TextStore_Inspect(client);
 	}
+	else if(StrEqual(buffer, "+helpme_server", false))
+	{
+		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
+		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		RPGCommands_TriggerMedicCall(client);
+		return Plugin_Handled;
+	}
 #endif
 	return Plugin_Continue;
 }
@@ -180,6 +189,15 @@ public Action OnJoinClass(int client, const char[] command, int args)
 #endif
 
 #if defined RPG
+
+bool RPGCommands_TriggerMedicCall(int client)
+{
+	bool CanTransform = RPGCore_ClientCanTransform(client);
+	if(CanTransform)
+		TransformButton(client);
+	
+	return CanTransform;
+}
 public Action OnJoinClass(int client, const char[] command, int args)
 {
 	if(client && GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"))
@@ -273,7 +291,7 @@ public Action OnSayCommand(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public Action Command_Voicemenu(int client, const char[] command, int args)
 {
 	if(client && args == 2 && IsPlayerAlive(client))
@@ -285,16 +303,20 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
+#if defined ZR
 				if(TeutonType[client] != TEUTON_NONE)
 					return Plugin_Handled;
+#endif
 
 				if(f_MedicCallIngore[client] < GetGameTime())
 				{
-					bool has_been_done = BuildingCustomCommand(client);
-					if(has_been_done)
-					{
-						return Plugin_Handled;
-					}
+#if defined RPG
+					RPGCommands_TriggerMedicCall(client);
+#endif
+#if defined ZR
+					BuildingCustomCommand(client);
+#endif
+					return Plugin_Handled;
 				}
 			}
 		}

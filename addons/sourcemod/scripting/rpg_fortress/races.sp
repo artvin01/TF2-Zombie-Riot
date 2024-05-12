@@ -140,7 +140,7 @@ enum struct Form
 	}
 	void Default()
 	{
-		strcopy(this.Name, sizeof(this.Name), "Base");
+		strcopy(this.Name, sizeof(this.Name), "Energy");
 
 		this.Level = 0;
 		this.Upgrade = 0;

@@ -454,9 +454,13 @@ static void ReShowSettingsHud(int client)
 	SetGlobalTransTarget(client);
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Settings Page");
-
+#if defined ZR
 	FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
 	menu2.AddItem("-2", buffer);
+#else
+	FormatEx(buffer, sizeof(buffer), "%s", "Stamina Hud Setting");
+	menu2.AddItem("-2", buffer);
+#endif
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
 	menu2.AddItem("-8", buffer);
@@ -529,8 +533,11 @@ public void ReShowArmorHud(int client)
 	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
+#if defined ZR
 	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
-
+#else
+	menu2.SetTitle("%s\nX:%.3f\nY:%.3f", "Stamina Hud Offset",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
+#endif
 	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
 	menu2.AddItem("-3", buffer);
 
