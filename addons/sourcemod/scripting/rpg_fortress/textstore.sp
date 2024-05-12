@@ -657,7 +657,7 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 	else if(StrEqual(name, ITEM_XP, false))
 	{
 		int xp = amount;
-		Stats_GiveXP(client, xp, quest);
+		xp = Stats_GiveXP(client, xp, quest);
 		if(xp > 0 && !silent)
 			SPrintToChat(client, "You gained %d XP", xp);
 	}

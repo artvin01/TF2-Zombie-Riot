@@ -876,6 +876,12 @@ bool RPGCore_ClientCanTransform(int client)
 	if(f_TransformationDelay[client] > GetGameTime())
 		return false;
 
+	if(!IsValidClient(client))
+		return false;
+
+	if(!IsPlayerAlive(client))
+		return false;
+
 	static Race race;
 	static Form form;
 	if(Races_GetRaceByIndex(RaceIndex[client], race))
