@@ -1516,7 +1516,7 @@ public Action Dungeon_Timer(Handle timer)
 								float PlayerCountScaling = float(dungeon.PlayerCount);
 
 
-								PlayerCountScaling *= 0.45;
+								PlayerCountScaling *= 0.65;
 								if(PlayerCountScaling < 0.75)
 								{
 									PlayerCountScaling = 0.75;
@@ -1524,17 +1524,17 @@ public Action Dungeon_Timer(Handle timer)
 								
 								if(dungeon.PlayerCount == 1)
 								{
-									PlayerCountScaling = 0.65;
+									PlayerCountScaling = 0.75;
 								}
 								if(dungeon.PlayerCount == 2)
 								{
-									PlayerCountScaling = 0.85;
+									PlayerCountScaling = 1.0;
 								}
 
 								if(wave.Health)
 								{
 									// +20% each player
-									wave.Health = RoundToCeil(float(wave.Health) * PlayerCountScaling * 0.75);
+									wave.Health = RoundToCeil(float(wave.Health) * PlayerCountScaling);
 									SetEntProp(entity, Prop_Data, "m_iMaxHealth", wave.Health);
 									SetEntProp(entity, Prop_Data, "m_iHealth", wave.Health);
 								}

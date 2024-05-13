@@ -220,7 +220,7 @@ void Spawns_EnableZone(int client, const char[] name)
 
 bool RPGSpawns_LevelPrioLogic(int spawnlevel, int playerlevel)
 {
-	if(spawnlevel > ((playerlevel * 3) / 4) && spawnlevel < ((playerlevel / 3) * 4))
+	if(spawnlevel > ((playerlevel * 3) / 5) && spawnlevel < ((playerlevel / 3) * 4))
 	{
 		return true;
 	}
