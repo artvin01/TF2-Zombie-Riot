@@ -2041,3 +2041,18 @@ public float Ammo_HealingSpell(int client, int index, char name[48])
 	}
 	return FAR_FUTURE;
 }
+
+
+public void Ammo_TagDeploy(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		kv.GetString("tagsforplayer", c_TagName[client],sizeof(c_TagName[]), "Newbie");
+		kv.GetColor4("tagsforplayercolor", i_TagColor[client]);
+		if(i_TagColor[client][3] == 0)
+		{
+			i_TagColor[client] =	{255,255,255,255};
+		}
+	}
+}

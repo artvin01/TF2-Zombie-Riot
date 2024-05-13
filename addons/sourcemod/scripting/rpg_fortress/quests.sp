@@ -364,7 +364,7 @@ bool Quests_StartQuest(int client, const char[] name)
 						do
 						{
 							QuestKv.GetSectionName(id, sizeof(id));
-							TextStore_AddItemCount(client, id, QuestKv.GetNum(NULL_STRING, 1), true);
+							TextStore_AddItemCount(client, id, QuestKv.GetNum(NULL_STRING, 1), _,true);
 						}
 						while(QuestKv.GotoNextKey(false));
 					}
@@ -444,7 +444,7 @@ bool Quests_TurnIn(int client, const char[] name)
 						do
 						{
 							QuestKv.GetSectionName(buffer, sizeof(buffer));
-							TextStore_AddItemCount(client, buffer, -QuestKv.GetNum(NULL_STRING, 1), true);
+							TextStore_AddItemCount(client, buffer, -QuestKv.GetNum(NULL_STRING, 1), _,true);
 						}
 						while(QuestKv.GotoNextKey(false));
 
@@ -485,7 +485,7 @@ bool Quests_TurnIn(int client, const char[] name)
 						do
 						{
 							QuestKv.GetSectionName(buffer, sizeof(buffer));
-							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1));
+							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1), _,true);
 						}
 						while(QuestKv.GotoNextKey(false));
 					}

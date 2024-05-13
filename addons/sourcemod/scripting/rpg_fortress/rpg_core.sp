@@ -753,6 +753,14 @@ void RPGCore_AddClientToHurtList(int entity, int client)
 		f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
 }
 
+void RPGCore_ResetHurtList(int entity)
+{
+	for(int client = 0; client <= MaxClients; client++)
+	{
+		f_ClientSinceLastHitNpc[entity][client] = 0;
+	}
+}
+
 /*
 	int client;
 
