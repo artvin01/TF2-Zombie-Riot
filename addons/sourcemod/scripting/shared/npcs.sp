@@ -2502,8 +2502,10 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 	{
 		i_HasBeenHeadShotted[victim] = false;
 	}
+#if !defined RPG
 	if(b_npcspawnprotection[victim])
 		damage *= 0.25;
+#endif
 		
 #if defined ZR
 	if(GetTeam(victim) == TFTeam_Red)
