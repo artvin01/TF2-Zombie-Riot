@@ -1419,10 +1419,12 @@ void TextStore_DropNamedItem(int client, const char[] name, float pos[3], int am
 	}
 }
 
-static void DropItem(int client, int index, float pos[3], int amount)
+static void DropItem(int client, int index, float pos[3], int totalAmount)
 {
 	float ang[3];
 	static char buffer[PLATFORM_MAX_PATH];
+
+	int amount = totalAmount;
 
 	int entity = MaxClients + 1;
 	while((entity = FindEntityByClassname(entity, "prop_physics_multiplayer")) != -1)
