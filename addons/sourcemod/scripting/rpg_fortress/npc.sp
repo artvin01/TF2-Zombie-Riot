@@ -52,10 +52,10 @@ void NPC_ConfigSetup()
 	SlaveMaster_OnMapStart_NPC();
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
+	ExplosiveHeadcrabZombie_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
 
 /*
-	PoisonZombie_OnMapStart_NPC();
-	ExplosiveHeadcrabZombie_OnMapStart_NPC();
 	ZombiefiedCombineSwordsman_OnMapStart_NPC();
 	BobTheTargetDummy_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
@@ -517,9 +517,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
-/*
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
+/*
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"
 #include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"

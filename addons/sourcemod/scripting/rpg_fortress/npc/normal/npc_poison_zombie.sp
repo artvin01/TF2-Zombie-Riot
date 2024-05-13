@@ -48,6 +48,16 @@ public void PoisonZombie_OnMapStart_NPC()
 
 	PrecacheModel("models/zombie/poison.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Poison Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_poison_zombie");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return PoisonZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap PoisonZombie < CClotBody
@@ -91,7 +101,6 @@ methodmap PoisonZombie < CClotBody
 	{
 		PoisonZombie npc = view_as<PoisonZombie>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = POISON_ZOMBIE;
 		KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -107,13 +116,13 @@ methodmap PoisonZombie < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.m_flNextThinkTime = GetGameTime() + GetRandomFloat(0.0, 1.0);
+		func_NPCDeath[npc.index] = PoisonZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = PoisonZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = PoisonZombie_ClotThink;
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, PoisonZombie_ClotThink);
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -170,14 +179,16 @@ public void PoisonZombie_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100.0;
+					float damage = 15000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -203,27 +214,32 @@ public void PoisonZombie_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3];
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
-			//	npc.PlayRangedSound();
-				npc.FireGrenade(vecTarget, 800.0, 100.0, "models/weapons/w_grenade.mdl");
+				npc.FireGrenade(vecTarget, 800.0, 20000.0, "models/weapons/w_grenade.mdl");
 			}
 		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -344,8 +360,6 @@ public void PoisonZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, PoisonZombie_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, PoisonZombie_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
