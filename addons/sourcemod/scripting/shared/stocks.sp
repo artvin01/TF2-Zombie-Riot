@@ -2607,6 +2607,11 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 //	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
 	else if(!b_NpcHasDied[other_entity]) //way less cheap, lets see how that goes.
 	{
+#if defined RPG
+	int owner = GetEntPropEnt(owner_projectile, Prop_Send, "m_hOwnerEntity");
+	if(OnTakeDamageRpgPartyLogic(other_entity, owner, GetGameTime()))
+		return -1;
+#endif
 		return other_entity;
 	}
 	return 0;

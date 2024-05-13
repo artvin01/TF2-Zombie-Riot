@@ -694,7 +694,7 @@ void Mining_EditorMenu(int client)
 		FormatEx(buffer2, sizeof(buffer2), "Drop 1: Chance %f", kv.GetFloat("s1_chance"));
 		menu.AddItem("s1_chance", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Drop 1: Tier %d", kv.GetFloat("s1_tier"));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: Tier %d", kv.GetNum("s1_tier"));
 		menu.AddItem("s1_tier", buffer2);
 
 		kv.GetString("s2_item", buffer1, sizeof(buffer1));
@@ -705,7 +705,7 @@ void Mining_EditorMenu(int client)
 		FormatEx(buffer2, sizeof(buffer2), "Drop 2: Chance %f", kv.GetFloat("s2_chance"));
 		menu.AddItem("s2_chance", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Drop 2: Tier %d", kv.GetFloat("s2_tier"));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: Tier %d", kv.GetNum("s2_tier"));
 		menu.AddItem("s2_tier", buffer2);
 
 		kv.GetString("s3_item", buffer1, sizeof(buffer1));
@@ -716,7 +716,7 @@ void Mining_EditorMenu(int client)
 		FormatEx(buffer2, sizeof(buffer2), "Drop 3: Chance %f", kv.GetFloat("s3_chance"));
 		menu.AddItem("s3_chance", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Drop 3: Tier %d", kv.GetFloat("s3_tier"));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: Tier %d", kv.GetNum("s3_tier"));
 		menu.AddItem("s3_tier", buffer2);
 
 		menu.AddItem("copy", "Copy From");

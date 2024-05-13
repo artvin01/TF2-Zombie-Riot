@@ -817,7 +817,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
 	}
 	if(b_npcspawnprotection[entity] && i_NpcIsUnderSpawnProtectionInfluence[entity] > 0)
 	{
-		if(RPGSpawns_LevelPrioLogic(Level[entity], Level[attacker]))
+		if(!RPGSpawns_LevelPrioLogic(Level[entity], Level[attacker]))
 		{
 			return false;
 		}

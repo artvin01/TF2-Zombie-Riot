@@ -80,10 +80,12 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 			return false;
 		}
 	}
+	if(OnTakeDamageRpgPartyLogic(entity, iExclude, GetGameTime()))
+		return false;
 #endif
 
 	if(!b_NpcHasDied[iExclude])
-	{
+	{	
 		//1 means we treat it as a bullet trace
 		return NpcCollisionCheck(iExclude, entity, 1);
 	}
