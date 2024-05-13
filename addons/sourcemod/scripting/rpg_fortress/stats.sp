@@ -73,10 +73,11 @@ int RPGStats_MaxXPAllowed(int client)
 {
 	return (BaseMaxExperience + (BaseMaxExperiencePerLevel * Level[client]));
 }
-int Stats_GiveXP(int client, int &xp, bool quest = false)
+
+void Stats_GiveXP(int client, int xp, bool quest = false)
 {
 	int XPToGive;
-	if(xp > 0)
+	if(xp > 0 && !quest)
 	{
 		int maxXP = RPGStats_MaxXPAllowed(client);
 
@@ -115,7 +116,6 @@ int Stats_GiveXP(int client, int &xp, bool quest = false)
 	{
 		SaveIn[client] -= XP[client];
 	}
-	return XPToGive;
 }
 
 float AgilityMulti(int amount)

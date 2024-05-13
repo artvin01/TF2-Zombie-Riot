@@ -485,7 +485,7 @@ bool Quests_TurnIn(int client, const char[] name)
 						do
 						{
 							QuestKv.GetSectionName(buffer, sizeof(buffer));
-							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1), true);
+							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1));
 						}
 						while(QuestKv.GotoNextKey(false));
 					}
