@@ -326,6 +326,8 @@ void RPG_PutInServer(int client)
 	int userid = GetClientUserId(client);
 	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);
 	QueryClientConVar(client, "cl_downloadfilter", OnQueryFinished, userid);
+
+	mp_disable_respawn_times.ReplicateToClient(client, "1");
 }
 
 public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue, int userid)
@@ -342,6 +344,8 @@ public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult re
 			if(StrContains("all", cvarValue) == -1)
 				DisabledDownloads[client] = true;
 		}
+
+		mp_disable_respawn_times.ReplicateToClient(client, "1");
 	}
 }
 

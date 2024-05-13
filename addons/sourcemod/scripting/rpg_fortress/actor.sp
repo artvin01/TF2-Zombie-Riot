@@ -657,6 +657,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 			ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
+			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
 			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
 		}
 		else
