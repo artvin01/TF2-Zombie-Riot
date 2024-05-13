@@ -54,11 +54,11 @@ void NPC_ConfigSetup()
 	HeadcrabZombieElectro_OnMapStart_NPC();
 	ExplosiveHeadcrabZombie_OnMapStart_NPC();
 	PoisonZombie_OnMapStart_NPC();
+	ZombiefiedCombineSwordsman_OnMapStart_NPC();
+	FastZombie_OnMapStart_NPC();
 
 /*
-	ZombiefiedCombineSwordsman_OnMapStart_NPC();
 	BobTheTargetDummy_OnMapStart_NPC();
-	FastZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
 	ArkSlug_MapStart();
@@ -519,10 +519,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
-/*
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"
-#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
+/*
+#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"

@@ -132,8 +132,6 @@ methodmap FastZombie < CClotBody
 	{
 		FastZombie npc = view_as<FastZombie>(CClotBody(vecPos, vecAng, "models/zombie/fast.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = FAST_ZOMBIE;
-		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
@@ -147,13 +145,14 @@ methodmap FastZombie < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		func_NPCDeath[npc.index] = FastZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FastZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = FastZombie_ClotThink;
+
 
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, FastZombie_ClotThink);
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -221,7 +220,8 @@ public void FastZombie_ClotThink(int iNPC)
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; 
+				PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 				npc.m_flDoingAnimation = gameTime + 3.5;
 				npc.m_bisWalking = true;
 				npc.RemoveGesture("ACT_JUMP");
@@ -241,13 +241,18 @@ public void FastZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -321,7 +326,9 @@ public void FastZombie_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MELEE_ATTACK1");
 
 						Handle swingTrace;
-						npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+						float WorldSpaceCenterVec[3]; 
+						WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+						npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
@@ -402,9 +409,6 @@ public void FastZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FastZombie_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, FastZombie_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
