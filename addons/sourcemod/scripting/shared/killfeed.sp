@@ -243,7 +243,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		botNum++;
 
-		priority = feed.victim_team != 3;
+		priority = feed.victim_team == TFTeam_Red;
 
 #if defined ZR
 		if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
