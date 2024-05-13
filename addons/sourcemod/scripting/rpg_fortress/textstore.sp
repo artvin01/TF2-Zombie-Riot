@@ -1432,22 +1432,31 @@ static void DropItem(int client, int index, float pos[3], int amount)
 			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", ang);
 			if(GetVectorDistance(pos, ang, true) < 10000.0) // 100.0
 			{
-				if(ItemCount[entity] < 50)
+				if(ItemIndex[entity] == -1)
 				{
-					if(ItemIndex[entity] == -1)
+					ItemCount[entity] += amount;
+					UpdateItemText(entity, index);
+					return;
+				}
+				
+				static const int MaxAmount = 50;
+
+				if(ItemCount[entity] < MaxAmount)
+				{
+					int count = ItemCount[entity] + amount;
+					if(count > MaxAmount)
 					{
-						return;
+						amount -= MaxAmount - ItemCount[entity];
+						ItemCount[entity] = MaxAmount;
+						UpdateItemText(entity, index);
 					}
 					else
 					{
-						ItemCount[entity] += amount;
+						ItemCount[entity] = count;
 						UpdateItemText(entity, index);
 						return;
 					}
 				}
-
-				amount = ItemCount[entity] - 49;
-				ItemCount[entity] = 50;
 			}
 		}
 	}
