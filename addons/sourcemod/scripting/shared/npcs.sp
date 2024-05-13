@@ -988,7 +988,26 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			//Decide Damage falloff ourselves.
 #endif
-
+#if defined RPG
+			if(OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+			{
+				Damageaftercalc = 0.0;
+				return Plugin_Handled;	
+			}
+			else
+			{
+				if(inflictor > 0 && inflictor <= MaxClients)
+				{
+					f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+					RPGCore_AddClientToHurtList(victim, inflictor);
+				}
+				else if(attacker > 0 && attacker <= MaxClients)
+				{
+					f_InBattleDelay[attacker] = GetGameTime() + 3.0;
+					RPGCore_AddClientToHurtList(victim, attacker);
+				}
+			}
+#endif
 #if defined ZR || defined NOG || defined RPG
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 #if defined ZR || defined NOG
@@ -1238,18 +1257,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	
-#if defined RPG 
-	if(inflictor > 0 && inflictor <= MaxClients)
-	{
-		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
-		RPGCore_AddClientToHurtList(victim, inflictor);
-	}
-	else if(attacker > 0 && attacker <= MaxClients)
-	{
-		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
-		RPGCore_AddClientToHurtList(victim, attacker);
-	}
-#endif
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1434,7 +1441,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if((!b_npcspawnprotection[victim]/* || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)*/))
+		if(!b_npcspawnprotection[victim] || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
 		if(!b_npcspawnprotection[victim])
 #endif
@@ -2524,17 +2531,39 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 }
 
 #if defined RPG
-stock bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 {
-	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 100000)
+	if(attacker > MaxClients && victim <= MaxClients)
+	{
+		int PrevAttack = attacker;
+		int PrevVictim = victim;
+		attacker = PrevVictim;
+		victim = PrevAttack;
+		//an npc is attacking a player, invert.
+	}
+
+	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 1000000)
 	{
 			
+	}
+	else
+	{
+		if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
+		{
+			i_NpcFightOwner[victim] = attacker;
+			f_NpcFightTime[victim] = GameTime + 10.0;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	//We check if the npc is already hurt, dead, or other stuff like that.
 
 	//TODO:
 	//Make sure ownership goes over other party members if you die
 	//Realisticly speaking this should never be an issue.
+	/*
 	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] < GameTime || !IsClientInGame(i_NpcFightOwner[victim]) || !IsPlayerAlive(i_NpcFightOwner[victim]))
 	{
 		if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 8))
@@ -2555,6 +2584,7 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, 
 	{
 		f_NpcFightTime[victim] = GameTime + 10.0;
 	}
+	*/
 	return false;
 }
 

@@ -112,6 +112,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return false;
 	}
+#if defined ZR
+	if(OnTakeDamageRpgPartyLogic(bot_entidx, otherindex, GetGameTime()))
+		return false;
+#endif
 	//They have collided with something, try to change the target.
 	if(extrarules == 0)
 		NpcStartTouch(bot_entidx,otherindex);

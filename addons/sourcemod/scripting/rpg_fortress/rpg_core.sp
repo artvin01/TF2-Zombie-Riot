@@ -754,17 +754,77 @@ bool RPGCore_PlayerCanPVP(int attacker, int victim)
 void RPGCore_AddClientToHurtList(int entity, int client)
 {
 	if(client <= MaxClients)
-		f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
+		f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 10.0;
 }
 
 void RPGCore_ResetHurtList(int entity)
 {
 	for(int client = 0; client <= MaxClients; client++)
 	{
-		f_ClientSinceLastHitNpc[entity][client] = 0;
+		f_ClientSinceLastHitNpc[entity][client] = 0.0;
 	}
 }
 
+bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
+{
+	//if a player is being attacked, always allow.
+	if(entity <= MaxClients)
+		return true;
+
+	//if the attacker is an entity, always allow.
+	if(attacker > MaxClients)
+		return true;
+	
+	//do not include party leader here.
+
+
+	bool EnemyWasAttackedBefore;
+	int PartyLeader = Party_GetPartyLeader(attacker);
+	if(PartyLeader)
+	{
+		//They are in a party, anyone in another party has attacked the enemy first.
+		for(int client; client <= MaxClients; client++)
+		{
+			if(attacker != client && f_ClientSinceLastHitNpc[entity][client] > GetGameTime())
+			{
+				if(Party_GetPartyLeader(client) != PartyLeader)
+				{
+					EnemyWasAttackedBefore = true;
+					break;
+				}
+			}
+		}
+		if(EnemyWasAttackedBefore)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		//they are not in a party, anyone else attacked the enemy first.
+		for(int client; client <= MaxClients; client++)
+		{
+			if(attacker != client && f_ClientSinceLastHitNpc[entity][client] > GetGameTime())
+			{
+				EnemyWasAttackedBefore = true;
+				break;
+			}
+		}
+		if(EnemyWasAttackedBefore)
+		{
+			return false;
+		}
+	}
+	if(b_npcspawnprotection[entity] && i_NpcIsUnderSpawnProtectionInfluence[entity] > 0)
+	{
+		if(RPGSpawns_LevelPrioLogic(Level[entity], Level[attacker]))
+		{
+			return false;
+		}
+	}
+	//As of now, all checks passed.
+	return true;
+}
 /*
 	int client;
 
@@ -773,6 +833,8 @@ void RPGCore_ResetHurtList(int entity)
 
 	}
 */
+
+
 bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 {
 	// Start by adding 1; limit; keep adding 1
