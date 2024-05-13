@@ -1644,6 +1644,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
 #endif
 			return Plugin_Handled;	
+
+#if defined RPG
+		LastHitRef[victim] = EntIndexToEntRef(attacker);
+#endif
 	}
 	else if (attacker != 0)
 	{

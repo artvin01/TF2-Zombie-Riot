@@ -243,9 +243,9 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		botNum++;
 
-		priority = feed.victim_team == TFTeam_Red;
-
 #if defined ZR
+		priority = feed.victim_team != TFTeam_Blue;
+		
 		if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			priority = true;
 
@@ -532,6 +532,21 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 		{
 			event.SetBool("silent_kill", false);
 
+#if defined RPG
+			bool hasVictim = IsValidClient(victim) && !IsFakeClient(victim);
+			bool hasAttacker = IsValidClient(attacker) && !IsFakeClient(attacker);
+			bool hasAssister = IsValidClient(assister) && !IsFakeClient(assister);
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(target == victim || target == attacker || target == assister ||
+				  (hasVictim && Party_IsClientMember(target, victim)) ||
+				  (hasAttacker && Party_IsClientMember(target, attacker)) ||
+				  (hasAssister && Party_IsClientMember(target, assister)))
+				{
+					event.FireToClient(target);
+				}
+			}
+#else
 			if(victim)
 				event.FireToClient(victim);
 			
@@ -540,6 +555,7 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 			
 			if(assister)
 				event.FireToClient(assister);
+#endif
 		}
 		else
 		{
