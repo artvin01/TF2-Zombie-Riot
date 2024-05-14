@@ -385,7 +385,7 @@ void RPG_ClientDisconnect(int client)
 	Saves_ClientDisconnect(client);
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
-//	MudrockShieldDisconnect(client);
+	MudrockShieldDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
 	f_TransformationDelay[client] = 0.0;
 	RequestFrame(CheckIfAloneOnServer);

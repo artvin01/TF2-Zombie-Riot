@@ -54,6 +54,34 @@ public void Weapon_ThrowBrick(int client, int weapon, bool crit, int slot)
 		target);			// float AnglesInitiate[3]);
 }
 
+
+public void Weapon_ThrowBrick_Admin(int client, int weapon, bool crit, int slot)
+{
+	float damage = 50.0;
+	damage *= Attributes_Get(weapon, 2, 1.0);
+	b_IsABow[weapon] = true;
+
+		
+	float fAng[3], fPos[3];
+	GetClientEyeAngles(client, fAng);
+	GetClientEyePosition(client, fPos);
+	EmitSoundToAll("weapons/slam/throw.wav", weapon, SNDCHAN_WEAPON, 80, _, 1.0);
+
+	float speed = 2000.0;
+	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, 0, weapon, "bullet_distortion_trail_tracer");
+	ApplyCustomModelToWandProjectile(projectile, "models/props_debris/concrete_cynderblock001.mdl", 0.8, "");
+	WandProjectile_ApplyFunctionToEntity(projectile, BrickTouchStart);
+
+	Initiate_HomingProjectile(projectile,
+	projectile,
+		180.0,			// float lockonAngleMax,
+		180.0,				//float homingaSec,
+		false,				// bool LockOnlyOnce,
+		true,				// bool changeAngles,
+		fAng,
+		0);			// float AnglesInitiate[3]);
+}
+
 public void BrickTouchStart(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);

@@ -267,7 +267,7 @@ public void SlaveMaster_ClotThink(int iNPC)
 
 						DmgCalc *= 0.5;
 
-						damage *= DmgCalc;
+						damage *= DmgCalc + 1.0;
 					}
 
 					npc.PlayMeleeHitSound();
