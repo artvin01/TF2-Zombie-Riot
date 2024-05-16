@@ -90,7 +90,7 @@ methodmap SeabornHeavy < CClotBody
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "fists");
+		//KillFeed_SetKillIcon(npc.index, "fists");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -181,7 +181,7 @@ public void SeabornHeavy_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 10);
+						Elemental_AddNervousDamage(target, npc.index, 10);
 					}
 				}
 

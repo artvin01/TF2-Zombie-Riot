@@ -78,7 +78,7 @@ methodmap SeaSwarmcaller < CSeaBody
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
-		KillFeed_SetKillIcon(npc.index, "saw_kill");
+		//KillFeed_SetKillIcon(npc.index, "saw_kill");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -197,7 +197,7 @@ public void SeaSwarmcaller_ClotThink(int iNPC)
 
 public void SeaSwarmcaller_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	SeaSlider_AddNeuralDamage(victim, attacker, view_as<SeaSwarmcaller>(attacker).m_bCarrier ? 3 : 2);
+	Elemental_AddNervousDamage(victim, attacker, view_as<SeaSwarmcaller>(attacker).m_bCarrier ? 3 : 2);
 	// 140 x 0.05 x 0.15
 	// 160 x 0.05 x 0.15
 	// 140 x 0.1 x 0.15

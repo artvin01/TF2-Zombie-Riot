@@ -102,7 +102,7 @@ methodmap SeaReefbreaker < CSeaBody
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
-		KillFeed_SetKillIcon(npc.index, "nessieclub");
+		//KillFeed_SetKillIcon(npc.index, "nessieclub");
 		
 		func_NPCDeath[npc.index] = SeaReefbreaker_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = SeaReefbreaker_OnTakeDamage;
@@ -300,7 +300,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							npc.PlayMeleeHitSound();
 
 							if(npc.m_bCarrier)
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.2));
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.2));
 						}
 					}
 

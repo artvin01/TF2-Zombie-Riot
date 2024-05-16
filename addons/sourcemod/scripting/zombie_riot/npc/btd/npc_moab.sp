@@ -54,9 +54,6 @@ static int MoabHealth(bool fortified)
 
 void Moab_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/boab.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Massive Ornery Air Blimp");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_moab");
@@ -129,7 +126,7 @@ methodmap Moab < CClotBody
 		Moab npc = view_as<Moab>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/boab.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

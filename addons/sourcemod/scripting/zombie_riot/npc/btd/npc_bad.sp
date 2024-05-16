@@ -52,9 +52,6 @@ static int MoabHealth(bool fortified)
 
 void Bad_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bad.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Big Airship of Doom");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bad");
@@ -72,6 +69,10 @@ static void ClotPrecache()
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
 		PrecacheSoundCustom(SoundZomgPop[i]);
+	}
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
@@ -123,7 +124,7 @@ methodmap Bad < CClotBody
 		Bad npc = view_as<Bad>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bad.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 5;
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

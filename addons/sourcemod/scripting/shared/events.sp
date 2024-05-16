@@ -70,7 +70,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Blacksmith_RoundStart();
 #endif
 
-#if defined RTS
+#if defined RPG
+	Zones_RoundStart();
+#endif
+
+#if defined RPG || defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
 }
@@ -211,7 +215,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
+		if(b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -284,7 +288,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			
 			if(TeutonType[client] == TEUTON_WAITING)
 			{
-				damage *= 0.33;
+				damage *= 0.65;
 			}
 			
 	   		Attributes_Set(weapon_index, 2, damage);
@@ -377,12 +381,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		
 		SetAmmo(client, 1, 9999);
 		SetAmmo(client, 2, 9999);
-		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+		SetAmmo(client, Ammo_Metal, 9999);
 		SetAmmo(client, Ammo_Jar, 1);
 		for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
 		{
-			SetAmmo(client, i, CurrentAmmo[client][i]);
+			SetAmmo(client, i, 9999);
 		}
+		//In RPG Ammo is infinite and used in a different way.
 		UpdateLevelAbovePlayerText(client);
 
 		RequestFrame(UpdateHealthFrame, userid);
@@ -424,10 +429,10 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
-
+		/*
 		// Resets the hand/arm pos for melee weapons 
 		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
 		//come out from behind and it litterally looks like a dick
@@ -440,6 +445,9 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		index = npc.LookupPoseParameter("r_arm");
 		if(index >= 0)
 			npc.SetPoseParameter(index, 0.0);
+
+			THis now crashes in 64bit? perhaps?
+		*/
 	}
 }
 
@@ -449,12 +457,14 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-#if defined ZR
+#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 
 #if defined ZR
-	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+#elseif defined RPG
+	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
@@ -468,9 +478,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		DestroyDispenser(client);
 
-		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-		if(obj != INVALID_ENT_REFERENCE)
-			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
+//		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
+	//	if(obj != INVALID_ENT_REFERENCE)
+			//KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
 	}
 	else
 	{
@@ -502,7 +512,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UpdateLevelAbovePlayerText(client, true);
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif

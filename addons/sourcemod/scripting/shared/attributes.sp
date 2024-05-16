@@ -11,7 +11,11 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412:
+		case 4003, 4004, 4005://rpg specific
+		{
+			return true;
+		}
+		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
 		{
 			return true;
 		}
@@ -136,7 +140,7 @@ stock void Attributes_SetString(int entity, int attrib, const char[] value)
 	WeaponAttributes[entity].SetString(buffer, value);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 bool Attributes_Fire(int weapon)
 {
 	int clip = GetEntProp(weapon, Prop_Data, "m_iClip1");
@@ -493,4 +497,50 @@ stock float Attributes_FindOnPlayerZR(int client, int index, bool multi=false, f
 		return Attributes_GetOnWeapon(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), index, multi);
 	
 	return Attributes_GetOnPlayer(client, index, multi, IgnoreWeaponsEquipped);
+}
+
+/*
+
+#define MULTIDMG_NONE 		 ( 1<<0 )
+#define MULTIDMG_MAGIC_WAND  ( 1<<1 )
+#define MULTIDMG_BLEED 		 ( 1<<2 )
+#define MULTIDMG_BUILDER 	 ( 1<<3 )
+
+*/
+float WeaponDamageAttributeMultipliers(int weapon, int Flags = MULTIDMG_NONE, int client = 0)
+{
+	float DamageBonusLogic = 1.0;
+	if((Flags & MULTIDMG_BUILDER))
+	{
+		if(client > 0)
+		{
+			float attack_speed;		
+			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
+							
+			DamageBonusLogic = attack_speed * DamageBonusLogic * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			return DamageBonusLogic;	
+		}
+	}
+	DamageBonusLogic *= Attributes_Get(weapon, 1000, 1.0); //global dmg multi
+#if defined ZR
+	if(i_CustomWeaponEquipLogic[weapon] != WEAPON_TEUTON_DEAD)
+#endif
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 476, 1.0); //global dmg multi
+	}
+
+	if(!(Flags & MULTIDMG_BLEED))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 1, 1.0); //only base damage
+	}
+
+	if((Flags & MULTIDMG_MAGIC_WAND))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 410, 1.0); //wand damage multi
+	}
+	else if(!(Flags & MULTIDMG_BUILDER))
+	{
+		DamageBonusLogic *= Attributes_Get(weapon, 2, 1.0); //non wand dmg multi
+	}
+	return DamageBonusLogic;
 }

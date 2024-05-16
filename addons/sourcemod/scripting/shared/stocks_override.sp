@@ -312,7 +312,9 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 		{
 			if(entity <= MaxClients)
 			{
-				Custom_SetAbsVelocity(entity, angles);
+				float angles2[3];
+				angles2 = angles;
+				SnapEyeAngles(entity, angles2);
 			}
 			else
 			{
@@ -414,9 +416,7 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 }
 
 #define TF2_SetPlayerClass_ZR SetPlayerClass*/
-#if !defined UseDownloadTable
-#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
-#endif
+
 stock void PrecacheSoundList(const char[][] array, int length)
 {
     for(int i; i < length; i++)

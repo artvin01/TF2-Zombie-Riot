@@ -92,11 +92,11 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 		if(FirstSuperSale && index == 0)
 		{
 			FirstSuperSale = false;
-			Rogue_AddIngots(-artifact.ShopCost * 7 / 10);
+			Rogue_AddIngots(-artifact.ShopCost * 7 / 10, true);
 		}
 		else
 		{
-			Rogue_AddIngots(-artifact.ShopCost);
+			Rogue_AddIngots(-artifact.ShopCost, true);
 		}
 
 		StartShopVote();
@@ -606,4 +606,11 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
+}
+
+static void GrantAllPlayersCredits_Rogue(int cash)
+{
+	cash *= (Rogue_GetRound()+1);
+	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CurrentCash += cash;
 }

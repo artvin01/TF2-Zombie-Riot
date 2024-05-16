@@ -224,7 +224,7 @@ methodmap StalkerCombine < StalkerShared
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -491,14 +491,14 @@ public void StalkerCombine_ClotThink(int iNPC)
 							enemy.ExtraMeleeRes = 1.0;
 							enemy.ExtraRangedRes = 1.0;
 							enemy.ExtraSpeed = 1.0;
-							enemy.ExtraDamage = fl_ExtraDamage[npc.index];	
+							enemy.ExtraDamage = fl_Extra_Damage[npc.index];	
 							enemy.ExtraSize = 1.0;	
 							enemy.Team = GetTeam(npc.index);	
 							Waves_AddNextEnemy(enemy);
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
-							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+							//KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 							SmiteNpcToDeath(npc.index);
 							SmiteNpcToDeath(npc.m_iTarget);
 						}

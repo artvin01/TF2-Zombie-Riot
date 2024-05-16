@@ -313,7 +313,7 @@ void DesertAncientDemonSelfDefense(DesertAncientDemon npc, float gameTime, int t
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, ElementalDamage, true, true);
+					Elemental_AddChaosDamage(target, npc.index, ElementalDamage, true, true);
 					
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -462,7 +462,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int NpcSpawnDemon = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
-	if(IsValidEntity(NpcSpawnDemon))
+	if(IsValidEntity(NpcSpawnDemon) && !VIPBuilding_Active())
 	{
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)

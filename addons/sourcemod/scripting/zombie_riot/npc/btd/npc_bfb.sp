@@ -54,9 +54,6 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bfb.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brutal Floating Behemoth");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bfb");
@@ -71,6 +68,14 @@ void Bfb_MapStart()
 
 static void ClotPrecache()
 {
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
+	for(int i; i<sizeof(SoundMoabPop); i++)
+	{
+		PrecacheSoundCustom(SoundMoabPop[i]);
+	}
 	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
 }
 
@@ -120,7 +125,7 @@ methodmap BFB < CClotBody
 		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		func_NPCDeath[npc.index] = Bfb_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Bfb_OnTakeDamage;

@@ -72,7 +72,7 @@ void MechaSoldier_Barrager_OnMapStart_NPC()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mecha Soldier Barrager");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_soldier_barrager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_mecha_soldier_barrager");
 	data.Category = Type_Alt;
 	data.Func = ClotSummon;
 	strcopy(data.Icon, sizeof(data.Icon), "soldier"); 		//leaderboard_class_(insert the name)

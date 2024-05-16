@@ -89,7 +89,7 @@ methodmap SeaFounder < CSeaBody
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
-		KillFeed_SetKillIcon(npc.index, "fists");
+		//KillFeed_SetKillIcon(npc.index, "fists");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -209,7 +209,7 @@ public void SeaFounder_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
+						Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
@@ -620,7 +620,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				// 120 x 0.25 x 0.2
 
 				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
+					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
 					// 20 x 0.25 x 0.2
  
 /*
@@ -630,7 +630,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				// 120 x 0.25 x 0.2
 
 				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, 1);
+					Elemental_AddNervousDamage(client, 0, 1);
 					// 20 x 0.25 x 0.2
 				*/
 
@@ -681,7 +681,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 					// 120 x 0.25 x 0.2
 
-					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 		/*	
 					bool resist = Building_NeatherseaReduced(entity);
@@ -690,7 +690,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					// 120 x 0.25 x 0.2
 
 					if(!resist)
-						SeaSlider_AddNeuralDamage(entity, 0, 1);
+						Elemental_AddNervousDamage(entity, 0, 1);
 						// 20 x 0.25 x 0.2
 						*/
 
@@ -717,7 +717,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);
 					// 120 x 0.25 x 0.2
 
-					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 
 					NervousTouching[entity] = NervousTouching[0];

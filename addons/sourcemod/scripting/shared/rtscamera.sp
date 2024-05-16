@@ -5,6 +5,8 @@
 	https://github.com/geominorai/sm-rts-starter
 */
 
+#define RTS_CAMERA
+
 #define ZERO_VECTOR		{0.0, 0.0, 0.0}
 #define DEFAULT_ANGLES		{60.0, 45.0, 0.0}
 #define AXIS_OFFSET		0.196350 // FLOAT_PI/16
@@ -1939,7 +1941,7 @@ stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3
 	return true;
 }
 
-bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
+stock bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
 {
 	bool result;
 	if(BindingKey[client] != -1)

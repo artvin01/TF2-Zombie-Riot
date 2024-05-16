@@ -58,7 +58,7 @@ methodmap Archosauria < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		KillFeed_SetKillIcon(npc.index, "sniperrifle");
+		//KillFeed_SetKillIcon(npc.index, "sniperrifle");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -328,7 +328,7 @@ int ArchosauriaSelfDefense(Archosauria npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-				Sakratan_AddNeuralDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 300 : 100);
+				Elemental_AddChaosDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 300 : 100);
 				if(target <= MaxClients)
 					TF2_AddCondition(target, TFCond_Jarated, Rogue_Paradox_RedMoon() ? 15.0 : 5.0);
 			} 

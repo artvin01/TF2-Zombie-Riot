@@ -8,28 +8,41 @@
 			{
 				"library"	"server"
 				"linux"		"16"
-				"windows"	"15
+				"windows"		"15
+				"linux64"		"16"
+				"windows64"		"15
 			}
 		}
 		"Signatures"
 		{
 			"CLagCompensationManager::StartLagCompensation"
 			{
+				//"Trying to start a new lag compensation"
 				"library"	"server"
+				"linux64"		"@_ZN23CLagCompensationManager20StartLagCompensationEP11CBasePlayerP8CUserCmd"
+				"windows64"	"\x40\x55\x57\x41\x55\x48\x81\xEC\xA0\x00\x00\x00"	
 				"linux"		"@_ZN23CLagCompensationManager20StartLagCompensationEP11CBasePlayerP8CUserCmd"
-				"windows"	"\x55\x8B\xEC\x83\xEC\x24\x57\x8B\xF9\x89\x7D\xE8"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x28\x57\x8B\xF9\x89\x7D\xE4"
 			}
 			"CLagCompensationManager::FinishLagCompensation"
 			{
+				//"FinishLagCompensation"
 				"library"	"server"
-				"linux"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer" //sorry i hate sigs
-				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xA1\x2A\x2A\x2A\x2A\x53" // 55 8B EC 83 EC 38 A1 ? ? ? ? 53 
+				"linux64"		"@_ZN23CLagCompensationManager21FinishLagCompensationEP11CBasePlayer" 
+				"windows64"		"\x4C\x8B\xDC\x49\x89\x4B\x08\x53\x48\x81\xEC\xC0\x00\x00\x00"
+				
+				"linux"		"@_ZN23CLagCompensationManager20StartLagCompensationEP11CBasePlayerP8CUserCmd"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x40\x8B\x15\x2A\x2A\x2A\x2A\x53\x56\x33\xF6\x8B\xD9"
 			}
 			"CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE"
 			{
+				//"FrameUpdatePostEntityThink"
 				"library"	"server"
-				"linux"		"@_ZN23CLagCompensationManager26FrameUpdatePostEntityThinkEv" //sorry i hate sigs
-				"windows"	"\x55\x8B\xEC\x83\xEC\x34\xA1\x2A\x2A\x2A\x2A\x53\x8B\xD9"
+				"linux64"		"@_ZN23CLagCompensationManager26FrameUpdatePostEntityThinkEv" //sorry i hate sigs
+				"windows64"	"\x4C\x8B\xDC\x49\x89\x4B\x08\x53\x48\x81\xEC\xB0\x00\x00\x00"
+				
+				"linux"		"@_ZN23CLagCompensationManager26FrameUpdatePostEntityThinkEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x38\xA1\x2A\x2A\x2A\x2A\x53\x8B\xD9"
 			}
 		}
 		"Functions"

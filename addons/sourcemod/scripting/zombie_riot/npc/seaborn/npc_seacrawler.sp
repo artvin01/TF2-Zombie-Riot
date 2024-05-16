@@ -81,7 +81,7 @@ methodmap SeaCrawler < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
-		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+		//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -177,7 +177,7 @@ public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int w
 {
 	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
 	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
-	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
+	Elemental_AddNervousDamage(victim, attacker, RoundToCeil(damage));
 }
 
 public Action SeaCrawler_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

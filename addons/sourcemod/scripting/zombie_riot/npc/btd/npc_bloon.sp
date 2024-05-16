@@ -170,9 +170,6 @@ int Bloon_Health(bool fortified, int type)
 
 void Bloon_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/bloons_hitbox.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bloon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloon");
@@ -478,7 +475,7 @@ methodmap Bloon < CClotBody
 		Bloon npc = view_as<Bloon>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloons_hitbox.mdl", "1.0", buffer, ally));
 		
 		i_NpcWeight[npc.index] = 1;
-		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+		//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
 		npc.m_iStepNoiseType = STEPTYPE_NONE;	

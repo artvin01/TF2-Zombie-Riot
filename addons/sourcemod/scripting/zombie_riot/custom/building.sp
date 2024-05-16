@@ -1069,7 +1069,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
 	{
 		b_BuildingHasDied[entity] = true;
-		KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
+		//KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
 	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
@@ -4108,6 +4108,10 @@ int MaxSupportBuildingsAllowed(int client, bool ingore_glass)
 	
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	if(CvarInfiniteCash.BoolValue)
+	{
+		maxAllowed += 999;
+	}
 	
 	if(maxAllowed < 1)
 	{
@@ -6527,17 +6531,6 @@ public MRESReturn Dhook_FinishedBuilding_Post(int Building_Index, Handle hParams
 	return MRES_Ignored;
 }
 
-// set  Data_prop m_pPhysicsObject  to 1 in here
-
-public MRESReturn Dhook_FirstSpawn_Pre(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
-
-public MRESReturn Dhook_FirstSpawn_Post(int Building_Index, Handle hParams) 
-{
-	return MRES_Ignored;
-}
 /*
 float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
@@ -7314,8 +7307,8 @@ static void SummonerMenu(int client, int viewer)
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
-	CancelClientMenu(client);
-	SetStoreMenuLogic(client, false);
+	CancelClientMenu(viewer);
+	SetStoreMenuLogic(viewer, false);
 
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))
@@ -8538,7 +8531,11 @@ void BuildingVoteEndResetCD()
 
 void ApplyBuildingCollectCooldown(int building, int client, float Duration, bool IgnoreVotingExtraCD = false)
 {
-	if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
+	if(CvarInfiniteCash.BoolValue)
+	{
+		Building_Collect_Cooldown[building][client] = 0.0;
+	}
+	else if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
 	{
 		Building_Collect_Cooldown[building][client] = FAR_FUTURE;
 	}

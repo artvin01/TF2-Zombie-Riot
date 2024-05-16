@@ -90,7 +90,7 @@ methodmap Ursus < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -196,7 +196,7 @@ static void ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						Sakratan_AddNeuralDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 450 : 300);
+						Elemental_AddChaosDamage(target, npc.index, Rogue_Paradox_RedMoon() ? 450 : 300);
 					}
 				}
 

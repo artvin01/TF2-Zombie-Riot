@@ -199,7 +199,7 @@ methodmap OverlordRogue < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 99;
-		KillFeed_SetKillIcon(npc.index, "firedeath");
+		//KillFeed_SetKillIcon(npc.index, "firedeath");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -245,7 +245,7 @@ methodmap OverlordRogue < CClotBody
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 		
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
+		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
@@ -449,14 +449,14 @@ public void OverlordRogue_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									KillFeed_SetKillIcon(npc.index, "sword");
+									//KillFeed_SetKillIcon(npc.index, "sword");
 
 									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
 									
-									KillFeed_SetKillIcon(npc.index, "firedeath");
+									//KillFeed_SetKillIcon(npc.index, "firedeath");
 
 									if(target > MaxClients)
 									{

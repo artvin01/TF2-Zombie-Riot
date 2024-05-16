@@ -52,9 +52,6 @@ static int MoabHealth(bool fortified)
 
 void Zomg_MapStart()
 {
-	if(!IsFileInDownloads("models/zombie_riot/btd/zomg.mdl"))
-		return;
-	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Zeppelin of Mighty Gargantuaness");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zomg");
@@ -72,6 +69,10 @@ static void ClotPrecache()
 	for(int i; i<sizeof(SoundZomgPop); i++)
 	{
 		PrecacheSoundCustom(SoundZomgPop[i]);
+	}
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
 	}
 	
 	PrecacheModel("models/zombie_riot/btd/zomg.mdl");
@@ -122,7 +123,7 @@ methodmap Zomg < CClotBody
 		Zomg npc = view_as<Zomg>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/zomg.mdl", "1.0", buffer, ally, false, true));
 		
 		i_NpcWeight[npc.index] = 4;
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);

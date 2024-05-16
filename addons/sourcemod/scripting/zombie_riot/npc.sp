@@ -468,9 +468,12 @@ void NPC_ConfigSetup()
 	// Rogue Mode Low Prio
 	OverlordRogue_OnMapStart_NPC();
 	RaidbossBladedance_MapStart();
+	RogueCondition_Setup();
+	GogglesFollower_Setup();
+	TheHunter_Setup();
 }
 
-stock int NPC_Add(NPCData data)
+int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
@@ -486,7 +489,7 @@ int NPC_GetCount()
 	return NPCList.Length;
 }
 
-int NPC_GetNameById(int id, char[] buffer, int length)
+stock int NPC_GetNameById(int id, char[] buffer, int length)
 {
 	static NPCData data;
 	NPC_GetById(id, data);
@@ -538,20 +541,20 @@ static void PrecacheNPC(int i, NPCData data)
 	}
 }
 
-stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+stock int NPC_CreateByName(const char[] name, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "", bool ignoreSetup = false)
 {
 	static NPCData npcdata;
 	int id = NPC_GetByPlugin(name, npcdata);
 	if(id == -1)
 	{
-		PrintToChatAll("\"%s\" is not a valid NPC or is using old method!", name);
+		PrintToChatAll("\"%s\" is not a valid NPC!", name);
 		return -1;
 	}
 
-	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data);
+	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data, ignoreSetup);
 }
 
-int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "")
+int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], int team, const char[] data = "", bool ignoreSetup = false)
 {
 	if(Index_Of_Npc < 1 || Index_Of_Npc >= NPCList.Length)
 	{
@@ -561,10 +564,10 @@ int NPC_CreateById(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3
 
 	static NPCData npcdata;
 	NPC_GetById(Index_Of_Npc, npcdata);
-	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data);
+	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data, ignoreSetup);
 }
 
-static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float vecAng[3], int team, const char[] data, bool ignoreSetup)
 {
 	PrecacheNPC(id, npcdata);
 
@@ -586,16 +589,19 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
 		
-		if(GetTeam(entity) == 2)
+		if(!ignoreSetup)
 		{
-			Rogue_AllySpawned(entity);
-		}
-		else
-		{
-			Rogue_EnemySpawned(entity);
-		}
+			if(GetTeam(entity) == 2)
+			{
+				Rogue_AllySpawned(entity);
+			}
+			else
+			{
+				Rogue_EnemySpawned(entity);
+			}
 
-		Waves_UpdateMvMStats();
+			Waves_UpdateMvMStats();
+		}
 	}
 
 	return entity;
@@ -642,21 +648,6 @@ void NPCDeath(int entity)
 		{
 			f_FactionCreditGain += CreditsOnKill;
 
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.2;
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = f_FactionCreditGain * 0.1;
-					}
-				}
-			}		
-
 			if(f_FactionCreditGain >= 1.0)
 			{
 				f_FactionCreditGain -= 1.0;
@@ -668,21 +659,6 @@ void NPCDeath(int entity)
 			GiveMoney = RoundToFloor(CreditsOnKill);
 			float Decimal_MoneyGain = FloatFraction(CreditsOnKill);	
 			f_FactionCreditGain += Decimal_MoneyGain;
-			
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(!b_IsPlayerABot[client] && IsClientInGame(client))
-				{
-					if(GetClientTeam(client) != 2)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.2);
-					}
-					else if (TeutonType[client] == TEUTON_WAITING)
-					{
-						f_FactionCreditGainReduction[client] = (f_FactionCreditGain * float(GiveMoney) * 0.1);
-					}
-				}
-			}
 
 			if(f_FactionCreditGain >= 1.0)
 			{
@@ -716,7 +692,6 @@ void NPCDeath(int entity)
 				Call_PushCell(baseboss_index);
 				Call_PushCell(entity);
 				Call_Finish();
-				//todo: convert all on death and on take damage to this.
 			}
 		}
 	}
@@ -727,7 +702,6 @@ void NPCDeath(int entity)
 		Call_PushCell(entity);
 		Call_Finish();
 		return;
-		//todo: convert all on death and on take damage to this.
 	}
 }
 
@@ -1176,3 +1150,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_cautus.sp"
 #include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
+
+#include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"

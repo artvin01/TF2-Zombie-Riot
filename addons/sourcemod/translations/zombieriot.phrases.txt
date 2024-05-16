@@ -2123,11 +2123,17 @@
 	{
 		"en"		"Un-Claim the current marked building?"
 	}
-	"Builder Extra Gear Menu"
+	"Extra Menu"
 	{
-		"en"		"Builder extra gear menu"
-		"ru"		"Меню доп. снаряж. строителя"
-		"chi"		"建造者额外装备菜单"
+		"en"		"Extra Menu"
+	}
+	"Destroy all your non-Mounted Buildings"
+	{
+		"en"		"Destroy all your non-Mounted, non-Visible Buildings"
+	}
+	"Destroy all your non-Mounted Buildings Sure"
+	{
+		"en"		"Are you sure that you want to delete all your own non mounted buildings?\nThis will not delete buildings that are in your line of sight."
 	}
 	"Final_wave_message"
 	{
@@ -3119,7 +3125,7 @@
 	}
 	"Blacksmith Underleveled"
 	{
-		"en"		"Owner needs to upgrade this building before you can tinker this weapon"
+		"en"		"You can not tinker this weapon"
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3133,5 +3139,25 @@
 	{
 		"en"	"View Modifiers"
 		"de" 	"oha ein deutscher!"
+	}
+	"Bring up Class Change Menu"
+	{
+		"en"	"Bring up Class Change Menu"
+	}
+	"Corrode"
+	{
+		"en"	"Corrode"
+	}
+	"Chaos"
+	{
+		"en"	"Chaos"
+	}
+	"Cyro"
+	{
+		"en"	"Cyro"
+	}
+	"Necrosis"
+	{
+		"en"	"Necrosis"
 	}
 }

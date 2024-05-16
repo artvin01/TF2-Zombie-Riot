@@ -759,6 +759,6 @@ float CalculateDamageBonus_Board(float damage, int weapon)
 	float damageModif = damage;
 	damageModif *= Attributes_Get(weapon, 1, 1.0);
 	damageModif *= Attributes_Get(weapon, 2, 1.0);
-	damageModif *= Attributes_Get(weapon, 476, 1.0);
+	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 	return damageModif;
 }

@@ -107,7 +107,7 @@ methodmap LastKnight < CClotBody
 		
 		i_NpcWeight[npc.index] = 5;
 		npc.SetActivity("ACT_LAST_KNIGHT_WALK");
-		KillFeed_SetKillIcon(npc.index, "spy_cicle");
+		//KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -193,9 +193,11 @@ public void LastKnight_ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		npc.SetActivity("ACT_RIDER_RUN");
-		KillFeed_SetKillIcon(npc.index, "vehicle");
+		//KillFeed_SetKillIcon(npc.index, "vehicle");
 		npc.m_flNextThinkTime = gameTime + 0.4;
-
+		b_NpcIgnoresbuildings[npc.index] = true;
+		npc.m_iTarget = 0;
+		
 		if(!IsValidEntity(npc.m_iWearable6))
 		{
 			npc.m_iWearable6 = npc.EquipItem("partyhat", "models/workshop/player/items/engineer/hwn2022_pony_express/hwn2022_pony_express.mdl");
@@ -490,7 +492,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	else if(attacker > MaxClients)
 	{
 		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
-			Cryo_FreezeZombie(attacker);
+			Cryo_FreezeZombie(attacker, npc.m_iPhase ? 1 : 0);
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{

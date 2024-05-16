@@ -101,7 +101,6 @@ static const char g_BobSuperMeleeCharge_Hit[][] =
 	"player/taunt_yeti_standee_break.wav",
 };
 
-//static int BobHitDetected[MAXENTITIES];
 
 void RaidbossBobTheFirst_OnMapStart()
 {
@@ -268,7 +267,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		
-		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MUDROCK_RAGE");
@@ -475,6 +474,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	if(npc.m_bFakeClone)
 	{
+		bool FellowBobFound = false;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -486,11 +486,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
 						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
-						
+						FellowBobFound = true;
 						break;
 					}
 				}
 			}
+		}
+		if(!FellowBobFound)
+		{
+			SmiteNpcToDeath(npc.index);
 		}
 	}
 	if(!npc.m_bFakeClone && LastMann)
@@ -746,22 +750,9 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(npc.Anger)	// Waiting for enemies to die off
 	{
-		float enemies = float(Zombies_Currently_Still_Ongoing);
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int victim = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(victim != INVALID_ENT_REFERENCE && victim != npc.index && IsEntityAlive(victim) && GetTeam(victim) != TFTeam_Red)
-			{
-				int maxhealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-				if(maxhealth)
-					enemies += float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(maxhealth);
-			}
-		}
-
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * (enemies + 1.0) / 485.0));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
 			return;
 		}
 
@@ -1026,7 +1017,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					npc.m_iAttackType = 0;
 
-					KillFeed_SetKillIcon(npc.index, "sword");
+					//KillFeed_SetKillIcon(npc.index, "sword");
 
 					int HowManyEnemeisAoeMelee = 64;
 					Handle swingTrace;
@@ -1084,7 +1075,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(PlaySound)
 						npc.PlayMeleeSound();
 
-					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 			case 10:	// DEPLOY_MANHACK - Frame 32
@@ -1677,6 +1668,7 @@ void RaidbossBobTheFirst_NPCDeath(int entity)
 			}
 		}
 	}
+	
 }
 
 static Action Bob_DeathCutsceneCheck(Handle timer)
@@ -2028,7 +2020,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
+	//KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
 
 	if(NpcStats_IsEnemySilenced(entity))
 		kick = false;
@@ -2068,7 +2060,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	}
 	delete pack;
 
-	KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
+	//KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 }
 
 

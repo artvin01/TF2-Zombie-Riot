@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define VIEW_CHANGES
 
 static const char HandModels[][] =
 {
@@ -13,8 +14,7 @@ static const char HandModels[][] =
 	"models/weapons/c_models/c_heavy_arms.mdl",
 	"models/weapons/c_models/c_pyro_arms.mdl",
 	"models/weapons/c_models/c_spy_arms.mdl",
-	"models/weapons/c_models/c_engineer_arms.mdl",
-	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
+	"models/weapons/c_models/c_engineer_arms.mdl"
 };
 
 //	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
@@ -48,7 +48,7 @@ static const char RobotModels[][] =
 };
 
 
-static int HandIndex[11];
+static int HandIndex[10];
 static int PlayerIndex[10];
 static int RobotIndex[10];
 
@@ -58,17 +58,17 @@ static int TeutonModelIndex;
 
 void ViewChange_MapStart()
 {
-	for(int i; i<11; i++)
+	for(int i; i<sizeof(HandIndex); i++)
 	{
 		HandIndex[i] = PrecacheModel(HandModels[i], true);
 	}
 
-	for(int i; i<10; i++)
+	for(int i; i<sizeof(PlayerModels); i++)
 	{
 		PlayerIndex[i] = PrecacheModel(PlayerModels[i], true);
 	}
 
-	for(int i; i<10; i++)
+	for(int i; i<sizeof(RobotIndex); i++)
 	{
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
@@ -76,8 +76,6 @@ void ViewChange_MapStart()
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
-
-	PrecacheModel(NIKO_PLAYERMODEL);
 }
 
 void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
@@ -86,7 +84,7 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
 	ViewChange_PlayerModel(client);
 	int entity;
-	if(DontShowCosmetics || b_IsPlayerNiko[client])
+	if(DontShowCosmetics)
 	{
 		while(TF2_GetWearable(client, entity))
 		{
@@ -98,9 +96,6 @@ void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
 	}
 	else
 	{
-		if(b_IsPlayerNiko[client])
-			return;
-
 		while(TF2_GetWearable(client, entity))
 		{
 			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
@@ -119,68 +114,59 @@ void ViewChange_PlayerModel(int client)
 		TF2_RemoveWearable(client, ViewmodelPlayerModel);
 	}
 
+	int team = GetClientTeam(client);
+	int entity = CreateEntityByName("tf_wearable");
+	if(entity > MaxClients)	// playermodel
 	{
 #if defined ZR
-		if((b_IsPlayerNiko[client]) && TeutonType[client] == TEUTON_NONE)
-#else
-		if(b_IsPlayerNiko[client])
-#endif
+		if(TeutonType[client] == TEUTON_NONE)
 		{
-			SetVariantString(NIKO_PLAYERMODEL);
-			AcceptEntityInput(client, "SetCustomModel");
-			SetEntProp(client, Prop_Send, "m_bUseClassAnimations", true);
+			if(i_HealthBeforeSuit[client] == 0)
+			{
+				if(i_PlayerModelOverrideIndexWearable[client] > 0)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_PlayerModelOverrideIndexWearable[client]);
+				}
+				else
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+			}
+			else
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+			}
+			UpdatePlayerFakeModel(client);
+			MedicAdjustModel(client);
+
 		}
 		else
 		{
-			int team = GetClientTeam(client);
-			int entity = CreateEntityByName("tf_wearable");
-			if(entity > MaxClients)	// playermodel
-			{
-#if defined ZR
-				if(TeutonType[client] == TEUTON_NONE)
-				{
-					if(i_HealthBeforeSuit[client] == 0)
-					{
-						if(i_PlayerModelOverrideIndexWearable[client] > 0)
-						{
-							SetEntProp(entity, Prop_Send, "m_nModelIndex", i_PlayerModelOverrideIndexWearable[client]);
-						}
-						else
-							SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
-					}
-					else
-					{
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
-					}
-					UpdatePlayerFakeModel(client);
-					MedicAdjustModel(client);
-
-				}
-				else
-				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", TeutonModelIndex);
-					SetEntProp(entity, Prop_Send, "m_nBody", 9);
-				}
-#else
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
-#endif
-				
-				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-				SetTeam(entity, team);
-				SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(client, Prop_Send, "m_nSkin"));
-				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-				SetEntityCollisionGroup(entity, 11);
-				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-				DispatchSpawn(entity);
-				SetVariantString("!activator");
-				ActivateEntity(entity);
-		
-				SDKCall_EquipWearable(client, entity);
-				SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
-				i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
-
-			}
+			SetEntProp(entity, Prop_Send, "m_nModelIndex", TeutonModelIndex);
+			SetEntProp(entity, Prop_Send, "m_nBody", 9);
 		}
+#else
+		UpdatePlayerFakeModel(client);
+		MedicAdjustModel(client);
+		SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+#endif
+		
+		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+		SetTeam(entity, team);
+		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(client, Prop_Send, "m_nSkin"));
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+		SetEntityCollisionGroup(entity, 11);
+		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+		DispatchSpawn(entity);
+		SetVariantString("!activator");
+		ActivateEntity(entity);
+
+		SDKCall_EquipWearable(client, entity);
+		SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
+
+#if defined RPG
+		Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
+#endif
+
 	}
 }
 
@@ -411,8 +397,6 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		if(entity > MaxClients)
 		{
 			int hand_index = view_as<int>(class);
-			if(b_IsPlayerNiko[client])
-				hand_index = 10;
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[hand_index]);
 			SetEntProp(entity, Prop_Send, "m_fEffects", 129);

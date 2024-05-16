@@ -1,3 +1,19 @@
+# WARNING! READ!
+
+USE 32 BIT SERVER AS OF NOW!
+this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
+there are some things missing as its still a WIP fix:
+
+-Killfeed bots
+
+-MVM hud setting resetting
+
+-Bob the second not listenign to commands
+
+-EDAlloc remover, i.e. edicts being reserved.
+
+some more...
+
 # TF2 Zombie Riot
 
 You fight against AI enemies/Zombies with allies and try to win/suvive as long as possible, You buy weapons and or upgrade them from previous ones. Stay together and beat them

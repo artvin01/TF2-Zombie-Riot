@@ -173,7 +173,9 @@ enum
 	WEAPON_NAILGUN_SHOTGUN = 94,
 	WEAPON_BLACKSMITH = 95,
 	WEAPON_COSMIC_PILLAR = 96,
-	WEAPON_COSMIC_RAILCANNON = 97
+	WEAPON_COSMIC_RAILCANNON = 97,
+	WEAPON_GRENADEHUD = 98,
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -190,7 +192,8 @@ enum
 	Type_COF,
 	Type_Seaborn,
 	Type_Expidonsa,
-	Type_Interitus
+	Type_Interitus,
+	Type_BlueParadox
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -205,7 +208,6 @@ ConVar zr_minibossconfig;
 ConVar zr_ignoremapconfig;
 ConVar zr_smallmapbalancemulti;
 ConVar CvarNoRoundStart;
-ConVar CvarInfiniteCash;
 ConVar CvarNoSpecialZombieSpawn;
 ConVar zr_spawnprotectiontime;
 ConVar zr_viewshakeonlowhealth;
@@ -244,7 +246,6 @@ ArrayList Loadouts[MAXTF2PLAYERS];
 Handle g_hSDKMakeCarriedObjectDispenser;
 Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
-int i_IsAloneWeapon[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;
@@ -265,23 +266,20 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
-int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
-bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
-float f_Data_InBattleHudDisableDelay[MAXTF2PLAYERS];
-float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
 #define SF2_PLAYER_VIEWBOB_SCALE_Y 0.0
 #define SF2_PLAYER_VIEWBOB_SCALE_Z 0.0
 #define RAID_MAX_ARMOR_TABLE_USE 20
+#define ZR_ARMOR_DAMAGE_REDUCTION 0.75
+#define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
 float Armor_regen_delay[MAXTF2PLAYERS];
 
@@ -289,7 +287,6 @@ float Armor_regen_delay[MAXTF2PLAYERS];
 ConVar CvarSvRollagle; // sv_rollangle
 int i_SvRollAngle[MAXTF2PLAYERS];
 
-Handle SyncHud_ArmorCounter;
 	
 int CashSpent[MAXTF2PLAYERS];
 int CashSpentGivePostSetup[MAXTF2PLAYERS];
@@ -306,6 +303,7 @@ int b_NpcForcepowerupspawn[MAXENTITIES]={0, ...};
 int Armour_Level_Current[MAXTF2PLAYERS];
 int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
+float f_Armor_BreakSoundDelay[MAXENTITIES];
 
 int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
 int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
@@ -334,14 +332,9 @@ float f_HealthBeforeSuittime[MAXTF2PLAYERS]={0.0, ...};
 
 int Level[MAXTF2PLAYERS];
 int XP[MAXTF2PLAYERS];
-int PlayerPoints[MAXTF2PLAYERS];
 int i_ExtraPlayerPoints[MAXTF2PLAYERS];
 int i_PreviousPointAmount[MAXTF2PLAYERS];
 
-int Healing_done_in_total[MAXTF2PLAYERS];
-int i_BarricadeHasBeenDamaged[MAXTF2PLAYERS];
-int i_PlayerDamaged[MAXTF2PLAYERS];
-int Resupplies_Supplied[MAXTF2PLAYERS];
 bool WaitingInQueue[MAXTF2PLAYERS];
 
 int Armor_table_money_limit[MAXTF2PLAYERS][MAXTF2PLAYERS];
@@ -389,7 +382,7 @@ bool b_IgnoreWarningForReloadBuidling[MAXTF2PLAYERS];
 
 float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 
-bool b_SpecialGrigoriStore;
+bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 
@@ -398,6 +391,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
+#include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
 #include "zombie_riot/freeplay.sp"
 #include "zombie_riot/items.sp"
@@ -405,6 +399,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/natives.sp"
 #include "zombie_riot/queue.sp"
 #include "zombie_riot/spawns.sp"
+#include "zombie_riot/store.sp"
+#include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -522,6 +518,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
+#include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
 {
@@ -708,7 +705,6 @@ void ZR_MapStart()
 	Wand_Calcium_Map_Precache();
 //	Wand_Black_Fire_Map_Precache();
 	Wand_Chlorophite_Map_Precache();
-	MapStart_CustomMeleePrecache();
 	MagicRestore_MapStart();
 	Wind_Staff_MapStart();
 	Nailgun_Map_Precache();
@@ -762,6 +758,7 @@ void ZR_MapStart()
 	ResetMapStartDimWeapon();
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
+	ResetMapStartWest();
 
 	
 	Zombies_Currently_Still_Ongoing = 0;
@@ -789,16 +786,15 @@ public Action GlobalTimer(Handle timer)
 	{
 		if(IsClientInGame(client))
 		{
+			/*
 			if(IsFakeClient(client))
 			{
-				if(IsClientSourceTV(client) && !b_IsPlayerABot[client])
+				if(IsClientSourceTV(client) || b_IsPlayerABot[client])
 				{
-					f_ClientMusicVolume[client] = 1.0;
-					f_ZombieVolumeSetting[client] = 0.0;
-					SetTeam(client, TFTeam_Spectator);
-					b_IsPlayerABot[client] = true;
+					MoveBotToSpectator(client);
 				}
 			}
+			*/
 			PlayerApplyDefaults(client);
 			Spawns_CheckBadClient(client);
 		}
@@ -837,6 +833,7 @@ void ZR_ClientPutInServer(int client)
 	i_Backstabs[client] = 0;
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
+	f_Armor_BreakSoundDelay[client] = 0.0;
 	Doing_Handle_Mount[client] = false;
 	b_Doing_Buildingpickup_Handle[client] = false;
 	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
@@ -1617,7 +1614,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			}
 		}
 
-		if(rogue)
+		if(Rogue_NoLastman())
 		{
 			LastMann = false;
 		}
@@ -2390,13 +2387,6 @@ public Action DeployBannerIconBuff(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
-void GrantAllPlayersCredits_Rogue(int cash)
-{
-	cash *= (Rogue_GetRound()+1);
-	CPrintToChatAll("{green}%t","Cash Gained!", cash);
-	CurrentCash += cash;
-}
-
 stock int GetClientPointVisibleRevive(int iClient, float flDistance = 100.0)
 {
 	float vecOrigin[3], vecAngles[3], vecEndOrigin[3];
@@ -2458,19 +2448,23 @@ stock bool isPlayerMad(int client) {
 
 stock void GetTimerAndNullifyMusicMVM()
 {
-	if(FindEntityByClassname(-1, "tf_gamerules") == -1)
+	return;
+/*
+	int EntityTimerWhat = FindEntityByClassname(-1, "tf_gamerules");
+
+	if(!IsValidEntity(EntityTimerWhat))
 		return;
 	
-	int Time = RoundToNearest(GameRules_GetPropFloat("m_flRestartRoundTime") - GetGameTime());
+	int Time = RoundToNearest(GetEntPropFloat(EntityTimerWhat, Prop_Send, "m_flRestartRoundTime") - GetGameTime());
 	if(Time > 8 && Time <= 12)
 	{
-		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+		SetEntPropFloat(EntityTimerWhat ,Prop_Send, "m_flRestartRoundTime", GetGameTime() + 8.0);
 	}
 	else
 	{
 		return;
 	}
-	
+	*/
 }
 
 bool PlayerIsInNpcBattle(int client)

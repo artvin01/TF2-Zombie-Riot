@@ -328,8 +328,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 				}
+#if defined ZR						
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
+#endif					
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
@@ -407,8 +409,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 					if(medigun_mode == 1)
 					{
-				//		int Builder = GetEntPropEnt(healTarget, Prop_Send, "m_hBuilder");
-						
 						if(What_Uber_Type == 1)
 							Increaced_Sentry_damage_High[healTarget] = GetGameTime() + 0.11;
 							
@@ -431,7 +431,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					int Remove_Ammo = i_HealingAmount / 3;
 					
-				//	SetEntProp(healTarget, Prop_Send, "m_iHealth", newHealth);
 					if  (medigun_mode == 2)
 					{
 						Remove_Ammo = i_HealingAmount / 6;
@@ -448,12 +447,12 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					{
 						SetVariantInt(Healing_Value);
 						AcceptEntityInput(healTarget, "AddHealth");
-				//		SetEntityHealth(healTarget, newHealth);
-					//	SetEntProp(healTarget, Prop_Send, "m_iMaxHealth", max_health);
 					}
 				}
+#if defined ZR			
 				SetAmmo(owner, 3, new_ammo);
 				CurrentAmmo[owner][3] = GetAmmo(owner, 3);
+#endif
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
@@ -543,7 +542,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						else
 							flMaxHealth = 1.45;
 					}
+					flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
 
+#if defined ZR
 					if(What_type_Heal == 6.0)
 					{
 						float Healing_GiveArmor = 0.35;
@@ -574,6 +575,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						}
 						GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
 					}
+#endif
 
 					i_targethealedLastBy[healTarget] = owner;
 					//self heal
@@ -620,8 +622,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					}
 					
 				}
+#if defined ZR
 				SetAmmo(owner, 21, new_ammo);
 				CurrentAmmo[owner][21] = GetAmmo(owner, 21);
+#endif
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
@@ -689,8 +693,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				}
 				new_ammo -= 6;
 
+#if defined ZR
 				SetAmmo(owner, 22, new_ammo);
 				CurrentAmmo[owner][22] = GetAmmo(owner, 22);
+#endif				
 				if(medigun_hud_delay[owner] < GetGameTime())
 				{
 					if(!gb_medigun_on_reload[owner])

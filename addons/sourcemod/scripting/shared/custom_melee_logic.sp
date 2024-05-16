@@ -264,34 +264,38 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	float vecSwingEndHull[3];
 	float vecSwingEndHullHeadshot[3];
 	
-
+	float ExtraMeleeRange = 1.0;
+	if(weapon > 0)
+	{
+		ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	}
 	if(CustomMeleeRange)
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * ExtraMeleeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
 	
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
 	}
 	else
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * ExtraMeleeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * ExtraMeleeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
 
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 	}
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
@@ -384,7 +388,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
-	if(target > 0 && !b_NpcHasDied[target])
+	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
 		{
@@ -599,28 +603,20 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
-
 		if(Item_Index != 155)
 		{
-			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}
 		else
 		{
-			damage = 30.0;
-			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = 30.0;	
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
 			damage *= 0.5;
 #endif
-
 		}
-		
-			
-		damage *= Attributes_Get(weapon, 1, 1.0);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])

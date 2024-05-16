@@ -182,7 +182,7 @@ public void Cosmic_Activate(int client, int weapon)
 			Cosmic_DMG[client]=100.0;
 			Cosmic_DMG[client] *= Attributes_Get(weapon, 1, 1.0);
 			Cosmic_DMG[client] *= Attributes_Get(weapon, 2, 1.0);
-			Cosmic_DMG[client] *= Attributes_Get(weapon, 476, 1.0);
+			Cosmic_DMG[client] *= Attributes_Get(weapon, 1000, 1.0);
 			
 			CosmicActualDamage[client] = Cosmic_DMG[client];
 			
