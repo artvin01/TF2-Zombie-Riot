@@ -52,7 +52,7 @@ static char g_MeleeAttackSounds[][] = {
 };
 
 
-public void GiantHeadcrabZombie_OnMapStart_NPC()
+public void WaterZombie_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
@@ -63,25 +63,25 @@ public void GiantHeadcrabZombie_OnMapStart_NPC()
 
 	PrecacheModel("models/zombie/classic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Giant Zombie");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giant_headcrab_zombie");
+	strcopy(data.Name, sizeof(data.Name), "Water Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_water_zombie");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GiantHeadcrabZombie(client, vecPos, vecAng, ally);
+	return WaterZombie(client, vecPos, vecAng, ally);
 }
 
-methodmap GiantHeadcrabZombie < CClotBody
+methodmap WaterZombie < CClotBody
 {
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
@@ -89,31 +89,31 @@ methodmap GiantHeadcrabZombie < CClotBody
 	public void PlayHurtSound()
 	{
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayKilledEnemySound() 
 	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
 	}
 	public void PlayMeleeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
 	}
 	public void PlayMeleeHitSound()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,80);	
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
 	
-	public GiantHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	public WaterZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.85", "300", ally, false, true));
+		WaterZombie npc = view_as<WaterZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -125,9 +125,9 @@ methodmap GiantHeadcrabZombie < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
-		func_NPCDeath[npc.index] = GiantHeadcrabZombie_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = GiantHeadcrabZombie_OnTakeDamage;
-		func_NPCThink[npc.index] = GiantHeadcrabZombie_ClotThink;
+		func_NPCDeath[npc.index] = WaterZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = WaterZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = WaterZombie_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -137,6 +137,9 @@ methodmap GiantHeadcrabZombie < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
+
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 0, 0, 255, 255);
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -148,9 +151,9 @@ methodmap GiantHeadcrabZombie < CClotBody
 
 //TODO 
 //Rewrite
-public void GiantHeadcrabZombie_ClotThink(int iNPC)
+public void WaterZombie_ClotThink(int iNPC)
 {
-	GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(iNPC);
+	WaterZombie npc = view_as<WaterZombie>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -180,7 +183,7 @@ public void GiantHeadcrabZombie_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -194,13 +197,13 @@ public void GiantHeadcrabZombie_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40000.0;
+					float damage = 30000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -247,7 +250,7 @@ public void GiantHeadcrabZombie_ClotThink(int iNPC)
 		{
 			npc.m_iState = -1;
 		}
-		else if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -303,13 +306,13 @@ public void GiantHeadcrabZombie_ClotThink(int iNPC)
 }
 
 
-public Action GiantHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action WaterZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(victim);
+	WaterZombie npc = view_as<WaterZombie>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -321,9 +324,9 @@ public Action GiantHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void GiantHeadcrabZombie_NPCDeath(int entity)
+public void WaterZombie_NPCDeath(int entity)
 {
-	GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(entity);
+	WaterZombie npc = view_as<WaterZombie>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

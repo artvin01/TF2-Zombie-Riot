@@ -256,6 +256,7 @@ methodmap EnemyFatherGrigori < CClotBody
 		func_NPCDeath[npc.index] = EnemyFatherGrigori_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = EnemyFatherGrigori_OnTakeDamage;
 		func_NPCThink[npc.index] = EnemyFatherGrigori_ClotThink;
+		npc.m_flRangedArmor = 0.75;
 
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, EnemyFatherGrigori_OnTakeDamagePost);
 
@@ -312,12 +313,13 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 	float speed;
 	if(npc.m_flAttackHappens_bullshit > gameTime)
 	{
-		speed = 240.0;
+		speed = 310.0;
 	}
 	else
 	{
-		speed = 120.0;
+		speed = 200.0;
 	}
+
 	Npc_Base_Thinking(iNPC, 500.0, "Walk_aiming_all", "ACT_IDLE", speed, gameTime, true, false);
 	if(npc.m_flJumpCooldown)
 	{
@@ -392,11 +394,11 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 25000.0;
+					float damage = 30000.0;
 					
 					if(npc.m_iOverlordComboAttack >= 1)
 					{
-						damage = 27000.0;
+						damage = 35000.0;
 					}
 
 					npc.PlayMeleeHitSound();
@@ -424,11 +426,11 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 				npc.m_flNextRangedAttackHappening = 0.0;
 				
 				float projectile_speed = 1000.0;
-				float damage_bullet = 22000.0;
+				float damage_bullet = 25000.0;
 
 				if(npc.m_iOverlordComboAttack >= 1)
 				{
-					damage_bullet = 24000.0;
+					damage_bullet = 30000.0;
 				}
 				if(npc.m_flAttackHappens_bullshit > gameTime)
 				{
@@ -1016,7 +1018,7 @@ public void FatherGrigori_IonAttack(Handle &data)
 	else
 	{
 		startPosition[2] += 25.0;
-		makeexplosion(client, client, startPosition, "", 30000/*damage*/, 175/*Range */);
+		makeexplosion(client, client, startPosition, "", 40000/*damage*/, 175/*Range */);
 		startPosition[2] -= 25.0;
 		TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
 		TE_SendToAll();

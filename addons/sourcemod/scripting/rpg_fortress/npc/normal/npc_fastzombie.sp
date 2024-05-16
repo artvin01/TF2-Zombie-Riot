@@ -65,8 +65,17 @@ public void FastZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_leap_scream));   i++) { PrecacheSound(g_leap_scream[i]);   }
 	for (int i = 0; i < (sizeof(g_leap_prepare));   i++) { PrecacheSound(g_leap_prepare[i]);   }
 	PrecacheModel("models/zombie/fast.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Fast Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fastzombie");
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FastZombie(client, vecPos, vecAng, ally);
+}
 
 methodmap FastZombie < CClotBody
 {
@@ -335,7 +344,7 @@ public void FastZombie_ClotThink(int iNPC)
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-							float damage = 35.0;
+							float damage = 20000.0;
 
 							npc.PlayMeleeHitSound();
 							if(target > 0) 

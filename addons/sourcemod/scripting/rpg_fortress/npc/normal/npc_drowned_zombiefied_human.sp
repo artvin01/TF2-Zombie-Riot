@@ -4,28 +4,34 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static const char g_DeathSounds[][] = {
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_HurtSound[][] = {
-	"npc/combine_soldier/pain1.wav",
-	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
+};
+
+
+static const char g_IdleAlertedSounds[][] = {
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
 static const char g_IdleSound[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
+	"vo/npc/male01/ohno.wav",
+	"vo/npc/male01/overthere01.wav",
+	"vo/npc/male01/overthere02.wav",
 };
 
-static const char g_IdleAlertedSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-};
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -46,15 +52,16 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 };
 
 static const char g_RangedSpecialAttackSoundsSecondary[][] = {
-	"weapons/medi_shield_deploy.wav",
+	"weapons/cow_mangler_over_charge_shot.wav",
 };
 
-public void ZombiefiedCombineSwordsman_OnMapStart_NPC()
+public void DrowedZombieHuman_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));	i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
@@ -65,18 +72,18 @@ public void ZombiefiedCombineSwordsman_OnMapStart_NPC()
 
 	PrecacheModel("models/zombie/classic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Zombie Combine Knight");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombiefied_combine_soldier_swordsman");
+	strcopy(data.Name, sizeof(data.Name), "Drowned Atlantean");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_drowned_zombie_human");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
+	return DrowedZombieHuman(client, vecPos, vecAng, ally);
 }
 
-methodmap ZombiefiedCombineSwordsman < CClotBody
+methodmap DrowedZombieHuman < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -124,11 +131,11 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public ZombiefiedCombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
+	public DrowedZombieHuman(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false, true));
+		DrowedZombieHuman npc = view_as<DrowedZombieHuman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
-		SetVariantInt(3);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -147,9 +154,9 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		func_NPCDeath[npc.index] = ZombiefiedCombineSwordsman_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = ZombiefiedCombineSwordsman_OnTakeDamage;
-		func_NPCThink[npc.index] = ZombiefiedCombineSwordsman_ClotThink;
+		func_NPCDeath[npc.index] = DrowedZombieHuman_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DrowedZombieHuman_OnTakeDamage;
+		func_NPCThink[npc.index] = DrowedZombieHuman_ClotThink;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -158,7 +165,7 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_hood/thief_sniper_hood.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -177,9 +184,9 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 
 //TODO 
 //Rewrite
-public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
+public void DrowedZombieHuman_ClotThink(int iNPC)
 {
-	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(iNPC);
+	DrowedZombieHuman npc = view_as<DrowedZombieHuman>(iNPC);
 
 /*
 	SetVariantInt(1);
@@ -221,7 +228,17 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 300.0, gameTime);
+	if(npc.m_flDoingSpecial)
+	{
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 240.0, gameTime);
+		fl_TotalArmor[npc.index] = 0.75;
+
+	}
+	else
+	{
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 220.0, gameTime);
+		fl_TotalArmor[npc.index] = 1.0;
+	}
 
 	if(npc.m_flAttackHappens)
 	{
@@ -241,7 +258,9 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 26000.0;
+					float damage = 45000.0;
+					if(npc.m_flDoingSpecial)
+						damage = 48000;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -271,11 +290,23 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
-				npc.m_iWearable5 = npc.SpawnShield(3.0, "models/props_mvm/mvm_player_shield.mdl",80.0);
-				npc.PlayRangedSpecialAttackSecondarySound();
 				npc.m_flNextRangedSpecialAttackHappens = 0.0;
+				npc.PlayRangedSpecialAttackSecondarySound();
+				npc.m_flDoingSpecial = GetGameTime(npc.index) + 3.0;
+				float flPos[3]; // original
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "outerspace_belt_blue", npc.index, "head", {0.0,0.0,0.0});
 			}
 		}
+	}
+	if(npc.m_flDoingSpecial)
+	{
+		if(npc.m_flDoingSpecial < gameTime)
+		{
+			npc.m_flDoingSpecial = 0.0;
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+		}	
 	}
 
 	if(npc.m_flNextRangedAttackHappening)
@@ -325,7 +356,11 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 
 				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, vecTarget2, vecDir, 20000.0, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				float Damage = 40000;
+				if(npc.m_flDoingSpecial)
+					Damage = 45000;
+
+				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}
@@ -472,13 +507,13 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 }
 
 
-public Action ZombiefiedCombineSwordsman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action DrowedZombieHuman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(victim);
+	DrowedZombieHuman npc = view_as<DrowedZombieHuman>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -490,9 +525,9 @@ public Action ZombiefiedCombineSwordsman_OnTakeDamage(int victim, int &attacker,
 	return Plugin_Changed;
 }
 
-public void ZombiefiedCombineSwordsman_NPCDeath(int entity)
+public void DrowedZombieHuman_NPCDeath(int entity)
 {
-	ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(entity);
+	DrowedZombieHuman npc = view_as<DrowedZombieHuman>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
@@ -506,6 +541,8 @@ public void ZombiefiedCombineSwordsman_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }
 
 

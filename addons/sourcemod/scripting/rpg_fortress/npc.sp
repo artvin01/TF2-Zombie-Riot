@@ -59,6 +59,9 @@ void NPC_ConfigSetup()
 	GiantHeadcrabZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
 	BobTheTargetDummy_OnMapStart_NPC();
+	WaterZombie_OnMapStart_NPC();
+	DrowedZombieHuman_OnMapStart_NPC();
+	MutatedDrowedZombieHuman_OnMapStart_NPC();
 
 /*
 	FarmCow_OnMapStart_NPC();
@@ -529,6 +532,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
 #include "rpg_fortress/npc/normal/npc_giant_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
+#include "rpg_fortress/npc/normal/npc_water_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_drowned_zombiefied_human.sp"
+#include "rpg_fortress/npc/normal/npc_mutated_drowned_zombiefied_human.sp"
 /*
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"

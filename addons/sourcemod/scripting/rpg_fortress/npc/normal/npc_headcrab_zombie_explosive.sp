@@ -74,7 +74,7 @@ public void ExplosiveHeadcrabZombie_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return HeadcrabZombie(client, vecPos, vecAng, ally);
+	return ExplosiveHeadcrabZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap ExplosiveHeadcrabZombie < CClotBody
@@ -187,7 +187,10 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 240.0, gameTime);
+	if(npc.m_flNextRangedAttackHappening)
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 120.0, gameTime);
+	else
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -207,7 +210,7 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 11000.0;
+					float damage = 22000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -231,7 +234,6 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 
 	if(npc.m_flNextRangedAttackHappening)
 	{
-		npc.m_bisWalking = false;
 		if(npc.m_iChanged_WalkCycle != 6) 	
 		{
 			npc.m_iChanged_WalkCycle = 6;
@@ -239,6 +241,9 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		}
+		float vecabsorigin[3];
+		GetAbsOrigin(npc.index, vecabsorigin);
+		spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.2, 6.0, 0.1, 1, 1.0);
 
 		float vecTarget[3];
 		WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -251,7 +256,11 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			npc.m_flNextRangedAttackHappening = 0.0;
 			float vecTarget2[3];
 			WorldSpaceCenter(npc.index, vecTarget2);
-			makeexplosion(npc.index, npc.index, vecTarget2, "", 250, 200);
+			makeexplosion(npc.index, npc.index, vecTarget2, "", 35000, 200);
+			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			maxhealth /= 5;
+			HealEntityGlobal(npc.index, npc.index, -float(maxhealth), 1.0, 0.0, _);
+			RPGNpc_UpdateHpHud(npc.index);
 		}
 	}
 		
@@ -375,17 +384,11 @@ public void ExplosiveHeadcrabZombie_OnTakeDamagePost(int victim, int attacker, i
 			float vecabsorigin[3];
 			GetAbsOrigin(npc.index, vecabsorigin);
 
-			if(npc.m_bPathing) //Halt!
-			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;	
-			}
-
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5; //This is the explosive cooldown
 			npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 1.5; //This is the explosive cooldown
 			npc.PlayKilledEnemySound();
-			spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 1.5, 6.0, 0.1, 1, 1.0);
+			spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.2, 6.0, 0.1, 1, 1.0);
 		}
 	}
 }

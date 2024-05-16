@@ -160,7 +160,8 @@ enum struct MineEnum
 				}
 				
 				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+				if(this.Color[3] != 255)
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
