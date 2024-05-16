@@ -1168,6 +1168,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 
 	OverridePlayerModel(client, 0, false);
+	TrueStrengthShieldUnequip(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 

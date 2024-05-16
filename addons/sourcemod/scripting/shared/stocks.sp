@@ -3700,32 +3700,29 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 float RPGStocks_CalculatePowerLevel(int client)
 {
-	int amount, bonus;
-	float multi;
-
 	int total;
 	float BigTotal;
-	total = Stats_Strength(client, amount, bonus, multi);
+	total = Stats_Strength(client);
 	total *= 3;
 	BigTotal += float(total);
 
-	total = Stats_Precision(client, amount, bonus, multi);
+	total = Stats_Precision(client);
 	total *= 3;
 	BigTotal += float(total);
 
-	total = Stats_Artifice(client, amount, bonus, multi);
+	total = Stats_Artifice(client);
 	total *= 3;
 	BigTotal += float(total);
 
-	total = Stats_Endurance(client, amount, bonus, multi);
+	total = Stats_Endurance(client);
 	total *= 2;
 	BigTotal += float(total);
 
-	total = Stats_Structure(client, amount, bonus, multi);
+	total = Stats_Structure(client);
 	total *= 4;
 	BigTotal += float(total);
 
-	total = Stats_Capacity(client, amount, bonus, multi);
+	total = Stats_Capacity(client);
 	total *= 3;
 	BigTotal += float(total);
 
@@ -3739,7 +3736,7 @@ float RPGStocks_CalculatePowerLevel(int client)
 	BigTotal *= (1.0 / ResMulti);
 
 	//These stats are abit different
-	total = Stats_Agility(client, amount, bonus, multi);
+	total = Stats_Agility(client);
 	total *= 30;
 	BigTotal += float(total);
 	//luck doesnt exist

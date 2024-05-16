@@ -22,6 +22,7 @@ int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
 ConVar mp_disable_respawn_times;
+ConVar CvarSkyName;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
@@ -176,6 +177,7 @@ void RPG_PluginStart()
 
 	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
 	mp_disable_respawn_times.Flags &= ~(FCVAR_NOTIFY|FCVAR_REPLICATED);
+	CvarSkyName = FindConVar("sv_skyname");
 }
 
 void RPG_PluginEnd()
@@ -238,7 +240,7 @@ void RPG_MapStart()
 	Mortar_MapStart();
 	Wand_FireBall_Map_Precache();
 	BrickWeapon_Map_Precache();
-	Abiltity_Mudrock_Shield_Shield_PluginStart();
+	Abiltity_TrueStrength_Shield_Shield_PluginStart();
 	AirCutter_Map_Precache();
 	QuickReflex_MapStart();
 	Wand_Short_Teleport_Map_Precache();
@@ -385,7 +387,7 @@ void RPG_ClientDisconnect(int client)
 	Saves_ClientDisconnect(client);
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
-	MudrockShieldDisconnect(client);
+	TrueStrengthShieldDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
 	f_TransformationDelay[client] = 0.0;
 	RequestFrame(CheckIfAloneOnServer);
@@ -865,19 +867,20 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	float CombinedDamages;
 	int BaseDamage;
 	float Multiplier;
+	float Multiplier2;
 	int bonus;
-	Stats_Strength(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Strength(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
 
-	Stats_Precision(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Precision(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
 
-	Stats_Artifice(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Artifice(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
 

@@ -265,7 +265,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MUDROCK_RAGE");
+		npc.SetActivity("ACT_TrueStrength_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
 		npc.PlayIntroStartSound();

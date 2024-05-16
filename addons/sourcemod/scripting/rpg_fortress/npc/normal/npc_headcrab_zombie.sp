@@ -181,7 +181,7 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{

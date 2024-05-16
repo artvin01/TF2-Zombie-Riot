@@ -168,7 +168,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_IDLE", 80.0, gameTime);
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_IDLE", 80.0, gameTime);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -188,7 +188,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 15000.0;
+					float damage = 20000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -196,6 +196,7 @@ public void PoisonZombie_ClotThink(int iNPC)
 						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+						StartBleedingTimer_Against_Client(target, npc.index, 8000.0, 5);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						
@@ -206,22 +207,6 @@ public void PoisonZombie_ClotThink(int iNPC)
 					}
 				}
 				delete swingTrace;
-			}
-		}
-	}
-
-	if(npc.m_flNextRangedAttackHappening)
-	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
-		{
-			float vecTarget[3];
-			WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 30000.0);
-			if(npc.m_flNextRangedAttackHappening < gameTime)
-			{
-				npc.m_flNextRangedAttackHappening = 0.0;
-				
-				npc.FireGrenade(vecTarget, 800.0, 20000.0, "models/weapons/w_grenade.mdl");
 			}
 		}
 	}
@@ -256,10 +241,6 @@ public void PoisonZombie_ClotThink(int iNPC)
 		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
-		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0) && npc.m_flNextRangedAttack < gameTime)
-		{
-			npc.m_iState = 2; //Throw a ranged attack.
 		}
 		else 
 		{
@@ -305,28 +286,6 @@ public void PoisonZombie_ClotThink(int iNPC)
 					npc.m_flDoingAnimation = gameTime + 0.8;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
 					npc.m_bisWalking = true;
-				}
-			}
-			case 2:
-			{			
-				int Enemy_I_See;
-							
-				Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-				//Can i see This enemy, is something in the way of us?
-				//Dont even check if its the same enemy, just engage in rape, and also set our new target to this just in case.
-				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.m_iTarget = Enemy_I_See;
-
-					npc.AddGesture("ACT_RANGE_ATTACK2");
-
-					npc.PlayMeleeSound();
-					
-					npc.m_flNextRangedAttackHappening = gameTime + 1.2;
-
-					npc.m_flDoingAnimation = gameTime + 2.3;
-					npc.m_flNextRangedAttack = gameTime + 7.5;
-					npc.m_bisWalking = false;
 				}
 			}
 		}

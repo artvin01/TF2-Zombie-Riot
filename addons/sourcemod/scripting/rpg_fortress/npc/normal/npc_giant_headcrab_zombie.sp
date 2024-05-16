@@ -113,7 +113,7 @@ methodmap GiantHeadcrabZombie < CClotBody
 	
 	public GiantHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false, true));
+		GiantHeadcrabZombie npc = view_as<GiantHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.85", "300", ally, false, true));
 		
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

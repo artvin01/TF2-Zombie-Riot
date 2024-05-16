@@ -1614,9 +1614,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 	}
 	
-#if defined ZR
-	Replicate_Damage_Medications(victim, damage, damagetype);
-#endif
 	if(damagetype & DMG_FALL)
 	{
 #if defined RPG
@@ -1679,12 +1676,15 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	//dmg bonus before flat res!
 	damage *= fl_Extra_Damage[attacker];
 #if defined RPG
-	if(Ability_Mudrock_Shield_OnTakeDamage(victim))
+	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 	RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
+#endif
+#if defined ZR || defined RPG
+	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
 #if defined ZR
@@ -2075,7 +2075,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 	return Plugin_Changed;
 }
-#if defined ZR
+#if defined ZR || defined RPG
 void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
 	if(TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))

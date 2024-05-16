@@ -728,31 +728,31 @@ static int ModifiyCharacterRaceH(Menu menuaaaa, MenuAction action, int client, i
 				char buffer1[32], buffer2[16];
 				IntToString(choice, buffer2, sizeof(buffer2));
 
-				FormatEx(buffer1, sizeof(buffer1), "Strength: x%.1f", race.StrengthMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Strength: x%.2f", race.StrengthMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Precision: x%.1f", race.PrecisionMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Precision: x%.2f", race.PrecisionMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Artifice: x%.1f", race.ArtificeMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Artifice: x%.2f", race.ArtificeMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Endurance: x%.1f", race.EnduranceMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Endurance: x%.2f", race.EnduranceMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Structure: x%.1f", race.StructureMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Structure: x%.2f", race.StructureMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Intelligence: x%.1f", race.IntelligenceMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Intelligence: x%.2f", race.IntelligenceMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Capacity: x%.1f", race.CapacityMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Capacity: x%.2f", race.CapacityMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Luck: x%.1f", race.LuckMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Luck: x%.2f", race.LuckMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Agility: x%.1f", race.AgilityMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Agility: x%.2f", race.AgilityMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
 				menu.Pagination = 5;

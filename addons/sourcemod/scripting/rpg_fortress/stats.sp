@@ -446,7 +446,7 @@ int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
 	return base + bonus;
 }
 
-int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;
 	static Form form;
@@ -454,7 +454,8 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 
 	base = BaseStrength + StatStrength[client];
 	bonus = Strength[client];
-	multi = race.StrengthMulti * form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.StrengthMulti;
+	multiform = form.GetFloatStat(Form::StrengthMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -462,10 +463,10 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 		bonus += Strength[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
-int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;
 	static Form form;
@@ -473,7 +474,8 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 
 	base = BasePrecision + StatPrecision[client];
 	bonus = Precision[client];
-	multi = race.PrecisionMulti * form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.PrecisionMulti;
+	multiform = form.GetFloatStat(Form::PrecisionMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -481,10 +483,10 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 		bonus += Precision[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
-int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;
 	static Form form;
@@ -492,7 +494,8 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 
 	base = BaseArtifice + StatArtifice[client];
 	bonus = Artifice[client];
-	multi = race.ArtificeMulti * form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.ArtificeMulti;
+	multiform = form.GetFloatStat(Form::ArtificeMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -500,10 +503,10 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 		bonus += Artifice[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
-int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;
 	static Form form;
@@ -511,7 +514,8 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 
 	base = BaseEndurance + StatEndurance[client];
 	bonus = Endurance[client];
-	multi = race.EnduranceMulti * form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.EnduranceMulti;
+	multiform = form.GetFloatStat(Form::EnduranceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -519,10 +523,10 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 		bonus += Endurance[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
-int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;
 	static Form form;
@@ -530,7 +534,8 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 
 	base = BaseStructure + StatStructure[client];
 	bonus = Structure[client];
-	multi = race.StructureMulti * form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.StructureMulti;
+	multiform = form.GetFloatStat(Form::StructureMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -538,10 +543,10 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multi = 0.
 		bonus += Structure[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
-int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
+int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
 {
 	static Race race;	
 	static Form form;
@@ -549,7 +554,8 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multi =
 
 	base = BaseIntelligence + StatIntelligence[client];
 	bonus = Intelligence[client];
-	multi = race.IntelligenceMulti * form.GetFloatStat(Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
+	multirace = race.IntelligenceMulti;
+	multiform = form.GetFloatStat(Form::IntelligenceMulti, Stats_GetFormMastery(client, form.Name));
 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
@@ -557,7 +563,7 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multi =
 		bonus += Intelligence[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return bonus + RoundFloat(base * multirace * multiform);
 }
 
 int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
@@ -656,51 +662,107 @@ public Action Stats_ShowStats(int client, int args)
 		char costBuffer[64];
 		IntToString(cost,costBuffer, sizeof(costBuffer));
 		ThousandString(costBuffer, sizeof(costBuffer));
-		menu.SetTitle("RPG Fortress\n \nLevel: %s\nXP: %s / %s (x%d)", LVLBuffer, XPBuffer, costBuffer, InputMulti[client]);
+		menu.SetTitle("RPG Fortress\n \nLevel: %s\nXP: %s / %s (x%d)\nReopen menu while crouching for extended info.", LVLBuffer, XPBuffer, costBuffer, InputMulti[client]);
+		
+		if(!(GetClientButtons(client) & IN_DUCK))
+		{
+			char buffer[64];
+			int amount, bonus;
+			float multirace,multiform;
 
-		char buffer[64];
-		int amount, bonus;
-		float multi;
+			int total = Stats_Strength(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Strength: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		int total = Stats_Strength(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Strength: [%d x%.1f] + %d = [%d] (%.0f Melee DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 1));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Precision(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Precision: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Precision(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Precision: [%d x%.1f] + %d = [%d] (%.0f Ranged DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 2));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Artifice(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Artifice: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Artifice(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Artifice: [%d x%.1f] + %d = [%d] (%.0f Mage DMG)", amount, multi, bonus, total, RPGStats_FlatDamageSetStats(client, 3));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Endurance(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Endurance(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Endurance: [%d x%.1f] + %d = [%d] (%.0f Flat RES)", amount, multi, bonus, total, RPGStats_FlatDamageResistance(client));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Structure(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Structure(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Structure: [%d x%.1f] + %d = [%d] (Stamina + HP)", amount, multi, bonus, total, RPGStats_RetrieveMaxStamina(total));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Intelligence(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Intelligence(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Intelligence: [%d x%.1f] + %d = [%d] (Skills)", amount, multi, bonus, total);
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Capacity(client, amount, bonus, multirace);
+			static Race race;	
+			static Form form;
+			Races_GetClientInfo(client, race, form);
+			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.2f] + %d = [%d]", amount, multirace * multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
-		total = Stats_Capacity(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Capacity: [%d x%.1f] + %d = [%d] (%0.f Energy)", amount, multi, bonus, total, RPGStats_RetrieveMaxEnergy(total));
-		menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+			total = Stats_Agility(client, amount, bonus, multirace);
+			FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.2f] + %d = [%d]", amount, multirace, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
-		total = Stats_Agility(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Agility: [%d x%.1f] + %d = [%d] (%.0f%% Speed)", amount, multi, bonus, total, 100.0 + (total / 300.0));
-		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+			total = Stats_Luck(client, amount, bonus, multirace);
+			FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.2f] + %d = [%d]", amount, multirace, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
-		total = Stats_Luck(client, amount, bonus, multi);
-		FormatEx(buffer, sizeof(buffer), "Luck: [%d x%.1f] + %d = [%d] (%.0f%% Drops)", amount, multi, bonus, total, 100.0 + (total / 300.0));
-		menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+			menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(NULL_STRING, "Decrease Input Multi", InputMulti[client] < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		}
+		else
+		{
+			//Show more Accurate Info!
+			char buffer[64];
+			int amount, bonus;
+			float multirace,multiform;
 
-		menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-		menu.AddItem(NULL_STRING, "Decrease Input Multi", InputMulti[client] < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			int total = Stats_Strength(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "STR: [R:x%.2f F:x%.2f] (%.0f Melee DMG)", multirace, multiform, RPGStats_FlatDamageSetStats(client, 1));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
+			total = Stats_Precision(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "PRE: [R:x%.2f F:x%.2f] (%.0f Ranged DMG)", multirace, multiform, RPGStats_FlatDamageSetStats(client, 2));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Artifice(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "ART: [R:x%.2f F:x%.2f] (%.0f Mage DMG)", multirace, multiform, RPGStats_FlatDamageSetStats(client, 3));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Endurance(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "END: [R:x%.2f F:x%.2f] (%.0f Flat RES)", multirace, multiform, RPGStats_FlatDamageResistance(client));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Structure(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "STU: [R:x%.2f F:x%.2f] (Stamina + HP)", multirace, multiform, RPGStats_RetrieveMaxStamina(total));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Intelligence(client, amount, bonus, multirace, multiform);
+			FormatEx(buffer, sizeof(buffer), "INT: [R:x%.2f F:x%.2f] (Skills)", multirace, multiform, bonus, total);
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Capacity(client, amount, bonus, multirace);
+			static Race race;	
+			static Form form;
+			Races_GetClientInfo(client, race, form);
+			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%0.f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
+			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+			total = Stats_Agility(client, amount, bonus, multirace);
+			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.0f%% Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+
+			total = Stats_Luck(client, amount, bonus, multirace);
+			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.0f%% Drops)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
+
+			menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			menu.AddItem(NULL_STRING, "Decrease Input Multi", InputMulti[client] < 10 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);			
+		}
 		menu.ExitBackButton = true;
 		menu.Display(client, MENU_TIME_FOREVER);
 	}

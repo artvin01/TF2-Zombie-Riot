@@ -3,8 +3,8 @@
 
 static KeyValues ActorKv;
 static bool ForcedMenu[MAXTF2PLAYERS];
-static char CurrentChat[MAXTF2PLAYERS][64];
-static char CurrentNPC[MAXTF2PLAYERS][64];
+static char CurrentChat[MAXTF2PLAYERS][128];
+static char CurrentNPC[MAXTF2PLAYERS][128];
 static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool b_NpcHasQuestForPlayer[MAXENTITIES][MAXTF2PLAYERS];
 static int b_ParticleToOwner[MAXENTITIES];
@@ -1392,6 +1392,12 @@ void Actor_EditorMenu(int client)
 			ActorKv.GetString("wear3", buffer1, sizeof(buffer1));
 			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s", buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 			menu.AddItem("_wear3", buffer2);
+
+			FormatEx(buffer2, sizeof(buffer2), "Bodygroup: %i", ActorKv.GetNum("bodygroup"));
+			menu.AddItem("_bodygroup", buffer2);
+
+			FormatEx(buffer2, sizeof(buffer2), "Skin: %i", ActorKv.GetNum("skin"));
+			menu.AddItem("_skin", buffer2);
 		}
 
 		menu.AddItem("_delete", "Delete (Type \"_delete\")", ITEMDRAW_DISABLED);

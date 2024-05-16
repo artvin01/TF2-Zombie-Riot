@@ -17,6 +17,7 @@ void Zones_PluginStart()
 	.DefineIntField("m_iMusicDuration")
 	.DefineFloatField("m_fMusicVolume")
 	.DefineBoolField("m_bMusicCustom")
+	.DefineStringField("m_nSkyBoxOverride")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -133,6 +134,9 @@ void Zones_Rebuild()
 
 					ZonesKv.GetString("quest", buffer, sizeof(buffer));
 					SetEntPropString(entity, Prop_Data, "m_nQuestKey", buffer);
+
+					ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
+					SetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", buffer);
 					
 					int custom = ZonesKv.GetNum("download");
 					ZonesKv.GetString("sound", buffer, sizeof(buffer));
@@ -250,6 +254,12 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		{
 			ShowGameText(caller, _, 0, "You need complete \"%s\" quest to enter.", name);
 			return Plugin_Continue;
+		}
+
+		GetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", name, sizeof(name));
+		if(caller <= MaxClients && name[0])
+		{
+			CvarSkyName.ReplicateToClient(caller, name);
 		}
 
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
@@ -461,6 +471,10 @@ void Zones_EditorMenu(int client)
 			}
 			menu.AddItem("item", buffer);
 		}
+		ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
+
+		Format(buffer, sizeof(buffer), "Skybox: \"%s\"", buffer);
+		menu.AddItem("skybox_override", buffer);
 
 		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
 		

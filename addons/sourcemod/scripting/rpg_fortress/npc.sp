@@ -58,9 +58,9 @@ void NPC_ConfigSetup()
 	FastZombie_OnMapStart_NPC();
 	GiantHeadcrabZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
+	BobTheTargetDummy_OnMapStart_NPC();
 
 /*
-	BobTheTargetDummy_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -455,6 +455,9 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 
 void RPGNpc_UpdateHpHud(int entity)
 {
+	if(entity <= MaxClients)
+		return;
+		
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(IsValidEntity(npc.m_iTextEntity3))
 	{
@@ -516,6 +519,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_slave_master.sp"
 #include "rpg_fortress/npc/normal/npc_chaos_afflicted_miner.sp"
 
+#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
+
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
@@ -525,7 +530,6 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_giant_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
 /*
-#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
