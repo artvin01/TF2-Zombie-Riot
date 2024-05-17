@@ -13,7 +13,7 @@ static char g_DeathSounds[][] = {
 };
 
 static char g_HurtSounds[][] = {
-	"npc/fast_zombie/wake1.wav",
+	")zombie_riot/the_bone_zone/skeleton_hurt.mp3",
 };
 
 static char g_IdleSounds_Buffed[][] = {
@@ -281,7 +281,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayHurtSound()");
