@@ -1,29 +1,12 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//TODO
-//To use this template, just replace "Necromancer" with whatever your NPC is named.
-//Attack logic and custom movement logic are not included in this template.
+static float BONES_SUPREME_SPEED = 350.0;
 
-static float BONES_NECROMANCER_SPEED = 180.0;
-static float BONES_NECROMANCER_SPEED_BUFFED = 220.0;
-static float NECROMANCER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for skeletons of this type to spawn naturally buffed if they are not already buffed.
-static float NECROMANCER_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
-static float NECROMANCER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
-
-#define BONES_NECROMANCER_HP				"5000"
-#define BONES_NECROMANCER_HP_BUFFED			"25000"
-
-static float BONES_NECROMANCER_ATTACKINTERVAL = 0.5;
-static float BONES_NECROMANCER_ATTACKINTERVAL_BUFFED = 1.0;
-
-#define BONES_NECROMANCER_SCALE					"1.0"
-#define BONES_NECROMANCER_BUFFED_SCALE			"1.2"
-
-#define BONES_NECROMANCER_SKIN						"0"
-#define BONES_NECROMANCER_BUFFED_SKIN				"1"
-
-#define BONES_NECROMANCER_BUFFPARTICLE			"utaunt_auroraglow_purple_parent"
+#define BONES_SUPREME_SCALE				"2.0"
+#define BONES_SUPREME_SKIN				"1"
+#define BONES_SUPREME_HP				"35000"
+#define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -100,8 +83,8 @@ static char g_SSBPull_Sounds[][] = {
 };
 
 static char g_SSBPull_Captions[][] = {
-	"{haunted}Supreme Spookmaster Bones{default}: {crimson}GET OVER HERE, BROTHERRRRR!",
-	"{haunted}Supreme Spookmaster Bones{default}: {crimson}GET OVER HEERRREEEE!"
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}GET OVER HERE, BROTHERRRRR!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}GET OVER HEERRREEEE!{default}"
 };
 
 static char g_SSBMinorWin_Sounds[][] = {
@@ -115,7 +98,7 @@ static char g_SSBMinorWin_Sounds[][] = {
 static char g_SSBMinorWin_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: {red}NOOOOOO! {default}This is an outrage!",
 	"{haunted}Supreme Spookmaster Bones{default}: I hate you all. How dare you.",
-	"{haunted}Supreme Spookmaster Bones{default}: Ooohhhh noooo, it's one of {blue}these{default} games...",
+	"{haunted}Supreme Spookmaster Bones{default}: Ooohhhh noooo, it's one of {olive}these{default} games...",
 	"{haunted}Supreme Spookmaster Bones{default}: {yellow}Sigh... {default}What a good game.",
 	"{haunted}Supreme Spookmaster Bones{default}: {crimson}OH YOU FUCKING PIECE OF SHIT, GOD DAMMIT- {default}Agh...!"
 };
@@ -132,9 +115,9 @@ static char g_SSBHellIsHere_Sounds[][] = {
 };
 
 static char g_SSBHellIsHere_Captions[][] = {
-	"{haunted}Supreme Spookmaster Bones{default}: {red}I AM A GOD!{default}",
-	"{haunted}Supreme Spookmaster Bones{default}: {red}TAKE THIS!{default}",
-	"{haunted}Supreme Spookmaster Bones{default}: {red}I AM THE MASTER NOW!{default}"
+	"{haunted}Supreme Spookmaster Bones{default}: {cyan}I AM A GOD!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {cyan}TAKE THIS!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {cyan}I AM THE MASTER NOW!{default}"
 };
 
 static char g_SSBIntro_Sounds[][] = {
@@ -149,9 +132,94 @@ static char g_SSBIntro_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: Who dares enter... {unusual}THE HELL ZONE?{default}"
 };
 
+static char g_SSBKill_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill3.mp3",
+    "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill4.mp3",
+    "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_kill5.mp3"
+};
+
+static char g_SSBKill_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: He will never walk again.",
+	"{haunted}Supreme Spookmaster Bones{default}: Oh! Oh, I broke his fucking leg!",
+	"{haunted}Supreme Spookmaster Bones{default}: Oh my God, he-he's a dead man.",
+    "{haunted}Supreme Spookmaster Bones{default}: HA HA HA HAAAA! Suck it.",
+    "{haunted}Supreme Spookmaster Bones{default}: He's so useless!"
+};
+
+static char g_SSBNecroBlast_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_3.mp3"
+};
+
+static char g_SSBNecroBlast_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}FUCK YOU!!!!!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}BOOM, BABY!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {crimson}DAMN!!!!!{default}"
+};
+
+static char g_SSBNecroBlastWarning_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_3.mp3"
+};
+
+static char g_SSBNecroBlastWarning_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {darkorange}LAUNCH...{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {darkorange}NOT QUITE HADOUKEN...{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {darkorange}YOU'RE DEAD MEAT...{default}"
+};
+
+static char g_SSBSpin2Win_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_spin2win_intro1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_spin2win_intro2.mp3"
+};
+
+static char g_SSBSpin2Win_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {red}I'm spinning to winning...{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {red}Spin 2 Win, baby!{default}"
+};
+
+static char g_SSBSummonIntro_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_summoner_intro_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_summoner_intro_2.mp3",
+    "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_summoner_intro_3.mp3",
+    "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_summoner_intro_4.mp3"
+};
+
+static char g_SSBSummonIntro_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {vintage}I'm just gonna place out some Mr. Bones on this map, and they'll never notice...{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {vintage}GO HERE, YOU DUMB FUCK.{default}",
+    "{haunted}Supreme Spookmaster Bones{default}: {vintage}OBJECTIVE: {crimson}KILL.{default}",
+    "{haunted}Supreme Spookmaster Bones{default}: {vintage}Come on, family! You'll have fuuuuuunnn~!{default}"
+};
+
+static char g_SSBLoss_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win2.mp3",
+    "zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win3.mp3"
+};
+
+static char g_SSBLoss_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {red}Life sucks, and then you fucking die.{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {red}Good job, guys. Good job.{default}",
+    "{haunted}Supreme Spookmaster Bones{default}: {red}Mmhmhahahahahahahahahahahaaaa... AAAAAAHAHAHAHAHAHAHAHA!{default}"
+};
+
+static char g_SSBLossEasterEgg_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_win_waytoolong.mp3"
+};
+
+static char g_SSBLossEasterEgg_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {red}YO, SHIT FOR BRAINS! What GOD DAMN color is this? HUH?! YOU FUCKING BLIND MOTHERFUCKER!{default}",
+    "{red}Who the FUCK do you think you are? Coming here and shitting in MY mailbox, playing MY God damn video games? You're gonna learn about colors, you dumb FORESKIN.{default}"
+};
+
 static bool b_BonesBuffed[MAXENTITIES];
 
-public void NecromancerBones_OnMapStart_NPC()
+public void SupremeSpookmasterBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -164,10 +232,24 @@ public void NecromancerBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
-	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+	for (int i = 0; i < (sizeof(g_SSBBigHit_Sounds));   i++) { PrecacheSound(g_SSBBigHit_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBPull_Sounds));   i++) { PrecacheSound(g_SSBPull_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBMinorWin_Sounds));   i++) { PrecacheSound(g_SSBMinorWin_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBGenericSpell_Sounds));   i++) { PrecacheSound(g_SSBGenericSpell_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBHellIsHere_Sounds));   i++) { PrecacheSound(g_SSBHellIsHere_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBIntro_Sounds));   i++) { PrecacheSound(g_SSBIntro_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBKill_Sounds));   i++) { PrecacheSound(g_SSBKill_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBNecroBlast_Sounds));   i++) { PrecacheSound(g_SSBBigHit_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBNecroBlastWarning_Sounds));   i++) { PrecacheSound(g_SSBNecroBlastWarning_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBSpin2Win_Sounds));   i++) { PrecacheSound(g_SSBSpin2Win_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBSummonIntro_Sounds));   i++) { PrecacheSound(g_SSBSummonIntro_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBLoss_Sounds));   i++) { PrecacheSound(g_SSBLoss_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBLossEasterEgg_Sounds));   i++) { PrecacheSound(g_SSBLossEasterEgg_Sounds[i]);   }
+
+	PrecacheModel(MODEL_SSB);
 }
 
-methodmap NecromancerBones < CClotBody
+methodmap SupremeSpookmasterBones < CClotBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -176,7 +258,7 @@ methodmap NecromancerBones < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayIdleSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayIdleSound()");
 		#endif
 	}
 	
@@ -189,7 +271,7 @@ methodmap NecromancerBones < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayHurtSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayHurtSound()");
 		#endif
 	}
 	
@@ -198,7 +280,7 @@ methodmap NecromancerBones < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayDeathSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayDeathSound()");
 		#endif
 	}
 	
@@ -207,7 +289,7 @@ methodmap NecromancerBones < CClotBody
 		EmitSoundToAll(g_GibSounds[GetRandomInt(0, sizeof(g_GibSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayGibSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayGibSound()");
 		#endif
 	}
 	
@@ -215,14 +297,14 @@ methodmap NecromancerBones < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayMeleeHitSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CNecromancerBones::PlayMeleeHitSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayMeleeHitSound()");
 		#endif
 	}
 
@@ -241,61 +323,30 @@ methodmap NecromancerBones < CClotBody
 		PrintToServer("CBunkerSkeleton::PlayHeIsAwakeSound()");
 		#endif
 	}
-	
-	
-	
-	public NecromancerBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+
+	public void PlayIntroSound()
 	{
-		if (!buffed)
-		{
-			float chance = NECROMANCER_NATURAL_BUFF_CHANCE;
-			if (NECROMANCER_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
-			{
-				float total;
-				float players;
-				for (int i = 1; i <= MaxClients; i++)
-				{
-					if (IsClientInGame(i))
-					{
-						total += float(Level[i]);
-						players += 1.0;
-					}
-				}
-				
-				float average = total / players;
-				float mult = average / NECROMANCER_NATURAL_BUFF_LEVEL;
-				if (mult > 1.0)
-					mult = 1.0;
-					
-				chance += (mult * NECROMANCER_NATURAL_BUFF_LEVEL_MODIFIER);
-			}
-			
-			buffed = (GetRandomFloat() <= chance);
-		}
-			
-		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false));
+		int rand = GetRandomInt(0, sizeof(g_SSBIntro_Sounds) - 1);
+		EmitSoundToAll(g_SSBIntro_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBIntro_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayIntroSound()");
+		#endif
+	}
+	
+	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], bool ally)
+	{
+		SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_NECROMANCER : BONEZONE_NECROMANCER;
-		b_BonesBuffed[npc.index] = buffed;
-		npc.m_bBoneZoneNaturallyBuffed = buffed;
-		
-		Necromancer_GiveCosmetics(npc, buffed);
-		
-		if (buffed)
-		{
-			TE_SetupParticleEffect(BONES_NECROMANCER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
-			TE_WriteNum("m_bControlPoint1", npc.index);	
-			TE_SendToAll();	
-		}
+		i_NpcInternalId[npc.index] = BONEZONE_SUPREME;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_WIZARD_IDLE");
+		int iActivity = npc.LookupActivity("ACT_STAND_NO_HAMMER");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		//npc.m_bDoSpawnGesture = true;
-
-		DispatchKeyValue(npc.index, "skin", buffed ? BONES_NECROMANCER_BUFFED_SKIN : BONES_NECROMANCER_SKIN);
+		DispatchKeyValue(npc.index, "skin", BONES_SUPREME_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -303,128 +354,21 @@ methodmap NecromancerBones < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		//IDLE
-		npc.m_flSpeed = (buffed ? BONES_NECROMANCER_SPEED_BUFFED : BONES_NECROMANCER_SPEED);
+		npc.m_flSpeed = BONES_SUPREME_SPEED;
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-		SDKHook(npc.index, SDKHook_Think, NecromancerBones_ClotThink);
-		
-		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
-		
+		SDKHook(npc.index, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
+
 		npc.StartPathing();
+		npc.PlayIntroSound();
 		
 		return npc;
 	}
 }
 
-public void NecromancerBones_SetBuffed(int index, bool buffed)
+public void SupremeSpookmasterBones_ClotThink(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(index);
-	if (!b_BonesBuffed[index] && buffed)
-	{
-		//Tell the game the skeleton is buffed:
-		b_BonesBuffed[index] = true;
-		i_NpcInternalId[index] = BONEZONE_BUFFED_NECROMANCER;
-		
-		//Apply buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_BUFFED_SCALE);
-		int HP = StringToInt(BONES_NECROMANCER_HP_BUFFED);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
-		npc.m_flSpeed = BONES_NECROMANCER_SPEED_BUFFED;
-		Necromancer_GiveCosmetics(npc, true);
-		DispatchKeyValue(index, "skin", BONES_NECROMANCER_BUFFED_SKIN);
-		
-		//Apply buffed particle:
-		TE_SetupParticleEffect(BONES_NECROMANCER_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
-		TE_WriteNum("m_bControlPoint1", index);	
-		TE_SendToAll();
-	}
-	else if (b_BonesBuffed[index] && !buffed)
-	{
-		//Tell the game the skeleton is no longer buffed:
-		b_BonesBuffed[index] = false;
-		i_NpcInternalId[index] = BONEZONE_NECROMANCER;
-		
-		//Remove buffed stats:
-		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_SCALE);
-		int HP = StringToInt(BONES_NECROMANCER_HP);
-		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
-		npc.m_flSpeed = BONES_NECROMANCER_SPEED;
-		Necromancer_GiveCosmetics(npc, false);
-		DispatchKeyValue(index, "skin", BONES_NECROMANCER_SKIN);
-		
-		//Remove buffed particle:
-		TE_Start("EffectDispatch");
-		TE_WriteNum("entindex", index);
-		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_NECROMANCER_BUFFPARTICLE));
-		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
-		TE_SendToAll();
-	}
-}
-
-stock void Necromancer_GiveCosmetics(CClotBody npc, bool buffed)
-{
-	npc.RemoveAllWearables();
-	
-	if (buffed)
-	{
-		//DispatchKeyValue(npc.m_iWearable1, "skin", "1");
-		//DispatchKeyValue(npc.m_iWearable2, "skin", "1");
-	}
-	else
-	{
-		
-	}
-}
-
-stock int Necromancer_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
-{
-	if (IsValidEntity(entity))
-	{
-		int part1 = CreateEntityByName("info_particle_system");
-		if (IsValidEdict(part1))
-		{
-			float pos[3];
-			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-			}
-			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
-			{
-				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-			}
-			
-			if (zTrans != 0.0)
-			{
-				pos[2] += zTrans;
-			}
-			
-			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
-			DispatchKeyValue(part1, "effect_name", type);
-			SetVariantString("!activator");
-			AcceptEntityInput(part1, "SetParent", entity, part1);
-			SetVariantString(point);
-			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
-			DispatchKeyValue(part1, "targetname", "present");
-			DispatchSpawn(part1);
-			ActivateEntity(part1);
-			AcceptEntityInput(part1, "Start");
-			
-			if (duration > 0.0)
-			{
-				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
-			}
-			
-			return part1;
-		}
-	}
-	
-	return -1;
-}
-
-public void NecromancerBones_ClotThink(int iNPC)
-{
-	NecromancerBones npc = view_as<NecromancerBones>(iNPC);
+	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(iNPC);
 	
 	npc.Update();
 	
@@ -462,8 +406,8 @@ public void NecromancerBones_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, closest))
 	{
 		float pos[3], targPos[3], optimalPos[3]; 
-		pos = WorldSpaceCenter(npc.index);
-		targPos = WorldSpaceCenter(closest);
+		WorldSpaceCenter(npc.index, pos);
+		WorldSpaceCenter(closest, targPos);
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
@@ -482,13 +426,13 @@ public void NecromancerBones_ClotThink(int iNPC)
 	npc.PlayIdleSound();
 }
 
-public Action NecromancerBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SupremeSpookmasterBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	NecromancerBones npc = view_as<NecromancerBones>(victim);
+	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(victim);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -499,14 +443,14 @@ public Action NecromancerBones_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void NecromancerBones_NPCDeath(int entity)
+public void SupremeSpookmasterBones_NPCDeath(int entity)
 {
-	NecromancerBones npc = view_as<NecromancerBones>(entity);
+	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, NecromancerBones_ClotThink);
+	SDKUnhook(entity, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 		
 	npc.RemoveAllWearables();
 //	AcceptEntityInput(npc.index, "KillHierarchy");

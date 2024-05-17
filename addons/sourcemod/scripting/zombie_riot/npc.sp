@@ -426,6 +426,7 @@ enum
 	BONEZONE_BUFFED_NECROMANCER		= 374,
 	BONEZONE_BUCCANEER				= 375,
 	BONEZONE_BUFFED_BUCCANEER 		= 376,
+	BONEZONE_SUPREME				= 377,
 
 
 	MAX_NPC_TYPES	// Add entries above this line
@@ -835,7 +836,8 @@ public const char NPC_Names[MAX_NPC_TYPES][] =
 	"Novice Necromancer",
 	"Bringer of Bones",
 	"Brigadier Bones",
-	"Boner Bomber"
+	"Boner Bomber",
+	"Supreme Spookmaster Bones"
 };
 
 // See items.sp for IDs to names
@@ -1617,7 +1619,8 @@ public const char NPC_Plugin_Names_Converted[MAX_NPC_TYPES][] =
 	"npc_necromancer",
 	"npc_necromancer",
 	"npc_buccaneerbones",
-	"npc_buccaneerbones"
+	"npc_buccaneerbones",
+	"npc_ssb"
 };
 
 void NPC_MapStart()
@@ -1760,6 +1763,7 @@ void NPC_MapStart()
 	SaintBones_OnMapStart_NPC();
 	BigBones_OnMapStart_NPC();
 	BuccaneerBones_OnMapStart_NPC();
+	SupremeSpookmasterBones_OnMapStart_NPC();
 	
 	Itstilives_MapStart();
 	AlliedLeperVisualiserAbility_OnMapStart_NPC();
@@ -2387,6 +2391,9 @@ any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], b
 			
 		case BONEZONE_BUFFED_BUCCANEER:
 			entity = BuccaneerBones(client, vecPos, vecAng, ally, true);
+
+		case BONEZONE_SUPREME:
+			entity = SupremeSpookmasterBones(client, vecPos, vecAng, ally);
 		
 		case ITSTILIVES:
 			entity = Itstilives(client, vecPos, vecAng);
@@ -3488,6 +3495,9 @@ public void NPCDeath(int entity)
 			
 		case BONEZONE_BUFFED_BUCCANEER:
 			BuccaneerBones_NPCDeath(entity);
+
+		case BONEZONE_SUPREME:
+			SupremeSpookmasterBones_NPCDeath(entity);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_NPCDeath(entity);
@@ -4526,6 +4536,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			
 		case BONEZONE_BUFFED_BUCCANEER:
 			BuccaneerBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+		case BONEZONE_SUPREME:
+			SupremeSpookmasterBones_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 		case ALT_MECHA_ENGINEER:
 			Mecha_Engineer_OnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -5150,6 +5163,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
 #include "zombie_riot/npc/bonezone/npc_necromancer.sp"
 #include "zombie_riot/npc/bonezone/npc_buccaneerbones.sp"
+#include "zombie_riot/npc/bonezone/npc_ssb.sp"
 
 /*
 #include "zombie_riot/npc/bunker/npc_gambler.sp"

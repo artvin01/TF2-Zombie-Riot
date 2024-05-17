@@ -2310,11 +2310,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		if (this.m_bBoneZoneNaturallyBuffed)
 			return;
 		
+		bool AllBuffersGone = false;
 		//If buffer is a valid entity, add it to the list of buffers or remove it.
 		//This way, we can force the buffed state without specifying a buffer if we so choose.
 		if (IsValidEntity(buffer))
 		{
-			bool AllBuffersGone = false;
 			//Add the buffer to the list if we are applying the buffed form: 		
 			if (buffed)
 			{
