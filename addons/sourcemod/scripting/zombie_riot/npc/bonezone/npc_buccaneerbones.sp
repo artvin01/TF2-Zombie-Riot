@@ -121,7 +121,6 @@ enum BuccaneerState {
 	BUCCANEER_FLYING
 }
 
-static bool b_BonesBuffed[MAXENTITIES];
 static bool running[MAXENTITIES];
 
 static float f_CannonballRadius[MAXENTITIES];
@@ -241,7 +240,7 @@ methodmap BuccaneerBones < CClotBody
 	
 	
 	
-	public BuccaneerBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public BuccaneerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -272,9 +271,14 @@ methodmap BuccaneerBones < CClotBody
 		
 		BuccaneerBones npc = view_as<BuccaneerBones>(CClotBody(vecPos, vecAng, buffed ? "models/zombie_riot/the_bone_zone/basic_bones.mdl" : "models/player/demo.mdl", buffed ? BONES_BUCCANEER_BUFFED_SCALE : BONES_BUCCANEER_SCALE, buffed ? BONES_BUCCANEER_HP_BUFFED : BONES_BUCCANEER_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BUCCANEER : BONEZONE_BUCCANEER;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BuccaneerBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(BuccaneerBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BuccaneerBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(BuccaneerBones_ClotThink);
 		
 		Buccaneer_GiveCosmetics(npc, buffed);
 		
@@ -329,8 +333,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		i_NpcInternalId[index] = BONEZONE_BUFFED_BUCCANEER;
-		
+
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_BUFFED_SCALE);
 		int HP = StringToInt(BONES_BUCCANEER_HP_BUFFED);
@@ -345,8 +348,7 @@ public void BuccaneerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		i_NpcInternalId[index] = BONEZONE_BUCCANEER;
-		
+
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_BUCCANEER_SCALE);
 		int HP = StringToInt(BONES_BUCCANEER_HP);
@@ -683,8 +685,9 @@ public void Buccaneer_NonBuffedLogic(BuccaneerBones npc, int closest)
 	if(iPitch > 0)
 	{				
 		//Body pitch
-		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), targPos, v); 
+		float v[3], ang[3], worldold[3];
+		WorldSpaceCenter(npc.index, worldold);
+		SubtractVectors(worldold, targPos, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 									
@@ -766,7 +769,7 @@ void Buccaneer_ShootProjectile(BuccaneerBones npc, float vicLoc[3], float vel, b
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
-		See_Projectile_Team(entity);
+		See_Projectile_Team_Player(entity);
 		
 		SetEntProp(entity, Prop_Send, "m_nSkin", GetEntProp(entity, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue) ? 1 : 0);
 		

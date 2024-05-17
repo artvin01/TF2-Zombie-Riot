@@ -107,8 +107,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav",
 };
 
-static bool b_BonesBuffed[MAXENTITIES];
-
 enum Archmage_ThrowState
 {
 	THROWSTATE_INACTIVE,
@@ -232,7 +230,7 @@ methodmap ArchmageBones < CClotBody
 	
 	
 	
-	public ArchmageBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public ArchmageBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -263,9 +261,14 @@ methodmap ArchmageBones < CClotBody
 			
 		ArchmageBones npc = view_as<ArchmageBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_ARCHMAGE_BUFFED_SCALE : BONES_ARCHMAGE_SCALE, buffed ? BONES_ARCHMAGE_HP_BUFFED : BONES_ARCHMAGE_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_ARCHMAGE : BONEZONE_ARCHMAGE;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(ArchmageBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(ArchmageBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(ArchmageBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ArchmageBones_ClotThink);
 		
 		Archmage_GiveCosmetics(npc, buffed);
 		
@@ -312,7 +315,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		i_NpcInternalId[index] = BONEZONE_BUFFED_ARCHMAGE;
 		
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_BUFFED_SCALE);
@@ -331,7 +333,6 @@ public void ArchmageBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		i_NpcInternalId[index] = BONEZONE_ARCHMAGE;
 		
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_ARCHMAGE_SCALE);
@@ -557,7 +558,7 @@ public void Archmage_ShootProjectile(ArchmageBones npc, float vicLoc[3], float v
 		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
 		SetEntityCollisionGroup(entity, 24);
 		Set_Projectile_Collision(entity);
-		See_Projectile_Team(entity);
+		See_Projectile_Team_Player(entity);
 		
 		if (b_BonesBuffed[npc.index])
 		{

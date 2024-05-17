@@ -3,9 +3,12 @@
 
 static float BONES_BIG_SPEED = 200.0;
 static float BONES_BIG_SPEED_BUFFED = 250.0;
+static float BIG_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BIG_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BIG_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-#define BONES_BIG_HP		"3600"
-#define BONES_BIG_HP_BUFFED	"6000"
+#define BONES_BIG_HP		"3000"
+#define BONES_BIG_HP_BUFFED	"15000"
 
 static float BONES_BIG_PLAYERDAMAGE = 120.0;
 static float BONES_BIG_PLAYERDAMAGE_BUFFED = 180.0;
@@ -16,8 +19,12 @@ static float BONES_BIG_BUILDINGDAMAGE_BUFFED = 260.0;
 static float BONES_BIG_ATTACKINTERVAL = 2.4;
 static float BONES_BIG_ATTACKINTERVAL_BUFFED = 2.2;
 
-#define BONES_BIG_SCALE		"2.4"
+#define BONES_BIG_BUFFPARTICLE		"utaunt_glowyplayer_orange_parent"
+
+#define BONES_BIG_SCALE			"2.0"
+#define BONES_BIG_SCALE_BUFFED	"2.6"
 #define BONES_BIG_SKIN		"3"
+#define BONES_BIG_SKIN_BUFFED	"3"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -61,8 +68,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode2.wav",
 	"items/pumpkin_explode3.wav",
 };
-
-static bool b_BonesBuffed[MAXENTITIES];
 
 public void BigBones_OnMapStart_NPC()
 {
@@ -160,14 +165,47 @@ methodmap BigBones < CClotBody
 	
 	public BigBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
-		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
+		if (!buffed)
+		{
+			float chance = BIG_NATURAL_BUFF_CHANCE;
+			if (BIG_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 1; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BIG_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BIG_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
+		BigBones npc = view_as<BigBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", buffed ? BONES_BIG_SCALE_BUFFED : BONES_BIG_SCALE, buffed ? BONES_BIG_HP_BUFFED : BONES_BIG_HP, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BIGBONES : BONEZONE_BIGBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BigBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(BigBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BigBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(BigBones_ClotThink);
 		
 		if (buffed)
 		{
-			TE_SetupParticleEffect("utaunt_glowyplayer_orange_parent", PATTACH_ABSORIGIN_FOLLOW, npc.index);
+			TE_SetupParticleEffect(BONES_BIG_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, npc.index);
 			TE_WriteNum("m_bControlPoint1", npc.index);	
 			TE_SendToAll();	
 		}
@@ -178,7 +216,7 @@ methodmap BigBones < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_bDoSpawnGesture = true;
-		DispatchKeyValue(npc.index, "skin", BONES_BIG_SKIN);
+		DispatchKeyValue(npc.index, "skin", buffed ? BONES_BIG_SKIN_BUFFED : BONES_BIG_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -197,6 +235,47 @@ methodmap BigBones < CClotBody
 		npc.StartPathing();
 		
 		return npc;
+	}
+}
+
+public void BigBones_SetBuffed(int index, bool buffed)
+{
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		
+		//Apply buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE_BUFFED);
+		int HP = StringToInt(BONES_BIG_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BIG_SPEED_BUFFED;
+		DispatchKeyValue(index, "skin", BONES_BIG_SKIN_BUFFED);
+		
+		//Apply buffed particle:
+		TE_SetupParticleEffect(BONES_BIG_BUFFPARTICLE, PATTACH_ABSORIGIN_FOLLOW, index);
+		TE_WriteNum("m_bControlPoint1", index);	
+		TE_SendToAll();
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		
+		//Remove buffed stats:
+		DispatchKeyValue(index,	"modelscale", BONES_BIG_SCALE);
+		int HP = StringToInt(BONES_BIG_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BIG_SPEED;
+		DispatchKeyValue(index, "skin", BONES_BIG_SKIN);
+		
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BIG_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
 	}
 }
 
@@ -253,15 +332,17 @@ public void BigBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
+		float vecTarget[3], vecother[3]; 
+		WorldSpaceCenter(closest, vecTarget);
+		WorldSpaceCenter(npc.index, vecother);
 			
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -272,7 +353,7 @@ public void BigBones_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -362,6 +443,9 @@ public void BigBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, BigBones_ClotThink);
+	
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 

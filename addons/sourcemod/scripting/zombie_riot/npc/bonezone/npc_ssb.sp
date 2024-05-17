@@ -217,8 +217,6 @@ static char g_SSBLossEasterEgg_Captions[][] = {
     "{red}Who the FUCK do you think you are? Coming here and shitting in MY mailbox, playing MY God damn video games? You're gonna learn about colors, you dumb FORESKIN.{default}"
 };
 
-static bool b_BonesBuffed[MAXENTITIES];
-
 public void SupremeSpookmasterBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -335,14 +333,19 @@ methodmap SupremeSpookmasterBones < CClotBody
 		#endif
 	}
 	
-	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(CClotBody(vecPos, vecAng, MODEL_SSB, BONES_SUPREME_SCALE, BONES_SUPREME_HP, ally, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = BONEZONE_SUPREME;
-		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		b_IsSkeleton[npc.index] = true;
+		npc.m_bBoneZoneNaturallyBuffed = true;
+
+		func_NPCDeath[npc.index] = view_as<Function>(SupremeSpookmasterBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SupremeSpookmasterBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(SupremeSpookmasterBones_ClotThink);
+
 		int iActivity = npc.LookupActivity("ACT_STAND_NO_HAMMER");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		

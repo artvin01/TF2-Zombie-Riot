@@ -3,9 +3,12 @@
 
 static float BONES_BRITTLE_SPEED = 520.0;
 static float BONES_BRITTLE_SPEED_BUFFED = 750.0;
+static float BRITTLE_NATURAL_BUFF_CHANCE = 0.15;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
+static float BRITTLE_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-#define BONES_BRITTLE_HP			"150"
-#define BONES_BRITTLE_HP_BUFFED		"300"
+#define BONES_BRITTLE_HP			"200"
+#define BONES_BRITTLE_HP_BUFFED		"600"
 
 static float BONES_BRITTLE_PLAYERDAMAGE = 10.0;
 static float BONES_BRITTLE_PLAYERDAMAGE_BUFFED = 20.0;
@@ -16,7 +19,11 @@ static float BONES_BRITTLE_BUILDINGDAMAGE_BUFFED = 40.0;
 static float BONES_BRITTLE_ATTACKINTERVAL = 0.5;
 static float BONES_BRITTLE_ATTACKINTERVAL_BUFFED = 0.33;
 
+static int Brittle_Particle[MAXENTITIES] = { -1, ... };
+
 #define BONES_BRITTLE_SCALE			"0.7"
+
+#define BONES_BRITTLE_BUFFPARTICLE		"superrare_burning2"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -98,8 +105,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode2.wav",
 	"items/pumpkin_explode3.wav",
 };
-
-static bool b_BonesBuffed[MAXENTITIES];
 
 public void BrittleBones_OnMapStart_NPC()
 {
@@ -197,14 +202,47 @@ methodmap BrittleBones < CClotBody
 	
 	public BrittleBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
+		if (!buffed)
+		{
+			float chance = BRITTLE_NATURAL_BUFF_CHANCE;
+			if (BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER > 0.0)
+			{
+				float total;
+				float players;
+				for (int i = 1; i <= MaxClients; i++)
+				{
+					if (IsClientInGame(i))
+					{
+						total += float(Level[i]);
+						players += 1.0;
+					}
+				}
+				
+				float average = total / players;
+				float mult = average / BRITTLE_NATURAL_BUFF_LEVEL;
+				if (mult > 1.0)
+					mult = 1.0;
+					
+				chance += (mult * BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER);
+			}
+			
+			buffed = (GetRandomFloat() <= chance);
+		}
+			
 		BrittleBones npc = view_as<BrittleBones>(CClotBody(vecPos, vecAng, "models/bots/skeleton_sniper/skeleton_sniper.mdl", BONES_BRITTLE_SCALE, buffed ? BONES_BRITTLE_HP_BUFFED : BONES_BRITTLE_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_BRITTLEBONES : BONEZONE_BRITTLEBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
+		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(BrittleBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(BrittleBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(BrittleBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(BrittleBones_ClotThink);
 		
 		if (buffed)
 		{
-			Brittle_AttachParticle(npc.index, "superrare_burning2", _, "eyes");
+			Brittle_Particle[npc.index] = EntIndexToEntRef(Brittle_AttachParticle(npc.index, BONES_BRITTLE_BUFFPARTICLE, _, "eyes"));
 		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -239,7 +277,40 @@ methodmap BrittleBones < CClotBody
 	}
 }
 
-stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+public void BrittleBones_SetBuffed(int index, bool buffed)
+{
+	CClotBody npc = view_as<CClotBody>(index);
+	if (!b_BonesBuffed[index] && buffed)
+	{
+		//Tell the game the skeleton is buffed:
+		b_BonesBuffed[index] = true;
+		
+		//Apply buffed stats:
+		int HP = StringToInt(BONES_BRITTLE_HP_BUFFED);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BRITTLE_SPEED_BUFFED;
+		
+		//Apply buffed particle:
+		Brittle_Particle[index] = EntIndexToEntRef(Brittle_AttachParticle(npc.index, BONES_BRITTLE_BUFFPARTICLE, _, "eyes"));
+	}
+	else if (b_BonesBuffed[index] && !buffed)
+	{
+		//Tell the game the skeleton is no longer buffed:
+		b_BonesBuffed[index] = false;
+		
+		//Remove buffed stats:
+		int HP = StringToInt(BONES_BRITTLE_HP);
+		SetEntProp(index, Prop_Data, "m_iMaxHealth", HP);
+		npc.m_flSpeed = BONES_BRITTLE_SPEED;
+		
+		//Remove buffed particle:
+		int particle = EntRefToEntIndex(Brittle_Particle[index]);
+		if (IsValidEntity(particle))
+			RemoveEntity(particle);
+	}
+}
+
+stock int Brittle_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
 {
 	if (IsValidEntity(entity))
 	{
@@ -277,7 +348,11 @@ stock void Brittle_AttachParticle(int entity, char type[255], float duration = 0
 				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
 			}
 		}
+		
+		return part1;
 	}
+	
+	return -1;
 }
 
 //TODO 
@@ -333,15 +408,17 @@ public void BrittleBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
+		float vecTarget[3], vecother[3];
+		WorldSpaceCenter(closest, vecTarget);
+		WorldSpaceCenter(npc.index, vecother);
 			
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecother, true);
 				
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, closest, _, _, vPredictedPos);
 	//		PrintToChatAll("cutoff");
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -352,7 +429,7 @@ public void BrittleBones_ClotThink(int iNPC)
 		
 		//Target close enough to hit
 		
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
 		//	npc.FaceTowards(vecTarget, 20000.0);
@@ -442,7 +519,13 @@ public void BrittleBones_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	SDKUnhook(entity, SDKHook_Think, BrittleBones_ClotThink);
-//	AcceptEntityInput(npc.index, "KillHierarchy");
+	
+	int particle = EntRefToEntIndex(Brittle_Particle[entity]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+		
+	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 }
 
 

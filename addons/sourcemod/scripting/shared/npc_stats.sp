@@ -77,6 +77,15 @@ Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
 
+bool b_BoneZoneNaturallyBuffed[MAXENTITIES];
+bool b_IsSkeleton[MAXENTITIES];
+bool b_BonesBuffed[MAXENTITIES];
+int i_BoneZoneSummoner[MAXENTITIES];
+float f_BoneZoneSummonValue[MAXENTITIES];
+float f_BoneZoneNumSummons[MAXENTITIES];
+Handle g_BoneZoneBuffers[MAXENTITIES];
+Function g_BoneZoneBuffFunction[MAXENTITIES];
+
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
 #define NPC_DEFAULT_YAWRATE 225.0
@@ -1271,6 +1280,43 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()				{ return b_AllowBackWalking[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_AllowBackWalking[this.index] = TempValueForProperty; }
 	}
+
+	property bool m_bBoneZoneNaturallyBuffed
+	{
+		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_BoneZoneNaturallyBuffed[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_bIsSkeleton
+	{
+		public get()				{ return b_IsSkeleton[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_IsSkeleton[this.index] = TempValueForProperty; }
+	}
+	
+	property int m_iBoneZoneSummoner
+	{
+		public get()				{ return EntRefToEntIndex(i_BoneZoneSummoner[this.index]); }
+		public set(int TempValueForProperty) 	{ i_BoneZoneSummoner[this.index] = EntIndexToEntRef(TempValueForProperty); }
+	}
+	
+	property float m_flBoneZoneSummonValue
+	{
+		public get()				{ return f_BoneZoneSummonValue[this.index]; }
+		public set(float TempValueForProperty) 	{ f_BoneZoneSummonValue[this.index] = TempValueForProperty; }
+	}
+	
+	property float m_flBoneZoneNumSummons
+	{
+		public get()				{ return f_BoneZoneNumSummons[this.index]; }
+		public set(float TempValueForProperty) 	{ f_BoneZoneNumSummons[this.index] = TempValueForProperty; }
+	}
+	
+	property Handle g_BoneZoneBuffers
+	{
+		public get()				{ return g_BoneZoneBuffers[this.index]; }
+		public set(Handle TempValueForProperty) 	{ g_BoneZoneBuffers[this.index] = TempValueForProperty; }
+	}
+
 	public float GetDebuffPercentage()//For the future incase we want to alter it easier
 	{
 		float speed_for_return = 1.0;
@@ -2185,6 +2231,122 @@ methodmap CClotBody < CBaseCombatCharacter
 		this.GetLocomotionInterface().FaceTowards(vecGoal);
 		this.GetBaseNPC().flMaxYawRate = flPrevValue;
 	}
+
+	//Returns whether or not the NPC is a skeleton.
+	public bool BoneZone_IsASkeleton()
+	{
+		return this.m_bIsSkeleton;
+	}
+	
+	//Returns whether or not the NPC is any type of medic.
+	public bool BoneZone_IsASaint()
+	{
+		return Is_a_Medic[this.index];
+	}
+	
+	//Returns whether or not the NPC is a buffed skeleton.
+	public bool BoneZone_GetBuffedState()
+	{
+		return b_BonesBuffed[this.index];
+	}
+	
+	//Retrieves the number of NPCs who are currently providing this skeleton with a buff.
+	public int BoneZone_GetNumBuffers()
+	{
+		if (this.g_BoneZoneBuffers == null || !this.BoneZone_IsASkeleton())
+			return 0;
+			
+		return GetArraySize(this.g_BoneZoneBuffers);
+	}
+	
+	//Turns a non-buffed skeleton into a buffed one, or vice-versa.
+	//TODO: The max health set by this will need to account for later waves where skeletons have higher HP. Probably do this by comparing
+	//its current max health to its actual max health, and then multiply the target max health accordingly.
+	public void BoneZone_SetBuffedState(bool buffed, int buffer = -1)
+	{
+		//Skeletons which are already buffed when they spawn are completely ignored by this so that we don't accidentally remove their natural buff.
+		//Maybe we can change this in the future so players can remove buffs via Silence, but that may be way too strong, so for now it stays like this.
+		if (this.m_bBoneZoneNaturallyBuffed)
+			return;
+		
+		bool AllBuffersGone = false;
+		//If buffer is a valid entity, add it to the list of buffers or remove it.
+		//This way, we can force the buffed state without specifying a buffer if we so choose.
+		if (IsValidEntity(buffer))
+		{
+			//Add the buffer to the list if we are applying the buffed form: 		
+			if (buffed)
+			{
+				if (this.g_BoneZoneBuffers == null)
+					this.g_BoneZoneBuffers = CreateArray(16);
+				
+				bool DoNotAdd = false;
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers) && !DoNotAdd; i++)
+				{
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						DoNotAdd = true;
+					}
+				}
+				
+				if (!DoNotAdd)
+					PushArrayCell(this.g_BoneZoneBuffers, EntIndexToEntRef(buffer));
+			}
+			else if (this.g_BoneZoneBuffers != null)	//Remove the buffer from the list if we are removing the buffed form, and then delete the list if it is empty:
+			{
+				for (int i = 0; i < GetArraySize(this.g_BoneZoneBuffers); i++)
+				{
+					int index = EntRefToEntIndex(GetArrayCell(this.g_BoneZoneBuffers, i));
+					if (index == buffer)
+					{
+						RemoveFromArray(this.g_BoneZoneBuffers, i);
+					}
+				}
+				
+				if (GetArraySize(this.g_BoneZoneBuffers) < 1)
+				{
+					AllBuffersGone = true;
+					delete this.g_BoneZoneBuffers;
+				}
+			}
+		}
+		
+		//Add the buff if we are adding one, or remove it if we are trying to remove the buff and the list of buffers is empty:
+		//TODO: Change this to a function call
+		if (buffed || AllBuffersGone && g_BoneZoneBuffFunction[this.index] != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, g_BoneZoneBuffFunction[this.index]);
+			Call_PushCell(this.index);
+			Call_PushCell(buffed);
+			Call_Finish();
+			
+			//Don't let skeletons keep excess health when they lose their buffed state.
+			if (!buffed && GetEntProp(this.index, Prop_Data, "m_iHealth") > GetEntProp(this.index, Prop_Data, "m_iMaxHealth"))
+			{
+				SetEntProp(this.index, Prop_Data, "m_iHealth", GetEntProp(this.index, Prop_Data, "m_iMaxHealth"));
+			}
+		}
+	}
+	
+	public void RemoveAllWearables()
+	{
+		if(IsValidEntity(this.m_iWearable1))
+			RemoveEntity(this.m_iWearable1);
+		if(IsValidEntity(this.m_iWearable2))
+			RemoveEntity(this.m_iWearable2);
+		if(IsValidEntity(this.m_iWearable3))
+			RemoveEntity(this.m_iWearable3);
+		if(IsValidEntity(this.m_iWearable4))
+			RemoveEntity(this.m_iWearable4);
+		if(IsValidEntity(this.m_iWearable5))
+			RemoveEntity(this.m_iWearable5);
+		if(IsValidEntity(this.m_iWearable6))
+			RemoveEntity(this.m_iWearable6);
+		if(IsValidEntity(this.m_iWearable7))
+			RemoveEntity(this.m_iWearable7);
+	}
+
 	/*
 
 		public void FaceTowards(const float vecGoal[3], float turnrate = 250.0)
@@ -3182,6 +3344,7 @@ static void OnDestroy(CClotBody body)
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
+	b_IsSkeleton[body.index] = false;
 
 	if(IsValidEntity(body.m_iTeamGlow))
 		RemoveEntity(body.m_iTeamGlow);
@@ -3222,6 +3385,15 @@ static void OnDestroy(CClotBody body)
 	if(IsValidEntity(body.m_iWearable8))
 		RemoveEntity(body.m_iWearable8);
 
+	int summoner = EntRefToEntIndex(i_BoneZoneSummoner[body.index]);
+	if (IsValidEntity(summoner))
+	{
+		f_BoneZoneNumSummons[summoner] -= f_BoneZoneSummonValue[body.index];
+		if (f_BoneZoneNumSummons[summoner] < 0.0)
+			f_BoneZoneNumSummons[summoner] = 0.0;
+
+		i_BoneZoneSummoner[body.index] = -1;
+	}
 }
 
 //Ragdoll
@@ -3349,6 +3521,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
 		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
 		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
+		g_BoneZoneBuffFunction[pThis] = INVALID_FUNCTION;
+		delete g_BoneZoneBuffers[pThis];
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);

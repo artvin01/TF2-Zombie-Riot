@@ -118,7 +118,6 @@ enum Necromancer_CastState
 	NECRO_CASTSTATE_CASTING
 };
 
-static bool b_BonesBuffed[MAXENTITIES];
 Necromancer_CastState NecroCastState[MAXENTITIES] = { NECRO_CASTSTATE_INACTIVE };
 
 static int cast_Target[MAXENTITIES];
@@ -226,7 +225,7 @@ methodmap NecromancerBones < CClotBody
 	
 	
 	
-	public NecromancerBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public NecromancerBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -257,9 +256,14 @@ methodmap NecromancerBones < CClotBody
 			
 		NecromancerBones npc = view_as<NecromancerBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_NECROMANCER_BUFFED_SCALE : BONES_NECROMANCER_SCALE, buffed ? BONES_NECROMANCER_HP_BUFFED : BONES_NECROMANCER_HP, ally, false, false, true));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_NECROMANCER : BONEZONE_NECROMANCER;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(NecromancerBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(NecromancerBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(NecromancerBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(NecromancerBones_ClotThink);
 		
 		Necromancer_GiveCosmetics(npc, buffed);
 		
@@ -307,8 +311,7 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		i_NpcInternalId[index] = BONEZONE_BUFFED_NECROMANCER;
-		
+
 		//Apply buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_BUFFED_SCALE);
 		int HP = StringToInt(BONES_NECROMANCER_HP_BUFFED);
@@ -326,8 +329,7 @@ public void NecromancerBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		i_NpcInternalId[index] = BONEZONE_NECROMANCER;
-		
+
 		//Remove buffed stats:
 		DispatchKeyValue(index,	"modelscale", BONES_NECROMANCER_SCALE);
 		int HP = StringToInt(BONES_NECROMANCER_HP);
@@ -496,7 +498,7 @@ public void Necromancer_WaitForBolt(NecromancerBones npc)
 		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
 		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
 		SpawnBeam_Vectors(skyLoc, Necro_TargetLoc[npc.index], 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 20.0);
-		ParticleEffectAt(Necro_TargetLoc[npc.index], PARTICLE_GREENBLAST, 2.0);
+		ParticleEffectAt(Necro_TargetLoc[npc.index], "merasmus_dazed_explosion", 2.0);
 		
 		bool isBlue = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);	
 		Explode_Logic_Custom((b_BonesBuffed[npc.index] ? BOLT_DAMAGE_BUFFED : BOLT_DAMAGE), npc.index, npc.index, npc.index, Necro_TargetLoc[npc.index], currentRadius[npc.index], (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_MULTIHIT_BUFFED : BOLT_FALLOFF_MULTIHIT), (b_BonesBuffed[npc.index] ? BOLT_FALLOFF_RADIUS_BUFFED : BOLT_FALLOFF_RADIUS), isBlue, _, false, (b_BonesBuffed[npc.index] ? BOLT_DAMAGE_ENTITYMULT_BUFFED : BOLT_DAMAGE_ENTITYMULT));
@@ -526,26 +528,27 @@ public void Necromancer_Summon(NecromancerBones npc)
 		//For obvious reasons, you should NEVER allow Necromancers to summon more Necromancers.
 		//I also recommend you don't allow them to summon Skeletal Saints or Profaned Priests unless the necromancer is already buffed. Nothing will break if you do, it would just be too strong.
 		//Aside from that, any NPC is fair game.
+		
 		switch(GetRandomInt(1, 3))
 		{
 			case 1:
 			{
-				entity = BasicBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				entity = BasicBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 				Necromancer_AssignSummonStats(entity, npc, 1.0);
 			}
 			case 2:
 			{
-				entity = BeefyBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				entity = BeefyBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 				Necromancer_AssignSummonStats(entity, npc, 1.0);
 			}
 			case 3:
 			{
-				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 				Necromancer_AssignSummonStats(entity, npc, 0.5);
 					
 				randAng[1] = GetRandomFloat(0.0, 360.0);
 					
-				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, b_IsAlliedNpc[npc.index], b_BonesBuffed[npc.index]);
+				entity = BrittleBones(npc.index, Necro_TargetLoc[npc.index], randAng, GetTeam(npc.index), b_BonesBuffed[npc.index]);
 				Necromancer_AssignSummonStats(entity, npc, 0.5);
 			}
 		}

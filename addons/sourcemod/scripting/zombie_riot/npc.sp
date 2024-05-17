@@ -953,10 +953,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
 /*
-#include "zombie_riot/npc/bonezone/npc_basicbones.sp"
-#include "zombie_riot/npc/bonezone/npc_beefybones.sp"
-#include "zombie_riot/npc/bonezone/npc_brittlebones.sp"
-#include "zombie_riot/npc/bonezone/npc_bigbones.sp"
 */
 
 
@@ -1154,3 +1150,13 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+
+#include "zombie_riot/npc/bonezone/npc_basicbones.sp"
+#include "zombie_riot/npc/bonezone/npc_beefybones.sp"
+#include "zombie_riot/npc/bonezone/npc_brittlebones.sp"
+#include "zombie_riot/npc/bonezone/npc_bigbones.sp"
+#include "zombie_riot/npc/bonezone/npc_archmage.sp"
+#include "zombie_riot/npc/bonezone/npc_buccaneerbones.sp"
+#include "zombie_riot/npc/bonezone/npc_necromancer.sp"
+#include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
+#include "zombie_riot/npc/bonezone/npc_ssb.sp"

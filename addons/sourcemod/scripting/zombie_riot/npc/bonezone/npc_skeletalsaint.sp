@@ -115,8 +115,6 @@ static char g_GibSounds[][] = {
 	"items/pumpkin_explode3.wav", 
 };
 
-static bool b_BonesBuffed[MAXENTITIES];
-
 static int Priest_OldHealTarget[MAXENTITIES];
 static int Priest_HealingParticle[MAXENTITIES];
 static bool Priest_IsHealing[MAXENTITIES];
@@ -250,7 +248,7 @@ methodmap SaintBones < CClotBody
 	
 	
 	
-	public SaintBones(int client, float vecPos[3], float vecAng[3], bool ally, bool buffed)
+	public SaintBones(int client, float vecPos[3], float vecAng[3], int ally, bool buffed)
 	{
 		if (!buffed)
 		{
@@ -281,10 +279,15 @@ methodmap SaintBones < CClotBody
 			
 		SaintBones npc = view_as<SaintBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_SAINT_SCALE_BUFFED : BONES_SAINT_SCALE, buffed ? BONES_SAINT_HP_BUFFED : BONES_SAINT_HP, ally, false));
 		
-		i_NpcInternalId[npc.index] = buffed ? BONEZONE_BUFFED_SAINTBONES : BONEZONE_SAINTBONES;
 		b_BonesBuffed[npc.index] = buffed;
+		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		Is_a_Medic[npc.index] = true;
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(SaintBones_SetBuffed);
+
+		func_NPCDeath[npc.index] = view_as<Function>(SaintBones_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(SaintBones_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(SaintBones_ClotThink);
 		
 		if (buffed)
 		{
@@ -329,8 +332,7 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is buffed:
 		b_BonesBuffed[index] = true;
-		i_NpcInternalId[index] = BONEZONE_BUFFED_SAINTBONES;
-		
+
 		//Apply buffed stats:
 		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE_BUFFED);
 		int HP = StringToInt(BONES_SAINT_HP_BUFFED);
@@ -348,8 +350,7 @@ public void SaintBones_SetBuffed(int index, bool buffed)
 	{
 		//Tell the game the skeleton is no longer buffed:
 		b_BonesBuffed[index] = false;
-		i_NpcInternalId[index] = BONEZONE_SAINTBONES;
-		
+
 		//Remove buffed stats:
 		DispatchKeyValue(index, "modelscale", BONES_SAINT_SCALE);
 		int HP = StringToInt(BONES_SAINT_HP);
