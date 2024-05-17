@@ -2229,4 +2229,72 @@
 	{
 		"en"	"Forest Hitman"
 	}
+	"Basic Bones"
+	{
+		"en"	"Basic Bones"
+	}
+	"Buffed Basic Bones"
+	{
+		"en"	"Buffed Basic Bones"
+	}
+	"Beefy Bones"
+	{
+		"en"	"Beefy Bones"
+	}
+	"Buffed Beefy Bones"
+	{
+		"en"	"Buffed Beefy Bones"
+	}
+	"Big Bones"
+	{
+		"en"	"Big Bones"
+	}
+	"Buffed Big Bones"
+	{
+		"en"	"Buffed Big Bones"
+	}
+	"Brittle Bones"
+	{
+		"en"	"Brittle Bones"
+	}
+	"Buffed Brittle Bones"
+	{
+		"en"	"Buffed Brittle Bones"
+	}
+	"Spelleton"
+	{
+		"en"	"Spelleton"
+	}
+	"Calcified Conjurer"
+	{
+		"en"	"Calcified Conjurer"
+	}
+	"Profaned Priest"
+	{
+		"en"	"Profaned Priest"
+	}
+	"Skeletal Saint"
+	{
+		"en"	"Skeletal Saint"
+	}
+	"Novice Necromancer"
+	{
+		"en"	"Novice Necromancer"
+	}
+	"Bringer of Bones"
+	{
+		"en"	"Bringer of Bones"
+	}
+	"Brigadier Bones"
+	{
+		"en"	"Brigadier Bones"
+	}
+	"Boner Bomber"
+	{
+		"en"	"Boner Bomber"
+	}
+	"Supreme Spookmaster Bones"
+	{
+		"en"	"Supreme Spookmaster Bones"
+	}
 }
