@@ -888,15 +888,23 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	f_Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
 
 	//only a 5% chance!
+	int GrantGuranteed[MAXTF2PLAYERS];
+
 	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
 	{
-		if(GetRandomFloat(0.0, 1.0) >= 0.2)
+		if(GrantGuranteed[client] < 10 && GetRandomFloat(0.0, 1.0) >= 0.2)
+		{	
+			GrantGuranteed[client] += 2;
 			return;
+		}
 	}
 	else if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
 	{
-		if(GetRandomFloat(0.0, 1.0) >= 0.1)
+		if(GrantGuranteed[client] < 10 && GetRandomFloat(0.0, 1.0) >= 0.1)
+		{	
+			GrantGuranteed[client] += 1;
 			return;
+		}
 	}
 	else
 	{
@@ -904,6 +912,13 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 			SPrintToChat(client, "This enemy cannot give you mastery.");
 
 		f_MasteryTextHint[client] = GetGameTime() + 5.0;
+		return;
+	}
+	bool WasGuranteed = false;
+	if(GrantGuranteed[client] >= 10)
+	{
+		WasGuranteed = true;
+		GrantGuranteed[client] = 0;
 	}
 	//Get the highest statt you can find.
 
@@ -912,11 +927,12 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	{
 		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
 		float MasteryAdd;
-		if(GetRandomFloat(0.0, 1.0) <= 0.1)
+		if(!WasGuranteed && GetRandomFloat(0.0, 1.0) <= 0.1)
 		{
 			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
 		MasteryAdd += GetRandomFloat(0.09, 0.11);
+		MasteryAdd *= 0.65;
 		MasteryCurrent += MasteryAdd;
 		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);

@@ -2777,7 +2777,7 @@ int inflictor = 0)
 
 	float damage_reduction = 1.0;
 
-#if defined ZR
+#if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
