@@ -84,6 +84,36 @@ public void BasicBones_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Basic Bones");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_basicbones");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = Summon_Normal;
+	NPC_Add(data);
+
+	NPCData data_buffed;
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Buffed Basic Bones");
+	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_basicbones_buffed");
+	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
+	data_buffed.IconCustom = false;
+	data_buffed.Flags = 0;
+	data_buffed.Category = Type_Common;
+	data_buffed.Func = Summon_Buffed;
+	NPC_Add(data_buffed);
+}
+
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BasicBones(client, vecPos, vecAng, ally, false);
+}
+
+static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BasicBones(client, vecPos, vecAng, ally, true);
 }
 
 methodmap BasicBones < CClotBody

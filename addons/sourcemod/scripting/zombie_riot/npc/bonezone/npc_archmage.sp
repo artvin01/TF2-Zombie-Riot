@@ -151,6 +151,36 @@ public void ArchmageBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_SPELL_CAST_BUFFED);
 	PrecacheSound(SOUND_FIREBALL_HIT);
 	PrecacheSound(SOUND_FIREBALL_EXPLODE);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spelleton");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_archmage");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = Summon_Normal;
+	NPC_Add(data);
+
+	NPCData data_buffed;
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Calcified Conjurer");
+	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_archmage_buffed");
+	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "pyro");
+	data_buffed.IconCustom = false;
+	data_buffed.Flags = 0;
+	data_buffed.Category = Type_Common;
+	data_buffed.Func = Summon_Buffed;
+	NPC_Add(data_buffed);
+}
+
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ArchmageBones(client, vecPos, vecAng, ally, false);
+}
+
+static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ArchmageBones(client, vecPos, vecAng, ally, true);
 }
 
 methodmap ArchmageBones < CClotBody

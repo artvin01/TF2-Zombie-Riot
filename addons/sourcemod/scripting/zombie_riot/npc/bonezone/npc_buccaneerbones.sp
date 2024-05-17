@@ -161,6 +161,36 @@ public void BuccaneerBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_BUFFEDBOMB_LAUNCH);
 	PrecacheSound(SOUND_BIGBALL_PREPARE);
 	PrecacheSound(SOUND_BIGBALL_FIRE);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Brigadier Bones");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_buccaneerbones");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = Summon_Normal;
+	NPC_Add(data);
+
+	NPCData data_buffed;
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Boner Bomber");
+	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_buccaneerbones_buffed");
+	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "demo");
+	data_buffed.IconCustom = false;
+	data_buffed.Flags = 0;
+	data_buffed.Category = Type_Common;
+	data_buffed.Func = Summon_Buffed;
+	NPC_Add(data_buffed);
+}
+
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BuccaneerBones(client, vecPos, vecAng, ally, false);
+}
+
+static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BuccaneerBones(client, vecPos, vecAng, ally, true);
 }
 
 methodmap BuccaneerBones < CClotBody

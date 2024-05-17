@@ -245,6 +245,21 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBLossEasterEgg_Sounds));   i++) { PrecacheSound(g_SSBLossEasterEgg_Sounds[i]);   }
 
 	PrecacheModel(MODEL_SSB);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ssb");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = Summon_SSB;
+	NPC_Add(data);
+}
+
+static any Summon_SSB(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SupremeSpookmasterBones(client, vecPos, vecAng, ally);
 }
 
 methodmap SupremeSpookmasterBones < CClotBody

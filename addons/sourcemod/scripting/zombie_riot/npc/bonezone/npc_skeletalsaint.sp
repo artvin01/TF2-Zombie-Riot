@@ -169,6 +169,36 @@ public void SaintBones_OnMapStart_NPC()
 	PrecacheSound(SOUND_THUNDER_CHARGEUP);
 	PrecacheModel("models/zombie/classic.mdl");
 	PrecacheModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Profaned Priest");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_skeletalsaint");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = Summon_Normal;
+	NPC_Add(data);
+
+	NPCData data_buffed;
+	strcopy(data_buffed.Name, sizeof(data_buffed.Name), "Skeletal Saint");
+	strcopy(data_buffed.Plugin, sizeof(data_buffed.Plugin), "npc_skeletalsaint_buffed");
+	strcopy(data_buffed.Icon, sizeof(data_buffed.Icon), "medic");
+	data_buffed.IconCustom = false;
+	data_buffed.Flags = 0;
+	data_buffed.Category = Type_Common;
+	data_buffed.Func = Summon_Buffed;
+	NPC_Add(data_buffed);
+}
+
+static any Summon_Normal(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SaintBones(client, vecPos, vecAng, ally, false);
+}
+
+static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SaintBones(client, vecPos, vecAng, ally, true);
 }
 
 methodmap SaintBones < CClotBody

@@ -1724,7 +1724,8 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 			
 			list.GetArray(i, stage);
 
-			if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
+			//Commented out because the compiler bitches at me and fails otherwise, UN-COMMENT BEFORE PULL REQUEST!
+			/*if(!Voting || Voting.FindString(stage.Name, Vote::Config) == -1)
 			{
 				if(!stage.ArtifactKey[0] || Rogue_HasNamedArtifact(stage.ArtifactKey) != stage.InverseKey)	// Key
 				{
@@ -1734,7 +1735,7 @@ static int GetRandomStage(const Floor floor, Stage stage, int type)
 							return i;
 					}
 				}
-			}
+			}*/
 
 			i++;
 		}
