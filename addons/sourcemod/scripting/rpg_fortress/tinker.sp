@@ -397,9 +397,9 @@ void Tinker_DisableZone(const char[] name)
 	}
 }
 
-static void ToMetaData(KeyValues kv, const WeaponEnum weapon, char data[512])
+static void ToMetaData(const WeaponEnum weapon, char data[512])
 {
-	int sell = FORGE_COST + kv.GetNum("sell", kv.GetNum("cost") * 3 / 4);
+	int sell = FORGE_COST;
 
 	Format(data, sizeof(data), "txp%d", weapon.XP);
 
@@ -431,9 +431,8 @@ static int ConvertToTinker(int client, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		static const int cost = FORGE_COST;
 		int cash = TextStore_Cash(client);
-		if(cost <= cash)
+		if(FORGE_COST <= cash)
 		{
 			int amount;
 			TextStore_GetInv(client, index, amount);
@@ -442,11 +441,11 @@ static int ConvertToTinker(int client, int index)
 				TextStore_SetInv(client, index, amount - 1, false);
 
 				char data[20];
-				FormatEx(data, sizeof(data), "sell%d", cost);
+				FormatEx(data, sizeof(data), "sell%d", FORGE_COST);
 				newIndex = TextStore_CreateUniqueItem(client, index, data);
 				TextStore_UseItem(client, newIndex, false);
 
-				TextStore_Cash(client, -cost);
+				TextStore_Cash(client, -FORGE_COST);
 			}
 		}
 	}
@@ -644,7 +643,7 @@ void Tinker_GainXP(int client, int entity)
 					if(kv)
 					{
 						static char data[512];
-						ToMetaData(kv, weapon, data);
+						ToMetaData(weapon, data);
 						TextStore_SetItemData(weapon.Store, data);
 					}
 				}
@@ -902,9 +901,8 @@ static void ShowMenu(int client, int page)
 					if(kv.GetNum("sell", kv.GetNum("cost")) > 0)
 					{
 						int cash = TextStore_Cash(client);
-						static const int cost = FORGE_COST;
-						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, cost);
-						menu.AddItem("-2", buffer, cash < cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, FORGE_COST);
+						menu.AddItem("-2", buffer, cash < FORGE_COST ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 					}
 					else
 					{
@@ -1184,7 +1182,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 								RollRandomAttribs(Level[client], weapon, tool);
 								WeaponList.SetArray(i, weapon);
 
-								ToMetaData(kv, weapon, data);
+								ToMetaData(weapon, data);
 								TextStore_SetItemData(weapon.Store, data);
 								TF2_RegeneratePlayer(client);
 								break;
@@ -1239,7 +1237,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 									weapon.Perks[weapon.PerkCount++] = page;
 									WeaponList.SetArray(i, weapon);
 
-									ToMetaData(kv, weapon, data);
+									ToMetaData(weapon, data);
 									TextStore_SetItemData(weapon.Store, data);
 									TF2_RegeneratePlayer(client);
 									break;
@@ -1340,7 +1338,7 @@ void Tinker_StatsLevelUp(int client, int oldLevel)
 
 	if(count)
 	{
-		SPrintToChat("%d New Modifiers In Forge", count);
+		SPrintToChat(client, "%d New Modifiers In Forge", count);
 	}
 
 	count = 0;
@@ -1358,11 +1356,11 @@ void Tinker_StatsLevelUp(int client, int oldLevel)
 
 	if(count > 0)
 	{
-		SPrintToChat("%d New Attributes In Tinker", count);
+		SPrintToChat(client, "%d New Attributes In Tinker", count);
 	}
 }
 
-void Tinker_Mining(int client, int weapon, int toolTier, int mineTier, int &damage)
+void Tinker_Mining(int client, int entity, int toolTier, int mineTier, int &damage)
 {
 	int index = Store_GetStoreOfEntity(entity);
 	if(index < 0)
