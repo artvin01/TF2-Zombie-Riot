@@ -1671,6 +1671,7 @@ public void OnMapEnd()
 	OnRoundEnd(null, NULL_STRING, false);
 	Waves_MapEnd();
 	Spawns_MapEnd();
+	NPC_MapEnd();
 #endif
 
 #if defined RPG

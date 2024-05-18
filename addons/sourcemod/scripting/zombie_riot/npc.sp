@@ -479,6 +479,11 @@ void NPC_ConfigSetup()
 	ArchmageBones_OnMapStart_NPC();
 }
 
+void NPC_MapEnd()
+{
+	SSB_DeleteSpellCards();
+}
+
 int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
