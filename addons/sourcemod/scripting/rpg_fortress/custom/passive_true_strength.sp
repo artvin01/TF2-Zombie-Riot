@@ -20,14 +20,8 @@ public void TrueStrengthUnequip(int client)
 {
 	TrueStrength[client] = false;
 	TrueStrength_Rage[client] = false;
-	delete TrueStrengthHandle[client][client];
-}
-
-public void TrueStrengthDisconnect(int client)
-{
-	TrueStrength[client] = false;
-	TrueStrength_Rage[client] = false;
-	delete TrueStrengthHandle[client][client];
+	if(TrueStrengthHandle[client][client] != INVALID_HANDLE)
+		delete TrueStrengthHandle[client][client];
 }
 
 public void TrueStrengthEquip(int client, int weapon, int index)
@@ -144,7 +138,10 @@ static Action TrueStrengthTimer(Handle dashHud, DataPack pack)
 			damageDelt *= float(i_BleedStackLogic[o_attacker][victim]) / float(i_BleedStackLogicMax[o_attacker]);
 			float pos[3];
 			WorldSpaceCenter(victim, pos);
+			//it shall pierce abit of flat resistance.
+			f_FlatDamagePiercing[o_attacker] = 0.35;
 			SDKHooks_TakeDamage(victim, o_attacker, o_attacker, damageDelt, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			f_FlatDamagePiercing[o_attacker] = 1.0;
 			return Plugin_Continue;
 		}
 		else

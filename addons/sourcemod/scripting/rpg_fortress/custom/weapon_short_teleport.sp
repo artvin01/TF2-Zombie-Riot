@@ -85,8 +85,17 @@ public float AbilityShortTeleport(int client, int index, char name[48])
 	float time = Weapon_Wand_ShortTeleport(client, weapon, 1, damageDelt);
 	if(time > 0.0)
 	{
-		RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
+		EmitSoundToAll(WAND_TELEPORT_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7);
 		RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
+		if(ChronoShiftReady(client) == 2)
+		{
+			ChronoShiftDoCooldown(client);
+			time = 0.0;
+		}
+		else
+		{
+			RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
+		}
 	}
 	return (GetGameTime() + time);
 }

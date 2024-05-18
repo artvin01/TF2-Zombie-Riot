@@ -779,6 +779,14 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= 0.85;
 			}
+			if(WarCry_Enabled(client))
+			{
+				percentage_Global *= 0.75;
+			}
+			if(WarCry_Enabled_Buff(client))
+			{
+				percentage_Global *= WarCry_ResistanceBuff(client);
+			}
 #endif
 			if(f_HussarBuff[client] > GameTime)
 			{
@@ -867,6 +875,22 @@ public void OnPostThink(int client)
 				int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 				int ammo = GetEntData(TaurusInt, iAmmoTable, 4);//Get ammo clip
 				FormatEx(buffer, sizeof(buffer), "%s [T %i/%i]",buffer, ammo, TaurusMaxAmmo());
+			}
+#endif
+
+#if defined RPG
+			if(ChronoShiftReady(client))
+			{
+				if(ChronoShiftReady(client) == 2)
+				{
+					had_An_ability = true;
+					Format(buffer, sizeof(buffer), "[◈]", buffer);
+				}
+				else
+				{
+					had_An_ability = true;
+					Format(buffer, sizeof(buffer), "%s [◈ %.1fs]", buffer, ChornoShiftCooldown(client));
+				}
 			}
 #endif
 		}
@@ -1106,6 +1130,16 @@ public void OnPostThink(int client)
 		{
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "T%s", bufferbuffs);
+		}
+		if(WarCry_Enabled(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "w%s", bufferbuffs);
+		}
+		if(WarCry_Enabled_Buff(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "W%s", bufferbuffs);
 		}
 #endif
 		if(had_An_ability)
@@ -1698,6 +1732,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 #endif
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
+
+	#if defined RPG
+	Player_Ability_Warcry_OnTakeDamage(attacker, victim, damage);
+	#endif
 #endif
 
 #if defined ZR
@@ -1775,6 +1813,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(TrueStength_ClientBuff(victim))
 		{
 			damage *= 0.85;
+		}
+		if(WarCry_Enabled_Buff(victim))
+		{
+			damage *= WarCry_ResistanceBuff(victim);
 		}
 		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 #endif

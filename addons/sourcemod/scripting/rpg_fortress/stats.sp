@@ -426,6 +426,7 @@ void Stats_ApplyAttribsPost(int client, TFClassType class)
 		speed *= 0.85; 
 	}
 	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
+	Attributes_SetMulti(client, 442, 1.0);
 
 	static Race race;
 	static Form form;

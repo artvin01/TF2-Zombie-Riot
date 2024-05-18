@@ -3760,28 +3760,11 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 #endif
 
 
-stock void spawnRing_Vectors(float center[3],
- float range,
-  float modif_X,
-  float modif_Y,
-   float modif_Z,
-    char sprite[255],
-	 int r,
-	  int g,
-	   int b,
-	    int alpha,
-		 int fps,
-		  float life,
-		   float width,
-		    float amp,
-			 int speed,
-			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0, int client = 0) //Spawns a TE beam ring at a client's/entity's location
 {
-	float Center_Internal[3];
-	Center_Internal = center;
-	Center_Internal[0] += modif_X;
-	Center_Internal[1] += modif_Y;
-	Center_Internal[2] += modif_Z;
+	center[0] += modif_X;
+	center[1] += modif_Y;
+	center[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3796,8 +3779,15 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
+	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	if(client > 0)
+	{
+		TE_SendToClient(client);
+	}
+	else
+	{
+		TE_SendToAll();
+	}
 }
 
 stock char[] CharInt(int value)
@@ -4467,7 +4457,6 @@ void PrecachePlayerGiveGiveResponseVoice()
 
 void MakePlayerGiveResponseVoice(int client, int status)
 {
-	
 	int ClassShown = view_as<int>(CurrentClass[client]);
 
 	switch(status)

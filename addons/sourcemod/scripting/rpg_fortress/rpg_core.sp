@@ -121,6 +121,10 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "rpg_fortress/custom/weapon_passanger.sp"
 #include "rpg_fortress/custom/passive_true_strength.sp"
+#include "rpg_fortress/custom/melee_war_cry.sp"
+#include "rpg_fortress/custom/passive_chrono_shift.sp"
+#include "rpg_fortress/custom/weapon_heal_aoe.sp"
+#include "rpg_fortress/custom/passive_golden_agility.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -247,6 +251,9 @@ void RPG_MapStart()
 	Wand_Short_Teleport_Map_Precache();
 	Passanger_Wand_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
+	WarCryOnMapStart();
+	Wand_HolyLight_Map_Precache();
+	Abiltity_GoldenAgility_MapStart();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
@@ -390,6 +397,8 @@ void RPG_ClientDisconnect(int client)
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
 	TrueStrengthShieldDisconnect(client);
+	TrueStrengthUnequip(client);
+	ChronoShiftUnequipOrDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
 	f_TransformationDelay[client] = 0.0;
 	RequestFrame(CheckIfAloneOnServer);
@@ -410,6 +419,7 @@ void RPG_EntityCreated(int entity, const char[] classname)
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
+	OnEntityCreatedMeleeWarcry(entity);
 }
 
 void RPG_PlayerRunCmdPost(int client, int buttons)

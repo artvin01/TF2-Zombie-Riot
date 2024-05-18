@@ -8,8 +8,9 @@ public void TrueStrengthShieldUnequip(int client)
 	TrueStrengthShieldCounter[client] = 0;
 	TrueStrengthShield[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
-	
-	delete TrueStrengthShieldHandle[client];
+
+	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
+		delete TrueStrengthShieldHandle[client];
 }
 
 public void TrueStrengthShieldDisconnect(int client)

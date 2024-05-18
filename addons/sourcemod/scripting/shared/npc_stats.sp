@@ -4397,7 +4397,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 			return false;
 		}
-		if(index == enemy)
+		if(index == enemy && !b_AllowSelfTarget[index])
 		{
 			return false;
 		}
@@ -4441,7 +4441,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			if(!b_NpcIsTeamkiller[index] && GetTeam(index) == GetTeam(enemy))
 			{
 #if defined RPG
-				if(RPGCore_PlayerCanPVP(index, enemy))
+				if(RPGCore_PlayerCanPVP(index, enemy) || b_NpcIsTeamkiller[index])
 					return true;
 				else
 					return false;

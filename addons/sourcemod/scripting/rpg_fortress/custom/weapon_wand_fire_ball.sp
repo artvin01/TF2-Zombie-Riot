@@ -76,7 +76,16 @@ public float AbilityFireball(int client, int index, char name[48])
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana");
 		return 0.0;
 	}
-	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
+	float Time = 15.0;
+	if(ChronoShiftReady(client) == 2)
+	{
+		ChronoShiftDoCooldown(client);
+		Time = 0.0;
+	}
+	else
+	{
+		RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd / 2);
+	}
 	RPGCore_ResourceReduction(client, StatsForCalcMultiAdd_Capacity);
 	
 	StatsForCalcMultiAdd = Stats_Artifice(client);
@@ -86,7 +95,8 @@ public float AbilityFireball(int client, int index, char name[48])
 	damageDelt *= 1.6;
 
 	Weapon_Wand_FireBallSpell(client, 1, weapon, damageDelt);
-	return (GetGameTime() + 15.0);
+
+	return (GetGameTime() + Time);
 }
 
 public void Weapon_Wand_FireBallSpell(int client, int weapon, int level, float damage)
