@@ -41,6 +41,7 @@ void Stats_EnableCharacter(int client)
 	StatCapacity[client] = kv.GetNum("capacity");
 	XP[client] = kv.GetNum("xp");
 	InputMulti[client] = kv.GetNum("input", 1);
+	kv.GetVector("spawn", f3_PositionArrival[client]);
 
 	delete Mastery[client];
 
@@ -141,6 +142,7 @@ static void SaveClientStats(int client)
 		kv.SetNum("capacity", StatCapacity[client]);
 		kv.SetNum("xp", XP[client]);
 		kv.SetNum("input", InputMulti[client]);
+		kv.SetVector("spawn", f3_PositionArrival[client]);
 
 		kv.DeleteKey("mastery");
 
@@ -180,6 +182,7 @@ void Stats_ClientDisconnect(int client)
 	HasKeyHintHud[client] = false;
 	delete Mastery[client];
 	delete HasKilled[client];
+	f3_PositionArrival[client][0] = 0.0;
 }
 
 void Stats_UpdateHud(int client)
