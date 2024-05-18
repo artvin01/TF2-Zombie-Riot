@@ -1749,7 +1749,7 @@ public void Dungeon_Cave_Super_Ai(int entity)
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_auto_cave_defense"))
 	{
-		CClotBody npc = view_as<CClotBody>(entity);
+		//CClotBody npc = view_as<CClotBody>(entity);
 		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 		health = RoundToNearest(float(health) * 1.50);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);

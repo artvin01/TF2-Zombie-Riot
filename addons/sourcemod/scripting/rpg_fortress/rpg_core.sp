@@ -978,17 +978,17 @@ bool RPGCore_ClientCanTransform(int client)
 		return false;
 
 	static Race race;
-	static Form form;
+	//static Form form;
 	if(Races_GetRaceByIndex(RaceIndex[client], race))
 	{
 		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
 		{
-			race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+			//race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
 		}
 		else
 		{
 			return false;
-			form.Default();
+			//form.Default();
 		}	
 	}
 	return true;

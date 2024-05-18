@@ -198,38 +198,26 @@ static void OnLeave(int entity, const char[] name)
 	}
 }
 
-static void OnEnable(int caller , int entity, const char[] name)
+static void OnEnable(const char[] name)
 {
-	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
-	{
-	}
-	else*/
-	{
-		Crafting_EnableZone(name);
-		Dungeon_EnableZone(name);
-		Mining_EnableZone(name);
-		Spawns_EnableZone(caller, name);
-		Tinker_EnableZone(name);
-		Worldtext_EnableZone(name);
-	}
+	Crafting_EnableZone(name);
+	Dungeon_EnableZone(name);
+	Mining_EnableZone(name);
+	Spawns_EnableZone(name);
+	Tinker_EnableZone(name);
+	Worldtext_EnableZone(name);
 }
 
 static void OnDisable(const char[] name)
 {
-	/*if(!b_NpcHasDied[entity]) //An npc just touched it!
-	{
-	}
-	else*/
-	{
-		Actor_DisableZone(name);
-		Crafting_DisableZone(name);
-		Dungeon_DisableZone(name);
-		Mining_DisableZone(name);
-		Spawns_DisableZone(name);
-		TextStore_ZoneAllLeave(name);
-		Tinker_DisableZone(name);
-		Worldtext_DisableZone(name);
-	}
+	Actor_DisableZone(name);
+	Crafting_DisableZone(name);
+	Dungeon_DisableZone(name);
+	Mining_DisableZone(name);
+	Spawns_DisableZone(name);
+	TextStore_ZoneAllLeave(name);
+	Tinker_DisableZone(name);
+	Worldtext_DisableZone(name);
 }
 
 bool Zones_IsActive(const char[] name)
@@ -298,7 +286,7 @@ public Action Zones_StartTouchAll(const char[] output, int entity, int caller, f
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
 			ActiveZones.PushString(name);
-			OnEnable(caller, entity, name);
+			OnEnable(name);
 		}
 	}
 	return Plugin_Continue;

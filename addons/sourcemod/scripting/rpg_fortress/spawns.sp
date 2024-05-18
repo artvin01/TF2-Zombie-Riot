@@ -200,19 +200,19 @@ void Spawns_ClientLeave(int client, const char[] name)
 	}
 }
 
-void Spawns_EnableZone(int client, const char[] name)
+void Spawns_EnableZone(const char[] name)
 {
 	int length = SpawnList.Length;
 	for(int i; i < length; i++)
 	{
 		static SpawnEnum spawn;
 		SpawnList.GetArray(i, spawn);
-
+/*
 		if(RPGSpawns_LevelPrioLogic(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
 		{
 			spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
 		}
-
+*/
 		if(StrEqual(spawn.Zone, name))
 			UpdateSpawn(i, spawn, true);
 	}
