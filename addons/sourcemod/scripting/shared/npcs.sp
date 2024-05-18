@@ -1503,6 +1503,19 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		else
 			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(MAX)", Debuff_Adder_left);			
 	}
+	switch(BubbleProcStatusLogicCheck(victim))
+	{
+		case -1:
+		{
+			Debuff_added = true;
+			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "B!%s", Debuff_Adder_right);
+		}
+		case 1:
+		{
+			Debuff_added = true;
+			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "b!%s", Debuff_Adder_right);
+		}
+	}
 #endif
 
 #if defined ZR
@@ -2116,6 +2129,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
+		return true;
+	else if(BubbleProcStatusLogicCheck(client) != 0)
 		return true;
 #endif
 	return false;
@@ -3149,6 +3164,19 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 	{
 		damage *= RES_BATTILONS;
 	}		
+#if defined RPG
+	switch(BubbleProcStatusLogicCheck(victim))
+	{
+		case -1:
+		{
+			damage *= 0.85;
+		}
+		case 1:
+		{
+			damage *= 1.15;
+		}
+	}
+#endif
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
 		damage *= RES_MEDIGUN_LOW;

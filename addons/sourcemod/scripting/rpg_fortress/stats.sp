@@ -411,7 +411,7 @@ void Stats_ApplyAttribsPre(int client)
 	Stats_ClearCustomStats(client);
 }
 
-void Stats_ApplyAttribsPost(int client, TFClassType class)
+void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
 {
 	Attributes_SetAdd(client, 26, RemoveExtraHealth(class, float(Stats_Structure(client) * 30)));
 	Attributes_Set(client, 252, 0.0/*Stats_KnockbackResist(client)*/);
@@ -425,8 +425,21 @@ void Stats_ApplyAttribsPost(int client, TFClassType class)
 	{
 		speed *= 0.85; 
 	}
+	
+	switch(BubbleProcStatusLogicCheck(client))
+	{
+		case -1:
+		{
+			speed *= 1.15; 
+		}
+		case 1:
+		{
+			speed *= 0.85; 
+		}
+	}
+	
 	Attributes_SetMulti(client, 107, RemoveExtraSpeed(class, speed));
-	Attributes_SetMulti(client, 442, 1.0);
+	Attributes_SetMulti(client, 442, SpeedExtra);
 
 	static Race race;
 	static Form form;

@@ -775,6 +775,17 @@ public void OnPostThink(int client)
 				percentage_Global *= RES_BATTILONS;
 			}	
 #if defined RPG
+			switch(BubbleProcStatusLogicCheck(client))
+			{
+				case -1:
+				{
+					percentage_Global *= 0.85;
+				}
+				case 1:
+				{
+					percentage_Global *= 1.15;
+				}
+			}
 			if(TrueStength_ClientBuff(client))
 			{
 				percentage_Global *= 0.85;
@@ -1126,6 +1137,19 @@ public void OnPostThink(int client)
 			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
 		}
 #if defined RPG
+		switch(BubbleProcStatusLogicCheck(client))
+		{
+			case -1:
+			{
+				had_An_ability = true;
+				Format(bufferbuffs, sizeof(bufferbuffs), "B!%s", bufferbuffs);
+			}
+			case 1:
+			{
+				had_An_ability = true;
+				Format(bufferbuffs, sizeof(bufferbuffs), "b!%s", bufferbuffs);
+			}
+		}
 		if(TrueStength_ClientBuff(client))
 		{
 			had_An_ability = true;
@@ -1813,6 +1837,17 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(TrueStength_ClientBuff(victim))
 		{
 			damage *= 0.85;
+		}
+		switch(BubbleProcStatusLogicCheck(victim))
+		{
+			case -1:
+			{
+				damage *= 0.85;
+			}
+			case 1:
+			{
+				damage *= 1.15;
+			}
 		}
 		if(WarCry_Enabled_Buff(victim))
 		{

@@ -995,6 +995,7 @@ void Store_ApplyAttribs(int client)
 	if(!EquippedItems)
 		return;
 
+	float SpeedAttribBefore = Attributes_Get(client, 442, 1.0);
 	Attributes_RemoveAll(client);
 	Stats_ApplyAttribsPre(client);
 	
@@ -1126,7 +1127,7 @@ void Store_ApplyAttribs(int client)
 		}
 	}
 
-	Stats_ApplyAttribsPost(client, ClassForStats);
+	Stats_ApplyAttribsPost(client, ClassForStats, SpeedAttribBefore);
 
 	while(TF2_GetWearable(client, entity))
 	{

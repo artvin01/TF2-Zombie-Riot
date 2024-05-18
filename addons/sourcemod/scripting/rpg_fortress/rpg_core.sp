@@ -125,6 +125,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/passive_chrono_shift.sp"
 #include "rpg_fortress/custom/weapon_heal_aoe.sp"
 #include "rpg_fortress/custom/passive_golden_agility.sp"
+#include "rpg_fortress/custom/weapon_bubble_proc.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -254,6 +255,7 @@ void RPG_MapStart()
 	WarCryOnMapStart();
 	Wand_HolyLight_Map_Precache();
 	Abiltity_GoldenAgility_MapStart();
+	Wand_BubbleProctection_Map_Precache();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 

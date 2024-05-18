@@ -1370,6 +1370,19 @@ methodmap CClotBody < CBaseCombatCharacter
 				speed_for_return *= 0.75;
 #endif
 			}
+#if defined RPG
+			switch(BubbleProcStatusLogicCheck(this.index))
+			{
+				case -1:
+				{
+					speed_for_return *= 1.15; 
+				}
+				case 1:
+				{
+					speed_for_return *= 0.85; 
+				}
+			}
+#endif
 			if(this.m_fHighTeslarDebuff > Gametime)
 			{
 				speed_for_return *= 0.65;
@@ -7651,6 +7664,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(entity);
 #endif
+	f_BubbleProcStatus[entity][0] = 0.0;
+	f_BubbleProcStatus[entity][1] = 0.0;
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
