@@ -1277,8 +1277,44 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 		}
 
 		weapon.Forge[weapon.ForgeCount] = forge.Attrib;
+		
+		float value = 1.0;
+		switch(weapon.ForgeCount)
+		{
+			case 0:
+			{
+				switch(forge.Type)
+				{
+					case 0:
+						value = GetRandomFloat(1.0, forge.High);
+					
+					case 1:
+						value = GetRandomFloat(forge.Low, 1.0);
+					
+					case 2:
+						value = GetRandomFloat(0.0, forge.High);
+				}
+			}
+			case 1:
+			{
+				switch(forge.Type)
+				{
+					case 0:
+						value = GetRandomFloat(forge.Low, 1.0);
+					
+					case 1:
+						value = GetRandomFloat(1.0, forge.High);
+					
+					case 2:
+						value = GetRandomFloat(forge.Low, 0.0);
+				}
+			}
+			default:
+			{
+				value = GetRandomFloat(forge.Low, forge.High);
+			}
+		}
 
-		float value = GetRandomFloat(forge.Low, forge.High);
 		weapon.Value[weapon.ForgeCount++] = value;		
 		bool bad = view_as<bool>(GetURandomInt() % 2);
 /*
