@@ -606,7 +606,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		ActorKv.GetVector("teleport", pos);
 		if(pos[0])
 		{
-			TeleportEntity(client, pos);
+			float ang[3];
+			ActorKv.GetVector("angles", pos);
+			TeleportEntity(client, pos, ang);
 
 			if(ActorKv.GetNum("setspawn"))
 				f3_PositionArrival[client] = pos;
@@ -1832,6 +1834,9 @@ static void AdjustActions(int client, const char[] key)
 		{
 			GetClientAbsOrigin(client, pos);
 			ActorKv.SetVector("teleport", pos);
+
+			GetClientEyeAngles(client, pos);
+			ActorKv.SetVector("angles", pos);
 		}
 	}
 	else if(StrEqual(key, "delete"))
