@@ -19,7 +19,7 @@ static const char TierName[][] =
 	"Legendary"			// 10 / 16
 };
 
-#define FORGE_COST	4000
+#define FORGE_COST	2000
 #define ROLLING_COST	2000
 #define REROLL_COST	3000
 
