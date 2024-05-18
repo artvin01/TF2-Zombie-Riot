@@ -1098,6 +1098,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #endif
 #if defined RPG
 		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
+		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -1492,6 +1493,17 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		
 		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
+#if defined RPG
+	if(TrueStrength_StacksOnEntity(attacker, victim) > 0) //True stength!
+	{
+		Debuff_added = true;
+		
+		if(TrueStrength_StacksOnEntity(attacker, victim) < TrueStrength_StacksOnEntityMax(attacker))
+			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(%i/%i)", Debuff_Adder_left, TrueStrength_StacksOnEntity(attacker, victim), TrueStrength_StacksOnEntityMax(attacker));			
+		else
+			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(MAX)", Debuff_Adder_left);			
+	}
+#endif
 
 #if defined ZR
 	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
@@ -1789,7 +1801,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			{
 				HudOffset += 0.035;
 			}
-			else if(NpcHadArmorType(raidboss, 2) || DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))	
+			else if(NpcHadArmorType(raidboss, 2) || DoesNpcHaveHudDebuffOrBuff(attacker, raidboss, GameTime))	
 			{
 				HudOffset += 0.035;
 			}
@@ -2036,7 +2048,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 }
 #endif
 
-stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
+stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
@@ -2100,10 +2112,14 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-
+	else if(f_Ruina_Attack_Buff[npc] > GameTime)
+		return true;
+#if defined RPG
+	else if(TrueStrength_StacksOnEntity(client, npc))
+		return true;
+#endif
 	return false;
 }
-
 void DoMeleeAnimationFrameLater(DataPack pack)
 {
 	pack.Reset();

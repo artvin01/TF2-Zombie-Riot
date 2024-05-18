@@ -774,6 +774,12 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= RES_BATTILONS;
 			}	
+#if defined RPG
+			if(TrueStength_ClientBuff(client))
+			{
+				percentage_Global *= 0.85;
+			}
+#endif
 			if(f_HussarBuff[client] > GameTime)
 			{
 				percentage_Global *= 0.90;
@@ -1095,6 +1101,13 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
 		}
+#if defined RPG
+		if(TrueStength_ClientBuff(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "T%s", bufferbuffs);
+		}
+#endif
 		if(had_An_ability)
 		{
 			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
@@ -1758,7 +1771,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.8;
 		}
-		
+#if defined RPG
+		if(TrueStength_ClientBuff(victim))
+		{
+			damage *= 0.85;
+		}
+		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
+#endif
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 		//It will just return the same damage if nothing is done.
 	

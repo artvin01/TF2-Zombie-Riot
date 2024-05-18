@@ -364,11 +364,11 @@ public void MutatedDrowedZombieHuman_ClotThink(int iNPC)
 
 				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				float Damage = 50000.0;
+				float Damage1 = 50000.0;
 				if(npc.m_flDoingSpecial)
-					Damage = 55000.0;
+					Damage1 = 55000.0;
 
-				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage, 1000.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 1000.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}

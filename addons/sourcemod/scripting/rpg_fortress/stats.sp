@@ -462,8 +462,12 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace =
 	{
 		bonus += Strength[entity];
 	}
-
-	return bonus + RoundFloat(base * multirace * multiform);
+	int returnnumber = (bonus + RoundFloat(base * multirace * multiform));
+	if(TrueStength_ClientBuff(client))
+	{
+		returnnumber = RoundToNearest(float(returnnumber) * 1.35);
+	}
+	return returnnumber;
 }
 
 int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)

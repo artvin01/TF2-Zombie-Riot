@@ -7649,6 +7649,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_HpRegenInBattle[entity] = 0;
 	Level[entity] = 0;
 	RPGCore_ResetHurtList(entity);
+	TrueStrength_Reset(entity);
 #endif
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
 	i_NoEntityFoundCount[entity] = 0;

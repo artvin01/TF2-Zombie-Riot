@@ -4209,7 +4209,6 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	return HealAmount;
 }
 
-#if defined ZR
 static const char g_ScoutDownedResponse[][] = {
 	"vo/scout_paincrticialdeath01.mp3",
 	"vo/scout_paincrticialdeath02.mp3",
@@ -4644,6 +4643,7 @@ void MakePlayerGiveResponseVoice(int client, int status)
 	}
 }
 
+#if defined ZR
 void KillDyingGlowEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);

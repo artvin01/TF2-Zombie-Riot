@@ -1,94 +1,179 @@
-static Handle TrueStrengthHandle[MAXENTITIES] = {INVALID_HANDLE, ...};
+static Handle TrueStrengthHandle[MAXPLAYERS+1][MAXENTITIES];
+//a timer on each entity, private to each player
+
+#define BLEED_TIMEOUT_DURATION 5.0
+#define HITS_UNTILL_ENRAGE_NORM 6
+
 static bool TrueStrength[MAXPLAYERS+1] = {false, ...};
+//does the player have this item
 static bool TrueStrength_Rage[MAXPLAYERS+1] = {false, ...};
-static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
-static int i_BleedStackLogic[MAXENTITIES][MAXPLAYERS+1];
+//is the player enraged
+static int i_BleedStackLogic[MAXPLAYERS+1][MAXENTITIES];
+//How many bleedstacks does this entity have
+static int i_BleedStackLogicMax[MAXPLAYERS+1];
+//What is the max requires bleed stack needed to enrage
+static float f_TimerBleedRemove[MAXENTITIES];
+//Time untill the bleed or enrage timer removes itself
+#define TRUE_STRENGTH_SOUND "items/powerup_pickup_strength.wav"
 
-public void TrueStrengthShieldUnequip(int client)
+public void TrueStrengthUnequip(int client)
 {
-	TrueStrengthShield[client] = false;
-	
-	delete TrueStrengthHandle[client];
+	TrueStrength[client] = false;
+	TrueStrength_Rage[client] = false;
+	delete TrueStrengthHandle[client][client];
 }
 
-public void TrueStrengthShieldDisconnect(int client)
+public void TrueStrengthDisconnect(int client)
 {
-	TrueStrengthShield[client] = false;
-	TrueStrengthHandle[client] = INVALID_HANDLE;
+	TrueStrength[client] = false;
+	TrueStrength_Rage[client] = false;
+	delete TrueStrengthHandle[client][client];
 }
 
-public void TrueStrengthShieldEquip(int client, int weapon, int index)
+public void TrueStrengthEquip(int client, int weapon, int index)
 {
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		if (TrueStrengthHandle[client] != INVALID_HANDLE)
-			return;
-
-		TrueStrengthShield[client] = true;		
-		TrueStrengthHandle[client] = CreateTimer(0.5, TrueStrengthShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		PrecacheSound(TRUE_STRENGTH_SOUND, true);
+		TrueStrength[client] = true;		
 	}
 }
 
-void Abiltity_TrueStrength_Shield_Shield_PluginStart()
+void Abiltity_TrueStrength_PluginStart()
 {
-	PrecacheSound("player/resistance_light1.wav", true);
-	PrecacheSound("player/resistance_light2.wav", true);
-	PrecacheSound("player/resistance_light3.wav", true);
-	PrecacheSound("player/resistance_light4.wav", true);
-	PrecacheSound("player/resistance_medium1.wav", true);
-	PrecacheSound("player/resistance_medium2.wav", true);
-	PrecacheSound("player/resistance_medium3.wav", true);
-	PrecacheSound("player/resistance_medium4.wav", true);
-	PrecacheSound("player/resistance_heavy1.wav", true);
-	PrecacheSound("player/resistance_heavy2.wav", true);
-	PrecacheSound("player/resistance_heavy3.wav", true);
-	PrecacheSound("player/resistance_heavy4.wav", true);
-	PrecacheSound("weapons/medi_shield_deploy.wav", true);
-	PrecacheSound("weapons/medi_shield_retract.wav", true);
+	Zero2(TrueStrengthHandle);
 }
 
-bool NPC_Ability_TrueStrength_Shield_OnTakeDamage(int victim)
+void NPC_Ability_TrueStrength_OnTakeDamage(int attacker, int victim, int weapon, int &damagetype, int damagezrcustom)
 {
-	if (TrueStrengthShield[victim])
-	{
+	if (attacker <= 0 || attacker > MaxClients)
+		return;
 
+	if (!TrueStrength[attacker])
+		return;
+
+	if(damagezrcustom & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return;
+	
+	if(!(damagetype & DMG_CLUB))
+		return;
+
+	if(!IsValidEntity(weapon))
+		return;
+
+	float AttackspeedScaling = Attributes_Get(weapon, 6, 1.0);
+	AttackspeedScaling = 1.0 / AttackspeedScaling;
+	i_BleedStackLogicMax[attacker] = RoundToNearest(float(HITS_UNTILL_ENRAGE_NORM) * AttackspeedScaling);
+
+	if(TrueStrengthHandle[attacker][victim] == INVALID_HANDLE)
+	{
+		//Give them Bleed Timer
+		DataPack pack;
+		TrueStrengthHandle[attacker][victim] = CreateDataTimer(0.5, TrueStrengthTimer, pack, TIMER_REPEAT);
+		pack.WriteCell(attacker);	
+		pack.WriteCell(victim);	
+		pack.WriteCell(EntIndexToEntRef(victim));
 	}
-	return false;
+	if(TrueStength_ClientBuff(attacker))
+	{
+		i_BleedStackLogic[attacker][victim] += 9999;
+	}
+	i_BleedStackLogic[attacker][victim] += 1;
+	f_TimerBleedRemove[victim] = GetGameTime() + BLEED_TIMEOUT_DURATION;
+	if(i_BleedStackLogic[attacker][victim] >= i_BleedStackLogicMax[attacker])
+	{
+		i_BleedStackLogic[attacker][victim] = i_BleedStackLogicMax[attacker];
+		//the npc has hit their bleed limit, enrage the melee player.
+		f_TimerBleedRemove[attacker] = GetGameTime() + (BLEED_TIMEOUT_DURATION * 1.5);
+		if(TrueStrengthHandle[attacker][attacker] == INVALID_HANDLE)
+		{
+			DataPack pack;
+			TrueStrengthHandle[attacker][attacker] = CreateDataTimer(0.5, TrueStrengthTimer, pack, TIMER_REPEAT);
+			pack.WriteCell(attacker);	
+			pack.WriteCell(attacker);	
+			pack.WriteCell(EntIndexToEntRef(attacker));	
+			TrueStrength_Rage[attacker]	= true;
+		//	ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
+			EmitSoundToAll(TRUE_STRENGTH_SOUND, attacker, SNDCHAN_STATIC, 100, _);
+			TF2_AddCondition(attacker, TFCond_MegaHeal, 0.5, attacker);
+		//	MakePlayerGiveResponseVoice(attacker, 1); //haha!
+		}
+	}
 }
 
-static Action TrueStrengthShieldTimer(Handle dashHud, int ref)
+static Action TrueStrengthTimer(Handle dashHud, DataPack pack)
 {
-	int client = EntRefToEntIndex(ref);
-	if (IsValidClient(client))
+	pack.Reset();
+	int o_attacker = pack.ReadCell();
+	int o_victim = pack.ReadCell();
+	int victim = EntRefToEntIndex(pack.ReadCell());
+	if (!IsValidClient(o_attacker))
 	{
-		if(!IsPlayerAlive(client))
-			return Plugin_Continue;
-
+		TrueStrength_Reset(o_victim);
+		return Plugin_Stop;
+	}
+	if (!IsValidEntity(victim))
+	{
+		TrueStrength_Reset(o_victim);
+		return Plugin_Stop;
+	}
+	if(o_attacker == o_victim)
+	{
+		//This is playercode, this ONLY can come if the client reached their max bleed stacks.
+		if(f_TimerBleedRemove[o_attacker] < GetGameTime())
+		{
+			//Timer has expired, return them back to normal.
+			TrueStrength_Rage[o_attacker] = false;
+			TrueStrengthHandle[o_attacker][o_attacker] = null;
+			return Plugin_Stop;
+		}
 		return Plugin_Continue;
 	}
 	else
 	{
-		return Plugin_Stop;
+		if(f_TimerBleedRemove[o_victim] > GetGameTime())
+		{
+			if(i_BleedStackLogic[o_attacker][victim] >= i_BleedStackLogicMax[o_attacker])
+			{
+				i_BleedStackLogic[o_attacker][victim] = i_BleedStackLogicMax[o_attacker];
+			}
+			int StengthStats = Stats_Strength(o_attacker);
+			float damageDelt = RPGStats_FlatDamageSetStats(o_attacker, 0, StengthStats);
+			damageDelt *= 0.25;
+			damageDelt *= float(i_BleedStackLogic[o_attacker][victim]) / float(i_BleedStackLogicMax[o_attacker]);
+			float pos[3];
+			WorldSpaceCenter(victim, pos);
+			SDKHooks_TakeDamage(victim, o_attacker, o_attacker, damageDelt, DMG_CLUB | DMG_PREVENT_PHYSICS_FORCE, _, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+			return Plugin_Continue;
+		}
+		else
+		{
+			//Timer has expired, bleed turns off.
+			TrueStrengthHandle[o_attacker][victim] = null;
+			i_BleedStackLogic[o_attacker][victim] = 0;
+			return Plugin_Stop;
+		}
 	}
 }
 
-int TrueStrength_StacksOnEntity(int entity, int client)
+int TrueStrength_StacksOnEntity(int client, int entity)
 {
-	return i_BleedStackLogic[entity][client];
+	return i_BleedStackLogic[client][entity];
 }
-
-int TrueStrength_Reset(int entity)
+int TrueStrength_StacksOnEntityMax(int client)
+{
+	return i_BleedStackLogicMax[client];
+}
+bool TrueStength_ClientBuff(int client)
+{
+	return TrueStrength_Rage[client];
+}
+void TrueStrength_Reset(int entity)
 {
 	for(int client; client <= MaxClients; client++)
 	{
-		i_BleedStackLogic[entity][client] = 0;
+		i_BleedStackLogic[client][entity] = 0;
+		delete TrueStrengthHandle[client][entity];
 	}
-	delete TrueStrengthHandle[entity];
-}
-
-
-int TrueStrength_Reset(int entity)
-{
-
 }

@@ -260,7 +260,7 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 45000.0;
 					if(npc.m_flDoingSpecial)
-						damage = 48000;
+						damage = 48000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -356,11 +356,11 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 
 				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				float Damage = 40000;
+				float Damage1 = 40000.0;
 				if(npc.m_flDoingSpecial)
-					Damage = 45000;
+					Damage1 = 45000.0;
 
-				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}

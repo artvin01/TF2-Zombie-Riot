@@ -120,6 +120,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
 #include "rpg_fortress/custom/weapon_passanger.sp"
+#include "rpg_fortress/custom/passive_true_strength.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -240,11 +241,12 @@ void RPG_MapStart()
 	Mortar_MapStart();
 	Wand_FireBall_Map_Precache();
 	BrickWeapon_Map_Precache();
-	Abiltity_TrueStrength_Shield_Shield_PluginStart();
+	Abiltity_TrueStrength_PluginStart();
 	AirCutter_Map_Precache();
 	QuickReflex_MapStart();
 	Wand_Short_Teleport_Map_Precache();
 	Passanger_Wand_MapStart();
+	PrecachePlayerGiveGiveResponseVoice();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
