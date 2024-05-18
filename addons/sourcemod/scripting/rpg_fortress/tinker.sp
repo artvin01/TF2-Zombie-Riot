@@ -1315,27 +1315,10 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 			}
 		}
 
-		weapon.Value[weapon.ForgeCount++] = value;		
-		bool bad = view_as<bool>(GetURandomInt() % 2);
-/*
-		if(!bad)
-		{
-			switch(forge.Type)
-			{
-				case 0:
-					bad = value <= 1.0;
-				
-				case 1:
-					bad = value >= 1.0;
-				
-				case 2:
-					bad = value <= 0.0;
-			}
-		}
-*/
-		if(!bad)
-			break;
+		weapon.Value[weapon.ForgeCount++] = value;
 
+		if(weapon.ForgeCount > 1 && GetURandomInt() % 2)
+			break;
 	}
 }
 
@@ -1393,7 +1376,7 @@ public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Attributes_SetMulti(weapon, 2, 0.99);
 	Attributes_SetMulti(weapon, 410, 0.99);
-	Attributes_SetMulti(weapon, 2016, 0.99);
+	Attributes_SetMulti(weapon, 2016, 0.98);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
