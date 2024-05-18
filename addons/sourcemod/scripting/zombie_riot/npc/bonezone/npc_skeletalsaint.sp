@@ -22,7 +22,7 @@
 #define PARTICLE_NECROBLAST_2			"merasmus_spawn_flash"
 
 static float BONES_SAINT_SPEED = 350.0;
-static float BONES_SAINT_SPEED_BUFFED = 400.0;
+static float BONES_SAINT_SPEED_BUFFED = 420.0;
 static float SAINT_NATURAL_BUFF_CHANCE = 0.00;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float SAINT_NATURAL_BUFF_LEVEL_MODIFIER = 0.0;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float SAINT_NATURAL_BUFF_LEVEL = 0.0;	//The average level at which level_modifier reaches its max.
