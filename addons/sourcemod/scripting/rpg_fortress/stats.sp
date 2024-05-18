@@ -792,6 +792,8 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 		}
 		case MenuAction_Select:
 		{
+			int oldLevel = Level[client];
+
 			for(int i; i < InputMulti[client]; i++)
 			{
 				if(choice < 9)
@@ -855,6 +857,8 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 
 				Stats_UpdateLevel(client);
 			}
+
+			Tinker_StatsLevelUp(client, oldLevel);
 
 			ClientCommand(client, "playgamesound ui/mm_medal_click.wav");
 			UpdateLevelAbovePlayerText(client);

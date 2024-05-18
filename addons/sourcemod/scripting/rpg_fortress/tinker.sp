@@ -19,7 +19,7 @@ static const char TierName[][] =
 	"Legendary"			// 10 / 16
 };
 
-#define FORGE_COST	4000
+#define FORGE_COST	2000
 #define ROLLING_COST	2000
 #define REROLL_COST	3000
 
@@ -169,6 +169,7 @@ enum struct TinkerEnum
 	Function FuncAttack3;
 	Function FuncReload;
 	Function FuncGainXP;
+	Function FuncMining;
 
 	void SetupEnum(KeyValues kv)
 	{
@@ -204,6 +205,9 @@ enum struct TinkerEnum
 
 		kv.GetString("func_gainxp", this.Desc, 256);
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
+
+		kv.GetString("func_mining", this.Desc, 256);
+		this.FuncMining = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
 		kv.GetString("attribs", this.Desc, 256);
@@ -393,9 +397,9 @@ void Tinker_DisableZone(const char[] name)
 	}
 }
 
-static void ToMetaData(KeyValues kv, const WeaponEnum weapon, char data[512])
+static void ToMetaData(const WeaponEnum weapon, char data[512])
 {
-	int sell = FORGE_COST + kv.GetNum("sell", kv.GetNum("cost") * 3 / 4);
+	int sell = FORGE_COST;
 
 	Format(data, sizeof(data), "txp%d", weapon.XP);
 
@@ -427,9 +431,8 @@ static int ConvertToTinker(int client, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		static const int cost = FORGE_COST;
 		int cash = TextStore_Cash(client);
-		if(cost <= cash)
+		if(FORGE_COST <= cash)
 		{
 			int amount;
 			TextStore_GetInv(client, index, amount);
@@ -438,11 +441,11 @@ static int ConvertToTinker(int client, int index)
 				TextStore_SetInv(client, index, amount - 1, false);
 
 				char data[20];
-				FormatEx(data, sizeof(data), "sell%d", cost);
+				FormatEx(data, sizeof(data), "sell%d", FORGE_COST);
 				newIndex = TextStore_CreateUniqueItem(client, index, data);
 				TextStore_UseItem(client, newIndex, false);
 
-				TextStore_Cash(client, -cost);
+				TextStore_Cash(client, -FORGE_COST);
 			}
 		}
 	}
@@ -640,7 +643,7 @@ void Tinker_GainXP(int client, int entity)
 					if(kv)
 					{
 						static char data[512];
-						ToMetaData(kv, weapon, data);
+						ToMetaData(weapon, data);
 						TextStore_SetItemData(weapon.Store, data);
 					}
 				}
@@ -898,9 +901,8 @@ static void ShowMenu(int client, int page)
 					if(kv.GetNum("sell", kv.GetNum("cost")) > 0)
 					{
 						int cash = TextStore_Cash(client);
-						static const int cost = FORGE_COST;
-						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, cost);
-						menu.AddItem("-2", buffer, cash < cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, FORGE_COST);
+						menu.AddItem("-2", buffer, cash < FORGE_COST ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 					}
 					else
 					{
@@ -1180,7 +1182,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 								RollRandomAttribs(Level[client], weapon, tool);
 								WeaponList.SetArray(i, weapon);
 
-								ToMetaData(kv, weapon, data);
+								ToMetaData(weapon, data);
 								TextStore_SetItemData(weapon.Store, data);
 								TF2_RegeneratePlayer(client);
 								break;
@@ -1235,7 +1237,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 									weapon.Perks[weapon.PerkCount++] = page;
 									WeaponList.SetArray(i, weapon);
 
-									ToMetaData(kv, weapon, data);
+									ToMetaData(weapon, data);
 									TextStore_SetItemData(weapon.Store, data);
 									TF2_RegeneratePlayer(client);
 									break;
@@ -1322,7 +1324,7 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 	}
 }
 
-stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
+void Tinker_StatsLevelUp(int client, int oldLevel)
 {
 	int count;
 	int length = TinkerList.Length;
@@ -1336,9 +1338,7 @@ stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Modifiers In Forge", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat(client, "%d New Modifiers In Forge", count);
 	}
 
 	count = 0;
@@ -1356,9 +1356,41 @@ stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count > 0)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Attributes In Tinker", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat(client, "%d New Attributes In Tinker", count);
+	}
+}
+
+void Tinker_Mining(int client, int entity, int toolTier, int mineTier, int &damage)
+{
+	int index = Store_GetStoreOfEntity(entity);
+	if(index < 0)
+	{
+		static WeaponEnum weapon;
+		int length = WeaponList.Length;
+		for(int i; i < length; i++)
+		{
+			WeaponList.GetArray(i, weapon);
+			if(weapon.Store == index && weapon.Owner == client)
+			{
+				for(i = 0; i < weapon.PerkCount; i++)
+				{
+					static TinkerEnum tinker;
+					TinkerList.GetArray(weapon.Perks[i], tinker);
+					if(tinker.FuncMining != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, tinker.FuncMining);
+						Call_PushCell(client);
+						Call_PushCell(entity);
+						Call_PushCell(toolTier);
+						Call_PushCell(mineTier);
+						Call_PushCellRef(damage);
+						Call_Finish();
+					}
+				}
+
+				break;
+			}
+		}
 	}
 }
 
@@ -1375,8 +1407,23 @@ public void Tinker_XP_Ecological(int client, int weapon)
 public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Attributes_SetMulti(weapon, 2, 0.99);
-	Attributes_SetMulti(weapon, 410, 0.99);
-	Attributes_SetMulti(weapon, 2016, 0.98);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 0.99);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 0.98);
+}
+
+public void Tinker_XP_Dense(int client, int weapon)
+{
+	Attributes_SetMulti(weapon, 2, 1.005);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 1.005);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 1.01);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
@@ -1397,4 +1444,28 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
+}
+
+public void Tinker_XP_Stonebound(int client, int weapon)
+{
+	ApplyTempAttrib(weapon, 6, 0.985, 120.0);
+	ApplyTempAttrib(weapon, 2, 0.985, 120.0);
+
+	if(Attributes_Has(weapon, 410))
+		ApplyTempAttrib(weapon, 410, 0.985, 120.0);
+}
+
+public void Tinker_XP_Momentum(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 6.0, client);
+}
+
+public void Tinker_XP_Momentum2(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 12.0, client);
+}
+
+public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
+{
+	damage += 5 * (toolTier - mineTier);
 }
