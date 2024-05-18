@@ -466,6 +466,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					}
 					int damage = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2016, true));
 
+					Tinker_Mining(client, weapon, tier, mine.Tier, damage);
+
 					if(Rare_hit)
 					{
 						damage *= 6;

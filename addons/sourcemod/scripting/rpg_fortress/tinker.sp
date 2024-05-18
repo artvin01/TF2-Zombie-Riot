@@ -169,6 +169,7 @@ enum struct TinkerEnum
 	Function FuncAttack3;
 	Function FuncReload;
 	Function FuncGainXP;
+	Function FuncMining;
 
 	void SetupEnum(KeyValues kv)
 	{
@@ -204,6 +205,9 @@ enum struct TinkerEnum
 
 		kv.GetString("func_gainxp", this.Desc, 256);
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
+
+		kv.GetString("func_mining", this.Desc, 256);
+		this.FuncMining = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
 		kv.GetString("attribs", this.Desc, 256);
@@ -1322,7 +1326,7 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 	}
 }
 
-stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
+void Tinker_StatsLevelUp(int client, int oldLevel)
 {
 	int count;
 	int length = TinkerList.Length;
@@ -1336,9 +1340,7 @@ stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Modifiers In Forge", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat("%d New Modifiers In Forge", count);
 	}
 
 	count = 0;
@@ -1356,9 +1358,41 @@ stock void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count > 0)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Attributes In Tinker", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat("%d New Attributes In Tinker", count);
+	}
+}
+
+void Tinker_Mining(int client, int weapon, int toolTier, int mineTier, int &damage)
+{
+	int index = Store_GetStoreOfEntity(entity);
+	if(index < 0)
+	{
+		static WeaponEnum weapon;
+		int length = WeaponList.Length;
+		for(int i; i < length; i++)
+		{
+			WeaponList.GetArray(i, weapon);
+			if(weapon.Store == index && weapon.Owner == client)
+			{
+				for(i = 0; i < weapon.PerkCount; i++)
+				{
+					static TinkerEnum tinker;
+					TinkerList.GetArray(weapon.Perks[i], tinker);
+					if(tinker.FuncMining != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, tinker.FuncMining);
+						Call_PushCell(client);
+						Call_PushCell(entity);
+						Call_PushCell(toolTier);
+						Call_PushCell(mineTier);
+						Call_PushCellRef(damage);
+						Call_Finish();
+					}
+				}
+
+				break;
+			}
+		}
 	}
 }
 
@@ -1375,8 +1409,23 @@ public void Tinker_XP_Ecological(int client, int weapon)
 public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Attributes_SetMulti(weapon, 2, 0.99);
-	Attributes_SetMulti(weapon, 410, 0.99);
-	Attributes_SetMulti(weapon, 2016, 0.98);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 0.99);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 0.98);
+}
+
+public void Tinker_XP_Dense(int client, int weapon)
+{
+	Attributes_SetMulti(weapon, 2, 1.005);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 1.005);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 1.01);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
@@ -1397,4 +1446,28 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
+}
+
+public void Tinker_XP_Stonebound(int client, int weapon)
+{
+	ApplyTempAttrib(weapon, 6, 0.985, 120.0);
+	ApplyTempAttrib(weapon, 2, 0.985, 120.0);
+
+	if(Attributes_Has(weapon, 410))
+		ApplyTempAttrib(weapon, 410, 0.985, 120.0);
+}
+
+public void Tinker_XP_Momentum(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 6.0, client);
+}
+
+public void Tinker_XP_Momentum2(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 12.0, client);
+}
+
+public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
+{
+	damage += 5 * (toolTier - mineTier);
 }
