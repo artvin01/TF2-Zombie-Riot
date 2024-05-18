@@ -3,10 +3,14 @@
 
 static float BONES_SUPREME_SPEED = 350.0;
 
-#define BONES_SUPREME_SCALE				"2.0"
+#define BONES_SUPREME_SCALE				"1.45"
 #define BONES_SUPREME_SKIN				"1"
 #define BONES_SUPREME_HP				"35000"
 #define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
+
+#define SND_SPAWN_ALERT		"misc/halloween/merasmus_appear.wav"
+
+#define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -14,49 +18,6 @@ static char g_DeathSounds[][] = {
 
 static char g_HurtSounds[][] = {
 	")zombie_riot/the_bone_zone/skeleton_hurt.mp3",
-};
-
-static char g_IdleSounds_Buffed[][] = {
-	")misc/halloween/skeletons/skelly_giant_01.wav",
-	")misc/halloween/skeletons/skelly_giant_02.wav",
-	")misc/halloween/skeletons/skelly_giant_03.wav"
-};
-
-static char g_IdleAlertedSounds_Buffed[][] = {
-	")misc/halloween/skeletons/skelly_giant_01.wav",
-	")misc/halloween/skeletons/skelly_giant_02.wav",
-	")misc/halloween/skeletons/skelly_giant_03.wav"
-};
-
-static char g_IdleSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_01.wav",
-	")misc/halloween/skeletons/skelly_medium_02.wav",
-	")misc/halloween/skeletons/skelly_medium_03.wav",
-	")misc/halloween/skeletons/skelly_medium_04.wav",
-};
-
-static char g_IdleAlertedSounds[][] = {
-	")misc/halloween/skeletons/skelly_medium_01.wav",
-	")misc/halloween/skeletons/skelly_medium_02.wav",
-	")misc/halloween/skeletons/skelly_medium_03.wav",
-	")misc/halloween/skeletons/skelly_medium_04.wav",
-};
-
-static char g_MeleeHitSounds[][] = {
-	")weapons/grappling_hook_impact_flesh.wav",
-};
-
-static char g_MeleeAttackSounds[][] = {
-	"player/cyoa_pda_fly_swoosh.wav",
-};
-
-static char g_MeleeMissSounds[][] = {
-	"misc/blank.wav",
-};
-
-static char g_HeIsAwake[][] = {
-	"physics/concrete/concrete_break2.wav",
-	"physics/concrete/concrete_break3.wav",
 };
 
 static char g_GibSounds[][] = {
@@ -221,13 +182,6 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_IdleSounds_Buffed));		i++) { PrecacheSound(g_IdleSounds_Buffed[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds_Buffed)); i++) { PrecacheSound(g_IdleAlertedSounds_Buffed[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_GibSounds));   i++) { PrecacheSound(g_GibSounds[i]);   }
 
 	for (int i = 0; i < (sizeof(g_SSBBigHit_Sounds));   i++) { PrecacheSound(g_SSBBigHit_Sounds[i]);   }
@@ -245,6 +199,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBLossEasterEgg_Sounds));   i++) { PrecacheSound(g_SSBLossEasterEgg_Sounds[i]);   }
 
 	PrecacheModel(MODEL_SSB);
+	PrecacheSound(SND_SPAWN_ALERT);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
@@ -264,24 +219,13 @@ static any Summon_SSB(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap SupremeSpookmasterBones < CClotBody
 {
-	public void PlayIdleSound() {
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		EmitSoundToAll(b_BonesBuffed[this.index] ? g_IdleSounds_Buffed[GetRandomInt(0, sizeof(g_IdleSounds_Buffed) - 1)] : g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CSupremeSpookmasterBones::PlayIdleSound()");
-		#endif
-	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 110));
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, 1.0, GetRandomInt(80, 110));
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayHurtSound()");
@@ -305,42 +249,12 @@ methodmap SupremeSpookmasterBones < CClotBody
 		PrintToServer("CSupremeSpookmasterBones::PlayGibSound()");
 		#endif
 	}
-	
-	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CSupremeSpookmasterBones::PlayMeleeHitSound()");
-		#endif
-	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CSupremeSpookmasterBones::PlayMeleeHitSound()");
-		#endif
-	}
-
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
-	}
-	
-	public void PlayHeIsAwake() {
-		EmitSoundToAll(g_HeIsAwake[GetRandomInt(0, sizeof(g_HeIsAwake) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CBunkerSkeleton::PlayHeIsAwakeSound()");
-		#endif
-	}
 
 	public void PlayIntroSound()
 	{
 		int rand = GetRandomInt(0, sizeof(g_SSBIntro_Sounds) - 1);
 		EmitSoundToAll(g_SSBIntro_Sounds[rand], _, _, 120);
+		EmitSoundToAll(SND_SPAWN_ALERT, _, _, _, _, 0.8);
 		CPrintToChatAll(g_SSBIntro_Captions[rand]);
 
 		#if defined DEBUG_SOUND
@@ -379,6 +293,19 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		npc.StartPathing();
 		npc.PlayIntroSound();
+
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "item_armor", 1, "%t", "SSB Spawn");
+			}
+		}
+
+		b_thisNpcIsARaid[npc.index] = true;
+		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 		
 		return npc;
 	}
@@ -429,9 +356,9 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 			
 		float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		/*npc.StartPathing();
+		npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
-		npc.FaceTowards(targPos, 15000.0);*/
+		npc.FaceTowards(targPos, 225.0);
 	}
 	else
 	{
@@ -440,8 +367,6 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
-	
-	npc.PlayIdleSound();
 }
 
 public Action SupremeSpookmasterBones_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

@@ -57,6 +57,10 @@
 		"nl"		"Blitzkrieg is gearriveerd"
 		"chi"       "闪电战已经到来"
 	}
+	"SSB Spawn"
+	{
+		"en"		"SSB is here to wreak chaos!"
+	}
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
