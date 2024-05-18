@@ -599,6 +599,25 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 			ActorKv.GoBack();
 		}
 
+		if(ActorKv.GetNum("resetspawn"))
+			f3_PositionArrival[client][0] = 0.0;
+
+		float pos[3];
+		ActorKv.GetVector("teleport", pos);
+		if(pos[0])
+		{
+			float ang[3];
+			ActorKv.GetVector("angles", pos);
+			TeleportEntity(client, pos, ang);
+
+			if(ActorKv.GetNum("setspawn"))
+				f3_PositionArrival[client] = pos;
+		}
+		else if(ActorKv.GetNum("setspawn"))
+		{
+			GetClientAbsOrigin(client, f3_PositionArrival[client]);
+		}
+
 		ActorKv.GoBack();
 	}
 
@@ -1017,6 +1036,36 @@ void Actor_EditorMenu(int client)
 			else
 			{
 				menu.AddItem("deposit", "Add \"Deposit Items\"");
+			}
+
+			if(ActorKv.GetNum("setspawn"))
+			{
+				menu.AddItem("setspawn", "Set Spawn Point");
+			}
+			else
+			{
+				menu.InsertItem(2, "setspawn", "Add \"Set Spawn Point\"");
+			}
+
+			if(ActorKv.GetNum("resetspawn"))
+			{
+				menu.AddItem("resetspawn", "Reset Spawn Point");
+			}
+			else
+			{
+				menu.InsertItem(2, "resetspawn", "Add \"Reset Spawn Point\"");
+			}
+
+			float pos[3];
+			ActorKv.GetVector("teleport", pos);
+			if(pos[0])
+			{
+				Format(buffer2, sizeof(buffer2), "Teleport: %.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+				menu.AddItem("teleport", buffer2);
+			}
+			else
+			{
+				menu.InsertItem(2, "teleport", "Add \"Teleport\"");
 			}
 
 			if(!missing)
@@ -1769,9 +1818,26 @@ static void AdjustActions(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentChatEditing[client], true);
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
 
-	if(StrEqual(key, "deposit"))
+	if(StrEqual(key, "deposit") || StrEqual(key, "setspawn") || StrEqual(key, "resetspawn"))
 	{
-		ActorKv.SetNum("deposit", ActorKv.GetNum("deposit") ? 0 : 1);
+		ActorKv.SetNum(key, ActorKv.GetNum(key) ? 0 : 1);
+	}
+	else if(StrEqual(key, "teleport"))
+	{
+		float pos[3];
+		ActorKv.GetVector("teleport", pos);
+		if(pos[0])
+		{
+			ActorKv.SetVector("teleport", NULL_VECTOR);
+		}
+		else
+		{
+			GetClientAbsOrigin(client, pos);
+			ActorKv.SetVector("teleport", pos);
+
+			GetClientEyeAngles(client, pos);
+			ActorKv.SetVector("angles", pos);
+		}
 	}
 	else if(StrEqual(key, "delete"))
 	{

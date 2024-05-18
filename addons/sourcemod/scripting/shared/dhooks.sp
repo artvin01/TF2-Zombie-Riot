@@ -1731,27 +1731,9 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 			TeleportEntity(client, f3_SpawnPosition[client], NULL_VECTOR, NULL_VECTOR);
 			f3_SpawnPosition[client][0] = 0.0;
 		}
-		else
+		else if(f3_PositionArrival[client][0])
 		{
-			int level = 0;
-			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
-			{
-				static char buffer[32];
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "rpg_respawn_", false))
-				{
-					int lv = StringToInt(buffer[12]);
-					if(level == lv)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-						TeleportEntity(client, pos, ang, NULL_VECTOR);
-						break;
-					}
-				}
-			}
+			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
 		}
 #endif
 	}
