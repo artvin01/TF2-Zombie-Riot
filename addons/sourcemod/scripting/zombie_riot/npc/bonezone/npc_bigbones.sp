@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BIG_SPEED = 200.0;
-static float BONES_BIG_SPEED_BUFFED = 250.0;
+static float BONES_BIG_SPEED = 220.0;
+static float BONES_BIG_SPEED_BUFFED = 260.0;
 static float BIG_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float BIG_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BIG_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.

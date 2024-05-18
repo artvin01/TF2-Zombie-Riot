@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BRITTLE_SPEED = 420.0;
+static float BONES_BRITTLE_SPEED = 440.0;
 static float BONES_BRITTLE_SPEED_BUFFED = 600.0;
 static float BRITTLE_NATURAL_BUFF_CHANCE = 0.15;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float BRITTLE_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
