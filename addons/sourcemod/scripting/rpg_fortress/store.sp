@@ -1173,6 +1173,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	TrueStrengthUnequip(client);
 	ChronoShiftUnequipOrDisconnect(client);
 	GoldenAgilityUnequip(client);
+	FishingEmblemDoubleJumpUnequip(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 

@@ -126,6 +126,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_heal_aoe.sp"
 #include "rpg_fortress/custom/passive_golden_agility.sp"
 #include "rpg_fortress/custom/weapon_bubble_proc.sp"
+#include "rpg_fortress/custom/emblem_doublejump.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"

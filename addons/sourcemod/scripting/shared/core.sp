@@ -1715,6 +1715,9 @@ public void OnGameFrame()
 #if defined ZR
 	NPC_SpawnNext(false, false);
 #endif
+#if defined RPG
+	DoubleJumpGameFrame();
+#endif	
 }
 
 public Action Command_PlayViewmodelAnim(int client, int args)
