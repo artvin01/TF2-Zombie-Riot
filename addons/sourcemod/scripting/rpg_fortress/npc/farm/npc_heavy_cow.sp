@@ -24,7 +24,7 @@ public void FarmCow_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return FarmCow(client, vecPos, vecAng, ally);
+	return FarmCow(client, vecPos, vecAng, TFTeam_Red);
 }
 
 methodmap FarmCow < CClotBody
@@ -42,9 +42,7 @@ methodmap FarmCow < CClotBody
 	public FarmCow(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		//Hardcode them being allies, it would make no sense if they were enemies.
-		FarmCow npc = view_as<FarmCow>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", true, false,_,_,_));
-		
-		i_NpcInternalId[npc.index] = FARM_COW;
+		FarmCow npc = view_as<FarmCow>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -70,6 +68,7 @@ methodmap FarmCow < CClotBody
 		func_NPCDeath[npc.index] = FarmCow_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = FarmCow_OnTakeDamage;
 		func_NPCThink[npc.index] = FarmCow_ClotThink;
+		func_NPCInteract[npc.index] = HeavyCow_Interact;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -178,7 +177,7 @@ public void FarmCow_ClotThink(int iNPC)
 //			return;
 			
 
-		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 		delete ToGroundTrace;
@@ -187,8 +186,8 @@ public void FarmCow_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 		NPC_StartPathing(iNPC);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];

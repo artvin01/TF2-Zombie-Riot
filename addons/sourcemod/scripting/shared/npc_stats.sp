@@ -76,6 +76,7 @@ Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
 Function func_NPCActorEmoted[MAXENTITIES];
+Function func_NPCInteract[MAXENTITIES];
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -3373,6 +3374,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
 		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
 		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
+		func_NPCInteract[pThis] = INVALID_FUNCTION;
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);

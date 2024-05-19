@@ -62,16 +62,16 @@ void NPC_ConfigSetup()
 	WaterZombie_OnMapStart_NPC();
 	DrowedZombieHuman_OnMapStart_NPC();
 	MutatedDrowedZombieHuman_OnMapStart_NPC();
+	FarmBear_OnMapStart_NPC();
+	FarmCow_OnMapStart_NPC();
 
 /*
-	FarmCow_OnMapStart_NPC();
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
 	BaseSquad_MapStart();
 	CombineTurtle_MapStart();
-	FarmBear_OnMapStart_NPC();
 */
 }
 
@@ -488,7 +488,7 @@ stock bool ShouldNpcJumpAtThisClient(int client)
 stock bool AllyNpcInteract(int client, int entity, int weapon)
 {
 	bool result;
-/*
+
 	Function func = func_NPCInteract[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -497,7 +497,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 		Call_PushCell(weapon);
 		Call_Finish(result);
 	}
-*/
+
 	return result;
 }
 
@@ -535,10 +535,9 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_water_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_drowned_zombiefied_human.sp"
 #include "rpg_fortress/npc/normal/npc_mutated_drowned_zombiefied_human.sp"
-/*
-
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
+/*
 	 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
