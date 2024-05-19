@@ -506,6 +506,9 @@ methodmap SupremeSpookmasterBones < CClotBody
 			SSB_WavePhase = 0;
 		else
 			SSB_WavePhase = RoundToCeil(wave / 15.0) - 1;
+
+		if (SSB_WavePhase > 3)
+			SSB_WavePhase = 3;
 		
 		return npc;
 	}
