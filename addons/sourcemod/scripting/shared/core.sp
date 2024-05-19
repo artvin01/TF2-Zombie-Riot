@@ -3331,6 +3331,7 @@ public void OnEntityDestroyed(int entity)
 		#if defined ZR
 		OnEntityDestroyed_Build_On_Build(entity);
 		#endif
+		NPCStats_SetFuncsToZero(entity);
 	}
 }
 
