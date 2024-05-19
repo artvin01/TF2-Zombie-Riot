@@ -481,7 +481,7 @@ void NPC_ConfigSetup()
 
 void NPC_MapEnd()
 {
-	SSB_DeleteSpellCards();
+	SSB_DeleteAbilities();
 }
 
 int NPC_Add(NPCData data)

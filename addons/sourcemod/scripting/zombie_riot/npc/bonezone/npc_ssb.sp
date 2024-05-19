@@ -211,7 +211,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	data.Func = Summon_SSB;
 	NPC_Add(data);
 
-	SSB_PrepareSpellCards();
+	SSB_PrepareAbilities();
 }
 
 static any Summon_SSB(int client, float vecPos[3], float vecAng[3], int ally)
@@ -219,16 +219,17 @@ static any Summon_SSB(int client, float vecPos[3], float vecAng[3], int ally)
 	return SupremeSpookmasterBones(client, vecPos, vecAng, ally);
 }
 
-//TODO: Make the SpellCard methodmap shareable between Spell Cards and Specials. The only real difference between the two systems should be the cooldowns and ArrayLists used.
-
 //The following are variables used for SSB's various stats and attacks.
 //I use the same trick here as I use for my weapons, but for the wave of the encounter instead.
-//When you see a variable that looks like "int MyVariable[4] = { 1, 2, 3, 4 };", 1 is the value used on wave 15, 2 is the value used on wave 30, 3 is 45, and 4 is 60+.
+//When you see a variable that looks like "int MyVariable[4] = { 1, 2, 3, 4 };", 1 is the value used on/before wave 15, 2 is the value used on wave 30, 3 is 45, and 4 is 60+.
+
+int SSB_WavePhase = 0;		//This gets set based on the wave number whenever SSB spawns. <= W15 = 0, 16-30 = 1, 31-45 = 2, 46+ = 3.
+							//Used purely to know which array slot to use for ability stats.
 
 //SPELL CARDS: SSB's basic attacks. These come out instantly, but are far weaker than his specials.
 //NOTE: Spell Cards must have their own function, which takes a "SupremeSpookmasterBones" as a parameter, plus one entity index for the target entity.
 ArrayList SSB_SpellCards[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spell Cards SSB can use on each wave.
-															//To change this, see "SSB_PrepareSpellCards".
+															//To change this, see "SSB_PrepareAbilities".
 int SSB_LastSpell[MAXENTITIES] = { -1, ... };				//The most recently-used spell card. Used so that the same Spell Card cannot be used twice in a row.
 int SSB_DefaultSpell[4] = { 0, 0, 0, 0 };					//The Spell Card slot to default to if none of the other Spell Cards are successfully cast.
 float SSB_NextSpell[MAXENTITIES] = { 0.0, ... }; 			//The GameTime at which SSB will use his next Spell Card.
@@ -236,41 +237,66 @@ float SSB_SpellCDMin[4] = { 10.0, 7.5, 5.0, 2.5 };			//The minimum cooldown betw
 float SSB_SpellCDMax[4] = { 20.0, 15.0, 10.0, 10.0 };		//The maximum cooldown between spell cards.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
+ArrayList SSB_Specials[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
+														//To change this, see "SSB_PrepareAbilities".
 int SSB_LastSpecial[MAXENTITIES] = { -1, ... };	//The most recently-used special. Used so that the same special cannot be used twice in a row.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 40.0, 35.0, 30.0, 25.0 }; //The maximum cooldown between specials.
 
-float SpellCard_Chance[MAXENTITIES] = { 0.0, ... };	//Do not touch this.
-Function SpellCard_Function[MAXENTITIES] = { INVALID_FUNCTION, ... };
+//Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
+#define SSB_MAX_ABILITIES		9999999
 
-bool SSB_AbilitySlotUsed[9999999] = {false, ...};
+int Ability_MaxUses[SSB_MAX_ABILITIES] = { 0, ... };	//The maximum number of times the ability can be used per fight. <= 0: no limit.
+int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the ability has been used during this fight.
+float Ability_Chance[SSB_MAX_ABILITIES] = { 0.0, ... };	//The chance for this ability to be used when SSB attempts to activate a Spooky Special or use a Spell Card (0.0 = 0%, 1.0 = 100%).
+Function Ability_Function[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	//The function to call when this ability is successfully activated.
+Function Ability_Filter[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };		//The function to call when this ability is about to be activated, to check manually if it can be used or not. Must take one SupremeSpookmasterBones and an entity index for the victim as parameters, and return a bool (true: activate, false: don't).
 
-methodmap SSB_SpellCard __nullable__
+bool SSB_AbilitySlotUsed[SSB_MAX_ABILITIES] = {false, ...};
+
+methodmap SSB_Ability __nullable__
 {
-	public SSB_SpellCard()
+	public SSB_Ability()
 	{
 		int index = 0;
-		while (SSB_AbilitySlotUsed[index])
+		while (SSB_AbilitySlotUsed[index] && index < SSB_MAX_ABILITIES)
 			index++;
 
+		if (index >= SSB_MAX_ABILITIES)
+			LogError("ERROR: SSB SOMEHOW has more than %i spell cards/specials...\nThis should never happen.", SSB_MAX_ABILITIES);
+		
 		SSB_AbilitySlotUsed[index] = true;
 
-		return view_as<SSB_SpellCard>(index);
+		return view_as<SSB_Ability>(index);
 	}
 
-	//Rolls to see if this Spell Card can successfully cast, and then auto-casts it and returns true on success. Set "forced" to true to ignore random chance and force the spell to go through.
-	public bool Cast(SupremeSpookmasterBones caster, int target, bool forced = false)
+	//Rolls to see if this ability can successfully be used, auto-using it and returning true on success.
+	//Set "forced" to true to ignore random chance, max uses, and the filter function and force the ability to go through.
+	public bool Activate(SupremeSpookmasterBones user, int target, bool forced = false)
 	{
 		bool success = true;
 		if (!forced)
 			success = GetRandomFloat(0.0, 1.0) <= this.Chance;
-		
-		if (success)
+
+		if (success && !forced)
+			success = this.Uses < this.MaxUses && this.MaxUses > 0;
+
+		if (success && !forced && this.FilterFunction != INVALID_FUNCTION)
 		{
-			Call_StartFunction(null, this.CastFunction);
-			Call_PushCell(caster);
+			Call_StartFunction(null, this.FilterFunction);
+			Call_PushCell(user);
+			Call_PushCell(target);
+			Call_Finish(success);
+		}
+		
+		if (success || forced)
+		{
+			Call_StartFunction(null, this.ActivationFunction);
+			Call_PushCell(user);
 			Call_PushCell(target);
 			Call_Finish();
+
+			this.Uses++;
 		}
 
 		return success;
@@ -279,7 +305,9 @@ methodmap SSB_SpellCard __nullable__
 	public void Delete()
 	{
 		this.Chance = 0.0;
-		this.CastFunction = INVALID_FUNCTION;
+		this.ActivationFunction = INVALID_FUNCTION;
+		this.Uses = 0;
+		this.MaxUses = 0;
 		SSB_AbilitySlotUsed[this.Index] = false;
 	}
 
@@ -288,46 +316,74 @@ methodmap SSB_SpellCard __nullable__
 		public get() { return view_as<int>(this); }
 	}
 
-	property float Chance
+	property int MaxUses
 	{
-		public get() { return SpellCard_Chance[this.Index]; }
-		public set(float value) { SpellCard_Chance[this.Index] = value; }
+		public get() { return Ability_MaxUses[this.Index]; }
+		public set(int value) { Ability_MaxUses[this.Index] = value; }
 	}
 
-	property Function CastFunction
+	property int Uses
 	{
-		public get() { return SpellCard_Function[this.Index]; }
-		public set(Function value) { SpellCard_Function[this.Index] = value; }
+		public get() { return Ability_Uses[this.Index]; }
+		public set(int value) { Ability_Uses[this.Index] = value; }
+	}
+
+	property float Chance
+	{
+		public get() { return Ability_Chance[this.Index]; }
+		public set(float value) { Ability_Chance[this.Index] = value; }
+	}
+
+	property Function ActivationFunction
+	{
+		public get() { return Ability_Function[this.Index]; }
+		public set(Function value) { Ability_Function[this.Index] = value; }
+	}
+
+	property Function FilterFunction
+	{
+		public get() { return Ability_Filter[this.Index]; }
+		public set(Function value) { Ability_Filter[this.Index] = value; }
 	}
 }
 
-static void SSB_PrepareSpellCards()
+static void SSB_PrepareAbilities()
 {
-	SSB_DeleteSpellCards();
+	SSB_DeleteAbilities();
 	for (int i = 0; i < 4; i++)
 		SSB_SpellCards[i] = new ArrayList(255);
 
-	//The following example adds a Spell Card to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance and calls SpellCard_Example when successfully cast.
+	for (int i = 0; i < 4; i++)
+		SSB_Specials[i] = new ArrayList(255);
+
+	//The following example adds a Spell Card to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance, can be used twice, checks SpellCard_Filter before activation, and calls SpellCard_Example when successfully cast.
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateSpellCard(0.15, SpellCard_Example));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.15, 2, SpellCard_Example, SpellCard_Filter));
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
 {
 	//Hypothetical Spell Card code goes here.
+}
+
+void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
+{
+	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
 }*/
 
-static SSB_SpellCard SSB_CreateSpellCard(float Chance, Function CastFunction)
+static SSB_Ability SSB_CreateAbility(float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
 {
-	SSB_SpellCard Spell = new SSB_SpellCard();
+	SSB_Ability Spell = new SSB_Ability();
 
 	Spell.Chance = Chance;
-	Spell.CastFunction = CastFunction;
+	Spell.MaxUses = MaxUses;
+	Spell.ActivationFunction = ActivationFunction;
+	Spell.FilterFunction = FilterFunction;
 
 	return Spell;
 }
 
-public void SSB_DeleteSpellCards()
+public void SSB_DeleteAbilities()
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -335,12 +391,22 @@ public void SSB_DeleteSpellCards()
 		{
 			for (int spell = 0; spell < GetArraySize(SSB_SpellCards[i]); spell++)
 			{
-				SSB_SpellCard card = GetArrayCell(SSB_SpellCards[i], spell);
-				card.Delete();
+				SSB_Ability ability = GetArrayCell(SSB_SpellCards[i], spell);
+				ability.Delete();
+			}
+		}
+
+		if (SSB_Specials[i] != null)
+		{
+			for (int special = 0; special < GetArraySize(SSB_Specials[i]); special++)
+			{
+				SSB_Ability ability = GetArrayCell(SSB_Specials[i], special);
+				ability.Delete();
 			}
 		}
 
 		delete SSB_SpellCards[i];
+		delete SSB_Specials[i];
 	}
 }
 
@@ -434,6 +500,12 @@ methodmap SupremeSpookmasterBones < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
+
+		float wave = float(Waves_GetWave());
+		if (wave <= 0.0)
+			SSB_WavePhase = 0;
+		else
+			SSB_WavePhase = RoundToCeil(wave / 15.0) - 1;
 		
 		return npc;
 	}
