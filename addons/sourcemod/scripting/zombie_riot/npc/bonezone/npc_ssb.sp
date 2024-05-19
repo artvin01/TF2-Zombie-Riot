@@ -239,7 +239,8 @@ float SSB_SpellCDMax[4] = { 20.0, 15.0, 10.0, 10.0 };		//The maximum cooldown be
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
 														//To change this, see "SSB_PrepareAbilities".
-int SSB_LastSpecial[MAXENTITIES] = { -1, ... };	//The most recently-used special. Used so that the same special cannot be used twice in a row.
+int SSB_LastSpecial[MAXENTITIES] = { -1, ... };			//The most recently-used special. Used so that the same special cannot be used twice in a row.
+float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 40.0, 35.0, 30.0, 25.0 }; //The maximum cooldown between specials.
 
@@ -454,6 +455,26 @@ methodmap SupremeSpookmasterBones < CClotBody
 		PrintToServer("CSupremeSpookmasterBones::PlayIntroSound()");
 		#endif
 	}
+
+	public void CalculateNextSpecial()
+	{
+		SSB_NextSpecial[this.index] = GetGameTime() + GetRandomFloat(SSB_SpecialCDMin[SSB_WavePhase], SSB_SpecialCDMax[SSB_WavePhase]);
+	}
+
+	public void CalculateNextSpellCard()
+	{
+		SSB_NextSpell[this.index] = GetGameTime() + GetRandomFloat(SSB_SpellCDMin[SSB_WavePhase], SSB_SpellCDMax[SSB_WavePhase]);
+	}
+
+	public bool IsSpecialReady()
+	{
+		return SSB_NextSpecial[this.index] >= GetGameTime();
+	}
+
+	public bool IsSpellReady()
+	{
+		return SSB_NextSpell[this.index] >= GetGameTime();
+	}
 	
 	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -510,6 +531,9 @@ methodmap SupremeSpookmasterBones < CClotBody
 		if (SSB_WavePhase > 3)
 			SSB_WavePhase = 3;
 		
+		npc.CalculateNextSpecial();
+		npc.CalculateNextSpellCard();
+
 		return npc;
 	}
 }
