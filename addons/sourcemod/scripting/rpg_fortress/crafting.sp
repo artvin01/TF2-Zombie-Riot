@@ -15,6 +15,7 @@ enum struct CraftEnum
 	char Wear1[PLATFORM_MAX_PATH];
 	char Wear2[PLATFORM_MAX_PATH];
 	char Wear3[PLATFORM_MAX_PATH];
+	char QuestReq[PLATFORM_MAX_PATH];
 
 	int EntRef;
 
@@ -62,6 +63,8 @@ enum struct CraftEnum
 		kv.GetString("wear3", this.Wear3, PLATFORM_MAX_PATH);
 		if(this.Wear3[0])
 			PrecacheModel(this.Wear3);
+			
+		kv.GetString("quest", this.QuestReq, PLATFORM_MAX_PATH);
 	}
 	
 	void Despawn()
@@ -324,6 +327,11 @@ bool Crafting_Interact(int client, int entity)
 			{
 				OpenEditorFrom(client, craft);
 				return true;
+			}
+			if(client <= MaxClients && craft.QuestReq[0] && Quests_GetStatus(client, craft.QuestReq) != Status_Completed)
+			{
+				ShowGameText(client, _, 0, "You need to complete \"%s\" quest to interact.", craft.QuestReq);
+				return false;
 			}
 
 			if(CurrentMenu[client] != -1)
@@ -713,6 +721,18 @@ void Crafting_EditorMenu(int client)
 				kv.GetString("wear3", buffer1, sizeof(buffer1));
 				FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"%s",buffer1, (!buffer1[0] || FileExists(buffer1, true)) ? "" : " {WARNING: Model does not exist}");
 				menu.AddItem("_wear3", buffer2);
+
+				
+				kv.GetString("quest", buffer2, sizeof(buffer2));
+				if(buffer2[0] && !Quests_KV().JumpToKey(buffer2))
+				{
+					Format(buffer2, sizeof(buffer2), "Quest Key: \"%s\" {WARNING: Quest does not exist}", buffer2);
+				}
+				else
+				{
+					Format(buffer2, sizeof(buffer2), "Quest Key: \"%s\"", buffer2);
+				}
+				menu.AddItem("_quest", buffer2);
 
 				menu.AddItem("_delete", "Delete (Type \"_delete\")", ITEMDRAW_DISABLED);
 

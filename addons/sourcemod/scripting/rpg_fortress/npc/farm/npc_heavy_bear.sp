@@ -15,8 +15,17 @@ public void FarmBear_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	PrecacheModel("models/player/heavy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Farm Bear");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_bear_farm");
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FarmBear(client, vecPos, vecAng, ally);
+}
 methodmap FarmBear < CClotBody
 {
 	public void PlayIdleSound()
@@ -33,8 +42,6 @@ methodmap FarmBear < CClotBody
 	{
 		//Hardcode them being allies, it would make no sense if they were enemies.
 		FarmBear npc = view_as<FarmBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", true, false,_,_,_));
-		
-		i_NpcInternalId[npc.index] = FARM_BEAR;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -57,8 +64,9 @@ methodmap FarmBear < CClotBody
 
 		npc.m_bisWalking = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FarmBear_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, FarmBear_ClotThink);
+		func_NPCDeath[npc.index] = FarmBear_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FarmBear_OnTakeDamage;
+		func_NPCThink[npc.index] = FarmBear_ClotThink;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -193,9 +201,6 @@ public void FarmBear_NPCDeath(int entity)
 
 	//how did you kill it?????????
 
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FarmBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, FarmBear_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -247,6 +252,7 @@ bool HeavyBear_Interact(int client, int weapon)
 							float vecTarget[3];
 							GetClientEyePosition(client, vecTarget);
 							TextStore_DropNamedItem(client, "High Quality Furr", vecTarget, 1); //Drops 1 milk.
+							TextStore_DropNamedItem(client, "Seed Bag I", vecTarget, 1); //Drops 1 milk.
 							Animal_Happy[client][0][Farm_Animal_Food_Type] -= 1.0;
 							switch(GetRandomInt(1,3))
 							{

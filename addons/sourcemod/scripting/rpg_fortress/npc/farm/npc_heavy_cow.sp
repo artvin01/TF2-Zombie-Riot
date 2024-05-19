@@ -15,6 +15,16 @@ public void FarmCow_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	PrecacheModel("models/player/heavy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Farm Cow");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_cow_farm");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FarmCow(client, vecPos, vecAng, ally);
 }
 
 methodmap FarmCow < CClotBody
@@ -57,8 +67,9 @@ methodmap FarmCow < CClotBody
 
 		npc.m_bisWalking = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FarmCow_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, FarmCow_ClotThink);
+		func_NPCDeath[npc.index] = FarmCow_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FarmCow_OnTakeDamage;
+		func_NPCThink[npc.index] = FarmCow_ClotThink;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -199,9 +210,6 @@ public void FarmCow_NPCDeath(int entity)
 
 	//how did you kill it?????????
 
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FarmCow_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, FarmCow_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -253,6 +261,7 @@ bool HeavyCow_Interact(int client, int weapon)
 							float vecTarget[3];
 							GetClientEyePosition(client, vecTarget);
 							TextStore_DropNamedItem(client, "Milk", vecTarget, 1); //Drops 1 milk.
+							TextStore_DropNamedItem(client, "Seed Bag I", vecTarget, 1); //Drops 1 milk.
 							Animal_Happy[client][0][Farm_Animal_Food_Type] -= 1.0;
 							switch(GetRandomInt(1,3))
 							{
