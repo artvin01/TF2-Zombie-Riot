@@ -102,8 +102,9 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 	GetClientEyeAngles(client, anglesB);
 	static float velocity[3];
 	GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-	velocity[0] = 0.0;
-	velocity[1] = 0.0;
+	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
+	velocity[0] *= 1.5;
+	velocity[1] *= 1.5;
 	velocity[2] = fmax(velocity[2], 600.0);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);		
 		
@@ -130,7 +131,7 @@ public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, fl
 
 	particle_1[client] = EntIndexToEntRef(particle_1[client]);
 
-	Duration_Pound[client] = GetGameTime() + 1.0;
+	Duration_Pound[client] = GetGameTime() + 0.35;
 	Is_Duration_Pound[client] = GetGameTime() + 5.0;
 		
 	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);

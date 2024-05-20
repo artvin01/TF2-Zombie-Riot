@@ -261,6 +261,7 @@ static void ShowMenu(int client, bool first)
 		
 		TextStore_GetItemName(garden.Store[client], buffer, sizeof(buffer));
 		menu.SetTitle("RPG Fortress\n \nGarden:\n%s\n ", buffer);
+		int totalInt = Stats_Intelligence(client);
 		
 		int timeleft = RoundToCeil(garden.ReadyIn[client] - GetGameTime());
 		if(timeleft > 0)
@@ -270,7 +271,15 @@ static void ShowMenu(int client, bool first)
 		}
 		else
 		{
-			menu.AddItem(num, "Extract");
+			if(totalInt >= 1000)
+			{
+				menu.AddItem(num, "Clean Extract");
+			}
+			else
+			{
+				menu.AddItem(num, "Extract");
+				menu.AddItem("-99", "(1000 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
+			}
 		}
 		
 		menu.AddItem(num, "Cancel");
@@ -387,28 +396,35 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 				if(kv)
 				{
 					float luck = float(Stats_Luck(client));
-					
-					static char buffer[48];
-					kv.GetString("seed_result", buffer, sizeof(buffer));
-					if(buffer[0])
+					int totalInt = Stats_Intelligence(client);
+					int loopmax = 1;
+					if(totalInt >= 1000)
+						loopmax = 2;
+
+					for(int loop = 0 ; loop < loopmax; loop++)
 					{
-						float low = kv.GetFloat("seed_min", 1.0);
-						float high = kv.GetFloat("seed_max", 1.0);
-						float rand = GetURandomFloat() * (1.0 + (luck / 50.0));
-						if(rand > 1.0)
-							rand = 1.0;
-						
-						TextStore_AddItemCount(client, buffer, RoundFloat(low + ((high - low) * rand)));
-					}
-					
-					float rand = kv.GetFloat("seed_return");
-					if(rand > 0.0)
-					{
-						rand *= 1.0 + (luck / 100.0);
-						if(rand > GetURandomFloat())
+						static char buffer[48];
+						kv.GetString("seed_result", buffer, sizeof(buffer));
+						if(buffer[0])
 						{
-							kv.GetSectionName(buffer, sizeof(buffer));
-							TextStore_AddItemCount(client, buffer, 1);
+							float low = kv.GetFloat("seed_min", 1.0);
+							float high = kv.GetFloat("seed_max", 1.0);
+							float rand = GetURandomFloat() * (1.0 + (luck / 50.0));
+							if(rand > 1.0)
+								rand = 1.0;
+							
+							TextStore_AddItemCount(client, buffer, RoundFloat(low + ((high - low) * rand)));
+						}
+						
+						float rand = kv.GetFloat("seed_return");
+						if(rand > 0.0)
+						{
+							rand *= 1.0 + (luck / 100.0);
+							if(rand > GetURandomFloat())
+							{
+								kv.GetSectionName(buffer, sizeof(buffer));
+								TextStore_AddItemCount(client, buffer, 1);
+							}
 						}
 					}
 				}

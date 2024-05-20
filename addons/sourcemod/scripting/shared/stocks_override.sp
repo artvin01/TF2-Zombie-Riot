@@ -322,7 +322,7 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 			}
 		}
 
-		if(velocity[0] != NULL_VECTOR[0] || velocity[1] || NULL_VECTOR[1] || velocity[2] != NULL_VECTOR[2])
+		if(velocity[0] != NULL_VECTOR[0] || velocity[1] != NULL_VECTOR[1] || velocity[2] != NULL_VECTOR[2])
 		{
 			Custom_SetAbsVelocity(entity, velocity);
 		}
