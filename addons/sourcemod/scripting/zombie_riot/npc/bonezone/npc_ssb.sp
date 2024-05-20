@@ -240,6 +240,7 @@ float SSB_SpellCDMax[4] = { 20.0, 15.0, 10.0, 10.0 };		//The maximum cooldown be
 ArrayList SSB_Specials[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
 														//To change this, see "SSB_PrepareAbilities".
 int SSB_LastSpecial[MAXENTITIES] = { -1, ... };			//The most recently-used special. Used so that the same special cannot be used twice in a row.
+int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to default to if none of the other Spooky Specials are successfully cast.
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 40.0, 35.0, 30.0, 25.0 }; //The maximum cooldown between specials.
@@ -360,6 +361,44 @@ static void SSB_PrepareAbilities()
 	//The following example adds a Spell Card to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance, can be used twice, checks SpellCard_Filter before activation, and calls SpellCard_Example when successfully cast.
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.15, 2, SpellCard_Example, SpellCard_Filter));
+
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_1));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_2));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_3));
+
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_1));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_3));
+}
+
+static void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{haunted}Example spell card #1 was cast!");
+}
+
+static void TestSpellCard_2(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
+}
+
+static void TestSpellCard_3(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
+}
+
+static void TestSpecial_1(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{vintage}Example special #1 was cast!");
+}
+
+static void TestSpecial_2(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{vintage}Example special #2 was cast!");
+}
+
+static void TestSpecial_3(SupremeSpookmasterBones ssb, int target)
+{
+	CPrintToChatAll("{vintage}Example special #3 was cast!");
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -456,6 +495,18 @@ methodmap SupremeSpookmasterBones < CClotBody
 		#endif
 	}
 
+	public void PlayMinorLoss()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBMinorWin_Sounds) - 1);
+		EmitSoundToAll(g_SSBMinorWin_Sounds[rand], _, _, 120);
+		EmitSoundToAll(SND_SPAWN_ALERT, _, _, _, _, 0.8);
+		CPrintToChatAll(g_SSBMinorWin_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayIntroSound()");
+		#endif
+	}
+
 	public void CalculateNextSpecial()
 	{
 		SSB_NextSpecial[this.index] = GetGameTime() + GetRandomFloat(SSB_SpecialCDMin[SSB_WavePhase], SSB_SpecialCDMax[SSB_WavePhase]);
@@ -474,6 +525,76 @@ methodmap SupremeSpookmasterBones < CClotBody
 	public bool IsSpellReady()
 	{
 		return SSB_NextSpell[this.index] >= GetGameTime();
+	}
+
+	public void ActivateSpecial(int target)
+	{
+		ArrayList clone = SSB_Specials[SSB_WavePhase].Clone();
+
+		bool success = false;
+		int activated = -1;
+
+		//First: Attempt to use a random ability.
+		while (!success && GetArraySize(clone) > 0)
+		{
+			activated = GetRandomInt(0, GetArraySize(clone) - 1);
+
+			if (activated != SSB_LastSpecial[this.index])
+			{
+				SSB_Ability chosen = GetArrayCell(clone, activated);
+				success = chosen.Activate(this, target, false);
+			}
+
+			RemoveFromArray(clone, activated);
+		}
+
+		delete clone;
+
+		//Second: We failed to successfully activate any of our random options, force the default ability to activate. 
+		if (!success)
+		{
+			activated = SSB_DefaultSpecial[SSB_WavePhase];
+			SSB_Ability chosen = GetArrayCell(SSB_Specials[SSB_WavePhase], activated);
+			chosen.Activate(this, target, true);
+		}
+
+		SSB_LastSpecial[this.index] = activated;
+		this.CalculateNextSpecial();
+	}
+
+	public void CastSpell(int target)
+	{
+		ArrayList clone = SSB_SpellCards[SSB_WavePhase].Clone();
+
+		bool success = false;
+		int activated = -1;
+
+		//First: Attempt to use a random ability.
+		while (!success && GetArraySize(clone) > 0)
+		{
+			activated = GetRandomInt(0, GetArraySize(clone) - 1);
+
+			if (activated != SSB_LastSpell[this.index])
+			{
+				SSB_Ability chosen = GetArrayCell(clone, activated);
+				success = chosen.Activate(this, target, false);
+			}
+
+			RemoveFromArray(clone, activated);
+		}
+
+		delete clone;
+
+		//Second: We failed to successfully activate any of our random options, force the default ability to activate. 
+		if (!success)
+		{
+			activated = SSB_DefaultSpell[SSB_WavePhase];
+			SSB_Ability chosen = GetArrayCell(SSB_SpellCards[SSB_WavePhase], activated);
+			chosen.Activate(this, target, true);
+		}
+
+		SSB_LastSpell[this.index] = activated;
+		this.CalculateNextSpellCard();
 	}
 	
 	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
@@ -495,14 +616,11 @@ methodmap SupremeSpookmasterBones < CClotBody
 		DispatchKeyValue(npc.index, "skin", BONES_SUPREME_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
-		
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
 		npc.m_flSpeed = BONES_SUPREME_SPEED;
 		
-		throwState[npc.index] = THROWSTATE_INACTIVE;
 		SDKHook(npc.index, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 
 		npc.StartPathing();
@@ -530,6 +648,8 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		if (SSB_WavePhase > 3)
 			SSB_WavePhase = 3;
+
+		CPrintToChatAll("WavePhase is %i", SSB_WavePhase);
 		
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
@@ -566,7 +686,6 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -586,6 +705,19 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 		npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
 		npc.FaceTowards(targPos, 225.0);
+
+		if (npc.IsSpecialReady())
+		{
+			npc.ActivateSpecial(closest);
+		}
+		else if (npc.IsSpellReady())
+		{
+			npc.CastSpell(closest);
+		}
+		else /*if (flDistanceToTarget <= SSB_MeleeRange && GetGameTime(npc.index) >= npc.m_flNextMeleeAttack)*/
+		{
+			//TODO: Generic melee attack if the target is close enough
+		}
 	}
 	else
 	{
@@ -616,14 +748,10 @@ public Action SupremeSpookmasterBones_OnTakeDamage(int victim, int &attacker, in
 public void SupremeSpookmasterBones_NPCDeath(int entity)
 {
 	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+
+	npc.PlayMinorLoss();	//TODO: He needs to have a more cinematic death sequence when defeated on wave 60.
 	SDKUnhook(entity, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 		
 	npc.RemoveAllWearables();
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-
