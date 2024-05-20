@@ -709,6 +709,7 @@ public Action Stats_ShowStats(int client, int args)
 			IntToString(ReskillPoints[client],XPBuffer, sizeof(XPBuffer));
 			ThousandString(XPBuffer, sizeof(XPBuffer));
 			menu.SetTitle("RPG Fortress\n \nLevel: %s\nSkill Points: %s (x%d)\nReopen menu while crouching for extended info.", LVLBuffer, XPBuffer, InputMulti[client]);
+			canSkill = true;
 		}
 		else
 		{
