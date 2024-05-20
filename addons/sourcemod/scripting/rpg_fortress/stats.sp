@@ -794,7 +794,7 @@ public Action Stats_ShowStats(int client, int args)
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Structure(client, amount, bonus, multirace, multiform);
-			FormatEx(buffer, sizeof(buffer), "STU: [R:x%.2f F:x%.2f] (Stamina + HP)", multirace, multiform, RPGStats_RetrieveMaxStamina(total));
+			FormatEx(buffer, sizeof(buffer), "STU: [R:x%.2f F:x%.2f] (%d Stamina)", multirace, multiform, RPGStats_RetrieveMaxStamina(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Intelligence(client, amount, bonus, multirace, multiform);
@@ -806,7 +806,7 @@ public Action Stats_ShowStats(int client, int args)
 			static Form form;
 			Races_GetClientInfo(client, race, form);
 			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
-			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%0.f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
+			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%.0f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Agility(client, amount, bonus, multirace);
