@@ -434,7 +434,7 @@ void Stats_ReskillEverything(int client)
 	ReskillPoints[client] += stats;
 
 	SaveClientStats(client);
-	Stats_ShowStats(client, 0);
+	FakeClientCommandEx(client, "rpg_stats");
 }
 
 void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
