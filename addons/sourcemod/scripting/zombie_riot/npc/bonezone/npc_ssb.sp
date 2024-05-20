@@ -236,6 +236,45 @@ float SSB_NextSpell[MAXENTITIES] = { 0.0, ... }; 			//The GameTime at which SSB 
 float SSB_SpellCDMin[4] = { 7.5, 6.25, 5.0, 3.75 };			//The minimum cooldown between spell cards.
 float SSB_SpellCDMax[4] = { 12.5, 11.25, 10.0, 8.75 };		//The maximum cooldown between spell cards.
 
+//SPELL CARD #1 - NIGHTMARE VOLLEY: SSB fires a spread of skulls, one of which will always be centered, which home in on victims and explode. Victims are ignited.
+//Skulls start red, but turn blue when homing begins.
+int Skull_Count[4] = { 2, 3, 4, 6 };						//The number of skulls fired by this Spell Card.
+int Skull_MaxTargets[4] = { 3, 4, 5, 6 };					//Maximum number of enemies hit by skull explosions.
+float Skull_Velocity[4] = { 400.0, 600.0, 800.0, 1000.0 };	//Skull velocity.
+float Skull_HomingDelay[4] = { 2.0, 1.5, 1.0, 0.5 };		//Time until the skulls begin to home in on targets.
+float Skull_DMG[4] = { 60.0, 90.0, 120.0, 150.0 };			//Skull base damage.
+float Skull_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
+float Skull_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };		//Skull explosion radius.
+float Skull_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
+float Skull_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; //Amount to multiply explosion damage for each target hit.
+
+//SPELL CARD #2 - CURSED CROSS: SSB stops in place and begins to charge up. Once ready: SSB fires a cross of deathly green lasers from his position.
+//These lasers have infinite piercing and are not subject to falloff.
+float Cross_DMG[4] = { 120.0, 240.0, 360.0, 480.0 };		//Laser damage.
+float Cross_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by lasers to entities.
+float Cross_Range[4] = { 400.0, 600.0, 900.0, 1200.0 };		//Laser range.
+float Cross_Width[4] = { 60.0, 90.0, 120.0, 150.0 };		//Laser hitbox width.
+float Cross_Delay[4] = { 3.0, 2.75, 2.5, 2.25 };			//Delay until the lasers are fired once this Spell Card is activated.
+
+//SPELL CARD #3 - CHAOS BARRAGE: SSB launches a bunch of weak laser projectiles in random directions. These lasers deal no damage and do not touch players.
+//After a short delay, the lasers freeze in place. Then, after another delay, the lasers fly towards whoever is closest and deal damage on contact.
+int Barrage_NumWaves[4] = { 8, 9, 10, 12 };							//The number of waves to fire.
+int Barrage_PerWave[4] = { 2, 2, 3, 3 };							//The number of projectiles fired per wave.
+float Barrage_WaveDelay[4] = { 0.2, 0.15, 0.1, 0.05 };				//Delay between projectile waves.
+float Barrage_InitialVelocity[4] = { 400.0, 400.0, 400.0, 400.0 };	//Projectile velocity before they pause.
+float Barrage_PauseDelay[4] = { 1.0, 0.86, 0.76, 0.66};				//Time until projectiles pause.
+float Barrage_PauseDuration[4] = {1.66, 1.0, 0.66, 0.33};			//Projectile pause duration.
+float Barrage_Velocity[4] = { 2000.0, 2200.0, 2200.0, 2200.0 }; 	//Projectile velocity after they unpause.
+float Barrage_DMG[4] = { 20.0, 25.0, 30.0, 40.0 };					//Projectile base damage.
+bool Barrage_Prediction[4] = { false, false, true, true };			//Whether or not the projectiles should predict target movement once they become lethal.
+
+//SPELL CARD #4 - DEATH MAGNETIC: SSB freezes in place and begins conjuring a spell. When ready: all players within line-of-sight are pulled to SSB.
+//If at least one player was pulled, this spell forces one of the following abilities to be used immediately, ignoring cooldowns and max usage: Cursed Cross, Soul Harvester, Spin to Win
+float Death_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };				//Delay before the pull activates.
+float Death_Radius[4] = { 1200.0, 1400.0, 1600.0, 1800.0 };	//Maximum radius in which the pull can be activated.
+
+
+
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
 														//To change this, see "SSB_PrepareAbilities".
@@ -253,6 +292,7 @@ int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the abi
 float Ability_Chance[SSB_MAX_ABILITIES] = { 0.0, ... };	//The chance for this ability to be used when SSB attempts to activate a Spooky Special or use a Spell Card (0.0 = 0%, 1.0 = 100%).
 Function Ability_Function[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	//The function to call when this ability is successfully activated.
 Function Ability_Filter[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };		//The function to call when this ability is about to be activated, to check manually if it can be used or not. Must take one SupremeSpookmasterBones and an entity index for the victim as parameters, and return a bool (true: activate, false: don't).
+char Ability_Name[SSB_MAX_ABILITIES][255];
 
 bool SSB_AbilitySlotUsed[SSB_MAX_ABILITIES] = {false, ...};
 
@@ -313,6 +353,16 @@ methodmap SSB_Ability __nullable__
 		SSB_AbilitySlotUsed[this.Index] = false;
 	}
 
+	public void SetName(char name[255])
+	{
+		Ability_Name[this.Index] = name;
+	}
+
+	public void GetName(char output[255])
+	{
+		strcopy(output, sizeof(output), Ability_Name[this.Index]);
+	}
+
 	property int Index
 	{ 
 		public get() { return view_as<int>(this); }
@@ -358,17 +408,17 @@ static void SSB_PrepareAbilities()
 		SSB_Specials[i] = new ArrayList(255);
 	}
 
-	//The following example adds a Spell Card to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance, can be used twice, checks SpellCard_Filter before activation, and calls SpellCard_Example when successfully cast.
+	//The following example adds a Spell Card named "Example Spell" to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance, can be used twice, checks SpellCard_Filter before activation, and calls SpellCard_Example when successfully cast.
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.15, 2, SpellCard_Example, SpellCard_Filter));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell", 0.15, 2, SpellCard_Example, SpellCard_Filter));
 
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_1));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_2));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_3));
+	PushArrayCell("Example Spell Card #1", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_1));
+	PushArrayCell("Example Spell Card #2", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_2));
+	PushArrayCell("Example Spell Card #3", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_3));
 
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_1));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_2));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_3));
+	PushArrayCell("Example Special #1", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_1));
+	PushArrayCell("Example Special #2", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_2));
+	PushArrayCell("Example Special #3", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_3));
 }
 
 public void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
@@ -411,7 +461,7 @@ void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
 	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
 }*/
 
-static SSB_Ability SSB_CreateAbility(float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
+static SSB_Ability SSB_CreateAbility(char name[255], float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
 {
 	SSB_Ability Spell = new SSB_Ability();
 
@@ -419,6 +469,7 @@ static SSB_Ability SSB_CreateAbility(float Chance, int MaxUses, Function Activat
 	Spell.MaxUses = MaxUses;
 	Spell.ActivationFunction = ActivationFunction;
 	Spell.FilterFunction = FilterFunction;
+	Spell.SetName(name);
 
 	return Spell;
 }
@@ -450,8 +501,16 @@ public void SSB_DeleteAbilities()
 	}
 }
 
+bool SSB_UsingAbility[MAXENTITIES];
+
 methodmap SupremeSpookmasterBones < CClotBody
 {
+	property bool UsingAbility
+	{
+		public get() { return SSB_UsingAbility[this.index]; }
+		public set(bool value) { SSB_UsingAbility[this.index] = value; }
+	}
+
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
@@ -519,23 +578,23 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 	public bool IsSpecialReady()
 	{
-		return SSB_NextSpecial[this.index] <= GetGameTime();
+		return SSB_NextSpecial[this.index] <= GetGameTime() && !this.UsingAbility;
 	}
 
 	public bool IsSpellReady()
 	{
-		return SSB_NextSpell[this.index] <= GetGameTime();
+		return SSB_NextSpell[this.index] <= GetGameTime() && !this.UsingAbility;
 	}
 
-	public void ActivateSpecial(int target)
+	public void ActivateSpecial(int target, int specific = -1)
 	{
 		ArrayList clone = SSB_Specials[SSB_WavePhase].Clone();
 
 		bool success = false;
 		int activated = -1;
 
-		//First: Attempt to use a random ability.
-		while (!success && GetArraySize(clone) > 0)
+		//First: Attempt to use a random ability, provided we do not have a specific ability to force.
+		while (!success && GetArraySize(clone) > 0 && specific == -1)
 		{
 			activated = GetRandomInt(0, GetArraySize(clone) - 1);
 
@@ -550,10 +609,11 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		delete clone;
 
-		//Second: We failed to successfully activate any of our random options, force the default ability to activate. 
+		//Second: Either we failed to successfully activate any of our random options, or we specified a specific ability to activate.
+		//In the former case, force the default ability to activate. Otherwise, activate the specified ability.
 		if (!success)
 		{
-			activated = SSB_DefaultSpecial[SSB_WavePhase];
+			activated = specific > -1 ? specific : SSB_DefaultSpecial[SSB_WavePhase];
 			SSB_Ability chosen = GetArrayCell(SSB_Specials[SSB_WavePhase], activated);
 			chosen.Activate(this, target, true);
 		}
@@ -562,15 +622,15 @@ methodmap SupremeSpookmasterBones < CClotBody
 		this.CalculateNextSpecial();
 	}
 
-	public void CastSpell(int target)
+	public void CastSpell(int target, int specific = -1)
 	{
 		ArrayList clone = SSB_SpellCards[SSB_WavePhase].Clone();
 
 		bool success = false;
 		int activated = -1;
 
-		//First: Attempt to use a random ability.
-		while (!success && GetArraySize(clone) > 0)
+		//First: Attempt to use a random ability, provided we do not have a specific ability to force.
+		while (!success && GetArraySize(clone) > 0 && specific == -1)
 		{
 			activated = GetRandomInt(0, GetArraySize(clone) - 1);
 
@@ -585,16 +645,57 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		delete clone;
 
-		//Second: We failed to successfully activate any of our random options, force the default ability to activate. 
+		//Second: Either we failed to successfully activate any of our random options, or we specified a specific ability to activate.
+		//In the former case, force the default ability to activate. Otherwise, activate the specified ability.
 		if (!success)
 		{
-			activated = SSB_DefaultSpell[SSB_WavePhase];
+			activated = specific > -1 ? specific : SSB_DefaultSpell[SSB_WavePhase];
 			SSB_Ability chosen = GetArrayCell(SSB_SpellCards[SSB_WavePhase], activated);
 			chosen.Activate(this, target, true);
 		}
 
 		SSB_LastSpell[this.index] = activated;
 		this.CalculateNextSpellCard();
+	}
+
+	public int GetAbilityByName(char name[255])
+	{
+		int index = -1;
+
+		for (int i = 0; i < GetArraySize(SSB_Specials[SSB_WavePhase]); i++)
+		{
+			SSB_Ability check = GetArrayCell(SSB_Specials[SSB_WavePhase], i);
+			char checkName[255];
+			check.GetName(checkName);
+
+			if (StrEqual(name, checkName))
+			{
+				index = i;
+				break;
+			}
+		}
+
+		return index;
+	}
+
+	public int GetSpellByName(char name[255])
+	{
+		int index = -1;
+		
+		for (int i = 0; i < GetArraySize(SSB_SpellCards[SSB_WavePhase]); i++)
+		{
+			SSB_Ability check = GetArrayCell(SSB_SpellCards[SSB_WavePhase], i);
+			char checkName[255];
+			check.GetName(checkName);
+
+			if (StrEqual(name, checkName))
+			{
+				index = i;
+				break;
+			}
+		}
+
+		return index;
 	}
 	
 	public SupremeSpookmasterBones(int client, float vecPos[3], float vecAng[3], int ally)
@@ -653,6 +754,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
+		npc.UsingAbility = false;
 
 		return npc;
 	}
