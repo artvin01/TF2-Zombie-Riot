@@ -666,7 +666,7 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 		bonus += Luck[entity];
 	}
 
-	return bonus + RoundFloat(base * multi);
+	return RoundFloat((float(bonus) + base) * multi);
 }
 
 float Stats_KnockbackResist(int client)

@@ -6,6 +6,7 @@ void Transform_Expidonsa_MapStart()
 {
 	PrecacheSound("player/taunt_wormshhg.wav");
 	PrecacheSound("ambient/levels/labs/electric_explosion4.wav");
+	PrecacheSound("weapons/sentry_explode.wav");
 }
 
 public void Halo_Activation_Enable_form_1(int client)
@@ -16,6 +17,11 @@ public void Halo_Activation_Enable_form_1(int client)
 public void Halo_Activation_Enable_form_2(int client)
 {
 	Halo_Activation_Enable_Global(client, 2);
+}
+
+public void Halo_Activation_Enable_form_3(int client)
+{
+	Halo_Activation_Enable_Global(client, 3);
 }
 
 public void Halo_Activation_Enable_Global(int client, int level)
@@ -29,6 +35,10 @@ public void Halo_Activation_Enable_Global(int client, int level)
 		case 2:
 		{
 			EmitSoundToAll("ambient/levels/labs/electric_explosion4.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("weapons/sentry_explode.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
@@ -53,7 +63,7 @@ public void Halo_Activation_Enable_Global(int client, int level)
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(IsValidEntity(viewmodelModel))
 	{
-		if(level == 1 || level == 2)
+		if(level == 1 || level == 2 || level == 3)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
 			int particle_halo = ParticleEffectAt(flPos, "unusual_symbols_parent_lightning", 0.0);
@@ -72,6 +82,14 @@ public void Halo_Activation_Enable_Global(int client, int level)
 			iref_Halo[client][1] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-3.0});
+		}
+		if(level == 3)
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+			int particler = ParticleEffectAt(flPos, "utaunt_elebound_yellow_parent", 0.0);
+			SetParent(client, particler);
+			iref_Halo[client][1] = EntIndexToEntRef(particler);
+			AddEntityToThirdPersonTransitMode(client, particler);
 		}
 	}
 }

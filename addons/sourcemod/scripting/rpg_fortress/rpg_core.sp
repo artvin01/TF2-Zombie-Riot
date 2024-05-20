@@ -127,6 +127,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/passive_golden_agility.sp"
 #include "rpg_fortress/custom/weapon_bubble_proc.sp"
 #include "rpg_fortress/custom/emblem_doublejump.sp"
+#include "rpg_fortress/custom/weapon_boom_stick.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -135,7 +136,6 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/potion_healing_effects.sp"
 #include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
 #include "rpg_fortress/custom/ranged_sentrythrow.sp"
-#include "rpg_fortress/custom/weapon_boom_stick.sp"
 */
 #include "rpg_fortress/custom/ground_pound_melee.sp"
 #include "rpg_fortress/custom/ranged_mortar_strike.sp"
@@ -257,6 +257,7 @@ void RPG_MapStart()
 	Wand_HolyLight_Map_Precache();
 	Abiltity_GoldenAgility_MapStart();
 	Wand_BubbleProctection_Map_Precache();
+	BoomStick_MapPrecache();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 
@@ -264,7 +265,6 @@ void RPG_MapStart()
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
-	BoomStick_MapPrecache();
 	Wand_Arts_MapStart();
 
 	Wand_IcicleShard_Map_Precache();
