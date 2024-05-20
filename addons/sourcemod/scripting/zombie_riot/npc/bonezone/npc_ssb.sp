@@ -519,12 +519,12 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 	public bool IsSpecialReady()
 	{
-		return SSB_NextSpecial[this.index] >= GetGameTime();
+		return SSB_NextSpecial[this.index] <= GetGameTime();
 	}
 
 	public bool IsSpellReady()
 	{
-		return SSB_NextSpell[this.index] >= GetGameTime();
+		return SSB_NextSpell[this.index] <= GetGameTime();
 	}
 
 	public void ActivateSpecial(int target)
