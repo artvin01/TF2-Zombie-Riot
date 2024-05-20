@@ -15,6 +15,7 @@ static int StatEndurance[MAXTF2PLAYERS];
 static int StatStructure[MAXTF2PLAYERS];
 static int StatIntelligence[MAXTF2PLAYERS];
 static int StatCapacity[MAXTF2PLAYERS];
+static int ReskillPoints[MAXTF2PLAYERS];
 
 void Stats_PluginStart()
 {
@@ -42,6 +43,7 @@ void Stats_EnableCharacter(int client)
 	XP[client] = kv.GetNum("xp");
 	InputMulti[client] = kv.GetNum("input", 1);
 	kv.GetVector("spawn", f3_PositionArrival[client]);
+	ReskillPoints[client] = kv.GetNum("reskills");
 
 	delete Mastery[client];
 
@@ -143,6 +145,7 @@ static void SaveClientStats(int client)
 		kv.SetNum("xp", XP[client]);
 		kv.SetNum("input", InputMulti[client]);
 		kv.SetVector("spawn", f3_PositionArrival[client]);
+		kv.SetNum("reskills", ReskillPoints[client]);
 
 		kv.DeleteKey("mastery");
 
@@ -409,6 +412,29 @@ void Stats_SetHasKill(int client, const char[] name)
 void Stats_ApplyAttribsPre(int client)
 {
 	Stats_ClearCustomStats(client);
+}
+
+void Stats_ReskillEverything(int client)
+{
+	int stats = StatStrength[client]
+		+ StatPrecision[client]
+		+ StatArtifice[client]
+		+ StatEndurance[client]
+		+ StatStructure[client]
+		+ StatIntelligence[client]
+		+ StatCapacity[client];
+	
+	StatStrength[client] = 0;
+	StatPrecision[client] = 0;
+	StatArtifice[client] = 0;
+	StatEndurance[client] = 0;
+	StatStructure[client] = 0;
+	StatIntelligence[client] = 0;
+	StatCapacity[client] = 0;
+	ReskillPoints[client] += stats;
+
+	SaveClientStats(client);
+	Stats_ShowStats(client, 0);
 }
 
 void Stats_ApplyAttribsPost(int client, TFClassType class, float SpeedExtra)
@@ -678,12 +704,21 @@ public Action Stats_ShowStats(int client, int args)
 			strcopy(LVLBuffer, sizeof(LVLBuffer), "MAX");
 		
 		char XPBuffer[64];
-		IntToString(XP[client],XPBuffer, sizeof(XPBuffer));
-		ThousandString(XPBuffer, sizeof(XPBuffer));
-		char costBuffer[64];
-		IntToString(cost,costBuffer, sizeof(costBuffer));
-		ThousandString(costBuffer, sizeof(costBuffer));
-		menu.SetTitle("RPG Fortress\n \nLevel: %s\nXP: %s / %s (x%d)\nReopen menu while crouching for extended info.", LVLBuffer, XPBuffer, costBuffer, InputMulti[client]);
+		if(ReskillPoints[client] > 0)
+		{
+			IntToString(ReskillPoints[client],XPBuffer, sizeof(XPBuffer));
+			ThousandString(XPBuffer, sizeof(XPBuffer));
+			menu.SetTitle("RPG Fortress\n \nLevel: %s\nSkill Points: %s (x%d)\nReopen menu while crouching for extended info.", LVLBuffer, XPBuffer, InputMulti[client]);
+		}
+		else
+		{
+			IntToString(XP[client],XPBuffer, sizeof(XPBuffer));
+			ThousandString(XPBuffer, sizeof(XPBuffer));
+			char costBuffer[64];
+			IntToString(cost,costBuffer, sizeof(costBuffer));
+			ThousandString(costBuffer, sizeof(costBuffer));
+			menu.SetTitle("RPG Fortress\n \nLevel: %s\nXP: %s / %s (x%d)\nReopen menu while crouching for extended info.", LVLBuffer, XPBuffer, costBuffer, InputMulti[client]);
+		}
 		
 		if(!(GetClientButtons(client) & IN_DUCK))
 		{
@@ -811,16 +846,23 @@ public int Stats_ShowStatsH(Menu menu, MenuAction action, int client, int choice
 			{
 				if(choice < 9)
 				{
-					if(Level[client] >= BaseMaxLevel)
-						break;
-					
-					int cost = UpgradeCost(client);
-					if(XP[client] < cost)
-						break;
-					
-					// Removes XP
-					cost = -cost;
-					Stats_GiveXP(client, cost);
+					if(ReskillPoints[client] > 0)
+					{
+						ReskillPoints[client]--;
+					}
+					else
+					{
+						if(Level[client] >= BaseMaxLevel)
+							break;
+						
+						int cost = UpgradeCost(client);
+						if(XP[client] < cost)
+							break;
+						
+						// Removes XP
+						cost = -cost;
+						Stats_GiveXP(client, cost);
+					}
 				}
 
 				switch(choice)
@@ -924,7 +966,8 @@ void Stats_UpdateLevel(int client)
 		+ StatEndurance[client]
 		+ StatStructure[client]
 		+ StatIntelligence[client]
-		+ StatCapacity[client];
+		+ StatCapacity[client]
+		+ ReskillPoints[client];
 
 	Level[client] = stats / 5;
 }

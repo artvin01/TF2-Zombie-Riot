@@ -618,6 +618,9 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 			GetClientAbsOrigin(client, f3_PositionArrival[client]);
 		}
 
+		if(ActorKv.GetNum("reskillpoints"))
+			Stats_ReskillEverything(client);
+
 		ActorKv.GoBack();
 	}
 
@@ -1031,29 +1034,29 @@ void Actor_EditorMenu(int client)
 
 			if(ActorKv.GetNum("deposit"))
 			{
-				menu.AddItem("deposit", "Deposit Items");
+				menu.AddItem("_deposit", "Deposit Items");
 			}
 			else
 			{
-				menu.AddItem("deposit", "Add \"Deposit Items\"");
+				menu.AddItem("_deposit", "Add \"Deposit Items\"");
 			}
 
 			if(ActorKv.GetNum("setspawn"))
 			{
-				menu.AddItem("setspawn", "Set Spawn Point");
+				menu.AddItem("_setspawn", "Set Spawn Point");
 			}
 			else
 			{
-				menu.InsertItem(2, "setspawn", "Add \"Set Spawn Point\"");
+				menu.InsertItem(2, "_setspawn", "Add \"Set Spawn Point\"");
 			}
 
 			if(ActorKv.GetNum("resetspawn"))
 			{
-				menu.AddItem("resetspawn", "Reset Spawn Point");
+				menu.AddItem("_resetspawn", "Reset Spawn Point");
 			}
 			else
 			{
-				menu.InsertItem(2, "resetspawn", "Add \"Reset Spawn Point\"");
+				menu.InsertItem(2, "_resetspawn", "Add \"Reset Spawn Point\"");
 			}
 
 			float pos[3];
@@ -1066,6 +1069,15 @@ void Actor_EditorMenu(int client)
 			else
 			{
 				menu.InsertItem(2, "teleport", "Add \"Teleport\"");
+			}
+
+			if(ActorKv.GetNum("reskillpoints"))
+			{
+				menu.AddItem("_reskillpoints", "Reskill Points");
+			}
+			else
+			{
+				menu.InsertItem(2, "_reskillpoints", "Add \"Reskill Points\"");
 			}
 
 			if(!missing)
@@ -1818,9 +1830,9 @@ static void AdjustActions(int client, const char[] key)
 	ActorKv.JumpToKey(CurrentChatEditing[client], true);
 	ActorKv.JumpToKey(CurrentSectionEditing[client], true);
 
-	if(StrEqual(key, "deposit") || StrEqual(key, "setspawn") || StrEqual(key, "resetspawn"))
+	if(key[0] == '_')
 	{
-		ActorKv.SetNum(key, ActorKv.GetNum(key) ? 0 : 1);
+		ActorKv.SetNum(key[1], ActorKv.GetNum(key[1]) ? 0 : 1);
 	}
 	else if(StrEqual(key, "teleport"))
 	{

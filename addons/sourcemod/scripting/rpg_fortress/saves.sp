@@ -379,13 +379,15 @@ static void CharacterMenu(int client, const char[] id)
 		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
 		FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
 
+		int level = kv.GetNum("level");
+
 		Menu menu = new Menu(CharacterMenuH);
 
 		menu.SetTitle("RPG Fortress\n \nCharacter Selection:\n \n" ...
-		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, level, buffer3);
 
 		menu.AddItem(id, "Select Character");
-		menu.AddItem(id, "Modifiy Character");
+		menu.AddItem(id, "Modifiy Character", level > 99 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem(id, "Delete Character");
 
 		menu.ExitBackButton = true;
@@ -565,8 +567,8 @@ static void CreateCharacter(int client)
 				kv.SetString("model", "Medic");
 		}
 
+		kv.SetNum("firstsave", time);
 		kv.SetNum("lastsave", time);
-		kv.SetString("title", "Beta");
 
 		ModifiyCharacter(client, id);
 	}
@@ -634,12 +636,14 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Races_GetRaceByIndex(kv.GetNum("race"), race);
 				FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
 
+				int level = kv.GetNum("level");
+
 				Menu menu = new Menu(ModifiyCharacterH);
 
 				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
 
 				FormatEx(buffer1, sizeof(buffer1), "Race: %s", race.Name);
-				menu.AddItem(id, buffer1);
+				menu.AddItem(id, buffer1, level > 99 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 				kv.GetString("model", buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Outfit: %s", buffer2);
@@ -649,7 +653,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				FormatEx(buffer1, sizeof(buffer1), "Trait: %s", buffer2);
 				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 
-				Format(buffer1, sizeof(buffer1), "Level: %d", kv.GetNum("level"));
+				Format(buffer1, sizeof(buffer1), "Level: %d", level);
 				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 
 				menu.AddItem(id, "", ITEMDRAW_DISABLED);
