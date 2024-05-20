@@ -285,7 +285,7 @@ float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown b
 float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
-#define SSB_MAX_ABILITIES 9999999
+#define SSB_MAX_ABILITIES 255
 
 int Ability_MaxUses[SSB_MAX_ABILITIES] = { 0, ... };	//The maximum number of times the ability can be used per fight. <= 0: no limit.
 int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the ability has been used during this fight.
@@ -353,9 +353,9 @@ methodmap SSB_Ability __nullable__
 		SSB_AbilitySlotUsed[this.Index] = false;
 	}
 
-	public void SetName(char name[255])
+	public void SetName(const char[] name)
 	{
-		Ability_Name[this.Index] = name;
+		Format(Ability_Name[this.Index], 255, "%s", name);
 	}
 
 	public void GetName(char output[255])
@@ -412,13 +412,13 @@ static void SSB_PrepareAbilities()
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell", 0.15, 2, SpellCard_Example, SpellCard_Filter));
 
-	PushArrayCell("Example Spell Card #1", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_1));
-	PushArrayCell("Example Spell Card #2", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_2));
-	PushArrayCell("Example Spell Card #3", SSB_SpellCards[0], SSB_CreateAbility(0.33, 0, TestSpellCard_3));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #1", 0.33, 0, TestSpellCard_1));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #2", 0.33, 0, TestSpellCard_2));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #3", 0.33, 0, TestSpellCard_3));
 
-	PushArrayCell("Example Special #1", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_1));
-	PushArrayCell("Example Special #2", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_2));
-	PushArrayCell("Example Special #3", SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_3));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #1", 0.33, 0, TestSpecial_1));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #2", 0.33, 0, TestSpecial_2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #3", 0.33, 0, TestSpecial_3));
 }
 
 public void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
@@ -461,7 +461,7 @@ void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
 	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
 }*/
 
-static SSB_Ability SSB_CreateAbility(char name[255], float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
+static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
 {
 	SSB_Ability Spell = new SSB_Ability();
 
