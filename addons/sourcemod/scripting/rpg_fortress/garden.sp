@@ -271,14 +271,14 @@ static void ShowMenu(int client, bool first)
 		}
 		else
 		{
-			if(totalInt >= 1000)
+			if(totalInt >= 600)
 			{
 				menu.AddItem(num, "Clean Extract");
 			}
 			else
 			{
 				menu.AddItem(num, "Extract");
-				menu.AddItem("-99", "(1000 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
+				menu.AddItem("-99", "(600 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
 			}
 		}
 		
@@ -398,7 +398,7 @@ public int Garden_GrowthHandle(Menu menu, MenuAction action, int client, int cho
 					float luck = float(Stats_Luck(client));
 					int totalInt = Stats_Intelligence(client);
 					int loopmax = 1;
-					if(totalInt >= 1000)
+					if(totalInt >= 600)
 						loopmax = 2;
 
 					for(int loop = 0 ; loop < loopmax; loop++)
