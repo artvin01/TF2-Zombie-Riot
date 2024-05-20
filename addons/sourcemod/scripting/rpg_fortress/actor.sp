@@ -312,7 +312,7 @@ static bool CheckCondKv(int client, char[] fail = "", int length = 0)
 							}
 							else
 							{
-								Format(fail, length, "%s x%d", buffer);
+								Format(fail, length, "%s x%d", buffer, need);
 							}
 							
 							failed = true;
