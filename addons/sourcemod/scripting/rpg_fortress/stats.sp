@@ -794,7 +794,7 @@ public Action Stats_ShowStats(int client, int args)
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Structure(client, amount, bonus, multirace, multiform);
-			FormatEx(buffer, sizeof(buffer), "STU: [R:x%.2f F:x%.2f] (Stamina + HP)", multirace, multiform, RPGStats_RetrieveMaxStamina(total));
+			FormatEx(buffer, sizeof(buffer), "STU: [R:x%.2f F:x%.2f] (%d Stamina)", multirace, multiform, RPGStats_RetrieveMaxStamina(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Intelligence(client, amount, bonus, multirace, multiform);
@@ -806,15 +806,15 @@ public Action Stats_ShowStats(int client, int args)
 			static Form form;
 			Races_GetClientInfo(client, race, form);
 			multiform = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
-			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%0.f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
+			FormatEx(buffer, sizeof(buffer), "CAP: [R:x%.2f F:x%.2f] (%.0f Energy)", multirace, multiform, RPGStats_RetrieveMaxEnergy(total));
 			menu.AddItem(NULL_STRING, buffer, canSkill ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 
 			total = Stats_Agility(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.0f%% Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			FormatEx(buffer, sizeof(buffer), "AGI: [%d x%.2f] + %d = [%d] (%.1f%% Speed)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			total = Stats_Luck(client, amount, bonus, multirace);
-			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.0f%% Drops)", amount, multirace, bonus, total, 100.0 + (total / 300.0));
+			FormatEx(buffer, sizeof(buffer), "LUC: [%d x%.2f] + %d = [%d] (%.1f%% Crits)", amount, multirace, bonus, total, (1 + total) * 0.1);
 			menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 
 			menu.AddItem(NULL_STRING, "Increase Input Multi", InputMulti[client] > 1000 ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
