@@ -228,25 +228,25 @@ int SSB_WavePhase = 0;		//This gets set based on the wave number whenever SSB sp
 
 //SPELL CARDS: SSB's basic attacks. These come out instantly, but are far weaker than his specials.
 //NOTE: Spell Cards must have their own function, which takes a "SupremeSpookmasterBones" as a parameter, plus one entity index for the target entity.
-ArrayList SSB_SpellCards[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spell Cards SSB can use on each wave.
+ArrayList SSB_SpellCards[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spell Cards SSB can use on each wave.
 															//To change this, see "SSB_PrepareAbilities".
 int SSB_LastSpell[MAXENTITIES] = { -1, ... };				//The most recently-used spell card. Used so that the same Spell Card cannot be used twice in a row.
 int SSB_DefaultSpell[4] = { 0, 0, 0, 0 };					//The Spell Card slot to default to if none of the other Spell Cards are successfully cast.
 float SSB_NextSpell[MAXENTITIES] = { 0.0, ... }; 			//The GameTime at which SSB will use his next Spell Card.
-float SSB_SpellCDMin[4] = { 10.0, 7.5, 5.0, 2.5 };			//The minimum cooldown between spell cards.
-float SSB_SpellCDMax[4] = { 20.0, 15.0, 10.0, 10.0 };		//The maximum cooldown between spell cards.
+float SSB_SpellCDMin[4] = { 7.5, 6.25, 5.0, 3.75 };			//The minimum cooldown between spell cards.
+float SSB_SpellCDMax[4] = { 12.5, 11.25, 10.0, 8.75 };		//The maximum cooldown between spell cards.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
-ArrayList SSB_Specials[4] = { null, null, null, null };	//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
+ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
 														//To change this, see "SSB_PrepareAbilities".
 int SSB_LastSpecial[MAXENTITIES] = { -1, ... };			//The most recently-used special. Used so that the same special cannot be used twice in a row.
 int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to default to if none of the other Spooky Specials are successfully cast.
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 40.0, 35.0, 30.0, 25.0 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
-#define SSB_MAX_ABILITIES		9999999
+#define SSB_MAX_ABILITIES 9999999
 
 int Ability_MaxUses[SSB_MAX_ABILITIES] = { 0, ... };	//The maximum number of times the ability can be used per fight. <= 0: no limit.
 int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the ability has been used during this fight.
@@ -281,7 +281,7 @@ methodmap SSB_Ability __nullable__
 			success = GetRandomFloat(0.0, 1.0) <= this.Chance;
 
 		if (success && !forced)
-			success = this.Uses < this.MaxUses && this.MaxUses > 0;
+			success = this.Uses < this.MaxUses || this.MaxUses <= 0;
 
 		if (success && !forced && this.FilterFunction != INVALID_FUNCTION)
 		{
@@ -353,10 +353,10 @@ static void SSB_PrepareAbilities()
 {
 	SSB_DeleteAbilities();
 	for (int i = 0; i < 4; i++)
+	{
 		SSB_SpellCards[i] = new ArrayList(255);
-
-	for (int i = 0; i < 4; i++)
 		SSB_Specials[i] = new ArrayList(255);
+	}
 
 	//The following example adds a Spell Card to the wave 15 pool of spells (SSB_SpellCards[0]), which has a 15% cast chance, can be used twice, checks SpellCard_Filter before activation, and calls SpellCard_Example when successfully cast.
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
@@ -371,32 +371,32 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_Specials[0], SSB_CreateAbility(0.33, 0, TestSpecial_3));
 }
 
-static void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
+public void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{haunted}Example spell card #1 was cast!");
 }
 
-static void TestSpellCard_2(SupremeSpookmasterBones ssb, int target)
+public void TestSpellCard_2(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
 }
 
-static void TestSpellCard_3(SupremeSpookmasterBones ssb, int target)
+public void TestSpellCard_3(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
 }
 
-static void TestSpecial_1(SupremeSpookmasterBones ssb, int target)
+public void TestSpecial_1(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{vintage}Example special #1 was cast!");
 }
 
-static void TestSpecial_2(SupremeSpookmasterBones ssb, int target)
+public void TestSpecial_2(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{vintage}Example special #2 was cast!");
 }
 
-static void TestSpecial_3(SupremeSpookmasterBones ssb, int target)
+public void TestSpecial_3(SupremeSpookmasterBones ssb, int target)
 {
 	CPrintToChatAll("{vintage}Example special #3 was cast!");
 }
@@ -696,11 +696,11 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest))
 	{
-		float pos[3], targPos[3], optimalPos[3]; 
+		float pos[3], targPos[3]; 
 		WorldSpaceCenter(npc.index, pos);
 		WorldSpaceCenter(closest, targPos);
 			
-		float flDistanceToTarget = GetVectorDistance(targPos, pos);
+		//float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
 		npc.StartPathing();
 		NPC_SetGoalEntity(npc.index, closest);
