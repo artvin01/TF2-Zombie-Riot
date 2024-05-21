@@ -266,16 +266,17 @@ float SSB_SpellCDMax[4] = { 11.0, 11.0, 10.0, 9.0 };		//The maximum cooldown bet
 //Skulls start red, but turn blue when homing begins.
 int Volley_Count[4] = { 4, 8, 12, 16 };							//The number of skulls fired by this Spell Card.
 int Volley_MaxTargets[4] = { 3, 4, 5, 6 };						//Maximum number of enemies hit by skull explosions.
-float Volley_Velocity[4] = { 300.0, 400.0, 500.0, 600.0 };		//Skull velocity.
+float Volley_Velocity[4] = { 360.0, 420.0, 480.0, 540.0 };		//Skull velocity.
 float Volley_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
-float Volley_DMG[4] = { 60.0, 90.0, 120.0, 150.0 };				//Skull base damage.
+float Volley_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };				//Skull base damage.
 float Volley_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
 float Volley_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
 float Volley_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
 float Volley_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 	//Amount to multiply explosion damage for each target hit.
-float Volley_HomingAngle[4] = { 90.0, 100.0, 110.0, 120.0 };	//Skulls' maximum homing angle.
-float Volley_HomingPerSecond[4] = { 9.0, 15.0, 21.0, 27.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
-float Volley_Spread[4] = { 6.0, 7.0, 8.0, 9.0 };				//Random spread of skulls.
+float Volley_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };	//Skulls' maximum homing angle.
+float Volley_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Volley_Spread[4] = { 9.0, 10.0, 11.0, 12.0 };				//Random spread of skulls.
+float Volley_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };		//Distance to spread skulls apart when they spawn.
 bool b_IsHoming[MAXENTITIES] = { false, ... };
 int i_SkullParticle[MAXENTITIES] = { -1, ... };
 
@@ -504,7 +505,7 @@ static void SSB_PrepareAbilities()
 
 	//Wave 15 (and before):
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -536,13 +537,20 @@ public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
 		return;
 
 	ssb.AddGesture("ACT_SPELLCAST_2");
-	CreateTimer(0.5, NightmareVolley_Launch, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
+	DataPack pack = new DataPack();
+	CreateTimer(0.5, NightmareVolley_Launch, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, EntIndexToEntRef(target));
 	ssb.UsingAbility = true;
 }
 
-public Action NightmareVolley_Launch(Handle timer, int ref)
+public Action NightmareVolley_Launch(Handle timer, DataPack pack)
 {
-	int ent = EntRefToEntIndex(ref);
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int target = EntRefToEntIndex(ReadPackCell(pack));
+
 	if (!IsValidEntity(ent))
 		return Plugin_Continue;
 
@@ -565,23 +573,56 @@ public Action NightmareVolley_Launch(Handle timer, int ref)
 	NightmareVolley_ShootSkull(ssb, pos, ang, Volley_Velocity[SSB_WavePhase]);
 	num--;
 
+	ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 3.0);
+	EmitSoundToAll(SND_FIREBALL_CAST, ssb.index, _, 120);
+
 	if (num < 1)
 		return Plugin_Continue;
 
 	for (int i = 0; i < num; i++)
 	{
-		float randAng[3];
+		float randAng[3], randPos[3];
+		randPos = pos;
 		randAng = ang;
-		for (int vec = 0; vec < 3; vec++)
-			randAng[vec] += GetRandomFloat(-Volley_Spread[SSB_WavePhase], Volley_Spread[SSB_WavePhase]);
+		for (int vec = 0; vec < 2; vec++)
+			randAng[vec] += GetRandomFloat(-60.0, 60.0);
 
-		NightmareVolley_ShootSkull(ssb, pos, randAng, Volley_Velocity[SSB_WavePhase]);
+		GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Volley_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
+		while (NightmareVolley_WouldSkullCollide(pos))	//Don't let skulls spawn in places where they would collide with something
+			GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Volley_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
+
+		if (IsValidEntity(target))
+		{
+			float dummy[3], pos2[3];
+			WorldSpaceCenter(target, pos2);
+			Priest_GetAngleToPoint(ssb.index, randPos, pos2, dummy, randAng);
+		}
+		else
+		{
+			randAng = ang;
+			for (int vec = 0; vec < 3; vec++)
+				randAng[vec] += GetRandomFloat(-Volley_Spread[SSB_WavePhase], Volley_Spread[SSB_WavePhase]);
+		}
+
+		ParticleEffectAt(randPos, PARTICLE_GREENBLAST_SSB, 3.0);
+		NightmareVolley_ShootSkull(ssb, randPos, randAng, Volley_Velocity[SSB_WavePhase]);
 	}
 
-	ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 3.0);
-	EmitSoundToAll(SND_FIREBALL_CAST, ssb.index, _, 120);
-
 	return Plugin_Continue;
+}
+
+public bool NightmareVolley_WouldSkullCollide(float pos[3])
+{
+	float angles[3], otherLoc[3];
+	angles[0] = 90.0;
+	angles[1] = 0.0;
+	angles[2] = 0.0;
+	
+	Handle trace = TR_TraceRayFilterEx(pos, angles, MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+	TR_GetEndPosition(otherLoc, trace);
+	delete trace;
+	
+	return GetVectorDistance(pos, otherLoc) <= 25.0;
 }
 
 public void NightmareVolley_ShootSkull(SupremeSpookmasterBones ssb, float pos[3], float ang[3], float vel)
