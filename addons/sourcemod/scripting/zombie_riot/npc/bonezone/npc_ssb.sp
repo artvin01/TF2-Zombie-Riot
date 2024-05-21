@@ -30,6 +30,12 @@ static char Volley_HomingSFX[][] = {
 	")items/halloween/witch03.wav"
 };
 
+static char Cross_BlastSFX[][] = {
+	")misc/halloween_eyeball/book_exit.wav",
+	")misc/halloween/merasmus_hiding_explode.wav",
+	")misc/halloween/spell_lightning_ball_cast.wav"
+};
+
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
 };
@@ -226,6 +232,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_HOMING_ACTIVATE);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
+	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
@@ -681,9 +688,31 @@ public MRESReturn NightmareVolley_Collide(int entity)
 	return MRES_Supercede;
 }
 
+//TODO: Cursed Cross needs anims, also make some generic ability wind-up sounds and play them here
 public void SpellCard_CursedCross(SupremeSpookmasterBones ssb, int target)
 {
+	ssb.Pause();
+	ssb.UsingAbility = true;
+	CreateTimer(Cross_Delay[SSB_WavePhase], Cross_Activate, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
+}
 
+public Action Cross_Activate(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+	ssb.Unpause();
+	ssb.UsingAbility = false;
+	ssb.PlayGenericSpell();
+
+	for (int i = 0; i < sizeof(Cross_BlastSFX); i++)
+	{
+		EmitSoundToAll(Cross_BlastSFX[i], ssb.index, _, 120, _, _, 80);
+	}
+
+	//TODO: Deal damage, spawn laser effects
 }
 
 public void SpellCard_ChaosBarrage(SupremeSpookmasterBones ssb, int target)
@@ -764,6 +793,7 @@ public void SSB_DeleteAbilities()
 }
 
 bool SSB_UsingAbility[MAXENTITIES];
+bool SSB_Paused[MAXENTITIES];
 
 methodmap SupremeSpookmasterBones < CClotBody
 {
@@ -771,6 +801,20 @@ methodmap SupremeSpookmasterBones < CClotBody
 	{
 		public get() { return SSB_UsingAbility[this.index]; }
 		public set(bool value) { SSB_UsingAbility[this.index] = value; }
+	}
+
+	public void Pause()
+	{
+		SSB_Paused[this.index] = true;
+		this.StopPathing();
+		this.m_bPathing = false;
+	}
+
+	public void Unpause()
+	{
+		SSB_Paused[this.index] = false;
+		this.StartPathing();
+		this.m_bPathing = true;
 	}
 
 	public void PlayHurtSound() {
@@ -1100,9 +1144,13 @@ public void SupremeSpookmasterBones_ClotThink(int iNPC)
 			
 		//float flDistanceToTarget = GetVectorDistance(targPos, pos);
 		
-		npc.StartPathing();
-		NPC_SetGoalEntity(npc.index, closest);
-		npc.FaceTowards(targPos, 225.0);
+		if (!SSB_Paused[npc.index])
+		{
+			npc.StartPathing();
+			NPC_SetGoalEntity(npc.index, closest);
+			npc.FaceTowards(targPos, 225.0);
+			npc.m_bPathing = true;
+		}
 
 		if (npc.IsSpecialReady())
 		{
