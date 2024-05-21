@@ -9,6 +9,7 @@ static float BONES_SUPREME_SPEED = 350.0;
 #define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
 
 #define SND_SPAWN_ALERT		"misc/halloween/merasmus_appear.wav"
+#define SND_DESPAWN			"misc/halloween/merasmus_disappear.wav"
 
 #define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 
@@ -200,6 +201,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 
 	PrecacheModel(MODEL_SSB);
 	PrecacheSound(SND_SPAWN_ALERT);
+	PrecacheSound(SND_DESPAWN);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
@@ -238,15 +240,17 @@ float SSB_SpellCDMax[4] = { 12.5, 11.25, 10.0, 8.75 };		//The maximum cooldown b
 
 //SPELL CARD #1 - NIGHTMARE VOLLEY: SSB fires a spread of skulls, one of which will always be centered, which home in on victims and explode. Victims are ignited.
 //Skulls start red, but turn blue when homing begins.
-int Skull_Count[4] = { 2, 3, 4, 6 };						//The number of skulls fired by this Spell Card.
-int Skull_MaxTargets[4] = { 3, 4, 5, 6 };					//Maximum number of enemies hit by skull explosions.
-float Skull_Velocity[4] = { 400.0, 600.0, 800.0, 1000.0 };	//Skull velocity.
-float Skull_HomingDelay[4] = { 2.0, 1.5, 1.0, 0.5 };		//Time until the skulls begin to home in on targets.
-float Skull_DMG[4] = { 60.0, 90.0, 120.0, 150.0 };			//Skull base damage.
-float Skull_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
-float Skull_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };		//Skull explosion radius.
-float Skull_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
-float Skull_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; //Amount to multiply explosion damage for each target hit.
+int Volley_Count[4] = { 2, 3, 4, 6 };							//The number of skulls fired by this Spell Card.
+int Volley_MaxTargets[4] = { 3, 4, 5, 6 };						//Maximum number of enemies hit by skull explosions.
+float Volley_Velocity[4] = { 400.0, 600.0, 800.0, 1000.0 };		//Skull velocity.
+float Volley_HomingDelay[4] = { 2.0, 1.5, 1.0, 0.5 };			//Time until the skulls begin to home in on targets.
+float Volley_DMG[4] = { 60.0, 90.0, 120.0, 150.0 };				//Skull base damage.
+float Volley_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
+float Volley_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
+float Volley_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
+float Volley_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 	//Amount to multiply explosion damage for each target hit.
+float Volley_HomingAngle[4] = { 120.0, 160.0, 200.0, 240.0 };	//Skull's maximum homing angle.
+float Volley_HomingPerSecond[4] = { 40.0, 60.0, 80.0, 100.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
 
 //SPELL CARD #2 - CURSED CROSS: SSB stops in place and begins to charge up. Once ready: SSB fires a cross of deathly green lasers from his position.
 //These lasers have infinite piercing and are not subject to falloff.
@@ -273,7 +277,40 @@ bool Barrage_Prediction[4] = { false, false, true, true };			//Whether or not th
 float Death_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };				//Delay before the pull activates.
 float Death_Radius[4] = { 1200.0, 1400.0, 1600.0, 1800.0 };	//Maximum radius in which the pull can be activated.
 
+//SPELL CARD #5 - COSMIC TERROR: SSB chooses up to X player(s) at random and marks the spot they are currently at. Y seconds later, that spot summons a laser from the sky,
+//which moves towards the nearest enemy and deals rapid damage to anything too close. This is not affected by falloff.
+//PS: Using the SSB_ prefix for these variables because otherwise we interfere with the actual Cosmic Terror weapon.
+int SSB_Cosmic_NumTargets[4] = { 1, 2, 4, 6 };					//The maximum number of players who can be marked by the ability.
+float SSB_Cosmic_Delay[4] = { 4.0, 3.5, 2.5, 1.5 };				//Duration until the beams activate and begin to move.
+float SSB_Cosmic_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };		//Beam lifespan.
+float SSB_Cosmic_DMG[4] = { 20.0, 25.0, 30.0, 40.0 };			//Damage dealt per 0.1s to players who are within the beam's radius.
+float SSB_Cosmic_Radius[4] = { 160.0, 180.0, 200.0, 220.0 };	//Damage radius.
+float SSB_Cosmic_Speed[4] = { 2.0, 2.5, 3.0, 3.5 };				//Speed at which the beams move towards their target, in hammer units per frame.
 
+//SPELL CARD #6 - RING OF TARTARUS: The locations of up to X player(s) are marked with a red ring. After Y second(s), these rings activate and will begin to slow down
+//and rapidly deal damage to any enemies within its radius.
+int Ring_NumTargets[4] = { 2, 4, 6, 8 };				//The maximum number of players to spawn rings on.
+float Ring_Delay[4] = { 4.0, 4.0, 4.0, 4.0 };			//Duration until the rings activate.
+float Ring_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };		//Ring lifespan.
+float Ring_DMG[4] = { 10.0, 15.0, 20.0, 25.0 };			//Ring damage per 0.1s.
+float Ring_Radius[4] = { 250.0, 300.0, 350.0, 400.0 };	//Ring radius.
+float Ring_SlowAmt[4] = { 0.25, 0.33, 0.5, 0.66 };		//Percentage to reduce the movement speed of any enemy within a ring.
+
+//SPELL CARD #7 - GAZE UPON THE SKULL: SSB launches one big but very slow skull, which homes in on the nearest enemy.
+//While active, the skull rapidly fires smaller, weaker homing projectiles in random directions.
+//If the skull collides with something (or automatically after X seconds), it will trigger a huge explosion.
+float Skull_Velocity[4] = { 100.0, 150.0, 200.0, 250.0 };			//Velocity of the big skull.
+float Skull_DMG[4] = { 400.0, 800.0, 1600.0, 3200.0 };				//Base damage of the big skull.
+float Skull_Radius[4] = { 300.0, 350.0, 400.0, 500.0 };				//Explosion radius of the big skull.
+float Skull_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };				//Falloff-based radius of the big skull.
+float Skull_Falloff_MultiHit[4] = { 0.66, 0.75, 0.8, 0.85 };		//Amount to multiply the big skull's explosion damage for each target it hits.
+float Skull_HomingAngle[4] = { 180.0, 220.0, 260.0, 300.0 };		//Big skull's maximum homing angle.
+float Skull_HomingPerSecond[4] = { 120.0, 120.0, 120.0, 120.0 };	//Number of times per second for thee big skull to readjust its velocity for the sake of homing in on its target.
+float Skull_MiniVelocity[4] = { 800.0, 1000.0, 1200.0, 1400.0 };	//Velocity of the small projectiles fired by the big skull.
+float Skull_MiniDMG[4] = { 15.0, 20.0, 25.0, 30.0 };				//Damage dealt by the small projectiles.
+float Skull_MiniDuration[4] = {1.0, 1.5, 2.0, 2.5 };				//Lifespan of the small projectiles.
+float Skull_MiniHomingAngle[4] = { 90.0, 120.0, 160.0, 200.0 };		//Small projectile max homing angle.
+float Skull_MiniHomingPerSecond[4] = {40.0, 60.0, 80.0, 100.0 };	//Number of times per second for the small projectiles to readjust their velocity.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
@@ -292,7 +329,9 @@ int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the abi
 float Ability_Chance[SSB_MAX_ABILITIES] = { 0.0, ... };	//The chance for this ability to be used when SSB attempts to activate a Spooky Special or use a Spell Card (0.0 = 0%, 1.0 = 100%).
 Function Ability_Function[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	//The function to call when this ability is successfully activated.
 Function Ability_Filter[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };		//The function to call when this ability is about to be activated, to check manually if it can be used or not. Must take one SupremeSpookmasterBones and an entity index for the victim as parameters, and return a bool (true: activate, false: don't).
-char Ability_Name[SSB_MAX_ABILITIES][255];
+char Ability_Name[SSB_MAX_ABILITIES][255];				//The ability's name. Used for printing Spell Card alerts to chat, and also for looking up ability indices.
+bool Ability_IsCard[SSB_MAX_ABILITIES] = { false, ... };	//If true, the ability is a spell card.
+bool Ability_SkipCardSound[SSB_MAX_ABILITIES] = { false, ... };	//If true, the ability will not print an alert to chat or play the generic spell sound.
 
 bool SSB_AbilitySlotUsed[SSB_MAX_ABILITIES] = {false, ...};
 
@@ -339,6 +378,12 @@ methodmap SSB_Ability __nullable__
 			Call_Finish();
 
 			this.Uses++;
+
+			if (this.IsCard && !this.SkipCardSound)
+			{
+				CPrintToChatAll("{darkorange}- = { {unusual}SPELL CARD: {haunted}%s!{darkorange} } = -{default}", Ability_Name[this.Index]);
+				user.PlayGenericSpell();
+			}
 		}
 
 		return success;
@@ -397,6 +442,18 @@ methodmap SSB_Ability __nullable__
 		public get() { return Ability_Filter[this.Index]; }
 		public set(Function value) { Ability_Filter[this.Index] = value; }
 	}
+
+	property bool IsCard
+	{
+		public get() { return Ability_IsCard[this.Index]; }
+		public set(bool value) { Ability_IsCard[this.Index] = value; }
+	}
+
+	property bool SkipCardSound
+	{
+		public get() { return Ability_SkipCardSound[this.Index]; }
+		public set(bool value) { Ability_SkipCardSound[this.Index] = value; }
+	}
 }
 
 static void SSB_PrepareAbilities()
@@ -412,43 +469,67 @@ static void SSB_PrepareAbilities()
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell", 0.15, 2, SpellCard_Example, SpellCard_Filter));
 
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #1", 0.33, 0, TestSpellCard_1));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #2", 0.33, 0, TestSpellCard_2));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell Card #3", 0.33, 0, TestSpellCard_3));
+	//Wave 15 (and before):
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
 
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #1", 0.33, 0, TestSpecial_1));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #2", 0.33, 0, TestSpecial_2));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("Example Special #3", 0.33, 0, TestSpecial_3));
+	//Wave 30:
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.25, 3, SpellCard_DeathMagnetic, _, _, true));
+
+	//Wave 45:
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.33, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.25, 2, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.125, 3, SpellCard_RingOfTartarus));
+
+	//Wave 60+:
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("COSMIC TERROR", 0.33, 2, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.15, 2, SpellCard_TheSkull));
 }
 
-public void TestSpellCard_1(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{haunted}Example spell card #1 was cast!");
+
 }
 
-public void TestSpellCard_2(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_CursedCross(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
+
 }
 
-public void TestSpellCard_3(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_ChaosBarrage(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{haunted}Example spell card #2 was cast!");
+
 }
 
-public void TestSpecial_1(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_DeathMagnetic(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{vintage}Example special #1 was cast!");
+	ssb.PlayDeathMagnetic();
 }
 
-public void TestSpecial_2(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_CosmicTerror(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{vintage}Example special #2 was cast!");
+
 }
 
-public void TestSpecial_3(SupremeSpookmasterBones ssb, int target)
+public void SpellCard_RingOfTartarus(SupremeSpookmasterBones ssb, int target)
 {
-	CPrintToChatAll("{vintage}Example special #3 was cast!");
+
+}
+
+public void SpellCard_TheSkull(SupremeSpookmasterBones ssb, int target)
+{
+
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -461,7 +542,7 @@ void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
 	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
 }*/
 
-static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION)
+static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, bool IsSpellCard = true, bool SkipSpellCardAnnouncement = false)
 {
 	SSB_Ability Spell = new SSB_Ability();
 
@@ -470,6 +551,8 @@ static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUse
 	Spell.ActivationFunction = ActivationFunction;
 	Spell.FilterFunction = FilterFunction;
 	Spell.SetName(name);
+	Spell.IsCard = IsSpellCard;
+	Spell.SkipCardSound = SkipSpellCardAnnouncement;
 
 	return Spell;
 }
@@ -558,32 +641,64 @@ methodmap SupremeSpookmasterBones < CClotBody
 	{
 		int rand = GetRandomInt(0, sizeof(g_SSBMinorWin_Sounds) - 1);
 		EmitSoundToAll(g_SSBMinorWin_Sounds[rand], _, _, 120);
-		EmitSoundToAll(SND_SPAWN_ALERT, _, _, _, _, 0.8);
+		EmitSoundToAll(SND_DESPAWN);
 		CPrintToChatAll(g_SSBMinorWin_Captions[rand]);
 
 		#if defined DEBUG_SOUND
-		PrintToServer("CSupremeSpookmasterBones::PlayIntroSound()");
+		PrintToServer("CSupremeSpookmasterBones::PlayMinorLoss()");
+		#endif
+	}
+
+	public void PlayGenericSpell()
+	{
+		EmitSoundToAll(g_SSBGenericSpell_Sounds[GetRandomInt(0, sizeof(g_SSBGenericSpell_Sounds) - 1)], _, _, 120);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayGenericSpell()");
+		#endif
+	}
+
+	public void PlayDeathMagnetic()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBPull_Sounds) - 1);
+		EmitSoundToAll(g_SSBPull_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBPull_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayDeathMagnetic()");
 		#endif
 	}
 
 	public void CalculateNextSpecial()
 	{
-		SSB_NextSpecial[this.index] = GetGameTime() + GetRandomFloat(SSB_SpecialCDMin[SSB_WavePhase], SSB_SpecialCDMax[SSB_WavePhase]);
+		SSB_NextSpecial[this.index] = GetGameTime(this.index) + GetRandomFloat(SSB_SpecialCDMin[SSB_WavePhase], SSB_SpecialCDMax[SSB_WavePhase]);
 	}
 
 	public void CalculateNextSpellCard()
 	{
-		SSB_NextSpell[this.index] = GetGameTime() + GetRandomFloat(SSB_SpellCDMin[SSB_WavePhase], SSB_SpellCDMax[SSB_WavePhase]);
+		SSB_NextSpell[this.index] = GetGameTime(this.index) + GetRandomFloat(SSB_SpellCDMin[SSB_WavePhase], SSB_SpellCDMax[SSB_WavePhase]);
 	}
 
 	public bool IsSpecialReady()
 	{
-		return SSB_NextSpecial[this.index] <= GetGameTime() && !this.UsingAbility;
+		if (SSB_Specials[SSB_WavePhase] == null)
+			return false;
+		
+		if (GetArraySize(SSB_Specials[SSB_WavePhase]) < 1)
+			return false;
+
+		return SSB_NextSpecial[this.index] <= GetGameTime(this.index) && !this.UsingAbility;
 	}
 
 	public bool IsSpellReady()
 	{
-		return SSB_NextSpell[this.index] <= GetGameTime() && !this.UsingAbility;
+		if (SSB_SpellCards[SSB_WavePhase] == null)
+			return false;
+		
+		if (GetArraySize(SSB_SpellCards[SSB_WavePhase]) < 1)
+			return false;
+
+		return SSB_NextSpell[this.index] <= GetGameTime(this.index) && !this.UsingAbility;
 	}
 
 	public void ActivateSpecial(int target, int specific = -1)
@@ -741,17 +856,16 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		float wave = float(Waves_GetWave());
-		if (wave <= 0.0)
+		int wave = ZR_GetWaveCount() + 1;
+		if (wave <= 15)
 			SSB_WavePhase = 0;
+		else if (wave <= 30)
+			SSB_WavePhase = 1;
+		else if (wave <= 45)
+			SSB_WavePhase = 2;
 		else
-			SSB_WavePhase = RoundToCeil(wave / 15.0) - 1;
-
-		if (SSB_WavePhase > 3)
 			SSB_WavePhase = 3;
 
-		CPrintToChatAll("WavePhase is %i", SSB_WavePhase);
-		
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
 		npc.UsingAbility = false;
@@ -855,5 +969,6 @@ public void SupremeSpookmasterBones_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 		
 	npc.RemoveAllWearables();
-//	AcceptEntityInput(npc.index, "KillHierarchy");
+	RemoveEntity(entity);
+	//AcceptEntityInput(npc.index, "KillHierarchy");
 }
