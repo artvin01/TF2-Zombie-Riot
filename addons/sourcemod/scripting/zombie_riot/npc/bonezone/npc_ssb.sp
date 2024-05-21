@@ -1,17 +1,34 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_SUPREME_SPEED = 350.0;
+static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 
 #define BONES_SUPREME_SCALE				"1.45"
 #define BONES_SUPREME_SKIN				"1"
 #define BONES_SUPREME_HP				"35000"
 #define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
+#define MODEL_SKULL						"models/props_mvm/mvm_human_skull_collide.mdl"
 
 #define SND_SPAWN_ALERT		"misc/halloween/merasmus_appear.wav"
 #define SND_DESPAWN			"misc/halloween/merasmus_disappear.wav"
+#define SND_FIREBALL_CAST	")misc/halloween/spell_meteor_cast.wav"
+#define SND_FIREBALL_EXPLODE	")misc/halloween/spell_fireball_impact.wav"
+#define SND_HOMING_ACTIVATE		")misc/halloween/spell_mirv_cast.wav"
 
 #define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
+#define PARTICLE_OBJECTSPAWN_1	"merasmus_spawn_flash"
+#define PARTICLE_OBJECTSPAWN_2	"merasmus_spawn_flash2"
+#define PARTICLE_GREENBLAST_SSB		"merasmus_dazed_explosion"
+#define PARTICLE_EXPLOSION_FIREBALL_RED	"spell_fireball_tendril_parent_red"
+#define PARTICLE_EXPLOSION_FIREBALL_BLUE	"spell_fireball_tendril_parent_blue"
+#define PARTICLE_FIREBALL_RED		"spell_fireball_small_red"
+#define PARTICLE_FIREBALL_BLUE		"spell_fireball_small_blue"
+
+static char Volley_HomingSFX[][] = {
+	")items/halloween/witch01.wav",
+	")items/halloween/witch02.wav",
+	")items/halloween/witch03.wav"
+};
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -200,8 +217,15 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBLossEasterEgg_Sounds));   i++) { PrecacheSound(g_SSBLossEasterEgg_Sounds[i]);   }
 
 	PrecacheModel(MODEL_SSB);
+	PrecacheModel(MODEL_SKULL);
+
 	PrecacheSound(SND_SPAWN_ALERT);
 	PrecacheSound(SND_DESPAWN);
+	PrecacheSound(SND_FIREBALL_CAST);
+	PrecacheSound(SND_FIREBALL_EXPLODE);
+	PrecacheSound(SND_HOMING_ACTIVATE);
+
+	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
@@ -235,25 +259,29 @@ ArrayList SSB_SpellCards[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is use
 int SSB_LastSpell[MAXENTITIES] = { -1, ... };				//The most recently-used spell card. Used so that the same Spell Card cannot be used twice in a row.
 int SSB_DefaultSpell[4] = { 0, 0, 0, 0 };					//The Spell Card slot to default to if none of the other Spell Cards are successfully cast.
 float SSB_NextSpell[MAXENTITIES] = { 0.0, ... }; 			//The GameTime at which SSB will use his next Spell Card.
-float SSB_SpellCDMin[4] = { 7.5, 6.25, 5.0, 3.75 };			//The minimum cooldown between spell cards.
-float SSB_SpellCDMax[4] = { 12.5, 11.25, 10.0, 8.75 };		//The maximum cooldown between spell cards.
+float SSB_SpellCDMin[4] = { 6.0, 6.0, 5.0, 4.0 };			//The minimum cooldown between spell cards.
+float SSB_SpellCDMax[4] = { 11.0, 11.0, 10.0, 9.0 };		//The maximum cooldown between spell cards.
 
 //SPELL CARD #1 - NIGHTMARE VOLLEY: SSB fires a spread of skulls, one of which will always be centered, which home in on victims and explode. Victims are ignited.
 //Skulls start red, but turn blue when homing begins.
-int Volley_Count[4] = { 2, 3, 4, 6 };							//The number of skulls fired by this Spell Card.
+int Volley_Count[4] = { 4, 8, 12, 16 };							//The number of skulls fired by this Spell Card.
 int Volley_MaxTargets[4] = { 3, 4, 5, 6 };						//Maximum number of enemies hit by skull explosions.
-float Volley_Velocity[4] = { 400.0, 600.0, 800.0, 1000.0 };		//Skull velocity.
-float Volley_HomingDelay[4] = { 2.0, 1.5, 1.0, 0.5 };			//Time until the skulls begin to home in on targets.
+float Volley_Velocity[4] = { 300.0, 400.0, 500.0, 600.0 };		//Skull velocity.
+float Volley_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
 float Volley_DMG[4] = { 60.0, 90.0, 120.0, 150.0 };				//Skull base damage.
 float Volley_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
 float Volley_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
 float Volley_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
 float Volley_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 	//Amount to multiply explosion damage for each target hit.
-float Volley_HomingAngle[4] = { 120.0, 160.0, 200.0, 240.0 };	//Skull's maximum homing angle.
-float Volley_HomingPerSecond[4] = { 40.0, 60.0, 80.0, 100.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Volley_HomingAngle[4] = { 90.0, 100.0, 110.0, 120.0 };	//Skulls' maximum homing angle.
+float Volley_HomingPerSecond[4] = { 9.0, 15.0, 21.0, 27.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Volley_Spread[4] = { 6.0, 7.0, 8.0, 9.0 };				//Random spread of skulls.
+bool b_IsHoming[MAXENTITIES] = { false, ... };
+int i_SkullParticle[MAXENTITIES] = { -1, ... };
 
 //SPELL CARD #2 - CURSED CROSS: SSB stops in place and begins to charge up. Once ready: SSB fires a cross of deathly green lasers from his position.
 //These lasers have infinite piercing and are not subject to falloff.
+//TODO: Needs an intro, wind-up, and activation animation
 float Cross_DMG[4] = { 120.0, 240.0, 360.0, 480.0 };		//Laser damage.
 float Cross_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by lasers to entities.
 float Cross_Range[4] = { 400.0, 600.0, 900.0, 1200.0 };		//Laser range.
@@ -309,8 +337,8 @@ float Skull_HomingPerSecond[4] = { 120.0, 120.0, 120.0, 120.0 };	//Number of tim
 float Skull_MiniVelocity[4] = { 800.0, 1000.0, 1200.0, 1400.0 };	//Velocity of the small projectiles fired by the big skull.
 float Skull_MiniDMG[4] = { 15.0, 20.0, 25.0, 30.0 };				//Damage dealt by the small projectiles.
 float Skull_MiniDuration[4] = {1.0, 1.5, 2.0, 2.5 };				//Lifespan of the small projectiles.
-float Skull_MiniHomingAngle[4] = { 90.0, 120.0, 160.0, 200.0 };		//Small projectile max homing angle.
-float Skull_MiniHomingPerSecond[4] = {40.0, 60.0, 80.0, 100.0 };	//Number of times per second for the small projectiles to readjust their velocity.
+float Skull_MiniHomingAngle[4] = { 40.0, 60.0, 80.0, 100.0 };		//Small projectile max homing angle.
+float Skull_MiniHomingPerSecond[4] = {3.0, 4.0, 5.0, 6.0 };	//Number of times per second for the small projectiles to readjust their velocity.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
@@ -469,37 +497,147 @@ static void SSB_PrepareAbilities()
 	//Simply copy what this does to add new Spell Cards to each wave's pool of Spell Cards.
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("Example Spell", 0.15, 2, SpellCard_Example, SpellCard_Filter));
 
+	//IMPORTANT NOTE: The chance of a specific ability being chosen is NOT its chance variable. The chance variable ONLY determines the likelihood of it being cast if it is chosen.
+	//The ACTUAL chance of the spell being used can be calculated with this formula:
+	//Real Chance = (1 / Total # of Abilities In Wave's Ability Pack) * Ability's Chance Variable
+	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
+
 	//Wave 15 (and before):
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross));
 
 	//Wave 30:
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.5, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.25, 3, SpellCard_DeathMagnetic, _, _, true));
 
 	//Wave 45:
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.33, 3, SpellCard_DeathMagnetic, _, _, true));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.25, 2, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.125, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.33, 2, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.2, 3, SpellCard_RingOfTartarus));
 
 	//Wave 60+:
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 0.5, 0, SpellCard_CursedCross));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 0.33, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("COSMIC TERROR", 0.33, 2, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.15, 2, SpellCard_TheSkull));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("COSMIC TERROR", 0.5, 2, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.2, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 2, SpellCard_TheSkull));
 }
 
 public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
 {
+	if (Volley_Count[SSB_WavePhase] < 1)
+		return;
 
+	ssb.AddGesture("ACT_SPELLCAST_2");
+	CreateTimer(0.5, NightmareVolley_Launch, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
+	ssb.UsingAbility = true;
+}
+
+public Action NightmareVolley_Launch(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+
+	ssb.UsingAbility = false;
+
+	float pos[3], ang[3], testAng[3];
+	GetEntPropVector(ssb.index, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(ssb.index, Prop_Send, "m_angRotation", ang);
+	pos[2] += 60.0;
+
+	testAng[0] = 0.0;
+	testAng[1] = ang[1];
+	testAng[2] = 0.0;
+				
+	GetPointFromAngles(pos, testAng, 40.0, pos, Priest_IgnoreAll, MASK_SHOT);
+
+	int num = Volley_Count[SSB_WavePhase];
+	NightmareVolley_ShootSkull(ssb, pos, ang, Volley_Velocity[SSB_WavePhase]);
+	num--;
+
+	if (num < 1)
+		return Plugin_Continue;
+
+	for (int i = 0; i < num; i++)
+	{
+		float randAng[3];
+		randAng = ang;
+		for (int vec = 0; vec < 3; vec++)
+			randAng[vec] += GetRandomFloat(-Volley_Spread[SSB_WavePhase], Volley_Spread[SSB_WavePhase]);
+
+		NightmareVolley_ShootSkull(ssb, pos, randAng, Volley_Velocity[SSB_WavePhase]);
+	}
+
+	ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 3.0);
+	EmitSoundToAll(SND_FIREBALL_CAST, ssb.index, _, 120);
+
+	return Plugin_Continue;
+}
+
+public void NightmareVolley_ShootSkull(SupremeSpookmasterBones ssb, float pos[3], float ang[3], float vel)
+{
+	int skull = SSB_CreateProjectile(ssb, MODEL_SKULL, pos, ang, vel, GetRandomFloat(0.8, 1.2), NightmareVolley_Collide);
+	if (IsValidEntity(skull))
+	{
+		b_IsHoming[skull] = false;
+		i_SkullParticle[skull] = EntIndexToEntRef(SSB_AttachParticle(skull, PARTICLE_FIREBALL_RED, _, ""));
+		CreateTimer(Volley_HomingDelay[SSB_WavePhase], NightmareVolley_StartHoming, EntIndexToEntRef(skull), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public Action NightmareVolley_StartHoming(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	int particle = EntRefToEntIndex(i_SkullParticle[ent]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	i_SkullParticle[ent] = EntIndexToEntRef(SSB_AttachParticle(ent, PARTICLE_FIREBALL_BLUE, _, ""));
+
+	EmitSoundToAll(Volley_HomingSFX[GetRandomInt(0, sizeof(Volley_HomingSFX) - 1)], ent, _, 120, _, _, GetRandomInt(80, 110));
+	EmitSoundToAll(SND_HOMING_ACTIVATE, ent, _, 120, _, _, GetRandomInt(80, 110));
+
+	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+	float ang[3];
+	GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+	Initiate_HomingProjectile(ent, owner, Volley_HomingAngle[SSB_WavePhase], Volley_HomingPerSecond[SSB_WavePhase], false, true, ang);
+	b_IsHoming[ent] = true;
+
+	return Plugin_Continue;
+}
+
+public MRESReturn NightmareVolley_Collide(int entity)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+
+	ParticleEffectAt(position, b_IsHoming[entity] ? PARTICLE_EXPLOSION_FIREBALL_BLUE : PARTICLE_EXPLOSION_FIREBALL_RED, 1.0);
+
+	EmitSoundToAll(SND_FIREBALL_EXPLODE, entity);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	if(IsValidEntity(owner))
+	{
+		bool isBlue = GetEntProp(owner, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(Volley_DMG[SSB_WavePhase], owner, entity, 0, position, Volley_Radius[SSB_WavePhase], Volley_Falloff_MultiHit[SSB_WavePhase],
+		Volley_Falloff_Radius[SSB_WavePhase], isBlue, Volley_MaxTargets[SSB_WavePhase], true, Volley_EntityMult[SSB_WavePhase]);
+	}
+
+	RemoveEntity(entity);
+	return MRES_Supercede;
 }
 
 public void SpellCard_CursedCross(SupremeSpookmasterBones ssb, int target)
@@ -749,7 +887,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		{
 			activated = GetRandomInt(0, GetArraySize(clone) - 1);
 
-			if (activated != SSB_LastSpell[this.index])
+			if (activated != SSB_LastSpell[this.index] || activated == SSB_DefaultSpell[SSB_WavePhase])
 			{
 				SSB_Ability chosen = GetArrayCell(clone, activated);
 				success = chosen.Activate(this, target, false);
@@ -766,11 +904,14 @@ methodmap SupremeSpookmasterBones < CClotBody
 		{
 			activated = specific > -1 ? specific : SSB_DefaultSpell[SSB_WavePhase];
 			SSB_Ability chosen = GetArrayCell(SSB_SpellCards[SSB_WavePhase], activated);
-			chosen.Activate(this, target, true);
+			success = chosen.Activate(this, target, true);
 		}
 
-		SSB_LastSpell[this.index] = activated;
-		this.CalculateNextSpellCard();
+		if (success)
+		{
+			SSB_LastSpell[this.index] = (activated == SSB_DefaultSpell[SSB_WavePhase] ? -1 : activated);
+			this.CalculateNextSpellCard();
+		}
 	}
 
 	public int GetAbilityByName(char name[255])
@@ -835,7 +976,6 @@ methodmap SupremeSpookmasterBones < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.m_flSpeed = BONES_SUPREME_SPEED;
 		
 		SDKHook(npc.index, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 
@@ -866,6 +1006,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		else
 			SSB_WavePhase = 3;
 
+		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
 		npc.UsingAbility = false;
@@ -971,4 +1112,97 @@ public void SupremeSpookmasterBones_NPCDeath(int entity)
 	npc.RemoveAllWearables();
 	RemoveEntity(entity);
 	//AcceptEntityInput(npc.index, "KillHierarchy");
+}
+
+int SSB_CreateProjectile(SupremeSpookmasterBones owner, char model[255], float pos[3], float ang[3], float velocity, float scale, DHookCallback CollideCallback, int skin = 0)
+{
+	int prop = CreateEntityByName("zr_projectile_base");
+			
+	if (IsValidEntity(prop))
+	{
+		DispatchKeyValue(prop, "targetname", "ssb_projectile"); 
+				
+		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
+		SetTeam(prop, GetTeam(owner.index));
+				
+		DispatchSpawn(prop);
+				
+		ActivateEntity(prop);
+		
+		SetEntityModel(prop, model);
+		char scaleChar[16];
+		Format(scaleChar, sizeof(scaleChar), "%f", scale);
+		DispatchKeyValue(prop, "modelscale", scaleChar);
+		
+		SetEntPropEnt(prop, Prop_Data, "m_hOwnerEntity", owner.index);
+		SetEntProp(prop, Prop_Data, "m_takedamage", 0, 1);
+		
+		char skinChar[16];
+		Format(skinChar, 16, "%i", skin);
+		DispatchKeyValue(prop, "skin", skinChar);
+		
+		float propVel[3], buffer[3];
+
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+		
+		SetEntityMoveType(prop, MOVETYPE_FLY);
+		
+		propVel[0] = buffer[0]*velocity;
+		propVel[1] = buffer[1]*velocity;
+		propVel[2] = buffer[2]*velocity;
+			
+		TeleportEntity(prop, pos, ang, propVel);
+		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
+		
+		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+		
+		return prop;
+	}
+	
+	return -1;
+}
+
+stock int SSB_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
+{
+	if (IsValidEntity(entity))
+	{
+		int part1 = CreateEntityByName("info_particle_system");
+		if (IsValidEdict(part1))
+		{
+			float pos[3];
+			if (HasEntProp(entity, Prop_Data, "m_vecAbsOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+			}
+			else if (HasEntProp(entity, Prop_Send, "m_vecOrigin"))
+			{
+				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+			}
+			
+			if (zTrans != 0.0)
+			{
+				pos[2] += zTrans;
+			}
+			
+			TeleportEntity(part1, pos, NULL_VECTOR, NULL_VECTOR);
+			DispatchKeyValue(part1, "effect_name", type);
+			SetVariantString("!activator");
+			AcceptEntityInput(part1, "SetParent", entity, part1);
+			SetVariantString(point);
+			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			DispatchKeyValue(part1, "targetname", "present");
+			DispatchSpawn(part1);
+			ActivateEntity(part1);
+			AcceptEntityInput(part1, "Start");
+			
+			if (duration > 0.0)
+			{
+				CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(part1), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			
+			return part1;
+		}
+	}
+	
+	return -1;
 }
