@@ -326,6 +326,9 @@ public void MutatedDrowedZombieHuman_ClotThink(int iNPC)
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
+				if(IsValidEntity(npc.m_iWearable5))
+					RemoveEntity(npc.m_iWearable5);
+
 				npc.PlayRangedAttackSecondarySound();
 
 				npc.m_flNextRangedAttackHappening = 0.0;
@@ -497,16 +500,19 @@ public void MutatedDrowedZombieHuman_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_PUSH_PLAYER");
+					npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.5);
 
-					npc.m_flNextRangedAttackHappening = gameTime + 0.4;
+					npc.m_flNextRangedAttackHappening = gameTime + 0.8;
 
-					npc.m_flDoingAnimation = gameTime + 0.7;
+					npc.m_flDoingAnimation = gameTime + 1.2;
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
+					float flPos[3]; // original
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "outerspace_belt_red", npc.index, "anim_attachment_LH", {0.0,0.0,0.0});
 				}
 			}
 		}

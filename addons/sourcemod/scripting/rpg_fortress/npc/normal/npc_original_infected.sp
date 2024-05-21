@@ -4,34 +4,28 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static const char g_DeathSounds[][] = {
-	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"npc/combine_soldier/die1.wav",
+	"npc/combine_soldier/die2.wav",
+	"npc/combine_soldier/die3.wav",
 };
 
 static const char g_HurtSound[][] = {
-	"vo/npc/male01/pain01.wav",
-	"vo/npc/male01/pain02.wav",
-	"vo/npc/male01/pain03.wav",
-	"vo/npc/male01/pain05.wav",
-	"vo/npc/male01/pain06.wav",
-	"vo/npc/male01/pain07.wav",
-	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
-};
-
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"npc/combine_soldier/pain1.wav",
+	"npc/combine_soldier/pain2.wav",
+	"npc/combine_soldier/pain3.wav",
 };
 
 static const char g_IdleSound[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
 };
 
+static const char g_IdleAlertedSounds[][] = {
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
+};
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -52,38 +46,34 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 };
 
 static const char g_RangedSpecialAttackSoundsSecondary[][] = {
-	"weapons/cow_mangler_over_charge_shot.wav",
+	"weapons/medi_shield_deploy.wav",
 };
 
-public void SeaInfectedZombieHuman_OnMapStart_NPC()
+public void OriginalInfected_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));	i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 
-	PrecacheModel("models/props_mvm/mvm_player_shield.mdl");
-
-	PrecacheModel("models/zombie/classic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sea Infected Atlantean");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_infected_zombie_human");
+	strcopy(data.Name, sizeof(data.Name), "Original Infected, Junal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_original_infected");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SeaInfectedZombieHuman(client, vecPos, vecAng, ally);
+	return OriginalInfected(client, vecPos, vecAng, ally);
 }
 
-methodmap SeaInfectedZombieHuman < CClotBody
+methodmap OriginalInfected < CClotBody
 {
 	public void PlayIdleSound()
 	{
@@ -131,9 +121,9 @@ methodmap SeaInfectedZombieHuman < CClotBody
 	{
 		EmitSoundToAll(g_RangedSpecialAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedSpecialAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
-	public SeaInfectedZombieHuman(int client, float vecPos[3], float vecAng[3], int ally)
+	public OriginalInfected(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "300", ally, false, true));
+		OriginalInfected npc = view_as<OriginalInfected>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -154,32 +144,34 @@ methodmap SeaInfectedZombieHuman < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		func_NPCDeath[npc.index] = SeaInfectedZombieHuman_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeaInfectedZombieHuman_OnTakeDamage;
-		func_NPCThink[npc.index] = SeaInfectedZombieHuman_ClotThink;
+		func_NPCDeath[npc.index] = OriginalInfected_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = OriginalInfected_OnTakeDamage;
+		func_NPCThink[npc.index] = OriginalInfected_ClotThink;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
+		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_skullbat/c_skullbat.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
+		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/medic_mask/medic_mask.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/pyro/hw2013_the_glob/hw2013_the_glob.mdl");
-		SetVariantString("1.15");
+		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/player/items/sniper/desert_marauder.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/pyro/hw2013_mucus_membrane/hw2013_mucus_membrane.mdl");
-		SetVariantString("1.0");
+		
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
+
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
@@ -190,9 +182,9 @@ methodmap SeaInfectedZombieHuman < CClotBody
 
 //TODO 
 //Rewrite
-public void SeaInfectedZombieHuman_ClotThink(int iNPC)
+public void OriginalInfected_ClotThink(int iNPC)
 {
-	SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(iNPC);
+	OriginalInfected npc = view_as<OriginalInfected>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -222,17 +214,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	if(npc.m_flDoingSpecial)
-	{
-		Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 300.0, gameTime);
-		fl_TotalArmor[npc.index] = 0.75;
-
-	}
-	else
-	{
-		Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 290.0, gameTime);
-		fl_TotalArmor[npc.index] = 1.0;
-	}
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 300.0, gameTime);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -246,15 +228,13 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 				float WorldSpaceCenterVec[3]; 
 				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
 				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 52000.0;
-					if(npc.m_flDoingSpecial)
-						damage = 55000.0;
+					float damage = 26000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -284,112 +264,61 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
-				npc.m_flNextRangedSpecialAttackHappens = 0.0;
+				npc.SpawnShield(3.0, "models/props_mvm/mvm_player_shield.mdl",80.0,false);
 				npc.PlayRangedSpecialAttackSecondarySound();
-				npc.m_flDoingSpecial = GetGameTime(npc.index) + 3.0;
-				float flPos[3]; // original
-				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-				npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "outerspace_belt_blue", npc.index, "head", {0.0,0.0,0.0});
+				npc.m_flNextRangedSpecialAttackHappens = 0.0;
 			}
 		}
-	}
-	if(npc.m_flDoingSpecial)
-	{
-		if(npc.m_flDoingSpecial < gameTime)
-		{
-			npc.m_flDoingSpecial = 0.0;
-			if(IsValidEntity(npc.m_iWearable6))
-				RemoveEntity(npc.m_iWearable6);
-		}	
 	}
 
 	if(npc.m_flNextRangedAttackHappening)
 	{
-		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		//dont suck them in if its the final bit
+		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-			float vecTarget[3];
-			WorldSpaceCenter(npc.m_iTarget, vecTarget);
-			npc.FaceTowards(vecTarget, 30000.0);
-			if(npc.m_flNextRangedAttackHappening < gameTime)
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsValidEntity(npc.m_iWearable5))
-					RemoveEntity(npc.m_iWearable5);
-					
-				npc.PlayRangedAttackSecondarySound();
-
-				npc.m_flNextRangedAttackHappening = 0.0;
-				float vecSpread = 0.1;
-					
-				npc.FaceTowards(vecTarget, 20000.0);
-					
-				float eyePitch[3];
-				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+				if (IsClientInGame(client))
+				{				
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
 						
-				//
-				//
-					
-					
-				float x, y;
-				x = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-				y = GetRandomFloat( -0.0, 0.0 ) + GetRandomFloat( -0.0, 0.0 );
-					
-				float vecDirShooting[3], vecRight[3], vecUp[3];
-				//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
-					
-				vecTarget[2] += 15.0;
-				float vecTarget2[3];
-				WorldSpaceCenter(npc.index, vecTarget2);
-				MakeVectorFromPoints(vecTarget2, vecTarget, vecDirShooting);
-				GetVectorAngles(vecDirShooting, vecDirShooting);
-				vecDirShooting[1] = eyePitch[1];
-				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-					
-				//add the spray
-				float vecDir[3];
-				vecDir[0] = vecDirShooting[0] + x * vecSpread * vecRight[0] + y * vecSpread * vecUp[0]; 
-				vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
-				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
-				NormalizeVector(vecDir, vecDir);
-
-				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
-				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				float Damage1 = 50000.0;
-				if(npc.m_flDoingSpecial)
-					Damage1 = 55000.0;
-
-				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 1000.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
-				
-				if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget) && npc.m_iTarget <= MaxClients)
-				{
-					static float victimPos[3];
-					static float partnerPos[3];
-					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", partnerPos);
-					GetEntPropVector(npc.m_iTarget, Prop_Send, "m_vecOrigin", victimPos);
+					//from 
+					//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
 					float Distance = GetVectorDistance(victimPos, partnerPos);
-					
-					static float angles[3];
-					GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
+					if(Distance < 500)
+					{				
+						static float angles[3];
+						GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
 
-					if (GetEntityFlags(npc.m_iTarget) & FL_ONGROUND)
-						angles[0] = 0.0; // toss out pitch if on ground
+						if (GetEntityFlags(client) & FL_ONGROUND)
+							angles[0] = 0.0; // toss out pitch if on ground
 
-					static float velocity[3];
-					GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-					float attraction_intencity = 2.0;
-					ScaleVector(velocity, Distance * attraction_intencity);
+						static float velocity[3];
+						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+						ScaleVector(velocity, 25.0);
+						
+						float SubjectAbsVelocity[3];
+						GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+						velocity[0] += SubjectAbsVelocity[0];
+						velocity[1] += SubjectAbsVelocity[1];
+						velocity[2] += SubjectAbsVelocity[2];
+										
 									
-									
-					// min Z if on ground
-					if (GetEntityFlags(npc.m_iTarget) & FL_ONGROUND)
-						velocity[2] = fmax(325.0, velocity[2]);
-								
-					// apply velocity
-					TeleportEntity(npc.m_iTarget, NULL_VECTOR, NULL_VECTOR, velocity);   
-				} 
-			}
+						// apply velocity
+						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
+					}
+				}
+			}	
+		}
+		if(npc.m_flNextRangedAttackHappening < gameTime)
+		{
+			npc.m_flNextRangedAttackHappening = 0.0;
+			//Big TE OR PARTICLE that explodes
+			//Make it purple too
+
 		}
 	}
-	
+
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3];
@@ -421,11 +350,11 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2; //Throw a Shield.
 		}
-		else if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Engage in Close Range Destruction.
 		}
-		else if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		else if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			npc.m_iState = 1; //Engage in Close Range Destruction.
 		}
@@ -513,20 +442,19 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 				if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					npc.m_iTarget = Enemy_I_See;
+					//Enemy pulls everyone in heavily, then releases a huge wave of energy into the sky from his point, AOE boom basically.
+					//damamges ppl ofc if too close
+					//pull stops right before damage happens
+					//enemy has high res while doing it.
 
-					npc.AddGesture("ACT_PUSH_PLAYER",_,_,_,0.5);
+					npc.m_flNextRangedAttackHappening = gameTime + 1.5;
 
-					npc.m_flNextRangedAttackHappening = gameTime + 0.8;
-
-					npc.m_flDoingAnimation = gameTime + 1.2;
+					npc.m_flDoingAnimation = gameTime + 2.0;
 					npc.m_flNextRangedAttack = gameTime + 7.5;
 
 					npc.m_bisWalking = false;
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
-					float flPos[3]; // original
-					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "outerspace_belt_red", npc.index, "anim_attachment_LH", {0.0,0.0,0.0});
 				}
 			}
 		}
@@ -535,13 +463,13 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 }
 
 
-public Action SeaInfectedZombieHuman_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action OriginalInfected_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(victim);
+	OriginalInfected npc = view_as<OriginalInfected>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -553,9 +481,9 @@ public Action SeaInfectedZombieHuman_OnTakeDamage(int victim, int &attacker, int
 	return Plugin_Changed;
 }
 
-public void SeaInfectedZombieHuman_NPCDeath(int entity)
+public void OriginalInfected_NPCDeath(int entity)
 {
-	SeaInfectedZombieHuman npc = view_as<SeaInfectedZombieHuman>(entity);
+	OriginalInfected npc = view_as<OriginalInfected>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();
@@ -567,12 +495,8 @@ public void SeaInfectedZombieHuman_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
 }
 
 

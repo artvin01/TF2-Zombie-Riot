@@ -118,9 +118,7 @@ methodmap HyperHeadcrabZombie < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
-
-	//	npc.SetActivity("ACT_WALK");
-
+		
 		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
