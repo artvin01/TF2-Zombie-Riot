@@ -30,9 +30,13 @@ methodmap PlayerAnimatorNPC < CClotBody
 		switch(Type)
 		{
 			case 1:
+			{
 				npc = view_as<PlayerAnimatorNPC>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
+				npc.m_flNextRangedAttackHappening = GetGameTime() + 1.5;
+				npc.m_flRangedSpecialDelay = GetGameTime() + 2.0;
+			}
 		}
-		i_AttacksTillReload[npc.index] = npc;
+		i_AttacksTillReload[npc.index] = Type;
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
@@ -87,7 +91,6 @@ methodmap PlayerAnimatorNPC < CClotBody
 			}
 		}
 
-		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bNoKillFeed = true;
@@ -106,7 +109,6 @@ methodmap PlayerAnimatorNPC < CClotBody
 		npc.m_flSpeed = 0.0;
 		npc.m_flAttackHappens = GetGameTime() + 0.03;
 		npc.m_flAttackHappens_2 = GetGameTime() + 0.5;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 2.0;
 
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -136,30 +138,19 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 	{
 		case 1:
 		{
-			if(npc.m_flAttackHappens)
+			if(npc.m_flNextRangedAttackHappening)
 			{
-				if(npc.m_flAttackHappens < GetGameTime())
+				//dont suck them in if its the final bit
+				if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 				{
-					npc.m_flAttackHappens = 0.0;
-					npc.AddActivityViaSequence("selectionmenu_anim01");
-					npc.SetPlaybackRate(0.01);
-					npc.SetCycle(0.01);
-					if(IsValidEntity(npc.m_iWearable7))
-						RemoveEntity(npc.m_iWearable7);
-
-					npc.m_iWearable7 = npc.EquipItemSeperate("head", "models/effects/vol_light256x512.mdl",_,_,_,150.0);
-
-					if(IsValidEntity(npc.m_iWearable6))
-						RemoveEntity(npc.m_iWearable6);
-
-						
-					SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSALPHA);
-					SetEntityRenderColor(npc.m_iWearable7, 255, 165, 0, 255);
-
-					float flPos[3]; // original
-					float flAng[3]; // original
-					npc.GetAttachment("head", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_leaftaunt_fallingleaves", npc.index, "head", {0.0,0.0,-50.0});
+					Bing_BangVisualiser(npc.index, 250.0, 35.0, 400.0);
+				}
+				if(npc.m_flNextRangedAttackHappening < gameTime)
+				{
+					npc.m_flNextRangedAttackHappening = 0.0;
+					//Big TE OR PARTICLE that explodes
+					//Make it purple too
+					BingBangExplosion(npc.index, npc.m_flNextMeleeAttack, 350.0, 250.0, 1.0);
 				}
 			}
 		}

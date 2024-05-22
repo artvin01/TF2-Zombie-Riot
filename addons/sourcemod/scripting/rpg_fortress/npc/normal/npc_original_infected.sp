@@ -236,7 +236,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 26000.0;
+					float damage = 100000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -278,14 +278,14 @@ public void OriginalInfected_ClotThink(int iNPC)
 		//dont suck them in if its the final bit
 		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-
+			Bing_BangVisualiser(npc.index, 250.0, 35.0, 400.0);
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
 			npc.m_flNextRangedAttackHappening = 0.0;
 			//Big TE OR PARTICLE that explodes
 			//Make it purple too
-
+			BingBangExplosion(npc.index, 150000.0, 350.0, 250.0, 1.0);
 		}
 	}
 
@@ -483,16 +483,17 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 		int b = 125;
 		int a = 200;
 		
-		spawnRing(entity, range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
-		spawnRing(entity, range * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
-		spawnRing(entity, range * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 3.1, 1);
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 3.1, 1);
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 3.1, 1);
+		float vecabsorigin[3];
+		GetAbsOrigin(npc.index, vecabsorigin);
+		spawnRing_Vectors(vecabsorigin, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, /*DURATION*/ 0.3, 6.0, 3.1, 1, range * 2.0);
 	}
 	
 	if(Suckpower == 0.0)
 		return;
 
-	
-	//client is fine for now, no need for NPC support as they go in anyways like idiots
 	float partnerPos[3];
 	float victimPos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos); 
@@ -524,11 +525,43 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 			}
 		}
 	}	
+	
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int enemyidx = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if(IsValidEnemy(entity, enemyidx))
+		{	
+			if(b_NoKnockbackFromSources[enemyidx])	
+				continue;
+
+			GetEntPropVector(enemyidx, Prop_Data, "m_vecAbsOrigin", victimPos); 
+			float Distance = GetVectorDistance(victimPos, partnerPos);
+			if(Distance < Suckrange)
+			{			
+				static float angles[3];
+				GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
+
+				static float velocity[3];
+				GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+				ScaleVector(velocity, Suckpower);
+				
+				float SubjectAbsVelocity[3];
+				GetEntPropVector(enemyidx, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+				velocity[0] += SubjectAbsVelocity[0];
+				velocity[1] += SubjectAbsVelocity[1];
+				velocity[2] += SubjectAbsVelocity[2];
+								
+				// apply velocity
+				CClotBody npc = view_as<CClotBody>(entity);
+				npc.Jump();
+				npc.SetVelocity(velocity);    
+			}
+		}
+	}
 }
 
 void BingBangExplosion(int entity, float damage, float knockup, float Radius, float damagefalloff)
 {
-	
 	float partnerPos[3];
 	float partnerPos2[3];
 	partnerPos = partnerPos2;
@@ -536,11 +569,11 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {200, 255, 255, 255}, 3);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {100, 0, 200, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {100, 255, 255, 255}, 3);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {90, 0, 90, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {0, 255, 255, 255}, 3);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {70, 0, 70, 255}, 3);
 	TE_SendToAll();
 	//issue: we cannot use normal explosion logic, as this explosion goes in a cirlce straight up, so its way more vertical targetability.
 	partnerPos[2] -= 30.0;
@@ -613,9 +646,11 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 		{
 			if(!b_NoKnockbackFromSources[entity])	
 			{
-				CClotBody npc = view_as<CClotBody>(bot_entidx);
+				float SubjectAbsVelocity[3];
+				SubjectAbsVelocity[2] += knockup;
+				CClotBody npc = view_as<CClotBody>(entity);
 				npc.Jump();
-				npc.SetVelocity(vecJumpVel);
+				npc.SetVelocity(SubjectAbsVelocity);
 			}
 		}
 	}

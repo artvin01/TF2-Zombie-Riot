@@ -1,15 +1,14 @@
 
 
-float Leper_InAnimation[MAXPLAYERS+1];
 #define spirite "spirites/zerogxplode.spr"
 
 #define EarthStyleShockwaveRange 250.0
-void GroundSlam_Map_Precache()
+void BigBang_Map_Precache()
 {
-	Zero(Leper_InAnimation);
+	return;
 }
 
-public float AbilityGroundSlam(int client, int index, char name[48])
+public float AbilityBingBang(int client, int index, char name[48])
 {
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(!kv)
@@ -35,7 +34,7 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 	if(Stats_Intelligence(client) < 750)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [25]");
+		ShowGameText(client,"leaderboard_streak", 0, "You do not have enough Intelligence [750]");
 		return 0.0;
 	}
 	
@@ -56,187 +55,25 @@ public float AbilityGroundSlam(int client, int index, char name[48])
 
 	float damageDelt = RPGStats_FlatDamageSetStats(client, 0, StatsForCalcMultiAdd);
 
-	damageDelt *= 2.2;
-
-	Ability_OnAbility_Ground_Pound(client, 1, weapon, damageDelt);
+	damageDelt *= 4.2;
+	PlayerAnimationSettingFreeze(client, 1, damageDelt);
 	return (GetGameTime() + 15.0);
 }
 
-public void Ability_OnAbility_Ground_Pound(int client, int level, int weapon, float damage)
-{	
-	
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-
-	if(!IsValidEntity(viewmodelModel))
-		return;
-		
-	f_OriginalDamage[client] = damage;
-	client_slammed_how_many_times[client] = 0;
-	client_slammed_how_many_times_limit[client] = (level * 2);
-	static float anglesB[3];
-	GetClientEyeAngles(client, anglesB);
-	static float velocity[3];
-	GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-	GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", velocity);
-	velocity[0] *= 1.5;
-	velocity[1] *= 1.5;
-	velocity[2] = fmax(velocity[2], 600.0);
-	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);		
-		
-	float flPos[3]; // original
-	float flAng[3]; // original
-		
-	float flPos_l[3]; // original
-	float flAng_l[3]; // original
-	GetAttachment(viewmodelModel, "foot_L", flPos, flAng);
-			
-
-	i_weaponused[client] = EntIndexToEntRef(weapon);
-	particle[client] = ParticleEffectAt(flPos, "raygun_projectile_red_crit", 15.0);
-			
-	SetParent(viewmodelModel, particle[client], "foot_L");
-	
-	particle[client] = EntIndexToEntRef(particle[client]);
-
-	GetAttachment(viewmodelModel, "foot_R", flPos_l, flAng_l);
-			
-	particle_1[client] = ParticleEffectAt(flPos_l, "raygun_projectile_red_crit", 15.0);
-			
-	SetParent(viewmodelModel, particle_1[client], "foot_R");
-
-	particle_1[client] = EntIndexToEntRef(particle_1[client]);
-
-	Duration_Pound[client] = GetGameTime() + 0.35;
-	Is_Duration_Pound[client] = GetGameTime() + 5.0;
-		
-	SDKHook(client, SDKHook_PreThink, contact_ground_shockwave);
-
-	for(int entity=1; entity<MAXENTITIES; entity++)
-	{
-		b_GroundPoundHit[client][entity] = false;
-	}
-	
-	EmitSoundToAll("weapons/physcannon/energy_sing_flyby2.wav", client, SNDCHAN_STATIC, 80, _, 0.9);
-	f_ImmuneToFalldamage[client] = GetGameTime() + 0.5;
-}
-
-public Action contact_ground_shockwave(int client)
+void PlayerAnimationSettingFreeze(int client, int type, float damage)
 {
-	Is_Duration_Pound[client] = GetGameTime() + 1.0;
-	f_ImmuneToFalldamage[client] = GetGameTime() + 0.5;
-	if (Duration_Pound[client] < GetGameTime())
+	float TimeUntillUnfreeze;
+	switch(type)
 	{
-		SetEntityGravity(client, 10.0);
-	}
-	else
-	{
-		SetEntityGravity(client, 1.0);
-	}
-	int flags = GetEntityFlags(client);
-	
-	if (Duration_Pound[client] < GetGameTime() && ((flags & FL_ONGROUND)==1 || (flags & (FL_SWIM|FL_INWATER))))
-	{
-		Is_Duration_Pound[client] = 0.0;
-
-		SetEntityGravity(client, 1.0);
-		if(IsValidEntity(EntRefToEntIndex(particle[client])))
-			RemoveEntity(EntRefToEntIndex(particle[client]));
-			
-		if(IsValidEntity(EntRefToEntIndex(particle_1[client])))
-			RemoveEntity(EntRefToEntIndex(particle_1[client]));
-
-		float vecUp[3];
-		
-		GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp);
-		
-		GetAbsOrigin(client, client_slammed_pos[client]);
-		client_slammed_pos[client][2] += 5.0;
-		
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = client_slammed_pos[client][0] + client_slammed_forward[client][0] * (90 * client_slammed_how_many_times[client]);
-		vecSwingEnd[1] = client_slammed_pos[client][1] + client_slammed_forward[client][1] * (90 * client_slammed_how_many_times[client]);
-		vecSwingEnd[2] = client_slammed_pos[client][2] + client_slammed_forward[client][2] * 100;
-		
-		DataPack pack = new DataPack();
-		pack.WriteFloat(vecSwingEnd[0]);
-		pack.WriteFloat(vecSwingEnd[1]);
-		pack.WriteFloat(vecSwingEnd[2]);
-		pack.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack);
-		int weapon = EntRefToEntIndex(i_weaponused[client]);
-		if(IsValidEntity(weapon))
+		case 1:
 		{
-			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
-			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false,_,_,_,_,GroundPoundMeleeHitOnce);
-	
-		}
-		EmitSoundToAll("ambient/atmosphere/terrain_rumble1.wav", client, SNDCHAN_STATIC, 80, _, 0.9);
-		CreateEarthquake(vecSwingEnd, 0.5, 350.0, 16.0, 255.0);
-
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vecUp);
-		CreateTimer(0.15, shockwave_explosions, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		SDKUnhook(client, SDKHook_PreThink, contact_ground_shockwave);
-	}
-	return Plugin_Continue;
-}
-
-float GroundPoundMeleeHitOnce(int entity, int victim, float damage, int weapon)
-{
-	if(b_GroundPoundHit[entity][victim])
-	{
-		damage *= -1.0;
-		return damage;
-	}
-	b_GroundPoundHit[entity][victim] = true;
-	return damage;
-}
-
-public Action shockwave_explosions(Handle timer, int client)
-{
-	if(IsClientInGame(client))
-	{
-		client_slammed_how_many_times[client] += 1;
-		
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = client_slammed_pos[client][0] + client_slammed_forward[client][0] * (90 * client_slammed_how_many_times[client]);
-		vecSwingEnd[1] = client_slammed_pos[client][1] + client_slammed_forward[client][1] * (90 * client_slammed_how_many_times[client]);
-		vecSwingEnd[2] = client_slammed_pos[client][2] + client_slammed_forward[client][2] * 100;
-		
-		DataPack pack = new DataPack();
-		pack.WriteFloat(vecSwingEnd[0]);
-		pack.WriteFloat(vecSwingEnd[1]);
-		pack.WriteFloat(vecSwingEnd[2]);
-		pack.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack);
-
-		int weapon = EntRefToEntIndex(i_weaponused[client]);
-		if(IsValidEntity(weapon))
-		{
-			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
-			Explode_Logic_Custom(f_OriginalDamage[client], client, client, weapon, vecSwingEnd,_,_,_,false,_,_,_,_,GroundPoundMeleeHitOnce);
-		}
-
-		if(client_slammed_how_many_times[client] > client_slammed_how_many_times_limit[client])
-		{
-			return Plugin_Stop;
+			TimeUntillUnfreeze = 2.0;
 		}
 	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}
-
-
-void PlayerAnimationSettingFreeze(int client, bool Freeze)
-{
 	int ModelToDelete = 0;
-	int CameraDelete = SetCameraEffectLeperHew(client, ModelToDelete);
+	int CameraDelete = SetCameraEffectAndModel(client, ModelToDelete, type, damage);
 	DataPack pack;
-	Leper_InAnimation[client] = GetGameTime() + 0.8;
-	CreateDataTimer(0.8, PlayerAnimationSettingFreezePost, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(TimeUntillUnfreeze, PlayerAnimationSettingFreezePost, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(client);
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(EntIndexToEntRef(CameraDelete));
@@ -265,7 +102,6 @@ public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	int camreadelete = EntRefToEntIndex(pack.ReadCell());
 	int DeleteKillEntity = EntRefToEntIndex(pack.ReadCell());
-	LeperSwingEffect[clientindex] = false;
 
 	if(camreadelete != -1)
 		RemoveEntity(camreadelete);
@@ -308,8 +144,9 @@ public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 #define LEPER_BOUNDS_VIEW_EFFECT 25.0
 #define LEPER_MAXRANGE_VIEW_EFFECT 125.0
 
-int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type)
+int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float damage)
 {
+	/*
 	int pitch = GetRandomInt(95,100);	
 	for(int clientloop=1; clientloop<=MaxClients; clientloop++)
 	{
@@ -331,7 +168,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type)
 			ClientCommand(client,"playgamesound ambient/rottenburg/barrier_smash.wav");
 		}
 	}	
-//	EmitSoundToClient(client, LEPER_AOE_SWING_HIT, SOUND_FROM_WORLD, SNDCHAN_AUTO, 999,_,0.8,pitch);	
+	*/
 	float vAngles[3];
 	float vOrigin[3];
 	GetClientEyePosition(client, vOrigin);
@@ -414,6 +251,9 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type)
 	int spawn_index = NPC_CreateByName("npc_player_animator", client, vabsOrigin, vabsAngles, GetTeam(client), IntToString(Type));
 	if(spawn_index > 0)
 	{
+		CClotBody npc = view_as<CClotBody>(spawn_index);
+		npc.m_flNextMeleeAttack = damage;
+		i_AttacksTillReload[spawn_index] = Type;
 		ModelToDelete = spawn_index;
 	}
 	return viewcontrol;

@@ -128,6 +128,7 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/custom/weapon_bubble_proc.sp"
 #include "rpg_fortress/custom/emblem_doublejump.sp"
 #include "rpg_fortress/custom/weapon_boom_stick.sp"
+#include "rpg_fortress/custom/skill_big_bang.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
@@ -258,6 +259,7 @@ void RPG_MapStart()
 	Abiltity_GoldenAgility_MapStart();
 	Wand_BubbleProctection_Map_Precache();
 	BoomStick_MapPrecache();
+	BigBang_Map_Precache();
 
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
 

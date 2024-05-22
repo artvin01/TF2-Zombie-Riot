@@ -67,6 +67,7 @@ void NPC_ConfigSetup()
 	SeaInfectedZombieHuman_OnMapStart_NPC();
 	HyperHeadcrabZombie_OnMapStart_NPC();
 	PlayerAnimatorNPC_OnMapStart_NPC();
+	OriginalInfected_OnMapStart_NPC();
 
 /*
 	ArkSlug_MapStart();
@@ -542,6 +543,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
 #include "rpg_fortress/npc/normal/npc_sea_infected_zombiefied_human.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_hyper.sp"
+#include "rpg_fortress/npc/normal/npc_original_infected.sp"
 #include "rpg_fortress/npc/ally/npc_player_animator.sp"
 /*
 	 
