@@ -411,34 +411,10 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type)
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
 	
-	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
+	int spawn_index = NPC_CreateByName("npc_player_animator", client, vabsOrigin, vabsAngles, GetTeam(client), IntToString(Type));
 	if(spawn_index > 0)
 	{
-		i_AttacksTillReload[spawn_index] = 0;
 		ModelToDelete = spawn_index;
-	}
-	GetClientEyeAngles(client, vabsAngles);
-	int PreviousProjectile;
-	static float AngEffect[3];
-	AngEffect = vabsAngles;
-
-	int MaxRepeats = 4;
-	AngEffect[1] -= 90.0;
-	for(int repeat; repeat <= MaxRepeats; repeat ++)
-	{
-		int projectile = Wand_Projectile_Spawn(client, 500.0, 99999.9, 0.0, -1, 0, "", AngEffect);
-		DataPack pack2 = new DataPack();
-		int laser = projectile;
-		if(IsValidEntity(PreviousProjectile))
-		{
-			laser = ConnectWithBeam(projectile, PreviousProjectile, 255, 255, 255, 10.0, 10.0, 1.0);
-		}
-		SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
-		PreviousProjectile = projectile;
-		pack2.WriteCell(EntIndexToEntRef(projectile));
-		pack2.WriteCell(EntIndexToEntRef(laser));
-		RequestFrames(Mylnar_DeleteLaserAndParticle, 18, pack2);
-		AngEffect[1] += (180.0 / float(MaxRepeats));
 	}
 	return viewcontrol;
 }

@@ -49,6 +49,7 @@ static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 	"weapons/medi_shield_deploy.wav",
 };
 
+static char gLaser1;
 public void OriginalInfected_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -61,6 +62,7 @@ public void OriginalInfected_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
 
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Original Infected, Junal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_original_infected");
@@ -276,39 +278,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 		//dont suck them in if its the final bit
 		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if (IsClientInGame(client))
-				{				
-					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
-						
-					//from 
-					//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
-					float Distance = GetVectorDistance(victimPos, partnerPos);
-					if(Distance < 500)
-					{				
-						static float angles[3];
-						GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
 
-						if (GetEntityFlags(client) & FL_ONGROUND)
-							angles[0] = 0.0; // toss out pitch if on ground
-
-						static float velocity[3];
-						GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
-						ScaleVector(velocity, 25.0);
-						
-						float SubjectAbsVelocity[3];
-						GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-						velocity[0] += SubjectAbsVelocity[0];
-						velocity[1] += SubjectAbsVelocity[1];
-						velocity[2] += SubjectAbsVelocity[2];
-										
-									
-						// apply velocity
-						TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
-					}
-				}
-			}	
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
@@ -499,4 +469,155 @@ public void OriginalInfected_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable5);
 }
 
+//put it on a delay, a sizeable one
+void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0, float Suckrange = 0.0)
+{
+	static int RepeatTillVisualiser[MAXENTITIES];
 
+	RepeatTillVisualiser[entity] += 1;
+	if(RepeatTillVisualiser[entity] >= 2)
+	{
+		RepeatTillVisualiser[entity] = 0;
+		int r = 125;
+		int g = 0;
+		int b = 125;
+		int a = 200;
+		
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.5, 6.0, 6.1, 1);
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
+		spawnRing(entity, range * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 6.0, 6.1, 1);
+	}
+	
+	if(Suckpower == 0.0)
+		return;
+
+	
+	//client is fine for now, no need for NPC support as they go in anyways like idiots
+	float partnerPos[3];
+	float victimPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos); 
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && IsValidEnemy(entity, client))
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
+			//from 
+			//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
+			float Distance = GetVectorDistance(victimPos, partnerPos);
+			if(Distance < Suckrange)
+			{				
+				static float angles[3];
+				GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
+
+				static float velocity[3];
+				GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+				ScaleVector(velocity, Suckpower);
+				
+				float SubjectAbsVelocity[3];
+				GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+				velocity[0] += SubjectAbsVelocity[0];
+				velocity[1] += SubjectAbsVelocity[1];
+				velocity[2] += SubjectAbsVelocity[2];
+								
+				// apply velocity
+				TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);       
+			}
+		}
+	}	
+}
+
+void BingBangExplosion(int entity, float damage, float knockup, float Radius, float damagefalloff)
+{
+	
+	float partnerPos[3];
+	float partnerPos2[3];
+	partnerPos = partnerPos2;
+	partnerPos2[2] += 500.0;
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {200, 255, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {100, 255, 255, 255}, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 100.0, 100.0, 0, 1.0, {0, 255, 255, 255}, 3);
+	TE_SendToAll();
+	//issue: we cannot use normal explosion logic, as this explosion goes in a cirlce straight up, so its way more vertical targetability.
+	partnerPos[2] -= 30.0;
+	//the attack goes down abit.
+	
+	for(int enemyidx = 1; enemyidx <= MaxClients; enemyidx++)
+	{
+		if (IsValidEnemy(entity, enemyidx))
+		{
+			BingBangExplosionInternal(enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
+		}
+	}
+	
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int enemyidx = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if(IsValidEnemy(entity, enemyidx))
+		{
+			BingBangExplosionInternal(enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
+		}
+	}
+}
+
+void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float &damage, float knockup, float Radius, float damagefalloff)
+{
+	float victimPos[3];
+	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", victimPos);
+
+	float VictimPos2;
+	float AttackerPos2;
+	AttackerPos2 = SelfVec[2];
+	VictimPos2 = victimPos[2];
+	victimPos[2] = SelfVec[2];
+
+	float Distance = GetVectorDistance(victimPos, SelfVec);
+	if(Distance > Radius)
+		return;
+	//they are in the range, non dioagnially
+
+	if(AttackerPos2 > VictimPos2)
+		return;
+	//they are above the player atleast
+
+	float HeightDifference = VictimPos2 - AttackerPos2;
+	if(HeightDifference < 0.0)
+		HeightDifference *= -1.0;
+
+	if(HeightDifference > 500.0)
+		return;
+
+	if(!Can_I_See_Enemy_Only(attacker, victim))
+		return;
+
+	//all checks done, now damage the enemy
+	
+	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, _, _, _,);
+	damage /= damagefalloff;
+	//idealy you want no falloff 
+	if(knockup > 0.0)
+	{
+		if(victim <= Maxclients)
+		{
+			float SubjectAbsVelocity[3];
+			SubjectAbsVelocity[2] += knockup;
+							
+			// apply velocity
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, SubjectAbsVelocity); 	
+		}
+		else
+		{
+			if(!b_NoKnockbackFromSources[entity])	
+			{
+				CClotBody npc = view_as<CClotBody>(bot_entidx);
+				npc.Jump();
+				npc.SetVelocity(vecJumpVel);
+			}
+		}
+	}
+	
+}
