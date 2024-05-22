@@ -70,6 +70,7 @@ void PlayerAnimationSettingFreeze(int client, int type, float damage)
 			TimeUntillUnfreeze = 2.0;
 		}
 	}
+	IncreaceEntityDamageTakenBy(client, 0.5, TimeUntillUnfreeze);
 	int ModelToDelete = 0;
 	int CameraDelete = SetCameraEffectAndModel(client, ModelToDelete, type, damage);
 	DataPack pack;
