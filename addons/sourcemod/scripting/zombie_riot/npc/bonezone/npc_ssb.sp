@@ -274,27 +274,28 @@ float SSB_SpellCDMax[4] = { 11.0, 11.0, 10.0, 9.0 };		//The maximum cooldown bet
 int Volley_Count[4] = { 4, 8, 12, 16 };							//The number of skulls fired by this Spell Card.
 int Volley_MaxTargets[4] = { 3, 4, 5, 6 };						//Maximum number of enemies hit by skull explosions.
 float Volley_Velocity[4] = { 360.0, 420.0, 480.0, 540.0 };		//Skull velocity.
-float Volley_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
+float Volley_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };		//Time until the skulls begin to home in on targets.
 float Volley_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };				//Skull base damage.
 float Volley_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };			//Amount to multiply damage dealt by skulls to entities.
 float Volley_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };			//Skull explosion radius.
 float Volley_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };	//Skull falloff, based on radius.
 float Volley_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 	//Amount to multiply explosion damage for each target hit.
-float Volley_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };	//Skulls' maximum homing angle.
+float Volley_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };		//Skulls' maximum homing angle.
 float Volley_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };	//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
 float Volley_Spread[4] = { 9.0, 10.0, 11.0, 12.0 };				//Random spread of skulls.
 float Volley_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };		//Distance to spread skulls apart when they spawn.
-bool b_IsHoming[MAXENTITIES] = { false, ... };
-int i_SkullParticle[MAXENTITIES] = { -1, ... };
+bool b_IsHoming[MAXENTITIES] = { false, ... };					//This is set to true by the plugin when Nightmare Volley's skulls begin to home in on players.
+int i_SkullParticle[MAXENTITIES] = { -1, ... };					//The particle associated with a given Nightmare Volley skull, used exclusively to change the trail from red to blue once homing begins.
 
 //SPELL CARD #2 - CURSED CROSS: SSB stops in place and begins to charge up. Once ready: SSB fires a cross of deathly green lasers from his position.
 //These lasers have infinite piercing and are not subject to falloff.
 //TODO: Needs an intro, wind-up, and activation animation
-float Cross_DMG[4] = { 120.0, 240.0, 360.0, 480.0 };		//Laser damage.
+float Cross_DMG[4] = { 240.0, 480.0, 960.0, 1920.0 };		//Laser damage.
 float Cross_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by lasers to entities.
 float Cross_Range[4] = { 400.0, 600.0, 900.0, 1200.0 };		//Laser range.
 float Cross_Width[4] = { 60.0, 90.0, 120.0, 150.0 };		//Laser hitbox width.
 float Cross_Delay[4] = { 3.0, 2.75, 2.5, 2.25 };			//Delay until the lasers are fired once this Spell Card is activated.
+bool SSB_LaserHit[MAXENTITIES] = { false, ... };			//Used exclusively to see if an entity was hit by any of SSB's laser effects.
 
 //SPELL CARD #3 - CHAOS BARRAGE: SSB launches a bunch of weak laser projectiles in random directions. These lasers deal no damage and do not touch players.
 //After a short delay, the lasers freeze in place. Then, after another delay, the lasers fly towards whoever is closest and deal damage on contact.
@@ -346,7 +347,7 @@ float Skull_MiniVelocity[4] = { 800.0, 1000.0, 1200.0, 1400.0 };	//Velocity of t
 float Skull_MiniDMG[4] = { 15.0, 20.0, 25.0, 30.0 };				//Damage dealt by the small projectiles.
 float Skull_MiniDuration[4] = {1.0, 1.5, 2.0, 2.5 };				//Lifespan of the small projectiles.
 float Skull_MiniHomingAngle[4] = { 40.0, 60.0, 80.0, 100.0 };		//Small projectile max homing angle.
-float Skull_MiniHomingPerSecond[4] = {3.0, 4.0, 5.0, 6.0 };	//Number of times per second for the small projectiles to readjust their velocity.
+float Skull_MiniHomingPerSecond[4] = {3.0, 4.0, 5.0, 6.0 };			//Number of times per second for the small projectiles to readjust their velocity.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
@@ -356,6 +357,89 @@ int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to defa
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
+
+//SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
+//in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
+float Necrotic_Delay[4] = { 4.0, 3.5, 3.0, 2.5 };			//Time until the laser is fired after SSB enters his stance.
+float Necrotic_DMG[4] = { 800.0, 2000.0, 5000.0, 12500.0 };	//Damage dealt by the laser.
+float Necrotic_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };	//Amount to multiply damage dealt by the laser to entities.
+float Necrotic_Width[4] = { 300.0, 350.0, 400.0, 450.0 };	//Laser width, in hammer units.
+
+//SPOOKY SPECIAL #2 - MASTER OF THE DAMNED: SSB takes an immobile stance where he rapidly summons skeletal minions to fight for him. These minions are summoned by telegraphed
+//green thunderbolts which deal damage in the area around the minion's spawn point.
+int Summon_Count[4] = { 2, 3, 4, 5 };								//Number of minions summoned per summon interval.
+float Summon_Max[4] = { 16.0, 25.0, 35.0, 45.0 };					//Maximum total summon value of minions summoned by SSB by this ability (lightning strikes will still occur once this cap is reached, but new minions will not be summoned).
+float Summon_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };				//Duration for which SSB should summon minions.
+float Summon_Resistance[4] = { 0.5, 0.42, 0.33, 0.25 };				//Amount to multiply all damage taken by SSB while he is summoning.
+float Summon_BonusTime[4] = { 10.0, 12.0, 14.0, 16.0 };				//Bonus time given to the mercenaries when SSB activates this ability.
+float Summon_Radius[4] = { 600.0, 800.0, 1000.0, 1200.0 };			//Radius in which minions are summoned.
+float Summon_Interval[4] = { 1.0, 0.9, 0.8, 0.6 };					//Time between summon waves.
+float Summon_ThunderDMG[4] = { 100.0, 200.0, 300.0, 400.0 };		//Damage dealt by thunderbolts.
+float Summon_ThunderRadius[4] = { 120.0, 180.0, 240.0, 300.0 };		//Thunderbolt radius.
+float Summon_ThunderEntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by thunderbolts to entities.
+float Summon_ThunderFalloffMultiHit[4] = { 0.66, 0.75, 0.8, 0.8 };	//Amount to multiply damage dealt by thunderbolts for each target hit.
+float Summon_ThunderFalloffRange[4] = { 0.66, 0.5, 0.33, 0.165 };	//Maximum damage falloff of thunderbolts, based on range.
+
+//SPOOKY SPECIAL #3 - SOUL HARVESTER: SSB takes an immobile stance where he raises his arms and attempts to drain the life of all nearby enemies, drawing them in as they rapidly
+//take damage which is then given to SSB as healing. This ability is immune to damage falloff.
+float Harvester_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };				//Duration of the ability.
+float Harvester_Radius[4] = { 400.0, 500.0, 600.0, 800.0 };			//Radius.
+float Harvester_Resistance[4] = { 0.75, 0.7, 0.66, 0.5 };			//Amount to multiply damage dealt to SSB during this ability.
+float Harvester_DMG[4] = { 5.0, 10.0, 15.0, 20.0 };					//Damage dealt per 0.1s to all enemies within Soul Harvester's radius.
+float Harvester_HealRatio[4] = { 1.0, 1.5, 2.0, 3.0 };				//Amount to heal SSB per point of damage dealt by this attack.
+float Harvester_PullStrength[4] = { 200.0, 250.0, 300.0, 350.0 };	//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
+
+//SPOOKY SPECIAL #4 - HELL IS HERE: SSB takes - you guessed it - an immobile stance where he thrusts his arms forward and begins to fire a barrage of homing skulls.
+//This ability functions like a supercharged version of the Nightmare Volley Spell Card. SSB CAN turn during this ability.
+int Hell_Count[4] = { 4, 4, 3, 2 };									//Number of skulls fired per interval.
+float Hell_Duration[4] = { 4.0, 5.0, 6.0, 7.0 };					//Duration.
+float Hell_Resistance[4] = { 0.5, 0.5, 0.5, 0.5 };					//Amount to multiply damage taken by SSB during this ability.
+float Hell_Interval[4] = { 1.0, 0.66, 0.33, 0.2 };					//Interval in which skulls are fired.
+float Hell_Velocity[4] = { 360.0, 420.0, 480.0, 540.0 };			//Skull velocity.
+float Hell_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
+float Hell_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };					//Skull base damage.
+float Hell_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };					//Amount to multiply damage dealt by skulls to entities.
+float Hell_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };				//Skull explosion radius.
+float Hell_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };			//Skull falloff, based on radius.
+float Hell_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 			//Amount to multiply explosion damage for each target hit.
+float Hell_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };			//Skulls' maximum homing angle.
+float Hell_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };			//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Hell_Spread[4] = { 9.0, 10.0, 11.0, 12.0 };					//Random spread of skulls.
+float Hell_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };				//Distance to spread skulls apart when they spawn.
+
+//SPOOKY SPECIAL #5 - SPIN 2 WIN: SSB pulls out his trusty Mortis Masher and begins to spin wildly. During this, he moves VERY quickly, but has his friction reduced, making
+//him prone to overshooting his target.
+float Spin_DMG[4] = { 100.0, 150.0, 200.0, 400.0 };					//Damage dealt per interval to anyone close enough during the spin.
+float Spin_Radius[4] = { 120.0, 120.0, 120.0, 120.0 };				//Radius in which SSB's hammer will bludgeon players while he is spinning.
+float Spin_Interval[4] = { 0.33, 0.3, 0.25, 0.2 };					//Interval in which the hammer will hit anyone who is too close.
+float Spin_Duration[4] = {7.0, 8.0, 9.0, 10.0 };					//Duration of the ability.
+float Spin_Speed[4] = { 600.0, 700.0, 800.0, 900.0 };				//SSB's movement speed while spinning.
+float Spin_KB[4] = { 300.0, 600.0, 900.0, 1200.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
+//SPECIAL NOTE FOR SPIN 2 WIN: Friction and acceleration seem to be inextricably linked. You will need the perfect blend of both to get the effects you're looking for, 
+//so don't just change these willy-nilly without testing first.
+float Spin_Friction[4] = { 0.5, 0.75, 1.0, 1.5 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
+float Spin_Acceleration[4] = { 1200.0, 1540.0, 2000.0, 2520.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
+
+//SPOOKY SPECIAL #6 - MEGA MORTIS: SSB once again pulls out his trusty Mortis Masher and lifts it high into the air, charging it with necrotic energy. After X second(s),
+//he slams it down, dealing massive damage within a large radius to anybody who is on the ground. Anyone who is directly hit by the hammer itself is instantly killed,
+//no matter what. This bypasses downs entirely. In other words: don't try to face-tank it, you will fail.
+float Mortis_Delay[4] = { 5.0, 4.0, 3.0, 2.0 };						//Charge time.
+float Mortis_DMG[4] = { 800.0, 1600.0, 2400.0, 3200.0 };			//Damage.
+float Mortis_Radius[4] = { 900.0, 1200.0, 1500.0, 1800.0 };			//Radius.
+float Mortis_InstaDeathRadius[4] = { 100.0, 100.0, 100.0, 100.0 };	//Radius in which players are considered to have been hit directly by the hammer, and are thus instantly killed.
+float Mortis_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };			//Falloff based on radius.
+float Mortis_Falloff_MultiHit[4] = { 1.0, 1.0, 1.0, 1.0 };			//Amount to multiply damage dealt for each target hit.
+float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity applied to each target hit.
+
+//TODO:
+//	- All specials and spells, as well as all animations that come with them.
+//		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
+//	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger.
+//	- Note: intended Spooky Special unlock progression is as follows:
+//		- Wave Phase 0: Necrotic Blast, Master of the Damned
+//		- Wave Phase 1: Gains access to Spin 2 Win and Soul Harvester.
+//		- Wave Phase 2: Gains access to Hell is Here.
+//		- Wave Phase 3: Gains access to MEGA MORTIS.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
 #define SSB_MAX_ABILITIES 255
@@ -595,8 +679,13 @@ public Action NightmareVolley_Launch(Handle timer, DataPack pack)
 			randAng[vec] += GetRandomFloat(-60.0, 60.0);
 
 		GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Volley_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
-		while (NightmareVolley_WouldSkullCollide(pos))	//Don't let skulls spawn in places where they would collide with something
+
+		int attempts = 10;	//SSB can sometimes try to use this attack in a position where the skulls would spawn in a wall, which causes script execution timeout. This is a hack which fixes that. I may or may not eventually add a REAL fix, but for now, this will do.
+		while (NightmareVolley_WouldSkullCollide(pos) && attempts > 0)	//Don't let skulls spawn in places where they would collide with something
+		{
 			GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Volley_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
+			attempts--;
+		}
 
 		if (IsValidEntity(target))
 		{
@@ -712,7 +801,66 @@ public Action Cross_Activate(Handle timer, int ref)
 		EmitSoundToAll(Cross_BlastSFX[i], ssb.index, _, 120, _, _, 80);
 	}
 
+	float pos[3], ang[3], hullMin[3], hullMax[3];
+	GetEntPropVector(ssb.index, Prop_Data, "m_angRotation", ang);
+	ang[0] = 0.0;
+	ang[2] = 0.0;
+	WorldSpaceCenter(ssb.index, pos);
+	hullMin[0] = -Cross_Width[SSB_WavePhase];
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	for (float mod = 0.0; mod < 360.0; mod += 90.0)
+	{
+		float shootAng[3], shootPos[3];
+		shootAng = ang;
+		shootAng[1] += mod;
+
+		GetPointFromAngles(pos, shootAng, Cross_Range[SSB_WavePhase], shootPos, Priest_OnlyHitWorld, MASK_SHOT);
+
+		TR_TraceHullFilter(pos, shootPos, hullMin, hullMax, 1073741824, SSB_LaserTrace, ssb.index);
+			
+		for (int victim = 1; victim < MAXENTITIES; victim++)
+		{
+			if (SSB_LaserHit[victim])
+			{
+				SSB_LaserHit[victim] = false;
+					
+				if (IsValidEnemy(ssb.index, victim))
+				{
+					float damage = Cross_DMG[SSB_WavePhase];
+						
+					if (ShouldNpcDealBonusDamage(victim))
+					{
+						damage *= Cross_EntityMult[SSB_WavePhase];
+					}
+						
+					float vicLoc[3];
+					WorldSpaceCenter(victim, vicLoc);
+					SDKHooks_TakeDamage(victim, ssb.index, ssb.index, damage, DMG_PLASMA, _, NULL_VECTOR, vicLoc);
+				}
+			}
+		}
+			
+		ParticleEffectAt(shootPos, PARTICLE_GREENBLAST_SSB, 2.0);
+		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 6.0, 6.0, _, 10.0);
+		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
+	}
+
 	//TODO: Deal damage, spawn laser effects
+}
+
+public bool SSB_LaserTrace(int entity, int contentsMask, int user)
+{
+	if (IsEntityAlive(entity) && entity != user)
+		SSB_LaserHit[entity] = true;
+	
+	return false;
 }
 
 public void SpellCard_ChaosBarrage(SupremeSpookmasterBones ssb, int target)
@@ -1092,6 +1240,13 @@ methodmap SupremeSpookmasterBones < CClotBody
 			SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
+
+		//COPY THIS WHEN MAKING SPIN 2 WIN'S CODE
+		/*npc.m_flSpeed = Spin_Speed[SSB_WavePhase];
+		npc.GetBaseNPC().flFrictionSideways = Spin_Friction[SSB_WavePhase];
+		npc.GetBaseNPC().flFrictionForward = Spin_Friction[SSB_WavePhase];
+		npc.GetBaseNPC().flAcceleration = Spin_Acceleration[SSB_WavePhase];*/
+
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
 		npc.UsingAbility = false;
