@@ -67,6 +67,7 @@ static const char g_HalfHealth[][] = {
 
 
 static char gLaser1;
+static char gLaser2;
 public void OriginalInfected_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -82,6 +83,7 @@ public void OriginalInfected_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HalfHealth));	i++) { PrecacheSound(g_HalfHealth[i]);	}
 
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	gLaser2 = PrecacheModel("materials/sprites/halo01.vmt");
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Original Infected, Junal");
@@ -597,9 +599,9 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
 	partnerPos2 = partnerPos;
 	partnerPos2[2] += 500.0;
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser2, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {100, 0, 200, 255}, 3);
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser2, 0, 0, 0, 2.0, 50.0, 50.0, 0, 1.0, {100, 0, 200, 255}, 3);
 	TE_SendToAll();
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 80.0, 80.0, 0, 1.0, {90, 0, 90, 255}, 3);
 	TE_SendToAll();
