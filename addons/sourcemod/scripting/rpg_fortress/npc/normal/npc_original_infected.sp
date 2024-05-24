@@ -599,10 +599,12 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 
 void BingBangExplosion(int entity, float damage, float knockup, float Radius, float damagefalloff)
 {
-	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, _, _, _, 1.0);
+	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, SNDCHAN_AUTO, 80, _, 1.0, 100);
+	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, SNDCHAN_AUTO, 80, _, 1.0, 100);
 	float partnerPos[3];
 	float partnerPos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
+	CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
 	partnerPos2 = partnerPos;
 	partnerPos2[2] += 500.0;
 	/*
