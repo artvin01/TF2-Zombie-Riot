@@ -599,14 +599,20 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
 	partnerPos2 = partnerPos;
 	partnerPos2[2] += 500.0;
+	/*
 	TE_SetupBeamPoints(const float start[3], const float end[3], int ModelIndex, int HaloIndex, int StartFrame, int FrameRate, float Life, float Width, 
 	float EndWidth, int FadeLength, float Amplitude, const int Color[4], int Speed)
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser2, 0, 0, 0, 1.0, 30.0, 30.0, 0, 5.0, {255, 255, 255, 255}, 3);
+	*/
+	//White middle beam
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 1.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
 	TE_SendToAll();
-	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 0.8, 50.0, 50.0, 0, 4.0, {100, 0, 200, 255}, 3);
+	//Fainter more inner circle
+	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser2, 0, 0, 0, 0.8, 150.0, 150.0, 0, 4.0, {100, 0, 200, 255}, 3);
 	TE_SendToAll();
+	//Fainter more inner circle
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 0.7, 80.0, 80.0, 0, 1.0, {90, 0, 90, 255}, 3);
 	TE_SendToAll();
+	//Fainter more inner circle
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 0.5, 100.0, 100.0, 0, 1.0, {70, 0, 70, 255}, 3);
 	TE_SendToAll();
 	//issue: we cannot use normal explosion logic, as this explosion goes in a cirlce straight up, so its way more vertical targetability.
