@@ -374,9 +374,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 
 	CaveGuardsman npc = view_as<CaveGuardsman>(victim);
-
-	float gameTime = GetGameTime(npc.index);
-
 	if(npc.m_flArmorCount > 0.0)
 	{
 		if(damagetype & DMG_CLUB)

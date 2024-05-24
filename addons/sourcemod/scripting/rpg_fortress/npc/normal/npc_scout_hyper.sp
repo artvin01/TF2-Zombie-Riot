@@ -233,13 +233,6 @@ public void ScoutHyper_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-
-						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
-						
-						if(Health <= 0)
-						{
-							npc.PlayKilledEnemySound();
-						}
 					}
 				}
 				delete swingTrace;
@@ -326,7 +319,7 @@ public void ScoutHyper_ClotThink(int iNPC)
 			}
 		}
 	}
-	npc.PlayIdleSound();
+	npc.PlayIdleAlertSound();
 }
 
 

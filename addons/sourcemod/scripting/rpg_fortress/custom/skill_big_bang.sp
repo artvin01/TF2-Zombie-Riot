@@ -173,7 +173,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 	float vAngles[3];
 	float vOrigin[3];
 	float vecSwingForward[3];
-	float vecSwingEnd[3];
+	float vecSwingEnd[3];	
 	GetClientEyePosition(client, vOrigin);
 	GetClientEyeAngles(client, vAngles);
 
@@ -250,8 +250,10 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
+	char Buffer[32];
+	IntToString(Type, Buffer, sizeof(Buffer));
 	
-	int spawn_index = NPC_CreateByName("npc_player_animator", client, vabsOrigin, vabsAngles, GetTeam(client), IntToString(Type));
+	int spawn_index = NPC_CreateByName("npc_player_animator", client, vabsOrigin, vabsAngles, GetTeam(client), Buffer);
 	if(spawn_index > 0)
 	{
 		CClotBody npc = view_as<CClotBody>(spawn_index);

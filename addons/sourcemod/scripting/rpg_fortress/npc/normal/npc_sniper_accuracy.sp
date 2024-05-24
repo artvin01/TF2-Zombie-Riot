@@ -214,13 +214,6 @@ public void SniperAccuracy_ClotThink(int iNPC)
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 						StartBleedingTimer_Against_Client(target, npc.index, 25000.0, 5);
-
-						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
-						
-						if(Health <= 0)
-						{
-							npc.PlayKilledEnemySound();
-						}
 					}
 				}
 				delete swingTrace;
@@ -307,7 +300,7 @@ public void SniperAccuracy_ClotThink(int iNPC)
 			}
 		}
 	}
-	npc.PlayIdleSound();
+	npc.PlayIdleAlertSound();
 }
 
 
