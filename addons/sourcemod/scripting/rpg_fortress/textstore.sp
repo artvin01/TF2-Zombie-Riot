@@ -467,6 +467,7 @@ void TextStore_ClientDisconnect(int client)
 		if(spell.Owner == client)
 			SpellList.Erase(i);
 	}
+	RpgTextstoreDisconnectXPTimer(client);
 }
 
 void TextStore_GiveAll(int client)
@@ -659,7 +660,12 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 		int xp = amount;
 		Stats_GiveXP(client, xp, quest);
 		if(xp > 0 && !silent)
-			SPrintToChat(client, "You gained %d XP", xp);
+		{
+			if(quest)
+				SPrintToChat(client, "You gained %d XP", xp);
+			else
+				RPGTextstore_XpToChat(client, xp);
+		}
 	}
 	else
 	{
@@ -2441,4 +2447,42 @@ void De_TransformClient(int client)
 		EmitSoundToAll("weapons/physcannon/physcannon_drop.wav", client, SNDCHAN_AUTO, 80, _, 1.0);	
 	}
 	UpdateLevelAbovePlayerText(client);
+}
+
+
+static Handle XpTimerHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static int XPGainedOverTime[MAXPLAYERS+1] = {0, ...};
+
+void RPGTextstore_XpToChat(int client, int XP)
+{
+	XPGainedOverTime[client] += XP;
+
+	//Raw id works fine.
+	if(XpTimerHandle[client] == INVALID_HANDLE)
+		XpTimerHandle[client] = CreateTimer(60.0, XpHandleTimerDisplay, client);
+}
+
+
+static Action XpHandleTimerDisplay(Handle DummyHandle, int client)
+{
+	//shouldnt ever happen.
+	if(!IsValidClient(client))
+	{
+		XpTimerHandle[client] = INVALID_HANDLE;
+		XPGainedOverTime[client] = 0;
+		return Plugin_Stop;
+	}
+
+	SPrintToChat(client, "You gained %d XP over the last minute!", XPGainedOverTime[client]);
+	XpTimerHandle[client] = INVALID_HANDLE;
+	XPGainedOverTime[client] = 0;
+	return Plugin_Stop;
+}
+
+void RpgTextstoreDisconnectXPTimer(int client)
+{
+	if(XpTimerHandle[client] != INVALID_HANDLE)
+		delete XpTimerHandle[client];
+
+	XPGainedOverTime[client] = 0;
 }

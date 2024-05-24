@@ -233,6 +233,7 @@ bool RPGSpawns_GivePrioLevel(int spawnlevel, int playerlevel)
 		And the player isnt above their level if it was raised by 25%
 		So its a range between 75 - 125 player levels if the enemy was lvl 100 that gets priority!
 	*/
+	
 	if(spawnlevel >= ((playerlevel * 3) / 4) && spawnlevel <= ((playerlevel * 5) / 4))
 	{
 		return true;
@@ -498,6 +499,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 		if(i_CreditsOnKill[entity])
 		{
+			/*
 			if(i_CreditsOnKill[entity] > 49)
 			{
 				TextStore_DropCash(client, pos1, i_CreditsOnKill[entity]);
@@ -507,7 +509,10 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 				if(GetURandomInt() % 2)
 					TextStore_DropCash(client, pos1, i_CreditsOnKill[entity] * 2);
 			}
-			else if(!(GetURandomInt() % 5))
+			else 
+			//we'll only use the bottom part, as its too much cash spam pickup up all the time.
+			*/
+			if(!(GetURandomInt() % 5))
 			{
 				TextStore_DropCash(client, pos1, i_CreditsOnKill[entity] * 5);
 			}

@@ -3,6 +3,7 @@
 
 static KeyValues SaveKv;
 static char CharacterId[MAXTF2PLAYERS][32];
+#define MAX_CHARACTER_SLOTS 4 
 
 void Saves_PluginStart()
 {
@@ -300,7 +301,7 @@ void Saves_MainMenu(int client)
 				while(kv.GotoNextKey());
 			}
 
-			for(; chars < 3; chars++)
+			for(; chars < MAX_CHARACTER_SLOTS; chars++)
 			{
 				menu.AddItem("", "New Character");
 			}
