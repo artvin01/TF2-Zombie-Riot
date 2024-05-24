@@ -27,7 +27,7 @@ methodmap PlayerAnimatorNPC < CClotBody
 		{
 			case 1:
 			{
-				npc = view_as<PlayerAnimatorNPC>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
+				npc = view_as<PlayerAnimatorNPC>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", TFTeam_Red, true));
 				npc.m_flNextRangedAttackHappening = GetGameTime() + 1.5;
 				npc.m_flRangedSpecialDelay = GetGameTime() + 2.0;
 			}
@@ -128,6 +128,18 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+	if(npc.m_flNextThinkTime > gameTime)
+	{
+		return;
+	}
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+	/*
+		//start with taunt_soviet_showoff, frame 145/182
+		//end with taunt_table_flip_outro, frame 18/117
+
+	*/
 	switch(i_AttacksTillReload[npc.index])
 	{
 		case 1:
@@ -135,12 +147,29 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 			if(npc.m_flNextRangedAttackHappening)
 			{
 				//dont suck them in if its the final bit
-				if(npc.m_flNextRangedAttackHappening - 0.5 > GetGameTime(npc.index))
+				if(npc.m_flNextRangedAttackHappening - 0.2 > GetGameTime(npc.index))
 				{
+					if(npc.m_iChanged_WalkCycle != 1)
+					{
+						npc.AddActivityViaSequence("taunt_soviet_showoff");
+						//npc.AddGesture("ACT_MP_RUN_MELEE");
+						npc.SetPlaybackRate(0.2);	
+						npc.SetCycle(0.79);
+						npc.m_iChanged_WalkCycle = 1;
+					}
+
 					Bing_BangVisualiser(npc.index, 150.0, 35.0, 350.0);
 				}
 				if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 				{
+					if(npc.m_iChanged_WalkCycle != 2)
+					{
+						npc.AddActivityViaSequence("taunt_table_flip_outro");
+						//npc.AddGesture("ACT_MP_RUN_MELEE");
+						npc.SetPlaybackRate(0.2);	
+						npc.SetCycle(0.15);
+						npc.m_iChanged_WalkCycle = 2;
+					}
 					npc.m_flNextRangedAttackHappening = 0.0;
 					//Big TE OR PARTICLE that explodes
 					//Make it purple too

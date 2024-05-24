@@ -3,9 +3,13 @@
 #define spirite "spirites/zerogxplode.spr"
 
 #define EarthStyleShockwaveRange 250.0
+#define BING_BANG_SOUND "npc/attack_helicopter/aheli_charge_up.wav"
+#define BING_BANG_BOOM_SOUND "weapons/stinger_fire1.wav"
+
 void BigBang_Map_Precache()
 {
-	return;
+	PrecacheSound(BING_BANG_SOUND);
+	PrecacheSound(BING_BANG_BOOM_SOUND);
 }
 
 public float AbilityBingBang(int client, int index, char name[48])
@@ -57,6 +61,7 @@ public float AbilityBingBang(int client, int index, char name[48])
 
 	damageDelt *= 4.2;
 	PlayerAnimationSettingFreeze(client, 1, damageDelt);
+	EmitSoundToAll(BING_BANG_SOUND, client, _, _, _, 1.0);
 	return (GetGameTime() + 15.0);
 }
 

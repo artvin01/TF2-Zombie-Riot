@@ -509,7 +509,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 	static int RepeatTillVisualiser[MAXENTITIES];
 
 	RepeatTillVisualiser[entity] += 1;
-	if(RepeatTillVisualiser[entity] >= 2)
+	if(RepeatTillVisualiser[entity] >= 3)
 	{
 		RepeatTillVisualiser[entity] = 0;
 		int r = 125;
@@ -596,6 +596,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 
 void BingBangExplosion(int entity, float damage, float knockup, float Radius, float damagefalloff)
 {
+	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, _, _, _, 1.0);
 	float partnerPos[3];
 	float partnerPos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
