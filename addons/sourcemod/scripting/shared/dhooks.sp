@@ -1080,7 +1080,11 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
+#if defined RPG
 			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
+#else
+			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
+#endif
 			{
 				//if a player needs to get unstuck.
 				return false;
