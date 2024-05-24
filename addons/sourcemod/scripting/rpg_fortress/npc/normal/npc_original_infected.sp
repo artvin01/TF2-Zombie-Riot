@@ -613,7 +613,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	{
 		if (IsValidEnemy(entity, enemyidx))
 		{
-			BingBangExplosionInternal(enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
+			BingBangExplosionInternal(entity, enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
 		}
 	}
 	
@@ -622,7 +622,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 		int enemyidx = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if(IsValidEnemy(entity, enemyidx))
 		{
-			BingBangExplosionInternal(enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
+			BingBangExplosionInternal(entity, enemyidx, partnerPos, damage, knockup, Radius, damagefalloff);
 		}
 	}
 }
