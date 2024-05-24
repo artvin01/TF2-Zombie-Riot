@@ -595,7 +595,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	float partnerPos[3];
 	float partnerPos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
-	partnerPos = partnerPos2;
+	partnerPos2 = partnerPos;
 	partnerPos2[2] += 500.0;
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 2.0, 30.0, 30.0, 0, 1.0, {255, 255, 255, 255}, 3);
 	TE_SendToAll();

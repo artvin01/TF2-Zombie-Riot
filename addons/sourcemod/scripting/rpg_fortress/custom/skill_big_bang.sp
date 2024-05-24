@@ -143,7 +143,7 @@ public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 
 
 #define LEPER_BOUNDS_VIEW_EFFECT 25.0
-#define LEPER_MAXRANGE_VIEW_EFFECT 125.0
+#define LEPER_MAXRANGE_VIEW_EFFECT 250.0
 
 int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float damage)
 {
