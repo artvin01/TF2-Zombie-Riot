@@ -179,6 +179,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 
 	//always from upwards somewhere.
 	vAngles[0] = GetRandomFloat(-10.0 , -5.0);
+	/*
 	switch(GetRandomInt(0,1))
 	{
 		case 0:
@@ -190,7 +191,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 			vAngles[1] -= GetRandomFloat(80.0 , 90.0);
 		}
 	}
-
+*/
 	float LeperViewAnglesMins[3];
 	float LeperViewAnglesMaxs[3];
 	LeperViewAnglesMins = view_as<float>({-LEPER_BOUNDS_VIEW_EFFECT, -LEPER_BOUNDS_VIEW_EFFECT, -LEPER_BOUNDS_VIEW_EFFECT});
