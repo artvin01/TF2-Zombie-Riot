@@ -4,7 +4,7 @@
 
 
 void PlayerAnimatorNPC_OnMapStart_NPC()
-{s
+{
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Player Animator NPC");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_player_animator");
