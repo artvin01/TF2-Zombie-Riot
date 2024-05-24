@@ -3,6 +3,9 @@
 
 // this should vary from npc to npc as some are in a really small area.
 
+#define BING_BANG_SOUND "npc/attack_helicopter/aheli_charge_up.wav"
+#define BING_BANG_BOOM_SOUND "weapons/stinger_fire1.wav"
+
 static const char g_DeathSounds[][] = {
 	"vo/npc/male01/no01.wav",
 	"vo/npc/male01/no02.wav",

@@ -129,12 +129,12 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(npc.m_flNextThinkTime > gameTime)
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	/*
 		//start with taunt_soviet_showoff, frame 145/182
 		//end with taunt_table_flip_outro, frame 18/117
