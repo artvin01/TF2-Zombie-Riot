@@ -648,7 +648,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float &damage, float knockup, float Radius, float damagefalloff)
 {
 	float victimPos[3];
-	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", victimPos);
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", victimPos);
 
 	float VictimPos2;
 	float AttackerPos2;
@@ -659,6 +659,7 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 	float Distance = GetVectorDistance(victimPos, SelfVec);
 	if(Distance > Radius)
 		return;
+
 	//they are in the range, non dioagnially
 
 	if(AttackerPos2 > VictimPos2)
@@ -677,7 +678,7 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 
 	//all checks done, now damage the enemy
 	
-	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, _, _, _);
+	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, _, {0.0,0.0, 15000.0}, _);
 	damage /= damagefalloff;
 	//idealy you want no falloff 
 	if(knockup > 0.0)
