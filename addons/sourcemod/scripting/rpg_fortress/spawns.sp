@@ -220,6 +220,14 @@ void Spawns_EnableZone(const char[] name)
 
 bool RPGSpawns_GivePrioLevel(int spawnlevel, int playerlevel)
 {
+	//Extra rules: if the player is below lvl 50, then the below calcs kinda suck, so we need more extreme things.
+	//as in very low level areas, 1 level makes a huge difference, being lvl 0 and going to lvl 10 is a 10x difference.
+	//So we need to do this exception.
+	if(spawnlevel <= 50 && playerlevel <= 50)
+	{
+		return true;
+	}
+	
 	/*
 		the player is atleast above their level if it was 75% reduced
 		And the player isnt above their level if it was raised by 25%
