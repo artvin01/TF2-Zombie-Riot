@@ -599,11 +599,13 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 
 void BingBangExplosion(int entity, float damage, float knockup, float Radius, float damagefalloff)
 {
+		
 	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, SNDCHAN_AUTO, 80, _, 1.0, 100);
 	EmitSoundToAll(BING_BANG_BOOM_SOUND, entity, SNDCHAN_AUTO, 80, _, 1.0, 100);
 	float partnerPos[3];
 	float partnerPos2[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", partnerPos);
+	ParticleEffectAt(partnerPos, "moon_miasma_purple01", 0.5); //This is a permanent particle, gotta delete it manually...
 	CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
 	partnerPos2 = partnerPos;
 	partnerPos2[2] += 500.0;
