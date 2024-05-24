@@ -178,7 +178,7 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 	GetClientEyeAngles(client, vAngles);
 
 	//always from upwards somewhere.
-	vAngles[0] = GetRandomFloat(-10.0 , -5.0);
+	vAngles[0] = GetRandomFloat(7.0 , 3.0);
 	/*
 	switch(GetRandomInt(0,1))
 	{

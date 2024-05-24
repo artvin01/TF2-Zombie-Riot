@@ -137,14 +137,14 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 				//dont suck them in if its the final bit
 				if(npc.m_flNextRangedAttackHappening - 0.5 > GetGameTime(npc.index))
 				{
-					Bing_BangVisualiser(npc.index, 250.0, 35.0, 400.0);
+					Bing_BangVisualiser(npc.index, 150.0, 35.0, 350.0);
 				}
 				if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedAttackHappening = 0.0;
 					//Big TE OR PARTICLE that explodes
 					//Make it purple too
-					BingBangExplosion(npc.index, npc.m_flNextMeleeAttack, 350.0, 250.0, 1.0);
+					BingBangExplosion(npc.index, npc.m_flNextMeleeAttack, 350.0, 150.0, 1.0);
 				}
 			}
 		}
