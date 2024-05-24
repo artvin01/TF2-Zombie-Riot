@@ -20,6 +20,8 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define SND_BARRAGE_LAUNCH		")weapons/flare_detonator_launch.wav"
 #define SND_PULL_ACTIVATED		")misc/halloween/merasmus_spell.wav"
 #define SND_PLAYER_PULLED		")misc/halloween/merasmus_stun.wav"
+#define SND_COSMIC_STRIKE		")misc/halloween/spell_spawn_boss.wav"
+#define SND_COSMIC_MARKED		")misc/halloween/hwn_bomb_flash.wav"
 
 #define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1	"merasmus_spawn_flash"
@@ -247,6 +249,8 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_BARRAGE_HIT);
 	PrecacheSound(SND_PULL_ACTIVATED);
 	PrecacheSound(SND_PLAYER_PULLED);
+	PrecacheSound(SND_COSMIC_STRIKE);
+	PrecacheSound(SND_COSMIC_MARKED);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -333,15 +337,17 @@ float f_BarrageProjectileDMG[MAXENTITIES];							//Ignore this.
 float Death_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };				//Delay before the pull activates.
 float Death_Radius[4] = { 1000.0, 1050.0, 1100.0, 1150.0 };	//Maximum radius in which the pull can be activated.
 
-//SPELL CARD #5 - COSMIC TERROR: SSB chooses up to X player(s) at random and marks the spot they are currently at. Y seconds later, that spot summons a laser from the sky,
-//which moves towards the nearest enemy and deals rapid damage to anything too close. This is not affected by falloff.
-//PS: I'm using the SSB_ prefix for these variables because otherwise we interfere with the actual Cosmic Terror weapon.
-int SSB_Cosmic_NumTargets[4] = { 1, 2, 4, 6 };					//The maximum number of players who can be marked by the ability.
-float SSB_Cosmic_Delay[4] = { 4.0, 3.5, 2.5, 1.5 };				//Duration until the beams activate and begin to move.
-float SSB_Cosmic_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };		//Beam lifespan.
-float SSB_Cosmic_DMG[4] = { 20.0, 25.0, 30.0, 40.0 };			//Damage dealt per 0.1s to players who are within the beam's radius.
-float SSB_Cosmic_Radius[4] = { 160.0, 180.0, 200.0, 220.0 };	//Damage radius.
-float SSB_Cosmic_Speed[4] = { 2.0, 2.5, 3.0, 3.5 };				//Speed at which the beams move towards their target, in hammer units per frame.
+//SPELL CARD #5 - NECROTIC BOMBARDMENT: SSB chooses up to X player(s) at random and marks the spot they are currently at. Y seconds later, that spot is struck by a necrotic bolt
+//from the sky, triggering an explosion. This is repeated for all targeted player(s) an additional Z time(s).
+//PS: I'm using the SSB_ prefix for these variables because otherwise we interfere with the Cosmic Terror weapon.
+int SSB_Cosmic_NumTargets[4] = { 3, 6, 9, 12 };						//The maximum number of players who can be marked by the ability.'
+int SSB_Cosmic_NumStrikes[4] = { 5, 6, 7, 8 };						//The number of times to attempt to strike marked playes.
+float SSB_Cosmic_Delay[4] = { 2.0, 1.75, 1.5, 1.25 };				//Duration until the strikes land.
+float SSB_Cosmic_DMG[4] = { 150.0, 300.0, 600.0, 900.0 };			//Damage dealt by strikes.
+float SSB_Cosmic_Radius[4] = { 200.0, 240.0, 280.0, 320.0 };		//Damage radius.
+float SSB_Cosmic_Falloff_Radius[4] = { 0.25, 0.15, 0.05, 0.0 };		//Maximum falloff percentage, based on radius.
+float SSB_Cosmic_Falloff_MultiHit[4] = { 0.8, 0.85, 0.9, 0.95 };	//Amount to multiply damage dealt by the strikes per entity hit.
+float SSB_Cosmic_EntityMult[4] = { 4.0, 6.0, 8.0, 10.0 };			//Amount to multiply damage dealt to entities.
 
 //SPELL CARD #6 - RING OF TARTARUS: The locations of up to X player(s) are marked with a red ring. After Y second(s), these rings activate and will begin to slow down
 //and rapidly deal damage to any enemies within its radius.
@@ -456,6 +462,8 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //	- Finalize the VFX/SFX on the following abilities:
 //		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
 //		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
+//		- Necrotic Bombardment: Port the Necrotic Blast sound effect from BvB and use that for explosions.
+//		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -630,8 +638,8 @@ static void SSB_PrepareAbilities()
 
 	//Wave 15 (and before):
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", /*0.66*/0.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("DEATH MAGNETIC", 1.0, 0, SpellCard_DeathMagnetic, _, _, true, Death_Delay[0]));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NECROTIC BOMBARDMENT", 1.0, 0, SpellCard_CosmicTerror));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -644,16 +652,16 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[2]));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 2, SpellCard_DeathMagnetic, _, _, true, Death_Delay[2]));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.33, 1, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.2, 2, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.5, 2, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.33, 1, SpellCard_RingOfTartarus));
 
 	//Wave 60+:
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[3]));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("COSMIC TERROR", 0.5, 2, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.2, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 2, SpellCard_RingOfTartarus));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 2, SpellCard_TheSkull));
 }
 
@@ -1307,7 +1315,88 @@ public void Death_Check(DataPack pack)
 
 public void SpellCard_CosmicTerror(SupremeSpookmasterBones ssb, int target)
 {
+	ArrayList Players = new ArrayList(255);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && dieingstate[i] == 0 && TeutonType[i] == 0)
+			PushArrayCell(Players, i);
+	}
 
+	int remaining = SSB_Cosmic_NumTargets[SSB_WavePhase];
+	while (GetArraySize(Players) > 0 && remaining > 0)
+	{
+		int random = GetRandomInt(0, GetArraySize(Players) - 1);
+		int target = GetArrayCell(Players, random);
+		Cosmic_BeginStrike(ssb, target, SSB_Cosmic_NumStrikes[SSB_WavePhase], true);
+
+		RemoveFromArray(Players, random);
+		remaining--;
+	}
+
+	delete Players;
+}
+
+public void Cosmic_BeginStrike(SupremeSpookmasterBones ssb, int target, int remainingStrikes, bool first)
+{
+	float pos[3];
+	GetClientAbsOrigin(target, pos);
+	EmitSoundToAll(SND_COSMIC_MARKED, _, _, _, _, _, GetRandomInt(80, 110), _, pos);
+
+	if (first)
+	{
+		float UserLoc[3];
+		WorldSpaceCenter(ssb.index, UserLoc);
+		SpawnBeam_Vectors(UserLoc, pos, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 15.0);
+	}
+
+	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase], 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 6.0, 0.0, 0);
+	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase], 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 4.0, 0.0, 0, 0.0);
+
+	remainingStrikes--;
+
+	DataPack pack = new DataPack();
+	CreateDataTimer(SSB_Cosmic_Delay[SSB_WavePhase], Cosmic_StrikePlayer, pack, TIMER_FLAG_NO_MAPCHANGE);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, GetClientUserId(target));
+	WritePackCell(pack, remainingStrikes);
+	WritePackFloat(pack, pos[0]);
+	WritePackFloat(pack, pos[1]);
+	WritePackFloat(pack, pos[2]);
+}
+
+public Action Cosmic_StrikePlayer(Handle timer, DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int target = GetClientOfUserId(ReadPackCell(pack));
+	int remaining = ReadPackCell(pack);
+	float pos[3], skyPos[3];
+	for (int i = 0; i < 3; i++)
+		pos[i] = ReadPackFloat(pack);
+
+	if (!IsValidEntity(ent) || target < 1 || target > MaxClients)
+		return Plugin_Continue;
+
+	skyPos = pos;
+	skyPos[2] += 9999.0;
+
+	ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 2.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 20.0);
+
+	bool isBlue = GetEntProp(ent, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(SSB_Cosmic_DMG[SSB_WavePhase], ent, ent, 0, pos, SSB_Cosmic_Radius[SSB_WavePhase], SSB_Cosmic_Falloff_MultiHit[SSB_WavePhase], SSB_Cosmic_Falloff_Radius[SSB_WavePhase], isBlue, _, _, SSB_Cosmic_EntityMult[SSB_WavePhase]);
+
+	EmitSoundToAll(SND_COSMIC_STRIKE, _, _, _, _, _, GetRandomInt(80, 110), _, pos);
+
+	if (!IsClientInGame(target) || dieingstate[target] != 0 || TeutonType[target] != 0 || remaining < 1)
+		return Plugin_Continue;
+
+	Cosmic_BeginStrike(view_as<SupremeSpookmasterBones>(ent), target, remaining, false);
+
+	return Plugin_Continue;
 }
 
 public void SpellCard_RingOfTartarus(SupremeSpookmasterBones ssb, int target)
