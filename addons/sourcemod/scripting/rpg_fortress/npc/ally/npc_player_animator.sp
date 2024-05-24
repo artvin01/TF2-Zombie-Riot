@@ -125,6 +125,7 @@ public void PlayerAnimatorNPC_ClotThink(int iNPC)
 {
 	PlayerAnimatorNPC npc = view_as<PlayerAnimatorNPC>(iNPC);
 
+	npc.SetVelocity({0.0,0.0,0.0});
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 		return;
 	
