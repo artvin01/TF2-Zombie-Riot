@@ -96,9 +96,11 @@ methodmap PlayerAnimatorNPC < CClotBody
 		npc.m_iNpcStepVariation = 0;
 
 		b_NpcIsInvulnerable[npc.index] = true;
+		b_IgnorePlayerCollisionNPC[npc.index] = true;
+		b_DoNotUnStuck[npc.index] = true;
 		
 		func_NPCDeath[npc.index] = PlayerAnimatorNPC_NPCDeath;
-		func_NPCThink[npc.index] = AlliedLeperVisaluser_ClotThink;
+		func_NPCThink[npc.index] = PlayerAnimatorNPC_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -119,7 +121,7 @@ methodmap PlayerAnimatorNPC < CClotBody
 	}
 }
 
-public void AlliedLeperVisaluser_ClotThink(int iNPC)
+public void PlayerAnimatorNPC_ClotThink(int iNPC)
 {
 	PlayerAnimatorNPC npc = view_as<PlayerAnimatorNPC>(iNPC);
 
