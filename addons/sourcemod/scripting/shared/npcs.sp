@@ -2575,49 +2575,26 @@ stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 		//an npc is attacking a player, invert.
 	}
 
+	/*
+		The npc is in a dungeon
+		The attacker is not an npc
+		The enemy is in a debug level state
+	*/
 	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 1000000)
 	{
-			
+		return false;	
+	}
+
+	if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
+	{
+		i_NpcFightOwner[victim] = attacker;
+		f_NpcFightTime[victim] = GameTime + 10.0;
 	}
 	else
-	{
-		if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
-		{
-			i_NpcFightOwner[victim] = attacker;
-			f_NpcFightTime[victim] = GameTime + 10.0;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	//We check if the npc is already hurt, dead, or other stuff like that.
-
-	//TODO:
-	//Make sure ownership goes over other party members if you die
-	//Realisticly speaking this should never be an issue.
-	/*
-	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] < GameTime || !IsClientInGame(i_NpcFightOwner[victim]) || !IsPlayerAlive(i_NpcFightOwner[victim]))
-	{
-		if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 8))
-		{
-			return true;
-		}
-		else
-		{
-			i_NpcFightOwner[victim] = attacker;
-			f_NpcFightTime[victim] = GameTime + 10.0;
-		}
-	}
-	else if(i_NpcFightOwner[victim] != attacker && !Party_IsClientMember(i_NpcFightOwner[victim], attacker))
 	{
 		return true;
 	}
-	else
-	{
-		f_NpcFightTime[victim] = GameTime + 10.0;
-	}
-	*/
+	
 	return false;
 }
 

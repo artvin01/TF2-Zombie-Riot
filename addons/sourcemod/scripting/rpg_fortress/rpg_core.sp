@@ -784,10 +784,10 @@ void RPGCore_ResetHurtList(int entity)
 	}
 }
 
-bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
+bool RPGCore_ClientAllowedToTargetNpc(int victim, int attacker)
 {
 	//if a player is being attacked, always allow.
-	if(entity <= MaxClients)
+	if(victim <= MaxClients)
 		return true;
 
 	//if the attacker is an entity, always allow.
@@ -804,7 +804,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
 		//They are in a party, anyone in another party has attacked the enemy first.
 		for(int client; client <= MaxClients; client++)
 		{
-			if(attacker != client && f_ClientSinceLastHitNpc[entity][client] > GetGameTime())
+			if(attacker != client && f_ClientSinceLastHitNpc[victim][client] > GetGameTime())
 			{
 				if(Party_GetPartyLeader(client) != PartyLeader)
 				{
@@ -823,7 +823,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
 		//they are not in a party, anyone else attacked the enemy first.
 		for(int client; client <= MaxClients; client++)
 		{
-			if(attacker != client && f_ClientSinceLastHitNpc[entity][client] > GetGameTime())
+			if(attacker != client && f_ClientSinceLastHitNpc[victim][client] > GetGameTime())
 			{
 				EnemyWasAttackedBefore = true;
 				break;
@@ -834,9 +834,10 @@ bool RPGCore_ClientAllowedToTargetNpc(int entity, int attacker)
 			return false;
 		}
 	}
-	if(b_npcspawnprotection[entity] && i_NpcIsUnderSpawnProtectionInfluence[entity] > 0)
+	//if someone attacked them while in a party, then allow.
+	if(!EnemyWasAttackedBefore && b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
 	{
-		if(!RPGSpawns_LevelPrioLogic(Level[entity], Level[attacker]))
+		if(!RPGSpawns_GivePrioLevel(Level[victim], Level[attacker]))
 		{
 			return false;
 		}

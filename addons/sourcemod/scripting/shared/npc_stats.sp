@@ -4469,7 +4469,7 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 #if defined RPG
 			if(GetTeam(index) != GetTeam(enemy))
 			{
-				if(OnTakeDamageRpgPartyLogic(index, enemy, GetGameTime()))
+				if(OnTakeDamageRpgPartyLogic(enemy, index, GetGameTime()))
 				{
 					return false;
 				}

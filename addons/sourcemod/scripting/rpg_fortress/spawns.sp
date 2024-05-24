@@ -166,7 +166,7 @@ void Spawns_ClientEnter(int client, const char[] name)
 		SpawnList.GetArray(i, spawn);
 		if(StrEqual(spawn.Zone, name))
 		{  
-			if(RPGSpawns_LevelPrioLogic(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
+			if(RPGSpawns_GivePrioLevel(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
 			{
 				spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
 			}
@@ -185,7 +185,7 @@ void Spawns_ClientLeave(int client, const char[] name)
 		SpawnList.GetArray(i, spawn);
 		if(StrEqual(spawn.Zone, name))
 		{
-			if(RPGSpawns_LevelPrioLogic(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
+			if(RPGSpawns_GivePrioLevel(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
 			{
 				spawn.LowLevelClientAreaCount -= 1; //Remove by 1.
 				if(spawn.LowLevelClientAreaCount < 0)
@@ -208,7 +208,7 @@ void Spawns_EnableZone(const char[] name)
 		static SpawnEnum spawn;
 		SpawnList.GetArray(i, spawn);
 /*
-		if(RPGSpawns_LevelPrioLogic(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
+		if(RPGSpawns_GivePrioLevel(spawn.Level[LOW], Level[client])) //Give priority to lower level players.
 		{
 			spawn.LowLevelClientAreaCount += 1; //Give the spawn a way to give the npcs inside itself to protect it from high levels.
 		}
@@ -218,9 +218,14 @@ void Spawns_EnableZone(const char[] name)
 	}
 }
 
-bool RPGSpawns_LevelPrioLogic(int spawnlevel, int playerlevel)
+bool RPGSpawns_GivePrioLevel(int spawnlevel, int playerlevel)
 {
-	if(spawnlevel > ((playerlevel * 3) / 5) && spawnlevel < ((playerlevel / 3) * 4))
+	/*
+		the player is atleast above their level if it was 75% reduced
+		And the player isnt above their level if it was raised by 25%
+		So its a range between 75 - 125 player levels if the enemy was lvl 100 that gets priority!
+	*/
+	if(spawnlevel >= ((playerlevel * 3) / 4) && spawnlevel <= ((playerlevel * 5) / 4))
 	{
 		return true;
 	}
