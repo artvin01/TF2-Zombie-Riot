@@ -8,12 +8,16 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define BONES_SUPREME_HP				"35000"
 #define MODEL_SSB   					"models/zombie_riot/the_bone_zone/supreme_spookmaster_bones.mdl"
 #define MODEL_SKULL						"models/props_mvm/mvm_human_skull_collide.mdl"
+#define MODEL_HIDDEN_PROJECTILE			"models/weapons/w_models/w_drg_ball.mdl"
 
 #define SND_SPAWN_ALERT		"misc/halloween/merasmus_appear.wav"
 #define SND_DESPAWN			"misc/halloween/merasmus_disappear.wav"
 #define SND_FIREBALL_CAST	")misc/halloween/spell_meteor_cast.wav"
 #define SND_FIREBALL_EXPLODE	")misc/halloween/spell_fireball_impact.wav"
 #define SND_HOMING_ACTIVATE		")misc/halloween/spell_mirv_cast.wav"
+#define SND_BARRAGE_HIT			")weapons/flare_detonator_explode_world.wav"
+#define SND_BARRAGE_SPAWN		")weapons/bison_main_shot_01.wav"
+#define SND_BARRAGE_LAUNCH		")weapons/flare_detonator_launch.wav"
 
 #define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1	"merasmus_spawn_flash"
@@ -23,6 +27,11 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define PARTICLE_EXPLOSION_FIREBALL_BLUE	"spell_fireball_tendril_parent_blue"
 #define PARTICLE_FIREBALL_RED		"spell_fireball_small_red"
 #define PARTICLE_FIREBALL_BLUE		"spell_fireball_small_blue"
+#define PARTICLE_LASER_RED			"raygun_projectile_red"
+#define PARTICLE_LASER_BLUE			"raygun_projectile_blue"
+#define PARTICLE_LASER_RED_PREDICT			"raygun_projectile_red_crit"
+#define PARTICLE_LASER_BLUE_PREDICT			"raygun_projectile_blue_crit"
+#define PARTICLE_BARRAGE_HIT				"nutsnbolts_repair"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -224,12 +233,16 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 
 	PrecacheModel(MODEL_SSB);
 	PrecacheModel(MODEL_SKULL);
+	PrecacheModel(MODEL_HIDDEN_PROJECTILE);
 
 	PrecacheSound(SND_SPAWN_ALERT);
 	PrecacheSound(SND_DESPAWN);
 	PrecacheSound(SND_FIREBALL_CAST);
 	PrecacheSound(SND_FIREBALL_EXPLODE);
 	PrecacheSound(SND_HOMING_ACTIVATE);
+	PrecacheSound(SND_BARRAGE_SPAWN);
+	PrecacheSound(SND_BARRAGE_LAUNCH);
+	PrecacheSound(SND_BARRAGE_HIT);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -293,7 +306,7 @@ int i_SkullParticle[MAXENTITIES] = { -1, ... };					//The particle associated wi
 float Cross_DMG[4] = { 240.0, 480.0, 960.0, 1920.0 };		//Laser damage.
 float Cross_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by lasers to entities.
 float Cross_Range[4] = { 400.0, 600.0, 900.0, 1200.0 };		//Laser range.
-float Cross_Width[4] = { 60.0, 90.0, 120.0, 150.0 };		//Laser hitbox width.
+float Cross_Width[4] = { 120.0, 160.0, 200.0, 280.0 };		//Laser hitbox width.
 float Cross_Delay[4] = { 3.0, 2.75, 2.5, 2.25 };			//Delay until the lasers are fired once this Spell Card is activated.
 bool SSB_LaserHit[MAXENTITIES] = { false, ... };			//Used exclusively to see if an entity was hit by any of SSB's laser effects.
 
@@ -308,15 +321,17 @@ float Barrage_PauseDuration[4] = {1.66, 1.0, 0.66, 0.33};			//Projectile pause d
 float Barrage_Velocity[4] = { 2000.0, 2200.0, 2200.0, 2200.0 }; 	//Projectile velocity after they unpause.
 float Barrage_DMG[4] = { 20.0, 25.0, 30.0, 40.0 };					//Projectile base damage.
 bool Barrage_Prediction[4] = { false, false, true, true };			//Whether or not the projectiles should predict target movement once they become lethal.
+float f_BarrageProjectileDMG[MAXENTITIES];							//Ignore this.
 
 //SPELL CARD #4 - DEATH MAGNETIC: SSB freezes in place and begins conjuring a spell. When ready: all players within line-of-sight are pulled to SSB.
-//If at least one player was pulled, this spell forces one of the following abilities to be used immediately, ignoring cooldowns and max usage: Cursed Cross, Soul Harvester, Spin to Win
+//If at least one player was pulled, this spell forces one of the following abilities to be used immediately, ignoring cooldowns and max usage:
+//Cursed Cross, Soul Harvester, Spin to Win, MEGA MORTIS
 float Death_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };				//Delay before the pull activates.
 float Death_Radius[4] = { 1200.0, 1400.0, 1600.0, 1800.0 };	//Maximum radius in which the pull can be activated.
 
 //SPELL CARD #5 - COSMIC TERROR: SSB chooses up to X player(s) at random and marks the spot they are currently at. Y seconds later, that spot summons a laser from the sky,
 //which moves towards the nearest enemy and deals rapid damage to anything too close. This is not affected by falloff.
-//PS: Using the SSB_ prefix for these variables because otherwise we interfere with the actual Cosmic Terror weapon.
+//PS: I'm using the SSB_ prefix for these variables because otherwise we interfere with the actual Cosmic Terror weapon.
 int SSB_Cosmic_NumTargets[4] = { 1, 2, 4, 6 };					//The maximum number of players who can be marked by the ability.
 float SSB_Cosmic_Delay[4] = { 4.0, 3.5, 2.5, 1.5 };				//Duration until the beams activate and begin to move.
 float SSB_Cosmic_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };		//Beam lifespan.
@@ -434,12 +449,17 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //TODO:
 //	- All specials and spells, as well as all animations that come with them.
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
-//	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger.
+//	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
 //		- Wave Phase 1: Gains access to Spin 2 Win and Soul Harvester.
 //		- Wave Phase 2: Gains access to Hell is Here.
 //		- Wave Phase 3: Gains access to MEGA MORTIS.
+//	- Make Supreme Slayer stance:
+//		- Entered after reaching 33% HP on wave phase 3. Increases movement speed by 66%, triples damage output, and reduces cooldowns to 33%.
+//		- Melee attack is replaced with a short-ranged necrotic bolt, which has a very low cooldown and deals enormous damage.
+//		- Lasts for 30 seconds.
+//		- Entered permanently when the mercenaries run out of time on any wave phase.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
 #define SSB_MAX_ABILITIES 255
@@ -595,8 +615,9 @@ static void SSB_PrepareAbilities()
 	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
 
 	//Wave 15 (and before):
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CHAOS BARRAGE", 0.5, 0, SpellCard_ChaosBarrage));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -852,7 +873,7 @@ public Action Cross_Activate(Handle timer, int ref)
 		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
 	}
 
-	//TODO: Deal damage, spawn laser effects
+	return Plugin_Continue;
 }
 
 public bool SSB_LaserTrace(int entity, int contentsMask, int user)
@@ -863,9 +884,251 @@ public bool SSB_LaserTrace(int entity, int contentsMask, int user)
 	return false;
 }
 
+public MRESReturn SSB_BlockExplosion(int entity)
+{
+	return MRES_Supercede;	//DO NOT.
+}
+
 public void SpellCard_ChaosBarrage(SupremeSpookmasterBones ssb, int target)
 {
+	Barrage_LaunchWave(ssb);
+	int numWaves = Barrage_NumWaves[SSB_WavePhase] - 1;
+	if (numWaves > 0)
+	{
+		DataPack pack = new DataPack();
+		RequestFrame(Barrage_NextWave, pack);
+		WritePackCell(pack, EntIndexToEntRef(ssb.index));
+		WritePackCell(pack, numWaves);
+		WritePackCell(pack, SSB_WavePhase);
+		WritePackFloat(pack, GetGameTime(ssb.index) + Barrage_WaveDelay[SSB_WavePhase]);
+	}
+}
 
+public void Barrage_NextWave(DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int remaining = ReadPackCell(pack);
+	int phase = ReadPackCell(pack);
+	float next = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent) || remaining < 1)
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+
+	float gt = GetGameTime(ssb.index);
+	if (gt >= next)
+	{
+		Barrage_LaunchWave(ssb);
+		next = gt + Barrage_WaveDelay[phase];
+		remaining--;
+	}
+
+	DataPack pack2 = new DataPack();
+	RequestFrame(Barrage_NextWave, pack2);
+	WritePackCell(pack2, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack2, remaining);
+	WritePackCell(pack2, phase);
+	WritePackFloat(pack2, next);
+}
+
+public void Barrage_LaunchWave(SupremeSpookmasterBones ssb)
+{
+	float pos[3];
+	WorldSpaceCenter(ssb.index, pos);
+
+	for (int i = 0; i < Barrage_PerWave[SSB_WavePhase]; i++)
+	{
+		float randAng[3];
+		randAng[0] = GetRandomFloat(20.0, -90.0);	//We don't want too steep of a downward angle, otherwise they might hit the ground and be useless.
+		randAng[1] = GetRandomFloat(0.0, 360.0);
+		randAng[2] = GetRandomFloat(0.0, 360.0);
+
+		int projectile = SSB_CreateProjectile(ssb, MODEL_HIDDEN_PROJECTILE, pos, randAng, Barrage_InitialVelocity[SSB_WavePhase], 0.33, SSB_BlockExplosion);
+		if (IsValidEntity(projectile))
+		{
+			SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
+
+			i_SkullParticle[projectile] = EntIndexToEntRef(SSB_AttachParticle(projectile, Barrage_Prediction[SSB_WavePhase] ? PARTICLE_LASER_RED_PREDICT : PARTICLE_LASER_RED, 0.0, ""));
+
+			DataPack pack = new DataPack();
+			RequestFrame(Barrage_WaitForFreeze, pack);
+			WritePackCell(pack, EntIndexToEntRef(projectile));
+			WritePackCell(pack, SSB_WavePhase);
+			WritePackFloat(pack, GetGameTime() + Barrage_PauseDelay[SSB_WavePhase]);
+		}
+	}
+
+	EmitSoundToAll(SND_BARRAGE_SPAWN, ssb.index, _, _, _, _, GetRandomInt(80, 110));
+}
+
+public void Barrage_WaitForFreeze(DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float freezeTime = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	float gt = GetGameTime();
+	if (gt >= freezeTime)
+	{
+		SetEntityMoveType(ent, MOVETYPE_NONE);
+
+		DataPack pack2 = new DataPack();
+		RequestFrame(Barrage_WaitForLaunch, pack2);
+		WritePackCell(pack2, EntIndexToEntRef(ent));
+		WritePackCell(pack2, phase);
+		WritePackFloat(pack2, gt + Barrage_PauseDuration[phase]);
+
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Barrage_WaitForFreeze, pack);
+	WritePackCell(pack, EntIndexToEntRef(ent));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, freezeTime);
+}
+
+public void Barrage_WaitForLaunch(DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float launchTime = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	float gt = GetGameTime();
+	if (gt >= launchTime)
+	{
+		int target = GetClosestTarget(ent, true, _, _, _, _, _, true);
+		if (!IsValidEntity(target))
+		{
+			pack = new DataPack();
+			RequestFrame(Barrage_SearchForTarget, pack);
+			WritePackCell(pack, EntIndexToEntRef(ent));
+			WritePackCell(pack, phase);
+		}
+		else
+		{
+			Barrage_Launch(ent, target, phase);
+		}
+
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Barrage_WaitForLaunch, pack);
+	WritePackCell(pack, EntIndexToEntRef(ent));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, launchTime);
+}
+
+public void Barrage_SearchForTarget(DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	int target = GetClosestTarget(ent, true, _, _, _, _, _, true);
+	if (IsValidEntity(target))
+	{
+		Barrage_Launch(ent, target, phase);
+		return;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Barrage_SearchForTarget, pack);
+	WritePackCell(pack, EntIndexToEntRef(ent));
+	WritePackCell(pack, phase);
+}
+
+public void Barrage_Launch(int ent, int target, int phase)
+{
+	SetEntityMoveType(ent, MOVETYPE_FLY);
+
+	SDKHook(ent, SDKHook_TouchPost, Barrage_Touch);
+
+	int particle = EntRefToEntIndex(i_SkullParticle[ent]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	i_SkullParticle[ent] = EntIndexToEntRef(SSB_AttachParticle(ent, Barrage_Prediction[phase] ? PARTICLE_LASER_BLUE_PREDICT : PARTICLE_LASER_BLUE, 0.0, ""));
+
+	float pos[3], startPos[3], vel[3], ang[3];
+	WorldSpaceCenter(target, pos);
+	GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", startPos);
+	GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+
+	if (Barrage_Prediction[phase])
+		PredictSubjectPositionForProjectiles_NoNPCNeeded(startPos, target, Barrage_Velocity[phase], _, pos);
+
+	MakeVectorFromPoints(startPos, pos, ang);
+	GetVectorAngles(ang, ang);
+
+	vel[0] = Cosine(DegToRad(ang[0])) * Cosine(DegToRad(ang[1])) * Barrage_Velocity[phase];
+	vel[1] = Cosine(DegToRad(ang[0])) * Sine(DegToRad(ang[1])) * Barrage_Velocity[phase];
+	vel[2] = Sine(DegToRad(ang[0])) * -Barrage_Velocity[phase];
+
+	TeleportEntity(ent, _, _, vel);
+
+	f_BarrageProjectileDMG[ent] = Barrage_DMG[phase];
+	EmitSoundToAll(SND_BARRAGE_LAUNCH, ent, _, _, _, _, GetRandomInt(80, 110));
+}
+
+public void SSB_DeleteIfOwnerDisappears(int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return;
+
+	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+	if (!IsValidEntity(owner))
+	{
+		RemoveEntity(ent);
+		return;
+	}
+
+	RequestFrame(SSB_DeleteIfOwnerDisappears, ref);
+}
+
+public Action Barrage_Touch(int entity, int other)
+{
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+
+	ParticleEffectAt(pos, PARTICLE_BARRAGE_HIT);
+	EmitSoundToAll(SND_BARRAGE_HIT, entity, _, _, _, _, GetRandomInt(80, 110));
+
+	if (IsValidEnemy(entity, other))
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		SDKHooks_TakeDamage(other, entity, owner, f_BarrageProjectileDMG[entity], _, _, _, pos);
+	}
+
+	RemoveEntity(entity);
+	return Plugin_Continue;
 }
 
 public void SpellCard_DeathMagnetic(SupremeSpookmasterBones ssb, int target)
@@ -1399,6 +1662,8 @@ int SSB_CreateProjectile(SupremeSpookmasterBones owner, char model[255], float p
 		SetEntPropVector(prop, Prop_Send, "m_vInitialVelocity", propVel);
 		
 		g_DHookRocketExplode.HookEntity(Hook_Pre, prop, CollideCallback);
+
+		RequestFrame(SSB_DeleteIfOwnerDisappears, EntIndexToEntRef(prop));
 		
 		return prop;
 	}
@@ -1449,4 +1714,77 @@ stock int SSB_AttachParticle(int entity, char type[255], float duration = 0.0, c
 	}
 	
 	return -1;
+}
+
+stock void PredictSubjectPositionForProjectiles_NoNPCNeeded(float startPos[3], int subject, float projectile_speed, float offset = 0.0, float pathTarget[3])
+{
+	float botPos[3];
+	botPos = startPos;
+
+	botPos[2] += offset;
+	
+	float subjectPos[3];
+	WorldSpaceCenter(subject, subjectPos);
+	
+	float to[3];
+	SubtractVectors(subjectPos, botPos, to);
+	to[2] = 0.0;
+	
+	float flRangeSq = GetVectorLength(to, true);
+	
+	// Normalize in place
+	float range = SquareRoot( flRangeSq );
+	to[0] /= ( range + 0.0001 );	// avoid divide by zero
+	to[1] /= ( range + 0.0001 );	// avoid divide by zero
+	to[2] /= ( range + 0.0001 );	// avoid divide by zero
+	
+	// estimate time to reach subject, assuming maximum speed
+	float leadTime = (0.0001) + ( range / ( projectile_speed + 0.0001 ) );
+	
+	// estimate amount to lead the subject	
+	float SubjectAbsVelocity[3];
+	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+	float lead[3];	
+	lead[0] = leadTime * SubjectAbsVelocity[0];
+	lead[1] = leadTime * SubjectAbsVelocity[1];
+	lead[2] = 0.0;	
+
+	if(GetVectorDotProduct(to, lead) < 0.0)
+	{
+		// the subject is moving towards us - only pay attention 
+		// to his perpendicular velocity for leading
+		float to2D[3]; to2D = to;
+		to2D[2] = 0.0;
+		NormalizeVector(to2D, to2D);
+		
+		float perp[2];
+		perp[0] = -to2D[1];
+		perp[1] = to2D[0];
+
+		float enemyGroundSpeed = lead[0] * perp[0] + lead[1] * perp[1];
+
+		lead[0] = enemyGroundSpeed * perp[0];
+		lead[1] = enemyGroundSpeed * perp[1];
+	}
+
+	// compute our desired destination
+	AddVectors(subjectPos, lead, pathTarget);
+
+	// validate this destination
+
+	// don't lead through walls
+	/*
+	if (GetVectorLength(lead, true) > 36.0)
+	{
+		float fraction;
+		if (!PF_IsPotentiallyTraversable( npc.index, subjectPos, pathTarget, IMMEDIATELY, fraction))
+		{
+			// tried to lead through an unwalkable area - clip to walkable space
+			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
+			pathTarget[1] = subjectPos[1] + fraction * ( pathTarget[1] - subjectPos[1] );
+			pathTarget[2] = subjectPos[2] + fraction * ( pathTarget[2] - subjectPos[2] );
+		}
+	}
+	*/
+	//replace this with a trace.
 }
