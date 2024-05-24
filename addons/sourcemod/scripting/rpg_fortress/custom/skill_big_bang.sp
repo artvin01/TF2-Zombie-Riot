@@ -172,6 +172,8 @@ int SetCameraEffectAndModel(int client, int &ModelToDelete, int Type, float dama
 	*/
 	float vAngles[3];
 	float vOrigin[3];
+	float vecSwingForward[3];
+	float vecSwingEnd[3];
 	GetClientEyePosition(client, vOrigin);
 	GetClientEyeAngles(client, vAngles);
 

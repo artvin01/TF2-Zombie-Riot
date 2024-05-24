@@ -8,10 +8,6 @@ void PlayerAnimatorNPC_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Player Animator NPC");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_player_animator");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -54,7 +50,7 @@ methodmap PlayerAnimatorNPC < CClotBody
 
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
-			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+			if(i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 
 			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
@@ -99,7 +95,6 @@ methodmap PlayerAnimatorNPC < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 
-		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
 		func_NPCDeath[npc.index] = PlayerAnimatorNPC_NPCDeath;
@@ -116,7 +111,6 @@ methodmap PlayerAnimatorNPC < CClotBody
 		NPC_StopPathing(npc.index);
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
-		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		MakeObjectIntangeable(npc.index);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
@@ -141,11 +135,11 @@ public void AlliedLeperVisaluser_ClotThink(int iNPC)
 			if(npc.m_flNextRangedAttackHappening)
 			{
 				//dont suck them in if its the final bit
-				if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
+				if(npc.m_flNextRangedAttackHappening - 0.5 > GetGameTime(npc.index))
 				{
 					Bing_BangVisualiser(npc.index, 250.0, 35.0, 400.0);
 				}
-				if(npc.m_flNextRangedAttackHappening < gameTime)
+				if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 				{
 					npc.m_flNextRangedAttackHappening = 0.0;
 					//Big TE OR PARTICLE that explodes

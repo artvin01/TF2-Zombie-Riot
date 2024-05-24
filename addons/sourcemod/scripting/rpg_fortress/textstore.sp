@@ -2453,9 +2453,9 @@ void De_TransformClient(int client)
 static Handle XpTimerHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static int XPGainedOverTime[MAXPLAYERS+1] = {0, ...};
 
-void RPGTextstore_XpToChat(int client, int XP)
+void RPGTextstore_XpToChat(int client, int XPAdd)
 {
-	XPGainedOverTime[client] += XP;
+	XPGainedOverTime[client] += XPAdd;
 
 	//Raw id works fine.
 	if(XpTimerHandle[client] == INVALID_HANDLE)

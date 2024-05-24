@@ -517,7 +517,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 		spawnRing(entity, range * 2.0, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 3.1, 1);
 		spawnRing(entity, range * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 3.1, 1);
 		float vecabsorigin[3];
-		GetAbsOrigin(npc.index, vecabsorigin);
+		GetAbsOrigin(entity, vecabsorigin);
 		spawnRing_Vectors(vecabsorigin, /*RANGE*/ 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, /*DURATION*/ 0.3, 6.0, 3.1, 1, range * 2.0);
 	}
 	
@@ -664,21 +664,21 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 	//idealy you want no falloff 
 	if(knockup > 0.0)
 	{
-		if(victim <= Maxclients)
+		if(victim <= MaxClients)
 		{
 			float SubjectAbsVelocity[3];
 			SubjectAbsVelocity[2] += knockup;
 							
 			// apply velocity
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, SubjectAbsVelocity); 	
+			TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, SubjectAbsVelocity); 	
 		}
 		else
 		{
-			if(!b_NoKnockbackFromSources[entity])	
+			if(!b_NoKnockbackFromSources[victim])	
 			{
 				float SubjectAbsVelocity[3];
 				SubjectAbsVelocity[2] += knockup;
-				CClotBody npc = view_as<CClotBody>(entity);
+				CClotBody npc = view_as<CClotBody>(victim);
 				npc.Jump();
 				npc.SetVelocity(SubjectAbsVelocity);
 			}
