@@ -65,9 +65,11 @@ void NPC_ConfigSetup()
 	FarmBear_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
 	SeaInfectedZombieHuman_OnMapStart_NPC();
-	HyperHeadcrabZombie_OnMapStart_NPC();
+	ScoutHyper_OnMapStart_NPC();
 	PlayerAnimatorNPC_OnMapStart_NPC();
 	OriginalInfected_OnMapStart_NPC();
+	HeavyExtreme_OnMapStart_NPC();
+	SniperAccuracy_OnMapStart_NPC();
 
 /*
 	ArkSlug_MapStart();
@@ -542,11 +544,15 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
 #include "rpg_fortress/npc/normal/npc_sea_infected_zombiefied_human.sp"
-#include "rpg_fortress/npc/normal/npc_headcrab_zombie_hyper.sp"
+#include "rpg_fortress/npc/normal/npc_scout_hyper.sp"
 #include "rpg_fortress/npc/normal/npc_original_infected.sp"
 #include "rpg_fortress/npc/ally/npc_player_animator.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_extreme.sp"
+#include "rpg_fortress/npc/normal/npc_sniper_accuracy.sp"
+
+
+
 /*
-	 
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"

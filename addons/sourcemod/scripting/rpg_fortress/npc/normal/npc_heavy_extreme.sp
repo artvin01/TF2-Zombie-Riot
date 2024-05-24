@@ -3,13 +3,13 @@
 
 // this should vary from npc to npc as some are in a really small area.
 
-static char g_DeathSounds[][] = {
+static const char g_DeathSounds[][] = {
 	"npc/zombie/zombie_die1.wav",
 	"npc/zombie/zombie_die2.wav",
 	"npc/zombie/zombie_die3.wav",
 };
 
-static char g_HurtSound[][] = {
+static const char g_HurtSounds[][] = {
 	"npc/zombie/zombie_pain1.wav",
 	"npc/zombie/zombie_pain2.wav",
 	"npc/zombie/zombie_pain3.wav",
@@ -18,102 +18,97 @@ static char g_HurtSound[][] = {
 	"npc/zombie/zombie_pain6.wav",
 };
 
-static char g_IdleSound[][] = {
-	"npc/zombie/zombie_voice_idle1.wav",
-	"npc/zombie/zombie_voice_idle2.wav",
-	"npc/zombie/zombie_voice_idle3.wav",
-	"npc/zombie/zombie_voice_idle4.wav",
-	"npc/zombie/zombie_voice_idle5.wav",
-	"npc/zombie/zombie_voice_idle6.wav",
-	"npc/zombie/zombie_voice_idle7.wav",
-	"npc/zombie/zombie_voice_idle8.wav",
-	"npc/zombie/zombie_voice_idle9.wav",
-	"npc/zombie/zombie_voice_idle10.wav",
-	"npc/zombie/zombie_voice_idle11.wav",
-	"npc/zombie/zombie_voice_idle12.wav",
-	"npc/zombie/zombie_voice_idle13.wav",
-	"npc/zombie/zombie_voice_idle14.wav",
-};
-
-static char g_IdleAlertedSounds[][] = {
+static const char g_IdleAlertedSounds[][] = {
 	"npc/zombie/zombie_alert1.wav",
 	"npc/zombie/zombie_alert2.wav",
 	"npc/zombie/zombie_alert3.wav",
 };
 
-static char g_MeleeHitSounds[][] = {
-	"npc/fast_zombie/claw_strike1.wav",
-	"npc/fast_zombie/claw_strike2.wav",
-	"npc/fast_zombie/claw_strike3.wav",
+static const char g_MeleeHitSounds[][] = {
+	"weapons/boxing_gloves_hit1.wav",
+	"weapons/boxing_gloves_hit2.wav",
+	"weapons/boxing_gloves_hit3.wav",
+	"weapons/boxing_gloves_hit4.wav",
 };
-static char g_MeleeAttackSounds[][] = {
-	"npc/zombie/zo_attack1.wav",
-	"npc/zombie/zo_attack2.wav",
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav",
 };
 
+static const char g_MeleeMissSounds[][] = {
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav",
+};
 
-public void HyperHeadcrabZombie_OnMapStart_NPC()
+public void HeavyExtreme_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
-	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 
-	PrecacheModel("models/zombie/classic.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Hyper Zombie");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hyper_headcrab_zombie");
+	strcopy(data.Name, sizeof(data.Name), "Heavy Extreme Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_extreme");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return HyperHeadcrabZombie(client, vecPos, vecAng, ally);
+	return HeavyExtreme(client, vecPos, vecAng, ally);
 }
 
-methodmap HyperHeadcrabZombie < CClotBody
+methodmap HeavyExtreme < CClotBody
 {
-	public void PlayIdleSound()
-	{
+	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);
-
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-	}
-	
-	public void PlayHurtSound()
-	{
 		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+
 	}
 	
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);
+	public void PlayHurtSound() {
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		
 	}
-	public void PlayKilledEnemySound() 
-	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
+	
+	public void PlayDeathSound() {
+	
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		
 	}
-	public void PlayMeleeSound()
- 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);
+	
+	public void PlayMeleeSound() {
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		
 	}
-	public void PlayMeleeHitSound()
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,120);	
+	public void PlayMeleeHitSound() {
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+	
+	}
+
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		
 	}
 	
 	
-	public HyperHeadcrabZombie(int client, float vecPos[3], float vecAng[3], int ally)
+	
+	public HeavyExtreme(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		HyperHeadcrabZombie npc = view_as<HyperHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "0.9", "300", ally, false,_,_,_,_));
+		HeavyExtreme npc = view_as<HeavyExtreme>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "300", ally, false,_,_,_,_));
 		
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -123,9 +118,9 @@ methodmap HyperHeadcrabZombie < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
-		func_NPCDeath[npc.index] = HyperHeadcrabZombie_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = HyperHeadcrabZombie_OnTakeDamage;
-		func_NPCThink[npc.index] = HyperHeadcrabZombie_ClotThink;
+		func_NPCDeath[npc.index] = HeavyExtreme_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = HeavyExtreme_OnTakeDamage;
+		func_NPCThink[npc.index] = HeavyExtreme_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -135,11 +130,21 @@ methodmap HyperHeadcrabZombie < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		npc.m_flRangedArmor = 1.15;
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
+		int skin = 5;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/heavy_zombie.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/spr17_warhood/spr17_warhood.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 		return npc;
 	}
 	
@@ -147,9 +152,9 @@ methodmap HyperHeadcrabZombie < CClotBody
 
 //TODO 
 //Rewrite
-public void HyperHeadcrabZombie_ClotThink(int iNPC)
+public void HeavyExtreme_ClotThink(int iNPC)
 {
-	HyperHeadcrabZombie npc = view_as<HyperHeadcrabZombie>(iNPC);
+	HeavyExtreme npc = view_as<HeavyExtreme>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -164,9 +169,9 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 	
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
+	if(npc.m_blPlayHurtAnimation) //Dont play dodge anim if we are in an animation.
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false,_,_,2.0);
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false,_,_,2.0);
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -179,7 +184,7 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -199,7 +204,7 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 65000.0;
+					float damage = 90000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -271,7 +276,7 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_WALK");
+					npc.SetActivity("ACT_MP_RUN_MELEE");
 				}
 			}
 			case 1:
@@ -285,14 +290,14 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_MELEE_ATTACK1",_,_,_,2.0);
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.6);
 
 					npc.PlayMeleeSound();
 					
-					npc.m_flAttackHappens = gameTime + 0.4;
+					npc.m_flAttackHappens = gameTime + 0.6;
 
-					npc.m_flDoingAnimation = gameTime + 0.4;
-					npc.m_flNextMeleeAttack = gameTime + 0.8;
+					npc.m_flDoingAnimation = gameTime + 0.6;
+					npc.m_flNextMeleeAttack = gameTime + 1.3;
 					npc.m_bisWalking = true;
 				}
 			}
@@ -302,13 +307,13 @@ public void HyperHeadcrabZombie_ClotThink(int iNPC)
 }
 
 
-public Action HyperHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action HeavyExtreme_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	HyperHeadcrabZombie npc = view_as<HyperHeadcrabZombie>(victim);
+	HeavyExtreme npc = view_as<HeavyExtreme>(victim);
 
 	float gameTime = GetGameTime(npc.index);
 
@@ -320,9 +325,9 @@ public Action HyperHeadcrabZombie_OnTakeDamage(int victim, int &attacker, int &i
 	return Plugin_Changed;
 }
 
-public void HyperHeadcrabZombie_NPCDeath(int entity)
+public void HeavyExtreme_NPCDeath(int entity)
 {
-	HyperHeadcrabZombie npc = view_as<HyperHeadcrabZombie>(entity);
+	HeavyExtreme npc = view_as<HeavyExtreme>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();

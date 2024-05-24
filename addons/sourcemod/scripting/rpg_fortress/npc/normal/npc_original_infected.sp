@@ -4,15 +4,19 @@
 // this should vary from npc to npc as some are in a really small area.
 
 static const char g_DeathSounds[][] = {
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"vo/npc/male01/no01.wav",
+	"vo/npc/male01/no02.wav",
 };
 
 static const char g_HurtSound[][] = {
-	"npc/combine_soldier/pain1.wav",
-	"npc/combine_soldier/pain2.wav",
-	"npc/combine_soldier/pain3.wav",
+	"vo/npc/male01/pain01.wav",
+	"vo/npc/male01/pain02.wav",
+	"vo/npc/male01/pain03.wav",
+	"vo/npc/male01/pain05.wav",
+	"vo/npc/male01/pain06.wav",
+	"vo/npc/male01/pain07.wav",
+	"vo/npc/male01/pain08.wav",
+	"vo/npc/male01/pain09.wav",
 };
 
 static const char g_IdleSound[][] = {
@@ -22,9 +26,10 @@ static const char g_IdleSound[][] = {
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
+	"vo/npc/male01/strider_run.wav",
+	"vo/npc/male01/zombies01.wav",
+	"vo/npc/male01/zombies02.wav",
+	"vo/npc/male01/gethellout.wav",
 };
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
@@ -48,6 +53,18 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 	"weapons/medi_shield_deploy.wav",
 };
+static const char g_TauntEnemy[][] = {
+	"vo/npc/male01/likethat.wav",
+	"vo/npc/male01/ammo04.wav",
+	"vo/npc/male01/ammo03.wav",
+};
+
+static const char g_HalfHealth[][] = {
+	"vo/npc/male01/thislldonicely01.wav",
+	"vo/npc/male01/watchwhat.wav",
+	"vo/npc/male01/youdbetterreload01.wav",
+};
+
 
 static char gLaser1;
 public void OriginalInfected_OnMapStart_NPC()
@@ -61,8 +78,11 @@ public void OriginalInfected_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));	i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);	}
 	for (int i = 0; i < (sizeof(g_RangedSpecialAttackSoundsSecondary));	i++) { PrecacheSound(g_RangedSpecialAttackSoundsSecondary[i]);	}
+	for (int i = 0; i < (sizeof(g_TauntEnemy));	i++) { PrecacheSound(g_TauntEnemy[i]);	}
+	for (int i = 0; i < (sizeof(g_HalfHealth));	i++) { PrecacheSound(g_HalfHealth[i]);	}
 
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Original Infected, Junal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_original_infected");
@@ -89,8 +109,15 @@ methodmap OriginalInfected < CClotBody
 	
 	public void PlayHurtSound()
 	{
-		
 		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,70);
+	}
+	public void PlayTauntSound()
+	{
+		EmitSoundToAll(g_TauntEnemy[GetRandomInt(0, sizeof(g_TauntEnemy) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,70);
+	}
+	public void PlayHalfHealthSound()
+	{
+		EmitSoundToAll(g_HalfHealth[GetRandomInt(0, sizeof(g_HalfHealth) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,70);
 	}
 
 	public void PlayRangedSound()
@@ -149,6 +176,7 @@ methodmap OriginalInfected < CClotBody
 		func_NPCDeath[npc.index] = OriginalInfected_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = OriginalInfected_OnTakeDamage;
 		func_NPCThink[npc.index] = OriginalInfected_ClotThink;
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, OriginalInfected_OnTakeDamagePost);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -176,6 +204,7 @@ methodmap OriginalInfected < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
+		npc.Anger = false;
 		
 		return npc;
 	}
@@ -201,7 +230,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 	
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime) //Dont play dodge anim if we are in an animation.
+	if(npc.m_blPlayHurtAnimation) //Dont play dodge anim if we are in an animation.
 	{
 		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
 		npc.PlayHurtSound();
@@ -286,6 +315,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 			//Big TE OR PARTICLE that explodes
 			//Make it purple too
 			BingBangExplosion(npc.index, 150000.0, 350.0, 250.0, 1.0);
+			npc.PlayTauntSound();
 		}
 	}
 
@@ -320,7 +350,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2; //Throw a Shield.
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Engage in Close Range Destruction.
 		}
@@ -506,7 +536,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 			//https://github.com/Batfoxkid/FF2-Library/blob/edited/addons/sourcemod/scripting/freaks/ff2_sarysamods9.sp
 			float Distance = GetVectorDistance(victimPos, partnerPos);
 			if(Distance < Suckrange)
-			{				
+			{
 				static float angles[3];
 				GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
 
@@ -654,5 +684,20 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 			}
 		}
 	}
-	
+}
+
+
+public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+{
+	OriginalInfected npc = view_as<OriginalInfected>(victim);
+
+	int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+	if(maxHealth/2 >= Health && !npc.Anger) //Anger after half hp/400 hp
+	{
+		npc.Anger = true; //	>:(
+		npc.PlayHalfHealthSound();
+		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+	}
 }
