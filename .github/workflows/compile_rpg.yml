@@ -78,3 +78,9 @@ jobs:
         run: |
           spcomp -O2 -v2 -i "include" -o rpg_fortress.smx rpg_fortress.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@master
+        with:
+          name: rpg_fortress.smx
+          path: addons/sourcemod/scripting/rpg_fortress.smx
