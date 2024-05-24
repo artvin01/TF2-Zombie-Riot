@@ -18,6 +18,8 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define SND_BARRAGE_HIT			")weapons/flare_detonator_explode_world.wav"
 #define SND_BARRAGE_SPAWN		")weapons/bison_main_shot_01.wav"
 #define SND_BARRAGE_LAUNCH		")weapons/flare_detonator_launch.wav"
+#define SND_PULL_ACTIVATED		")misc/halloween/merasmus_spell.wav"
+#define SND_PLAYER_PULLED		")misc/halloween/merasmus_stun.wav"
 
 #define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1	"merasmus_spawn_flash"
@@ -243,6 +245,8 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_BARRAGE_SPAWN);
 	PrecacheSound(SND_BARRAGE_LAUNCH);
 	PrecacheSound(SND_BARRAGE_HIT);
+	PrecacheSound(SND_PULL_ACTIVATED);
+	PrecacheSound(SND_PLAYER_PULLED);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -327,7 +331,7 @@ float f_BarrageProjectileDMG[MAXENTITIES];							//Ignore this.
 //If at least one player was pulled, this spell forces one of the following abilities to be used immediately, ignoring cooldowns and max usage:
 //Cursed Cross, Soul Harvester, Spin to Win, MEGA MORTIS
 float Death_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };				//Delay before the pull activates.
-float Death_Radius[4] = { 1200.0, 1400.0, 1600.0, 1800.0 };	//Maximum radius in which the pull can be activated.
+float Death_Radius[4] = { 1000.0, 1050.0, 1100.0, 1150.0 };	//Maximum radius in which the pull can be activated.
 
 //SPELL CARD #5 - COSMIC TERROR: SSB chooses up to X player(s) at random and marks the spot they are currently at. Y seconds later, that spot summons a laser from the sky,
 //which moves towards the nearest enemy and deals rapid damage to anything too close. This is not affected by falloff.
@@ -438,17 +442,20 @@ float Spin_Acceleration[4] = { 1200.0, 1540.0, 2000.0, 2520.0 };	//SSB's acceler
 //SPOOKY SPECIAL #6 - MEGA MORTIS: SSB once again pulls out his trusty Mortis Masher and lifts it high into the air, charging it with necrotic energy. After X second(s),
 //he slams it down, dealing massive damage within a large radius to anybody who is on the ground. Anyone who is directly hit by the hammer itself is instantly killed,
 //no matter what. This bypasses downs entirely. In other words: don't try to face-tank it, you will fail.
-float Mortis_Delay[4] = { 5.0, 4.0, 3.0, 2.0 };						//Charge time.
+float Mortis_Delay[4] = { 5.0, 4.5, 4.0, 3.5 };						//Charge time.
 float Mortis_DMG[4] = { 800.0, 1600.0, 2400.0, 3200.0 };			//Damage.
-float Mortis_Radius[4] = { 900.0, 1200.0, 1500.0, 1800.0 };			//Radius.
+float Mortis_Radius[4] = { 900.0, 1000.0, 1100.0, 1200.0 };			//Radius.
 float Mortis_InstaDeathRadius[4] = { 100.0, 100.0, 100.0, 100.0 };	//Radius in which players are considered to have been hit directly by the hammer, and are thus instantly killed.
 float Mortis_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };			//Falloff based on radius.
 float Mortis_Falloff_MultiHit[4] = { 1.0, 1.0, 1.0, 1.0 };			//Amount to multiply damage dealt for each target hit.
 float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity applied to each target hit.
 
 //TODO:
-//	- All specials and spells, as well as all animations that come with them.
+//	- All specials and spells.
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
+//	- Finalize the VFX/SFX on the following abilities:
+//		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
+//		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -467,6 +474,7 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 int Ability_MaxUses[SSB_MAX_ABILITIES] = { 0, ... };	//The maximum number of times the ability can be used per fight. <= 0: no limit.
 int Ability_Uses[SSB_MAX_ABILITIES] = { 0, ... };		//The number of times the ability has been used during this fight.
 float Ability_Chance[SSB_MAX_ABILITIES] = { 0.0, ... };	//The chance for this ability to be used when SSB attempts to activate a Spooky Special or use a Spell Card (0.0 = 0%, 1.0 = 100%).
+float Ability_ExtraCD[SSB_MAX_ABILITIES] = { 0.0, ... };	//Additional cooldown caused by this ability. Used mainly for long-duration abilities, so SSB doesn't chain them back-to-back.
 Function Ability_Function[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };	//The function to call when this ability is successfully activated.
 Function Ability_Filter[SSB_MAX_ABILITIES] = { INVALID_FUNCTION, ... };		//The function to call when this ability is about to be activated, to check manually if it can be used or not. Must take one SupremeSpookmasterBones and an entity index for the victim as parameters, and return a bool (true: activate, false: don't).
 char Ability_Name[SSB_MAX_ABILITIES][255];				//The ability's name. Used for printing Spell Card alerts to chat, and also for looking up ability indices.
@@ -571,6 +579,12 @@ methodmap SSB_Ability __nullable__
 		public set(float value) { Ability_Chance[this.Index] = value; }
 	}
 
+	property float ExtraCD
+	{
+		public get() { return Ability_ExtraCD[this.Index]; }
+		public set(float value) { Ability_ExtraCD[this.Index] = value; }
+	}
+
 	property Function ActivationFunction
 	{
 		public get() { return Ability_Function[this.Index]; }
@@ -616,28 +630,28 @@ static void SSB_PrepareAbilities()
 
 	//Wave 15 (and before):
 	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CHAOS BARRAGE", 0.5, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", /*0.66*/0.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("DEATH MAGNETIC", 1.0, 0, SpellCard_DeathMagnetic, _, _, true, Death_Delay[0]));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.5, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.25, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[1]));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.75, 0, SpellCard_ChaosBarrage));
+	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[1]));
 
 	//Wave 45:
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[2]));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.33, 2, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.2, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 2, SpellCard_DeathMagnetic, _, _, true, Death_Delay[2]));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("COSMIC TERROR", 0.33, 1, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.2, 2, SpellCard_RingOfTartarus));
 
 	//Wave 60+:
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("COSMIC TERROR", 0.5, 2, SpellCard_CosmicTerror));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.2, 3, SpellCard_RingOfTartarus));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 2, SpellCard_TheSkull));
@@ -1134,6 +1148,161 @@ public Action Barrage_Touch(int entity, int other)
 public void SpellCard_DeathMagnetic(SupremeSpookmasterBones ssb, int target)
 {
 	ssb.PlayDeathMagnetic();
+	ssb.Pause();
+	ssb.UsingAbility = true;
+
+	DataPack pack = new DataPack();
+	RequestFrame(Death_Check, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack, GetGameTime(ssb.index) + Death_Delay[SSB_WavePhase]);
+	WritePackFloat(pack, GetGameTime(ssb.index));
+}
+
+public void Death_Check(DataPack pack)
+{
+	ResetPack(pack);
+
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float time = ReadPackFloat(pack);
+	float NextVFX = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+
+	float gt = GetGameTime(ssb.index);
+
+	if (gt >= time)
+	{
+		int NumPulled = 0;
+		//Copied directly from Bob, thanks Artvin:
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+			{
+				if (!Can_I_See_Enemy_Only(ssb.index, client))
+					continue;
+
+				float pos[3], EnemyPos[3];
+				GetEntPropVector(client, Prop_Data, "m_vecOrigin", EnemyPos); 
+				GetEntPropVector(ssb.index, Prop_Data, "m_vecOrigin", pos); 
+								
+				float Distance = GetVectorDistance(pos, EnemyPos);
+				if(Distance < Death_Radius[SSB_WavePhase])
+				{				
+					//Pull them.
+					static float angles[3];
+					GetVectorAnglesTwoPoints(pos, EnemyPos, angles);
+
+					if (GetEntityFlags(client) & FL_ONGROUND)
+						angles[0] = 0.0; // toss out pitch if on ground
+
+					static float velocity[3];
+					GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+					ScaleVector(velocity, -Death_Radius[SSB_WavePhase]);
+																
+					// min Z if on ground
+					if (GetEntityFlags(client) & FL_ONGROUND)
+						velocity[2] = fmax(325.0, velocity[2]);
+												
+					// apply velocity
+					TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);   
+
+					NumPulled++;
+
+					float UserCenter[3], OtherCenter[3];
+					WorldSpaceCenter(ssb.index, UserCenter);
+					WorldSpaceCenter(client, OtherCenter);
+					SpawnBeam_Vectors(UserCenter, OtherCenter, 0.33, 255, 80, 80, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 15.0);
+
+					EmitSoundToAll(SND_PLAYER_PULLED, client, _, _, _, _, GetRandomInt(80, 110));
+				}
+			}
+		}
+
+		ssb.Unpause();
+		ssb.UsingAbility = false;
+
+		if (NumPulled > 0)
+		{
+			EmitSoundToAll(SND_PULL_ACTIVATED, ssb.index, _, 120, _, _, GetRandomInt(80, 110));
+
+			ArrayList abilities = new ArrayList(255);
+			PushArrayString(abilities, "CURSED CROSS");
+			PushArrayString(abilities, "SOUL HARVESTER");
+			PushArrayString(abilities, "SPIN 2 WIN");
+			PushArrayString(abilities, "MEGA MORTIS");
+
+			bool success = false;
+			while (!success && GetArraySize(abilities) > 0)
+			{
+				int chosen = GetRandomInt(0, GetArraySize(abilities) - 1);
+				char name[255];
+				GetArrayString(abilities, chosen, name, sizeof(name));
+
+				int slot = ssb.GetAbilityByName(name);
+				if (slot != -1)
+				{
+					ssb.ActivateSpecial(-1, slot);
+					success = true;
+				}
+				else
+				{
+					slot = ssb.GetSpellByName(name);
+					if (slot != -1)
+					{
+						ssb.CastSpell(-1, slot);
+						success = true;
+					}
+				}
+
+				RemoveFromArray(abilities, chosen);
+			}
+
+			delete abilities;
+		}
+
+		return;
+	}
+	else
+	{
+		float pos[3], UserCenter[3], OtherCenter[3];
+		GetEntPropVector(ssb.index, Prop_Data, "m_vecOrigin", pos); 
+		WorldSpaceCenter(ssb.index, UserCenter);
+
+		spawnRing_Vectors(pos, Death_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 0, 0, 255, 1, 0.1, 16.0, 2.0, 1);
+
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if (IsClientInGame(client) && dieingstate[client] == 0 && TeutonType[client] == 0)
+			{
+				if (!Can_I_See_Enemy_Only(ssb.index, client))
+					continue;
+
+				WorldSpaceCenter(client, OtherCenter);
+				if (GetVectorDistance(UserCenter, OtherCenter) <= Death_Radius[SSB_WavePhase])
+				{
+					SpawnBeam_Vectors(UserCenter, OtherCenter, 0.1, 255, 0, 0, 140, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+				}
+			}
+		}
+
+		if (gt >= NextVFX)
+		{
+			spawnRing_Vectors(pos, Death_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 255, 1, 0.1, 32.0, 2.0, 1);
+			spawnRing_Vectors(pos, Death_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 255, 0, 0, 255, 1, 0.33, 16.0, 2.0, 1, 0.0);
+			NextVFX = gt + 0.25;
+		}
+	}
+
+	pack = new DataPack();
+	RequestFrame(Death_Check, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack, time);
+	WritePackFloat(pack, NextVFX);
 }
 
 public void SpellCard_CosmicTerror(SupremeSpookmasterBones ssb, int target)
@@ -1161,7 +1330,7 @@ void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
 	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
 }*/
 
-static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, bool IsSpellCard = true, bool SkipSpellCardAnnouncement = false)
+static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, bool IsSpellCard = true, bool SkipSpellCardAnnouncement = false, float ExtraCD = 0.0)
 {
 	SSB_Ability Spell = new SSB_Ability();
 
@@ -1172,6 +1341,7 @@ static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUse
 	Spell.SetName(name);
 	Spell.IsCard = IsSpellCard;
 	Spell.SkipCardSound = SkipSpellCardAnnouncement;
+	Spell.ExtraCD = ExtraCD;
 
 	return Spell;
 }
@@ -1341,6 +1511,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		bool success = false;
 		int activated = -1;
+		SSB_Ability chosen;
 
 		//First: Attempt to use a random ability, provided we do not have a specific ability to force.
 		while (!success && GetArraySize(clone) > 0 && specific == -1)
@@ -1349,7 +1520,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 			if (activated != SSB_LastSpecial[this.index])
 			{
-				SSB_Ability chosen = GetArrayCell(clone, activated);
+				chosen = GetArrayCell(clone, activated);
 				success = chosen.Activate(this, target, false);
 			}
 
@@ -1363,12 +1534,17 @@ methodmap SupremeSpookmasterBones < CClotBody
 		if (!success)
 		{
 			activated = specific > -1 ? specific : SSB_DefaultSpecial[SSB_WavePhase];
-			SSB_Ability chosen = GetArrayCell(SSB_Specials[SSB_WavePhase], activated);
+			chosen = GetArrayCell(SSB_Specials[SSB_WavePhase], activated);
 			chosen.Activate(this, target, true);
 		}
 
 		SSB_LastSpecial[this.index] = activated;
 		this.CalculateNextSpecial();
+
+		if (success && chosen.ExtraCD != 0.0)
+		{
+			SSB_NextSpecial[this.index] += chosen.ExtraCD;
+		}
 	}
 
 	public void CastSpell(int target, int specific = -1)
@@ -1377,6 +1553,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		bool success = false;
 		int activated = -1;
+		SSB_Ability chosen;
 
 		//First: Attempt to use a random ability, provided we do not have a specific ability to force.
 		while (!success && GetArraySize(clone) > 0 && specific == -1)
@@ -1385,7 +1562,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 			if (activated != SSB_LastSpell[this.index] || activated == SSB_DefaultSpell[SSB_WavePhase])
 			{
-				SSB_Ability chosen = GetArrayCell(clone, activated);
+				chosen = GetArrayCell(clone, activated);
 				success = chosen.Activate(this, target, false);
 			}
 
@@ -1399,7 +1576,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		if (!success)
 		{
 			activated = specific > -1 ? specific : SSB_DefaultSpell[SSB_WavePhase];
-			SSB_Ability chosen = GetArrayCell(SSB_SpellCards[SSB_WavePhase], activated);
+			chosen = GetArrayCell(SSB_SpellCards[SSB_WavePhase], activated);
 			success = chosen.Activate(this, target, true);
 		}
 
@@ -1407,6 +1584,11 @@ methodmap SupremeSpookmasterBones < CClotBody
 		{
 			SSB_LastSpell[this.index] = (activated == SSB_DefaultSpell[SSB_WavePhase] ? -1 : activated);
 			this.CalculateNextSpellCard();
+
+			if (chosen.ExtraCD != 0.0)
+			{
+				SSB_NextSpell[this.index] += chosen.ExtraCD;
+			}
 		}
 	}
 
