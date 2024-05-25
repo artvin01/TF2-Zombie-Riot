@@ -458,6 +458,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.35);	
 					npc.m_iChanged_WalkCycle = 1;
+					EmitSoundToAll(BING_BANG_SOUND, npc.index, SNDCHAN_AUTO, 80, _, 1.0, 100);
 
 					npc.m_flNextRangedAttackHappening = gameTime + 1.5;
 
