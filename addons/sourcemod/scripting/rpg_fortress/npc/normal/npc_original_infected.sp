@@ -681,7 +681,9 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 		return;
 
 	//all checks done, now damage the enemy
-	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, {0.0,0.0, 15000.0}, SelfVec);
+	float WorldSpaceCenterVec[3]; 
+	WorldSpaceCenter(victim, WorldSpaceCenterVec);
+	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, {0.0,0.0, 50000.0}, WorldSpaceCenterVec);
 	damage /= damagefalloff;
 	//idealy you want no falloff 
 	if(knockup > 0.0)
