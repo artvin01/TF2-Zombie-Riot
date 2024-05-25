@@ -25,6 +25,8 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define SND_RING_MARKED			")misc/halloween/spell_teleport.wav"
 #define SND_TARTARUS_SLOW		"weapons/breadmonster/gloves/bm_gloves_on.wav"
 #define SND_TARTARUS_BEGIN		")misc/halloween/spell_skeleton_horde_rise.wav"
+#define SND_MEGASKULLBLAST		")misc/doomsday_missile_explosion.wav"
+#define SND_SKULL_MINIFIRE		")weapons/pomson_fire_01.wav"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -42,6 +44,9 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define PARTICLE_TARTARUS					"utaunt_hands_purple_parent"
 #define PARTICLE_TARTARUS_BEGIN				"skull_island_explosion"
 #define PARTICLE_SPAWNVFX_GREEN				"duck_collect_green"
+#define PARTICLE_MEGASKULL					"eyeboss_team_red"
+#define PARTICLE_MEGASKULLBLAST				"fireSmoke_collumn_mvmAcres"
+#define PARTICLE_SKULL_MINI					"flaregun_trail_red"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -53,6 +58,13 @@ static char Cross_BlastSFX[][] = {
 	")misc/halloween_eyeball/book_exit.wav",
 	")misc/halloween/merasmus_hiding_explode.wav",
 	")misc/halloween/spell_lightning_ball_cast.wav"
+};
+
+static char Skull_LaughSFX[][] = {
+	")vo/halloween_boss/knight_laugh01.mp3",
+	")vo/halloween_boss/knight_laugh02.mp3",
+	")vo/halloween_boss/knight_laugh03.mp3",
+	")vo/halloween_boss/knight_laugh04.mp3"
 };
 
 static char g_DeathSounds[][] = {
@@ -260,9 +272,12 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_RING_MARKED);
 	PrecacheSound(SND_TARTARUS_SLOW);
 	PrecacheSound(SND_TARTARUS_BEGIN);
+	PrecacheSound(SND_MEGASKULLBLAST);
+	PrecacheSound(SND_SKULL_MINIFIRE);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
+	for (int i = 0; i < (sizeof(Skull_LaughSFX));   i++) { PrecacheSound(Skull_LaughSFX[i]);   }
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Supreme Spookmaster Bones");
@@ -371,18 +386,23 @@ float Ring_SlowAmt[4] = { 0.5, 0.66, 0.75, 0.85 };		//Percentage to reduce the m
 //SPELL CARD #7 - GAZE UPON THE SKULL: SSB launches one big but very slow skull, which homes in on the nearest enemy.
 //While active, the skull rapidly fires smaller, weaker homing projectiles in random directions.
 //If the skull collides with something (or automatically after X seconds), it will trigger a huge explosion.
-float Skull_Velocity[4] = { 100.0, 150.0, 200.0, 250.0 };			//Velocity of the big skull.
+float Skull_Velocity[4] = { 240.0, 240.0, 240.0, 240.0 };			//Velocity of the big skull.
 float Skull_DMG[4] = { 400.0, 800.0, 1600.0, 3200.0 };				//Base damage of the big skull.
 float Skull_Radius[4] = { 300.0, 350.0, 400.0, 500.0 };				//Explosion radius of the big skull.
 float Skull_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };				//Falloff-based radius of the big skull.
 float Skull_Falloff_MultiHit[4] = { 0.66, 0.75, 0.8, 0.85 };		//Amount to multiply the big skull's explosion damage for each target it hits.
-float Skull_HomingAngle[4] = { 180.0, 220.0, 260.0, 300.0 };		//Big skull's maximum homing angle.
-float Skull_HomingPerSecond[4] = { 120.0, 120.0, 120.0, 120.0 };	//Number of times per second for thee big skull to readjust its velocity for the sake of homing in on its target.
+float Skull_EntityMult[4] = { 4.0, 8.0, 12.0, 16.0 };				//Amount to multiply the big skull's explosion damage against entities.
+float Skull_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };				//Duration until the big skull automatically detonates.
+float Skull_SelfDestructDelay[4] = { 3.0, 3.0, 3.0, 3.0 };			//When the big skull reaches the end of its duration: how long should it pause before exploding?
+float Skull_HomingAngle[4] = { 110.0, 115.0, 120.0, 125.0 };		//Big skull's maximum homing angle.
+float Skull_HomingPerSecond[4] = { 11.0, 12.0, 13.0, 14.0 };		//Number of times per second for thee big skull to readjust its velocity for the sake of homing in on its target.
+float Skull_MiniRate[4] = { 0.33, 0.33, 0.25, 0.15 };				//Number of seconds between mini projectiles fired by the skull.
 float Skull_MiniVelocity[4] = { 800.0, 1000.0, 1200.0, 1400.0 };	//Velocity of the small projectiles fired by the big skull.
 float Skull_MiniDMG[4] = { 15.0, 20.0, 25.0, 30.0 };				//Damage dealt by the small projectiles.
-float Skull_MiniDuration[4] = {1.0, 1.5, 2.0, 2.5 };				//Lifespan of the small projectiles.
-float Skull_MiniHomingAngle[4] = { 40.0, 60.0, 80.0, 100.0 };		//Small projectile max homing angle.
-float Skull_MiniHomingPerSecond[4] = {3.0, 4.0, 5.0, 6.0 };			//Number of times per second for the small projectiles to readjust their velocity.
+float Skull_MiniDuration[4] = {0.66, 0.63, 0.6, 0.5 };				//Lifespan of the small projectiles.
+float Skull_MiniHomingAngle[4] = { 60.0, 70.0, 80.0, 90.0 };		//Small projectile max homing angle.
+float Skull_MiniHomingPerSecond[4] = {6.0, 7.0, 8.0, 9.0 };			//Number of times per second for the small projectiles to readjust their velocity.
+float Skull_MiniSpread[4] = { 16.0, 16.0, 16.0, 16.0 };				//Degrees of random spread for the small projectiles when fired.
 
 //SPOOKY SPECIALS: SSB's big attacks. These typically have wind-up periods and are very powerful, but have long cooldowns and are more easily avoided.
 ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used for setting the collection of Spooky Specials SSB can use on each wave.
@@ -469,10 +489,13 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //TODO:
 //	- All specials and spells.
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
+//		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
+//		- Probably make Witness the Skull summon a portal, which then summons the skull on a delay. Otherwise, SSB can just jumpscare people with it to instakill them.
 //	- Finalize the VFX/SFX on the following abilities:
 //		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
 //		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
+//		- WITNESS THE SKULL: The skull needs an ambient looping sound, also a custom cast sound (something like ssb_witnesstheskull) since it's the strongest Spell Card.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -646,8 +669,9 @@ static void SSB_PrepareAbilities()
 	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
 
 	//Wave 15 (and before):
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 0, SpellCard_TheSkull));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -680,7 +704,7 @@ public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
 
 	ssb.AddGesture("ACT_SPELLCAST_2");
 	DataPack pack = new DataPack();
-	CreateTimer(0.5, NightmareVolley_Launch, pack, TIMER_FLAG_NO_MAPCHANGE);
+	CreateDataTimer(0.5, NightmareVolley_Launch, pack, TIMER_FLAG_NO_MAPCHANGE);
 	WritePackCell(pack, EntIndexToEntRef(ssb.index));
 	WritePackCell(pack, EntIndexToEntRef(target));
 	ssb.UsingAbility = true;
@@ -1154,7 +1178,7 @@ public Action Barrage_Touch(int entity, int other)
 	if (IsValidEnemy(entity, other))
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		SDKHooks_TakeDamage(other, entity, owner, f_BarrageProjectileDMG[entity], _, _, _, pos);
+		SDKHooks_TakeDamage(other, entity, owner, f_BarrageProjectileDMG[entity], DMG_CLUB, _, _, pos);
 	}
 
 	RemoveEntity(entity);
@@ -1648,7 +1672,236 @@ public float GetDifference(float a, float b)
 
 public void SpellCard_TheSkull(SupremeSpookmasterBones ssb, int target)
 {
+	ssb.AddGesture("ACT_SPELLCAST_2");
+	CreateTimer(0.5, Skull_Launch, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
+	ssb.UsingAbility = true;
+}
 
+public Action Skull_Launch(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+
+	ssb.UsingAbility = false;
+
+	float pos[3], ang[3], testAng[3];
+	GetEntPropVector(ssb.index, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(ssb.index, Prop_Send, "m_angRotation", ang);
+	pos[2] += 60.0;
+
+	testAng[0] = 0.0;
+	testAng[1] = ang[1];
+	testAng[2] = 0.0;
+				
+	GetPointFromAngles(pos, testAng, 40.0, pos, Priest_IgnoreAll, MASK_SHOT);
+
+	int skull = SSB_CreateProjectile(ssb, MODEL_SKULL, pos, testAng, Skull_Velocity[SSB_WavePhase], 4.0, Skull_Collide);
+	if (IsValidEntity(skull))
+	{
+		ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 3.0);
+		EmitSoundToAll(SND_FIREBALL_CAST, ssb.index, _, 120);
+
+		SSB_AttachParticle(skull, PARTICLE_MEGASKULL, _, "");
+		SSB_AttachParticle(skull, PARTICLE_FIREBALL_RED, _, "");
+		SetEntityRenderMode(skull, RENDER_GLOW);
+		SetEntityRenderColor(skull, 255, 160, 80, 200);
+
+		Initiate_HomingProjectile(skull, ssb.index, Skull_HomingAngle[SSB_WavePhase], Skull_HomingPerSecond[SSB_WavePhase], false, true, testAng);
+
+		DataPack pack = new DataPack();
+		RequestFrame(Skull_Logic, pack);
+		WritePackCell(pack, EntIndexToEntRef(skull));
+		WritePackCell(pack, EntIndexToEntRef(ssb.index));
+		WritePackCell(pack, SSB_WavePhase);
+		WritePackFloat(pack, GetGameTime() + Skull_MiniRate[SSB_WavePhase]);
+		WritePackFloat(pack, GetGameTime() + Skull_Duration[SSB_WavePhase]);
+	}
+}
+
+public void Skull_Logic(DataPack pack)
+{
+	ResetPack(pack);
+
+	int skull = EntRefToEntIndex(ReadPackCell(pack));
+	int owner = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float nextProjectile = ReadPackFloat(pack);
+	float endTime = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(skull) || !IsValidEntity(owner))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(owner);
+	float gt = GetGameTime();
+
+	if (gt >= endTime)
+	{
+		SetEntityMoveType(skull, MOVETYPE_NONE);
+		float ang[3];
+		GetEntPropVector(skull, Prop_Data, "m_angRotation", ang);
+
+		pack = new DataPack();
+		RequestFrame(Skull_SelfDestructSequence, pack);
+		WritePackCell(pack, EntIndexToEntRef(skull));
+		WritePackCell(pack, EntIndexToEntRef(owner));
+		WritePackCell(pack, phase);
+		WritePackFloat(pack, gt + Skull_SelfDestructDelay[phase]);
+		WritePackFloat(pack, ang[1]);
+		WritePackFloat(pack, 2.0);
+		WritePackFloat(pack, 0.0);
+		WritePackFloat(pack, 1.0);
+
+		return;
+	}
+
+	if (gt >= nextProjectile)
+	{
+		int target = GetClosestTarget(skull, true, _, _, _, _, _, true);
+		if (IsValidEntity(target))
+		{
+			float pos[3], ang[3], otherPos[3];
+			GetEntPropVector(skull, Prop_Data, "m_vecAbsOrigin", pos);
+			WorldSpaceCenter(target, otherPos);
+
+			MakeVectorFromPoints(pos, otherPos, ang);
+			GetVectorAngles(ang, ang);
+
+			for (int i = 0; i < 3; i++)
+				ang[i] += GetRandomFloat(-Skull_MiniSpread[phase], Skull_MiniSpread[phase]);
+
+			int projectile = SSB_CreateProjectile(ssb, MODEL_HIDDEN_PROJECTILE, pos, ang, Skull_MiniVelocity[phase], 0.5, SSB_BlockExplosion);
+			if (IsValidEntity(projectile))
+			{
+				CreateTimer(Skull_MiniDuration[phase], Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
+
+				SSB_AttachParticle(projectile, PARTICLE_SKULL_MINI, _, "");
+
+				Initiate_HomingProjectile(projectile, ssb.index, Skull_MiniHomingAngle[phase], Skull_MiniHomingPerSecond[phase], false, true, ang);
+
+				SDKHook(projectile, SDKHook_TouchPost, Skull_MiniTouch);
+
+				EmitSoundToAll(SND_SKULL_MINIFIRE, skull, _, _, _, _, GetRandomInt(80, 120));
+
+				f_BarrageProjectileDMG[projectile] = Skull_MiniDMG[phase];
+			}
+
+			nextProjectile = gt + Skull_MiniRate[phase];
+		}
+	}
+
+	pack = new DataPack();
+	RequestFrame(Skull_Logic, pack);
+	WritePackCell(pack, EntIndexToEntRef(skull));
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, nextProjectile);
+	WritePackFloat(pack, endTime);
+}
+
+public void Skull_SelfDestructSequence(DataPack pack)
+{
+	ResetPack(pack);
+
+	int skull = EntRefToEntIndex(ReadPackCell(pack));
+	int owner = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float endTime = ReadPackFloat(pack);
+	float yaw = ReadPackFloat(pack);
+	float acceleration = ReadPackFloat(pack);
+	float nextlaugh = ReadPackFloat(pack);
+	float laughdelay = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(skull) || !IsValidEntity(owner))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(owner);
+	float gt = GetGameTime();
+
+	if (gt >= endTime)
+	{
+		Skull_Collide(skull);
+		return;
+	}
+
+	if (gt >= nextlaugh)
+	{
+		int pitch = GetRandomInt(90, 110);
+		EmitSoundToAll(Skull_LaughSFX[GetRandomInt(0, sizeof(Skull_LaughSFX) - 1)], skull, _, 120, _, _, pitch);
+		EmitSoundToAll(Skull_LaughSFX[GetRandomInt(0, sizeof(Skull_LaughSFX) - 1)], skull, _, 120, _, _, pitch);
+
+		float pos[3];
+		GetEntPropVector(skull, Prop_Data, "m_vecAbsOrigin", pos);
+
+		int alpha = 255;
+		float remainingTime = (endTime - gt);
+		alpha -= RoundToCeil(255.0 * (remainingTime / Skull_SelfDestructDelay[phase]));
+		spawnRing_Vectors(pos, Skull_Radius[phase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 120, 0, alpha, 0, 0.2, 6.0, 2.0, 0, 0.0);
+
+		laughdelay *= 0.66;
+		nextlaugh = gt + laughdelay;
+	}
+	
+	float ang[3];
+	ang[1] = yaw;
+	TeleportEntity(skull, _, ang);
+
+	pack = new DataPack();
+	RequestFrame(Skull_SelfDestructSequence, pack);
+	WritePackCell(pack, EntIndexToEntRef(skull));
+	WritePackCell(pack, EntIndexToEntRef(owner));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, endTime);
+	WritePackFloat(pack, yaw + acceleration);
+	WritePackFloat(pack, acceleration * 1.04);
+	WritePackFloat(pack, nextlaugh);
+	WritePackFloat(pack, laughdelay);
+}
+
+public Action Skull_MiniTouch(int entity, int other)
+{
+	float pos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+
+	ParticleEffectAt(pos, PARTICLE_BARRAGE_HIT);
+	EmitSoundToAll(SND_BARRAGE_HIT, entity, _, _, _, _, GetRandomInt(80, 110));
+
+	if (IsValidEnemy(entity, other))
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		SDKHooks_TakeDamage(other, entity, owner, f_BarrageProjectileDMG[entity], DMG_CLUB, _, _, pos);
+	}
+
+	RemoveEntity(entity);
+	return Plugin_Continue;
+}
+
+public MRESReturn Skull_Collide(int entity)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+
+	ParticleEffectAt(position, PARTICLE_MEGASKULLBLAST, 1.0);
+	EmitSoundToAll(SND_MEGASKULLBLAST, entity, _, 120);
+	EmitSoundToAll(SND_MEGASKULLBLAST, entity, _, 120);
+
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	if(IsValidEntity(owner))
+	{
+		bool isBlue = GetEntProp(owner, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(Skull_DMG[SSB_WavePhase], owner, entity, 0, position, Skull_Radius[SSB_WavePhase], Skull_Falloff_MultiHit[SSB_WavePhase],
+		Skull_Falloff_Radius[SSB_WavePhase], isBlue, 9999, true, Skull_EntityMult[SSB_WavePhase]);
+	}
+
+	RemoveEntity(entity);
+	return MRES_Supercede;
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
