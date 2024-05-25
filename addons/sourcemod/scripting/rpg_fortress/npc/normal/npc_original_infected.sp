@@ -454,6 +454,11 @@ public void OriginalInfected_ClotThink(int iNPC)
 					//pull stops right before damage happens
 					//enemy has high res while doing it.
 
+					npc.AddActivityViaSequence("shootflare");
+					//npc.AddGesture("ACT_MP_RUN_MELEE");
+					npc.SetPlaybackRate(0.35);	
+					npc.m_iChanged_WalkCycle = 1;
+
 					npc.m_flNextRangedAttackHappening = gameTime + 1.5;
 
 					npc.m_flDoingAnimation = gameTime + 2.0;
