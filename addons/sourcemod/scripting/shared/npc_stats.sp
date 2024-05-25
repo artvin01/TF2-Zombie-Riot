@@ -9967,9 +9967,9 @@ void IsEntityInvincible_ShieldRemove(int entity)
 
 void MakeObjectIntangeable(int entity)
 {
-	SetEntityCollisionGroup(entity, 1); //Dont Touch Anything.
+	SetEntityCollisionGroup(entity, 0); //Dont Touch Anything.
 	SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
-	SetEntProp(entity, Prop_Data, "m_nSolidType", 6);
+	SetEntProp(entity, Prop_Data, "m_nSolidType", 0);
 }
 
 

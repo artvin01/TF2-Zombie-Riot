@@ -314,7 +314,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 		//dont suck them in if its the final bit
 		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-			Bing_BangVisualiser(npc.index, 150.0, 35.0, 350.0);
+			Bing_BangVisualiser(npc.index, 150.0, 70.0, 350.0);
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
@@ -502,6 +502,8 @@ public void OriginalInfected_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 }

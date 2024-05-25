@@ -161,7 +161,7 @@ public void PlayerAnimatorNPC_ClotThink(int iNPC)
 						npc.m_iChanged_WalkCycle = 1;
 					}
 
-					Bing_BangVisualiser(npc.index, 150.0, 35.0, 350.0);
+					Bing_BangVisualiser(npc.index, 150.0, 70.0, 350.0);
 				}
 				if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 				{
