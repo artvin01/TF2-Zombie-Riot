@@ -23,9 +23,10 @@ static const char g_HurtSound[][] = {
 };
 
 static const char g_IdleSound[][] = {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
+	"vo/npc/male01/strider_run.wav",
+	"vo/npc/male01/zombies01.wav",
+	"vo/npc/male01/zombies02.wav",
+	"vo/npc/male01/gethellout.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
