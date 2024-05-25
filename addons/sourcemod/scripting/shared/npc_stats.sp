@@ -2232,7 +2232,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
 	public void SetVelocity(const float vec[3])	
 	{
-		PrintToChatAll("Set Velocity");
+		ThrowError("SetVelocity Triggered");
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
 		locomotion.SetVelocity(vec);							  
