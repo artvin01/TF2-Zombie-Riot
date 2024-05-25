@@ -315,7 +315,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 		//dont suck them in if its the final bit
 		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-			Bing_BangVisualiser(npc.index, 150.0, 70.0, 350.0);
+			Bing_BangVisualiser(npc.index, 150.0, 140.0, 550.0);
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
