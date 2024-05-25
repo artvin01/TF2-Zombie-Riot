@@ -388,18 +388,18 @@ float Ring_SlowAmt[4] = { 0.5, 0.66, 0.75, 0.85 };		//Percentage to reduce the m
 //If the skull collides with something (or automatically after X seconds), it will trigger a huge explosion.
 float Skull_Velocity[4] = { 240.0, 240.0, 240.0, 240.0 };			//Velocity of the big skull.
 float Skull_DMG[4] = { 400.0, 800.0, 1600.0, 3200.0 };				//Base damage of the big skull.
-float Skull_Radius[4] = { 300.0, 350.0, 400.0, 500.0 };				//Explosion radius of the big skull.
+float Skull_Radius[4] = { 400.0, 450.0, 500.0, 500.0 };				//Explosion radius of the big skull.
 float Skull_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };				//Falloff-based radius of the big skull.
 float Skull_Falloff_MultiHit[4] = { 0.66, 0.75, 0.8, 0.85 };		//Amount to multiply the big skull's explosion damage for each target it hits.
 float Skull_EntityMult[4] = { 4.0, 8.0, 12.0, 16.0 };				//Amount to multiply the big skull's explosion damage against entities.
 float Skull_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };				//Duration until the big skull automatically detonates.
 float Skull_SelfDestructDelay[4] = { 3.0, 3.0, 3.0, 3.0 };			//When the big skull reaches the end of its duration: how long should it pause before exploding?
-float Skull_HomingAngle[4] = { 110.0, 115.0, 120.0, 125.0 };		//Big skull's maximum homing angle.
-float Skull_HomingPerSecond[4] = { 11.0, 12.0, 13.0, 14.0 };		//Number of times per second for thee big skull to readjust its velocity for the sake of homing in on its target.
+float Skull_HomingAngle[4] = { 60.0, 65.0, 70.0, 80.0 };		//Big skull's maximum homing angle.
+float Skull_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };		//Number of times per second for thee big skull to readjust its velocity for the sake of homing in on its target.
 float Skull_MiniRate[4] = { 0.33, 0.33, 0.25, 0.15 };				//Number of seconds between mini projectiles fired by the skull.
-float Skull_MiniVelocity[4] = { 800.0, 1000.0, 1200.0, 1400.0 };	//Velocity of the small projectiles fired by the big skull.
-float Skull_MiniDMG[4] = { 15.0, 20.0, 25.0, 30.0 };				//Damage dealt by the small projectiles.
-float Skull_MiniDuration[4] = {0.66, 0.63, 0.6, 0.5 };				//Lifespan of the small projectiles.
+float Skull_MiniVelocity[4] = { 600.0, 700.0, 800.0, 1000.0 };		//Velocity of the small projectiles fired by the big skull.
+float Skull_MiniDMG[4] = { 15.0, 17.5, 20.0, 22.5 };				//Damage dealt by the small projectiles.
+float Skull_MiniDuration[4] = {0.66, 0.66, 0.66, 0.66 };			//Lifespan of the small projectiles.
 float Skull_MiniHomingAngle[4] = { 60.0, 70.0, 80.0, 90.0 };		//Small projectile max homing angle.
 float Skull_MiniHomingPerSecond[4] = {6.0, 7.0, 8.0, 9.0 };			//Number of times per second for the small projectiles to readjust their velocity.
 float Skull_MiniSpread[4] = { 16.0, 16.0, 16.0, 16.0 };				//Degrees of random spread for the small projectiles when fired.
@@ -669,9 +669,8 @@ static void SSB_PrepareAbilities()
 	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
 
 	//Wave 15 (and before):
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 0, SpellCard_TheSkull));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -693,8 +692,8 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 2, SpellCard_RingOfTartarus));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 2, SpellCard_TheSkull));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
 }
 
 public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
