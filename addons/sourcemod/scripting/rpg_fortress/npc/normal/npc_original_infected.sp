@@ -628,7 +628,7 @@ void BingBangExplosion(int entity, float damage, float knockup, float Radius, fl
 	TE_SetupBeamPoints(partnerPos, partnerPos2, gLaser1, 0, 0, 0, 0.7, 80.0, 80.0, 0, 1.0, {90, 0, 90, 255}, 3);
 	TE_SendToAll();
 	//issue: we cannot use normal explosion logic, as this explosion goes in a cirlce straight up, so its way more vertical targetability.
-	partnerPos[2] -= 30.0;
+	partnerPos[2] -= 60.0;
 	//the attack goes down abit.
 	
 	for(int enemyidx = 1; enemyidx <= MaxClients; enemyidx++)
