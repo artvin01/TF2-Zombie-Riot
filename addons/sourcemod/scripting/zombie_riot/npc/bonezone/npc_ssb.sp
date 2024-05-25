@@ -10,9 +10,9 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define MODEL_SKULL						"models/props_mvm/mvm_human_skull_collide.mdl"
 #define MODEL_HIDDEN_PROJECTILE			"models/weapons/w_models/w_drg_ball.mdl"
 
-#define SND_SPAWN_ALERT		"misc/halloween/merasmus_appear.wav"
-#define SND_DESPAWN			"misc/halloween/merasmus_disappear.wav"
-#define SND_FIREBALL_CAST	")misc/halloween/spell_meteor_cast.wav"
+#define SND_SPAWN_ALERT			"misc/halloween/merasmus_appear.wav"
+#define SND_DESPAWN				"misc/halloween/merasmus_disappear.wav"
+#define SND_FIREBALL_CAST		")misc/halloween/spell_meteor_cast.wav"
 #define SND_FIREBALL_EXPLODE	")misc/halloween/spell_fireball_impact.wav"
 #define SND_HOMING_ACTIVATE		")misc/halloween/spell_mirv_cast.wav"
 #define SND_BARRAGE_HIT			")weapons/flare_detonator_explode_world.wav"
@@ -22,20 +22,26 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 310.0, 340.0, 370.0 };
 #define SND_PLAYER_PULLED		")misc/halloween/merasmus_stun.wav"
 #define SND_COSMIC_STRIKE		")misc/halloween/spell_spawn_boss.wav"
 #define SND_COSMIC_MARKED		")misc/halloween/hwn_bomb_flash.wav"
+#define SND_RING_MARKED			")misc/halloween/spell_teleport.wav"
+#define SND_TARTARUS_SLOW		"weapons/breadmonster/gloves/bm_gloves_on.wav"
+#define SND_TARTARUS_BEGIN		")misc/halloween/spell_skeleton_horde_rise.wav"
 
-#define PARTICLE_SSB_SPAWN	"doomsday_tentpole_vanish01"
-#define PARTICLE_OBJECTSPAWN_1	"merasmus_spawn_flash"
-#define PARTICLE_OBJECTSPAWN_2	"merasmus_spawn_flash2"
-#define PARTICLE_GREENBLAST_SSB		"merasmus_dazed_explosion"
-#define PARTICLE_EXPLOSION_FIREBALL_RED	"spell_fireball_tendril_parent_red"
+#define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
+#define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
+#define PARTICLE_OBJECTSPAWN_2				"merasmus_spawn_flash2"
+#define PARTICLE_GREENBLAST_SSB				"merasmus_dazed_explosion"
+#define PARTICLE_EXPLOSION_FIREBALL_RED		"spell_fireball_tendril_parent_red"
 #define PARTICLE_EXPLOSION_FIREBALL_BLUE	"spell_fireball_tendril_parent_blue"
-#define PARTICLE_FIREBALL_RED		"spell_fireball_small_red"
-#define PARTICLE_FIREBALL_BLUE		"spell_fireball_small_blue"
-#define PARTICLE_LASER_RED			"raygun_projectile_red"
-#define PARTICLE_LASER_BLUE			"raygun_projectile_blue"
+#define PARTICLE_FIREBALL_RED				"spell_fireball_small_red"
+#define PARTICLE_FIREBALL_BLUE				"spell_fireball_small_blue"
+#define PARTICLE_LASER_RED					"raygun_projectile_red"
+#define PARTICLE_LASER_BLUE					"raygun_projectile_blue"
 #define PARTICLE_LASER_RED_PREDICT			"raygun_projectile_red_crit"
 #define PARTICLE_LASER_BLUE_PREDICT			"raygun_projectile_blue_crit"
 #define PARTICLE_BARRAGE_HIT				"nutsnbolts_repair"
+#define PARTICLE_TARTARUS					"utaunt_hands_purple_parent"
+#define PARTICLE_TARTARUS_BEGIN				"skull_island_explosion"
+#define PARTICLE_SPAWNVFX_GREEN				"duck_collect_green"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -251,6 +257,9 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_PLAYER_PULLED);
 	PrecacheSound(SND_COSMIC_STRIKE);
 	PrecacheSound(SND_COSMIC_MARKED);
+	PrecacheSound(SND_RING_MARKED);
+	PrecacheSound(SND_TARTARUS_SLOW);
+	PrecacheSound(SND_TARTARUS_BEGIN);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -344,19 +353,20 @@ int SSB_Cosmic_NumTargets[4] = { 3, 6, 9, 12 };						//The maximum number of pla
 int SSB_Cosmic_NumStrikes[4] = { 5, 6, 7, 8 };						//The number of times to attempt to strike marked playes.
 float SSB_Cosmic_Delay[4] = { 2.0, 1.75, 1.5, 1.25 };				//Duration until the strikes land.
 float SSB_Cosmic_DMG[4] = { 150.0, 300.0, 600.0, 900.0 };			//Damage dealt by strikes.
-float SSB_Cosmic_Radius[4] = { 200.0, 240.0, 280.0, 320.0 };		//Damage radius.
+float SSB_Cosmic_Radius[4] = { 150.0, 180.0, 220.0, 260.0 };		//Damage radius.
 float SSB_Cosmic_Falloff_Radius[4] = { 0.25, 0.15, 0.05, 0.0 };		//Maximum falloff percentage, based on radius.
 float SSB_Cosmic_Falloff_MultiHit[4] = { 0.8, 0.85, 0.9, 0.95 };	//Amount to multiply damage dealt by the strikes per entity hit.
 float SSB_Cosmic_EntityMult[4] = { 4.0, 6.0, 8.0, 10.0 };			//Amount to multiply damage dealt to entities.
 
-//SPELL CARD #6 - RING OF TARTARUS: The locations of up to X player(s) are marked with a red ring. After Y second(s), these rings activate and will begin to slow down
-//and rapidly deal damage to any enemies within its radius.
+//SPELL CARD #6 - RING OF TARTARUS: The locations of up to X player(s) are marked with a purple ring. After Y second(s), these rings activate and will begin to slow down
+//and rapidly deal damage to any enemies within its radius. Victims must be on the ground.
 int Ring_NumTargets[4] = { 2, 4, 6, 8 };				//The maximum number of players to spawn rings on.
 float Ring_Delay[4] = { 4.0, 4.0, 4.0, 4.0 };			//Duration until the rings activate.
 float Ring_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };		//Ring lifespan.
-float Ring_DMG[4] = { 10.0, 15.0, 20.0, 25.0 };			//Ring damage per 0.1s.
-float Ring_Radius[4] = { 250.0, 300.0, 350.0, 400.0 };	//Ring radius.
-float Ring_SlowAmt[4] = { 0.25, 0.33, 0.5, 0.66 };		//Percentage to reduce the movement speed of any enemy within a ring.
+float Ring_DMG[4] = { 1.0, 2.0, 3.0, 5.0 };				//Ring damage per 0.1s.
+float Ring_Radius[4] = { 200.0, 250.0, 300.0, 350.0 };	//Ring radius.
+float Ring_Height[4] = { 40.0, 40.0, 40.0, 40.0 };		//Ring height.
+float Ring_SlowAmt[4] = { 0.5, 0.66, 0.75, 0.85 };		//Percentage to reduce the movement speed of any enemy within a ring.
 
 //SPELL CARD #7 - GAZE UPON THE SKULL: SSB launches one big but very slow skull, which homes in on the nearest enemy.
 //While active, the skull rapidly fires smaller, weaker homing projectiles in random directions.
@@ -462,7 +472,6 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //	- Finalize the VFX/SFX on the following abilities:
 //		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
 //		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
-//		- Necrotic Bombardment: Port the Necrotic Blast sound effect from BvB and use that for explosions.
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
@@ -637,9 +646,8 @@ static void SSB_PrepareAbilities()
 	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
 
 	//Wave 15 (and before):
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
-	//PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
-	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NECROTIC BOMBARDMENT", 1.0, 0, SpellCard_CosmicTerror));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
+	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -1326,7 +1334,7 @@ public void SpellCard_CosmicTerror(SupremeSpookmasterBones ssb, int target)
 	while (GetArraySize(Players) > 0 && remaining > 0)
 	{
 		int random = GetRandomInt(0, GetArraySize(Players) - 1);
-		int target = GetArrayCell(Players, random);
+		target = GetArrayCell(Players, random);
 		Cosmic_BeginStrike(ssb, target, SSB_Cosmic_NumStrikes[SSB_WavePhase], true);
 
 		RemoveFromArray(Players, random);
@@ -1340,7 +1348,9 @@ public void Cosmic_BeginStrike(SupremeSpookmasterBones ssb, int target, int rema
 {
 	float pos[3];
 	GetClientAbsOrigin(target, pos);
-	EmitSoundToAll(SND_COSMIC_MARKED, _, _, _, _, _, GetRandomInt(80, 110), _, pos);
+
+	int particle = ParticleEffectAt(pos, PARTICLE_SPAWNVFX_GREEN);
+	EmitSoundToAll(SND_COSMIC_MARKED, particle, _, _, _, _, GetRandomInt(80, 110));
 
 	if (first)
 	{
@@ -1349,8 +1359,8 @@ public void Cosmic_BeginStrike(SupremeSpookmasterBones ssb, int target, int rema
 		SpawnBeam_Vectors(UserLoc, pos, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 15.0);
 	}
 
-	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase], 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 6.0, 0.0, 0);
-	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase], 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 4.0, 0.0, 0, 0.0);
+	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 6.0, 0.0, 0);
+	spawnRing_Vectors(pos, SSB_Cosmic_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, SSB_Cosmic_Delay[SSB_WavePhase], 4.0, 0.0, 0, 0.0);
 
 	remainingStrikes--;
 
@@ -1381,7 +1391,7 @@ public Action Cosmic_StrikePlayer(Handle timer, DataPack pack)
 	skyPos = pos;
 	skyPos[2] += 9999.0;
 
-	ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 2.0);
+	int particle = ParticleEffectAt(pos, PARTICLE_GREENBLAST_SSB, 2.0);
 	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 0.0);
 	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 36.0, 36.0, _, 0.0);
 	SpawnBeam_Vectors(skyPos, pos, 0.33, 0, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 20.0);
@@ -1389,7 +1399,9 @@ public Action Cosmic_StrikePlayer(Handle timer, DataPack pack)
 	bool isBlue = GetEntProp(ent, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 	Explode_Logic_Custom(SSB_Cosmic_DMG[SSB_WavePhase], ent, ent, 0, pos, SSB_Cosmic_Radius[SSB_WavePhase], SSB_Cosmic_Falloff_MultiHit[SSB_WavePhase], SSB_Cosmic_Falloff_Radius[SSB_WavePhase], isBlue, _, _, SSB_Cosmic_EntityMult[SSB_WavePhase]);
 
-	EmitSoundToAll(SND_COSMIC_STRIKE, _, _, _, _, _, GetRandomInt(80, 110), _, pos);
+	int pitch = GetRandomInt(80, 110);
+	EmitSoundToAll(SND_COSMIC_STRIKE, particle, _, _, _, _, pitch);
+	EmitSoundToAll(SND_COSMIC_STRIKE, particle, _, _, _, _, pitch);
 
 	if (!IsClientInGame(target) || dieingstate[target] != 0 || TeutonType[target] != 0 || remaining < 1)
 		return Plugin_Continue;
@@ -1399,9 +1411,239 @@ public Action Cosmic_StrikePlayer(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+#define RING_MAX 	255
+
+int Tartarus_Ring_Owner[RING_MAX] = { -1, ... };
+
+float Tartarus_Ring_Radius[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_DMG[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_Height[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_SlowAmt[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_EndTime[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_NextVFX[RING_MAX] = { 0.0, ... };
+float Tartarus_Ring_Origin[RING_MAX][3];
+
+bool Tartarus_Ring_SlotUsed[RING_MAX] = { false, ... };
+
+methodmap Tartarus_Ring __nullable__
+{
+	public Tartarus_Ring(float pos[3], int phase, SupremeSpookmasterBones owner)
+	{
+		int index = 0;
+		while (Tartarus_Ring_SlotUsed[index] && index < RING_MAX)
+			index++;
+
+		if (index >= RING_MAX)
+			LogError("ERROR: More than %i Rings of Tartarus cannot exist at once.", RING_MAX);
+		
+		Tartarus_Ring_SlotUsed[index] = true;
+
+		spawnRing_Vectors(pos, Ring_Radius[phase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 85, 0, 255, 120, 0, Ring_Delay[phase] + 0.1, 6.0, 0.0, 0);
+		spawnRing_Vectors(pos, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 85, 0, 255, 255, 0, Ring_Delay[phase] + 0.1, 4.0, 0.0, 0, Ring_Radius[phase] * 2.0);
+
+		return view_as<Tartarus_Ring>(index);
+	}
+
+	public void Activate() { CreateTimer(Ring_Delay[SSB_WavePhase], Ring_Activate, this, TIMER_FLAG_NO_MAPCHANGE); }
+
+	public void Stop() { Tartarus_Ring_SlotUsed[this.Index] = false; this.Owner = -1; }
+
+	public void SetOrigin(float pos[3])
+	{
+		Tartarus_Ring_Origin[this.Index] = pos;
+	}
+
+	public void GetOrigin(float output[3])
+	{
+		output = Tartarus_Ring_Origin[this.Index];
+	}
+
+	property int Index
+	{ 
+		public get() { return view_as<int>(this); }
+	}
+
+	property int Owner
+	{
+		public get() { return EntRefToEntIndex(Tartarus_Ring_Owner[this.Index]); }
+		public set(int value)
+		{
+			if (IsValidEntity(value))
+				Tartarus_Ring_Owner[this.Index] = EntIndexToEntRef(value); 
+			else
+				Tartarus_Ring_Owner[this.Index] = value;
+		}
+	}
+
+	property float Radius
+	{
+		public get() { return Tartarus_Ring_Radius[this.Index]; }
+		public set(float value) { Tartarus_Ring_Radius[this.Index] = value; }
+	}
+
+	property float Damage
+	{
+		public get() { return Tartarus_Ring_DMG[this.Index]; }
+		public set(float value) { Tartarus_Ring_DMG[this.Index] = value; }
+	}
+
+	property float Height
+	{
+		public get() { return Tartarus_Ring_Height[this.Index]; }
+		public set(float value) { Tartarus_Ring_Height[this.Index] = value; }
+	}
+
+	property float SlowAmt
+	{
+		public get() { return Tartarus_Ring_SlowAmt[this.Index]; }
+		public set(float value) { Tartarus_Ring_SlowAmt[this.Index] = value; }
+	}
+
+	property float EndTime
+	{
+		public get() { return Tartarus_Ring_EndTime[this.Index]; }
+		public set(float value) { Tartarus_Ring_EndTime[this.Index] = value; }
+	}
+
+	property float NextVFX
+	{
+		public get() { return Tartarus_Ring_NextVFX[this.Index]; }
+		public set(float value) { Tartarus_Ring_NextVFX[this.Index] = value; }
+	}
+}
+
 public void SpellCard_RingOfTartarus(SupremeSpookmasterBones ssb, int target)
 {
+	ArrayList Players = new ArrayList(255);
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && dieingstate[i] == 0 && TeutonType[i] == 0)
+			PushArrayCell(Players, i);
+	}
 
+	int remaining = Ring_NumTargets[SSB_WavePhase];
+	while (GetArraySize(Players) > 0 && remaining > 0)
+	{
+		int random = GetRandomInt(0, GetArraySize(Players) - 1);
+		target = GetArrayCell(Players, random);
+
+		float pos[3], UserLoc[3];
+		GetClientAbsOrigin(target, pos);
+		WorldSpaceCenter(ssb.index, UserLoc);
+
+		if (GetEntityFlags(target) & FL_ONGROUND == 0)
+			pos[2] -= SSB_GetDistanceToGround(pos);
+
+		EmitSoundToAll(SND_RING_MARKED, _, _, _, _, _, GetRandomInt(80, 110), _, pos);
+
+		SpawnBeam_Vectors(UserLoc, pos, 0.33, 85, 0, 255, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 15.0);
+		
+		Ring_CreateRing(pos, SSB_WavePhase, ssb);
+
+		RemoveFromArray(Players, random);
+		remaining--;
+	}
+
+	delete Players;
+}
+
+public void Ring_CreateRing(float pos[3], int phase, SupremeSpookmasterBones ssb)
+{
+	Tartarus_Ring ring = new Tartarus_Ring(pos, SSB_WavePhase, ssb);
+
+	ring.Owner = ssb.index;
+	ring.Radius = Ring_Radius[phase];
+	ring.Damage = Ring_DMG[phase];
+	ring.Height = Ring_Height[phase];
+	ring.SlowAmt = Ring_SlowAmt[phase];
+	ring.EndTime = GetGameTime() + Ring_Duration[phase] + Ring_Delay[phase];
+	ring.SetOrigin(pos);
+
+	ring.Activate();
+}
+
+public Action Ring_Activate(Handle timer, Tartarus_Ring ring)
+{
+	if (!IsValidEntity(ring.Owner))
+	{
+		ring.Stop();
+		return Plugin_Continue;
+	}
+
+	float pos[3];
+	ring.GetOrigin(pos);
+	CreateTimer(0.1, Ring_Logic, ring, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	int particle = ParticleEffectAt(pos, PARTICLE_TARTARUS_BEGIN);
+	EmitSoundToAll(SND_TARTARUS_BEGIN, particle);
+	EmitSoundToAll(SND_TARTARUS_BEGIN, particle);
+	EmitSoundToAll(SND_TARTARUS_BEGIN, particle);
+
+	return Plugin_Continue;
+}
+
+public Action Ring_Logic(Handle timer, Tartarus_Ring ring)
+{
+	float gt = GetGameTime();
+	if (!IsValidEntity(ring.Owner) || gt >= ring.EndTime)
+	{
+		ring.Stop();
+		return Plugin_Stop;
+	}
+
+	float pos[3];
+	ring.GetOrigin(pos);
+
+	//Uncomment this and delete the for loop inside of (if gt >= ring.NextVFX) if the hand particles cause problems that can't be solved by reducing the number of them that spawn
+	//spawnRing_Vectors(pos, ring.Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 105, 0, 255, 255, 0, 0.1, 6.0, 4.0, 0);
+	if (gt >= ring.NextVFX)
+	{
+		spawnRing_Vectors(pos, ring.Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 105, 0, 255, 255, 0, 0.4, 3.0, 2.0, 0, 0.0);
+
+		for (int i = 0; i < GetRandomInt(8, 16); i++)
+		{
+			float randPos[3];
+			randPos = pos;
+			randPos[0] += GetRandomFloat(-ring.Radius, ring.Radius);
+			randPos[1] += GetRandomFloat(-ring.Radius, ring.Radius);
+
+			ParticleEffectAt(randPos, PARTICLE_TARTARUS, 0.8);
+		}
+
+		ring.NextVFX = gt + 0.8;
+	}
+
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && dieingstate[i] == 0 && TeutonType[i] == 0)
+		{
+			if (GetEntityFlags(i) & FL_ONGROUND == 0)
+				continue;
+
+			float vicLoc[3];
+			GetClientAbsOrigin(i, vicLoc);
+			float ZOff = vicLoc[2];
+			vicLoc[2] = 0.0;
+
+			if (GetVectorDistance(pos, vicLoc) <= ring.Radius && GetDifference(ZOff, pos[2]) <= ring.Height)
+			{
+				if (!TF2_IsPlayerInCondition(i, TFCond_Dazed))
+					TF2_StunPlayer(i, 0.5, ring.SlowAmt, TF_STUNFLAG_SLOWDOWN);
+
+				SDKHooks_TakeDamage(i, ring.Owner, ring.Owner, ring.Damage, DMG_CLUB, _, _, pos);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+public float GetDifference(float a, float b)
+{
+	float diff = a - b;
+	if (diff < 0.0)
+		diff *= -1.0;
+
+	return diff;
 }
 
 public void SpellCard_TheSkull(SupremeSpookmasterBones ssb, int target)
@@ -2058,4 +2300,18 @@ stock void PredictSubjectPositionForProjectiles_NoNPCNeeded(float startPos[3], i
 	}
 	*/
 	//replace this with a trace.
+}
+
+public float SSB_GetDistanceToGround(float pos[3])
+{
+	float angles[3], otherLoc[3];
+	angles[0] = 90.0;
+	angles[1] = 0.0;
+	angles[2] = 0.0;
+	
+	Handle trace = TR_TraceRayFilterEx(pos, angles, MASK_SHOT, RayType_Infinite, Priest_OnlyHitWorld);
+	TR_GetEndPosition(otherLoc, trace);
+	delete trace;
+	
+	return GetVectorDistance(pos, otherLoc);
 }
