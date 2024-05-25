@@ -591,7 +591,7 @@ void Bing_BangVisualiser(int entity, float range = 250.0, float Suckpower = 0.0,
 				velocity[2] += SubjectAbsVelocity[2];
 								
 				// apply velocity
-				CClotBody npc = view_as<CClotBody>(entity);
+				CClotBody npc = view_as<CClotBody>(enemyidx);
 				npc.Jump();
 				npc.SetVelocity(velocity);    
 			}
