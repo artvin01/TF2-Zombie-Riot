@@ -240,6 +240,44 @@ static char g_SSBLossEasterEgg_Captions[][] = {
     "{red}Who the FUCK do you think you are? Coming here and shitting in MY mailbox, playing MY God damn video games? You're gonna learn about colors, you dumb FORESKIN.{default}"
 };
 
+/*static char g_SSBSupremeSlayerIntro_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: ...",
+	"......",
+	"..........",
+	"{unusual}Get ready to receive some unholy spirit.{default}"
+};*/
+
+static char g_SSBFinaleIntro_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: Well, I'd be lying if I said this hasn't been a fun time.",
+	"I'd also be lying if I said you've all done anything less than a {unusual}superb{default} job making it this far. {green}Good job!{default}",
+	"Honestly, I thought you'd all have been long dead by now.",
+	"I mean, I am quite literally the {red}God of the Dead{default}, I'm kind of an expert when it comes to people dying.",
+	"So yeah, congrats on defying my expectations!",
+	"You just seem to be forgetting one tiny thing...",
+	"...",
+	"{crimson}You can't outrun the devil.",
+	"{darkgrey}Now Playing: {community}King Stephen {default}| {lightgreen}You Can't Outrun the Devil"
+};
+
+static char g_SSBVictorySpeech_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {red}ALRIGHT, ALRIGHT, I GET IT! CHILL OUT!{default}",
+	"Do you have any idea how much {red}work{default} this whole zombie apocalypse thing has given me?",
+	//"I don't just sit down there in the underworld and boss people around all day, you know.",
+	"Every time someone dies, they show up down in my realm and join a nice, orderly queue.",
+	"When they get to the front of that queue, I have to {yellow}judge them personally{default}. That means I have to read their entire life story. {red}It's a lot of paperwork!{default}",
+	//"Dealing with just one of you {olive}mortals{default}can take up to an hour, sometimes even longer!",
+	"Do you have {crimson}ANY IDEA{default} how much overtime I have to clock in for you people every time there's a {orange}war{default}, or an {red}apocalyptic event{default} like this?",
+	"I haven't had so much as a {orange}single minute{default} of free time since those {red}bastard cat people{default} let their silly little infection breach containment.",
+	"So I thought, {haunted}''hey! If there are no more mortals, there won't be any mortals that I need to judge!''{default} Brilliant idea, right? At least, I thought so.",
+	"...But fine, I'll admit it: Maybe trying to {red}wipe out all of humanity{default} wasn't the {yellow}best{default} way to get some relief from my day job.",
+	//"You people seem {green}more than capable{default}. I guess I'll just go back to my office and let you all put a stop to this zombie ordeal on your own.",
+	"...",
+	"Right, I guess you're probably {yellow}expecting something{default} for all of that. And I suppose I probably should give you something for the trouble I caused...",
+	"{green}Here. {default}Call this number if you ever need help, and I'll {teal}send up some of my guys to help.{default}",
+	"You'd better put a stop to this infection, though. After all, if I see you in my queue before this zombie apocalypse is over...",
+	"{crimson}You won't like your judgment."
+};
+
 public void SupremeSpookmasterBones_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
