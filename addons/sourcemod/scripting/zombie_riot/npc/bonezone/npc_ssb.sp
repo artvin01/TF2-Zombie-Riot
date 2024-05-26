@@ -30,6 +30,9 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 290.0, 300.0, 320.0 };
 #define SND_SKULL_SDBEEP		")misc/halloween/spelltick_01.wav"
 #define SND_SKULL_PORTAL		")misc/halloween/spell_teleport.wav"
 #define SND_SKULL_SPAWN			")misc/halloween/spell_meteor_cast.wav"
+#define SND_NECROBLAST_EXTRA_1	")misc/halloween/spell_spawn_boss.wav"
+#define SND_NECROBLAST_EXTRA_2	")items/halloween/crazy02.wav"
+#define SND_NECROBLAST_EXTRA_3	")items/cart_explode.wav"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -169,9 +172,9 @@ static char g_SSBKill_Captions[][] = {
 };
 
 static char g_SSBNecroBlast_Sounds[][] = {
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_1.mp3",
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_2.mp3",
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_3.mp3"
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_3.mp3"
 };
 
 static char g_SSBNecroBlast_Captions[][] = {
@@ -181,9 +184,9 @@ static char g_SSBNecroBlast_Captions[][] = {
 };
 
 static char g_SSBNecroBlastWarning_Sounds[][] = {
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_1.mp3",
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_2.mp3",
-	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroblast_prepare_3.mp3"
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_prepare_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_prepare_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_prepare_3.mp3"
 };
 
 static char g_SSBNecroBlastWarning_Captions[][] = {
@@ -250,7 +253,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBHellIsHere_Sounds));   i++) { PrecacheSound(g_SSBHellIsHere_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBIntro_Sounds));   i++) { PrecacheSound(g_SSBIntro_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBKill_Sounds));   i++) { PrecacheSound(g_SSBKill_Sounds[i]);   }
-	for (int i = 0; i < (sizeof(g_SSBNecroBlast_Sounds));   i++) { PrecacheSound(g_SSBBigHit_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBNecroBlast_Sounds));   i++) { PrecacheSound(g_SSBNecroBlast_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBNecroBlastWarning_Sounds));   i++) { PrecacheSound(g_SSBNecroBlastWarning_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBSpin2Win_Sounds));   i++) { PrecacheSound(g_SSBSpin2Win_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBSummonIntro_Sounds));   i++) { PrecacheSound(g_SSBSummonIntro_Sounds[i]);   }
@@ -281,6 +284,9 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_SKULL_SDBEEP);
 	PrecacheSound(SND_SKULL_PORTAL);
 	PrecacheSound(SND_SKULL_SPAWN);
+	PrecacheSound(SND_NECROBLAST_EXTRA_1);
+	PrecacheSound(SND_NECROBLAST_EXTRA_2);
+	PrecacheSound(SND_NECROBLAST_EXTRA_3);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -420,13 +426,16 @@ int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to defa
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
+//float SSB_SpecialCDMin[4] = { 0.0, 0.0, 0.0, 0.0 };	//The minimum cooldown between specials.
+//float SSB_SpecialCDMax[4] = { 0.0, 0.0, 0.0, 0.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
-float Necrotic_Delay[4] = { 4.0, 3.5, 3.0, 2.5 };			//Time until the laser is fired after SSB enters his stance.
-float Necrotic_DMG[4] = { 800.0, 2000.0, 5000.0, 12500.0 };	//Damage dealt by the laser.
-float Necrotic_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };	//Amount to multiply damage dealt by the laser to entities.
-float Necrotic_Width[4] = { 300.0, 350.0, 400.0, 450.0 };	//Laser width, in hammer units.
+float Necrotic_Delay[4] = { 1.5, 1.35, 1.2, 1.15 };				//Time until the laser is fired after SSB enters his stance. Note that 1.16 is ALWAYS added to this for the intro sequence.
+float Necrotic_DMG[4] = { 800.0, 2000.0, 5000.0, 12500.0 };		//Damage dealt by the laser.
+float Necrotic_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };		//Amount to multiply damage dealt by the laser to entities.
+float Necrotic_Width[4] = { 400.0, 475.0, 550.0, 625.0 };		//Laser width, in hammer units.
+float Necrotic_SelfKB[4] = { 800.0, 1200.0, 1600.0, 2000.0 };	//Amount of knockback taken by SSB when the laser is fired.
 
 //SPOOKY SPECIAL #2 - MASTER OF THE DAMNED: SSB takes an immobile stance where he rapidly summons skeletal minions to fight for him. These minions are summoned by telegraphed
 //green thunderbolts which deal damage in the area around the minion's spawn point.
@@ -503,6 +512,7 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //		- WITNESS THE SKULL: The skull needs an ambient looping sound, also a custom cast sound (something like ssb_witnesstheskull) since it's the strongest Spell Card.
+//		- Necrotic Blast: Give the charging phase some sort of intense background noise to indicate via audio that he's charging up something enormous.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -678,6 +688,7 @@ static void SSB_PrepareAbilities()
 	//Wave 15 (and before):
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC BLAST", 1.0, 0, Special_NecroticBlast, _, false));
 
 	//Wave 30:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
@@ -694,13 +705,66 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.33, 1, SpellCard_RingOfTartarus));
 
 	//Wave 60+:
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	/*PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));*/
+}
+
+/*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
+{
+	//Hypothetical Spell Card code goes here.
+}
+
+void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
+{
+	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
+}*/
+
+static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, bool IsSpellCard = true, bool SkipSpellCardAnnouncement = false, float ExtraCD = 0.0)
+{
+	SSB_Ability Spell = new SSB_Ability();
+
+	Spell.Chance = Chance;
+	Spell.MaxUses = MaxUses;
+	Spell.ActivationFunction = ActivationFunction;
+	Spell.FilterFunction = FilterFunction;
+	Spell.SetName(name);
+	Spell.IsCard = IsSpellCard;
+	Spell.SkipCardSound = SkipSpellCardAnnouncement;
+	Spell.ExtraCD = ExtraCD;
+
+	return Spell;
+}
+
+public void SSB_DeleteAbilities()
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (SSB_SpellCards[i] != null)
+		{
+			for (int spell = 0; spell < GetArraySize(SSB_SpellCards[i]); spell++)
+			{
+				SSB_Ability ability = GetArrayCell(SSB_SpellCards[i], spell);
+				ability.Delete();
+			}
+		}
+
+		if (SSB_Specials[i] != null)
+		{
+			for (int special = 0; special < GetArraySize(SSB_Specials[i]); special++)
+			{
+				SSB_Ability ability = GetArrayCell(SSB_Specials[i], special);
+				ability.Delete();
+			}
+		}
+
+		delete SSB_SpellCards[i];
+		delete SSB_Specials[i];
+	}
 }
 
 public void SpellCard_NightmareVolley(SupremeSpookmasterBones ssb, int target)
@@ -1892,7 +1956,6 @@ public void Skull_SelfDestructSequence(DataPack pack)
 	if (!IsValidEntity(skull) || !IsValidEntity(owner))
 		return;
 
-	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(owner);
 	float gt = GetGameTime();
 
 	if (gt >= endTime)
@@ -1978,57 +2041,283 @@ public MRESReturn Skull_Collide(int entity)
 	return MRES_Supercede;
 }
 
-/*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
+public void Special_NecroticBlast(SupremeSpookmasterBones ssb, int target)
 {
-	//Hypothetical Spell Card code goes here.
+	float pos[3];
+	WorldSpaceCenter(target, pos);
+	ssb.FaceTowards(pos, 15000.0);
+
+	ssb.UsingAbility = true;
+	ssb.Pause();
+	ssb.PlayNecroBlastWarning();
+
+	int iActivity = ssb.LookupActivity("ACT_NULL_POINTER_INTRO");
+	if(iActivity > 0) ssb.StartActivity(iActivity);
+
+	float begin = GetGameTime(ssb.index) + 1.16;
+
+	DataPack pack = new DataPack();
+	RequestFrame(NecroBlast_WaitForCharge, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, SSB_WavePhase);
+	WritePackFloat(pack, begin);
+
+	DataPack pack2 = new DataPack();
+	RequestFrame(NecroBlast_ChargeVFX, pack2);
+	WritePackCell(pack2, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack2, SSB_WavePhase);
+	WritePackFloat(pack2, GetGameTime(ssb.index) + Necrotic_Delay[SSB_WavePhase] + 1.16);
+	WritePackFloat(pack2, GetGameTime(ssb.index));
+	WritePackFloat(pack2, 0.0);
+	WritePackFloat(pack2, 0.0);
 }
 
-void SpellCard_Filter(SupremeSpookmasterBones ssb, int target)
+public void NecroBlast_ChargeVFX(DataPack pack)
 {
-	//Hypothetical filter code goes here. Return true to allow activation, false otherwise.
-}*/
+	ResetPack(pack);
 
-static SSB_Ability SSB_CreateAbility(const char[] name, float Chance, int MaxUses, Function ActivationFunction, Function FilterFunction = INVALID_FUNCTION, bool IsSpellCard = true, bool SkipSpellCardAnnouncement = false, float ExtraCD = 0.0)
-{
-	SSB_Ability Spell = new SSB_Ability();
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float end = ReadPackFloat(pack);
+	float start = ReadPackFloat(pack);
+	float spin = ReadPackFloat(pack);
+	float next = ReadPackFloat(pack);
 
-	Spell.Chance = Chance;
-	Spell.MaxUses = MaxUses;
-	Spell.ActivationFunction = ActivationFunction;
-	Spell.FilterFunction = FilterFunction;
-	Spell.SetName(name);
-	Spell.IsCard = IsSpellCard;
-	Spell.SkipCardSound = SkipSpellCardAnnouncement;
-	Spell.ExtraCD = ExtraCD;
+	delete pack;
 
-	return Spell;
-}
+	if (!IsValidEntity(user))
+		return;
 
-public void SSB_DeleteAbilities()
-{
-	for (int i = 0; i < 4; i++)
+	float gt = GetGameTime(user);
+	if (gt >= end)
+		return;
+
+	if (gt >= next)
 	{
-		if (SSB_SpellCards[i] != null)
+		float remaining = end - GetGameTime(user);
+		float total = end - start;
+		float ratio = remaining / total;
+
+		int alpha = 255 - RoundToCeil(255.0 * ratio);
+		
+		float pos[3], ang[3];
+		WorldSpaceCenter(user, pos);
+		GetEntPropVector(user, Prop_Data, "m_angRotation", ang);
+		ang[0] = 0.0;
+		ang[2] = 0.0;
+
+		for (float i = 0.0; i < 360.0; i += 45.0)
 		{
-			for (int spell = 0; spell < GetArraySize(SSB_SpellCards[i]); spell++)
-			{
-				SSB_Ability ability = GetArrayCell(SSB_SpellCards[i], spell);
-				ability.Delete();
-			}
+			float spawnAng[3], startPos[3], endPos[3], Direction[3];
+			spawnAng[0] = i + spin;
+			spawnAng[1] = ang[1] + 90.0;
+			spawnAng[2] = ang[2];
+
+			GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, Necrotic_Width[phase] * 0.5);
+			AddVectors(pos, Direction, startPos);
+
+			GetAngleVectors(ang, Direction, NULL_VECTOR, NULL_VECTOR);
+			ScaleVector(Direction, 9999.0);
+			AddVectors(startPos, Direction, endPos);
+
+			SpawnBeam_Vectors(pos, startPos, 0.1, 0, 255, 120, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
+			SpawnBeam_Vectors(startPos, endPos, 0.1, 0, 255, 120, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
 		}
 
-		if (SSB_Specials[i] != null)
-		{
-			for (int special = 0; special < GetArraySize(SSB_Specials[i]); special++)
-			{
-				SSB_Ability ability = GetArrayCell(SSB_Specials[i], special);
-				ability.Delete();
-			}
-		}
-
-		delete SSB_SpellCards[i];
-		delete SSB_Specials[i];
+		next = gt + 0.0;
 	}
+
+	pack = new DataPack();
+	RequestFrame(NecroBlast_ChargeVFX, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, end);
+	WritePackFloat(pack, start);
+	WritePackFloat(pack, spin + 16.0);
+	WritePackFloat(pack, next);
+}
+
+public void NecroBlast_WaitForCharge(DataPack pack)
+{
+	ResetPack(pack);
+
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float begin = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	if (GetGameTime(user) >= begin)
+	{
+		SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+
+		if (Necrotic_Delay[phase] <= 0.0)
+		{
+			delete pack;
+			NecroBlast_Fire(ssb, phase);
+		}
+		else
+		{
+			int iActivity = ssb.LookupActivity("ACT_NULL_POINTER_CHARGE");
+			if(iActivity > 0) ssb.StartActivity(iActivity);
+
+			ssb.SetPlaybackRate((32.0 / 24.0) / Necrotic_Delay[phase]);
+
+			pack = new DataPack();
+			RequestFrame(NecroBlast_ChargeUp, pack);
+			WritePackCell(pack, EntIndexToEntRef(ssb.index));
+			WritePackCell(pack, phase);
+			WritePackFloat(pack, GetGameTime(ssb.index) + Necrotic_Delay[phase]);
+		}
+
+		return;
+	}
+
+	RequestFrame(NecroBlast_WaitForCharge, pack);
+}
+
+public void NecroBlast_ChargeUp(DataPack pack)
+{
+	ResetPack(pack);
+
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float fire = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+	if (GetGameTime(user) >= fire)
+	{
+		NecroBlast_Fire(ssb, phase);
+		delete pack;
+		return;
+	}
+
+	RequestFrame(NecroBlast_ChargeUp, pack);
+}
+
+public void NecroBlast_Fire(SupremeSpookmasterBones ssb, int phase)
+{
+	ssb.SetPlaybackRate(1.0);
+	ssb.PlayNecroBlast();
+
+	float ang[3], pos[3], hullMin[3], hullMax[3], testAng[3], shootPos[3], Direction[3];
+	GetEntPropVector(ssb.index, Prop_Data, "m_angRotation", ang);
+	WorldSpaceCenter(ssb.index, pos);
+	testAng[1] = ang[1];
+
+	hullMin[0] = -Necrotic_Width[phase] * 0.475;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+
+	//We move the hitbox slightly forward so that it doesn't damage people who are standing next to SSB but outside of the laser.
+	GetAngleVectors(testAng, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Necrotic_Width[phase] * 0.5);
+	AddVectors(pos, Direction, pos);
+
+	GetPointFromAngles(pos, testAng, 9999.0, shootPos, Priest_IgnoreAll, MASK_SHOT);
+
+	TR_TraceHullFilter(pos, shootPos, hullMin, hullMax, 1073741824, SSB_LaserTrace, ssb.index);
+			
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (SSB_LaserHit[victim])
+		{
+			SSB_LaserHit[victim] = false;
+					
+			if (IsValidEnemy(ssb.index, victim))
+			{
+				float damage = Necrotic_DMG[SSB_WavePhase];
+					
+				if (ShouldNpcDealBonusDamage(victim))
+				{
+					damage *= Necrotic_EntityMult[SSB_WavePhase];
+				}
+						
+				float vicLoc[3];
+				WorldSpaceCenter(victim, vicLoc);
+				SDKHooks_TakeDamage(victim, ssb.index, ssb.index, damage, DMG_CLUB|DMG_BLAST|DMG_ALWAYSGIB, _, NULL_VECTOR, vicLoc);
+			}
+		}
+	}
+
+	for (float i = 0.0; i < 360.0; i += 22.5)
+	{
+		float spawnAng[3], startPos[3], endPos[3];
+		spawnAng[0] = i;
+		spawnAng[1] = ang[1] + 90.0;
+		spawnAng[2] = ang[2];
+
+		GetAngleVectors(spawnAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, Necrotic_Width[phase] * 0.5);
+		AddVectors(pos, Direction, startPos);
+
+		GetAngleVectors(testAng, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, 9999.0);
+		AddVectors(startPos, Direction, endPos);
+
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 33.0, 33.0, _, 10.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 11.0, 11.0, _, 20.0);
+	}
+
+	SSB_BigVFX(true, _, _, 2.0, false);
+
+	if (Necrotic_SelfKB[phase] > 0.0)
+	{
+		float buffer[3], targPos[3];
+
+		WorldSpaceCenter(ssb.index, pos);
+
+		ang[1] += 180.0;
+		ang[0] = -6.0;
+
+		GetPointFromAngles(pos, ang, Necrotic_SelfKB[phase], targPos, Priest_IgnoreAll, MASK_SHOT);
+		PluginBot_Jump(ssb.index, targPos);
+
+		RequestFrame(NecroBlast_FunnySpin, EntIndexToEntRef(ssb.index));
+		//TODO: This needs a custom anim
+	}
+	else
+	{
+		ssb.RevertSequence();
+		ssb.Unpause();
+		ssb.UsingAbility = false;
+	}
+}
+
+public void NecroBlast_FunnySpin(int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+
+	if (ssb.IsOnGround())
+	{
+		ssb.Unpause();
+		ssb.UsingAbility = false;
+		ssb.RevertSequence();
+
+		return;
+	}
+
+	RequestFrame(NecroBlast_FunnySpin, ref);
 }
 
 bool SSB_UsingAbility[MAXENTITIES];
@@ -2054,6 +2343,12 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_Paused[this.index] = false;
 		this.StartPathing();
 		this.m_bPathing = true;
+	}
+
+	public void RevertSequence()
+	{
+		int iActivity = this.LookupActivity("ACT_STAND_NO_HAMMER");
+		if(iActivity > 0) this.StartActivity(iActivity);
 	}
 
 	public void PlayHurtSound() {
@@ -2128,6 +2423,30 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayDeathMagnetic()");
+		#endif
+	}
+
+	public void PlayNecroBlastWarning()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBNecroBlastWarning_Sounds) - 1);
+		EmitSoundToAll(g_SSBNecroBlastWarning_Sounds[rand], _, _, 120);
+
+		CPrintToChatAll(g_SSBNecroBlastWarning_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlastWarning()");
+		#endif
+	}
+
+	public void PlayNecroBlast()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBNecroBlast_Sounds) - 1);
+		EmitSoundToAll(g_SSBNecroBlast_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBNecroBlast_Captions[rand]);
+		EmitSoundToAll(SND_NECROBLAST_EXTRA_1, _, _, 120, _, _, GetRandomInt(70, 90));
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlast()");
 		#endif
 	}
 
@@ -2332,7 +2651,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		int wave = ZR_GetWaveCount() + 1;
+		/*int wave = ZR_GetWaveCount() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
 		else if (wave <= 30)
@@ -2340,7 +2659,9 @@ methodmap SupremeSpookmasterBones < CClotBody
 		else if (wave <= 45)
 			SSB_WavePhase = 2;
 		else
-			SSB_WavePhase = 3;
+			SSB_WavePhase = 3;*/
+
+		SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
 
@@ -2641,4 +2962,34 @@ public float SSB_GetDistanceToGround(float pos[3])
 	delete trace;
 	
 	return GetVectorDistance(pos, otherLoc);
+}
+
+void SSB_BigVFX(bool shake = true, float shakeAmplitude = 50.0, float shakeFrequency = 150.0, float shakeDuration = 2.5, bool flash = true, float flashDuration = 0.1)
+{
+	if (!shake && !flash)
+		return;
+	
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsValidClient(i))
+		{
+			if (shake)
+				Client_Shake(i, SHAKE_START, shakeAmplitude, shakeFrequency, shakeDuration);
+
+			if (flash)
+			{
+				DoOverlay(i, "lights/white005", 0);
+				CreateTimer(flashDuration, SSB_RemoveFlash, GetClientUserId(i), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+	}
+}
+
+public Action SSB_RemoveFlash(Handle helpmeimblind, int id)
+{
+	int client = GetClientOfUserId(id);
+	if (IsValidClient(client))
+		DoOverlay(client, "");
+		
+	return Plugin_Continue;
 }
