@@ -942,6 +942,7 @@ static void ShowMenu(int client, int page)
 				}
 				else
 				{
+					int rank = Dungeon_GetClientRank(client, DungeonMenu[client], dungeon.CurrentStage);
 					int length = stage.ModList.Length;
 					for(int i; i < length; i++)
 					{
@@ -949,9 +950,9 @@ static void ShowMenu(int client, int page)
 						stage.ModList.GetArray(i, mod);
 						if(dungeon.ModList.FindValue(i) != -1)
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", mod.Name, mod.Ti, mod.Desc);
-						}er
-						else if(Dungeon_GetClientRank(client, DungeonMenu[client], dungeon.CurrentStage) < mod.Unlock)
+							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", mod.Name, mod.Tier, mod.Desc);
+						}
+						else if(rank < mod.Unlock)
 						{
 							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nComplete with atleast △%d to unlock\n ", mod.Name, mod.Tier, mod.Unlock);
 							menu.AddItem(NULL_STRING, mod.Desc, ITEMDRAW_DISABLED);
@@ -1409,7 +1410,10 @@ static void CleanDungeon(const char[] name, bool victory)
 								TF2_AddCondition(client, TFCond_HalloweenCritCandy, 8.1);
 
 							if(Saves_ClientCharId(client, mod.Desc, sizeof(mod.Desc)))
-								kv.SetNum(mod.Desc, tier);
+							{
+								if(tier > kv.GetNum(mod.Desc))
+									kv.SetNum(mod.Desc, tier);
+							}
 						}
 						else
 						{
@@ -1640,7 +1644,7 @@ public Action Dungeon_Timer(Handle timer)
 						static StageEnum stage;
 						if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 						{
-							if(b_IsAloneOnServer || StageSlotsLeft(DungeonMenu[client], stage) < 1)
+							if(b_IsAloneOnServer || StageSlotsLeft(name, stage) < 1)
 							{
 								dungeon.StartTime = GetGameTime() + 10;
 								time = 10;

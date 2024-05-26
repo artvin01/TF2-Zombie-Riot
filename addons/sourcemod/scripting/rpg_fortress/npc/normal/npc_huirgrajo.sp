@@ -179,7 +179,7 @@ static void ClotThink(int iNPC)
 		WorldSpaceCenter(npc.index, vecMe);
 		WorldSpaceCenter(target, vecTarget);
 
-		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		//float distance = GetVectorDistance(vecTarget, vecMe, true);
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
