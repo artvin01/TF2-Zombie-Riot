@@ -197,7 +197,7 @@ enum struct StageEnum
 		this.XP = kv.GetNum("xp");
 		this.Cash = kv.GetNum("cash");
 		this.Level = kv.GetNum("level");
-		this.MaxLevel = kv.GetNum("maxlevel", this.Level * 5 / 4);
+		this.MaxLevel = kv.GetNum("maxlevel", this.Level * 21 / 20);
 		this.MaxPlayers = kv.GetNum("maxplayers", 10);
 
 		kv.GetString("drop_name_1", this.DropName1, 48);
