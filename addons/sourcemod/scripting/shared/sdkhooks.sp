@@ -2159,6 +2159,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	else if(IsValidClient(attacker))
 		ClientAttacker = attacker;
 
+#if !defined RTS
 	if(ClientAttacker > 0)
 	{
 		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
@@ -2168,7 +2169,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
 		}
 	}
-	
+#endif
+
 	return Plugin_Changed;
 }
 #if defined ZR || defined RPG

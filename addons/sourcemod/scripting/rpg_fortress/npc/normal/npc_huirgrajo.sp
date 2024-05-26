@@ -1,70 +1,45 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-// this should vary from npc to npc as some are in a really small area.
-
-static char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
-};
-
-static char g_HurtSound[][] = {
-	")vo/medic_painsharp01.mp3",
-	")vo/medic_painsharp02.mp3",
-	")vo/medic_painsharp03.mp3",
-	")vo/medic_painsharp04.mp3",
-	")vo/medic_painsharp05.mp3",
-	")vo/medic_painsharp06.mp3",
-	")vo/medic_painsharp07.mp3",
-	")vo/medic_painsharp08.mp3",
-};
-
-static char g_IdleSound[][] = {
-	")vo/null.mp3",
-};
-
-static char g_IdleAlertedSounds[][] = {
-	")vo/medic_battlecry01.mp3",
-	")vo/medic_battlecry02.mp3",
-	")vo/medic_battlecry03.mp3",
-	")vo/medic_battlecry04.mp3",
-};
-
-static char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
-};
-static char g_MeleeAttackSounds[][] = {
-	"weapons/cbar_miss1.wav",
-};
-
-static const char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
-};
-static const char g_RangedAttackAbilitySounds[][] = {
-	"weapons/cow_mangler_over_charge_shot.wav",
-};
-
-#define SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE	"misc/halloween/spell_mirv_explode_primary.wav"
-
-void Huirgrajo_OnMapStart_NPC()
+static const char g_DeathSounds[][] =
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
-	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
-	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
-	PrecacheSoundArray(g_RangedAttackAbilitySounds);
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
+};
+
+static const char g_HurtSound[][] =
+{
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
+};
+
+static const char g_RangedAttackSounds[][] =
+{
+	"weapons/diamond_back_01.wav",
+	"weapons/diamond_back_02.wav",
+	"weapons/diamond_back_03.wav"
+};
+
+static const char g_RangedReloadSounds[][] =
+{
+	"weapons/revolver_worldreload.wav"
+};
+
+void Huirgrajo_Setup()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSound);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedReloadSounds);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Huirgrajo The Light Keeper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_huirgrajo");
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	
-	PrecacheSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -74,52 +49,26 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Huirgrajo < CClotBody
 {
-	public void PlayIdleSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-
-		EmitSoundToAll(g_IdleSound[GetRandomInt(0, sizeof(g_IdleSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-	}
-	
 	public void PlayHurtSound()
 	{
-		
-		EmitSoundToAll(g_HurtSound[GetRandomInt(0, sizeof(g_HurtSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_HurtSound[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayKilledEnemySound() 
-	{
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(5.0, 10.0);
-	}
-	public void PlayMeleeSound()
+	public void PlayPistolFire()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);
+		EmitSoundToAll(g_RangedAttackSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound()
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
-	}
-	public void PlayRangedAttackSecondarySound() 
-	{
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-	}
-	public void PlayRangedAttackAbilitySound() 
-	{
-		EmitSoundToAll(g_RangedAttackAbilitySounds[GetRandomInt(0, sizeof(g_RangedAttackAbilitySounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	public void PlayPistolReload()
+ 	{
+		EmitSoundToAll(g_RangedReloadSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public Huirgrajo(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Huirgrajo npc = view_as<Huirgrajo>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "300", ally, false,_,_,_,_));
+		Huirgrajo npc = view_as<Huirgrajo>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "300", ally, false));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
@@ -127,8 +76,11 @@ methodmap Huirgrajo < CClotBody
 
 		npc.m_bisWalking = false;
 
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bDissapearOnDeath = false;
+		float gameTime = GetGameTime(npc.index);
+		npc.m_flNextMeleeAttack = gameTime + 9.0;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flCharge_delay = gameTime + 3.0;
+		npc.Anger = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -138,7 +90,7 @@ methodmap Huirgrajo < CClotBody
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];	
 
-		func_NPCDeath[npc.index] = ClothDeath;
+		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
 		func_NPCThink[npc.index] = ClotThink;
 		
@@ -179,7 +131,6 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
 	float speed;
 	if(npc.m_flReloadDelay > gameTime)
 	{
@@ -187,10 +138,38 @@ static void ClotThink(int iNPC)
 	}
 	else
 	{
-		speed = 260.0;
+		speed = npc.Anger ? 160.0 : 260.0;
 	}
 
-	Npc_Base_Thinking(iNPC, 800.0, "ACT_MP_RUN_SECONDARY", "ACT_MP_CROUCH_SECONDARY", 260.0, gameTime);
+	// npc.m_iTarget comes from here.
+	Npc_Base_Thinking(npc.index, 800.0, "ACT_MP_RUN_SECONDARY", "ACT_MP_CROUCH_SECONDARY", speed, gameTime);
+	npc.m_bAllowBackWalking = false;
+
+	if(!npc.Anger)
+	{
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3))
+		{
+			npc.Anger = true;
+	
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+			
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+			
+			float pos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+			int particle = ParticleEffectAt(pos, "utaunt_auroraglow_purple_glow", 0.0);
+			SetParent(npc.index, particle, "head", {0.0, 0.0, -5.0});
+			npc.m_iWearable3 = particle;
+
+			pos[2] += 70.0;
+			particle = ParticleEffectAt(pos, "scout_dodge_blue", 0.0);
+			SetParent(npc.index, particle);
+			npc.m_iWearable6 = particle;
+		}
+	}
 
 	int target = npc.m_iTarget;
 	
@@ -202,12 +181,15 @@ static void ClotThink(int iNPC)
 
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 
-		if(npc.m_flNextRangedAttack < gameTime)
+		if(npc.m_flNextMeleeAttack < gameTime)
+		{
+			npc.m_flNextMeleeAttack = gameTime + ((GetURandomInt() % (npc.Anger ? 3 : 2)) ? 1.0 : 8.0);
+			FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), target);
+		}
+		else if(npc.m_flNextRangedAttack < gameTime)
 		{
 			if(npc.m_iAttacksTillReload < 1)
 			{
-				canWalk = false;
-				
 				npc.AddGesture("ACT_MP_RELOAD_CROUCH_SECONDARY");
 				npc.m_flNextRangedAttack = gameTime + 1.35;
 				npc.m_flReloadDelay = gameTime + 1.35;
@@ -216,13 +198,14 @@ static void ClotThink(int iNPC)
 			}
 			else
 			{
-				int target = Can_I_See_Enemy(npc.index, npc.m_iTargetAttack);
+				target = Can_I_See_Enemy(npc.index, target);
 				if(IsValidEnemy(npc.index, target))
 				{
 					// Can dodge bullets by moving
 					PredictSubjectPositionForProjectiles(npc, target, -600.0, _, vecTarget);
 					
-					npc.FaceTowards(vecTarget, 2000.0);
+					npc.m_bAllowBackWalking = true;
+					npc.FaceTowards(vecTarget, 1500.0);
 					
 					float eyePitch[3], vecDirShooting[3];
 					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
@@ -236,7 +219,7 @@ static void ClotThink(int iNPC)
 					{
 						vecDirShooting[1] = eyePitch[1];
 
-						npc.m_flNextRangedAttack = gameTime + 0.5;
+						npc.m_flNextRangedAttack = gameTime + 0.85;
 						npc.m_iAttacksTillReload--;
 						
 						float x = GetRandomFloat( -0.03, 0.03 );
@@ -264,27 +247,38 @@ static void ClotThink(int iNPC)
 				}
 			}
 		}
-	}
+		else if(npc.m_flCharge_delay < gameTime)
+		{
+			target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				PredictSubjectPositionForProjectiles(npc, target, GetRandomFloat(-1000.0, 1000.0), _, vecTarget);
 
-	npc.PlayIdleSound();
+				npc.m_flCharge_delay = gameTime + (npc.Anger ? 3.0 : 6.0);
+				PluginBot_Jump(npc.index, vecTarget);
+			}
+		}
+	}
+	else
+	{
+		npc.m_flNextMeleeAttack = gameTime + 9.0;
+		npc.m_flCharge_delay = gameTime + 3.0;
+	}
 }
 
-Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	//Valid attackers only.
-	if(attacker < 1)
-		return Plugin_Continue;
-
-	Huirgrajo npc = view_as<Huirgrajo>(victim);
-
-	float gameTime = GetGameTime(npc.index);
-
-	if(npc.m_flHeadshotCooldown < gameTime)
+	if(attacker > 0)
 	{
-		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
+		Huirgrajo npc = view_as<Huirgrajo>(victim);
+
+		float gameTime = GetGameTime(npc.index);
+		if(npc.m_flHeadshotCooldown < gameTime)
+		{
+			npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}
 	}
-	return Plugin_Changed;
 }
 
 void ClotDeath(int entity)
@@ -307,5 +301,8 @@ void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 
 }

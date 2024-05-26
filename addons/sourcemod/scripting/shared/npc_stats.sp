@@ -3268,7 +3268,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			client = EntRefToEntIndex(LastHitRef[pThis]);
 		}
 
+#if defined ZR || defined RPG
 		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
+#endif
 
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
@@ -5469,7 +5471,11 @@ public void NpcBaseThink(int iNPC)
 	}
 	SaveLastValidPositionEntity(iNPC);
 
+#if defined ZR || defined RPG
 	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+#else
+	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+#endif
 	
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{

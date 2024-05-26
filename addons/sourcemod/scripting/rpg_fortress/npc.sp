@@ -70,6 +70,7 @@ void NPC_ConfigSetup()
 	OriginalInfected_OnMapStart_NPC();
 	HeavyExtreme_OnMapStart_NPC();
 	SniperAccuracy_OnMapStart_NPC();
+	Huirgrajo_Setup();
 
 /*
 	ArkSlug_MapStart();
@@ -549,7 +550,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/ally/npc_player_animator.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_extreme.sp"
 #include "rpg_fortress/npc/normal/npc_sniper_accuracy.sp"
-
+#include "rpg_fortress/npc/normal/npc_huirgrajo.sp"
 
 
 /*

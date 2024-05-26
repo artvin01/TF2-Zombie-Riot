@@ -3010,6 +3010,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			damage *= 1.35;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 			damagetype &= ~DMG_CRIT;
+#if defined ZR
 			if(i_HeadshotAffinity[attacker] == 1)
 			{
 				damage *= 1.35;
@@ -3025,6 +3026,7 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			{
 				damage *= 0.75;
 			}
+#endif
 		}
 	}
 	return false;
