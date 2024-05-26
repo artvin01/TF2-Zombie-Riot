@@ -18,6 +18,7 @@ void Zones_PluginStart()
 	.DefineFloatField("m_fMusicVolume")
 	.DefineBoolField("m_bMusicCustom")
 	.DefineStringField("m_nSkyBoxOverride")
+	.DefineBoolField("m_bSilentKey")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -137,6 +138,8 @@ void Zones_Rebuild()
 
 					ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
 					SetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", buffer);
+
+					SetEntProp(entity, Prop_Data, "m_bSilentKey", ZonesKv.GetNum("silent"));
 					
 					int custom = ZonesKv.GetNum("download");
 					ZonesKv.GetString("sound", buffer, sizeof(buffer));
@@ -233,14 +236,18 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 		GetEntPropString(entity, Prop_Data, "m_nItemKey", name, sizeof(name));
 		if(caller <= MaxClients && name[0] && TextStore_GetItemCount(caller, name) < 1)
 		{
-			ShowGameText(caller, _, 0, "You need \"%s\" to enter", name);
+			if(!GetEntProp(entity, Prop_Data, "m_bSilentKey"))
+				ShowGameText(caller, _, 0, "You need \"%s\" to enter", name);
+			
 			return Plugin_Continue;
 		}
 		
 		GetEntPropString(entity, Prop_Data, "m_nQuestKey", name, sizeof(name));
 		if(caller <= MaxClients && name[0] && Quests_GetStatus(caller, name) != Status_Completed)
 		{
-			ShowGameText(caller, _, 0, "You need complete \"%s\" quest to enter.", name);
+			if(!GetEntProp(entity, Prop_Data, "m_bSilentKey"))
+				ShowGameText(caller, _, 0, "You need complete \"%s\" quest to enter.", name);
+			
 			return Plugin_Continue;
 		}
 
@@ -415,7 +422,7 @@ void Zones_EditorMenu(int client)
 			int custom = ZonesKv.GetNum("download");
 			if(custom)
 			{
-				Format(buffer, sizeof(buffer), "Music Custom: Download Priority %d", custom);
+				Format(buffer, sizeof(buffer), "Music Custom: Download (Level %d)", custom);
 			}
 			else
 			{
@@ -458,7 +465,11 @@ void Zones_EditorMenu(int client)
 				Format(buffer, sizeof(buffer), "Item Key: \"%s\"", buffer);
 			}
 			menu.AddItem("item", buffer);
+
+			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
+			menu.AddItem("silent", buffer);
 		}
+
 		ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
 
 		Format(buffer, sizeof(buffer), "Skybox: \"%s\"", buffer);
@@ -618,6 +629,10 @@ static void AdjustZone(int client, const char[] buffer)
 				pos[2] = 0.0;
 				ZonesKv.SetVector("teleang", pos);
 			}
+		}
+		else if(StrEqual(buffer, "silent"))
+		{
+			ZonesKv.SetNum(buffer, ZonesKv.GetNum(buffer) ? 0 : 1);
 		}
 		else if(StrEqual(buffer, "delete"))
 		{

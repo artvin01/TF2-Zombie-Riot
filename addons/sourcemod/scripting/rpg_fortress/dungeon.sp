@@ -133,6 +133,7 @@ enum struct StageEnum
 	int Cash;
 	int Level;
 	int MaxLevel;
+	int MaxPlayers;
 
 	char DropName1[48];
 	float DropChance1;
@@ -196,7 +197,8 @@ enum struct StageEnum
 		this.XP = kv.GetNum("xp");
 		this.Cash = kv.GetNum("cash");
 		this.Level = kv.GetNum("level");
-		this.MaxLevel = kv.GetNum("maxlevel", this.Level + 4);
+		this.MaxLevel = kv.GetNum("maxlevel", this.Level * 5 / 4);
+		this.MaxPlayers = kv.GetNum("maxplayers", 10);
 
 		kv.GetString("drop_name_1", this.DropName1, 48);
 		this.DropChance1 = kv.GetFloat("drop_chance_1", 1.0);
@@ -888,18 +890,21 @@ static void ShowMenu(int client, int page)
 					{
 						if(client == target && client == leader)
 						{
-							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)\n ", client);
-							
-							if(menu.ItemCount)
+							if(StrEqual(InDungeon[client], DungeonMenu[client]))
 							{
-								menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage);
+								Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "%N (Leave)\n ", client);
+
+								if(menu.ItemCount)
+								{
+									menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage);
+								}
+								else
+								{
+									menu.AddItem(NULL_STRING, dungeon.CurrentStage);
+								}
+								
+								found = true;
 							}
-							else
-							{
-								menu.AddItem(NULL_STRING, dungeon.CurrentStage);
-							}
-							
-							found = true;
 						}
 						else if(client != leader && target == leader)
 						{
@@ -920,7 +925,11 @@ static void ShowMenu(int client, int page)
 
 					if(!found)
 					{
-						if(client == leader)
+						if(StageSlotsLeft(DungeonMenu[client], stage) < Party_Count(client))
+						{
+							menu.InsertItem(0, NULL_STRING, "Dungeon Is Full\n ", ITEMDRAW_DISABLED);
+						}
+						else if(client == leader)
 						{
 							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Enter Queue (Level %d)\n ", stage.Level);
 							menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage, stage.Level > Level[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -1069,27 +1078,30 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 						else	// Join/Leave Lobby
 						{
 							bool alreadyIn = StrEqual(InDungeon[client], DungeonMenu[client]);
-							bool party = Party_GetPartyLeader(client) == client;
-							for(int target = 1; target <= MaxClients; target++)
+							if(alreadyIn || StageSlotsLeft(DungeonMenu[client], stage) >= Party_Count(client))
 							{
-								if(client == target || (party && Party_IsClientMember(target, client)))
+								bool party = Party_GetPartyLeader(client) == client;
+								for(int target = 1; target <= MaxClients; target++)
 								{
-									Dungeon_ClientDisconnect(target, true);
-
-									if(!alreadyIn)
+									if(client == target || (party && Party_IsClientMember(target, client)))
 									{
-										if(LastResult[target] > 0)
-										{
-											ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
-											LastResult[target] = 0;
-										}
-										else if(LastResult[target] < 0)
-										{
-											ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
-											LastResult[target] = 0;
-										}
+										Dungeon_ClientDisconnect(target, true);
 
-										strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
+										if(!alreadyIn)
+										{
+											if(LastResult[target] > 0)
+											{
+												ClientCommand(target, "playgamesound %s", RoundRetryWin[GetURandomInt() % sizeof(RoundRetryWin)]);
+												LastResult[target] = 0;
+											}
+											else if(LastResult[target] < 0)
+											{
+												ClientCommand(target, "playgamesound %s", RoundRetryLoss[GetURandomInt() % sizeof(RoundRetryLoss)]);
+												LastResult[target] = 0;
+											}
+
+											strcopy(InDungeon[target], sizeof(InDungeon[]), DungeonMenu[client]);
+										}
 									}
 								}
 							}
@@ -1109,7 +1121,7 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 							dungeon.ModList = new ArrayList();
 						
 						dungeon.CurrentHost = client;
-						dungeon.StartTime = GetGameTime() + (b_IsAloneOnServer ? 30.0 : QUEUE_TIME);
+						dungeon.StartTime = GetGameTime() + QUEUE_TIME;
 						DungeonList.SetArray(DungeonMenu[client], dungeon, sizeof(dungeon));
 
 						bool party = Party_GetPartyLeader(client) == client;
@@ -1144,6 +1156,19 @@ public int Dungeon_MenuHandle(Menu menu, MenuAction action, int client, int choi
 		}
 	}
 	return 0;
+}
+
+static int StageSlotsLeft(const char[] dungeon, const StageEnum stage)
+{
+	int players;
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(StrEqual(InDungeon[client], dungeon))
+			players++;
+	}
+
+	return stage.MaxPlayers - players;
 }
 
 void Dungeon_ResetEntity(int entity)
@@ -1590,6 +1615,19 @@ public Action Dungeon_Timer(Handle timer)
 				int time = RoundToCeil(dungeon.StartTime - GetGameTime());
 				if(time > 0)
 				{
+					if(time > 10)
+					{
+						static StageEnum stage;
+						if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
+						{
+							if(b_IsAloneOnServer || StageSlotsLeft(DungeonMenu[client], stage) < 1)
+							{
+								dungeon.StartTime = GetGameTime() + 10;
+								time = 10;
+							}
+						}
+					}
+
 					for(int client = 1; client <= MaxClients; client++)
 					{
 						if(StrEqual(InDungeon[client], name))

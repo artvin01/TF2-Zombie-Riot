@@ -466,7 +466,7 @@ bool Quests_TurnIn(int client, const char[] name)
 							QuestKv.GetSectionName(buffer, sizeof(buffer));
 							if(kv.JumpToKey(buffer))
 							{
-								kv.SetNum(id, kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
+								kv.SetNum(id, 0);//kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
 								kv.GoBack();
 							}
 						}

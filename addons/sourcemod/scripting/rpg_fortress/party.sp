@@ -62,6 +62,22 @@ bool Party_FriendlyFire(int client, int target)
 	return (PartyLeader[client] && PartyLeader[client] == PartyLeader[target] && PartyFriendlyFire[PartyLeader[client]]);
 }
 
+int Party_Count(int client)
+{
+	int players = 1;
+
+	if(PartyLeader[client])
+	{
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(client != target && PartyLeader[client] == PartyLeader[target])
+				players++;
+		}
+	}
+
+	return players;
+}
+
 void Party_PlayerModel(int client, const char[] model)
 {
 	int entity = EntRefToEntIndex(PartyOutlineRef[client]);

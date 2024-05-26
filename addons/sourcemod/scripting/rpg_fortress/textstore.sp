@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MARKET_TAX	10
+
 static const char RarityName[][] = 
 {
 	"Common",
@@ -845,6 +847,9 @@ static void TextStore_ShowSellMenu(int client)
 				amount = kv.GetNum("sell", RoundFloat(amount * 0.75));
 				if(MarketSell[client] < amount)
 					MarketSell[client] = amount;
+				
+				if(MarketSell[client] <= MARKET_TAX)
+					MarketSell[client] = MARKET_TAX + 1;
 			}
 
 			menu.AddItem(buffer, "Add 10");
@@ -864,11 +869,11 @@ static void TextStore_ShowSellMenu(int client)
 
 			if(market)
 			{
-				Format(buffer, sizeof(buffer), "List %d for %d credits each (%d total)\n ", MarketCount[client], MarketSell[client], MarketCount[client] * MarketSell[client]);
+				Format(buffer, sizeof(buffer), "List %d for %d credits each (%d total after tax)\n ", MarketCount[client], MarketSell[client], MarketCount[client] * (MarketSell[client] - MARKET_TAX));
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "Sell %d for %d credits each (%d total)\n ", MarketCount[client], MarketSell[client], MarketCount[client] * MarketSell[client]);
+				Format(buffer, sizeof(buffer), "Sell %d for %d credits each (%d total after tax)\n ", MarketCount[client], MarketSell[client], MarketCount[client] * (MarketSell[client] - MARKET_TAX));
 			}
 
 			menu.AddItem(buffer, buffer, MarketCount[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -972,7 +977,8 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 
 									if(GetClientAuthId(client, AuthId_Steam3, buffer, sizeof(buffer)) && MarketKv.JumpToKey(buffer, true))
 									{
-										if(MarketKv.GetNum("price") == MarketSell[client])
+										int oldPrice = MarketKv.GetNum("price");
+										if(oldPrice == MarketSell[client])
 										{
 											amount -= MarketCount[client];
 											MarketKv.SetNum("amount", MarketKv.GetNum("amount") + MarketCount[client]);
@@ -985,7 +991,7 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 											MarketKv.SetNum("price", MarketSell[client]);
 
 											if(refund)
-												SPrintToChat(client, "%d was returned to you from the market because you changed your sell price.", refund);
+												SPrintToChat(client, "%d items were placed at %d credits and were returned to you.", refund, oldPrice);
 										}
 
 										TextStore_SetInv(client, MarketItem[client], amount);
@@ -1343,7 +1349,7 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 											MarketKv.JumpToKey("Payout", true);
 											MarketKv.JumpToKey(market.SteamID, true);
 											MarketKv.JumpToKey(buffer, true);
-											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + (market.Price * market.Amount));
+											MarketKv.SetNum("cash", MarketKv.GetNum("cash") + ((market.Price - MARKET_TAX) * market.Amount));
 											MarketKv.SetNum("amount", MarketKv.GetNum("amount") +  market.Amount);
 
 											if(market.NowEmpty)
