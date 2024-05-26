@@ -524,6 +524,10 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Melee attack is replaced with a short-ranged necrotic bolt, which has a very low cooldown and deals enormous damage.
 //		- Lasts for 30 seconds.
 //		- Entered permanently when the mercenaries run out of time on any wave phase.
+//	- DO NOT FORGET:
+//		- Summoner's Stance, Soul Harvester, and Hell is Here all grant resistance while active.
+//		- Summoner's Stance needs to grant bonus time when it is activated.
+//		- Summoner's Stance needs a filter which blocks it from activating if the user has not taken a certain amount of damage since its last activation.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
 #define SSB_MAX_ABILITIES 255
@@ -686,32 +690,44 @@ static void SSB_PrepareAbilities()
 	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
 
 	//Wave 15 (and before):
+	//Spell Cards:
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
-	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC BLAST", 1.0, 0, Special_NecroticBlast, _, false));
+	//Spooky Specials:
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 0, Special_Summoner, _, false, _, Summon_Duration[0]));
 
 	//Wave 30:
+	//Spell Cards:
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[1]));
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("CHAOS BARRAGE", 0.75, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[1]));
+	//Spooky Specials:
+	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[1] + 1.6));
 
 	//Wave 45:
+	//Spell Cards:
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[2]));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 2, SpellCard_DeathMagnetic, _, _, true, Death_Delay[2]));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.5, 2, SpellCard_CosmicTerror));
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.33, 1, SpellCard_RingOfTartarus));
+	//Spooky Specials:
+	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[2] + 1.6));
 
 	//Wave 60+:
-	/*PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	//Spell Cards:
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[3]));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));*/
+	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
+	//Spooky Specials:
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[3] + 1.6));
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -2320,6 +2336,126 @@ public void NecroBlast_FunnySpin(int ref)
 	RequestFrame(NecroBlast_FunnySpin, ref);
 }
 
+public void Special_Summoner(SupremeSpookmasterBones ssb, int target)
+{
+	ssb.UsingAbility = true;
+	ssb.Pause();
+	ssb.PlaySummonerIntro();
+
+	int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_INTRO");
+	if(iActivity > 0) ssb.StartActivity(iActivity);
+
+	float begin = GetGameTime(ssb.index) + 1.04;
+
+	DataPack pack = new DataPack();
+	RequestFrame(Summoner_EndIntroAnim, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack, begin);
+
+	float pos[3];
+	GetEntPropVector(ssb.index, Prop_Data, "m_vecAbsOrigin", pos);
+	spawnRing_Vectors(pos, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 120, 1, 1.04, 32.0, 0.0, 1, Summon_Radius[SSB_WavePhase] * 2.0);
+}
+
+public void Summoner_EndIntroAnim(DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	float end = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+
+	if (GetGameTime(user) >= end)
+	{
+		int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_LOOP");
+		if(iActivity > 0) ssb.StartActivity(iActivity);
+
+		delete pack;
+		pack = new DataPack();
+		RequestFrame(Summoner_Logic, pack);
+		WritePackCell(pack, EntIndexToEntRef(user));
+		WritePackCell(pack, SSB_WavePhase);
+		WritePackFloat(pack, GetGameTime(user) + Summon_Duration[SSB_WavePhase]);
+		WritePackFloat(pack, 0.0);
+		WritePackFloat(pack, 0.0);
+
+		return;
+	}
+
+	RequestFrame(Summoner_EndIntroAnim, pack);
+}
+
+public void Summoner_Logic(DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float endTime = ReadPackFloat(pack);
+	float nextWave = ReadPackFloat(pack);
+	float nextVFX = ReadPackFloat(pack);
+	delete pack;
+
+	if (!IsValidEntity(user))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+
+	float gt = GetGameTime(user);
+	if (gt >= endTime)
+	{
+		int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_OUTRO");
+		if(iActivity > 0) ssb.StartActivity(iActivity);
+
+		CreateTimer(1.0, Summon_End, EntIndexToEntRef(user), TIMER_FLAG_NO_MAPCHANGE);
+
+		return;
+	}
+
+	float pos[3];
+	GetEntPropVector(ssb.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+	if (gt >= nextWave)
+	{
+		//TODO: Summon a bunch of guys, also explode
+
+		nextWave = gt + Summon_Interval[phase];
+	}
+
+	if (gt >= nextVFX)
+	{
+		spawnRing_Vectors(pos, Summon_Radius[SSB_WavePhase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 1, 0.1, 32.0, 0.0, 1);
+		nextVFX = gt + 0.1;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Summoner_Logic, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, endTime);
+	WritePackFloat(pack, nextWave);
+	WritePackFloat(pack, nextVFX);
+}
+
+public Action Summon_End(Handle end, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (IsValidEntity(ent))
+	{
+		SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+		ssb.UsingAbility = false;
+		ssb.Unpause();
+		ssb.RevertSequence();
+	}
+
+	return Plugin_Continue;
+}
+
 bool SSB_UsingAbility[MAXENTITIES];
 bool SSB_Paused[MAXENTITIES];
 
@@ -2447,6 +2583,17 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlast()");
+		#endif
+	}
+
+	public void PlaySummonerIntro()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBSummonIntro_Sounds) - 1);
+		EmitSoundToAll(g_SSBSummonIntro_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBSummonIntro_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlaySummonerIntro()");
 		#endif
 	}
 
@@ -2651,7 +2798,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		/*int wave = ZR_GetWaveCount() + 1;
+		int wave = ZR_GetWaveCount() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
 		else if (wave <= 30)
@@ -2659,9 +2806,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		else if (wave <= 45)
 			SSB_WavePhase = 2;
 		else
-			SSB_WavePhase = 3;*/
-
-		SSB_WavePhase = 3;
+			SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
 
