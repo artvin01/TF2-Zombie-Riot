@@ -932,7 +932,7 @@ static void ShowMenu(int client, int page)
 						else if(client == leader)
 						{
 							Format(dungeon.CurrentStage, sizeof(dungeon.CurrentStage), "Enter Queue (Level %d)\n ", stage.Level);
-							menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage, stage.Level > Level[client] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+							menu.InsertItem(0, NULL_STRING, dungeon.CurrentStage, stage.Level > LowestLevel(client) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 						}
 						else
 						{
@@ -949,8 +949,8 @@ static void ShowMenu(int client, int page)
 						stage.ModList.GetArray(i, mod);
 						if(dungeon.ModList.FindValue(i) != -1)
 						{
-							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", mod.Name, mod.Tier, mod.Desc);
-						}
+							Format(mod.Desc, sizeof(mod.Desc), "[X] %s △%d\n%s\n ", mod.Name, mod.Ti, mod.Desc);
+						}er
 						else if(Dungeon_GetClientRank(client, DungeonMenu[client], dungeon.CurrentStage) < mod.Unlock)
 						{
 							Format(mod.Desc, sizeof(mod.Desc), "[!] %s △%d\nComplete with atleast △%d to unlock\n ", mod.Name, mod.Tier, mod.Unlock);
@@ -1001,7 +1001,7 @@ static void ShowMenu(int client, int page)
 				if(dungeon.StageList.GetArray(name, stage, sizeof(stage)))
 				{
 					Format(stage.MusicEasy, sizeof(stage.MusicEasy), "%s (Level %d)", name, stage.Level);
-					menu.AddItem(name, stage.MusicEasy, (stage.Level > Level[client] || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+					menu.AddItem(name, stage.MusicEasy, (stage.Level > LowestLevel(client) || client != leader) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 				}
 			}
 
@@ -1169,6 +1169,26 @@ static int StageSlotsLeft(const char[] dungeon, const StageEnum stage)
 	}
 
 	return stage.MaxPlayers - players;
+}
+
+static int LowestLevel(int client)
+{
+	int lowest = Level[client];
+
+	if(Party_GetPartyLeader(client))
+	{
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(Party_IsClientMember(client, target))
+			{
+				int level = Level[target];
+				if(level < lowest)
+					lowest = level;
+			}
+		}
+	}
+
+	return lowest;
 }
 
 void Dungeon_ResetEntity(int entity)
