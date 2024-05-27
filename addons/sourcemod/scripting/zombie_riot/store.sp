@@ -1267,6 +1267,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 							other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 							other.BuyWave[client] = -1;
+							other.Owned[client] = values[1] + 1;
 
 							StoreItems.SetArray(item.Section, other);
 

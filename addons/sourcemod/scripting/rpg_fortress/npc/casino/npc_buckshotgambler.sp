@@ -36,40 +36,37 @@ static const char g_IdleSound[][] =
 	"vo/spy_stabtaunt16.mp3"
 };
 
-static const char g_MeleeHitSounds[][] =
+static const char g_RangeMisfireSounds[][] =
 {
-	"weapons/blade_hit1.wav",
-	"weapons/blade_hit2.wav",
-	"weapons/blade_hit3.wav",
-	"weapons/blade_hit4.wav"
+	"weapons/shotgun_empty.wav"
 };
 
-static const char g_MeleeAttackSounds[][] =
+static const char g_RangeAttackSounds[][] =
 {
-	"weapons/knife_swing.wav"
+	"weapons/shotgun_shoot.wav"
 };
 
-void RookieGambler_Setup()
+void BuckshotGambler_Setup()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
 	PrecacheSoundArray(g_IdleSound);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_RangeMisfireSounds);
+	PrecacheSoundArray(g_RangeAttackSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Rookie Gambler");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rookiegambler");
+	strcopy(data.Name, sizeof(data.Name), "Buckshot Gambler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_buckshotgambler");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return RookieGambler(client, vecPos, vecAng, ally);
+	return BuckshotGambler(client, vecPos, vecAng, ally);
 }
 
-methodmap RookieGambler < CClotBody
+methodmap BuckshotGambler < CClotBody
 {
 	public void PlayIdleSound() 
 	{
@@ -87,24 +84,23 @@ methodmap RookieGambler < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound()
+	public void PlayMisfireSound()
  	{
-		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangeMisfireSounds[GetURandomInt() % sizeof(g_RangeMisfireSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangeAttackSounds[GetURandomInt() % sizeof(g_RangeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public RookieGambler(int client, float vecPos[3], float vecAng[3], int team)
+	public BuckshotGambler(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		RookieGambler npc = view_as<RookieGambler>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "300", team));
+		BuckshotGambler npc = view_as<BuckshotGambler>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "300", team));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		npc.SetActivity("ACT_MP_STAND_MELEE");
-		KillFeed_SetKillIcon(npc.index, "eternal_reward");
+		npc.SetActivity("ACT_MP_STAND_PRIMARY");
+		KillFeed_SetKillIcon(npc.index, "headshot");
 
-		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -122,15 +118,13 @@ methodmap RookieGambler < CClotBody
 
 		static const char RandomHat[][] =
 		{
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised/hwn2022_beaten_bruised_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style2_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style3_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style4_spy.mdl",
-			"models/workshop/player/items/all_class/hwn2022_beaten_bruised_style2/hwn2022_beaten_bruised_style5_spy.mdl"
+			"models/workshop/player/items/engineer/dec23_clue_hairdo/dec23_clue_hairdo.mdl",
+			"models/workshop/player/items/engineer/dec23_clue_hairdo_style2/dec23_clue_hairdo_style2.mdl",
+			"models/workshop/player/items/engineer/dec23_clue_hairdo_style3/dec23_clue_hairdo_style3.mdl"
 		};
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl", _, skin);
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/jul13_classy_royale/jul13_classy_royale.mdl", _, skin);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shotgun/c_shotgun.mdl", _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/invasion_life_support_system/invasion_life_support_system.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", RandomHat[GetURandomInt() % sizeof(RandomHat)], _, skin);
 		
 		return npc;
@@ -140,7 +134,7 @@ methodmap RookieGambler < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	RookieGambler npc = view_as<RookieGambler>(iNPC);
+	BuckshotGambler npc = view_as<BuckshotGambler>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -162,43 +156,10 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 250.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_STAND_PRIMARY", 230.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
-	if(npc.m_flAttackHappens)
-	{
-		if(npc.m_flAttackHappens < gameTime)
-		{
-			npc.m_flAttackHappens = 0.0;
-			
-			if(IsValidEnemy(npc.index, target))
-			{
-				float vecTarget[3]; 
-				WorldSpaceCenter(target, vecTarget);
-				npc.FaceTowards(vecTarget, 15000.0);
-
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target))
-				{
-					target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-
-					if(target > 0) 
-					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB);
-						CasinoShared_RobMoney(npc, target, 5);
-						CasinoShared_StealNearbyItems(npc, vecHit);
-					}
-				}
-				delete swingTrace;
-			}
-		}
-	}
-
 	if(target > 0)
 	{
 		float vecMe[3], vecTarget[3];
@@ -224,13 +185,22 @@ static void ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 3.0);
-				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.45;
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				npc.m_flNextMeleeAttack = gameTime + 1.05;
+
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", _, _, _, 3.0);
+				npc.FaceTowards(vecTarget, 15000.0);
+
+				if(GetURandomInt() % 3)
+				{
+					npc.PlayMisfireSound();
+				}
+				else
+				{
+					npc.PlayRangeSound();
+					SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 3.5), DMG_BULLET);
+				}
 			}
 		}
 	}
@@ -240,7 +210,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	RookieGambler npc = view_as<RookieGambler>(entity);
+	BuckshotGambler npc = view_as<BuckshotGambler>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 
