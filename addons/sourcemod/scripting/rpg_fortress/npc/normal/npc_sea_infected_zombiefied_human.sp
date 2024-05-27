@@ -162,7 +162,7 @@ methodmap SeaInfectedZombieHuman < CClotBody
 		SetEntityRenderColor(npc.index, 100, 100, 255, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		

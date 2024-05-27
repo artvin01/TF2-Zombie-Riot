@@ -201,7 +201,7 @@ methodmap OriginalInfected < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop_partner/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
+		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/hw2013_foul_cowl/hw2013_foul_cowl.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
