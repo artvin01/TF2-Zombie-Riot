@@ -204,6 +204,10 @@ methodmap OriginalInfected < CClotBody
 		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/hw2013_foul_cowl/hw2013_foul_cowl.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		
+		npc.m_iWearable5 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/hw2013_the_parasight/hw2013_the_parasight.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
