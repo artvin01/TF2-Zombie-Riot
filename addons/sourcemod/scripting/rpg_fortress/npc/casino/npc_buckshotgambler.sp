@@ -3,37 +3,29 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3"
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSound[][] =
 {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3"
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3"
 };
 
 static const char g_IdleSound[][] =
 {
-	"vo/spy_stabtaunt01.mp3",
-	"vo/spy_stabtaunt02.mp3",
-	"vo/spy_stabtaunt03.mp3",
-	"vo/spy_stabtaunt04.mp3",
-	"vo/spy_stabtaunt05.mp3",
-	"vo/spy_stabtaunt06.mp3",
-	"vo/spy_stabtaunt07.mp3",
-	"vo/spy_stabtaunt08.mp3",
-	"vo/spy_stabtaunt09.mp3",
-	"vo/spy_stabtaunt10.mp3",
-	"vo/spy_stabtaunt11.mp3",
-	"vo/spy_stabtaunt12.mp3",
-	"vo/spy_stabtaunt13.mp3",
-	"vo/spy_stabtaunt14.mp3",
-	"vo/spy_stabtaunt15.mp3",
-	"vo/spy_stabtaunt16.mp3"
+	"vo/engineer_battlecry01.mp3",
+	"vo/engineer_battlecry03.mp3",
+	"vo/engineer_battlecry04.mp3",
+	"vo/engineer_battlecry05.mp3"
 };
 
 static const char g_RangeMisfireSounds[][] =
