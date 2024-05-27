@@ -69,6 +69,9 @@ static int TriggerDamage(int entity, int type)
 			if(GetTeam(entity) == TFTeam_Red)
 				return 1000;
 			
+			if(b_thisNpcIsARaid[entity])
+				return 50000;
+			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		}
 	}
@@ -76,7 +79,7 @@ static int TriggerDamage(int entity, int type)
 	if(Citizen_IsIt(entity))
 		return view_as<Citizen>(entity).m_iGunValue / 20;
 
-	int divide = GetTeam(entity) == TFTeam_Red ? 2 : 3;	// Allied NPCs get a buff
+	int divide = 3;
 
 	if(b_thisNpcIsARaid[entity])
 	{
@@ -99,7 +102,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		return true;
 	}
 	
-	if((LastTime[entity] + 5.0) > gameTime && GetTeam(entity) != TFTeam_Red)
+	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
 	
 	int low = -1;
@@ -120,7 +123,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %.0f%%]", ElementName[low], lowHealth);
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %d]", ElementName[low], lowHealth);
 	return true;
 }
 
@@ -160,7 +163,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
 						return;
 				}
 
@@ -168,6 +171,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 			
 			trigger = TriggerDamage(victim, Element_Nervous);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Nervous;
 			ElementDamage[victim][Element_Nervous] += damage;
 			if(ElementDamage[victim][Element_Nervous] > trigger)
@@ -250,7 +254,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
 						return;
 				}
 
@@ -258,6 +262,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			
 			trigger = TriggerDamage(victim, Element_Chaos);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Chaos;
 			ElementDamage[victim][Element_Chaos] += damage;
 			if(ElementDamage[victim][Element_Chaos] > trigger)
@@ -318,6 +323,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 		{
 			int trigger = TriggerDamage(victim, Element_Cyro);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Cyro;
 			ElementDamage[victim][Element_Cyro] += damage;
 			if(ElementDamage[victim][Element_Cyro] > trigger)
@@ -344,6 +350,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 		{
 			int trigger = TriggerDamage(victim, Element_Necrosis);
 
+			LastTime[victim] = GetGameTime();
 			LastElement[victim] = Element_Necrosis;
 			ElementDamage[victim][Element_Necrosis] += damage;
 			if(ElementDamage[victim][Element_Necrosis] > trigger)
@@ -351,7 +358,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				ElementDamage[victim][Element_Necrosis] = 0;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 7.5;
 
-				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_SLASH);
+				StartBleedingTimer(victim, attacker, 800.0, 15, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				
 				float time = 7.5;
 				if(b_thisNpcIsARaid[victim])

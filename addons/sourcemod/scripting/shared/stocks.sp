@@ -527,7 +527,9 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 	}
 
 	TFClassType backup;
-	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
+	//for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
+	int TempEnginnerExcluded;
+	for(TFClassType class=TFClass_Spy; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
 			continue;
@@ -1148,7 +1150,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
+stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype, int customtype = 0)
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
@@ -1160,6 +1162,7 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(damagetype);
+		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
 		pack.WriteCell(amount);
 	}
@@ -1200,9 +1203,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
+	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
