@@ -2,6 +2,8 @@
 #pragma newdecls required
 
 static float BONES_SUPREME_SPEED[4] = { 280.0, 290.0, 300.0, 320.0 };
+static float SSB_RaidTime[4] = { 200.0, 220.0, 240.0, 260.0 };
+static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 
 #define BONES_SUPREME_SCALE				"1.45"
 #define BONES_SUPREME_SKIN				"1"
@@ -33,6 +35,10 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 290.0, 300.0, 320.0 };
 #define SND_NECROBLAST_EXTRA_1	")misc/halloween/spell_spawn_boss.wav"
 #define SND_NECROBLAST_EXTRA_2	")items/halloween/crazy02.wav"
 #define SND_NECROBLAST_EXTRA_3	")items/cart_explode.wav"
+#define SND_SUMMON_BLAST		")misc/halloween/spell_spawn_boss.wav"
+#define SND_SUMMON_SPAWN		")misc/halloween/merasmus_appear.wav"
+#define SND_SUMMON_INTRO		")misc/halloween/gotohell.wav"
+#define SND_SUMMON_LOOP			")ambient/halloween/underground_wind_lp_02.wav"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -54,6 +60,7 @@ static float BONES_SUPREME_SPEED[4] = { 280.0, 290.0, 300.0, 320.0 };
 #define PARTICLE_MEGASKULLBLAST				"fireSmoke_collumn_mvmAcres"
 #define PARTICLE_SKULL_MINI					"flaregun_trail_red"
 #define PARTICLE_PORTAL_PURPLE				"eyeboss_tp_vortex"
+#define PARTICLE_SUMMON_VANISH				"ghost_appearation"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -325,6 +332,10 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_NECROBLAST_EXTRA_1);
 	PrecacheSound(SND_NECROBLAST_EXTRA_2);
 	PrecacheSound(SND_NECROBLAST_EXTRA_3);
+	PrecacheSound(SND_SUMMON_BLAST);
+	PrecacheSound(SND_SUMMON_SPAWN);
+	PrecacheSound(SND_SUMMON_INTRO);
+	PrecacheSound(SND_SUMMON_LOOP);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -464,8 +475,8 @@ int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to defa
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
-//float SSB_SpecialCDMin[4] = { 0.0, 0.0, 0.0, 0.0 };	//The minimum cooldown between specials.
-//float SSB_SpecialCDMax[4] = { 0.0, 0.0, 0.0, 0.0 }; //The maximum cooldown between specials.
+//float SSB_SpecialCDMin[4] = { 8.0, 0.0, 0.0, 8.0 };	//The minimum cooldown between specials.
+//float SSB_SpecialCDMax[4] = { 8.0, 0.0, 0.0, 8.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -478,17 +489,20 @@ float Necrotic_SelfKB[4] = { 800.0, 1200.0, 1600.0, 2000.0 };	//Amount of knockb
 //SPOOKY SPECIAL #2 - MASTER OF THE DAMNED: SSB takes an immobile stance where he rapidly summons skeletal minions to fight for him. These minions are summoned by telegraphed
 //green thunderbolts which deal damage in the area around the minion's spawn point.
 int Summon_Count[4] = { 2, 3, 4, 5 };								//Number of minions summoned per summon interval.
+float Summon_HPCost[4] = { 0.66, 0.4, 0.33, 0.25 };					//After losing this percentage of his max HP, SSB will immediately activate Master of the Damned the next time he takes damage.
 float Summon_Max[4] = { 16.0, 25.0, 35.0, 45.0 };					//Maximum total summon value of minions summoned by SSB by this ability (lightning strikes will still occur once this cap is reached, but new minions will not be summoned).
-float Summon_Duration[4] = { 8.0, 10.0, 12.0, 14.0 };				//Duration for which SSB should summon minions.
+float Summon_Duration[4] = { 6.5, 7.0, 7.5, 8.0 };					//Duration for which SSB should summon minions.
 float Summon_Resistance[4] = { 0.5, 0.42, 0.33, 0.25 };				//Amount to multiply all damage taken by SSB while he is summoning.
 float Summon_BonusTime[4] = { 10.0, 12.0, 14.0, 16.0 };				//Bonus time given to the mercenaries when SSB activates this ability.
 float Summon_Radius[4] = { 600.0, 800.0, 1000.0, 1200.0 };			//Radius in which minions are summoned.
-float Summon_Interval[4] = { 1.0, 0.9, 0.8, 0.6 };					//Time between summon waves.
+float Summon_Interval[4] = { 1.0, 0.8, 0.66, 0.5 };					//Time between summon waves.
+float Summon_SpawnDelay[4] = { 0.66, 0.66, 0.66, 0.66 };			//Time after the thunderbolt is called until it hits its target and spawns a minion.
 float Summon_ThunderDMG[4] = { 100.0, 200.0, 300.0, 400.0 };		//Damage dealt by thunderbolts.
-float Summon_ThunderRadius[4] = { 120.0, 180.0, 240.0, 300.0 };		//Thunderbolt radius.
+float Summon_ThunderRadius[4] = { 120.0, 140.0, 160.0, 180.0 };		//Thunderbolt radius.
 float Summon_ThunderEntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by thunderbolts to entities.
 float Summon_ThunderFalloffMultiHit[4] = { 0.66, 0.75, 0.8, 0.8 };	//Amount to multiply damage dealt by thunderbolts for each target hit.
 float Summon_ThunderFalloffRange[4] = { 0.66, 0.5, 0.33, 0.165 };	//Maximum damage falloff of thunderbolts, based on range.
+float Summon_DamageTracker[MAXENTITIES];							//Don't touch this, it's just used to track how much damage SSB has taken since the last time he used this ability.
 
 //SPOOKY SPECIAL #3 - SOUL HARVESTER: SSB takes an immobile stance where he raises his arms and attempts to drain the life of all nearby enemies, drawing them in as they rapidly
 //take damage which is then given to SSB as healing. This ability is immune to damage falloff.
@@ -544,6 +558,7 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //TODO:
 //	- All specials and spells.
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
+//		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
 //		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
 //	- Finalize the VFX/SFX on the following abilities:
 //		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
@@ -564,8 +579,8 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Entered permanently when the mercenaries run out of time on any wave phase.
 //	- DO NOT FORGET:
 //		- Summoner's Stance, Soul Harvester, and Hell is Here all grant resistance while active.
-//		- Summoner's Stance needs to grant bonus time when it is activated.
-//		- Summoner's Stance needs a filter which blocks it from activating if the user has not taken a certain amount of damage since its last activation.
+//		- When the last merc dies, he needs to play his victory sound and mock RED team in chat.
+//		- If he takes more than X% (probably 2.5%?) of his max HP from a single attack, he needs to play the BigHit sound.
 
 //Below are the stats governing both of SSB's ability systems (Spell Cards AND Spooky Specials). Do not touch these! Instead, use the methodmap's getters and setters if you need to change them.
 #define SSB_MAX_ABILITIES 255
@@ -587,7 +602,7 @@ methodmap SSB_Ability __nullable__
 	public SSB_Ability()
 	{
 		int index = 0;
-		while (SSB_AbilitySlotUsed[index] && index < SSB_MAX_ABILITIES)
+		while (SSB_AbilitySlotUsed[index] && index < SSB_MAX_ABILITIES - 1)
 			index++;
 
 		if (index >= SSB_MAX_ABILITIES)
@@ -607,7 +622,7 @@ methodmap SSB_Ability __nullable__
 			success = GetRandomFloat(0.0, 1.0) <= this.Chance;
 
 		if (success && !forced)
-			success = this.Uses < this.MaxUses || this.MaxUses <= 0;
+			success = this.Uses < this.MaxUses || this.MaxUses == 0;
 
 		if (success && !forced && this.FilterFunction != INVALID_FUNCTION)
 		{
@@ -732,8 +747,8 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 0, Special_Summoner, _, false, _, Summon_Duration[0]));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
 
 	//Wave 30:
 	//Spell Cards:
@@ -743,6 +758,7 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[1]));
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[1] + 1.6));
+	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, -1, Special_Summoner, _, false, _, Summon_Duration[1] + 2.2));
 
 	//Wave 45:
 	//Spell Cards:
@@ -754,6 +770,7 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[2], SSB_CreateAbility("RING OF TARTARUS", 0.33, 1, SpellCard_RingOfTartarus));
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[2] + 1.6));
+	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[2] + 2.2));
 
 	//Wave 60+:
 	//Spell Cards:
@@ -766,6 +783,7 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[3] + 1.6));
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[3] + 2.2));
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -1580,7 +1598,7 @@ methodmap Tartarus_Ring __nullable__
 	public Tartarus_Ring(float pos[3], int phase, SupremeSpookmasterBones owner)
 	{
 		int index = 0;
-		while (Tartarus_Ring_SlotUsed[index] && index < RING_MAX)
+		while (Tartarus_Ring_SlotUsed[index] && index < RING_MAX - 1)
 			index++;
 
 		if (index >= RING_MAX)
@@ -2152,6 +2170,8 @@ public void NecroBlast_ChargeVFX(DataPack pack)
 		float total = end - start;
 		float ratio = remaining / total;
 
+		RaidModeScaling = (SSB_RaidPower[phase] * 100000.0) * (1.0 - ratio);
+
 		int alpha = 255 - RoundToCeil(255.0 * ratio);
 		
 		float pos[3], ang[3];
@@ -2175,8 +2195,8 @@ public void NecroBlast_ChargeVFX(DataPack pack)
 			ScaleVector(Direction, 9999.0);
 			AddVectors(startPos, Direction, endPos);
 
-			SpawnBeam_Vectors(pos, startPos, 0.1, 0, 255, 120, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
-			SpawnBeam_Vectors(startPos, endPos, 0.1, 0, 255, 120, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
+			SpawnBeam_Vectors(pos, startPos, 0.1, 255, 60, 0, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
+			SpawnBeam_Vectors(startPos, endPos, 0.1, 255, 60, 0, alpha, PrecacheModel("materials/sprites/laserbeam.vmt"), 2.0, 2.0, _, 0.0);
 		}
 
 		next = gt + 0.0;
@@ -2277,11 +2297,6 @@ public void NecroBlast_Fire(SupremeSpookmasterBones ssb, int phase)
 	hullMax[1] = -hullMin[1];
 	hullMax[2] = -hullMin[2];
 
-	//We move the hitbox slightly forward so that it doesn't damage people who are standing next to SSB but outside of the laser.
-	GetAngleVectors(testAng, Direction, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(Direction, Necrotic_Width[phase] * 0.5);
-	AddVectors(pos, Direction, pos);
-
 	GetPointFromAngles(pos, testAng, 9999.0, shootPos, Priest_IgnoreAll, MASK_SHOT);
 
 	TR_TraceHullFilter(pos, shootPos, hullMin, hullMax, 1073741824, SSB_LaserTrace, ssb.index);
@@ -2323,10 +2338,10 @@ public void NecroBlast_Fire(SupremeSpookmasterBones ssb, int phase)
 		ScaleVector(Direction, 9999.0);
 		AddVectors(startPos, Direction, endPos);
 
-		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 66.0, 66.0, _, 0.0);
-		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 66.0, 66.0, _, 0.0);
-		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 33.0, 33.0, _, 10.0);
-		SpawnBeam_Vectors(startPos, endPos, 0.33, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 11.0, 11.0, _, 20.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 255, 60, 0, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 255, 60, 0, 255, PrecacheModel("materials/sprites/glow02.vmt"), 66.0, 66.0, _, 0.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 255, 60, 0, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 33.0, 33.0, _, 10.0);
+		SpawnBeam_Vectors(startPos, endPos, 0.33, 255, 60, 0, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 11.0, 11.0, _, 20.0);
 	}
 
 	SSB_BigVFX(true, _, _, 2.0, false);
@@ -2352,6 +2367,8 @@ public void NecroBlast_Fire(SupremeSpookmasterBones ssb, int phase)
 		ssb.Unpause();
 		ssb.UsingAbility = false;
 	}
+
+	RaidModeScaling = SSB_RaidPower[SSB_WavePhase];
 }
 
 public void NecroBlast_FunnySpin(int ref)
@@ -2379,6 +2396,8 @@ public void Special_Summoner(SupremeSpookmasterBones ssb, int target)
 	ssb.UsingAbility = true;
 	ssb.Pause();
 	ssb.PlaySummonerIntro();
+	ssb.DmgMult = Summon_Resistance[SSB_WavePhase];
+	ssb.GiveTime(Summon_BonusTime[SSB_WavePhase]);
 
 	int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_INTRO");
 	if(iActivity > 0) ssb.StartActivity(iActivity);
@@ -2460,7 +2479,27 @@ public void Summoner_Logic(DataPack pack)
 
 	if (gt >= nextWave)
 	{
-		//TODO: Summon a bunch of guys, also explode
+		for (int i = 0; i < Summon_Count[phase]; i++)
+		{
+			float randAng[3], spawnLoc[3];
+			randAng[1] = GetRandomFloat(0.0, 360.0);
+
+			GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Summon_Radius[phase]), spawnLoc, Priest_OnlyHitWorld, MASK_SHOT);
+
+			spawnLoc[2] -= SSB_GetDistanceToGround(spawnLoc);
+
+			spawnRing_Vectors(spawnLoc, Summon_ThunderRadius[phase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, Summon_SpawnDelay[phase], 16.0, 0.0, 0);
+			spawnRing_Vectors(spawnLoc, Summon_ThunderRadius[phase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 0, 255, 120, 255, 0, Summon_SpawnDelay[phase], 16.0, 0.0, 0, 0.0);
+			ParticleEffectAt(spawnLoc, PARTICLE_SPAWNVFX_GREEN);
+
+			DataPack summonPack = new DataPack();
+			CreateDataTimer(Summon_SpawnDelay[phase], Summoner_Spawn, summonPack, TIMER_FLAG_NO_MAPCHANGE);
+			WritePackCell(summonPack, EntIndexToEntRef(ssb.index));
+			WritePackCell(summonPack, phase);
+			WritePackFloat(summonPack, spawnLoc[0]);
+			WritePackFloat(summonPack, spawnLoc[1]);
+			WritePackFloat(summonPack, spawnLoc[2]);
+		}
 
 		nextWave = gt + Summon_Interval[phase];
 	}
@@ -2480,6 +2519,201 @@ public void Summoner_Logic(DataPack pack)
 	WritePackFloat(pack, nextVFX);
 }
 
+#define SUMMONER_MAX	255
+
+bool Summoner_Minion_SlotUsed[SUMMONER_MAX];
+bool Summoner_HasBuffedForm[SUMMONER_MAX];
+
+float Summoner_BuffChance[SUMMONER_MAX];
+float Summoner_Value[SUMMONER_MAX];
+
+int Summoner_Count[SUMMONER_MAX];
+
+Function Summoner_SummonFunction[SUMMONER_MAX] = { INVALID_FUNCTION, ... };
+
+methodmap Summoner_Minion __nullable__
+{
+	public Summoner_Minion(Function SummonFunction, bool HasBuffedForm = true, float BuffChance = 0.0, float SummonValue = 1.0, int SummonCount = 1)
+	{
+		int index = 0;
+		while (Summoner_Minion_SlotUsed[index] && index < SUMMONER_MAX - 1)
+			index++;
+
+		if (index >= SUMMONER_MAX)
+			LogError("ERROR: More than %i minion templates for Master of the Damned cannot exist at once.", SUMMONER_MAX);
+		
+		Summoner_Minion_SlotUsed[index] = true;
+		Summoner_HasBuffedForm[index] = HasBuffedForm;
+		Summoner_SummonFunction[index] = SummonFunction;
+		Summoner_BuffChance[index] = BuffChance;
+		Summoner_Value[index] = SummonValue;
+		Summoner_Count[index] = SummonCount;
+
+		return view_as<Summoner_Minion>(index);
+	}
+
+	public void Dispatch(SupremeSpookmasterBones ssb, float pos[3], int phase)
+	{
+		Summoner_Minion_SlotUsed[this.Index] = false;
+
+		if (this.SummonFunction == INVALID_FUNCTION || this.Count < 1)
+			return;
+
+		for (int i = 0; i < this.Count && ssb.m_flBoneZoneNumSummons + this.Value < Summon_Max[phase]; i++)
+		{
+			float randAng[3];
+			randAng[1] = GetRandomFloat(0.0, 360.0);
+
+			int entity = -1;
+
+			Call_StartFunction(null, this.SummonFunction);
+
+			Call_PushCell(ssb.index);
+			Call_PushArray(pos, 3);
+			Call_PushArray(randAng, 3);
+			Call_PushCell(GetTeam(ssb.index));
+			if (this.HasBuffedForm)
+				Call_PushCell(GetRandomFloat(0.0, 1.0) <= this.BuffChance);
+
+			Call_Finish(entity);
+
+			CClotBody summoned = view_as<CClotBody>(entity);
+			summoned.m_iBoneZoneSummoner = ssb.index;
+			summoned.m_flBoneZoneSummonValue = this.Value;
+			ssb.m_flBoneZoneNumSummons += this.Value;
+		}
+
+		this.SummonFunction = INVALID_FUNCTION;
+	}
+
+	property int Index
+	{
+		public get() { return view_as<int>(this); }
+	}
+
+	property int Count
+	{
+		public get() { return Summoner_Count[this.Index]; }
+		public set(int value) { Summoner_Count[this.Index] = value; }
+	}
+
+	property float BuffChance
+	{
+		public get() { return Summoner_BuffChance[this.Index]; }
+		public set(float value) { Summoner_BuffChance[this.Index] = value; }
+	}
+
+	property float Value
+	{
+		public get() { return Summoner_Value[this.Index]; }
+		public set(float value) { Summoner_Value[this.Index] = value; }
+	}
+
+	property bool HasBuffedForm
+	{
+		public get() { return Summoner_HasBuffedForm[this.Index]; }
+		public set(bool value) { Summoner_HasBuffedForm[this.Index] = value; }
+	}
+
+	property Function SummonFunction
+	{
+		public get() { return Summoner_SummonFunction[this.Index]; }
+		public set(Function value) { Summoner_SummonFunction[this.Index] = value; }
+	}
+}
+
+public Action Summoner_Spawn(Handle timer, DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float spawnLoc[3], skyPos[3];
+	for (int i = 0; i < 3; i++)
+		spawnLoc[i] = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+		return Plugin_Continue;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+
+	skyPos = spawnLoc;
+	skyPos[2] += 9999.0;
+
+	int particle = ParticleEffectAt(spawnLoc, PARTICLE_GREENBLAST_SSB, 2.0);
+	int pitch = GetRandomInt(70, 110);
+	EmitSoundToAll(SND_SUMMON_BLAST, particle, _, 120, _, _, pitch);
+	EmitSoundToAll(SND_SUMMON_SPAWN, particle, _, 120, _, _, pitch);
+
+	SpawnBeam_Vectors(skyPos, spawnLoc, 0.33, 0, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, spawnLoc, 0.33, 0, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 36.0, 36.0, _, 0.0);
+	SpawnBeam_Vectors(skyPos, spawnLoc, 0.33, 0, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 36.0, 36.0, _, 20.0);
+
+	bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+	Explode_Logic_Custom(Summon_ThunderDMG[phase], ssb.index, ssb.index, -1, spawnLoc, Summon_ThunderRadius[phase], Summon_ThunderFalloffMultiHit[phase], 
+	Summon_ThunderFalloffRange[phase], isBlue, _, _, Summon_ThunderEntityMult[phase]);
+
+	ArrayList minions = new ArrayList();
+
+	//TODO: Expand on this once all other Bone Zone NPCs are finished.
+	//	- Phase 0: Already finished, should ONLY be able to summon Basic Bones, Beefy Bones, and 2x Brittle Bones.
+	//	- Phase 1: Normal pirate-themed skeletons.
+	//	- Phase 2: Medieval-era skeletons.
+	//	- Phase 3: Literally any non-boss skeleton.
+	switch(phase)
+	{
+		case 0:
+		{
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BasicBones), true, 0.1));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BeefyBones), true, 0.1));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BrittleBones), true, 0.2, 0.5, 2));
+		}
+		case 1:
+		{
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BasicBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BeefyBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BrittleBones), true, 0.33, 0.5, 2));
+		}
+		case 2:
+		{
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BasicBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BeefyBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BrittleBones), true, 0.33, 0.5, 2));
+		}
+		default:
+		{
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BasicBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BeefyBones), true, 0.2));
+			PushArrayCell(minions, new Summoner_Minion(view_as<Function>(Summon_BrittleBones), true, 0.33, 0.5, 2));
+		}
+	}
+
+	if (GetArraySize(minions) > 0)
+	{
+		int chosen = GetRandomInt(0, GetArraySize(minions) - 1);
+		Summoner_Minion minion = GetArrayCell(minions, chosen);
+		minion.Dispatch(ssb, spawnLoc, phase);
+	}
+
+	delete minions;
+
+	return Plugin_Continue;
+}
+
+public int Summon_BasicBones(int owner, float pos[3], float ang[3], int team, bool buffed)
+{
+	return BasicBones(owner, pos, ang, team, buffed).index;
+}
+
+public int Summon_BeefyBones(int owner, float pos[3], float ang[3], int team, bool buffed)
+{
+	return BeefyBones(owner, pos, ang, team, buffed).index;
+}
+
+public int Summon_BrittleBones(int owner, float pos[3], float ang[3], int team, bool buffed)
+{
+	return BrittleBones(owner, pos, ang, team, buffed).index;
+}
+
 public Action Summon_End(Handle end, int ref)
 {
 	int ent = EntRefToEntIndex(ref);
@@ -2489,13 +2723,42 @@ public Action Summon_End(Handle end, int ref)
 		ssb.UsingAbility = false;
 		ssb.Unpause();
 		ssb.RevertSequence();
+		ssb.DmgMult = 1.0;
+		Summon_StopLoop(ssb);
 	}
 
 	return Plugin_Continue;
 }
 
+public void Summon_StopLoop(SupremeSpookmasterBones ssb)
+{
+	StopSound(ssb.index, SNDCHAN_AUTO, SND_SUMMON_LOOP);
+	StopSound(ssb.index, SNDCHAN_AUTO, SND_SUMMON_LOOP);
+}
+
+public void Summon_DeleteMinions(SupremeSpookmasterBones ssb)
+{
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
+	{
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if (!IsValidEntity(ent))
+			continue;
+
+		CClotBody summoned = view_as<CClotBody>(ent);
+		if (summoned.m_iBoneZoneSummoner == ssb.index)
+		{
+			float pos[3];
+			WorldSpaceCenter(ent, pos);
+			ParticleEffectAt(pos, PARTICLE_SUMMON_VANISH);
+
+			RemoveEntity(ent);
+		}
+	}
+}
+
 bool SSB_UsingAbility[MAXENTITIES];
 bool SSB_Paused[MAXENTITIES];
+float SSB_DMGMult[MAXENTITIES];
 
 methodmap SupremeSpookmasterBones < CClotBody
 {
@@ -2503,6 +2766,12 @@ methodmap SupremeSpookmasterBones < CClotBody
 	{
 		public get() { return SSB_UsingAbility[this.index]; }
 		public set(bool value) { SSB_UsingAbility[this.index] = value; }
+	}
+
+	property float DmgMult
+	{
+		public get() { return SSB_DMGMult[this.index]; }
+		public set(float value) { SSB_DMGMult[this.index] = value; }
 	}
 
 	public void Pause()
@@ -2518,6 +2787,8 @@ methodmap SupremeSpookmasterBones < CClotBody
 		this.StartPathing();
 		this.m_bPathing = true;
 	}
+
+	public void GiveTime(float amt) { RaidModeTime += amt; }
 
 	public void RevertSequence()
 	{
@@ -2629,6 +2900,9 @@ methodmap SupremeSpookmasterBones < CClotBody
 		int rand = GetRandomInt(0, sizeof(g_SSBSummonIntro_Sounds) - 1);
 		EmitSoundToAll(g_SSBSummonIntro_Sounds[rand], _, _, 120);
 		CPrintToChatAll(g_SSBSummonIntro_Captions[rand]);
+		EmitSoundToAll(SND_SUMMON_INTRO, _, _, _, _, _, GetRandomInt(80, 110));
+		EmitSoundToAll(SND_SUMMON_LOOP, this.index, _, 120, _, 0.8, 85);
+		EmitSoundToAll(SND_SUMMON_LOOP, this.index, _, 120, _, 0.8, 85);
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlaySummonerIntro()");
@@ -2857,6 +3131,48 @@ methodmap SupremeSpookmasterBones < CClotBody
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
 		npc.UsingAbility = false;
+		npc.DmgMult = 1.0;
+
+		RaidModeScaling = SSB_RaidPower[SSB_WavePhase];
+		RaidModeTime = GetGameTime(npc.index) + SSB_RaidTime[SSB_WavePhase];
+		RaidBossActive = EntIndexToEntRef(npc.index);
+		RaidAllowsBuildings = false;
+
+		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
+		npc.m_bTeamGlowDefault = false;
+		SetVariantColor(view_as<int>({0, 255, 120, 255}));
+		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
+
+		float rightEye[3], leftEye[3];
+		float junk[3];
+		npc.GetAttachment("righteye", rightEye, junk);
+		npc.GetAttachment("lefteye", leftEye, junk);
+
+		npc.m_flBoneZoneNumSummons = 0.0;
+
+		switch (SSB_WavePhase)
+		{
+			case 0:
+			{
+				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_1", npc.index, "righteye", {0.0,0.0,0.0});
+				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_1", npc.index, "lefteye", {0.0,0.0,0.0});
+			}
+			case 1:
+			{
+				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_2", npc.index, "righteye", {0.0,0.0,0.0});
+				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_2", npc.index, "lefteye", {0.0,0.0,0.0});
+			}
+			case 2:
+			{
+				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_3", npc.index, "righteye", {0.0,0.0,0.0});
+				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_3", npc.index, "lefteye", {0.0,0.0,0.0});
+			}
+			default:
+			{
+				npc.m_iWearable1 = ParticleEffectAt_Parent(rightEye, "eye_powerup_green_lvl_4", npc.index, "righteye", {0.0,0.0,0.0});
+				npc.m_iWearable2 = ParticleEffectAt_Parent(leftEye, "eye_powerup_green_lvl_4", npc.index, "lefteye", {0.0,0.0,0.0});
+			}
+		}
 
 		return npc;
 	}
@@ -2944,10 +3260,30 @@ public Action SupremeSpookmasterBones_OnTakeDamage(int victim, int &attacker, in
 
 	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(victim);
 	
+	if (npc.DmgMult != 1.0)
+		damage *= npc.DmgMult;
+
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+
+	Summon_DamageTracker[victim] += damage;
+	if (Summon_DamageTracker[victim] >= (float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * Summon_HPCost[SSB_WavePhase])
+	&& !npc.UsingAbility)
+	{
+		int slot = npc.GetAbilityByName("MASTER OF THE DAMNED");
+		if (slot > -1)
+			npc.ActivateSpecial(-1, slot);
+		else
+		{
+			slot = npc.GetSpellByName("MASTER OF THE DAMNED");
+			if (slot > -1)
+				npc.CastSpell(-1, slot);
+		}
+
+		Summon_DamageTracker[victim] = 0.0;
 	}
 //	
 	return Plugin_Changed;
@@ -2961,6 +3297,9 @@ public void SupremeSpookmasterBones_NPCDeath(int entity)
 	SDKUnhook(entity, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 		
 	npc.RemoveAllWearables();
+	Summon_StopLoop(npc);
+	Summon_DeleteMinions(npc);
+
 	RemoveEntity(entity);
 	//AcceptEntityInput(npc.index, "KillHierarchy");
 }
