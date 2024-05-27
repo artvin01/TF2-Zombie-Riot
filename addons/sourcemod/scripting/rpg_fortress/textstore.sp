@@ -387,8 +387,6 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 	if(auto)
 		return Item_None;
 	
-	static char buffer[256];
-
 	if(!equipped && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 	{
 		int level = item.GetNum("level");
@@ -397,72 +395,11 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 			SPrintToChat(client, "You must be Level %d to use this.", level);
 			return Item_None;
 		}
-
-		static char buffers[8][32];
-		static Race race;
-		bool whitelist;
-
-		item.GetString("race_blacklist", buffer, sizeof(buffer));
-		if(!buffer[0])
-		{
-			item.GetString("race_whitelist", buffer, sizeof(buffer));
-			whitelist = true;
-		}
-
-		if(buffer[0])
-		{
-			bool failed = whitelist;
-			Races_GetClientInfo(client, race);
-			
-			int amount = ExplodeString(buffer, ";", buffers, sizeof(buffers), sizeof(buffers[]), true);
-			for(int i; i < amount; i++)
-			{
-				if(StrContains(race.Name, buffers[0], false) != -1)
-				{
-					failed = !whitelist;
-					break;
-				}
-			}
-
-			if(failed)
-			{
-				strcopy(buffer, sizeof(buffer), whitelist ? "You must be" : "You can not be");
-				
-				for(int i; i < amount; i++)
-				{
-					if(i)
-					{
-						if(i != (amount - 1))
-						{
-							// Race1, Race2
-							// Race1, Race2, Race3
-							Format(buffer, sizeof(buffer), "%s, %s", buffer, buffers[i]);
-						}
-						else if(amount == 2)
-						{
-							// Race1 or Race2
-							Format(buffer, sizeof(buffer), "%s or %s", buffer, buffers[i]);
-						}
-						else
-						{
-							// Race1, Race2, or Race3
-							Format(buffer, sizeof(buffer), "%s, or %s", buffer, buffers[i]);
-						}
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "%s %s", buffer, buffers[i]);
-					}
-				}
-
-				SPrintToChat(client, "%s to use this.", buffer);
-				return Item_None;
-			}
-		}
 	}
 
 	HashCheck();
 
+	static char buffer[64];
 	item.GetString("type", buffer, sizeof(buffer));
 	/*
 	if(!StrContains(buffer, "ammo", false))
@@ -1469,11 +1406,6 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 		}
 	}
 	return 0;
-}
-
-public Action TextStore_OnImportConfig(char file[PLATFORM_MAX_PATH])
-{
-	return RPG_BuildPath(file, sizeof(file), "textstore") ? Plugin_Changed : Plugin_Handled;
 }
 
 void TextStore_EntityCreated(int entity)

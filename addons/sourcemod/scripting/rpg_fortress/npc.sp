@@ -73,7 +73,6 @@ void NPC_ConfigSetup()
 	Huirgrajo_Setup();
 
 	RookieGambler_Setup();
-	BuckshotGambler_Setup();
 
 /*
 	ArkSlug_MapStart();
@@ -557,7 +556,6 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 
 #include "rpg_fortress/npc/casino/npc_casinoshared.sp"
 #include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
-#include "rpg_fortress/npc/casino/npc_buckshotgambler.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
