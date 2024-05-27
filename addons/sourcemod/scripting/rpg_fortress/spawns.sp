@@ -61,17 +61,17 @@ enum struct SpawnEnum
 		this.Boss = view_as<bool>(kv.GetNum("boss"));
 		this.DropMulti = kv.GetFloat("high_drops", 1.0);
 
-		this.Level[LOW] = kv.GetNum("low_level", kv.GetNum("level"));
-		this.Health[LOW] = kv.GetNum("low_health", kv.GetNum("health"));
-		this.XP[LOW] = kv.GetNum("low_xp", kv.GetNum("xp"));
-		this.Cash[LOW] = kv.GetNum("low_cash", kv.GetNum("cash"));
-		this.HPRegen[LOW] = kv.GetNum("low_hpregen", kv.GetNum("hpregen"));
+		this.Level[LOW] = kv.GetNum("level", kv.GetNum("low_level"));
+		this.Health[LOW] = kv.GetNum("health", kv.GetNum("low_health"));
+		this.XP[LOW] = kv.GetNum("xp", kv.GetNum("low_xp"));
+		this.Cash[LOW] = kv.GetNum("cash", kv.GetNum("low_cash"));
+		this.HPRegen[LOW] = kv.GetNum("hpregen", kv.GetNum("low_hpregen"));
 
-		this.Level[HIGH] = kv.GetNum("high_level", this.Level[LOW]);
-		this.Health[HIGH] = kv.GetNum("high_health", this.Health[LOW]);
-		this.XP[HIGH] = kv.GetNum("high_xp", this.XP[LOW]);
-		this.Cash[HIGH] = kv.GetNum("high_cash", this.Cash[LOW]);
-		this.HPRegen[HIGH] = kv.GetNum("high_hpregen", this.HPRegen[LOW]);
+		this.Level[HIGH] = kv.GetNum("level", kv.GetNum("high_level"));
+		this.Health[HIGH] = kv.GetNum("health", kv.GetNum("high_health"));
+		this.XP[HIGH] = kv.GetNum("xp", kv.GetNum("high_xp"));
+		this.Cash[HIGH] = kv.GetNum("cash", kv.GetNum("high_cash"));
+		this.HPRegen[HIGH] = kv.GetNum("hpregen", kv.GetNum("high_hpregen"));
 
 		this.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
 		this.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
