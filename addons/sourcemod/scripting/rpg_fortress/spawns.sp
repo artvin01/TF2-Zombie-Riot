@@ -23,6 +23,12 @@ enum struct SpawnEnum
 	int Cash[2];
 	int HPRegen[2];
 	float DropMulti;
+
+	float ExtraMeleeRes;
+	float ExtraRangedRes;
+	float ExtraSpeed;
+	float ExtraDamage;
+	float ExtraSize;
 	
 	char Item1[48];
 	float Chance1;
@@ -55,17 +61,23 @@ enum struct SpawnEnum
 		this.Boss = view_as<bool>(kv.GetNum("boss"));
 		this.DropMulti = kv.GetFloat("high_drops", 1.0);
 
-		this.Level[LOW] = kv.GetNum("low_level");
-		this.Health[LOW] = kv.GetNum("low_health");
-		this.XP[LOW] = kv.GetNum("low_xp");
-		this.Cash[LOW] = kv.GetNum("low_cash");
-		this.HPRegen[LOW] = kv.GetNum("low_hpregen");
+		this.Level[LOW] = kv.GetNum("low_level", kv.GetNum("level"));
+		this.Health[LOW] = kv.GetNum("low_health", kv.GetNum("health"));
+		this.XP[LOW] = kv.GetNum("low_xp", kv.GetNum("xp"));
+		this.Cash[LOW] = kv.GetNum("low_cash", kv.GetNum("cash"));
+		this.HPRegen[LOW] = kv.GetNum("low_hpregen", kv.GetNum("hpregen"));
 
-		this.Level[HIGH] = kv.GetNum("high_level");
-		this.Health[HIGH] = kv.GetNum("high_health");
-		this.XP[HIGH] = kv.GetNum("high_xp");
-		this.Cash[HIGH] = kv.GetNum("high_cash");
-		this.HPRegen[HIGH] = kv.GetNum("high_hpregen");
+		this.Level[HIGH] = kv.GetNum("high_level", this.Level[LOW]);
+		this.Health[HIGH] = kv.GetNum("high_health", this.Health[LOW]);
+		this.XP[HIGH] = kv.GetNum("high_xp", this.XP[LOW]);
+		this.Cash[HIGH] = kv.GetNum("high_cash", this.Cash[LOW]);
+		this.HPRegen[HIGH] = kv.GetNum("high_hpregen", this.HPRegen[LOW]);
+
+		this.ExtraMeleeRes = kv.GetFloat("extra_melee_res", 1.0);
+		this.ExtraRangedRes = kv.GetFloat("extra_ranged_res", 1.0);
+		this.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
+		this.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
+		this.ExtraSize = kv.GetFloat("extra_size", 1.0);
 
 		kv.GetString("drop_name_1", this.Item1, 48);
 		if(this.Item1[0])
@@ -381,6 +393,17 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				i_CreditsOnKill[entity] = GetScaledRate(spawn.Cash, strength, diff);
 				i_HpRegenInBattle[entity] = GetScaledRate(spawn.HPRegen, strength, diff);
 				b_thisNpcIsABoss[entity] = spawn.Boss;
+
+				fl_Extra_MeleeArmor[entity] = spawn.ExtraMeleeRes;
+				fl_Extra_RangedArmor[entity] = spawn.ExtraRangedRes;
+				fl_Extra_Speed[entity] = spawn.ExtraSpeed;
+				fl_Extra_Damage[entity] = spawn.ExtraDamage;
+
+				if(spawn.ExtraSize != 1.0)
+				{
+					float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale * spawn.ExtraSize);
+				}
 
 				int health;
 				if(spawn.Health[LOW])
@@ -751,41 +774,55 @@ void Spawns_EditorMenu(int client)
 
 		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Min Level: %d", kv.GetNum("low_level"));
-		menu.AddItem("low_level", buffer2);
+		FormatEx(buffer2, sizeof(buffer2), "Level: %d", kv.GetNum("level"));
+		menu.AddItem("level", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
-		menu.AddItem("high_level", buffer2);
+		//FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
+		//menu.AddItem("high_level", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Min Health: %d", kv.GetNum("low_health"));
-		menu.AddItem("low_health", buffer2);
+		FormatEx(buffer2, sizeof(buffer2), "Health: %d", kv.GetNum("health"));
+		menu.AddItem("health", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
-		menu.AddItem("high_health", buffer2);
+		//FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
+		//menu.AddItem("high_health", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Min XP: %d", kv.GetNum("low_xp"));
-		menu.AddItem("low_xp", buffer2);
+		FormatEx(buffer2, sizeof(buffer2), "XP: %d", kv.GetNum("xp"));
+		menu.AddItem("xp", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
-		menu.AddItem("high_xp", buffer2);
+		//FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
+		//menu.AddItem("high_xp", buffer2);
 
-		menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
+		//menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Min Cash: %d", kv.GetNum("low_cash"));
-		menu.AddItem("low_cash", buffer2);
+		FormatEx(buffer2, sizeof(buffer2), "Cash: %d", kv.GetNum("cash"));
+		menu.AddItem("cash", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
-		menu.AddItem("high_cash", buffer2);
+		//FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
+		//menu.AddItem("high_cash", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Min Hp Regen: %d", kv.GetNum("low_hpregen"));
-		menu.AddItem("low_hpregen", buffer2);
+		FormatEx(buffer2, sizeof(buffer2), "HP Regen: %d", kv.GetNum("hpregen"));
+		menu.AddItem("hpregen", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "High Hp Regen: %d", kv.GetNum("high_hpregen"));
-		menu.AddItem("high_hpregen", buffer2);
+		//FormatEx(buffer2, sizeof(buffer2), "High Hp Regen: %d", kv.GetNum("high_hpregen"));
+		//menu.AddItem("high_hpregen", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
-		menu.AddItem("high_drops", buffer2);
-		
+		//FormatEx(buffer2, sizeof(buffer2), "Max Drop Multi: %f", kv.GetFloat("high_drops", 1.0));
+		//menu.AddItem("high_drops", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Melee DMG Taken: %f", kv.GetFloat("extra_melee_res", 1.0));
+		menu.AddItem("extra_melee_res", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Ranged DMG Taken: %f", kv.GetFloat("extra_ranged_res", 1.0));
+		menu.AddItem("extra_ranged_res", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Speed Multi: %f", kv.GetFloat("extra_speed", 1.0));
+		menu.AddItem("extra_speed", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Damage Multi: %f", kv.GetFloat("extra_damage", 1.0));
+		menu.AddItem("extra_damage", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Size Multi: %f", kv.GetFloat("extra_size", 1.0));
+		menu.AddItem("extra_size", buffer2);
 
 		kv.GetString("drop_name_1", buffer1, sizeof(buffer1));
 		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
@@ -1046,7 +1083,6 @@ static void AdjustSpawnCopy(int client, const char[] key)
 	char buffers[2][64];
 	if(ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[])) != 2)
 	{
-		PrintToChatAll("AdjustSpawnCopy:%s::Failed", key);
 		CurrentKeyEditing[client][0] = 0;
 		Spawns_EditorMenu(client);
 		return;

@@ -72,6 +72,8 @@ void NPC_ConfigSetup()
 	SniperAccuracy_OnMapStart_NPC();
 	Huirgrajo_Setup();
 
+	RookieGambler_Setup();
+
 /*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
@@ -552,6 +554,8 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_sniper_accuracy.sp"
 #include "rpg_fortress/npc/normal/npc_huirgrajo.sp"
 
+#include "rpg_fortress/npc/casino/npc_casinoshared.sp"
+#include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
 
 /*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"

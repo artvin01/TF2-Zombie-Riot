@@ -357,7 +357,7 @@ float Stats_GetFormMastery(int client, const char[] name)
 	
 	return mastery;
 }
-
+/*
 float Stats_GetFormMaxMastery(int client, const char[] name)
 {
 	float mastery;
@@ -366,7 +366,7 @@ float Stats_GetFormMaxMastery(int client, const char[] name)
 	
 	return mastery;
 }
-
+*/
 void Stats_SetCurrentFormMastery(int client, float mastery)
 {
 	Form form;
@@ -383,7 +383,7 @@ void Stats_SetCurrentFormMastery(int client, float mastery)
 		SaveClientStats(client);
 	}
 }
-
+/*
 void Stats_SetFormMastery(int client, const char[] name, float mastery)
 {
 	if(!Mastery[client])
@@ -392,7 +392,7 @@ void Stats_SetFormMastery(int client, const char[] name, float mastery)
 	Mastery[client].SetValue(name, mastery);
 	SaveClientStats(client);
 }
-
+*/
 bool Stats_GetHasKill(int client, const char[] name)
 {
 	if(HasKilled[client])
@@ -668,18 +668,16 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 
 	return RoundFloat((float(bonus) + base) * multi);
 }
-
+/*
 float Stats_KnockbackResist(int client)
 {
-	/*
 	float lv = float(level == -1 ? Level[client] : level);
 	float ti = float(tier == -1 ? Tier[client] : tier);
 
 	return 1.0 / (0.5 + ti + (lv * 0.05));
-	*/
 	return 1.0 / (0.5 + (Stats_Structure(client) * 0.0005));
 }
-
+*/
 int UpgradeCost(int client)
 {
 	return BaseUpgradeCost + (Level[client] * BaseUpgradeScale);

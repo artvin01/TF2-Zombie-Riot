@@ -340,7 +340,6 @@ float f_InBattleDelay[MAXTF2PLAYERS];
 
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_PlayerDamaged[MAXTF2PLAYERS];
-int PlayerPoints[MAXTF2PLAYERS];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
@@ -348,6 +347,7 @@ TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 TFClassType WeaponClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
 
 #if defined ZR
+int PlayerPoints[MAXTF2PLAYERS];
 float f_InBattleHudDisableDelay[MAXTF2PLAYERS];
 int CurrentAmmo[MAXTF2PLAYERS][Ammo_MAX];
 float DeleteAndRemoveAllNpcs = 5.0;
@@ -359,8 +359,11 @@ int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsHud[MAXENTITIES];
 #endif
 
-#if defined ZR || defined RTS || defined RPG
+#if defined ZR || defined RTS
 ConVar CvarInfiniteCash;
+#endif
+
+#if defined ZR || defined RTS || defined RPG
 Handle SyncHud_ArmorCounter;
 #endif
 

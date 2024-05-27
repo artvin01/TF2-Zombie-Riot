@@ -1639,15 +1639,15 @@ public Action Dungeon_Timer(Handle timer)
 				int time = RoundToCeil(dungeon.StartTime - GetGameTime());
 				if(time > 0)
 				{
-					if(time > 10)
+					if(time > 30)
 					{
 						static StageEnum stage;
 						if(dungeon.StageList.GetArray(dungeon.CurrentStage, stage, sizeof(stage)))
 						{
 							if(b_IsAloneOnServer || StageSlotsLeft(name, stage) < 1)
 							{
-								dungeon.StartTime = GetGameTime() + 10;
-								time = 10;
+								time = stage.ModList ? 30 : 5;
+								dungeon.StartTime = GetGameTime() + time;
 							}
 						}
 					}

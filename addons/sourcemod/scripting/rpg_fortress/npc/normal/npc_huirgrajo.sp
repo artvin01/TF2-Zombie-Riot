@@ -55,15 +55,15 @@ methodmap Huirgrajo < CClotBody
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayPistolFire()
  	{
-		EmitSoundToAll(g_RangedAttackSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetURandomInt() % sizeof(g_RangedAttackSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayPistolReload()
  	{
-		EmitSoundToAll(g_RangedReloadSounds[GetURandomInt() % sizeof(g_HurtSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedReloadSounds[GetURandomInt() % sizeof(g_RangedReloadSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public Huirgrajo(int client, float vecPos[3], float vecAng[3], int ally)
@@ -71,10 +71,7 @@ methodmap Huirgrajo < CClotBody
 		Huirgrajo npc = view_as<Huirgrajo>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "300", ally, false));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-
 		npc.SetActivity("ACT_MP_STAND_SECONDARY");
-
-		npc.m_bisWalking = false;
 
 		float gameTime = GetGameTime(npc.index);
 		npc.m_flNextMeleeAttack = gameTime + 9.0;
@@ -86,9 +83,7 @@ methodmap Huirgrajo < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		f3_SpawnPosition[npc.index][0] = vecPos[0];
-		f3_SpawnPosition[npc.index][1] = vecPos[1];
-		f3_SpawnPosition[npc.index][2] = vecPos[2];	
+		f3_SpawnPosition[npc.index] = vecPos;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ClotTakeDamage;
@@ -179,7 +174,22 @@ static void ClotThink(int iNPC)
 		WorldSpaceCenter(npc.index, vecMe);
 		WorldSpaceCenter(target, vecTarget);
 
-		//float distance = GetVectorDistance(vecTarget, vecMe, true);
+		float distance = GetVectorDistance(vecTarget, vecMe, true);
+		
+		if(npc.m_flReloadDelay > gameTime)
+		{
+			
+		}
+		else if(distance < npc.GetLeadRadius()) 
+		{
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, target, _, _, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
@@ -266,7 +276,7 @@ static void ClotThink(int iNPC)
 	}
 }
 
-void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(attacker > 0)
 	{
@@ -281,7 +291,7 @@ void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, in
 	}
 }
 
-void ClotDeath(int entity)
+static void ClotDeath(int entity)
 {
 	Huirgrajo npc = view_as<Huirgrajo>(entity);
 	if(!npc.m_bGib)

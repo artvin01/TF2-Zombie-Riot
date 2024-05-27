@@ -4455,7 +4455,7 @@ void PrecachePlayerGiveGiveResponseVoice()
 }
 
 
-void MakePlayerGiveResponseVoice(int client, int status)
+stock void MakePlayerGiveResponseVoice(int client, int status)
 {
 	int ClassShown = view_as<int>(CurrentClass[client]);
 
