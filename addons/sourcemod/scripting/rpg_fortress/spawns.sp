@@ -774,19 +774,19 @@ void Spawns_EditorMenu(int client)
 
 		menu.AddItem("time", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Level: %d", kv.GetNum("level"));
+		FormatEx(buffer2, sizeof(buffer2), "Level: %d", kv.GetNum("level", kv.GetNum("low_level")));
 		menu.AddItem("level", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Level: %d", kv.GetNum("high_level"));
 		//menu.AddItem("high_level", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "Health: %d", kv.GetNum("health"));
+		FormatEx(buffer2, sizeof(buffer2), "Health: %d", kv.GetNum("health", kv.GetNum("low_health")));
 		menu.AddItem("health", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Health: %d", kv.GetNum("high_health"));
 		//menu.AddItem("high_health", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "XP: %d", kv.GetNum("xp"));
+		FormatEx(buffer2, sizeof(buffer2), "XP: %d", kv.GetNum("xp", kv.GetNum("low_xp")));
 		menu.AddItem("xp", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max XP: %d", kv.GetNum("high_xp"));
@@ -794,13 +794,13 @@ void Spawns_EditorMenu(int client)
 
 		//menu.AddItem("high_xp", buffer2, ITEMDRAW_SPACER);
 
-		FormatEx(buffer2, sizeof(buffer2), "Cash: %d", kv.GetNum("cash"));
+		FormatEx(buffer2, sizeof(buffer2), "Cash: %d", kv.GetNum("cash", kv.GetNum("low_cash")));
 		menu.AddItem("cash", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "Max Cash: %d", kv.GetNum("high_cash"));
 		//menu.AddItem("high_cash", buffer2);
 
-		FormatEx(buffer2, sizeof(buffer2), "HP Regen: %d", kv.GetNum("hpregen"));
+		FormatEx(buffer2, sizeof(buffer2), "HP Regen: %d", kv.GetNum("hpregen", kv.GetNum("low_hpregen")));
 		menu.AddItem("hpregen", buffer2);
 
 		//FormatEx(buffer2, sizeof(buffer2), "High Hp Regen: %d", kv.GetNum("high_hpregen"));
