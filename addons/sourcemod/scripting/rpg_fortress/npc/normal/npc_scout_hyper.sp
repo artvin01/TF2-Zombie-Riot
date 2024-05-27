@@ -131,6 +131,10 @@ methodmap ScoutHyper < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+
+		
+		SetVariantInt(3);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_bisWalking = false;
 
@@ -167,6 +171,8 @@ methodmap ScoutHyper < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/fall17_aztec_warrior/fall17_aztec_warrior_scout.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.SetActivity("ACT_MP_STAND_MELEE");
 
 		return npc;
 	}

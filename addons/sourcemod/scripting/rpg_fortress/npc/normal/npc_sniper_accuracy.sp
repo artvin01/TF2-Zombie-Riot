@@ -147,6 +147,7 @@ methodmap SniperAccuracy < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/sniper/robo_sniper_liquidator/robo_sniper_liquidator.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.SetActivity("ACT_MP_STAND_MELEE");
 
 		return npc;
 	}

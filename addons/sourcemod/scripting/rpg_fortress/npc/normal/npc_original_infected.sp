@@ -160,7 +160,7 @@ methodmap OriginalInfected < CClotBody
 	}
 	public OriginalInfected(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		OriginalInfected npc = view_as<OriginalInfected>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false, true));
+		OriginalInfected npc = view_as<OriginalInfected>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "300", ally, false, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -200,10 +200,6 @@ methodmap OriginalInfected < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/player/items/sniper/desert_marauder.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("partyhat", "models/workshop/player/items/spy/hw2013_foul_cowl/hw2013_foul_cowl.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		npc.m_iWearable5 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/hw2013_the_parasight/hw2013_the_parasight.mdl");
 		SetVariantString("1.25");
