@@ -39,6 +39,8 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define SND_SUMMON_SPAWN		")misc/halloween/merasmus_appear.wav"
 #define SND_SUMMON_INTRO		")misc/halloween/gotohell.wav"
 #define SND_SUMMON_LOOP			")ambient/halloween/underground_wind_lp_02.wav"
+#define SND_SPIN_WHOOSH			")misc/halloween/strongman_fast_whoosh_01.wav"
+#define SND_SPIN_HIT			")misc/halloween/strongman_fast_impact_01.wav"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -336,6 +338,8 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_SUMMON_SPAWN);
 	PrecacheSound(SND_SUMMON_INTRO);
 	PrecacheSound(SND_SUMMON_LOOP);
+	PrecacheSound(SND_SPIN_WHOOSH);
+	PrecacheSound(SND_SPIN_HIT);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -473,10 +477,10 @@ ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used 
 int SSB_LastSpecial[MAXENTITIES] = { -1, ... };			//The most recently-used special. Used so that the same special cannot be used twice in a row.
 int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to default to if none of the other Spooky Specials are successfully cast.
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
-float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
-//float SSB_SpecialCDMin[4] = { 8.0, 0.0, 0.0, 8.0 };	//The minimum cooldown between specials.
-//float SSB_SpecialCDMax[4] = { 8.0, 0.0, 0.0, 8.0 }; //The maximum cooldown between specials.
+//float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
+//float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMin[4] = { 0.0, 0.0, 0.0, 8.0 };	//The minimum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 0.0, 0.0, 0.0, 8.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -533,11 +537,13 @@ float Hell_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };				//Distance to spread s
 
 //SPOOKY SPECIAL #5 - SPIN 2 WIN: SSB pulls out his trusty Mortis Masher and begins to spin wildly. During this, he moves VERY quickly, but has his friction reduced, making
 //him prone to overshooting his target.
+float Spin_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Time until the spin begins.
 float Spin_DMG[4] = { 100.0, 150.0, 200.0, 400.0 };					//Damage dealt per interval to anyone close enough during the spin.
 float Spin_Radius[4] = { 120.0, 120.0, 120.0, 120.0 };				//Radius in which SSB's hammer will bludgeon players while he is spinning.
 float Spin_Interval[4] = { 0.33, 0.3, 0.25, 0.2 };					//Interval in which the hammer will hit anyone who is too close.
 float Spin_Duration[4] = {7.0, 8.0, 9.0, 10.0 };					//Duration of the ability.
 float Spin_Speed[4] = { 600.0, 700.0, 800.0, 900.0 };				//SSB's movement speed while spinning.
+float Spin_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };				//Amount to multiply damage dealt to entities.
 float Spin_KB[4] = { 300.0, 600.0, 900.0, 1200.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
 //SPECIAL NOTE FOR SPIN 2 WIN: Friction and acceleration seem to be inextricably linked. You will need the perfect blend of both to get the effects you're looking for, 
 //so don't just change these willy-nilly without testing first.
@@ -565,7 +571,7 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //		- WITNESS THE SKULL: The skull needs an ambient looping sound, also a custom cast sound (something like ssb_witnesstheskull) since it's the strongest Spell Card.
-//		- Necrotic Blast: Give the charging phase some sort of intense background noise to indicate via audio that he's charging up something enormous.
+//		- Necrotic Blast: Give the charging phase some sort of intense background noise to indicate via audio that he's charging up something enormous. Also add a pose sequence to be used while he's in the air due to self-knockback.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -747,8 +753,9 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[0] + Spin_Duration[0] + 1.0));
 
 	//Wave 30:
 	//Spell Cards:
@@ -758,7 +765,7 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[1], SSB_CreateAbility("DEATH MAGNETIC", 0.5, 3, SpellCard_DeathMagnetic, _, _, true, Death_Delay[1]));
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[1] + 1.6));
-	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, -1, Special_Summoner, _, false, _, Summon_Duration[1] + 2.2));
+	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[1] + 2.2));
 
 	//Wave 45:
 	//Spell Cards:
@@ -2756,6 +2763,138 @@ public void Summon_DeleteMinions(SupremeSpookmasterBones ssb)
 	}
 }
 
+public void Special_Spin(SupremeSpookmasterBones ssb, int target)
+{
+	ssb.UsingAbility = true;
+	ssb.Pause();
+	ssb.PlaySpinIntro();
+	//TODO: Needs intro sequence
+
+	//int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_INTRO");
+	//if(iActivity > 0) ssb.StartActivity(iActivity);
+
+	float begin = GetGameTime(ssb.index) + Spin_Delay[SSB_WavePhase];
+
+	DataPack pack = new DataPack();
+	RequestFrame(Spin_Begin, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, SSB_WavePhase);
+	WritePackFloat(pack, begin);
+}
+
+float Spin_OldSpeed[MAXENTITIES];
+float Spin_OldFrictionSideways[MAXENTITIES];
+float Spin_OldFrictionForward[MAXENTITIES];
+float Spin_OldAcceleration[MAXENTITIES];
+
+public void Spin_Begin(DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float startTime = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	float gt = GetGameTime(user);
+	if (gt >= startTime)
+	{
+		SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+
+		ssb.Unpause();
+
+		Spin_OldSpeed[ssb.index] = ssb.m_flSpeed;
+		ssb.m_flSpeed = Spin_Speed[phase];
+
+		Spin_OldFrictionSideways[ssb.index] = ssb.GetBaseNPC().flFrictionSideways;
+		ssb.GetBaseNPC().flFrictionSideways = Spin_Friction[phase];
+
+		Spin_OldFrictionForward[ssb.index] = ssb.GetBaseNPC().flFrictionForward;
+		ssb.GetBaseNPC().flFrictionForward = Spin_Friction[phase];
+
+		Spin_OldAcceleration[ssb.index] = ssb.GetBaseNPC().flAcceleration;
+		ssb.GetBaseNPC().flAcceleration = Spin_Acceleration[phase];
+
+		delete pack;
+		pack = new DataPack();
+		RequestFrame(Spin_Logic, pack);
+		WritePackCell(pack, EntIndexToEntRef(user));
+		WritePackCell(pack, phase);
+		WritePackFloat(pack, GetGameTime(user) + Spin_Interval[phase]);
+		WritePackFloat(pack, GetGameTime(user) + Spin_Duration[phase]);
+
+		//TODO: Needs looping sequence while active
+
+		return;
+	}
+
+	RequestFrame(Spin_Begin, pack);
+}
+
+public void Spin_Logic(DataPack pack)
+{
+	ResetPack(pack);
+
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float nextHit = ReadPackFloat(pack);
+	float endTime = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+	float gt = GetGameTime(user);
+
+	if (gt >= endTime)
+	{
+		//TODO: Needs outro anim
+		ssb.UsingAbility = false;
+
+		ssb.m_flSpeed = Spin_OldSpeed[ssb.index];
+		ssb.GetBaseNPC().flFrictionSideways = Spin_OldFrictionSideways[ssb.index];
+		ssb.GetBaseNPC().flFrictionForward = Spin_OldFrictionForward[ssb.index];
+		ssb.GetBaseNPC().flAcceleration = Spin_OldAcceleration[ssb.index];
+
+		return;
+	}
+
+	if (gt >= nextHit)
+	{
+		float pos[3];
+		WorldSpaceCenter(ssb.index, pos);
+
+		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(Spin_DMG[phase], ssb.index, ssb.index, 0, pos, Spin_Radius[phase], 1.0, 1.0, isBlue, 999, _, Spin_EntityMult[phase], Spin_OnHit);
+
+		EmitSoundToAll(SND_SPIN_WHOOSH, ssb.index, _, 120, _, _, GetRandomInt(70, 120));
+
+		nextHit = gt + Spin_Interval[phase];
+	}
+
+	pack = new DataPack();
+	RequestFrame(Spin_Logic, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, phase);
+	WritePackFloat(pack, nextHit);
+	WritePackFloat(pack, endTime);
+}
+
+public void Spin_OnHit(int attacker, int victim, float damage, int weapon)
+{
+	EmitSoundToAll(SND_SPIN_HIT, victim, _, _, _, _, GetRandomInt(70, 100));
+	//TODO: Knockback
+}
+
 bool SSB_UsingAbility[MAXENTITIES];
 bool SSB_Paused[MAXENTITIES];
 float SSB_DMGMult[MAXENTITIES];
@@ -2906,6 +3045,17 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlaySummonerIntro()");
+		#endif
+	}
+
+	public void PlaySpinIntro()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBSpin2Win_Sounds) - 1);
+		EmitSoundToAll(g_SSBSpin2Win_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBSpin2Win_Captions[rand]);
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlaySpinIntro()");
 		#endif
 	}
 
@@ -3121,12 +3271,6 @@ methodmap SupremeSpookmasterBones < CClotBody
 			SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
-
-		//COPY THIS WHEN MAKING SPIN 2 WIN'S CODE
-		/*npc.m_flSpeed = Spin_Speed[SSB_WavePhase];
-		npc.GetBaseNPC().flFrictionSideways = Spin_Friction[SSB_WavePhase];
-		npc.GetBaseNPC().flFrictionForward = Spin_Friction[SSB_WavePhase];
-		npc.GetBaseNPC().flAcceleration = Spin_Acceleration[SSB_WavePhase];*/
 
 		npc.CalculateNextSpecial();
 		npc.CalculateNextSpellCard();
