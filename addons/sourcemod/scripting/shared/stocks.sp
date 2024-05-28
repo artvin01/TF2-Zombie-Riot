@@ -527,9 +527,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 	}
 
 	TFClassType backup;
-	//for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
-	int TempEnginnerExcluded;
-	for(TFClassType class=TFClass_Spy; class>TFClass_Unknown; class--)
+	for(TFClassType class=TFClass_Engineer; class>TFClass_Unknown; class--)
 	{
 		if(defaul == class)
 			continue;
