@@ -230,7 +230,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	if(npc.m_flArmorCount > 0.0)
 	{
 		Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_ITEM1", "ACT_MP_STAND_ITEM1", 280.0, gameTime);

@@ -309,7 +309,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 
 
 	//Boss deserves full uptime.
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	float speed;
 	if(npc.m_flAttackHappens_bullshit > gameTime)
 	{
