@@ -273,7 +273,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100000.0;
+					float damage = 150000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -315,14 +315,14 @@ public void OriginalInfected_ClotThink(int iNPC)
 		//dont suck them in if its the final bit
 		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
 		{
-			Bing_BangVisualiser(npc.index, 150.0, 140.0, 550.0);
+			Bing_BangVisualiser(npc.index, 200.0, 350.0, 550.0);
 		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
 			npc.m_flNextRangedAttackHappening = 0.0;
 			//Big TE OR PARTICLE that explodes
 			//Make it purple too
-			BingBangExplosion(npc.index, 150000.0, 350.0, 150.0, 1.0);
+			BingBangExplosion(npc.index, 300000.0, 350.0, 200.0, 1.0);
 			npc.PlayTauntSound();
 		}
 	}

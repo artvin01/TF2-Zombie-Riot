@@ -200,7 +200,7 @@ public void GiantHeadcrabZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 40000.0;
+					float damage = 65000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
