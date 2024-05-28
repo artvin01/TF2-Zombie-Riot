@@ -255,7 +255,7 @@ static void ClotThink(int iNPC)
 
 						NormalizeVector(vecDir, vecDir);
 						
-						float damage = 45000.0;
+						float damage = 70000.0;
 
 						KillFeed_SetKillIcon(npc.index, "enforcer");
 						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");

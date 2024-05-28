@@ -187,10 +187,10 @@ methodmap OriginalInfected < CClotBody
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, OriginalInfected_OnTakeDamagePost);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
+		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_skullbat/c_skullbat.mdl");
-		SetVariantString("0.7");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/medic/medic_mask/medic_mask.mdl");
@@ -206,10 +206,16 @@ methodmap OriginalInfected < CClotBody
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 255, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
 
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 255, 200, 255);	
+		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
+
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
+
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		npc.Anger = false;
@@ -273,7 +279,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 150000.0;
+					float damage = 250000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -313,7 +319,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttackHappening)
 	{
 		//dont suck them in if its the final bit
-		if(npc.m_flNextRangedAttackHappening - 0.5 > gameTime)
+		if(npc.m_flNextRangedAttackHappening - 0.25 > gameTime)
 		{
 			Bing_BangVisualiser(npc.index, 200.0, 350.0, 550.0);
 		}
@@ -322,7 +328,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 			npc.m_flNextRangedAttackHappening = 0.0;
 			//Big TE OR PARTICLE that explodes
 			//Make it purple too
-			BingBangExplosion(npc.index, 300000.0, 350.0, 200.0, 1.0);
+			BingBangExplosion(npc.index, 600000.0, 350.0, 200.0, 1.0);
 			npc.PlayTauntSound();
 		}
 	}
@@ -408,7 +414,7 @@ public void OriginalInfected_ClotThink(int iNPC)
 					npc.m_flAttackHappens = gameTime + 0.4;
 
 					npc.m_flDoingAnimation = gameTime + 0.4;
-					npc.m_flNextMeleeAttack = gameTime + 1.5;
+					npc.m_flNextMeleeAttack = gameTime + 1.0;
 					npc.m_bisWalking = true;
 				}
 			}

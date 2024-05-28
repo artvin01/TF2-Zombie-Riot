@@ -208,13 +208,13 @@ public void SniperAccuracy_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 95000.0;
+					float damage = 150000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						StartBleedingTimer_Against_Client(target, npc.index, 75000.0, 5);
+						StartBleedingTimer_Against_Client(target, npc.index, 100000.0, 5);
 					}
 				}
 				delete swingTrace;
