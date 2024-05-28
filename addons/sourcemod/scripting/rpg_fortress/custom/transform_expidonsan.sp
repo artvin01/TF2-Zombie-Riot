@@ -86,7 +86,7 @@ public void Halo_Activation_Enable_Global(int client, int level)
 		if(level == 3)
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
-			int particler = ParticleEffectAt(flPos, "utaunt_beams_yellow", 0.0);
+			int particler = ParticleEffectAt(flPos, "utaunt_elebound_yellow_head1", 0.0);
 			SetParent(client, particler);
 			iref_Halo[client][1] = EntIndexToEntRef(particler);
 			AddEntityToThirdPersonTransitMode(client, particler);
