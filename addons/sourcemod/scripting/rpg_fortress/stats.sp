@@ -23,6 +23,7 @@ void Stats_PluginStart()
 	RegConsoleCmd("rpg_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stats", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
 	RegConsoleCmd("sm_stat", Stats_ShowStats, "Shows your RPG stats", FCVAR_HIDDEN);
+	RegConsoleCmd("sm_give_mastery", Command_Give_Mastery, "Force gives mastery to current form", FCVAR_HIDDEN);
 }
 
 void Stats_EnableCharacter(int client)
@@ -1018,3 +1019,47 @@ static void RpgStats_GrantStatsViaIndex(int entity, int statindx, int StatAmount
 			Capacity[entity] += StatAmount;
 	}
 }
+
+
+public Action Command_Give_Mastery(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_give_mastery <target> <mastery>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	char buf[12];
+	GetCmdArg(2, buf, sizeof(buf));
+	int money = StringToInt(buf); 
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		if(money > 0)
+		{
+			PrintToChat(targets[target], "You got %i Mastery from the admin %N!", money, client);
+			int MasteryAdd = money;
+			float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+			MasteryCurrent += MasteryAdd;
+			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
+			Stats_SetCurrentFormMastery(client, MasteryCurrent);
+		}
+	}
+	
+	return Plugin_Handled;
+}
+
