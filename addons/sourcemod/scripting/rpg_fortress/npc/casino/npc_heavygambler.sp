@@ -96,6 +96,7 @@ methodmap HeavyGambler < CClotBody
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

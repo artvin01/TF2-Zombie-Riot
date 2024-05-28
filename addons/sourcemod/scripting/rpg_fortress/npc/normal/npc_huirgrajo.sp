@@ -78,6 +78,7 @@ methodmap Huirgrajo < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flCharge_delay = gameTime + 3.0;
 		npc.Anger = false;
+		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

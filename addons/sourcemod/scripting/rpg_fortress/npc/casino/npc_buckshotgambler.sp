@@ -93,6 +93,7 @@ methodmap BuckshotGambler < CClotBody
 		KillFeed_SetKillIcon(npc.index, "headshot");
 
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
