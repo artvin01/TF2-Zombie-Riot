@@ -96,7 +96,6 @@ methodmap HeavyGambler < CClotBody
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -115,6 +114,9 @@ methodmap HeavyGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_heavy.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bagdolier/jul13_bagdolier.mdl", _, skin);
 		
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;	
+
 		return npc;
 	}
 	

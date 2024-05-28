@@ -93,7 +93,6 @@ methodmap BuckshotGambler < CClotBody
 		KillFeed_SetKillIcon(npc.index, "headshot");
 
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -118,6 +117,9 @@ methodmap BuckshotGambler < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shotgun/c_shotgun.mdl", _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/invasion_life_support_system/invasion_life_support_system.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", RandomHat[GetURandomInt() % sizeof(RandomHat)], _, skin);
+		
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;	
 		
 		return npc;
 	}

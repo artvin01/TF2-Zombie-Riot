@@ -103,7 +103,6 @@ methodmap RookieGambler < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE");
 		KillFeed_SetKillIcon(npc.index, "eternal_reward");
-		npc.m_bisWalking = false;
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -125,6 +124,9 @@ methodmap RookieGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/treasure_hat_02_demo.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/demo/demo_chest_front.mdl", _, skin);
 		
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;	
+
 		return npc;
 	}
 	

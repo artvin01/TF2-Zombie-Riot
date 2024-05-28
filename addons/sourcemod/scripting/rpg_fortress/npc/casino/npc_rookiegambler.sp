@@ -106,7 +106,6 @@ methodmap RookieGambler < CClotBody
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisWalking = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -133,6 +132,9 @@ methodmap RookieGambler < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eternal_reward/c_eternal_reward.mdl", _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/jul13_classy_royale/jul13_classy_royale.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", RandomHat[GetURandomInt() % sizeof(RandomHat)], _, skin);
+		
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;	
 		
 		return npc;
 	}
