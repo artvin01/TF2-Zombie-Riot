@@ -124,9 +124,6 @@ methodmap RookieGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/treasure_hat_02_demo.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/demo/demo_chest_front.mdl", _, skin);
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
-
 		return npc;
 	}
 	
@@ -213,6 +210,9 @@ static void ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, target);
 		}
+
+		npc.StartPathing();
+		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{

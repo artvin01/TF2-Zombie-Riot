@@ -94,12 +94,9 @@ methodmap Huirgrajo < CClotBody
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_snub_nose/c_snub_nose.mdl", _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2019_avian_amante/hwn2019_avian_amante.mdl", _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/worksmodels/workshop/player/items/all_class/hwn_spy_priest/hwn_spy_priest_spy.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn_spy_priest/hwn_spy_priest_spy.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/sept2014_lady_killer/sept2014_lady_killer.mdl", _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/short2014_invisible_ishikawa/short2014_invisible_ishikawa.mdl", _, skin);
-		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
 		
 		return npc;
 	}
@@ -142,7 +139,7 @@ static void ClotThink(int iNPC)
 	}
 
 	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
-	Npc_Base_Thinking(npc.index, 800.0, "ACT_MP_RUN_SECONDARY", "ACT_MP_CROUCH_SECONDARY", speed, gameTime);
+	Npc_Base_Thinking(npc.index, 800.0, "ACT_MP_RUN_SECONDARY", "ACT_MP_STAND_SECONDARY", speed, gameTime);
 	npc.m_bAllowBackWalking = false;
 
 	if(!npc.Anger)
@@ -183,17 +180,24 @@ static void ClotThink(int iNPC)
 		
 		if(npc.m_flReloadDelay > gameTime)
 		{
-			
+			npc.StopPathing();
+			npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
 		}
 		else if(distance < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3]; 
 			PredictSubjectPosition(npc, target, _, _, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
+
+			npc.StartPathing();
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		}
 		else
 		{
 			NPC_SetGoalEntity(npc.index, target);
+			
+			npc.StartPathing();
+			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 		}
 
 		if(npc.m_flNextMeleeAttack < gameTime)
@@ -269,8 +273,23 @@ static void ClotThink(int iNPC)
 			{
 				PredictSubjectPositionForProjectiles(npc, target, GetRandomFloat(-1000.0, 1000.0), _, vecTarget);
 
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 15000.0);
+
 				npc.m_flCharge_delay = gameTime + (npc.Anger ? 3.0 : 6.0);
 				PluginBot_Jump(npc.index, vecTarget);
+			}
+		}
+		else
+		{
+			int target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				// Can dodge bullets by moving
+				PredictSubjectPositionForProjectiles(npc, target, -600.0, _, vecTarget);
+				
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 1500.0);
 			}
 		}
 	}

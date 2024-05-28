@@ -114,9 +114,6 @@ methodmap HeavyGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_heavy.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bagdolier/jul13_bagdolier.mdl", _, skin);
 		
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
-
 		return npc;
 	}
 	
@@ -203,6 +200,9 @@ static void ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, target);
 		}
+
+		npc.StartPathing();
+		npc.SetActivity("ACT_MP_RUN_MELEE");
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{

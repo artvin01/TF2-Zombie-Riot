@@ -118,11 +118,6 @@ methodmap BuckshotGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/invasion_life_support_system/invasion_life_support_system.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", RandomHat[GetURandomInt() % sizeof(RandomHat)], _, skin);
 		
-		npc.m_bisWalking = true;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;	
-		npc.SetActivity("ACT_MP_STAND_PRIMARY");
-		
 		return npc;
 	}
 	
@@ -176,6 +171,9 @@ static void ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, target);
 		}
+
+		npc.StartPathing();
+		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
 		if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
