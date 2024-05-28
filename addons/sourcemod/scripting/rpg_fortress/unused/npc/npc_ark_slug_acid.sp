@@ -154,7 +154,7 @@ public void ArkSlugAcid_ClotThink(int iNPC)
 		i_NoEntityFoundCount[npc.index] = 9;
 	}
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, f_SingerBuffedFor[npc.index] > gameTime ? 775.0 : 350.0, "ACT_RUN", "ACT_IDLE", 100.0, gameTime);
 	
 	if(i_NoEntityFoundCount[npc.index] == 9)

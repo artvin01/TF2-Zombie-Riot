@@ -138,7 +138,7 @@ static void ClotThink(int iNPC)
 		speed = npc.Anger ? 160.0 : 260.0;
 	}
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(npc.index, 800.0, "ACT_MP_RUN_SECONDARY", "ACT_MP_STAND_SECONDARY", speed, gameTime);
 	npc.m_bAllowBackWalking = false;
 
