@@ -118,7 +118,7 @@ methodmap BuckshotGambler < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/invasion_life_support_system/invasion_life_support_system.mdl", _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", RandomHat[GetURandomInt() % sizeof(RandomHat)], _, skin);
 		
-		npc.m_bisWalking = false;
+		npc.m_bisWalking = true;
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
 		
