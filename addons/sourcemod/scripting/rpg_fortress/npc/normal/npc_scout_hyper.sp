@@ -133,7 +133,7 @@ methodmap ScoutHyper < CClotBody
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 		
-		SetVariantInt(3);
+		SetVariantInt(3);	
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_bisWalking = false;

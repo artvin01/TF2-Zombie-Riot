@@ -360,7 +360,7 @@ public void DrowedZombieHuman_ClotThink(int iNPC)
 				if(npc.m_flDoingSpecial)
 					Damage1 = 45000.0;
 
-				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 200.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}

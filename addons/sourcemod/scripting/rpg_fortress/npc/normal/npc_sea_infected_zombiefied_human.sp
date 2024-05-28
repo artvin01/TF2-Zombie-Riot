@@ -526,7 +526,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 					npc.m_bPathing = false;
 					float flPos[3]; // original
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "outerspace_belt_red", npc.index, "anim_attachment_LH", {0.0,0.0,0.0});
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "flaregun_energyfield_red", npc.index, "anim_attachment_LH", {0.0,0.0,0.0});
 				}
 			}
 		}
