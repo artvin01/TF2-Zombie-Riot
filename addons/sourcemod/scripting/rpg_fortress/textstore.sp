@@ -2006,7 +2006,7 @@ static void ShowMenu(int client, int page = 0)
 			char c_Powerlevel[255];
 			Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
 			ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
-			Format(TitleChar, sizeof(TitleChar), "RPG Fortress\nPower: %s\nLVL: %s\n \nSkills:", c_Powerlevel,LVLBuffer);
+			Format(TitleChar, sizeof(TitleChar), "RPG Fortress%s\nPower: %s\nLVL: %s\n \nSkills:", CvarRPGInfiniteLevelAndAmmo.BoolValue ? " DEBUG" : "", c_Powerlevel,LVLBuffer);
 			menu.SetTitle("%s",TitleChar);
 
 			static const int MaxSkills = 6;
