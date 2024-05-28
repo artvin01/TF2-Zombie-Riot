@@ -3,43 +3,53 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3"
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSound[][] =
 {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3"
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
 static const char g_IdleSound[][] =
 {
-	"vo/heavy_mvm_collect_credits01.mp3",
-	"vo/heavy_mvm_collect_credits02.mp3",
-	"vo/heavy_mvm_collect_credits03.mp3",
-	"vo/heavy_mvm_collect_credits04.mp3"
+	"vo/spy_stabtaunt01.mp3",
+	"vo/spy_stabtaunt02.mp3",
+	"vo/spy_stabtaunt03.mp3",
+	"vo/spy_stabtaunt04.mp3",
+	"vo/spy_stabtaunt05.mp3",
+	"vo/spy_stabtaunt06.mp3",
+	"vo/spy_stabtaunt07.mp3",
+	"vo/spy_stabtaunt08.mp3",
+	"vo/spy_stabtaunt09.mp3",
+	"vo/spy_stabtaunt10.mp3",
+	"vo/spy_stabtaunt11.mp3",
+	"vo/spy_stabtaunt12.mp3",
+	"vo/spy_stabtaunt13.mp3",
+	"vo/spy_stabtaunt14.mp3",
+	"vo/spy_stabtaunt15.mp3",
+	"vo/spy_stabtaunt16.mp3"
 };
 
 static const char g_MeleeHitSounds[][] =
 {
-	"weapons/eviction_notice_01.wav",
-	"weapons/eviction_notice_02.wav",
-	"weapons/eviction_notice_03.wav",
-	"weapons/eviction_notice_04.wav"
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 
 static const char g_MeleeAttackSounds[][] =
 {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav"
+	"weapons/knife_swing.wav"
 };
 
-void HeavyGambler_Setup()
+void RookieGambler_Setup()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSound);
@@ -48,18 +58,18 @@ void HeavyGambler_Setup()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Heavy Gambler");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavygambler");
+	strcopy(data.Name, sizeof(data.Name), "Rookie Gambler");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rookiegambler");
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return HeavyGambler(client, vecPos, vecAng, ally);
+	return RookieGambler(client, vecPos, vecAng, ally);
 }
 
-methodmap HeavyGambler < CClotBody
+methodmap RookieGambler < CClotBody
 {
 	public void PlayIdleSound() 
 	{
@@ -86,13 +96,13 @@ methodmap HeavyGambler < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetURandomInt() % sizeof(g_MeleeAttackSounds)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public HeavyGambler(int client, float vecPos[3], float vecAng[3], int team)
+	public RookieGambler(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		HeavyGambler npc = view_as<HeavyGambler>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", team));
+		RookieGambler npc = view_as<RookieGambler>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "300", team));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.SetActivity("ACT_MP_STAND_MELEE");
-		KillFeed_SetKillIcon(npc.index, "eviction_notice");
+		KillFeed_SetKillIcon(npc.index, "eternal_reward");
 
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -110,9 +120,9 @@ methodmap HeavyGambler < CClotBody
 		int skin = GetURandomInt() % 2;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_eviction_notice/c_eviction_notice.mdl", _, skin);
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_heavy.mdl", _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_bagdolier/jul13_bagdolier.mdl", _, skin);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_frying_pan/c_frying_pan.mdl", _, skin + 2);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/treasure_hat_02_demo.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/demo/demo_chest_front.mdl", _, skin);
 		
 		return npc;
 	}
@@ -121,7 +131,7 @@ methodmap HeavyGambler < CClotBody
 
 static void ClotThink(int iNPC)
 {
-	HeavyGambler npc = view_as<HeavyGambler>(iNPC);
+	RookieGambler npc = view_as<RookieGambler>(iNPC);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -145,7 +155,7 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 280.0, gameTime);
+	Npc_Base_Thinking(npc.index, 350.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 250.0, gameTime);
 
 	int target = npc.m_iTarget;
 	
@@ -172,8 +182,8 @@ static void ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 0.6), DMG_CLUB);
-						CasinoShared_RobMoney(npc, target, 10);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, CasinoShared_GetDamage(npc, 1.0), DMG_CLUB);
+						CasinoShared_RobMoney(npc, target, 5);
 						CasinoShared_StealNearbyItems(npc, vecHit);
 					}
 				}
@@ -208,12 +218,12 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_iTarget = target;
 
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 2.0);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.5;
-				npc.m_flNextMeleeAttack = gameTime + 0.45;
+				npc.m_flAttackHappens = 0.45;
+				npc.m_flDoingAnimation = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.05;
 			}
 		}
 	}
@@ -223,7 +233,7 @@ static void ClotThink(int iNPC)
 
 static void ClotDeath(int entity)
 {
-	HeavyGambler npc = view_as<HeavyGambler>(entity);
+	RookieGambler npc = view_as<RookieGambler>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 

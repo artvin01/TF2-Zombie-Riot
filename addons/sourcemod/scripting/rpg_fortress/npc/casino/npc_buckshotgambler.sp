@@ -134,9 +134,11 @@ static void ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime)
+	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		if(npc.m_flDoingAnimation < gameTime)
+			npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
@@ -180,7 +182,7 @@ static void ClotThink(int iNPC)
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				npc.m_flNextMeleeAttack = gameTime + 1.05;
 
-				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", _, _, _, 3.0);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				if(GetURandomInt() % 3)

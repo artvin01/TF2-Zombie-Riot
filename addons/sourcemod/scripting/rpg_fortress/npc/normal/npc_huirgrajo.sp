@@ -114,9 +114,11 @@ static void ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();	
 
-	if(npc.m_blPlayHurtAnimation && npc.m_flDoingAnimation < gameTime)
+	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		if(npc.m_flDoingAnimation < gameTime)
+			npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST");
+		
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 	}
