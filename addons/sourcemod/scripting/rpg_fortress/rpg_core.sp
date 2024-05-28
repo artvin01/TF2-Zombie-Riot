@@ -280,6 +280,7 @@ void RPG_MapStart()
 void RPG_MapEnd()
 {
 	Spawns_MapEnd();
+	MapConfig[0] = 0;
 }
 
 void RPG_ConfigSetup(const char[] mapname)
@@ -329,9 +330,10 @@ void RPG_ConfigSetup(const char[] mapname)
 	LoadSoundScript(buffer);
 }
 
-void RPG_BuildPath(char[] buffer, int length, const char[] name)
+bool RPG_BuildPath(char[] buffer, int length, const char[] name)
 {
 	BuildPath(Path_SM, buffer, length, CONFIG ... "/%s/%s.cfg", MapConfig, name);
+	return view_as<bool>(MapConfig[0]);
 }
 
 void RPG_PutInServer(int client)
