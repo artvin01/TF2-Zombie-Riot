@@ -121,6 +121,7 @@ methodmap BuckshotGambler < CClotBody
 		npc.m_bisWalking = true;
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
+		npc.SetActivity("ACT_MP_STAND_PRIMARY");
 		
 		return npc;
 	}
