@@ -94,7 +94,7 @@ methodmap Huirgrajo < CClotBody
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_snub_nose/c_snub_nose.mdl", _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2019_avian_amante/hwn2019_avian_amante.mdl", _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/worksmodels/workshop/player/items/all_class/hwn_spy_priest/hwn_spy_priest_spy.mdl", _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn_spy_priest/hwn_spy_priest_spy.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/sept2014_lady_killer/sept2014_lady_killer.mdl", _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/short2014_invisible_ishikawa/short2014_invisible_ishikawa.mdl", _, skin);
 		
@@ -273,8 +273,23 @@ static void ClotThink(int iNPC)
 			{
 				PredictSubjectPositionForProjectiles(npc, target, GetRandomFloat(-1000.0, 1000.0), _, vecTarget);
 
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 15000.0);
+
 				npc.m_flCharge_delay = gameTime + (npc.Anger ? 3.0 : 6.0);
 				PluginBot_Jump(npc.index, vecTarget);
+			}
+		}
+		else
+		{
+			int target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				// Can dodge bullets by moving
+				PredictSubjectPositionForProjectiles(npc, target, -600.0, _, vecTarget);
+				
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 1500.0);
 			}
 		}
 	}
