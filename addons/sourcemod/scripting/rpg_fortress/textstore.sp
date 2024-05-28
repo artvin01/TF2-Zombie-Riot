@@ -2099,7 +2099,7 @@ static void ShowMenu(int client, int page = 0)
 				for(int i; i < length; i++)
 				{
 					race.Forms.GetArray(i, form);
-					if(form.Questline[0] && Quests_GetStatus(client, form.Questline) != Status_Completed)
+					if(!CvarRPGInfiniteLevelAndAmmo.BoolValue && form.Questline[0] && Quests_GetStatus(client, form.Questline) != Status_Completed)
 						continue;
 					
 					IntToString(i, data, sizeof(data));
