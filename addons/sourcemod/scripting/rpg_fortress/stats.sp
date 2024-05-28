@@ -1037,7 +1037,7 @@ public Action Command_Give_Mastery(int client, int args)
 	
 	char buf[12];
 	GetCmdArg(2, buf, sizeof(buf));
-	int money = StringToInt(buf); 
+	float money = StringToFloat(buf); 
 
 	int targets[MAXPLAYERS], matches;
 	bool targetNounIsMultiLanguage;
@@ -1049,10 +1049,10 @@ public Action Command_Give_Mastery(int client, int args)
 	
 	for(int target; target<matches; target++)
 	{
-		if(money > 0)
+		if(money > 0.0)
 		{
-			PrintToChat(targets[target], "You got %i Mastery from the admin %N!", money, client);
-			int MasteryAdd = money;
+			PrintToChat(targets[target], "You got %0.2f  Mastery from the admin %N!", money, client);
+			float MasteryAdd = money;
 			float MasteryCurrent = Stats_GetCurrentFormMastery(client);
 			MasteryCurrent += MasteryAdd;
 			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
