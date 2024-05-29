@@ -1921,6 +1921,29 @@ public void Dungeon_Spawn_ChaosMiner(ArrayList list)
 	list.PushArray(wave);
 }
 
+public void Dungeon_Spawn_Hurigrajao(ArrayList list)
+{
+	static WaveEnum wave;
+	if(!wave.Index)
+	{
+		wave.Delay = 75.0;
+		wave.Index = NPC_GetByPlugin("npc_huirgrajo");
+		wave.Pos = {-1560.944458, 8319.227539, -502.811187};
+		wave.Angle = -130.0;
+		wave.Boss = true;
+		wave.Level = 5500;
+		wave.Health = 12000000;
+		wave.Rarity = 4;
+		wave.HPRegen= 8000;
+
+		wave.ExtraMeleeRes = 1.0;
+		wave.ExtraRangedRes = 1.0;
+		wave.ExtraSpeed = 1.0;
+		wave.ExtraDamage = 1.0;
+		wave.CustomName = "Julians Right Hand, Mind Altered"
+	}
+	list.PushArray(wave);
+}
 public void ClearDungeonStats(int entity)
 {
 	if(entity < MAXTF2PLAYERS)
