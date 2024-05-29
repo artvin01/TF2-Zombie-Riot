@@ -452,7 +452,7 @@ stock void Apply_Text_Above_Npc(int entity,int strength, int health)
 	OffsetFromHead[2] = 95.0;
 	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 
-	NPC_GetNameById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+	NPC_GetNameById(c_NpcName[entity], buffer, sizeof(buffer));
 //	OffsetFromHead[2] += 10.0;
 	npc.m_iTextEntity1 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
 	OffsetFromHead[2] -= 10.0;
@@ -480,6 +480,10 @@ void RPGSpawns_UpdateHealthNpc(int entity)
 	char sColor[32];
 	Format(sColor, sizeof(sColor), " %d %d %d %d ", red, green, blue, 255);
 	DispatchKeyValue(npc.m_iTextEntity3,     "color", sColor);
+
+	if(!IsValidEntity(npc.m_iTextEntity3))
+		return;
+	
 }
 static int GetScaledRate(const int rates[2], int power, int maxpower)
 {
