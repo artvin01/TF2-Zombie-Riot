@@ -2248,7 +2248,7 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 
 			if(ActorKv.JumpToKey("race"))
 			{
-				if(ActorKv.GotoFirstSubKey())
+				if(ActorKv.GotoFirstSubKey(false))
 				{
 					do
 					{
@@ -2266,7 +2266,7 @@ static void CondMenu(int client, EditMenu menu, const char[] subsection, const c
 						Format(buffer1, sizeof(buffer1), "race;%s", buffer1);
 						menu.AddItem(buffer1, buffer2);
 					}
-					while(ActorKv.GotoNextKey());
+					while(ActorKv.GotoNextKey(false));
 					
 					ActorKv.GoBack();
 				}
