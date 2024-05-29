@@ -452,11 +452,10 @@ stock void Apply_Text_Above_Npc(int entity,int strength, int health)
 	OffsetFromHead[2] = 95.0;
 	OffsetFromHead[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 
-	NPC_GetNameById(c_NpcName[entity], buffer, sizeof(buffer));
 //	OffsetFromHead[2] += 10.0;
-	npc.m_iTextEntity1 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
+	npc.m_iTextEntity1 = SpawnFormattedWorldText(c_NpcName[entity], OffsetFromHead, 10,color, entity);
 	OffsetFromHead[2] -= 10.0;
-	npc.m_iTextEntity3 = SpawnFormattedWorldText(buffer, OffsetFromHead, 10,color, entity);
+	npc.m_iTextEntity3 = SpawnFormattedWorldText("???", OffsetFromHead, 10,color, entity);
 	RPGSpawns_UpdateHealthNpc(entity);
 }
 
