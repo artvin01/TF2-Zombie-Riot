@@ -898,7 +898,7 @@ static void ShowMenu(int client, int page)
 				}
 				else
 				{
-					if(kv.GetNum("sell", kv.GetNum("cost")) > 0)
+					if(kv.GetNum("forgable"))
 					{
 						int cash = TextStore_Cash(client);
 						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, FORGE_COST);
