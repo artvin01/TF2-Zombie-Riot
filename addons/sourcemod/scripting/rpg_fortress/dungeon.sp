@@ -1939,7 +1939,7 @@ public void Dungeon_Spawn_Hurigrajao(ArrayList list)
 		wave.ExtraMeleeRes = 1.0;
 		wave.ExtraRangedRes = 1.0;
 		wave.ExtraSpeed = 1.0;
-		wave.ExtraDamage = 1.0;
+		wave.ExtraDamage = 4.0;
 		wave.CustomName = "Julians Right Hand, Mind Altered";
 	}
 	list.PushArray(wave);
