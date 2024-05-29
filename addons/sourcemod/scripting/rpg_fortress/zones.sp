@@ -651,6 +651,10 @@ static void AdjustZone(int client, const char[] buffer)
 		{
 			ZonesKv.SetNum(buffer, ZonesKv.GetNum(buffer) ? 0 : 1);
 		}
+		else if(StrEqual(buffer, "pvp_zone"))
+		{
+			ZonesKv.SetNum(buffer, ZonesKv.GetNum(buffer) ? 0 : 1);
+		}
 		else if(StrEqual(buffer, "delete"))
 		{
 			ZonesKv.DeleteThis();
