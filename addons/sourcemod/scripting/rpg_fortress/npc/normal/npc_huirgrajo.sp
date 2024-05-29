@@ -221,7 +221,7 @@ static void ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, target))
 				{
 					// Can dodge bullets by moving
-					PredictSubjectPositionForProjectiles(npc, target, -600.0, _, vecTarget);
+					PredictSubjectPositionForProjectiles(npc, target, -400.0, _, vecTarget);
 					
 					npc.m_bAllowBackWalking = true;
 					npc.FaceTowards(vecTarget, 1500.0);
@@ -255,7 +255,7 @@ static void ClotThink(int iNPC)
 
 						NormalizeVector(vecDir, vecDir);
 						
-						float damage = 2000.0;
+						float damage = 70000.0;
 
 						KillFeed_SetKillIcon(npc.index, "enforcer");
 						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 9000.0, DMG_BULLET, "bullet_tracer01_red");
@@ -286,7 +286,7 @@ static void ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				// Can dodge bullets by moving
-				PredictSubjectPositionForProjectiles(npc, target, -600.0, _, vecTarget);
+				PredictSubjectPositionForProjectiles(npc, target, -400.0, _, vecTarget);
 				
 				npc.m_bAllowBackWalking = true;
 				npc.FaceTowards(vecTarget, 1500.0);
