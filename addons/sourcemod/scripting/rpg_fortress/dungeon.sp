@@ -1925,8 +1925,8 @@ public void Dungeon_Spawn_Hurigrajao(ArrayList list)
 {
 	static WaveEnum wave;
 	if(!wave.Index)
-	{
-		wave.Delay = 85.0;
+	{	
+		wave.Delay = 140.0;
 		wave.Index = NPC_GetByPlugin("npc_huirgrajo");
 		wave.Pos = {-1560.944458, 8319.227539, -502.811187};
 		wave.Angle = -130.0;
