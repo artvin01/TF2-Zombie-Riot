@@ -185,6 +185,7 @@ methodmap OriginalInfected < CClotBody
 		func_NPCOnTakeDamage[npc.index] = OriginalInfected_OnTakeDamage;
 		func_NPCThink[npc.index] = OriginalInfected_ClotThink;
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, OriginalInfected_OnTakeDamagePost);
+		npc.m_iOverlordComboAttack = 0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
@@ -736,5 +737,25 @@ public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int infl
 		npc.Anger = true; //	>:(
 		//This doesnt do anything except say words
 		npc.PlayHalfHealthSound();
+		if(npc.m_iOverlordComboAttack == 1)
+		{
+			fl_Extra_Damage[victim] *= 2.0;
+			fl_Extra_Speed[victim] *= 1.1;
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 0, 0, 255);
+
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 0, 0, 255);
+
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 255, 0, 0, 255);
+
+			SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
+
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable5, 255, 0, 0, 255);
+			IgniteTargetEffect(npc.m_iWearable1);
+		}
 	}
 }

@@ -7668,6 +7668,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
+	b_JunalSpecialGear100k[entity] = false;
 #endif
 	c_NpcName[entity][0] = 0;
 

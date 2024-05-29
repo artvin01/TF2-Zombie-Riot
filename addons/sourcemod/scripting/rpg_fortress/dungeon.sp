@@ -1759,9 +1759,18 @@ public void Dungeon_Spawn_DoubleHpRegen(int entity)
 	i_HpRegenInBattle[entity] *= 2;
 }
 
+public void Dungeon_JunalEnhancedSuperGear(int entity)
+{
+	b_JunalSpecialGear100k[entity] = true;
+}
+
 public void Dungeon_Spawn_FlatRes(int entity)
 {
 	Endurance[entity] += 645;
+}
+public void Dungeon_Spawn_FlatResZombie(int entity)
+{
+	Endurance[entity] += 4500;
 }
 
 public void Dungeon_Spawn_BuffBosses1(int entity)
@@ -1805,6 +1814,24 @@ public void Dungeon_Spawn_MegaEnslaver(int entity)
 	}
 }
 
+public void Dungeon_Spawn_MegaEnslaver(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_enemy_grigori"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		
+		health = RoundToNearest(float(health) * 1.5);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.2;
+		fl_Extra_Speed[entity] *= 1.5;
+	}
+}
+
 public void Dungeon_Cave_Super_Ai(int entity)
 {
 	char npc_classname[60];
@@ -1821,6 +1848,40 @@ public void Dungeon_Cave_Super_Ai(int entity)
 		Endurance[entity] += 650;
 	}
 }
+public void Dungeon_JunalTheUnstoppable(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(StrEqual(npc_classname, "npc_original_infector"))
+	{
+		CClotBody npc = view_as<CClotBody>(entity);
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		health = RoundToNearest(float(health) * 3.0);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 2.0;
+		fl_Extra_Speed[entity] *= 1.20;
+		npc.m_iOverlordComboAttack = 1;
+	}
+}
+
+public void Dungeon_RepairedCombineGear(int entity)
+{
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	if(StrEqual(npc_classname, "npc_zombiefied_combine_soldier_swordsman"))
+	{
+		//CClotBody npc = view_as<CClotBody>(entity);
+		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		health = RoundToNearest(float(health) * 1.50);
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(entity, Prop_Data, "m_iHealth", health);
+		fl_Extra_Damage[entity] *= 1.10;
+		fl_Extra_Speed[entity] *= 1.10;
+		Endurance[entity] += 3500;
+	}
+}
+
 
 public void Dungeon_40_Percent_More_Cooldown(int entity)
 {
@@ -1867,5 +1928,26 @@ public void ClearDungeonStats(int entity)
 		b_DungeonContracts_LongerCooldown[entity] = false;
 		b_DungeonContracts_SlowerAttackspeed[entity] = false;
 		b_DungeonContracts_SlowerMovespeed[entity] = false;
+	}
+}
+
+
+void RPG_ChaosSurgance(int victim, int attacker, int weapon, float &damage)
+{
+	if(b_JunalSpecialGear100k[victim])
+	{
+		float DamageMaxPunish = 100000;
+		//if they deal more then 100 or equivilant in one hit, punish
+		if(IsValidEntity(weapon))
+		{
+			float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
+			DamageMaxPunish *= DamagePiercing;
+		}
+		if(damage > DamageMaxPunish)
+		{
+			float damageOverLimit = damage - DamageMaxPunish;
+			damageOverLimit *= 0.65;
+			damage = damageOverLimit + DamageMaxPunish;
+		}
 	}
 }

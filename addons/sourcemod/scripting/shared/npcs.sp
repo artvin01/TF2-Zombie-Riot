@@ -1099,6 +1099,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined RPG
 		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
+		RPG_ChaosSurgance(victim, attacker, weapon, damage);
+		b_JunalSpecialGear100k
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
