@@ -480,9 +480,6 @@ void RPGSpawns_UpdateHealthNpc(int entity)
 	char sColor[32];
 	Format(sColor, sizeof(sColor), " %d %d %d %d ", red, green, blue, 255);
 	DispatchKeyValue(npc.m_iTextEntity3,     "color", sColor);
-
-	if(!IsValidEntity(npc.m_iTextEntity3))
-		return;
 	
 }
 static int GetScaledRate(const int rates[2], int power, int maxpower)
