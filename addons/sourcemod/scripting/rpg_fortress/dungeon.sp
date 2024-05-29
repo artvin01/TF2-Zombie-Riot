@@ -1814,7 +1814,7 @@ public void Dungeon_Spawn_MegaEnslaver(int entity)
 	}
 }
 
-public void Dungeon_Spawn_MegaEnslaver(int entity)
+public void Dungeon_Spawn_GrigoriCorrupted(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
