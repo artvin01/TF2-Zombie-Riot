@@ -734,7 +734,7 @@ public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int infl
 	if(maxHealth/2 >= Health && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
+		//This doesnt do anything except say words
 		npc.PlayHalfHealthSound();
-		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 	}
 }
