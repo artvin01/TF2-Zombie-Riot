@@ -19,6 +19,7 @@ void Zones_PluginStart()
 	.DefineBoolField("m_bMusicCustom")
 	.DefineStringField("m_nSkyBoxOverride")
 	.DefineBoolField("m_bSilentKey")
+	.DefineBoolField("m_bPvpZone")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -140,6 +141,7 @@ void Zones_Rebuild()
 					SetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", buffer);
 
 					SetEntProp(entity, Prop_Data, "m_bSilentKey", ZonesKv.GetNum("silent"));
+					SetEntProp(entity, Prop_Data, "m_bPvpZone", ZonesKv.GetNum("pvp_zone"));
 					
 					int custom = ZonesKv.GetNum("download");
 					ZonesKv.GetString("sound", buffer, sizeof(buffer));
@@ -251,6 +253,12 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 			return Plugin_Continue;
 		}
 
+		if(caller <= MaxClients)
+		{
+			if(GetEntProp(entity, Prop_Data, "m_bPvpZone"))
+				b_PlayerIsPVP[caller] = true;
+		}
+
 		GetEntPropString(entity, Prop_Data, "m_nSkyBoxOverride", name, sizeof(name));
 		if(caller <= MaxClients && name[0])
 		{
@@ -278,6 +286,11 @@ public Action Zones_EndTouch(const char[] output, int entity, int caller, float 
 {
 	if(caller > 0 && caller <= MaxClients)
 	{
+		if(caller <= MaxClients)
+		{
+			if(GetEntProp(entity, Prop_Data, "m_bPvpZone"))
+				b_PlayerIsPVP[caller] = false;
+		}
 		char name[64];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 			OnLeave(caller, name);
@@ -407,6 +420,7 @@ void Zones_EditorMenu(int client)
 		FormatEx(buffer, sizeof(buffer), "Point 2: %.0f %.0f %.0f", pos2[0], pos2[1], pos2[2]);
 		menu.AddItem("point2", buffer);
 		
+		
 		ZonesKv.GetString("sound", buffer, sizeof(buffer));
 		if(buffer[0])
 		{
@@ -468,6 +482,9 @@ void Zones_EditorMenu(int client)
 
 			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
 			menu.AddItem("silent", buffer);
+
+			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "Off" : "On");
+			menu.AddItem("pvp_zone", buffer);
 		}
 
 		ZonesKv.GetString("skybox_override", buffer, sizeof(buffer));
