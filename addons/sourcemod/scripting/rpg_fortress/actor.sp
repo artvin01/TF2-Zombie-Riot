@@ -604,7 +604,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 
 		float pos[3];
 		ActorKv.GetVector("teleport", pos);
-		PrintToChatAll("teleport pos : %f, %f, %f", pos);
+		PrintToChatAll("teleport pos : 0 %f, 1 %f, 2 %f", pos[0], pos[1], pos[2],);
 		if(pos[0])
 		{
 			float ang[3];
