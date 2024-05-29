@@ -443,6 +443,12 @@ void Zones_EditorMenu(int client)
 				Format(buffer, sizeof(buffer), "Music Custom: Is Base Game");
 			}
 			menu.AddItem("download", buffer);
+
+			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
+			menu.AddItem("silent", buffer);
+
+			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "On" : "Off");
+			menu.AddItem("pvp_zone", buffer);
 		}
 		else
 		{
@@ -483,7 +489,7 @@ void Zones_EditorMenu(int client)
 			Format(buffer, sizeof(buffer), "Key Print: %s", ZonesKv.GetNum("silent") ? "None" : "HUD Message");
 			menu.AddItem("silent", buffer);
 
-			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "Off" : "On");
+			Format(buffer, sizeof(buffer), "PVP Zone: %s", ZonesKv.GetNum("pvp_zone") ? "On" : "Off");
 			menu.AddItem("pvp_zone", buffer);
 		}
 
