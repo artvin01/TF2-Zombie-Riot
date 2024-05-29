@@ -252,9 +252,9 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 90000.0;
+					float damage = 13000.0;
 					if(npc.m_flDoingSpecial)
-						damage = 100000.0;
+						damage = 150000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -353,9 +353,9 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 
 				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				float Damage1 = 90000.0;
+				float Damage1 = 13000.0;
 				if(npc.m_flDoingSpecial)
-					Damage1 = 100000.0;
+					Damage1 = 150000.0;
 
 				FireBullet(npc.index, npc.index, vecTarget2, vecDir, Damage1, 1000.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 				
