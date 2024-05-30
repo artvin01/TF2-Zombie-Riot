@@ -1753,14 +1753,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
-	RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
+	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
+		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 #endif
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
-
-	#if defined RPG
+#endif
+#if defined RPG
 	Player_Ability_Warcry_OnTakeDamage(attacker, victim, damage);
-	#endif
 #endif
 
 #if defined ZR
@@ -1815,7 +1815,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				damage *= 1.25;
 			}
 		}
-#endif	// ZR & RPG
+#endif	// ZR
 		if(f_HussarBuff[attacker] > GameTime) //hussar!
 		{
 			damage *= 1.10;
@@ -2221,7 +2221,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		damage *= value;
 	}	
 }
-#endif	// ZR
+#endif	// ZR & RPG
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {

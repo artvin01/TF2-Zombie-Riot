@@ -480,7 +480,7 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
 	{
 		if(soundlevel == -1)
-			ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+			LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
 
 		return false;
 	}

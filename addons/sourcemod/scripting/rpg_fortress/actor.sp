@@ -3,6 +3,7 @@
 
 static KeyValues ActorKv;
 static bool ForcedMenu[MAXTF2PLAYERS];
+static float DelayTalkFor[MAXTF2PLAYERS];
 static char CurrentChat[MAXTF2PLAYERS][128];
 static char CurrentNPC[MAXTF2PLAYERS][128];
 static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
@@ -678,25 +679,36 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 
 		if(options)
 		{
+			DelayTalkFor[client] = GetGameTime() + 1.5;
+			/*
 			ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
 			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
 			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
+			*/
 		}
 		else
 		{
+			DelayTalkFor[client] = 0.0;
 			menu.AddItem(NULL_STRING, "...");
-
+			/*
 			if(ForcedMenu[client])
 			{
 				ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
+			*/
 		}
+
+		ForcedMenu[client] = true;
+		RPGCore_CancelMovementAbilities(client);
+		SetEntityMoveType(client, MOVETYPE_NONE);
+		TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
+		ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
 		
 		menu.ExitButton = false;
-		menu.Display(client, options ? MENU_TIME_FOREVER : 30);
+		menu.Display(client, MENU_TIME_FOREVER);
 	}
 }
 
@@ -706,6 +718,10 @@ static void FormatText(int client, char[] text, int length)
 
 	GetClientName(client, buffer, sizeof(buffer));
 	ReplaceString(text, length, "{playername}", buffer);
+
+	static Race race;
+	Races_GetClientInfo(client, race);
+	ReplaceString(text, length, "{playerrace}", race.Name);
 
 	ReplaceString(text, length, "\\n", "\n");
 }
@@ -740,6 +756,14 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			if(DelayTalkFor[client] > GetGameTime())
+			{
+				float time = DelayTalkFor[client];
+				Actor_ReopenMenu(client);
+				DelayTalkFor[client] = time;
+				return 0;
+			}
+			
 			char buffer[64];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 
@@ -1696,6 +1720,7 @@ static void AdjustNPC(int client, const char[] key)
 		float ang[3];
 		GetClientEyeAngles(client, ang);
 		ang[0] = 0.0;
+		ang[1] = (RoundFloat(ang[1]) / 15) * 15.0;
 		ang[2] = 0.0;
 		ActorKv.SetVector("ang", ang);
 	}
@@ -1849,7 +1874,10 @@ static void AdjustActions(int client, const char[] key)
 			GetClientAbsOrigin(client, pos);
 			ActorKv.SetVector("teleport", pos);
 
-			GetClientEyeAngles(client, pos);
+			GetClientAbsAngles(client, pos);
+			pos[0] = 0.0;
+			pos[1] = (RoundFloat(pos[1]) / 45) * 45.0;
+			pos[2] = 0.0;
 			ActorKv.SetVector("angles", pos);
 		}
 	}

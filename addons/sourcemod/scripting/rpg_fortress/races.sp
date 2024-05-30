@@ -1,42 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
 
-#define RACE_MERC_HUMAN 1 //all around
-#define RACE_EXPIDONSAN 2 //melee
-#define RACE_RUANIANS 	3 //mage
-#define RACE_IBERIANS 	4 //ranged
-
-//upgrdeable skills
-#define STAT_STRENGTH 		1 // -> direct damage delt
-#define STAT_PRECISION 		2 // -> driect damage delt, each weapon has its own damage % logic
-#define STAT_ARTIFICE 		3 // -> Direct damage delt
-#define STAT_ENDURANCE 		4 // -> flat damage reduction perhaps?
-#define STAT_STRUCTURE 		5 // -> health and stamina
-#define STAT_INTELLIGENCE	6 // -> very slight overall boost in all stats, its at each goal point that we'll set ourselves, needed to get skills
-#define STAT_CAPACITY		7 // -> resource to use either skills or upgrades to your self, or mana or ammo so to speak.
-
-//non upgradeable skills
-#define STAT_LUCK			8 // -> random crit? idk lol, but increaced chance based shit
-#define STAT_AGILITY		9 // -> more movesmentspeed attackspeed reload speed, all speed things speedy.
-
-/*
-	this defineswhat stats get multiplied by what.
-	It should really never multiply the stats such as stat capacity and stat intelligence.
-	
-	Certain stats here do not get multiplied but added, these stats include...
-	STAT_LUCK
-	STAT_AGILITY
-
-	Each transformation should be able to be mastered, this just gives player an insentive also we likely extra stat boost :3
-
-
-	how this works:
-	1.form minimum mastery stats
-	2.form max mastery stats
-
-	3. new form
-	4. new form's max mastery stats
-
-	etc etc
-*/
 enum struct Form
 {
 	char Name[64];

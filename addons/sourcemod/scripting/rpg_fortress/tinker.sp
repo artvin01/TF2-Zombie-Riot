@@ -438,7 +438,7 @@ static int ConvertToTinker(int client, int index)
 			TextStore_GetInv(client, index, amount);
 			if(amount)
 			{
-				TextStore_SetInv(client, index, amount - 1, false);
+				TextStore_SetInv(client, index, _, false);
 
 				char data[20];
 				FormatEx(data, sizeof(data), "sell%d", FORGE_COST);
@@ -898,7 +898,7 @@ static void ShowMenu(int client, int page)
 				}
 				else
 				{
-					if(kv.GetNum("forgable"))
+					if(kv.GetNum("forgable", 1))
 					{
 						int cash = TextStore_Cash(client);
 						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, FORGE_COST);

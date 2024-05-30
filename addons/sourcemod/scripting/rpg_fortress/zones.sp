@@ -276,7 +276,7 @@ public Action Zones_StartTouch(const char[] output, int entity, int caller, floa
 			GetEntPropVector(entity, Prop_Data, "m_vecTeleAng", ang);
 			TeleportEntity(caller, pos, ang, {0.0, 0.0, 0.0});
 			if(caller <= MaxClients)
-				TF2_StunPlayer(caller, 0.3, 1.0, TF_STUNFLAG_SLOWDOWN);
+				TF2_StunPlayer(caller, 0.15, 1.0, TF_STUNFLAG_SLOWDOWN);
 		}
 	}
 	return Plugin_Continue;

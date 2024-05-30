@@ -305,6 +305,9 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 	{
 		if(origin[1] != NULL_VECTOR[1] || origin[0] != NULL_VECTOR[0] || origin[2] != NULL_VECTOR[2])
 		{
+			if(origin[0] == 0.0 && origin[1] == 0.0 && origin[2] == 0.0)
+				LogStackTrace("Possible unintended 0 0 0 teleport");
+			
 			Custom_SDKCall_SetLocalOrigin(entity, origin);
 		}
 

@@ -282,7 +282,7 @@ static void ClotThink(int iNPC)
 		}
 		else
 		{
-			int target = Can_I_See_Enemy(npc.index, target);
+			target = Can_I_See_Enemy(npc.index, target);
 			if(IsValidEnemy(npc.index, target))
 			{
 				// Can dodge bullets by moving

@@ -1412,7 +1412,7 @@ static void CleanDungeon(const char[] name, bool victory)
 
 							if(Saves_ClientCharId(client, mod.Desc, sizeof(mod.Desc)))
 							{
-								if(tier > kv.GetNum(mod.Desc))
+								if(tier > kv.GetNum(mod.Desc, -1))
 									kv.SetNum(mod.Desc, tier);
 							}
 						}
@@ -1822,7 +1822,6 @@ public void Dungeon_Spawn_GrigoriCorrupted(int entity)
 	
 	if(StrEqual(npc_classname, "npc_enemy_grigori"))
 	{
-		CClotBody npc = view_as<CClotBody>(entity);
 		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 		
 		health = RoundToNearest(float(health) * 1.5);
@@ -1955,12 +1954,11 @@ public void ClearDungeonStats(int entity)
 	}
 }
 
-
 void RPG_ChaosSurgance(int victim, int attacker, int weapon, float &damage)
 {
 	if(b_JunalSpecialGear100k[victim])
 	{
-		float DamageMaxPunish = 100000;
+		float DamageMaxPunish = 100000.0;
 		//if they deal more then 100 or equivilant in one hit, punish
 		if(IsValidEntity(weapon))
 		{
