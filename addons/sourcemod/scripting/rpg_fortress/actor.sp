@@ -3,7 +3,7 @@
 
 static KeyValues ActorKv;
 static bool ForcedMenu[MAXTF2PLAYERS];
-static float DelayTalkFor[MAXTF2PLAYERS];
+//static float DelayTalkFor[MAXTF2PLAYERS];
 static char CurrentChat[MAXTF2PLAYERS][128];
 static char CurrentNPC[MAXTF2PLAYERS][128];
 static int CurrentRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
@@ -679,26 +679,26 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 
 		if(options)
 		{
-			DelayTalkFor[client] = GetGameTime() + 1.5;
-			/*
+		//	DelayTalkFor[client] = GetGameTime() + 1.5;
+			
 			ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
 			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
 			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
-			*/
+			
 		}
 		else
 		{
-			DelayTalkFor[client] = 0.0;
+		// DelayTalkFor[client] = 0.0;
 			menu.AddItem(NULL_STRING, "...");
-			/*
+			
 			if(ForcedMenu[client])
 			{
 				ForcedMenu[client] = false;
 				SetEntityMoveType(client, MOVETYPE_WALK);
 			}
-			*/
+			
 		}
 
 		ForcedMenu[client] = true;
@@ -756,6 +756,7 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
+			/*
 			if(DelayTalkFor[client] > GetGameTime())
 			{
 				float time = DelayTalkFor[client];
@@ -763,6 +764,7 @@ static int MenuHandle(Menu menu, MenuAction action, int client, int choice)
 				DelayTalkFor[client] = time;
 				return 0;
 			}
+			*/
 			
 			char buffer[64];
 			menu.GetItem(choice, buffer, sizeof(buffer));
