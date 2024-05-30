@@ -2160,7 +2160,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			StartPlayerOnlyLagComp(client, true);
 			if(InteractKey(client, weapon_holding, false)) //doesnt matter which one
 			{
-				buttons &= ~IN_ATTACK2;
 				EndPlayerOnlyLagComp(client);
 				return Plugin_Changed;
 			}
