@@ -330,11 +330,13 @@ enum struct StageEnum
 
 	float GetDropChance(int level, int luck, int tier, char name[48], float chance = 1.0, int required = 0)
 	{
-		if(!name[0] || required > tier || level < this.Level)
+		if(!name[0] || level < this.Level)
 		{
 			if(level != 0)
 				return 0.0;
 		}
+		if(required > tier)
+			return 0.0;
 		
 		if(StrEqual(name, ITEM_XP, false))
 		{
@@ -364,7 +366,7 @@ enum struct StageEnum
 	void RollItemDrop(int[] clients, int amount, int luck, int tier, char name[48], float chance, int droptier)
 	{
 		//say level as atleast one.
-		if(name[0] && this.GetDropChance(1, luck, tier, name, chance, droptier) > GetURandomFloat())
+		if(name[0] && this.GetDropChance(0, luck, tier, name, chance, droptier) > GetURandomFloat())
 		{
 			for(int i; i < amount; i++)
 			{
