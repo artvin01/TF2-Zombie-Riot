@@ -7683,7 +7683,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_HpRegenInBattle[entity] = 0;
 	Level[entity] = 0;
 	RPGCore_ResetHurtList(entity);
-	TrueStrength_Reset(entity);
+	TrueStrength_Reset(_,entity);
 #endif
 	f_BubbleProcStatus[entity][0] = 0.0;
 	f_BubbleProcStatus[entity][1] = 0.0;

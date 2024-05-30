@@ -104,12 +104,12 @@ static Action TrueStrengthTimer(Handle dashHud, DataPack pack)
 	int victim = EntRefToEntIndex(pack.ReadCell());
 	if (!IsValidClient(o_attacker))
 	{
-		TrueStrength_Reset(o_victim);
+		TrueStrength_Reset(dashHud, o_victim);
 		return Plugin_Stop;
 	}
 	if (!IsValidEntity(victim))
 	{
-		TrueStrength_Reset(o_victim);
+		TrueStrength_Reset(dashHud, o_victim);
 		return Plugin_Stop;
 	}
 	if(o_attacker == o_victim)
@@ -166,12 +166,14 @@ bool TrueStength_ClientBuff(int client)
 {
 	return TrueStrength_Rage[client];
 }
-void TrueStrength_Reset(int entity)
+void TrueStrength_Reset(Handle dashHud = null, int entity)
 {
 	for(int client; client <= MaxClients; client++)
 	{
 		i_BleedStackLogic[client][entity] = 0;
-		if(TrueStrengthHandle[client][entity] != INVALID_HANDLE)
+		if(TrueStrengthHandle[client][entity] != INVALID_HANDLE && TrueStrengthHandle[client][entity] != dashHud)
 			delete TrueStrengthHandle[client][entity];
+
+		TrueStrengthHandle[client][entity] = null;
 	}
 }
