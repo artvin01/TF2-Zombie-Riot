@@ -336,11 +336,9 @@ public void Npc_AirCutter_Launch_client(int client)
 
 void AircutterCancelAbility(int client)
 {
-	
-		i_EntityToAlwaysMeleeHit[client] = 0;
-		b_DoNotUnStuck[client] = false;
-		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
-		SetEntityMoveType(client, MOVETYPE_WALK);
-		i_NpcToTarget[client] = 0;
-		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
+	i_EntityToAlwaysMeleeHit[client] = 0;
+	b_DoNotUnStuck[client] = false;
+	SetEntityMoveType(client, MOVETYPE_WALK);
+	i_NpcToTarget[client] = 0;
+	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 }
