@@ -723,11 +723,8 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 	else if(StrEqual(name, ITEM_XP, false))
 	{
 		int xp = amount;
-		bool QuestIs;
-		if(quest == 1)
-			QuestIs = true;
 
-		Stats_GiveXP(client, xp, QuestIs);
+		Stats_GiveXP(client, xp, quest);
 		if(xp > 0 && !silent)
 		{
 			if(quest)
