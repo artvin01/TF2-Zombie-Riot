@@ -171,6 +171,7 @@ void TrueStrength_Reset(int entity)
 	for(int client; client <= MaxClients; client++)
 	{
 		i_BleedStackLogic[client][entity] = 0;
-		delete TrueStrengthHandle[client][entity];
+		if(TrueStrengthHandle[client][entity] != INVALID_HANDLE)
+			delete TrueStrengthHandle[client][entity];
 	}
 }

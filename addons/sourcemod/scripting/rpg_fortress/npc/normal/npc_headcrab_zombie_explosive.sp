@@ -246,8 +246,11 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 		spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.2, 6.0, 0.1, 1, 1.0);
 
 		float vecTarget[3];
-		WorldSpaceCenter(npc.m_iTarget, vecTarget);
-		npc.FaceTowards(vecTarget, 30000.0);
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			npc.FaceTowards(vecTarget, 30000.0);
+		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
