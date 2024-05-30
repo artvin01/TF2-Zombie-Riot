@@ -712,7 +712,7 @@ int TextStore_GetItemCount(int client, const char[] name)
 	return amount;
 }
 
-void TextStore_AddItemCount(int client, const char[] name, int amount, bool silent = false, bool quest = false)
+void TextStore_AddItemCount(int client, const char[] name, int amount, bool silent = false, int quest = 0)
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
@@ -723,7 +723,11 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 	else if(StrEqual(name, ITEM_XP, false))
 	{
 		int xp = amount;
-		Stats_GiveXP(client, xp, quest);
+		bool QuestIs;
+		if(quest == 1)
+			QuestIs = true;
+
+		Stats_GiveXP(client, xp, QuestIs);
 		if(xp > 0 && !silent)
 		{
 			if(quest)

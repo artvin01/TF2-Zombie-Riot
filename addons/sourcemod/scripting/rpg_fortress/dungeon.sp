@@ -363,13 +363,14 @@ enum struct StageEnum
 
 	void RollItemDrop(int[] clients, int amount, int luck, int tier, char name[48], float chance, int droptier)
 	{
-		if(name[0] && this.GetDropChance(0, luck, tier, name, chance, droptier) > GetURandomFloat())
+		//say level as atleast one.
+		if(name[0] && this.GetDropChance(1, luck, tier, name, chance, droptier) > GetURandomFloat())
 		{
 			for(int i; i < amount; i++)
 			{
 				if(Level[clients[i]] >= this.Level)
 				{
-					TextStore_AddItemCount(clients[i], name, 1);
+					TextStore_AddItemCount(clients[i], name, 1,_, true);
 				}
 			}
 		}
@@ -389,7 +390,7 @@ enum struct StageEnum
 			TextStore_AddItemCount(clients[i], ITEM_CASH, this.Cash * (10 + tier) / 10);
 
 			if(Level[clients[i]] <= this.MaxLevel)
-				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10);
+				TextStore_AddItemCount(clients[i], ITEM_XP, this.XP * (10 + tier) / 10,_, 2);
 		}
 
 		luck = (luck * 2) / amount;
