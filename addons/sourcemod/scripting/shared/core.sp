@@ -1257,10 +1257,13 @@ int Armor_Wearable[MAXTF2PLAYERS];
 #include "shared/rtscamera.sp"
 #endif
 
+#if defined ZR || defined NOG
+#include "shared/npccamera.sp"
+#endif
+
 #include "shared/baseboss_lagcompensation.sp"
 #include "shared/configs.sp"
 #include "shared/filenetwork.sp"
-#include "shared/npccamera.sp"
 #include "shared/npcs.sp"
 #include "shared/sdkcalls.sp"
 #include "shared/sdkhooks.sp"
@@ -1386,11 +1389,14 @@ public void OnPluginStart()
 	SDKCall_Setup();
 	ConVar_PluginStart();
 	NPC_PluginStart();
-	NPCCamera_PluginStart();
 	SDKHook_PluginStart();
 //	Building_PluginStart();
 	OnPluginStart_LagComp();
 	NPC_Base_InitGamedata();
+
+#if defined NPC_CAMERA
+	NPCCamera_PluginStart();
+#endif
 
 #if defined NOG
 	NOG_PluginStart();

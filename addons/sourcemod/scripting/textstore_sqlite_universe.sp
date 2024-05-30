@@ -79,7 +79,6 @@ public void OnPluginStart()
 	
 	tr.AddQuery("CREATE TABLE IF NOT EXISTS common_items ("
 	... "steamid INTEGER NOT NULL, "
-	... "universe INTEGER NOT NULL,"
 	... "item TEXT NOT NULL, "
 	... "count INTEGER NOT NULL, "
 	... "equip INTEGER NOT NULL, "
@@ -87,7 +86,6 @@ public void OnPluginStart()
 	
 	tr.AddQuery("CREATE TABLE IF NOT EXISTS unique_items ("
 	... "steamid INTEGER NOT NULL, "
-	... "universe INTEGER NOT NULL,"
 	... "item TEXT NOT NULL, "
 	... "name TEXT NOT NULL, "
 	... "equip INTEGER NOT NULL, "
