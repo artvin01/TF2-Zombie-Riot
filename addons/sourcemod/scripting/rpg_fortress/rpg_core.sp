@@ -948,12 +948,11 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 	{
 		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
 		float MasteryAdd;
-		if(!WasGuranteed && GetRandomFloat(0.0, 1.0) <= 0.1)
+		if(GetRandomFloat(0.0, 1.0) <= 0.1)
 		{
 			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
-		MasteryAdd += GetRandomFloat(0.09, 0.11);
-		MasteryAdd *= 0.65;
+		MasteryAdd += GetRandomFloat(0.11, 0.13);
 		MasteryCurrent += MasteryAdd;
 		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
