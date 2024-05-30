@@ -937,7 +937,7 @@ static void TextStore_ShowSellMenu(int client)
 			}
 			else
 			{
-				Format(buffer, sizeof(buffer), "Sell %d for %d credits each (%d total after tax)\n ", MarketCount[client], MarketSell[client], MarketCount[client] * (MarketSell[client] - MARKET_TAX));
+				Format(buffer, sizeof(buffer), "Sell %d for %d credits each\n ", MarketCount[client], MarketSell[client]);
 			}
 
 			menu.AddItem(buffer, buffer, MarketCount[client] > 0 ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
