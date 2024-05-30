@@ -15,7 +15,8 @@ methodmap EditMenu < Menu
 		if(result)
 		{
 			EditorMenu[client] = callback;
-			CvarDisableThink.BoolValue = true;
+			if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+				CvarDisableThink.BoolValue = true;
 		}
 		
 		return result;
@@ -26,7 +27,8 @@ methodmap EditMenu < Menu
 		if(result)
 		{
 			EditorMenu[client] = callback;
-			CvarDisableThink.BoolValue = true;
+			if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+				CvarDisableThink.BoolValue = true;
 		}
 		
 		return result;
@@ -123,8 +125,9 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 					Call_Finish();
 				}
 
-				if(EditorMenu[client] == INVALID_FUNCTION)
-					CvarDisableThink.BoolValue = false;
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+					if(EditorMenu[client] == INVALID_FUNCTION)
+						CvarDisableThink.BoolValue = false;
 			}
 		}
 		case MenuAction_Select:
@@ -142,8 +145,9 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 				Call_PushString(buffer);
 				Call_Finish();
 
-				if(EditorMenu[client] == INVALID_FUNCTION)
-					CvarDisableThink.BoolValue = false;
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+					if(EditorMenu[client] == INVALID_FUNCTION)
+						CvarDisableThink.BoolValue = false;
 			}
 		}
 	}

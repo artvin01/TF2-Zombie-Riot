@@ -93,7 +93,7 @@ methodmap NPCActor < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		npc.Anger = false;
-
+		b_DoNotUnStuck[npc.index] = true;
 		int skin = kv.GetNum("skin");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
