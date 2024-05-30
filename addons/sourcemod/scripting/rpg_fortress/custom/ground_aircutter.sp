@@ -185,6 +185,11 @@ bool Npc_Is_Targeted_In_Air(int entity) //Anything that needs to be precaced lik
 public void Npc_AirCutter_Launch_client(int client)
 {
 	int target = i_NpcToTarget[client];
+	if(target == -999)
+	{
+		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
+		return;
+	}
 	if(IsValidEnemy(client, target, true, true))
 	{
 		if(GetGameTime() > f_TargetAirtime[client])
@@ -336,9 +341,10 @@ public void Npc_AirCutter_Launch_client(int client)
 
 void AircutterCancelAbility(int client)
 {
+
 	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	b_DoNotUnStuck[client] = false;	
 	SetEntityMoveType(client, MOVETYPE_WALK);
-	i_NpcToTarget[client] = 0;
+	i_NpcToTarget[client] = -999;
 }
