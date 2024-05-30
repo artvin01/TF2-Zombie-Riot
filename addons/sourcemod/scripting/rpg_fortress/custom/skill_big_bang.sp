@@ -52,6 +52,7 @@ public float AbilityBingBang(int client, int index, char name[48])
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Stamina");
 		return 0.0;
 	}
+	RPGCore_CancelMovementAbilities(client);
 	RPGCore_StaminaReduction(weapon, client, StatsForCalcMultiAdd);
 	StatsForCalcMultiAdd = Stats_Strength(client);
 

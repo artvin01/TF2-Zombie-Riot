@@ -1335,6 +1335,7 @@ static void StartDungeon(const char[] name)
 			
 			for(int c; c < dungeon.PlayerCount; c++)
 			{
+				RPGCore_CancelMovementAbilities(clients[c]);
 				TF2_RespawnPlayer(clients[c]);
 
 				if(stage.MusicTier > tier)

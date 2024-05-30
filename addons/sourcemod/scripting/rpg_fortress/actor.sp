@@ -608,6 +608,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 			float ang[3];
 			ActorKv.GetVector("angles", ang);
+			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, pos, ang, NULL_VECTOR);
 
 			if(ActorKv.GetNum("setspawn"))
@@ -679,6 +680,7 @@ static void OpenChatLineKv(int client, int entity, bool noActions)
 		{
 			ForcedMenu[client] = true;
 			SetEntityMoveType(client, MOVETYPE_NONE);
+			RPGCore_CancelMovementAbilities(client);
 			TeleportEntity(client, _, _, {0.0, 0.0, 0.0});
 			ActorKv.GetSectionName(CurrentChat[client], sizeof(CurrentChat[]));
 		}

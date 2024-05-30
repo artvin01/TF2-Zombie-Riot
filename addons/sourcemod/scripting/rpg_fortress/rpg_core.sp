@@ -1012,3 +1012,9 @@ bool RPGCore_ClientCanTransform(int client)
 	}
 	return true;
 }
+
+//This is needed for certain abilities actions.
+void RPGCore_CancelMovementAbilities(int client)
+{
+	AircutterCancelAbility(client);
+}
