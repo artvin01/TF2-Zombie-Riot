@@ -6,6 +6,7 @@ static float f_ChronoShiftCooldown[MAXENTITIES];
 public void ChronoShiftUnequipOrDisconnect(int client)
 {
 	ChronoShiftEnable[client] = false;
+	f_ChronoShiftCooldown[client] = 0.0;
 }
 
 public void ChronoShiftEquip(int client, int weapon, int index)
@@ -13,8 +14,7 @@ public void ChronoShiftEquip(int client, int weapon, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		ChronoShiftEnable[client] = true;	
-		f_ChronoShiftCooldown[client] = 0.0;	
+		ChronoShiftEnable[client] = true;		
 	}
 }
 
