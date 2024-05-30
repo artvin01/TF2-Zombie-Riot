@@ -874,7 +874,7 @@ static void TextStore_ShowSellMenu(int client)
 		{
 			Menu menu = new Menu(TextStore_SellMenuHandle);
 
-			bool market = StrEqual(InStoreTag[client], "market", false);
+			bool market = InStore[client][0] && StrEqual(InStoreTag[client], "market", false);
 
 			static char buffer[64];
 			kv.GetSectionName(buffer, sizeof(buffer));
@@ -1030,7 +1030,7 @@ static int TextStore_SellMenuHandle(Menu menu, MenuAction action, int client, in
 							TextStore_GetInv(client, MarketItem[client], amount);
 							if(amount >= MarketCount[client])
 							{
-								if(StrEqual(InStoreTag[client], "market", false))
+								if(InStore[client][0] && StrEqual(InStoreTag[client], "market", false))
 								{
 									MarketKv.Rewind();
 									MarketKv.JumpToKey("Listing", true);
@@ -1168,7 +1168,7 @@ public void TextStore_OnCatalog(int client)
 
 public Action TextStore_OnPriceItem(int client, int item, int &price)
 {
-	if(price > 0 && !StrEqual(InStoreTag[client], "market", false))
+	if(price > 0 && !InStore[client][0] && !StrEqual(InStoreTag[client], "market", false))
 		return Plugin_Continue;
 	
 	price = 0;
@@ -1216,7 +1216,7 @@ static void TextStore_ShowBuyMenu(int client)
 		{
 			Menu menu = new Menu(TextStore_BuyMenuHandle);
 
-			bool market = StrEqual(InStoreTag[client], "market", false);
+			bool market = InStore[client][0] && StrEqual(InStoreTag[client], "market", false);
 
 			static char buffer[64];
 			kv.GetSectionName(buffer, sizeof(buffer));
@@ -1360,7 +1360,7 @@ static int TextStore_BuyMenuHandle(Menu menu, MenuAction action, int client, int
 							if(cash >= (MarketCount[client] * MarketSell[client]))
 							{
 								static char buffer[64];
-								if(!StrEqual(InStoreTag[client], "market", false))
+								if(!InStore[client][0] || !StrEqual(InStoreTag[client], "market", false))
 								{
 									int amount;
 									TextStore_GetInv(client, MarketItem[client], amount);
