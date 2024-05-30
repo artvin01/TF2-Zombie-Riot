@@ -341,7 +341,6 @@ public void Npc_AirCutter_Launch_client(int client)
 
 void AircutterCancelAbility(int client)
 {
-
 	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	b_DoNotUnStuck[client] = false;	
