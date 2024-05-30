@@ -798,6 +798,7 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= WarCry_ResistanceBuff(client);
 			}
+			RPG_BobsPureRage(client, -1, percentage_Global);
 #endif
 			if(f_HussarBuff[client] > GameTime)
 			{
@@ -1853,6 +1854,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= WarCry_ResistanceBuff(victim);
 		}
+		RPG_BobsPureRage(victim, attacker, damage);
 		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 #endif
 		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!

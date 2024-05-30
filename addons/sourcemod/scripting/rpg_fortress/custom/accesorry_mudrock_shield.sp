@@ -3,10 +3,13 @@ static Handle TrueStrengthShieldHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static bool TrueStrengthShield[MAXPLAYERS+1] = {false, ...};
 static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
 
+static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
+
 public void TrueStrengthShieldUnequip(int client)
 {
 	TrueStrengthShieldCounter[client] = 0;
 	TrueStrengthShield[client] = false;
+	BobsPureRage[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
 
 	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
@@ -18,6 +21,7 @@ public void TrueStrengthShieldDisconnect(int client)
 	TrueStrengthShieldCounter[client] = 0;
 	TrueStrengthShield[client] = false;
 	TrueStrengthShieldHandle[client] = INVALID_HANDLE;
+	BobsPureRage[client] = false;
 }
 
 public void TrueStrengthShieldEquip(int client, int weapon, int index)
@@ -132,5 +136,45 @@ static Action TrueStrengthShieldTimer(Handle dashHud, int ref)
 	else
 	{
 		return Plugin_Stop;
+	}
+}
+
+
+//bobs Strength
+
+
+public void RPG_BobsPureRageEquip(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		BobsPureRage[client] = true;
+	}
+}
+
+
+void RPG_BobsPureRage(int victim, int attacker, float &damage)
+{
+	if(IsValidClient(attacker) && BobsPureRage[attacker])
+	{
+		int MaxHealth = SDKCall_GetMaxHealth(attacker);
+		int Health = GetEntProp(attacker, Prop_Send, "m_iHealth");
+
+		float Ratio = float(Health) / float(MaxHealth);
+		if(Ratio <= 0.5)
+		{
+			damage *= 1.25;
+		}
+	}
+	if(IsValidClient(victim) && BobsPureRage[victim])
+	{
+		int MaxHealth = SDKCall_GetMaxHealth(attacker);
+		int Health = GetEntProp(attacker, Prop_Send, "m_iHealth");
+
+		float Ratio = float(Health) / float(MaxHealth);
+		if(Ratio <= 0.5)
+		{
+			damage *= 0.85;
+		}
 	}
 }

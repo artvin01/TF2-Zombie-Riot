@@ -1097,9 +1097,12 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		RTS_TakeDamage(victim, damage, damagetype);
 #endif
 #if defined RPG
-		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 		RPG_ChaosSurgance(victim, attacker, weapon, damage);
+		RPG_BobsPureRage(victim, attacker, damage);
+
+		//this should be last.
+		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
