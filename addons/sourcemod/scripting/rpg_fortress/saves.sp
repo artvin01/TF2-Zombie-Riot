@@ -221,7 +221,7 @@ static void SaveCharacter(int client, bool remove)
 
 	if(remove)
 	{
-		if(IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client))
 			ForcePlayerSuicide(client);
 	}
 }
