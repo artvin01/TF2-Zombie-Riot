@@ -5,9 +5,9 @@
 
 // TODO: If more party settings are added, use a enum/enum struct
 
-static int PartyLeader[MAXTF2PLAYERS];
+static int PartyLeader[MAXENTITIES];
 static bool PartyXPLowShare[MAXTF2PLAYERS];
-static bool PartyFriendlyFire[MAXTF2PLAYERS];
+static bool PartyFriendlyFire[MAXENTITIES];
 static int PartyInvitedBy[MAXTF2PLAYERS];
 static int PartyOutlineRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
