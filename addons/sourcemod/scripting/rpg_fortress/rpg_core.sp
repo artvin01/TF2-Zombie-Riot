@@ -388,7 +388,7 @@ void RPG_ClientDisconnect(int client)
 	b_PlayerIsPVP[client] = false;
 	f_MasteryTextHint[client] = 0.0;
 
-	if(IsClientCookiesCached(client))
+	if(AreClientCookiesCached(client))
 	{
 		char buffer[128];		
 
