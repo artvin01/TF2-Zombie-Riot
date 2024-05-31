@@ -161,7 +161,7 @@ void Spawns_ConfigSetup()
 	delete kv;
 
 	if(!h_SpawnTimer && SpawnList.Length)
-		h_SpawnTimer = CreateTimer(0.1, Spawner_Timer, _, TIMER_REPEAT);
+		h_SpawnTimer = CreateTimer(0.35, Spawner_Timer, _, TIMER_REPEAT);
 }
 
 void Spawns_MapEnd()
@@ -280,15 +280,14 @@ void Spawns_DisableZone(const char[] name)
 
 public Action Spawner_Timer(Handle timer)
 {
-	if(SpawnCycle >= SpawnList.Length)
-		SpawnCycle = 0;
-	
-	static SpawnEnum spawn;
-	SpawnList.GetArray(SpawnCycle, spawn);
-	if(Zones_IsActive(spawn.Zone))
-		UpdateSpawn(SpawnCycle, spawn, false);
-	
-	SpawnCycle++;
+	for(; SpawnCycle < SpawnList.Length; SpawnCycle++)
+	{
+		static SpawnEnum spawn;
+		SpawnList.GetArray(SpawnCycle, spawn);
+		if(Zones_IsActive(spawn.Zone))
+			UpdateSpawn(SpawnCycle, spawn, false);
+	}
+	SpawnCycle = 0;
 	return Plugin_Continue;
 }
 
@@ -314,7 +313,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				alive++;
 			}
 		}
-	}
+	}	
 	
 	if(alive < spawn.Count)
 	{
