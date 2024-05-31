@@ -756,9 +756,11 @@ bool Tinker_Interact(int client, int entity, int weapon)
 
 		static TinkerNPCEnum npc;
 		NPCList.GetArray(name, npc, sizeof(npc));
+		PrintToChatAll("CurrentWeapon ?");
 		if(EntRefToEntIndex(npc.EntRef) == entity)
 		{
 			CurrentWeapon[client] = Store_GetStoreOfEntity(weapon);
+			PrintToChatAll("CurrentWeapon1 %i", CurrentWeapon[client]);
 			if(CurrentWeapon[client])
 				ShowMenu(client, -1);
 			

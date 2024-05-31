@@ -284,7 +284,6 @@ stock void NPC_Despawn(int entity)
 stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
-	distance *= 1.5; //increace range due to nav mesh
 	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
@@ -292,7 +291,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 		{
 			distance = 99999.9;
 		}
-		int entity_found = GetClosestTarget(npc.index, false, distance);
+		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
