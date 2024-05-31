@@ -952,7 +952,7 @@ float RPGStats_FlatDamageSetStats(int client, int damageType = 0, int total = -9
 			case 3:
 			{
 				total = Stats_Artifice(client);
-				return (float(total) * 2.3);
+				return (float(total) * 2.2);
 			}
 		}
 	}
