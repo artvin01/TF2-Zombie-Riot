@@ -5046,9 +5046,6 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			}
 
 			distance_limit *= distance_limit;
-			PrintToChatAll("distanceVector %f",distanceVector);
-			PrintToChatAll("distance_limit %f",distance_limit);
-			PrintToChatAll("fldistancelimit %f",fldistancelimit);
 #endif	// Non-RTS
 
 			if(distanceVector < distance_limit && MinimumDistance < distanceVector)
