@@ -319,6 +319,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 	if(alive < spawn.Count)
 	{
 		int count;
+		PrintToChatAll("spawn.NextSpawnTime 1 check: %f",spawn.NextSpawnTime);
 		if(spawn.NextSpawnTime)
 		{
 			float gameTime = GetGameTime();
