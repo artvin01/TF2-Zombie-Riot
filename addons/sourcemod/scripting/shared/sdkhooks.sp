@@ -2831,7 +2831,10 @@ void ArmorDisplayClientColor(int client, int armor)
 void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool DrainForm = false)
 {
 	//Regenerate stamina over time at all times!
-	RPGCore_StaminaAddition(client, i_MaxStamina[client] / 30);
+	if(i_TransformationLevel[client] > 0)
+		RPGCore_StaminaAddition(client, i_MaxStamina[client] / 30);
+	else
+		RPGCore_StaminaAddition(client, i_MaxStamina[client] / 15);
 	
 	//firstly regen any resource!
 	if(f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())
@@ -2839,7 +2842,10 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 		//regen health if they werent in battle!
 		int healing_Amount;
 		
-		healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		if(i_TransformationLevel[client] > 0)
+			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		else
+			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
 
 		if(healing_Amount)
 			ApplyHealEvent(client, healing_Amount);
@@ -2847,12 +2853,18 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
 		//if outside of battle and not in transformations that drain resource, regenerate resource.
-		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 40.0));
+		if(i_TransformationLevel[client] > 0)
+			RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 40.0));
+		else
+			RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 20.0));
 	}
 	else
 	{
 		//if they are in battle, regenerate resource much slower.
-		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 400.0));
+		if(i_TransformationLevel[client] > 0)
+			RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 400.0));
+		else
+			RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 200.0));
 	}
 
 	if(DrainForm)
