@@ -3559,6 +3559,9 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 #endif
 			
 #if defined RPG
+			if(Tinker_Interact(client, entity, weapon))
+				return true;
+				
 			if(Actor_Interact(client, entity))
 				return true;
 			
@@ -3569,9 +3572,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				return true;
 			
 			if(Crafting_Interact(client, entity))
-				return true;
-			
-			if(Tinker_Interact(client, entity, weapon))
 				return true;
 			
 			if(Dungeon_Interact(client, entity))
