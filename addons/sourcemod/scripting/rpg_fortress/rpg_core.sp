@@ -953,8 +953,16 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
 		MasteryAdd += GetRandomFloat(0.11, 0.13);
+		int totalInt = Stats_Intelligence(client);
+		if(totalInt >= 1000)
+		{
+			MasteryAdd *= 1.25;
+			SPrintToChat(client, "Your intellect boosts you, your current form obtained %0.2f (1.25x) Mastery points.",MasteryAdd);
+		}
+		else
+			SPrintToChat(client, "Your current form obtained %0.2f Mastery points. You feel as if more intelligence (1000) would help...",MasteryAdd);
+			
 		MasteryCurrent += MasteryAdd;
-		SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
 	}
