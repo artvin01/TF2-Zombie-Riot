@@ -346,7 +346,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 					break;
 				
 				count++;
-				spawn.NextSpawnTime += time;
+				spawn.NextSpawnTime = GetGameTime() + spawn.Time;
 			}
 			
 			if(count)
