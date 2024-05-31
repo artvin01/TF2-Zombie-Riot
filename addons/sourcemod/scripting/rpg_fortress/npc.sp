@@ -338,7 +338,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				npc.m_iTarget = entity_found;
 			}
 		}
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
