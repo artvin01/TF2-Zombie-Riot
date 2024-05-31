@@ -6195,6 +6195,9 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	{
 		Random_time *= 0.5; //half the duration if there are too many gibs
 	}
+#if defined RPG
+	Random_time *= 0.25; //in RPG, gibs are really not needed as they are purpely cosmetic, for this reason they wont stay long at all.
+#endif
 	SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 	
 	b_IsAGib[prop] = true;
