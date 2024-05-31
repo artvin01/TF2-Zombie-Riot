@@ -388,13 +388,16 @@ void RPG_ClientDisconnect(int client)
 	b_PlayerIsPVP[client] = false;
 	f_MasteryTextHint[client] = 0.0;
 
-	char buffer[128];		
+	if(IsClientCookiesCached(client))
+	{
+		char buffer[128];		
 
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
-	HudSettings_Cookies.Set(client, buffer);
+		FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
+		HudSettings_Cookies.Set(client, buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
-	HudSettingsExtra_Cookies.Set(client, buffer);
+		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+		HudSettingsExtra_Cookies.Set(client, buffer);
+	}
 
 	UpdateLevelAbovePlayerText(client, true);
 	Dungeon_ClientDisconnect(client);
@@ -961,7 +964,7 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		}
 		else
 			SPrintToChat(client, "Your current form obtained %0.2f Mastery points. You feel as if more intelligence (1000) would help...",MasteryAdd);
-			
+
 		MasteryCurrent += MasteryAdd;
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
