@@ -2510,7 +2510,7 @@ void De_TransformClient(int client)
 		Form form;
 		race.Forms.GetArray(i_TransformationLevel[client] - 1, form);
 		i_TransformationLevel[client] = 0;
-		f_TransformationDelay[client] = GetGameTime() + 7.5;
+		f_TransformationDelay[client] = GetGameTime() + 5.0;
 		if(form.Func_FormDeactivate != INVALID_FUNCTION)
 		{
 			Call_StartFunction(null, form.Func_FormDeactivate);
