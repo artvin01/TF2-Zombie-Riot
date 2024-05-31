@@ -2839,7 +2839,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 		//regen health if they werent in battle!
 		int healing_Amount;
 		
-		healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 1.0, 0.0, HEAL_SELFHEAL);	
+		healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 
 		if(healing_Amount)
 			ApplyHealEvent(client, healing_Amount);
@@ -2847,7 +2847,7 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
 		//if outside of battle and not in transformations that drain resource, regenerate resource.
-		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 80.0));
+		RPGCore_ResourceAddition(client, RoundToCeil(max_mana[client] / 40.0));
 	}
 	else
 	{

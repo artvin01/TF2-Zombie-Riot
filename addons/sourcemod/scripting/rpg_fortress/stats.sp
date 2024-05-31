@@ -220,7 +220,7 @@ void Stats_UpdateHud(int client)
 
 int RPGStats_RetrieveMaxStamina(int stucture)
 {
-	return RoundToNearest(float(stucture) * 1.5);
+	return RoundToNearest(float(stucture) * 1.6);
 }
 
 float RPGStats_RetrieveMaxEnergy(int capacity)
@@ -966,7 +966,7 @@ float RPGStats_FlatDamageResistance(int client)
 		total = Stats_Endurance(client);
 	else
 		total = Endurance[client];
-	return (float(total) * 1.75);
+	return (float(total) * 1.85);
 }
 
 void Stats_UpdateLevel(int client)
