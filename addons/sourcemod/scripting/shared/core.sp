@@ -892,7 +892,7 @@ enum
 #if defined ZR
 	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //0.0151 //Make it 0 for now
 #else
-	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //rpg needs a bigger delay.
+	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0151 //rpg needs a bigger delay.
 #endif
 
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
