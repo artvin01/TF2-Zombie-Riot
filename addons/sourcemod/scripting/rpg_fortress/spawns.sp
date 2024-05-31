@@ -324,6 +324,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 			float gameTime = GetGameTime();
 
 			float time = spawn.Time;
+			PrintToChatAll("time : %f",time);
 			int clients;
 			for(int i; i < sizeof(spawn.Touching); i++)
 			{
@@ -333,6 +334,8 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 
 			if(clients > 1)
 				time /= float(clients);
+
+			PrintToChatAll("time : %f",time);
 
 			int limit = spawn.Count - alive;
 			for(int i; i < limit; i++)
@@ -347,6 +350,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				
 				count++;
 				spawn.NextSpawnTime = GetGameTime() + spawn.Time;
+				PrintToChatAll("TimeDiff 2 : %f",spawn.NextSpawnTime - GetGameTime());
 			}
 			
 			if(count)
@@ -358,6 +362,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 		}
 		else
 		{
+			PrintToChatAll("TimeDiff 3 : %f",spawn.NextSpawnTime - GetGameTime());
 			spawn.NextSpawnTime = GetGameTime() + spawn.Time;
 			SpawnList.SetArray(pos, spawn);
 		}
