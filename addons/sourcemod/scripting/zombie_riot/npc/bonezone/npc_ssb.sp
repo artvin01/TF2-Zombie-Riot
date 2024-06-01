@@ -510,11 +510,13 @@ float Summon_DamageTracker[MAXENTITIES];							//Don't touch this, it's just use
 
 //SPOOKY SPECIAL #3 - SOUL HARVESTER: SSB takes an immobile stance where he raises his arms and attempts to drain the life of all nearby enemies, drawing them in as they rapidly
 //take damage which is then given to SSB as healing. This ability is immune to damage falloff.
+float Harvester_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };					//Delay until the effects of this ability activate.
 float Harvester_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };				//Duration of the ability.
 float Harvester_Radius[4] = { 400.0, 500.0, 600.0, 800.0 };			//Radius.
 float Harvester_Resistance[4] = { 0.75, 0.7, 0.66, 0.5 };			//Amount to multiply damage dealt to SSB during this ability.
 float Harvester_DMG[4] = { 5.0, 10.0, 15.0, 20.0 };					//Damage dealt per 0.1s to all enemies within Soul Harvester's radius.
-float Harvester_HealRatio[4] = { 1.0, 1.5, 2.0, 3.0 };				//Amount to heal SSB per point of damage dealt by this attack.
+float Harvester_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };				//Amount to multiply damage dealt to entities.
+float Harvester_HealRatio[4] = { 1.0, 3.0, 9.0, 20.0 };				//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
 float Harvester_PullStrength[4] = { 200.0, 250.0, 300.0, 350.0 };	//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
 
 //SPOOKY SPECIAL #4 - HELL IS HERE: SSB takes - you guessed it - an immobile stance where he thrusts his arms forward and begins to fire a barrage of homing skulls.
@@ -567,11 +569,13 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
 //		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
 //	- Finalize the VFX/SFX on the following abilities:
-//		- Cursed Cross (needs wind-up, charge loop, and cast animations, also a generic wind-up sound)
-//		- Death Magnetic (needs wind-up, charge loop, and cast animations, attach particle to hand while charging and have player tether beams emit from that hand)
+//		- Cursed Cross: Needs wind-up, charge loop, and cast animations, also a generic wind-up sound.
+//		- Death Magnetic: Needs wind-up, charge loop, and cast animations. Attach particle to hand while charging and have player tether beams emit from that hand.
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //		- WITNESS THE SKULL: The skull needs an ambient looping sound, also a custom cast sound (something like ssb_witnesstheskull) since it's the strongest Spell Card.
 //		- Necrotic Blast: Give the charging phase some sort of intense background noise to indicate via audio that he's charging up something enormous. Also add a pose sequence to be used while he's in the air due to self-knockback.
+//		- Spin 2 Win: Needs all animations and a sound loop which is emitted from his location while it is active.
+//		- Death Magnetic, Necrotic Barrage, Ring of Tartarus: Replace tether beam flashes with control point particles.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
@@ -746,16 +750,16 @@ static void SSB_PrepareAbilities()
 	//IMPORTANT NOTE: The chance of a specific ability being chosen is NOT its chance variable. The chance variable ONLY determines the likelihood of it being cast if it is chosen.
 	//The ACTUAL chance of the spell being used can be calculated with this formula:
 	//Real Chance = (1 / Total # of Abilities In Wave's Ability Pack) * Ability's Chance Variable
-	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used.
+	//So if we have 3 abilities and a chance variable of 0.33, our chance is: (1 / 3) * 0.33 -> 0.33 * 0.33 -> 10.89% chance of being used. This does not necessarily mean all abilities will add up to 100%.
 
 	//Wave 15 (and before):
 	//Spell Cards:
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
-	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[0] + Spin_Duration[0] + 1.0));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, _, false, _, Harvester_Delay[0] + Harvester_Duration[0] + 2.2));
 
 	//Wave 30:
 	//Spell Cards:
@@ -766,6 +770,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[1] + 1.6));
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[1] + 2.2));
+	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
 
 	//Wave 45:
 	//Spell Cards:
@@ -778,6 +783,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[2] + 1.6));
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[2] + 2.2));
+	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[2] + Spin_Duration[2] + 1.0));
 
 	//Wave 60+:
 	//Spell Cards:
@@ -791,6 +797,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[3] + 1.6));
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[3] + 2.2));
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[3] + Spin_Duration[3] + 1.0));
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -2895,6 +2902,131 @@ public void Spin_OnHit(int attacker, int victim, float damage, int weapon)
 	//TODO: Knockback
 }
 
+public void Special_Harvester(SupremeSpookmasterBones ssb, int target)
+{
+	ssb.UsingAbility = true;
+	ssb.Pause();
+	//ssb.PlayHarvesterIntro();
+	ssb.DmgMult = Harvester_Resistance[SSB_WavePhase];
+	//TODO: Needs intro sequence
+
+	//int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_INTRO");
+	//if(iActivity > 0) ssb.StartActivity(iActivity);
+
+	float begin = GetGameTime(ssb.index) + Harvester_Delay[SSB_WavePhase];
+
+	DataPack pack = new DataPack();
+	RequestFrame(Harvester_Begin, pack);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackCell(pack, SSB_WavePhase);
+	WritePackFloat(pack, begin);
+}
+
+public void Harvester_Begin(DataPack pack)
+{
+	ResetPack(pack);
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float startTime = ReadPackFloat(pack);
+
+	if (!IsValidEntity(user))
+	{
+		delete pack;
+		return;
+	}
+
+	float gt = GetGameTime(user);
+	if (gt >= startTime)
+	{
+		//TODO: Sound, animation
+
+		delete pack;
+		pack = new DataPack();
+		RequestFrame(Harvester_Logic, pack);
+		WritePackCell(pack, EntIndexToEntRef(user));
+		WritePackCell(pack, phase);
+		WritePackCell(pack, gt + Harvester_Duration[phase]);
+		WritePackCell(pack, gt + 0.1);
+
+		return;
+	}
+
+	RequestFrame(Harvester_Begin, pack);
+}
+
+public void Harvester_Logic(DataPack pack)
+{
+	ResetPack(pack);
+
+	int user = EntRefToEntIndex(ReadPackCell(pack));
+	int phase = ReadPackCell(pack);
+	float endTime = ReadPackFloat(pack);
+	float nextHit = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(user))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(user);
+	float gt = GetGameTime(ssb.index);
+
+	if (gt >= endTime)
+	{
+		ssb.UsingAbility = false;
+		ssb.Unpause();
+		ssb.RevertSequence();
+		ssb.DmgMult = 1.0;
+
+		//TODO: Outro sequence
+
+		return;
+	}
+
+	if (gt >= nextHit)
+	{
+		//TODO: Damage, visual indicator
+
+		float pos[3];
+		GetEntPropVector(ssb.index, Prop_Send, "m_vecAbsOrigin", pos);
+
+		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(Harvester_DMG[phase], ssb.index, ssb.index, 0, pos, Harvester_Radius[phase], 1.0, 1.0, isBlue, 9999, _, Harvester_EntityMult[phase], Harvester_OnHit);
+
+		nextHit = gt + 0.1;
+	}
+
+	pack = new DataPack();
+	RequestFrame(Harvester_Logic, pack);
+	WritePackCell(pack, EntIndexToEntRef(user));
+	WritePackCell(pack, phase);
+	WritePackCell(pack, endTime);
+	WritePackCell(pack, nextHit);
+}
+
+public void Harvester_OnHit(int attacker, int victim, float damage, int weapon)
+{
+	int healing = RoundToCeil(damage * Harvester_HealRatio[SSB_WavePhase]);
+	if (healing > 0 && victim > 0 && victim < MaxClients)
+	{
+		int hp = GetEntProp(attacker, Prop_Data, "m_iHealth");
+
+		//This should never happen, but just to be safe...
+		if (hp <= 0)
+			return;
+
+		int maxHP = GetEntProp(attacker, Prop_Data, "m_iMaxHealth");
+
+		hp += healing;
+		if (hp > maxHP)
+			hp = maxHP;
+
+		SetEntProp(attacker, Prop_Data, "m_iHealth", hp);
+	}
+
+	//TODO: VFX, pull
+}
+
 bool SSB_UsingAbility[MAXENTITIES];
 bool SSB_Paused[MAXENTITIES];
 float SSB_DMGMult[MAXENTITIES];
@@ -3284,7 +3416,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-		SetVariantColor(view_as<int>({0, 255, 120, 255}));
+		SetVariantColor(view_as<int>({0, 255, 200, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
 		float rightEye[3], leftEye[3];
