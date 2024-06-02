@@ -1603,7 +1603,7 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	{
 		return;
 	}
-	int new_ammo = GetAmmo(owner, 3);
+	int new_ammo = GetAmmo(client, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
 	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
