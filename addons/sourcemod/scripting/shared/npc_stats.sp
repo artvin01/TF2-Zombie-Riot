@@ -7671,7 +7671,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
-	b_JunalSpecialGear100k[entity] = false;
 #endif
 	c_NpcName[entity][0] = 0;
 
@@ -7680,6 +7679,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 #endif
 
 #if defined RPG
+	b_JunalSpecialGear100k[entity] = false;
 	RPGCore_SetFlatDamagePiercing(entity,1.0);
 	XP[entity] = 0;
 	i_CreditsOnKill[entity] = 0;
