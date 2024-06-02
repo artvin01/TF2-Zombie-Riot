@@ -2560,7 +2560,7 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
 
-		if(i_IsWandWeapon[weapon] != 1 && StrContains(classname, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/))
+		if(i_IsWandWeapon[weapon] != 1 && StrContains(classname, "tf_weapon_wrench" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/))
 		{
 			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
@@ -2947,7 +2947,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/)) //need custom logic here
+		else if(!StrContains(classname, "tf_weapon_wrench" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/)) //need custom logic here
 		{
 			OnWrenchCreated(entity);
 		}

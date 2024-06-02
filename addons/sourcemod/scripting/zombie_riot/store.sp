@@ -5350,7 +5350,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/};
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench" };
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 

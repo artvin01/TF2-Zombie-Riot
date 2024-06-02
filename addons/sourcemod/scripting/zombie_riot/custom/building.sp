@@ -271,6 +271,10 @@ void Building_MapStart()
 	Zero(f_VillageRingVectorCooldown);
 	Zero(f_VillageSavingResources);
 	Zero(Perk_Machine_Sickness);
+	Precachesound
+	PrecacheSound("weapons/wrench_hit_build_success1.wav");
+	PrecacheSound("weapons/wrench_hit_build_success2.wav");
+	PrecacheSound("weapons/wrench_hit_build_fail.wav");
 }
 
 //static int RebelTimerSpawnIn;
@@ -1578,7 +1582,80 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			}
 		}
 }
-					
+		
+//This function ONLY exists, beacuse for some reason, the 64bit update started to crash people if they have the classname called tf_weapon_wrench
+//i have no idea why, i hate this update.
+//whatever, this replaces that function, so we can use the repair melee swing logic on ANY weapon, yippie!!!
+public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, int slot)
+{
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
+
+	if(target < 0)
+		return;
+	
+	if(!i_IsABuilding[target])
+	{
+		return;
+	}
+
+	float RepairRate = Attributes_Get(weapon, 95, 1.0);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+
+	RepairRate *= 102.0;
+
+	int i_HealingAmount = RoundToCeil(healing_Amount);
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	int Healing_Value = i_HealingAmount;
+	int newHealth = flHealth + i_HealingAmount;
+	
+	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
+	
+	if(newHealth >= max_health)
+	{
+		i_HealingAmount -= newHealth - max_health;
+		newHealth = max_health;
+	}
+	
+	int Remove_Ammo = i_HealingAmount / 3;
+	
+	if(Remove_Ammo < 0)
+	{
+		Remove_Ammo = 0;
+	}
+	
+	new_ammo -= Remove_Ammo;
+	
+	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
+	{
+		SetVariantInt(Healing_Value);
+		AcceptEntityInput(target, "AddHealth");
+		switch(GetRandomInt(0,1))
+		{
+			case 0:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success1.wav", client, SNDCHAN_AUTO, 70);
+			}
+			case 1:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70);
+			}
+		}
+	}
+	else
+	{
+		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		// Content
+	}
+	SetAmmo(client, 3, new_ammo);
+	CurrentAmmo[client][3] = GetAmmo(client, 3);
+}			
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
@@ -2007,7 +2084,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(owner == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
+				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
 				{
 					if(Is_Reload_Button)
 					{
