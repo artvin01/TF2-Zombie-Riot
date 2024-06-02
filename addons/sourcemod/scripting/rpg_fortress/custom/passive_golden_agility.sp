@@ -95,6 +95,11 @@ void PostThink_GoldenAgility(int client)
 		else
 		{
 			spawnRing_Vectors(f3_GoldenAgilitySpotStepOn[client], RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1,_,client);
+			float VecAbove2[3];
+			VecAbove2 = f3_GoldenAgilitySpotStepOn[client];
+			VecAbove2[2] += 30.0;
+			spawnRing_Vectors(VecAbove2, RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.25, 12.0, 0.1, 1,_,client);
+		
 		}
 		return;
 	}
@@ -167,6 +172,11 @@ void PostThink_GoldenAgility(int client)
 	TE_SetupBeamPoints(VecAbove, f3_GoldenAgilitySpotStepOn[client], gLaser1, 0, 0, 0, 0.75, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {255, 255, 50, 255}, 3);
 	TE_SendToClient(client);
 	spawnRing_Vectors(f3_GoldenAgilitySpotStepOn[client], RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.75, 12.0, 0.1, 1,_,client);
+	
+	float VecAbove2[3];
+	VecAbove2 = f3_GoldenAgilitySpotStepOn[client];
+	VecAbove2[2] += 30.0;
+	spawnRing_Vectors(VecAbove2, RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.75, 12.0, 0.1, 1,_,client);
 	f_GoldenAgilityThrottle[client] =  GetGameTime() + 0.3;
 
 }
