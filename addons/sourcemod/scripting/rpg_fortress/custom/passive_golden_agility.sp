@@ -52,7 +52,7 @@ void PostThink_GoldenAgility(int client)
 		}
 		f_GoldenAgilityThrottle[client] =  GetGameTime() + 0.1;
 
-		float RangeCircleBig = 50.0;
+		float RangeCircleBig = 80.0;
 
 		float ClientPos[3];
 		float SavePos[3];
@@ -60,7 +60,7 @@ void PostThink_GoldenAgility(int client)
 		GetClientAbsOrigin(client, ClientPos);
 		if (GetVectorDistance(ClientPos, SavePos, true) <= (RangeCircleBig * RangeCircleBig))
 		{
-			f_GoldenAgilityCooldown[client] = GetGameTime() + 3.0;
+			f_GoldenAgilityCooldown[client] = GetGameTime() + 6.0;
 			f_GoldenAgilityActiveFor[client] = 0.0; //fail.
 			//Circle yippie.
 			//Do stuff now.
@@ -81,13 +81,13 @@ void PostThink_GoldenAgility(int client)
 			}
 			//if they dont hold a ranged weapon, then they dont get anything. Fuck u
 			
-			ApplyTempAttrib(client, 442, 1.35, 2.9);
+			ApplyTempAttrib(client, 442, 1.35, 5.9);
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-			ApplyTempAttrib(weapon, 2, 1.35, 3.0);
-			ApplyTempAttrib(weapon, 6, 0.75, 3.0);
-			ApplyTempAttrib(weapon, 97, 0.75, 3.0);
-			ApplyTempAttrib(weapon, 4004, 0.75, 3.0);
-			ApplyTempAttrib(weapon, 4003, 0.75, 3.0);
+			ApplyTempAttrib(weapon, 2, 1.35, 6.0);
+			ApplyTempAttrib(weapon, 6, 0.75, 6.0);
+			ApplyTempAttrib(weapon, 97, 0.75, 6.0);
+			ApplyTempAttrib(weapon, 4004, 0.75, 6.0);
+			ApplyTempAttrib(weapon, 4003, 0.75, 6.0);
 			CreateTimer(3.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			EmitSoundToClient(client, PICKUP_SPOT_GOLDEN_SOUND, client, SNDCHAN_STATIC, 100, _);
 			TE_Particle("teleportedin_red", SavePos, NULL_VECTOR, NULL_VECTOR, 0, _, _, _, _, _, _, _, _, _, 0.0);
@@ -129,22 +129,41 @@ void PostThink_GoldenAgility(int client)
 	GetClientAbsOrigin(client, f_pos);
 
 	f_pos[2] += 150.0;
-	f_ang[0] = 5.0 + GetRandomFloat(20.0, 50.0);
+	f_ang[0] = 5.0 + GetRandomFloat(20.0, 35.0);
 	f_ang[1] = GetRandomFloat(-180.0,180.0);
 
 	Handle trace; 
-	trace = TR_TraceRayFilterEx(f_pos, f_ang, (MASK_SHOT_HULL ), RayType_Infinite, HitOnlyWorld, client);
+	trace = TR_TraceRayFilterEx(f_pos, f_ang, (MASK_SHOT_HULL), RayType_Infinite, HitOnlyWorld, client);
 	TR_GetEndPosition(f3_GoldenAgilitySpotStepOn[client], trace);
 	delete trace;
-	f_GoldenAgilityActiveFor[client] = GetGameTime() + 5.0;
+
+	float pos_enemy[3];
+	pos_enemy = f3_GoldenAgilitySpotStepOn[client];
+	float pos_Client[3];
+	WorldSpaceCenter(client, pos_Client);
+
+	AddEntityToTraceStuckCheck(client);
+	
+	trace = TR_TraceRayFilterEx(pos_enemy, pos_Client, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, client);
+	
+	RemoveEntityToTraceStuckCheck(client);
+	
+	int Traced_Target = TR_GetEntityIndex(trace);
+	delete trace;
+	if(Traced_Target != enemy)
+	{
+		return;
+	}
+
+	f_GoldenAgilityActiveFor[client] = GetGameTime() + 8.0;
 	EmitSoundToClient(client, NEW_SPOT_GOLDEN_SOUND, client, SNDCHAN_STATIC, 100, _);
-	f_GoldenAgilityCooldown[client] = GetGameTime() + 6.0;
-	float RangeCircleBig = 50.0;
+	f_GoldenAgilityCooldown[client] = GetGameTime() + 10.0;
+	float RangeCircleBig = 80.0;
 	float VecAbove[3];
 	VecAbove = f3_GoldenAgilitySpotStepOn[client];
 	VecAbove[2] += 1000.0;
 	TE_SetupBeamPoints(VecAbove, f3_GoldenAgilitySpotStepOn[client], gLaser1, 0, 0, 0, 0.75, 50.0, 50.0, 0, NORMAL_ZOMBIE_VOLUME, {255, 255, 50, 255}, 3);
-	TE_SendToAll();
+	TE_SendToClient(client);
 	spawnRing_Vectors(f3_GoldenAgilitySpotStepOn[client], RangeCircleBig * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 50, 200, 1, /*DURATION*/ 0.75, 12.0, 0.1, 1,_,client);
 	f_GoldenAgilityThrottle[client] =  GetGameTime() + 0.3;
 
