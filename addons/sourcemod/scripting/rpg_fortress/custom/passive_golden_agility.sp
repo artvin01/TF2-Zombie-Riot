@@ -139,17 +139,19 @@ void PostThink_GoldenAgility(int client)
 
 	float pos_enemy[3];
 	pos_enemy = f3_GoldenAgilitySpotStepOn[client];
+	pos_enemy[2] += 5.0;
 	float pos_Client[3];
 	WorldSpaceCenter(client, pos_Client);
 
 	AddEntityToTraceStuckCheck(client);
 	
-	trace = TR_TraceRayFilterEx(pos_enemy, pos_Client, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, client);
+	Handle trace2;
+	trace2 = TR_TraceRayFilterEx(pos_enemy, pos_Client, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, client);
 	
 	RemoveEntityToTraceStuckCheck(client);
 	
 	int Traced_Target = TR_GetEntityIndex(trace);
-	delete trace;
+	delete trace2;
 	if(Traced_Target != client)
 	{
 		return;
