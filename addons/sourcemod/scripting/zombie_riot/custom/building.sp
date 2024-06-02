@@ -1603,13 +1603,14 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	{
 		return;
 	}
+	int new_ammo = GetAmmo(owner, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
 	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
 
 	RepairRate *= 102.0;
 
-	int i_HealingAmount = RoundToCeil(healing_Amount);
+	int i_HealingAmount = RoundToCeil(RepairRate);
 	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
 	int Healing_Value = i_HealingAmount;
 	int newHealth = flHealth + i_HealingAmount;
