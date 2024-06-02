@@ -1497,8 +1497,6 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 
 static Function Building[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 static int BuildingWeapon[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-//static float GrabAt[MAXTF2PLAYERS];
-//static int GrabRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
 void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 {
@@ -1956,20 +1954,6 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
 	if (TeutonType[client] == TEUTON_WAITING)
 		return false;
-	
-	static char buffer[36];
-	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
-		{
-			GrabAt[client] = GetGameTime()+1.0; //Make building pickup a bit faster, was 1.5 before, 1.0 is good
-	//		SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			PrintCenterText(client, "%t", "Picking Up Building");
-	//		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Picking Up Building");
-		}
-	}
 	
 	if(IsValidEntity(entity))
 	{
