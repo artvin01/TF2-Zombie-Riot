@@ -252,7 +252,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 13000.0;
+					float damage = 130000.0;
 					if(npc.m_flDoingSpecial)
 						damage = 150000.0;
 
@@ -421,7 +421,7 @@ public void SeaInfectedZombieHuman_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2; //Throw a Shield.
 		}
-		else if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Engage in Close Range Destruction.
 		}
