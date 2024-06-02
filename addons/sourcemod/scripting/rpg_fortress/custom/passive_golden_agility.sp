@@ -146,7 +146,7 @@ void PostThink_GoldenAgility(int client)
 	AddEntityToTraceStuckCheck(client);
 	
 	Handle trace2;
-	trace2 = TR_TraceRayFilterEx(pos_enemy, pos_Client, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, client);
+	trace2 = TR_TraceRayFilterEx(pos_enemy, pos_Client, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, TraceRayCanSeeAllySpecific, _);
 	
 	RemoveEntityToTraceStuckCheck(client);
 	
