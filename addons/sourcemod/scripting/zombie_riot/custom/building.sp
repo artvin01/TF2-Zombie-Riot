@@ -271,7 +271,6 @@ void Building_MapStart()
 	Zero(f_VillageRingVectorCooldown);
 	Zero(f_VillageSavingResources);
 	Zero(Perk_Machine_Sickness);
-	Precachesound
 	PrecacheSound("weapons/wrench_hit_build_success1.wav");
 	PrecacheSound("weapons/wrench_hit_build_success2.wav");
 	PrecacheSound("weapons/wrench_hit_build_fail.wav");
