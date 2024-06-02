@@ -98,7 +98,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	float gameTime = GetGameTime();
 	if(f_ArmorCurrosionImmunity[entity] > gameTime)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%s %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
 		return true;
 	}
 	
