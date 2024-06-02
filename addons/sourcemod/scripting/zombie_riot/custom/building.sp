@@ -1956,7 +1956,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
 	if (TeutonType[client] == TEUTON_WAITING)
 		return false;
-	/*
+	
 	static char buffer[36];
 	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 	{
@@ -1970,7 +1970,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	//		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Picking Up Building");
 		}
 	}
-	*/
+	
 	if(IsValidEntity(entity))
 	{
 		bool BuildingWasMounted = false;
