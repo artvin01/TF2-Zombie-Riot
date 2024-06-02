@@ -1010,6 +1010,8 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	//due to reducing building HP by 10x, this is needed.
+	damage *= 0.1;
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{

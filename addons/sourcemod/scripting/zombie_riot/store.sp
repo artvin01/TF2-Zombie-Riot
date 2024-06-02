@@ -4580,6 +4580,8 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("442", 1.0);		// Move Speed
+	map.SetValue("286", 0.1);		// Reduce building hp by x10
+	map.SetValue("287", 0.1);		// Reduce repair rate by x10
 
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed

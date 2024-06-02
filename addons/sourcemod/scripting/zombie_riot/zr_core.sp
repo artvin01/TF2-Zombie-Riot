@@ -24,7 +24,7 @@ public const int AmmoData[][] =
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
 	{ 0, 4222 },		//Secondary
-	{ 10, 500 },		//Metal
+	{ 10, 50 },			//Metal, reduced by x10 as a temp fix
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food
 	{ 0, 0 },			//Jar
