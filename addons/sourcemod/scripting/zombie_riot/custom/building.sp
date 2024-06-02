@@ -2086,7 +2086,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(owner == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
+				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && ((StrContains(classname, "tf_weapon_wrench") || EntityFuncAttack[weapon] == Wrench_Hit_Repair_Replacement) || StrEqual(buffer, "tf_weapon_robot_arm")))
 				{
 					if(Is_Reload_Button)
 					{
