@@ -150,7 +150,7 @@ void PostThink_GoldenAgility(int client)
 	
 	int Traced_Target = TR_GetEntityIndex(trace);
 	delete trace;
-	if(Traced_Target != enemy)
+	if(Traced_Target != client)
 	{
 		return;
 	}
