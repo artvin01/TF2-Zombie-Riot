@@ -896,7 +896,7 @@ public void OnPostThink(int client)
 				if(ChronoShiftReady(client) == 2)
 				{
 					had_An_ability = true;
-					Format(buffer, sizeof(buffer), "[◈]", buffer);
+					Format(buffer, sizeof(buffer), "%s [◈]", buffer);
 				}
 				else
 				{
