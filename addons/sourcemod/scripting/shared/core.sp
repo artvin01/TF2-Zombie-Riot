@@ -599,6 +599,7 @@ int Level[MAXENTITIES];
 int XP[MAXENTITIES];
 int i_CreditsOnKill[MAXENTITIES];
 int i_HpRegenInBattle[MAXENTITIES];
+bool b_JunalSpecialGear100k[MAXENTITIES];
 #endif
 
 #if defined ZR || defined RPG
