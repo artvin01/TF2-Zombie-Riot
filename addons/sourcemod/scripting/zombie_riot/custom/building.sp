@@ -1603,6 +1603,15 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	{
 		return;
 	}
+	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	
+	if(flHealth >= max_health)
+	{
+		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		return;
+	}
+
 	int new_ammo = GetAmmo(client, 3);
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
@@ -1611,12 +1620,10 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	RepairRate *= 102.0;
 
 	int i_HealingAmount = RoundToCeil(RepairRate);
-	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
 	int Healing_Value = i_HealingAmount;
 	int newHealth = flHealth + i_HealingAmount;
 	
-	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
-	
+
 	if(newHealth >= max_health)
 	{
 		i_HealingAmount -= newHealth - max_health;
@@ -1647,11 +1654,6 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 				EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70);
 			}
 		}
-	}
-	else
-	{
-		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
-		// Content
 	}
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
