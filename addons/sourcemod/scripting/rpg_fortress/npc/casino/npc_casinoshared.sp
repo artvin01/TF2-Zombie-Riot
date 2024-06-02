@@ -50,8 +50,7 @@ stock void CasinoShared_RobMoney(CClotBody npc, int victim, int steal)
 				SPrintToChat(victim, "%d credits were stolen", steal);
 				
 				TextStore_Cash(victim, -steal);
-				i_CreditsOnKill[npc.index] += steal * 5;
-				// NOTE: If cash drop is no longer always 1/5, remove the *5
+				i_CreditsOnKill[npc.index] += steal;
 			}
 		}
 	}
