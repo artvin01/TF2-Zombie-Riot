@@ -83,12 +83,12 @@ void PostThink_GoldenAgility(int client)
 			
 			ApplyTempAttrib(client, 442, 1.35, 5.9);
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-			ApplyTempAttrib(weapon, 2, 1.35, 6.0);
+			ApplyTempAttrib(weapon, 2, 1.35, 6.0);	
 			ApplyTempAttrib(weapon, 6, 0.75, 6.0);
 			ApplyTempAttrib(weapon, 97, 0.75, 6.0);
 			ApplyTempAttrib(weapon, 4004, 0.75, 6.0);
 			ApplyTempAttrib(weapon, 4003, 0.75, 6.0);
-			CreateTimer(3.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(6.0, Timer_UpdateMovementSpeed, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			EmitSoundToClient(client, PICKUP_SPOT_GOLDEN_SOUND, client, SNDCHAN_STATIC, 100, _);
 			TE_Particle("teleportedin_red", SavePos, NULL_VECTOR, NULL_VECTOR, 0, _, _, _, _, _, _, _, _, _, 0.0);
 		}
