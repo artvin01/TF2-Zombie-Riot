@@ -150,7 +150,7 @@ void PostThink_GoldenAgility(int client)
 	
 	RemoveEntityToTraceStuckCheck(client);
 	
-	int Traced_Target = TR_GetEntityIndex(trace);
+	int Traced_Target = TR_GetEntityIndex(trace2);
 	delete trace2;
 	if(Traced_Target != client)
 	{
