@@ -33,6 +33,7 @@ static const char TierName[][] =
 #define FLAG_WRENCH	(1 << 5)	// 32
 #define FLAG_ALL	63
 
+
 enum struct TinkerNPCEnum
 {
 	char Model[PLATFORM_MAX_PATH];
@@ -1449,6 +1450,12 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 
 public void Tinker_XP_Stonebound(int client, int weapon)
 {
+	if(f_MomentumAntiOpSpam[weapon] > GetGameTime())
+	{
+		//dont do anything.
+		return;
+	}
+	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.2;
 	ApplyTempAttrib(weapon, 6, 0.985, 120.0);
 	ApplyTempAttrib(weapon, 2, 0.985, 120.0);
 
