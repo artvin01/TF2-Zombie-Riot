@@ -1961,7 +1961,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
 	{
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
+		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
 		{
 			GrabAt[client] = GetGameTime()+1.0; //Make building pickup a bit faster, was 1.5 before, 1.0 is good
 	//		SetDefaultHudPosition(client);
@@ -2023,7 +2023,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(owner == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
+				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/) || StrEqual(buffer, "tf_weapon_robot_arm")))
 				{
 					if(Is_Reload_Button)
 					{

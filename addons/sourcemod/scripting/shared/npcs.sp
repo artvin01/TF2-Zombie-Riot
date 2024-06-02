@@ -1761,7 +1761,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			int testvalue = 1;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
-	#if defined ZR
+#if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
 				percentage *= 0.85;
@@ -1778,7 +1778,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 
-	#endif
+#endif
 
 			if(percentage < 10.0)
 			{

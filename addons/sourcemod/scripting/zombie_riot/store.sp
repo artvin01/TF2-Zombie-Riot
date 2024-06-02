@@ -4582,7 +4582,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("442", 1.0);		// Move Speed
 
 	if(LastMann)
-		Attributes_Set(client, 442, 0.7674418604651163);
+		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 999.0);	// instant build
@@ -5350,7 +5350,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench"};
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_robot_arm" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/};
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
