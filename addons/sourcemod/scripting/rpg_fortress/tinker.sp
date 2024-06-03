@@ -1455,7 +1455,7 @@ public void Tinker_XP_Stonebound(int client, int weapon)
 		//dont do anything.
 		return;
 	}
-	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.5;
+//	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.5;
 	ApplyTempAttrib(weapon, 6, 0.985, 45.0);
 	ApplyTempAttrib(weapon, 2, 0.985, 45.0);
 
