@@ -5352,13 +5352,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench" };
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_fireaxe" };
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 7 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
