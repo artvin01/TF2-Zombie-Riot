@@ -305,7 +305,7 @@ public void Npc_AirCutter_Launch_client(int client)
 		else
 		{
 			LookAtTarget(client, target);
-			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR,{0.0,0.0,0.0});
+			TeleportEntity(client, OldPosSave[client], NULL_VECTOR,{0.0,0.0,0.0});
 		}
 	}
 	else
