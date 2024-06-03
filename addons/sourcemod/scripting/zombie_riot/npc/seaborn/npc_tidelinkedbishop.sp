@@ -66,7 +66,7 @@ methodmap TidelinkedBishop < CClotBody
 
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
-		//KillFeed_SetKillIcon(npc.index, "huntsman");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -273,7 +273,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 public void TidelinkedBishop_DownedThink(int entity)
 {
 	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
-	npc.SetActivity("ACT_MUDROCK_RAGE");
+	npc.SetActivity("ACT_TrueStrength_RAGE");
 	npc.SetPlaybackRate(0.5);
 	SDKUnhook(entity, SDKHook_Think, TidelinkedBishop_DownedThink);
 }

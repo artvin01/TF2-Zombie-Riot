@@ -1,9 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MAX_PARTY_SIZE	4
+#define MAX_PARTY_SIZE	6
 
-static int PartyLeader[MAXTF2PLAYERS];
+// TODO: If more party settings are added, use a enum/enum struct
+
+static int PartyLeader[MAXENTITIES];
+static bool PartyXPLowShare[MAXTF2PLAYERS];
+static bool PartyFriendlyFire[MAXENTITIES];
 static int PartyInvitedBy[MAXTF2PLAYERS];
 static int PartyOutlineRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
@@ -46,6 +50,32 @@ int Party_GetPartyLeader(int client)
 bool Party_IsClientMember(int client, int target)
 {
 	return (PartyLeader[client] && PartyLeader[client] == PartyLeader[target]);
+}
+
+bool Party_XPLowShare(int client)
+{
+	return (PartyLeader[client] && PartyXPLowShare[PartyLeader[client]]);
+}
+
+bool Party_FriendlyFire(int client, int target)
+{
+	return (PartyLeader[client] && PartyLeader[client] == PartyLeader[target] && PartyFriendlyFire[PartyLeader[client]]);
+}
+
+int Party_Count(int client)
+{
+	int players = 1;
+
+	if(PartyLeader[client])
+	{
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(client != target && PartyLeader[client] == PartyLeader[target])
+				players++;
+		}
+	}
+
+	return players;
 }
 
 void Party_PlayerModel(int client, const char[] model)
@@ -107,7 +137,11 @@ void Party_ClientDisconnect(int client)
 			if(client != target && PartyLeader[client] == PartyLeader[target])
 			{
 				if(!newLeader)
+				{
 					newLeader = target;
+					PartyXPLowShare[target] = PartyXPLowShare[client];
+					PartyFriendlyFire[target] = PartyFriendlyFire[client];
+				}
 				
 				SPrintToChat(target, "%N left the party, %N is now the leader!", client, newLeader);
 				PartyLeader[target] = newLeader;
@@ -125,6 +159,8 @@ void Party_ClientDisconnect(int client)
 
 	PartyLeader[client] = 0;
 	PartyInvitedBy[client] = 0;
+	PartyXPLowShare[client] = false;
+	PartyFriendlyFire[client] = false;
 }
 
 public Action Party_Command(int client, int args)
@@ -141,11 +177,12 @@ static void ShowMenu(int client)
 		return;
 	
 	Menu menu = new Menu(Party_MenuHandle);
-	menu.SetTitle("RPG Fortress\n \nParty:");
 
 	static char index[16], buffer[96];
 	if(PartyLeader[client])
 	{
+		menu.AddItem("-2", "Party Settings\n(Mute a person to ingore their invites.)\n ");
+
 		for(int target = 1; target <= MaxClients; target++)
 		{
 			bool joined = PartyLeader[client] == PartyLeader[target];
@@ -183,10 +220,10 @@ static void ShowMenu(int client)
 			}
 		}
 
-		int count = menu.ItemCount;
-		menu.SetTitle("RPG Fortress\n \nParty:\n(%d / %d)", count, MAX_PARTY_SIZE);
+		int count = menu.ItemCount - 1;
+		menu.SetTitle("RPG Fortress\n \nParty (%d / %d)\n(Mute a person to ingore their invites.)", count, MAX_PARTY_SIZE);
 
-		if(count < 4 && PartyLeader[client] == client)
+		if(count < MAX_PARTY_SIZE && PartyLeader[client] == client)
 		{
 			for(int target = 1; target <= MaxClients; target++)
 			{
@@ -202,6 +239,8 @@ static void ShowMenu(int client)
 	}
 	else
 	{
+		menu.SetTitle("RPG Fortress\n \nParty:\n(Mute a person to ingore their invites.)");
+
 		for(int target = 1; target <= MaxClients; target++)
 		{
 			if(IsValidClient(target) && IsInvitedBy(client, target))
@@ -232,7 +271,7 @@ static void ShowMenu(int client)
 	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-public int Party_MenuHandle(Menu menu, MenuAction action, int client, int choice)
+static int Party_MenuHandle(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -251,7 +290,7 @@ public int Party_MenuHandle(Menu menu, MenuAction action, int client, int choice
 			menu.GetItem(choice, num, sizeof(num));
 
 			int target = StringToInt(num);
-			if(target != -1)
+			if(target >= 0)
 				target = GetClientOfUserId(target);
 			
 			if(!target)
@@ -263,6 +302,11 @@ public int Party_MenuHandle(Menu menu, MenuAction action, int client, int choice
 				if(target == -1)
 				{
 					Party_ClientDisconnect(client);
+				}
+				else if(target == -2)
+				{
+					ShowSettings(client);
+					return 0;
 				}
 				else if(PartyLeader[client] == PartyLeader[target])
 				{
@@ -304,6 +348,75 @@ public int Party_MenuHandle(Menu menu, MenuAction action, int client, int choice
 			}
 
 			ShowMenu(client);
+		}
+	}
+	return 0;
+}
+
+static void ShowSettings(int client)
+{
+	if(Actor_InChatMenu(client))
+		return;
+	
+	Menu menu = new Menu(Party_SettingsHandle);
+	menu.SetTitle("RPG Fortress\n \nParty Settings:");
+
+	static char buffer[64];
+	bool leader = (PartyLeader[client] && PartyLeader[client] == client);
+	
+	Format(buffer, sizeof(buffer), "XP Share: %s", PartyXPLowShare[client] ? "Prioritize Low Leveled" : "Share Evenly");
+	menu.AddItem(buffer, buffer, leader ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+	Format(buffer, sizeof(buffer), "Friendly Fire: %s", PartyFriendlyFire[client] ? "Enabled" : "Disabled");
+	menu.AddItem(buffer, buffer, leader ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+
+	menu.ExitBackButton = true;
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+static int Party_SettingsHandle(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			if(choice == MenuCancel_ExitBack)
+				ShowMenu(client);
+		}
+		case MenuAction_Select:
+		{
+			if(PartyLeader[client] && PartyLeader[client] == client)
+			{
+				switch(choice)
+				{
+					case 0:
+					{
+						PartyXPLowShare[client] = !PartyXPLowShare[client];
+						
+						for(int other = 1; other <= MaxClients; other++)
+						{
+							if(client != other && PartyLeader[client] == PartyLeader[other])
+								SPrintToChat(other, "%N has set XP Share to %s!", client, PartyXPLowShare[client] ? "Prioritize Low Leveled" : "Share Evenly");
+						}
+					}
+					case 1:
+					{
+						PartyFriendlyFire[client] = !PartyFriendlyFire[client];
+						
+						for(int other = 1; other <= MaxClients; other++)
+						{
+							if(client != other && PartyLeader[client] == PartyLeader[other])
+								SPrintToChat(other, "%N has set Friendly Fire %s!", client, PartyFriendlyFire[client] ? "on" : "off");
+						}
+					}
+				}
+			}
+
+			ShowSettings(client);
 		}
 	}
 	return 0;

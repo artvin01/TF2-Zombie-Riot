@@ -988,10 +988,31 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			}
 			//Decide Damage falloff ourselves.
 #endif
-
-#if defined ZR || defined NOG
+#if defined RPG
+			if(OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+			{
+				Damageaftercalc = 0.0;
+				return Plugin_Handled;	
+			}
+			else
+			{
+				if(inflictor > 0 && inflictor <= MaxClients)
+				{
+					f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+					RPGCore_AddClientToHurtList(victim, inflictor);
+				}
+				else if(attacker > 0 && attacker <= MaxClients)
+				{
+					f_InBattleDelay[attacker] = GetGameTime() + 3.0;
+					RPGCore_AddClientToHurtList(victim, attacker);
+				}
+			}
+#endif
+#if defined ZR || defined NOG || defined RPG
 			OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
+#if defined ZR || defined NOG
 			VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+#endif
 #endif
 
 #if defined ZR
@@ -1074,6 +1095,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		
 #if defined RTS
 		RTS_TakeDamage(victim, damage, damagetype);
+#endif
+#if defined RPG
+		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
+		RPG_ChaosSurgance(victim, attacker, weapon, damage);
+		RPG_BobsPureRage(victim, attacker, damage);
+
+		//this should be last.
+		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 #endif
 
 		NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
@@ -1233,18 +1262,6 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	
-#if defined RPG 
-	if(inflictor > 0 && inflictor <= MaxClients)
-	{
-		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
-		RPGCore_AddClientToHurtList(victim, inflictor);
-	}
-	else if(attacker > 0 && attacker <= MaxClients)
-	{
-		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
-		RPGCore_AddClientToHurtList(victim, inflictor);
-	}
-#endif
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1368,7 +1385,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
-		return;
+	{
+		if(!IsValidClient(victim))
+			return;
+	}
 
 	if(!c_NpcName[victim][0])
 		return;
@@ -1426,7 +1446,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if((!b_npcspawnprotection[victim]/* || i_NpcIsUnderSpawnProtectionInfluence[victim] == 0) && (i_NpcFightOwner[victim] == attacker || Party_IsClientMember(i_NpcFightOwner[victim], attacker)*/))
+		if(!b_npcspawnprotection[victim] || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
 		if(!b_npcspawnprotection[victim])
 #endif
@@ -1477,6 +1497,30 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		
 		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
 	}
+#if defined RPG
+	if(TrueStrength_StacksOnEntity(attacker, victim) > 0) //True stength!
+	{
+		Debuff_added = true;
+		
+		if(TrueStrength_StacksOnEntity(attacker, victim) < TrueStrength_StacksOnEntityMax(attacker))
+			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(%i/%i)", Debuff_Adder_left, TrueStrength_StacksOnEntity(attacker, victim), TrueStrength_StacksOnEntityMax(attacker));			
+		else
+			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(MAX)", Debuff_Adder_left);			
+	}
+	switch(BubbleProcStatusLogicCheck(victim))
+	{
+		case -1:
+		{
+			Debuff_added = true;
+			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "B!%s", Debuff_Adder_right);
+		}
+		case 1:
+		{
+			Debuff_added = true;
+			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "b!%s", Debuff_Adder_right);
+		}
+	}
+#endif
 
 #if defined ZR
 	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
@@ -1647,14 +1691,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%t", "Invulnerable Npc");
 		armor_added = true;
 	}
-#if defined ZR
-	else if(Elemental_HurtHud(victim, Debuff_Adder))
-	{
-		armor_added = true;
-	}
-#endif
 	else
 	{
+#if defined ZR
+		if(Elemental_HurtHud(victim, Debuff_Adder))
+		{
+			armor_added = true;
+		}
+#endif
 		float percentage;
 		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
 		{
@@ -1700,52 +1744,52 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			}
 			armor_added = true;
 		}
-	}
-	
-	if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
-	{
-		float percentage = npc.m_flRangedArmor * 100.0;
-		percentage *= fl_Extra_RangedArmor[victim];
-		percentage *= fl_TotalArmor[victim];
-		if(f_MultiDamageTaken[victim] != 1.0)
+		
+		if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
 		{
-			percentage *= f_MultiDamageTaken[victim];
-		}
-		if(f_MultiDamageTaken_Flat[victim] != 1.0)
-		{
-			percentage *= f_MultiDamageTaken_Flat[victim];
-		}
-		int testvalue = 1;
-		OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+			percentage = npc.m_flRangedArmor * 100.0;
+			percentage *= fl_Extra_RangedArmor[victim];
+			percentage *= fl_TotalArmor[victim];
+			if(f_MultiDamageTaken[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken[victim];
+			}
+			if(f_MultiDamageTaken_Flat[victim] != 1.0)
+			{
+				percentage *= f_MultiDamageTaken_Flat[victim];
+			}
+			int testvalue = 1;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
 
 #if defined ZR
-		if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
-		{
-			percentage *= 0.85;
-		}
-		
-		if(!NpcStats_IsEnemySilenced(victim))
-		{
-			if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
-				percentage *= Medival_Difficulty_Level;
+				percentage *= 0.85;
 			}
-		}
+			
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+				{
+					percentage *= Medival_Difficulty_Level;
+				}
+			}
 
-		if(VausMagicaShieldLogicEnabled(victim))
-			percentage *= 0.25;
+			if(VausMagicaShieldLogicEnabled(victim))
+				percentage *= 0.25;
 
 #endif
 
-		if(percentage < 10.0)
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+			if(percentage < 10.0)
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+			}
+			else
+			{
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+			}
+			armor_added = true;
 		}
-		else
-		{
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
-		}
-		armor_added = true;
 	}
 
 	if(armor_added)
@@ -1774,7 +1818,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			{
 				HudOffset += 0.035;
 			}
-			else if(NpcHadArmorType(raidboss, 2) || DoesNpcHaveHudDebuffOrBuff(raidboss, GameTime))	
+			else if(NpcHadArmorType(raidboss, 2) || DoesNpcHaveHudDebuffOrBuff(attacker, raidboss, GameTime))	
 			{
 				HudOffset += 0.035;
 			}
@@ -1916,7 +1960,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 		return true;
 
 #if defined ZR
-	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
+	if(Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(victim))
 		return true;
 #endif
 
@@ -2021,7 +2065,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 }
 #endif
 
-stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
+stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
@@ -2085,10 +2129,16 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int npc, float GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-
+	else if(f_Ruina_Attack_Buff[npc] > GameTime)
+		return true;
+#if defined RPG
+	else if(TrueStrength_StacksOnEntity(client, npc))
+		return true;
+	else if(BubbleProcStatusLogicCheck(client) != 0)
+		return true;
+#endif
 	return false;
 }
-
 void DoMeleeAnimationFrameLater(DataPack pack)
 {
 	pack.Reset();
@@ -2208,6 +2258,7 @@ void NPC_DeadEffects(int entity)
 #endif
 			
 #if defined RPG
+			Stats_SetHasKill(client, c_NpcName[entity]);
 			Quests_AddKill(client, entity);
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
@@ -2486,8 +2537,10 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 	{
 		i_HasBeenHeadShotted[victim] = false;
 	}
+#if !defined RPG
 	if(b_npcspawnprotection[victim])
 		damage *= 0.25;
+#endif
 		
 #if defined ZR
 	if(GetTeam(victim) == TFTeam_Red)
@@ -2515,37 +2568,37 @@ bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, float &dam
 }
 
 #if defined RPG
-stock bool OnTakeDamageRpgPartyLogic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom, float GameTime)
+stock bool OnTakeDamageRpgPartyLogic(int victim, int attacker, float GameTime)
 {
-	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 100000)
+	if(attacker > MaxClients && victim <= MaxClients)
 	{
-			
+		int PrevAttack = attacker;
+		int PrevVictim = victim;
+		attacker = PrevVictim;
+		victim = PrevAttack;
+		//an npc is attacking a player, invert.
 	}
-	//We check if the npc is already hurt, dead, or other stuff like that.
 
-	//TODO:
-	//Make sure ownership goes over other party members if you die
-	//Realisticly speaking this should never be an issue.
-	else if(!i_NpcFightOwner[victim] || f_NpcFightTime[victim] < GameTime || !IsClientInGame(i_NpcFightOwner[victim]) || !IsPlayerAlive(i_NpcFightOwner[victim]))
+	/*
+		The npc is in a dungeon
+		The attacker is not an npc
+		The enemy is in a debug level state
+	*/
+	if(b_NpcIsInADungeon[victim] || attacker > MaxClients || Level[victim] > 1000000)
 	{
-		if(b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] && Level[victim] < (Level[attacker] - 8))
-		{
-			return true;
-		}
-		else
-		{
-			i_NpcFightOwner[victim] = attacker;
-			f_NpcFightTime[victim] = GameTime + 10.0;
-		}
+		return false;	
 	}
-	else if(i_NpcFightOwner[victim] != attacker && !Party_IsClientMember(i_NpcFightOwner[victim], attacker))
+
+	if(RPGCore_ClientAllowedToTargetNpc(victim, attacker))
 	{
-		return true;
+		i_NpcFightOwner[victim] = attacker;
+		f_NpcFightTime[victim] = GameTime + 10.0;
 	}
 	else
 	{
-		f_NpcFightTime[victim] = GameTime + 10.0;
+		return true;
 	}
+	
 	return false;
 }
 
@@ -2583,21 +2636,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 	{
 		if(!trueArmorOnly)
 		{
+			float TotalMeleeRes = 1.0;
 #if defined ZR
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
-					damage *= Medival_Difficulty_Level;
+					TotalMeleeRes *= Medival_Difficulty_Level;
 				}
 			}
 
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
-				damage *= 0.85;
+				TotalMeleeRes *= 0.85;
 			}
 #endif
-			float TotalMeleeRes = 1.0;
 			TotalMeleeRes *= fl_MeleeArmor[victim];
 			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
 #if defined ZR
@@ -2620,29 +2673,31 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 	{
 		if(!trueArmorOnly)
 		{
+			float TotalMeleeRes = 1.0;
 #if defined ZR
 			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
 			{
-				damage *= 1.25;
+				TotalMeleeRes *= 1.25;
 			}
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
-					damage *= Medival_Difficulty_Level;
+					TotalMeleeRes *= Medival_Difficulty_Level;
 				}
 			}
 #endif
-			damage *= fl_RangedArmor[victim];
-			damage *= fl_Extra_RangedArmor[victim];
+			TotalMeleeRes *= fl_RangedArmor[victim];
+			TotalMeleeRes *= fl_Extra_RangedArmor[victim];
 
 #if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
-				damage *= 0.85;
+				TotalMeleeRes *= 0.85;
 			}
 #endif
 
+			damage *= TotalMeleeRes;
 		}
 		damage *= fl_TotalArmor[victim];
 	}
@@ -2949,17 +3004,19 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			}
 		}
 	}
-#if defined ZR
 	else if(b_IsABow[weapon])
 	{
 		//arrows ignore inflictor?
+#if defined ZR
 		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker];
+#endif
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
 		{		
 			damage *= 1.35;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 			damagetype &= ~DMG_CRIT;
+#if defined ZR
 			if(i_HeadshotAffinity[attacker] == 1)
 			{
 				damage *= 1.35;
@@ -2975,9 +3032,9 @@ bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &dama
 			{
 				damage *= 0.75;
 			}
+#endif
 		}
 	}
-#endif
 	return false;
 }
 void BackstabNpcInternalModifExtra(int weapon, int attacker, int victim, float multi)
@@ -3092,6 +3149,19 @@ void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor, floa
 	{
 		damage *= RES_BATTILONS;
 	}		
+#if defined RPG
+	switch(BubbleProcStatusLogicCheck(victim))
+	{
+		case -1:
+		{
+			damage *= 0.85;
+		}
+		case 1:
+		{
+			damage *= 1.15;
+		}
+	}
+#endif
 	if(Resistance_Overall_Low[victim] > GameTime)
 	{
 		damage *= RES_MEDIGUN_LOW;

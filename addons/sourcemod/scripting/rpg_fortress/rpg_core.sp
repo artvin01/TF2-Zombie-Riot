@@ -21,11 +21,11 @@ int BaseUpdateStats;
 int BaseMaxLevel;
 int BaseMaxExperience;
 int BaseMaxExperiencePerLevel;
+ConVar mp_disable_respawn_times;
+ConVar CvarSkyName;
 
 bool DisabledDownloads[MAXTF2PLAYERS];
 
-int Level[MAXENTITIES];
-int XP[MAXENTITIES];
 int RaceIndex[MAXTF2PLAYERS];
 int i_TransformationSelected[MAXTF2PLAYERS];
 int i_TransformationLevel[MAXTF2PLAYERS];
@@ -37,10 +37,14 @@ char c_TagName[MAXTF2PLAYERS][64];
 int b_BrushToOwner[MAXENTITIES];
 int b_OwnerToBrush[MAXENTITIES];
 float Animal_Happy[MAXTF2PLAYERS][10][3];
+float f3_PositionArrival[MAXENTITIES][3];
+int hFromSpawnerIndex[MAXENTITIES] = {-1, ...};
 
 bool b_PlayerIsPVP[MAXENTITIES];
 int i_CurrentStamina[MAXTF2PLAYERS];
 int i_MaxStamina[MAXTF2PLAYERS];
+float f_ClientTargetedByNpc[MAXTF2PLAYERS];
+float f_MasteryTextHint[MAXTF2PLAYERS];
 
 bool b_NpcIsInADungeon[MAXENTITIES];
 int i_NpcFightOwner[MAXENTITIES];
@@ -78,8 +82,10 @@ int Luck2[MAXENTITIES];
 //CC CONTRACT DIFFICULTIES!
 bool b_DungeonContracts_LongerCooldown[MAXTF2PLAYERS];
 bool b_DungeonContracts_SlowerAttackspeed[MAXTF2PLAYERS];
+bool b_DungeonContracts_SlowerMovespeed[MAXTF2PLAYERS];
 //bool b_DungeonContracts_BleedOnHit[MAXTF2PLAYERS]; Global inside core.sp
 int i_NpcIsUnderSpawnProtectionInfluence[MAXENTITIES];
+float f_MomentumAntiOpSpam[MAXENTITIES];
 
 static char MapConfig[64];
 
@@ -107,28 +113,39 @@ Cookie HudSettingsExtra_Cookies;
 #include "rpg_fortress/textstore.sp"
 #include "rpg_fortress/tinker.sp"
 #include "rpg_fortress/traffic.sp"
+#include "rpg_fortress/worldtext.sp"
 #include "rpg_fortress/zones.sp"
-#include "rpg_fortress/npc_despawn_zone.sp"
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/weapon_samurai_sword.sp"
+#include "rpg_fortress/custom/weapon_brick.sp"
+#include "zombie_riot/custom/homing_projectile_logic.sp"
+#include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
+#include "rpg_fortress/custom/weapon_passanger.sp"
+#include "rpg_fortress/custom/passive_true_strength.sp"
+#include "rpg_fortress/custom/melee_war_cry.sp"
+#include "rpg_fortress/custom/passive_chrono_shift.sp"
+#include "rpg_fortress/custom/weapon_heal_aoe.sp"
+#include "rpg_fortress/custom/passive_golden_agility.sp"
+#include "rpg_fortress/custom/weapon_bubble_proc.sp"
+#include "rpg_fortress/custom/emblem_doublejump.sp"
+#include "rpg_fortress/custom/weapon_boom_stick.sp"
+#include "rpg_fortress/custom/skill_big_bang.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_default_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_fire_wand.sp"
 #include "rpg_fortress/custom/wand/weapon_lightning_wand.sp"
-#include "rpg_fortress/custom/wand/weapon_wand_fire_ball.sp"
-#include "rpg_fortress/custom/wand/weapon_short_teleport.sp"
 #include "rpg_fortress/custom/wand/weapon_icicles.sp"
 #include "rpg_fortress/custom/potion_healing_effects.sp"
-#include "rpg_fortress/custom/ranged_mortar_strike.sp"
 #include "rpg_fortress/custom/ground_beserkhealtharmor.sp"	
+#include "rpg_fortress/custom/ranged_sentrythrow.sp"
+*/
+#include "rpg_fortress/custom/ground_pound_melee.sp"
+#include "rpg_fortress/custom/ranged_mortar_strike.sp"
+#include "rpg_fortress/custom/weapon_wand_fire_ball.sp"
+#include "shared/custom/joke_medigun_mod_drain_health.sp"
+#include "rpg_fortress/custom/weapon_short_teleport.sp"
 #include "rpg_fortress/custom/ground_aircutter.sp"	
 #include "rpg_fortress/custom/ranged_quick_reflex.sp"
-#include "rpg_fortress/custom/ranged_sentrythrow.sp"
-#include "rpg_fortress/custom/ground_pound_melee.sp"
-#include "rpg_fortress/custom/weapon_boom_stick.sp"
-#include "rpg_fortress/custom/accesorry_mudrock_shield.sp"
-*/
-#include "shared/custom/joke_medigun_mod_drain_health.sp"
 /*
 #include "rpg_fortress/custom/wand/weapon_arts_wand.sp"
 #include "rpg_fortress/custom/weapon_semi_auto.sp"
@@ -160,10 +177,16 @@ void RPG_PluginStart()
 	TextStore_PluginStart();
 	Traffic_PluginStart();
 	Zones_PluginStart();
+	Quests_PluginStart();
 
 	CountPlayersOnRed();
 	Medigun_PluginStart();
 	RpgPluginStart_Store();
+	RequestFrame(CheckIfAloneOnServer);
+
+	mp_disable_respawn_times = FindConVar("mp_disable_respawn_times");
+	mp_disable_respawn_times.Flags &= ~(FCVAR_NOTIFY|FCVAR_REPLICATED);
+	CvarSkyName = FindConVar("sv_skyname");
 }
 
 void RPG_PluginEnd()
@@ -173,12 +196,14 @@ void RPG_PluginEnd()
 	{
 		if(IsValidEntity(i) && GetEntityClassname(i, buffer, sizeof(buffer)))
 		{
+			/*
 			if(StrEqual(buffer, "zr_base_npc"))
 			{
 				NPC_Despawn(i);
 				continue;
 			}
-			else if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
+			else */
+			if(!StrContains(buffer, "prop_dynamic") || !StrContains(buffer, "point_worldtext") || !StrContains(buffer, "info_particle_system"))
 			{
 				GetEntPropString(i, Prop_Data, "m_iName", buffer, sizeof(buffer));
 				if(!StrEqual(buffer, "rpg_fortress"))
@@ -206,11 +231,13 @@ void RPG_PluginEnd()
 void RPG_MapStart()
 {
 	Zero2(f3_SpawnPosition);
+	Zero(f_ClientTargetedByNpc);
 	Fishing_OnMapStart();
 	Medigun_PersonOnMapStart();
 	Zones_MapStart();
 
 	CreateTimer(2.0, CheckClientConvars, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
 	Wand_Map_Precache();
 	Transform_Expidonsa_MapStart();
@@ -218,23 +245,34 @@ void RPG_MapStart()
 	Transform_MercHuman_MapStart();
 	Transform_Ruianian_MapStart();
 	SamuraiSword_Map_Precache();
+	GroundSlam_Map_Precache();
+	Mortar_MapStart();
+	Wand_FireBall_Map_Precache();
+	BrickWeapon_Map_Precache();
+	Abiltity_TrueStrength_PluginStart();
+	AirCutter_Map_Precache();
+	QuickReflex_MapStart();
+	Wand_Short_Teleport_Map_Precache();
+	Passanger_Wand_MapStart();
+	PrecachePlayerGiveGiveResponseVoice();
+	WarCryOnMapStart();
+	Wand_HolyLight_Map_Precache();
+	Abiltity_GoldenAgility_MapStart();
+	Wand_BubbleProctection_Map_Precache();
+	BoomStick_MapPrecache();
+	BigBang_Map_Precache();
+
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav");
+
 	/*
 	HealingPotion_Map_Start();
 	Wand_Fire_Map_Precache();
 	Wand_Lightning_Map_Precache();
-	GroundSlam_Map_Precache();
-	Wand_FireBall_Map_Precache();
-	Wand_Short_Teleport_Map_Precache();
-	Mortar_MapStart();
-	BoomStick_MapPrecache();
-	Abiltity_Mudrock_Shield_Shield_PluginStart();
 	Wand_Arts_MapStart();
 
 	Wand_IcicleShard_Map_Precache();
 	SentryThrow_MapStart();
-	QuickReflex_MapStart();
 	BeserkerRageGain_Map_Precache();
-	AirCutter_Map_Precache();
 	*/
 
 	
@@ -243,6 +281,7 @@ void RPG_MapStart()
 void RPG_MapEnd()
 {
 	Spawns_MapEnd();
+	MapConfig[0] = 0;
 }
 
 void RPG_ConfigSetup(const char[] mapname)
@@ -272,18 +311,19 @@ void RPG_ConfigSetup(const char[] mapname)
 		SetFailState("Can not find folder in '%s' for map '%s'", buffer, mapname);
 
 	Zones_ConfigSetup();
+	Actor_ConfigSetup();
 	Crafting_ConfigSetup();
 	Dungeon_ConfigSetup();
 	Fishing_ConfigSetup();
 	Games_ConfigSetup();
 	Garden_ConfigSetup();
 	Mining_ConfigSetup();
-	Music_ConfigSetup();
 	Quests_ConfigSetup();
 	Races_ConfigSetup();
 	Saves_ConfigSetup();
 	Spawns_ConfigSetup();
 	Tinker_ConfigSetup();
+	Worldtext_ConfigSetup();
 	
 	TextStore_ConfigSetup();
 
@@ -291,24 +331,22 @@ void RPG_ConfigSetup(const char[] mapname)
 	LoadSoundScript(buffer);
 }
 
-stock bool RPG_IsMap(const char[] name)
-{
-	return StrContains(MapConfig, name, false) != -1;
-}
-
-void RPG_BuildPath(char[] buffer, int length, const char[] name)
+bool RPG_BuildPath(char[] buffer, int length, const char[] name)
 {
 	BuildPath(Path_SM, buffer, length, CONFIG ... "/%s/%s.cfg", MapConfig, name);
+	return view_as<bool>(MapConfig[0]);
 }
 
 void RPG_PutInServer(int client)
 {
 	CountPlayersOnRed();
-//	AdjustBotCount();
+	AdjustBotCount();
 
 	int userid = GetClientUserId(client);
 	QueryClientConVar(client, "cl_allowdownload", OnQueryFinished, userid);
 	QueryClientConVar(client, "cl_downloadfilter", OnQueryFinished, userid);
+
+	mp_disable_respawn_times.ReplicateToClient(client, "1");
 }
 
 public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue, int userid)
@@ -325,6 +363,8 @@ public void OnQueryFinished(QueryCookie cookie, int client, ConVarQueryResult re
 			if(StrContains("all", cvarValue) == -1)
 				DisabledDownloads[client] = true;
 		}
+
+		mp_disable_respawn_times.ReplicateToClient(client, "1");
 	}
 }
 
@@ -346,14 +386,18 @@ void RPG_ClientDisconnect(int client)
 
 	DisabledDownloads[client] = false;
 	b_PlayerIsPVP[client] = false;
+	f_MasteryTextHint[client] = 0.0;
 
-	char buffer[128];		
+	if(AreClientCookiesCached(client))
+	{
+		char buffer[128];		
 
-	FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
-	HudSettings_Cookies.Set(client, buffer);
+		FormatEx(buffer, sizeof(buffer), "%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f;%.3f", f_ArmorHudOffsetX[client], f_ArmorHudOffsetY[client], f_HurtHudOffsetX[client], f_HurtHudOffsetY[client], f_WeaponHudOffsetX[client], f_WeaponHudOffsetY[client], f_NotifHudOffsetX[client], f_NotifHudOffsetY[client]);
+		HudSettings_Cookies.Set(client, buffer);
 
-	FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
-	HudSettingsExtra_Cookies.Set(client, buffer);
+		FormatEx(buffer, sizeof(buffer), "%b;%b;%b", b_HudScreenShake[client], b_HudLowHealthShake[client], b_HudHitMarker[client]);
+		HudSettingsExtra_Cookies.Set(client, buffer);
+	}
 
 	UpdateLevelAbovePlayerText(client, true);
 	Dungeon_ClientDisconnect(client);
@@ -363,9 +407,12 @@ void RPG_ClientDisconnect(int client)
 	Saves_ClientDisconnect(client);
 	Stats_ClientDisconnect(client);
 	TextStore_ClientDisconnect(client);
-//	MudrockShieldDisconnect(client);
+	TrueStrengthShieldDisconnect(client);
+	TrueStrengthUnequip(client);
+	ChronoShiftUnequipOrDisconnect(client);
 //	BeserkHealthArmorDisconnect(client);
 	f_TransformationDelay[client] = 0.0;
+	RequestFrame(CheckIfAloneOnServer);
 }
 
 void RPG_ClientDisconnect_Post()
@@ -375,13 +422,16 @@ void RPG_ClientDisconnect_Post()
 
 void RPG_EntityCreated(int entity, const char[] classname)
 {
+	f_MomentumAntiOpSpam[entity] = 0.0;
 	b_NpcIsInADungeon[entity] = false;
 	i_NpcFightOwner[entity] = false;
 	f_SingerBuffedFor[entity] = 0.0;
 	StoreWeapon[entity][0] = 0;
+	hFromSpawnerIndex[entity] = -1;
 	Dungeon_ResetEntity(entity);
 	Stats_ClearCustomStats(entity);
 	Zones_EntityCreated(entity, classname);
+	OnEntityCreatedMeleeWarcry(entity);
 }
 
 void RPG_PlayerRunCmdPost(int client, int buttons)
@@ -407,6 +457,17 @@ void CheckAlivePlayers(int killed = 0)
 {
 	Dungeon_CheckAlivePlayers(killed);
 }
+public Action GlobalTimer(Handle timer)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Spawns_CheckBadClient(client);
+		}
+	}
+	return Plugin_Continue;
+}
 
 public Action CheckClientConvars(Handle timer)
 {
@@ -430,6 +491,7 @@ public Action CheckClientConvars(Handle timer)
 				QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //snd_musicvolume
 				QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //snd_ducktovolume
 			}
+			Spawns_CheckBadClient(client);
 		}
 	}
 	return Plugin_Continue;
@@ -560,12 +622,14 @@ public Action Command_GiveXp(int client, int args)
 		if(money > 0)
 		{
 			PrintToChat(targets[target], "You got %i XP from the admin %N!", money, client);
-			Stats_GiveXP(targets[target], money);
+			int xp = money;
+			Stats_GiveXP(targets[target], xp);
 		}
 		else
 		{
 			PrintToChat(targets[target], "You lost %i XP due to the admin %N!", money, client);
-			Stats_GiveXP(targets[target], money);
+			int xp = money;
+			Stats_GiveXP(targets[target], xp);
 		}
 	}
 	
@@ -648,9 +712,17 @@ void RPGCore_StaminaAddition(int client, int amount)
 	}
 }
 
-void RPGCore_ResourceReduction(int client, int amount)
+void RPGCore_ResourceReduction(int client, int amount, bool isformdrain = false)
 {
-	Current_Mana[client] -= amount;
+	static Race race;	
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+
+	float multi = 1.0;
+	if(!isformdrain)
+		multi = form.GetFloatStat(Form::EnergyMulti, Stats_GetFormMastery(client, form.Name));
+	
+	Current_Mana[client] -= RoundToNearest(float(amount) * (1.0 / multi));
 	if(Current_Mana[client] <= 0)
 	{
 		Current_Mana[client] = 0;
@@ -680,19 +752,106 @@ void RPGCore_ResourceAddition(int client, int amount)
 
 bool RPGCore_PlayerCanPVP(int attacker, int victim)
 {
+	if(attacker > MaxClients)
+	{
+		attacker = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
+	}
+	if(attacker > MaxClients)
+		return false;
+
+	if(attacker < 0)
+		return false;
+
+	if(attacker == victim)
+		return false;
+		
 	if(b_PlayerIsPVP[attacker] && b_PlayerIsPVP[victim])
 	{
 		return true;
 	}
+	
+	if(Party_FriendlyFire(attacker, victim))
+		return true;
+	
 	return false;
 }
 
 
 void RPGCore_AddClientToHurtList(int entity, int client)
 {
-	f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 20.0;
+	if(client <= MaxClients)
+		f_ClientSinceLastHitNpc[entity][client] = GetGameTime() + 10.0;
 }
 
+void RPGCore_ResetHurtList(int entity)
+{
+	for(int client = 0; client <= MaxClients; client++)
+	{
+		f_ClientSinceLastHitNpc[entity][client] = 0.0;
+	}
+}
+
+bool RPGCore_ClientAllowedToTargetNpc(int victim, int attacker)
+{
+	//if a player is being attacked, always allow.
+	if(victim <= MaxClients)
+		return true;
+
+	//if the attacker is an entity, always allow.
+	if(attacker > MaxClients)
+		return true;
+	
+	//do not include party leader here.
+
+
+	bool EnemyWasAttackedBefore;
+	int PartyLeader = Party_GetPartyLeader(attacker);
+	if(PartyLeader)
+	{
+		//They are in a party, anyone in another party has attacked the enemy first.
+		for(int client; client <= MaxClients; client++)
+		{
+			if(attacker != client && f_ClientSinceLastHitNpc[victim][client] > GetGameTime())
+			{
+				if(Party_GetPartyLeader(client) != PartyLeader)
+				{
+					EnemyWasAttackedBefore = true;
+					break;
+				}
+			}
+		}
+		if(EnemyWasAttackedBefore)
+		{
+			return false;
+		}
+	}
+	else
+	{
+		//they are not in a party, anyone else attacked the enemy first.
+		for(int client; client <= MaxClients; client++)
+		{
+			if(attacker != client && f_ClientSinceLastHitNpc[victim][client] > GetGameTime())
+			{
+				EnemyWasAttackedBefore = true;
+				break;
+			}
+		}
+		if(EnemyWasAttackedBefore)
+		{
+			return false;
+		}
+	}
+	//if someone attacked them while in a party, then allow.
+	if(!EnemyWasAttackedBefore && b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
+	{
+		if(!RPGSpawns_GivePrioLevel(Level[victim], Level[attacker]))
+		{
+			return false;
+		}
+	}
+	//As of now, all checks passed.
+	return true;
+}
 /*
 	int client;
 
@@ -701,6 +860,8 @@ void RPGCore_AddClientToHurtList(int entity, int client)
 
 	}
 */
+
+
 bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 {
 	// Start by adding 1; limit; keep adding 1
@@ -724,42 +885,88 @@ bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 
 void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 {
-	//only a 10% chance!
-	if(GetRandomFloat(0.0, 1.0) >= 0.1)
+	if(Stats_GetCurrentFormMasteryMax(client))
 		return;
 
 	float CombinedDamagesPre;
 	float CombinedDamages;
 	int BaseDamage;
 	float Multiplier;
+	float Multiplier2;
 	int bonus;
-	Stats_Strength(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Strength(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
 
-	Stats_Precision(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Precision(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
 
-	Stats_Artifice(client, BaseDamage, bonus, Multiplier);
-	CombinedDamagesPre = float(BaseDamage) * Multiplier;
+	Stats_Artifice(client, BaseDamage, bonus, Multiplier, Multiplier2);
+	CombinedDamagesPre = float(BaseDamage) * Multiplier * Multiplier2;
 	if(CombinedDamagesPre > CombinedDamages)
 		CombinedDamages = CombinedDamagesPre;
-	//Get the highest statt you can find.
+
 	float f_Stats_GetCurrentFormMastery;
 	f_Stats_GetCurrentFormMastery = RPGStats_FlatDamageSetStats(client, 0, RoundToNearest(CombinedDamages));
+
+	//only a 5% chance!
+	int GrantGuranteed[MAXTF2PLAYERS];
+
+	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 1.5)
+	{
+		if(GrantGuranteed[client] < 10 && GetRandomFloat(0.0, 1.0) >= 0.2)
+		{	
+			GrantGuranteed[client] += 2;
+			return;
+		}
+	}
+	else if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
+	{
+		if(GrantGuranteed[client] < 10 && GetRandomFloat(0.0, 1.0) >= 0.1)
+		{	
+			GrantGuranteed[client] += 1;
+			return;
+		}
+	}
+	else
+	{
+		if(f_MasteryTextHint[client] < GetGameTime())
+			SPrintToChat(client, "This enemy cannot give you mastery.");
+
+		f_MasteryTextHint[client] = GetGameTime() + 5.0;
+		return;
+	}
+	bool WasGuranteed = false;
+	if(GrantGuranteed[client] >= 10)
+	{
+		WasGuranteed = true;
+		GrantGuranteed[client] = 0;
+	}
+	//Get the highest statt you can find.
 
 	//todo: Make it also work if your level is low enough!
 	if(float(MaxHealth) > f_Stats_GetCurrentFormMastery * 0.75)
 	{
 		float MasteryCurrent = Stats_GetCurrentFormMastery(client);
+		float MasteryAdd;
 		if(GetRandomFloat(0.0, 1.0) <= 0.1)
 		{
-			MasteryCurrent += GetRandomFloat(0.4, 0.8);
+			MasteryAdd += GetRandomFloat(0.2, 0.3);
 		}
-		MasteryCurrent += 0.1;
+		MasteryAdd += GetRandomFloat(0.11, 0.13);
+		int totalInt = Stats_Intelligence(client);
+		if(totalInt >= 1000)
+		{
+			MasteryAdd *= 1.25;
+			SPrintToChat(client, "Your intellect boosts you, your current form obtained %0.2f (1.25x) Mastery points.",MasteryAdd);
+		}
+		else
+			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
+
+		MasteryCurrent += MasteryAdd;
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
 		//enemy was able to survive atleast 1 hit and abit more, allow them to use form mastery, it also counts the current form!.
 	}
@@ -768,4 +975,57 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 void RPGCore_SetFlatDamagePiercing(int entity, float value)
 {
 	f_FlatDamagePiercing[entity] = value;
+}
+
+void RPGCore_ClientTargetedByNpc(int client, float time)
+{
+	f_ClientTargetedByNpc[client] = GetGameTime() + time;
+}
+
+float RPGCore_ClientTargetedByNpcReturn(int client)
+{
+	return f_ClientTargetedByNpc[client];
+}
+
+void RPGCore_CopyStatsOver(int npc_owner, int npc_target)
+{
+	fl_Extra_Damage[npc_target] = fl_Extra_Damage[npc_owner];
+	fl_Extra_Damage[npc_target] = fl_Extra_Damage[npc_owner];
+	fl_Extra_Speed[npc_target] = fl_Extra_Speed[npc_owner];
+	Endurance[npc_target] = Endurance[npc_owner];
+}
+
+
+bool RPGCore_ClientCanTransform(int client)
+{
+	if(f_TransformationDelay[client] > GetGameTime())
+		return false;
+
+	if(!IsValidClient(client))
+		return false;
+
+	if(!IsPlayerAlive(client))
+		return false;
+
+	static Race race;
+	//static Form form;
+	if(Races_GetRaceByIndex(RaceIndex[client], race))
+	{
+		if(i_TransformationSelected[client] > 0 && i_TransformationSelected[client] <= race.Forms.Length)
+		{
+			//race.Forms.GetArray(i_TransformationSelected[client] - 1, form);
+		}
+		else
+		{
+			return false;
+			//form.Default();
+		}	
+	}
+	return true;
+}
+
+//This is needed for certain abilities actions.
+void RPGCore_CancelMovementAbilities(int client)
+{
+	AircutterCancelAbility(client);
 }

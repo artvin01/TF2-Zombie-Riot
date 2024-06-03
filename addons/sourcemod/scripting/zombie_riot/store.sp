@@ -803,7 +803,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	ManualTF2Util_SetPlayerActiveWeapon(client, swap);
+	SetPlayerActiveWeapon(client, swap);
 }
 
 void Store_SwapItems(int client)
@@ -885,7 +885,7 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					ManualTF2Util_SetPlayerActiveWeapon(client, nextE);
+					SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -900,7 +900,7 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					ManualTF2Util_SetPlayerActiveWeapon(client, weapon);
+					SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
@@ -1267,6 +1267,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 							other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 							other.BuyWave[client] = -1;
+							other.Owned[client] = values[1] + 1;
 
 							StoreItems.SetArray(item.Section, other);
 
@@ -4576,12 +4577,14 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
+	map.SetValue("442", 1.0);		// Move Speed
+	map.SetValue("286", 0.1);		// Reduce building hp by x10
+	map.SetValue("287", 0.1);		// Reduce repair rate by x10
 
 	if(LastMann)
-		Attributes_Set(client, 442, 0.7674418604651163);
+		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 999.0);	// instant build
@@ -5349,13 +5352,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench"};
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_fireaxe" };
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 7 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);

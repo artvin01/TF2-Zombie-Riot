@@ -15,10 +15,10 @@ enum
 
 static const char ElementName[][] =
 {
-	"Corrode",
-	"Chaos",
-	"Cyro",
-	"Necrosis"
+	"CO",
+	"CH",
+	"CY",
+	"NE"
 };
 
 static float LastTime[MAXENTITIES];
@@ -98,7 +98,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	float gameTime = GetGameTime();
 	if(f_ArmorCurrosionImmunity[entity] > gameTime)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%s %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
 		return true;
 	}
 	
@@ -123,7 +123,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %d]", ElementName[low], lowHealth);
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%t %d>", ElementName[low], lowHealth);
 	return true;
 }
 

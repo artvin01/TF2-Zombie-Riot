@@ -271,6 +271,9 @@ void Building_MapStart()
 	Zero(f_VillageRingVectorCooldown);
 	Zero(f_VillageSavingResources);
 	Zero(Perk_Machine_Sickness);
+	PrecacheSound("weapons/wrench_hit_build_success1.wav");
+	PrecacheSound("weapons/wrench_hit_build_success2.wav");
+	PrecacheSound("weapons/wrench_hit_build_fail.wav");
 }
 
 //static int RebelTimerSpawnIn;
@@ -1007,6 +1010,8 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 		damage = 0.0;
 		return Plugin_Handled;
 	}
+	//due to reducing building HP by 10x, this is needed.
+	damage *= 0.1;
 
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
@@ -1069,7 +1074,7 @@ public Action Building_TakeDamage(int entity, int &attacker, int &inflictor, flo
 	if(GetEntProp(entity, Prop_Data, "m_iHealth") <= damage)
 	{
 		b_BuildingHasDied[entity] = true;
-		//KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
+		KillFeed_Show(entity, inflictor, attacker, 0, weapon, damagetype);
 	}
 	//This is no longer needed, this logic has been added to the base explosive plugin, this also means that it allows
 	//npc vs npc interaction (mainly from blu to red) to deal 3x the explosive damage, so its not so weak.
@@ -1497,8 +1502,6 @@ public void Building_TakeDamagePost(int entity, int attacker, int inflictor, flo
 
 static Function Building[MAXTF2PLAYERS] = {INVALID_FUNCTION, ...};
 static int BuildingWeapon[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-//static float GrabAt[MAXTF2PLAYERS];
-//static int GrabRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 
 void Building_WeaponSwitchPost(int client, int &weapon, const char[] buffer)
 {
@@ -1580,7 +1583,83 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			}
 		}
 }
-					
+		
+//This function ONLY exists, beacuse for some reason, the 64bit update started to crash people if they have the classname called tf_weapon_wrench
+//i have no idea why, i hate this update.
+//whatever, this replaces that function, so we can use the repair melee swing logic on ANY weapon, yippie!!!
+public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, int slot)
+{
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
+
+	if(target < 0)
+		return;
+	
+	if(!i_IsABuilding[target])
+	{
+		return;
+	}
+	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
+	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
+	
+	if(flHealth >= max_health)
+	{
+		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		return;
+	}
+
+	int new_ammo = GetAmmo(client, 3);
+
+	float RepairRate = Attributes_Get(weapon, 95, 1.0);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+
+	RepairRate *= 102.0;
+
+	int i_HealingAmount = RoundToCeil(RepairRate);
+	int Healing_Value = i_HealingAmount;
+	int newHealth = flHealth + i_HealingAmount;
+	
+
+	if(newHealth >= max_health)
+	{
+		i_HealingAmount -= newHealth - max_health;
+		newHealth = max_health;
+	}
+	
+	int Remove_Ammo = i_HealingAmount / 3;
+	
+	if(Remove_Ammo < 0)
+	{
+		Remove_Ammo = 0;
+	}
+	
+	new_ammo -= Remove_Ammo;
+	
+	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
+	{
+		SetVariantInt(Healing_Value);
+		AcceptEntityInput(target, "AddHealth");
+		switch(GetRandomInt(0,1))
+		{
+			case 0:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success1.wav", client, SNDCHAN_AUTO, 70);
+			}
+			case 1:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70);
+			}
+		}
+	}
+	SetAmmo(client, 3, new_ammo);
+	CurrentAmmo[client][3] = GetAmmo(client, 3);
+}			
 public Action Building_Pickup_Timer(Handle sentryHud, DataPack pack)
 {
 	pack.Reset();
@@ -1956,21 +2035,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 {
 	if (TeutonType[client] == TEUTON_WAITING)
 		return false;
-	/*
-	static char buffer[36];
-	if(!Is_Reload_Button && GrabRef[client] == INVALID_ENT_REFERENCE && !StrContains(classname, "obj_") && GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
-		{
-			GrabAt[client] = GetGameTime()+1.0; //Make building pickup a bit faster, was 1.5 before, 1.0 is good
-	//		SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			PrintCenterText(client, "%t", "Picking Up Building");
-	//		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Picking Up Building");
-		}
-	}
-	*/
+	
 	if(IsValidEntity(entity))
 	{
 		bool BuildingWasMounted = false;
@@ -2023,7 +2088,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 			if(owner == -1)
 			{
 				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && (StrEqual(buffer, "tf_weapon_wrench") || StrEqual(buffer, "tf_weapon_robot_arm")))
+				if(weapon > MaxClients && GetEntityClassname(weapon, buffer, sizeof(buffer)) && ((StrContains(buffer, "tf_weapon_wrench") || EntityFuncAttack[weapon] == Wrench_Hit_Repair_Replacement) || StrEqual(buffer, "tf_weapon_robot_arm")))
 				{
 					if(Is_Reload_Button)
 					{

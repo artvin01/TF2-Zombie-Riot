@@ -30,31 +30,58 @@ void NPC_ConfigSetup()
 	data.Func = INVALID_FUNCTION;
 	NPCList.PushArray(data);
 
+	NPCActor_Setup();
 	StartChicken_OnMapStart_NPC();
 	MadChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();
 	HeavyBear_OnMapStart_NPC();
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
-
-/*
 	Miner_Enemy_OnMapStart_NPC();
+	DeepMiner_OnMapStart_NPC();
+	HeavyExcavator_OnMapStart_NPC();
+	CaveGuardsman_OnMapStart_NPC();
+	NemanBoss_OnMapStart_NPC();
+	ExtremeHeatDigger_OnMapStart_NPC();
+	Driller_OnMapStart_NPC();
+	CaveBowmen_OnMapStart_NPC();
+	AutomaticCaveDefense_OnMapStart_NPC();
+	CaveEnslaver_OnMapStart_NPC();
+	EnslavedMiner_OnMapStart_NPC();
+	ChaosAfflictedMiner_OnMapStart_NPC();
+	SlaveMaster_OnMapStart_NPC();
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
-	PoisonZombie_OnMapStart_NPC();
 	ExplosiveHeadcrabZombie_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
 	ZombiefiedCombineSwordsman_OnMapStart_NPC();
-	BobTheTargetDummy_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
+	GiantHeadcrabZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
+	BobTheTargetDummy_OnMapStart_NPC();
+	WaterZombie_OnMapStart_NPC();
+	DrowedZombieHuman_OnMapStart_NPC();
+	MutatedDrowedZombieHuman_OnMapStart_NPC();
+	FarmBear_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
+	SeaInfectedZombieHuman_OnMapStart_NPC();
+	ScoutHyper_OnMapStart_NPC();
+	PlayerAnimatorNPC_OnMapStart_NPC();
+	OriginalInfected_OnMapStart_NPC();
+	HeavyExtreme_OnMapStart_NPC();
+	SniperAccuracy_OnMapStart_NPC();
+	Huirgrajo_Setup();
+
+	RookieGambler_Setup();
+	BuckshotGambler_Setup();
+
+/*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
 	BaseSquad_MapStart();
 	CombineTurtle_MapStart();
-	FarmBear_OnMapStart_NPC();
 */
 }
 
@@ -62,9 +89,6 @@ int NPC_Add(NPCData data)
 {
 	if(!data.Func || data.Func == INVALID_FUNCTION)
 		ThrowError("Invalid function name");
-
-	if(!TranslationPhraseExists(data.Name))
-		LogError("Translation '%s' does not exist", data.Name);
 
 	return NPCList.PushArray(data);
 }
@@ -187,11 +211,23 @@ void NPCDeath(int entity)
 	{
 		RpgCore_OnKillGiveMastery(client, MaxHealth);
 	}
-	
 }
 
 void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(IsValidEntity(attacker))
+	{
+		CClotBody npcBase = view_as<CClotBody>(victim);
+		if(GetTeam(attacker) != GetTeam(victim))
+		{
+			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
+
+			if(!IsValidEnemy(npcBase.index, npcBase.m_iTarget)) //Only set it if they actaully have no target.
+			{
+				npcBase.m_iTarget = attacker;
+			}
+		}
+	}
 	Function func = func_NPCOnTakeDamage[victim];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -211,6 +247,12 @@ void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 
 stock void NPC_Despawn(int entity)
 {
+	/*
+	if(i_NpcInternalId[entity] == NPCActor_ID())
+		LogStackTrace("Actor Despawned");
+	
+	PrintToChatAll("NPC_Despawn::%d", i_NpcInternalId[entity]);
+	*/
 	if(IsValidEntity(entity))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
@@ -245,12 +287,11 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 	
 	if(npc.m_flGetClosestTargetTime < gameTime) //Find a new victim to destroy.
 	{
-		distance *= 2.0; //need to double distance beacuse of how distance works now via navmesh and all.
 		if(b_NpcIsInADungeon[npc.index])
 		{
 			distance = 99999.9;
 		}
-		int entity_found = GetClosestTarget(npc.index, false, distance);
+		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
@@ -297,7 +338,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 				npc.m_iTarget = entity_found;
 			}
 		}
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -365,17 +406,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 						npc.SetActivity(StandStill);
 					}
 				}
-
-				char HealthString[64];
-				IntToString(Health,HealthString, sizeof(HealthString));
-				int offset = Health < 0 ? 1 : 0;
-				ThousandString(HealthString[offset], sizeof(HealthString) - offset);
-
-				if(IsValidEntity(npc.m_iTextEntity3))
-				{
-					
-					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-				}
+				RPGNpc_UpdateHpHud(npc.index);
 			}
 		}
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -434,22 +465,39 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 	}
 }
 
+void RPGNpc_UpdateHpHud(int entity)
+{
+	if(entity <= MaxClients)
+		return;
+		
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(IsValidEntity(npc.m_iTextEntity3))
+	{
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		char HealthString[64];
+		IntToString(Health,HealthString, sizeof(HealthString));
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(HealthString[offset], sizeof(HealthString) - offset);
+		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	}
+}
+
 stock bool ShouldNpcJumpAtThisClient(int client)
 {
 	bool AllowJump = true;
-	/*
+	
 	if(AbilityGroundPoundReturnFloat(client) > GetGameTime())
 	{
 		AllowJump = false;
 	}
-	*/
+	
 	return AllowJump;
 }
 
 stock bool AllyNpcInteract(int client, int entity, int weapon)
 {
 	bool result;
-/*
+
 	Function func = func_NPCInteract[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -458,31 +506,59 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 		Call_PushCell(weapon);
 		Call_Finish(result);
 	}
-*/
+
 	return result;
 }
 
+#include "rpg_fortress/npc/npc_actor.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
-/*
 #include "rpg_fortress/npc/normal/npc_miner.sp"
+#include "rpg_fortress/npc/normal/npc_deep_miner.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_excavator.sp"
+#include "rpg_fortress/npc/normal/npc_cave_guardsman.sp"
+#include "rpg_fortress/npc/normal/npc_neman.sp"
+#include "rpg_fortress/npc/normal/npc_extreme_heat_digger.sp"
+#include "rpg_fortress/npc/normal/npc_driller.sp"
+#include "rpg_fortress/npc/normal/npc_cave_bowmen.sp"
+#include "rpg_fortress/npc/normal/npc_auto_cave_defense.sp"
+#include "rpg_fortress/npc/normal/npc_cave_enslaver.sp"
+#include "rpg_fortress/npc/normal/npc_enslaved_miner.sp"
+#include "rpg_fortress/npc/normal/npc_slave_master.sp"
+#include "rpg_fortress/npc/normal/npc_chaos_afflicted_miner.sp"
+
+#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"
-#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
+#include "rpg_fortress/npc/normal/npc_giant_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
-
+#include "rpg_fortress/npc/normal/npc_water_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_drowned_zombiefied_human.sp"
+#include "rpg_fortress/npc/normal/npc_mutated_drowned_zombiefied_human.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
+#include "rpg_fortress/npc/normal/npc_sea_infected_zombiefied_human.sp"
+#include "rpg_fortress/npc/normal/npc_scout_hyper.sp"
+#include "rpg_fortress/npc/normal/npc_original_infected.sp"
+#include "rpg_fortress/npc/ally/npc_player_animator.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_extreme.sp"
+#include "rpg_fortress/npc/normal/npc_sniper_accuracy.sp"
+#include "rpg_fortress/npc/normal/npc_huirgrajo.sp"
 
+#include "rpg_fortress/npc/casino/npc_casinoshared.sp"
+#include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
+#include "rpg_fortress/npc/casino/npc_buckshotgambler.sp"
+
+/*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"

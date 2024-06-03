@@ -3,6 +3,7 @@
 
 static KeyValues SaveKv;
 static char CharacterId[MAXTF2PLAYERS][32];
+#define MAX_CHARACTER_SLOTS 4 
 
 void Saves_PluginStart()
 {
@@ -75,16 +76,69 @@ void Saves_ClientDisconnect(int client)
 
 static void EnableCharacter(int client, const char[] id)
 {
+	//dont show transforms.
+	i_TransformationSelected[client] = 0;
 	if(!CharacterId[client][0])
 	{
+		char buffer1[64], buffer2[64];
+
 		KeyValues kv = Saves_Kv("characters");
 		if(kv.JumpToKey(id))
 		{
-			char buffer1[64], buffer2[64];
+			mp_disable_respawn_times.ReplicateToClient(client, "0");
+			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
+			RaceIndex[client] = kv.GetNum("race");
 
-			int uniques, count;
-			int length = TextStore_GetItems(uniques);
+			kv.GetString("model", buffer1, sizeof(buffer1));
+			switch(buffer1[2])
+			{
+				case 'o':	// Scout
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Scout);
+				}
+				case 'l':	// Soldier
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Soldier);
+				}
+				case 'r':	// Pyro
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Pyro);
+				}
+				case 'm':	// Demoman
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_DemoMan);
+				}
+				case 'a':	// Heavy
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Heavy);
+				}
+				case 'g':	// Engineer
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Engineer);
+				}
+				case 'i':	// Sniper
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Sniper);
+				}
+				case 'y':	// Spy
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Spy);
+				}
+				default:	// Medic
+				{
+					SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", TFClass_Medic);
+				}
+			}
 
+			Stats_EnableCharacter(client);
+		}
+
+		int uniques, count;
+		int length = TextStore_GetItems(uniques);
+		
+		kv = Saves_Kv("characters");
+		if(kv.JumpToKey(id))
+		{
 			if(kv.JumpToKey("equipped"))
 			{
 				if(kv.GotoFirstSubKey(false))
@@ -92,6 +146,7 @@ static void EnableCharacter(int client, const char[] id)
 					do
 					{
 						kv.GetSectionName(buffer1, sizeof(buffer1));
+						ReplaceString(buffer1, sizeof(buffer1), "'", "\"");
 
 						for(int i = -uniques; i < length; i++)
 						{
@@ -112,11 +167,6 @@ static void EnableCharacter(int client, const char[] id)
 
 				kv.GoBack();
 			}
-
-			strcopy(CharacterId[client], sizeof(CharacterId[]), id);
-			RaceIndex[client] = kv.GetNum("race");
-
-			Stats_EnableCharacter(client);
 		}
 	}
 }
@@ -129,7 +179,8 @@ static void SaveCharacter(int client, bool remove)
 		if(kv.JumpToKey(CharacterId[client]))
 		{
 			kv.SetNum("lastsave", GetTime());
-
+			kv.SetNum("level", Level[client]);
+			
 			kv.DeleteKey("equipped");
 			kv.JumpToKey("equipped", true);
 
@@ -148,6 +199,7 @@ static void SaveCharacter(int client, bool remove)
 						TextStore_GetItemName(i, buffer, sizeof(buffer));
 						if(TextStore_GetInv(client, i))
 						{
+							ReplaceString(buffer, sizeof(buffer), "\"", "'");
 							kv.SetNum(buffer, 1);
 
 							if(remove)
@@ -163,12 +215,15 @@ static void SaveCharacter(int client, bool remove)
 		}
 
 		if(remove)
+		{
 			CharacterId[client][0] = 0;
+			mp_disable_respawn_times.ReplicateToClient(client, "1");
+		}
 	}
 
 	if(remove)
 	{
-		if(IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client))
 			ForcePlayerSuicide(client);
 	}
 }
@@ -192,7 +247,7 @@ void Saves_MainMenu(int client)
 
 	Race race;
 
-	char buffer1[32], buffer2[32];
+	char buffer1[64], buffer2[32];
 
 	KeyValues kv = Saves_Kv("characters");
 	if(CharacterId[client][0] && kv.JumpToKey(CharacterId[client]))
@@ -203,7 +258,7 @@ void Saves_MainMenu(int client)
 
 		Menu menu = new Menu(CharacterInfoH);
 		menu.SetTitle("RPG Fortress\n \nCharacter:\n \n" ...
-		"Race: %s\nOutfit: %s\nTrait: %sLevel %d\nUnspent XP %d", race.Name, buffer1, buffer2, Level[client], XP[client]);
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nUnspent XP: %d", race.Name, buffer2, buffer1, Level[client], XP[client]);
 
 		menu.AddItem(NULL_STRING, "Change Characters", ITEMDRAW_SPACER);
 		menu.AddItem(NULL_STRING, "Change Characters");
@@ -224,8 +279,8 @@ void Saves_MainMenu(int client)
 			{
 				do
 				{
-					kv.GetString("owner", buffer1, sizeof(buffer1));
-					if(StrEqual(buffer1, steamid))
+					kv.GetString("owner", buffer2, sizeof(buffer2));
+					if(StrEqual(buffer2, steamid))
 					{
 						Races_GetRaceByIndex(kv.GetNum("race"), race);
 						kv.GetString("title", buffer1, sizeof(buffer1));
@@ -248,7 +303,7 @@ void Saves_MainMenu(int client)
 				while(kv.GotoNextKey());
 			}
 
-			for(; chars < 3; chars++)
+			for(; chars < MAX_CHARACTER_SLOTS; chars++)
 			{
 				menu.AddItem("", "New Character");
 			}
@@ -327,10 +382,12 @@ static void CharacterMenu(int client, const char[] id)
 		kv.GetString("model", buffer2, sizeof(buffer2), "N/A");
 		FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
 
+		int level = kv.GetNum("level");
+
 		Menu menu = new Menu(CharacterMenuH);
 
 		menu.SetTitle("RPG Fortress\n \nCharacter Selection:\n \n" ...
-		"Race: %s\nOutfit: %s\nTrait: %s\nLevel %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, kv.GetNum("level"), buffer3);
+		"Race: %s\nOutfit: %s\nTrait: %s\nLevel: %d\nLast Played: %s\n ", race.Name, buffer2, buffer1, level, buffer3);
 
 		menu.AddItem(id, "Select Character");
 		menu.AddItem(id, "Modifiy Character");
@@ -431,8 +488,16 @@ static int DeleteCharacterH(Menu menu, MenuAction action, int client, int choice
 			if(choice == 3)
 			{
 				KeyValues kv = Saves_Kv("characters");
-				if(kv.JumpToKey(id))
-					kv.SetString("owner", "DELETED");
+				kv.DeleteKey(id);
+
+				kv = Saves_Kv("stats");
+				kv.DeleteKey(id);
+
+				Quests_DeleteChar(id);
+				Dungeon_DeleteChar(id);
+
+				//if(kv.JumpToKey(id))
+				//	kv.SetString("owner", "DELETED");
 
 				Saves_MainMenu(client);
 			}
@@ -505,8 +570,11 @@ static void CreateCharacter(int client)
 				kv.SetString("model", "Medic");
 		}
 
+		kv.SetNum("firstsave", time);
 		kv.SetNum("lastsave", time);
-		kv.SetString("title", "Alpha-Build");
+
+		if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+			kv.SetString("title", "Debugger");
 
 		ModifiyCharacter(client, id);
 	}
@@ -574,12 +642,14 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				Races_GetRaceByIndex(kv.GetNum("race"), race);
 				FormatTime(buffer3, sizeof(buffer3), NULL_STRING, kv.GetNum("lastsave"));
 
+				int level = kv.GetNum("level");
+
 				Menu menu = new Menu(ModifiyCharacterH);
 
 				menu.SetTitle("RPG Fortress\n \nCharacter Creation:\n ");
 
 				FormatEx(buffer1, sizeof(buffer1), "Race: %s", race.Name);
-				menu.AddItem(id, buffer1);
+				menu.AddItem(id, buffer1, (level > 99 && !CvarRPGInfiniteLevelAndAmmo.BoolValue) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 				kv.GetString("model", buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Outfit: %s", buffer2);
@@ -589,7 +659,7 @@ static void ModifiyCharacter(int client, const char[] id, int submenu = -1)
 				FormatEx(buffer1, sizeof(buffer1), "Trait: %s", buffer2);
 				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 
-				Format(buffer1, sizeof(buffer1), "Level: %d", kv.GetNum("level"));
+				Format(buffer1, sizeof(buffer1), "Level: %d", level);
 				menu.AddItem(id, buffer1, ITEMDRAW_DISABLED);
 
 				menu.AddItem(id, "", ITEMDRAW_DISABLED);
@@ -668,31 +738,31 @@ static int ModifiyCharacterRaceH(Menu menuaaaa, MenuAction action, int client, i
 				char buffer1[32], buffer2[16];
 				IntToString(choice, buffer2, sizeof(buffer2));
 
-				FormatEx(buffer1, sizeof(buffer1), "Strength: x%.1f", race.StrengthMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Strength: x%.2f", race.StrengthMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Precision: x%.1f", race.PrecisionMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Precision: x%.2f", race.PrecisionMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Artifice: x%.1f", race.ArtificeMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Artifice: x%.2f", race.ArtificeMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Endurance: x%.1f", race.EnduranceMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Endurance: x%.2f", race.EnduranceMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Structure: x%.1f", race.StructureMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Structure: x%.2f", race.StructureMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Intelligence: x%.1f", race.IntelligenceMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Intelligence: x%.2f", race.IntelligenceMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Capacity: x%.1f", race.CapacityMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Capacity: x%.2f", race.CapacityMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Luck: x%.1f", race.LuckMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Luck: x%.2f", race.LuckMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
-				FormatEx(buffer1, sizeof(buffer1), "Agility: x%.1f", race.AgilityMulti);
+				FormatEx(buffer1, sizeof(buffer1), "Agility: x%.2f", race.AgilityMulti);
 				menu.AddItem(buffer2, buffer1, ITEMDRAW_DISABLED);
 
 				menu.Pagination = 5;
