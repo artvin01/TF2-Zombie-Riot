@@ -79,8 +79,7 @@ static float OldPosSave[MAXENTITIES][3];
 
 public float Ability_AirCutter(int client, int level, int weapon)
 {
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
-	PrintToChatAll("start %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
+	GetEntPropVector(client, Prop_Data, "m_vecOrigin", OldPosSave[client]);
 
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
@@ -96,7 +95,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 	if(IsValidEnemy(client, target, true, true))
 	{
 		//We have found a victim.
-		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", OldPosSave[target]);
+		GetEntPropVector(target, Prop_Data, "m_vecOrigin", OldPosSave[target]);
 		//Save old position
 		
 		if(GetGameTime() > f_TargetAirtime[target]) //Do not shoot up again once already dome.
@@ -197,9 +196,9 @@ public void Npc_AirCutter_Launch_client(int client)
 		{
 			CClotBody npc = view_as<CClotBody>(target);
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
 			float VecPosClient[3];
-			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecPosClient);
+			GetEntPropVector(client, Prop_Data, "m_vecOrigin", VecPosClient);
 			float Time = 0.5;
 			TE_SetupBeamPoints(VecPosClient, OldPosSave[client], ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
 			TE_SendToAll(0.0);
@@ -238,7 +237,7 @@ public void Npc_AirCutter_Launch_client(int client)
 		else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
 		{
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
 			if(GetGameTime() > f_TargetAirtimeTeleportDelay[client])
 			{
 				f_TargetAirtimeTeleportDelay[client] = GetGameTime() + 0.15;
@@ -324,7 +323,7 @@ public void Npc_AirCutter_Launch_client(int client)
 				}
 			}
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
 			VecPos[2] += 45.0;
 			float Time = 0.5;
 			TE_SetupBeamPoints(VecPos, OldPosSave[client], ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
@@ -333,9 +332,6 @@ public void Npc_AirCutter_Launch_client(int client)
 		i_EntityToAlwaysMeleeHit[client] = 0;
 		b_DoNotUnStuck[client] = false;
 		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
-		PrintToChatAll("End %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
-		PrintToChatAll("End2nd %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
 		SetEntityMoveType(client, MOVETYPE_WALK);
 		i_NpcToTarget[client] = 0;
 		SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
