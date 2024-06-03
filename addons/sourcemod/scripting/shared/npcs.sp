@@ -1960,7 +1960,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 		return true;
 
 #if defined ZR
-	if(Medival_Difficulty_Level != 0 && !NpcStats_IsEnemySilenced(victim))
+	if(Medival_Difficulty_Level != 0.0 && !NpcStats_IsEnemySilenced(victim))
 		return true;
 #endif
 
@@ -2636,21 +2636,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 	{
 		if(!trueArmorOnly)
 		{
+			float TotalMeleeRes = 1.0;
 #if defined ZR
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
-					damage *= Medival_Difficulty_Level;
+					TotalMeleeRes *= Medival_Difficulty_Level;
 				}
 			}
 
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
-				damage *= 0.85;
+				TotalMeleeRes *= 0.85;
 			}
 #endif
-			float TotalMeleeRes = 1.0;
 			TotalMeleeRes *= fl_MeleeArmor[victim];
 			TotalMeleeRes *= fl_Extra_MeleeArmor[victim];	
 #if defined ZR
@@ -2673,29 +2673,31 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 	{
 		if(!trueArmorOnly)
 		{
+			float TotalMeleeRes = 1.0;
 #if defined ZR
 			if(!b_NpcHasDied[attacker] && i_CurrentEquippedPerk[attacker] == 5)
 			{
-				damage *= 1.25;
+				TotalMeleeRes *= 1.25;
 			}
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
 				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
 				{
-					damage *= Medival_Difficulty_Level;
+					TotalMeleeRes *= Medival_Difficulty_Level;
 				}
 			}
 #endif
-			damage *= fl_RangedArmor[victim];
-			damage *= fl_Extra_RangedArmor[victim];
+			TotalMeleeRes *= fl_RangedArmor[victim];
+			TotalMeleeRes *= fl_Extra_RangedArmor[victim];
 
 #if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
 			{
-				damage *= 0.85;
+				TotalMeleeRes *= 0.85;
 			}
 #endif
 
+			damage *= TotalMeleeRes;
 		}
 		damage *= fl_TotalArmor[victim];
 	}

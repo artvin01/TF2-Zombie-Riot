@@ -342,7 +342,7 @@ public void MedivalPikeman_ClotThink(int iNPC)
 								{
 									float damage = 15.0;
 
-									if(Medival_Difficulty_Level > 1.0)
+									if(Medival_Difficulty_Level < 0.93)
 									{
 										damage = 20.0;
 									}

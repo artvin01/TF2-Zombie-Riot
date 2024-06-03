@@ -375,7 +375,7 @@ public void HandleAnimEvent_MedivalEliteSkirmisher(int entity, int event)
 			npc.FaceTowards(vecTarget, 30000.0);
 			
 			float damage = 15.0;
-			if(Medival_Difficulty_Level > 1.0)
+			if(Medival_Difficulty_Level < 0.93)
 			{
 				damage = 30.0;
 			}
