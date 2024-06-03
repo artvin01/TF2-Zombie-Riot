@@ -165,13 +165,14 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;
+	/*
 	float original_damage = damage;
 	for (int loop = 6; loop > 5; loop--)
 	{
 		int enemy = GetClosestTargetNotAffectedByLightning(vecHit);
 		if(IsValidEntity(enemy))
 		{
-			damage = (original_damage * (0.15 * loop));
+			damage = (original_damage * (0.115 * loop));
 			if(b_thisNpcIsARaid[enemy])
 			{
 				damage *= 1.5;
@@ -189,5 +190,6 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			break;
 		}
 	}
+	*/
 	Zero(b_EntityHitByLightning); //delete this logic.
 }
