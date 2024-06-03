@@ -188,7 +188,7 @@ public void Npc_AirCutter_Launch_client(int client)
 	int target = i_NpcToTarget[client];
 	if(target == -999)
 	{
-		SDKUnhook(client, SDKHook_Postthink, Npc_AirCutter_Launch_client);
+		SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 	if(IsValidEnemy(client, target, true, true))
@@ -232,7 +232,7 @@ public void Npc_AirCutter_Launch_client(int client)
 			i_NpcToTarget[client] = 0;
 			LookAtTarget(client, target);
 			i_EntityToAlwaysMeleeHit[client] = 0;
-			SDKUnhook(client, SDKHook_Postthink, Npc_AirCutter_Launch_client);
+			SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
 			return;
 		}	
 		else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
@@ -338,14 +338,14 @@ public void Npc_AirCutter_Launch_client(int client)
 		PrintToChatAll("End2nd %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
 		SetEntityMoveType(client, MOVETYPE_WALK);
 		i_NpcToTarget[client] = 0;
-		SDKUnhook(client, SDKHook_Postthink, Npc_AirCutter_Launch_client);
+		SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 }
 
 void AircutterCancelAbility(int client)
 {
-	SDKUnhook(client, SDKHook_Postthink, Npc_AirCutter_Launch_client);
+	SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	b_DoNotUnStuck[client] = false;	
 	SetEntityMoveType(client, MOVETYPE_WALK);
