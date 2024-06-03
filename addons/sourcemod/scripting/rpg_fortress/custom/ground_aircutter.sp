@@ -79,12 +79,13 @@ static float OldPosSave[MAXENTITIES][3];
 
 public float Ability_AirCutter(int client, int level, int weapon)
 {
-	GetClientAbsOrigin(client, OldPosSave[client]);
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
+	PrintToChatAll("start %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
 
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	Handle swingTrace;
-	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0); //about 	melee range.
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0); //about melee range.
 	FinishLagCompensation_Base_boss();
 				
 	int target = TR_GetEntityIndex(swingTrace);
@@ -207,8 +208,8 @@ public void Npc_AirCutter_Launch_client(int client)
 
 			spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	
 			spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
-			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, {0.0,0.0,0.0});
-			SDKCall_SetLocalOrigin(client, OldPosSave[client]);
+			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
 			SpawnSmallExplosionNotRandom(VecPos);
 			SpawnSmallExplosionNotRandom(VecPosClient);
 			
@@ -269,8 +270,7 @@ public void Npc_AirCutter_Launch_client(int client)
 				}
 				b_ThisEntityIsAProjectileForUpdateContraints[target] = false;
 
-				SDKCall_SetLocalOrigin(client, VecPos);
-			//	TeleportEntity(client, VecPos, NULL_VECTOR, NULL_VECTOR);
+				TeleportEntity(client, VecPos, NULL_VECTOR, NULL_VECTOR);
 				LookAtTarget(client, target);
 				spawnRing_Vectors(VecPos, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.2, 12.0, 6.1, 1);
 				
@@ -332,24 +332,17 @@ public void Npc_AirCutter_Launch_client(int client)
 		}
 		i_EntityToAlwaysMeleeHit[client] = 0;
 		b_DoNotUnStuck[client] = false;
-		SDKCall_SetLocalOrigin(client, OldPosSave[client]);
-	//	RequestFrames(AirCutterTeleportDelay,5, EntIndexToEntRef(client));
+		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
+		PrintToChatAll("End %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
+		PrintToChatAll("End2nd %f | %f | %f",OldPosSave[client][0],OldPosSave[client][1],OldPosSave[client][2]);
+		SetEntityMoveType(client, MOVETYPE_WALK);
 		i_NpcToTarget[client] = 0;
 		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 }
 
-void AirCutterTeleportDelay(int clientref)
-{
-	int client = EntRefToEntIndex(clientref);
-	if(IsValidEntity(client))
-	{
-		//frame delay is needed for this, as it might just get them stuck in a wall or something due to a pervious teleport.
-		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
-		SetEntityMoveType(client, MOVETYPE_WALK);
-	}
-}
 void AircutterCancelAbility(int client)
 {
 	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
