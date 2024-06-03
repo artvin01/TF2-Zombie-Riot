@@ -80,9 +80,7 @@ static float OldPosSave[MAXENTITIES][3];
 public float Ability_AirCutter(int client, int level, int weapon)
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
-	TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
 
-	return 0.0 ;
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	Handle swingTrace;
