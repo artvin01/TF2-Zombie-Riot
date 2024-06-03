@@ -546,8 +546,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 #endif
 
-	//	SDKHook(npc, SDKHook_Think, NpcBaseThink);
-	//	SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
+		SDKHook(npc, SDKHook_Think, NpcBaseThink);
+		SDKHook(npc, SDKHook_ThinkPost, NpcBaseThinkPost);
 //		SDKHook(npc, SDKHook_SetTransmit, SDKHook_Settransmit_Baseboss);
 		
 		b_ThisWasAnNpc[npc] = true;
