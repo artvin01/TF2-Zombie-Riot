@@ -208,7 +208,7 @@ public void Npc_AirCutter_Launch_client(int client)
 			spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	
 			spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
 			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, {0.0,0.0,0.0});
-			TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
+			SDKCall_SetLocalOrigin(client, OldPosSave[client]);
 			SpawnSmallExplosionNotRandom(VecPos);
 			SpawnSmallExplosionNotRandom(VecPosClient);
 			
@@ -269,7 +269,8 @@ public void Npc_AirCutter_Launch_client(int client)
 				}
 				b_ThisEntityIsAProjectileForUpdateContraints[target] = false;
 
-				TeleportEntity(client, VecPos, NULL_VECTOR, NULL_VECTOR);
+				SDKCall_SetLocalOrigin(client, VecPos);
+			//	TeleportEntity(client, VecPos, NULL_VECTOR, NULL_VECTOR);
 				LookAtTarget(client, target);
 				spawnRing_Vectors(VecPos, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.2, 12.0, 6.1, 1);
 				
