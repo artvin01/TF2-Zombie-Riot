@@ -79,8 +79,8 @@ static float OldPosSave[MAXENTITIES][3];
 
 public float Ability_AirCutter(int client, int level, int weapon)
 {
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
-
+	GetClientAbsOrigin(client, OldPosSave[client]);
+	
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	Handle swingTrace;
@@ -207,8 +207,8 @@ public void Npc_AirCutter_Launch_client(int client)
 
 			spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	
 			spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
-			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, NULL_VECTOR);
-			TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
+			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, {0.0,0.0,0.0});
+			TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
 			SpawnSmallExplosionNotRandom(VecPos);
 			SpawnSmallExplosionNotRandom(VecPosClient);
 			
@@ -331,7 +331,7 @@ public void Npc_AirCutter_Launch_client(int client)
 		}
 		i_EntityToAlwaysMeleeHit[client] = 0;
 		b_DoNotUnStuck[client] = false;
-		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
+		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
 		SetEntityMoveType(client, MOVETYPE_WALK);
 		i_NpcToTarget[client] = 0;
 		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
