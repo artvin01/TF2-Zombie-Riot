@@ -79,7 +79,7 @@ static float OldPosSave[MAXENTITIES][3];
 
 public float Ability_AirCutter(int client, int level, int weapon)
 {
-	GetEntPropVector(client, Prop_Data, "m_vecOrigin", OldPosSave[client]);
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", OldPosSave[client]);
 
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
@@ -95,7 +95,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 	if(IsValidEnemy(client, target, true, true))
 	{
 		//We have found a victim.
-		GetEntPropVector(target, Prop_Data, "m_vecOrigin", OldPosSave[target]);
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", OldPosSave[target]);
 		//Save old position
 		
 		if(GetGameTime() > f_TargetAirtime[target]) //Do not shoot up again once already dome.
@@ -134,7 +134,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		i_NpcToTarget[client] = target;
 		i_NpcToTarget[target] = client;
 		//There is no need to ent ref this, the code fires every frame, and the same index cannot be used for 1 second.
-		SDKHook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
+		SDKHook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return 25.0;
 	}
 	else
@@ -187,7 +187,7 @@ public void Npc_AirCutter_Launch_client(int client)
 	int target = i_NpcToTarget[client];
 	if(target == -999)
 	{
-		SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
+		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 	if(IsValidEnemy(client, target, true, true))
@@ -196,9 +196,9 @@ public void Npc_AirCutter_Launch_client(int client)
 		{
 			CClotBody npc = view_as<CClotBody>(target);
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
 			float VecPosClient[3];
-			GetEntPropVector(client, Prop_Data, "m_vecOrigin", VecPosClient);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecPosClient);
 			float Time = 0.5;
 			TE_SetupBeamPoints(VecPosClient, OldPosSave[client], ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
 			TE_SendToAll(0.0);
@@ -231,13 +231,13 @@ public void Npc_AirCutter_Launch_client(int client)
 			i_NpcToTarget[client] = 0;
 			LookAtTarget(client, target);
 			i_EntityToAlwaysMeleeHit[client] = 0;
-			SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
+			SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 			return;
 		}	
 		else if(GetGameTime() > f_TargetAirtimeDelayHit[client])
 		{
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
 			if(GetGameTime() > f_TargetAirtimeTeleportDelay[client])
 			{
 				f_TargetAirtimeTeleportDelay[client] = GetGameTime() + 0.15;
@@ -304,7 +304,7 @@ public void Npc_AirCutter_Launch_client(int client)
 		else
 		{
 			LookAtTarget(client, target);
-			TeleportEntity(client, OldPosSave[client], NULL_VECTOR,{0.0,0.0,0.0});
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR,{0.0,0.0,0.0});
 		}
 	}
 	else
@@ -323,7 +323,7 @@ public void Npc_AirCutter_Launch_client(int client)
 				}
 			}
 			float VecPos[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", VecPos);
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", VecPos);
 			VecPos[2] += 45.0;
 			float Time = 0.5;
 			TE_SetupBeamPoints(VecPos, OldPosSave[client], ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
@@ -334,14 +334,14 @@ public void Npc_AirCutter_Launch_client(int client)
 		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
 		SetEntityMoveType(client, MOVETYPE_WALK);
 		i_NpcToTarget[client] = 0;
-		SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
+		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 }
 
 void AircutterCancelAbility(int client)
 {
-	SDKUnhook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
+	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	b_DoNotUnStuck[client] = false;	
 	SetEntityMoveType(client, MOVETYPE_WALK);
