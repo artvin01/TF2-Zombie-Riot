@@ -331,7 +331,8 @@ public void Npc_AirCutter_Launch_client(int client)
 		}
 		i_EntityToAlwaysMeleeHit[client] = 0;
 		b_DoNotUnStuck[client] = false;
-		RequestFrame(AirCutterTeleportDelay, EntIndexToEntRef(client));
+		SDKCall_SetLocalOrigin(client, OldPosSave[client]);
+	//	RequestFrames(AirCutterTeleportDelay,5, EntIndexToEntRef(client));
 		i_NpcToTarget[client] = 0;
 		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return;
