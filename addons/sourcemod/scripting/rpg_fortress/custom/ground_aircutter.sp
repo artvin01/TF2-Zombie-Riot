@@ -135,7 +135,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 		i_NpcToTarget[client] = target;
 		i_NpcToTarget[target] = client;
 		//There is no need to ent ref this, the code fires every frame, and the same index cannot be used for 1 second.
-		SDKHook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
+		SDKHook(client, SDKHook_PostThink, Npc_AirCutter_Launch_client);
 		return 25.0;
 	}
 	else
