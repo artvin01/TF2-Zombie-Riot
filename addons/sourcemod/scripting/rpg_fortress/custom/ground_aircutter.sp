@@ -204,9 +204,9 @@ public void Npc_AirCutter_Launch_client(int client)
 			TE_SendToAll(0.0);
 			TE_SetupBeamPoints(VecPos, OldPosSave[target], ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
 			TE_SendToAll(0.0);
-
-			spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	
-			spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
+			
+			spawnRing_Vectors(OldPosSave[target], 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);	
+			spawnRing_Vectors(OldPosSave[client], 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1, AIRCUTTER_JUDGEMENT_MAXRANGE * 2.0);
 			TeleportEntity(target, OldPosSave[target], NULL_VECTOR, NULL_VECTOR);
 			TeleportEntity(client, OldPosSave[client], NULL_VECTOR, NULL_VECTOR);
 			SpawnSmallExplosionNotRandom(VecPos);
