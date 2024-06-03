@@ -166,7 +166,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	f_CooldownForHurtHud[client] = 0.0;
 	b_EntityHitByLightning[target] = true;
 	float original_damage = damage;
-	for (int loop = 6; loop > 4; loop--)
+	for (int loop = 6; loop > 5; loop--)
 	{
 		int enemy = GetClosestTargetNotAffectedByLightning(vecHit);
 		if(IsValidEntity(enemy))
