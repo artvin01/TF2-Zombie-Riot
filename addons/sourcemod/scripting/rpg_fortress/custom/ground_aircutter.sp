@@ -80,11 +80,11 @@ static float OldPosSave[MAXENTITIES][3];
 public float Ability_AirCutter(int client, int level, int weapon)
 {
 	GetClientAbsOrigin(client, OldPosSave[client]);
-	
+
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	Handle swingTrace;
-	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0); //about melee range.
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0); //about 	melee range.
 	FinishLagCompensation_Base_boss();
 				
 	int target = TR_GetEntityIndex(swingTrace);
@@ -331,14 +331,23 @@ public void Npc_AirCutter_Launch_client(int client)
 		}
 		i_EntityToAlwaysMeleeHit[client] = 0;
 		b_DoNotUnStuck[client] = false;
-		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
-		SetEntityMoveType(client, MOVETYPE_WALK);
+		RequestFrame(AirCutterTeleportDelay, EntIndexToEntRef(client));
 		i_NpcToTarget[client] = 0;
 		SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
 		return;
 	}
 }
 
+void AirCutterTeleportDelay(int clientref)
+{
+	int client = EntRefToEntIndex(clientref);
+	if(IsValidEntity(client))
+	{
+		//frame delay is needed for this, as it might just get them stuck in a wall or something due to a pervious teleport.
+		TeleportEntity(client, OldPosSave[client], NULL_VECTOR, {0.0,0.0,0.0});
+		SetEntityMoveType(client, MOVETYPE_WALK);
+	}
+}
 void AircutterCancelAbility(int client)
 {
 	SDKUnhook(client, SDKHook_PreThink, Npc_AirCutter_Launch_client);
