@@ -278,7 +278,7 @@ static void ShowMenu(int client, bool first)
 			else
 			{
 				menu.AddItem(num, "Extract");
-				menu.AddItem("-99", "(600 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
+			//	menu.AddItem("-99", "(600 Intelligence For Upgrade)", ITEMDRAW_DISABLED);
 			}
 		}
 		

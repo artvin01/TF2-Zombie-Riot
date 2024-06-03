@@ -964,7 +964,7 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 			SPrintToChat(client, "Your intellect boosts you, your current form obtained %0.2f (1.25x) Mastery points.",MasteryAdd);
 		}
 		else
-			SPrintToChat(client, "Your current form obtained %0.2f Mastery points. You feel as if more intelligence (1000) would help...",MasteryAdd);
+			SPrintToChat(client, "Your current form obtained %0.2f Mastery points.",MasteryAdd);
 
 		MasteryCurrent += MasteryAdd;
 		Stats_SetCurrentFormMastery(client, MasteryCurrent);
