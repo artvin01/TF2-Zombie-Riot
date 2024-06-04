@@ -155,13 +155,22 @@ void PostThink_GoldenAgility(int client)
 	
 	RemoveEntityToTraceStuckCheck(client);
 	
+	//needs to be seeable by the client
 	int Traced_Target = TR_GetEntityIndex(trace2);
 	delete trace2;
 	if(Traced_Target != client)
 	{
+		f_GoldenAgilityThrottle[client] = GetGameTime() + 0.1;
 		return;
 	}
 
+	//Needs to be on a nav to work
+	CNavArea area = TheNavMesh.GetNavArea(pos_enemy, 30.0);
+	if(area == NULL_AREA)
+	{
+		f_GoldenAgilityThrottle[client] = GetGameTime() + 0.1;
+		return;
+	}
 	f_GoldenAgilityActiveFor[client] = GetGameTime() + 8.0;
 	EmitSoundToClient(client, NEW_SPOT_GOLDEN_SOUND, client, SNDCHAN_STATIC, 100, _);
 	f_GoldenAgilityCooldown[client] = GetGameTime() + 10.0;
