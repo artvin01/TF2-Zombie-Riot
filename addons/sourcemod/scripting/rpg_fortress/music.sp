@@ -39,6 +39,7 @@ static char OverrideSong[MAXTF2PLAYERS][PLATFORM_MAX_PATH];
 static int OverrideTime[MAXTF2PLAYERS];
 static bool OverrideCustom[MAXTF2PLAYERS];
 static float OverrideVolume[MAXTF2PLAYERS];
+static float MusicDelay[MAXTF2PLAYERS];
 
 void Music_ZoneEnter(int client, int entity)
 {
@@ -51,6 +52,7 @@ void Music_ZoneEnter(int client, int entity)
 
 void Music_ClientDisconnect(int client)
 {
+	MusicDelay[client] = 0.0;
 	CurrentZone[client] = -1;
 	NextZone[client] = -1;
 	OverrideSong[client][0] = 0;
@@ -75,6 +77,11 @@ void Music_PlayerRunCmd(int client)
 	//Do not play anything if the client has no sound.
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
+
+	if(MusicDelay[client] > GetGameTime())
+		return;
+
+	MusicDelay[client] = GetGameTime() + 0.1;
 
 	if(CurrentZone[client] != -1 || NextZone[client] != -1 || OverrideSong[client][0])
 	{
