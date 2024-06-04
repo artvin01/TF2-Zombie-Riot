@@ -1182,7 +1182,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	return Plugin_Changed;
 }
 
-public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3])
+public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
@@ -1249,6 +1249,23 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		{
 			SlayNpc = false;
 		}
+	}
+
+	Function func = func_NPCOnTakeDamagePost[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCell(attacker);
+		Call_PushCell(inflictor);
+		Call_PushFloat(damage);
+		Call_PushCell(damagetype);
+		Call_PushCell(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_PushCellRef(SlayNpc);
+		Call_Finish();
 	}
 
 #if defined ZR 

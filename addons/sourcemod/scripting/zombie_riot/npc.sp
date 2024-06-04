@@ -57,6 +57,10 @@ void NPC_ConfigSetup()
 	PoisonZombie_OnMapStart_NPC();
 	FortifiedPoisonZombie_OnMapStart_NPC();
 	FatherGrigori_OnMapStart_NPC();
+
+	// Buildings
+	ObjectBarricade_MapStart();
+	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
 	CombinePoliceSmg_OnMapStart_NPC();
@@ -731,6 +735,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
+
+//BUILDINGS
+#include "zombie_riot/object/obj_shared.sp"
+#include "zombie_riot/object/obj_barricade.sp"
 
 //NORMAL
 

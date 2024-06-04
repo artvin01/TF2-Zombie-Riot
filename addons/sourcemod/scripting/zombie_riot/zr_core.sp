@@ -305,11 +305,8 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
-int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
-int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 float LastStoreMenu[MAXTF2PLAYERS];
 bool LastStoreMenu_Store[MAXTF2PLAYERS];
-int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
 const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
@@ -318,13 +315,6 @@ int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
-
-float Resistance_for_building_High[MAXENTITIES];
-int i_WhatBuilding[MAXENTITIES]={0, ...};
-bool Building_Constructed[MAXENTITIES]={false, ...};
-
-int Elevator_Owner[MAXENTITIES]={0, ...};
-bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
@@ -351,10 +341,6 @@ float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
 float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
-			
-int g_CarriedDispenser[MAXPLAYERS+1];
-int i_BeingCarried[MAXENTITIES];
-float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
@@ -362,12 +348,9 @@ float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
-bool b_SentryIsCustom[MAXENTITIES];
 
-bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
-bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
-
-int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
+//bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
+//bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1][2];
@@ -389,7 +372,6 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
-#include "zombie_riot/buildonbuilding.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
@@ -408,7 +390,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
 #include "zombie_riot/custom/weapon_boom_stick.sp"
@@ -471,7 +452,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_cspyknife.sp"
 #include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
 #include "zombie_riot/custom/weapon_riotshield.sp"
-#include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
