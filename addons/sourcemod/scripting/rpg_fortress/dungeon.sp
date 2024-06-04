@@ -1855,7 +1855,7 @@ public void Dungeon_JunalTheUnstoppable(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrEqual(npc_classname, "npc_original_infector"))
+	if(StrEqual(npc_classname, "npc_original_infected"))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
 		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");

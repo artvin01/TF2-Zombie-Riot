@@ -695,9 +695,13 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 		return;
 
 	//all checks done, now damage the enemy
+	int DamageCreditor = attacker;
+	if(IsValidClient(GetEntPropEnt(attacker, Prop_Data, "m_hOwnerEntity")))
+		DamageCreditor = GetEntPropEnt(attacker, Prop_Data, "m_hOwnerEntity");
+
 	float WorldSpaceCenterVec[3]; 
 	WorldSpaceCenter(victim, WorldSpaceCenterVec);
-	SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, -1, {0.0,0.0, 30000.0}, WorldSpaceCenterVec);
+	SDKHooks_TakeDamage(victim, DamageCreditor, DamageCreditor, damage, DMG_CLUB, -1, {0.0,0.0, 30000.0}, WorldSpaceCenterVec);
 	damage /= damagefalloff;
 	//idealy you want no falloff 
 	if(knockup > 0.0)
