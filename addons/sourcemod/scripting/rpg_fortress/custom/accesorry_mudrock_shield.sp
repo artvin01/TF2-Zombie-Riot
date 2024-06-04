@@ -168,8 +168,8 @@ void RPG_BobsPureRage(int victim, int attacker, float &damage)
 	}
 	if(IsValidClient(victim) && BobsPureRage[victim])
 	{
-		int MaxHealth = SDKCall_GetMaxHealth(attacker);
-		int Health = GetEntProp(attacker, Prop_Send, "m_iHealth");
+		int MaxHealth = SDKCall_GetMaxHealth(victim);
+		int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
 		float Ratio = float(Health) / float(MaxHealth);
 		if(Ratio <= 0.5)
