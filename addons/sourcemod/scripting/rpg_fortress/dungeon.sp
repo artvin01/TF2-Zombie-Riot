@@ -1568,20 +1568,20 @@ public Action Dungeon_Timer(Handle timer)
 
 								float PlayerCountScaling = float(dungeon.PlayerCount);
 
-
-								PlayerCountScaling *= 0.65;
-								if(PlayerCountScaling < 0.75)
+								switch(dungeon.PlayerCount)
 								{
-									PlayerCountScaling = 0.75;
-								}
-								
-								if(dungeon.PlayerCount == 1)
-								{
-									PlayerCountScaling = 0.75;
-								}
-								if(dungeon.PlayerCount == 2)
-								{
-									PlayerCountScaling = 1.0;
+									case 1:
+										PlayerCountScaling = 0.85;
+									case 2:
+										PlayerCountScaling = 1.35;
+									case 3:
+										PlayerCountScaling = 1.65;
+									case 4:
+										PlayerCountScaling = 2.1;
+									case 5:
+										PlayerCountScaling = 2.45;
+									case 6:
+										PlayerCountScaling = 2.8;
 								}
 
 								if(wave.Health)
