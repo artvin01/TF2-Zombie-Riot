@@ -146,7 +146,7 @@ static void EnableCharacter(int client, const char[] id)
 					do
 					{
 						kv.GetSectionName(buffer1, sizeof(buffer1));
-						ReplaceString(buffer1, sizeof(buffer1), "'", "\"");
+						ReplaceString(buffer1, sizeof(buffer1), "#", "\"");
 
 						for(int i = -uniques; i < length; i++)
 						{
@@ -199,7 +199,7 @@ static void SaveCharacter(int client, bool remove)
 						TextStore_GetItemName(i, buffer, sizeof(buffer));
 						if(TextStore_GetInv(client, i))
 						{
-							ReplaceString(buffer, sizeof(buffer), "\"", "'");
+							ReplaceString(buffer, sizeof(buffer), "\"", "#");
 							kv.SetNum(buffer, 1);
 
 							if(remove)
