@@ -820,7 +820,12 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= RES_MEDIGUN_LOW;
 			}
+			percentage_Global *= Attributes_Get(weapon, 4009, 1.0);
 			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+				
+			value = Attributes_Get(weapon, 4007, 0.0);	// MELEE damage resitance
 			if(value)
 				percentage *= value;
 			//melee res
@@ -834,6 +839,10 @@ public void OnPostThink(int client)
 			percentage = 100.0;
 			percentage *= percentage_Global;
 			value = Attributes_FindOnPlayerZR(client, 205, true, 0.0, true, true);	// MELEE damage resistance
+			if(value)
+				percentage *= value;
+
+			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
 				percentage *= value;
 
@@ -2220,6 +2229,28 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	{
 		damage *= value;
 	}	
+	//only while active!
+	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+	{
+		damage *= Attributes_Get(weapon, 4009, 1.0);
+		if(damagetype & (DMG_CLUB|DMG_SLASH))
+		{
+			value = Attributes_Get(weapon, 4007, 1.0);	// MELEE damage resitance
+			if(value)
+			{
+				damage *= value;
+			}
+		}
+		else if(!(damagetype & DMG_FALL))
+		{
+			value = Attributes_Get(weapon, 4008, 1.0);	// RANGED damage resistance
+			if(value)
+			{
+				damage *= value;
+			}
+		}
+	}
 }
 #endif	// ZR & RPG
 

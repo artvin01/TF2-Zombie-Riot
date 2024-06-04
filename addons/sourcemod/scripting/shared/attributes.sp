@@ -15,6 +15,11 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
+		case 4007, 4008, 4009, 4010: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+		{
+			return true;
+		}
+
 		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
 		{
 			return true;

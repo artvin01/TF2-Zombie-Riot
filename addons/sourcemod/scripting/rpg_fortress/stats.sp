@@ -492,7 +492,8 @@ int Stats_BaseCarry(int client, int &base = 0, int &bonus = 0)
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += BackpackBonus[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += BackpackBonus[entity];
 	}
 
 	return base + bonus;
@@ -512,7 +513,8 @@ int Stats_Strength(int client, int &base = 0, int &bonus = 0, float &multirace =
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Strength[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Strength[entity];
 	}
 	int returnnumber = (bonus + RoundFloat(base * multirace * multiform));
 	if(TrueStength_ClientBuff(client))
@@ -536,7 +538,8 @@ int Stats_Precision(int client, int &base = 0, int &bonus = 0, float &multirace 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Precision[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Precision[entity];
 	}
 
 	return bonus + RoundFloat(base * multirace * multiform);
@@ -556,7 +559,8 @@ int Stats_Artifice(int client, int &base = 0, int &bonus = 0, float &multirace =
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Artifice[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Artifice[entity];
 	}
 
 	return bonus + RoundFloat(base * multirace * multiform);
@@ -576,7 +580,8 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Endurance[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Endurance[entity];
 	}
 
 	return bonus + RoundFloat(base * multirace * multiform);
@@ -596,7 +601,8 @@ int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace 
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Structure[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Structure[entity];
 	}
 
 	return bonus + RoundFloat(base * multirace * multiform);
@@ -616,7 +622,8 @@ int Stats_Intelligence(int client, int &base = 0, int &bonus = 0, float &multira
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Intelligence[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Intelligence[entity];
 	}
 
 	return bonus + RoundFloat(base * multirace * multiform);
@@ -634,7 +641,8 @@ int Stats_Capacity(int client, int &base = 0, int &bonus = 0, float &multi = 0.0
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Capacity[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Capacity[entity];
 	}
 
 	return bonus + RoundFloat(base * multi);
@@ -653,11 +661,13 @@ int Stats_Agility(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Agility[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Agility[entity];
 	}
 
 	return bonus + RoundFloat(base * multi);
 }
+
 
 int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 {
@@ -672,11 +682,26 @@ int Stats_Luck(int client, int &base = 0, int &bonus = 0, float &multi = 0.0)
 	int i, entity;
 	while(TF2_GetItem(client, entity, i))
 	{
-		bonus += Luck[entity];
+		if(RPGStats_WeaponActiveNeeded(client, entity))
+			bonus += Luck[entity];
 	}
 
 	return RoundFloat((float(bonus) + base) * multi);
 }
+
+bool RPGStats_WeaponActiveNeeded(int client, int weapon)
+{
+	if(Attributes_Get(weapon, 4010, 0.0) > 0.0)
+	{
+		int Activeweapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(Activeweapon == weapon)
+			return true;
+
+		return false;
+	}
+	return true;
+}
+
 /*
 float Stats_KnockbackResist(int client)
 {
