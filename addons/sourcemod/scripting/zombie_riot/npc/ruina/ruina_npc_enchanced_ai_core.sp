@@ -228,6 +228,16 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	b_ruina_allow_teleport[client]=false;
 }
 
+void Ruina_Reset_Starts_Npc(int client)
+{
+	f_Ruina_Speed_Buff[client] = 0.0;
+	f_Ruina_Defense_Buff[client] = 0.0;
+	f_Ruina_Attack_Buff[client] = 0.0;
+	f_Ruina_Speed_Buff_Amt[client] = 0.0;
+	f_Ruina_Defense_Buff_Amt[client] = 0.0;
+	f_Ruina_Attack_Buff_Amt[client] = 0.0;
+}
+
 public void Ruina_Master_Release_Slaves(int client)
 {
 	i_master_current_slaves[client] = 0;	//reset
@@ -1071,6 +1081,13 @@ enum struct Ruina_Self_Defense
 	float turn_speed;
 	float gameTime;
 	int status;
+
+	/*
+		Fix:
+			Something here doesn't work.
+			Npc once swinging turns away completely.
+			Doesn't deal damage. Might be due to the effect above.
+	*/
 
 	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
 	{

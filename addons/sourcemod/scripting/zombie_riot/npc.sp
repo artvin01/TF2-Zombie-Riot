@@ -287,6 +287,7 @@ void NPC_ConfigSetup()
 	Isharmla_Precache();
 	IsharmlaTrans_MapStart();
 	
+	#if defined RUINA_BASE
 	//Ruina waves	//warp
 	Ruina_Ai_Core_Mapstart();
 	//Stage 1.
@@ -321,6 +322,8 @@ void NPC_ConfigSetup()
 	Magia_Anchor_OnMapStart_NPC();
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
+
+	#endif
 
 	//Expidonsa Waves
 //wave 1-15:
@@ -846,7 +849,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
 
-
+#if defined RUINA_BASE
 //Ruina
 
 #include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
@@ -885,6 +888,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
+
+#endif
 
 //Alt
 

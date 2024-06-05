@@ -1665,6 +1665,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "➤%s", Debuff_Adder_right);
 	}
 	
+	#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{
 		Debuff_added = true;
@@ -1680,6 +1681,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "♟%s", Debuff_Adder_right);
 	}
+	#endif
 	
 	CClotBody npc = view_as<CClotBody>(victim);
 	
@@ -2123,14 +2125,14 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
+	#if defined RUINA_BASE
 	else if(f_Ruina_Defense_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Speed_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
+	#endif
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
 		return true;
@@ -3252,10 +3254,12 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	{
 		damage += BaseDamageBeforeBuffs * (0.35 * DamageBuffExtraScaling);
 	}
+	#if defined RUINA_BASE
 	if(f_Ruina_Attack_Buff[attacker] > GameTime)
 	{
 		damage += BaseDamageBeforeBuffs * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
 	}
+	#endif
 #if defined ZR	
 	if(f_HighIceDebuff[victim] > GameTime)
 	{
@@ -3303,11 +3307,12 @@ void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float &d
 	{
 		damage += BaseDamageBeforeBuffs * (0.3 * DamageBuffExtraScaling);
 	}
-
+	#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
 	{
 		damage -= BaseDamageBeforeBuffs * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
+	#endif
 }
 
 #if defined ZR

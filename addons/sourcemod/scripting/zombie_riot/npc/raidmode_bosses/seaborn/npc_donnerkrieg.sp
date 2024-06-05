@@ -1126,7 +1126,7 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 		ScaleVector(Direction, fl_heavens_speed);
 		AddVectors(loc, Direction, loc);
 		
-		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
+		Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
 
 		int wave = ZR_GetWaveCount()+1;
 
@@ -1171,6 +1171,43 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 
 		Heavens_SpawnBeam(loc, color, 7.5, true);
 	}
+}
+static void Donnerkrieg_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
+{
+	float originalPostionTrace[3];
+	float startPostionTrace[3];
+	float endPostionTrace[3];
+	endPostionTrace = vecorigin;
+	startPostionTrace = vecorigin;
+	originalPostionTrace = vecorigin;
+	startPostionTrace[2] += StepHeight;
+	endPostionTrace[2] -= 5000.0;
+
+	float vecHullMins[3];
+	vecHullMins = vecHull;
+
+	vecHullMins[0] *= -1.0;
+	vecHullMins[1] *= -1.0;
+	vecHullMins[2] *= -1.0;
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID,HitOnlyWorld, 0);
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		// This is the point on the actual surface (the hull could have hit space)
+		TR_GetEndPosition(vecorigin, trace);	
+	}
+	vecorigin[0] = originalPostionTrace[0];
+	vecorigin[1] = originalPostionTrace[1];
+
+	float VecCalc = (vecorigin[2] - startPostionTrace[2]);
+	if(VecCalc > (StepHeight - (vecHull[2] + 2.0)) || VecCalc > (StepHeight - (vecHull[2] + 2.0)) ) //This means it was inside something, in this case, we take the normal non traced position.
+	{
+		vecorigin[2] = originalPostionTrace[2];
+	}
+
+	delete trace;
+	//if it doesnt hit anything, then it just does buisness as usual
 }
 static void Heavens_Light_Charging(int ref, float ratio)
 {
@@ -1228,7 +1265,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 			ScaleVector(Direction, distance);
 			AddVectors(UserLoc, Direction, endLoc);
 			
-			Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
+			Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 			
 			
 
@@ -1616,7 +1653,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				if(dist_check3<Dist3*0.75)
 					continue;
 
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
+				Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
 
 				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);	//make it a bit random so it doesn't all explode at the same time
 
@@ -3480,7 +3517,7 @@ static void Invoke_Divine_Intervention(Raidboss_Donnerkrieg npc, float GameTime)
 
 	fl_anchor_location = GetAbsOrigin(npc.index);
 
-	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, fl_anchor_location);
+	Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, fl_anchor_location);
 
 	SDKUnhook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
 	SDKHook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
