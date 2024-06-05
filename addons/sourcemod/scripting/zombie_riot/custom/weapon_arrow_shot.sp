@@ -95,7 +95,6 @@ public void Weapon_Shoot_Arrow(int client, int weapon, bool crit, int slot)
 				SetEntityCollisionGroup(Arrow, 27);
 			}		
 		}
-		
 	}
 }
 

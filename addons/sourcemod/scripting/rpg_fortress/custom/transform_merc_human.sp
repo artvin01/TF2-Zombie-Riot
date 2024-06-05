@@ -6,6 +6,7 @@ void Transform_MercHuman_MapStart()
 {
 	PrecacheSound("ui/rd_2base_alarm.wav");
 	PrecacheSound("ui/quest_decode_halloween.wav");
+	PrecacheSound("ui/halloween_boss_tagged_other_it.wav");
 }
 
 public void MercHuman_Activation_Enable_form_1(int client)
@@ -19,6 +20,11 @@ public void MercHuman_Activation_Enable_form_2(int client)
 	//Merasmus Magic!
 	MercHuman_Activation_Enable_Global(client, 2);
 }
+public void MercHuman_Activation_Enable_form_3(int client)
+{
+	//Merasmus Magic!
+	MercHuman_Activation_Enable_Global(client, 3);
+}
 
 public void MercHuman_Activation_Enable_Global(int client, int level)
 {
@@ -31,6 +37,10 @@ public void MercHuman_Activation_Enable_Global(int client, int level)
 		case 2:
 		{
 			EmitSoundToAll("ui/quest_decode_halloween.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("ui/halloween_boss_tagged_other_it.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
@@ -71,6 +81,23 @@ public void MercHuman_Activation_Enable_Global(int client, int level)
 			SetParent(client, particler);
 			iref_Halo[client][1] = EntIndexToEntRef(particler);
 			AddEntityToThirdPersonTransitMode(client, particler);
+		}
+		if(level == 3)
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+			flPos[2] += 10.0;
+			int particler = ParticleEffectAt(flPos, "eyeboss_aura_grumpy", 0.0);
+			SetParent(client, particler);
+			iref_Halo[client][1] = EntIndexToEntRef(particler);
+			AddEntityToThirdPersonTransitMode(client, particler);
+
+			
+			GetAttachment(viewmodelModel, "head", flPos, flAng);
+			flPos[2] += 10.0;
+			int particle_halo = ParticleEffectAt(flPos, "unusual_eyeboss_parent", 0.0);
+			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
+			AddEntityToThirdPersonTransitMode(client, particle_halo);
+			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-10.0});
 		}
 	}
 }

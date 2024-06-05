@@ -211,6 +211,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	  	AcceptEntityInput(client, "SetCustomModel");
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
@@ -462,9 +463,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #elseif defined RPG
-	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
@@ -478,9 +479,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	{
 		DestroyDispenser(client);
 
-//		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-	//	if(obj != INVALID_ENT_REFERENCE)
-			//KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
+		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
+		if(obj != INVALID_ENT_REFERENCE)
+			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
 	}
 	else
 	{
@@ -510,6 +511,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #if defined RPG
 	TextStore_DepositBackpack(client, true);
 	UpdateLevelAbovePlayerText(client, true);
+	De_TransformClient(client);
 #endif
 
 #if defined ZR || defined RPG

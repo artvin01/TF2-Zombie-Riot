@@ -323,13 +323,12 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				
 			}
 
-			#if defined ZR
+#if defined ZR
 			if(TeutonType[client] == TEUTON_NONE)
 			{
 				UpdatePlayerFakeModel(client);
 			}
 			else
-			#endif
 			{
 				int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 				if(IsValidEntity(ViewmodelPlayerModel))
@@ -337,6 +336,9 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SetEntProp(ViewmodelPlayerModel, Prop_Send, "m_nBody", 9);
 				}
 			}
+#else
+			UpdatePlayerFakeModel(client);
+#endif
 			MedicAdjustModel(client);
 			return;
 		}

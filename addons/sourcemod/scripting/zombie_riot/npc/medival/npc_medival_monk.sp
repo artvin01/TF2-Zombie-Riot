@@ -531,7 +531,7 @@ void MonkSelfDefense(MedivalMonk npc, float gameTime)
 					static int g;
 					static int b ;
 					static int a = 50;
-					if(GetTeam(npc.index) == TFTeam_Red)
+					if(GetTeam(npc.index) != TFTeam_Red)
 					{
 						r = 125;
 						g = 125;

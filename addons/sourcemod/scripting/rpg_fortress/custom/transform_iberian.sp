@@ -6,6 +6,7 @@ void Transform_Iberian_MapStart()
 {
 	PrecacheSound("player/taunt_yeti_appear_snow.wav");
 	PrecacheSound("replay/enterperformancemode.wav");
+	PrecacheSound("items/powerup_pickup_precision.wav");
 }
 
 public void Iberian_Activation_Enable_form_1(int client)
@@ -16,6 +17,10 @@ public void Iberian_Activation_Enable_form_1(int client)
 public void Iberian_Activation_Enable_form_2(int client)
 {
 	Iberian_Activation_Enable_Global(client, 2);
+}
+public void Iberian_Activation_Enable_form_3(int client)
+{
+	Iberian_Activation_Enable_Global(client, 3);
 }
 
 public void Iberian_Activation_Enable_Global(int client, int level)
@@ -29,6 +34,10 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 		case 2:
 		{
 			EmitSoundToAll("replay/enterperformancemode.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("items/powerup_pickup_precision.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
@@ -56,12 +65,12 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 		if(level == 1 || level == 2)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			int particle_halo = ParticleEffectAt(flPos, "unusual_sixthsense_teamcolor_blue", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_genplasmos_b_glow2", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-5.0});
 		}
-		if(level == 2)
+		if(level == 2 || level == 3)
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 			flPos[2] += 70.0;
@@ -69,6 +78,14 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 			SetParent(client, particler);
 			iref_Halo[client][1] = EntIndexToEntRef(particler);
 			AddEntityToThirdPersonTransitMode(client, particler);
+		}
+		if(level == 3)
+		{
+			GetAttachment(viewmodelModel, "head", flPos, flAng);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_eyes_purple_parent", 0.0);
+			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
+			AddEntityToThirdPersonTransitMode(client, particle_halo);
+			SetParent(viewmodelModel, particle_halo, "head", {0.0,0.0,-1.0});
 		}
 	}
 }

@@ -415,7 +415,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						else
 							Increaced_Sentry_damage_Low[healTarget] = GetGameTime() + 0.11;
 					}
-
+					
 					int i_HealingAmount = RoundToCeil(healing_Amount);
 					int flHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth");
 					int Healing_Value = i_HealingAmount;

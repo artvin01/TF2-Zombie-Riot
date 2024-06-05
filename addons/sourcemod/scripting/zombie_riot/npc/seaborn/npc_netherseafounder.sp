@@ -89,7 +89,7 @@ methodmap SeaFounder < CSeaBody
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
-		//KillFeed_SetKillIcon(npc.index, "fists");
+		KillFeed_SetKillIcon(npc.index, "fists");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

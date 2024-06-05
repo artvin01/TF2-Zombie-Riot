@@ -212,14 +212,14 @@ static void ClotThink(int iNPC)
 							{
 								npc.PlayMeleeBackstabSound(target);
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
-								//KillFeed_SetKillIcon(npc.index, "backstab");
+								KillFeed_SetKillIcon(npc.index, "backstab");
 								damage *= 4.0;
 							}
 							else
 							{
 								npc.PlayMeleeHitSound();
 								npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-								//KillFeed_SetKillIcon(npc.index, "knife");
+								KillFeed_SetKillIcon(npc.index, "knife");
 							}
 
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);

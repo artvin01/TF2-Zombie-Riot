@@ -64,9 +64,9 @@ enum struct MineEnum
 
 		//kv.GetString("zone", this.Zone, 32);
 		
-		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "models/error.mdl");
+		kv.GetString("model", this.Model, PLATFORM_MAX_PATH, "error.mdl");
 		if(!this.Model[0])
-			SetFailState("Missing model in mining.cfg");
+			strcopy(this.Model, PLATFORM_MAX_PATH, "error.mdl");
 			
 		kv.GetString("text_name", this.Text_Name, PLATFORM_MAX_PATH, "Ore");
 		
@@ -77,6 +77,7 @@ enum struct MineEnum
 
 		kv.GetVector("text_pos", this.Text_Pos);
 
+		this.Color = {255, 255, 255, 255};
 		kv.GetColor4("color", this.Color);
 		this.Scale = kv.GetFloat("scale", 1.0);
 
@@ -144,6 +145,9 @@ enum struct MineEnum
 				DispatchSpawn(entity);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
+				b_is_a_brush[entity] = true;
+				b_BrushToOwner[entity] = EntIndexToEntRef(entity);
+
 				if(this.OnTouch)
 				{
 					SDKHook(entity, SDKHook_Touch, AntiTouchStuckMine);
@@ -156,6 +160,8 @@ enum struct MineEnum
 				}
 				
 				SetEntityRenderColor(entity, this.Color[0], this.Color[1], this.Color[2], this.Color[3]);
+				if(this.Color[3] != 255)
+					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 				
 				this.EntRef = EntIndexToEntRef(entity);
 			}
@@ -284,6 +290,38 @@ void Mining_DescItem(KeyValues kv, char[] desc, int[] attrib, float[] value, int
 			}
 		}
 	}
+}
+
+/* Just Below TextStore_Interact */
+bool Mining_Interact(int client, int entity, int weapon)
+{
+	bool pick = (weapon != -1 && EntityFuncAttack[weapon] == Mining_PickaxeM1);
+
+	if(entity > 0)
+	{
+		int ref = EntIndexToEntRef(entity);
+		int length = MineList.Length;
+		for(int i; i < length; i++)
+		{
+			static MineEnum mine;
+			MineList.GetArray(i, mine);
+			if(mine.EntRef == ref)
+			{
+				if(!pick && !Store_SwitchToWeaponSlot(client, 3))
+					SPrintToChat(client, "You must equip a pickaxe!");
+				
+				return true;
+			}
+		}
+	}
+	
+	if(pick)
+	{
+		Store_SwitchToWeaponSlot(client, 2);
+		return true;
+	}
+
+	return false;
 }
 
 public void Mining_PickaxeM1(int client, int weapon, const char[] classname, bool &result)
@@ -428,6 +466,8 @@ public Action Mining_PickaxeM1Delay(Handle timer, DataPack pack)
 					}
 					int damage = RoundToNearest(Attributes_FindOnWeapon(client, weapon, 2016, true));
 
+					Tinker_Mining(client, weapon, tier, mine.Tier, damage);
+
 					if(Rare_hit)
 					{
 						damage *= 6;
@@ -525,4 +565,413 @@ public Action ApplyRareMiningChanceRepeat(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	
+}
+
+static Handle TimerZoneEditing[MAXTF2PLAYERS];
+static char CurrentKeyEditing[MAXTF2PLAYERS][64];
+static char CurrentMineEditing[MAXTF2PLAYERS][64];
+static char CurrentZoneEditing[MAXTF2PLAYERS][64];
+
+void Mining_EditorMenu(int client)
+{
+	char buffer1[PLATFORM_MAX_PATH], buffer2[PLATFORM_MAX_PATH], buffer3[48];
+
+	EditMenu menu = new EditMenu();
+
+	if(StrEqual(CurrentKeyEditing[client], "copy"))
+	{
+		menu.SetTitle("Mines\n%s - %s\nSelect mine to copy from:\n ", CurrentZoneEditing[client], CurrentMineEditing[client]);
+		
+		RPG_BuildPath(buffer1, sizeof(buffer1), "mining");
+		KeyValues kv = new KeyValues("Mining");
+		kv.ImportFromFile(buffer1);
+		if(kv.GotoFirstSubKey())
+		{
+			bool first;
+			do
+			{
+				kv.GetSectionName(buffer1, sizeof(buffer1));
+				if(kv.GotoFirstSubKey())
+				{
+					do
+					{
+						kv.GetSectionName(buffer2, sizeof(buffer2));
+						Format(buffer2, sizeof(buffer2), "%s;%s", buffer1, buffer2);
+
+						kv.GetString("text_name", buffer3, sizeof(buffer3));
+						Format(buffer3, sizeof(buffer3), "%s (%s)", buffer3, buffer2);
+
+						if(first && Zones_IsActive(buffer1))
+						{
+							menu.InsertItem(0, buffer2, buffer3);
+						}
+						else
+						{
+							first = true;
+							menu.AddItem(buffer2, buffer3);
+						}
+					}
+					while(kv.GotoNextKey());
+					kv.GoBack();
+				}
+			}
+			while(kv.GotoNextKey());
+		}
+
+		delete kv;
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustMineCopy);
+	}
+	else if(CurrentKeyEditing[client][0])
+	{
+		menu.SetTitle("Spawns\n%s - %s\n ", CurrentZoneEditing[client], CurrentMineEditing[client]);
+		
+		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
+
+		menu.AddItem("", "Set To Default");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawnKey);
+	}
+	else if(CurrentMineEditing[client][0])
+	{
+		RPG_BuildPath(buffer1, sizeof(buffer1), "mining");
+		KeyValues kv = new KeyValues("Mining");
+		kv.ImportFromFile(buffer1);
+		kv.JumpToKey(CurrentZoneEditing[client]);
+		kv.JumpToKey(CurrentMineEditing[client]);
+
+		menu.SetTitle("Mines\n%s - %s\nClick to set it's value:\n ", CurrentZoneEditing[client], CurrentMineEditing[client]);
+		
+		FormatEx(buffer2, sizeof(buffer2), "Position: %s", CurrentMineEditing[client]);
+		menu.AddItem("pos", buffer2);
+
+		float vec[3];
+		kv.GetVector("ang", vec);
+		FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
+		menu.AddItem("ang", buffer2);
+
+		kv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
+		FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"", buffer1);
+		menu.AddItem("model", buffer2);
+
+		int color[4] = {255, 255, 255, 255};
+		kv.GetColor4("color", color);
+		FormatEx(buffer2, sizeof(buffer2), "Color: %d %d %d %d", color[0], color[1], color[2], color[3]);
+		menu.AddItem("color", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Scale: %f", kv.GetFloat("scale", 1.0));
+		menu.AddItem("scale", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Health: %d", kv.GetNum("health"));
+		menu.AddItem("health", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Pick Tier: %d", kv.GetNum("tier"));
+		menu.AddItem("tier", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Touching Hurts: %s", kv.GetNum("ontouch") ? "Enabled" : "Disabled");
+		menu.AddItem("ontouch", buffer2);
+
+		kv.GetVector("text_pos", vec);
+		FormatEx(buffer2, sizeof(buffer2), "Text Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
+		menu.AddItem("text_pos", buffer2);
+
+		kv.GetString("text_name", buffer1, sizeof(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Text Name: \"%s\"", buffer1);
+		menu.AddItem("text_name", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Text Size: %d", kv.GetNum("text_font_size"));
+		menu.AddItem("text_font_size", buffer2);
+
+		kv.GetString("item", buffer1, sizeof(buffer1));
+		bool valid = TextStore_IsValidName(buffer1);
+		FormatEx(buffer2, sizeof(buffer2), "Main Drop: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("item", buffer2);
+
+		kv.GetString("s1_item", buffer1, sizeof(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("s1_item", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: Chance %f", kv.GetFloat("s1_chance"));
+		menu.AddItem("s1_chance", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 1: Tier %d", kv.GetNum("s1_tier"));
+		menu.AddItem("s1_tier", buffer2);
+
+		kv.GetString("s2_item", buffer1, sizeof(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("s2_item", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: Chance %f", kv.GetFloat("s2_chance"));
+		menu.AddItem("s2_chance", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 2: Tier %d", kv.GetNum("s2_tier"));
+		menu.AddItem("s2_tier", buffer2);
+
+		kv.GetString("s3_item", buffer1, sizeof(buffer1));
+		valid = (!buffer1[0] || TextStore_IsValidName(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: \"%s\"%s", buffer1, valid ? "" : " {WARNING: Item does not exist}");
+		menu.AddItem("s3_item", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: Chance %f", kv.GetFloat("s3_chance"));
+		menu.AddItem("s3_chance", buffer2);
+
+		FormatEx(buffer2, sizeof(buffer2), "Drop 3: Tier %d", kv.GetNum("s3_tier"));
+		menu.AddItem("s3_tier", buffer2);
+
+		menu.AddItem("copy", "Copy From");
+		menu.AddItem("delete", "Delete (Type \"delete\")", ITEMDRAW_DISABLED);
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustSpawn);
+		
+		delete kv;
+	}
+	else if(CurrentZoneEditing[client][0])
+	{
+		menu.SetTitle("Mines\n%s\nSelect a mine:\n ", CurrentZoneEditing[client]);
+
+		RPG_BuildPath(buffer1, sizeof(buffer1), "mining");
+		KeyValues kv = new KeyValues("Mining");
+		kv.ImportFromFile(buffer1);
+
+		menu.AddItem("", "Create New (or type in position)");
+		
+		if(kv.JumpToKey(CurrentZoneEditing[client]) && kv.GotoFirstSubKey())
+		{
+			do
+			{
+				kv.GetSectionName(buffer1, sizeof(buffer1));
+				kv.GetString("text_name", buffer2, sizeof(buffer2));
+				//Format(buffer2, sizeof(buffer2), "%s - %s", buffer2, buffer1);
+				menu.AddItem(buffer1, buffer2);
+			}
+			while(kv.GotoNextKey());
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, MinePicker);
+
+		delete kv;
+
+		Zones_RenderZone(client, CurrentZoneEditing[client]);
+
+		delete TimerZoneEditing[client];
+		TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
+	}
+	else
+	{
+		menu.SetTitle("Mines\nSelect a zone:\n ");
+
+		Zones_GenerateZoneList(client, menu);
+
+		menu.ExitBackButton = true;
+		menu.Display(client, ZonePicker);
+	}
+}
+
+static Action Timer_RefreshHud(Handle timer, int client)
+{
+	TimerZoneEditing[client] = null;
+	Function func = Editor_MenuFunc(client);
+	if(func != MinePicker)
+		return Plugin_Stop;
+	
+	Mining_EditorMenu(client);
+	return Plugin_Continue;
+}
+
+static void ZonePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		Editor_MainMenu(client);
+		return;
+	}
+
+	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
+	Mining_EditorMenu(client);
+}
+
+static void MinePicker(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		delete TimerZoneEditing[client];
+		CurrentZoneEditing[client][0] = 0;
+		Editor_MainMenu(client);
+		return;
+	}
+
+	if(key[0])
+	{
+		strcopy(CurrentMineEditing[client], sizeof(CurrentMineEditing[]), key);
+	}
+	else
+	{
+		float pos[3];
+		GetClientPointVisible(client, _, _, _, pos);
+		Format(CurrentMineEditing[client], sizeof(CurrentMineEditing[]), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+	}
+
+	Mining_EditorMenu(client);
+}
+
+static void AdjustSpawn(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentMineEditing[client][0] = 0;
+		Mining_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "mining");
+	KeyValues kv = new KeyValues("Mining");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentZoneEditing[client], true);
+	kv.JumpToKey(CurrentMineEditing[client], true);
+
+	if(StrEqual(key, "pos"))
+	{
+		char buffer[64];
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		FormatEx(buffer, sizeof(buffer), "%.0f %.0f %.0f", pos[0], pos[1], pos[2]);
+		kv.SetSectionName(buffer);
+		strcopy(CurrentMineEditing[client], sizeof(CurrentMineEditing[]), buffer);
+	}
+	else if(StrEqual(key, "ontouch"))
+	{
+		kv.SetNum("ontouch", kv.GetNum("ontouch") ? 0 : 1);
+	}
+	else if(StrEqual(key, "ang"))
+	{
+		float ang[3];
+		GetClientEyeAngles(client, ang);
+		ang[0] = 0.0;
+		ang[2] = 0.0;
+		kv.SetVector(key, ang);
+	}
+	else if(StrEqual(key, "text_pos"))
+	{
+		float pos[3];
+		GetClientAbsOrigin(client, pos);
+		kv.SetVector(key, pos);
+	}
+	else if(StrEqual(key, "delete"))
+	{
+		kv.DeleteThis();
+		CurrentMineEditing[client][0] = 0;
+	}
+	else
+	{
+		delete kv;
+		
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		Mining_EditorMenu(client);
+		return;
+	}
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	MineEnum mine;
+	int length = MineList.Length;
+	for(int i; i < length; i++)
+	{
+		MineList.GetArray(i, mine);
+		mine.Despawn();
+	}
+
+	Mining_ConfigSetup();
+	Zones_Rebuild();
+	Mining_EditorMenu(client);
+}
+
+static void AdjustSpawnKey(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Mining_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "mining");
+	KeyValues kv = new KeyValues("Mining");
+	kv.ImportFromFile(filepath);
+	kv.JumpToKey(CurrentZoneEditing[client], true);
+	kv.JumpToKey(CurrentMineEditing[client], true);
+
+	if(key[0])
+	{
+		kv.SetString(CurrentKeyEditing[client], key);
+	}
+	else
+	{
+		kv.DeleteKey(CurrentKeyEditing[client]);
+	}
+
+	CurrentKeyEditing[client][0] = 0;
+
+	kv.Rewind();
+	kv.ExportToFile(filepath);
+	delete kv;
+	
+	MineEnum mine;
+	int length = MineList.Length;
+	for(int i; i < length; i++)
+	{
+		MineList.GetArray(i, mine);
+		mine.Despawn();
+	}
+
+	Mining_ConfigSetup();
+	Zones_Rebuild();
+	Mining_EditorMenu(client);
+}
+
+static void AdjustMineCopy(int client, const char[] key)
+{
+	char buffers[2][64];
+	if(ExplodeString(key, ";", buffers, sizeof(buffers), sizeof(buffers[])) != 2)
+	{
+		CurrentKeyEditing[client][0] = 0;
+		Mining_EditorMenu(client);
+		return;
+	}
+
+	char filepath[PLATFORM_MAX_PATH];
+	RPG_BuildPath(filepath, sizeof(filepath), "mining");
+	KeyValues main = new KeyValues("Mining");
+	main.ImportFromFile(filepath);
+	
+	if(main.JumpToKey(buffers[0]) && main.JumpToKey(buffers[1]))
+	{
+		KeyValues other = new KeyValues(buffers[1]);
+		other.Import(main);
+		
+		main.Rewind();
+		main.JumpToKey(CurrentZoneEditing[client], true);
+		main.JumpToKey(CurrentMineEditing[client], true);
+		main.Import(other);
+
+		main.Rewind();
+		main.ExportToFile(filepath);
+	}
+
+	delete main;
+
+	CurrentKeyEditing[client][0] = 0;
+	Mining_ConfigSetup();
+	Zones_Rebuild();
+	Mining_EditorMenu(client);
 }

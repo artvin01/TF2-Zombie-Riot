@@ -107,7 +107,7 @@ methodmap HeavyBearBoss < CClotBody
 		HeavyBearBoss npc = view_as<HeavyBearBoss>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "1000", ally, false, true));
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -197,7 +197,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 400.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 200.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
@@ -218,7 +218,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 150.0;
+					float damage = 200.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -226,7 +226,7 @@ public void HeavyBearBoss_ClotThink(int iNPC)
 						if(npc.m_iAttacksTillMegahit > 3)
 						{
 							npc.m_iAttacksTillMegahit = 0;
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 2, DMG_CLUB);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * 1.3, DMG_CLUB);
 							Custom_Knockback(npc.index, target, 500.0);
 						}
 						else
