@@ -589,7 +589,6 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 	{
 		returnnumber = RoundToNearest(float(returnnumber) * 1.35);
 	}
-			RPG_BobsPureRage(client, -1, percentage_Global);
 
 	return returnnumber;
 }
