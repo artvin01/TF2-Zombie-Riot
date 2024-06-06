@@ -153,8 +153,9 @@ public void RPG_BobsPureRageEquip(int client, int weapon, int index)
 }
 
 
-void RPG_BobsPureRage(int victim, int attacker, float &damage)
+bool RPG_BobsPureRage(int victim, int attacker, float &damage)
 {
+	bool ReturnVal;
 	if(IsValidClient(attacker) && BobsPureRage[attacker])
 	{
 		int MaxHealth = SDKCall_GetMaxHealth(attacker);
@@ -164,6 +165,7 @@ void RPG_BobsPureRage(int victim, int attacker, float &damage)
 		if(Ratio <= 0.5)
 		{
 			damage *= 1.25;
+			ReturnVal = true;
 		}
 	}
 	if(IsValidClient(victim) && BobsPureRage[victim])
@@ -175,6 +177,8 @@ void RPG_BobsPureRage(int victim, int attacker, float &damage)
 		if(Ratio <= 0.5)
 		{
 			damage *= 0.85;
+			ReturnVal = true;
 		}
 	}
+	return ReturnVal;
 }
