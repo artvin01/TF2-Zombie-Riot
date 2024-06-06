@@ -21,6 +21,7 @@ static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 static int g_rocket_particle;
 static char gLaser1;
 int Ruina_BEAM_Laser;
+int Ruina_HALO_Laser;
 //static char gGlow1;	//blue
 
 float fl_rally_timer[MAXENTITIES];
@@ -170,6 +171,7 @@ public void Ruina_Ai_Core_Mapstart()
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
+	Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 }
 public void Ruina_Set_Heirarchy(int client, int type)
 {
@@ -1299,7 +1301,10 @@ public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameT
 	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
 	{
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, Range * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, cylce_speed, 6.0, 0.1, 1, 1.0);
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, Ruina_BEAM_Laser, Ruina_HALO_Laser, 0, 1, cylce_speed, Thickness, 0.5, color, 1, 0);
+		TE_SendToAll();
+		
 		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
 		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
@@ -1347,9 +1352,10 @@ public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=2.5;
-	spawnRing_Vectors(npc_Loc, Range*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", colour[0], colour[1], colour[2], colour[3], 1, 0.5, 6.0, 0.1, 1, 1.0);
-
+	float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=2.5;	
+	float Thickness = 6.0;
+	TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, Ruina_BEAM_Laser, Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, colour, 1, 0);
+	TE_SendToAll();
 	Apply_Master_Buff(npc.index, RUINA_TELEPORT_BUFF, Range, 0.0, 0.0);
 }
 static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
@@ -1392,7 +1398,10 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 
 		b_ruina_allow_teleport[npc.index]=false;
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
-		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
+		float Range = 250.0;
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, Ruina_BEAM_Laser, Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, {30, 230, 226, 200}, 1, 0);
+		TE_SendToAll();
 		int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))
 		{
@@ -1868,7 +1877,15 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 				
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
 				float skyloc[3]; skyloc = cur_vec; skyloc[2] += 3000.0;
-				Ruina_spawnRing_Vector(cur_vec, 2.0*range, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.1, 8.0, 0.1, 1);
+				
+				int color[4];
+				color[0] = r;
+				color[1] = g;
+				color[2] = b;
+				color[3] = a;
+				float Thickness = 8.0;
+				TE_SetupBeamRingPoint(cur_vec, range*2.0, range*2.0+1.0, Ruina_BEAM_Laser, Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.1, color, 1, 0);
+				TE_SendToAll();
 				
 				fl_ion_sound_delay[ion]++;
 				if(fl_ion_sound_delay[ion]>1.0)
@@ -1938,8 +1955,10 @@ static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int
 				
 				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
-				Ruina_spawnRing_Vector(cur_vec, range/2.5, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt" , colour[0], colour[1], colour[2], colour[3], 1, 0.1, 2.0, 1.25, 1);
 				
+				float Thickness = 8.0;
+				TE_SetupBeamRingPoint(cur_vec, range/2.5, range/2.5+1.0, Ruina_BEAM_Laser, Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.1, colour, 1, 0);
+				TE_SendToAll();
 				
 				fl_ion_sound_delay[ion]++;
 				if(fl_ion_sound_delay[ion]>2.0)
@@ -2018,28 +2037,6 @@ public void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float
 
 	delete trace;
 	//if it doesnt hit anything, then it just does buisness as usual
-}
-static void Ruina_spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-	
-	int ICE_INT = PrecacheModel(sprite);
-	
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-	
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
 }
 static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0, char point[255], float zTrans = 0.0)
 {
