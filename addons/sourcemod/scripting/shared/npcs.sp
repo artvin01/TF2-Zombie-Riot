@@ -1524,13 +1524,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		if(TrueStength_ClientBuff(client))
 		{
-			had_An_ability = true;
+			Debuff_added = true;
 			Format(bufferbuffs, sizeof(Debuff_Adder_right), "%sT", Debuff_Adder_right);
 		}
 		float dummyNumber;
 		if(RPG_BobsPureRage(client, -1, dummyNumber))
 		{
-			had_An_ability = true;
+			Debuff_added = true;
 			Format(bufferbuffs, sizeof(Debuff_Adder_right), "%sRA", Debuff_Adder_right);
 		}
 		
