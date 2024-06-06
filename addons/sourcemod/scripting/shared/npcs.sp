@@ -1512,13 +1512,28 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		case -1:
 		{
 			Debuff_added = true;
-			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "B!%s", Debuff_Adder_right);
+			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%sB!", Debuff_Adder_right);
 		}
 		case 1:
 		{
 			Debuff_added = true;
-			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "b!%s", Debuff_Adder_right);
+			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "b!%s", Debuff_Adder_left);
 		}
+	}
+	if(victim < Maxclients)
+	{
+		if(TrueStength_ClientBuff(client))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(Debuff_Adder_right), "%sT", Debuff_Adder_right);
+		}
+		float dummyNumber;
+		if(RPG_BobsPureRage(client, -1, dummyNumber))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(Debuff_Adder_right), "%sRA", Debuff_Adder_right);
+		}
+		
 	}
 #endif
 
