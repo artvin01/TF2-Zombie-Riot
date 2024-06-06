@@ -1794,7 +1794,7 @@ public void Ruina_Create_Ion_Cannon(int amt, float damage, float speed, float ra
 }
 
 //todo: DOESNT HAVE A PLUGIN_STOP;
-static Action Ruina_Ion_Timer(Handle time, DataPack pack)
+static Action Ruina_Ion_Timer(Handle time, DataPack pack)	//note: just redo this entire thing, ive gone past the need for TE's to make ions. plus this thing sucks
 {
 	int true_current_round = ZR_GetWaveCount() + 1;
 	
@@ -1903,8 +1903,18 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 						
 						if(dist < (range * range))
 						{
-							float fake_damage = damage*(1.01 - (dist / (range * range)));	//reduce damage if the target just grazed it.
-							
+							float Dmg = damage;
+
+							float falloffmax = 0.80;	//it will deal only 20% of the original dmg at max range!
+							float falloffstart = range*0.5;
+							if (dist > falloffstart)		//reduce damage if the target just grazed it.
+							{
+								float diff = dist - falloffstart;
+								float rad = range - falloffstart;
+								
+								Dmg *= 1.0 - ((diff/rad) * falloffmax);
+							}
+
 							fl_ion_attack_sound_delay[ion]++;
 							if(fl_ion_attack_sound_delay[ion]>1.0)
 							{
@@ -1912,7 +1922,7 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
 							}
 
-							SDKHooks_TakeDamage(client, 0, 0, fake_damage, DMG_CLUB, _, _, cur_vec);
+							SDKHooks_TakeDamage(client, 0, 0, Dmg, DMG_CLUB, _, _, cur_vec);
 						}
 					}
 				}
@@ -2132,6 +2142,7 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 }
 
 static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
+static int i_targets_hit;
 enum struct Ruian_Laser_Logic
 {
 	int client;
@@ -2144,6 +2155,12 @@ enum struct Ruian_Laser_Logic
 
 	bool trace_hit;
 	bool trace_hit_enemy;
+
+	/*
+		Todo: 
+			If needed, add a trace version that only triggers a void instead of also dealing damage.
+			Test it fully, should work, but just incase, need to try and break it.
+	*/
 
 	void DoForwardTrace_Basic(float Dist=-1.0)
 	{
@@ -2207,6 +2224,8 @@ enum struct Ruian_Laser_Logic
 
 		Zero(Ruina_Laser_BEAM_HitDetected);
 
+		i_targets_hit = 0;	//todo: test this!
+
 		float hullMin[3], hullMax[3];
 		hullMin[0] = -this.Radius;
 		hullMin[1] = hullMin[0];
@@ -2219,13 +2238,11 @@ enum struct Ruian_Laser_Logic
 		delete trace;
 
 				
-		for (int loop = 0; loop < MAXENTITIES; loop++)
+		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Ruina_Laser_BEAM_HitDetected[loop];
 			if (victim && GetTeam(this.client) != GetTeam(victim))
 			{
-
-				
 				this.trace_hit_enemy=true;
 
 				float playerPos[3];
@@ -2235,6 +2252,7 @@ enum struct Ruian_Laser_Logic
 					SDKHooks_TakeDamage(victim, this.client, this.client, this.Bonus_Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
 				else
 					SDKHooks_TakeDamage(victim, this.client, this.client, this.Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
+
 				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 				{	
 					Call_StartFunction(null, Attack_Function);
@@ -2261,6 +2279,7 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 		{
 			if(!Ruina_Laser_BEAM_HitDetected[i])
 			{
+				i_targets_hit++;
 				Ruina_Laser_BEAM_HitDetected[i] = entity;
 				break;
 			}
@@ -2327,6 +2346,11 @@ Names per stage:
 		Retreats from enemies.
 		Battery: Buff's nearby Ranged npc's speed
 
+		Stage 1: Done.
+		Stage 2: Needs work.
+		Stage 3: Null
+		Stage 4: Null
+
 		Magnia:
 		{
 			ICBM: Gains the ability to launch a "homing" projectile rocket.
@@ -2342,6 +2366,12 @@ Names per stage:
 		Melee.
 		Teleporting.
 		Battery: Buff's nearby Melee npc's speed
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
+
 		Laniun:
 		{
 			
@@ -2357,6 +2387,11 @@ Names per stage:
 		Support: Healer
 		Heals nearby npc's within range in a AOE.
 		Battery: Massive AOE healing for 2.5 seconds
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 	//created
 	4: Astria -> Astriana -> Astrianis -> Astrianious
@@ -2365,6 +2400,11 @@ Names per stage:
 		Class: Engie
 		Slow itself, boots nearby npc speed passively.
 		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 
 	//created
@@ -2374,6 +2414,11 @@ Names per stage:
 		Class: Pyro.
 		Summons "brainless" npc's
 		Battery: Summons itself.
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 	//created
 	6: Daedalus -> Draedon -> Draeonis -> Draconia
@@ -2382,6 +2427,11 @@ Names per stage:
 		Class: Scout
 		Support: Shield.
 		Battery: Provides shield to npc's within range.
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 	//created
 	7: Aether -> Aetheria -> Aetherium -> Aetherianus
@@ -2391,6 +2441,11 @@ Names per stage:
 		Ranged:
 
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
@@ -2399,6 +2454,11 @@ Names per stage:
 		Class: Engie
 		Support: Battery
 		Battery: Gives a set amt of battery to nearby npc's
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 
 		Maliana:
 
@@ -2411,6 +2471,11 @@ Names per stage:
 		Class: Medic.
 		Ranged, Melee.
 		Passive: damage taken is healed to allies around.
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
 	{
@@ -2425,6 +2490,11 @@ Names per stage:
 		Class: Spy
 		Melee.
 		it only exists as a minnion to be spammed. it has nothing special for now
+
+		Stage 1: Done.
+		Stage 2: Needs concept, sp exists
+		Stage 3: Null
+		Stage 4: Null
 	}
 
 	Valiant	//Gonna be set into special, like expi spies.
