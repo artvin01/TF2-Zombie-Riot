@@ -60,6 +60,7 @@ void NPC_ConfigSetup()
 
 	// Buildings
 	ObjectBarricade_MapStart();
+	ObjectAmmobox_MapStart();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -400,7 +401,7 @@ void NPC_ConfigSetup()
 	VulpoOnMapStart();
 
 	//Alt Barracks
-	Barrack_Alt_Ikunagae_MapStart();
+/*	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
 	Barrack_Railgunner_MapStart();
 	Barrack_Alt_Basic_Mage_MapStart();
@@ -413,9 +414,9 @@ void NPC_ConfigSetup()
 	Barrack_Alt_Crossbowmedic_MapStart();
 	Barrack_Alt_Scientific_Witchery_MapStart();
 	Barracks_Thorns();
-	VIPBuilding_MapStart();
+	VIPBuilding_MapStart();*/
 	AlliedSensalAbility_OnMapStart_NPC();
-	BarrackVillagerOnMapStart();
+/*	BarrackVillagerOnMapStart();
 	BarrackBuildingOnMapStart();
 	BarrackTwoHandedOnMapStart();
 	BarrackTeutonOnMapStart();
@@ -429,7 +430,7 @@ void NPC_ConfigSetup()
 	BarrackCrossbowOnMapStart();
 	BarrackChampionOnMapStart();
 	BarrackArcherOnMapStart();
-	BarrackArbelastOnMapStart();
+	BarrackArbelastOnMapStart();*/
 	AlliedKahmlAbilityOnMapStart();
 
 
@@ -483,7 +484,10 @@ int NPC_Add(NPCData data)
 		ThrowError("Invalid function name");
 
 	if(!TranslationPhraseExists(data.Name))
+	{
 		LogError("Translation '%s' does not exist", data.Name);
+		strcopy(data.Name, sizeof(data.Name), "nothing");
+	}
 
 	return NPCList.PushArray(data);
 }
@@ -739,6 +743,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //BUILDINGS
 #include "zombie_riot/object/obj_shared.sp"
 #include "zombie_riot/object/obj_barricade.sp"
+#include "zombie_riot/object/obj_ammobox.sp"
 
 //NORMAL
 
@@ -985,6 +990,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
 */
+
+/*
 #include "zombie_riot/npc/ally/npc_barrack.sp"
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
@@ -997,7 +1004,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_champion.sp"
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
-#include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
 #include "zombie_riot/npc/ally/npc_barrack_teutonic_knight.sp"
 #include "zombie_riot/npc/ally/npc_barrack_villager.sp"
@@ -1015,6 +1021,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
+*/
+
+#include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"
@@ -1060,7 +1069,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_sniper.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_spy.sp"
 #include "zombie_riot/npc/seaborn/npc_lastknight.sp"
-#include "zombie_riot/npc/ally/npc_barrack_lastknight.sp"
+//#include "zombie_riot/npc/ally/npc_barrack_lastknight.sp"
 #include "zombie_riot/npc/seaborn/npc_saintcarmen.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper_fractal.sp"
@@ -1110,7 +1119,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_anfuhrer_eisenhard.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_sensal.sp"
 
-#include "zombie_riot/npc/ally/npc_vip_building.sp"
+//#include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"

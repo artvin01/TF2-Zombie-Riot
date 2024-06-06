@@ -1312,8 +1312,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 							int HigherTechAdvancedClient;
 							int HigherTechAdvancedCount;
 							HigherTechAdvancedClient = owner;
-							HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
-							char buffer_pap[36];
+							//HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
+							/*char buffer_pap[36];
 							for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 							{
 								int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
@@ -1335,7 +1335,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 										}
 									}
 								}
-							}
+							}*/
 							if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
 							{
 								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
@@ -1433,15 +1433,6 @@ void Store_RogueEndFightReset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-	ResetSentryCD();
-	/*for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity) && !i_BeingCarried[entity]) //delete all buildings that arent mounted
-		{
-			RemoveEntity(entity);
-		}
-	}*/
 	Ammo_Count_Ready += 5;
 }
 
@@ -1624,7 +1615,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						{
 							break;
 						}
-						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
+/*						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 						{
 							break;
 						}
@@ -1638,7 +1629,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 						if(info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 						{
 							break;
-						}
+						}*/
 					}
 					bool MoneyTake = true;
 					if(Rogue_Mode())
@@ -2736,7 +2727,7 @@ static void MenuPage(int client, int section)
 		LastMenuPage[client] = 0;
 	}
 
-	BarracksCheckItems(client);
+//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -2874,7 +2865,7 @@ static void MenuPage(int client, int section)
 					{
 						ItemCost(client, item, info.Cost);
 						
-						bool Maxed_Building = false;
+/*						bool Maxed_Building = false;
 						if(item.MaxBarricadesBuild)
 						{
 							if(BarricadeMaxSupply(client) >= MaxBarricadesAllowed(client))
@@ -2888,7 +2879,7 @@ static void MenuPage(int client, int section)
 						{
 							FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
 						}
-						else
+						else*/
 						{
 							FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
 						}
@@ -2948,7 +2939,7 @@ static void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
-					bool tinker = Blacksmith_HasTinker(client, section);
+					bool tinker = false;//Blacksmith_HasTinker(client, section);
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
@@ -3242,18 +3233,6 @@ static void MenuPage(int client, int section)
 					
 					strcopy(BuildingGetName, sizeof(BuildingGetName), item.BuildingExistName);
 					
-					for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-					{
-						int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-						if(IsValidEntity(entity))
-						{
-							GetEntPropString(entity, Prop_Data, "m_iName", BuildingGetName_2, sizeof(BuildingGetName_2));
-							if(StrEqual(BuildingGetName_2, BuildingGetName, true))
-							{
-								How_Many_Buildings_Exist += 1;
-							}
-						}
-					}
 					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), " {%i}", How_Many_Buildings_Exist);
 				}
 				if(info.ScrapCost > 0)
@@ -3304,7 +3283,7 @@ static void MenuPage(int client, int section)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
-					}
+					}/*
 					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
@@ -3319,16 +3298,16 @@ static void MenuPage(int client, int section)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s%s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
-					}
+					}*/
 					else
 					{
 						if(item.WhiteOut)
 						{
-							if(item.ShouldThisCountSupportBuildings)
+/*							if(item.ShouldThisCountSupportBuildings)
 							{
 								FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
 							}
-							else
+							else*/
 							{
 								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 							}
@@ -4286,7 +4265,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						CPrintToChat(client, "%t", "Created By", item.Author);
 					}
 
-					Blacksmith_ExtraDesc(client, index);
+//					Blacksmith_ExtraDesc(client, index);
 				}
 			}
 			MenuPage(client, index);
@@ -4572,23 +4551,23 @@ void Store_ApplyAttribs(int client)
 
 	float MovementSpeed = 330.0;
 	
-	if(VIPBuilding_Active())
+/*	if(VIPBuilding_Active())
 	{
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
-	}
+	}*/
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
-	map.SetValue("442", 1.0);		// Move Speed
-	map.SetValue("286", 0.1);		// Reduce building hp by x10
-	map.SetValue("287", 0.1);		// Reduce repair rate by x10
+	//map.SetValue("442", 1.0);		// Move Speed
+	//map.SetValue("286", 0.1);		// Reduce building hp by x10
+	//map.SetValue("287", 0.1);		// Reduce repair rate by x10
 
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
-	map.SetValue("465", 999.0);	// instant build
-	map.SetValue("464", 999.0);	// instant build
+//	map.SetValue("465", 999.0);	// instant build
+//	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 //	map.SetValue("397", 50.0);	// Ignore ally with shooting
 	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
@@ -4813,7 +4792,7 @@ void Store_ApplyAttribs(int client)
 
 	EnableSilvesterCosmetic(client);
 	EnableMagiaCosmetic(client);
-	Building_Check_ValidSupportcount(client);
+//	Building_Check_ValidSupportcount(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -4934,12 +4913,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
-	
-	if(!IsFakeClient(client) && Was_phasing)
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	}
 
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
@@ -5018,8 +4991,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
-	CheckSummonerUpgrades(client);
-	Barracks_UpdateAllEntityUpgrades(client);
+//	CheckSummonerUpgrades(client);
+//	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
 }
 
@@ -5646,7 +5619,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
-		Enable_WeaponBoard(client, entity);
+//		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
@@ -5676,7 +5649,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
-		Blacksmith_Enable(client, entity);
+//		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 	}

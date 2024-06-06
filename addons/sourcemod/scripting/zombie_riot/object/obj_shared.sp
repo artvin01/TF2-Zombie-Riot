@@ -8,7 +8,7 @@
  * @param client	Client
  * @return		If to render as useable
  */
-static Function FuncCanUse[MAXENTITES];
+static Function FuncCanUse[MAXENTITIES];
 
 /**
  * static bool ClotCanBuild(ObjectYour npc, int client)
@@ -17,15 +17,19 @@ static Function FuncCanUse[MAXENTITES];
  * @param client	0 for being unclaimed
  * @return		If can build this building
  */
-static Function FuncCanBuild[MAXENTITES];
+static Function FuncCanBuild[MAXENTITIES];
+
+/**
+ * static void ClotShowInteractHud(ObjectYour npc, int client)
+ * 
+ * @param npc		Building
+ * @param client	Client
+ * @noreturn
+ */
+static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
-
-static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally,  const char[] data)
-{
-	return ObjectGeneric(client, vecPos, vecAng, data);
-}
 
 methodmap ObjectGeneric < CClotBody
 {
@@ -33,11 +37,9 @@ methodmap ObjectGeneric < CClotBody
 						const char[] model,
 						const char[] modelscale = "1.0",
 						const char[] basehealth = "750",
-						Function funcCanUse = INVALID_FUNCTION,
-						Function funcCanBuild = ObjectGeneric_CanBuild,
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
-		ObjectGeneric npc = view_as<ObjectGeneric>(CClotBody(vecPos, vecAng, model, modelscale, basehealth, TFTeam_Red, .CustomThreeDimensions = CustomThreeDimensions));
+		ObjectGeneric npc = view_as<ObjectGeneric>(CClotBody(vecPos, vecAng, model, modelscale, basehealth, TFTeam_Red, false, false, _, _, CustomThreeDimensions, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
@@ -50,8 +52,13 @@ methodmap ObjectGeneric < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 
-		FuncCanUse[npc.index] = funcCanUse;
-		FuncCanBuild[npc.index] = funcCanBuild;
+		static Function defaultFunc;
+		if(!defaultFunc)
+			defaultFunc = GetFunctionByName(null, "ObjectGeneric_CanBuild");
+		
+		npc.FuncCanUse = INVALID_FUNCTION;
+		npc.FuncCanBuild = defaultFunc;
+		npc.FuncShowInteractHud = INVALID_FUNCTION;
 
 		func_NPCDeath[npc.index] = ObjectGeneric_ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = ObjectGeneric_ClotTakeDamage;
@@ -78,6 +85,28 @@ methodmap ObjectGeneric < CClotBody
 
 		return npc;
 	}
+
+	property Function FuncCanUse
+	{
+		public set(Function func)
+		{
+			FuncCanUse[this.index] = func;
+		}
+	}
+	property Function FuncCanBuild
+	{
+		public set(Function func)
+		{
+			FuncCanBuild[this.index] = func;
+		}
+	}
+	property Function FuncShowInteractHud
+	{
+		public set(Function func)
+		{
+			FuncShowInteractHud[this.index] = func;
+		}
+	}
 }
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
@@ -92,14 +121,17 @@ static Action SetTransmit_BuildingReady(int entity, int client)
 
 static Action SetTransmit_BuildingShared(int entity, int client, bool reverse)
 {
+	if(client < 1 || client > MaxClients)
+		return Plugin_Continue;
+	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(owner > 0 && owner <= MaxClients)
+	if(owner != -1)
 	{
 		bool result = true;
 
-		if(FuncCanUse[npc.index] && FuncCanUse[npc.index] != INVALID_FUNCTION)
+		if(FuncCanUse[owner] && FuncCanUse[owner] != INVALID_FUNCTION)
 		{
-			Call_StartFunction(null, FuncCanUse[npc.index]);
+			Call_StartFunction(null, FuncCanUse[owner]);
 			Call_PushCell(owner);
 			Call_PushCell(client);
 			Call_Finish(result);
@@ -112,7 +144,7 @@ static Action SetTransmit_BuildingShared(int entity, int client, bool reverse)
 	return Plugin_Stop;
 }
 
-bool ObjectGeneric_CanBuild(ObjectBarricade npc, int client)
+public bool ObjectGeneric_CanBuild(ObjectBarricade npc, int client)
 {
 	if(client && Object_SupportBuildings(client) >= Object_MaxSupportBuildings(client))
 		return false;
@@ -128,22 +160,8 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 	
 	npc.m_flNextDelayTime = gameTime + 0.1;
 
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-	int expected = RoundFloat(Building_Max_Health[npc.index] * GetMaxHealthMulti());
-	if(maxhealth && expected && maxhealth != expected)
-	{
-		float change = expected / maxhealth;
-
-		maxhealth = expected;
-		health = RoundFloat(float(health) * change);
-		Building_Repair_Health[npc.index] = RoundFloat(float(Building_Repair_Health[npc.index]) * change);
-		
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-		SetEntProp(entity, Prop_Data, "m_iHealth", health);
-	}
-
-	if(GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity") == -1)
+	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(owner == -1)
 	{
 		if(FuncCanBuild[npc.index] && FuncCanBuild[npc.index] != INVALID_FUNCTION)
 		{
@@ -171,7 +189,22 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 	}
 	else
 	{
-		int g = GetEntProp(entity, Prop_Data, "m_iHealth") * 255  / maxhealth;
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int expected = RoundFloat(Building_Max_Health[npc.index] * GetMaxHealthMulti(owner));
+		if(maxhealth && expected && maxhealth != expected)
+		{
+			float change = float(expected) / float(maxhealth);
+
+			maxhealth = expected;
+			health = RoundFloat(float(health) * change);
+			Building_Repair_Health[npc.index] = RoundFloat(float(Building_Repair_Health[npc.index]) * change);
+			
+			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", maxhealth);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+		}
+		
+		int g = health * 255  / maxhealth;
 		if(g > 255)
 		{
 			g = 255;
@@ -196,16 +229,29 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 	return true;
 }
 
-bool Object_Interact(int client, int weapon, int entity, bool reload)
+bool Object_ShowInteractHud(int client, int entity)
 {
-	if(TeutonType[client] != TEUTON_NONE)
+	if(!FuncShowInteractHud[entity] || FuncShowInteractHud[entity] == INVALID_FUNCTION)
 		return false;
 	
-	int object = entity;
-	if(object <= MaxClients)
+	Call_StartFunction(null, FuncShowInteractHud[entity]);
+	Call_PushCell(entity);
+	Call_PushCell(client);
+	Call_Finish();
+	return true;
+}
+
+bool Object_Interact(int client, int weapon, int obj)
+{
+	if(TeutonType[client] != TEUTON_NONE || obj == -1)
+		return false;
+	
+	int entity = obj;
+	if(entity <= MaxClients)
 	{
-		object = EntRefToEntIndex(Building_Mounted[entity]);
-		if(object == -1)
+		// Player mounted
+		entity = EntRefToEntIndex(Building_Mounted[obj]);
+		if(entity == -1)
 			return false;
 	}
 
@@ -229,7 +275,7 @@ bool Object_Interact(int client, int weapon, int entity, bool reload)
 
 					if(result)
 					{
-						SetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity", client);
+						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 					}
 					else
 					{
@@ -255,7 +301,7 @@ bool Object_Interact(int client, int weapon, int entity, bool reload)
 		}
 	}
 
-	return result;
+	return true;
 }
 
 int Object_NamedBuildings(int owner, const char[] name)
@@ -308,7 +354,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
   	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
 	
 	maxAllowed += Building_health_attribute; 
-	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+//	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;
@@ -325,11 +371,11 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 			maxAllowed = 1;
 	}
 
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
-	{
-		if(!ingore_glass)
-			maxAllowed = 1;
-	}
+//	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
+//	{
+//		if(!ingore_glass)
+//			maxAllowed = 1;
+//	}
 	return maxAllowed;
 }
 
@@ -341,11 +387,26 @@ static float GetMaxHealthMulti(int client)
 void ObjectGeneric_ClotDeath(int entity)
 {
 	ObjectGeneric npc = view_as<ObjectGeneric>(entity);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
 
 void ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(RaidBossActive && (RaidbossIgnoreBuildingsLogic(2))) //They are ignored anyways
+	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
 	{
 		damage = 0.0;
 		return;
@@ -355,33 +416,37 @@ void ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, flo
 void ObjectGeneric_ClotTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom, bool &killed) 
 {
 	if(killed)
+	{
+		view_as<CClotBody>(victim).m_bDissapearOnDeath = false;
+		view_as<CClotBody>(victim).m_bGib = true;
 		return;
+	}
 	
 	int dmg = RoundFloat(damage);
-	if(Building_Repair_Health[npc.index] > 0)
+	if(Building_Repair_Health[victim] > 0)
 	{
-		Building_Repair_Health[entity] -= dmg;
-		if(Building_Repair_Health[entity] > 0)
+		Building_Repair_Health[victim] -= dmg;
+		if(Building_Repair_Health[victim] > 0)
 		{
 			dmg = 0;
 		}
 		else
 		{
-			dmg += Building_Repair_Health[entity];
-			Building_Repair_Health[entity] = 0;
+			dmg += Building_Repair_Health[victim];
+			Building_Repair_Health[victim] = 0;
 		}
 	}
 
 	if(dmg)
 	{
-		Building_Max_Health[npc.index] -= dmg;
-		if(Building_Max_Health[npc.index] < 1)
+		Building_Max_Health[victim] -= dmg;
+		if(Building_Max_Health[victim] < 1)
 			killed = true;
 		
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") - dmg;
+		int health = GetEntProp(victim, Prop_Data, "m_iMaxHealth") - dmg;
 		if(health < 1)
 			killed = true;
 		
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
+		SetEntProp(victim, Prop_Data, "m_iMaxHealth", health);
 	}
 }

@@ -191,7 +191,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				}
 			}
 		}
-	}
+	}/*
 	else if(i_IsABuilding[victim])	// Buildings
 	{
 		int health = Building_GetBuildingRepair(victim);
@@ -199,7 +199,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		{
 			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 		}
-	}
+	}*/
 }
 
 void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)

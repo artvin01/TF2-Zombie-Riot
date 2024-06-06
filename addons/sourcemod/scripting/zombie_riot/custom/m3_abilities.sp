@@ -585,14 +585,14 @@ public int BuilderMenuM(Menu menu, MenuAction action, int client, int choice)
 				{
 					if(IsValidClient(client))
 					{
-						DeleteBuildingLookedAt(client);
+//						DeleteBuildingLookedAt(client);
 					}
 				}
 				case -2:
 				{
 					if(IsValidClient(client))
 					{
-						Un_ClaimBuildingLookedAt(client);
+//						Un_ClaimBuildingLookedAt(client);
 					}
 				}
 				case -3:
@@ -670,7 +670,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 			{
 				case -1:
 				{
-					if(IsValidClient(client))
+/*					if(IsValidClient(client))
 					{
 						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
 						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
@@ -687,7 +687,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 								}
 							}
 						}
-					}
+					}*/
 				}
 				default:
 				{
@@ -1016,7 +1016,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				int CurrentMetal = GetAmmo(client, 3);
 
 				CurrentMetal *= 5;
-				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+/*				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
 					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
@@ -1043,7 +1043,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 							Resistance_for_building_High[entity_close] = GetGameTime() + 1.1; 
 						}
 					}
-				}
+				}*/
 				CurrentMetal /= 5;
 				SetAmmo(client, 3, CurrentMetal);
 				CurrentAmmo[client][3] = GetAmmo(client, 3);

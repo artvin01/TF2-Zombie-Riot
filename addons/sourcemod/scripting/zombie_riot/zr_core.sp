@@ -6,6 +6,7 @@
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5
+#define MAX_TARGETS_HIT 10
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
@@ -243,8 +244,6 @@ Cookie CookieScrap;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
-Handle g_hSDKMakeCarriedObjectDispenser;
-Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
 
 //custom wave music.
@@ -372,6 +371,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
+#include "zombie_riot/building.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
@@ -473,7 +473,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
-#include "zombie_riot/custom/weapon_board.sp"
+//#include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
@@ -497,7 +497,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_hell_hoe.sp"
 #include "zombie_riot/custom/wand/weapon_ludo.sp"
 #include "zombie_riot/custom/weapon_messenger.sp"
-#include "zombie_riot/custom/kit_blacksmith.sp"
+//#include "zombie_riot/custom/kit_blacksmith.sp"
 #include "zombie_riot/custom/weapon_deagle_west.sp"
 
 void ZR_PluginLoad()
@@ -541,12 +541,10 @@ void ZR_PluginStart()
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
-	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
 	Items_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
-	SentryHat_OnPluginStart();
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
@@ -561,7 +559,6 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
-	Building_PluginStart();
 }
 
 void ZR_MapStart()
@@ -580,13 +577,11 @@ void ZR_MapStart()
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(f_Reviving_This_Client);
 	Zero(i_Reviving_This_Client);
-	OnMapStart_Build_on_Build();
 	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
-	Building_ClearAll();
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
@@ -617,7 +612,6 @@ void ZR_MapStart()
 	Zero2(fl_blitz_ioc_punish_timer);
 	Zero(i_PlayerModelOverrideIndexWearable);
 	Zero(b_HideCosmeticsPlayer);
-	CleanAllBuildingEscape();
 	KahmlFistMapStart();
 	M3_ClearAll();
 	SniperMonkey_ClearAll();
@@ -630,7 +624,6 @@ void ZR_MapStart()
 	Zero(i_Headshots);
 	Zero(f_TutorialUpdateStep);
 	Zero(healing_cooldown);
-	Zero(f_BuildingIsNotReady);
 	Zero(f_TerroriserAntiSpamCd);
 	Zero(f_DisableDyingTimer);
 	Zero(f_DyingTextTimer);
@@ -645,7 +638,6 @@ void ZR_MapStart()
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
-	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
 	Hazard_Map_Precache();
@@ -675,7 +667,6 @@ void ZR_MapStart()
 	Weapon_Arrow_Shoot_Map_Precache();
 	Weapon_Hose_Precache();
 //	Weapon_Pipe_Shoot_Map_Precache();
-	Building_MapStart();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
 	Wand_Elemental_Map_Precache();
@@ -722,7 +713,7 @@ void ZR_MapStart()
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
-	WeaponBoard_Precache();
+//	WeaponBoard_Precache();
 	Weapon_German_MapStart();
 	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
@@ -814,9 +805,6 @@ void ZR_ClientPutInServer(int client)
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
 	f_Armor_BreakSoundDelay[client] = 0.0;
-	Doing_Handle_Mount[client] = false;
-	b_Doing_Buildingpickup_Handle[client] = false;
-	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
 	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
@@ -858,24 +846,6 @@ void ZR_ClientDisconnect(int client)
 	GoldAmount[client] = 0.0;
 	i_PlayerModelOverrideIndexWearable[client] = 0;
 	b_HideCosmeticsPlayer[client] = false;
-	
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity)) //delete all buildings that arent mounted
-		{
-			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-			{
-				static char classname[64];
-				GetEntityClassname(entity, classname, sizeof(classname));
-				if(!StrContains(classname, "obj_sentrygun"))
-				{
-					//sometimes this building does not vanish upon being used, we must destroy it manually.
-					RemoveEntity(entity);
-				}
-			}
-		}
-	}
 }
 
 public void OnMapInit()
@@ -1290,7 +1260,6 @@ public Action Command_AFKKnight(int client, int args)
 {
 	if(client)
 	{
-		DestroyDispenser(client);
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 2);
 	}
@@ -1964,7 +1933,7 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-
+/*
 public Action DeleteEntitiesInHazards(Handle timer)
 {
 	float BuildingPos[3];
@@ -1983,12 +1952,13 @@ public Action DeleteEntitiesInHazards(Handle timer)
 	}
 	return Plugin_Handled;
 }
+*/
 void ReviveAll(bool raidspawned = false)
 {
 	//only set false here
 	ZombieMusicPlayed = false;
 
-	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	for(int client=1; client<=MaxClients; client++)
 	{

@@ -601,7 +601,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				bool resist = (SeaMelee_IsSeaborn(client) || Building_NeatherseaReduced(client));
+				bool resist = (SeaMelee_IsSeaborn(client)/* || Building_NeatherseaReduced(client)*/);
 				float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
 				float damageDeal;
@@ -693,32 +693,6 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 						Elemental_AddNervousDamage(entity, 0, 1);
 						// 20 x 0.25 x 0.2
 						*/
-
-					NervousTouching[entity] = NervousTouching[0];
-				}
-			}
-		}
-	}
-	
-	for(int a; a < i_MaxcountBuilding; a++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
-		if(entity != INVALID_ENT_REFERENCE)
-		{
-			CClotBody npc = view_as<CClotBody>(entity);
-			if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
-			{
-				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-
-				// Find entities touching infected tiles
-				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
-				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
-				{
-					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);
-					// 120 x 0.25 x 0.2
-
-					Elemental_AddNervousDamage(entity, 0, 1, false);
-					// 20 x 0.25 x 0.2
 
 					NervousTouching[entity] = NervousTouching[0];
 				}

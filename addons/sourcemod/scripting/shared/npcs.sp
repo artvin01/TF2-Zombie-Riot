@@ -3428,16 +3428,12 @@ void GiveProgressDelay(float Time)
 #if defined ZR
 int MaxNpcEnemyAllowed()
 {
-	if(VIPBuilding_Active())
-	{
-		return RoundToCeil(float(NPC_HARD_LIMIT) * MaxEnemyMulti());
-	}
 	return NPC_HARD_LIMIT;
 }
 
 float MaxEnemyMulti()
 {
-	if(VIPBuilding_Active())
+/*	if(VIPBuilding_Active())
 	{
 		if(Waves_GetWave() + 1 >= 100)
 		{
@@ -3447,7 +3443,7 @@ float MaxEnemyMulti()
 		{
 			return 1.5;
 		}
-	}
+	}*/
 	return 1.0;
 }
 

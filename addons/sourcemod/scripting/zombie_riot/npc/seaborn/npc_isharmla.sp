@@ -272,7 +272,7 @@ public void Isharmla_ClotThink(int iNPC)
 					int healing = npc.Anger ? 24000 : 16000;
 
 					bool regrow = true;
-					Building_CamoOrRegrowBlocker(npc.m_iTarget, _, regrow);
+//					Building_CamoOrRegrowBlocker(npc.m_iTarget, _, regrow);
 					if(!regrow)
 						healing -= 16000;
 					
@@ -310,7 +310,7 @@ public void Isharmla_ClotThink(int iNPC)
 					int healing = npc.Anger ? 24000 : 16000;
 
 					bool regrow = true;
-					Building_CamoOrRegrowBlocker(ally, _, regrow);
+//					Building_CamoOrRegrowBlocker(ally, _, regrow);
 					if(!regrow)
 						healing -= 16000;
 					

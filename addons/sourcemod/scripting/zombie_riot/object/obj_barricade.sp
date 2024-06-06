@@ -18,17 +18,19 @@ void ObjectBarricade_MapStart()
 	NPCId = NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally,  const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
-	return ObjectBarricade(client, vecPos, vecAng, data);
+	return ObjectBarricade(client, vecPos, vecAng);
 }
 
 methodmap ObjectBarricade < ObjectGeneric
 {
 	public ObjectBarricade(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectBarricade npc = view_as<ObjectBarricade>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "6000", _, ClotCanBuild));
+		ObjectBarricade npc = view_as<ObjectBarricade>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "6000"));
 		
+		npc.FuncCanBuild = ClotCanBuild;
+
 		return npc;
 	}
 }

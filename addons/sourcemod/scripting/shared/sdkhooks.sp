@@ -186,8 +186,6 @@ public void OnPreThinkPost(int client)
 			{
 				if(i_PreviousBuildingCollision[client] != 2)
 				{
-					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 				}
 				b_PhaseThroughBuildingsPerma[client] = i_PreviousBuildingCollision[client];
 			}
@@ -684,7 +682,7 @@ public void OnPostThink(int client)
 					
 			}
 			
-			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+/*			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(IsValidEntity(obj) && obj>MaxClients)
 			{
 				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
@@ -709,7 +707,7 @@ public void OnPostThink(int client)
 				}
 				IsReady = false;
 				had_An_ability = true;
-			}
+			}*/
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
@@ -1051,7 +1049,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
 		}
-
+/*
 		static int VillageBuffs;
 		VillageBuffs = Building_GetClientVillageFlags(client);
 
@@ -1085,6 +1083,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
 		}
+*/
 #endif
 
 		if(Increaced_Overall_damage_Low[client] > GameTime)
@@ -1246,7 +1245,7 @@ public void OnPostThink(int client)
 		}
 		ArmorDisplayClient(client);
 		char buffer[64];
-		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
+/*		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
 		{	
 			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
@@ -1383,7 +1382,7 @@ public void OnPostThink(int client)
 				}
 			}
 		}
-		else
+		else*/
 		{
 			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
 		}
@@ -1513,8 +1512,7 @@ public void OnPostThink(int client)
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
-			static int entity;
-			entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
+			int entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
 			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
@@ -2236,15 +2234,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
-#if defined ZR
-		if(StrContains(sample, "weapons/sentry_scan.wav", true) != -1)
-		{
-			if(b_SentryIsCustom[entity])
-			{
-				return Plugin_Handled;
-			}
-		}
-#endif
 		volume *= 0.4;
 		level = SNDLEVEL_NORMAL;
 		
@@ -2331,10 +2320,6 @@ public void OnWeaponSwitchPost(int client, int weapon)
 		
 		char buffer[36];
 		GetEntityClassname(weapon, buffer, sizeof(buffer));
-		
-#if defined ZR
-		Building_WeaponSwitchPost(client, weapon, buffer);
-#endif
 
 #if defined ZR
 		if(i_SemiAutoWeapon[weapon])
@@ -2431,7 +2416,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_BOARD:
 		{
-			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
+//			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
@@ -2476,7 +2461,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		}
 		case WEAPON_BOARD:
 		{
-			return Player_OnTakeDamage_Board_Hud(victim);
+//			return Player_OnTakeDamage_Board_Hud(victim);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{

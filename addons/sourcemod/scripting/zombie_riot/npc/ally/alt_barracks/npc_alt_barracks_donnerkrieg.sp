@@ -26,8 +26,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 
-#define MAX_TARGETS_HIT 10
-
 static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
 static int Ikunagae_BEAM_Laser;

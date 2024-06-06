@@ -207,7 +207,7 @@ void Freeplay_SpawnEnemy(int entity)
 		case 3:
 		{
 			bool camo = true;
-			Building_CamoOrRegrowBlocker(entity, camo);
+//			Building_CamoOrRegrowBlocker(entity, camo);
 			if(camo)
 			{
 				b_IsCamoNPC[entity] = true;

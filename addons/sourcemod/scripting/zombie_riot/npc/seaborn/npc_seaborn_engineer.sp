@@ -154,7 +154,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 
 				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
 				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
-
+/*
 				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
 				if(repair < 1)
 				{
@@ -164,7 +164,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				{
 					Building_SetBuildingRepair(npc.m_iTargetAlly, repair - 150);
 				}
-
+*/
 				npc.m_flNextThinkTime = gameTime + 0.4;
 				return;
 			}
@@ -186,6 +186,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	}
 	else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 	{
+/*
 		for(int i; i < i_MaxcountBuilding; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
@@ -213,7 +214,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				}
 			}
 		}
-
+*/
 		npc.m_flNextRangedAttack = gameTime + 10.0;
 	}
 	

@@ -603,20 +603,8 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
-		if(Item_Index != 155)
-		{
-			damage *= WeaponDamageAttributeMultipliers(weapon);
-		}
-		else
-		{
-			damage = 30.0;	
-			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
-
-#if defined ZR
-			damage *= BuildingWeaponDamageModif(1);
-			damage *= 0.5;
-#endif
-		}
+		
+		damage *= WeaponDamageAttributeMultipliers(weapon);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])

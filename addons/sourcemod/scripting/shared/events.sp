@@ -67,7 +67,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	Escape_RoundStart();
 	Waves_RoundStart();
-	Blacksmith_RoundStart();
+//	Blacksmith_RoundStart();
 #endif
 
 #if defined RPG
@@ -86,7 +86,7 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	{
 		SetMusicTimer(client, 0);
 	}
-	BuildingVoteEndResetCD();
+
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
 }
@@ -103,28 +103,6 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
-#if defined ZR
-	//Ty to Keldra#1114 on discord to pointing this out.
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{	
-		/*
-		TFTeam_Unassigned = 0,
-		TFTeam_Spectator = 1,
-		TFTeam_Red = 2,
-		TFTeam_Blue = 3
-		*/
-		int team = event.GetInt("team");
-		switch(team)
-		{
-			case 0,1,3: //either team ? kill dispenser!
-			{
-				DestroyDispenser(client);
-			}
-		}
-	}
-#endif
-
 	
 	if(event.GetBool("silent"))
 		return Plugin_Continue;
@@ -475,20 +453,6 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
-	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
-	{
-		DestroyDispenser(client);
-
-		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-		if(obj != INVALID_ENT_REFERENCE)
-			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
-	}
-	else
-	{
-		Building_Mounted[client] = 0;
-		Player_Mounting_Building[client] = false;
-		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
-	}
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())

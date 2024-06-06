@@ -83,8 +83,8 @@ public void Renable_Powerups()
 public void BalanceDropMinimum(float multi)
 {
 	f_PowerupSpawnMulti = multi;
-	if(VIPBuilding_Active())
-		f_PowerupSpawnMulti *= 4.0;
+//	if(VIPBuilding_Active())
+//		f_PowerupSpawnMulti *= 4.0;
 		
 	i_KillTheseManyMorePowerup_Nuke = RoundToCeil((f_KillTheseManyMorePowerup_base_Nuke + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));
 	i_KillTheseManyMorePowerup_Maxammo = RoundToCeil((f_KillTheseManyMorePowerup_base_Maxammo + (Waves_GetRound() * 2)) * (f_PowerupSpawnMulti));

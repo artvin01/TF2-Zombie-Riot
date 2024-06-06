@@ -427,9 +427,6 @@ bool b_AllowSelfTarget[MAXENTITIES]={false, ...};
 
 const int i_MaxcountNpcTotal = ZR_MAX_NPCS;
 int i_ObjectsNpcsTotal[ZR_MAX_NPCS];
-
-const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
-int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 bool i_IsABuilding[MAXENTITIES];
 
 bool i_NpcIsABuilding[MAXENTITIES];
@@ -629,7 +626,6 @@ bool b_HasGlassBuilder[MAXTF2PLAYERS];
 bool b_HasMechanic[MAXTF2PLAYERS];
 int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
-int Building_Hidden_Prop[MAXENTITIES][2];
 bool b_ArmorVisualiser[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
@@ -2207,7 +2203,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 
 #if defined ZR
-			char classname[36];
+/*			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
 			
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
@@ -2217,7 +2213,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
-			}
+			}*/
 #endif
 
 		}
@@ -2249,7 +2245,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			int entity = EntRefToEntIndex(Building_Mounted[client]);
 			if(IsValidEntity(entity))
 			{
-				Building_Interact(client, entity, true);
+				Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), entity);
 			}
 		}
 		else
@@ -2557,11 +2553,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 			}
 			f_DelayAttackspeedPreivous[client] = attack_speed;
 		}
-#if defined ZR
-		if(i_IsWandWeapon[weapon] != 1 && (StrContains(classname, "tf_weapon_wrench") || EntityFuncAttack[weapon] == Wrench_Hit_Repair_Replacement))
-#else
+//#if defined ZR
+//		if(i_IsWandWeapon[weapon] != 1 && (StrContains(classname, "tf_weapon_wrench") || EntityFuncAttack[weapon] == Wrench_Hit_Repair_Replacement))
+//#else
 		if(i_IsWandWeapon[weapon] != 1 && (StrContains(classname, "tf_weapon_wrench")))
-#endif
+//#endif
 		{
 			if(Panic_Attack[weapon] != 0.0 && !i_IsWrench[weapon])
 			{
@@ -2700,9 +2696,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
 		SetEntitySpike(entity, false);
-		i_WhatBuilding[entity] = 0;
 		StoreWeapon[entity] = -1;
-		b_SentryIsCustom[entity] = false;
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
@@ -2836,15 +2830,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_Damage[entity] 			= 1.0;
 #if defined ZR
 		HasMechanic[entity] = false;
-		i_BuildingRecievedHordings[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
-		view_as<BarrackBody>(entity).BonusDamageBonus = 1.0;
-		view_as<BarrackBody>(entity).BonusFireRate = 1.0;
-		Resistance_for_building_High[entity] = 0.0;
 		Armor_Charge[entity] = 0;
-		i_EntityRecievedUpgrades[entity]	 	= ZR_UNIT_UPGRADES_NONE;
-		i_EntityRecievedUpgrades_2[entity] 		= ZR_UNIT_UPGRADES_NONE;
 #endif
 
 #if defined ZR || defined RPG
@@ -2852,12 +2840,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 
 #if defined ZR
-		BarracksEntityCreated(entity);
-		OnEntityCreated_Build_On_Build(entity, classname);
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
-		Board_EntityCreated(entity);
+//		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
 		Elemental_ClearDamage(entity);
@@ -3134,19 +3120,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidieAlly = true;
 			i_IsABuilding[entity] = true;
 			b_NoKnockbackFromSources[entity] = true;
-			for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
-			{
-				if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
-				{
-					i_ObjectsBuilding[i] = EntIndexToEntRef(entity);
-					i = ZR_MAX_BUILDINGS;
-				}
-			}
-			
-#if defined ZR
-			SDKHook(entity, SDKHook_SpawnPost, Building_EntityCreatedPost);
-#endif
-			
 		}
 		/*
 		else if(!StrContains(classname, "tf_gamerules_data"))
@@ -3334,8 +3307,6 @@ public void OnEntityDestroyed(int entity)
 #if defined ZR
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
-			OnEntityDestroyed_BackPack(entity);
-			BuildingHordingsRemoval(entity);
 #endif
 			RemoveNpcThingsAgain(entity);
 #if !defined NOG
@@ -3356,9 +3327,6 @@ public void OnEntityDestroyed(int entity)
 				}
 			}
 		}
-		#if defined ZR
-		OnEntityDestroyed_Build_On_Build(entity);
-		#endif
 		NPCStats_SetFuncsToZero(entity);
 	}
 }
@@ -3535,7 +3503,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
 					
-				if(Building_Interact(client, entity, Is_Reload_Button))
+				if(Object_Interact(client, weapon, entity))
 					return true;
 				
 				//shouldnt invalidate clicking, makes battle hard.
@@ -3552,8 +3520,8 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 				
-				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
-					return true;
+//				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
+//					return true;
 				
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;

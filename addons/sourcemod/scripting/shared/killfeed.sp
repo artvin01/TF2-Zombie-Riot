@@ -211,11 +211,11 @@ static bool BuildingFullName(int entity, char[] buffer, int length)
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))
 		return false;
 
-	int index = i_WhatBuilding[entity];
-	if(index >= sizeof(BuildingName))
-		index = 0;
+	//int index = i_WhatBuilding[entity];
+	//if(index >= sizeof(BuildingName))
+	//	index = 0;
 	
-	Format(buffer, length, "%s (%N)", BuildingName[index], owner);
+	//Format(buffer, length, "%s (%N)", BuildingName[index], owner);
 	return true;
 }
 #endif

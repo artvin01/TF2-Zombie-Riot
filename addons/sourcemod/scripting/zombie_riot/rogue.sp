@@ -1564,14 +1564,14 @@ static void StartStage(const Stage stage)
 			}
 		}
 	}
-
+/*
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
-
+*/
 	if(b_LeaderSquad)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -1643,13 +1643,14 @@ static void TeleportToSpawn()
 			}
 		}
 	}
-
+/*
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
+*/
 }
 
 static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)
@@ -2108,18 +2109,6 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 							Call_Finish();
 						}
 					}
-
-					for(int a; a < i_MaxcountBuilding; a++)
-					{
-						int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-						{
-							Call_StartFunction(null, artifact.FuncAlly);
-							Call_PushCell(entity);
-							Call_PushCell(INVALID_HANDLE);
-							Call_Finish();
-						}
-					}
 				}
 			}
 
@@ -2531,7 +2520,7 @@ static void ClearStats()
 	b_SpanishSpecialisedGunpowder = false;
 	b_SupportHealHandPassive = false;
 
-	Rogue_Barracks_Reset();
+//	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 }
 
@@ -2548,7 +2537,7 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/encounter_items.sp"
 #include "roguelike/item_generic.sp"
 #include "roguelike/item_squads.sp"
-#include "roguelike/item_barracks.sp"
+//#include "roguelike/item_barracks.sp"
 #include "roguelike/item_storyteller.sp"
 #include "roguelike/item_hands.sp"
 
