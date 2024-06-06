@@ -1919,8 +1919,6 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 				cur_vec[2] -= 50.0;
 				TE_SetupBeamPoints(cur_vec, skyloc, Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
 				TE_SendToAll();
-				TE_SetupBeamPoints(cur_vec, skyloc, Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
-				TE_SendToAll();
 			}
 		}
 	}
