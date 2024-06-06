@@ -20,7 +20,7 @@ static int i_last_sniper_anchor_id_Ref[MAXENTITIES];
 
 static int g_rocket_particle;
 static char gLaser1;
-static int BeamWand_Laser;
+int Ruina_BEAM_Laser;
 //static char gGlow1;	//blue
 
 float fl_rally_timer[MAXENTITIES];
@@ -86,8 +86,6 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
-static bool Ruina_Core_BEAM_HitDetected[MAXENTITIES];
-
 enum
 {
 	RUINA_MELEE_NPC = 1,
@@ -150,7 +148,6 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_mana_sickness_timeout);
 	Zero(b_is_battery_buffed);
-	Zero(Ruina_Core_BEAM_HitDetected);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -172,7 +169,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
-	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
+	Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 }
 public void Ruina_Set_Heirarchy(int client, int type)
 {
@@ -1082,13 +1079,6 @@ enum struct Ruina_Self_Defense
 	float gameTime;
 	int status;
 
-	/*
-		Fix:
-			Something here doesn't work.
-			Npc once swinging turns away completely.
-			Doesn't deal damage. Might be due to the effect above.
-	*/
-
 	void Swing_Melee(Function OnAttack = INVALID_FUNCTION)
 	{
 		CClotBody npc = view_as<CClotBody>(this.iNPC);
@@ -1100,8 +1090,8 @@ enum struct Ruina_Self_Defense
 				npc.m_flAttackHappens = 0.0;
 				
 				Handle swingTrace;
-				float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
-				npc.FaceTowards(npc_vec, this.turn_speed);
+				float target_vec[3]; WorldSpaceCenter(this.target, target_vec);
+				npc.FaceTowards(target_vec, this.turn_speed);
 				if(npc.DoSwingTrace(swingTrace, this.target)) 
 				{				
 					int new_target = TR_GetEntityIndex(swingTrace);	
@@ -1344,7 +1334,7 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 			float Loc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
 			Loc[2]+=75.0;
-			int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
+			int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
 			if(IsValidEntity(entity))
 			{
 				Ruina_AttachParticle(entity, "spell_cast_wheel_red", 2.4, "nozzle");
@@ -1403,7 +1393,7 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 		b_ruina_allow_teleport[npc.index]=false;
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		spawnRing_Vectors(npc_Loc, 2.0*250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 30, 230, 226, 200, 1, 0.5, 6.0, 0.1, 1, 1.0);
-		int entity = Ruina_Create_Entity_Spesific(Loc, _ , 2.45);
+		int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))
 		{
 			Ruina_AttachParticle(entity, "spell_cast_wheel_blue", 2.4, "nozzle");
@@ -1904,24 +1894,15 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 								fl_ion_attack_sound_delay[ion] = 0.0;
 								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
 							}
-							/*int health = GetClientHealth(client);
-							health -= RoundToFloor(fake_damage);	//FUCKING TAKE DAMAGE GOD DAMMIT
-							if((health) < 1)
-							{
-								health = 1;
-							}
-					
-							SetEntityHealth(client, health); // Self dmg
-							
-							CPrintToChatAll("hit %N with %f dmg", client, fake_damage);*/
+
 							SDKHooks_TakeDamage(client, 0, 0, fake_damage, DMG_CLUB, _, _, cur_vec);
 						}
 					}
 				}
 				cur_vec[2] -= 50.0;
-				TE_SetupBeamPoints(cur_vec, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+				TE_SetupBeamPoints(cur_vec, skyloc, Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
 				TE_SendToAll();
-				TE_SetupBeamPoints(cur_vec, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+				TE_SetupBeamPoints(cur_vec, skyloc, Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
 				TE_SendToAll();
 			}
 		}
@@ -1988,7 +1969,7 @@ static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int
 					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc);
 					
 					float skyloc[3]; skyloc = EndLoc; skyloc[2] += 3000.0; EndLoc[2] -= 50.0;
-					TE_SetupBeamPoints(EndLoc, skyloc, BeamWand_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
+					TE_SetupBeamPoints(EndLoc, skyloc, Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
 					TE_SendToAll();
 					
 					EndLoc[2] += 50.0;
@@ -2107,7 +2088,7 @@ static int Ruina_AttachParticle(int entity, char type[255], float duration = 0.0
 	return -1;
 }
 
-static int Ruina_Create_Entity_Spesific(float Loc[3], int old_particle=-1, float time=0.0)
+static int Ruina_Create_Entity_Specific(float Loc[3], int old_particle=-1, float time=0.0)
 {
 	if(!IsValidEntity(old_particle))
 	{
@@ -2154,46 +2135,143 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 		return -1;
 	}
 }
-public bool Ruina_BEAM_TraceWallsOnly(int entity, int contentsMask)
+
+static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
+enum struct Ruian_Laser_Logic
+{
+	int client;
+	float Start_Point[3];
+	float End_Point[3];
+	float Radius;
+	float Damage;
+	float Bonus_Damage;
+	int damagetype;
+
+	bool trace_hit;
+	bool trace_hit_enemy;
+
+	void DoForwardTrace_Basic(float Dist=-1.0)
+	{
+		float Angles[3], startPoint[3], Loc[3];
+		WorldSpaceCenter(this.client, startPoint);
+		GetEntPropVector(this.client, Prop_Data, "m_angRotation", Angles);
+		CClotBody npc = view_as<CClotBody>(this.client);
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+				
+		float flPitch = npc.GetPoseParameter(iPitch);
+		flPitch *= -1.0;
+		Angles[0] = flPitch;
+
+		Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, Ruina_Laser_BEAM_TraceWallsOnly);
+
+		if (TR_DidHit(trace))
+		{
+			TR_GetEndPosition(Loc, trace);
+			delete trace;
+
+
+			if(Dist !=-1.0)
+			{
+				ConformLineDistance(Loc, startPoint, Loc, Dist);
+			}
+			this.Start_Point = startPoint;
+			this.End_Point = Loc;
+			this.trace_hit=true;
+		}
+		else
+		{
+			delete trace;
+		}
+	}
+	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0)
+	{
+		float Loc[3];
+		Handle trace = TR_TraceRayFilterEx(startPoint, Angles, 11, RayType_Infinite, Ruina_Laser_BEAM_TraceWallsOnly);
+		if (TR_DidHit(trace))
+		{
+			TR_GetEndPosition(Loc, trace);
+			delete trace;
+
+
+			if(Dist !=-1.0)
+			{
+				ConformLineDistance(Loc, startPoint, Loc, Dist);
+			}
+			this.Start_Point = startPoint;
+			this.End_Point = Loc;
+			this.trace_hit=true;
+		}
+		else
+		{
+			delete trace;
+		}
+	}
+
+	void Deal_Damage(Function Attack_Function = INVALID_FUNCTION)
+	{
+
+		Zero(Ruina_Laser_BEAM_HitDetected);
+
+		float hullMin[3], hullMax[3];
+		hullMin[0] = -this.Radius;
+		hullMin[1] = hullMin[0];
+		hullMin[2] = hullMin[0];
+		hullMax[0] = -hullMin[0];
+		hullMax[1] = -hullMin[1];
+		hullMax[2] = -hullMin[2];
+
+		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Ruina_Laser_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
+		delete trace;
+
+				
+		for (int loop = 0; loop < MAXENTITIES; loop++)
+		{
+			int victim = Ruina_Laser_BEAM_HitDetected[loop];
+			if (victim && GetTeam(this.client) != GetTeam(victim))
+			{
+
+				
+				this.trace_hit_enemy=true;
+
+				float playerPos[3];
+				WorldSpaceCenter(victim, playerPos);
+
+				if(ShouldNpcDealBonusDamage(victim))
+					SDKHooks_TakeDamage(victim, this.client, this.client, this.Bonus_Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
+				else
+					SDKHooks_TakeDamage(victim, this.client, this.client, this.Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
+				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
+				{	
+					Call_StartFunction(null, Attack_Function);
+					Call_PushCell(this.client);
+					Call_PushCell(victim);
+					Call_PushCell(this.damagetype);
+					Call_PushFloat(this.Damage);
+					Call_Finish();			
+				}
+			}
+		}
+	}
+}
+
+static bool Ruina_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
-stock void Do_Laz_Laser_Effects(int client, int color[4], float size[2], float time, float Dist, float amp, float End_Loc[3])
+static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 {
-	float Npc_Loc[3], flAng[3];
-	WorldSpaceCenter(client, Npc_Loc);
-	GetEntPropVector(client, Prop_Data, "m_angRotation", flAng);
-
-	CClotBody npc = view_as<CClotBody>(client);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-			
-	float flPitch = npc.GetPoseParameter(iPitch);
-	flPitch *= -1.0;
-	flAng[0] = flPitch;
-
-	Handle trace = TR_TraceRayFilterEx(Npc_Loc, flAng, 11, RayType_Infinite, Ruina_BEAM_TraceWallsOnly);
-	if (TR_DidHit(trace))
+	if (IsEntityAlive(entity))
 	{
-		TR_GetEndPosition(End_Loc, trace);
-		delete trace;
-
-		float distance = GetVectorDistance(Npc_Loc, End_Loc);
-
-		if(distance>Dist && Dist !=-1.0)
+		for(int i=0 ; i < MAXENTITIES ; i++)
 		{
-			Get_Fake_Forward_Vec(Dist, flAng, End_Loc, Npc_Loc);
+			if(!Ruina_Laser_BEAM_HitDetected[i])
+			{
+				Ruina_Laser_BEAM_HitDetected[i] = entity;
+				break;
+			}
 		}
 	}
-	else
-	{
-		delete trace;
-	}
-	
-	float flPos[3]; // original
-	GetAttachment(client, "effect_hand_r", flPos, flAng);
-
-	TE_SetupBeamPoints(flPos, End_Loc, BeamWand_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
-	TE_SendToAll();
+	return false;
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
@@ -2202,47 +2280,6 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
-}
-stock void Ruina_Laser_Damage_Trace(int client, float Start_Point[3], float End_Point[3], float Radius, float dps, float Bonus_dmg = 5.0)
-{
-
-	for (int i = 1; i < MAXENTITIES; i++)
-	{
-		Ruina_Core_BEAM_HitDetected[i] = false;
-	}
-
-	float hullMin[3], hullMax[3];
-	hullMin[0] = -Radius;
-	hullMin[1] = hullMin[0];
-	hullMin[2] = hullMin[0];
-	hullMax[0] = -hullMin[0];
-	hullMax[1] = -hullMin[1];
-	hullMax[2] = -hullMin[2];
-	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Ruina_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-	delete trace;
-			
-	for (int victim = 1; victim < MAXENTITIES; victim++)
-	{
-		if (Ruina_Core_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-		{
-			float Dmg = dps;
-
-			if(ShouldNpcDealBonusDamage(victim))
-			{
-				Dmg *= Bonus_dmg;
-			}
-			float Vic_Vec[3]; WorldSpaceCenter(victim, Vic_Vec);
-			SDKHooks_TakeDamage(victim, client, client, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Vic_Vec);
-		}
-	}
-}
-public bool Ruina_BEAM_TraceUsers(int entity, int contentsMask, int client)
-{
-	if (IsEntityAlive(entity))
-	{
-		Ruina_Core_BEAM_HitDetected[entity] = true;
-	}
-	return false;
 }
 /*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
 {

@@ -324,8 +324,17 @@ static void ClotThink(int iNPC)
 				npc.PlayMeleeSound();
 				
 			}
-			float EndLoc[3];
-			Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp, EndLoc);	//reuse the location since Laziusy to do another trace.
+
+			Ruian_Laser_Logic Laser;
+
+			Laser.client = npc.index;
+			Laser.DoForwardTrace_Basic(975.0);
+
+			float flPos[3], flAng[3]; // original
+			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+
+			TE_SetupBeamPoints(flPos, Laser.End_Point, Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
+			TE_SendToAll();
 
 			if(attack)
 			{
@@ -333,7 +342,12 @@ static void ClotThink(int iNPC)
 				WorldSpaceCenter(npc.index, Npc_Loc);
 				float dmg = 50.0;
 				float radius = 25.0;
-				Ruina_Laser_Damage_Trace(npc.index, Npc_Loc, EndLoc, radius, dmg, 6.0);
+
+				Laser.Radius = radius;
+				Laser.Damage = dmg;
+				Laser.Bonus_Damage = dmg*6.0;
+
+				Laser.Deal_Damage();
 			}
 		}
 		else

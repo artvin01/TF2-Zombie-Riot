@@ -57,7 +57,7 @@ void Dronian_OnMapStart_NPC()
 	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Dronian");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dronian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_dronian");
 	data.Category = -1;
 	data.Func = ClotSummon;
 	NPC_Add(data);
