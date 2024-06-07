@@ -2617,6 +2617,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Is_Reload_Button)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							
 							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
 								switch(i_CustomWeaponEquipLogic[weapon])

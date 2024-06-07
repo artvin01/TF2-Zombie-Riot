@@ -5216,8 +5216,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
-							SetAmmo(client, 29, 99999);
-							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 29);
+							//This allows perma switching to all weapons, even if you have 0 ammo.
+							SetAmmo(client, 30, 99999);
+							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
 					}
 					

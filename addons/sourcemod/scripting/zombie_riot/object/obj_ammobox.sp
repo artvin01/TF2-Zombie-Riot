@@ -51,7 +51,7 @@ static void ClotThink(ObjectAmmobox npc)
 			if(npc.m_flAttackHappens > 999999.9)
 			{
 				npc.SetActivity("Open", true);
-				npc.SetPlaybackRate(0.5);
+				npc.SetPlaybackRate(0.5);	
 				npc.m_flAttackHappens = gameTime + 1.4;
 			}
 			if(npc.m_flAttackHappens < gameTime)
