@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-float f_CheckWeaponDelay[MAXTF2PLAYERS];
-bool b_LastWeaponCheckBias[MAXTF2PLAYERS];
 
 void ObjectHealingStation_MapStart()
 {
@@ -17,8 +15,6 @@ void ObjectHealingStation_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
-	Zero(b_LastWeaponCheckBias);
-	Zero(f_CheckWeaponDelay);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -44,15 +40,7 @@ static bool ClotCanUse(ObjectHealingStation npc, int client)
 {
 	if(Building_Collect_Cooldown[npc.index][client] > GetGameTime())
 		return false;
-
-	if(!Pap_WeaponCheck(client))
-		return false;
-	
-	bool started = Waves_Started();
-	if(started || Rogue_Mode() || CvarNoRoundStart.BoolValue)
-	{
-		return true;
-	}
+		
 	return false;
 }
 

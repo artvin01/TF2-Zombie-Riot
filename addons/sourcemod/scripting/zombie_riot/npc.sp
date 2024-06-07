@@ -61,6 +61,11 @@ void NPC_ConfigSetup()
 	// Buildings
 	ObjectBarricade_MapStart();
 	ObjectAmmobox_MapStart();
+	ObjectDecorative_MapStart();
+	ObjectArmorTable_MapStart();
+	ObjectPerkMachine_MapStart();
+	ObjectPackAPunch_MapStart();
+	ObjectHealingStation_MapStart();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -742,6 +747,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 //BUILDINGS
 #include "zombie_riot/object/obj_shared.sp"
+#include "zombie_riot/object/obj_armortable.sp"
+#include "zombie_riot/object/obj_decorative.sp"
+#include "zombie_riot/object/obj_perkmachine.sp"
+#include "zombie_riot/object/obj_healingstation.sp"
+#include "zombie_riot/object/obj_packapunch.sp"
 #include "zombie_riot/object/obj_barricade.sp"
 #include "zombie_riot/object/obj_ammobox.sp"
 
