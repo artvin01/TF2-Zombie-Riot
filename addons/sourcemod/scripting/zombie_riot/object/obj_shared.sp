@@ -30,6 +30,8 @@ static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
+int i_MachineJustClickedOn[MAXTF2PLAYERS];
+
 
 methodmap ObjectGeneric < CClotBody
 {
@@ -41,8 +43,10 @@ methodmap ObjectGeneric < CClotBody
 	{
 		ObjectGeneric npc = view_as<ObjectGeneric>(CClotBody(vecPos, vecAng, model, modelscale, basehealth, TFTeam_Red, false, false, _, _, CustomThreeDimensions, true));
 		
+		b_AllowCollideWithSelfTeam[npc.index] = true;
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
+		i_IsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
 		Building_Max_Health[npc.index] = StringToInt(basehealth);
@@ -189,6 +193,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 	}
 	else
 	{
+		// Update max health if attributes changed on the player
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		int expected = RoundFloat(Building_Max_Health[npc.index] * GetMaxHealthMulti(owner));

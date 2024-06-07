@@ -25,7 +25,7 @@ methodmap ObjectArmorTable < ObjectGeneric
 {
 	public ObjectArmorTable(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectArmorTable npc = view_as<ObjectArmorTable>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/table_01.mdl"));
+		ObjectArmorTable npc = view_as<ObjectArmorTable>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/table_01.mdl", _, "500",{20.0, 20.0, 35.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -68,9 +68,9 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 
 	Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 1.0);
 
+	bool GiveArmor = true;
 	if(Armor_Charge[client] < Armor_Max)
 	{
-		bool GiveArmor = true;
 		if(RaidbossIgnoreBuildingsLogic(0))
 		{
 			if(i_MaxArmorTableUsed[client] < RAID_MAX_ARMOR_TABLE_USE)
@@ -86,9 +86,11 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
+	GiveArmorViaPercentage(client, 0.2, 1.0);
+	ApplyBuildingCollectCooldown(npc.index, client, 45.0);
 	ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
 	float pos[3];
-	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 	pos[2] += 45.0;
 
 	ParticleEffectAt(pos, "halloween_boss_axe_hit_sparks", 1.0);

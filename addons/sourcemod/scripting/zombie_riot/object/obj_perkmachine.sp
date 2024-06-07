@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+float Perk_Machine_Sickness[MAXTF2PLAYERS];
 void ObjectPerkMachine_MapStart()
 {
 	PrecacheModel("models/props_farm/welding_machine01.mdl");
@@ -14,6 +15,7 @@ void ObjectPerkMachine_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+	Zero(Perk_Machine_Sickness);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -25,7 +27,7 @@ methodmap ObjectPerkMachine < ObjectGeneric
 {
 	public ObjectPerkMachine(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/welding_machine01.mdl"));
+		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/welding_machine01.mdl",_, "500",{20.0, 20.0, 65.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -98,8 +100,7 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 	return true;
 }
 
-						
-public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
+static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -234,7 +235,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	return 0;
 }
 
-public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
+static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);

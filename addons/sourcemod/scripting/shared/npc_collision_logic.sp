@@ -56,6 +56,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return true;
 		}
+		if(extrarules == 0 && b_AllowCollideWithSelfTeam[bot_entidx])
+		{
+			return true;
+		}
 		return false;
 	}
 	//the collided index is a player.

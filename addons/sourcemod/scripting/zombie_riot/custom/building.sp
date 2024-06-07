@@ -1550,39 +1550,6 @@ bool AllowBuildingCurrently()
 	
 	return true;
 }
-public void Pickup_Building_M2(int client, int weapon, bool crit)
-{
-		int entity = GetClientPointVisible(client, _ , true, true,_,1);
-		if(entity > MaxClients)
-		{
-			if (IsValidEntity(entity))
-			{
-				static char buffer[64];
-				if(GetEntityClassname(entity, buffer, sizeof(buffer)))
-				{
-					if(!StrContains(buffer, "obj_"))
-					{
-						if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-						{
-							if(b_Doing_Buildingpickup_Handle[client])
-							{
-								delete h_Pickup_Building[client];
-							}
-							b_Doing_Buildingpickup_Handle[client] = true;
-							DataPack pack;
-							h_Pickup_Building[client] = CreateDataTimer(b_ThisEntityIgnored[entity] ? 0.0 : 1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(client);
-							pack.WriteCell(EntIndexToEntRef(entity));
-							pack.WriteCell(GetClientUserId(client));
-							f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
-							SetGlobalTransTarget(client);
-							PrintCenterText(client, "%t", "Picking Up Building");
-						}
-					}
-				}
-			}
-		}
-}
 		
 //This function ONLY exists, beacuse for some reason, the 64bit update started to crash people if they have the classname called tf_weapon_wrench
 //i have no idea why, i hate this update.

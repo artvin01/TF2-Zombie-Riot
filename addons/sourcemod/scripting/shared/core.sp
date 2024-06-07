@@ -424,6 +424,7 @@ bool b_DoNotIgnoreDuringLagCompAlly[MAXENTITIES]={false, ...};
 
 bool b_NpcIsTeamkiller[MAXENTITIES]={false, ...};
 bool b_AllowSelfTarget[MAXENTITIES]={false, ...};
+bool b_AllowCollideWithSelfTeam[MAXENTITIES]={false, ...};
 
 const int i_MaxcountNpcTotal = ZR_MAX_NPCS;
 int i_ObjectsNpcsTotal[ZR_MAX_NPCS];
@@ -2203,17 +2204,17 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			}
 
 #if defined ZR
-/*			char classname[36];
+			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
 			
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
-				if(EntityFuncAttack2[weapon_holding] != MountBuildingToBack && TeutonType[client] == TEUTON_NONE)
+				if(/*EntityFuncAttack2[weapon_holding] != MountBuildingToBack && */TeutonType[client] == TEUTON_NONE)
 				{
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
-			}*/
+			}
 #endif
 
 		}
@@ -2673,6 +2674,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 	
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
+		b_AllowCollideWithSelfTeam[entity] = false;
 		func_NPCDeath[entity] = INVALID_FUNCTION;
 		func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
 		func_NPCThink[entity] = INVALID_FUNCTION;

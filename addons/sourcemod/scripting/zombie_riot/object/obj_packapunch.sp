@@ -6,11 +6,11 @@ bool b_LastWeaponCheckBias[MAXTF2PLAYERS];
 
 void ObjectPackAPunch_MapStart()
 {
-	PrecacheModel("models/props_farm/welding_machine01.mdl");
+	PrecacheModel("models/props_spytech/computer_low.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Perk Machine");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_perkmachine");
+	strcopy(data.Name, sizeof(data.Name), "Pack a Punch");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_packapunch");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -30,7 +30,7 @@ methodmap ObjectPackAPunch < ObjectGeneric
 {
 	public ObjectPackAPunch(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectPackAPunch npc = view_as<ObjectPackAPunch>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/welding_machine01.mdl"));
+		ObjectPackAPunch npc = view_as<ObjectPackAPunch>(ObjectGeneric(client, vecPos, vecAng, "models/props_spytech/computer_low.mdl", _, "500",{25.0, 25.0, 65.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -65,6 +65,9 @@ bool Pap_WeaponCheck(int client, bool force = false)
 	f_CheckWeaponDelay[client] = GetGameTime() + 0.25;
 
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == -1)
+		return false;
+	
 	b_LastWeaponCheckBias[client] = Store_CanPapItem(client, StoreWeapon[weapon]);
 	return b_LastWeaponCheckBias[client];
 }
@@ -85,13 +88,11 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	return true;
 }
-
-						
-public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
+/*
+static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)
 	{
@@ -226,7 +227,7 @@ public int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 	return 0;
 }
 
-public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
+static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
@@ -264,3 +265,4 @@ public void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	Store_GiveAll(client, GetClientHealth(client));	
 	Barracks_UpdateAllEntityUpgrades(client);
 }
+*/

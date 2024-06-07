@@ -1,5 +1,180 @@
 #pragma semicolon 1
 #pragma newdecls required
+
+void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bool first_barracks = false)
+{
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		if(IsValidEntity(i) && (i_IsABuilding[i] || !b_NpcHasDied[i])) //This isnt expensive.
+		{
+/*			BarrackBody npc = view_as<BarrackBody>(i);
+			if(GetClientOfUserId(npc.OwnerUserId) == client && !b_NpcHasDied[i])
+			{
+				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
+			}
+			else */
+			if(i_IsABuilding[i] && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client)
+			{
+				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
+			}
+		}
+	}
+}
+
+void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
+{
+	/*
+	if(i_IsABuilding[entity] && b_NpcHasDied[entity])
+	{
+		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
+		{
+			GlassBuilder[entity] = true;
+			SetBuildingMaxHealth(entity, 0.25, false, true,true);
+		}
+		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
+		{
+			GlassBuilder[entity] = false;
+			if(firstbuild)
+				SetBuildingMaxHealth(entity, 0.25, true, true ,true);
+			else
+				SetBuildingMaxHealth(entity, 0.25, true, _ ,true);
+
+		}
+		if(!HasMechanic[entity] && b_HasMechanic[client])
+		{
+			HasMechanic[entity] = true;
+
+			if(firstbuild)
+				SetBuildingMaxHealth(entity, 1.15, false, true);
+			else
+				SetBuildingMaxHealth(entity, 1.15, false);
+
+		}
+		if(HasMechanic[entity] && !b_HasMechanic[client])
+		{
+			HasMechanic[entity] = false;
+			SetBuildingMaxHealth(entity, 1.15, true, false);
+		}
+		if(i_WhatBuilding[entity] == BuildingSummoner)
+		{
+			
+			float healthMult = 1.0;
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER) && !(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_TOWER))
+			{
+				healthMult *= 1.3;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
+				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
+				
+				if(IsValidEntity(prop1))
+				{
+					SetEntityModel(prop1, "models/props_manor/clocktower_01.mdl");
+					//"0.65" default
+					SetEntPropFloat(prop1, Prop_Send, "m_flModelScale", 0.11); 
+				}
+			}
+
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
+			{
+				healthMult *= 1.15;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_GUARD_TOWER;
+			}
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER)))
+			{
+				healthMult *= 1.15;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER;
+			}
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER)))
+			{
+				healthMult *= 1.15;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER;
+			}
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)&& (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_DONJON)))
+			{
+				healthMult *= 1.3;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_DONJON;
+			}
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_KREPOST) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_KREPOST)))
+			{
+				healthMult *= 1.4;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_KREPOST;
+			}
+			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CASTLE) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_CASTLE)))
+			{
+				healthMult *= 1.6;
+				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_CASTLE;
+			}
+			if(healthMult > 1.0)
+			{
+				SetBuildingMaxHealth(entity, healthMult, false, true);
+			}
+		}
+	}
+	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
+	{
+		if(!FinalBuilder[entity] && FinalBuilder[client])
+		{
+			FinalBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.35;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.8;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.35));
+		}
+		if(FinalBuilder[entity] && !FinalBuilder[client])
+		{
+			FinalBuilder[entity] = false;
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.35;			
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.8;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.35));
+		}
+		if(!GlassBuilder[entity] && GlassBuilder[client])
+		{
+			GlassBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.8));
+		}
+		if(GlassBuilder[entity] && !GlassBuilder[client])
+		{
+			GlassBuilder[entity] = false;
+			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 0.8));
+		}
+
+		//double tap
+		if(i_CurrentEquippedPerk[entity] != 3 && i_CurrentEquippedPerk[client] == 3)
+		{
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
+		}
+		if(i_CurrentEquippedPerk[entity] == 3 && i_CurrentEquippedPerk[client] != 3)
+		{
+			view_as<BarrackBody>(entity).BonusFireRate /= 0.85;
+		}
+		//juggernog
+		if(i_CurrentEquippedPerk[entity] != 2 && i_CurrentEquippedPerk[client] == 2)
+		{
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
+
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
+		}
+		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
+		{
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
+		}
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
+		{
+			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
+			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.1));
+		}
+		i_CurrentEquippedPerk[entity] = i_CurrentEquippedPerk[client];
+	}*/
+}
 	
 void Building_ShowInteractionHud(int client, int entity)
 {
@@ -80,4 +255,80 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 	{
 		Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
 	}
+}
+
+
+static int Building_BuildingBeingCarried[MAXENTITIES];
+static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
+float f3_Building_KnockbackToTake[MAXENTITIES][3];
+
+public void Pickup_Building_M2(int client, int weapon, bool crit)
+{
+	PrintToChatAll("fail1");
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
+	{
+		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
+		Player_BuildingBeingCarried[client] = 0;
+		return;
+	}
+	PrintToChatAll("fail2");
+	int entity = GetClientPointVisible(client, _ , false, false,_,1);
+	PrintToChatAll("%i",entity);
+	if(entity < MaxClients)
+		return;
+	PrintToChatAll("fail3");
+
+	if (!IsValidEntity(entity))
+		return;
+	PrintToChatAll("fail4");
+
+	if (!i_IsABuilding[entity])
+		return;
+	PrintToChatAll("fail5");
+
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+		return;
+	PrintToChatAll("fail6");
+
+	SDKUnhook(entity, SDKHook_Think, BuildingPickUp);
+	SDKHook(entity, SDKHook_Think, BuildingPickUp);
+	Building_BuildingBeingCarried[entity] = EntIndexToEntRef(client);
+	Player_BuildingBeingCarried[client] = EntIndexToEntRef(entity);
+}
+
+#define BUILDING_DISTANCE_GRAB 50.0
+void BuildingPickUp(int BuildingNPC)
+{
+	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
+	if(!IsValidClient(client))
+	{
+		SDKUnhook(BuildingNPC, SDKHook_Think, BuildingPickUp);
+		return;
+	}
+	float vecView[3];
+	float vecFwd[3];
+	float vecPos[3];
+	float vecVel[3];
+
+	GetClientEyeAngles(client, vecView);
+	GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+	GetClientEyePosition(client, vecPos);
+
+	vecPos[0]+=vecFwd[0]* BUILDING_DISTANCE_GRAB;
+	vecPos[1]+=vecFwd[1]* BUILDING_DISTANCE_GRAB;
+	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
+
+	GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", vecFwd);
+
+	SubtractVectors(vecPos, vecFwd, vecVel);
+	ScaleVector(vecVel, 5.0);
+	for(int i; i < 3; i++)
+	{
+		f3_Building_KnockbackToTake[BuildingNPC][i] = vecVel[i];
+	}
+	
+	CBaseCombatCharacter npc = view_as<CBaseCombatCharacter>(BuildingNPC);
+	npc.MyNextBotPointer().GetLocomotionInterface().Jump();
+	CBaseNPC baseNPC = TheNPCs.FindNPCByEntIndex(BuildingNPC);
+	baseNPC.GetLocomotion().SetVelocity(f3_Building_KnockbackToTake[BuildingNPC]);
 }
