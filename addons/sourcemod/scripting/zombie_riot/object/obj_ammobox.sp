@@ -48,6 +48,12 @@ static void ClotThink(ObjectAmmobox npc)
 		{
 			float gameTime = GetGameTime(npc.index);
 
+			if(npc.m_flAttackHappens > 999999.9)
+			{
+				npc.SetActivity("Open", true);
+				npc.SetPlaybackRate(0.5);
+				npc.m_flAttackHappens = gameTime + 1.4;
+			}
 			if(npc.m_flAttackHappens < gameTime)
 			{
 				npc.SetActivity("Close", true);
@@ -82,10 +88,14 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 		ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 		ApplyBuildingCollectCooldown(npc.index, client, 5.0, true);
+		
+		//Trying to apply animations outside of clot think can fail to work.
 
-		npc.SetActivity("Open", true);
-		npc.SetPlaybackRate(0.5);
-		npc.m_flAttackHappens = GetGameTime(npc.index) + 1.4;
+
+	//	npc.SetActivity("Open", true);
+	//	npc.SetPlaybackRate(0.5);
+	//	npc.m_flAttackHappens = GetGameTime(npc.index) + 1.4;
+		npc.m_flAttackHappens = GetGameTime(npc.index) + 999999.4;
 	}
 	else
 	{
