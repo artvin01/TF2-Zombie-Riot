@@ -84,6 +84,7 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 		return true;
 	}
 	int owner;
+	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	return true;
