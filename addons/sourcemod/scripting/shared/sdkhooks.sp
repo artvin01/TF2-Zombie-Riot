@@ -1165,6 +1165,12 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "T%s", bufferbuffs);
 		}
+		float dummyNumber;
+		if(RPG_BobsPureRage(client, -1, dummyNumber))
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "RA%s", bufferbuffs);
+		}
 		if(WarCry_Enabled(client))
 		{
 			had_An_ability = true;

@@ -583,8 +583,14 @@ int Stats_Endurance(int client, int &base = 0, int &bonus = 0, float &multirace 
 		if(RPGStats_WeaponActiveNeeded(client, entity))
 			bonus += Endurance[entity];
 	}
+	int returnnumber = (bonus + RoundFloat(base * multirace * multiform));
+	float dummyNumber;
+	if(RPG_BobsPureRage(client, -1, dummyNumber))
+	{
+		returnnumber = RoundToNearest(float(returnnumber) * 1.35);
+	}
 
-	return bonus + RoundFloat(base * multirace * multiform);
+	return returnnumber;
 }
 
 int Stats_Structure(int client, int &base = 0, int &bonus = 0, float &multirace = 0.0, float &multiform = 0.0)
