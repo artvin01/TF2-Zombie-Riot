@@ -180,6 +180,7 @@ enum
 
 enum
 {
+	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,

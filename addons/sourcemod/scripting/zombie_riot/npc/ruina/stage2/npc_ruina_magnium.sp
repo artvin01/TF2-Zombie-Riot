@@ -54,6 +54,19 @@ static char g_TeleportSounds[][] = {
 void Magnium_OnMapStart_NPC()
 {
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magnium");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magnium");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -64,13 +77,6 @@ void Magnium_OnMapStart_NPC()
 	PrecacheSoundArray(g_TeleportSounds);
 
 	PrecacheModel("models/player/medic.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Magnium");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magnium");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -332,6 +338,7 @@ static void ClotThink(int iNPC)
 				if (!npc.m_flAttackHappenswillhappen)
 				{
 					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
+
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
@@ -346,20 +353,41 @@ static void ClotThink(int iNPC)
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-					Ruina_Launch_ICBM ICBM;
+					Ruina_Projectiles Projectile;
 
-					ICBM.iNPC = npc.index;
-					ICBM.Start_Loc = flPos;
+					Projectile.iNPC = npc.index;
+					Projectile.Start_Loc = flPos;
 					float Ang[3];
 					MakeVectorFromPoints(flPos, target_vec, Ang);
 					GetVectorAngles(Ang, Ang);
-					ICBM.Angles = Ang;
-					ICBM.speed = 1000.0;
-					ICBM.radius = 300.0;
-					ICBM.damage = 500.0;
-					ICBM.bonus_dmg = 2.5;
-					ICBM.Time = 10.0;
-					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
+					Projectile.Angles = Ang;
+					Projectile.speed = 1000.0;
+					Projectile.radius = 300.0;
+					Projectile.damage = 500.0;
+					Projectile.bonus_dmg = 2.5;
+					Projectile.Time = 10.0;
+					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);
+					
+
+					if(IsValidEntity(Proj))
+					{
+						Projectile.Apply_Particle("raygun_projectile_blue");
+
+						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS);
+						if(IsValidEntity(ModelApply))
+						{
+							float angles[3];
+							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+							angles[1]+=90.0;
+							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+							SetVariantInt(4);
+							AcceptEntityInput(ModelApply, "SetBodyGroup");
+						}
+					}
+					
+
+					
+					
 		
 					//npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						
@@ -385,9 +413,20 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
-static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
+static void Func_On_Proj_Touch(int projectile, int other)
 {
-	
+	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+	{
+		owner = 0;
+	}
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	Explode_Logic_Custom(fl_ruina_Projectile_dmg[projectile] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[projectile] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[projectile]);
+
+	Ruina_Remove_Projectile(projectile);
 }
 
 static int i_particle[MAXENTITIES][11];

@@ -878,14 +878,14 @@ public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIn
 		npc.StartPathing();
 	}
 }
-static Function func_Ruina_ICBM_Explode[MAXENTITIES];
-static int i_ICBM_Particle[MAXENTITIES];
-static float fl_ICBM_dmg[MAXENTITIES];
-static float fl_ICBM_radius[MAXENTITIES];
-static float fl_ICBM_bonus_dmg[MAXENTITIES];
+int i_ruina_Projectile_Particle[MAXENTITIES];
+float fl_ruina_Projectile_dmg[MAXENTITIES];
+float fl_ruina_Projectile_radius[MAXENTITIES];
+float fl_ruina_Projectile_bonus_dmg[MAXENTITIES];
+Function Func_Ruina_Proj_Touch[MAXENTITIES];
 
 /*
-	Ruina_Launch_ICBM ICBM;
+	Ruina_Projectiles ICBM;
 
 					ICBM.iNPC = npc.index;
 					ICBM.Start_Loc = flPos;
@@ -900,51 +900,44 @@ static float fl_ICBM_bonus_dmg[MAXENTITIES];
 					ICBM.bonus_dmg = 2.5;
 					ICBM.Time = 10.0;
 					ICBM.visible = false;
-					ICBM.custom = false;
-					ICBM.Launch_ICBM(Func_On_ICBM_Boom);
+					ICBM.Launch_ICBM(Func_On_Projectile_Boom);
 
-	static void Func_On_ICBM_Boom(int projectile, float damage, float radius, float Loc[3])
+	static void Func_On_Projectile_Boom(int projectile, float damage, float radius, float Loc[3])
 {
 	CPrintToChatAll("Kaboom!");
 }
 */
-enum struct Ruina_Launch_ICBM
+enum struct Ruina_Projectiles
 {
-	int iNPC;
-	float Start_Loc[3];
-	float Angles[3];
-	int color[4];
-	float speed;
-	float radius;
-	float damage;
-	float bonus_dmg;
-	float Time;
-	bool visible;
-	char rocket_particle[255];
-	bool custom;
-	int Launch_ICBM(Function OnAttack = INVALID_FUNCTION)
+	int iNPC;				//index of the one spawning this.
+	float Start_Loc[3];		//
+	float Angles[3];		//
+	int color[4];			//affects the colour of the model
+	float speed;			//
+	float radius;			//
+	float damage;			//self explanitory
+	float bonus_dmg;		//what dmg to deal if it hits an enemy thats meant to take bonus dmg
+	float Time;				//how long it exists before being deleted
+	bool visible;			//Make model invis?
+
+	int Projectile_Index;
+
+	int Launch_Projectile(Function Custom_Projectile_Touch)
 	{	
-		float vecForward[3];
-		vecForward[0] = Cosine(DegToRad(this.Angles[0]))*Cosine(DegToRad(this.Angles[1]))*this.speed;
-		vecForward[1] = Cosine(DegToRad(this.Angles[0]))*Sine(DegToRad(this.Angles[1]))*this.speed;
-		vecForward[2] = Sine(DegToRad(this.Angles[0]))*-this.speed;
+		float Velocity[3];
+
+		this.Velocity(Velocity);
 
 		int entity = CreateEntityByName("zr_projectile_base");
 		if(IsValidEntity(entity))
 		{
-			if(OnAttack && OnAttack != INVALID_FUNCTION)
-			{
-				func_Ruina_ICBM_Explode[entity] = OnAttack;
-			}
-			else
-			{
-				func_Ruina_ICBM_Explode[entity] = INVALID_FUNCTION;
-			}
-			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", vecForward);
+			this.Projectile_Index = entity;
+			SetEntPropVector(entity, Prop_Send, "m_vInitialVelocity", Velocity);
 
-			fl_ICBM_dmg[entity] = this.damage;
-			fl_ICBM_radius[entity] = this.radius;
-			fl_ICBM_bonus_dmg[entity] = this.bonus_dmg;
+			fl_ruina_Projectile_dmg[entity] = this.damage;
+			fl_ruina_Projectile_radius[entity] = this.radius;
+			fl_ruina_Projectile_bonus_dmg[entity] = this.bonus_dmg;
+			Func_Ruina_Proj_Touch[entity] = Custom_Projectile_Touch;
 			
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", this.iNPC);
 			SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
@@ -967,95 +960,110 @@ enum struct Ruina_Launch_ICBM
 				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
 				SetEntityRenderColor(entity, 255, 255, 255, 0);
 			}
-			int particle = 0;
-	
-			if(this.rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
-			{
-				particle = ParticleEffectAt(this.Start_Loc, this.rocket_particle, 0.0); //Inf duartion
-				i_ICBM_Particle[entity]= EntIndexToEntRef(particle);
-				TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
-				SetParent(entity, particle);	
-				SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-				SetEntityRenderColor(entity, 255, 255, 255, 0);
-			}
 
-			if(!this.custom)
-			{
-				int ModelApply = ApplyCustomModelToWandProjectile(entity, WEAPON_CUSTOM_WEAPONRY_1, 1.0, "icbm_idle");
-
-				if(this.color[0])
-				{
-					SetEntityRenderColor(ModelApply, this.color[0], this.color[1], this.color[2], this.color[3]);
-				}
-				else
-				{
-					SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
-				}
-				float angles[3];
-				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-				angles[1]+=90.0;
-				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
-				SetVariantInt(4);
-				AcceptEntityInput(ModelApply, "SetBodyGroup");
-			}
-
-			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward, true);
+			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, Velocity, true);
 			SetEntityCollisionGroup(entity, 24); //our savior
 			Set_Projectile_Collision(entity); //If red, set to 27
 			
 			g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Ruina_RocketExplodePre);
 		//	SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-			SDKHook(entity, SDKHook_StartTouch, Ruina_ICBM_StartTouch);
+			SDKHook(entity, SDKHook_StartTouch, Ruina_Projectile_Touch);
+
+			
 
 			if(this.Time>0.0)
 			{
-				CreateTimer(this.Time, Ruina_Remove_ICBM_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(this.Time, Remove_Projectile_Timer, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			}
 			return entity;
 		}
 		return -1;
 	}
-}
-public void Ruina_ICBM_StartTouch(int entity, int target)
-{
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(owner))
+	int Apply_Particle(char[] Particle_Path)
 	{
-		owner = 0;
+		int particle = ParticleEffectAt(this.Start_Loc, Particle_Path, 0.0); //Inf duartion
+
+		if(!IsValidEntity(particle))
+			return -1;
+
+		i_ruina_Projectile_Particle[this.Projectile_Index]= EntIndexToEntRef(particle);
+		TeleportEntity(particle, NULL_VECTOR, this.Angles, NULL_VECTOR);
+		SetParent(this.Projectile_Index, particle);	
+		SetEntityRenderMode(this.Projectile_Index, RENDER_TRANSCOLOR); //Make it entirely invis.
+		SetEntityRenderColor(this.Projectile_Index, 255, 255, 255, 0);
+
+		return particle;
 	}
+	int Apply_Model(char[] Model_Path)
+	{
+		int ModelApply = ApplyCustomModelToWandProjectile(this.Projectile_Index, Model_Path, 1.0, "icbm_idle");
+
+		if(!IsValidEntity(ModelApply))
+			return -1;
+
+		if(this.color[0])
+		{
+			SetEntityRenderColor(ModelApply, this.color[0], this.color[1], this.color[2], this.color[3]);
+		}
+		else
+		{
+			SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
+		}
 		
-	float ProjectileLoc[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-
-	Explode_Logic_Custom(fl_ICBM_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ICBM_radius[entity] , _ , _ , true, _,_, fl_ICBM_bonus_dmg[entity]);
-
-	Function func = func_Ruina_ICBM_Explode[entity];
-
-	if(func && func != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, func);
-		Call_PushCell(entity);
-		Call_PushFloat(fl_ICBM_dmg[entity]);
-		Call_PushFloat(fl_ICBM_radius[entity]);
-		Call_PushArrayEx(ProjectileLoc, sizeof(ProjectileLoc), SM_PARAM_COPYBACK);
-		Call_Finish();
+		return ModelApply;
 	}
-	Remove_ICBM(entity);
+	void Velocity(float Vel[3])
+	{
+		Vel[0] = Cosine(DegToRad(this.Angles[0]))*Cosine(DegToRad(this.Angles[1]))*this.speed;
+		Vel[1] = Cosine(DegToRad(this.Angles[0]))*Sine(DegToRad(this.Angles[1]))*this.speed;
+		Vel[2] = Sine(DegToRad(this.Angles[0]))*-this.speed;
+	}
 }
-static Action Ruina_Remove_ICBM_Timer(Handle Timer, int Ref)
+static void Ruina_Projectile_Touch(int entity, int target)
+{
+	Function func = Func_Ruina_Proj_Touch[entity];
+
+	if(func==INVALID_FUNCTION)
+	{
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(!IsValidEntity(owner))
+		{
+			owner = 0;
+		}
+			
+		float ProjectileLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+
+		Ruina_Remove_Projectile(entity);
+	}
+	else
+	{
+		if(func)
+		{	
+			Call_StartFunction(null, func);
+			Call_PushCell(entity);
+			Call_PushCell(target);
+			Call_Finish();
+		}
+	}
+	
+}
+static Action Remove_Projectile_Timer(Handle Timer, int Ref)
 {
 	int ICBM = EntRefToEntIndex(Ref);
 
 	if(IsValidEntity(ICBM))
 	{
-		Remove_ICBM(ICBM);
+		Ruina_Remove_Projectile(ICBM);
 	}
 
 	return Plugin_Stop;
 }
-static void Remove_ICBM(int entity)
+void Ruina_Remove_Projectile(int entity)
 {
-	int particle = EntRefToEntIndex(i_ICBM_Particle[entity]);
+	int particle = EntRefToEntIndex(i_ruina_Projectile_Particle[entity]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);

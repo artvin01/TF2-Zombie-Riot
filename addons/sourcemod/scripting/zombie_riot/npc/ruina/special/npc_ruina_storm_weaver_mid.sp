@@ -25,18 +25,24 @@ static int i_following_id[MAXENTITIES];
 
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-
-	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver_middle");
 	data.Category = -1;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "tank"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
+}
+static void ClotPrecache()
+{	
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+
+	PrecacheModel(RUINA_STORM_WEAVER_MODEL);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

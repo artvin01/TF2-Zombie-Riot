@@ -891,7 +891,9 @@ enum
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
-#define RUINA_CUSTOM_MODELS			"models/zombie_riot/ruina/ruina_models_1.mdl"
+#if defined RUINA_BASE
+	#define RUINA_CUSTOM_MODELS			"models/zombie_riot/ruina/ruina_models_1.mdl"
+#endif
 
 #if defined ZR
 	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //0.0151 //Make it 0 for now
@@ -1598,6 +1600,10 @@ public void OnMapStart()
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
+
+#if defined RUINA_BASE
+	PrecacheModel(RUINA_CUSTOM_MODELS);
+#endif
 	
 #if defined ZR
 	Zero(i_CustomWeaponEquipLogic);
