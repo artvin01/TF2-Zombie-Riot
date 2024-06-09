@@ -30,17 +30,22 @@ methodmap ObjectDecorative < ObjectGeneric
 	{
 		ObjectDecorative npc = view_as<ObjectDecorative>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "250"));
 		
-		npc.FuncCanBuild = ClotCanBuild;
+		npc.FuncCanBuild = ObjectDecorative_CanBuild;
 
 		return npc;
 	}
 }
 
-static bool ClotCanBuild(ObjectDecorative npc, int client)
+bool ObjectDecorative_CanBuild(int client, int &count, int &maxcount)
 {
-	if(client && ObjectDecorative_Buildings(client) > 6)
-		return false;
-
+	if(client)
+	{
+		count = ObjectBarricade_Buildings(client);
+		maxcount = 7;
+		if(count >= maxcount)
+			return false;
+	}
+	
 	//no more then 15 decos, as its litterally just deco
 	if(ObjectDecorative_Buildings(-1) > 15)
 		return false;

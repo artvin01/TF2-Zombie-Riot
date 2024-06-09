@@ -1,6 +1,211 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static const char BuildingPlugin[][] =
+{
+	"obj_barricade",
+	"obj_ammobox"
+};
+
+// Base metal cost of building
+static const int BuildingCost[sizeof(BuildingPlugin)] =
+{
+	1000,
+	4000
+};
+
+// Base health of building
+static const int BuildingHealth[sizeof(BuildingPlugin)] =
+{
+	6000,
+	750
+};
+
+// Max storage of building
+static const int BuildingSupply[sizeof(BuildingPlugin)] =
+{
+	3,
+	3,
+};
+
+static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
+{
+	"ObjectBarricade_CanBuild",
+	"ObjectGeneric_CanBuild"
+};
+
+static int BuildingId[sizeof(BuildingPlugin)];
+static Function BuildingFunc[sizeof(BuildingPlugin)];
+static int Consumed[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
+static int MenuPage[MAXTF2PLAYERS];
+static Handle MenuTimer[MAXTF2PLAYERS];
+
+void Building_PluginStart()
+{
+	for(int i; i < sizeof(BuildingFuncName); i++)
+	{
+		BuildingFunc[i] = GetFunctionByName(null, BuildingFuncName[i]);
+		if(BuildingFunc[i] == INVALID_FUNCTION)
+			LogError("Function '%s' is missing in building.sp", BuildingFuncName[i]);
+	}
+}
+
+// Called after NPC_ConfigSetup()
+void Building_ConfigSetup()
+{
+	for(int i; i < sizeof(BuildingPlugin); i++)
+	{
+		BuildingId[i] = NPC_GetByPlugin(BuildingPlugin[i]);
+		if(BuildingId[i] == -1)
+			LogError("NPC '%s' is missing in building.sp", BuildingPlugin[i]);
+	}
+
+	Zero2(Consumed);
+}
+
+void Building_WaveEnd()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		for(int i; i < sizeof(Consumed[]); i++)
+		{
+			if(Consumed[client][i] > 0)
+				Consumed[client][i]--;
+		}
+	}
+}
+
+public void Building_WrenchM2(int client, int weapon, bool crit, int slot)
+{
+	BuildingMenu(client);
+}
+
+static int GetCost(int id, float multi)
+{
+	return BuildingCost[id] + RoundFloat(BuildingHealth[id] * multi / 3.0);
+}
+
+static bool HasWrench(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == -1 || EntityFuncAttack2[weapon] != Building_WrenchM2)
+		return false;
+	
+	return true;
+}
+
+static void BuildingMenu(int client)
+{
+	if(MenuTimer[client] || !HasWrench(client))
+		return;
+	
+	int metal = GetAmmo(client, Ammo_Metal);
+	float multi = Object_GetMaxHealthMulti(client);
+
+	static const int ItemsPerPage = 3;
+
+	Menu menu = new Menu(BuildingMenuH);
+
+	menu.SetTitle("%t\n ", "Building Menu");
+
+	char buffer1[196], buffer2[64];
+	for(int i = MenuPage[client] * ItemsPerPage; i < sizeof(BuildingPlugin); i++)
+	{
+		int cost = GetCost(i, multi);
+		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
+		int count, maxcount;
+		bool allowed;
+
+		if(BuildingFunc[i] != INVALID_FUNCTION)
+			allowed = Object_CanBuild(BuildingFunc[i], client, count, maxcount);
+		
+		if(cost > metal)
+			allowed = false;
+
+		NPC_GetNameById(BuildingId[i], buffer1, sizeof(buffer1));
+		FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
+		Format(buffer1, sizeof(buffer1), "%t (%d %t) [%d/%d] {%d}", buffer1, cost, "Metal", count, maxcount, alive);
+		if(TranslationPhraseExists(buffer2))
+			Format(buffer1, sizeof(buffer1), "%s\n%t", buffer1, buffer2);
+
+		IntToString(i, buffer2, sizeof(buffer2));
+		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
+	}
+
+	for(int i; i < MenuPage[client] ? 7 : 8; i++)
+	{
+		menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);
+	}
+
+	if(MenuPage[client])
+	{
+		FormatEx(buffer2, sizeof(buffer2), "%t", "Previous");
+		menu.AddItem(buffer2, buffer2);
+	}
+	
+	if(sizeof(BuildingPlugin) > ((MenuPage[client] + 1) * ItemsPerPage))
+	{
+		FormatEx(buffer2, sizeof(buffer2), "%t", "Next");
+		menu.AddItem(buffer2, buffer2);
+	}
+
+	menu.Pagination = 0;
+	menu.ExitButton = true;
+
+	if(menu.Display(client, 2))
+		MenuTimer[client] = CreateTimer(1.0, Timer_RefreshMenu, client);
+}
+
+static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			delete MenuTimer[client];
+		}
+		case MenuAction_Select:
+		{
+			delete MenuTimer[client];
+
+			if(HasWrench(client))
+			{
+				switch(choice)
+				{
+					case 7:
+					{
+						MenuPage[client]--;
+					}
+					case 8:
+					{
+						MenuPage[client]++;
+					}
+					default:
+					{
+						char buffer[64];
+						menu.GetItem(choice, buffer, sizeof(buffer));
+
+						int id = StringToInt(buffer);
+						PrintToChat(client, BuildingPlugin[id]);
+					}
+				}
+
+				BuildingMenu(client);
+			}
+		}
+	}
+}
+
+static Action Timer_RefreshMenu(Handle timer, int client)
+{
+	MenuTimer[client] = null;
+	BuildingMenu(client);
+}
+
 void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bool first_barracks = false)
 {
 	for (int i = 0; i < MAXENTITIES; i++)

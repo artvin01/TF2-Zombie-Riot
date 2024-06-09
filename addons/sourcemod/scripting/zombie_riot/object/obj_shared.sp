@@ -28,6 +28,7 @@ static Function FuncCanBuild[MAXENTITIES];
  */
 static Function FuncShowInteractHud[MAXENTITIES];
 
+static bool SentryBuilding[MAXENTITIES];
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
@@ -51,6 +52,7 @@ methodmap ObjectGeneric < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		Building_Max_Health[npc.index] = StringToInt(basehealth);
 		Building_Repair_Health[npc.index] = Building_Max_Health[npc.index];
+		SentryBuilding[npc.index] = false;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -111,6 +113,30 @@ methodmap ObjectGeneric < CClotBody
 			FuncShowInteractHud[this.index] = func;
 		}
 	}
+	property int BaseHealth
+	{
+		public set(int value)
+		{
+			Building_Max_Health[this.index] = value;
+			Building_Repair_Health[this.index] = value;
+			SetEntProp(this.index, Prop_Data, "m_iMaxHealth", value);
+		}
+		public get()
+		{
+			return Building_Max_Health[this.index];
+		}
+	}
+	property bool SentryBuilding
+	{
+		public set(bool value)
+		{
+			SentryBuilding[this.index] = value;
+		}
+		public get()
+		{
+			return SentryBuilding[this.index];
+		}
+	}
 }
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
@@ -148,12 +174,41 @@ static Action SetTransmit_BuildingShared(int entity, int client, bool reverse)
 	return Plugin_Stop;
 }
 
-public bool ObjectGeneric_CanBuild(ObjectBarricade npc, int client)
+public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
 {
-	if(client && Object_SupportBuildings(client) >= Object_MaxSupportBuildings(client))
-		return false;
+	if(client)
+	{
+		count = Object_SupportBuildings(client);
+		maxcount = Object_MaxSupportBuildings(client);
+		if(count >= maxcount)
+			return false;
+	}
 	
 	return true;
+}
+
+public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
+{
+	if(!client)
+		return false;
+	
+	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
+	maxcount = 1;
+	if(count)
+		return false;
+
+	return true;
+}
+
+bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 0)
+{
+	bool result;
+	Call_StartFunction(null, func);
+	Call_PushCell(client);
+	Call_PushCellRef(count);
+	Call_PushCellRef(maxcount);
+	Call_Finish(result);
+	return result;
 }
 
 bool ObjectGeneric_ClotThink(ObjectGeneric npc)
@@ -170,13 +225,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 		if(FuncCanBuild[npc.index] && FuncCanBuild[npc.index] != INVALID_FUNCTION)
 		{
 			// If 0 can't build, destory the unclaimed building
-
-			bool result;
-			Call_StartFunction(null, FuncCanBuild[npc.index]);
-			Call_PushCell(npc.index);
-			Call_PushCell(0);
-			Call_Finish(result);
-			if(!result)
+			if(!Object_CanBuild(FuncCanBuild[npc.index], 0))
 			{
 				SmiteNpcToDeath(npc.index);
 				return false;
@@ -196,7 +245,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 		// Update max health if attributes changed on the player
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		int expected = RoundFloat(Building_Max_Health[npc.index] * GetMaxHealthMulti(owner));
+		int expected = RoundFloat(Building_Max_Health[npc.index] * Object_GetMaxHealthMulti(owner));
 		if(maxhealth && expected && maxhealth != expected)
 		{
 			float change = float(expected) / float(maxhealth);
@@ -273,12 +322,7 @@ bool Object_Interact(int client, int weapon, int obj)
 			{
 				if(FuncCanBuild[entity] && FuncCanBuild[entity] != INVALID_FUNCTION)
 				{
-					Call_StartFunction(null, FuncCanBuild[entity]);
-					Call_PushCell(entity);
-					Call_PushCell(client);
-					Call_Finish(result);
-
-					if(result)
+					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 					}
@@ -309,14 +353,14 @@ bool Object_Interact(int client, int weapon, int obj)
 	return true;
 }
 
-int Object_NamedBuildings(int owner, const char[] name)
+int Object_NamedBuildings(int owner = 0, const char[] name)
 {
 	int count;
 	
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(!b_NpcHasDied[entity] && (owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner))
 		{
 			static char plugin[64];
 			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
@@ -352,6 +396,23 @@ int Object_SupportBuildings(int owner)
 	return count;
 }
 
+int Object_GetSentryBuilding(int owner)
+{
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(!b_NpcHasDied[entity] && SentryBuilding[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		{
+			static char plugin[64];
+			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+			if(StrContains(plugin, "obj_", false) != -1)
+				break;
+		}
+	}
+
+	return entity;
+}
+
 int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 {
 	int maxAllowed = 1;
@@ -384,7 +445,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	return maxAllowed;
 }
 
-static float GetMaxHealthMulti(int client)
+float Object_GetMaxHealthMulti(int client)
 {
 	return Attributes_GetOnPlayer(client, 286);
 }

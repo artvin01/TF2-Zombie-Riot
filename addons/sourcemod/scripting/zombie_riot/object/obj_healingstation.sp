@@ -60,7 +60,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	ApplyBuildingCollectCooldown(npc.index, client, 90.0);
 	ClientCommand(client, "playgamesound items/smallmedkit1.wav");

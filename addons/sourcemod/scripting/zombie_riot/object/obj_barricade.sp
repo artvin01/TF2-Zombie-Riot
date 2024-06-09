@@ -48,16 +48,21 @@ methodmap ObjectBarricade < ObjectGeneric
 	{
 		ObjectBarricade npc = view_as<ObjectBarricade>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "6000"));
 		
-		npc.FuncCanBuild = ClotCanBuild;
+		npc.FuncCanBuild = ObjectBarricade_CanBuild;
 
 		return npc;
 	}
 }
 
-static bool ClotCanBuild(ObjectBarricade npc, int client)
+bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
-	if(client && ObjectBarricade_Buildings(client) > 3)
-		return false;
+	if(client)
+	{
+		count = ObjectBarricade_Buildings(client);
+		maxcount = 4;
+		if(count >= maxcount)
+			return false;
+	}
 	
 	return true;
 }
