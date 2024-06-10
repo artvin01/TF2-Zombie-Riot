@@ -469,34 +469,26 @@ float f3_Building_KnockbackToTake[MAXENTITIES][3];
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
-	PrintToChatAll("fail1");
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
-		PrintToChatAll("reset!");
 		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		Player_BuildingBeingCarried[client] = 0;
 		return;
 	}
-	PrintToChatAll("fail2");
 	int entity = GetClientPointVisible(client, _ , false, false,_,1);
-	PrintToChatAll("%i",entity);
 	if(entity < MaxClients)
 		return;
-	PrintToChatAll("fail3");
 
 	if (!IsValidEntity(entity))
 		return;
-	PrintToChatAll("fail4");
 
 	if (!i_IsABuilding[entity])
 		return;
-	PrintToChatAll("fail5");
 
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 		return;
-	PrintToChatAll("fail6");
 
 	SDKUnhook(entity, SDKHook_Think, BuildingPickUp);
 	SDKHook(entity, SDKHook_Think, BuildingPickUp);
@@ -505,7 +497,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	b_ThisEntityIgnoredBeingCarried[entity] = true;
 }
 
-#define BUILDING_DISTANCE_GRAB 25.0
+#define BUILDING_DISTANCE_GRAB 100.0
 void BuildingPickUp(int BuildingNPC)
 {
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
@@ -529,7 +521,7 @@ void BuildingPickUp(int BuildingNPC)
 	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
 
 	GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", vecFwd);
-	vecFwd[2] += 15.0;
+	vecFwd[2] += 30.0;
 
 	SubtractVectors(vecPos, vecFwd, vecVel);
 	ScaleVector(vecVel, 5.0);
