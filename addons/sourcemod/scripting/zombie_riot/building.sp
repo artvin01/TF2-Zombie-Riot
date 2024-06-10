@@ -475,8 +475,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		PrintToChatAll("reset!");
 		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
-		b_ThisEntityIgnored[buildingindx] = false;
-		b_CantCollidie[buildingindx] = false;
+		b_CantCollidieAlly[buildingindx] = false;
 		Player_BuildingBeingCarried[client] = 0;
 		return;
 	}
@@ -503,8 +502,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	SDKHook(entity, SDKHook_Think, BuildingPickUp);
 	Building_BuildingBeingCarried[entity] = EntIndexToEntRef(client);
 	Player_BuildingBeingCarried[client] = EntIndexToEntRef(entity);
-	b_ThisEntityIgnored[entity] = true;
-	b_CantCollidie[entity] = true;
+	b_CantCollidieAlly[entity] = true;
 }
 
 #define BUILDING_DISTANCE_GRAB 50.0
@@ -513,8 +511,7 @@ void BuildingPickUp(int BuildingNPC)
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
-		b_ThisEntityIgnored[BuildingNPC] = false;
-		b_CantCollidie[BuildingNPC] = false;
+		b_CantCollidieAlly[BuildingNPC] = false;
 		SDKUnhook(BuildingNPC, SDKHook_Think, BuildingPickUp);
 		return;
 	}
