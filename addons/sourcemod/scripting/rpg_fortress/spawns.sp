@@ -331,7 +331,18 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 			}
 
 			if(clients > 1)
-				time /= float(clients);
+			{
+				//Theres only 3 threshholds, no more.
+				switch(clients)
+				{
+					case 2:
+						time *= 0.85;
+					case 1:
+						time *= 1.0;
+					default:
+						time *= 0.75;
+				}
+			}
 
 			int limit = spawn.Count - alive;
 			for(int i; i < limit; i++)
