@@ -472,6 +472,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	PrintToChatAll("fail1");
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
+		PrintToChatAll("reset!");
 		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
 		Player_BuildingBeingCarried[client] = 0;
 		return;
