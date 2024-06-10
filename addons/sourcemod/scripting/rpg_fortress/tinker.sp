@@ -737,7 +737,7 @@ static void GetAttributeFormat(char[] desc, int attrib, float value)
 			Format(desc, 512, "%s\n%s Reload Speed", desc, CharPercent(1.0 / value));
 
 		case 4009:
-			Format(desc, 512, "%s\n%s Reload Speed", desc, CharPercent(1.0 / value));
+			Format(desc, 512, "%s\n%s Damage Resistance", desc, CharPercent(1.0 / value));
 		
 		case 410:
 			Format(desc, 512, "%s\n%s Magic Damage", desc, CharPercent(value));
