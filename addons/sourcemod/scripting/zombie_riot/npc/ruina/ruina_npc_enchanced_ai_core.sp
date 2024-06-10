@@ -2151,7 +2151,7 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 
 static int Ruina_Laser_BEAM_HitDetected[MAXENTITIES];
 static int i_targets_hit;
-enum struct Ruian_Laser_Logic
+enum struct Ruina_Laser_Logic
 {
 	int client;
 	float Start_Point[3];
@@ -2232,7 +2232,7 @@ enum struct Ruian_Laser_Logic
 
 		Zero(Ruina_Laser_BEAM_HitDetected);
 
-		i_targets_hit = 0;	//todo: test this!
+		i_targets_hit = 0;	//todo: test this! | so far works!
 
 		float hullMin[3], hullMax[3];
 		hullMin[0] = -this.Radius;
@@ -2249,17 +2249,19 @@ enum struct Ruian_Laser_Logic
 		for (int loop = 0; loop < i_targets_hit; loop++)
 		{
 			int victim = Ruina_Laser_BEAM_HitDetected[loop];
-			if (victim && GetTeam(this.client) != GetTeam(victim))
+			if (victim && IsValidEnemy(this.client, victim))
 			{
 				this.trace_hit_enemy=true;
 
 				float playerPos[3];
 				WorldSpaceCenter(victim, playerPos);
 
+				float Dmg = this.Damage;
+
 				if(ShouldNpcDealBonusDamage(victim))
-					SDKHooks_TakeDamage(victim, this.client, this.client, this.Bonus_Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
-				else
-					SDKHooks_TakeDamage(victim, this.client, this.client, this.Damage, this.damagetype, -1, NULL_VECTOR, playerPos);
+					Dmg = this.Bonus_Damage;
+				
+				SDKHooks_TakeDamage(victim, this.client, this.client, Dmg, this.damagetype, -1, _, playerPos);
 
 				if(Attack_Function && Attack_Function != INVALID_FUNCTION)
 				{	
@@ -2268,7 +2270,9 @@ enum struct Ruian_Laser_Logic
 					Call_PushCell(victim);
 					Call_PushCell(this.damagetype);
 					Call_PushFloat(this.Damage);
-					Call_Finish();			
+					Call_Finish();
+
+					//static void On_LaserHit(int client, int target, int damagetype, float damage)
 				}
 			}
 		}

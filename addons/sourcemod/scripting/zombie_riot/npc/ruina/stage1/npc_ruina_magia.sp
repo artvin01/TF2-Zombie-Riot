@@ -53,9 +53,6 @@ static char g_TeleportSounds[][] = {
 
 void Magia_OnMapStart_NPC()
 {
-
-	
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Magia");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
