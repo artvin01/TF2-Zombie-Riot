@@ -20,6 +20,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return false;
 	}
+	//it ignores all npc collisions
+	if(b_ThisEntityIgnoredBeingCarried[bot_entidx])
+		return false;
 
 #if defined ZR
 	//if the bots team is player team, then they cant collide with any entities that have this flag.

@@ -475,7 +475,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		PrintToChatAll("reset!");
 		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
-		b_CantCollidieAlly[buildingindx] = false;
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		Player_BuildingBeingCarried[client] = 0;
 		return;
 	}
@@ -502,16 +502,16 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	SDKHook(entity, SDKHook_Think, BuildingPickUp);
 	Building_BuildingBeingCarried[entity] = EntIndexToEntRef(client);
 	Player_BuildingBeingCarried[client] = EntIndexToEntRef(entity);
-	b_CantCollidieAlly[entity] = true;
+	b_ThisEntityIgnoredBeingCarried[entity] = true;
 }
 
-#define BUILDING_DISTANCE_GRAB 50.0
+#define BUILDING_DISTANCE_GRAB 25.0
 void BuildingPickUp(int BuildingNPC)
 {
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
-		b_CantCollidieAlly[BuildingNPC] = false;
+		b_ThisEntityIgnoredBeingCarried[BuildingNPC] = false;
 		SDKUnhook(BuildingNPC, SDKHook_Think, BuildingPickUp);
 		return;
 	}
@@ -529,6 +529,7 @@ void BuildingPickUp(int BuildingNPC)
 	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
 
 	GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", vecFwd);
+	vecFwd[2] += 15.0;
 
 	SubtractVectors(vecPos, vecFwd, vecVel);
 	ScaleVector(vecVel, 5.0);
