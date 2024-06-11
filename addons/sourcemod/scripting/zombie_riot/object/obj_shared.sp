@@ -49,6 +49,7 @@ methodmap ObjectGeneric < CClotBody
 		i_NpcIsABuilding[npc.index] = true;
 		i_IsABuilding[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;
+		b_NoGravity[npc.index] = true;
 		npc.m_bDissapearOnDeath = true;
 		Building_Max_Health[npc.index] = StringToInt(basehealth);
 		Building_Repair_Health[npc.index] = Building_Max_Health[npc.index];
