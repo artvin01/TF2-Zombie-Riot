@@ -179,7 +179,7 @@ methodmap Daedalus < CClotBody
 		
 		/*
 			b'aaarrgh-n-britches	models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl
-			berliner's bazooka		models/player/items/medic/berliners_bucket_helm.mdl
+			berliner's 				models/player/items/medic/berliners_bucket_helm.mdl
 			Sole Saviors			models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl
 
 			beggars 				models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl
@@ -393,7 +393,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

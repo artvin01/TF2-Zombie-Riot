@@ -402,7 +402,7 @@ static void ClotThink(int iNPC)
 			//float flPos[3], flAng[3]; // original
 			//GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-			//TE_SetupBeamPoints(flPos, Proj_Vec, Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
+			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
 			float dmg = 7.5;
@@ -470,7 +470,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

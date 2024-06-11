@@ -133,11 +133,11 @@ methodmap Lazius < CClotBody
 		
 		/*
 			Bozo's bouffant		"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl"
-			Last Breath			"models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl"
-			Masked Loyalty		"models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl"
 			Mighty Mitre		"models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl"
 			Nostrum Napalmer	"models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
-			Wings of purity		"models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl"
+			Whiskey bib			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
+			Berliner's bucket helm	"models/player/items/medic/berliners_bucket_helm.mdl"
+
 		
 		*/
 		
@@ -154,11 +154,10 @@ methodmap Lazius < CClotBody
 		npc.StartPathing();
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl");	
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl");	
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl");	
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 
 		
 		int skin = 1;	//1=blue, 0=red
@@ -169,7 +168,6 @@ methodmap Lazius < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -219,19 +217,13 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	//Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.0);	//will take 30 seconds to charge special
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	/*if(fl_ruina_battery[npc.index]>500.0)
-	{
-		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		
-	}
-	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
+	/*if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
 		
 	}*/
@@ -309,12 +301,22 @@ static void ClotThink(int iNPC)
 				
 				if(!IsValidEntity(Laser_End))
 				{
+					bool buffed = false;
+					if(fl_ruina_battery[npc.index]>300.0)
+					{
+						fl_ruina_battery[npc.index] = 0.0;
+
+						buffed = true;
+					}
+						
+						
 					Ruina_Projectiles Projectile;
 
 					float Laser_Time = 5.0;
 					float Reload_Time = 10.0;
+					float Projectile_Time = buffed ? Reload_Time : Laser_Time;
 
-					float projectile_speed = 500.0;
+					float projectile_speed = buffed ? 420.0 : 500.0;	//in this case, slower is better
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
@@ -328,7 +330,7 @@ static void ClotThink(int iNPC)
 					Projectile.radius = 0.0;
 					Projectile.damage = 250.0;
 					Projectile.bonus_dmg = 350.0;
-					Projectile.Time = Laser_Time;
+					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
 
@@ -337,18 +339,13 @@ static void ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						npc.m_flNextRangedAttack = GameTime + Reload_Time;
 
-						npc.m_flAttackHappens = GameTime + Laser_Time;
+						npc.m_flAttackHappens = GameTime + Projectile_Time;
 
 						i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
 						//CPrintToChatAll("Laser end created and is valid");
 
-						Initiate_HomingProjectile(Proj,
-						npc.index,
-						90.0,			// float lockonAngleMax,
-						8.5,			// float homingaSec,
-						true,			// bool LockOnlyOnce,
-						true,			// bool changeAngles,
-						Ang);			// float AnglesInitiate[3]);
+						float Homing_Power = 8.5;
+						float Homing_Lockon = 90.0;
 
 						float 	f_start = 1.5,
 								f_end = 0.75,
@@ -357,6 +354,30 @@ static void ClotThink(int iNPC)
 						int r = 200,
 							g = 200,
 							b = 200;
+
+						if(buffed)
+						{
+
+							Homing_Power = 10.0;
+							Homing_Lockon = 110.0;
+
+							r = 255,
+							g = 100,
+							b = 100;
+
+							amp = 0.5;
+							
+						}
+
+						Initiate_HomingProjectile(Proj,
+						npc.index,
+						Homing_Lockon,			// float lockonAngleMax,
+						Homing_Power,			// float homingaSec,
+						true,					// bool LockOnlyOnce,
+						true,					// bool changeAngles,
+						Ang);					// float AnglesInitiate[3]);
+
+						
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
@@ -402,7 +423,7 @@ static void ClotThink(int iNPC)
 			//float flPos[3], flAng[3]; // original
 			//GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-			//TE_SetupBeamPoints(flPos, Proj_Vec, Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
+			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
 			float dmg = 15.0;
@@ -469,8 +490,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -509,6 +528,4 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
 }
