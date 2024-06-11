@@ -490,8 +490,8 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		VecMin[2] = 0.0;
 		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 
-		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
+		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
 		if(Success)
 		{
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
