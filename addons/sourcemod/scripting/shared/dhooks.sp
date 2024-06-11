@@ -1038,6 +1038,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif	// Non-RTS
+//enemy NPC
 #if defined RTS
 		if(!b_NpcHasDied[entity1])
 #else	
@@ -1077,13 +1078,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-
+//allied NPC
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
-				return false;
+				if(!i_IsABuilding[entity2] && !i_IsABuilding[entity1])
+					return false;
 			}
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{

@@ -489,8 +489,6 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		VecMin[1] *= -1.0;
 		VecMin[2] = 0.0;
 		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
-		PrintToChatAll("Mins: %f, %f, %f",VecMin[0],VecMin[1],VecMin[2]);
-		PrintToChatAll("maxs: %f, %f, %f",VecMax[0],VecMax[1],VecMax[2]);
 
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
@@ -499,6 +497,8 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
+			CBaseNPC baseNPC = TheNPCs.FindNPCByEntIndex(buildingindx);
+			baseNPC.GetLocomotion().SetVelocity({0.0,0.0,0.0});
 		}
 		else
 		{
@@ -507,7 +507,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		}
 		return;
 	}
-	int entity = GetClientPointVisible(client, _ , false, false,_,1);
+	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
 	if(entity < MaxClients)
 		return;
 
@@ -555,7 +555,7 @@ void BuildingPickUp(int BuildingNPC)
 	vecFwd[2] += 30.0;
 
 	SubtractVectors(vecPos, vecFwd, vecVel);
-	ScaleVector(vecVel, 5.0);
+	ScaleVector(vecVel, 15.0);
 	for(int i; i < 3; i++)
 	{
 		f3_Building_KnockbackToTake[BuildingNPC][i] = vecVel[i];
