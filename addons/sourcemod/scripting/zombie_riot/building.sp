@@ -49,7 +49,13 @@ void Building_PluginStart()
 			LogError("Function '%s' is missing in building.sp", BuildingFuncName[i]);
 	}
 }
-
+#define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
+#define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
+void Building_MapStart()
+{
+	PrecacheSound(SOUND_GRAB_TF, true);
+	PrecacheSound(SOUND_TOSS_TF, true);
+}
 // Called after NPC_ConfigSetup()
 void Building_ConfigSetup()
 {
@@ -484,14 +490,16 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		VecMin[2] = 0.0;
 		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 
-		bool Success = Npc_Teleport_Safe(buildingindx, VecPos, VecMin, VecMax, false, false);
+		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
 		
 		if(Success)
 		{
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 			Player_BuildingBeingCarried[client] = 0;
+			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
 	int entity = GetClientPointVisible(client, _ , false, false,_,1);
@@ -507,6 +515,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 		return;
 
+	EmitSoundToClient(client, SOUND_GRAB_TF);
 	SDKUnhook(entity, SDKHook_Think, BuildingPickUp);
 	SDKHook(entity, SDKHook_Think, BuildingPickUp);
 	Building_BuildingBeingCarried[entity] = EntIndexToEntRef(client);
@@ -551,4 +560,165 @@ void BuildingPickUp(int BuildingNPC)
 	npc.MyNextBotPointer().GetLocomotionInterface().Jump();
 	CBaseNPC baseNPC = TheNPCs.FindNPCByEntIndex(BuildingNPC);
 	baseNPC.GetLocomotion().SetVelocity(f3_Building_KnockbackToTake[BuildingNPC]);
+}
+
+
+bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3], float hullcheckmaxs_Player[3])
+{
+	bool FoundSafeSpot = false;
+	//Try base position.
+	float OriginalPos[3];
+	OriginalPos = endPos;
+
+	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	for (int x = 0; x < 6; x++)
+	{
+		if (FoundSafeSpot)
+			break;
+
+		endPos = OriginalPos;
+		//ignore 0 at all costs.
+		
+		switch(x)
+		{
+			case 0:
+				endPos[2] -= TELEPORT_STUCK_CHECK_1;
+
+			case 1:
+				endPos[2] += TELEPORT_STUCK_CHECK_1;
+
+			case 2:
+				endPos[2] += TELEPORT_STUCK_CHECK_2;
+
+			case 3:
+				endPos[2] -= TELEPORT_STUCK_CHECK_2;
+
+			case 4:
+				endPos[2] += TELEPORT_STUCK_CHECK_3;
+
+			case 5:
+				endPos[2] -= TELEPORT_STUCK_CHECK_3;	
+		}
+		for (int y = 0; y < 7; y++)
+		{
+			if (FoundSafeSpot)
+				break;
+
+			endPos[1] = OriginalPos[1];
+				
+			switch(y)
+			{
+				case 1:
+					endPos[1] += TELEPORT_STUCK_CHECK_1;
+
+				case 2:
+					endPos[1] -= TELEPORT_STUCK_CHECK_1;
+
+				case 3:
+					endPos[1] += TELEPORT_STUCK_CHECK_2;
+
+				case 4:
+					endPos[1] -= TELEPORT_STUCK_CHECK_2;
+
+				case 5:
+					endPos[1] += TELEPORT_STUCK_CHECK_3;
+
+				case 6:
+					endPos[1] -= TELEPORT_STUCK_CHECK_3;	
+			}
+
+			for (int z = 0; z < 7; z++)
+			{
+				if (FoundSafeSpot)
+					break;
+
+				endPos[0] = OriginalPos[0];
+						
+				switch(z)
+				{
+					case 1:
+						endPos[0] += TELEPORT_STUCK_CHECK_1;
+
+					case 2:
+						endPos[0] -= TELEPORT_STUCK_CHECK_1;
+
+					case 3:
+						endPos[0] += TELEPORT_STUCK_CHECK_2;
+
+					case 4:
+						endPos[0] -= TELEPORT_STUCK_CHECK_2;
+
+					case 5:
+						endPos[0] += TELEPORT_STUCK_CHECK_3;
+
+					case 6:
+						endPos[0] -= TELEPORT_STUCK_CHECK_3;
+				}
+				if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+					FoundSafeSpot = true;
+			}
+		}
+	}
+				
+
+	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
+		FoundSafeSpot = true;
+
+	if(FoundSafeSpot && teleport_entity)
+	{
+		SDKCall_SetLocalOrigin(client, endPos);	
+	}
+	return FoundSafeSpot;
+}
+
+
+//We wish to check if this poisiton is safe or not.
+//This is only for players.
+bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs[3])
+{
+	int ref;
+	
+	Handle hTrace;
+	int SolidityFlags;
+	if(entity <= MaxClients)
+	{
+		SolidityFlags = MASK_PLAYERSOLID;
+	}
+
+#if defined ZR
+	else if(GetTeam(entity) == TFTeam_Red)
+	{
+		SolidityFlags = MASK_NPCSOLID | MASK_PLAYERSOLID;
+	}
+#endif
+
+	else
+	{
+		SolidityFlags = MASK_NPCSOLID;
+	}
+	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
+
+	ref = TR_GetEntityIndex(hTrace);
+	delete hTrace;
+	float pos_player[3];
+	WorldSpaceCenter(entity, pos_player);
+	float Pos2Test_Higher[3];
+	Pos2Test_Higher = Pos;
+	Pos2Test_Higher[2] += 35.0;
+	hTrace = TR_TraceRayFilterEx( pos_player, Pos2Test_Higher, SolidityFlags, RayType_EndPoint, TraceRayDontHitPlayersOrEntityCombat, entity );
+	if ( TR_GetFraction(hTrace) < 1.0)
+	{
+		delete hTrace;
+		return false;
+	}
+	if(ref < 0) //It hit nothing, good!
+	{
+		delete hTrace;
+		return true;
+	}
+	//It Hit something, bad!
+	delete hTrace;
+	return false;
 }
