@@ -59,7 +59,7 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return true;
 		}
-		if(extrarules == 0 && b_AllowCollideWithSelfTeam[bot_entidx] && b_AllowCollideWithSelfTeam[otherindex])
+		if(/*extrarules == 0 && */b_AllowCollideWithSelfTeam[bot_entidx] && b_AllowCollideWithSelfTeam[otherindex])
 		{
 			return true;
 		}
