@@ -88,8 +88,12 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+		if(b_ThisEntityIgnoredBeingCarried[otherindex])
+			return false;
+
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+			
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.

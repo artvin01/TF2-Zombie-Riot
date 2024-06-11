@@ -33,6 +33,32 @@ static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 
+void Object_PluginStart()
+{
+	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
+	factory.DeriveFromClass("prop_dynamic");
+	factory.BeginDataMapDesc()
+	.DefineIntField("m_iRepair")
+	.DefineIntField("m_iRepairMax")
+	.DefineIntField("m_iMaxHealth")
+	.EndDataMapDesc();
+	factory.Install();
+}
+
+//remove whatever things it had
+static void OnDestroy(int entity)
+{
+	ObjectGeneric npc = view_as<ObjectGeneric>(entity);
+
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+
+	Building_RotateAllDepencencies(entity);
+}
 
 methodmap ObjectGeneric < CClotBody
 {
@@ -42,60 +68,181 @@ methodmap ObjectGeneric < CClotBody
 						const char[] basehealth = "750",
 						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
 	{
-		ObjectGeneric npc = view_as<ObjectGeneric>(CClotBody(vecPos, vecAng, model, modelscale, basehealth, TFTeam_Red, false, false, _, _, CustomThreeDimensions, true));
+		int obj = CreateEntityByName("obj_building");
+		DispatchKeyValueVector(obj, "origin",	 vecPos);
+		DispatchKeyValueVector(obj, "angles",	 vecAng);
+		DispatchKeyValue(obj,		 "model",	 model);
+		DispatchKeyValue(obj,	   "modelscale", modelscale);
+		DispatchKeyValue(obj,	   "solid", "2");
+		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
+		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
+		DispatchSpawn(obj);
+		SetEntProp(obj, Prop_Data, "m_iMaxHealth", StringToInt(basehealth));
+		SetEntProp(obj, Prop_Data, "m_iHealth", StringToInt(basehealth));
+		SetEntProp(obj, Prop_Data, "m_iRepairMax", StringToInt(basehealth));
+		SetEntProp(obj, Prop_Data, "m_iRepair", StringToInt(basehealth));
+			
+ 		b_CantCollidie[obj] = false;
+	 	b_CantCollidieAlly[obj] = false;
+		b_AllowCollideWithSelfTeam[obj] = true;
+		i_NpcWeight[obj] = 999;
+		i_NpcIsABuilding[obj] = true;
+		i_IsABuilding[obj] = true;
+		b_NoKnockbackFromSources[obj] = true;
+		SentryBuilding[obj] = false;
+		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
+		SDKHook(obj, SDKHook_Think, ObjBaseThink);
+		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
+		CBaseCombatCharacter(obj).SetNextThink(GetGameTime());
+		SetEntityCollisionGroup(obj, 24);
 		
-		b_AllowCollideWithSelfTeam[npc.index] = true;
-		i_NpcWeight[npc.index] = 999;
-		i_NpcIsABuilding[npc.index] = true;
-		i_IsABuilding[npc.index] = true;
-		b_NoKnockbackFromSources[npc.index] = true;
-		b_NoGravity[npc.index] = true;
-		npc.m_bDissapearOnDeath = true;
-		Building_Max_Health[npc.index] = StringToInt(basehealth);
-		Building_Repair_Health[npc.index] = Building_Max_Health[npc.index];
-		SentryBuilding[npc.index] = false;
-		
-		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = 0;	
-		npc.m_iNpcStepVariation = 0;
+		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
+		{
+			if (EntRefToEntIndex(i_ObjectsBuilding[i]) <= 0)
+			{
+				i_ObjectsBuilding[i] = EntIndexToEntRef(obj);
+				i = ZR_MAX_BUILDINGS;
+			}
+		}
+
+		f3_CustomMinMaxBoundingBox[obj][0] = CustomThreeDimensions[0];
+		f3_CustomMinMaxBoundingBox[obj][1] = CustomThreeDimensions[1];
+		f3_CustomMinMaxBoundingBox[obj][2] = CustomThreeDimensions[2];
+
+		float VecMin[3];
+		float VecMax[3];
+		VecMin = CustomThreeDimensions;
+		VecMin[0] *= -1.0;
+		VecMin[1] *= -1.0;
+		VecMin[2] = 0.0;
+		VecMax = CustomThreeDimensions;
+		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
+		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
+		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
+		objstats.UpdateCollisionBox();
 
 		static Function defaultFunc;
 		if(!defaultFunc)
 			defaultFunc = GetFunctionByName(null, "ObjectGeneric_CanBuild");
 		
-		npc.FuncCanUse = INVALID_FUNCTION;
-		npc.FuncCanBuild = defaultFunc;
-		npc.FuncShowInteractHud = INVALID_FUNCTION;
+		objstats.FuncCanUse = INVALID_FUNCTION;
+		objstats.FuncCanBuild = defaultFunc;
+		objstats.FuncShowInteractHud = INVALID_FUNCTION;
 
-		func_NPCDeath[npc.index] = ObjectGeneric_ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = ObjectGeneric_ClotTakeDamage;
-		func_NPCOnTakeDamagePost[npc.index] = ObjectGeneric_ClotTakeDamagePost;
-		func_NPCThink[npc.index] = ObjectGeneric_ClotThink;
-
-		SetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity", client);
+		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
-		SetEntityRenderFx(npc.index, RENDERFX_FADE_FAST);
+		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+	//	SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
 
-		int entity = npc.EquipItemSeperate("partyhat", model);
+		int entity = objstats.EquipItemSeperate("partyhat", model);
 		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
-		npc.m_iWearable1 = entity;
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+		objstats.m_iWearable1 = entity;
 
-		entity = npc.EquipItemSeperate("partyhat", model);
+		entity = objstats.EquipItemSeperate("partyhat", model);
 		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", npc.index);
-		npc.m_iWearable2 = entity;
-		
-		npc.m_flSpeed = 0.0;
-		npc.m_bPathing = true;
-		NPC_StopPathing(npc.index);
-		npc.m_bPathing = false;
-
-		return npc;
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+		objstats.m_iWearable2 = entity;
+		return objstats;
 	}
 
+	property int index 
+	{ 
+		public get() { return view_as<int>(this); } 
+	}
+	public int EquipItemSeperate(
+	const char[] attachment,
+	const char[] model,
+	const char[] anim = "",
+	int skin = 0,
+	float model_size = 1.0,
+	float offset = 0.0,
+	bool DontParent = false)
+	{
+		int item = CreateEntityByName("prop_dynamic");
+		DispatchKeyValue(item, "model", model);
+
+		if(model_size == 1.0)
+		{
+			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Data, "m_flModelScale"));
+		}
+		else
+		{
+			DispatchKeyValueFloat(item, "modelscale", model_size);
+		}
+
+		DispatchSpawn(item);
+		
+		SetEntityMoveType(item, MOVETYPE_NONE);
+		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
+		float eyePitch[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", eyePitch);
+
+		float VecOrigin[3];
+		GetAbsOrigin(this.index, VecOrigin);
+		VecOrigin[2] += offset;
+
+		TeleportEntity(item, VecOrigin, eyePitch, NULL_VECTOR);
+		if(DontParent)
+		{
+			return item;
+		}
+		
+
+		if(!StrEqual(anim, ""))
+		{
+			SetVariantString(anim);
+			AcceptEntityInput(item, "SetAnimation");
+		}
+
+#if defined RPG
+		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
+		SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 1800.0);
+#endif
+
+		SetVariantString("!activator");
+		AcceptEntityInput(item, "SetParent", this.index);
+		MakeObjectIntangeable(item);
+		return item;
+	} 
+	property int m_iWearable1
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][0]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][0] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][0] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iWearable2
+	{
+		public get()		 
+		{ 
+			return EntRefToEntIndex(i_Wearable[this.index][1]); 
+		}
+		public set(int iInt) 
+		{
+			if(iInt == -1)
+			{
+				i_Wearable[this.index][1] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_Wearable[this.index][1] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
 	property Function FuncCanUse
 	{
 		public set(Function func)
@@ -141,6 +288,17 @@ methodmap ObjectGeneric < CClotBody
 			return SentryBuilding[this.index];
 		}
 	}
+	property float m_flNextDelayTime
+	{
+		public get()							{ return fl_NextDelayTime[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextDelayTime[this.index] = TempValueForProperty; }
+	}
+	property float m_flAttackHappens
+	{
+		public get()							{ return fl_AttackHappensMinimum[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_AttackHappensMinimum[this.index] = TempValueForProperty; }
+	}
+
 }
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
@@ -215,51 +373,51 @@ bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 
 	return result;
 }
 
-bool ObjectGeneric_ClotThink(ObjectGeneric npc)
+bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 {
-	float gameTime = GetGameTime(npc.index);
-	if(npc.m_flNextDelayTime > gameTime)
+	float gameTime = GetGameTime(objstats.index);
+	if(objstats.m_flNextDelayTime > gameTime)
 		return false;
 	
-	npc.m_flNextDelayTime = gameTime + 0.1;
-
-	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	objstats.m_flNextDelayTime = gameTime + 0.1;
+	BuildingDisplayRepairLeft(objstats.index);
+	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1)
 	{
-		if(FuncCanBuild[npc.index] && FuncCanBuild[npc.index] != INVALID_FUNCTION)
+		if(FuncCanBuild[objstats.index] && FuncCanBuild[objstats.index] != INVALID_FUNCTION)
 		{
 			// If 0 can't build, destory the unclaimed building
-			if(!Object_CanBuild(FuncCanBuild[npc.index], 0))
+			if(!Object_CanBuild(FuncCanBuild[objstats.index], 0))
 			{
-				SmiteNpcToDeath(npc.index);
+				SmiteNpcToDeath(objstats.index);
 				return false;
 			}
 		}
 
-		int wearable = npc.m_iWearable1;
+		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
 		
-		wearable = npc.m_iWearable2;
+		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
 	}
 	else
 	{
 		// Update max health if attributes changed on the player
-		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		int expected = RoundFloat(Building_Max_Health[npc.index] * Object_GetMaxHealthMulti(owner));
+		int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
+		int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
+		int expected = RoundFloat(Building_Max_Health[objstats.index] * Object_GetMaxHealthMulti(owner));
 		if(maxhealth && expected && maxhealth != expected)
 		{
 			float change = float(expected) / float(maxhealth);
 
 			maxhealth = expected;
 			health = RoundFloat(float(health) * change);
-			Building_Repair_Health[npc.index] = RoundFloat(float(Building_Repair_Health[npc.index]) * change);
+			Building_Repair_Health[objstats.index] = RoundFloat(float(Building_Repair_Health[objstats.index]) * change);
 			
-			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", maxhealth);
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(objstats.index, Prop_Data, "m_iMaxHealth", maxhealth);
+			SetEntProp(objstats.index, Prop_Data, "m_iHealth", health);
 		}
 		
 		int g = health * 255  / maxhealth;
@@ -274,11 +432,11 @@ bool ObjectGeneric_ClotThink(ObjectGeneric npc)
 		
 		int r = 255 - g;
 		
-		int wearable = npc.m_iWearable1;
+		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, r, g, 0, 100);
 		
-		wearable = npc.m_iWearable2;
+		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, r, g, 0, 255);
 		
@@ -362,7 +520,7 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_")) != -1)
 	{
 		if(!b_NpcHasDied[entity] && (owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner))
 		{
@@ -454,69 +612,71 @@ float Object_GetMaxHealthMulti(int client)
 	return Attributes_GetOnPlayer(client, 286);
 }
 
-void ObjectGeneric_ClotDeath(int entity)
-{
-	ObjectGeneric npc = view_as<ObjectGeneric>(entity);
-
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
-}
-
-void ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(RaidBossActive && RaidbossIgnoreBuildingsLogic(2)) //They are ignored anyways
+		return Plugin_Handled;
+
+	if((damagetype & DMG_CRUSH))
+		return Plugin_Handled;
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	health -= RoundToNearest(damage);
+	PrintToChatAll("attacked %i ",health);
+	if(health < 0)
 	{
-		damage = 0.0;
-		return;
+		RemoveEntity(victim);
 	}
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	return Plugin_Handled;
 }
 
-void ObjectGeneric_ClotTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom, bool &killed) 
+
+
+public void ObjBaseThinkPost(int building)
 {
-	if(killed)
+	CBaseCombatCharacter(building).SetNextThink(GetGameTime());
+	SetEntPropFloat(building, Prop_Data, "m_flSimulationTime",GetGameTime());
+}
+
+public void ObjBaseThink(int building)
+{
+	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	ObjectGeneric_ClotThink(objstats);
+}
+
+void BuildingDisplayRepairLeft(int entity)
+{
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	char HealthText[32];
+	int HealthColour[4];
+	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
+	int Health = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
+	for(int i=0; i<(20); i++)
 	{
-		view_as<CClotBody>(victim).m_bDissapearOnDeath = false;
-		view_as<CClotBody>(victim).m_bGib = true;
-		return;
-	}
-	
-	int dmg = RoundFloat(damage);
-	if(Building_Repair_Health[victim] > 0)
-	{
-		Building_Repair_Health[victim] -= dmg;
-		if(Building_Repair_Health[victim] > 0)
+		if(Health >= MaxHealth*(i*(0.05)))
 		{
-			dmg = 0;
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
 		}
 		else
 		{
-			dmg += Building_Repair_Health[victim];
-			Building_Repair_Health[victim] = 0;
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " ");
 		}
 	}
+	HealthColour[0] = 255;
+	HealthColour[1] = 255;
+	HealthColour[3] = 255;
 
-	if(dmg)
+	if(IsValidEntity(objstats.m_iWearable3))
 	{
-		Building_Max_Health[victim] -= dmg;
-		if(Building_Max_Health[victim] < 1)
-			killed = true;
-		
-		int health = GetEntProp(victim, Prop_Data, "m_iMaxHealth") - dmg;
-		if(health < 1)
-			killed = true;
-		
-		SetEntProp(victim, Prop_Data, "m_iMaxHealth", health);
+		DispatchKeyValue(objstats.m_iWearable3, "message", HealthText);
+	}
+	else
+	{
+		float Offset[3];
+		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 7, HealthColour, objstats.index);
+		DispatchKeyValue(TextEntity, "font", "1");
+		objstats.m_iWearable3 = TextEntity;	
 	}
 }

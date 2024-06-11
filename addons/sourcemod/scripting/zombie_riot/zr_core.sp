@@ -550,6 +550,7 @@ void ZR_PluginStart()
 	Waves_PluginStart();
 	Rogue_PluginStart();
 	Spawns_PluginStart();
+	Object_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	

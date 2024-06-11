@@ -471,13 +471,12 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 
 static int Building_BuildingBeingCarried[MAXENTITIES];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
-float f3_Building_KnockbackToTake[MAXENTITIES][3];
+static int i_IDependOnThisBuilding[MAXENTITIES];
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
-
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
 		
 		float VecPos[3];
@@ -492,23 +491,54 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
-		if(Success)
+		if(!Success)
 		{
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		
+		//do we want to build on anothrer building?
+		int buildingHit;
+		float endPos[3];
+		if(IsValidGroundBuilding(VecPos , 70.0, endPos, buildingHit, buildingindx)) //130.0
+		{
+			float endPos2[3];
+			GetEntPropVector(buildingHit, Prop_Data, "m_vecAbsOrigin", endPos2);
+			//We use custom offets for buildings, so we do our own magic here
+			float Delta = f3_CustomMinMaxBoundingBox[buildingHit][2];
+			//Be sure to now set all the things we need.
+			//Set the dependency
+			endPos2[0] = VecPos[0];
+			endPos2[1] = VecPos[1];
+			endPos2[2] += Delta;
+			i_IDependOnThisBuilding[buildingindx] = buildingHit;
+			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
+			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
-			CBaseNPC baseNPC = TheNPCs.FindNPCByEntIndex(buildingindx);
-			baseNPC.GetLocomotion().SetVelocity({0.0,0.0,0.0});
+			return;
 		}
-		else
+		Success = Building_IsValidGroundFloor(client, buildingindx, VecPos);
+		if(!Success)
 		{
 			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			CanBuild_VisualiseAndWarn(client, buildingindx, true, VecPos);
+			return;
+		}
+		if(Success)
+		{
+			SDKCall_SetLocalOrigin(buildingindx, VecPos);	
+			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+			Player_BuildingBeingCarried[client] = 0;
+			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
 		return;
 	}
 	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
-	if(entity < MaxClients)
+	if(entity < MaxClients)	
 		return;
 
 	if (!IsValidEntity(entity))
@@ -520,6 +550,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 		return;
 
+	Building_RotateAllDepencencies(entity);
 	EmitSoundToClient(client, SOUND_GRAB_TF);
 	SDKUnhook(entity, SDKHook_Think, BuildingPickUp);
 	SDKHook(entity, SDKHook_Think, BuildingPickUp);
@@ -534,16 +565,17 @@ void BuildingPickUp(int BuildingNPC)
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
-		b_ThisEntityIgnoredBeingCarried[BuildingNPC] = false;
-		SDKUnhook(BuildingNPC, SDKHook_Think, BuildingPickUp);
+		RemoveEntity(BuildingNPC);
 		return;
 	}
 	float vecView[3];
+	float vecView2[3];
 	float vecFwd[3];
 	float vecPos[3];
 	float vecVel[3];
 
 	GetClientEyeAngles(client, vecView);
+	vecView2 = vecView;
 	GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
 	GetClientEyePosition(client, vecPos);
 
@@ -552,19 +584,12 @@ void BuildingPickUp(int BuildingNPC)
 	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
 
 	GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", vecFwd);
-	vecFwd[2] += 30.0;
 
 	SubtractVectors(vecPos, vecFwd, vecVel);
-	ScaleVector(vecVel, 15.0);
-	for(int i; i < 3; i++)
-	{
-		f3_Building_KnockbackToTake[BuildingNPC][i] = vecVel[i];
-	}
-	
-	CBaseCombatCharacter npc = view_as<CBaseCombatCharacter>(BuildingNPC);
-	npc.MyNextBotPointer().GetLocomotionInterface().Jump();
-	CBaseNPC baseNPC = TheNPCs.FindNPCByEntIndex(BuildingNPC);
-	baseNPC.GetLocomotion().SetVelocity(f3_Building_KnockbackToTake[BuildingNPC]);
+	vecPos[2] -= 15.0;
+	vecView2[0] = 0.0;
+	Custom_SDKCall_SetLocalOrigin(BuildingNPC, vecPos);
+	SetEntPropVector(BuildingNPC, Prop_Data, "m_angRotation", vecView2); 
 }
 
 
@@ -670,11 +695,7 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
-
-	if(FoundSafeSpot)
-	{
-		SDKCall_SetLocalOrigin(client, endPos);	
-	}
+		
 	return FoundSafeSpot;
 }
 
@@ -725,3 +746,322 @@ bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs
 	delete hTrace;
 	return false;
 }
+
+bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3])
+{
+	//This code checks if there is a valid ground, if not, itll say no and fail.
+	//All the checks here now will say if it cailed, if all pass, its valid.
+	
+	float VecMin[3];
+	float VecMax[3];
+	VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
+	VecMin[0] *= -1.0;
+	VecMin[1] *= -1.0;
+	VecMin[2] = 0.0;
+	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
+	//Visualise the box for the player!
+	//This is the final check.
+	static float m_vecLookdown[3];
+	m_vecLookdown = view_as<float>( { 90.0, 0.0, 0.0 } );
+	float VecCheckBottom[3];
+	VecCheckBottom = VecBottom;
+	Handle hTrace;
+	hTrace = TR_TraceRayFilterEx(VecCheckBottom, m_vecLookdown, ( MASK_ALL ), RayType_Infinite, HitOnlyWorld, client);	
+	TR_GetEndPosition(VecCheckBottom, hTrace);
+	delete hTrace;
+	VecCheckBottom[2] += 4.0;
+	float Distance = GetVectorDistance(VecCheckBottom, VecBottom);
+	if(Distance > 60.0)
+	{
+		CanBuild_VisualiseAndWarn(client, buildingindx, true,VecBottom);
+		return false;
+	}
+	VecBottom = VecCheckBottom;
+	CanBuild_VisualiseAndWarn(client, buildingindx, false, VecBottom);
+	return true;
+}
+
+void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float VecBottom[3])
+{
+	float VecMin[3];
+	float VecMax[3];
+	VecMin = f3_CustomMinMaxBoundingBox[entity];
+	VecMin[0] *= -1.0;
+	VecMin[1] *= -1.0;
+	VecMin[2] = 0.0;
+	VecMax = f3_CustomMinMaxBoundingBox[entity];
+	float VecLaser[3];
+	VecLaser = VecBottom;
+	if(Fail)
+	{
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({255, 0, 0, 255}));
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client, 255, 0, 0);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Cannot Build Here");	
+	}
+	else
+	{
+		TE_DrawBox(client, VecLaser, VecMin, VecMax, 0.5, view_as<int>({0, 255, 0, 255}));
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Can Build Here");	
+	}
+}
+
+
+//Derived from function in SMLIB
+stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEnd[3], int& buildingHit, int self)
+{
+	bool foundbuilding = false;
+	Handle trace = TR_TraceRayFilterEx(pos, view_as<float>({90.0, 0.0, 0.0}), CONTENTS_SOLID, RayType_Infinite, TraceRayFilterBuildOnBuildings, self);
+
+	if (TR_DidHit(trace))
+	{
+		int EntityHit = TR_GetEntityIndex(trace);
+
+		if (EntityHit <= 0 || EntityHit==self)
+		{
+			delete trace;
+			return false;
+		}
+
+		if(!i_IsABuilding[EntityHit])
+		{
+			delete trace;
+			return false;
+		}
+		//no multi stacking
+		if(i_IDependOnThisBuilding[EntityHit] != 0)
+		{
+			delete trace;
+			return false;
+		}
+
+
+		TR_GetEndPosition(posEnd, trace);
+
+		if (GetVectorDistance(pos, posEnd, true) <= (distance * distance))
+		{
+			foundbuilding = true;
+			buildingHit = EntityHit;
+		}
+	}
+
+	delete trace;
+
+	return foundbuilding;
+}
+
+public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iExclude)
+{
+	if(iExclude == entity)
+		return false;
+
+	if(entity==0 || entity==-1) //Never the world or something unknown
+	{
+		return false;
+	}
+	if(contentsMask==0) //Never the world or something unknown
+	{
+		return false;
+	}
+
+	if(entity>0 && entity<=MaxClients) //ingore players?
+	{
+		return false;
+	}
+	if(b_BuildingIsStacked[entity])
+	{
+		return false;
+	}
+	
+	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
+	{
+		return true;
+	}
+	return false;
+}
+
+void IsBuildingNotFloating(int building)
+{
+	static float m_vecMaxs[3];
+	static float m_vecMins[3];
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 1.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, -5.0 } );	
+	float endPos2[3];
+	GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", endPos2);
+
+	if(!IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
+	{
+
+		float endPos4[3];
+		endPos4 = endPos2;
+		endPos4[2] += 40.0;
+		/*
+		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
+		TE_SetupBeamPoints(endPos4, endPos2, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
+		TE_SendToAll();
+		*/
+		//This failed, lets do a trace
+		Handle hTrace;
+		float endPos3[3];
+		endPos3 = endPos2;
+		endPos3[2] -= 50.0; //only go down 50 units at max.
+		
+		m_vecMaxs = view_as<float>( { 20.0, 20.0, 20.0 } );
+		m_vecMins = view_as<float>( { -20.0, -20.0, 0.0 } );
+		hTrace = TR_TraceHullFilterEx(endPos2, endPos3, m_vecMins, m_vecMaxs, MASK_PLAYERSOLID, TraceRayHitWorldOnly, building);
+		
+		int target_hit = TR_GetEntityIndex(hTrace);	
+		if(target_hit > -1)
+		{
+			float vecHit[3];
+			TR_GetEndPosition(vecHit, hTrace);
+		//	vecHit[2] -= 7.5; //if a tracehull collides, it takes the middle, so we have to half our height box, which is 20.
+			endPos2 = vecHit;
+			if(IsPointHazard(endPos2))
+			{
+				SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+				return;
+			}
+			TeleportEntity(building, endPos2, NULL_VECTOR, NULL_VECTOR);
+			//we hit something
+		}
+		else
+		{
+			SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+			return;
+		}
+	}
+	m_vecMaxs = view_as<float>( { 20.0, 20.0, 50.0 } );
+	m_vecMins = view_as<float>( { -20.0, -20.0, 35.0 } );	
+	//Check if half of the top half of the building is inside a wall, if it is, detroy, if it is not, then we leave it be.
+	if(IsSpaceOccupiedWorldOnly(endPos2, m_vecMins, m_vecMaxs, building))
+	{
+		SDKHooks_TakeDamage(building, 0, 0, 1000000.0, DMG_CRUSH);
+	}
+}
+
+
+void Building_RotateAllDepencencies(int entityLost = 0)
+{
+	for (int i = 0; i < MAXENTITIES; i++)
+	{
+		if(i_IDependOnThisBuilding[i] == entityLost)
+		{
+			BuildingAdjustMe(i, entityLost);
+		}
+	}
+}
+
+
+void BuildingAdjustMe(int building, int DestroyedBuilding)
+{
+	float posMain[3]; 
+	GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", posMain);
+	float posStacked[3]; 
+	GetEntPropVector(DestroyedBuilding, Prop_Data, "m_vecAbsOrigin", posStacked);
+
+//	posMain = posStacked;
+	posMain[2] = posStacked[2];	
+	
+	TeleportEntity(building, posMain, NULL_VECTOR, NULL_VECTOR);
+	//make npc's that target the previous building target the stacked one now.
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(INpc) && !b_NpcHasDied[INpc])
+		{
+			CClotBody npc = view_as<CClotBody>(INpc);
+			if(npc.m_iTarget == DestroyedBuilding)
+			{
+				npc.m_iTarget = building; 
+			}
+		}
+	}
+	IsBuildingNotFloating(building);
+	i_IDependOnThisBuilding[building] = 0;
+}
+
+public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, int slot)
+{
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true); //infinite range, and ignore walls!
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
+	
+	if(target < 0)
+		return;
+	
+	if(!i_IsABuilding[target])
+	{
+		return;
+	}
+	int max_health = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
+	
+	if(flHealth >= max_health)
+	{
+		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		return;
+	}
+
+	int new_ammo = GetAmmo(client, 3);
+
+	float RepairRate = Attributes_Get(weapon, 95, 1.0);
+	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
+
+	RepairRate *= 102.0;
+
+	int i_HealingAmount = RoundToCeil(RepairRate);
+	int Healing_Value = i_HealingAmount;
+	int newHealth = flHealth + i_HealingAmount;
+	
+
+	if(newHealth >= max_health)
+	{
+		i_HealingAmount -= newHealth - max_health;
+		newHealth = max_health;
+	}
+	if(GetEntProp(target, Prop_Data, "m_iRepair") < i_HealingAmount)
+	{
+		i_HealingAmount = GetEntProp(target, Prop_Data, "m_iRepair");
+	}
+	
+	int Remove_Ammo = i_HealingAmount / 3;
+	
+	if(Remove_Ammo < 0)
+	{
+		Remove_Ammo = 0;
+	}
+	
+	new_ammo -= Remove_Ammo;
+	
+	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
+	{
+		int HealGiven = HealEntityViaFloat(target, float(Healing_Value), _, _);
+		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
+		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
+		{
+			SetEntProp(target, Prop_Data, "m_iRepair", 0);
+		}
+		switch(GetRandomInt(0,1))
+		{
+			case 0:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success1.wav", client, SNDCHAN_AUTO, 70);
+			}
+			case 1:
+			{
+				EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70);
+			}
+		}
+	}
+	SetAmmo(client, 3, new_ammo);
+	CurrentAmmo[client][3] = GetAmmo(client, 3);
+}			

@@ -1564,14 +1564,16 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
-
+PrintToChatAll("test");
 	if(target < 0)
 		return;
 	
+PrintToChatAll("test1");
 	if(!i_IsABuilding[target])
 	{
 		return;
 	}
+PrintToChatAll("test2");
 	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
 	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
 	
@@ -1598,6 +1600,10 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 		i_HealingAmount -= newHealth - max_health;
 		newHealth = max_health;
 	}
+	if(GetEntProp(target, Prop_Data, "m_iRepair") < i_HealingAmount)
+	{
+		i_HealingAmount = GetEntProp(target, Prop_Data, "m_iRepair");
+	}
 	
 	int Remove_Ammo = i_HealingAmount / 3;
 	
@@ -1611,7 +1617,12 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
 		SetVariantInt(Healing_Value);
-		AcceptEntityInput(target, "AddHealth");
+		int HealGiven = HealEntityViaFloat(target, Healing_Value, _, _);
+		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
+		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
+		{
+			SetEntProp(target, Prop_Data, "m_iRepair", 0);
+		}
 		switch(GetRandomInt(0,1))
 		{
 			case 0:

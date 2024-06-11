@@ -386,6 +386,9 @@ bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
 int EnemyNpcAlive = 0;
 int EnemyNpcAliveStatic = 0;
 
+const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
+int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
+
 float f_ClientReviveDelay[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12

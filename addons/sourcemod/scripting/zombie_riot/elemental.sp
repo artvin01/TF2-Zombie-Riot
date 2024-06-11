@@ -123,7 +123,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%t %d>", ElementName[low], lowHealth);
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d>", ElementName[low], lowHealth);
 	return true;
 }
 
