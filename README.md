@@ -31,6 +31,9 @@ Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allo
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
 
+Use THIS compiler version if you dont want any wierd issues:
+1.12.0.7053
+
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 
 ### Where can I see this gamemode in action?
