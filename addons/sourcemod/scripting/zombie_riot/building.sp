@@ -489,8 +489,8 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		VecMin[1] *= -1.0;
 		VecMin[2] = 0.0;
 		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
-		PrintToChatAll("Mins: %f, %f, %f",VecMin[2],VecMin[1],VecMin[0]);
-		PrintToChatAll("maxs: %f, %f, %f",VecMax[2],VecMax[1],VecMax[0]);
+		PrintToChatAll("Mins: %f, %f, %f",VecMin[0],VecMin[1],VecMin[2]);
+		PrintToChatAll("maxs: %f, %f, %f",VecMax[0],VecMax[1],VecMax[2]);
 
 		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
