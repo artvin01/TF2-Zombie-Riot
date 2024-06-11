@@ -1391,7 +1391,6 @@ public void OnPluginStart()
 	ConVar_PluginStart();
 	NPC_PluginStart();
 	SDKHook_PluginStart();
-	Building_PluginStart();
 	OnPluginStart_LagComp();
 	NPC_Base_InitGamedata();
 
@@ -1411,6 +1410,7 @@ public void OnPluginStart()
 	SyncHud_WandMana = CreateHudSynchronizer();
 #if defined ZR
 	ZR_PluginStart();
+	Building_PluginStart();
 #endif
 	
 #if defined RPG
