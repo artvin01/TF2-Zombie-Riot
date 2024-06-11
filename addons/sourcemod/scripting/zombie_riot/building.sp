@@ -475,7 +475,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
 		
 		float VecPos[3];
-		GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", VecPos);
+		GetEntPropVector(buildingindx, Prop_Send, "m_vecOrigin", VecPos);
 		float VecMin[3];
 		float VecMax[3];
 		VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
