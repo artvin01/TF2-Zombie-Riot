@@ -471,10 +471,27 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
-		SDKUnhook(Player_BuildingBeingCarried[client], SDKHook_Think, BuildingPickUp);
+
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
-		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
-		Player_BuildingBeingCarried[client] = 0;
+		
+		float VecPos[3];
+		GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", VecPos);
+		float VecMin[3];
+		float VecMax[3];
+		VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
+		VecMin[0] *= -1.0;
+		VecMin[1] *= -1.0;
+		VecMin[2] = 0.0;
+		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
+
+		bool Success = Npc_Teleport_Safe(buildingindx, VecPos, VecMin, VecMax, false, false);
+		
+		if(Success)
+		{
+			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
+			Player_BuildingBeingCarried[client] = 0;
+		}
 		return;
 	}
 	int entity = GetClientPointVisible(client, _ , false, false,_,1);

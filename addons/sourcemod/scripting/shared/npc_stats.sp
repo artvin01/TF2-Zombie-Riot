@@ -3934,8 +3934,7 @@ public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 	}
 	return false;
 }
-
-stock bool Player_Teleport_Safe(int client, float endPos[3])
+stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true)
 {
 	bool FoundSafeSpot = false;
 
@@ -4049,7 +4048,8 @@ stock bool Player_Teleport_Safe(int client, float endPos[3])
 
 	if(FoundSafeSpot)
 	{
-		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
+		if(teleport)
+			TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
 	}
 	return FoundSafeSpot;
 }

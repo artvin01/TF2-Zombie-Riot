@@ -88,6 +88,7 @@ methodmap ObjectGeneric < CClotBody
 		npc.m_iWearable2 = entity;
 		
 		npc.m_flSpeed = 0.0;
+		NPC_StopPathing(npc.index);
 
 		return npc;
 	}
