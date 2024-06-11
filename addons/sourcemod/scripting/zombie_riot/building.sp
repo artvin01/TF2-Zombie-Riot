@@ -491,15 +491,18 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 
 		bool Success = BuildingSafeSpot(buildingindx, VecPos, VecMin, VecMax);
-		
+		b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 		if(Success)
 		{
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
-			b_ThisEntityIgnoredBeingCarried[buildingindx] = false;
 			Player_BuildingBeingCarried[client] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		else
+		{
+			b_ThisEntityIgnoredBeingCarried[buildingindx] = true;
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+		}
 		return;
 	}
 	int entity = GetClientPointVisible(client, _ , false, false,_,1);
