@@ -666,7 +666,7 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 	if(IsSafePosition_Building(client, endPos, hullcheckmins_Player, hullcheckmaxs_Player))
 		FoundSafeSpot = true;
 
-	if(FoundSafeSpot && teleport_entity)
+	if(FoundSafeSpot)
 	{
 		SDKCall_SetLocalOrigin(client, endPos);	
 	}
