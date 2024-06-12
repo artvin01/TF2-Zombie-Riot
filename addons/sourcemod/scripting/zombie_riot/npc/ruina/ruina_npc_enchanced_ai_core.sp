@@ -2552,7 +2552,7 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 
 		Stage 1: Done.
-		Stage 2: Done. Only requires a bow model.
+		Stage 2: Done. Bow model done. maybe just requires a bit of paintwork.
 		Stage 3: Null
 		Stage 4: Null
 	}
