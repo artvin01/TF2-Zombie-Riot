@@ -205,7 +205,7 @@ void KillFeed_SetBotTeam(int client, int team)
 }
 
 #if defined ZR
-static bool BuildingFullName(int entity, char[] buffer, int length)
+static stock bool BuildingFullName(int entity, char[] buffer, int length)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))

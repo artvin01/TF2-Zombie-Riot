@@ -45,6 +45,11 @@ void Object_PluginStart()
 	factory.Install();
 }
 
+int Object_GetRepairHealth(int entity)
+{
+	return GetEntProp(entity, Prop_Data, "m_iRepair");
+}
+
 //remove whatever things it had
 static void OnDestroy(int entity)
 {
@@ -93,7 +98,7 @@ methodmap ObjectGeneric < CClotBody
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
-		CBaseCombatCharacter(obj).SetNextThink(GetGameTime());
+		objstats.SetNextThink(GetGameTime());
 		SetEntityCollisionGroup(obj, 24);
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)

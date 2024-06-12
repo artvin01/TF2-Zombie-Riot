@@ -1309,11 +1309,10 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						owner = GetClientOfUserId(values[3]);
 						if(owner && !Rogue_Mode())
 						{
-							int HigherTechAdvancedClient;
-							int HigherTechAdvancedCount;
-							HigherTechAdvancedClient = owner;
-							//HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
-							/*char buffer_pap[36];
+							int HigherTechAdvancedClient = owner;
+							/*int HigherTechAdvancedCount;
+							HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
+							char buffer_pap[36];
 							for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
 							{
 								int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);

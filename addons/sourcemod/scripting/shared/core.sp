@@ -134,8 +134,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 	
 	Current coders that in anyway actively helped, in order of how much:
 	
-	Batfoxkid
 	Artvin
+	Batfoxkid
 	Mikusch
 	Suza
 	Alex
@@ -182,6 +182,8 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define DISPENSER_BLUEPRINT	"models/buildables/dispenser_blueprint.mdl"
 #define SENTRY_BLUEPRINT	"models/buildables/sentry1_blueprint.mdl"
+
+#define BANNER_DURATION_FIX_FLOAT 1.0
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 
@@ -493,6 +495,7 @@ float f_CrippleDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
+float f_EnfeebleEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -1209,7 +1212,6 @@ int Armor_Wearable[MAXTF2PLAYERS];
 	Below Are Shared Overrides
 */
 
-#include "shared/take_damage_buff_defaults.sp"
 #include "shared/stocks_override.sp"
 #include "shared/npc_stats.sp"	// NPC Stats is required here due to important methodmap
 #include "shared/npc_collision_logic.sp"	// NPC collisions are sepearted for ease
@@ -1267,6 +1269,7 @@ int Armor_Wearable[MAXTF2PLAYERS];
 
 #include "shared/baseboss_lagcompensation.sp"
 #include "shared/configs.sp"
+#include "shared/damage.sp"
 #include "shared/filenetwork.sp"
 #include "shared/npcs.sp"
 #include "shared/sdkcalls.sp"
@@ -2717,6 +2720,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
+		f_EnfeebleEffect[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
 		f_DelayAttackspeedPreivous[entity] = 1.0;

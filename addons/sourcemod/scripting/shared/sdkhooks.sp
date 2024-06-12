@@ -1751,254 +1751,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		return Plugin_Handled;	
 	}
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
-	if(!(damagetype & (DMG_FALL|DMG_DROWN)))
-		RPGSdkhooks_FlatRes(victim, attacker, weapon, damage);
 #endif
+
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
-#if defined RPG
-	Player_Ability_Warcry_OnTakeDamage(attacker, victim, damage);
-#endif
 
-#if defined ZR
-	if(Medival_Difficulty_Level != 0.0)
-	{
-		float difficulty_math = Medival_Difficulty_Level;
-		
-		difficulty_math = 1.0 - difficulty_math;
-		
-		damage *= difficulty_math + 1.0; //More damage !! only upto double.
-	}
-#endif
-	if(f_MultiDamageTaken[victim] != 1.0)
-	{
-		damage *= f_MultiDamageTaken[victim];
-	}
-	if(f_MultiDamageTaken_Flat[victim] != 1.0)
-	{
-		damage *= f_MultiDamageTaken_Flat[victim];
-	}
-	
-#if defined ZR
-	//freeplay causes more damage taken.
-	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
-	{
-		damage *= f_FreeplayDamageExtra;
-	}
-#endif
-#if defined ZR
-	int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-	if(!b_ThisNpcIsSawrunner[attacker])
-#endif
-	{
-#if defined ZR
-		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-	
-		if(IsValidEntity(Victim_weapon))
-		{
-			OnTakeDamage_ProvokedAnger(Victim_weapon);
-			float modified_damage = Player_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, Victim_weapon, damagePosition);
-			
-			damage = modified_damage;
-		}
-		if(OnTakeDamage_ShieldLogic(victim, damagetype))
-		{
-			return Plugin_Handled;
-		}
-		if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
-		{
-			if(i_CurrentEquippedPerk[attacker] == 5)
-			{
-				damage *= 1.25;
-			}
-		}
-#endif	// ZR
-		if(f_HussarBuff[attacker] > GameTime) //hussar!
-		{
-			damage *= 1.10;
-		}
-		if(f_HussarBuff[victim] > GameTime) //hussar!
-		{
-			damage *= 0.90;
-		}
-#if defined ZR
-		if(f_PotionShrinkEffect[attacker] > GameTime || (IsValidEntity(inflictor) && f_PotionShrinkEffect[inflictor] > GameTime))
-		{
-			damage *= 0.5; //half the damage when small.
-		}
-#endif
-		if(f_BattilonsNpcBuff[victim] > GameTime)
-		{
-			damage *= 0.8;
-		}
-#if defined RPG
-		if(TrueStength_ClientBuff(victim))
-		{
-			damage *= 0.85;
-		}
-		switch(BubbleProcStatusLogicCheck(victim))
-		{
-			case -1:
-			{
-				damage *= 0.85;
-			}
-			case 1:
-			{
-				damage *= 1.15;
-			}
-		}
-		if(WarCry_Enabled_Buff(victim))
-		{
-			damage *= WarCry_ResistanceBuff(victim);
-		}
-		RPG_BobsPureRage(victim, attacker, damage);
-		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
-#endif
-		//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
-		//It will just return the same damage if nothing is done.
-	
-#if defined ZR
-		if(RaidbossIgnoreBuildingsLogic(1) && i_HealthBeforeSuit[victim] > 0)
-		{
-			damage *= 3.0;	//when a raid is alive, make quantum armor 8x as bad at tanking.
-		}
-#endif
-		if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
-		{
-			damage *= 0.93;
-		}
-		if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
-		{
-			damage *= 0.9;
-		}
-
-#if defined ZR
-		if(i_CurrentEquippedPerk[victim] == 2)
-		{
-			damage *= 0.85;
-		}
-
-		if(Rogue_Mode())
-		{
-			int scale = Rogue_GetRoundScale();
-			if(scale < 2)
-			{
-				damage *= 0.50;
-			}
-			else if(scale < 4)
-			{
-				damage *= 0.75;
-			}
-		}
-#endif
-			
-#if defined ZR
-	//	bool Though_Armor = false;
-	
-		if(i_CurrentEquippedPerk[victim] == 6)
-		{
-
-			//s	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
-			int flMaxHealth = SDKCall_GetMaxHealth(victim);
-		
-			if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
-			{
-				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
-				
-				float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
-				
-				ParticleEffectAt(vecVictim, "peejar_impact_cloud_milk", 0.5);
-				
-				EmitSoundToAll("weapons/jar_explode.wav", victim, SNDCHAN_AUTO, 80, _, 1.0);
-				
-				damage *= 0.25;
-				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
-					if (IsValidEntity(baseboss_index))
-					{
-						if(!b_NpcHasDied[baseboss_index])
-						{
-							if (GetTeam(victim)!=GetTeam(baseboss_index)) 
-							{
-								float vecTarget[3]; WorldSpaceCenter(baseboss_index, vecTarget);
-								
-								float flDistanceToTarget = GetVectorDistance(vecVictim, vecTarget, true);
-								if(flDistanceToTarget < 90000)
-								{
-									ParticleEffectAt(vecTarget, "peejar_impact_cloud_milk", 0.5);
-									f_WidowsWineDebuff[baseboss_index] = GameTime + FL_WIDOWS_WINE_DURATION;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-#endif	// ZR
-		
-		if(Resistance_Overall_Low[victim] > GameTime)
-		{
-			damage *= RES_MEDIGUN_LOW;
-		}
-#if defined ZR
-		if(i_HealthBeforeSuit[victim] == 0)
-		{
-			int armorEnt = victim;
-			int vehicle = GetEntPropEnt(victim, Prop_Data, "m_hVehicle");
-			if(vehicle != -1)
-				armorEnt = vehicle;
-
-			if(Armor_Charge[armorEnt] > 0)
-			{
-				int dmg_through_armour = RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED);
-				switch(GetRandomInt(1,3))
-				{
-					case 1:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-					
-					case 2:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-					
-					case 3:
-						EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-				}						
-				if(RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION) >= Armor_Charge[armorEnt])
-				{
-					int damage_recieved_after_calc;
-					damage_recieved_after_calc = RoundToCeil(damage) - Armor_Charge[armorEnt];
-					Armor_Charge[armorEnt] = 0;
-					damage = float(damage_recieved_after_calc);
-
-					//armor is broken!
-					if(f_Armor_BreakSoundDelay[victim] < GetGameTime())
-					{
-						f_Armor_BreakSoundDelay[victim] = GetGameTime() + 5.0;	
-						EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
-						//\sound\npc\assassin\ball_zap1.wav
-					}
-				}
-				else
-				{
-					Armor_Charge[armorEnt] -= RoundToCeil(damage * ZR_ARMOR_DAMAGE_REDUCTION);
-					damage = 0.0;
-					damage += float(dmg_through_armour);
-				}
-			}
-
-			if(armorEnt == victim)
-			{
-				float percentage = ArmorPlayerReduction(victim);
-				damage *= percentage;
-			}
-			else
-			{
-				damage *= 0.65;
-			}
-		}
-#endif	// ZR
-	}
+	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 #if defined ZR
 	if(RoundToCeil(damage) >= flHealth)
@@ -2153,13 +1912,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 	}
 #endif	// ZR
+
+#if !defined RTS
 	int ClientAttacker;
 	if(IsValidClient(inflictor))
 		ClientAttacker = inflictor;
 	else if(IsValidClient(attacker))
 		ClientAttacker = attacker;
 
-#if !defined RTS
 	if(ClientAttacker > 0)
 	{
 		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
@@ -2173,6 +1933,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 	return Plugin_Changed;
 }
+
 #if defined ZR || defined RPG
 void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
@@ -2378,71 +2139,6 @@ public void OnWeaponSwitchPre(int client, int weapon)
 #endif	// Non-RTS
 
 #if defined ZR
-static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3])
-{
-	switch(i_CustomWeaponEquipLogic[equipped_weapon])
-	{
-		case WEAPON_ARK: // weapon_ark
-		{
-			return Player_OnTakeDamage_Ark(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-		case WEAPON_NEARL, WEAPON_FUSION_PAP2:
-		{
-			return Player_OnTakeDamage_Fusion(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-		case WEAPON_RIOT_SHIELD:
-		{
-			return Player_OnTakeDamage_Riot_Shield(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-		case WEAPON_MLYNAR: // weapon_ark
-		{
-			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon);
-		}
-		case WEAPON_MLYNAR_PAP: // weapon_ark
-		{
-			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
-		}
-		case WEAPON_OCEAN, WEAPON_SPECTER:
-		{
-			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
-		}
-		case WEAPON_GLADIIA:
-		{
-			return Gladiia_OnTakeDamageSelf(victim, attacker, damage);
-		}
-		case WEAPON_BLEMISHINE:
-		{
-			return Player_OnTakeDamage_Blemishine(victim, attacker, damage);
-		}
-		case WEAPON_BOARD:
-		{
-//			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
-		{
-			return WeaponLeper_OnTakeDamagePlayer(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
-		{
-			Flagellant_OnTakeDamage(victim, damage);
-		}
-		case WEAPON_RAPIER:
-		{
-			Player_OnTakeDamage_Rapier(victim, attacker, damage);
-		}
-		case WEAPON_RED_BLADE:
-		{
-			WeaponRedBlade_OnTakeDamage(attacker, victim, damage);
-		}
-		case WEAPON_HEAVY_PARTICLE_RIFLE:
-		{
-			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
-		}
-	}
-	return damage;
-}
-
-
 static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -2936,26 +2632,5 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	int blue = 0;
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
-}
-
-
-void RPGSdkhooks_FlatRes(int victim, int attacker, int weapon, float &damage)
-{
-	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
-	if(f_FlatDamagePiercing[attacker] != 1.0)
-	{
-		FlatDamageResistance *= f_FlatDamagePiercing[attacker];
-	}
-	if(IsValidEntity(weapon))
-	{
-		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
-		FlatDamageResistance *= DamagePiercing;
-	}
-	float damageMinimum = (damage * 0.05);
-	damage -= FlatDamageResistance;
-	if(damage < damageMinimum)
-	{
-		damage = damageMinimum;
-	}
 }
 #endif
