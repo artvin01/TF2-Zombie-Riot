@@ -66,6 +66,9 @@ void NPC_ConfigSetup()
 	ObjectPerkMachine_MapStart();
 	ObjectPackAPunch_MapStart();
 	ObjectHealingStation_MapStart();
+	ObjectTinkerAnvil_MapStart();
+	ObjectSentrygun_MapStart();
+	ObjectMortar_MapStart();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -754,7 +757,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_packapunch.sp"
 #include "zombie_riot/object/obj_barricade.sp"
 #include "zombie_riot/object/obj_ammobox.sp"
-
+#include "zombie_riot/object/obj_tinker_anvil.sp"
+#include "zombie_riot/object/obj_sentrygun.sp"
+#include "zombie_riot/object/obj_mortar.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

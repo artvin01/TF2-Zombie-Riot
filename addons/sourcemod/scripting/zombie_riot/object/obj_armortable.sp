@@ -25,7 +25,7 @@ methodmap ObjectArmorTable < ObjectGeneric
 {
 	public ObjectArmorTable(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectArmorTable npc = view_as<ObjectArmorTable>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/table_01.mdl", _, "500",{20.0, 20.0, 33.0}));
+		ObjectArmorTable npc = view_as<ObjectArmorTable>(ObjectGeneric(client, vecPos, vecAng, "models/props_manor/table_01.mdl", _, "50",{20.0, 20.0, 33.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
@@ -81,6 +81,9 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 				GiveArmor = false;
 		}
 	}
+	else
+		GiveArmor = false;
+
 	if(!GiveArmor)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");

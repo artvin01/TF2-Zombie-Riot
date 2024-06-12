@@ -553,7 +553,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 		return;
-		
+
 	Building_PlayerWieldsBuilding(client, entity);
 }
 
@@ -611,6 +611,8 @@ void BuildingPickUp(int BuildingNPC)
 	SubtractVectors(vecPos, vecFwd, vecVel);
 	vecPos[2] -= 15.0;
 	vecView2[0] = 0.0;
+	vecView2[1] -= 180.0;
+	vecView2[1] += RotateByDefaultReturn(BuildingNPC);
 	Custom_SDKCall_SetLocalOrigin(BuildingNPC, vecPos);
 	SetEntPropVector(BuildingNPC, Prop_Data, "m_angRotation", vecView2); 
 }
@@ -1010,6 +1012,23 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 //Acts like a tf2 wrench with repairing
 public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, int slot)
 {
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	RequestFrames(Wrench_Hit_Repair_ReplacementInternal, 12, pack);
+}
+public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	
+	delete pack;
+	if(!client || weapon == -1 || !IsValidCurrentWeapon(client, weapon))
+	{
+		return;
+	}
+
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
 	Handle swingTrace;
 	float vecSwingForward[3];
@@ -1042,7 +1061,7 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
 	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
 
-	RepairRate *= 102.0;
+	RepairRate *= 10.0;
 
 	int i_HealingAmount = RoundToCeil(RepairRate);
 	int newHealth = flHealth + i_HealingAmount;
@@ -1062,7 +1081,6 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 		return;
 	}
 	int Healing_Value = i_HealingAmount;
-	TE_Particle("halloween_boss_axe_hit_sparks", vecHit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	int Remove_Ammo = i_HealingAmount / 3;
 	
@@ -1071,16 +1089,21 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 		Remove_Ammo = 0;
 	}
 	
-	new_ammo -= Remove_Ammo;
-	
+	int HealGiven;
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
-		int HealGiven = HealEntityViaFloat(target, float(Healing_Value), _, _);
+		HealGiven = HealEntityViaFloat(target, float(Healing_Value), _, float(new_ammo / 3));
+		if(HealGiven <= 0)
+		{
+			EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+			return;
+		}
 		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
 		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
 		{
 			SetEntProp(target, Prop_Data, "m_iRepair", 0);
 		}
+		TE_Particle("halloween_boss_axe_hit_sparks", vecHit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		switch(GetRandomInt(0,1))
 		{
 			case 0:
@@ -1093,6 +1116,7 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 			}
 		}
 	}
+	new_ammo -= HealGiven / 3;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
 }			

@@ -25,7 +25,7 @@ methodmap ObjectAmmobox < ObjectGeneric
 {
 	public ObjectAmmobox(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectAmmobox npc = view_as<ObjectAmmobox>(ObjectGeneric(client, vecPos, vecAng, "models/items/ammocrate_smg1.mdl"));
+		ObjectAmmobox npc = view_as<ObjectAmmobox>(ObjectGeneric(client, vecPos, vecAng, "models/items/ammocrate_smg1.mdl", _,"50", {20.0, 20.0, 33.0}, 15.0));
 		
 		npc.SetActivity("Idle", true);
 
@@ -40,26 +40,21 @@ methodmap ObjectAmmobox < ObjectGeneric
 
 static void ClotThink(ObjectAmmobox npc)
 {
-	npc.Update();
-
-	if(ObjectGeneric_ClotThink(npc))
+	if(npc.m_flAttackHappens)
 	{
-		if(npc.m_flAttackHappens)
-		{
-			float gameTime = GetGameTime(npc.index);
+		float gameTime = GetGameTime(npc.index);
 
-			if(npc.m_flAttackHappens > 999999.9)
-			{
-				npc.SetActivity("Open", true);
-				npc.SetPlaybackRate(0.5);	
-				npc.m_flAttackHappens = gameTime + 1.4;
-			}
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.SetActivity("Close", true);
-				npc.SetPlaybackRate(0.5);
-				npc.m_flAttackHappens = 0.0;
-			}
+		if(npc.m_flAttackHappens > 999999.9)
+		{
+			npc.SetActivity("Open", true);
+			npc.SetPlaybackRate(0.5);	
+			npc.m_flAttackHappens = gameTime + 0.6;
+		}
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.SetActivity("Close", true);
+			npc.SetPlaybackRate(0.5);
+			npc.m_flAttackHappens = 0.0;
 		}
 	}
 }

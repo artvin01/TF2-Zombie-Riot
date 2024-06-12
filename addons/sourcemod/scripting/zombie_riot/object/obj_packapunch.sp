@@ -30,11 +30,12 @@ methodmap ObjectPackAPunch < ObjectGeneric
 {
 	public ObjectPackAPunch(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectPackAPunch npc = view_as<ObjectPackAPunch>(ObjectGeneric(client, vecPos, vecAng, "models/props_spytech/computer_low.mdl", _, "500",{25.0, 25.0, 65.0}));
+		ObjectPackAPunch npc = view_as<ObjectPackAPunch>(ObjectGeneric(client, vecPos, vecAng, "models/props_spytech/computer_low.mdl", _, "50",{25.0, 25.0, 65.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		SetRotateByDefaultReturn(npc.index, 90.0);
 
 		return npc;
 	}

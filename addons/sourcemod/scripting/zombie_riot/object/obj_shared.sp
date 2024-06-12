@@ -32,7 +32,16 @@ static bool SentryBuilding[MAXENTITIES];
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
+static float RotateByDefault[MAXENTITIES]={0.0, ...};
 
+float RotateByDefaultReturn(int entity)
+{
+	return RotateByDefault[entity];
+}
+float SetRotateByDefaultReturn(int entity, float Setfloat)
+{
+	RotateByDefault[entity] = Setfloat;
+}
 //Default ones, most buildings are metal.
 static char g_HurtSounds[][] = {
 	"physics/metal/metal_box_impact_hard1.wav",
@@ -89,7 +98,9 @@ methodmap ObjectGeneric < CClotBody
 						const char[] model,
 						const char[] modelscale = "1.0",
 						const char[] basehealth = "750",
-						const float CustomThreeDimensions[3] = {0.0,0.0,0.0})
+						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						const float FakemodelOffset = 0.0,
+						bool DoFakeModel = true)
 	{
 		int obj = CreateEntityByName("obj_building");
 		DispatchKeyValueVector(obj, "origin",	 vecPos);
@@ -119,6 +130,7 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
 		SetEntityCollisionGroup(obj, 24);
+		RotateByDefault[obj] = 0.0;
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 		{
@@ -141,9 +153,13 @@ methodmap ObjectGeneric < CClotBody
 		VecMin[2] = 0.0;
 		VecMax = CustomThreeDimensions;
 		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
+
+	//	VecMax[2] += FakemodelOffset;
+	//	VecMin[2] += FakemodelOffset;
 		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
 		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
-		objstats.UpdateCollisionBox();
+		//Running UpdateCollisionBox On this entity just makes it calculate its own one, bad.
+	//	objstats.UpdateCollisionBox();
 
 		static Function defaultFunc;
 		if(!defaultFunc)
@@ -156,19 +172,22 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
-	//	SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
+		if(DoFakeModel)
+		{
+			SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
 
-		int entity = objstats.EquipItemSeperate("partyhat", model);
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
-		objstats.m_iWearable1 = entity;
+			int entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+			objstats.m_iWearable1 = entity;
 
-		entity = objstats.EquipItemSeperate("partyhat", model);
-		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
-		objstats.m_iWearable2 = entity;
+			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+			objstats.m_iWearable2 = entity;
+		}
 
 
 		return objstats;
@@ -233,6 +252,90 @@ methodmap ObjectGeneric < CClotBody
 		MakeObjectIntangeable(item);
 		return item;
 	} 
+	/*
+	
+	public void SetActivity(const char[] animation, bool Is_sequence = false)
+	{
+		if(IsValidEntity(this.m_iWearable1))
+		{
+			SetVariantString(animation);
+			AcceptEntityInput(this.m_iWearable1, "SetAnimation");
+		}
+		if(IsValidEntity(this.m_iWearable2))
+		{
+			SetVariantString(animation);
+			AcceptEntityInput(this.m_iWearable2, "SetAnimation");
+		}
+	}
+	public void SetPlaybackRate(float flSpeedAnim)
+	{
+		char FloatString[8];
+		FloatToString(flSpeedAnim, FloatString, sizeof(FloatString));
+		if(IsValidEntity(this.m_iWearable1))
+		{
+			SetVariantString(FloatString);
+			AcceptEntityInput(this.m_iWearable1, "SetPlayBackRate");
+		}
+		if(IsValidEntity(this.m_iWearable2))
+		{
+			SetVariantString(FloatString);
+			AcceptEntityInput(this.m_iWearable2, "SetPlayBackRate");
+		}
+	}
+	*/
+	public void SetActivity(const char[] animation, bool Is_sequence = false)
+	{
+		if(IsValidEntity(this.m_iWearable1))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
+			npcstats.SetActivity(animation, Is_sequence);
+		}
+		else
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.index);
+			npcstats.SetActivity(animation, Is_sequence);
+			return;
+		}
+		if(IsValidEntity(this.m_iWearable2))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
+			npcstats.SetActivity(animation, Is_sequence);
+		}
+	}
+	public void SetPlaybackRate(float flSpeedAnim)
+	{
+		if(IsValidEntity(this.m_iWearable1))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
+			npcstats.SetPlaybackRate(flSpeedAnim);
+		}
+		else
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.index);
+			npcstats.SetPlaybackRate(flSpeedAnim);
+			return;
+		}
+		if(IsValidEntity(this.m_iWearable2))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
+			npcstats.SetPlaybackRate(flSpeedAnim);
+		}
+	}
+/*
+	public void Update()
+	{
+		if(IsValidEntity(this.m_iWearable1))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
+			npcstats.Update();
+		}
+		if(IsValidEntity(this.m_iWearable2))
+		{
+			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
+			npcstats.Update();
+		}
+	}
+	*/
 	property int m_iWearable1
 	{
 		public get()		 
@@ -415,7 +518,16 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	float gameTime = GetGameTime(objstats.index);
 	if(objstats.m_flNextDelayTime > gameTime)
 		return false;
-	
+
+
+	Function func = func_NPCThink[objstats.index];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(objstats.index);
+		Call_Finish();
+	}
+
 	objstats.m_flNextDelayTime = gameTime + 0.1;
 	BuildingDisplayRepairLeft(objstats.index);
 	
@@ -461,6 +573,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
+			
 	}
 	else
 	{
@@ -493,11 +606,19 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
+		{
 			SetEntityRenderColor(wearable, r, g, 0, 100);
+		}
 		
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
+		{
 			SetEntityRenderColor(wearable, r, g, 0, 255);
+		}
+		else
+		{
+			SetEntityRenderColor(objstats.index, r, g, 0, 255);
+		}
 		
 	}
 
@@ -641,7 +762,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
   	int Building_health_attribute = i_MaxSupportBuildingsLimit[client];
 	
 	maxAllowed += Building_health_attribute; 
-//	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;
@@ -682,8 +803,10 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 		return Plugin_Handled;
 
+	damage *= 0.1;
+
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	health -= RoundToNearest(damage);
+	health -= RoundToCeil(damage);
 	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)
 	{
@@ -731,36 +854,36 @@ int OwnerOfText[MAXENTITIES];
 void BuildingDisplayRepairLeft(int entity)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
-	char HealthText[32];
+	char HealthText[64];
 	int HealthColour[4];
-	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
-	int Health = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
+	int Repair = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
+//	int MaxRepair = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
+
+	int Health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
+//	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;
-	if(Health <= 0)
+	if(Repair <= 0)
 	{
 		HealthColour[0] = 255;
 		HealthColour[1] = 0;
 		HealthColour[3] = 255;
-		for(int i=0; i<(20); i++)
-		{
-			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
-		}
+		char ThousandBuffer[64];
+		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
+		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
 	}
 	else
 	{
-		for(int i=0; i<(20); i++)
-		{
-			if(Health >= MaxHealth*(i*(0.05)))
-			{
-				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
-			}
-			else
-			{
-				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
-			}
-		}
+		char ThousandBuffer[64];
+		IntToString(Repair, ThousandBuffer, sizeof(ThousandBuffer));
+		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " -> ");
+		IntToString(Health, ThousandBuffer, sizeof(ThousandBuffer));
+		ThousandString(ThousandBuffer, sizeof(ThousandBuffer));
+		Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ThousandBuffer);
 	}
 
 
@@ -775,8 +898,8 @@ void BuildingDisplayRepairLeft(int entity)
 	{
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 7, HealthColour, objstats.index);
-		DispatchKeyValue(TextEntity, "font", "1");
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
+		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable3 = TextEntity;	
 	}
 	if(!IsValidEntity(objstats.m_iWearable4))
@@ -785,14 +908,18 @@ void BuildingDisplayRepairLeft(int entity)
 		HealthColour[1] = 255;
 		HealthColour[2] = 0;
 		HealthColour[3] = 255;
-		Format(HealthText, sizeof(HealthText), "You own this!");
+		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+		if(IsValidClient(Owner))
+			Format(HealthText, sizeof(HealthText), "%N", Owner);
+		else
+			Format(HealthText, sizeof(HealthText), "%s", " ");
 		float Offset[3];
 		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
-		Offset[2] += 7.0;
-		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 5, HealthColour, objstats.index);
+		Offset[2] += 6.0;
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 6, HealthColour, objstats.index);
+		OwnerOfText[TextEntity] = Owner;
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable4 = TextEntity;	
-		OwnerOfText[TextEntity] = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 		SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_OwnerOfBuilding);
 	}
 }

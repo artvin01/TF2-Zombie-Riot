@@ -221,42 +221,6 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-public Action Blacksmith_BuildingTimer(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(entity == -1)
-		return Plugin_Stop;
-	
-	int maxRepair = Building_Max_Health[entity] * 2;
-
-	if(Building_cannot_be_repaired[entity])
-	{
-		int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth") + (maxRepair / 1500);
-		if(maxhealth >= Building_Max_Health[entity])
-		{
-			Building_Repair_Health[entity] += Building_Max_Health[entity] - maxhealth;
-			if(Building_Repair_Health[entity] >= maxRepair)
-				Building_Repair_Health[entity] = maxRepair - 1;
-			
-			maxhealth = Building_Max_Health[entity];
-			Building_cannot_be_repaired[entity] = false;
-		}
-
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-	}
-	else if(Building_Repair_Health[entity] < maxRepair)
-	{
-		Building_Repair_Health[entity] += (maxRepair / 1500);
-		if(Building_Repair_Health[entity] > maxRepair)
-			Building_Repair_Health[entity] = maxRepair;
-		
-		int progress = (Building_Repair_Health[entity] - 1) * 100 / Building_Max_Health[entity];
-		SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress + 1);
-	}
-
-	return Plugin_Continue;
-}
-
 void Blacksmith_BuildingUsed(int entity, int client, int owner)
 {
 	if(owner == -1 || SmithLevel[owner] < 0)

@@ -67,7 +67,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	
 	Escape_RoundStart();
 	Waves_RoundStart();
-//	Blacksmith_RoundStart();
+	Blacksmith_RoundStart();
 #endif
 
 #if defined RPG

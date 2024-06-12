@@ -27,11 +27,12 @@ methodmap ObjectPerkMachine < ObjectGeneric
 {
 	public ObjectPerkMachine(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/welding_machine01.mdl",_, "500",{20.0, 20.0, 65.0}));
+		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(ObjectGeneric(client, vecPos, vecAng, "models/props_farm/welding_machine01.mdl",_, "50",{20.0, 20.0, 65.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+		SetRotateByDefaultReturn(npc.index, 90.0);
 
 		return npc;
 	}

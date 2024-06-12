@@ -46,7 +46,7 @@ methodmap ObjectBarricade < ObjectGeneric
 {
 	public ObjectBarricade(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectBarricade npc = view_as<ObjectBarricade>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "6000",{20.0, 20.0, 60.0}));
+		ObjectBarricade npc = view_as<ObjectBarricade>(ObjectGeneric(client, vecPos, vecAng, "models/props_gameplay/sign_barricade001a.mdl", _, "600",{20.0, 20.0, 63.0},_,false));
 		
 		npc.FuncCanBuild = ObjectBarricade_CanBuild;
 

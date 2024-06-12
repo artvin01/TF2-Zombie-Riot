@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const float minbounds[3] = {-15.0, -15.0, 0.0};
-				static const float maxbounds[3] = {15.0, 15.0, 45.0};
 void ObjectHealingStation_MapStart()
 {
 	PrecacheModel("models/props_halloween/fridge.mdl");
@@ -26,8 +24,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 methodmap ObjectHealingStation < ObjectGeneric
 {
 	public ObjectHealingStation(int client, const float vecPos[3], const float vecAng[3])
-	{ 
-		ObjectHealingStation npc = view_as<ObjectHealingStation>(ObjectGeneric(client, vecPos, vecAng, "models/props_halloween/fridge.mdl", "0.65", "500", {15.0, 15.0, 45.0}));
+	{
+		ObjectHealingStation npc = view_as<ObjectHealingStation>(ObjectGeneric(client, vecPos, vecAng, "models/props_halloween/fridge.mdl", "0.65", "50", {15.0, 15.0, 57.0}));
 
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;

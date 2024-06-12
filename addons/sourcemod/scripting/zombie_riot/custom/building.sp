@@ -1564,16 +1564,13 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
-PrintToChatAll("test");
 	if(target < 0)
 		return;
 	
-PrintToChatAll("test1");
 	if(!i_IsABuilding[target])
 	{
 		return;
 	}
-PrintToChatAll("test2");
 	int max_health = GetEntProp(target, Prop_Send, "m_iMaxHealth");
 	int flHealth = GetEntProp(target, Prop_Send, "m_iHealth");
 	
