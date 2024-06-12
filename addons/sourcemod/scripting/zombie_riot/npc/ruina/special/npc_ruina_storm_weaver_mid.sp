@@ -230,14 +230,14 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(!b_storm_weaver_solo)
 	{
 		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
-		//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
 	}
 	else if(b_stellar_weaver_true_solo)
 	{
 		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
-		//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
 	}
 

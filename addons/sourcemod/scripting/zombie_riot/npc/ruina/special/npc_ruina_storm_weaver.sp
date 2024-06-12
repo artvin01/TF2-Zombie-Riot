@@ -1028,7 +1028,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		
-		//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 		damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
 
 
@@ -1039,7 +1039,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 
-		//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
 		damage = 0.0;
 

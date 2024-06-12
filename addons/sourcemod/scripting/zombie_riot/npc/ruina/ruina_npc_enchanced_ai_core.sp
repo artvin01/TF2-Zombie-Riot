@@ -88,6 +88,9 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
+
+int i_laz_entity[MAXENTITIES];
+
 enum
 {
 	RUINA_GLOBAL_NPC = 0,	//global npc's, OR non ruina npc's
@@ -154,6 +157,8 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_mana_sickness_timeout);
 	Zero(b_is_battery_buffed);
+
+	Zero(i_laz_entity);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -1209,7 +1214,7 @@ stock void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, floa
 	i_mana_sickness_flat[iNPC] = flat_amt;
 	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
 }
-public void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
+void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 {
 	if(!IsValidClient(victim))
 		return;
@@ -2370,6 +2375,32 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
+
+	/// Custom Hand Particles or body or wings or halo or whatnot ///
+
+#define RUINA_MAX_PARTICLE_ENTS 12
+
+//Current highest particle amt: 12.
+
+int i_particle_ref_id[MAXENTITIES][RUINA_MAX_PARTICLE_ENTS];
+int i_laser_ref_id[MAXENTITIES][RUINA_MAX_PARTICLE_ENTS];
+
+void Ruina_Clean_Particles(int client)
+{
+	for(int i=0 ; i < RUINA_MAX_PARTICLE_ENTS; i++)
+	{
+		int laser = EntRefToEntIndex(i_laser_ref_id[client][i]);
+		int particle = EntRefToEntIndex(i_particle_ref_id[client][i]);
+
+		if(IsValidEntity(laser))
+			RemoveEntity(laser);
+		if(IsValidEntity(particle))
+			RemoveEntity(particle);
+
+		i_particle_ref_id[client][i] = INVALID_ENT_REFERENCE;
+		i_laser_ref_id[client][i] = INVALID_ENT_REFERENCE;
+	}
+}
 /*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
 {
 	if(IsValidEntity(entity))	
@@ -2518,7 +2549,7 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done. Only requires a bow model.
 		Stage 3: Null
 		Stage 4: Null
 	}

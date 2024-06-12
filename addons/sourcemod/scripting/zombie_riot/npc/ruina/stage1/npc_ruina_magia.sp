@@ -229,6 +229,9 @@ methodmap Magia < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
+
+		Ruina_Clean_Particles(npc.index);
+
 		Magia_Create_Hand_Crest(npc.index);
 		
 		return npc;
@@ -379,9 +382,6 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static int i_particle[MAXENTITIES][11];
-static int i_laser[MAXENTITIES][8];
-
 static void Magia_Create_Hand_Crest(int client)
 {
 	float flPos[3];
@@ -437,49 +437,34 @@ static void Magia_Create_Hand_Crest(int client)
 	SetParent(client, particle_0, "effect_hand_r",_);
 
 	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	/*i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
+	/*i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
 	
 	
-	i_particle[client][0] = EntIndexToEntRef(particle_0);
-	i_particle[client][1] = EntIndexToEntRef(particle_1);
-	i_particle[client][2] = EntIndexToEntRef(particle_2);
-	i_particle[client][3] = EntIndexToEntRef(particle_4);
-	i_particle[client][4] = EntIndexToEntRef(particle_4_1);
-	i_particle[client][5] = EntIndexToEntRef(particle_5);
-	i_particle[client][6] = EntIndexToEntRef(particle_5_1);
-	i_particle[client][7] = EntIndexToEntRef(particle_6);
-	i_particle[client][8] = EntIndexToEntRef(particle_6_1);
+	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
+	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
+	i_particle_ref_id[client][2] = EntIndexToEntRef(particle_2);
+	i_particle_ref_id[client][3] = EntIndexToEntRef(particle_4);
+	i_particle_ref_id[client][4] = EntIndexToEntRef(particle_4_1);
+	i_particle_ref_id[client][5] = EntIndexToEntRef(particle_5);
+	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_5_1);
+	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_6);
+	i_particle_ref_id[client][8] = EntIndexToEntRef(particle_6_1);
 	
-}
-static void Delete_Hand_Crest(int client)
-{
-	for(int laser=0 ; laser<4 ; laser++)
-	{
-		int entity = EntRefToEntIndex(i_laser[client][laser]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-	for(int particle=0 ; particle < 9 ; particle++)
-	{
-		int entity = EntRefToEntIndex(i_particle[client][particle]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
 }
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -510,9 +495,9 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	Ruina_NPCDeath_Override(entity);
+	Ruina_NPCDeath_Override(npc.index);
 	
-	Delete_Hand_Crest(entity);
+	Ruina_Clean_Particles(npc.index);
 
 		
 	if(IsValidEntity(npc.m_iWearable2))

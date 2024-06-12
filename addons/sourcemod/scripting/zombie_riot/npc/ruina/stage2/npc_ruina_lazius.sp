@@ -34,8 +34,6 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
-static int i_laz_entity[MAXENTITIES];
-
 void Lazius_OnMapStart_NPC()
 {
 	NPCData data;
@@ -58,7 +56,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
 
-	Zero(i_laz_entity);
+	
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {

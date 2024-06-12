@@ -36,6 +36,19 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
+static const char g_HyperArrowSound[][] = {
+	"ambient_mp3/halloween/thunder_01.mp3",
+	"ambient_mp3/halloween/thunder_02.mp3",
+	"ambient_mp3/halloween/thunder_03.mp3",
+	"ambient_mp3/halloween/thunder_04.mp3",
+	"ambient_mp3/halloween/thunder_05.mp3",
+	"ambient_mp3/halloween/thunder_06.mp3",
+	"ambient_mp3/halloween/thunder_07.mp3",
+	"ambient_mp3/halloween/thunder_08.mp3",
+	"ambient_mp3/halloween/thunder_09.mp3",
+	"ambient_mp3/halloween/thunder_10.mp3"
+};
+
 void Aetheria_OnMapStart_NPC()
 {
 	NPCData data;
@@ -57,6 +70,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_HyperArrowSound);
 
 	PrecacheModel("models/player/sniper.mdl");
 }
@@ -68,6 +82,14 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 methodmap Aetheria < CClotBody
 {
 	
+	public void PlayHyperArrowSound() {
+		EmitSoundToAll(g_HyperArrowSound[GetRandomInt(0, sizeof(g_HyperArrowSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayHyperArrowSound()");
+		#endif
+	}
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -115,7 +137,7 @@ methodmap Aetheria < CClotBody
 	}
 	
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -125,7 +147,7 @@ methodmap Aetheria < CClotBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
+		PrintToServer("CClot::PlayRangedReloadSound()");
 		#endif
 	}
 	
@@ -138,18 +160,17 @@ methodmap Aetheria < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
-			C_Bet_Brinkhood	models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl
-			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl"
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
-			Hwn_Spy_Misc2 "models/player/items/spy/hwn_spy_misc2.mdl"
-			Hazeguard "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
-
-			power spike? "models/workshop/player/items/sniper/hwn2023_power_spike_style1/hwn2023_power_spike_style1.mdl"
+			//Blighted beak 			"models/player/items/medic/medic_blighted_beak.mdl"
+			//Whiskey Bib				"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
+			//Intangible Ascot 			"models/player/items/spy/hwn_spy_misc2.mdl"
+			//Gentleman's Ushanka		"models/player/items/medic/medic_ushanka.mdl"
+			//power spike 				"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl"
+			//Triggerman's tacticals	"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl"
 		
 		*/
 		
@@ -169,27 +190,27 @@ methodmap Aetheria < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/medic_blighted_beak.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/sniper/c_bet_brinkhood/c_bet_brinkhood.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/medic/medic_ushanka.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/spy/hwn_spy_misc2.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
@@ -203,7 +224,9 @@ methodmap Aetheria < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-				
+
+		Ruina_Clean_Particles(npc.index);
+		Spawn_Weapon(npc.index);			
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -257,12 +280,8 @@ static void ClotThink(int iNPC)
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
-	
-	/*if(fl_ruina_battery[npc.index]>500.0)
-	{
-		fl_ruina_battery[npc.index] = 0.0;
-		
-	}*/
+
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -356,8 +375,18 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	Ruina_NPCDeath_Override(entity);
+	Ruina_NPCDeath_Override(npc.index);
 		
+	Ruina_Clean_Particles(npc.index);
+
+	int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+
+	if(IsValidEntity(Laser_End))
+	{
+		RemoveEntity(Laser_End);
+		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
+	}
+
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
@@ -370,6 +399,41 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+}
+
+static void On_LaserHit(int client, int target, int damagetype, float damage)
+{
+	Ruina_Add_Mana_Sickness(client, target, 0.01, 1);
+}
+
+static void Func_On_Proj_Touch(int projectile, int other)
+{
+	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+	{
+		owner = 0;
+	}
+	else
+	{
+		Aetheria npc = view_as<Aetheria>(owner);
+		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
+	}
+
+	if(IsValidEnemy(owner, other))
+	{
+		Ruina_Add_Mana_Sickness(owner, other, 0.5, 50);
+
+		float Dmg = fl_ruina_Projectile_dmg[projectile];
+		if(ShouldNpcDealBonusDamage(other))
+			Dmg = fl_ruina_Projectile_bonus_dmg[projectile];
+
+		float ProjectileLoc[3];
+		GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		
+		SDKHooks_TakeDamage(other, owner, owner, Dmg, DMG_PLASMA, -1, _, ProjectileLoc);
+	}
+
+	Ruina_Remove_Projectile(projectile);
 }
 
 static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//ty artvin
@@ -385,27 +449,136 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+	if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.0)
+	{
+		npc.FaceTowards(vecTarget, 20000.0);
+	}
+
+	if(npc.m_flNextTeleport < gameTime)
+	{
+		npc.m_flNextTeleport = gameTime + 1.0;
+		npc.FaceTowards(vecTarget, 20000.0);
+	}
+
+	if(npc.m_flAttackHappens > gameTime)
+	{
+		npc.m_flSpeed = 0.0;
+		int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+
+		if(!IsValidEntity(Laser_End))
+		{
+			npc.m_flAttackHappens = 0.0;
+			i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
+
+			return;
+		}
+
+		float Proj_Vec[3];
+		GetEntPropVector(Laser_End, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
+
+		npc.FaceTowards(Proj_Vec, 20000.0);
+			
+		Ruina_Laser_Logic Laser;
+
+		Laser.client = npc.index;
+		Laser.Start_Point = Npc_Vec;
+		Laser.End_Point = Proj_Vec;
+
+		float dmg = 25.0;
+		float radius = 15.0;
+
+		Laser.Radius = radius;
+		Laser.Damage = dmg;
+		Laser.Bonus_Damage = dmg*6.0;
+		Laser.damagetype = DMG_PLASMA;
+
+		Laser.Deal_Damage(On_LaserHit);
+	}
+	else
+	{
+		npc.m_flSpeed = 200.0;
+	}
+
+	
 	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
-			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
-			npc.PlayRangedSound();
-			//after we fire, we will have a short delay beteween the actual laser, and when it happens
-			//This will predict as its relatively easy to dodge
-			float projectile_speed = 1250.0;
-			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+			if(fl_ruina_battery[npc.index]>300.0)
 			{
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+				fl_ruina_battery[npc.index] = 0.0;
+				npc.PlayHyperArrowSound();
+
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+				npc.PlayRangedReloadSound();
+
+				Ruina_Projectiles Projectile;
+				float Projectile_Time = 2.5;
+
+				float projectile_speed = 2500.0;	
+				float target_vec[3];
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, _,target_vec);
+
+				Projectile.iNPC = npc.index;
+				Projectile.Start_Loc = Npc_Vec;
+				float Ang[3];
+				MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+				GetVectorAngles(Ang, Ang);
+				Projectile.Angles = Ang;
+				Projectile.speed = projectile_speed;
+				Projectile.radius = 0.0;
+				Projectile.damage = 750.0;
+				Projectile.bonus_dmg = 900.0;
+				Projectile.Time = Projectile_Time;
+				Projectile.visible = false;
+				int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
+
+				if(IsValidEntity(Proj))
+				{
+					npc.m_flAttackHappens = gameTime + Projectile_Time;
+
+					i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
+				
+
+					float 	f_start = 2.5,
+							f_end = 1.5,
+							amp = 0.25;
+					
+					int r = 1,
+						g = 1,
+						b = 255;
+					
+					int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
+							
+					int beam = ConnectWithBeamClient(beam_start, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+					i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+				}
 			}
-			float DamageDone = 25.0;
-			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
-			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+			else
+			{
+				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
+				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+				npc.PlayRangedSound();
+				//after we fire, we will have a short delay beteween the actual laser, and when it happens
+				//This will predict as its relatively easy to dodge
+				float projectile_speed = 2000.0;
+				//lets pretend we have a projectile.
+				if(flDistanceToTarget < 1250.0*1250.0)
+					PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
+				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+				{
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+				}
+				float DamageDone = 50.0;
+				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+				npc.FaceTowards(vecTarget, 20000.0);
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+			}
+			
 		}
 	}
 	else
@@ -425,26 +598,226 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
-					npc.PlayRangedSound();
-					//after we fire, we will have a short delay beteween the actual laser, and when it happens
-					//This will predict as its relatively easy to dodge
-					float projectile_speed = 1250.0;
-					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
-						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+					if(fl_ruina_battery[npc.index]>300.0)
 					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+						int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+
+						if(IsValidEntity(Laser_End))
+							return;
+
+						fl_ruina_battery[npc.index] = 0.0;
+						npc.PlayHyperArrowSound();
+
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+
+						npc.FaceTowards(vecTarget, 20000.0);
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+						npc.PlayRangedReloadSound();
+
+						
+
+						Ruina_Projectiles Projectile;
+						float Projectile_Time = 2.5;
+
+						float projectile_speed = 2500.0;	
+						float target_vec[3];
+						PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
+
+						Projectile.iNPC = npc.index;
+						Projectile.Start_Loc = Npc_Vec;
+						float Ang[3];
+						MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+						GetVectorAngles(Ang, Ang);
+						Projectile.Angles = Ang;
+						Projectile.speed = projectile_speed;
+						Projectile.radius = 0.0;
+						Projectile.damage = 750.0;
+						Projectile.bonus_dmg = 900.0;
+						Projectile.Time = Projectile_Time;
+						Projectile.visible = false;
+						int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
+
+						if(IsValidEntity(Proj))
+						{
+							npc.m_flAttackHappens = gameTime + Projectile_Time;
+
+							i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
+						
+
+							float 	f_start = 2.5,
+									f_end = 1.5,
+									amp = 0.25;
+							
+							int r = 1,
+								g = 1,
+								b = 255;
+
+							int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
+							
+							int beam = ConnectWithBeamClient(beam_start, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+							i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+						}
 					}
-					float DamageDone = 25.0;
-					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
-					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
-					npc.PlayRangedReloadSound();
+					else
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+						npc.PlayRangedSound();
+						//after we fire, we will have a short delay beteween the actual laser, and when it happens
+						//This will predict as its relatively easy to dodge
+						float projectile_speed = 2000.0;
+						//lets pretend we have a projectile.
+						if(flDistanceToTarget < 1250.0*1250.0)
+							PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
+						if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
+						{
+							WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+						}
+						float DamageDone = 50.0;
+						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+						npc.FaceTowards(vecTarget, 20000.0);
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+						npc.PlayRangedReloadSound();
+					}
+					
 				}
 			}
 		}
 	}
 	npc.m_iTarget = GetClosestEnemyToAttack;
+}
+static void test(float vec[3], float vec2[3], float Direction[3])
+{
+	float vecAngles[3];
+	MakeVectorFromPoints(vec, vec2, vecAngles);
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, -25.0);
+}
+//todo: make it into an actual model instead!
+static void Spawn_Weapon(int client)
+{
+		
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(client, "effect_hand_l", flPos, flAng);
+	
+	float flPos_2[3];
+	float flAng_2[3];
+	GetAttachment(client, "effect_hand_r", flPos_2, flAng_2);
+	
+	int i_particle_ref_id_right = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
+	
+	float Direction[3], zero_zero[3] = {0.0, 100.0, 0.0};	//use this to get a "fake" forward vec
+	
+	float offest1 = 8.5;
+	float offest2 = 8.5;
+	float offest3 = 26.0;
+	//zero_zero[0] += offest1;
+	//zero_zero[2] += offest2;
+	int r, g, b;
+	float f_start, f_end, amp;
+	r = 1;
+	g = 175;
+	b = 255;
+	f_start = 1.0;
+	f_end = 1.0;
+	amp = 0.1;
+	
+	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
+	
+	float part_0[3] = { 0.0, 12.5, 0.0 };
+	part_0[0] += offest1;
+	part_0[2] += offest2;
+	part_0[1] += offest3;
+	test(part_0, zero_zero, Direction); //ScaleVector(Direction, -1.0);
+	AddVectors(part_0, Direction, part_0);
+	
+	int particle_1 = InfoTargetParentAt(part_0, "", 0.0);
+	
+	SetParent(particle_0, particle_1);
+	
+	float part_1[3] = { 0.0, -10.0, -30.0 };
+	part_1[0] += offest1;
+	part_1[2] += offest2;
+	part_1[1] += offest3;
+	test(part_1, zero_zero, Direction);
+	AddVectors(part_1, Direction, part_1);
+	
+	float part_1_1[3] = { 0.0, -10.0, 30.0 };
+	part_1_1[0] += offest1;
+	part_1_1[2] += offest2;
+	part_1_1[1] += offest3;
+	test(part_1_1, zero_zero, Direction);
+	AddVectors(part_1_1, Direction, part_1_1);
+	
+	float part_2[3] = {0.0, -15.0, -45.0};
+	part_2[0] += offest1;
+	part_2[2] += offest2;
+	part_2[1] += offest3;
+	test(part_2, zero_zero, Direction);
+	AddVectors(part_2, Direction, part_2);
+	float part_2_1[3] = {0.0, -15.0, 45.0};
+	part_2_1[0] += offest1;
+	part_2_1[2] += offest2;
+	part_2_1[1] += offest3;
+	test(part_2_1, zero_zero, Direction);
+	AddVectors(part_2_1, Direction, part_2_1);
+
+	float part_3[3] = {0.0, 0.0, -17.0};
+	part_3[0] += offest1;
+	part_3[2] += offest2;
+	part_3[1] += offest3;
+	test(part_3, zero_zero, Direction);
+	AddVectors(part_3, Direction, part_3);
+	
+	float part_3_1[3] = {0.0, 0.0, 17.0};
+	part_3_1[0] += offest1;
+	part_3_1[2] += offest2;
+	part_3_1[1] += offest3;
+	test(part_3_1, zero_zero, Direction);
+	AddVectors(part_3_1, Direction, part_3_1);
+
+	
+	//X axis- Left, Right	//this one im almost fully sure of
+	//Y axis - Foward, Back
+	//Z axis - Up Down
+	
+	int particle_6 = InfoTargetParentAt(part_1, "", 0.0);
+	int particle_6_1 = InfoTargetParentAt(part_1_1, "", 0.0);
+	SetParent(particle_1, particle_6, "",_, true);
+	SetParent(particle_6, particle_6_1, "",_, true);
+	
+	int particle_8 = InfoTargetParentAt(part_3, "", 0.0);	//hadle
+	int particle_8_1 = InfoTargetParentAt(part_3_1, "", 0.0);
+	SetParent(particle_1, particle_8, "",_, true);
+	SetParent(particle_8, particle_8_1, "",_, true);
+	
+	
+
+	
+	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
+	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
+	SetParent(client, particle_0, "effect_hand_l",_);
+	
+	Custom_SDKCall_SetLocalOrigin(i_particle_ref_id_right, flPos_2);
+	SetEntPropVector(i_particle_ref_id_right, Prop_Data, "m_angRotation", flAng_2); 
+	SetParent(client, i_particle_ref_id_right, "effect_hand_r",_);
+	
+	i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//inner stick	//base
+	
+	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//inner stick	//base
+	
+	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_ref_id_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
+	
+	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_ref_id_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
+		
+	i_laser_ref_id[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM));			//handle	//base
+
+	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
+	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
+	i_particle_ref_id[client][2] = EntIndexToEntRef(particle_6);
+	i_particle_ref_id[client][3] = EntIndexToEntRef(particle_6_1);
+	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_8);
+	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_8_1);
+	i_particle_ref_id[client][8] = EntIndexToEntRef(i_particle_ref_id_right);
+	
 }
