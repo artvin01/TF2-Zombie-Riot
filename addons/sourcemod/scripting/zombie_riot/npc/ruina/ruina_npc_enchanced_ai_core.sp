@@ -1262,7 +1262,7 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 }
 static void Apply_Sickness(int iNPC, int Target)
 {
-	CPrintToChatAll("Player: %N got nuked due to overmana", Target);
+	//CPrintToChatAll("Player: %N got nuked due to overmana", Target);
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
 	
