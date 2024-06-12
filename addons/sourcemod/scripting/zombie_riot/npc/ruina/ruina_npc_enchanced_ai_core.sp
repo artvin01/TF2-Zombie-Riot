@@ -50,7 +50,10 @@ static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
 static float fl_shield_break_timeout[MAXENTITIES];
-static int i_shield_color[3] = {0, 255, 0};			//does this work?
+static int i_shield_color[3] = {0, 255, 255};			//does this work?
+/*
+	0, 255, 0  //Green.
+*/
 
 //these scales on wavecount
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	175.0
