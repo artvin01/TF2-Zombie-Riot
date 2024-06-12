@@ -7,11 +7,17 @@ $bodygroup "ruina_icbm"
 	blank
 	studio "ruina_projectile.smd"
 }
-$bodygroup "halo_1.smd"	//Create a spinning animation for the rings.
+$bodygroup "halo_1"	//Create a spinning animation for the rings.
 {
 	blank
-	studio "ruina_projectile.smd"
+	studio "halo_1"
 }
+$bodygroup "quincy_bow"
+{
+	blank
+	studio "ruina_bow.smd"
+}
+
 
 
 
@@ -46,6 +52,13 @@ $sequence "idle" {
 
 $sequence "icbm_idle" {
 	"custom_weaponry_1_anims\icbm_idle.smd"
+	fadein 0.2
+	fadeout 0.2
+	fps 30
+}
+
+$sequence "quincy_idle" {
+	"custom_weaponry_1_anims\idle.smd"
 	fadein 0.2
 	fadeout 0.2
 	fps 30

@@ -383,7 +383,7 @@ static void ClotThink(int iNPC)
 							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
 							angles[1]+=90.0;
 							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
-							SetVariantInt(4);
+							SetVariantInt(RUINA_ICBM);
 							AcceptEntityInput(ModelApply, "SetBodyGroup");
 						}
 					}

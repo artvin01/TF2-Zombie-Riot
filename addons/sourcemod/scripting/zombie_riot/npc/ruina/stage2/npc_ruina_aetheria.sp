@@ -213,6 +213,10 @@ methodmap Aetheria < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
+		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		
 		
 		int skin = 1;	//1=blue, 0=red
@@ -225,8 +229,8 @@ methodmap Aetheria < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
-		Ruina_Clean_Particles(npc.index);
-		Spawn_Weapon(npc.index);			
+		SetVariantInt(RUINA_QUINCY_BOW);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");		
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -376,8 +380,6 @@ static void NPC_Death(int entity)
 	}
 
 	Ruina_NPCDeath_Override(npc.index);
-		
-	Ruina_Clean_Particles(npc.index);
 
 	int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 
@@ -399,6 +401,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
 
 static void On_LaserHit(int client, int target, int damagetype, float damage)
@@ -552,9 +556,9 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 						g = 1,
 						b = 255;
 					
-					int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
+					//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
 							
-					int beam = ConnectWithBeamClient(beam_start, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+					int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 					i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 				}
 			}
@@ -652,9 +656,9 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 								g = 1,
 								b = 255;
 
-							int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
+							//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
 							
-							int beam = ConnectWithBeamClient(beam_start, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+							int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 							i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 						}
 					}
@@ -684,140 +688,4 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 		}
 	}
 	npc.m_iTarget = GetClosestEnemyToAttack;
-}
-static void test(float vec[3], float vec2[3], float Direction[3])
-{
-	float vecAngles[3];
-	MakeVectorFromPoints(vec, vec2, vecAngles);
-	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-	ScaleVector(Direction, -25.0);
-}
-//todo: make it into an actual model instead!
-static void Spawn_Weapon(int client)
-{
-		
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(client, "effect_hand_l", flPos, flAng);
-	
-	float flPos_2[3];
-	float flAng_2[3];
-	GetAttachment(client, "effect_hand_r", flPos_2, flAng_2);
-	
-	int i_particle_ref_id_right = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
-	
-	float Direction[3], zero_zero[3] = {0.0, 100.0, 0.0};	//use this to get a "fake" forward vec
-	
-	float offest1 = 8.5;
-	float offest2 = 8.5;
-	float offest3 = 26.0;
-	//zero_zero[0] += offest1;
-	//zero_zero[2] += offest2;
-	int r, g, b;
-	float f_start, f_end, amp;
-	r = 1;
-	g = 175;
-	b = 255;
-	f_start = 1.0;
-	f_end = 1.0;
-	amp = 0.1;
-	
-	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
-	
-	float part_0[3] = { 0.0, 12.5, 0.0 };
-	part_0[0] += offest1;
-	part_0[2] += offest2;
-	part_0[1] += offest3;
-	test(part_0, zero_zero, Direction); //ScaleVector(Direction, -1.0);
-	AddVectors(part_0, Direction, part_0);
-	
-	int particle_1 = InfoTargetParentAt(part_0, "", 0.0);
-	
-	SetParent(particle_0, particle_1);
-	
-	float part_1[3] = { 0.0, -10.0, -30.0 };
-	part_1[0] += offest1;
-	part_1[2] += offest2;
-	part_1[1] += offest3;
-	test(part_1, zero_zero, Direction);
-	AddVectors(part_1, Direction, part_1);
-	
-	float part_1_1[3] = { 0.0, -10.0, 30.0 };
-	part_1_1[0] += offest1;
-	part_1_1[2] += offest2;
-	part_1_1[1] += offest3;
-	test(part_1_1, zero_zero, Direction);
-	AddVectors(part_1_1, Direction, part_1_1);
-	
-	float part_2[3] = {0.0, -15.0, -45.0};
-	part_2[0] += offest1;
-	part_2[2] += offest2;
-	part_2[1] += offest3;
-	test(part_2, zero_zero, Direction);
-	AddVectors(part_2, Direction, part_2);
-	float part_2_1[3] = {0.0, -15.0, 45.0};
-	part_2_1[0] += offest1;
-	part_2_1[2] += offest2;
-	part_2_1[1] += offest3;
-	test(part_2_1, zero_zero, Direction);
-	AddVectors(part_2_1, Direction, part_2_1);
-
-	float part_3[3] = {0.0, 0.0, -17.0};
-	part_3[0] += offest1;
-	part_3[2] += offest2;
-	part_3[1] += offest3;
-	test(part_3, zero_zero, Direction);
-	AddVectors(part_3, Direction, part_3);
-	
-	float part_3_1[3] = {0.0, 0.0, 17.0};
-	part_3_1[0] += offest1;
-	part_3_1[2] += offest2;
-	part_3_1[1] += offest3;
-	test(part_3_1, zero_zero, Direction);
-	AddVectors(part_3_1, Direction, part_3_1);
-
-	
-	//X axis- Left, Right	//this one im almost fully sure of
-	//Y axis - Foward, Back
-	//Z axis - Up Down
-	
-	int particle_6 = InfoTargetParentAt(part_1, "", 0.0);
-	int particle_6_1 = InfoTargetParentAt(part_1_1, "", 0.0);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_6, particle_6_1, "",_, true);
-	
-	int particle_8 = InfoTargetParentAt(part_3, "", 0.0);	//hadle
-	int particle_8_1 = InfoTargetParentAt(part_3_1, "", 0.0);
-	SetParent(particle_1, particle_8, "",_, true);
-	SetParent(particle_8, particle_8_1, "",_, true);
-	
-	
-
-	
-	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
-	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "effect_hand_l",_);
-	
-	Custom_SDKCall_SetLocalOrigin(i_particle_ref_id_right, flPos_2);
-	SetEntPropVector(i_particle_ref_id_right, Prop_Data, "m_angRotation", flAng_2); 
-	SetParent(client, i_particle_ref_id_right, "effect_hand_r",_);
-	
-	i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));			//inner stick	//base
-	
-	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_1, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));		//inner stick	//base
-	
-	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, i_particle_ref_id_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
-	
-	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, i_particle_ref_id_right, r, g, b, f_start, f_end, amp, LASERBEAM));		//string	//base
-		
-	i_laser_ref_id[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_8, particle_8_1, r, g, b, f_start, f_end, amp, LASERBEAM));			//handle	//base
-
-	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
-	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
-	i_particle_ref_id[client][2] = EntIndexToEntRef(particle_6);
-	i_particle_ref_id[client][3] = EntIndexToEntRef(particle_6_1);
-	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_8);
-	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_8_1);
-	i_particle_ref_id[client][8] = EntIndexToEntRef(i_particle_ref_id_right);
-	
 }

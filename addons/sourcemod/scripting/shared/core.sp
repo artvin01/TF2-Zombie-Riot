@@ -893,6 +893,12 @@ enum
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 #if defined RUINA_BASE
 	#define RUINA_CUSTOM_MODELS			"models/zombie_riot/ruina/ruina_models_1.mdl"
+	enum
+	{
+		RUINA_ICBM 				= 1,
+		RUINA_HALO1 			= 2,
+		RUINA_QUINCY_BOW 		= 4
+	}
 #endif
 
 #if defined ZR
