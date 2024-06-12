@@ -514,10 +514,12 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			endPos2[1] = VecPos[1];
 			endPos2[2] += Delta;
 			i_IDependOnThisBuilding[buildingindx] = buildingHit;
+			b_ThisEntityIgnored[buildingindx] = false;
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
+			Building_BuildingBeingCarried[buildingindx] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
 			return;
 		}
@@ -533,7 +535,9 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			SDKCall_SetLocalOrigin(buildingindx, VecPos);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
+			Building_BuildingBeingCarried[buildingindx] = 0;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
+			b_ThisEntityIgnored[buildingindx] = false;
 		}
 		return;
 	}
@@ -549,7 +553,16 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
 		return;
+		
+	Building_PlayerWieldsBuilding(client, entity);
+}
 
+//Make the player carry a building
+void Building_PlayerWieldsBuilding(int client, int entity)
+{
+	if(!Building_AllowedToWieldBuilding(client))
+		return;
+		
 	Building_RotateAllDepencencies(entity);
 	EmitSoundToClient(client, SOUND_GRAB_TF);
 	SDKUnhook(entity, SDKHook_Think, BuildingPickUp);
@@ -557,6 +570,16 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 	Building_BuildingBeingCarried[entity] = EntIndexToEntRef(client);
 	Player_BuildingBeingCarried[client] = EntIndexToEntRef(entity);
 	b_ThisEntityIgnoredBeingCarried[entity] = true;
+	b_ThisEntityIgnored[entity] = true;
+}
+
+//make sure they dont carry anything beforehand
+bool Building_AllowedToWieldBuilding(int client)
+{
+	if(Player_BuildingBeingCarried[client] != 0)
+		return false;
+
+	return true;
 }
 
 #define BUILDING_DISTANCE_GRAB 100.0
@@ -701,7 +724,6 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 
 
 //We wish to check if this poisiton is safe or not.
-//This is only for players.
 bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs[3])
 {
 	int ref;
@@ -769,7 +791,6 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 	hTrace = TR_TraceRayFilterEx(VecCheckBottom, m_vecLookdown, ( MASK_ALL ), RayType_Infinite, HitOnlyWorld, client);	
 	TR_GetEndPosition(VecCheckBottom, hTrace);
 	delete hTrace;
-	VecCheckBottom[2] += 4.0;
 	float Distance = GetVectorDistance(VecCheckBottom, VecBottom);
 	if(Distance > 60.0)
 	{
@@ -781,6 +802,7 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 	return true;
 }
 
+//The laser boxes and warnings.
 void CanBuild_VisualiseAndWarn(int client, int entity, bool Fail = false, float VecBottom[3])
 {
 	float VecMin[3];
@@ -943,7 +965,7 @@ void IsBuildingNotFloating(int building)
 	}
 }
 
-
+//Make sure all buildings are placed correctly
 void Building_RotateAllDepencencies(int entityLost = 0)
 {
 	for (int i = 0; i < MAXENTITIES; i++)
@@ -956,6 +978,7 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 }
 
 
+//Make sure all buildings are placed correctly
 void BuildingAdjustMe(int building, int DestroyedBuilding)
 {
 	float posMain[3]; 
@@ -984,6 +1007,7 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 	i_IDependOnThisBuilding[building] = 0;
 }
 
+//Acts like a tf2 wrench with repairing
 public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, int slot)
 {
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
@@ -992,6 +1016,8 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true); //infinite range, and ignore walls!
 				
 	int target = TR_GetEntityIndex(swingTrace);	
+	float vecHit[3];
+	TR_GetEndPosition(vecHit, swingTrace);	
 	delete swingTrace;
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
 	
@@ -1019,9 +1045,7 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	RepairRate *= 102.0;
 
 	int i_HealingAmount = RoundToCeil(RepairRate);
-	int Healing_Value = i_HealingAmount;
 	int newHealth = flHealth + i_HealingAmount;
-	
 
 	if(newHealth >= max_health)
 	{
@@ -1032,6 +1056,13 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	{
 		i_HealingAmount = GetEntProp(target, Prop_Data, "m_iRepair");
 	}
+	if(i_HealingAmount <= 0)
+	{
+		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		return;
+	}
+	int Healing_Value = i_HealingAmount;
+	TE_Particle("halloween_boss_axe_hit_sparks", vecHit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	int Remove_Ammo = i_HealingAmount / 3;
 	

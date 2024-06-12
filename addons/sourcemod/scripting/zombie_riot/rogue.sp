@@ -1564,6 +1564,7 @@ static void StartStage(const Stage stage)
 			}
 		}
 	}
+	PrintToChatAll("Hey! We forgot this! Please Remind us! 5");
 /*
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
@@ -1643,6 +1644,7 @@ static void TeleportToSpawn()
 			}
 		}
 	}
+	PrintToChatAll("Hey! We forgot this! Please Remind us! 4");
 /*
 	for(int i; i < i_MaxcountBuilding; i++)
 	{

@@ -670,6 +670,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 			{
 				case -1:
 				{
+					PrintToChatAll("Hey! We forgot this! Please Remind us!");
 /*					if(IsValidClient(client))
 					{
 						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
@@ -1016,6 +1017,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				int CurrentMetal = GetAmmo(client, 3);
 
 				CurrentMetal *= 5;
+					PrintToChatAll("Hey! We forgot this! Please Remind us! 2");
 /*				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
 					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);

@@ -186,6 +186,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	}
 	else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 	{
+		PrintToChatAll("Hey! We forgot this! Please Remind us! 3");
 /*
 		for(int i; i < i_MaxcountBuilding; i++)
 		{

@@ -33,6 +33,24 @@ static int Building_Max_Health[MAXENTITIES]={0, ...};
 static int Building_Repair_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 
+//Default ones, most buildings are metal.
+static char g_HurtSounds[][] = {
+	"physics/metal/metal_box_impact_hard1.wav",
+	"physics/metal/metal_box_impact_hard2.wav",
+	"physics/metal/metal_box_impact_hard3.wav",
+};
+
+//Default ones, most buildings are metal.
+static char g_DeathSounds[][] = {
+	"physics/metal/metal_box_break1.wav",
+	"physics/metal/metal_box_break2.wav",
+};
+
+void Object_MapStart()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+}
 void Object_PluginStart()
 {
 	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
@@ -86,6 +104,7 @@ methodmap ObjectGeneric < CClotBody
 		SetEntProp(obj, Prop_Data, "m_iHealth", StringToInt(basehealth));
 		SetEntProp(obj, Prop_Data, "m_iRepairMax", StringToInt(basehealth));
 		SetEntProp(obj, Prop_Data, "m_iRepair", StringToInt(basehealth));
+		SetTeam(obj, GetTeam(client));
 			
  		b_CantCollidie[obj] = false;
 	 	b_CantCollidieAlly[obj] = false;
@@ -150,6 +169,8 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		objstats.m_iWearable2 = entity;
+
+
 		return objstats;
 	}
 
@@ -293,17 +314,28 @@ methodmap ObjectGeneric < CClotBody
 			return SentryBuilding[this.index];
 		}
 	}
-	property float m_flNextDelayTime
+	property bool m_bBurning
 	{
-		public get()							{ return fl_NextDelayTime[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextDelayTime[this.index] = TempValueForProperty; }
-	}
-	property float m_flAttackHappens
-	{
-		public get()							{ return fl_AttackHappensMinimum[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_AttackHappensMinimum[this.index] = TempValueForProperty; }
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
 	}
 
+	
+	public bool PlayHurtSound() 
+	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return false;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.2;
+		
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
+		return true;
+	}
+	
+	public void PlayDeathSound() 
+	{
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
+	}
 }
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
@@ -386,6 +418,29 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	
 	objstats.m_flNextDelayTime = gameTime + 0.1;
 	BuildingDisplayRepairLeft(objstats.index);
+	
+
+	int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
+	int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
+	float Ratio = float(health) / float(maxhealth);
+
+	if(Ratio < 0.15)
+	{
+		if(!objstats.m_bBurning)
+		{
+			IgniteTargetEffect(objstats.index, _, _);
+			objstats.m_bBurning = true;
+		}
+	}
+	else
+	{
+		if(objstats.m_bBurning)
+		{
+			ExtinguishTarget(objstats.index);
+			objstats.m_bBurning = false;
+		}
+	}
+
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	if(owner == -1)
 	{
@@ -410,8 +465,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	else
 	{
 		// Update max health if attributes changed on the player
-		int health = GetEntProp(objstats.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(objstats.index, Prop_Data, "m_iMaxHealth");
+
 		int expected = RoundFloat(Building_Max_Health[objstats.index] * Object_GetMaxHealthMulti(owner));
 		if(maxhealth && expected && maxhealth != expected)
 		{
@@ -625,12 +679,35 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	if((damagetype & DMG_CRUSH))
 		return Plugin_Handled;
 
+	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
+		return Plugin_Handled;
+
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= RoundToNearest(damage);
-	PrintToChatAll("attacked %i ",health);
+	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)
 	{
+		objstats.PlayDeathSound();
+		float VecOrigin[3];
+		GetAbsOrigin(victim, VecOrigin);
+		VecOrigin[2] += 15.0;
+		DataPack pack = new DataPack();
+		pack.WriteFloat(VecOrigin[0]);
+		pack.WriteFloat(VecOrigin[1]);
+		pack.WriteFloat(VecOrigin[2]);
+		pack.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack);
 		RemoveEntity(victim);
+		return Plugin_Handled;
+	}
+	else
+	{
+		if(objstats.PlayHurtSound())
+		{
+			damagePosition[2] -= 40.0;
+			TE_ParticleInt(g_particleImpactMetal, damagePosition);
+			TE_SendToAll();
+		}
 	}
 	SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	return Plugin_Handled;
@@ -650,6 +727,7 @@ public void ObjBaseThink(int building)
 	ObjectGeneric_ClotThink(objstats);
 }
 
+int OwnerOfText[MAXENTITIES];
 void BuildingDisplayRepairLeft(int entity)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
@@ -657,23 +735,40 @@ void BuildingDisplayRepairLeft(int entity)
 	int HealthColour[4];
 	int MaxHealth = GetEntProp(objstats.index, Prop_Data, "m_iRepairMax");
 	int Health = GetEntProp(objstats.index, Prop_Data, "m_iRepair");
-	for(int i=0; i<(20); i++)
-	{
-		if(Health >= MaxHealth*(i*(0.05)))
-		{
-			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
-		}
-		else
-		{
-			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, " ");
-		}
-	}
 	HealthColour[0] = 255;
 	HealthColour[1] = 255;
 	HealthColour[3] = 255;
+	if(Health <= 0)
+	{
+		HealthColour[0] = 255;
+		HealthColour[1] = 0;
+		HealthColour[3] = 255;
+		for(int i=0; i<(20); i++)
+		{
+			Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+		}
+	}
+	else
+	{
+		for(int i=0; i<(20); i++)
+		{
+			if(Health >= MaxHealth*(i*(0.05)))
+			{
+				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, "|");
+			}
+			else
+			{
+				Format(HealthText, sizeof(HealthText), "%s%s", HealthText, ".");
+			}
+		}
+	}
+
 
 	if(IsValidEntity(objstats.m_iWearable3))
 	{
+		char sColor[32];
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		DispatchKeyValue(objstats.m_iWearable3,     "color", sColor);
 		DispatchKeyValue(objstats.m_iWearable3, "message", HealthText);
 	}
 	else
@@ -684,4 +779,29 @@ void BuildingDisplayRepairLeft(int entity)
 		DispatchKeyValue(TextEntity, "font", "1");
 		objstats.m_iWearable3 = TextEntity;	
 	}
+	if(!IsValidEntity(objstats.m_iWearable4))
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 255;
+		HealthColour[2] = 0;
+		HealthColour[3] = 255;
+		Format(HealthText, sizeof(HealthText), "You own this!");
+		float Offset[3];
+		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2];
+		Offset[2] += 7.0;
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 5, HealthColour, objstats.index);
+		DispatchKeyValue(TextEntity, "font", "4");
+		objstats.m_iWearable4 = TextEntity;	
+		OwnerOfText[TextEntity] = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+		SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_OwnerOfBuilding);
+	}
+}
+
+static Action SetTransmit_OwnerOfBuilding(int entity, int client)
+{
+	if(OwnerOfText[entity] == client)
+	{
+		return Plugin_Continue;
+	}
+	return Plugin_Handled;
 }

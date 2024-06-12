@@ -959,13 +959,18 @@ char g_GibSound[][] = {
 };
 
 char g_GibSoundMetal[][] = {
+	"physics/metal/metal_box_break1.wav",
+	"physics/metal/metal_box_break2.wav",
+};
+/*
+char g_GibSoundMetal[][] = {
 	"ui/item_metal_pot_drop.wav",
 	"ui/item_metal_scrap_drop.wav",
 	"ui/item_metal_scrap_pickup.wav",
 	"ui/item_metal_scrap_pickup.wav",
 	"ui/item_metal_weapon_drop.wav",
 };
-
+*/
 char g_CombineSoldierStepSound[][] = {
 	"npc/combine_soldier/gear1.wav",
 	"npc/combine_soldier/gear2.wav",

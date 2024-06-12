@@ -72,7 +72,7 @@ int ObjectBarricade_Buildings(int owner)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
 	{
 		if(!b_NpcHasDied[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{

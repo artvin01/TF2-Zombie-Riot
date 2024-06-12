@@ -577,7 +577,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
 	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
@@ -4769,10 +4768,7 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
-#if defined ZR
-					if(!npc.bBuildingIsPlaced)
-						continue;
-#elseif defined RTS
+#if defined RTS
 					if(ExtraValidityFunction == INVALID_FUNCTION)
 					{
 						// Ignore resources and allies
@@ -4786,9 +4782,6 @@ stock int GetClosestTarget(int entity,
 						if(!Object_GetResource(entity_close) && RTS_IsEntAlly(entity, entity_close))
 							continue;
 					}
-#else
-					if(GetEntProp(entity_close, Prop_Send, "m_bCarried") || GetEntProp(entity_close, Prop_Send, "m_bPlacing"))
-						continue;
 #endif
 
 #if !defined RTS

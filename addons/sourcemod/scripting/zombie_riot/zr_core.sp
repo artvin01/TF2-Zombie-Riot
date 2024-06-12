@@ -731,7 +731,7 @@ void ZR_MapStart()
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
-
+	Object_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1934,26 +1934,6 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-/*
-public Action DeleteEntitiesInHazards(Handle timer)
-{
-	float BuildingPos[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if (IsValidEntity(entity) && !i_BeingCarried[entity])
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-			BuildingPos[2] + 10.0;
-			if(IsPointNoBuild(BuildingPos))
-			{
-				RemoveEntity(entity);
-			}
-		}
-	}
-	return Plugin_Handled;
-}
-*/
 void ReviveAll(bool raidspawned = false)
 {
 	//only set false here

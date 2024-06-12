@@ -61,7 +61,7 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 #if defined ZR
 	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
-		if(!b_AllowCollideWithSelfTeam[iExclude] && !b_AllowCollideWithSelfTeam[entity])
+		if(!b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
 			return false;
 	}
 
