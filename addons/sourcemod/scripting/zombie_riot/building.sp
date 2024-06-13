@@ -100,6 +100,7 @@ static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 static int BuildingId[sizeof(BuildingPlugin)];
 static Function BuildingFunc[sizeof(BuildingPlugin)];
 static float Cooldowns[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
+static float GrabThrottle[MAXENTITIES];
 static int MenuPage[MAXTF2PLAYERS];
 static Handle MenuTimer[MAXTF2PLAYERS];
 static int Building_BuildingBeingCarried[MAXENTITIES];
@@ -196,6 +197,7 @@ void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
 	PrecacheSound(SOUND_TOSS_TF, true);
+	Zero(GrabThrottle);
 }
 
 // Called after NPC_ConfigSetup()
@@ -684,6 +686,11 @@ bool Building_AllowedToWieldBuilding(int client)
 #define BUILDING_DISTANCE_GRAB 100.0
 void BuildingPickUp(int BuildingNPC)
 {
+	if(GrabThrottle[BuildingNPC] > GetGameTime())
+	{
+		return;
+	}
+	GrabThrottle[BuildingNPC] = GetGameTime() + 0.1;
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
