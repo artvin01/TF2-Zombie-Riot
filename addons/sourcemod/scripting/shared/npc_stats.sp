@@ -4191,7 +4191,14 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(!Allowbuildings_BulletAndMeleeTraceAlly && i_IsABuilding[entity])
+	if(Allowbuildings_BulletAndMeleeTraceAlly)
+	{
+		if(i_IsABuilding[entity])
+			return true;
+		return false;
+	}
+	
+	if(i_IsABuilding[entity])
 	{
 		return false;
 	}

@@ -42,7 +42,7 @@ static bool ClotCanUse(ObjectHealingStation npc, int client)
 	if(Building_Collect_Cooldown[npc.index][client] > GetGameTime())
 		return false;
 		
-	return false;
+	return true;
 }
 
 static void ClotShowInteractHud(ObjectHealingStation npc, int client)
