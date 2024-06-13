@@ -126,14 +126,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 1);
 				}
 			}
@@ -143,14 +136,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 2);
 				}
 			}
@@ -160,14 +146,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 3);
 				}
 			}
@@ -177,14 +156,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 4);
 				}
 			}
@@ -194,14 +166,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
-					else
-					{
-						owner = GetClientOfUserId(i_ThisEntityHasAMachineThatBelongsToClient[entity]);
-					}	
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 5);
 				}
 			}
@@ -211,10 +176,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 6);
 				}
 			}
@@ -224,10 +186,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 				if(IsValidEntity(entity))
 				{
 					int owner = -1;
-					if(HasEntProp(entity, Prop_Send, "m_hBuilder"))
-					{
-						owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-					}
+					owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 					Do_Perk_Machine_Logic(owner, client, entity, 7);
 				}
 			}
@@ -238,6 +197,9 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 
 static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk)
 {
+	if(owner == -1)
+		return;
+		
 	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
 	ApplyBuildingCollectCooldown(entity, client, 40.0);
 	

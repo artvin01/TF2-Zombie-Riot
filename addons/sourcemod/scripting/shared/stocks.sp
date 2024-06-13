@@ -1236,8 +1236,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	*/
 
 #if defined ZR
-	if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
-		return 0;
+	if(reciever <= MaxClients)
+		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+			return 0;
 #endif
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
