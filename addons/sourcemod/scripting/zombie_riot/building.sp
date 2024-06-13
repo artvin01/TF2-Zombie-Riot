@@ -185,8 +185,9 @@ static void BuildingMenu(int client)
 
 	menu.SetTitle("%t\n ", "Building Menu");
 
+	int items;
 	char buffer1[196], buffer2[64];
-	for(int i = MenuPage[client] * ItemsPerPage; (i < sizeof(BuildingPlugin)) && (menu.ItemCount < ItemsPerPage); i++)
+	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
 		int cost = GetCost(i, multi);
 		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
@@ -204,6 +205,15 @@ static void BuildingMenu(int client)
 		// Hide if maxcount is 0
 		if(maxcount < 1)
 			continue;
+		
+		// Add Items if they belong in that page
+		if(items < (MenuPage[client] * ItemsPerPage) || items >= ((MenuPage[client] + 1) * ItemsPerPage))
+		{
+			items++;
+			continue;
+		}
+
+		items++;
 
 		if(cost > metal)
 			allowed = false;
