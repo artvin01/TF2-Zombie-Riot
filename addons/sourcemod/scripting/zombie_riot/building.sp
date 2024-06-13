@@ -186,15 +186,8 @@ static void BuildingMenu(int client)
 	menu.SetTitle("%t\n ", "Building Menu");
 
 	char buffer1[196], buffer2[64];
-	int IRepeatMaxLimit;
-	for(int i = MenuPage[client] * ItemsPerPage; i < sizeof(BuildingPlugin); i++)
+	for(int i = MenuPage[client] * ItemsPerPage; (i < sizeof(BuildingPlugin)) && (menu.ItemCount < ItemsPerPage); i++)
 	{
-		if(IRepeatMaxLimit > 50)
-		{
-			PrintToChatAll("stop!! BuildingMenu failed!!! report!!!!");
-			return;
-		}
-		IRepeatMaxLimit++;
 		int cost = GetCost(i, multi);
 		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
 		int count;
