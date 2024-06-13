@@ -106,6 +106,7 @@ static Handle MenuTimer[MAXTF2PLAYERS];
 static int Building_BuildingBeingCarried[MAXENTITIES];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
+static float PlayerWasHoldingProp[MAXTF2PLAYERS];
 
 void ResetPlayer_BuildingBeingCarried(int client)
 {
@@ -115,6 +116,9 @@ bool IsPlayerCarringObject(int client)
 {
 	if(Player_BuildingBeingCarried[client])
 		return true;
+	if(PlayerWasHoldingProp[client] > GetGameTime())
+		return true;
+		
 	return false;
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
@@ -205,6 +209,7 @@ void Building_MapStart()
 	PrecacheSound(SOUND_GRAB_TF, true);
 	PrecacheSound(SOUND_TOSS_TF, true);
 	Zero(GrabThrottle);
+	Zero(PlayerWasHoldingProp);
 }
 
 // Called after NPC_ConfigSetup()
@@ -686,7 +691,6 @@ bool Building_AllowedToWieldBuilding(int client)
 {
 	if(Player_BuildingBeingCarried[client] != 0)
 		return false;
-
 	return true;
 }
 
@@ -699,6 +703,7 @@ void BuildingPickUp(int BuildingNPC)
 	}
 	GrabThrottle[BuildingNPC] = GetGameTime() + 0.1;
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
+	PlayerWasHoldingProp[client] = GetGameTime() + 0.2;
 	if(!IsValidClient(client))
 	{
 		RemoveEntity(BuildingNPC);
