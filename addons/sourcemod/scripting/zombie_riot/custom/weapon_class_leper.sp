@@ -627,5 +627,6 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 
 void LeperResetUses()
 {
+
 	Zero(Leper_SolemnyUses);
 }

@@ -106,6 +106,10 @@ static int Building_BuildingBeingCarried[MAXENTITIES];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
 
+void ResetPlayer_BuildingBeingCarried(int client)
+{
+	Player_BuildingBeingCarried[client] = 0;
+}
 #define MAX_CASH_VIA_BUILDINGS 5000
 #define MAX_SUPPLIES_EACH_WAVE 5
 static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
@@ -130,6 +134,11 @@ void Building_ResetRewardValues(int client)
 	i_GiveCashBuilding[client] = 0;
 }
 
+void Building_ResetRewardValuesWave()
+{
+	Zero(i_GiveAmmoSupplyLimit);
+}
+
 void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
 {
 	//when using your own buildings, you get half as much.
@@ -144,8 +153,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		if(i_GiveCashBuilding[owner] < MAX_CASH_VIA_BUILDINGS)
 		{
 			i_GiveCashBuilding[owner] += Cash;
-			CashRecievedNonWave[owner] += Cash;
-			CashSpent[owner] -= Cash;
+			GiveCredits(owner, Cash, true);
 		}
 	}
 	else
@@ -544,16 +552,20 @@ void Building_ShowInteractionHud(int client, int entity)
 		PrintCenterText(client, "");
 }
 
+void BuildingVoteEndResetCD()
+{
+	Zero2(Building_Collect_Cooldown);
+}
 stock void ApplyBuildingCollectCooldown(int building, int client, float Duration, bool IgnoreVotingExtraCD = false)
 {
 	if(CvarInfiniteCash.BoolValue)
 	{
 		Building_Collect_Cooldown[building][client] = 0.0;
 	}
-	//else if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
-	//{
-	//	Building_Collect_Cooldown[building][client] = FAR_FUTURE;
-	//}
+	else if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
+	{
+		Building_Collect_Cooldown[building][client] = FAR_FUTURE;
+	}
 	else
 	{
 		Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
@@ -675,6 +687,12 @@ void BuildingPickUp(int BuildingNPC)
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
+		RemoveEntity(BuildingNPC);
+		return;
+	}
+	if(!IsPlayerAlive(client))
+	{
+		Player_BuildingBeingCarried[client] = 0;
 		RemoveEntity(BuildingNPC);
 		return;
 	}

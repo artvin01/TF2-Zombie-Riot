@@ -1932,6 +1932,7 @@ void WaveEndLogicExtra()
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
 	LeperResetUses();
+	Building_ResetRewardValuesWave();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{

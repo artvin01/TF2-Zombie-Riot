@@ -95,7 +95,7 @@ static void ClotThink(ObjectSentrygun npc)
 		view_as<CClotBody>(npc.index).GetAttachment("muzzle", origin, angles);
 		ShootLaser(npc.index, "bullet_tracer01_red", origin, vecHit, false );
 		npc.m_flNextMeleeAttack = gameTime + (0.25 * ReduceTime);
-		npc.AddGesture("ACT_RANGE_ATTACK1", false);
+	//	npc.AddGesture("ACT_RANGE_ATTACK1", false);
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
@@ -103,6 +103,7 @@ static void ClotThink(ObjectSentrygun npc)
 			damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;
+				
 			SDKHooks_TakeDamage(target, npc.index, Owner, damageDealt, DMG_BULLET, -1, _, vecHit);
 		}
 	}
