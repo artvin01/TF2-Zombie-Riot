@@ -12,10 +12,15 @@ $bodygroup "halo_1"	//Create a spinning animation for the rings.
 	blank
 	studio "halo_1"
 }
-$bodygroup "quincy_bow"
+$bodygroup "quincy_bow"		//todo: paint it, its just flat white
 {
 	blank
 	studio "ruina_bow.smd"
+}
+$bodygroup "ruina_blade"	//todo: paint it better, so far its just 2 flat colours, the blade is fine-ish, but the rest is just flat.
+{
+	blank
+	studio "ruina_blade.smd"
 }
 
 
@@ -58,6 +63,12 @@ $sequence "icbm_idle" {
 }
 
 $sequence "quincy_idle" {
+	"custom_weaponry_1_anims\idle.smd"
+	fadein 0.2
+	fadeout 0.2
+	fps 30
+}
+$sequence "blade_idle" {
 	"custom_weaponry_1_anims\idle.smd"
 	fadein 0.2
 	fadeout 0.2
