@@ -4406,27 +4406,16 @@ void Store_ApplyAttribs(int client)
 	{
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
-	}*/
+	}
+*/
+	
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
-	//map.SetValue("442", 1.0);		// Move Speed
-	//map.SetValue("286", 0.1);		// Reduce building hp by x10
-	//map.SetValue("287", 0.1);		// Reduce repair rate by x10
 
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
-//	map.SetValue("353", 1.0);	// No manual building pickup.
-//	map.SetValue("465", 999.0);	// instant build
-//	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
-//	map.SetValue("397", 50.0);	// Ignore ally with shooting
-//	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
-//	map.SetValue("49", 0.0);	// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
-					//... doesnt work on player, must be on weapon...
-//	map.SetValue("124", 1.0);	// Make sentries minisentries (only works on melee's that are wrenches...)
-//	map.SetValue("345", 0.0);	// No dispenser range
-//	map.SetValue("732", 0.0);	// No dispenser metal gain
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
 
 	float KnockbackResistance;
