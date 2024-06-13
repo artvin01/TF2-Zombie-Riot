@@ -925,10 +925,10 @@ void BuildingDisplayRepairLeft(int entity)
 		OwnerOfText[TextEntity] = Owner;
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable4 = TextEntity;	
-		SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_OwnerOfBuilding);
+	//	SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_OwnerOfBuilding);
 	}
 }
-
+/*
 static Action SetTransmit_OwnerOfBuilding(int entity, int client)
 {
 	if(OwnerOfText[entity] == client)
@@ -937,3 +937,4 @@ static Action SetTransmit_OwnerOfBuilding(int entity, int client)
 	}
 	return Plugin_Handled;
 }
+*/

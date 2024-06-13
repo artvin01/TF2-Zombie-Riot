@@ -2734,7 +2734,7 @@ static void MenuPage(int client, int section)
 					int Repeat_Filler = 0;
 					if(item.Equipped[client])
 					{
-						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with Ammo, buyable only
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{	
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0];
 							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1], cost);
@@ -2800,14 +2800,26 @@ static void MenuPage(int client, int section)
 					{
 						canSell = false;
 					}
-					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+					if(item.Equipped[client] && (info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX) || (info.Ammo && info.Ammo < Ammo_MAX))	// Weapon with Ammo
 					{
-						int cost = AmmoData[info.Ammo][0] * 10;
-						FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
-						if(cost > cash)
-							style = ITEMDRAW_DISABLED;
-						Repeat_Filler ++;
-						menu.AddItem(buffer2, buffer, style);	// 1
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+						{
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
+							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1] * 10, cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+							Repeat_Filler ++;
+							menu.AddItem(buffer2, buffer, style);	// 1
+						}
+						else
+						{
+							int cost = AmmoData[info.Ammo][0] * 10;
+							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+							Repeat_Filler ++;
+							menu.AddItem(buffer2, buffer, style);	// 1
+						}
 					}
 					else if(item.Equipped[client] || canSell)
 					{
@@ -3791,7 +3803,17 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						
 						if(item.Equipped[client])	// Buy Ammo
 						{
-							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
+							if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+							{
+								CashSpent[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+								CashSpentTotal[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								
+								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1];
+								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
+								CurrentAmmo[client][info.AmmoBuyMenuOnly] = ammo;
+							}
+							else if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
 							{
 								CashSpent[client] += AmmoData[info.Ammo][0];
 								CashSpentTotal[client] += AmmoData[info.Ammo][0];
@@ -3991,7 +4013,20 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							level = 0;
 						
 						item.GetItemInfo(level, info);
-						if(info.Ammo && info.Ammo < Ammo_MAX)
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+						{
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
+							if(cost <= cash)
+							{
+								CashSpent[client] += cost;
+								CashSpentTotal[client] += cost;
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1]*10;
+								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
+								CurrentAmmo[client][info.AmmoBuyMenuOnly] = ammo;
+							}
+						}
+						else if(info.Ammo && info.Ammo < Ammo_MAX)
 						{
 							int cost = AmmoData[info.Ammo][0] * 10;
 							if(cost <= cash)
