@@ -34,11 +34,11 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	975,
 	975,
 
-	575,
-	575,
-	575,
+	590,
+	590,
+	590,
 
-	575
+	400
 };
 
 // Base health of building
