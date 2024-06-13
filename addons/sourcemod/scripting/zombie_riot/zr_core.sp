@@ -2095,9 +2095,9 @@ void GiveXP(int client, int xp)
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
 		
-		int maxhealth = SDKCall_GetMaxHealth(client);
-		if(GetClientHealth(client) < maxhealth)
-			SetEntityHealth(client, maxhealth);
+		//int maxhealth = SDKCall_GetMaxHealth(client);
+		//if(GetClientHealth(client) < maxhealth)
+		//	SetEntityHealth(client, maxhealth);
 		
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
@@ -2110,7 +2110,10 @@ void GiveXP(int client, int xp)
 			Level[client]++;
 
 			if(Level[client] == STARTER_WEAPON_LEVEL)
+			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
+				found = true;
+			}
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
@@ -2119,7 +2122,10 @@ void GiveXP(int client, int xp)
 				slots++;
 			
 			if(Level[client] < 81 && !(Level[client] % 10))
+			{
 				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
+				found = true;
+			}
 		}
 		
 		if(slots)

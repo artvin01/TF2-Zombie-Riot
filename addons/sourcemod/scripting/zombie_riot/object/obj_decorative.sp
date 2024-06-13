@@ -36,7 +36,7 @@ methodmap ObjectDecorative < ObjectGeneric
 	}
 }
 
-bool ObjectDecorative_CanBuild(int client, int &count, int &maxcount)
+public bool ObjectDecorative_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
@@ -58,9 +58,9 @@ int ObjectDecorative_Buildings(int owner)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && owner == -1 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(owner == -1 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			if(NPCId == i_NpcInternalId[entity])
 				count++;

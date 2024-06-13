@@ -28,9 +28,7 @@ static Function FuncCanBuild[MAXENTITIES];
  */
 static Function FuncShowInteractHud[MAXENTITIES];
 
-static bool SentryBuilding[MAXENTITIES];
 static int Building_Max_Health[MAXENTITIES]={0, ...};
-static int Building_Repair_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 
@@ -68,6 +66,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iRepair")
 	.DefineIntField("m_iRepairMax")
 	.DefineIntField("m_iMaxHealth")
+	.DefineBoolField("m_bSentryBuilding")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -111,10 +110,9 @@ methodmap ObjectGeneric < CClotBody
 		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
 		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
 		DispatchSpawn(obj);
-		SetEntProp(obj, Prop_Data, "m_iMaxHealth", StringToInt(basehealth));
-		SetEntProp(obj, Prop_Data, "m_iHealth", StringToInt(basehealth));
-		SetEntProp(obj, Prop_Data, "m_iRepairMax", StringToInt(basehealth));
-		SetEntProp(obj, Prop_Data, "m_iRepair", StringToInt(basehealth));
+
+		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
+		objstats.BaseHealth = StringToInt(basehealth);
 		SetTeam(obj, GetTeam(client));
 			
  		b_CantCollidie[obj] = false;
@@ -124,8 +122,6 @@ methodmap ObjectGeneric < CClotBody
 		i_NpcIsABuilding[obj] = true;
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
-		SentryBuilding[obj] = false;
-		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -398,8 +394,10 @@ methodmap ObjectGeneric < CClotBody
 		public set(int value)
 		{
 			Building_Max_Health[this.index] = value;
-			Building_Repair_Health[this.index] = value;
+			SetEntProp(this.index, Prop_Data, "m_iHealth", value);
 			SetEntProp(this.index, Prop_Data, "m_iMaxHealth", value);
+			SetEntProp(this.index, Prop_Data, "m_iRepair", value);
+			SetEntProp(this.index, Prop_Data, "m_iRepairMax", value);
 		}
 		public get()
 		{
@@ -410,11 +408,11 @@ methodmap ObjectGeneric < CClotBody
 	{
 		public set(bool value)
 		{
-			SentryBuilding[this.index] = value;
+			SetEntProp(this.index, Prop_Data, "m_bSentryBuilding", value);
 		}
 		public get()
 		{
-			return SentryBuilding[this.index];
+			return view_as<bool>(GetEntProp(this.index, Prop_Data, "m_bSentryBuilding"));
 		}
 	}
 	property bool m_bBurning
@@ -495,11 +493,9 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = 1;
-	if(count)
-		return false;
+	maxcount = Blacksmith_IsASmith(client) ? 0 : 1;
 
-	return true;
+	return (!count && maxcount);
 }
 
 bool Object_CanBuild(Function func, int client, int &count = 0, int &maxcount = 0)
@@ -577,7 +573,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	}
 	else
 	{
-		// Update max health if attributes changed on the player
+		// Update max health/repair if attributes changed on the player
 
 		int expected = RoundFloat(Building_Max_Health[objstats.index] * Object_GetMaxHealthMulti(owner));
 		if(maxhealth && expected && maxhealth != expected)
@@ -586,12 +582,16 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 			maxhealth = expected;
 			health = RoundFloat(float(health) * change);
-			Building_Repair_Health[objstats.index] = RoundFloat(float(Building_Repair_Health[objstats.index]) * change);
+			int maxrepair = RoundFloat(float(GetEntProp(objstats.index, Prop_Data, "m_iRepairMax")) * change);
+			int repair = RoundFloat(float(GetEntProp(objstats.index, Prop_Data, "m_iRepair")) * change);
 			
 			SetEntProp(objstats.index, Prop_Data, "m_iMaxHealth", maxhealth);
 			SetEntProp(objstats.index, Prop_Data, "m_iHealth", health);
+			SetEntProp(objstats.index, Prop_Data, "m_iRepairMax", maxrepair);
+			SetEntProp(objstats.index, Prop_Data, "m_iRepair", repair);
 		}
-		
+
+
 		int g = health * 255  / maxhealth;
 		if(g > 255)
 		{
@@ -702,7 +702,7 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "obj_")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && (owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner))
+		if(owner == 0 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			static char plugin[64];
 			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
@@ -719,9 +719,9 @@ int Object_SupportBuildings(int owner)
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			static char plugin[64];
 			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
@@ -741,9 +741,9 @@ int Object_SupportBuildings(int owner)
 int Object_GetSentryBuilding(int owner)
 {
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && SentryBuilding[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(view_as<ObjectGeneric>(entity).SentryBuilding && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			static char plugin[64];
 			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
@@ -804,9 +804,12 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Handled;
 
 	damage *= 0.1;
+	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+	int dmg = RoundToCeil(damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	health -= RoundToCeil(damage);
+	health -= dmg;
+
 	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)
 	{
@@ -823,20 +826,17 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 		RemoveEntity(victim);
 		return Plugin_Handled;
 	}
-	else
+	
+	if(objstats.PlayHurtSound())
 	{
-		if(objstats.PlayHurtSound())
-		{
-			damagePosition[2] -= 40.0;
-			TE_ParticleInt(g_particleImpactMetal, damagePosition);
-			TE_SendToAll();
-		}
+		damagePosition[2] -= 40.0;
+		TE_ParticleInt(g_particleImpactMetal, damagePosition);
+		TE_SendToAll();
 	}
+
 	SetEntProp(victim, Prop_Data, "m_iHealth", health);
 	return Plugin_Handled;
 }
-
-
 
 public void ObjBaseThinkPost(int building)
 {

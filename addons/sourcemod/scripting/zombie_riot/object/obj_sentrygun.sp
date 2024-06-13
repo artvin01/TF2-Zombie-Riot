@@ -36,10 +36,9 @@ methodmap ObjectSentrygun < ObjectGeneric
 	{
 		ObjectSentrygun npc = view_as<ObjectSentrygun>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/sentry1.mdl", "0.75","50", {15.0, 15.0, 34.0},_,false));
 
-	//	npc.FuncCanUse = ClotCanUse;
-		npc.FuncShowInteractHud = ClotShowInteractHud;
+		npc.SentryBuilding = true;
+		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = ClotThink;
-	//	func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 180.0);
 
 		return npc;
@@ -109,19 +108,6 @@ static void ClotThink(ObjectSentrygun npc)
 	}
 	delete swingTrace;
 }
-
-static bool ClotCanUse(ObjectSentrygun npc, int client)
-{
-	return true;
-}
-
-static void ClotShowInteractHud(ObjectSentrygun npc, int client)
-{
-	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip");
-}
-
-
 
 void Sentrygun_FaceEnemy(int sentry, int Target)
 {

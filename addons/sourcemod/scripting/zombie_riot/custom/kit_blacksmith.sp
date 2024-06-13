@@ -88,6 +88,11 @@ void Blacksmith_ExtraDesc(int client, int index)
 	}
 }
 
+bool Blacksmith_IsASmith(int client)
+{
+	return view_as<bool>(EffectTimer[client]);
+}
+
 void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)

@@ -43,10 +43,10 @@ methodmap ObjectMortar < ObjectGeneric
 	{
 		ObjectMortar npc = view_as<ObjectMortar>(ObjectGeneric(client, vecPos, vecAng, "models/zombie_riot/buildings/mortar_2.mdl", "1.0","50", {15.0, 15.0, 34.0},_,false));
 
-	//	npc.FuncCanUse = ClotCanUse;
-		npc.FuncShowInteractHud = ClotShowInteractHud;
+		npc.SentryBuilding = true;
+		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = ClotThink;
-	//	func_NPCInteract[npc.index] = ClotInteract;
+
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		npc.SetActivity("MORTAR_IDLE");
 
@@ -84,17 +84,6 @@ static void ClotThink(ObjectMortar npc)
 			npc.SetActivity("MORTAR_IDLE");
 		}
 	}
-}
-
-static bool ClotCanUse(ObjectMortar npc, int client)
-{
-	return true;
-}
-
-static void ClotShowInteractHud(ObjectMortar npc, int client)
-{
-	SetGlobalTransTarget(client);
-	PrintCenterText(client, "%t", "Ammobox Tooltip");
 }
 
 //todo: When pressing E, Actives All Building stuff

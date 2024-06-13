@@ -120,9 +120,6 @@ enum struct ItemInfo
 	int Melee_AttackDelayFrame;
 	bool Melee_Allows_Headshots;
 	
-	int RougeBuildMax;
-	int RougeBuildSupportNeeded;
-	int BuildSupportNeeded;
 	int ScrapCost;
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
@@ -429,15 +426,6 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sscrap_cost", prefix);
 		this.ScrapCost = kv.GetNum(buffer, -1);
 
-		Format(buffer, sizeof(buffer), "%srogue_build_max", prefix);
-		this.RougeBuildMax = kv.GetNum(buffer, -1);
-
-		Format(buffer, sizeof(buffer), "%srogue_build_support_minimum", prefix);
-		this.RougeBuildSupportNeeded = kv.GetNum(buffer, -1);
-
-		Format(buffer, sizeof(buffer), "%sbuild_support_minimum", prefix);
-		this.BuildSupportNeeded = kv.GetNum(buffer, -1);
-
 		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
@@ -475,8 +463,6 @@ enum struct Item
 	bool Hidden;
 	bool NoPrivatePlugin;
 	bool WhiteOut;
-	char BuildingExistName[64];
-	bool ShouldThisCountSupportBuildings;
 	bool IgnoreSlots;
 	char Tags[256];
 	char Author[128];
@@ -759,7 +745,7 @@ void Store_OpenItemPage(int client)
 	}
 }
 
-void Store_OpenItemThis(int client, int index)
+stock void Store_OpenItemThis(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -1038,14 +1024,12 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
-	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
-	kv.GetString("buildingexistname", item.BuildingExistName, sizeof(item.BuildingExistName));
 	
 	if(isItem)
 	{
@@ -1608,36 +1592,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				}
 				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
-					if(Rogue_Mode())
-					{
-						if(info.RougeBuildMax == -999)
-						{
-							break;
-						}
-/*						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-						{
-							break;
-						}
-						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
-						{
-							break;
-						}
-					}
-					else
-					{
-						if(info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-						{
-							break;
-						}*/
-					}
 					bool MoneyTake = true;
-					if(Rogue_Mode())
-					{
-						if(info.RougeBuildMax > -1)
-						{
-							MoneyTake = false;
-						}
-					}
 					Store_BuyClientItem(client, a, item, info);
 					
 					if(MoneyTake)
@@ -2938,7 +2893,7 @@ static void MenuPage(int client, int section)
 						menu.AddItem(buffer2, "-", ITEMDRAW_DISABLED);	// 2
 					}
 
-					bool tinker = false;//Blacksmith_HasTinker(client, section);
+					bool tinker = Blacksmith_HasTinker(client, section);
 					if(tinker || item.Tags[0] || info.ExtraDesc[0] || item.Author[0])
 					{
 						for(int Repeatuntill; Repeatuntill < 10; Repeatuntill++)
@@ -3222,18 +3177,6 @@ static void MenuPage(int client, int section)
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				
-				char BuildingExtraCounter[8];
-				if(item.BuildingExistName[0])
-				{
-					char BuildingGetName[24];
-					char BuildingGetName_2[24];
-					
-					int How_Many_Buildings_Exist = 0;
-					
-					strcopy(BuildingGetName, sizeof(BuildingGetName), item.BuildingExistName);
-					
-					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), " {%i}", How_Many_Buildings_Exist);
-				}
 				if(info.ScrapCost > 0)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
@@ -3242,19 +3185,19 @@ static void MenuPage(int client, int section)
 				}
 				else if(item.Equipped[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped");
 				}
 				else if(item.Owned[client] > 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Packed");
 				}
 				else if(item.Owned[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased");
 				}
 				else if(!info.Cost && item.Level)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]", TranslateItemName(client, item.Name, info.Custom_Name), item.Level);
 				}
 				else if(info.Cost >= 999999 && !CvarInfiniteCash.BoolValue)
 				{
@@ -3273,56 +3216,29 @@ static void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(Rogue_Mode() && info.RougeBuildMax == -999)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(hasKit && item.NoKit)
+					if(hasKit && item.NoKit)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
 						style = ITEMDRAW_DISABLED;
-					}/*
-					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
-						style = ITEMDRAW_DISABLED;
 					}
-					else if(!Rogue_Mode() && info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(Rogue_Mode() && info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
-						style = ITEMDRAW_DISABLED;
-					}*/
 					else
 					{
 						if(item.WhiteOut)
 						{
-/*							if(item.ShouldThisCountSupportBuildings)
-							{
-								FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
-							}
-							else*/
-							{
-								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
-							}
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 							style = ITEMDRAW_DISABLED;
 						}
 						else if(!info.Cost)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s [$%d]%s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 						}
 					}
 				}
-				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
+				
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
 				if(Rogue_UnlockStore())
@@ -4264,7 +4180,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						CPrintToChat(client, "%t", "Created By", item.Author);
 					}
 
-//					Blacksmith_ExtraDesc(client, index);
+					Blacksmith_ExtraDesc(client, index);
 				}
 			}
 			MenuPage(client, index);
@@ -4889,14 +4805,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
-	
+	/*
 	bool Was_phasing = false;
 	
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
 		Was_phasing = true;
 	}
-	
+	*/
 	b_PhaseThroughBuildingsPerma[client] = 1;
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
@@ -5649,7 +5565,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_HHH_Axe_Ability(client, entity);
 		Enable_Messenger_Launcher_Ability(client, entity);
 		WeaponNailgun_Enable(client, entity);
-//		Blacksmith_Enable(client, entity);
+		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 	}
@@ -5711,7 +5627,8 @@ void Store_RemoveSpecificItem(int client, const char[] name)
 		}
 	}
 }
-void Store_ConsumeItem(int client, int index)
+
+stock void Store_ConsumeItem(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -5963,24 +5880,6 @@ static void ItemCost(int client, Item item, int &cost)
 	if(Rogue_Mode())
 	{
 		Rogue_Curse_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller_First || item.NPCSeller));
-
-		ItemInfo info;
-		if(item.GetItemInfo(0, info))
-		{
-			if(info.RougeBuildMax > 0)
-			{
-				cost = 0;			
-				if(info.RougeBuildMax <= item.RogueBoughtRecently[client])
-				{
-					cost = 999999;
-				}
-				//building under this category during rogue modes will be marked as free unless otherwise.
-			}
-			else if(info.RougeBuildMax == -999)
-			{
-				cost = 999999;
-			}
-		}
 	}
 }
 

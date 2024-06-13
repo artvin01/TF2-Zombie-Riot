@@ -27,6 +27,8 @@ methodmap ObjectHealingStation < ObjectGeneric
 	{
 		ObjectHealingStation npc = view_as<ObjectHealingStation>(ObjectGeneric(client, vecPos, vecAng, "models/props_halloween/fridge.mdl", "0.65", "50", {15.0, 15.0, 57.0}));
 
+		npc.SentryBuilding = true;
+		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;

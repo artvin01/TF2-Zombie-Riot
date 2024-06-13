@@ -9,7 +9,7 @@ void ObjectPackAPunch_MapStart()
 	PrecacheModel("models/props_spytech/computer_low.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Pack a Punch");
+	strcopy(data.Name, sizeof(data.Name), "Pack-a-Punch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_packapunch");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

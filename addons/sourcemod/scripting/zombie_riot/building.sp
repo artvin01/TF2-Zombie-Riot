@@ -1,44 +1,110 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
+#define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
+
 static const char BuildingPlugin[][] =
 {
-	"obj_barricade",
-	"obj_ammobox"
+	"obj_barricade", // Cheap Barricade
+	"obj_barricade", // Normal Barricade
+	"obj_decorative",
+
+	"obj_ammobox",
+	"obj_armortable",
+	"obj_perkmachine",
+	"obj_packapunch",
+
+	"obj_sentrygun",
+	"obj_mortar",
+	"obj_healingstation",
+
+	"obj_tinker_anvil"
 };
 
 // Base metal cost of building
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
-	1000,
-	4000
+	-50,
+	800,
+	0,
+
+	5975,
+	3975,
+	9975,
+	9975,
+
+	5975,
+	5975,
+	5975,
+
+	5975
 };
 
 // Base health of building
 static const int BuildingHealth[sizeof(BuildingPlugin)] =
 {
-	6000,
-	750
+	150,
+	600,
+	75,
+
+	75,
+	75,
+	75,
+	75,
+
+	30,
+	30,
+	30,
+
+	600
 };
 
-// Max storage of building
-static const int BuildingSupply[sizeof(BuildingPlugin)] =
+// Cooldown between creation (not effected during setup)
+static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 {
-	3,
-	3,
+	99999.9,
+	30.0,
+	10.0,
+
+	20.0,
+	20.0,
+	90.0,
+	90.0,
+
+	60.0,
+	60.0,
+	60.0,
+
+	30.0
 };
 
 static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 {
+	"ObjectBarricade_CanBuildCheap",
 	"ObjectBarricade_CanBuild",
-	"ObjectGeneric_CanBuild"
+	"ObjectDecorative_CanBuild",
+
+	"ObjectGeneric_CanBuild",
+	"ObjectGeneric_CanBuild",
+	"ObjectGeneric_CanBuild",
+	"ObjectGeneric_CanBuild",
+
+	"ObjectGeneric_CanBuildSentry",
+	"ObjectGeneric_CanBuildSentry",
+	"ObjectGeneric_CanBuildSentry",
+
+	"ObjectTinkerAnvil_CanBuild"
 };
 
 static int BuildingId[sizeof(BuildingPlugin)];
 static Function BuildingFunc[sizeof(BuildingPlugin)];
-static int Consumed[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
+static float Cooldowns[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
 static int MenuPage[MAXTF2PLAYERS];
 static Handle MenuTimer[MAXTF2PLAYERS];
+static int Building_BuildingBeingCarried[MAXENTITIES];
+static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
+static int i_IDependOnThisBuilding[MAXENTITIES];
 
 void Building_PluginStart()
 {
@@ -49,13 +115,13 @@ void Building_PluginStart()
 			LogError("Function '%s' is missing in building.sp", BuildingFuncName[i]);
 	}
 }
-#define SOUND_GRAB_TF "ui/item_default_pickup.wav"      // grab
-#define SOUND_TOSS_TF "ui/item_default_drop.wav"        // throww
+
 void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
 	PrecacheSound(SOUND_TOSS_TF, true);
 }
+
 // Called after NPC_ConfigSetup()
 void Building_ConfigSetup()
 {
@@ -66,38 +132,35 @@ void Building_ConfigSetup()
 			LogError("NPC '%s' is missing in building.sp", BuildingPlugin[i]);
 	}
 
-	Zero2(Consumed);
+	Zero2(Cooldowns);
 }
 
 void Building_WaveEnd()
 {
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		for(int i; i < sizeof(Consumed[]); i++)
-		{
-			if(Consumed[client][i] > 0)
-				Consumed[client][i]--;
-		}
-	}
+	//Zero2(Cooldowns);
 }
 
-public void Building_WrenchM2(int client, int weapon, bool crit, int slot)
+public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
 	BuildingMenu(client);
-}
-
-static int GetCost(int id, float multi)
-{
-	return BuildingCost[id] + RoundFloat(BuildingHealth[id] * multi / 3.0);
 }
 
 static bool HasWrench(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == -1 || EntityFuncAttack2[weapon] != Building_WrenchM2)
+	if(weapon == -1)
 		return false;
 	
+	if(EntityFuncAttack2[weapon] != Building_OpenMenuWeapon &&
+	   EntityFuncAttack3[weapon] != Building_OpenMenuWeapon)
+		return false;
+
 	return true;
+}
+
+static int GetCost(int id, float multi)
+{
+	return BuildingCost[id] + RoundFloat(BuildingHealth[id] * multi / 3.0);
 }
 
 static void BuildingMenu(int client)
@@ -107,6 +170,8 @@ static void BuildingMenu(int client)
 	
 	int metal = GetAmmo(client, Ammo_Metal);
 	float multi = Object_GetMaxHealthMulti(client);
+	float gameTime = GetGameTime();
+	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
 
 	static const int ItemsPerPage = 3;
 
@@ -119,20 +184,51 @@ static void BuildingMenu(int client)
 	{
 		int cost = GetCost(i, multi);
 		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
-		int count, maxcount;
+		int count;
+		int maxcount = 99;
 		bool allowed;
 
 		if(BuildingFunc[i] != INVALID_FUNCTION)
 			allowed = Object_CanBuild(BuildingFunc[i], client, count, maxcount);
 		
+		// Hide if maxcount is 0
+		if(maxcount < 1)
+			continue;
+
 		if(cost > metal)
 			allowed = false;
+		
+		float cooldown = Cooldowns[client][i] - gameTime;
+		if(cooldown > 9999.9)
+			continue;
+		
+		if(Waves_InSetup())
+		{
+			cooldown = 0.0;
+		}
+		else if(cooldown > 0.0)
+		{
+			allowed = false;
+		}
 
 		NPC_GetNameById(BuildingId[i], buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
-		Format(buffer1, sizeof(buffer1), "%t (%d %t) [%d/%d] {%d}", buffer1, cost, "Metal", count, maxcount, alive);
-		if(TranslationPhraseExists(buffer2))
-			Format(buffer1, sizeof(buffer1), "%s\n%t", buffer1, buffer2);
+
+		if(ducking)
+		{
+			FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
+			if(!TranslationPhraseExists(buffer2))
+				strcopy(buffer2, sizeof(buffer2), buffer1);
+
+			Format(buffer1, sizeof(buffer1), "{x%d} %t", alive, buffer2);
+		}
+		else if(cooldown > 0.0)
+		{
+			Format(buffer1, sizeof(buffer1), "%t (%ds) [%d/%d]", buffer1, RoundToCeil(cooldown), count, maxcount);
+		}
+		else
+		{
+			Format(buffer1, sizeof(buffer1), "%t (%d %t) [%d/%d]", buffer1, cost, "Metal", count, maxcount);
+		}
 
 		IntToString(i, buffer2, sizeof(buffer2));
 		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -159,7 +255,7 @@ static void BuildingMenu(int client)
 	menu.ExitButton = true;
 
 	if(menu.Display(client, 2))
-		MenuTimer[client] = CreateTimer(1.0, Timer_RefreshMenu, client);
+		MenuTimer[client] = CreateTimer(0.5, Timer_RefreshMenu, client);
 }
 
 static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
@@ -192,11 +288,36 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 					}
 					default:
 					{
-						char buffer[64];
-						menu.GetItem(choice, buffer, sizeof(buffer));
+						if(CanCreateBuilding(client))
+						{
+							char buffer[64];
+							menu.GetItem(choice, buffer, sizeof(buffer));
+							int id = StringToInt(buffer);
 
-						int id = StringToInt(buffer);
-						PrintToChat(client, BuildingPlugin[id]);
+							int metal = GetAmmo(client, Ammo_Metal);
+							int cost = GetCost(id, Object_GetMaxHealthMulti(client));
+
+							if(metal >= cost && (BuildingFunc[id] == INVALID_FUNCTION || Object_CanBuild(BuildingFunc[id], client)))
+							{
+								float vecPos[3], vecAng[3];
+								GetClientAbsOrigin(client, vecPos);
+								GetClientEyeAngles(client, vecAng);
+								vecAng[0] = 0.0;
+								vecAng[2] = 0.0;
+
+								int entity = NPC_CreateById(BuildingId[id], client, vecPos, vecAng, GetTeam(client));
+								if(entity != -1)
+								{
+									ObjectGeneric obj = view_as<ObjectGeneric>(entity);
+									obj.BaseHealth = BuildingHealth[id];
+
+									Building_PlayerWieldsBuilding(client, entity);
+
+									SetAmmo(client, Ammo_Metal, metal - cost);
+									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[client][id];
+								}
+							}
+						}
 					}
 				}
 
@@ -204,12 +325,23 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 			}
 		}
 	}
+
+	return 0;
+}
+
+static bool CanCreateBuilding(int client)
+{
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
+		return false;
+	
+	return true;
 }
 
 static Action Timer_RefreshMenu(Handle timer, int client)
 {
 	MenuTimer[client] = null;
 	BuildingMenu(client);
+	return Plugin_Stop;
 }
 
 void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bool first_barracks = false)
@@ -232,40 +364,11 @@ void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bo
 	}
 }
 
-void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
+stock void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
 {
 	/*
 	if(i_IsABuilding[entity] && b_NpcHasDied[entity])
 	{
-		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false, true,true);
-		}
-		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
-		{
-			GlassBuilder[entity] = false;
-			if(firstbuild)
-				SetBuildingMaxHealth(entity, 0.25, true, true ,true);
-			else
-				SetBuildingMaxHealth(entity, 0.25, true, _ ,true);
-
-		}
-		if(!HasMechanic[entity] && b_HasMechanic[client])
-		{
-			HasMechanic[entity] = true;
-
-			if(firstbuild)
-				SetBuildingMaxHealth(entity, 1.15, false, true);
-			else
-				SetBuildingMaxHealth(entity, 1.15, false);
-
-		}
-		if(HasMechanic[entity] && !b_HasMechanic[client])
-		{
-			HasMechanic[entity] = false;
-			SetBuildingMaxHealth(entity, 1.15, true, false);
-		}
 		if(i_WhatBuilding[entity] == BuildingSummoner)
 		{
 			
@@ -419,9 +522,22 @@ void Building_ShowInteractionHud(int client, int entity)
 				}
 			}
 
-			static char plugin[64];
-			NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
-			if(StrContains(plugin, "obj_", false) != -1)
+			switch(Citizen_ShowInteractionHud(entity, client))
+			{
+				case -1:
+				{
+					Hide_Hud = false;
+				}
+				case 1:
+				{
+				}
+			}
+		}
+		else if(i_IsABuilding[entity])
+		{
+			//static char plugin[64];
+			//NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+			//if(StrContains(plugin, "obj_", false) != -1)
 			{
 				if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
 				{
@@ -467,11 +583,6 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 		Building_Collect_Cooldown[building][client] = GetGameTime() + Duration;
 	}
 }
-
-
-static int Building_BuildingBeingCarried[MAXENTITIES];
-static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
-static int i_IDependOnThisBuilding[MAXENTITIES];
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
@@ -996,7 +1107,7 @@ void BuildingAdjustMe(int building, int DestroyedBuilding)
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
 		int INpc = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(INpc) && !b_NpcHasDied[INpc])
+		if (IsValidEntity(INpc))
 		{
 			CClotBody npc = view_as<CClotBody>(INpc);
 			if(npc.m_iTarget == DestroyedBuilding)

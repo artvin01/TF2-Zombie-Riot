@@ -1482,7 +1482,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	}
 	return 0;
 }
-
+/*
 int Citizen_BuildingInteract(int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1496,7 +1496,7 @@ int Citizen_BuildingInteract(int entity)
 	}
 	return 0;
 }
-
+*/
 bool Citizen_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)

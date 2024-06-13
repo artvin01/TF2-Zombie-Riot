@@ -54,7 +54,7 @@ methodmap ObjectBarricade < ObjectGeneric
 	}
 }
 
-bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
+public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
@@ -67,14 +67,30 @@ bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 	return true;
 }
 
+public bool ObjectBarricade_CanBuildCheap(int client, int &count, int &maxcount)
+{
+	if(!ObjectBarricade_CanBuild(client, count, maxcount))
+		return false;
+	
+	if(client)
+	{
+		count = 0;
+		maxcount = Level[client] > 19 ? 1 : 0;
+		if(count >= maxcount)
+			return false;
+	}
+	
+	return true;
+}
+
 int ObjectBarricade_Buildings(int owner)
 {
 	int count;
 	
 	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
+	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
-		if(!b_NpcHasDied[entity] && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
 			if(NPCId == i_NpcInternalId[entity])
 				count++;

@@ -24,24 +24,6 @@ enum struct KillFeed
 	bool silent_kill;
 }
 
-#if defined ZR
-static const char BuildingName[][] =
-{
-	"Building",
-	"Barricade",
-	"Elevation",
-	"AmmoBox",
-	"Armortable",
-	"Perk Machine",
-	"Pack-a-Punch",
-	"Railgun",
-	"Sentry",
-	"Mortar",
-	"Healing Station",
-	"Barracks"
-};
-#endif
-
 static int Bots[2];
 static int ForceTeam[MAXTF2PLAYERS];
 static char KillIcon[MAXENTITIES][32];
@@ -205,17 +187,13 @@ void KillFeed_SetBotTeam(int client, int team)
 }
 
 #if defined ZR
-static stock bool BuildingFullName(int entity, char[] buffer, int length)
+static bool BuildingFullName(int entity, char[] buffer, int length)
 {
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))
 		return false;
 
-	//int index = i_WhatBuilding[entity];
-	//if(index >= sizeof(BuildingName))
-	//	index = 0;
-	
-	//Format(buffer, length, "%s (%N)", BuildingName[index], owner);
+	Format(buffer, length, "%s (%N)", c_NpcName[owner], owner);
 	return true;
 }
 #endif

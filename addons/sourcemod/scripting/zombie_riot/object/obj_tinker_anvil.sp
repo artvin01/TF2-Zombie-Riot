@@ -6,7 +6,7 @@ void ObjectTinkerAnvil_MapStart()
 	PrecacheModel("models/props_medieval/anvil.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Tinker Anvil");
+	strcopy(data.Name, sizeof(data.Name), "Tinker Workshop");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_tinker_anvil");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -25,14 +25,41 @@ methodmap ObjectTinkerAnvil < ObjectGeneric
 {
 	public ObjectTinkerAnvil(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectTinkerAnvil npc = view_as<ObjectTinkerAnvil>(ObjectGeneric(client, vecPos, vecAng, "models/props_medieval/anvil.mdl", _, "250",{20.0, 20.0, 42.0}));
+		ObjectTinkerAnvil npc = view_as<ObjectTinkerAnvil>(ObjectGeneric(client, vecPos, vecAng, "models/props_medieval/anvil.mdl", _, "600",{20.0, 20.0, 42.0}));
 
+		npc.SentryBuilding = true;
+		npc.FuncCanBuild = ObjectTinkerAnvil_CanBuild;
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
+		func_NPCThink[npc.index] = ClotThink;
 		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 90.0);
 
 		return npc;
+	}
+}
+
+public bool ObjectTinkerAnvil_CanBuild(int client, int &count, int &maxcount)
+{
+	if(!client)
+		return false;
+	
+	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
+	maxcount = Blacksmith_IsASmith(client) ? 1 : 0;
+
+	return (!count && maxcount);
+}
+
+static void ClotThink(ObjectTinkerAnvil npc)
+{
+	int maxrepair = GetEntProp(npc.index, Prop_Data, "m_iRepairMax");
+	int repair = GetEntProp(npc.index, Prop_Data, "m_iRepair");
+	if(repair < maxrepair)
+	{
+		// Regen 1% repair a second
+		repair += maxrepair / 1000;
+		if(repair > maxrepair)
+			repair = maxrepair;
 	}
 }
 
