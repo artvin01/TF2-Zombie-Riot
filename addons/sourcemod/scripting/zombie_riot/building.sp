@@ -1410,6 +1410,22 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 }
 
 
+float BuildingWeaponDamageModif(int Type)
+{
+	switch(Type)
+	{
+		case 1:
+		{
+			//1 means its a weapon
+			return 1.85;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+}
+
 public bool BuildingCustomCommand(int client)
 {
 	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);

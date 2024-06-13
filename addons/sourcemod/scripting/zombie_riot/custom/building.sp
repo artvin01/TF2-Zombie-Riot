@@ -8293,22 +8293,6 @@ public bool Building_Blacksmith(int client, int entity)
 	return true;
 }
 
-float BuildingWeaponDamageModif(int Type)
-{
-	switch(Type)
-	{
-		case 1:
-		{
-			//1 means its a weapon
-			return 1.85;
-		}
-		default:
-		{
-			return 1.0;
-		}
-	}
-}
-
 bool BuildingIsSupport(int entity)
 {
 	switch(i_WhatBuilding[entity])

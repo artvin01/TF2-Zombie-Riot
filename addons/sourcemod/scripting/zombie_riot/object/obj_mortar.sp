@@ -16,6 +16,10 @@ void ObjectMortar_MapStart()
 {
 	PrecacheSoundArray(g_ShootingSound);
 	PrecacheModel("models/zombie_riot/buildings/mortar_2.mdl");
+	PrecacheSound(MORTAR_SHOT);
+	PrecacheSound(MORTAR_BOOM);
+	PrecacheSound(MORTAR_SHOT_INCOMMING);
+	PrecacheSound(MORTAR_RELOAD);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Mortar");
