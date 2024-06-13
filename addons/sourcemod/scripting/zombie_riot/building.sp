@@ -26,7 +26,7 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	-50,
-	275,
+	300,
 	0,
 
 	575,
@@ -253,14 +253,19 @@ static void BuildingMenu(int client)
 
 	menu.SetTitle("%t\n ", "Building Menu");
 
+	int items;
 	char buffer1[196], buffer2[64];
-	for(int i = MenuPage[client] * ItemsPerPage; (i < sizeof(BuildingPlugin)) && (menu.ItemCount < ItemsPerPage); i++)
+	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
 		int cost = GetCost(i, multi);
 		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
 		int count;
 		int maxcount = 99;
 		bool allowed;
+		
+		float cooldown = Cooldowns[client][i] - gameTime;
+		if(cooldown > 9999.9)
+			continue;
 
 		if(BuildingFunc[i] != INVALID_FUNCTION)
 			allowed = Object_CanBuild(BuildingFunc[i], client, count, maxcount);
@@ -268,13 +273,18 @@ static void BuildingMenu(int client)
 		// Hide if maxcount is 0
 		if(maxcount < 1)
 			continue;
+		
+		// Add Items if they belong in that page
+		if(items < (MenuPage[client] * ItemsPerPage) || items >= ((MenuPage[client] + 1) * ItemsPerPage))
+		{
+			items++;
+			continue;
+		}
+
+		items++;
 
 		if(cost > metal)
 			allowed = false;
-		
-		float cooldown = Cooldowns[client][i] - gameTime;
-		if(cooldown > 9999.9)
-			continue;
 		
 		if(Waves_InSetup())
 		{
