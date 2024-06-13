@@ -75,7 +75,7 @@ public bool ObjectBarricade_CanBuildCheap(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = 0;
-		maxcount = Level[client] > 19 ? 1 : 0;
+		maxcount = (Level[client] > 19 || CvarInfiniteCash.BoolValue) ? 1 : 0;
 		if(count >= maxcount)
 			return false;
 	}
