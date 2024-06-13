@@ -247,14 +247,11 @@ static void BuildingMenu(int client)
 		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
-	/*
-	for(int i; i < MenuPage[client] ? 7 : 8; i++)
+	for(int i = menu.ItemCount; i < (MenuPage[client] ? 7 : 8); i++)
 	{
 		menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);
 	}
-	*/
-
-
+	
 	if(MenuPage[client])
 	{
 		FormatEx(buffer2, sizeof(buffer2), "%t", "Previous");
