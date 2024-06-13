@@ -804,6 +804,7 @@ Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+float f_MedicCallIngore[MAXTF2PLAYERS];
 #endif
 
 int b_BoundingBoxVariant[MAXENTITIES];
@@ -2713,6 +2714,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_PullStrength[entity] = 0.0;
 #if defined ZR
 		i_CustomWeaponEquipLogic[entity] = 0;
+		Resistance_for_building_High[entity] = 0.0;
 #endif
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR

@@ -576,8 +576,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 				{
 					HealthToRepair = 1;
 				}
-				SetVariantInt(HealthToRepair);
-				AcceptEntityInput(building, "AddHealth");
+				HealEntityGlobal(entity, building, float(HealthToRepair), _, _, _, _);
 			}
 		}
 	}

@@ -245,6 +245,7 @@ Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
 float f_RingDelayGift[MAXENTITIES];
+float Resistance_for_building_High[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;

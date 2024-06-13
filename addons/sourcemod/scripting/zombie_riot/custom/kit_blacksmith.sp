@@ -631,6 +631,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	if(!Rogue_Mode() && owner != client)
 	{
+		/*
 		if(i_Healing_station_money_limit[owner][client] < 20)
 		{
 			i_Healing_station_money_limit[owner][client]++;
@@ -640,6 +641,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
 		}
+		*/
 
 		switch(tinker.Rarity)
 		{

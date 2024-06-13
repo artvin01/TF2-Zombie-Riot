@@ -710,6 +710,21 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				}
 			}
 		}
+		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+		{
+			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+			if(IsValidEntity(entity_close))
+			{
+				static float pos2[3];
+				GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", pos2);
+				if(GetVectorDistance(vector, pos2, true) < (MONK_MAXRANGE * MONK_MAXRANGE))
+				{
+					float WorldSpaceVec[3]; 
+					WorldSpaceCenter(entity_close, WorldSpaceVec);
+					SDKHooks_TakeDamage(entity_close, Monk, Monk, damage * 3.0, DMG_SHOCK|DMG_PREVENT_PHYSICS_FORCE, -1, _, WorldSpaceVec);	
+				}
+			}
+		}
 	}
 	return Plugin_Continue;
 }

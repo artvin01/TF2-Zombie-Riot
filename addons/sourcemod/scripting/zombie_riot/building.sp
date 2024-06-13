@@ -26,7 +26,7 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	//-50,
-	300,
+	600,
 	0,
 
 	575,
@@ -111,6 +111,12 @@ void ResetPlayer_BuildingBeingCarried(int client)
 {
 	Player_BuildingBeingCarried[client] = 0;
 }
+bool IsPlayerCarringObject(int client)
+{
+	if(Player_BuildingBeingCarried[client])
+		return true;
+	return false;
+}
 #define MAX_CASH_VIA_BUILDINGS 5000
 #define MAX_SUPPLIES_EACH_WAVE 5
 static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
@@ -148,6 +154,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		Cash /= 2;
 		AmmoSupply *= 0.5;
 	}
+	AmmoSupply *= 0.5;
 	if(CashLimit)
 	{
 		//affected by limit.
@@ -205,7 +212,6 @@ void Building_ConfigSetup()
 {
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
-		PrintToServer("%s",BuildingPlugin[i]);
 		BuildingId[i] = NPC_GetByPlugin(BuildingPlugin[i]);
 		if(BuildingId[i] == -1)
 			LogError("NPC '%s' is missing in building.sp", BuildingPlugin[i]);
@@ -240,6 +246,7 @@ static bool HasWrench(int client)
 static int GetCost(int id, float multi)
 {
 	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 3.0);
+	cost_extra *= 2;
 	if(cost_extra <= 0)
 	{
 		cost_extra = 0;
@@ -257,7 +264,7 @@ static void BuildingMenu(int client)
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
 
-	static const int ItemsPerPage = 3;
+	static const int ItemsPerPage = 5;
 
 	Menu menu = new Menu(BuildingMenuH);
 
@@ -1204,7 +1211,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	int HealGiven;
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
-		HealGiven = HealEntityViaFloat(target, float(Healing_Value), _, float(new_ammo / 3));
+		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, float(new_ammo / 3));
 		if(HealGiven <= 0)
 		{
 			EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
@@ -1241,12 +1248,12 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!GlassBuilder[entity] && b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
-			SetBuildingMaxHealth(entity, 0.25, false, firstbuild);
+			SetBuildingMaxHealth(entity, 0.25, false, true);
 		}
 		if(GlassBuilder[entity] && !b_HasGlassBuilder[client])
 		{
 			GlassBuilder[entity] = false;
-			SetBuildingMaxHealth(entity, 0.25, true, false ,true);
+			SetBuildingMaxHealth(entity, 0.25, false, true ,true);
 		}
 		if(!HasMechanic[entity] && b_HasMechanic[client])
 		{

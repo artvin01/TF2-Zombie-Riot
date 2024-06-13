@@ -1564,15 +1564,13 @@ static void StartStage(const Stage stage)
 			}
 		}
 	}
-	PrintToChatAll("Hey! We forgot this! Please Remind us! 5");
-/*
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
-*/
+
 	if(b_LeaderSquad)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -1644,15 +1642,13 @@ static void TeleportToSpawn()
 			}
 		}
 	}
-	PrintToChatAll("Hey! We forgot this! Please Remind us! 4");
-/*
+
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
-*/
 }
 
 static int GetStageByName(const Floor floor, const char[] name, bool final, Stage stage)

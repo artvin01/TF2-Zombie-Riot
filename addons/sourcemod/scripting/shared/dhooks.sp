@@ -874,6 +874,17 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
+	//npc has died, ignore all collissions no matter what
+	if(b_ThisWasAnNpc[ent1])
+	{
+		if(b_NpcHasDied[ent1])
+			return false;
+	}
+	if(b_ThisWasAnNpc[ent2])
+	{
+		if(b_NpcHasDied[ent2])
+			return false;
+	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
 #if defined RPG

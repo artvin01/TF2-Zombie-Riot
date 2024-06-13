@@ -1573,6 +1573,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
 #endif
 
+			if(!NpcStats_IsEnemySilenced(victim))
+			{
+				if(Medival_Difficulty_Level != 0.0 && GetTeam(victim) != TFTeam_Red)
+				{
+					percentage *= Medival_Difficulty_Level;
+				}
+			}
 #if defined ZR
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;

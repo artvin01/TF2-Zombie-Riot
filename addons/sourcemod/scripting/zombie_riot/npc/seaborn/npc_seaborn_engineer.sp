@@ -186,15 +186,13 @@ public void SeabornEngineer_ClotThink(int iNPC)
 	}
 	else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 	{
-		PrintToChatAll("Hey! We forgot this! Please Remind us! 3");
-/*
 		for(int i; i < i_MaxcountBuilding; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
 				CClotBody building = view_as<CClotBody>(entity);
-				if(!building.bBuildingIsStacked && building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
 					b_ThisEntityIgnored[entity] = true;
 
@@ -215,7 +213,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				}
 			}
 		}
-*/
+
 		npc.m_flNextRangedAttack = gameTime + 10.0;
 	}
 	

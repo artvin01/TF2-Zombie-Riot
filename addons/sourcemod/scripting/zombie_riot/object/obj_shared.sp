@@ -683,19 +683,24 @@ bool Object_Interact(int client, int weapon, int obj)
 		else
 		{
 			// Interact with a building
-			Function func = func_NPCInteract[entity];
-			if(func && func != INVALID_FUNCTION)
+			//dont interact with buildings if you are carring something
+			if(!IsPlayerCarringObject(client))
 			{
-				Call_StartFunction(null, func);
-				Call_PushCell(client);
-				Call_PushCell(weapon);
-				Call_PushCell(entity);
-				Call_Finish(result);
+				Function func = func_NPCInteract[entity];
+				if(func && func != INVALID_FUNCTION)
+				{
+					Call_StartFunction(null, func);
+					Call_PushCell(client);
+					Call_PushCell(weapon);
+					Call_PushCell(entity);
+					Call_Finish(result);
+				}
+				return true;
 			}
 		}
 	}
 
-	return true;
+	return false;
 }
 
 int Object_NamedBuildings(int owner = 0, const char[] name)
@@ -734,7 +739,15 @@ int Object_SupportBuildings(int owner)
 					continue;
 				if(StrContains(plugin, "obj_decorative", false) != -1)
 					continue;
-				
+				if(StrContains(plugin, "obj_healingstation", false) != -1)
+					continue;
+				if(StrContains(plugin, "obj_sentrygun", false) != -1)
+					continue;
+				if(StrContains(plugin, "obj_tinker_anvil", false) != -1)
+					continue;
+				if(StrContains(plugin, "obj_mortar", false) != -1)
+					continue;
+
 				count++;
 			}
 		}
@@ -807,6 +820,11 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 		return Plugin_Handled;
+
+	if(Resistance_for_building_High[victim] > GetGameTime())
+	{
+		damage *= 0.75;
+	}
 
 	damage *= 0.1;
 	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);

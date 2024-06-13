@@ -5,9 +5,6 @@
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
-#if defined RPG || defined ZR
-float f_MedicCallIngore[MAXTF2PLAYERS];
-#endif
 
 void Commands_PluginStart()
 {

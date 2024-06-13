@@ -45,7 +45,7 @@ methodmap ObjectMortar < ObjectGeneric
 	}
 	public ObjectMortar(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectMortar npc = view_as<ObjectMortar>(ObjectGeneric(client, vecPos, vecAng, "models/zombie_riot/buildings/mortar_2.mdl", "0.7","50", {15.0, 15.0, 70.0},_,false));
+		ObjectMortar npc = view_as<ObjectMortar>(ObjectGeneric(client, vecPos, vecAng, "models/zombie_riot/buildings/mortar_2.mdl", "0.7","50", {15.0, 15.0, 100.0},_,false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
@@ -100,6 +100,9 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 		return false;
 		
 	if(f_BuildingIsNotReady[client] > GetGameTime())
+		return false;
+	
+	if(f_MedicCallIngore[client] < GetGameTime())
 		return false;
 
 	BuildingMortarAction(client, npc.index);

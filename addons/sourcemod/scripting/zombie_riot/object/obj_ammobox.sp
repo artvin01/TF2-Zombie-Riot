@@ -21,6 +21,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 	return ObjectAmmobox(client, vecPos, vecAng);
 }
 
+
 methodmap ObjectAmmobox < ObjectGeneric
 {
 	public ObjectAmmobox(int client, const float vecPos[3], const float vecAng[3])

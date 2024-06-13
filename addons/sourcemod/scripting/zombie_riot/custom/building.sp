@@ -1613,8 +1613,7 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
-		SetVariantInt(Healing_Value);
-		int HealGiven = HealEntityViaFloat(target, Healing_Value, _, _);
+		int HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, _);
 		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
 		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
 		{

@@ -670,8 +670,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 			{
 				case -1:
 				{
-					PrintToChatAll("Hey! We forgot this! Please Remind us!");
-/*					if(IsValidClient(client))
+					if(IsValidClient(client))
 					{
 						int mountedentity = EntRefToEntIndex(Building_Mounted[client]);
 						for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
@@ -679,7 +678,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 							int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 							if(IsValidEntity(entity) && entity != 0)
 							{
-								if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client && mountedentity != entity)
+								if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == client && mountedentity != entity)
 								{
 									if(!Can_I_See_Enemy_Only(client, entity))
 									{
@@ -688,7 +687,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 								}
 							}
 						}
-					}*/
+					}
 				}
 				default:
 				{
@@ -1013,12 +1012,11 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 					//try to get it from weapons instead now.
 					RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
 				}
-				int healing_Amount = RoundToCeil(200.0 * RepairRateBonus);
+				int healing_Amount = RoundToCeil(20.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 
 				CurrentMetal *= 5;
-					PrintToChatAll("Hey! We forgot this! Please Remind us! 2");
-/*				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+				for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
 				{
 					int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
 					if(IsValidEntity(entity_close))
@@ -1035,17 +1033,15 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 							}
 							if(CurrentMetal > 0)
 							{
-								int HealthBefore = GetEntProp(entity_close, Prop_Send, "m_iHealth");
-								SetVariantInt(healing_Amount);
-								AcceptEntityInput(entity_close, "AddHealth");
-								int HealthAfter = GetEntProp(entity_close, Prop_Send, "m_iHealth");
+								int HealthAfter = HealEntityGlobal(client, entity_close, float(healing_Amount), _, _, _, _);
 
-								CurrentMetal -= (HealthAfter - HealthBefore) / 5;
+								CurrentMetal -= (HealthAfter) / 5;
 							}
 							Resistance_for_building_High[entity_close] = GetGameTime() + 1.1; 
 						}
 					}
-				}*/
+				}
+
 				CurrentMetal /= 5;
 				SetAmmo(client, 3, CurrentMetal);
 				CurrentAmmo[client][3] = GetAmmo(client, 3);

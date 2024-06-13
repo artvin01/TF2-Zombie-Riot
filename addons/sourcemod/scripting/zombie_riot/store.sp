@@ -5054,6 +5054,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
+					if(info.AmmoBuyMenuOnly)
+					{
+						i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
+					}
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -5090,13 +5094,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									if(info.Ammo) //my man broke my shit.
 									{
-										if(info.AmmoBuyMenuOnly)
-										{
-											i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
-										}
-										else
-											SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
-
+										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
 									}
 								}
 							}
