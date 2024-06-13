@@ -568,6 +568,18 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		wearable = objstats.m_iWearable2;
 		if(wearable != -1)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
+
+		if(IsValidEntity(objstats.m_iWearable4))
+		{
+			char HealthText[32];
+			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+			if(IsValidClient(Owner))
+				Format(HealthText, sizeof(HealthText), "%N", Owner);
+			else
+				Format(HealthText, sizeof(HealthText), "%s", " ");
+
+			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
+		}
 			
 	}
 	else
@@ -670,6 +682,18 @@ bool Object_Interact(int client, int weapon, int obj)
 					if(Object_CanBuild(FuncCanBuild[entity], client))
 					{
 						SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
+						ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+						if(IsValidEntity(objstats.m_iWearable4))
+						{
+							char HealthText[32];
+							int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
+							if(IsValidClient(Owner))
+								Format(HealthText, sizeof(HealthText), "%N", Owner);
+							else
+								Format(HealthText, sizeof(HealthText), "%s", " ");
+
+							DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
+						}
 					}
 					else
 					{
