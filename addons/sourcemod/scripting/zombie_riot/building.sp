@@ -6,7 +6,7 @@
 
 static const char BuildingPlugin[][] =
 {
-	"obj_barricade", // Cheap Barricade
+	//"obj_barricade", // Cheap Barricade
 	"obj_barricade", // Normal Barricade
 	"obj_decorative",
 
@@ -25,7 +25,7 @@ static const char BuildingPlugin[][] =
 // Base metal cost of building
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
-	-50,
+	//-50,
 	300,
 	0,
 
@@ -44,7 +44,7 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 // Base health of building
 static const int BuildingHealth[sizeof(BuildingPlugin)] =
 {
-	150,
+	//150,
 	600,
 	75,
 
@@ -63,7 +63,7 @@ static const int BuildingHealth[sizeof(BuildingPlugin)] =
 // Cooldown between creation (not effected during setup)
 static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 {
-	99999.9,
+	//99999.9,
 	30.0,
 	10.0,
 
@@ -81,7 +81,7 @@ static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 
 static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 {
-	"ObjectBarricade_CanBuildCheap",
+	//"ObjectBarricade_CanBuildCheap",
 	"ObjectBarricade_CanBuild",
 	"ObjectDecorative_CanBuild",
 
