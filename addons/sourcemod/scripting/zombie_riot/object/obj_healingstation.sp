@@ -60,7 +60,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	ApplyBuildingCollectCooldown(npc.index, client, 90.0);
 	ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 	float HealAmmount = 30.0;
@@ -68,6 +67,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	{
 		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
 	}
+	Building_GiveRewardsUse(client, owner, 40, true, 0.4, true);
 
 	HealEntityGlobal(owner, client, HealAmmount, _, 3.0, _);
 	return true;

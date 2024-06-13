@@ -41,14 +41,16 @@ methodmap ObjectMortar < ObjectGeneric
 	}
 	public ObjectMortar(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectMortar npc = view_as<ObjectMortar>(ObjectGeneric(client, vecPos, vecAng, "models/zombie_riot/buildings/mortar_2.mdl", "1.0","50", {15.0, 15.0, 34.0},_,false));
+		ObjectMortar npc = view_as<ObjectMortar>(ObjectGeneric(client, vecPos, vecAng, "models/zombie_riot/buildings/mortar_2.mdl", "0.7","50", {15.0, 15.0, 70.0},_,false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = ClotThink;
+		func_NPCInteract[npc.index] = ClotInteract;
 
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		npc.SetActivity("MORTAR_IDLE");
+		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		return npc;
 	}
@@ -84,6 +86,20 @@ static void ClotThink(ObjectMortar npc)
 			npc.SetActivity("MORTAR_IDLE");
 		}
 	}
+}
+
+
+static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
+{
+	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(Owner != client)
+		return false;
+		
+	if(f_BuildingIsNotReady[client] > GetGameTime())
+		return false;
+
+	BuildingMortarAction(client, npc.index);
+	return true;
 }
 
 //todo: When pressing E, Actives All Building stuff
@@ -151,6 +167,7 @@ public void BuildingMortarAction(int client, int mortar)
 	pos_obj[2] += 100.0;
 	CClotBody npcstats = view_as<CClotBody>(mortar);
 	npcstats.m_flAttackHappens = GetGameTime() + 15.0;
+	f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
 	ParticleEffectAt(pos_obj, "skull_island_embers", 2.0);
 }
 

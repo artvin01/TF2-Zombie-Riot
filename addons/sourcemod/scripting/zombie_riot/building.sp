@@ -106,6 +106,12 @@ static int Building_BuildingBeingCarried[MAXENTITIES];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
 
+#define MAX_CASH_VIA_BUILDINGS 5000
+#define MAX_SUPPLIES_EACH_WAVE 5
+static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
+static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
+static int i_GiveCashBuilding[MAXTF2PLAYERS];
+
 void Building_PluginStart()
 {
 	for(int i; i < sizeof(BuildingFuncName); i++)
@@ -114,6 +120,68 @@ void Building_PluginStart()
 		if(BuildingFunc[i] == INVALID_FUNCTION)
 			LogError("Function '%s' is missing in building.sp", BuildingFuncName[i]);
 	}
+}
+
+//dont do this on disconnect!
+void Building_ResetRewardValues(int client)
+{
+	f_GiveAmmoSupplyFacture[client] = 0.0;
+	i_GiveAmmoSupplyLimit[client] = 0;
+	i_GiveCashBuilding[client] = 0;
+}
+
+void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = true, float AmmoSupply = 0.0, bool SupplyLimit = true)
+{
+	//when using your own buildings, you get half as much.
+	if(client == owner)
+	{
+		Cash /= 2;
+		AmmoSupply *= 0.5;
+	}
+	if(CashLimit)
+	{
+		//affected by limit.
+		if(i_GiveCashBuilding[owner] < MAX_CASH_VIA_BUILDINGS)
+		{
+			i_GiveCashBuilding[owner] += Cash;
+			CashRecievedNonWave[owner] += Cash;
+			CashSpent[owner] -= Cash;
+		}
+	}
+	else
+	{
+		//This building doesnt affect the limit.
+		CashRecievedNonWave[owner] += Cash;
+		CashSpent[owner] -= Cash;
+	}
+	if(AmmoSupply <= 0.0)
+	{
+		return;
+	}
+	int ConvertedAmmoSupplyGive;
+	ConvertedAmmoSupplyGive = RoundToFloor(AmmoSupply);
+	float Decimal_Ammo = FloatFraction(AmmoSupply);
+
+	f_GiveAmmoSupplyFacture[owner] += Decimal_Ammo;
+						
+	while(f_GiveAmmoSupplyFacture[owner] >= 1.0)
+	{
+		f_GiveAmmoSupplyFacture[owner] -= 1.0;
+		ConvertedAmmoSupplyGive += 1;
+	}
+	if(SupplyLimit)
+	{
+		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)
+		{
+			i_GiveCashBuilding[owner] += ConvertedAmmoSupplyGive;
+			Ammo_Count_Used[owner] -= ConvertedAmmoSupplyGive;
+		}
+	}
+	else
+	{
+		Ammo_Count_Used[owner] -= ConvertedAmmoSupplyGive;
+	}
+
 }
 
 void Building_MapStart()
@@ -1329,4 +1397,25 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 			}
 		}
 	}
+}
+
+
+public bool BuildingCustomCommand(int client)
+{
+	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+	if(IsValidEntity(obj) && obj>MaxClients)
+	{
+		bool result;
+		Function func = func_NPCInteract[obj];
+		if(func && func != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, func);
+			Call_PushCell(client);
+			Call_PushCell(-1);
+			Call_PushCell(obj);
+			Call_Finish(result);
+		}
+		return true;
+	}
+	return false;
 }

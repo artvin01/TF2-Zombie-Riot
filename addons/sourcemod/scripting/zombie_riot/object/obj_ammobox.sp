@@ -90,7 +90,12 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 	//	npc.SetActivity("Open", true);
 	//	npc.SetPlaybackRate(0.5);
 	//	npc.m_flAttackHappens = GetGameTime(npc.index) + 1.4;
-		AmmoboxUsed(client, npc.index);
+		if(AmmoboxUsed(client, npc.index))
+		{
+			int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+			Building_GiveRewardsUse(client, owner, 20, true, 0.35, true);
+			Resupplies_Supplied[owner] += 2;
+		}
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 999999.4;
 	}
 	else
@@ -100,8 +105,6 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 	
 	return true;
 }
-
-
 
 
 bool AmmoboxUsed(int client, int entity)
@@ -142,16 +145,8 @@ bool AmmoboxUsed(int client, int entity)
 				}
 
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
 				Mana_Hud_Delay[client] = 0.0;
+				return true;
 			}
 			else
 			{
@@ -176,14 +171,7 @@ bool AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}	
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
+				return true;
 			}
 			else if(weaponindex == 411)
 			{
@@ -196,14 +184,7 @@ bool AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}	
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
+				return true;
 			}
 			else if(weaponindex == 441 || weaponindex == 35)
 			{
@@ -216,15 +197,7 @@ bool AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}		
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
+				return true;
 			}
 			else if(weaponindex == 998)
 			{
@@ -237,14 +210,7 @@ bool AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}	
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
+				return true;
 			}
 			else if(AmmoBlacklist(Ammo_type) && i_OverrideWeaponSlot[weapon] != 2) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 			{
@@ -257,14 +223,7 @@ bool AmmoboxUsed(int client, int entity)
 					CurrentAmmo[client][i] = GetAmmo(client, i);
 				}
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(!Rogue_Mode() && owner != -1 && owner != client)
-				{
-					Resupplies_Supplied[owner] += 2;
-					GiveCredits(owner, 20, true);
-					SetDefaultHudPosition(owner);
-					SetGlobalTransTarget(owner);
-					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-				}
+				return true;
 			}
 			else
 			{
@@ -276,17 +235,10 @@ bool AmmoboxUsed(int client, int entity)
 				{
 					GiveArmorViaPercentage(client, 0.1, 1.0);
 					ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-					if(!Rogue_Mode() && owner != -1 && owner != client)
-					{
-						Resupplies_Supplied[owner] += 2;
-						GiveCredits(owner, 20, true);
-						SetDefaultHudPosition(owner);
-						SetGlobalTransTarget(owner);
-						ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
-					}
 					Ammo_Count_Used[client] += 1;
 					
 					ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+					return true;
 				}
 				else
 				{
@@ -294,8 +246,10 @@ bool AmmoboxUsed(int client, int entity)
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Ammo Box");
+					return false;
 				}
 			}
 		}
 	}
+	return false;
 }

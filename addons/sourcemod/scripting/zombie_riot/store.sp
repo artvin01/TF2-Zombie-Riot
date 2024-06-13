@@ -1291,72 +1291,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
-						if(owner && !Rogue_Mode())
-						{
-							int HigherTechAdvancedClient = owner;
-							/*int HigherTechAdvancedCount;
-							HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
-							char buffer_pap[36];
-							for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-							{
-								int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-								if(IsValidEntity(entity))
-								{
-									GetEntPropString(entity, Prop_Data, "m_iName", buffer_pap, sizeof(buffer_pap));
-									if(!StrContains(buffer_pap, "zr_packapunch", false))
-									{
-										int ownerTech = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-										if(IsValidClient(ownerTech) && ownerTech != owner)
-										{
-											int TechCount;
-											TechCount = MaxSupportBuildingsAllowed(ownerTech, false);
-											if(HigherTechAdvancedCount < TechCount)
-											{
-												HigherTechAdvancedClient = ownerTech;
-												HigherTechAdvancedCount = TechCount;
-											}
-										}
-									}
-								}
-							}*/
-							if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
-							{
-								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[owner][client] += 10;
-									GiveCredits(owner, 400, true);
-									Resupplies_Supplied[owner] += 40;
-									SetDefaultHudPosition(owner, _, _, _, 5.0);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
-								}
-							}
-							else
-							{
-								if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
-									GiveCredits(HigherTechAdvancedClient, 300, true);
-									Resupplies_Supplied[HigherTechAdvancedClient] += 30;
-									SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
-									SetGlobalTransTarget(HigherTechAdvancedClient);
-									ShowSyncHudText(HigherTechAdvancedClient, SyncHud_Notifaction, "%t", "Pap Machine Used Me");
-								}
-								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[owner][client] += 3;
-									GiveCredits(owner, 100, true);
-									Resupplies_Supplied[owner] += 10;
-									SetDefaultHudPosition(owner, _, _, _, 5.0);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used But Another");
-								}							
-							}
-						}
-						else
-						{
-							owner = -1;
-						}
+						if(IsValidClient(owner))
+							Building_GiveRewardsUse(client, owner, 400, false, 5.0, false);
 					}
 				}
 				

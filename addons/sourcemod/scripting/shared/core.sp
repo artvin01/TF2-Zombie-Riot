@@ -359,6 +359,8 @@ float f_BombEntityWeaponDamageApplied[MAXENTITIES][MAXTF2PLAYERS];
 int i_HowManyBombsOnThisEntity[MAXENTITIES][MAXTF2PLAYERS];
 
 int i_HowManyBombsHud[MAXENTITIES];
+int i_PlayerToCustomBuilding[MAXTF2PLAYERS] = {0, ...};
+float f_BuildingIsNotReady[MAXTF2PLAYERS] = {0.0, ...};
 #endif
 
 #if defined ZR || defined RTS
@@ -382,6 +384,7 @@ bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
 Handle SyncHud_Notifaction;
 Handle SyncHud_WandMana;
 int i_CustomWeaponEquipLogic[MAXENTITIES]={0, ...};
+
 
 //only used in zr, however, can also be used for other gamemodes incase theres a limit.
 bool b_EnemyNpcWasIndexed[MAXENTITIES][2];
@@ -2059,6 +2062,7 @@ public void OnClientDisconnect(int client)
 	f_MedicCallIngore[client] = 0.0;
 	ZR_ClientDisconnect(client);
 	f_DelayAttackspeedAnimation[client] = 0.0;
+	f_BuildingIsNotReady[client] = 0.0;
 	//Needed to reset attackspeed stuff
 #endif
 

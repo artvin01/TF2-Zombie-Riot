@@ -244,18 +244,8 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	i_CurrentEquippedPerk[client] = what_perk;
 	i_CurrentEquippedPerkPreviously[client] = what_perk;
 	
-	if(!Rogue_Mode() && owner > 0 && owner != client)
-	{
-		if(!Rogue_Mode() && Perk_Machine_money_limit[owner][client] < 10)
-		{
-			GiveCredits(owner, 40, true);
-			Perk_Machine_money_limit[owner][client] += 1;
-			Resupplies_Supplied[owner] += 4;
-			SetDefaultHudPosition(owner);
-			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Perk Machine Used");
-		}
-	}
+	Building_GiveRewardsUse(client, owner, 65, true, 0.6, true);
+
 	float pos[3];
 	float angles[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);

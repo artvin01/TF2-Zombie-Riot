@@ -682,7 +682,7 @@ public void OnPostThink(int client)
 					
 			}
 			
-/*			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+			int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
 			if(IsValidEntity(obj) && obj>MaxClients)
 			{
 				cooldown_time = f_BuildingIsNotReady[client] - GameTime;
@@ -707,7 +707,8 @@ public void OnPostThink(int client)
 				}
 				IsReady = false;
 				had_An_ability = true;
-			}*/
+			}
+			
 			if(had_An_ability)
 			{
 				HudY -= 0.035;
