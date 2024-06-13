@@ -212,6 +212,19 @@ bool AmmoboxUsed(int client, int entity)
 				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
 				return true;
 			}
+			else if (i_WeaponAmmoAdjustable[weapon])
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, i_WeaponAmmoAdjustable[weapon] ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				return true;
+			}
 			else if(AmmoBlacklist(Ammo_type) && i_OverrideWeaponSlot[weapon] != 2) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 			{
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");

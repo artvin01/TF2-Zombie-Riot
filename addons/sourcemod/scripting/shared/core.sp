@@ -807,6 +807,7 @@ int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 #endif
 
 int b_BoundingBoxVariant[MAXENTITIES];
+int i_WeaponAmmoAdjustable[MAXENTITIES];
 bool b_ThisEntityIgnored_NoTeam[MAXENTITIES];
 bool b_ThisEntityIgnored[MAXENTITIES];
 bool b_ThisEntityIgnoredByOtherNpcsAggro[MAXENTITIES];

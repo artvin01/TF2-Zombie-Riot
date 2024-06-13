@@ -71,6 +71,7 @@ enum struct ItemInfo
 	int Attribs2;
 
 	int Ammo;
+	int AmmoBuyMenuOnly;
 	
 	int Reload_ModeForce;
 
@@ -167,6 +168,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sammo", prefix);
 		this.Ammo = kv.GetNum(buffer);
+
+		Format(buffer, sizeof(buffer), "%sammoBuyOnly", prefix);
+		this.AmmoBuyMenuOnly = kv.GetNum(buffer);
 		
 		Format(buffer, sizeof(buffer), "%sreload_mode", prefix);
 		this.Reload_ModeForce = kv.GetNum(buffer);
@@ -2730,8 +2734,15 @@ static void MenuPage(int client, int section)
 					int Repeat_Filler = 0;
 					if(item.Equipped[client])
 					{
-						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
-						{
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with Ammo, buyable only
+						{	
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0];
+							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1], cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+						}
+						else if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+						{	
 							int cost = AmmoData[info.Ammo][0];
 							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1], cost);
 							if(cost > cash)
@@ -4996,6 +5007,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
+				i_WeaponAmmoAdjustable[entity] = 0;
 				
 				if(entity > MaxClients)
 				{
@@ -5043,7 +5055,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 									}
 									if(info.Ammo) //my man broke my shit.
 									{
-										SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
+										if(info.AmmoBuyMenuOnly)
+										{
+											i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
+										}
+										else
+											SetEntProp(entity, Prop_Send, "m_iPrimaryAmmoType", info.Ammo);
+
 									}
 								}
 							}
