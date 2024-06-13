@@ -4416,12 +4416,12 @@ void Store_ApplyAttribs(int client)
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
-	map.SetValue("353", 1.0);	// No manual building pickup.
+//	map.SetValue("353", 1.0);	// No manual building pickup.
 //	map.SetValue("465", 999.0);	// instant build
 //	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 //	map.SetValue("397", 50.0);	// Ignore ally with shooting
-	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
+//	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
 //	map.SetValue("49", 0.0);	// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
 					//... doesnt work on player, must be on weapon...
 //	map.SetValue("124", 1.0);	// Make sentries minisentries (only works on melee's that are wrenches...)
@@ -5217,7 +5217,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			{
 				Attributes_Set(entity, 93, 0.0);
 				Attributes_Set(entity, 95, 0.0);
-				Attributes_Set(entity, 2043, 0.0);
 			}
 
 			Attributes_Set(entity, 263, 0.0);

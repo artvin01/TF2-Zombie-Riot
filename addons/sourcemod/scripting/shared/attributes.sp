@@ -7,7 +7,7 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
