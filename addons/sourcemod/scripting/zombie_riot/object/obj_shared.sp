@@ -185,7 +185,6 @@ methodmap ObjectGeneric < CClotBody
 			objstats.m_iWearable2 = entity;
 		}
 
-
 		return objstats;
 	}
 
@@ -574,7 +573,10 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	else
 	{
 		// Update max health/repair if attributes changed on the player
-
+		//issue: unequip lowest, buy best, place, and so on.
+		//we need to make this work only once when the building is made.
+		//or we block uneqiupping and selling of building upgrades.
+		/*
 		int expected = RoundFloat(Building_Max_Health[objstats.index] * Object_GetMaxHealthMulti(owner));
 		if(maxhealth && expected && maxhealth != expected)
 		{
@@ -590,6 +592,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			SetEntProp(objstats.index, Prop_Data, "m_iRepairMax", maxrepair);
 			SetEntProp(objstats.index, Prop_Data, "m_iRepair", repair);
 		}
+		*/
 
 
 		int g = health * 255  / maxhealth;
@@ -728,6 +731,8 @@ int Object_SupportBuildings(int owner)
 			if(StrContains(plugin, "obj_", false) != -1)
 			{
 				if(StrContains(plugin, "barricade", false) != -1)
+					continue;
+				if(StrContains(plugin, "obj_decorative", false) != -1)
 					continue;
 				
 				count++;

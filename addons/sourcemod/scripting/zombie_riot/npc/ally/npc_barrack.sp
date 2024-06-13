@@ -1232,7 +1232,7 @@ void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bo
 			{
 				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
 			}
-			else if(i_IsABuilding[i] && GetEntPropEnt(i, Prop_Send, "m_hBuilder") == client)
+			else if(i_IsABuilding[i] && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client)
 			{
 				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
 			}

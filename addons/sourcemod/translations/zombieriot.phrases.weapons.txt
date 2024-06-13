@@ -796,13 +796,17 @@
 	{
 		"en"		"Railgun"
 	}
-	"Healing Station"
+	"Food Fridge"
 	{
-		"en"		"Healing Station"
+		"en"		"Food Fridge"
 	}
 	"Village"
 	{
 		"en"        "Village"
+	}
+	"Metal"
+	{
+		"en"		"Metal"
 	}
 	"Chooseable Buildings (Only one)"
 	{

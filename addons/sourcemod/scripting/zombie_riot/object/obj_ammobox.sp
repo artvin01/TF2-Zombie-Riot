@@ -80,9 +80,9 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 {
 	if(ClotCanUse(npc, client))
 	{
-		ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-		ClientCommand(client, "playgamesound items/ammo_pickup.wav");
-		ApplyBuildingCollectCooldown(npc.index, client, 5.0, true);
+	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+	//	ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+	//	ApplyBuildingCollectCooldown(npc.index, client, 5.0, true);
 		
 		//Trying to apply animations outside of clot think can fail to work.
 
@@ -90,6 +90,7 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 	//	npc.SetActivity("Open", true);
 	//	npc.SetPlaybackRate(0.5);
 	//	npc.m_flAttackHappens = GetGameTime(npc.index) + 1.4;
+		AmmoboxUsed(client, npc.index);
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 999999.4;
 	}
 	else
@@ -98,4 +99,203 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 	}
 	
 	return true;
+}
+
+
+
+
+bool AmmoboxUsed(int client, int entity)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(IsValidEntity(weapon))
+	{
+		if(i_IsWandWeapon[weapon])
+		{
+			float max_mana_temp = 800.0;
+			float mana_regen_temp = 100.0;
+			
+			if(i_CurrentEquippedPerk[client] == 4)
+			{
+				mana_regen_temp *= 1.35;
+			}
+			
+			if(Mana_Regen_Level[client])
+			{			
+				mana_regen_temp *= Mana_Regen_Level[client];
+				max_mana_temp *= Mana_Regen_Level[client];	
+			}
+			if(b_AggreviatedSilence[client])
+				mana_regen_temp *= 0.30;
+			
+			if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+			{
+				Ammo_Count_Used[client] += 1;
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				if(Current_Mana[client] < RoundToCeil(max_mana_temp))
+				{
+					Current_Mana[client] += RoundToCeil(mana_regen_temp);
+					
+					if(Current_Mana[client] > RoundToCeil(max_mana_temp)) //Should only apply during actual regen
+						Current_Mana[client] = RoundToCeil(max_mana_temp);
+				}
+
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+				Mana_Hud_Delay[client] = 0.0;
+			}
+			else
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Max Mana Reached");
+			}
+		}
+		else
+		{
+			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+			if(weaponindex == 211)
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, 21 ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}	
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+			}
+			else if(weaponindex == 411)
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, 22 ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}	
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+			}
+			else if(weaponindex == 441 || weaponindex == 35)
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, 23 ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}		
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+			}
+			else if(weaponindex == 998)
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, 3 ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}	
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+			}
+			else if(AmmoBlacklist(Ammo_type) && i_OverrideWeaponSlot[weapon] != 2) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
+			{
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				AddAmmoClient(client, Ammo_type ,_,2.0);
+				Ammo_Count_Used[client] += 1;
+				for(int i; i<Ammo_MAX; i++)
+				{
+					CurrentAmmo[client][i] = GetAmmo(client, i);
+				}
+				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+				if(!Rogue_Mode() && owner != -1 && owner != client)
+				{
+					Resupplies_Supplied[owner] += 2;
+					GiveCredits(owner, 20, true);
+					SetDefaultHudPosition(owner);
+					SetGlobalTransTarget(owner);
+					ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+				}
+			}
+			else
+			{
+				int Armor_Max = 150;
+			
+				Armor_Max = MaxArmorCalculation(Armor_Level[client], client, 0.75);
+					
+				if(Armor_Charge[client] < Armor_Max)
+				{
+					GiveArmorViaPercentage(client, 0.1, 1.0);
+					ApplyBuildingCollectCooldown(entity, client, 5.0, true);
+					if(!Rogue_Mode() && owner != -1 && owner != client)
+					{
+						Resupplies_Supplied[owner] += 2;
+						GiveCredits(owner, 20, true);
+						SetDefaultHudPosition(owner);
+						SetGlobalTransTarget(owner);
+						ShowSyncHudText(owner,  SyncHud_Notifaction, "%t", "Ammo Box Used");
+					}
+					Ammo_Count_Used[client] += 1;
+					
+					ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					SetDefaultHudPosition(client);
+					SetGlobalTransTarget(client);
+					ShowSyncHudText(client,  SyncHud_Notifaction, "%t" , "Armor Max Reached Ammo Box");
+				}
+			}
+		}
+	}
 }

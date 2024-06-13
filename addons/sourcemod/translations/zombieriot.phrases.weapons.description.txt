@@ -1266,7 +1266,7 @@
 	
 	"Decorative Object Desc"
 	{
-		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
+		"en"	"Good for stacking buildings, low hp."
 	}
 	"Barricade Desc"
 	{
@@ -1274,19 +1274,19 @@
 	}
 	"Armor Table Desc"
 	{
-		"en"	"usage of this machine will give you Armour."
+		"en"	"using gives you Armour."
 	}
 	"Ammo Box Desc"
 	{
-		"en"	"usage of this machine will give you Ammo for your current holding weapon."
+		"en"	"using gives you ammo for your holding weapon."
 	}
 	"Perk Machine Desc"
 	{
-		"en"	"usage of this machine will give you an extra perk that vanishes on death/downed."
+		"en"	"using will give you a perk that vanishes on death/downed."
 	}
 	"Pack-a-Punch Desc"
 	{
-		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nIf any other player with more upgrades then you exists that also has a pap, then they will get the majority of the cash."
+		"en"	"gives weapnos upgrades, person with the most upgrades gets the most cash instead."
 	}
 	"Sentrygun Desc"
 	{
@@ -1300,11 +1300,9 @@
 	{
 		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
 	}
-	"Healing Station Desc"
+	"Food Fridge Desc"
 	{
 		"en"	"Heals for 30 Health, scales with medigun upgrades."
-		"ru"	"Лечит на 30 ед. здоровья, увеличивается с улучшением лечеб. пушки."
-		"chi"   "治疗30点生命值，随着医疗升级而增加。"
 	}
 	"Village Desc"
 	{

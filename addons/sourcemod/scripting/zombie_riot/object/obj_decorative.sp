@@ -40,7 +40,7 @@ public bool ObjectDecorative_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = ObjectBarricade_Buildings(client);
+		count = ObjectDecorative_Buildings(client);
 		maxcount = 7;
 		if(count >= maxcount)
 			return false;
