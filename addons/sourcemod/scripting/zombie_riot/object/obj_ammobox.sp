@@ -112,6 +112,26 @@ bool AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+
+
+	
+	int ie, weapon1;
+	while(TF2_GetItem(client, weapon1, ie))
+	{
+		if(IsValidEntity(weapon1))
+		{
+			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+			if(Ammo_type > 0)
+			{
+				//found a weapon that has ammo.
+				if(GetAmmo(client, Ammo_type) <= 0)
+				{
+					weapon = weapon1;
+					break;
+				}
+			}
+		}
+	}
 	if(IsValidEntity(weapon))
 	{
 		if(i_IsWandWeapon[weapon])

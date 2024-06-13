@@ -146,6 +146,9 @@ stock void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
+
+	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
+	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 #endif
 
 #if defined NOG
@@ -159,6 +162,20 @@ stock void SDKHook_HookClient(int client)
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 #endif
+}
+
+public Action WeaponSwtichToWarning(int client, int weapon)
+{
+	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	if(Ammo_type > 0)
+	{
+		//found a weapon that has ammo.
+		if(GetAmmo(client, Ammo_type) <= 0)
+		{
+			SetGlobalTransTarget(client);
+			PrintToChat(client, "%t", "Warn Client Ammo None");
+		}
+	}
 }
 
 #if defined ZR || defined RPG
