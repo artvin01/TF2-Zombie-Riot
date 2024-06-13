@@ -26,19 +26,19 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	-50,
-	800,
+	275,
 	0,
 
-	5975,
-	3975,
-	9975,
-	9975,
+	575,
+	375,
+	975,
+	975,
 
-	5975,
-	5975,
-	5975,
+	575,
+	575,
+	575,
 
-	5975
+	575
 };
 
 // Base health of building
@@ -127,6 +127,7 @@ void Building_ConfigSetup()
 {
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
+		PrintToServer("%s",BuildingPlugin[i]);
 		BuildingId[i] = NPC_GetByPlugin(BuildingPlugin[i]);
 		if(BuildingId[i] == -1)
 			LogError("NPC '%s' is missing in building.sp", BuildingPlugin[i]);
@@ -180,8 +181,15 @@ static void BuildingMenu(int client)
 	menu.SetTitle("%t\n ", "Building Menu");
 
 	char buffer1[196], buffer2[64];
+	int IRepeatMaxLimit;
 	for(int i = MenuPage[client] * ItemsPerPage; i < sizeof(BuildingPlugin); i++)
 	{
+		if(IRepeatMaxLimit > 50)
+		{
+			PrintToChatAll("stop!! BuildingMenu failed!!! report!!!!");
+			return;
+		}
+		IRepeatMaxLimit++;
 		int cost = GetCost(i, multi);
 		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
 		int count;
@@ -216,6 +224,7 @@ static void BuildingMenu(int client)
 		if(ducking)
 		{
 			FormatEx(buffer2, sizeof(buffer2), "%s Desc", buffer1);
+			PrintToChatAll("%s",buffer2);
 			if(!TranslationPhraseExists(buffer2))
 				strcopy(buffer2, sizeof(buffer2), buffer1);
 
@@ -234,10 +243,13 @@ static void BuildingMenu(int client)
 		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
+	/*
 	for(int i; i < MenuPage[client] ? 7 : 8; i++)
 	{
 		menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);
 	}
+	*/
+
 
 	if(MenuPage[client])
 	{

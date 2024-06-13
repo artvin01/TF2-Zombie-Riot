@@ -28,7 +28,7 @@ methodmap ObjectDecorative < ObjectGeneric
 {
 	public ObjectDecorative(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectDecorative npc = view_as<ObjectDecorative>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mvm_museum_pedestal.mdl", _, "50",{15.0, 15.0, 40.0},_,false));
+		ObjectDecorative npc = view_as<ObjectDecorative>(ObjectGeneric(client, vecPos, vecAng, "models/props_mvm/mvm_museum_pedestal.mdl", _, "50",{15.0, 15.0, 53.0},_,false));
 		
 		npc.FuncCanBuild = ObjectDecorative_CanBuild;
 

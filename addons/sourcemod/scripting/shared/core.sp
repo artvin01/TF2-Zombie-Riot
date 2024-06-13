@@ -2216,20 +2216,20 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 
+			/*
 #if defined ZR
 			char classname[36];
 			GetEntityClassname(weapon_holding, classname, sizeof(classname));
-			
 			if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 			{
-				if(/*EntityFuncAttack2[weapon_holding] != MountBuildingToBack && */TeutonType[client] == TEUTON_NONE)
+				if(EntityFuncAttack2[weapon_holding] == INVALID_FUNCTION && TeutonType[client] == TEUTON_NONE)
 				{
 					b_IgnoreWarningForReloadBuidling[client] = true;
 					Pickup_Building_M2(client, weapon, false);
 				}
 			}
 #endif
-
+			*/
 		}
 		
 		StartPlayerOnlyLagComp(client, true);

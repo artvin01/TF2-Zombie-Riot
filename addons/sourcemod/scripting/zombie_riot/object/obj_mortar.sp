@@ -18,8 +18,8 @@ void ObjectMortar_MapStart()
 	PrecacheModel("models/zombie_riot/buildings/mortar_2.mdl");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sentrygun");
-	strcopy(data.Plugin, sizeof(data.Plugin), "obj_sentrygun");
+	strcopy(data.Name, sizeof(data.Name), "Mortar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "obj_mortar");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
