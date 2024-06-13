@@ -26,7 +26,7 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	-50,
-	275,
+	300,
 	0,
 
 	575,
@@ -193,6 +193,10 @@ static void BuildingMenu(int client)
 		int count;
 		int maxcount = 99;
 		bool allowed;
+		
+		float cooldown = Cooldowns[client][i] - gameTime;
+		if(cooldown > 9999.9)
+			continue;
 
 		if(BuildingFunc[i] != INVALID_FUNCTION)
 			allowed = Object_CanBuild(BuildingFunc[i], client, count, maxcount);
@@ -203,10 +207,6 @@ static void BuildingMenu(int client)
 
 		if(cost > metal)
 			allowed = false;
-		
-		float cooldown = Cooldowns[client][i] - gameTime;
-		if(cooldown > 9999.9)
-			continue;
 		
 		if(Waves_InSetup())
 		{
