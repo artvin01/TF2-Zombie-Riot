@@ -4448,12 +4448,11 @@ void Store_ApplyAttribs(int client)
 
 	float MovementSpeed = 330.0;
 	
-/*	if(VIPBuilding_Active())
+	if(VIPBuilding_Active())
 	{
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-*/
 	
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed

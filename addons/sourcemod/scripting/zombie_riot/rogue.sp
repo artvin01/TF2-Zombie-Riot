@@ -2531,7 +2531,7 @@ static void ClearStats()
 	b_SpanishSpecialisedGunpowder = false;
 	b_SupportHealHandPassive = false;
 
-//	Rogue_Barracks_Reset();
+	Rogue_Barracks_Reset();
 	Rogue_StoryTeller_Reset();
 }
 

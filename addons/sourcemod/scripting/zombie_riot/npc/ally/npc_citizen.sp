@@ -1925,7 +1925,7 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
-	bool noSafety = (npc.m_bCamo/* || VIPBuilding_Active()*/);
+	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive);
 
 	// See if our target is still valid
