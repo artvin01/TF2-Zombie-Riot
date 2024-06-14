@@ -893,11 +893,12 @@ enum
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
 #if defined RUINA_BASE
 	#define RUINA_CUSTOM_MODELS			"models/zombie_riot/ruina/ruina_models_1.mdl"
-	enum
-	{
+	enum	//can have a maximum of 16 (I think)
+	{		//Also, once done, move as many as I can into custom weaponry_1, then leave the leftovers in the seperate ones
 		RUINA_ICBM 				= 1,
 		RUINA_HALO1 			= 2,
-		RUINA_QUINCY_BOW 		= 4
+		RUINA_QUINCY_BOW 		= 4,
+		RUINA_BLADE_1			= 8
 	}
 #endif
 

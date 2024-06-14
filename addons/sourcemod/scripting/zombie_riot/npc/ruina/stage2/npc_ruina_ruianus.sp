@@ -72,7 +72,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Ruianus(client, vecPos, vecAng, ally);
 }
-
 methodmap Ruianus < CClotBody
 {
 	
@@ -171,7 +170,7 @@ methodmap Ruianus < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
@@ -204,6 +203,9 @@ methodmap Ruianus < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(RUINA_BLADE_1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
 
 		//fl_ruina_battery[npc.index] = 0.0;
 		//b_ruina_battery_ability_active[npc.index] = false;
