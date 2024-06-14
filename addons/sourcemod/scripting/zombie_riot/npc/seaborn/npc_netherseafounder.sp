@@ -601,7 +601,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				bool resist = (SeaMelee_IsSeaborn(client)/* || Building_NeatherseaReduced(client)*/);
+				bool resist = (SeaMelee_IsSeaborn(client) || Building_NeatherseaReduced(client));
 				float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
 				float damageDeal;

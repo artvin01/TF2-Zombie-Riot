@@ -1599,7 +1599,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_iGunValue = sell;
 	npc.m_iGunSeller = userid;
 	
-//	Building_ClearRefBuffs(EntIndexToEntRef(entity));
+	Building_ClearRefBuffs(EntIndexToEntRef(entity));
 	
 	int wave = 90;
 	
