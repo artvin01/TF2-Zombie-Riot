@@ -2305,7 +2305,7 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
 			if(FakeMaxWaves)
-				maxwaves = FakeMaxWaves - 1;
+				maxwaves = FakeMaxWaves;
 
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
