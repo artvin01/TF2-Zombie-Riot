@@ -66,7 +66,7 @@ methodmap ObjectVillage < ObjectGeneric
 {
 	public ObjectVillage(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectVillage npc = view_as<ObjectVillage>(ObjectGeneric(client, vecPos, vecAng, VILLAGE_MODEL, "0.75", "50", {15.0, 15.0, 100.0}, _, false));
+		ObjectVillage npc = view_as<ObjectVillage>(ObjectGeneric(client, vecPos, vecAng, VILLAGE_MODEL, "0.75", "50", {18.0, 18.0, 70.0}, _, false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
