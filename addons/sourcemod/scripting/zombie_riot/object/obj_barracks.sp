@@ -8,6 +8,7 @@ float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 See ZR core.
 */
+
 static float f_VillageSavingResources[MAXENTITIES];
 
 static int InMenu[MAXTF2PLAYERS];
@@ -247,9 +248,12 @@ enum
 //just nerf the building overall, so its more advantagous to have it placed down.
 //none of these upgrades cost gold (or should)
 
+#define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
+#define SUMMONER_MODEL_2	"models/props_manor/clocktower_01.mdl"
 void ObjectBarracks_MapStart()
 {
-	PrecacheModel("models/buildables/sentry1.mdl");
+	PrecacheModel(SUMMONER_MODEL);
+	PrecacheModel(SUMMONER_MODEL_2);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks");
@@ -271,7 +275,7 @@ methodmap ObjectBarracks < ObjectGeneric
 {
 	public ObjectBarracks(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/sentry1.mdl", "0.75","50", {15.0, 15.0, 34.0},_,false));
+		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, SUMMONER_MODEL, "0.15","50", {18.0, 18.0, 50.0}, _, false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;

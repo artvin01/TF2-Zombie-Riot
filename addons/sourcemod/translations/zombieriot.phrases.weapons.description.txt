@@ -3045,4 +3045,12 @@
 	{
 		"en"	"Fires a strong laser, weakened when mounted."
 	}
+	"Barracks"
+	{
+		"en"	"Barracks"
+	}
+	"Barracks Desc"
+	{
+		"en"	"Train your own army and upgrade them."
+	}
 }
