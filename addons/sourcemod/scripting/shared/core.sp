@@ -3544,8 +3544,8 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
 				
-//				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
-//					return true;
+				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
+					return true;
 				
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
