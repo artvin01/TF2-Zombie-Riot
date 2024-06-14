@@ -19,6 +19,7 @@ static const char BuildingPlugin[][] =
 	"obj_mortar",
 	"obj_railgun",
 	"obj_healingstation",
+	"obj_village",
 
 	"obj_tinker_anvil"
 };
@@ -40,6 +41,7 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	590,
 	590,
 	590,
+	1190,
 
 	400
 };
@@ -56,6 +58,7 @@ static const int BuildingHealth[sizeof(BuildingPlugin)] =
 	75,
 	75,
 
+	30,
 	30,
 	30,
 	30,
@@ -80,6 +83,7 @@ static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 	60.0,
 	60.0,
 	60.0,
+	60.0,
 
 	30.0
 };
@@ -95,6 +99,7 @@ static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 	"ObjectGeneric_CanBuild",
 	"ObjectGeneric_CanBuild",
 
+	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",

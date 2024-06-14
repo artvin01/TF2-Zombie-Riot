@@ -8,13 +8,11 @@
 
 #define MORTAR_RELOAD	"vehicles/tank_readyfire1.wav"
 
-static char g_ShootingSound[][] = {
-	"weapons/sentry_shoot_mini.wav",
-};
+static const char g_ShootingSound[] = "weapons/sentry_shoot_mini.wav";
 
 void ObjectMortar_MapStart()
 {
-	PrecacheSoundArray(g_ShootingSound);
+	PrecacheSound(g_ShootingSound);
 	PrecacheModel("models/zombie_riot/buildings/mortar_2.mdl");
 	PrecacheSound(MORTAR_SHOT);
 	PrecacheSound(MORTAR_BOOM);
@@ -41,7 +39,7 @@ methodmap ObjectMortar < ObjectGeneric
 {
 	public void PlayShootSound() 
 	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
+		EmitSoundToAll(g_ShootingSound, this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
 	}
 	public ObjectMortar(int client, const float vecPos[3], const float vecAng[3])
 	{
@@ -53,7 +51,6 @@ methodmap ObjectMortar < ObjectGeneric
 		func_NPCInteract[npc.index] = ClotInteract;
 
 		SetRotateByDefaultReturn(npc.index, 180.0);
-		npc.SetActivity("MORTAR_IDLE");
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		return npc;
