@@ -373,14 +373,12 @@
 			}
 			"CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState"
 			{
+				// Does not work on Windows!!
 				// "server_changelevel_failed" -> (Large Function) CTeamplayRoundBasedRules::CTeamplayRoundBasedRules
 				// CTeamplayRoundBasedRules calls ResetPlayerAndTeamReadyState
 				"library"	"server"
 				"linux64"	"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x33\xFF\x48\x8B\xD9"
-				
 				"linux"		"@_ZN24CTeamplayRoundBasedRules28ResetPlayerAndTeamReadyStateEv"
-				"windows"	"\x8B\x4C\x24\x0C\x0F\xB6\x44\x24\x08"
 			}
 			"CTFGCServerSystem::PreClientUpdate"
 			{
