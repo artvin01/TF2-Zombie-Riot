@@ -1453,6 +1453,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
+
+			SteamWorks_UpdateGameTitle();
 			
 			//MUSIC LOGIC
 			if(CurrentRound == length)
@@ -2517,6 +2519,7 @@ void Waves_SetDifficultyName(const char[] name)
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), name);
 	WavesUpdateDifficultyName();
+	SteamWorks_UpdateGameTitle();
 }
 
 void WavesUpdateDifficultyName()

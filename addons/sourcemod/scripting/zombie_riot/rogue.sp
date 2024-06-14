@@ -474,6 +474,8 @@ void Rogue_SetupVote(KeyValues kv)
 
 		kv.GoBack();
 	}
+
+	SteamWorks_UpdateGameTitle();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -1069,6 +1071,7 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
+				SteamWorks_UpdateGameTitle();
 
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -2272,9 +2275,19 @@ int Rogue_GetRound()	// Waves_GetRound()
 	return ProgressTimer ? CurrentFloor : CurrentRound;
 }
 
+int Rogue_GetFloor()
+{
+	return CurrentFloor;
+}
+
 int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
+}
+
+int Rogue_GetCount()
+{
+	return CurrentCount;
 }
 
 int Rogue_GetRoundScale()

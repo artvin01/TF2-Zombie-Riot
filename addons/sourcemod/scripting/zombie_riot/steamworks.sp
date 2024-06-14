@@ -44,13 +44,13 @@ void SteamWorks_UpdateGameTitle()
 
 		if(Rogue_Mode())
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetRound() + 1, Rogue_GetWave() + 1);
+			FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);
 		}
-		else if(Waves_InFreeplay())
+		else if(Waves_InFreeplay() && WhatDifficultySetting_Internal[0])
 		{
 			FormatEx(buffer, sizeof(buffer), "%s (Freeplay)", WhatDifficultySetting_Internal);
 		}
-		else if(Waves_Started())
+		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
 			FormatEx(buffer, sizeof(buffer), "%s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
 		}
