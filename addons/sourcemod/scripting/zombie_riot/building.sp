@@ -932,13 +932,6 @@ bool Building_IsValidGroundFloor(int client, int buildingindx, float VecBottom[3
 	//This code checks if there is a valid ground, if not, itll say no and fail.
 	//All the checks here now will say if it cailed, if all pass, its valid.
 	
-	float VecMin[3];
-	float VecMax[3];
-	VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
-	VecMin[0] *= -1.0;
-	VecMin[1] *= -1.0;
-	VecMin[2] = 0.0;
-	VecMax = f3_CustomMinMaxBoundingBox[buildingindx];
 	//Visualise the box for the player!
 	//This is the final check.
 	static float m_vecLookdown[3];
@@ -1248,7 +1241,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	int HealGiven;
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
-		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, float(new_ammo / 3));
+		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / 3);
 		if(HealGiven <= 0)
 		{
 			EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
@@ -1302,8 +1295,9 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			HasMechanic[entity] = false;
 			SetBuildingMaxHealth(entity, 1.15, true, false);
 		}
-		/*
-		if(i_WhatBuilding[entity] == BuildingSummoner)
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			
 			float healthMult = 1.0;
@@ -1311,14 +1305,15 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			{
 				healthMult *= 1.3;
 				i_EntityRecievedUpgrades[entity] |= ZR_BARRACKS_UPGRADES_TOWER;
+				/*
 				int prop1 = EntRefToEntIndex(Building_Hidden_Prop[entity][1]);
-				
 				if(IsValidEntity(prop1))
 				{
 					SetEntityModel(prop1, "models/props_manor/clocktower_01.mdl");
 					//"0.65" default
 					SetEntPropFloat(prop1, Prop_Send, "m_flModelScale", 0.11); 
 				}
+				*/
 			}
 
 			if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GUARD_TOWER) && (!(i_EntityRecievedUpgrades[entity] & ZR_BARRACKS_UPGRADES_GUARD_TOWER)))
@@ -1356,9 +1351,8 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetBuildingMaxHealth(entity, healthMult, false, true);
 			}
 		}
-		*/
 	}
-	/*
+	
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
 	{
 		if(!FinalBuilder[entity] && FinalBuilder[client])
@@ -1438,7 +1432,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		}
 		i_CurrentEquippedPerk[entity] = i_CurrentEquippedPerk[client];
 	}
-	*/
 }
 
 

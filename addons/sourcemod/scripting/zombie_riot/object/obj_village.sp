@@ -582,7 +582,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	if(f_BuildingIsNotReady[Owner] > gameTime)
 		return false;
 	
-	if(owner == client && f_MedicCallIngore[Owner] < gameTime)
+	if(Owner == client && f_MedicCallIngore[Owner] < gameTime)
 	{
 		if(!(Village_Flags[Owner] & VILLAGE_040))
 		{

@@ -29,7 +29,7 @@ static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
 int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 int i_EntityRecievedUpgrades[MAXENTITIES];
-int i_EntityRecievedUpgrades_2[MAXENTITIES];
+//int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
@@ -275,7 +275,7 @@ methodmap ObjectBarracks < ObjectGeneric
 {
 	public ObjectBarracks(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, SUMMONER_MODEL, "0.11","50", {22.0, 22.0, 30.0}, _, false));
+		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, SUMMONER_MODEL, "0.11","50", {18.0, 18.0, 40.0}, _, false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
@@ -284,6 +284,23 @@ methodmap ObjectBarracks < ObjectGeneric
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		Building_Summoner(client, npc.index);
 
+		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
+		{
+			SetEntityModel(npc.index, SUMMONER_MODEL_2);
+			if(IsValidEntity(npc.m_iWearable2))
+			{
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", 0.07);
+				SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+			}
+			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.07);
+			float minbounds[3] = {-18.0, -18.0, 0.0};
+			float maxbounds[3] = {18.0, 18.0, 40.0};
+			SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
+			SetEntPropVector(npc.index, Prop_Send, "m_vecMaxs", maxbounds);
+
+			b_Anger[npc.index] = true;
+		}
+		
 		return npc;
 	}
 }
@@ -833,6 +850,21 @@ void Barracks_BuildingThink(int entity)
 	if(!(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		return;
 
+	if(!b_Anger[npc.index])
+	{
+		SetEntityModel(npc.index, SUMMONER_MODEL_2);
+		if(IsValidEntity(npc.m_iWearable2))
+		{
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", 0.07);
+			SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+		}
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.07);
+		float minbounds[3] = {-18.0, -18.0, 0.0};
+		float maxbounds[3] = {18.0, 18.0, 40.0};
+		SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
+		SetEntPropVector(npc.index, Prop_Send, "m_vecMaxs", maxbounds);
+		b_Anger[npc.index] = true;
+	}
 	float MinimumDistance = 60.0;
 
 	if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_MURDERHOLES)

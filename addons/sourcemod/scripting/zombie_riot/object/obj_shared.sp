@@ -39,7 +39,7 @@ float RotateByDefaultReturn(int entity)
 {
 	return RotateByDefault[entity];
 }
-float SetRotateByDefaultReturn(int entity, float Setfloat)
+void SetRotateByDefaultReturn(int entity, float Setfloat)
 {
 	RotateByDefault[entity] = Setfloat;
 }
