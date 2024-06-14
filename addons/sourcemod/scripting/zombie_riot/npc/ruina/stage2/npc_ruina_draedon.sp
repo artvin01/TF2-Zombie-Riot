@@ -172,7 +172,7 @@ methodmap Draedon < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -211,9 +211,12 @@ methodmap Draedon < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+
+		SetVariantInt(RUINA_MAGI_GUN);
+		AcceptEntityInput(npc.m_iWearable4, "SetBodyGroup");	
 		
 		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
 		SetVariantString("1.0");
@@ -338,7 +341,7 @@ static void ClotThink(int iNPC)
 				{
 					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 					npc.FaceTowards(vecTarget, 100000.0);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 					npc.PlayMeleeSound();
 					npc.m_flNextMeleeAttack = GameTime+1.0;
 					npc.m_flAttackHappenswillhappen = true;
