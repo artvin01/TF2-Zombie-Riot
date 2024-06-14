@@ -69,6 +69,7 @@ void NPC_ConfigSetup()
 	ObjectTinkerAnvil_MapStart();
 	ObjectSentrygun_MapStart();
 	ObjectMortar_MapStart();
+	ObjectRailgun_MapStart();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -760,6 +761,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_tinker_anvil.sp"
 #include "zombie_riot/object/obj_sentrygun.sp"
 #include "zombie_riot/object/obj_mortar.sp"
+#include "zombie_riot/object/obj_railgun.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"

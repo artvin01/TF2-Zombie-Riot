@@ -849,6 +849,7 @@ void ZR_ClientDisconnect(int client)
 	GoldAmount[client] = 0.0;
 	i_PlayerModelOverrideIndexWearable[client] = 0;
 	b_HideCosmeticsPlayer[client] = false;
+	UnequipDispenser(client, true);
 }
 
 public void OnMapInit()
@@ -983,7 +984,7 @@ public Action Command_AFK(int client, int args)
 	if(client)
 	{
 		ForcePlayerSuicide(client);
-	//	DestroyDispenser(client);
+		UnequipDispenser(client, true);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);

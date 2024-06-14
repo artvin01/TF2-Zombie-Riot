@@ -117,7 +117,7 @@ void Sentrygun_FaceEnemy(int sentry, int Target)
 
 	static float tmpAngles[3];
 	static float rocketOrigin[3];
-	GetEntPropVector(sentry, Prop_Send, "m_vecOrigin", rocketOrigin);
+	GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", rocketOrigin);
 
 	float pos1[3];
 	WorldSpaceCenter(Target, pos1);

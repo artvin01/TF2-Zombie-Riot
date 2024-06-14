@@ -17,10 +17,12 @@ static const char BuildingPlugin[][] =
 
 	"obj_sentrygun",
 	"obj_mortar",
+	"obj_railgun",
 	"obj_healingstation",
 
 	"obj_tinker_anvil"
 };
+
 
 // Base metal cost of building
 static const int BuildingCost[sizeof(BuildingPlugin)] =
@@ -34,6 +36,7 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	975,
 	975,
 
+	590,
 	590,
 	590,
 	590,
@@ -56,6 +59,7 @@ static const int BuildingHealth[sizeof(BuildingPlugin)] =
 	30,
 	30,
 	30,
+	30,
 
 	600
 };
@@ -72,6 +76,7 @@ static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 	90.0,
 	90.0,
 
+	60.0,
 	60.0,
 	60.0,
 	60.0,
@@ -93,6 +98,7 @@ static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",
 	"ObjectGeneric_CanBuildSentry",
+	"ObjectGeneric_CanBuildSentry",
 
 	"ObjectTinkerAnvil_CanBuild"
 };
@@ -103,11 +109,17 @@ static float Cooldowns[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
 static float GrabThrottle[MAXENTITIES];
 static int MenuPage[MAXTF2PLAYERS];
 static Handle MenuTimer[MAXTF2PLAYERS];
-static int Building_BuildingBeingCarried[MAXENTITIES];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXTF2PLAYERS];
 
+bool BuildingIsSupport(int entity)
+{
+	if(BuildingFunc[entity] == ObjectGeneric_CanBuild)
+		return true;
+
+	return false;
+}
 void ResetPlayer_BuildingBeingCarried(int client)
 {
 	Player_BuildingBeingCarried[client] = 0;
@@ -117,6 +129,13 @@ bool IsPlayerCarringObject(int client)
 	if(Player_BuildingBeingCarried[client])
 		return true;
 	if(PlayerWasHoldingProp[client] > GetGameTime())
+		return true;
+		
+	return false;
+}
+bool BuildingIsBeingCarried(int buildingindx)
+{
+	if(Building_BuildingBeingCarried[buildingindx] != 0)
 		return true;
 		
 	return false;
@@ -593,7 +612,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
 		
 		float VecPos[3];
-		GetEntPropVector(buildingindx, Prop_Send, "m_vecOrigin", VecPos);
+		GetEntPropVector(buildingindx, Prop_Data, "m_vecAbsOrigin", VecPos);
 		float VecMin[3];
 		float VecMax[3];
 		VecMin = f3_CustomMinMaxBoundingBox[buildingindx];
@@ -627,12 +646,13 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			endPos2[1] = VecPos[1];
 			endPos2[2] += Delta;
 			i_IDependOnThisBuilding[buildingindx] = buildingHit;
-			b_ThisEntityIgnored[buildingindx] = false;
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
 			Building_BuildingBeingCarried[buildingindx] = 0;
+			b_ThisEntityIgnored[buildingindx] = false;
+			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
 			EmitSoundToClient(client, SOUND_TOSS_TF);
 			return;
 		}
@@ -649,8 +669,9 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
 			Player_BuildingBeingCarried[client] = 0;
 			Building_BuildingBeingCarried[buildingindx] = 0;
-			EmitSoundToClient(client, SOUND_TOSS_TF);
 			b_ThisEntityIgnored[buildingindx] = false;
+			b_ThisEntityIsAProjectileForUpdateContraints[buildingindx] = false;
+			EmitSoundToClient(client, SOUND_TOSS_TF);
 		}
 		return;
 	}
@@ -684,6 +705,7 @@ void Building_PlayerWieldsBuilding(int client, int entity)
 	Player_BuildingBeingCarried[client] = EntIndexToEntRef(entity);
 	b_ThisEntityIgnoredBeingCarried[entity] = true;
 	b_ThisEntityIgnored[entity] = true;
+	b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 }
 
 //make sure they dont carry anything beforehand
@@ -730,15 +752,16 @@ void BuildingPickUp(int BuildingNPC)
 	vecPos[1]+=vecFwd[1]* BUILDING_DISTANCE_GRAB;
 	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
 
-	GetEntPropVector(BuildingNPC, Prop_Send, "m_vecOrigin", vecFwd);
+	GetEntPropVector(BuildingNPC, Prop_Data, "m_vecAbsOrigin", vecFwd);
 
 	SubtractVectors(vecPos, vecFwd, vecVel);
 	vecPos[2] -= 15.0;
 	vecView2[0] = 0.0;
 	vecView2[1] -= 180.0;
 	vecView2[1] += RotateByDefaultReturn(BuildingNPC);
-	Custom_SDKCall_SetLocalOrigin(BuildingNPC, vecPos);
-	SetEntPropVector(BuildingNPC, Prop_Data, "m_angRotation", vecView2); 
+	TeleportEntity(BuildingNPC, vecPos, vecView2, NULL_VECTOR);
+//	Custom_SDKCall_SetLocalOrigin(BuildingNPC, vecPos);
+//	SetEntPropVector(BuildingNPC, Prop_Data, "m_angRotation", vecView2); 
 }
 
 
@@ -1481,4 +1504,159 @@ public bool BuildingCustomCommand(int client)
 		return true;
 	}
 	return false;
+}
+
+
+
+int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
+
+public void MountBuildingToBack(int client, int weapon, bool crit)
+{
+	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]) || IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+	{
+		UnequipDispenser(client);
+		return;
+	}
+	if(IsPlayerCarringObject(client))
+	{
+		Pickup_Building_M2(client, -1, false);
+		return;
+	}
+	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
+	if(entity < MaxClients)
+	{
+		return;
+	}
+	if (!IsValidEntity(entity))
+	{
+		return;
+	}
+	if(!i_IsABuilding[entity])
+	{
+		return;
+	}
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+	{
+		return;
+	}
+	int Wearable;
+	Wearable = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(Wearable))
+		return;
+
+	Building_RotateAllDepencencies(entity);
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+	ModelScale *= 0.5;
+
+	b_ThisEntityIgnored[entity] = true;
+	b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+	
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
+	if(IsValidEntity(objstats.m_iWearable1))
+		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
+
+	if(IsValidEntity(objstats.m_iWearable2))
+		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
+
+	if(IsValidEntity(objstats.m_iWearable3))
+	{
+		SetVariantString("0");
+		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
+	}
+	if(IsValidEntity(objstats.m_iWearable4))
+	{
+		SetVariantString("0");
+		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
+	}
+
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(Wearable, "flag", flPos, flAng);
+	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
+	SetParent(Wearable, InfoTarget, "flag",_);
+	SDKCall_SetLocalOrigin(entity, flPos);	
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
+	SetParent(InfoTarget, entity, _, _, _);
+	Building_Mounted[client] = EntIndexToEntRef(entity);
+	Building_Mounted[entity] = EntIndexToEntRef(client);
+
+	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
+	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
+	//all checks succeeded, now mount the building onto their back!
+}
+
+
+void UnequipDispenser(int client, bool destroy = false)
+{
+	if(destroy)
+	{
+		Building_Mounted[client] = 0;
+		if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
+		{
+			RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
+		}
+		if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+		{
+			RemoveEntity(i2_MountedInfoAndBuilding[1][client]);
+		}
+		i2_MountedInfoAndBuilding[0][client] = INVALID_ENT_REFERENCE;
+		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
+		return;
+	}
+	//dont carry anything please.
+	if(IsPlayerCarringObject(client))
+	{
+		Pickup_Building_M2(client, -1, false);
+		return;
+	}
+	
+	Building_Mounted[client] = 0;
+	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+	if(IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+	{
+		float posStacked[3]; 
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+		AcceptEntityInput(i2_MountedInfoAndBuilding[1][client], "ClearParent");
+		SDKCall_SetLocalOrigin(entity, posStacked);	
+		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
+	}
+	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
+	{
+		RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
+		i2_MountedInfoAndBuilding[0][client] = INVALID_ENT_REFERENCE;
+	}
+	if(!IsValidEntity(entity))
+	{
+		return;
+	}
+	Building_Mounted[entity] = 0;
+	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+	b_ThisEntityIgnored[entity] = false;
+	b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
+	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+	ModelScale *= 2.0;
+
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
+	if(IsValidEntity(objstats.m_iWearable1))
+	{
+		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
+	}
+
+	if(IsValidEntity(objstats.m_iWearable2))
+		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
+
+	if(IsValidEntity(objstats.m_iWearable3))
+	{
+		SetVariantString("6");
+		AcceptEntityInput(objstats.m_iWearable3, "SetTextSize");
+	}
+	if(IsValidEntity(objstats.m_iWearable4))
+	{
+		SetVariantString("6");
+		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
+	}
+
+	Building_PlayerWieldsBuilding(client, entity);
+
 }

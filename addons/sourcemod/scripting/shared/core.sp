@@ -2715,6 +2715,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined ZR
 		i_CustomWeaponEquipLogic[entity] = 0;
 		Resistance_for_building_High[entity] = 0.0;
+		Building_Mounted[entity] = 0;
 #endif
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR

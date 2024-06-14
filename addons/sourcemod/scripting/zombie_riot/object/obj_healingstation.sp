@@ -67,7 +67,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	{
 		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
 	}
-	Building_GiveRewardsUse(client, owner, 40, true, 0.4, true);
+	Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
 
 	HealEntityGlobal(owner, client, HealAmmount, _, 3.0, _);
 	return true;
