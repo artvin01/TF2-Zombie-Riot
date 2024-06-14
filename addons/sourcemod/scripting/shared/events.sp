@@ -175,6 +175,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+#if defined ZR
+		TransferDispenserBackToOtherEntity(client, true);
+#endif
 #if defined RPG
 		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif

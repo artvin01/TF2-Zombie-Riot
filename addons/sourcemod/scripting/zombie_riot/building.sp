@@ -1539,10 +1539,6 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	{
 		return;
 	}
-	int Wearable;
-	Wearable = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-	if(!IsValidEntity(Wearable))
-		return;
 
 	Building_RotateAllDepencencies(entity);
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
@@ -1570,6 +1566,11 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
 	}
 
+	int Wearable;
+	Wearable = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(Wearable))
+		return;
+
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(Wearable, "flag", flPos, flAng);
@@ -1586,7 +1587,73 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	//all checks succeeded, now mount the building onto their back!
 }
 
+static Handle Timer_TransferOwnerShip[MAXTF2PLAYERS];
 
+static Action Timer_KillMountedStuff(Handle timer, int client)
+{
+	Timer_TransferOwnerShip[client] = null;
+	if(IsValidClient(client))
+		UnequipDispenser(client, true);
+		
+	return Plugin_Stop;
+}
+
+void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
+{
+	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
+
+	if(DontEquip && IsValidEntity(entity))
+	{
+		if(Timer_TransferOwnerShip[client] == null)
+		{
+			Timer_TransferOwnerShip[client] = CreateTimer(0.25, Timer_KillMountedStuff, client);
+
+			float posStacked[3]; 
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", posStacked);
+			AcceptEntityInput(entity, "ClearParent");
+			SDKCall_SetLocalOrigin(entity, posStacked);	
+		}
+		return;
+	}
+	if(IsValidEntity(i2_MountedInfoAndBuilding[0][client]))
+	{
+		RemoveEntity(i2_MountedInfoAndBuilding[0][client]);
+	}
+	i2_MountedInfoAndBuilding[0][client] = INVALID_ENT_REFERENCE;
+	if(!IsValidEntity(i2_MountedInfoAndBuilding[1][client]))
+	{
+		i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
+		return;
+	}
+	i2_MountedInfoAndBuilding[1][client] = INVALID_ENT_REFERENCE;
+	if(DontEquip)
+	{
+		return;
+	}
+
+	int Wearable;
+	Wearable = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(!IsValidEntity(Wearable))
+		return;
+	
+	if(Timer_TransferOwnerShip[client] != null)
+	{
+		delete Timer_TransferOwnerShip[client];
+	}
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(Wearable, "flag", flPos, flAng);
+	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
+	SetParent(Wearable, InfoTarget, "flag",_);
+	SDKCall_SetLocalOrigin(entity, flPos);	
+	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
+	SetParent(InfoTarget, entity, _, _, _);
+	Building_Mounted[client] = EntIndexToEntRef(entity);
+	Building_Mounted[entity] = EntIndexToEntRef(client);
+
+	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
+	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
+}
 void UnequipDispenser(int client, bool destroy = false)
 {
 	if(destroy)
@@ -1658,5 +1725,4 @@ void UnequipDispenser(int client, bool destroy = false)
 	}
 
 	Building_PlayerWieldsBuilding(client, entity);
-
 }

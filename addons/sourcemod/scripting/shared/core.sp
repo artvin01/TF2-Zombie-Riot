@@ -3319,7 +3319,6 @@ public void OnEntityDestroyed(int entity)
 	//	CreateTimer(1.01, Timer_FreeEdict);
 
 		//OnEntityDestroyed_LagComp(entity);
-		
 		if(entity > MaxClients)
 		{
 

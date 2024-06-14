@@ -164,6 +164,9 @@ public Action OnJoinClass(int client, const char[] command, int args)
 		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
 		return Plugin_Continue;
 	}
+#if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
+#endif
 	//save clips to not insta reload. lol.
 	Clip_SaveAllWeaponsClipSizes(client);
 	int Health = GetClientHealth(client);

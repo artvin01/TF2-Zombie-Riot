@@ -112,7 +112,7 @@ void ViewChange_PlayerModel(int client)
 	if(IsValidEntity(ViewmodelPlayerModel))
 	{
 #if defined ZR
-		UnequipDispenser(client, true);
+		TransferDispenserBackToOtherEntity(client, true);
 #endif
 		TF2_RemoveWearable(client, ViewmodelPlayerModel);
 	}
@@ -170,6 +170,9 @@ void ViewChange_PlayerModel(int client)
 		float flPos[3];
 		float flAng[3];
 		GetAttachment(entity, "flag", flPos, flAng);
+#if defined ZR
+		TransferDispenserBackToOtherEntity(client, false);
+#endif
 
 #if defined RPG
 		Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
