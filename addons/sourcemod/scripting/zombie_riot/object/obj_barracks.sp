@@ -8,6 +8,8 @@ float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 See ZR core.
 */
+static float f_VillageSavingResources[MAXENTITIES];
+
 static int InMenu[MAXTF2PLAYERS];
 static float TrainingStartedIn[MAXTF2PLAYERS];
 static float TrainingIn[MAXTF2PLAYERS];
@@ -31,6 +33,54 @@ bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
 //Barracks smith things:
+
+public const char BuildingUpgrade_Names[][] =
+{
+	"nothing",
+	"Barracks Copper Smith",
+	"Barracks Iron Casting",
+	"Barracks Steel Casting",
+	"Barracks Refined Steel",
+
+	"Barracks Fletching",
+	"Barracks Steel Arrows",
+	"Barracks Bracer",
+	"Barracks Obsidian Refined Tips",
+	
+	"Barracks Copper Armor Plate",
+	"Barracks Iron Armor Plate",
+	"Barracks Chainmail Armor",
+	"Barracks Reforged Armor Plate",
+
+	"Barracks Herbal Medicine",
+	"Barracks Refined Medicine",
+
+	"Barracks Tower",
+	"Barracks Guard Tower",
+	"Barracks Imperial Tower",
+	"Barracks Ballistical Tower",
+	"Barracks Donjon",
+	"Barracks Krepost",
+	"Barracks Castle",
+
+	"Barracks Manual Fire",
+
+	"Barracks Murder Holes",
+	"Barracks Ballistics",
+	"Barracks Chemistry",
+	"Barracks Crenelations",
+
+	"Barracks Conscription",
+	"Barracks Goldminers",
+
+	"Barracks Assistant Villager",
+	"Barracks Villager Education",
+	
+	"Barracks Strongholds",
+	"Barracks Hoardings",
+	"Barracks Exquisite Housing",
+	"Barracks Troop Classes",
+};
 
 enum
 {
@@ -219,10 +269,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 
 methodmap ObjectBarracks < ObjectGeneric
 {
-	public void PlayShootSound() 
-	{
-		EmitSoundToAll(g_ShootingSound[GetRandomInt(0, sizeof(g_ShootingSound) - 1)], this.index, SNDCHAN_AUTO, 80, _, 0.8, 100);
-	}
 	public ObjectBarracks(int client, const float vecPos[3], const float vecAng[3])
 	{
 		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, "models/buildables/sentry1.mdl", "0.75","50", {15.0, 15.0, 34.0},_,false));
@@ -587,9 +633,9 @@ public void Building_Summoner(int client, int entity)
 
 
 
-void Barracks_BuildingThink(int building)
+void Barracks_BuildingThink(int entity)
 {
-	BarrackBody npc = view_as<BarrackBody>(building);
+	BarrackBody npc = view_as<BarrackBody>(entity);
 	float GameTime = GetGameTime(npc.index);
 
 	//do not think.
@@ -600,11 +646,12 @@ void Barracks_BuildingThink(int building)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
-	int client = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 
 	if(!IsValidClient(client))
 		return;
-
+	
+	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	SummonerRenerateResources(client, 1.0);
 
 	if(TrainingIn[client])
@@ -628,8 +675,8 @@ void Barracks_BuildingThink(int building)
 							NPC_GetPluginById(i_NpcInternalId[entity_close], npc_classname, sizeof(npc_classname));
 							if(StrEqual(npc_classname, "npc_barrack_villager"))
 							{
-								BarrackBody npc = view_as<BarrackBody>(entity_close);
-								if(GetClientOfUserId(npc.OwnerUserId) == owner)
+								BarrackBody npc2 = view_as<BarrackBody>(entity_close);
+								if(GetClientOfUserId(npc2.OwnerUserId) == client)
 								{
 									OwnsVillager = true;
 									break;
@@ -645,7 +692,7 @@ void Barracks_BuildingThink(int building)
 		{
 			subtractVillager = 1;
 		}
-		if((/*(!AtMaxSupply(owner) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+		if((/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -680,9 +727,9 @@ void Barracks_BuildingThink(int building)
 					GetEntPropVector(mounted ? client : entity, Prop_Data, "m_angRotation", ang);
 					
 					view_as<BarrackBody>(mounted ? client : entity).PlaySpawnSound();
-					int npc = NPC_CreateById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), client, pos, ang, TFTeam_Red);
-					view_as<BarrackBody>(npc).m_iSupplyCount = GetSData(CivType[client], TrainingIndex[client], SupplyCost);
-					Barracks_UpdateEntityUpgrades(client, npc, true, true); //make sure upgrades if spawned, happen on full health!
+					int npc2 = NPC_CreateById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), client, pos, ang, TFTeam_Red);
+					view_as<BarrackBody>(npc2).m_iSupplyCount = GetSData(CivType[client], TrainingIndex[client], SupplyCost);
+					Barracks_UpdateEntityUpgrades(client, npc2, true, true); //make sure upgrades if spawned, happen on full health!
 
 
 					if(TrainingQueue[client] != -1)
@@ -711,8 +758,8 @@ void Barracks_BuildingThink(int building)
 			/*
 			else
 			{
-				int required = RoundFloat((TrainingIn[owner] - TrainingStartedIn[owner]) * 2.0);
-				int current = required - RoundToCeil((TrainingIn[owner] - gameTime) * 2.0);
+				int required = RoundFloat((TrainingIn[client] - TrainingStartedIn[client]) * 2.0);
+				int current = required - RoundToCeil((TrainingIn[client] - gameTime) * 2.0);
 				
 			//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", current);
 			//	SetEntProp(entity, Prop_Send, "m_iUpgradeMetalRequired", required);
@@ -721,37 +768,37 @@ void Barracks_BuildingThink(int building)
 		}
 	}
 
-	if(ResearchIn[owner])
+	if(ResearchIn[client])
 	{
 		float gameTime = GetGameTime();
-		if(ResearchIn[owner] < gameTime)
+		if(ResearchIn[client] < gameTime)
 		{
-			ResearchIn[owner] = 0.0;
+			ResearchIn[client] = 0.0;
 
 			int Get_GiveHexArray;
 			int Get_GiveClient;
-		//	GetRData(ResearchIndex[owner], UpgradeIndex);
-			Get_GiveHexArray = GetRData(ResearchIndex[owner], GiveHexArray);
-			Get_GiveClient = GetRData(ResearchIndex[owner], GiveClient);
+		//	GetRData(ResearchIndex[client], UpgradeIndex);
+			Get_GiveHexArray = GetRData(ResearchIndex[client], GiveHexArray);
+			Get_GiveClient = GetRData(ResearchIndex[client], GiveClient);
 			
 			if(Get_GiveHexArray == 1)
 			{
-				i_NormalBarracks_HexBarracksUpgrades[owner] |= Get_GiveClient;
-				Store_SetNamedItem(owner, "Barracks Hex Upgrade 1", i_NormalBarracks_HexBarracksUpgrades[owner]);
+				i_NormalBarracks_HexBarracksUpgrades[client] |= Get_GiveClient;
+				Store_SetNamedItem(client, "Barracks Hex Upgrade 1", i_NormalBarracks_HexBarracksUpgrades[client]);
 			}
 			else if(Get_GiveHexArray == 2)
 			{
-				i_NormalBarracks_HexBarracksUpgrades_2[owner] |= Get_GiveClient;
-				Store_SetNamedItem(owner, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[owner]);
+				i_NormalBarracks_HexBarracksUpgrades_2[client] |= Get_GiveClient;
+				Store_SetNamedItem(client, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[client]);
 			}
-			Barracks_UpdateAllEntityUpgrades(owner);
+			Barracks_UpdateAllEntityUpgrades(client);
 		}
 	}
 
 	for(int i = 1; i <= MaxClients; i++)
 	{
-		if(InMenu[i] == owner)
-			SummonerMenu(owner, i);
+		if(InMenu[i] == client)
+			SummonerMenu(client, i);
 	}
 			
 	//they do not even have the first upgrade, do not think, but dont cancel.
@@ -766,7 +813,6 @@ void Barracks_BuildingThink(int building)
 	float MaximumDistance = 400.0;
 	MaximumDistance = Barracks_UnitExtraRangeCalc(npc.index, client, MaximumDistance, true);
 	float pos[3];
-	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	int ValidEnemyToTarget;
 	if(mounted)
 	{
@@ -787,7 +833,7 @@ void Barracks_BuildingThink(int building)
 		}
 		else
 		{
-			DoHealingOcean(building, building, (500.0 * 500.0), 0.5, true);
+			DoHealingOcean(entity, entity, (500.0 * 500.0), 0.5, true);
 		}
 	}
 	if(IsValidEnemy(client, ValidEnemyToTarget))
@@ -893,7 +939,7 @@ void Barracks_BuildingThink(int building)
 			{
 				if(!i_BuildingRecievedHordings[Building_hordings]) 
 				{
-					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == client && Building_Constructed[Building_hordings])
+					if(GetEntPropEnt(Building_hordings, Prop_Send, "m_hOwnerEntity") == client/* && Building_Constructed[Building_hordings]*/)
 					{
 						SetBuildingMaxHealth(Building_hordings, 1.25, false, true);
 						i_BuildingRecievedHordings[Building_hordings] = true;					
@@ -914,7 +960,7 @@ void Barracks_BuildingThink(int building)
 	}
 }	
 
-
+/*
 void BuildingHordingsRemoval(int entity)
 {
 	if(i_WhatBuilding[entity] == BuildingSummoner)
@@ -950,7 +996,7 @@ void BuildingHordingsRemoval(int entity)
 		}
 	}
 }
-
+*/
 
 int Building_GetFollowerEntity(int owner)
 {
@@ -1066,7 +1112,7 @@ static void SummonerMenu(int client, int viewer)
 
 	bool owner = client == viewer;
 	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
-	int level = MaxSupportBuildingsAllowed(client, true);
+	int level = Object_MaxSupportBuildings(client, true);
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
@@ -1307,23 +1353,29 @@ static void SummonerMenu(int client, int viewer)
 			}
 			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)));
+				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
 
 				Format(buffer1, sizeof(buffer1), "%s\nTIP: Your barricades counts towards the supply limit\n ", buffer1);
 			}
 			else if(TrainingStartedIn[client] < 0.0)
 			{
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)));
+				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", buffer2);
 			}
 			else
 			{
 				float gameTime = GetGameTime();
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", GetNPCName(GetSData(CivType[client], TrainingIndex[client], NPCIndex)),
+				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (%.0f%%)\n ", buffer2,
 					100.0 - ((TrainingIn[client] - gameTime) * 100.0 / (TrainingIn[client] - TrainingStartedIn[client])));
 			}
 
 			if(TrainingQueue[client] != -1)
-				Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, GetNPCName(GetSData(CivType[client], TrainingQueue[client], NPCIndex)));
+			{
+				NPC_GetNameById(GetSData(CivType[client], TrainingQueue[client], NPCIndex), buffer2, sizeof(buffer2));
+				Format(buffer1, sizeof(buffer1), "%sNext: %t\n ", buffer1, buffer2);
+			}
 			
 			itemsAddedToList += 1;
 			menu.AddItem(buffer1, buffer1, owner ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
@@ -1395,11 +1447,13 @@ static void SummonerMenu(int client, int viewer)
 			if(GetEntityFlags(viewer) & FL_DUCKING)
 			{
 				ShowingDesc = true;
-				FormatEx(buffer2, sizeof(buffer2), "%s Desc",GetNPCName(GetSData(CivType[client], i, NPCIndex)));
+				NPC_GetNameById(GetSData(CivType[client], i, NPCIndex), buffer2, sizeof(buffer2));
+				Format(buffer2, sizeof(buffer2), "%s Desc", buffer2);
 			}
 			else
 			{
-				FormatEx(buffer1, sizeof(buffer1), "%t [", GetNPCName(GetSData(CivType[client], i, NPCIndex)));
+				NPC_GetNameById(GetSData(CivType[client], i, NPCIndex), buffer1, sizeof(buffer1));
+				Format(buffer1, sizeof(buffer1), "%t [", buffer1);
 			}
 			if(!ShowingDesc)
 			{
@@ -1467,4 +1521,262 @@ static void SummonerMenu(int client, int viewer)
 	menu.ExitButton = true;
 	if(menu.Display(viewer, 1))
 		InMenu[viewer] = client;
+}
+
+static int GetSupplyLeft(int client)
+{
+	int personal = ActiveCurrentNpcsBarracks(client);
+	return 3 + Rogue_Barracks_BonusSupply() - personal;
+}
+
+
+
+//void AddItemToTrainingList(char item, )
+public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+			InMenu[client] = 0;
+		}
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			if(choice)
+			{
+				char buffer[16];
+				menu.GetItem(choice, buffer, sizeof(buffer));
+				int id = StringToInt(buffer);
+				if(id == 50)
+				{
+					if(b_InUpgradeMenu[client])
+					{
+						b_InUpgradeMenu[client] = false;
+					}
+					else
+					{
+						b_InUpgradeMenu[client] = true;
+					}
+					
+					SummonerMenu(client, client);
+					return 0;
+				}
+
+				int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+				if(entity != INVALID_ENT_REFERENCE)
+				{
+					if(choice == 1)
+					{
+						if(b_InUpgradeMenu[client])
+						{
+							if(ResearchIn[client])
+							{
+								ResearchIn[client] = 0.0;
+
+								WoodAmount[client] += float(GetRData(ResearchIndex[client], WoodCost));
+								FoodAmount[client] += float(GetRData(ResearchIndex[client], FoodCost));
+								GoldAmount[client] += float(GetRData(ResearchIndex[client], GoldCost));
+							}
+						}
+						else if(TrainingQueue[client] != -1)
+						{
+							WoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], WoodCost));
+							FoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], FoodCost));
+							GoldAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], GoldCost));
+
+							TrainingQueue[client] = -1;
+						}
+						else if(TrainingIn[client])
+						{
+							TrainingIn[client] = 0.0;
+
+							WoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], WoodCost));
+							FoodAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], FoodCost));
+							GoldAmount[client] += float(GetSData(CivType[client], TrainingIndex[client], GoldCost));
+						}
+						BarracksSaveResources(client);
+					}
+					else if(b_InUpgradeMenu[client])
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(GetRData(item, WoodCost));
+						float foodcost = float(GetRData(item, FoodCost));
+						float goldcost = float(GetRData(item, GoldCost));
+
+						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							if(ResearchIn[client])
+							{
+								WoodAmount[client] += float(GetRData(TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetRData(TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetRData(TrainingQueue[client], GoldCost));
+							}
+
+							ResearchIndex[client] = item;
+							ResearchStartedIn[client] = GetGameTime();
+							
+							float TimeUntillResearch = float(GetRData(item, TrainTime));
+							if(Rogue_Mode())
+							{
+								TimeUntillResearch *= 0.5;
+							}
+							ResearchIn[client] = ResearchStartedIn[client] + TimeUntillResearch;
+							if(CvarInfiniteCash.BoolValue)
+							{
+								ResearchIn[client] = GetGameTime() + 0.1; 
+							}
+							
+							WoodAmount[client] -= woodcost;
+							FoodAmount[client] -= foodcost;
+							GoldAmount[client] -= goldcost;
+							BarracksSaveResources(client);
+						}
+					}
+					else
+					{
+						char num[16];
+						menu.GetItem(choice, num, sizeof(num));
+						int item = StringToInt(num);
+
+						float woodcost = float(GetSData(CivType[client], item, WoodCost));
+						float foodcost = float(GetSData(CivType[client], item, FoodCost));
+						float goldcost = float(GetSData(CivType[client], item, GoldCost));
+
+						if(WoodAmount[client] >= woodcost && FoodAmount[client] >= foodcost && GoldAmount[client] >= goldcost)
+						{
+							if(!TrainingIn[client])
+							{
+								TrainingIndex[client] = item;
+								TrainingStartedIn[client] = GetGameTime();
+								TrainingIn[client] = TrainingStartedIn[client] + float(LastMann ? (GetSData(CivType[client], item, TrainTime) / 3) : GetSData(CivType[client], item, TrainTime));
+								if(CvarInfiniteCash.BoolValue)
+								{
+									TrainingIn[client] = TrainingStartedIn[client] + 0.5;
+								}
+							}
+							else if(TrainingQueue[client] == -1)
+							{
+								TrainingQueue[client] = item;
+							}
+							else
+							{
+								WoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], WoodCost));
+								FoodAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], FoodCost));
+								GoldAmount[client] += float(GetSData(CivType[client], TrainingQueue[client], GoldCost));
+
+								TrainingQueue[client] = item;
+							}
+							
+							WoodAmount[client] -= woodcost;
+							FoodAmount[client] -= foodcost;
+							GoldAmount[client] -= goldcost;
+							BarracksSaveResources(client);
+						}
+					}
+
+					SummonerMenu(client, client);
+				}
+			}
+			else
+			{
+				if(++CommandMode[client] >= sizeof(CommandName))
+					CommandMode[client] = 0;
+
+				if(CommandMode[client] == 3)
+				{
+					float StartOrigin[3], Angles[3], vecPos[3];
+					GetClientEyeAngles(client, Angles);
+					GetClientEyePosition(client, StartOrigin);
+					Handle TraceRay = TR_TraceRayFilterEx(StartOrigin, Angles, (MASK_NPCSOLID_BRUSHONLY), RayType_Infinite, TraceRayProp);
+					if (TR_DidHit(TraceRay))
+						TR_GetEndPosition(vecPos, TraceRay);
+							
+					delete TraceRay;
+					
+					CreateParticle("ping_circle", vecPos, NULL_VECTOR);
+					f3_SpawnPosition[client] = vecPos;
+				}
+				else
+				{
+					f3_SpawnPosition[client][0] = 0.0;
+					f3_SpawnPosition[client][1] = 0.0;
+					f3_SpawnPosition[client][2] = 0.0;
+				}
+				
+				SummonerMenu(client, client);
+			}
+		}
+	}
+	return 0;
+}
+
+int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
+{
+	int userid = GetClientUserId(client);
+	int personal;
+	if(!ignore_barricades)
+	{
+		personal = ObjectBarricade_Buildings(client) * 3 / 2;
+		if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+		{
+			if(personal > 4) //even if you build a barricade, it will allow you to get 1 more unit.
+			{
+				personal = 3;
+			}
+		}
+	}
+
+
+	int entity = MaxClients + 1;
+	char npc_classname[60];
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(GetTeam(entity) == 2)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId == userid)
+			{
+				NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
+				if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION)
+				{
+					if(!StrEqual(npc_classname, "npc_barrack_villager"))
+					{
+						if(!StrEqual(npc_classname, "npc_barrack_building"))
+							personal += npc.m_iSupplyCount;
+					}
+				}
+				else
+				{
+					if(!StrEqual(npc_classname, "npc_barrack_building"))
+						personal += npc.m_iSupplyCount;
+				}
+			}
+		}
+	}
+
+	if(!ignore_barricades)
+	{
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_DONJON)
+		{
+			personal += 1;
+			if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING)
+				personal -= 1;
+		}
+	}
+
+	if(personal < 0)
+	{
+		personal = 0;
+	}
+
+	return personal;
 }

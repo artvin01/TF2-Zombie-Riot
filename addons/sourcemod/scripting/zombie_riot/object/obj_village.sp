@@ -383,18 +383,18 @@ void Building_CamoOrRegrowBlocker(int entity, bool &camo = false, bool &regrow =
 			{
 				if(IsClientInGame(client))
 				{
-					int entity = Object_GetSentryBuilding(client);
-					if(entity != -1)
+					int obj = Object_GetSentryBuilding(client);
+					if(obj != -1)
 					{
 						static float pos2[3];
-						bool mounted = (Building_Mounted[client] == entity);
+						bool mounted = (Building_Mounted[client] == EntIndexToEntRef(obj));
 						if(mounted)
 						{
 							GetClientEyePosition(client, pos2);
 						}
 						else
 						{
-							GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+							GetEntPropVector(obj, Prop_Data, "m_vecAbsOrigin", pos2);
 						}
 
 						float range = 600.0;
@@ -800,7 +800,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 
 	int entity = Object_GetSentryBuilding(client);
 	float pos[3];
-	bool mounted = (Building_Mounted[client] == entity);
+	bool mounted = (Building_Mounted[client] == EntIndexToEntRef(entity));
 	if(mounted)
 	{
 		GetClientEyePosition(client, pos);
