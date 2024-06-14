@@ -346,7 +346,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 			if(!b_AlreadyReparing[npc.index])
 			{
 				bool regrow = true;
-//				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
+				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
 				if(regrow)
 				{
 					b_AlreadyReparing[npc.index] = true;
@@ -648,7 +648,7 @@ public void MedivalVillager_ClotThink(int iNPC)
 				}
 
 				bool regrow = true;
-//				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
+				Building_CamoOrRegrowBlocker(buildingentity, _, regrow);
 				if(regrow)
 				{
 					int healthbuilding = GetEntProp(buildingentity, Prop_Data, "m_iHealth");

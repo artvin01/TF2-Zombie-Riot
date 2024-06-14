@@ -546,7 +546,7 @@ public void Bloon_ClotThink(int iNPC)
 	bool silenced = NpcStats_IsEnemySilenced(npc.index);
 	bool camo = npc.m_bOriginalCamo && !silenced;
 	bool regrow = npc.m_bRegrow && !silenced;
-//	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
+	Building_CamoOrRegrowBlocker(npc.index, camo, regrow);
 
 	if(regrow)
 	{

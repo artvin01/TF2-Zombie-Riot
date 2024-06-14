@@ -670,7 +670,7 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				if(IsValidEntity(entity_close) && !b_NpcHasDied[entity_close] && !i_NpcIsABuilding[entity_close] && i_NpcInternalId[entity_close] != NPCId && !b_thisNpcIsARaid[entity_close] && GetTeam(entity_close) != TFTeam_Red)
 				{
 					bool regrow = true;
-//					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
+					Building_CamoOrRegrowBlocker(entity_close, _, regrow);
 					if(regrow)
 					{
 						static float pos2[3];
