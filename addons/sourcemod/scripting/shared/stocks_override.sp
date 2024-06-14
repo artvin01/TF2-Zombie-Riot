@@ -358,8 +358,8 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 
 void Edited_TF2_RegeneratePlayer(int client)
 {
-	TransferDispenserBackToOtherEntity(client, true);
 #if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 #if defined ZR
@@ -379,8 +379,8 @@ void Edited_TF2_RegeneratePlayer(int client)
 
 stock void Edited_TF2_RespawnPlayer(int client)
 {
-	TransferDispenserBackToOtherEntity(client, true);
 #if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 

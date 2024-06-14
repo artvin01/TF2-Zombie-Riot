@@ -4176,7 +4176,7 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 
 bool Allowbuildings_BulletAndMeleeTraceAlly = false;
 
-void Allowbuildings_BulletAndMeleeTraceAllyLogic(bool Enableornot)
+stock void Allowbuildings_BulletAndMeleeTraceAllyLogic(bool Enableornot)
 {
 	Allowbuildings_BulletAndMeleeTraceAlly = Enableornot;
 }

@@ -1152,7 +1152,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		BarracksSaveResources(client);
 	}
 }
-
+/*
 static void OpenSummonerMenu(int client, int viewer)
 {
 	if(client == viewer)
@@ -1160,6 +1160,7 @@ static void OpenSummonerMenu(int client, int viewer)
 	
 	SummonerMenu(client, viewer);
 }
+*/
 
 static void SummonerMenu(int client, int viewer)
 {
