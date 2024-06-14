@@ -275,11 +275,12 @@ methodmap ObjectBarracks < ObjectGeneric
 {
 	public ObjectBarracks(int client, const float vecPos[3], const float vecAng[3])
 	{
-		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, SUMMONER_MODEL, "0.15","50", {18.0, 18.0, 50.0}, _, false));
+		ObjectBarracks npc = view_as<ObjectBarracks>(ObjectGeneric(client, vecPos, vecAng, SUMMONER_MODEL, "0.11","50", {22.0, 22.0, 30.0}, _, false));
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = Barracks_BuildingThink;
+		func_NPCInteract[npc.index] = ClotInteract;
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		Building_Summoner(client, npc.index);
 
@@ -288,6 +289,26 @@ methodmap ObjectBarracks < ObjectGeneric
 }
 
 
+static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
+{
+	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if(Owner != client)
+		return false;
+		
+	if(f_BuildingIsNotReady[client] > GetGameTime())
+		return false;
+	
+	if(Owner == client)
+	{
+		if(f_MedicCallIngore[client] < GetGameTime())
+			return false;
+
+		SummonerMenu(Owner, client);
+		return true;
+	}
+	SummonerMenu(Owner, client);
+	return true;
+}
 
 void BarracksCheckItems(int client)
 {
@@ -606,12 +627,14 @@ static int GetRData(int type, int index)
 public void Building_Summoner(int client, int entity)
 {
 	SetupNPCIndexes();
+	/*
 	SetDefaultValuesToZeroNPC(entity);
 	b_BuildingHasDied[entity] = false;
 	b_CantCollidieAlly[entity] = true;
 	i_IsABuilding[entity] = true;
 	b_NoKnockbackFromSources[entity] = true;
 	b_NpcHasDied[entity] = true;
+	*/
 	BarracksCheckItems(client);
 	WoodAmount[client] *= 0.75;
 	FoodAmount[client] *= 0.75;
@@ -729,6 +752,7 @@ void Barracks_BuildingThink(int entity)
 					float pos[3], ang[3];
 					GetEntPropVector(mounted ? client : entity, Prop_Data, "m_vecAbsOrigin", pos);
 					GetEntPropVector(mounted ? client : entity, Prop_Data, "m_angRotation", ang);
+					pos[2] += 3.0;
 					
 					view_as<BarrackBody>(mounted ? client : entity).PlaySpawnSound();
 					int npc2 = NPC_CreateById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), client, pos, ang, TFTeam_Red);

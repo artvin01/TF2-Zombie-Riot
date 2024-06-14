@@ -438,7 +438,7 @@ static void VillageCheckItems(int client)
 {
 	int lastFlags = Village_Flags[client];
 	
-	if(Store_HasNamedItem(client, "Buildable Village"))
+//	if(Store_HasNamedItem(client, "Buildable Village"))
 	{
 		Village_Flags[client] = VILLAGE_000;
 		
@@ -499,9 +499,9 @@ static void VillageCheckItems(int client)
 		if(lastFlags != Village_Flags[client])
 			Village_ForceUpdate[client] = true;
 	}
-	else
+//	else
 	{
-		Village_Flags[client] = 0;
+//		Village_Flags[client] = 0;
 	}
 }
 
