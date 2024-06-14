@@ -38,14 +38,14 @@ methodmap ObjectSentrygun < ObjectGeneric
 
 		npc.SentryBuilding = true;
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
-		func_NPCThink[npc.index] = ClotThink;
+		func_NPCThink[npc.index] = ObjectSentrygun_ClotThink;
 		SetRotateByDefaultReturn(npc.index, 180.0);
 
 		return npc;
 	}
 }
 
-static void ClotThink(ObjectSentrygun npc)
+void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	if(!IsValidClient(Owner))
