@@ -33,6 +33,8 @@ int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 
+#define MAX_REBELS_ALLOWED 4
+
 float RotateByDefaultReturn(int entity)
 {
 	return RotateByDefault[entity];

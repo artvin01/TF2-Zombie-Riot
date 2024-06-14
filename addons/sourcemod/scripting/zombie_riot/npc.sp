@@ -70,6 +70,8 @@ void NPC_ConfigSetup()
 	ObjectSentrygun_MapStart();
 	ObjectMortar_MapStart();
 	ObjectRailgun_MapStart();
+	ObjectBarracks_MapStart();
+	ObjectVillage_MapStart();
 	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
@@ -410,7 +412,7 @@ void NPC_ConfigSetup()
 	VulpoOnMapStart();
 
 	//Alt Barracks
-/*	Barrack_Alt_Ikunagae_MapStart();
+	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
 	Barrack_Railgunner_MapStart();
 	Barrack_Alt_Basic_Mage_MapStart();
@@ -423,9 +425,9 @@ void NPC_ConfigSetup()
 	Barrack_Alt_Crossbowmedic_MapStart();
 	Barrack_Alt_Scientific_Witchery_MapStart();
 	Barracks_Thorns();
-	VIPBuilding_MapStart();*/
+	VIPBuilding_MapStart();
 	AlliedSensalAbility_OnMapStart_NPC();
-/*	BarrackVillagerOnMapStart();
+	BarrackVillagerOnMapStart();
 	BarrackBuildingOnMapStart();
 	BarrackTwoHandedOnMapStart();
 	BarrackTeutonOnMapStart();
@@ -439,7 +441,7 @@ void NPC_ConfigSetup()
 	BarrackCrossbowOnMapStart();
 	BarrackChampionOnMapStart();
 	BarrackArcherOnMapStart();
-	BarrackArbelastOnMapStart();*/
+	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
 
 
@@ -762,6 +764,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/object/obj_sentrygun.sp"
 #include "zombie_riot/object/obj_mortar.sp"
 #include "zombie_riot/object/obj_railgun.sp"
+#include "zombie_riot/object/obj_village.sp"
+#include "zombie_riot/object/obj_barracks.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -1008,7 +1012,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
 */
 
-/*
+
 #include "zombie_riot/npc/ally/npc_barrack.sp"
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
@@ -1038,7 +1042,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
-*/
+
 
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 
@@ -1086,7 +1090,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/seaborn/npc_seaborn_sniper.sp"
 #include "zombie_riot/npc/seaborn/npc_seaborn_spy.sp"
 #include "zombie_riot/npc/seaborn/npc_lastknight.sp"
-//#include "zombie_riot/npc/ally/npc_barrack_lastknight.sp"
+#include "zombie_riot/npc/ally/npc_barrack_lastknight.sp"
 #include "zombie_riot/npc/seaborn/npc_saintcarmen.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper.sp"
 #include "zombie_riot/npc/seaborn/npc_pathshaper_fractal.sp"
@@ -1136,7 +1140,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_anfuhrer_eisenhard.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_sensal.sp"
 
-//#include "zombie_riot/npc/ally/npc_vip_building.sp"
+#include "zombie_riot/npc/ally/npc_vip_building.sp"
 #include "zombie_riot/npc/rogue/npc_overlord_rogue.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_bladedance.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_the_messenger.sp"

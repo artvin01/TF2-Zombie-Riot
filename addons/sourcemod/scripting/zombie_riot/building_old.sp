@@ -50,7 +50,6 @@
 
 #define BUILDINGCOLLISIONNUMBER	24
 
-#define MAX_REBELS_ALLOWED 4
 
 enum
 {

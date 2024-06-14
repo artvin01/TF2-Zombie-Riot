@@ -77,9 +77,9 @@ methodmap ObjectVillage < ObjectGeneric
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
 		// Timer is done instead cause we run code when a village no longer exists in here
-		CreateTimer(0.5, Timer_VillageThink, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		i_VillageModelAppliance[entity] = 0;
-		i_VillageModelApplianceCollisionBox[entity] = 0;
+		CreateTimer(0.5, Timer_VillageThink, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		i_VillageModelAppliance[npc.index] = 0;
+		i_VillageModelApplianceCollisionBox[npc.index] = 0;
 		VillageCheckItems(client);
 
 		return npc;
@@ -542,7 +542,7 @@ static const int VillageCosts[] =
 
 static int VillagePointsLeft(int client)
 {
-	int level = MaxSupportBuildingsAllowed(client, true);	// 1 - 16
+	int level = Object_MaxSupportBuildings(client, true);	// 1 - 16
 
 	if(Store_HasNamedItem(client, "Construction Novice"))
 		level++;
@@ -844,7 +844,6 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					{
 						RemoveEntity(entity);
 						f_BuildingIsNotReady[client] = 0.0; 
-						Building_Sentry_Cooldown[client] = 0.0; //Reset the cooldown!
 					}
 					int count;
 					int i = MaxClients + 1;
@@ -1324,100 +1323,68 @@ static void BuildingVillageChangeModel(int owner, int entity)
 		Explained:
 		Buildings, or sentries in this regard have some special rule where their model scale makes their bounding box scale with it
 		thats why we have all this extra shit.
-
-
 	*/
 	int ModelTypeApplied = i_VillageModelAppliance[entity];
 	int collisionboxapplied = i_VillageModelApplianceCollisionBox[entity];
 	if(ModelTypeApplied == 1 && collisionboxapplied != 1)
 	{
 		i_VillageModelApplianceCollisionBox[entity] = 1;
-		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
 		float maxbounds[3] = {20.0, 20.0, 30.0};
-		for(int repeat; repeat < 3; repeat++)
-		{
-			minbounds[repeat] /= ModelScaleMulti;
-			maxbounds[repeat] /= ModelScaleMulti;
-		}
 		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-		view_as<CClotBody>(entity).UpdateCollisionBox();
+//		view_as<CClotBody>(entity).UpdateCollisionBox();
 	}
 	else if(ModelTypeApplied == 2 && collisionboxapplied != 2)
 	{
 		i_VillageModelApplianceCollisionBox[entity] = 2;
-		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
 		float maxbounds[3] = {20.0, 20.0, 30.0};
-		for(int repeat; repeat < 3; repeat++)
-		{
-			minbounds[repeat] /= ModelScaleMulti;
-			maxbounds[repeat] /= ModelScaleMulti;
-		}
 		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-		view_as<CClotBody>(entity).UpdateCollisionBox();
+//		view_as<CClotBody>(entity).UpdateCollisionBox();
 	}
 	else if(ModelTypeApplied == 3 && collisionboxapplied != 3)
 	{
 		i_VillageModelApplianceCollisionBox[entity] = 3;
-		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
 		float maxbounds[3] = {20.0, 20.0, 30.0};
-		for(int repeat; repeat < 3; repeat++)
-		{
-			minbounds[repeat] /= ModelScaleMulti;
-			maxbounds[repeat] /= ModelScaleMulti;
-		}
 		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-		view_as<CClotBody>(entity).UpdateCollisionBox();
+//		view_as<CClotBody>(entity).UpdateCollisionBox();
 	}
 	else if(ModelTypeApplied == 4 && collisionboxapplied != 4)
 	{
 		i_VillageModelApplianceCollisionBox[entity] = 4;
-		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
 		float maxbounds[3] = {20.0, 20.0, 30.0};
-		for(int repeat; repeat < 3; repeat++)
-		{
-			minbounds[repeat] /= ModelScaleMulti;
-			maxbounds[repeat] /= ModelScaleMulti;
-		}
 		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-		view_as<CClotBody>(entity).UpdateCollisionBox();
+//		view_as<CClotBody>(entity).UpdateCollisionBox();
 	}
 	else if(ModelTypeApplied == 5 && collisionboxapplied != 5)
 	{
 		i_VillageModelApplianceCollisionBox[entity] = 5;
-		float ModelScaleMulti = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		float minbounds[3] = {-20.0, -20.0, 0.0};
 		float maxbounds[3] = {20.0, 20.0, 30.0};
-		for(int repeat; repeat < 3; repeat++)
-		{
-			minbounds[repeat] /= ModelScaleMulti;
-			maxbounds[repeat] /= ModelScaleMulti;
-		}
 		SetEntPropVector(entity, Prop_Send, "m_vecMins", minbounds);
 		SetEntPropVector(entity, Prop_Send, "m_vecMaxs", maxbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
-		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMinsPreScaled", minbounds);
+//		SetEntPropVector(entity, Prop_Send, "m_vecMaxsPreScaled", maxbounds);
 
-		view_as<CClotBody>(entity).UpdateCollisionBox();
+//		view_as<CClotBody>(entity).UpdateCollisionBox();
 	}
 	if(Village_Flags[owner] & VILLAGE_500 && ModelTypeApplied != 5)
 	{

@@ -498,13 +498,12 @@ void Barracks_UpdateAllEntityUpgrades(int client, bool first_upgrade = false, bo
 	{
 		if(IsValidEntity(i) && (i_IsABuilding[i] || !b_NpcHasDied[i])) //This isnt expensive.
 		{
-/*			BarrackBody npc = view_as<BarrackBody>(i);
+			BarrackBody npc = view_as<BarrackBody>(i);
 			if(GetClientOfUserId(npc.OwnerUserId) == client && !b_NpcHasDied[i])
 			{
 				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
 			}
-			else */
-			if(i_IsABuilding[i] && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client)
+			else if(i_IsABuilding[i] && GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") == client)
 			{
 				Barracks_UpdateEntityUpgrades(i, client,first_upgrade,first_barracks);
 			}
