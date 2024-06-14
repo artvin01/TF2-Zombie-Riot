@@ -1877,6 +1877,11 @@ int Waves_GetRound()
 	return CurrentRound;
 }
 
+int Waves_GetMaxRound()
+{
+	return Rounds.Length;
+}
+
 public int Waves_GetWave()
 {
 	if(Rogue_Mode())
