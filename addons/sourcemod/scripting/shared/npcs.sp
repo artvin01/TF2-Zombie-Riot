@@ -1571,7 +1571,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #if defined ZR
 			if(weapon > 0 && attacker > 0)
 				percentage *= Siccerino_Melee_DmgBonus(victim, attacker, weapon);
-#endif
 
 			if(!NpcStats_IsEnemySilenced(victim))
 			{
@@ -1580,7 +1579,6 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 					percentage *= Medival_Difficulty_Level;
 				}
 			}
-#if defined ZR
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 #endif

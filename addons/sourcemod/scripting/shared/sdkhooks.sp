@@ -176,6 +176,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			PrintToChat(client, "%t", "Warn Client Ammo None");
 		}
 	}
+	return Plugin_Continue;
 }
 
 #if defined ZR || defined RPG
@@ -1316,7 +1317,6 @@ public void OnPostThink(int client)
 				Cooldowntocheck = 0.0;
 			}
 
-			char class[64];
 			char npc_classname[7];
 			NPC_GetPluginById(i_NpcInternalId[converted_ref], npc_classname, sizeof(npc_classname));
 			npc_classname[4] = CharToUpper(npc_classname[4]);
