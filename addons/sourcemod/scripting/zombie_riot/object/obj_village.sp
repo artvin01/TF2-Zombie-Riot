@@ -577,16 +577,54 @@ static int VillagePointsLeft(int client)
 static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	if(Owner != client)
-		return false;
-		
-	if(f_BuildingIsNotReady[client] > GetGameTime())
+	
+	float gameTime = GetGameTime();
+	if(f_BuildingIsNotReady[Owner] > gameTime)
 		return false;
 	
-	if(f_MedicCallIngore[client] < GetGameTime())
-		return false;
+	if(owner == client && f_MedicCallIngore[Owner] < gameTime)
+	{
+		if(!(Village_Flags[Owner] & VILLAGE_040))
+		{
 
-	BuildingMortarAction(client, npc.index);
+		}
+		else if(f_BuildingIsNotReady[Owner] < gameTime)
+		{
+			f_BuildingIsNotReady[Owner] = gameTime + 90.0;
+			
+			if(Village_Flags[Owner] & VILLAGE_050)
+			{
+				i_ExtraPlayerPoints[Owner] += 100; //Static point increace.
+				Village_ReloadBuffFor[Owner] = gameTime + 20.0;
+				EmitSoundToAll("items/powerup_pickup_uber.wav");
+				EmitSoundToAll("items/powerup_pickup_uber.wav");
+			}
+			else
+			{
+				i_ExtraPlayerPoints[Owner] += 50; //Static point increace.
+				Village_ReloadBuffFor[Owner] = gameTime + 15.0;
+				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
+				EmitSoundToAll("player/mannpower_invulnerable.wav", npc.index);
+			}
+		}
+		else
+		{
+			float Ability_CD = f_BuildingIsNotReady[Owner] - gameTime;
+			
+			if(Ability_CD <= 0.0)
+				Ability_CD = 0.0;
+			
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
+		}
+	}
+	else
+	{
+		VillageUpgradeMenu(Owner, client);
+	}
+
 	return true;
 }
 
