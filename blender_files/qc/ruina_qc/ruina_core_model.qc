@@ -2,7 +2,7 @@
 
 $modelname "zombie_riot/ruina/ruina_models_1.mdl"
 
-$bodygroup "ruina_icbm"
+$bodygroup "ruina_icbm"	//done
 {
 	blank
 	studio "ruina_projectile.smd"
@@ -12,15 +12,20 @@ $bodygroup "halo_1"	//Create a spinning animation for the rings.
 	blank
 	studio "halo_1"
 }
-$bodygroup "quincy_bow"		//todo: paint it, its just flat white
+$bodygroup "quincy_bow"		//todo: paint it, its currently just flat white
 {
 	blank
 	studio "ruina_bow.smd"
 }
-$bodygroup "ruina_blade"	//todo: paint it better, so far its just 2 flat colours, the blade is fine-ish, but the rest is just flat.
+$bodygroup "ruina_blade"	//done
 {
 	blank
 	studio "ruina_blade.smd"
+}
+$bodygroup "ruina_magi_gun"	//todo: paint it.
+{
+	blank
+	studio "ruina_magi_gun.smd"
 }
 
 

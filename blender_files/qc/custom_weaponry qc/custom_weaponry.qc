@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1"
+$modelname "zombie_riot/weapons/custom_weaponry_2"
 
 $bodygroup "scythe"
 {
