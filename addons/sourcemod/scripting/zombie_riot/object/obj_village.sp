@@ -622,7 +622,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	}
 	else
 	{
-		VillageUpgradeMenu(owner, client);
+		VillageUpgradeMenu(Owner, client);
 	}
 
 	return true;
