@@ -206,7 +206,7 @@ static void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_pe
 	i_CurrentEquippedPerk[client] = what_perk;
 	i_CurrentEquippedPerkPreviously[client] = what_perk;
 	
-	Building_GiveRewardsUse(client, owner, 65, true, 0.6, true);
+	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 
 	float pos[3];
 	float angles[3];

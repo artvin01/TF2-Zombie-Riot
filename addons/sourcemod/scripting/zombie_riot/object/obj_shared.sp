@@ -31,6 +31,7 @@ static Function FuncShowInteractHud[MAXENTITIES];
 static int Building_Max_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
+int Building_BuildingBeingCarried[MAXENTITIES];
 
 float RotateByDefaultReturn(int entity)
 {
@@ -150,8 +151,6 @@ methodmap ObjectGeneric < CClotBody
 		VecMax = CustomThreeDimensions;
 		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
 
-	//	VecMax[2] += FakemodelOffset;
-	//	VecMin[2] += FakemodelOffset;
 		SetEntPropVector(obj, Prop_Data, "m_vecMaxs", VecMax);
 		SetEntPropVector(obj, Prop_Data, "m_vecMins", VecMin);
 		//Running UpdateCollisionBox On this entity just makes it calculate its own one, bad.
@@ -168,22 +167,21 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
+		SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
+		int entity;
 		if(DoFakeModel)
 		{
-			SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
-
-			int entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
 			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;
-
-			entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
-			SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
-			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
-			objstats.m_iWearable2 = entity;
 		}
+		entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
+		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
+		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
+		objstats.m_iWearable2 = entity;
 
 		return objstats;
 	}
@@ -285,12 +283,6 @@ methodmap ObjectGeneric < CClotBody
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
 			npcstats.SetActivity(animation, Is_sequence);
 		}
-		else
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.index);
-			npcstats.SetActivity(animation, Is_sequence);
-			return;
-		}
 		if(IsValidEntity(this.m_iWearable2))
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
@@ -303,12 +295,6 @@ methodmap ObjectGeneric < CClotBody
 		{
 			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
 			npcstats.SetPlaybackRate(flSpeedAnim);
-		}
-		else
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.index);
-			npcstats.SetPlaybackRate(flSpeedAnim);
-			return;
 		}
 		if(IsValidEntity(this.m_iWearable2))
 		{
@@ -657,6 +643,7 @@ bool Object_Interact(int client, int weapon, int obj)
 	if(TeutonType[client] != TEUTON_NONE || obj == -1)
 		return false;
 	
+	bool MountedObjectInteracted = false;
 	int entity = obj;
 	if(entity <= MaxClients)
 	{
@@ -664,6 +651,8 @@ bool Object_Interact(int client, int weapon, int obj)
 		entity = EntRefToEntIndex(Building_Mounted[obj]);
 		if(entity == -1)
 			return false;
+
+		MountedObjectInteracted = true;
 	}
 
 	bool result;
@@ -708,7 +697,7 @@ bool Object_Interact(int client, int weapon, int obj)
 		{
 			// Interact with a building
 			//dont interact with buildings if you are carring something
-			if(!IsPlayerCarringObject(client))
+			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && BuildingIsBeingCarried(entity))
 			{
 				Function func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
@@ -894,6 +883,10 @@ public void ObjBaseThinkPost(int building)
 public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	//do not think if you are being carried.
+	if(BuildingIsBeingCarried(building))
+		return;
+
 	ObjectGeneric_ClotThink(objstats);
 }
 

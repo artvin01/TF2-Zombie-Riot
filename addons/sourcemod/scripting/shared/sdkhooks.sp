@@ -1262,8 +1262,10 @@ public void OnPostThink(int client)
 			blue = 255;
 		}
 		ArmorDisplayClient(client);
+
+		/*
 		char buffer[64];
-/*		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
+		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
 		{	
 			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
@@ -1299,108 +1301,36 @@ public void OnPostThink(int client)
 						Format(buffer, sizeof(buffer), "\nAR\n", Cooldowntocheck);
 					}
 				}
-				case 2: //Ammo box
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nAM\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nAM\n", Cooldowntocheck);
-					}
-				}
-				case 3: //Mortar
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nMO\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nMO\n", Cooldowntocheck);
-					}
-				}
-				case 4: //Railgun
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nRA\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nRA\n", Cooldowntocheck);
-					}
-				}
-				case 5: //Perk
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nPE\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nPE\n", Cooldowntocheck);
-					}
-				}
-				case 6: //pack a punch
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nPA\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nPA\n", Cooldowntocheck);
-					}
-				}
-				case 7: //Healing Station
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nHE\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nHE\n", Cooldowntocheck);
-					}
-				}
-				case 8: //Village
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nVI\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nVI\n", Cooldowntocheck);
-					}
-				}
-				case 9: //Barracks
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nBA\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nBA\n", Cooldowntocheck);
-					}
-				}
-				case BuildingBlacksmith:
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nTI\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nTI\n", Cooldowntocheck);
-					}
-				}
 			}
 		}
-		else*/
+		*/
+		char buffer[64];
+		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
+		if(IsValidEntity(converted_ref))
+		{
+			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
+			Cooldowntocheck -= GetGameTime();
+
+			if(Cooldowntocheck < 0.0)
+			{
+				Cooldowntocheck = 0.0;
+			}
+
+			char class[64];
+			char npc_classname[7];
+			NPC_GetPluginById(i_NpcInternalId[converted_ref], npc_classname, sizeof(npc_classname));
+			npc_classname[4] = CharToUpper(npc_classname[4]);
+			npc_classname[5] = CharToUpper(npc_classname[5]);
+			if(Cooldowntocheck > 0.0)
+			{
+				Format(buffer, sizeof(buffer), "%.1f\n%s\n", Cooldowntocheck, npc_classname[4]);
+			}
+			else
+			{
+				Format(buffer, sizeof(buffer), "%s\n", npc_classname[4]);
+			}
+		}
+		else
 		{
 			Format(buffer, sizeof(buffer), "\n\n");	 //so the spacing stays!
 		}

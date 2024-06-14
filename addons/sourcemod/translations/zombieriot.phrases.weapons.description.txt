@@ -3037,4 +3037,12 @@
 	{
 		"en"	"Increased damage, reload speed, and firerate"
 	}
+	"Railgun"
+	{
+		"en"	"Railgun"
+	}
+	"Railgun Desc"
+	{
+		"en"	"Fires a strong laser, weakened when mounted."
+	}
 }

@@ -87,7 +87,7 @@ static bool ClotInteract(int client, int weapon, ObjectTinkerAnvil npc)
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	Blacksmith_BuildingUsed(npc.index, client, owner);
-	Building_GiveRewardsUse(client, owner, 65, true, 0.6, true);
+	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	
 	return true;
 }

@@ -111,6 +111,9 @@ void ViewChange_PlayerModel(int client)
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(IsValidEntity(ViewmodelPlayerModel))
 	{
+#if defined ZR
+		UnequipDispenser(client, true);
+#endif
 		TF2_RemoveWearable(client, ViewmodelPlayerModel);
 	}
 
@@ -162,6 +165,11 @@ void ViewChange_PlayerModel(int client)
 		SDKCall_EquipWearable(client, entity);
 		SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
 		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
+		//get its attachemt once, it probably has to authorise it once to work correctly for later.
+		//otherwise, trying to get its attachment breaks, i dont know why, it has to be here.
+		float flPos[3];
+		float flAng[3];
+		GetAttachment(entity, "flag", flPos, flAng);
 
 #if defined RPG
 		Party_PlayerModel(client, PlayerModels[CurrentClass[client]]);
