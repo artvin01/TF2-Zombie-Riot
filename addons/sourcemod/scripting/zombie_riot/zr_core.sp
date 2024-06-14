@@ -389,6 +389,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/mvm_hud.sp"
+#include "zombie_riot/steamworks.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
@@ -552,6 +553,7 @@ void ZR_PluginStart()
 	Rogue_PluginStart();
 	Spawns_PluginStart();
 	Object_PluginStart();
+	SteamWorks_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	

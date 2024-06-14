@@ -434,11 +434,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		baseNPC.flDeathDropHeight = 999999.0;
 
 #if defined ZR
-//		if(Ally != TFTeam_Red && VIPBuilding_Active())
-//		{
-//			baseNPC.flAcceleration = 90000.0;
-//			baseNPC.flFrictionSideways = 90.0;
-//		}
+		if(Ally != TFTeam_Red && VIPBuilding_Active())
+		{
+			baseNPC.flAcceleration = 90000.0;
+			baseNPC.flFrictionSideways = 90.0;
+		}
 #endif
 
 		CBaseNPC_Locomotion locomotion = baseNPC.GetLocomotion();
@@ -3019,14 +3019,14 @@ methodmap CClotBody < CBaseCombatCharacter
 			this.GetBaseNPC().SetBodyMins({0.0,0.0,0.0});
 		}
 #if defined ZR
-/*		if(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red)
+		if(VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red)
 		{
 			if(f_UnstuckSuckMonitor[this.index] < GetGameTime())
 			{
 				this.GetLocomotionInterface().ClearStuckStatus("UN-STUCK");
 				f_UnstuckSuckMonitor[this.index] = GetGameTime() + 1.0;
 			}
-		}*/
+		}
 #endif
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
@@ -4722,14 +4722,14 @@ stock int GetClosestTarget(int entity,
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(!npc.m_bThisEntityIgnored && IsEntityAlive(entity_close, true) && !b_NpcIsInvulnerable[entity_close] && !onlyPlayers && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
 				{
-/*					if(IsTowerdefense)
+					if(IsTowerdefense)
 					{
 						if(i_NpcInternalId[entity_close] == VIPBuilding_ID() && !IsValidEnemy(entity, view_as<CClotBody>(entity).m_iTarget, true, true))
 						{
 							return entity_close; //we found a vip building, go after it.
 						}
 					}
-					*/
+					
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, entity_close))
@@ -9509,7 +9509,7 @@ stock bool RaidbossIgnoreBuildingsLogic(int value = 0)
 			if(RaidAllowsBuildings)
 				return false;
 
-			if(/*!VIPBuilding_Active() && */IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			if(!VIPBuilding_Active() && IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 			{
 				//do ignore
 				return true;

@@ -1599,7 +1599,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_iGunValue = sell;
 	npc.m_iGunSeller = userid;
 	
-//	Building_ClearRefBuffs(EntIndexToEntRef(entity));
+	Building_ClearRefBuffs(EntIndexToEntRef(entity));
 	
 	int wave = 90;
 	
@@ -1925,7 +1925,7 @@ public void Citizen_ClotThink(int iNPC)
 		return;
 	}
 
-	bool noSafety = (npc.m_bCamo/* || VIPBuilding_Active()*/);
+	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive);
 
 	// See if our target is still valid
