@@ -46,6 +46,9 @@ void ObjectVillage_MapStart()
 	PrecacheModel(VILLAGE_MODEL_MIDDLE);
 	PrecacheModel(VILLAGE_MODEL_REBEL);
 
+	delete Village_Effects;
+	Village_Effects = new ArrayList(sizeof(VillageBuff));
+	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Village");
 	strcopy(data.Plugin, sizeof(data.Plugin), "obj_village");
