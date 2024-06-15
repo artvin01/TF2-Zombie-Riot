@@ -1525,8 +1525,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else
 		{
-//			if(VIPBuilding_Active())
-//				speed_for_return *= 2.0;
+			if(VIPBuilding_Active())
+				speed_for_return *= 2.0;
 		}
 #endif
 		return speed_for_return; 
@@ -2978,8 +2978,8 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(b_AvoidObstacleType[this.index])
 			IgnoreObstacles = 2;
 #if defined ZR
-//		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
-//			IgnoreObstacles = 2;
+		if((VIPBuilding_Active() && GetTeam(this.index) != TFTeam_Red))
+			IgnoreObstacles = 2;
 #endif
 		if(IgnoreObstacles == 0)
 		{

@@ -141,11 +141,11 @@ bool NpcCollisionCheck(int npc, int other, int extrarules = 0)
 stock bool IsEntityTowerDefense(int entity)
 {
 #if defined ZR
-/*	if(GetTeam(entity) != TFTeam_Red)
+	if(GetTeam(entity) != TFTeam_Red)
 	{
 		if(VIPBuilding_Active())
 			return true;
-	}*/
+	}
 #endif
 	return false;
 }
