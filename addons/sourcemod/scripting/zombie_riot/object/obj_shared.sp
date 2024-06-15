@@ -584,15 +584,23 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	{
 		if(FuncCanBuild[objstats.index] && FuncCanBuild[objstats.index] != INVALID_FUNCTION)
 		{
-			// If 0 can't build, destory the unclaimed building
+			// If 0 can't build, destory the unclaimed building (sentry)
 			if(!Object_CanBuild(FuncCanBuild[objstats.index], 0))
 			{
 				RemoveEntity(objstats.index);
 				return false;
 			}
+		}		
+		char npc_classname[32];
+		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "obj_barricade"))
+		{
+			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 1)
+			{
+				SetEntityCollisionGroup(objstats.index, 1);
+				b_ThisEntityIgnored[objstats.index] = true;
+			}
 		}
-
-		SetEntityCollisionGroup(objstats.index, 1);
 
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
@@ -639,7 +647,16 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		*/
 
-		SetEntityCollisionGroup(objstats.index, 24);
+		char npc_classname[32];
+		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "obj_barricade"))
+		{
+			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 24)
+			{
+				SetEntityCollisionGroup(objstats.index, 24);
+				b_ThisEntityIgnored[objstats.index] = false;
+			}
+		}
 
 		int g = health * 255  / maxhealth;
 		if(g > 255)
