@@ -494,8 +494,8 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	float GameTime = GetGameTime();
 
-	//freeplay causes more damage taken.
-	if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
+	//freeplay causes more damage taken for allies only.
+	if(GetTeam(victim) == TFTeam_Red && f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
 	{
 		damage *= f_FreeplayDamageExtra;
 	}
@@ -1068,7 +1068,7 @@ static stock bool OnTakeDamageScalingWaveDamage(int &victim, int &attacker, int 
 	{
 		ExtraDamageDealt = 0.35;
 	}
-	if(LastMann)
+	if(LastMann && GetTeam(victim) != TFTeam_Red)
 	{
 		damage *= 1.35;
 		int DisplayCritSoundTo;
@@ -1499,7 +1499,7 @@ static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflic
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
 	}
-
+	
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
 	{
 		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
