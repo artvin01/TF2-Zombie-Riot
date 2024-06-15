@@ -70,6 +70,15 @@ bool Pap_WeaponCheck(int client, bool force = false)
 		return false;
 	
 	b_LastWeaponCheckBias[client] = Store_CanPapItem(client, StoreWeapon[weapon]);
+	
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_ION_BEAM:
+		{
+			Neuvellete_Menu(client, weapon);
+			b_LastWeaponCheckBias[client] = true;
+		}
+	}
 	return b_LastWeaponCheckBias[client];
 }
 
@@ -89,6 +98,20 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	}
 	int owner;
 	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_ION_BEAM:
+		{
+			int buttons = GetClientButtons(client);
+			bool attack2 = (buttons & IN_ATTACK2) != 0;
+			if(attack2)
+			{
+				Neuvellete_Menu(client, weapon);
+				return true;
+			}
+		}
+	}
 	Store_PackMenu(client, StoreWeapon[weapon], weapon, owner);
 	return true;
 }
