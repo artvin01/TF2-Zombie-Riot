@@ -58,7 +58,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -71,14 +71,12 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
-		}*/
+		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 public void Rogue_Spearhead_Weapon(int entity)

@@ -637,7 +637,6 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		*/
 
-
 		int g = health * 255  / maxhealth;
 		if(g > 255)
 		{

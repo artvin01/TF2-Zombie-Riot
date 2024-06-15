@@ -1590,8 +1590,6 @@ static int GetSupplyLeft(int client)
 	return 3 + Rogue_Barracks_BonusSupply() - personal;
 }
 
-
-
 //void AddItemToTrainingList(char item, )
 public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 {

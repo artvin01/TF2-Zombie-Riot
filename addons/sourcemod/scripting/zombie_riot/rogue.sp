@@ -838,11 +838,28 @@ void Rogue_BattleVictory()
 
 	if(BattleIngots > 0)
 	{
-		if(RogueTheme == BobChaos && (GetURandomInt() % 8) < BattleIngots)
+		switch(RogueTheme)
 		{
-			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
-				Rogue_GiveNamedArtifact(artifact.Name);
+			case BobChaos:
+			{
+				if((GetURandomInt() % 8) < BattleIngots)
+				{
+					Artifact artifact;
+					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
+				}
+			}
+			case BlueParadox:
+			{
+				if(BattleIngots > 4)
+				{
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+				}
+				else
+				{
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 3);
+				}
+			}
 		}
 
 		if(Rogue_HasFriendship())
@@ -1570,10 +1587,11 @@ static void StartStage(const Stage stage)
 			}
 		}
 	}
+
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			RemoveEntity(entity);
 	}
 
@@ -1652,7 +1670,7 @@ static void TeleportToSpawn()
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			RemoveEntity(entity);
 	}
 }
@@ -2569,3 +2587,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/hand_of_elder_mages.sp"
 
 #include "roguelike/paradox_theme.sp"
+#include "roguelike/paradox_generic.sp"

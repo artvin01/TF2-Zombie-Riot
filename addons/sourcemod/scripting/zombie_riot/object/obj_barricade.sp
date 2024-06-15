@@ -58,13 +58,13 @@ public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 {
 	if(client)
 	{
-		count = ObjectBarricade_Buildings(client);
+		count = ObjectBarricade_Buildings(client) + ActiveCurrentNpcsBarracks(client, true);
 		maxcount = 4;
-		if(count >= maxcount)
-			return false;
+		if(count < maxcount)
+			return true;
 	}
 	
-	return true;
+	return false;
 }
 
 public bool ObjectBarricade_CanBuildCheap(int client, int &count, int &maxcount)
@@ -72,15 +72,12 @@ public bool ObjectBarricade_CanBuildCheap(int client, int &count, int &maxcount)
 	if(!ObjectBarricade_CanBuild(client, count, maxcount))
 		return false;
 	
-	if(client)
-	{
-		count = 0;
-		maxcount = (Level[client] > 19 || CvarInfiniteCash.BoolValue) ? 1 : 0;
-		if(count >= maxcount)
-			return false;
-	}
+	count = 0;
+	maxcount = (Level[client] > 19 || CvarInfiniteCash.BoolValue) ? 1 : 0;
+	if(count < maxcount)
+		return true;
 	
-	return true;
+	return false;
 }
 
 int ObjectBarricade_Buildings(int owner)

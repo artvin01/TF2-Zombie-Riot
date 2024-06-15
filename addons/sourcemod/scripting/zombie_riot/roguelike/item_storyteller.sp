@@ -68,7 +68,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -81,7 +81,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
-		}*/
+		}
 	}
 }
 
@@ -206,7 +206,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 
 			LastFlowerHealth = float(last);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -219,7 +219,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 
 				LastFlowerHealth = float(last);
 			}
-		}*/
+		}
 	}
 }
 
@@ -246,7 +246,7 @@ public void Rogue_Shadow_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -255,7 +255,7 @@ public void Rogue_Shadow_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
-		}*/
+		}
 	}
 }
 
@@ -302,7 +302,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -312,7 +312,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
-		}*/
+		}
 	}
 }
 
@@ -354,7 +354,7 @@ public void Rogue_BobFinal_Ally(int entity, StringMap map)
 			// +15% damage bonus
 			npc.m_fGunRangeBonus *= 1.15;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -362,7 +362,7 @@ public void Rogue_BobFinal_Ally(int entity, StringMap map)
 				// +15% damage bonus
 				npc.BonusDamageBonus *= 1.15;
 			}
-		}*/
+		}
 	}
 }
 

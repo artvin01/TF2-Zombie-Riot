@@ -176,14 +176,14 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		map.GetValue("107", value);
 		map.SetValue("107", value * 0.8);
 	}
-/*	else if(!b_NpcHasDied[entity])	// NPCs
+	else if(!b_NpcHasDied[entity])	// NPCs
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(npc.OwnerUserId)	// Barracks Unit
 		{
 			fl_Extra_Speed[entity] *= 0.8;
 		}
-	}*/
+	}
 }
 
 public void Rogue_HeavyRain_Enemy(int entity)
