@@ -256,11 +256,6 @@ public void Rogue_RangedVuln1_Enemy(int entity)
 	fl_Extra_RangedArmor[entity] /= 1.15;
 }
 
-public void Rogue_RangedVuln1_Enemy(int entity)
-{
-	fl_Extra_RangedArmor[entity] /= 1.15;
-}
-
 public void Rogue_RangedVuln2_Enemy(int entity)
 {
 	fl_Extra_RangedArmor[entity] /= 1.25;
