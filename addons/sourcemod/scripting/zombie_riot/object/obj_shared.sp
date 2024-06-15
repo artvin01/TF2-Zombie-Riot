@@ -436,22 +436,22 @@ static Action SetTransmit_BuildingNotReady(int entity, int client)
 	{
 		if(b_FirstPersonUsesWorldModel[client])
 		{
-			return SetTransmit_BuildingShared(owner, entity, client, true);
+			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
 		}
 		if(owner == client)
 		{
 			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
 			{
-				return SetTransmit_BuildingShared(owner, entity, client, true);
+				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
 			}
 		}
 		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
 		{
-			return SetTransmit_BuildingShared(owner, entity, client, true);
+			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
 		}
 		return Plugin_Stop;
 	}
-	return SetTransmit_BuildingShared(owner, entity, client, true);
+	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
 }
 
 static Action SetTransmit_BuildingReady(int entity, int client)
@@ -462,22 +462,22 @@ static Action SetTransmit_BuildingReady(int entity, int client)
 	{
 		if(b_FirstPersonUsesWorldModel[client])
 		{
-			return SetTransmit_BuildingShared(owner, entity, client, false);
+			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
 		}
 		if(owner == client)
 		{
 			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
 			{
-				return SetTransmit_BuildingShared(owner, entity, client, false);
+				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
 			}
 		}
 		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
 		{
-			return SetTransmit_BuildingShared(owner, entity, client, false);
+			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
 		}
 		return Plugin_Stop;
 	}
-	return SetTransmit_BuildingShared(owner, entity, client, false);
+	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
 }
 
 static Action SetTransmit_BuildingShared(int owner, int entity, int client, bool reverse)
