@@ -2293,12 +2293,12 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
 			{
-				if(addItem == 0 && subtract_wave == 0 && item.NPCSeller_First)
+				if(addItem == 0 && !subtract_wave && item.NPCSeller_First)
 				{
 					item.NPCSeller = false;
 					item.NPCSeller_First = false;
 				}
-				else if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				else if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart--;
 					StoreItems.SetArray(i, item);
@@ -2313,7 +2313,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 			else if(ResetStore != 2)	// Reset items, add random ones (normal)
 			{
-				if(addItem == 0 && subtract_wave == 0)
+				if(addItem == 0 && !subtract_wave)
 				{
 					item.NPCSeller_First = false;
 					item.NPCSeller = false;
@@ -2323,7 +2323,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 					}
 				}
 
-				if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart -= 1;
 				}
@@ -2336,7 +2336,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 		}
 	}
-	if(subtract_wave != 0 || ResetStore)
+	if(subtract_wave || ResetStore)
 		return;
 	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))

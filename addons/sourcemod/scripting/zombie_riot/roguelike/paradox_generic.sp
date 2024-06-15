@@ -318,6 +318,7 @@ public void Rogue_EternalNight_Weapon(int entity)
 public void Rogue_EternalNight_Remove()
 {
 	delete EternalNightTimer;
+	Rogue_Refresh_Remove();
 }
 
 static Action EternalNightTimer(Handle timer)
@@ -361,6 +362,7 @@ public void Rogue_DeadTree_Ally(int entity, StringMap map)
 public void Rogue_DeadTree_Remove()
 {
 	delete DeadTreeTimer;
+	Rogue_Refresh_Remove();
 }
 
 static Action DeadTreeTimer(Handle timer)
@@ -372,11 +374,52 @@ static Action DeadTreeTimer(Handle timer)
 			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0)
 			{
 				int health = GetClientHealth(client);
-				if(health > 0)
+				if(health > 0 && health < SDKCall_GetMaxHealth(client))
 					SetEntityHealth(client, health + 4);
 			}
 		}
 	}
 
 	return Plugin_Continue;
+}
+
+public void Rogue_Fowlbeast_Ally(int entity, StringMap map)
+{
+	if(map)	// Players
+	{
+		
+	}
+	else if(!b_NpcHasDied[entity])	// NPCs
+	{
+		if(Citizen_IsIt(entity))	// Rebel
+		{
+		}
+		else
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId)	// Barracks Unit
+			{
+
+			}
+			else	// Other
+			{
+				int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+				if(owner > 0 && owner <= MaxClients)
+				{
+					fl_Extra_Damage[entity] *= 1.3;
+					MultiHealth(entity, 1.3);
+
+					int weapon = GetEntPropEnt(owner, Prop_Send, "m_hActiveWeapon");
+					if(weapon != -1)
+					{
+						if(Attributes_Has(weapon, 2))
+							ApplyTempAttrib(weapon, 2, 1.6, 10.0);
+						
+						if(Attributes_Has(weapon, 410))
+							ApplyTempAttrib(weapon, 410, 1.6, 10.0);
+					}
+				}
+			}
+		}
+	}
 }

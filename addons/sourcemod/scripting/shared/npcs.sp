@@ -918,7 +918,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
 #else
-	if(damagetype & DMG_DROWN)
+	if((damagetype & DMG_DROWN))
 #endif
 	{
 		damage = 0.0;
