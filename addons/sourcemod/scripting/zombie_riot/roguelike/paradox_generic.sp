@@ -295,7 +295,7 @@ static Handle EternalNightTimer;
 public void Rogue_EternalNight_Collect()
 {
 	delete EternalNightTimer;
-	EternalNightTimer = CreateTimer(0.2, EternalNightTimer, _, TIMER_REPEAT);
+	EternalNightTimer = CreateTimer(0.2, Timer_EternalNightTimer, _, TIMER_REPEAT);
 }
 
 public void Rogue_EternalNight_Weapon(int entity)
@@ -316,7 +316,7 @@ public void Rogue_EternalNight_Remove()
 	Rogue_Refresh_Remove();
 }
 
-static Action EternalNightTimer(Handle timer)
+static Action Timer_EternalNightTimer(Handle timer)
 {
 	if(Rogue_CanRegen())
 	{
@@ -345,7 +345,7 @@ static Handle DeadTreeTimer;
 public void Rogue_DeadTree_Collect()
 {
 	delete DeadTreeTimer;
-	DeadTreeTimer = CreateTimer(0.2, DeadTreeTimer, _, TIMER_REPEAT);
+	DeadTreeTimer = CreateTimer(0.2, Timer_DeadTreeTimer, _, TIMER_REPEAT);
 }
 
 public void Rogue_DeadTree_Ally(int entity, StringMap map)
@@ -360,7 +360,7 @@ public void Rogue_DeadTree_Remove()
 	Rogue_Refresh_Remove();
 }
 
-static Action DeadTreeTimer(Handle timer)
+static Action Timer_DeadTreeTimer(Handle timer)
 {
 	if(Rogue_CanRegen())
 	{
