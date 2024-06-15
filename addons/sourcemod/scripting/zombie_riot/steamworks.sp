@@ -46,15 +46,15 @@ void SteamWorks_UpdateGameTitle()
 		}
 		else if(Waves_InFreeplay() && WhatDifficultySetting_Internal[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "%s (Freeplay)", WhatDifficultySetting_Internal);
+			FormatEx(buffer, sizeof(buffer), "ZR %s (Freeplay)", WhatDifficultySetting_Internal);
 		}
 		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "%s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
+			FormatEx(buffer, sizeof(buffer), "ZR %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRound() + 1, Waves_GetMaxRound());
 		}
 		else
 		{
-			strcopy(buffer, sizeof(buffer), "Zombie Riot");
+			strcopy(buffer, sizeof(buffer), "ZR (Waiting For Players)");
 		}
 
 		SteamWorks_SetGameDescription(buffer);
