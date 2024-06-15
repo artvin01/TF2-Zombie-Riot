@@ -683,13 +683,12 @@ void Barracks_BuildingThink(int entity)
 	float GameTime = GetGameTime(npc.index);
 
 	//do not think.
-	
 	if(npc.m_flNextThinkTime > GameTime) //add a delay, we dont really need more lol
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GameTime + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.2;
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 
 	if(!IsValidClient(client))

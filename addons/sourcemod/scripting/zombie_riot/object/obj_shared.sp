@@ -929,8 +929,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 public void ObjBaseThinkPost(int building)
 {
-	CBaseCombatCharacter(building).SetNextThink(GetGameTime());
-	SetEntPropFloat(building, Prop_Data, "m_flSimulationTime",GetGameTime());
+	CBaseCombatCharacter(building).SetNextThink(GetGameTime() + 0.1);
 }
 
 public void ObjBaseThink(int building)
