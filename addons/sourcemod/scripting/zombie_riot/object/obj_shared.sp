@@ -112,6 +112,7 @@ methodmap ObjectGeneric < CClotBody
 		DispatchKeyValue(obj,	   "solid", "2");
 		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
 		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
+		b_IsEntityAlwaysTranmitted[obj] = true;
 		DispatchSpawn(obj);
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
@@ -214,6 +215,7 @@ methodmap ObjectGeneric < CClotBody
 		}
 
 		DispatchSpawn(item);
+		SetEntPropEnt(item, Prop_Send, "m_hOwnerEntity", this.index);
 		
 		SetEntityMoveType(item, MOVETYPE_NONE);
 		SetEntProp(item, Prop_Data, "m_nNextThinkTick", -1.0);
@@ -428,20 +430,61 @@ methodmap ObjectGeneric < CClotBody
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, true);
+	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
+	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
+	{
+		if(b_FirstPersonUsesWorldModel[client])
+		{
+			return SetTransmit_BuildingShared(owner, entity, client, true);
+		}
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return SetTransmit_BuildingShared(owner, entity, client, true);
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return SetTransmit_BuildingShared(owner, entity, client, true);
+		}
+		return Plugin_Stop;
+	}
+	return SetTransmit_BuildingShared(owner, entity, client, true);
 }
 
 static Action SetTransmit_BuildingReady(int entity, int client)
 {
-	return SetTransmit_BuildingShared(entity, client, false);
+	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
+	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
+	{
+		if(b_FirstPersonUsesWorldModel[client])
+		{
+			return SetTransmit_BuildingShared(owner, entity, client, false);
+		}
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return SetTransmit_BuildingShared(owner, entity, client, false);
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return SetTransmit_BuildingShared(owner, entity, client, false);
+		}
+		return Plugin_Stop;
+	}
+	return SetTransmit_BuildingShared(owner, entity, client, false);
 }
 
-static Action SetTransmit_BuildingShared(int entity, int client, bool reverse)
+static Action SetTransmit_BuildingShared(int owner, int entity, int client, bool reverse)
 {
 	if(client < 1 || client > MaxClients)
 		return Plugin_Continue;
 	
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(owner != -1)
 	{
 		bool result = true;
@@ -699,7 +742,7 @@ bool Object_Interact(int client, int weapon, int obj)
 		{
 			// Interact with a building
 			//dont interact with buildings if you are carring something
-			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && BuildingIsBeingCarried(entity))
+			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && !BuildingIsBeingCarried(entity))
 			{
 				Function func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
