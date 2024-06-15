@@ -1396,8 +1396,7 @@ public void OnPluginStart()
 	LoadTranslations("zombieriot.phrases.weapons.description");
 	LoadTranslations("zombieriot.phrases.weapons");
 	LoadTranslations("zombieriot.phrases.bob");
-	LoadTranslations("zombieriot.phrases.icons"); 
-	LoadTranslations("zombieriot.phrases.rogue"); 
+	LoadTranslations("zombieriot.phrases.icons");
 	LoadTranslations("zombieriot.phrases.item.gift.desc"); 
 	LoadTranslations("realtime.phrases");
 	LoadTranslations("common.phrases");

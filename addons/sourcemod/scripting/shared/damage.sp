@@ -10,11 +10,6 @@
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-#if defined ZR
-	if(b_ThisNpcIsSawrunner[attacker])
-		return false;
-#endif
-
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
@@ -120,6 +115,9 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #endif
 
 #if defined ZR
+	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
+		return false;
+	
 	float GameTime = GetGameTime();
 
 	if(Medival_Difficulty_Level != 0.0)
