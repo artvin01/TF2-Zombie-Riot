@@ -1125,6 +1125,7 @@ static stock void OnTakeDamageVehicleDamage(int &attacker, int &inflictor, float
 	}
 }
 
+#if !defined RTS
 static stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	
 	if(!IsValidEntity(weapon))
@@ -1144,7 +1145,7 @@ static stock bool OnTakeDamageOldExtraWeapons(int victim, int &attacker, int &in
 }
 
 static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
-{	
+{
 	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
@@ -1319,6 +1320,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	}
 	return false;
 }
+#endif	// Non-RTS
 
 static stock bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float GameTime)
 {	
@@ -1339,6 +1341,7 @@ static stock bool OnTakeDamageBuildingBonusDamage(int &attacker, int &inflictor,
 	return false;
 }
 
+#if !defined RTS
 static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon)
 {	
 #if defined RPG	
@@ -1502,3 +1505,4 @@ static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflic
 		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
 }
+#endif	// Non-RTS
