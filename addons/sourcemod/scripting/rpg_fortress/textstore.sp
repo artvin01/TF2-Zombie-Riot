@@ -2174,7 +2174,7 @@ static void ShowMenu(int client, int page = 0)
 				amount += 1;
 			}
 
-			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d):", amount, Stats_BaseCarry(client));
+			menu.SetTitle("RPG Fortress\n \nBackpack (%d / %d);", amount, Stats_BaseCarry(client));
 
 			menu.ExitButton = true;
 			InMenu[client] = menu.DisplayAt(client, page / 7 * 7, MENU_TIME_FOREVER);

@@ -460,6 +460,10 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, 3 ,_,4.0);
 										}
+										else if (i_WeaponAmmoAdjustable[weapon])
+										{
+											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
+										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
 											if(AmmoBlacklist(Ammo_type))

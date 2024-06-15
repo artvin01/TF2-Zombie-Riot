@@ -50,7 +50,6 @@
 
 #define BUILDINGCOLLISIONNUMBER	24
 
-#define MAX_REBELS_ALLOWED 4
 
 enum
 {
@@ -1550,39 +1549,6 @@ bool AllowBuildingCurrently()
 	
 	return true;
 }
-public void Pickup_Building_M2(int client, int weapon, bool crit)
-{
-		int entity = GetClientPointVisible(client, _ , true, true,_,1);
-		if(entity > MaxClients)
-		{
-			if (IsValidEntity(entity))
-			{
-				static char buffer[64];
-				if(GetEntityClassname(entity, buffer, sizeof(buffer)))
-				{
-					if(!StrContains(buffer, "obj_"))
-					{
-						if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-						{
-							if(b_Doing_Buildingpickup_Handle[client])
-							{
-								delete h_Pickup_Building[client];
-							}
-							b_Doing_Buildingpickup_Handle[client] = true;
-							DataPack pack;
-							h_Pickup_Building[client] = CreateDataTimer(b_ThisEntityIgnored[entity] ? 0.0 : 1.0, Building_Pickup_Timer, pack, TIMER_FLAG_NO_MAPCHANGE);
-							pack.WriteCell(client);
-							pack.WriteCell(EntIndexToEntRef(entity));
-							pack.WriteCell(GetClientUserId(client));
-							f_DelayLookingAtHud[client] = GetGameTime() + 1.0;	
-							SetGlobalTransTarget(client);
-							PrintCenterText(client, "%t", "Picking Up Building");
-						}
-					}
-				}
-			}
-		}
-}
 		
 //This function ONLY exists, beacuse for some reason, the 64bit update started to crash people if they have the classname called tf_weapon_wrench
 //i have no idea why, i hate this update.
@@ -1597,7 +1563,6 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
-
 	if(target < 0)
 		return;
 	
@@ -1631,6 +1596,10 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 		i_HealingAmount -= newHealth - max_health;
 		newHealth = max_health;
 	}
+	if(GetEntProp(target, Prop_Data, "m_iRepair") < i_HealingAmount)
+	{
+		i_HealingAmount = GetEntProp(target, Prop_Data, "m_iRepair");
+	}
 	
 	int Remove_Ammo = i_HealingAmount / 3;
 	
@@ -1643,8 +1612,12 @@ public void Wrench_Hit_Repair_Replacement(int client, int weapon, bool &result, 
 	
 	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
 	{
-		SetVariantInt(Healing_Value);
-		AcceptEntityInput(target, "AddHealth");
+		int HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, _);
+		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
+		if(GetEntProp(target, Prop_Data, "m_iRepair") < 0)
+		{
+			SetEntProp(target, Prop_Data, "m_iRepair", 0);
+		}
 		switch(GetRandomInt(0,1))
 		{
 			case 0:
@@ -2617,6 +2590,7 @@ bool Building_Interact(int client, int entity, bool Is_Reload_Button = false)
 						if(Is_Reload_Button)
 						{
 							int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+							
 							if(weapon != -1 && StoreWeapon[weapon] > 0)
 							{
 								switch(i_CustomWeaponEquipLogic[weapon])
@@ -3321,209 +3295,7 @@ public Action Timer_DroppedBuildingWaitSentry(Handle htimer, int entref)
 	}
 	return Plugin_Continue;
 }
-public bool BuildingCustomCommand(int client)
-{
-	int obj=EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-	if(IsValidEntity(obj) && obj>MaxClients)
-	{
-		if(GetEntPropFloat(obj, Prop_Send, "m_flPercentageConstructed") >= 1.0)
-		{
-			static char buffer[36];
-			GetEntPropString(obj, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if(StrEqual(buffer, "zr_mortar"))
-			{
-				if(f_BuildingIsNotReady[client] < GetGameTime())
-				{
-					f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
-					BuildingMortarAction(client, obj);
-				}
-				else
-				{
-					float Ability_CD = f_BuildingIsNotReady[client] - GetGameTime();
-			
-					if(Ability_CD <= 0.0)
-						Ability_CD = 0.0;
-				
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetDefaultHudPosition(client);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-				}
-			}
-			else if(StrEqual(buffer, "zr_railgun"))
-			{
-				if(obj == EntRefToEntIndex(g_CarriedDispenser[client]))
-				{
-					if(f_BuildingIsNotReady[client] < GetGameTime())
-					{
-						f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
-						BuildingRailgunShotClient(client, obj);
-					}
-					else
-					{
-						float Ability_CD = f_BuildingIsNotReady[client] - GetGameTime();
-				
-						if(Ability_CD <= 0.0)
-							Ability_CD = 0.0;
-					
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-					}
-				}
-				else
-				{
-					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
-					if(IsValidEntity(looking_at) && looking_at > 0)
-					{
-						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));
-						if(StrEqual(buffer, "zr_railgun"))
-						{
-							if(GetEntPropEnt(looking_at, Prop_Send, "m_hBuilder") == client)
-							{
-								if(f_BuildingIsNotReady[client] < GetGameTime())
-								{
-									f_BuildingIsNotReady[client] = GetGameTime() + 15.0;
-									BuildingRailgunShot(client, looking_at);
-								}
-								else
-								{
-									float Ability_CD = f_BuildingIsNotReady[client] - GetGameTime();
-							
-									if(Ability_CD <= 0.0)
-										Ability_CD = 0.0;
-								
-									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetDefaultHudPosition(client);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-								}
-							}
-						}
-					}
-				}
-			}
-			else if(StrEqual(buffer, "zr_healingstation"))
-			{
-				if(obj == EntRefToEntIndex(g_CarriedDispenser[client]))
-				{
-					if(Building_Collect_Cooldown[obj][client] < GetGameTime())
-					{
-						ApplyBuildingCollectCooldown(obj, client, 75.0);
-						ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-						float HealAmmount = 30.0;
-						if(IsValidClient(client))
-						{
-							HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
-						}
-						HealEntityGlobal(client, client, HealAmmount, 1.0, 3.0, _);
-					}
-					else
-					{
-						float Ability_CD = Building_Collect_Cooldown[obj][client] - GetGameTime();
-				
-						if(Ability_CD <= 0.0)
-							Ability_CD = 0.0;
-					
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-					}
-				}
-				else
-				{
-					int looking_at = GetClientPointVisible(client, _ , _, _,_,1);
-					if(IsValidEntity(looking_at) && looking_at > 0)
-					{
-						GetEntPropString(looking_at, Prop_Data, "m_iName", buffer, sizeof(buffer));
-						if(StrEqual(buffer, "zr_healingstation"))
-						{
-							if(GetEntPropEnt(looking_at, Prop_Send, "m_hBuilder") == client)
-							{
-								if(Building_Collect_Cooldown[obj][client] < GetGameTime())
-								{
-									ApplyBuildingCollectCooldown(obj, client, 75.0);
-									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-									float HealAmmount = 30.0;
-									if(IsValidClient(client))
-									{
-										HealAmmount *= Attributes_GetOnPlayer(client, 8, true, true);
-									}
-									HealEntityGlobal(client, client, HealAmmount, 1.0, 3.0, _);
-								}
-								else
-								{
-									float Ability_CD = Building_Collect_Cooldown[obj][client] - GetGameTime();
-							
-									if(Ability_CD <= 0.0)
-										Ability_CD = 0.0;
-								
-									ClientCommand(client, "playgamesound items/medshotno1.wav");
-									SetDefaultHudPosition(client);
-									SetGlobalTransTarget(client);
-									ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-								}
-							}
-						}
-					}
-				}
-			}
-			else if((Village_Flags[client] & VILLAGE_040) && StrEqual(buffer, "zr_village"))
-			{
-				//if(Ammo_Count_Used[client] > 0)
-				{
-					if(f_BuildingIsNotReady[client] < GetGameTime())
-					{
-						//Ammo_Count_Used[client]--;
-						f_BuildingIsNotReady[client] = GetGameTime() + 90.0;
-						
-						if(Village_Flags[client] & VILLAGE_050)
-						{
-							i_ExtraPlayerPoints[client] += 100; //Static point increace.
-							Village_ReloadBuffFor[client] = GetGameTime() + 20.0;
-							EmitSoundToAll("items/powerup_pickup_uber.wav");
-							EmitSoundToAll("items/powerup_pickup_uber.wav");
-						}
-						else
-						{
-							i_ExtraPlayerPoints[client] += 50; //Static point increace.
-							Village_ReloadBuffFor[client] = GetGameTime() + 15.0;
-							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
-							EmitSoundToAll("player/mannpower_invulnerable.wav", client);
-						}
-					}
-					else
-					{
-						float Ability_CD = f_BuildingIsNotReady[client] - GetGameTime();
-						
-						if(Ability_CD <= 0.0)
-							Ability_CD = 0.0;
-						
-						ClientCommand(client, "playgamesound items/medshotno1.wav");
-						SetDefaultHudPosition(client);
-						SetGlobalTransTarget(client);
-						ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);	
-					}
-				}
-				/*else
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					SetDefaultHudPosition(client);
-					SetGlobalTransTarget(client);
-					ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
-				}*/
-			}
-			else if(StrEqual(buffer, "zr_summoner"))
-			{
-				OpenSummonerMenu(client, client);
-			}
-		}
-		return true;
-	}
-	return false;
-}
+
 						
 						
 public void BuildingRailgunShot(int client, int Railgun)
@@ -8517,22 +8289,6 @@ public bool Building_Blacksmith(int client, int entity)
 	}
 	Barracks_UpdateEntityUpgrades(client, entity, true);
 	return true;
-}
-
-float BuildingWeaponDamageModif(int Type)
-{
-	switch(Type)
-	{
-		case 1:
-		{
-			//1 means its a weapon
-			return 1.85;
-		}
-		default:
-		{
-			return 1.0;
-		}
-	}
 }
 
 bool BuildingIsSupport(int entity)

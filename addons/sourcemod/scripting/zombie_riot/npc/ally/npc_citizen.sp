@@ -1482,7 +1482,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	}
 	return 0;
 }
-
+/*
 int Citizen_BuildingInteract(int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1496,7 +1496,7 @@ int Citizen_BuildingInteract(int entity)
 	}
 	return 0;
 }
-
+*/
 bool Citizen_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1542,7 +1542,7 @@ bool Citizen_GivePerk(int entity, int type)
 	flPos[2] += 100.0;
 
 	npc.m_bRebelAgressive = false;
-
+/*
 	switch(npc.m_iBuildingType)
 	{
 		case 1:
@@ -1580,6 +1580,7 @@ bool Citizen_GivePerk(int entity, int type)
 		SDKUnhook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmit);
 		SDKHook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmitCitizen);
 	}
+*/
 	return true;
 }
 

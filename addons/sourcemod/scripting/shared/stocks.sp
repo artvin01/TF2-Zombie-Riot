@@ -1236,8 +1236,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	*/
 
 #if defined ZR
-	if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
-		return 0;
+	if(reciever <= MaxClients)
+		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+			return 0;
 #endif
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
@@ -1245,8 +1246,8 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
-		bool RegrowthBlock,camoblock;
- 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		bool RegrowthBlock;
+ 		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
 		if(RegrowthBlock)
 		{
 			HealTotal *= 0.5;
@@ -1523,6 +1524,12 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 	}
 #endif	
+
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		//if the building is ignored, prevent interaction with it.
+		return false;
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;

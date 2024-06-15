@@ -474,6 +474,8 @@ void Rogue_SetupVote(KeyValues kv)
 
 		kv.GoBack();
 	}
+
+	SteamWorks_UpdateGameTitle();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -1069,6 +1071,7 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
+				SteamWorks_UpdateGameTitle();
 
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1564,11 +1567,10 @@ static void StartStage(const Stage stage)
 			}
 		}
 	}
-
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
 
@@ -1647,7 +1649,7 @@ static void TeleportToSpawn()
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity))
 			RemoveEntity(entity);
 	}
 }
@@ -2108,18 +2110,6 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 							Call_Finish();
 						}
 					}
-
-					for(int a; a < i_MaxcountBuilding; a++)
-					{
-						int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-						{
-							Call_StartFunction(null, artifact.FuncAlly);
-							Call_PushCell(entity);
-							Call_PushCell(INVALID_HANDLE);
-							Call_Finish();
-						}
-					}
 				}
 			}
 
@@ -2285,9 +2275,19 @@ int Rogue_GetRound()	// Waves_GetRound()
 	return ProgressTimer ? CurrentFloor : CurrentRound;
 }
 
+int Rogue_GetFloor()
+{
+	return CurrentFloor;
+}
+
 int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
+}
+
+int Rogue_GetCount()
+{
+	return CurrentCount;
 }
 
 int Rogue_GetRoundScale()

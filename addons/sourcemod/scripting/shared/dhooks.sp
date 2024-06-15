@@ -99,10 +99,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
-	DHook_CreateDetour(gamedata, "CBaseObject::ShouldQuickBuild", DHookCallback_CBaseObject_ShouldQuickBuild_Pre, _);
 #endif
-	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
-	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -111,7 +108,6 @@ void DHook_Setup()
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 //	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
 //	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
@@ -878,6 +874,17 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
+	//npc has died, ignore all collissions no matter what
+	if(b_ThisWasAnNpc[ent1])
+	{
+		if(b_NpcHasDied[ent1])
+			return false;
+	}
+	if(b_ThisWasAnNpc[ent2])
+	{
+		if(b_NpcHasDied[ent2])
+			return false;
+	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
 #if defined RPG
@@ -915,15 +922,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
-		if(i_WhatBuilding[entity1] == BuildingSentrygun)
-		{
-			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red && entity2 > MaxClients)) //dont ignore players
-			{
-				return false;
-			}
-		}
-		
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -1051,6 +1049,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif	// Non-RTS
+//enemy NPC
 #if defined RTS
 		if(!b_NpcHasDied[entity1])
 #else	
@@ -1090,14 +1089,21 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-
+//allied NPC
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			//dont be solid to buildings
+			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
+				return false;
+			
+			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
-				return false;
+				if(!i_IsABuilding[entity2] && !i_IsABuilding[entity1])
+					return false;
 			}
+			//lag comp stuff, shooting in specific
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
 				return false;
@@ -1278,13 +1284,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	}
 	if(!Dont_Move_Building)
 	{
-		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if (IsValidEntity(entity))
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
 
@@ -1350,119 +1353,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	
 	return MRES_Ignored;
 //	return MRES_Supercede;
-}
-/*
-public MRESReturn DHook_BlockThink(int Base_Boss)
-{
-	PrintToChatAll("thinking");
-	return MRES_Supercede;
-}
-*/
-public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hParams)
-{
-#if defined ZR
-	if(b_SentryIsCustom[sentry])
-	{
-		DHookSetReturn(hReturn, false); 
-		return MRES_Supercede;		
-	}
-#endif
-	
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	if(owner > 0)
-	{
-		if(IsPlayerAlive(owner))
-		{
-			int i, entity;
-			while(TF2_GetItem(owner, entity, i))
-			{
-				int weaponindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-				if(weaponindex == 140)
-					return MRES_Ignored;
-			}
-		}
-	}
-	int Looking_At_This; 
-	Looking_At_This = GetEntPropEnt(sentry, Prop_Send, "m_hEnemy");
-	if(IsValidEntity(Looking_At_This) && IsValidEnemy(sentry, Looking_At_This))
-	{
-		Handle trace; 
-		float pos_sentry[3]; GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", pos_sentry);
-		float pos_enemy[3]; GetEntPropVector(Looking_At_This, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-		pos_sentry[2] += 25.0;
-		pos_enemy[2] += 45.0;
-		
-		trace = TR_TraceRayFilterEx(pos_sentry, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Base_Boss_Hit, sentry);
-		int Traced_Target;
-		
-//		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//		TE_SetupBeamPoints(pos_sentry, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//		TE_SendToAll();
-		
-		Traced_Target = TR_GetEntityIndex(trace);
-		delete trace;
-		
-		if(IsValidEntity(Traced_Target) && b_ThisEntityIgnoredByOtherNpcsAggro[Traced_Target])
-		{
-			DHookSetReturn(hReturn, false); 
-			return MRES_Supercede;	
-		}
-		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
-		{
-			DHookSetReturn(hReturn, true); 
-			return MRES_Supercede;		
-		}
-	} 
-	return MRES_Ignored;
-}
-
-
-public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParams)
-{
-#if !defined RTS
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-		}
-	}
-#else
-	
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && owner != client)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-		}	
-	}
-#endif
-	return MRES_Ignored;
-}
-
-public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hParams)
-{
-#if !defined RTS
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-		}
-	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
-	}
-#else
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && owner != client)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-		}
-	}
-#endif
-	return MRES_Ignored;
 }
 
 void DHook_HookClient(int client)
@@ -1588,9 +1478,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
-	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	
 	GiveCompleteInvul(client, 2.0);
 	
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
@@ -1605,90 +1492,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	return MRES_Ignored;
 }
-		
-#if !defined RTS
-//Ty miku for showing me this cvar.
-public void PhaseThroughOwnBuildings(int client)
-{
-	if(b_PhaseThroughBuildingsPerma[client] == 2) //They already ignore everything 24/7, dont bother.
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		return;
-	}
-	
-	float PlayerLoc[3];
-	float otherLoc[3];
-	bool Collides_with_atleast_one_building = false;
-	GetClientAbsOrigin(client, PlayerLoc);
-	
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity) && entity != 0)
-		{
-			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", otherLoc);
-				if (GetVectorDistance(PlayerLoc, otherLoc, true) <= 11000.0)// 110.0 distance
-				{	 
-					Collides_with_atleast_one_building = true;
-				}
-			}
-		}
-	}
-	
-	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.ReplicateToClient(client, Collides_with_atleast_one_building ? "0" : "1");
-		
-	b_PhasesThroughBuildingsCurrently[client] = Collides_with_atleast_one_building;
-	
-	if(!Collides_with_atleast_one_building)
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	}
-}
-#endif
-
-/*
-public void DHook_TeleportToObserver(DataPack pack)
-{
-	pack.Reset();
-	int client = GetClientOfUserId(pack.ReadCell());
-	if(client)
-	{
-		GiveCompleteInvul(client, 2.0);
-		int target = pack.ReadCell();
-		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
-		{
-			target = 0;
-			for(int i=1; i<=MaxClients; i++)
-			{
-				if(i != client && IsClientInGame(i))
-				{
-					if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-					{
-						target = i;
-						break;
-					}
-				}
-			}
-		}
-					
-		if(target)
-		{
-			float pos[3], ang[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-			ang[2] = 0.0;
-			SetEntProp(client, Prop_Send, "m_bDucked", true);
-			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-			TeleportEntity(client, pos, ang, NULL_VECTOR);
-			SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		}
-	}
-	delete pack;
-}*/
 
 public Action DHook_TeleportToAlly(Handle timer, int userid)
 {
@@ -1722,8 +1525,6 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 					SetEntProp(client, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 					TeleportEntity(client, pos, ang, NULL_VECTOR);
-					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 				}
 			}
 		}
@@ -1800,6 +1601,7 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 static int LastTeam;
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
 {
+	// Prevent buildings form disappearing
 //	if(!Disconnecting)
 	{
 		LastTeam = GetTeam(client);
@@ -2321,15 +2123,6 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 
 	return false;
 }
-
-#if !defined RTS
-//Thank you mikusch!
-static MRESReturn DHookCallback_CBaseObject_ShouldQuickBuild_Pre(int obj, DHookReturn returnHook)
-{
-	returnHook.Value = false;
-	return MRES_Supercede;
-}
-#endif
 
 void Hook_DHook_UpdateTransmitState(int entity)
 {

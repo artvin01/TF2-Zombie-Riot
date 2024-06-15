@@ -504,6 +504,7 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 		Call_StartFunction(null, func);
 		Call_PushCell(client);
 		Call_PushCell(weapon);
+		Call_PushCell(entity);
 		Call_Finish(result);
 	}
 

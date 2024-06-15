@@ -6,6 +6,9 @@ enum
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
+	if(entity == iExclude)
+		return false;
+		
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -25,7 +28,8 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 #if defined ZR
 		if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 		{
-			return false;
+			if(!b_AllowCollideWithSelfTeam[iExclude] && !b_AllowCollideWithSelfTeam[entity])
+				return false;
 		}
 		else if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
 #else
@@ -57,7 +61,8 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 #if defined ZR
 	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
-		return false;
+		if(!b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+			return false;
 	}
 
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
