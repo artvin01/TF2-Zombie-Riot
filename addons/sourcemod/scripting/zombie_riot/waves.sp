@@ -94,6 +94,7 @@ static ArrayList MiniBosses;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
+static int FakeMaxWaves;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
@@ -148,6 +149,7 @@ void Waves_MapStart()
 	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
+	FakeMaxWaves = 0;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -565,6 +567,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1881,7 +1884,7 @@ int Waves_GetRound()
 
 int Waves_GetMaxRound()
 {
-	return Rounds.Length;
+	return FakeMaxWaves ? (FakeMaxWaves-1) : Rounds.Length;
 }
 
 public int Waves_GetWave()
@@ -2300,6 +2303,9 @@ static void UpdateMvMStatsFrame()
 		{
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
+
+			if(FakeMaxWaves)
+				maxwaves = FakeMaxWaves;
 
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);

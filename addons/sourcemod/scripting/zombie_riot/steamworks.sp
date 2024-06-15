@@ -5,23 +5,21 @@
 
 #define STEAMWORKS_LIBRARY	"SteamWorks"
 
-#if defined _SteamWorks_Included
-static bool Loaded;
-#endif
+static bool SteamWorksCompiled;
 
 void SteamWorks_PluginStart()
 {
 	#if defined _SteamWorks_Included
-	Loaded = LibraryExists(STEAMWORKS_LIBRARY);
+	SteamWorksCompiled = LibraryExists(STEAMWORKS_LIBRARY);
 	#endif
 }
 
 public void OnLibraryAdded(const char[] name)
 {
 	#if defined _SteamWorks_Included
-	if(!Loaded && StrEqual(name, STEAMWORKS_LIBRARY))
+	if(!SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))
 	{
-		Loaded = true;
+		SteamWorksCompiled = true;
 		SteamWorks_UpdateGameTitle();
 	}
 	#endif
@@ -30,15 +28,15 @@ public void OnLibraryAdded(const char[] name)
 public void OnLibraryRemoved(const char[] name)
 {
 	#if defined _SteamWorks_Included
-	if(Loaded && StrEqual(name, STEAMWORKS_LIBRARY))
-		Loaded = false;
+	if(SteamWorksCompiled && StrEqual(name, STEAMWORKS_LIBRARY))
+		SteamWorksCompiled = false;
 	#endif
 }
 
 void SteamWorks_UpdateGameTitle()
 {
 	#if defined _SteamWorks_Included
-	if(Loaded)
+	if(SteamWorksCompiled)
 	{
 		char buffer[64];
 
