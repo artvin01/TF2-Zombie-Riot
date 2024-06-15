@@ -17,25 +17,11 @@ void ObjectBarricade_MapStart()
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
-/*
-enum
+
+int ObjectBarricade_ID()
 {
-	BuildingNone = 0,				Done					
-	BuildingBarricade = 1,			Done			
-	BuildingElevator = 2,			Done			
-	BuildingAmmobox = 3,			Done			
-	BuildingArmorTable = 4,			Done			
-	BuildingPerkMachine = 5,		Done				
-	BuildingPackAPunch = 6,			Done			
-	BuildingRailgun = 7,						
-	BuildingSentrygun = 8,						
-	BuildingMortar = 9,						
-	BuildingHealingStation = 10,						
-	BuildingSummoner = 11,						
-	BuildingVillage = 12,						
-	BuildingBlacksmith = 13						
+	return NPCId;
 }
-*/
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {

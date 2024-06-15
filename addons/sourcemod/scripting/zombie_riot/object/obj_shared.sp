@@ -590,10 +590,9 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				RemoveEntity(objstats.index);
 				return false;
 			}
-		}		
-		char npc_classname[32];
-		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "obj_barricade"))
+		}
+		
+		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 1)
 			{
@@ -611,16 +610,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
 
 		if(IsValidEntity(objstats.m_iWearable4))
-		{
-			char HealthText[32];
-			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-			if(IsValidClient(Owner))
-				Format(HealthText, sizeof(HealthText), "%N", Owner);
-			else
-				Format(HealthText, sizeof(HealthText), "%s", " ");
-
-			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-		}
+			RemoveEntity(objstats.m_iWearable4);
 			
 	}
 	else
@@ -647,9 +637,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		*/
 
-		char npc_classname[32];
-		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
-		if(StrEqual(npc_classname, "obj_barricade"))
+		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
 			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 24)
 			{
