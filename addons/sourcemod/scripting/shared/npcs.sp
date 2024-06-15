@@ -915,7 +915,11 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	float GameTime = GetGameTime();
 	b_DoNotDisplayHurtHud[victim] = false;
 	
-	if((damagetype & DMG_DROWN))
+#if defined ZR
+	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
+#else
+	if(damagetype & DMG_DROWN)
+#endif
 	{
 		damage = 0.0;
 		Damageaftercalc = 0.0;

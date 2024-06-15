@@ -1,0 +1,61 @@
+"Phrases"
+{
+	"Gained Chaos"
+	{
+		"#format"	"{1:d}"
+		"en"		"{red}Gained {1} Chaos Instability!"
+	}
+	"Losted Chaos"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Losted {1} Chaos Instability!"
+	}
+	"Compass and Map"
+	{
+		"en"	"Compass and Map"
+	}
+	"Compass and Map Desc"
+	{
+		"en"	"Go the right way, nothing more.\n{green}Enemies move 20% slower, take 35% more damage, and deal 35% less damage\n{green}Gain 75% less Chaos Infliction"
+	}
+	"Healing Supplies"
+	{
+		"en"	"Healing Supplies"
+	}
+	"Healing Supplies Desc"
+	{
+		"en"	"To always be careful of the unknown.\n{green}Restores last stand effect"
+	}
+	"Camping Supplies"
+	{
+		"en"	"Camping Supplies"
+	}
+	"Camping Supplies Desc"
+	{
+		"en"	"Stay longer so we can search more.\n{yellow}Adds an extra stage to every floor"
+	}
+	"Trading Supplies"
+	{
+		"en"	"Trading Supplies"
+	}
+	"Trading Supplies Desc"
+	{
+		"en"	"Bring some cash for trading later.\n{green}Gain 20 Australium Ingots"
+	}
+	"Weapon Supplies"
+	{
+		"en"	"Weapon Supplies"
+	}
+	"Weapon Supplies Desc"
+	{
+		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 credits and 30 ammo supplies"
+	}
+	"Something Else"
+	{
+		"en"	"Something Else"
+	}
+	"Something Else Desc"
+	{
+		"en"	"You brought something else with you.\n{red}Gain 30 Chaos Infliction"
+	}
+}

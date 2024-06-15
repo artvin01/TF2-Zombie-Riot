@@ -269,6 +269,9 @@ void Rogue_PluginStart()
 	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
+	
+	LoadTranslations("zombieriot.phrases.rogue"); 
+	LoadTranslations("zombieriot.phrases.rogue.paradox"); 
 }
 
 public Action Rogue_DebugGive(int client, int args)
@@ -2225,14 +2228,18 @@ stock int Rogue_GetChaosLevel()
 	return 0;
 }
 
-stock void Rogue_AddChaos(int amount)
+stock void Rogue_AddChaos(int amount, bool silent = false)
 {
 	int change = amount;
+
+	Rogue_Paradox_AddChaos(change);
 
 	CurrentChaos += change;
 
 	Waves_UpdateMvMStats();
-	CPrintToChatAll("%t", "Gained Chaos", change);
+
+	if(!silent)
+		CPrintToChatAll("%t", "Gained Chaos", change);
 }
 
 stock void Rogue_RemoveChaos(int amount)
@@ -2292,7 +2299,11 @@ int Rogue_GetCount()
 
 int Rogue_GetRoundScale()
 {
-	if(Waves_InFreeplay())
+	if(Rogue_Started())
+	{
+		return (CurrentFloor * 15) + (CurrentCount * 2);
+	}
+	else if(Waves_InFreeplay())
 	{
 		int RoundGive = CurrentRound;
 		if(RoundGive < 60)
@@ -2303,7 +2314,7 @@ int Rogue_GetRoundScale()
 	}
 	else
 	{
-		return Rogue_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
+		return CurrentRound;
 	}
 }
 
