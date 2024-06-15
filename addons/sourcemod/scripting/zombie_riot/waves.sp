@@ -1884,7 +1884,7 @@ int Waves_GetRound()
 
 int Waves_GetMaxRound()
 {
-	return FakeMaxWaves ? (FakeMaxWaves-1) : Rounds.Length;
+	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
 }
 
 public int Waves_GetWave()

@@ -280,6 +280,9 @@ static bool HasWrench(int client)
 
 static int GetCost(int id, float multi)
 {
+	if(Rogue_Mode())
+		return 0;
+	
 	int cost_extra = RoundFloat((BuildingHealth[id] * multi / 3.0) * 1.25);
 	if(cost_extra <= 0)
 	{
@@ -309,7 +312,6 @@ static void BuildingMenu(int client)
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
 		int cost = GetCost(i, multi);
-		int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
 		int count;
 		int maxcount = 99;
 		bool allowed;
@@ -354,11 +356,12 @@ static void BuildingMenu(int client)
 			if(!TranslationPhraseExists(buffer2))
 				strcopy(buffer2, sizeof(buffer2), buffer1);
 
+			int alive = Object_NamedBuildings(_, BuildingPlugin[i]);
 			Format(buffer1, sizeof(buffer1), "{x%d} %t", alive, buffer2);
 		}
 		else if(cooldown > 0.0)
 		{
-			Format(buffer1, sizeof(buffer1), "%t (%ds) [%d/%d]", buffer1, RoundToCeil(cooldown), count, maxcount);
+			Format(buffer1, sizeof(buffer1), "%t (%.1fs) [%d/%d]", buffer1, RoundToCeil(cooldown * 2.0) / 2.0, count, maxcount);
 		}
 		else
 		{
