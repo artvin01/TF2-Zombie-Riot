@@ -265,7 +265,7 @@ float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
-int i_PreviousBuildingCollision[MAXENTITIES];
+//int i_PreviousBuildingCollision[MAXENTITIES];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
