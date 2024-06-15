@@ -1583,7 +1583,7 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	SetParent(InfoTarget, entity, _, _, _);
 	Building_Mounted[client] = EntIndexToEntRef(entity);
 	Building_Mounted[entity] = EntIndexToEntRef(client);
-
+	
 	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
 	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
 	//all checks succeeded, now mount the building onto their back!

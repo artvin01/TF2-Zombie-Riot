@@ -85,7 +85,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	else if(StrEqual(buffer, "+helpme_server", false))
 	{
 		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
-		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		f_MedicCallIngore[client] = GetGameTime() + 0.5;
 		bool has_been_done = BuildingCustomCommand(client);
 		if(has_been_done)
 		{
@@ -305,6 +305,10 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 				{
 #if defined RPG
 					RPGCommands_TriggerMedicCall(client);
+#endif
+#if defined ZR
+					f_MedicCallIngore[client] = GetGameTime() + 0.5;
+					BuildingCustomCommand(client);
 #endif
 					return Plugin_Handled;
 				}

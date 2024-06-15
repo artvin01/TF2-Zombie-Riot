@@ -1093,11 +1093,17 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			//dont be solid to buildings
+			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
+				return false;
+			
+			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
 				if(!i_IsABuilding[entity2] && !i_IsABuilding[entity1])
 					return false;
 			}
+			//lag comp stuff, shooting in specific
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
 				return false;

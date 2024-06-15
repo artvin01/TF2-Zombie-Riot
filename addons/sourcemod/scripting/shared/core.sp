@@ -2265,7 +2265,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			int entity = EntRefToEntIndex(Building_Mounted[client]);
 			if(IsValidEntity(entity))
 			{
-				Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), entity);
+				Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
 			}
 		}
 		else
