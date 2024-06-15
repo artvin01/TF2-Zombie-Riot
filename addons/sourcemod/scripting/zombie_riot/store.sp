@@ -4780,7 +4780,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Was_phasing = true;
 	}
 	*/
-	b_PhaseThroughBuildingsPerma[client] = 1;
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
@@ -5297,10 +5296,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.Attack3AbilitySlot != 0)
 					{
 						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
-					}
-					if(info.SpecialAdditionViaNonAttribute == 1)
-					{
-						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
 					}
 					if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
 					{

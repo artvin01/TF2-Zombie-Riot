@@ -804,7 +804,6 @@ bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
 bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
 float f_MedicCallIngore[MAXTF2PLAYERS];
 #endif
 

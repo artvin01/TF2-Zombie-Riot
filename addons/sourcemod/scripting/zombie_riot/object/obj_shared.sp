@@ -591,7 +591,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 				return false;
 			}
 		}		
-		char npc_classname[32];
+		static char npc_classname[32];
 		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
 		if(StrEqual(npc_classname, "obj_barricade"))
 		{
@@ -647,7 +647,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		*/
 
-		char npc_classname[32];
+		static char npc_classname[32];
 		NPC_GetPluginById(i_NpcInternalId[objstats.index], npc_classname, sizeof(npc_classname));
 		if(StrEqual(npc_classname, "obj_barricade"))
 		{
