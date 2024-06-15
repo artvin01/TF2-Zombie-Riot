@@ -633,8 +633,16 @@ public void Un_ClaimBuildingLookedAt(int client)
 	int entity = GetClientPointVisible(client, _ , true, true);
 	if(entity > MaxClients)
 	{
-		if (IsValidEntity(entity) && BuildingIsSupport(entity))
+		if (IsValidEntity(entity))
 		{
+			if(!BuildingIsSupport(entity))
+			{
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "This building cannot be unclaimed, only destroyed.");
+				return;
+			}
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{

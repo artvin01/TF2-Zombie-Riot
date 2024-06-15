@@ -30,7 +30,7 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	//-50,
-	600,
+	450,
 	0,
 
 	575,
@@ -74,22 +74,22 @@ static const int BuildingHealth[sizeof(BuildingPlugin)] =
 static const float BuildingCooldown[sizeof(BuildingPlugin)] =
 {
 	//99999.9,
-	30.0,
+	15.0,
 	10.0,
 
 	20.0,
 	20.0,
-	90.0,
-	90.0,
+	60.0,
+	60.0,
 
-	60.0,
-	60.0,
-	60.0,
-	60.0,
-	60.0,
 	30.0,
+	30.0,
+	30.0,
+	30.0,
+	30.0,
+	15.0,
 
-	30.0
+	15.0
 };
 
 static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
@@ -115,6 +115,7 @@ static const char BuildingFuncName[sizeof(BuildingPlugin)][] =
 
 static int BuildingId[sizeof(BuildingPlugin)];
 static Function BuildingFunc[sizeof(BuildingPlugin)];
+static Function BuildingFuncSave[MAXENTITIES];
 static float Cooldowns[MAXTF2PLAYERS][sizeof(BuildingPlugin)];
 static float GrabThrottle[MAXENTITIES];
 static int MenuPage[MAXTF2PLAYERS];
@@ -125,7 +126,7 @@ static float PlayerWasHoldingProp[MAXTF2PLAYERS];
 
 bool BuildingIsSupport(int entity)
 {
-	if(BuildingFunc[entity] == ObjectGeneric_CanBuild)
+	if(BuildingFuncSave[entity] == ObjectGeneric_CanBuild)
 		return true;
 
 	return false;
@@ -145,7 +146,7 @@ bool IsPlayerCarringObject(int client)
 }
 bool BuildingIsBeingCarried(int buildingindx)
 {
-	if(Building_BuildingBeingCarried[buildingindx] != 0)
+	if(IsValidEntity(Building_BuildingBeingCarried[buildingindx]))
 		return true;
 		
 	return false;
@@ -187,7 +188,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		Cash /= 2;
 		AmmoSupply *= 0.5;
 	}
-	AmmoSupply *= 0.5;
+	AmmoSupply *= 0.65;
 	if(CashLimit)
 	{
 		//affected by limit.
@@ -279,8 +280,7 @@ static bool HasWrench(int client)
 
 static int GetCost(int id, float multi)
 {
-	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 3.0);
-	cost_extra *= 2;
+	int cost_extra = RoundFloat((BuildingHealth[id] * multi / 3.0) * 1.25);
 	if(cost_extra <= 0)
 	{
 		cost_extra = 0;
@@ -444,6 +444,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 								if(entity != -1)
 								{
 									ObjectGeneric obj = view_as<ObjectGeneric>(entity);
+									BuildingFuncSave[entity] = BuildingFunc[id];
 									obj.BaseHealth = BuildingHealth[id];
 									int health = GetEntProp(obj.index, Prop_Data, "m_iHealth");
 									int maxhealth = GetEntProp(obj.index, Prop_Data, "m_iMaxHealth");
@@ -720,7 +721,7 @@ void Building_PlayerWieldsBuilding(int client, int entity)
 //make sure they dont carry anything beforehand
 bool Building_AllowedToWieldBuilding(int client)
 {
-	if(Player_BuildingBeingCarried[client] != 0)
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 		return false;
 	return true;
 }
