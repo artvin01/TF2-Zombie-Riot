@@ -236,21 +236,147 @@ public void Rogue_Health3_Ally(int entity, StringMap map)
 	GiveMaxHealth(entity, map, 1.5);
 }
 
-/*
-public void Rogue_HeavyWind_Weapon(int entity)
+public void Rogue_MeleeVuln1_Enemy(int entity)
 {
-	Attributes_SetMulti(entity, 103, 0.67);
+	fl_Extra_MeleeArmor[entity] /= 1.15;
 }
 
-public void Rogue_HeavyRain_Enemy(int entity)
+public void Rogue_MeleeVuln2_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_SEABORN)
+	fl_Extra_MeleeArmor[entity] /= 1.25;
+}
+
+public void Rogue_MeleeVuln3_Enemy(int entity)
+{
+	fl_Extra_MeleeArmor[entity] /= 1.35;
+}
+
+public void Rogue_RangedVuln1_Enemy(int entity)
+{
+	fl_Extra_RangedArmor[entity] /= 1.15;
+}
+
+public void Rogue_RangedVuln1_Enemy(int entity)
+{
+	fl_Extra_RangedArmor[entity] /= 1.15;
+}
+
+public void Rogue_RangedVuln2_Enemy(int entity)
+{
+	fl_Extra_RangedArmor[entity] /= 1.25;
+}
+
+public void Rogue_RangedVuln3_Enemy(int entity)
+{
+	fl_Extra_RangedArmor[entity] /= 1.35;
+}
+
+public void Rogue_Healing1_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
 	{
-		fl_Extra_Speed[entity] *= 1.1;
-	}
-	else
-	{
-		fl_Extra_Speed[entity] *= 0.8;
+		float value;
+
+		// +20% healing bonus
+		map.GetValue("526", value);
+		map.SetValue("526", value * 1.2);
 	}
 }
-*/
+
+public void Rogue_Healing2_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +30% healing bonus
+		map.GetValue("526", value);
+		map.SetValue("526", value * 1.3);
+	}
+}
+
+static Handle EternalNightTimer;
+
+public void Rogue_EternalNight_Collect()
+{
+	delete EternalNightTimer;
+	EternalNightTimer = CreateTimer(0.2, EternalNightTimer, _, TIMER_REPEAT);
+}
+
+public void Rogue_EternalNight_Weapon(int entity)
+{
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.25);
+	
+	if(Attributes_Has(entity, 6))
+		Attributes_SetMulti(entity, 6, 0.75);
+
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.25);
+}
+
+public void Rogue_EternalNight_Remove()
+{
+	delete EternalNightTimer;
+}
+
+static Action EternalNightTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0)
+			{
+				int health = GetClientHealth(client);
+				if(health > 2)
+				{
+					SetEntityHealth(client, health - 2);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, 999.9, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				}
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}
+
+static Handle DeadTreeTimer;
+
+public void Rogue_DeadTree_Collect()
+{
+	delete DeadTreeTimer;
+	DeadTreeTimer = CreateTimer(0.2, DeadTreeTimer, _, TIMER_REPEAT);
+}
+
+public void Rogue_DeadTree_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+		GiveMaxHealth(entity, map, 0.75);
+}
+
+public void Rogue_DeadTree_Remove()
+{
+	delete DeadTreeTimer;
+}
+
+static Action DeadTreeTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] == 0)
+			{
+				int health = GetClientHealth(client);
+				if(health > 0)
+					SetEntityHealth(client, health + 4);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}

@@ -3347,15 +3347,15 @@ static bool RunFromNPC(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrContains(npc_classname, "npc_sawrunner"))
+	if(StrContains(npc_classname, "npc_sawrunner") != -1)
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_combine") && b_StaticNPC[entity])
+	else if(StrContains(npc_classname, "npc_stalker_combine") != -1 && b_StaticNPC[entity])
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_father") && b_StaticNPC[entity] && !b_movedelay[entity])
+	else if(StrContains(npc_classname, "npc_stalker_father") != -1 && b_StaticNPC[entity] && !b_movedelay[entity])
 	{
 		return true;
 	}

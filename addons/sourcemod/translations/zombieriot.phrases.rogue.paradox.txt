@@ -16,7 +16,7 @@
 	}
 	"Compass and Map Desc"
 	{
-		"en"	"Go the right way, nothing more.\n{green}Enemies move 20% slower, take 35% more damage, and deal 35% less damage\n{green}Gain 75% less Chaos Infliction"
+		"en"	"Go the right way, nothing more.\n{green}Enemies move 20%% slower, take 35%% more damage, and deal 35%% less damage\n{green}Gain 75%% less Chaos Infliction"
 	}
 	"Healing Supplies"
 	{
@@ -136,7 +136,7 @@
 	}
 	"Fissured Restraints Desc"
 	{
-		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7% damage"
+		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7%% damage"
 	}
 	"Abyssal Wyrdmask"
 	{
@@ -144,7 +144,7 @@
 	}
 	"Abyssal Wyrdmask Desc"
 	{
-		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12% damage"
+		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12%% damage"
 	}
 	"Godmother's Token"
 	{
@@ -152,7 +152,7 @@
 	}
 	"Godmother's Token Desc"
 	{
-		"en"	"A laurel of bones.\n{green}Enemies gain -17% damage"
+		"en"	"A laurel of bones.\n{green}Enemies gain -17%% damage"
 	}
 	"The Whisperer in Darknight"
 	{
@@ -160,7 +160,7 @@
 	}
 	"The Whisperer in Darknight Desc"
 	{
-		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10% max health"
+		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10%% max health"
 	}
 	"Gold-Plated Dice"
 	{
@@ -168,7 +168,7 @@
 	}
 	"Gold-Plated Dice Desc"
 	{
-		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15% max health"
+		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15%% max health"
 	}
 	"The Profound Silence"
 	{
@@ -176,7 +176,7 @@
 	}
 	"The Profound Silence Desc"
 	{
-		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20% max health"
+		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20%% max health"
 	}
 	"Emperor's Favor"
 	{
@@ -184,7 +184,7 @@
 	}
 	"Emperor's Favor Desc"
 	{
-		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15% damage"
+		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15%% damage"
 	}
 	"Vieux Vanguard's Blade"
 	{
@@ -192,7 +192,7 @@
 	}
 	"Vieux Vanguard's Blade Desc"
 	{
-		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25% damage"
+		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25%% damage"
 	}
 	"Necklace of the Presence"
 	{
@@ -200,7 +200,7 @@
 	}
 	"Necklace of the Presence Desc"
 	{
-		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15% damage"
+		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15%% damage"
 	}
 	"Damaged Revolver Cylinder"
 	{
@@ -208,7 +208,7 @@
 	}
 	"Damaged Revolver Cylinder Desc"
 	{
-		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25% damage"
+		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25%% damage"
 	}
 	"Royal Rapier"
 	{
@@ -216,7 +216,7 @@
 	}
 	"Royal Rapier Desc"
 	{
-		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15% damage"
+		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15%% damage"
 	}
 	"Silver Forks"
 	{
@@ -224,7 +224,7 @@
 	}
 	"Silver Forks Desc"
 	{
-		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25% damage"
+		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25%% damage"
 	}
 	"Noxious Hemostatic Agent"
 	{
@@ -232,7 +232,7 @@
 	}
 	"Noxious Hemostatic Agent Desc"
 	{
-		"en"	"Don't ask what's in it.\n{green}Allies gain +20% max health"
+		"en"	"Don't ask what's in it.\n{green}Allies gain +20%% max health"
 	}
 	"First Aid Kit"
 	{
@@ -240,7 +240,7 @@
 	}
 	"First Aid Kit Desc"
 	{
-		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35% max health"
+		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35%% max health"
 	}
 	"Unknown Instrument"
 	{
@@ -248,7 +248,7 @@
 	}
 	"Unknown Instrument Desc"
 	{
-		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50% max health"
+		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50%% max health"
 	}
 	"Rusted Razor"
 	{
@@ -256,7 +256,7 @@
 	}
 	"Rusted Razor Desc"
 	{
-		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15% melee vulnerability"
+		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15%% melee vulnerability"
 	}
 	"Carriage Driver's Whip"
 	{
@@ -264,111 +264,111 @@
 	}
 	"Carriage Driver's Whip Desc"
 	{
-		"en"	"As the troupe's carriage driver, he has no name and no past."
+		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25%% melee vulnerability"
 	}
-	""
+	"Avenger"
 	{
-		"en"	""
+		"en"	"''Avenger''"
 	}
-	" Desc"
+	"Avenger Desc"
 	{
-		"en"	""
+		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35%% melee vulnerability"
 	}
-	""
+	"Standard Anti-Riot Instrument"
 	{
-		"en"	""
+		"en"	"Standard Anti-Riot Instrument"
 	}
-	" Desc"
+	"Standard Anti-Riot Instrument Desc"
 	{
-		"en"	""
+		"en"	"For general zombie usage.\n{green}Enemies gain +15%% ranged vulnerability"
 	}
-	""
+	"Emperor's Collection"
 	{
-		"en"	""
+		"en"	"Emperor's Collection"
 	}
-	" Desc"
+	"Emperor's Collection Desc"
 	{
-		"en"	""
+		"en"	"A rock collection, what for?\n{green}Enemies gain +25%% ranged vulnerability"
 	}
-	""
+	"Brilliant Lament"
 	{
-		"en"	""
+		"en"	"''Brilliant Lament''"
 	}
-	" Desc"
+	"Brilliant Lament Desc"
 	{
-		"en"	""
+		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35%% ranged vulnerability"
 	}
-	""
+	"Live Rose"
 	{
-		"en"	""
+		"en"	"Live Rose"
 	}
-	" Desc"
+	"Live Rose Desc"
 	{
-		"en"	""
+		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20%% more health from healing"
 	}
-	""
+	"White Flower Crown"
 	{
-		"en"	""
+		"en"	"White Flower Crown"
 	}
-	" Desc"
+	"White Flower Crown Desc"
 	{
-		"en"	""
+		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30%% more health from healing"
 	}
-	""
+	"Dancer's Bracelets"
 	{
-		"en"	""
+		"en"	"Dancer's Bracelets"
 	}
-	" Desc"
+	"Dancer's Bracelets Desc"
 	{
-		"en"	""
+		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10%% dodge chance"
 	}
-	""
+	"Peek into the Eternal Night"
 	{
-		"en"	""
+		"en"	"''Peek into the Eternal Night''"
 	}
-	" Desc"
+	"Peek into the Eternal Night Desc"
 	{
-		"en"	""
+		"en"	"The moment she turns around to head north.\n{green}Players gain +25%% damage, +25%% firing speed {red}but -10 HP a second"
 	}
-	""
+	"Dead Tree's Echo"
 	{
-		"en"	""
+		"en"	"''Dead Tree's Echo''"
 	}
-	" Desc"
+	"Dead Tree's Echo Desc"
 	{
-		"en"	""
+		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25%% max health"
 	}
-	""
+	"Frozen Whetstone"
 	{
-		"en"	""
+		"en"	"Frozen Whetstone"
 	}
-	" Desc"
+	"Frozen Whetstone Desc"
 	{
-		"en"	""
+		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus"
 	}
-	""
+	"Clairvoyant's Reveal"
 	{
-		"en"	""
+		"en"	"Clairvoyant's Reveal"
 	}
-	" Desc"
+	"Clairvoyant's Reveal Desc"
 	{
-		"en"	""
+		"en"	"There is no direction you can head to avoid misfortune.\n{yellow}Ally max health is randomly changed"
 	}
-	""
+	"Finshell Shield"
 	{
-		"en"	""
+		"en"	"Finshell Shield"
 	}
-	" Desc"
+	"Finshell Shield Desc"
 	{
-		"en"	""
+		"en"	"The stacks of distant trauma cannot surpass the layers of protection built by the body.\n{green}Allies gain a shield that blocks one instance of damage every 10 seconds"
 	}
-	""
+	"Empty Fowlbeast"
 	{
-		"en"	""
+		"en"	"Empty Fowlbeast"
 	}
-	" Desc"
+	"Empty Fowlbeast Desc"
 	{
-		"en"	""
+		"en"	"{green}Limited lifetime allies gain +30%% max health and +30%% damage, the owner gains +60%% damage if at least one is alive."
 	}
 	""
 	{
