@@ -66,7 +66,7 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
 		// +X% max health
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * amount;
+		int health = RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * amount);
 
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -223,17 +223,17 @@ public void Rogue_MageDamage2_Weapon(int entity)
 
 public void Rogue_Health1_Ally(int entity, StringMap map)
 {
-	GiveLife(entity, map, 1.2);
+	GiveMaxHealth(entity, map, 1.2);
 }
 
 public void Rogue_Health2_Ally(int entity, StringMap map)
 {
-	GiveLife(entity, map, 1.35);
+	GiveMaxHealth(entity, map, 1.35);
 }
 
 public void Rogue_Health3_Ally(int entity, StringMap map)
 {
-	GiveLife(entity, map, 1.5);
+	GiveMaxHealth(entity, map, 1.5);
 }
 
 /*

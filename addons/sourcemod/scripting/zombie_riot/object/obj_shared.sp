@@ -587,10 +587,12 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			// If 0 can't build, destory the unclaimed building
 			if(!Object_CanBuild(FuncCanBuild[objstats.index], 0))
 			{
-				SmiteNpcToDeath(objstats.index);
+				RemoveEntity(objstats.index);
 				return false;
 			}
 		}
+
+		SetEntityCollisionGroup(objstats.index, 1);
 
 		int wearable = objstats.m_iWearable1;
 		if(wearable != -1)
@@ -636,6 +638,8 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			SetEntProp(objstats.index, Prop_Data, "m_iRepair", repair);
 		}
 		*/
+
+		SetEntityCollisionGroup(objstats.index, 24);
 
 		int g = health * 255  / maxhealth;
 		if(g > 255)
