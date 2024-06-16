@@ -504,9 +504,7 @@
 	}
 	"Elite Sniper Pap 1"
 	{
-		"en"		"Deals more damage and causes targets to slow and take more damage."
-		"ru"		"Наносит больше урона и заставляет цели замедляться и получать больше урона."
-		"chi"       "造成更多伤害，并使目标减速和受到更多伤害。"
+		"en"		"Deals more damage and causes targets to slow and take more damage.\nto apply debuff, half charge within scope at minimum."
 	}
 	"Elite Sniper Pap 2"
 	{

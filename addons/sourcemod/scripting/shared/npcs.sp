@@ -600,7 +600,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 	if(inflictor < 1 || inflictor > MaxClients)
 		return Plugin_Continue;
 
-	
+	if(b_NpcIsInvulnerable[victim])
+		return Plugin_Continue;
+		
 	if((damagetype & (DMG_BLAST))) //make sure any hitscan boom type isnt actually boom
 	{
 		f_IsThisExplosiveHitscan[attacker] = GetGameTime();
