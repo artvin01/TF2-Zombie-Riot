@@ -1121,6 +1121,9 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 {
 	for (int i = 0; i < MAXENTITIES; i++)
 	{
+		if(!IsValidEntity(i))
+			continue;
+			
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
 		{
 			BuildingAdjustMe(i, entityLost);
