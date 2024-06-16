@@ -186,7 +186,7 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-
+/*
 #if defined ZR
 	if(CvarMpSolidObjects)
 	{
@@ -220,7 +220,7 @@ public void OnPreThinkPost(int client)
 		}
 	}
 #endif	// ZR
-
+*/
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 }
 #endif	// ZR & RPG
@@ -283,7 +283,7 @@ public void OnPostThink(int client)
 		b_DisplayDamageHud[client] = false;
 		Calculate_And_Display_HP_Hud(client);
 	}
-
+/*
 #if defined ZR
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
@@ -306,7 +306,7 @@ public void OnPostThink(int client)
 		}
 	}
 #endif
-
+*/
 	if(b_AntiSlopeCamp[client])
 	{	
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
