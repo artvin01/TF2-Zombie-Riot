@@ -273,14 +273,18 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
-			if(!Bots[botNum])
-				return;
-			
-			feed.attacker = GetClientUserId(Bots[botNum]);
-			feed.attacker_team = GetTeam(attacker);
-			strcopy(feed.attacker_name, sizeof(feed.attacker_name), c_NpcName[attacker]);
-			
-			botNum++;
+			if(Bots[botNum])
+			{
+				feed.attacker = GetClientUserId(Bots[botNum]);
+				feed.attacker_team = GetTeam(attacker);
+				strcopy(feed.attacker_name, sizeof(feed.attacker_name), c_NpcName[attacker]);
+				
+				botNum++;
+			}
+			else
+			{
+				feed.attacker = -1;
+			}
 		}
 #if defined ZR
 		else if(i_IsABuilding[attacker])

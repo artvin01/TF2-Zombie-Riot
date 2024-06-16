@@ -237,14 +237,14 @@ public void LastKnight_ClotThink(int iNPC)
 			{
 				PeaceKnight = 1;
 				CPrintToChatAll("{gray}The Last Knight{default}: You have proven yourself, you're against the ocean, and you're not my enemy.");
-/*
+
 				int owner;
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client) && GetClientTeam(client) == 2)
 					{
 						int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-						if(entity != INVALID_ENT_REFERENCE && i_WhatBuilding[entity] == BuildingSummoner)
+						if(entity != INVALID_ENT_REFERENCE/* && i_WhatBuilding[entity] == BuildingSummoner*/)
 						{
 							owner = client;
 							break;
@@ -260,7 +260,7 @@ public void LastKnight_ClotThink(int iNPC)
 				view_as<BarrackBody>(ally).BonusDamageBonus = 1.0;
 				view_as<BarrackBody>(ally).BonusFireRate = 1.0;
 				view_as<BarrackBody>(ally).m_iSupplyCount = 0;
-*/
+
 				npc.m_bDissapearOnDeath = true;
 				npc.m_flNextDelayTime = FAR_FUTURE;
 				SDKHooks_TakeDamage(npc.index, 0, 0, 999999999.0, DMG_GENERIC);

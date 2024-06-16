@@ -803,8 +803,7 @@ bool b_Dont_Move_Allied_Npc[MAXENTITIES];
 bool g_GottenAddressesForLagComp;
 Address g_hSDKStartLagCompAddress;
 Address g_hSDKEndLagCompAddress;
-bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
-int b_PhaseThroughBuildingsPerma[MAXTF2PLAYERS];
+//bool b_PhasesThroughBuildingsCurrently[MAXTF2PLAYERS];
 float f_MedicCallIngore[MAXTF2PLAYERS];
 #endif
 
@@ -1071,7 +1070,6 @@ float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
 bool b_CollidesWithEachother[MAXENTITIES];
 bool b_CantCollidieAlly[MAXENTITIES];
-bool b_BuildingIsStacked[MAXENTITIES];
 bool b_bBuildingIsPlaced[MAXENTITIES];
 bool b_XenoInfectedSpecialHurt[MAXENTITIES];
 float fl_XenoInfectedSpecialHurtTime[MAXENTITIES];

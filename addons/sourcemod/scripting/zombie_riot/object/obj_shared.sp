@@ -584,11 +584,20 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	{
 		if(FuncCanBuild[objstats.index] && FuncCanBuild[objstats.index] != INVALID_FUNCTION)
 		{
-			// If 0 can't build, destory the unclaimed building
+			// If 0 can't build, destory the unclaimed building (sentry)
 			if(!Object_CanBuild(FuncCanBuild[objstats.index], 0))
 			{
-				SmiteNpcToDeath(objstats.index);
+				RemoveEntity(objstats.index);
 				return false;
+			}
+		}		
+		
+		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
+		{
+			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 1)
+			{
+				SetEntityCollisionGroup(objstats.index, 1);
+				b_ThisEntityIgnored[objstats.index] = true;
 			}
 		}
 
@@ -601,16 +610,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			SetEntityRenderColor(wearable, 55, 55, 55, 100);
 
 		if(IsValidEntity(objstats.m_iWearable4))
-		{
-			char HealthText[32];
-			int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
-			if(IsValidClient(Owner))
-				Format(HealthText, sizeof(HealthText), "%N", Owner);
-			else
-				Format(HealthText, sizeof(HealthText), "%s", " ");
-
-			DispatchKeyValue(objstats.m_iWearable4, "message", HealthText);
-		}
+			RemoveEntity(objstats.m_iWearable4);
 			
 	}
 	else
@@ -637,6 +637,14 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		}
 		*/
 
+		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
+		{
+			if(GetEntProp(objstats.index, Prop_Send, "m_CollisionGroup") != 24)
+			{
+				SetEntityCollisionGroup(objstats.index, 24);
+				b_ThisEntityIgnored[objstats.index] = false;
+			}
+		}
 
 		int g = health * 255  / maxhealth;
 		if(g > 255)
@@ -921,8 +929,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 public void ObjBaseThinkPost(int building)
 {
-	CBaseCombatCharacter(building).SetNextThink(GetGameTime());
-	SetEntPropFloat(building, Prop_Data, "m_flSimulationTime",GetGameTime());
+	CBaseCombatCharacter(building).SetNextThink(GetGameTime() + 0.1);
 }
 
 public void ObjBaseThink(int building)

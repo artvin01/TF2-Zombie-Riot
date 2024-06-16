@@ -137,7 +137,7 @@ void ResetPlayer_BuildingBeingCarried(int client)
 }
 bool IsPlayerCarringObject(int client)
 {
-	if(Player_BuildingBeingCarried[client])
+	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 		return true;
 	if(PlayerWasHoldingProp[client] > GetGameTime())
 		return true;
@@ -658,7 +658,7 @@ public void Pickup_Building_M2(int client, int weapon, bool crit)
 			endPos2[0] = VecPos[0];
 			endPos2[1] = VecPos[1];
 			endPos2[2] += Delta;
-			i_IDependOnThisBuilding[buildingindx] = buildingHit;
+			i_IDependOnThisBuilding[buildingindx] = EntIndexToEntRef(buildingHit);
 			CanBuild_VisualiseAndWarn(client, buildingindx, false, endPos2);
 			SDKCall_SetLocalOrigin(buildingindx, endPos2);	
 			SDKUnhook(buildingindx, SDKHook_Think, BuildingPickUp);
@@ -1009,7 +1009,7 @@ stock bool IsValidGroundBuilding(const float pos[3], float distance, float posEn
 			return false;
 		}
 		//no multi stacking
-		if(i_IDependOnThisBuilding[EntityHit] != 0)
+		if(IsValidEntity(i_IDependOnThisBuilding[EntityHit]))
 		{
 			delete trace;
 			return false;
@@ -1045,10 +1045,6 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 	}
 
 	if(entity>0 && entity<=MaxClients) //ingore players?
-	{
-		return false;
-	}
-	if(b_BuildingIsStacked[entity])
 	{
 		return false;
 	}
@@ -1125,7 +1121,7 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 {
 	for (int i = 0; i < MAXENTITIES; i++)
 	{
-		if(i_IDependOnThisBuilding[i] == entityLost)
+		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
 		{
 			BuildingAdjustMe(i, entityLost);
 		}

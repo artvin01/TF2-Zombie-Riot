@@ -56,6 +56,7 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 	float gameTime = GetGameTime(npc.index);
 	float ReduceTime = Attributes_GetOnPlayer(Owner, 343, true, true);
 	npc.m_flNextDelayTime = gameTime + (0.1 * ReduceTime);
+	CBaseCombatCharacter(npc.index).SetNextThink(GetGameTime() + (0.1 * ReduceTime)); //this needs to be set, otherwise it doesnt think fast enough to shoot
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = 1000.0;

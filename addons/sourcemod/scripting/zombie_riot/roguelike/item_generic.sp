@@ -36,14 +36,14 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 			npc.m_fGunBonusReload *= Multi;
 			npc.m_fGunBonusFireRate *= Multi;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
 				npc.BonusFireRate *= Multi;
 			}
-		}*/
+		}
 	}
 }
 
@@ -301,7 +301,7 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 			// +3% damage bonus
 			npc.m_fGunRangeBonus *= 1.03;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -309,7 +309,7 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 				// +3% damage bonus
 				npc.BonusDamageBonus *= 1.03;
 			}
-		}*/
+		}
 	}
 }
 
@@ -355,7 +355,7 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 		}
 		else
 		{
-/*			BarrackBody npc = view_as<BarrackBody>(entity);
+			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
 				// +3% max health
@@ -364,15 +364,13 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 				health = RoundToCeil(float(health) * 1.03);
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
-			}*/
+			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 
@@ -418,7 +416,7 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 			// +1% damage bonus
 			npc.m_fGunRangeBonus *= 1.01;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -426,7 +424,7 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 				// +1% damage bonus
 				npc.BonusDamageBonus *= 1.01;
 			}
-		}*/
+		}
 	}
 }
 
@@ -533,7 +531,7 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 			// +5% damage bonus
 			npc.m_fGunRangeBonus *= 1.05;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -541,7 +539,7 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 				// +5% damage bonus
 				npc.BonusDamageBonus *= 1.05;
 			}
-		}*/
+		}
 	}
 }
 
@@ -582,7 +580,7 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 			// +10% damage bonus
 			npc.m_fGunRangeBonus *= 1.1;
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -590,7 +588,7 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 				// +10% damage bonus
 				npc.BonusDamageBonus *= 1.1;
 			}
-		}*/
+		}
 	}
 }
 
@@ -617,7 +615,7 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
-/*		else
+		else
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
@@ -627,6 +625,6 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
-		}*/
+		}
 	}
 }

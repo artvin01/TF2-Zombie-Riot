@@ -2260,7 +2260,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave = 0)
+void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2274,7 +2274,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 		StoreItems.GetArray(i, item);
 		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell))
 		{
-			if(item.GregOnlySell == 2)
+			if(item.GregOnlySell == 2)	// We always sell this if unbought
 			{
 				item.NPCSeller_First = true;
 				item.NPCSeller = true;
@@ -2291,14 +2291,14 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 				
 				StoreItems.SetArray(i, item);
 			}
-			else if(unlock && !ResetStore)
+			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
 			{
-				if(addItem == 0 && item.NPCSeller_First)
+				if(addItem == 0 && !subtract_wave && item.NPCSeller_First)
 				{
 					item.NPCSeller = false;
 					item.NPCSeller_First = false;
 				}
-				else if(addItem == 99 && item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				else if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart--;
 					StoreItems.SetArray(i, item);
@@ -2307,13 +2307,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 				if(!item.NPCSeller)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 4))
 						indexes[amount++] = i;
 				}
 			}
-			else if(ResetStore != 2)
+			else if(ResetStore != 2)	// Reset items, add random ones (normal)
 			{
-				if(addItem == 0)
+				if(addItem == 0 && !subtract_wave)
 				{
 					item.NPCSeller_First = false;
 					item.NPCSeller = false;
@@ -2323,12 +2323,9 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 					}
 				}
 
-				if(addItem == 99)
+				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
-					if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
-					{
-						item.NPCSeller_WaveStart -= 1;
-					}
+					item.NPCSeller_WaveStart -= 1;
 				}
 				
 				item.GetItemInfo(0, info);
@@ -2339,7 +2336,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 			}
 		}
 	}
-	if(subtract_wave != 0 || ResetStore)
+	if(subtract_wave || ResetStore)
 		return;
 	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -4456,7 +4453,7 @@ void Store_ApplyAttribs(int client)
 	
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
-
+	map.SetValue("343", 1.0); //sentry attackspeed fix
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
@@ -4783,7 +4780,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Was_phasing = true;
 	}
 	*/
-	b_PhaseThroughBuildingsPerma[client] = 1;
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
@@ -5300,10 +5296,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.Attack3AbilitySlot != 0)
 					{
 						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
-					}
-					if(info.SpecialAdditionViaNonAttribute == 1)
-					{
-						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
 					}
 					if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
 					{
@@ -6128,6 +6120,14 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 	menu.ExitBackButton = false;
 	return menu.Display(client, MENU_TIME_FOREVER);
 	//return menu.DisplayAt(client, base, MENU_TIME_FOREVER);
+}
+
+bool Store_CheckEntitySlotIndex(int index, int entity)
+{
+	char classname[64];
+	GetEntityClassname(entity, classname, sizeof(classname));
+	int slot = TF2_GetClassnameSlot(classname);
+	return CheckEntitySlotIndex(index, slot, entity);
 }
 
 static bool CheckEntitySlotIndex(int index, int slot, int entity)
