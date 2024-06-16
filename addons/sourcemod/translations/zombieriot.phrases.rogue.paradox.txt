@@ -376,7 +376,7 @@
 	}
 	"Acahuallan Bowl Desc"
 	{
-		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain 1500 barrier"
+		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain +500 max health and 1000 barrier"
 	}
 	"Defender-2"
 	{
@@ -408,31 +408,31 @@
 	}
 	"Ancient Tree Fruit Desc"
 	{
-		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts"
+		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts."
 	}
-	"Steam Sale"
+	""
 	{
-		"en"	"Steam Sale"
+		"en"	""
 	}
-	"Steam Sale Desc"
+	" Desc"
 	{
-		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50%% off"
+		"en"	""
 	}
-	"Steal Grigori"
+	""
 	{
-		"en"	"Take them from Father Grigori"
+		"en"	""
 	}
-	"Steal Grigori Desc"
+	" Desc"
 	{
-		"en"	"Fight Father Grigori for the chance to take all his items without pay"
+		"en"	""
 	}
-	"Mark of a Thief"
+	""
 	{
-		"en"	"Mark of a Thief"
+		"en"	""
 	}
-	"Mark of a Thief Desc"
+	" Desc"
 	{
-		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
+		"en"	""
 	}
 	""
 	{
