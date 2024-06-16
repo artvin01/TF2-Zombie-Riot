@@ -301,6 +301,8 @@ static void BuildingMenu(int client)
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
 
+	SetGlobalTransTarget(client);
+
 	static const int ItemsPerPage = 5;
 
 	Menu menu = new Menu(BuildingMenuH);
