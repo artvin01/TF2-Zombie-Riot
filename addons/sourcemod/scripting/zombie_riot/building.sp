@@ -1048,10 +1048,6 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 	{
 		return false;
 	}
-	if(b_BuildingIsStacked[entity])
-	{
-		return false;
-	}
 	
 	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
 	{

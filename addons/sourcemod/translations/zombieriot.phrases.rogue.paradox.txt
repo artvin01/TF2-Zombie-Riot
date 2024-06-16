@@ -370,45 +370,45 @@
 	{
 		"en"	"{green}Limited lifetime allies gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
 	}
-	""
+	"Acahuallan Bowl"
 	{
-		"en"	""
+		"en"	"Acahuallan Bowl"
 	}
-	" Desc"
+	"Acahuallan Bowl Desc"
 	{
-		"en"	""
+		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain +500 max health and 1000 barrier"
 	}
-	""
+	"Defender-2"
 	{
-		"en"	""
+		"en"	"Defender-2"
 	}
-	" Desc"
+	"Defender-2 Desc"
 	{
-		"en"	""
+		"en"	"A mass-produced defensive-type drone.\n{green}Allies gain 2500 barrier"
 	}
-	""
+	"Golden Chalice"
 	{
-		"en"	""
+		"en"	"Golden Chalice"
 	}
-	" Desc"
+	"Golden Chalice Desc"
 	{
-		"en"	""
+		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
 	}
-	""
+	"Queen's Fellowship"
 	{
-		"en"	""
+		"en"	"Queen's Fellowship"
 	}
-	" Desc"
+	"Queen's Fellowship Desc"
 	{
-		"en"	""
+		"en"	"...preparing for the calamity that would come to be known as the Profound Silence.\n{green}Ally health is converted into barrier with an additional 500"
 	}
-	""
+	"Ancient Tree Fruit"
 	{
-		"en"	""
+		"en"	"Ancient Tree Fruit"
 	}
-	" Desc"
+	"Ancient Tree Fruit Desc"
 	{
-		"en"	""
+		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts."
 	}
 	""
 	{

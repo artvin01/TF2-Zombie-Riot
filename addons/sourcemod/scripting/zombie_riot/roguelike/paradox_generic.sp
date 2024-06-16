@@ -98,9 +98,19 @@ public void Rogue_Shield2_Collect()
 	GiveShield(1000);
 }
 
+public void Rogue_Shield3_Collect()
+{
+	GiveShield(1500);
+}
+
 public void Rogue_Shield4_Collect()
 {
 	GiveShield(2000);
+}
+
+public void Rogue_Shield5_Collect()
+{
+	GiveShield(2500);
 }
 
 public void Rogue_Shield6_Collect()

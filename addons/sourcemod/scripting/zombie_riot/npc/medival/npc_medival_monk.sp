@@ -640,7 +640,6 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 	
 	if(AlliedUnit)
 	{
-		/*
 		BarrackBody npc = view_as<BarrackBody>(Monk);
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //BLUE npcs.
 		{
@@ -657,7 +656,6 @@ public Action MonkHealDamageZone(Handle timer, DataPack pack)
 				}
 			}
 		}
-		*/
 		//Doesnt do anything for now, too lazy.
 	}
 	else

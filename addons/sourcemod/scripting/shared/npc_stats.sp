@@ -1215,11 +1215,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_CantCollidieAlly[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_CantCollidieAlly[this.index] = TempValueForProperty; }
 	}
-	property bool bBuildingIsStacked
-	{
-		public get()							{ return b_BuildingIsStacked[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_BuildingIsStacked[this.index] = TempValueForProperty; }
-	}
 	property bool bBuildingIsPlaced
 	{
 		public get()							{ return b_bBuildingIsPlaced[this.index]; }
@@ -7742,7 +7737,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_CantCollidie[entity] = false;
 	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
-	b_BuildingIsStacked[entity] = false;
 	b_bBuildingIsPlaced[entity] = false;
 	b_XenoInfectedSpecialHurt[entity] = false;
 	fl_XenoInfectedSpecialHurtTime[entity] = 0.0;
