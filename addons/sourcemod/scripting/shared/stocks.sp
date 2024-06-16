@@ -1530,7 +1530,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		//if the building is ignored, prevent interaction with it.
 		//Edit: if its a barricade this is ignored so they can reclaim it.
 #if defined ZR
-		if(i_NpcInternalId[objstats.index] != ObjectBarricade_ID())
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
 #endif	
 			return false;
 	}	
