@@ -1588,6 +1588,7 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini3.wav");
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
+	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 
 #if defined ZR || defined RPG
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
