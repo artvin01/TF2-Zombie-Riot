@@ -119,7 +119,6 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 		{
 			Rogue_StartThisBattle(5.0);
 			Rogue_SetBattleIngots(1);
-			Rogue_GiveNamedArtifact("Mark of a Thief", true);
 
 			int entity = -1;
 			while((entity=FindEntityByClassname(entity, "*")) != -1)
