@@ -840,6 +840,9 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 
 	int entity = Object_GetSentryBuilding(client);
+	if(!IsValidEntity(entity))
+		return;
+		
 	float pos[3];
 	bool mounted = (Building_Mounted[client] == EntIndexToEntRef(entity));
 	if(mounted)

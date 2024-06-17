@@ -1750,12 +1750,12 @@ void Citizen_SetupStart()
 				
 				static char buffer[32];
 				entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 				{
-					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-					if(!StrContains(buffer, "zr_packapunch"))
+					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+					if(!StrContains(buffer, "obj_packapunch"))
 					{
-						WorldSpaceCenter(entity, vecTarget);
+						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1764,7 +1764,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
-				
+				/*
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client))
@@ -1786,6 +1786,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
+					*/
 				
 				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.22, npc.m_bAlyx ? 0.4 : 0.3)), view_as<bool>(found)))
 				{
@@ -2025,14 +2026,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_healingstation"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_healingstation"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2042,7 +2043,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2064,8 +2065,8 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
+		*/
 	}
-
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
@@ -2725,14 +2726,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_perkmachine"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_perkmachine"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2743,7 +2744,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2766,7 +2767,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
@@ -2795,14 +2796,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_armortable"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_armortable"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2813,7 +2814,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2836,7 +2837,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
