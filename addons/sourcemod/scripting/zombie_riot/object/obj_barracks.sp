@@ -695,7 +695,8 @@ void Barracks_BuildingThink(int entity)
 		return;
 	
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
-	SummonerRenerateResources(client, 1.0);
+	SummonerRenerateResources(client, 0.6);
+	//used to be 1.0, but we think 2x as much, ill still buff it abit.
 
 	if(TrainingIn[client])
 	{

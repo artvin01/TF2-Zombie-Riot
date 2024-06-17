@@ -16,6 +16,11 @@ static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
 static ArrayList NPCList;
 
+int SaveCurrentHpAt = -1;
+int SaveCurrentHpAtFirst = -1;
+int SaveCurrentHurtAt = -1;
+int HurtIttirationAt = 0;
+float AntiChatSpamDebug;
 enum struct NPCData
 {
 	char Plugin[64];
@@ -34,6 +39,7 @@ enum struct NPCData
 // FileNetwork_ConfigSetup needs to be ran first
 void NPC_ConfigSetup()
 {
+	AntiChatSpamDebug = 0.0;
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
@@ -1192,3 +1198,66 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+
+void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
+{
+	return;
+	//currently not needed!
+/*
+	if(!Citizen_IsIt(victim))
+		return;
+
+	//Reset all
+	char buffer[36];
+	char buffer2[36];
+	GetEntityClassname(victim, buffer, sizeof(buffer));
+	GetEntityClassname(attacker, buffer2, sizeof(buffer2));
+	if(HurtID < SaveCurrentHurtAt)
+	{
+		if(SaveCurrentHurtAt != -1)
+		{
+			if(SaveCurrentHpAtFirst == SaveCurrentHpAt)
+			{
+				LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "PREVIOUS NPC WAS INVULNERABLE? HurtIttirationAt %i",HurtIttirationAt);
+				if(AntiChatSpamDebug < GetGameTime())
+				{
+					AntiChatSpamDebug = GetGameTime() + 15.0;
+					PrintToChatAll("[Debug] PLEASE contact an admin!!!! This might spam! It looks like a friendly NPC cant die! Please give them this number too! %i",HurtIttirationAt);
+				}
+			//	HurtIttirationAt = 9999999;
+			//	RemoveEntity(victim);
+			}
+		}
+		SaveCurrentHpAt = 0;
+		SaveCurrentHurtAt = 0;
+		SaveCurrentHpAtFirst = 0;
+		HurtIttirationAt++;
+		LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "------------------------------");
+	}
+	SaveCurrentHurtAt = HurtID;
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(HurtID == 1)
+	{
+		SaveCurrentHpAtFirst = health;
+	}
+	SaveCurrentHpAt = health;
+	if(Citizen_ThatIsDowned(victim))
+		SaveCurrentHpAt = 0;
+		
+	LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "HurtIttirationAt %i Victim Id: %i Victimclassname %s VictimTeam %i\n	Attacker Id: %i Attackerclassname %s attackerTeam %i Damage %.1f HurtID %i victimAliveState %i\n AttackerAliveState %i AtBeginningHealth %i Current health %i ",
+	HurtIttirationAt,
+	victim,
+	buffer,
+	GetTeam(victim),
+	attacker,
+	buffer2,
+	GetTeam(attacker),
+	damage,
+	HurtID,
+	GetEntProp(victim, Prop_Data, "m_lifeState"),
+	GetEntProp(attacker, Prop_Data, "m_lifeState"),
+	SaveCurrentHpAtFirst,
+	SaveCurrentHpAt);
+	*/
+}

@@ -1136,6 +1136,9 @@ bool Store_CanPapItem(int client, int index)
 
 void Store_PackMenu(int client, int index, int entity, int owner)
 {
+	if(!IsValidClient(owner))
+		return;
+		
 	if(index > 0)
 	{
 		static Item item;

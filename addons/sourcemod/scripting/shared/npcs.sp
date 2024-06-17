@@ -916,6 +916,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	float GameTime = GetGameTime();
 	b_DoNotDisplayHurtHud[victim] = false;
+	LogEntryInvicibleTest(victim, attacker, damage, 1);
+	//sommetimes, the game sets it to 1 somehow, in the future find a better fix for this.
+	SetEntProp(victim, Prop_Data, "m_lifeState", 0);
 	
 #if defined ZR
 	if((damagetype & DMG_DROWN) && !b_ThisNpcIsSawrunner[attacker])
@@ -928,6 +931,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		TeleportBackToLastSavePosition(victim);
 		return Plugin_Handled;
 	}
+	LogEntryInvicibleTest(victim, attacker, damage, 2);
 	// if your damage is higher then a million, we give up and let it through, theres multiple reasons why, mainly slaying.
 	if(b_NpcIsInvulnerable[victim] && damage < 9999999.9)
 	{
@@ -937,12 +941,14 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	CClotBody npcBase = view_as<CClotBody>(victim);
 	
+	LogEntryInvicibleTest(victim, attacker, damage, 3);
 	if((i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 	{
 		npcBase.m_bGib = true;
 		return Plugin_Continue;
 	}
 
+	LogEntryInvicibleTest(victim, attacker, damage, 4);
 	if(attacker < 0 || victim == attacker)
 	{
 		Damageaftercalc = 0.0;
@@ -958,17 +964,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			if(SeargentIdeal_Existant())
 			{
+				LogEntryInvicibleTest(victim, attacker, damage, 17);
 				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 				if(damage == 0.0)
 				{
 					b_DoNotDisplayHurtHud[victim] = true;
 					return Plugin_Handled;
 				}
+				LogEntryInvicibleTest(victim, attacker, damage, 18);
 			}
 		}
+		LogEntryInvicibleTest(victim, attacker, damage, 19);
 #endif
 
 	}
+	LogEntryInvicibleTest(victim, attacker, damage, 20);
 
 #if defined ZR
 	if(inflictor > 0 && inflictor < MaxClients)
@@ -981,7 +991,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 #endif
 	
+	LogEntryInvicibleTest(victim, attacker, damage, 21);
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
+	LogEntryInvicibleTest(victim, attacker, damage, 22);
 
 	npcBase.m_vecpunchforce(damageForce, true);
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
@@ -999,18 +1011,21 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 			npcBase.m_bGib = true;
 		}
 	}
+	LogEntryInvicibleTest(victim, attacker, damage, 23);
 #if defined ZR
 	if(RogueFizzyDrink())
 	{
 		npcBase.m_bGib = true;
 	}
 #endif
+	LogEntryInvicibleTest(victim, attacker, damage, 24);
 	
 	if(damage <= 0.0)
 	{
 		Damageaftercalc = 0.0;
 		return Plugin_Changed;
 	}
+	LogEntryInvicibleTest(victim, attacker, damage, 25);
 	Damageaftercalc = damage;
 	
 	return Plugin_Changed;
@@ -1026,6 +1041,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		attacker = AttackerOverride;
 	}		
+	LogEntryInvicibleTest(victim, attacker, damage, 26);
 #endif
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 #if defined ZR
@@ -1072,6 +1088,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
+	LogEntryInvicibleTest(victim, attacker, damage, 27);
 	bool SlayNpc = true;
 	if(health >= 1)
 	{
@@ -1085,6 +1102,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		}
 	}
 
+	LogEntryInvicibleTest(victim, attacker, damage, 28);
 	Function func = func_NPCOnTakeDamagePost[victim];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -1113,6 +1131,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	}
 #endif
 	
+	LogEntryInvicibleTest(victim, attacker, damage, 29);
 	if(SlayNpc)
 	{
 		CBaseCombatCharacter_EventKilledLocal(victim, attacker, inflictor, Damageaftercalc, damagetype, weapon, damageForce, damagePosition);
@@ -1123,6 +1142,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 			SetEntProp(victim, Prop_Data, "m_iHealth", 1);
 	}
 	i_HexCustomDamageTypes[victim] = 0;
+	LogEntryInvicibleTest(victim, attacker, damage, 30);
 		
 	Damageaftercalc = 0.0;
 }

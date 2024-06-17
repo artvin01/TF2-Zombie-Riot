@@ -306,6 +306,7 @@ static void BuildingMenu(int client)
 	static const int ItemsPerPage = 5;
 
 	Menu menu = new Menu(BuildingMenuH);
+	SetGlobalTransTarget(client);
 
 	menu.SetTitle("%t\n ", "Building Menu");
 
@@ -433,6 +434,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 							char buffer[64];
 							menu.GetItem(choice, buffer, sizeof(buffer));
 							int id = StringToInt(buffer);
+							if(id > sizeof(BuildingPlugin))
+							{		
+								BuildingMenu(client);
+								return 0;
+							}
 
 							int metal = GetAmmo(client, Ammo_Metal);
 							int cost = GetCost(id, Object_GetMaxHealthMulti(client));
@@ -1123,6 +1129,9 @@ void Building_RotateAllDepencencies(int entityLost = 0)
 {
 	for (int i = 0; i < MAXENTITIES; i++)
 	{
+		if(!IsValidEntity(i))
+			continue;
+			
 		if(EntRefToEntIndex(i_IDependOnThisBuilding[i]) == entityLost)
 		{
 			BuildingAdjustMe(i, entityLost);
@@ -1399,7 +1408,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		//		"Juggernog",	
 		//		"Double Tap",
 		//		"Speed Cola",
-		//		"Deadshot Daiquiri",
+		//		"Replicate_Damage_Medicationsdshot Daiquiri",
 		//		"Widows Wine",
 		//		"Recycle Poire"
 		//	};

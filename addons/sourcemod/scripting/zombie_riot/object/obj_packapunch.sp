@@ -75,7 +75,6 @@ bool Pap_WeaponCheck(int client, bool force = false)
 	{
 		case WEAPON_ION_BEAM:
 		{
-			Neuvellete_Menu(client, weapon);
 			b_LastWeaponCheckBias[client] = true;
 		}
 	}
