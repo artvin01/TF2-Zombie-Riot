@@ -93,6 +93,7 @@ static void StartShopVote()
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
+	Artifact artifact;
 	int index = StringToInt(vote.Config);
 	switch(index)
 	{
@@ -130,7 +131,6 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 		}
 		default:
 		{
-			Artifact artifact;
 			ShopListing.GetArray(index, artifact);
 			ShopListing.Erase(index);
 
@@ -186,7 +186,7 @@ static void GiveShield(int amount)
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red)
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + amount);
+				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
 		}
 	}
 }
