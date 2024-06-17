@@ -473,7 +473,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 									Barracks_UpdateEntityUpgrades(entity, client, true, _);
 
 									SetAmmo(client, Ammo_Metal, metal - cost);
-									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[client][id];
+									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[id];
 								}
 							}
 						}

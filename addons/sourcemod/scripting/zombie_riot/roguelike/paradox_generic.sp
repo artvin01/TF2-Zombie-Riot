@@ -58,7 +58,6 @@ static void StartShopVote()
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
 	int length = ShopListing.Length;
-	bool found;
 	for(int i; i < length; i++)
 	{
 		ShopListing.GetArray(i, artifact);
@@ -67,18 +66,15 @@ static void StartShopVote()
 
 		Rogue_ParadoxGeneric_ShopCost(cost);
 
-		if(ingots >= cost)
-		{
-			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
-			Format(vote.Append, sizeof(vote.Append), " △%d", cost);
-			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
-			IntToString(i, vote.Config, sizeof(vote.Config));
-			list.PushArray(vote);
-			found = true;
-		}
+		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		IntToString(i, vote.Config, sizeof(vote.Config));
+		vote.Locked = ingots < cost;
+		list.PushArray(vote);
 	}
 
-	if(found)
+	if(length)
 	{
 		strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
 		vote.Append[0] = 0;
@@ -93,7 +89,7 @@ static void StartShopVote()
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Rogue_StartGenericVote(found ? 30.0 : 3.0);
+	Rogue_StartGenericVote(length ? 30.0 : 3.0);
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
