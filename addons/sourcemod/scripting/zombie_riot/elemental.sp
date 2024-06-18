@@ -125,7 +125,36 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 
 	if(low == -1)
 		return false;
-	
+
+	//Get % of damage
+	float precent = lowHealth / TriggerDamage(entity, low);
+
+	int CurrentDamage = abs(Armor_Charge[armorEnt]);
+	int MaxDamage = TriggerDamage(entity, low);
+	for(int i=6; i>0; i--)
+	{
+		else if(armor >= Armor_Max*(i*0.1666) || (Armor_Regenerating && ArmorRegenCounter[client] == i))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
+		}
+		else if(armor > Armor_Max*(i*0.1666 - 1.0/15.0))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
+		}
+		else if(armor > Armor_Max*(i*0.1666 - 1.0/10.0))
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
+		}
+		else
+		{
+			Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_EMPTY);
+		}
+		
+		if((i % 2) == 1)
+		{
+			Format(buffer, sizeof(buffer), "%s\n", buffer);
+		}
+	}
 	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d>", ElementName[low], lowHealth);
 	return true;
 }
