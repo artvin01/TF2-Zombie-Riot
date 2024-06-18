@@ -582,7 +582,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_BOARD:
 		{
-//			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{

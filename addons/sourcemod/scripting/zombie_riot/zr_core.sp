@@ -530,6 +530,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
+	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	
 	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
 	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
@@ -1020,6 +1021,24 @@ public Action Command_TestTutorial(int client, int args)
 	{
 		StartTutorial(targets[target]);
 	}
+	return Plugin_Handled;
+}
+
+public Action CommandDebugHudTest(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: wat <cash>");
+        return Plugin_Handled;
+    }
+
+	char buf[12];
+	GetCmdArg(1, buf, sizeof(buf));
+	
+	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
+	ShowHudText(client, -1,"Debug : %s",buf);	
+
 	return Plugin_Handled;
 }
 

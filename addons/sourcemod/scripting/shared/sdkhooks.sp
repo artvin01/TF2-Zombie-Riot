@@ -847,17 +847,18 @@ public void OnPostThink(int client)
 				percentage *= value;
 			//melee res
 			percentage *= percentage_Global;
+			had_An_ability = false;
 			if(percentage != 100.0 && percentage > 0.0)
 			{
 				if(percentage < 10.0)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [♈ %.2f%%]", buffer, percentage);
+					FormatEx(buffer, sizeof(buffer), "%s [☛%.2f%%", buffer, percentage);
 					had_An_ability = true;
 				}
 				else
 				{
 
-					FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
+					FormatEx(buffer, sizeof(buffer), "%s [☛%.0f%%", buffer, percentage);
 					had_An_ability = true;
 				}
 			}
@@ -871,19 +872,47 @@ public void OnPostThink(int client)
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
 				percentage *= value;
+			
+			/*
+			This ugly code is made so formatting it looks better, isntead of [res][res]
+			itll be [res-res]
+			So tis easier to read.
 
+			*/
 			if(percentage != 100.0 && percentage > 0.0)
 			{
-				if(percentage < 10.0)
+				if(had_An_ability)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [♐ %.2f%%]", buffer, percentage);
-					had_An_ability = true;
+					FormatEx(buffer, sizeof(buffer), "%s-", buffer);
+					if(percentage < 10.0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s➶%.0f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
 				}
 				else
 				{
-					ormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
-					had_An_ability = true;
+					if(percentage < 10.0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [➶%.2f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [➶%.0f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
 				}
+			}
+			else
+			{
+				if(had_An_ability)
+					FormatEx(buffer, sizeof(buffer), "%s]", buffer);
 			}
 			if(percentage_Global <= 0.0)
 			{
@@ -2160,7 +2189,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		}
 		case WEAPON_BOARD:
 		{
-//			return Player_OnTakeDamage_Board_Hud(victim);
+			return Player_OnTakeDamage_Board_Hud(victim);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
