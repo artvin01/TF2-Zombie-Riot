@@ -32,6 +32,7 @@ static int Building_Max_Health[MAXENTITIES]={0, ...};
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
+float f_DamageTakenFloatObj[MAXENTITIES];
 
 #define MAX_REBELS_ALLOWED 4
 
@@ -126,6 +127,7 @@ methodmap ObjectGeneric < CClotBody
 		i_NpcIsABuilding[obj] = true;
 		i_IsABuilding[obj] = true;
 		b_NoKnockbackFromSources[obj] = true;
+		f_DamageTakenFloatObj[obj] = 0.0;
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
@@ -894,8 +896,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 
 	damage *= 0.1;
 	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
-
-	int dmg = RoundToCeil(damage);
+	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;
 
@@ -1025,3 +1026,42 @@ static Action SetTransmit_OwnerOfBuilding(int entity, int client)
 	return Plugin_Handled;
 }
 */
+
+int FloatToInt_DamageValue_ObjBuilding(int victim, float damage)
+{
+	int Damage_Return;
+
+	if (damage <= 1.0 && damage > 0.0)
+	{
+		f_DamageTakenFloatObj[victim] += damage;
+			
+		if(f_DamageTakenFloatObj[victim] >= 1.0)
+		{
+			f_DamageTakenFloatObj[victim] -= 1.0;
+			Damage_Return = 1;
+		}
+	}
+	else
+	{
+		if(Damage_Return < 0.0) //negative heal
+		{
+			Damage_Return = RoundToFloor(damage);
+		}
+		else
+		{
+			Damage_Return = RoundToFloor(damage);
+		
+			float Decimal_healing = FloatFraction(damage);
+								
+								
+			f_DamageTakenFloatObj[victim] += Decimal_healing;
+								
+			while(f_DamageTakenFloatObj[victim] >= 1.0)
+			{
+				f_DamageTakenFloatObj[victim] -= 1.0;
+				Damage_Return += 1;
+			}
+		}		
+	}
+	return Damage_Return;
+}

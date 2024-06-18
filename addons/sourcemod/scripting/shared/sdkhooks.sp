@@ -1977,7 +1977,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		return Plugin_Handled;
 	}
-
+	/*
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
 		volume *= 0.4;
@@ -1988,6 +1988,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			
 		return Plugin_Changed;
 	}
+	*/
 	if(StrContains(sample, "misc/halloween/spell_") != -1)
 	{
 		volume *= 0.75;

@@ -2603,7 +2603,10 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 #if defined ZR
 	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
-		return -1;
+		if(b_NpcIsTeamkiller[owner_projectile])
+			return other_entity;
+		else
+			return -1;
 	}
 #endif
 	else if(other_entity <= MaxClients)

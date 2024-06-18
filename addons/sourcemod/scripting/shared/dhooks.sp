@@ -1010,9 +1010,9 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 #else
 					return false;
-
 #endif	
 			}
+			/*
 #if defined ZR
 			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
 			{
@@ -1020,6 +1020,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 #endif	
+*/
 			//ally projectiles do not collide with players unless they only go for players
 			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
