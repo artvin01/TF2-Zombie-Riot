@@ -1628,12 +1628,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			
 			if(percentage < 10.0)
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛ %.2f%%", Debuff_Adder, percentage);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.2f%%", Debuff_Adder, percentage);
 				ResAdded = true;
 			}
 			else
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛ %.0f%%", Debuff_Adder, percentage);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.0f%%", Debuff_Adder, percentage);
 				ResAdded = true;
 			}
 			armor_added = true;
@@ -1675,7 +1675,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 #endif
 			if(ResAdded)
 			{
-				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s-", Debuff_Adder);
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 				if(percentage < 10.0)
 				{
 					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s➶%.2f%%]", Debuff_Adder, percentage);
@@ -1697,6 +1697,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 			armor_added = true;
+		}
+		else
+		{
+			if(ResAdded)
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s]", Debuff_Adder);
 		}
 	}
 

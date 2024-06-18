@@ -167,7 +167,7 @@ stock void SDKHook_HookClient(int client)
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
 	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	if(Ammo_type > 0)
+	if(Ammo_type > 0 && Ammo_type != 7)
 	{
 		//found a weapon that has ammo.
 		if(GetAmmo(client, Ammo_type) <= 0)
@@ -883,7 +883,7 @@ public void OnPostThink(int client)
 			{
 				if(had_An_ability)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s-", buffer);
+					FormatEx(buffer, sizeof(buffer), "%s|", buffer);
 					if(percentage < 10.0)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage);

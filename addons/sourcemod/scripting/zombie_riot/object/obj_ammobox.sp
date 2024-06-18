@@ -117,7 +117,7 @@ bool AmmoboxUsed(int client, int entity)
 		if(IsValidEntity(weapon1))
 		{
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0)
+			if(Ammo_type > 0 && Ammo_type != 7)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
