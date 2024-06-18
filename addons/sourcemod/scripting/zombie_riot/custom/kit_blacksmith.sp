@@ -15,7 +15,7 @@ enum struct TinkerEnum
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
+static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
 static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};

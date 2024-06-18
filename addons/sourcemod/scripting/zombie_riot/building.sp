@@ -30,7 +30,7 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	//-50,
-	450,
+	550,
 	0,
 
 	575,
@@ -52,22 +52,22 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 static const int BuildingHealth[sizeof(BuildingPlugin)] =
 {
 	//150,
-	600,
-	75,
+	420,
+	50,
 
-	75,
-	75,
-	75,
-	75,
+	50,
+	50,
+	50,
+	50,
 
 	30,
 	30,
 	30,
 	30,
 	30,
-	75,
+	50,
 
-	600
+	420
 };
 
 // Cooldown between creation (not effected during setup)
