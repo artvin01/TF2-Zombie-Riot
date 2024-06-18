@@ -137,7 +137,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
