@@ -5907,7 +5907,6 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
@@ -5919,15 +5918,18 @@ void GiveCredits(int client, int credits, bool building)
 		int CreditsGive = credits / 2;
 		CashSpentGivePostSetup[client] += CreditsGive;
 		CashSpent[client] -= CreditsGive;
+		CashRecievedNonWave[client] += CreditsGive;
 	}
 	else
 	{
+		CashSpentGivePostSetup[client] += credits;
 		CashSpent[client] -= credits;
 	}
 }
 
 void GrantCreditsBack(int client)
 {
+	CashRecievedNonWave[client] += CashSpentGivePostSetup[client];
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;
