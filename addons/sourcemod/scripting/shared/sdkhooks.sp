@@ -849,8 +849,17 @@ public void OnPostThink(int client)
 			percentage *= percentage_Global;
 			if(percentage != 100.0 && percentage > 0.0)
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
-				had_An_ability = true;
+				if(percentage < 10.0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [♈ %.2f%%]", buffer, percentage);
+					had_An_ability = true;
+				}
+				else
+				{
+
+					FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
+					had_An_ability = true;
+				}
 			}
 			
 			percentage = 100.0;
@@ -865,8 +874,16 @@ public void OnPostThink(int client)
 
 			if(percentage != 100.0 && percentage > 0.0)
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
-				had_An_ability = true;
+				if(percentage < 10.0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [♐ %.2f%%]", buffer, percentage);
+					had_An_ability = true;
+				}
+				else
+				{
+					ormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
+					had_An_ability = true;
+				}
 			}
 			if(percentage_Global <= 0.0)
 			{

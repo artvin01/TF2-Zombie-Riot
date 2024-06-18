@@ -172,7 +172,8 @@ methodmap ObjectGeneric < CClotBody
 		SetEntPropEnt(obj, Prop_Send, "m_hOwnerEntity", client);
 		
 		SDKHook(obj, SDKHook_OnTakeDamage, ObjectGeneric_ClotTakeDamage);
-		SetEntityRenderFx(obj, RENDERFX_FADE_FAST);
+		SetEntityRenderMode(obj, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(obj, 0, 0, 0, 0);
 		int entity;
 		if(DoFakeModel)
 		{

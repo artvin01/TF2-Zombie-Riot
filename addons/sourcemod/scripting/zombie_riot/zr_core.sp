@@ -475,7 +475,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
-//#include "zombie_riot/custom/weapon_board.sp"
+#include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
@@ -717,7 +717,7 @@ void ZR_MapStart()
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
-//	WeaponBoard_Precache();
+	WeaponBoard_Precache();
 	Weapon_German_MapStart();
 	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();

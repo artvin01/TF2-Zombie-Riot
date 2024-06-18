@@ -2867,7 +2867,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
-//		Board_EntityCreated(entity);
+		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
 		Elemental_ClearDamage(entity);
