@@ -762,13 +762,15 @@ void BuildingPickUp(int BuildingNPC)
 	float vecView2[3];
 	float vecFwd[3];
 	float vecPos[3];
+	float vecPosbase[3];
 	float vecVel[3];
 
 	GetClientEyeAngles(client, vecView);
 	vecView2 = vecView;
 	GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
 	GetClientEyePosition(client, vecPos);
-
+	vecPosbase = vecPos;
+	vecPosbase[2] -= 15.0;
 	vecPos[0]+=vecFwd[0]* BUILDING_DISTANCE_GRAB;
 	vecPos[1]+=vecFwd[1]* BUILDING_DISTANCE_GRAB;
 	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
@@ -780,9 +782,20 @@ void BuildingPickUp(int BuildingNPC)
 	vecView2[0] = 0.0;
 	vecView2[1] -= 180.0;
 	vecView2[1] += RotateByDefaultReturn(BuildingNPC);
-	TeleportEntity(BuildingNPC, vecPos, vecView2, NULL_VECTOR);
-//	Custom_SDKCall_SetLocalOrigin(BuildingNPC, vecPos);
-//	SetEntPropVector(BuildingNPC, Prop_Data, "m_angRotation", vecView2); 
+	//Fire a trace to check if they can even place a building on where they want to.
+
+	Handle hTrace;
+	int SolidityFlags;
+	SolidityFlags = MASK_PLAYERSOLID;
+	float VecMin[3];
+	float VecMax[3];
+	VecMax = {5.0, 5.0, 5.0};
+	hTrace = TR_TraceHullFilterEx(vecPosbase, vecPos, VecMin, VecMax, SolidityFlags, TraceRayDontHitPlayersOrEntityCombat, BuildingNPC);
+	float VecCheckBottom[3];
+	TR_GetEndPosition(VecCheckBottom, hTrace);
+	delete hTrace;
+	
+	TeleportEntity(BuildingNPC, VecCheckBottom, vecView2, NULL_VECTOR);
 }
 
 
@@ -896,24 +909,15 @@ bool BuildingSafeSpot(int client, float endPos[3], float hullcheckmins_Player[3]
 //We wish to check if this poisiton is safe or not.
 bool IsSafePosition_Building(int entity, float Pos[3], float mins[3], float maxs[3])
 {
+	if(!BuildingValidPositionFinal(Pos, entity))
+		return false;
+
 	int ref;
 	
 	Handle hTrace;
 	int SolidityFlags;
-	if(entity <= MaxClients)
-	{
-		SolidityFlags = MASK_PLAYERSOLID;
-	}
-#if defined ZR
-	else if(GetTeam(entity) == TFTeam_Red)
-	{
-		SolidityFlags = MASK_NPCSOLID | MASK_PLAYERSOLID;
-	}
-#endif
-	else
-	{
-		SolidityFlags = MASK_NPCSOLID;
-	}
+	SolidityFlags = MASK_PLAYERSOLID;
+
 	hTrace = TR_TraceHullFilterEx(Pos, Pos, mins, maxs, SolidityFlags, BulletAndMeleeTrace, entity);
 
 	ref = TR_GetEntityIndex(hTrace);
@@ -1738,4 +1742,42 @@ void UnequipDispenser(int client, bool destroy = false)
 	}
 
 	Building_PlayerWieldsBuilding(client, entity);
+}
+
+bool BuildingValidPositionFinal(float AbsOrigin[3], int entity)
+{
+	float VecMax[3];
+	float VecMin[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", VecMax);
+	GetEntPropVector(entity, Prop_Data, "m_vecMins", VecMin);
+
+	//is inside a trigger hurt zone
+	if(IsBoxHazard(AbsOrigin,VecMin,VecMax))
+	{
+		return false;
+	}
+	//is it inside a no build zone
+	if(IsPointNoBuild(AbsOrigin,VecMin,VecMax))
+	{
+		return false;
+	}
+	float AbsOrigin_after[3];
+	AbsOrigin_after = AbsOrigin;
+	AbsOrigin_after[2] -= 5.0;
+	TR_TraceHullFilter(AbsOrigin, AbsOrigin_after, VecMin, VecMax, MASK_PLAYERSOLID_BRUSHONLY, TraceRayHitWorldOnly, entity);
+	if(TR_DidHit())
+	{
+		// Gets the normal vector of the surface under the building
+		float vPlane[3];
+		TR_GetPlaneNormal(INVALID_HANDLE, vPlane);
+		
+		// Make sure it's not flat ground and not a surf ramp (1.0 = flat ground, < 0.7 = surf ramp)
+		//its a surf ramp, prevent building.
+		if(0.7 >= vPlane[2])
+		{
+			return false;
+		}
+	}
+	//it passed all checks, allow building.
+	return true;
 }

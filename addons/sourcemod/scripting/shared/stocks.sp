@@ -3921,10 +3921,10 @@ stock bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[
 	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
 	return HazardResult;
 }
-stock bool IsPointNoBuild(const float pos1[3])
+stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
-	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
 	return HazardResult;
 }
 
