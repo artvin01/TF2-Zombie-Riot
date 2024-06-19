@@ -308,7 +308,7 @@ methodmap Sensal < CClotBody
 		bool tripple = StrContains(data, "triple_enemies") != -1;
 		if(tripple)
 		{
-			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once.");
+			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
 		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
