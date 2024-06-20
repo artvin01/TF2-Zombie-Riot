@@ -1,20 +1,63 @@
 #pragma semicolon 1
 #pragma newdecls required
+static int i_shotsfired[MAXTF2PLAYERS];
 
+#define OBUCH_MAX_DMG 1.25
+#define OBUCH_MAX_SPEED 0.5
+#define OBUCH_MAX_SWING 20
 
 
 void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("weapons/bat_baseball_hit_flesh.wav");
 }
+
+/*
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
 
 	ApplyTempAttrib(weapon, 6, 0.7, 1.2);
 	ApplyTempAttrib(weapon, 2, 1.1, 1.2);
 	ApplyTempAttrib(weapon, 206, 0.95, 1.2);
-	//PrintToChatAll("Hit");
+	PrintToChatAll("Hit");
+	
+}
+*/
+
+public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
+{
+	float damage = Attributes_Get(weapon, 2, 1.0);
+	damage *= Attributes_Get(weapon, 1, 1.0);
+	float swingspeed = Attributes_Get(weapon, 6, 1.0);
+	swingspeed *= Attributes_Get(weapon, 5, 1.0);
+
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
+	float GameTime = GetGameTime();
+
+	i_swinged[attacker]+;
+
+	if(f_rest_time[attacker] < GameTime)
+	{
+		i_swinged[attacker]=0;
+	}
+	else
+	{
+		float ratio =  1 + float(i_swinged[attacker])/OBUCH_MAX_SWING;
+
+		if(ratio>=OBUCH_MAX_DMG)
+		{
+			damage*=OBUCH_MAX_DMG;
+			swingspeed*= OBUCH_MAX_SPEED;
+		}
+		else
+		{
+			damage*=ratio;
+			swingspeed*=0.75/ratio;
+		}
+	}
+
+	f_rest_time[attacker] = GameTime + 0.25;
+
 }
 
 /*
