@@ -54,12 +54,13 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		if(ratio>=OBUCH_MAX_DMG)
 		{
 			damage*=OBUCH_MAX_DMG;
-			swingspeed*= OBUCH_MAX_SPEED;
+			Attributes_Set(weapon, 6, OBUCH_MAX_SPEED);
 		}
 		else
 		{
 			damage*=ratio;
 			swingspeed*=0.75/ratio;
+			Attributes_Set(weapon, 6, swingspeed);
 		}
 	}
 
