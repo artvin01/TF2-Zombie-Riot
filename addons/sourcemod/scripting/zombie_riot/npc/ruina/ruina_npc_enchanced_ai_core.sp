@@ -2538,7 +2538,7 @@ Names per stage:
 		Battery: Provides shield to npc's within range.
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done. Is just a buffed version.
 		Stage 3: Null
 		Stage 4: Null
 	}

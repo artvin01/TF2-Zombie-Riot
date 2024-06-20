@@ -177,13 +177,24 @@ methodmap Draedon < CClotBody
 		
 		
 		/*
-			b'aaarrgh-n-britches	models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl
-			berliner's bazooka		models/player/items/medic/berliners_bucket_helm.mdl
-			Sole Saviors			models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl
-
-			beggars 				models/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl
-			battalions				models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl
+			Fuel Injector (Runnin' On Fumes) 	"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl"
+			Forgotten King's Pauldrons 			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl"
+			Blizzard Britches 					"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl"
+			Berliner's Bucket Helm 				"models/player/items/medic/berliners_bucket_helm.mdl"
+			battalions							models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl
+			Isotopic Insulator					"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl"
+			
 		*/
+
+		char Items[][] = {
+			"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl",
+			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl",
+			"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl",
+			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
+			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
+			RUINA_CUSTOM_MODELS
+		};
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -199,28 +210,33 @@ methodmap Draedon < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_bargain_britches/hwn2015_bargain_britches.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
+
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-
-		SetVariantInt(RUINA_MAGI_GUN);
-		AcceptEntityInput(npc.m_iWearable4, "SetBodyGroup");	
 		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -230,6 +246,11 @@ methodmap Draedon < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(RUINA_MAGI_GUN);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -274,7 +295,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -285,7 +306,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
+		Master_Apply_Shield_Buff(npc.index, 300.0, 0.5);	//50% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
@@ -354,7 +375,7 @@ static void ClotThink(int iNPC)
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 30.0;
+					float dmg = 50.0;
 					float radius = 150.0;
 					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						
@@ -414,15 +435,19 @@ static void NPC_Death(int entity)
 	
 	Ruina_NPCDeath_Override(entity);
 		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	
 }

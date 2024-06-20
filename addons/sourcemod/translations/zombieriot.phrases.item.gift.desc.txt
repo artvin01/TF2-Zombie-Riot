@@ -1295,7 +1295,7 @@
 	}
 	"Ruriana Desc"
 	{
-		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
+		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
 	}
 	"Valiant Desc"
 	{
@@ -1303,11 +1303,11 @@
 	}	
 	"Magia Anchor Desc"
 	{
-		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
+		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
 	}
 	"Storm Weaver Desc"
 	{
-		"en"		"A servant of The Scourge" 	//NEED DESC
+		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
 	}
 	"Daedalus Desc"
 	{
@@ -1319,7 +1319,7 @@
 	}
 	"Laz Desc"
 	{
-		"en"	"A magical laser wielding mage"
+		"en"	"A magical laser wielding mage\nits laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
 	}
 	"Laniun Desc"	//Need descs
 	{
@@ -1343,11 +1343,11 @@
 	}
 	"Draedon Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Daedalus\nthats it, oh also it holds a magic gun instead of a magic dumpster device"
 	}
 	"Aetheria Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Aether, its battery allows it to fire a powerfull laser.\nCaution is advised"
 	}
 	"Maliana Desc"
 	{
@@ -1359,7 +1359,7 @@
 	}
 	"Lazius Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Laz, additionally it has the ability to fire an EVEN STRONGER laser!!! As its battery."
 	}
 	"Dronian Desc"
 	{
