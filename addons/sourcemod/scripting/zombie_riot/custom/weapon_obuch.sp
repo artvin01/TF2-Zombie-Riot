@@ -12,7 +12,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 
 	ApplyTempAttrib(weapon, 6, 0.8, 0.1);
 	ApplyTempAttrib(weapon, 2, 1.1, 0.1);
-	ApplyTempAttrib(attacker, 206, 0.95, 0.1);
+	ApplyTempAttrib(weapon, 206, 0.95, 0.1);
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
 }
 
