@@ -10,10 +10,10 @@ void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
 
-	ApplyTempAttrib(weapon, 6, 0.8, 1.0);
-	ApplyTempAttrib(weapon, 2, 1.1, 1.0);
-	ApplyTempAttrib(weapon, 206, 0.95, 1.0);
-	PrintToChatAll("Hit");
+	ApplyTempAttrib(weapon, 6, 0.7, 1.2);
+	ApplyTempAttrib(weapon, 2, 1.1, 1.2);
+	ApplyTempAttrib(weapon, 206, 0.95, 1.2);
+	//PrintToChatAll("Hit");
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
 }
 
