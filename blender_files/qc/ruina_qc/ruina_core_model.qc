@@ -12,7 +12,7 @@ $bodygroup "halo_1"	//Create a spinning animation for the rings.
 	blank
 	studio "halo_1"
 }
-$bodygroup "quincy_bow"		//todo: paint it, its currently just flat white
+$bodygroup "quincy_bow"		//done
 {
 	blank
 	studio "ruina_bow.smd"
@@ -22,10 +22,15 @@ $bodygroup "ruina_blade"	//done
 	blank
 	studio "ruina_blade.smd"
 }
-$bodygroup "ruina_magi_gun"	//todo: paint it.
+$bodygroup "ruina_magi_gun"	//done
 {
 	blank
 	studio "ruina_magi_gun.smd"
+}
+$bodygroup "ruina_staff_1"	//todo: more detailing, and paint. has holes.
+{
+	blank
+	studio "ruina_staff_1.smd"
 }
 
 
