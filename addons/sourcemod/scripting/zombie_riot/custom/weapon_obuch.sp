@@ -55,16 +55,18 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		{
 			damage*=OBUCH_MAX_DMG;
 			Attributes_Set(weapon, 6, OBUCH_MAX_SPEED);
+			PrintToChatAll("MAX POWER");
 		}
 		else
 		{
 			damage*=ratio;
 			swingspeed*=0.75/ratio;
 			Attributes_Set(weapon, 6, swingspeed);
+			PrintToChatAll("CHARGING", ratio);
 		}
 	}
 
-	f_rest_time[attacker] = GameTime + 0.05;
+	f_rest_time[attacker] = GameTime + 2.00;
 
 }
 
