@@ -69,7 +69,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		}
 	}
 
-	f_rest_time[attacker] = GameTime + 2.00;
+	f_rest_time[attacker] = GameTime + 2.50;
 
 }
 
