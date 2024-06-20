@@ -176,7 +176,8 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98,
-	WEAPON_WEST_REVOLVER = 99
+	WEAPON_WEST_REVOLVER = 99,
+	WEAPON_OBUCH = 100
 }
 
 enum
@@ -501,6 +502,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
 #include "zombie_riot/custom/weapon_deagle_west.sp"
+#include "zombie_riot/custom/weapon_obuch.sp"
 
 void ZR_PluginLoad()
 {
