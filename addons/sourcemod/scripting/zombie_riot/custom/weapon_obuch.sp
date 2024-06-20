@@ -4,7 +4,7 @@ static int i_swinged[MAXTF2PLAYERS];
 static float f_rest_time[MAXTF2PLAYERS];
 
 #define OBUCH_MAX_DMG 1.25
-#define OBUCH_MAX_SPEED 0.5
+#define OBUCH_MAX_SPEED 0.75
 #define OBUCH_MAX_SWING 60
 
 public void Obuch_Mapstart()
@@ -61,7 +61,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		else
 		{
 			damage*=ratio;
-			swingspeed*=0.75/ratio;
+			swingspeed*=1.125/ratio;
 			Attributes_Set(weapon, 6, swingspeed);
 			PrintToChatAll("CHARGING");
 		}
