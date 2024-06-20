@@ -1,12 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 static int i_swinged[MAXTF2PLAYERS];
+static float f_rest_time[MAXTF2PLAYERS];
 
 #define OBUCH_MAX_DMG 1.25
 #define OBUCH_MAX_SPEED 0.5
 #define OBUCH_MAX_SWING 20
 
-
+public void Obuch_Mapstart()
+{
+	Zero(f_rest_time);
+	Zero(i_swinged);
+	ObuchHammer_Map_Precache();
+}
 void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds or something.
 {
 	PrecacheSound("weapons/bat_baseball_hit_flesh.wav");
