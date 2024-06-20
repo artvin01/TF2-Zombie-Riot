@@ -667,11 +667,15 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
 				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
 				{
+					/*
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
 					// 120 x 0.25 x 0.2
 
 					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
+					*/
+					if(f_LowTeslarDebuff[entity] - 1.0 < GetGameTime())
+						f_LowTeslarDebuff[entity] = GetGameTime() + 1.0;
 
 					NervousTouching[entity] = NervousTouching[0];
 				}

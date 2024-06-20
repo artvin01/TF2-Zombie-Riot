@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SELL_AMOUNT 0.7
+#define SELL_AMOUNT 0.9
 
 static const int SlotLimits[] =
 {

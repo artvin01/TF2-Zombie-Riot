@@ -695,7 +695,7 @@ void Barracks_BuildingThink(int entity)
 		return;
 	
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
-	SummonerRenerateResources(client, 0.6);
+	SummonerRenerateResources(client, 1.0);
 	//used to be 1.0, but we think 2x as much, ill still buff it abit.
 
 	if(TrainingIn[client])
@@ -789,6 +789,10 @@ void Barracks_BuildingThink(int entity)
 						if(CvarInfiniteCash.BoolValue)
 						{
 							trainingTime = 0.0;
+						}
+						if(RaidbossIgnoreBuildingsLogic(0))
+						{
+							trainingTime *= 0.85;
 						}
 						TrainingIn[client] = TrainingStartedIn[client] + trainingTime;
 						TrainingQueue[client] = -1;
@@ -1124,6 +1128,10 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		if(Rogue_Mode())
 		{
 			SupplyRateCalc *= 5.0;
+		}
+		if(RaidbossIgnoreBuildingsLogic(0))
+		{
+			SupplyRateCalc *= 1.25;
 		}
 		SupplyRateCalc *= multi;
 
