@@ -28,7 +28,7 @@ $bodygroup "ruina_magi_gun"	//done
 	studio "ruina_magi_gun.smd"
 }
 $bodygroup "ruina_staff_1"	//todo: more detailing, and paint. has holes.
-{
+{							//ALSO: REDUCE THE DETALING, HOLY SHIT THIS THING IS 40K LINES OF MODEL, AND 2500KB, HOLY SHIT
 	blank
 	studio "ruina_staff_1.smd"
 }
