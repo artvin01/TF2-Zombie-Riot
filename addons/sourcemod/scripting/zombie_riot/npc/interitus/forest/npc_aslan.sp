@@ -94,7 +94,7 @@ methodmap Aslan < CClotBody
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		//KillFeed_SetKillIcon(npc.index, "prinny_machete");
+		KillFeed_SetKillIcon(npc.index, "prinny_machete");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

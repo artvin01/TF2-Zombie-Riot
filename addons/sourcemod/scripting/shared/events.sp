@@ -103,28 +103,6 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
-#if defined ZR
-	//Ty to Keldra#1114 on discord to pointing this out.
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{	
-		/*
-		TFTeam_Unassigned = 0,
-		TFTeam_Spectator = 1,
-		TFTeam_Red = 2,
-		TFTeam_Blue = 3
-		*/
-		int team = event.GetInt("team");
-		switch(team)
-		{
-			case 0,1,3: //either team ? kill dispenser!
-			{
-				DestroyDispenser(client);
-			}
-		}
-	}
-#endif
-
 	
 	if(event.GetBool("silent"))
 		return Plugin_Continue;
@@ -167,6 +145,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;
+			Building_ResetRewardValues(client);
 		}
 	}
 
@@ -196,6 +175,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+#if defined ZR
+		TransferDispenserBackToOtherEntity(client, true);
+#endif
 #if defined RPG
 		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif
@@ -211,6 +193,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	  	AcceptEntityInput(client, "SetCustomModel");
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
@@ -462,32 +445,19 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #endif
 
 #if defined ZR
-	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #elseif defined RPG
-	//KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
+	UnequipDispenser(client, true);
 	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
-	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
-	{
-		DestroyDispenser(client);
-
-//		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-	//	if(obj != INVALID_ENT_REFERENCE)
-			//KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
-	}
-	else
-	{
-		Building_Mounted[client] = 0;
-		Player_Mounting_Building[client] = false;
-		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
-	}
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
@@ -510,6 +480,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #if defined RPG
 	TextStore_DepositBackpack(client, true);
 	UpdateLevelAbovePlayerText(client, true);
+	De_TransformClient(client);
 #endif
 
 #if defined ZR || defined RPG

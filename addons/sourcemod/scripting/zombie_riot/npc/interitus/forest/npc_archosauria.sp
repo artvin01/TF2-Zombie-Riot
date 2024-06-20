@@ -58,7 +58,7 @@ methodmap Archosauria < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		//KillFeed_SetKillIcon(npc.index, "sniperrifle");
+		KillFeed_SetKillIcon(npc.index, "sniperrifle");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

@@ -7,14 +7,19 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
-		case 4003, 4004, 4005://rpg specific
+		case 4003, 4004, 4005, 4006://rpg specific
 		{
 			return true;
 		}
+		case 4007, 4008, 4009, 4010: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+		{
+			return true;
+		}
+
 		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
 		{
 			return true;
@@ -169,7 +174,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
+void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
 		if(weapon < 1)
@@ -287,9 +292,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
-			guraneedGib = true;
-
-			
+			view_as<CClotBody>(victim).m_bGib = true;
+		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)
 		{

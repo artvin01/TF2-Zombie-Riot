@@ -28,7 +28,7 @@ methodmap BarrackTwoHanded < BarrackBody
 		BarrackTwoHanded npc = view_as<BarrackTwoHanded>(BarrackBody(client, vecPos, vecAng, "625",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-		//KillFeed_SetKillIcon(npc.index, "claidheamohmor");
+		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackTwoHanded_NPCDeath;

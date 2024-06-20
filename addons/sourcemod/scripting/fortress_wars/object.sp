@@ -514,7 +514,10 @@ int Object_Add(ObjectData data)
 		ThrowError("Invalid function name");
 
 	if(!TranslationPhraseExists(data.Name))
+	{
 		LogError("Translation '%s' does not exist", data.Name);
+		strcopy(data.Name, sizeof(data.Name), "nothing");
+	}
 	
 	return ObjectList.PushArray(data);
 }

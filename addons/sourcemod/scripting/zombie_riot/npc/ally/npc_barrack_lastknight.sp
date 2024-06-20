@@ -26,7 +26,7 @@ methodmap BarrackLastKnight < BarrackBody
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
-		//KillFeed_SetKillIcon(npc.index, "spy_cicle");
+		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_bSelectableByAll = true;
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;

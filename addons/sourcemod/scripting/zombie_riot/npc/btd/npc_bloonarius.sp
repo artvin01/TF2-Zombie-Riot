@@ -232,7 +232,7 @@ methodmap Bloonarius < CClotBody
 		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 5;
-		//KillFeed_SetKillIcon(npc.index, "bread_bite");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		int activity = npc.LookupActivity("ACT_BLOONARIUS_FLOAT");
 		if(activity > 0)

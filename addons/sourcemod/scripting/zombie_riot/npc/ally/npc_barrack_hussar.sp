@@ -31,7 +31,7 @@ methodmap BarrackHussar < BarrackBody
 		BarrackHussar npc = view_as<BarrackHussar>(BarrackBody(client, vecPos, vecAng, "2000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 2;
-		//KillFeed_SetKillIcon(npc.index, "scout_sword");
+		KillFeed_SetKillIcon(npc.index, "scout_sword");
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackHussar_NPCDeath;

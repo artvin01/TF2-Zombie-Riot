@@ -13,7 +13,11 @@ methodmap EditMenu < Menu
 	{
 		bool result = view_as<Menu>(this).Display(client, MENU_TIME_FOREVER);
 		if(result)
+		{
 			EditorMenu[client] = callback;
+			if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+				CvarDisableThink.BoolValue = true;
+		}
 		
 		return result;
 	}
@@ -21,11 +25,17 @@ methodmap EditMenu < Menu
 	{
 		bool result = view_as<Menu>(this).DisplayAt(client, first_item, MENU_TIME_FOREVER);
 		if(result)
+		{
 			EditorMenu[client] = callback;
+			if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+				CvarDisableThink.BoolValue = true;
+		}
 		
 		return result;
 	}
 }
+
+static int PickRange[MAXTF2PLAYERS];
 
 void Editor_PluginStart()
 {
@@ -68,6 +78,16 @@ void Editor_PlayerRunCmd(int client, int buttons)
 	}
 }
 
+bool Editor_WithinRange(int client, const float pos[3])
+{
+	if(PickRange[client] == 0)
+		return true;
+
+	float pos2[3];
+	GetClientEyePosition(client, pos2);
+	return GetVectorDistance(pos, pos2) < PickRange[client];
+}
+
 Function Editor_MenuFunc(int client)
 {
 	return EditorMenu[client];
@@ -104,6 +124,10 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 					Call_PushString("back");
 					Call_Finish();
 				}
+
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+					if(EditorMenu[client] == INVALID_FUNCTION)
+						CvarDisableThink.BoolValue = false;
 			}
 		}
 		case MenuAction_Select:
@@ -120,6 +144,10 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 				Call_PushCell(client);
 				Call_PushString(buffer);
 				Call_Finish();
+
+				if(CvarRPGInfiniteLevelAndAmmo.BoolValue)
+					if(EditorMenu[client] == INVALID_FUNCTION)
+						CvarDisableThink.BoolValue = false;
 			}
 		}
 	}
@@ -130,18 +158,78 @@ static int EditorMenuH(Menu menu, MenuAction action, int client, int choice)
 void Editor_MainMenu(int client)
 {
 	EditMenu menu = new EditMenu();
-	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress special attack to toggle noclip\n ");
+	menu.SetTitle("RPG Fortress: Game Editor\nChat messages are overriden while this menu is up\nPress reload/interact an object to pull up it's editor menu\nPress special attack to toggle noclip\n ");
+
+	menu.AddItem("reloadrpg", "Reload RPG Fortress");
+	menu.AddItem("reloadstore", "Reload Text Store");
+
+	char buffer[64];
+	if(PickRange[client] == 0)
+	{
+		FormatEx(buffer, sizeof(buffer), "Pick-From Range: All\n ");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "Pick-From Range: %d HU\n ", PickRange[client]);
+	}
+	
+	menu.AddItem("pickrange", buffer);
 
 	menu.AddItem("zones", "Zones");
 	menu.AddItem("spawns", "Spawns");
+	menu.AddItem("actor", "Actors");
 	menu.AddItem("quests", "Quests");
+	menu.AddItem("garden", "Gardens");
+	menu.AddItem("mining", "Mines");
+	menu.AddItem("fishing", "Fishing");
+	menu.AddItem("crafting", "Craft/Shop");
+	menu.AddItem("worldtext", "Worldtext");
 
 	menu.Display(client, MainMenuHandler);
 }
 
 static void MainMenuHandler(int client, const char[] buffer)
 {
-	if(StrContains(buffer, "zones") != -1)
+	if(StrContains(buffer, "reloadrpg") != -1)
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsClientInGame(i) && IsPlayerAlive(i))
+				ForcePlayerSuicide(i);
+		}
+
+		RequestFrame(ReloadPlugin);
+	}
+	else if(StrContains(buffer, "reloadstore") != -1)
+	{
+		ServerCommand("sm plugins reload textstore");
+	}
+	else if(StrContains(buffer, "pickrange") != -1)
+	{
+		switch(PickRange[client])
+		{
+			case 0:
+				PickRange[client] = 5000;
+			
+			case 1:
+				PickRange[client] = 2000;
+			
+			case 2:
+				PickRange[client] = 1000;
+			
+			case 3:
+				PickRange[client] = 600;
+			
+			case 4:
+				PickRange[client] = 300;
+			
+			default:
+				PickRange[client] = 0;
+		}
+
+		Editor_MainMenu(client);
+	}
+	else if(StrContains(buffer, "zones") != -1)
 	{
 		Zones_EditorMenu(client);
 	}
@@ -153,4 +241,35 @@ static void MainMenuHandler(int client, const char[] buffer)
 	{
 		Quests_EditorMenu(client);
 	}
+	else if(StrContains(buffer, "actor") != -1)
+	{
+		Actor_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "garden") != -1)
+	{
+		Garden_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "mining") != -1)
+	{
+		Mining_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "fishing") != -1)
+	{
+		Fishing_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "crafting") != -1)
+	{
+		Crafting_EditorMenu(client);
+	}
+	else if(StrContains(buffer, "worldtext") != -1)
+	{
+		Worldtext_EditorMenu(client);
+	}
+}
+
+static void ReloadPlugin()
+{
+	char plugin[128];
+	GetPluginFilename(null, plugin, sizeof(plugin));
+	ServerCommand("sm plugins reload %s", plugin);
 }

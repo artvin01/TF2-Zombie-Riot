@@ -81,7 +81,7 @@ methodmap SeaCrawler < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
-		//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

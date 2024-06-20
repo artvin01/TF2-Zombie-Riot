@@ -85,7 +85,7 @@ methodmap FirstToTalk < CClotBody
 
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_FIRST_1");
-		//KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

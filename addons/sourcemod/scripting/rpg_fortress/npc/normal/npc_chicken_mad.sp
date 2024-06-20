@@ -110,7 +110,7 @@ methodmap MadChicken < CClotBody
 		MadChicken npc = view_as<MadChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.75", "300", ally, false));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "fists");
+		KillFeed_SetKillIcon(npc.index, "fists");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -195,7 +195,7 @@ public void MadChicken_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 200.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 150.0, gameTime);
 	
 	if(npc.m_flAttackHappens)

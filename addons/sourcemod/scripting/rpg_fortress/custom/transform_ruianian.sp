@@ -5,7 +5,8 @@ static int iref_Halo[MAXPLAYERS+1][2];
 void Transform_Ruianian_MapStart()
 {
 	PrecacheSound("misc/halloween/spell_pickup.wav");
-	PrecacheSound("misc/halloween/hwn_plumes_capture.wav");
+	PrecacheSound("misc/halloween/spell_meteor_impact.wav");
+	PrecacheSound("ui/killsound_space.wav");
 }
 
 public void Ruianian_Activation_Enable_form_1(int client)
@@ -20,6 +21,11 @@ public void Ruianian_Activation_Enable_form_2(int client)
 	Ruianian_Activation_Enable_Global(client, 2);
 }
 
+public void Ruianian_Activation_Enable_form_3(int client)
+{
+	Ruianian_Activation_Enable_Global(client, 3);
+}
+
 public void Ruianian_Activation_Enable_Global(int client, int level)
 {
 	switch(level)
@@ -30,7 +36,11 @@ public void Ruianian_Activation_Enable_Global(int client, int level)
 		}
 		case 2:
 		{
-			EmitSoundToAll("misc/halloween/hwn_plumes_capture.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+			EmitSoundToAll("misc/halloween/spell_meteor_impact.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
+		}
+		case 3:
+		{
+			EmitSoundToAll("ui/killsound_space.wav", client, SNDCHAN_AUTO, 80, _, 1.0);
 		}
 	}
 	delete Timer_Expidonsan_Transform[client];
@@ -58,20 +68,27 @@ public void Ruianian_Activation_Enable_Global(int client, int level)
 		if(level == 1 || level == 2)
 		{
 			GetAttachment(viewmodelModel, "head", flPos, flAng);
-			int particle_halo = ParticleEffectAt(flPos, "unusual_star_parent", 0.0);
+			int particle_halo = ParticleEffectAt(flPos, "unusual_orbitingstar_parent", 0.0);
 			iref_Halo[client][0] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "head");
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
 		}
-		if(level == 2)
+		if(level == 2 || level == 3)
 		{
-
 			GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
 			int particle_halo = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.0);
 			iref_Halo[client][1] = EntIndexToEntRef(particle_halo);
 			AddEntityToThirdPersonTransitMode(client, particle_halo);
 			SetParent(viewmodelModel, particle_halo, "effect_hand_r");
+		}
+		if(level == 3)
+		{
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+			int particler = ParticleEffectAt(flPos, "utaunt_constellations_blue_cloud", 0.0);
+			SetParent(client, particler);
+			iref_Halo[client][0] = EntIndexToEntRef(particler);
+			AddEntityToThirdPersonTransitMode(client, particler);
 		}
 	}
 }

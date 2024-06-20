@@ -40,7 +40,7 @@ public void Weapon_TexanBuisness(int attacker, float &damage, int damagetype)
 
 public void Texan_business_altattack(int client, int weapon, bool crit, int slot)
 {
-    if(MaxSupportBuildingsAllowed(client, true) > 4)
+    if(Object_MaxSupportBuildings(client, true) > 4)
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
@@ -97,7 +97,7 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
-	}
+	}/*
 	else
 	{
 
@@ -105,5 +105,5 @@ public void Texan_business_altattack(int client, int weapon, bool crit, int slot
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Not Enough Builder Upgrades");
-	}
+	}*/
 }

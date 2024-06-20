@@ -367,12 +367,10 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 

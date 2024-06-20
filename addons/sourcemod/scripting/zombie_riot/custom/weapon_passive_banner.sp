@@ -488,7 +488,7 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 		}
 		else if(entity > MaxClients)
 		{
-			BarrackBody npc = view_as<BarrackBody>(entity);
+/*			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(!b_EntityRecievedBuff[entity])
 			{
 				if(GrantBuff)
@@ -504,7 +504,7 @@ void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool Grant
 					b_EntityRecievedBuff[entity] = false;
 					npc.BonusFireRate /= buffammount;
 				}
-			}
+			}*/
 		}
 	}
 }

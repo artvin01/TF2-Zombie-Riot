@@ -6,6 +6,7 @@
 #define MIN_FADE_DISTANCE	9999.9
 #define MAX_FADE_DISTANCE	9999.9
 #define STARTER_WEAPON_LEVEL	5
+#define MAX_TARGETS_HIT 10
 
 //#define ZR_ApplyKillEffects NPC_DeadEffects
 #define ZR_GetWaveCount Rogue_GetRoundScale
@@ -24,7 +25,7 @@ public const int AmmoData[][] =
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
 	{ 0, 4222 },		//Secondary
-	{ 10, 500 },		//Metal
+	{ 10, 50 },			//Metal, reduced by x10 as a temp fix
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food
 	{ 0, 0 },			//Jar
@@ -175,8 +176,7 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98,
-	WEAPON_WEST_REVOLVER = 99,
-	WEAPON_OBUCH_HAMMER = 100
+	WEAPON_WEST_REVOLVER = 99
 }
 
 enum
@@ -244,9 +244,8 @@ Cookie CookieScrap;
 Cookie CookieXP;
 ArrayList Loadouts[MAXTF2PLAYERS];
 
-Handle g_hSDKMakeCarriedObjectDispenser;
-Handle g_hSDKMakeCarriedObjectSentry;
 float f_RingDelayGift[MAXENTITIES];
+float Resistance_for_building_High[MAXENTITIES];
 
 //custom wave music.
 MusicEnum MusicString1;
@@ -266,7 +265,7 @@ float WoodAmount[MAXTF2PLAYERS];
 float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
-int i_PreviousBuildingCollision[MAXENTITIES];
+//int i_PreviousBuildingCollision[MAXENTITIES];
 bool b_ArkantosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
@@ -306,11 +305,8 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
-int Elevators_Currently_Build[MAXTF2PLAYERS]={0, ...};
-int i_SupportBuildingsBuild[MAXTF2PLAYERS]={0, ...};
 float LastStoreMenu[MAXTF2PLAYERS];
 bool LastStoreMenu_Store[MAXTF2PLAYERS];
-int i_BarricadesBuild[MAXTF2PLAYERS]={0, ...};
 
 //We kinda check these almost 24/7, its better to put them into an array!
 const int i_MaxcountSpawners = ZR_MAX_SPAWNERS;
@@ -319,13 +315,6 @@ int i_ObjectsSpawners[ZR_MAX_SPAWNERS];
 const int i_MaxcountTraps = ZR_MAX_TRAPS;
 int i_ObjectsTraps[ZR_MAX_TRAPS];
 float f_ChargeTerroriserSniper[MAXENTITIES];
-
-float Resistance_for_building_High[MAXENTITIES];
-int i_WhatBuilding[MAXENTITIES]={0, ...};
-bool Building_Constructed[MAXENTITIES]={false, ...};
-
-int Elevator_Owner[MAXENTITIES]={0, ...};
-bool Is_Elevator[MAXENTITIES]={false, ...};
 
 int StoreWeapon[MAXENTITIES];
 int i_HealthBeforeSuit[MAXTF2PLAYERS]={0, ...};
@@ -352,10 +341,6 @@ float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
 float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
-			
-int g_CarriedDispenser[MAXPLAYERS+1];
-int i_BeingCarried[MAXENTITIES];
-float f_BuildingIsNotReady[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
@@ -363,12 +348,9 @@ float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 //bool b_AllowBuildCommand[MAXPLAYERS + 1];
 
 int Building_Mounted[MAXENTITIES];
-bool b_SentryIsCustom[MAXENTITIES];
 
-bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
-bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
-
-int i_PlayerToCustomBuilding[MAXPLAYERS + 1]={0, ...};
+//bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
+//bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1][2];
@@ -390,7 +372,7 @@ bool applied_lastmann_buffs_once = false;
 
 #include "zombie_riot/npc.sp"	// Global NPC List
 
-#include "zombie_riot/buildonbuilding.sp"
+#include "zombie_riot/building.sp"
 #include "zombie_riot/database.sp"
 #include "zombie_riot/elemental.sp"
 #include "zombie_riot/escape.sp"
@@ -407,9 +389,9 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/mvm_hud.sp"
+#include "zombie_riot/steamworks.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/building.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
 #include "zombie_riot/custom/weapon_boom_stick.sp"
@@ -472,7 +454,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_cspyknife.sp"
 #include "zombie_riot/custom/wand/weapon_quantum_weaponry.sp"
 #include "zombie_riot/custom/weapon_riotshield.sp"
-#include "zombie_riot/custom/escape_sentry_hat.sp"
 #include "zombie_riot/custom/m3_abilities.sp"
 #include "zombie_riot/custom/weapon_health_hose.sp"
 #include "shared/custom/joke_medigun_mod_drain_health.sp"
@@ -494,7 +475,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
-#include "zombie_riot/custom/weapon_board.sp"
+//#include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
@@ -520,7 +501,6 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
 #include "zombie_riot/custom/weapon_deagle_west.sp"
-#include "zombie_riot/custom/weapon_obuch.sp"
 
 void ZR_PluginLoad()
 {
@@ -563,17 +543,17 @@ void ZR_PluginStart()
 		CvarSvRollagle.Flags &= ~(FCVAR_NOTIFY | FCVAR_REPLICATED);
 
 	SkyboxProps_OnPluginStart();
-	OnPluginStart_Build_on_Building();
 	Database_PluginStart();
 	Items_PluginStart();
 	Medigun_PluginStart();
 	OnPluginStartMangler();
-	SentryHat_OnPluginStart();
 	OnPluginStart_Glitched_Weapon();
 	Tutorial_PluginStart();
 	Waves_PluginStart();
 	Rogue_PluginStart();
 	Spawns_PluginStart();
+	Object_PluginStart();
+	SteamWorks_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -583,7 +563,6 @@ void ZR_PluginStart()
 	}
 	
 	BobTheGod_OnPluginStart();
-	Building_PluginStart();
 }
 
 void ZR_MapStart()
@@ -602,13 +581,11 @@ void ZR_MapStart()
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
 	Zero(f_Reviving_This_Client);
 	Zero(i_Reviving_This_Client);
-	OnMapStart_Build_on_Build();
 	WaveStart_SubWaveStart(GetGameTime());
 	Reset_stats_starshooter();
 	Zero(f_RingDelayGift);
 	Zero(f_HealthBeforeSuittime);
 	Music_ClearAll();
-	Building_ClearAll();
 	Medigun_ClearAll();
 	WindStaff_ClearAll();
 	Lighting_Wand_Spell_ClearAll();
@@ -639,7 +616,6 @@ void ZR_MapStart()
 	Zero2(fl_blitz_ioc_punish_timer);
 	Zero(i_PlayerModelOverrideIndexWearable);
 	Zero(b_HideCosmeticsPlayer);
-	CleanAllBuildingEscape();
 	KahmlFistMapStart();
 	M3_ClearAll();
 	SniperMonkey_ClearAll();
@@ -652,7 +628,6 @@ void ZR_MapStart()
 	Zero(i_Headshots);
 	Zero(f_TutorialUpdateStep);
 	Zero(healing_cooldown);
-	Zero(f_BuildingIsNotReady);
 	Zero(f_TerroriserAntiSpamCd);
 	Zero(f_DisableDyingTimer);
 	Zero(f_DyingTextTimer);
@@ -667,7 +642,6 @@ void ZR_MapStart()
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
-	EscapeSentryHat_MapStart();
 	PrecachePlayerGiveGiveResponseVoice();
 	Mlynar_Map_Precache();
 	Hazard_Map_Precache();
@@ -697,7 +671,6 @@ void ZR_MapStart()
 	Weapon_Arrow_Shoot_Map_Precache();
 	Weapon_Hose_Precache();
 //	Weapon_Pipe_Shoot_Map_Precache();
-	Building_MapStart();
 	Survival_Knife_Map_Precache();
 	Aresenal_Weapons_Map_Precache();
 	Wand_Elemental_Map_Precache();
@@ -744,7 +717,7 @@ void ZR_MapStart()
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
-	WeaponBoard_Precache();
+//	WeaponBoard_Precache();
 	Weapon_German_MapStart();
 	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
@@ -761,8 +734,7 @@ void ZR_MapStart()
 	Hell_Hoe_MapStart();
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
-	ObuchHammer_Map_Precache();
-
+	Object_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -837,9 +809,6 @@ void ZR_ClientPutInServer(int client)
 	i_Headshots[client] = 0;
 	Armor_Charge[client] = 0;
 	f_Armor_BreakSoundDelay[client] = 0.0;
-	Doing_Handle_Mount[client] = false;
-	b_Doing_Buildingpickup_Handle[client] = false;
-	g_CarriedDispenser[client] = INVALID_ENT_REFERENCE;
 	Timer_Knife_Management[client] = null;
 	i_CurrentEquippedPerk[client] = 0;
 	i_HealthBeforeSuit[client] = 0;
@@ -865,6 +834,7 @@ void ZR_ClientDisconnect(int client)
 	Reset_stats_Drink_Singular(client);
 	Reset_stats_Grenade_Singular(client);
 	Reset_stats_Skullswand_Singular(client);
+	ResetPlayer_BuildingBeingCarried(client);
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Damage_dealt_in_total[client] = 0.0;
 	Resupplies_Supplied[client] = 0;
@@ -881,24 +851,7 @@ void ZR_ClientDisconnect(int client)
 	GoldAmount[client] = 0.0;
 	i_PlayerModelOverrideIndexWearable[client] = 0;
 	b_HideCosmeticsPlayer[client] = false;
-	
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity)) //delete all buildings that arent mounted
-		{
-			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-			{
-				static char classname[64];
-				GetEntityClassname(entity, classname, sizeof(classname));
-				if(!StrContains(classname, "obj_sentrygun"))
-				{
-					//sometimes this building does not vanish upon being used, we must destroy it manually.
-					RemoveEntity(entity);
-				}
-			}
-		}
-	}
+	UnequipDispenser(client, true);
 }
 
 public void OnMapInit()
@@ -1032,7 +985,8 @@ public Action Command_AFK(int client, int args)
 {
 	if(client)
 	{
-	//	DestroyDispenser(client);
+		ForcePlayerSuicide(client);
+		UnequipDispenser(client, true);
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 1);
@@ -1312,7 +1266,6 @@ public Action Command_AFKKnight(int client, int args)
 {
 	if(client)
 	{
-		DestroyDispenser(client);
 		WaitingInQueue[client] = true;
 		ChangeClientTeam(client, 2);
 	}
@@ -1986,31 +1939,12 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-
-public Action DeleteEntitiesInHazards(Handle timer)
-{
-	float BuildingPos[3];
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if (IsValidEntity(entity) && !i_BeingCarried[entity])
-		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", BuildingPos);
-			BuildingPos[2] + 10.0;
-			if(IsPointNoBuild(BuildingPos))
-			{
-				RemoveEntity(entity);
-			}
-		}
-	}
-	return Plugin_Handled;
-}
 void ReviveAll(bool raidspawned = false)
 {
 	//only set false here
 	ZombieMusicPlayed = false;
 
-	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
+//	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2166,9 +2100,9 @@ void GiveXP(int client, int xp)
 		static const char Names[][] = { "one", "two", "three", "four", "five", "six" };
 		ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", Names[GetRandomInt(0, sizeof(Names)-1)]);
 		
-		int maxhealth = SDKCall_GetMaxHealth(client);
-		if(GetClientHealth(client) < maxhealth)
-			SetEntityHealth(client, maxhealth);
+		//int maxhealth = SDKCall_GetMaxHealth(client);
+		//if(GetClientHealth(client) < maxhealth)
+		//	SetEntityHealth(client, maxhealth);
 		
 		SetGlobalTransTarget(client);
 		PrintToChat(client, "%t", "Level Up", nextLevel);
@@ -2181,7 +2115,10 @@ void GiveXP(int client, int xp)
 			Level[client]++;
 
 			if(Level[client] == STARTER_WEAPON_LEVEL)
+			{
 				CPrintToChat(client, "%t", "All Weapons Unlocked");
+				found = true;
+			}
 			
 			if(Store_PrintLevelItems(client, Level[client]))
 				found = true;
@@ -2190,7 +2127,10 @@ void GiveXP(int client, int xp)
 				slots++;
 			
 			if(Level[client] < 81 && !(Level[client] % 10))
+			{
 				CPrintToChat(client, "%t", "Additional Starting Ingot", (Level[client] + 70) / 10, (Level[client] + 80) / 10);
+				found = true;
+			}
 		}
 		
 		if(slots)

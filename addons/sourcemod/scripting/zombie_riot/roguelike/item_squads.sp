@@ -73,12 +73,10 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 public void Rogue_Spearhead_Weapon(int entity)

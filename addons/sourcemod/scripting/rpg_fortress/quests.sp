@@ -13,6 +13,66 @@ static KeyValues QuestKv;
 static int BookPage[MAXTF2PLAYERS];
 static bool BookDirty[MAXTF2PLAYERS];
 
+void Quests_PluginStart()
+{
+	RegAdminCmd("rpg_givekill", QuestsKillDebug, ADMFLAG_ROOT, "Give X kills from X NPC");
+	RegAdminCmd("rpg_clearquests", QuestsClearDebug, ADMFLAG_ROOT, "Remove all quest status");
+}
+
+static Action QuestsKillDebug(int client, int args)
+{
+	if(!client)
+	{
+
+	}
+	else if(args == 1 || args == 2)
+	{
+		char name[64];
+		GetCmdArg(1, name, sizeof(name));
+
+		int amount = 999;
+		if(args == 2)
+			amount = GetCmdArgInt(2);
+		
+		KeyValues kv = Saves_Kv("quests");
+		kv.JumpToKey("_kills", true);
+		kv.JumpToKey(name, true);
+
+		char id[64];
+		if(Saves_ClientCharId(client, id, sizeof(id)))
+		{
+			kv.SetNum(id, kv.GetNum(id) + amount);
+			Quests_MarkBookDirty(client);
+			SReplyToCommand(client, "Gave %d kills for %s", amount, name);
+		}
+		else
+		{
+			SReplyToCommand(client, "No save state");
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: rpg_givekill <name> [amount]");
+	}
+
+	return Plugin_Handled;
+}
+
+static Action QuestsClearDebug(int client, int args)
+{
+	char id[64];
+	if(client && Saves_ClientCharId(client, id, sizeof(id)))
+	{
+		Quests_DeleteChar(id);
+		SReplyToCommand(client, "Cleared all quest status");
+	}
+	else
+	{
+	}
+
+	return Plugin_Handled;
+}
+
 void Quests_ConfigSetup()
 {
 	delete QuestKv;
@@ -24,19 +84,60 @@ void Quests_ConfigSetup()
 	QuestKv.ImportFromFile(buffer);
 }
 
+void Quests_DeleteChar(const char[] id)
+{
+	KeyValues kv = Saves_Kv("quests");
+	
+	if(kv.GotoFirstSubKey())
+	{
+		do
+		{
+			kv.DeleteKey(id);
+
+			if(kv.GotoFirstSubKey())
+			{
+				do
+				{
+					kv.DeleteKey(id);
+				}
+				while(kv.GotoNextKey());
+
+				kv.GoBack();
+			}
+		}
+		while(kv.GotoNextKey());
+	}
+}
+
 void Quests_AddKill(int client, int entity)
 {
-	char name[64];
-	NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
+	//char name[64];
+	//NPC_GetNameById(i_NpcInternalId[entity], name, sizeof(name));
 
 	KeyValues kv = Saves_Kv("quests");
 	kv.JumpToKey("_kills", true);
-	kv.JumpToKey(name, true);
+	kv.JumpToKey(c_NpcName[entity], true);
+
+	static float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+
+	int minlevel = Level[entity] * 3 / 4;
 
 	for(int target = 1; target <= MaxClients; target++)
 	{
 		if(client == target || Party_IsClientMember(client, target))
 		{
+			if(client != target)
+			{
+				if(Level[target] < minlevel && !Stats_GetHasKill(target, c_NpcName[entity]))
+					continue;
+				
+				static float pos2[3];
+				GetClientAbsOrigin(target, pos2);
+				if(GetVectorDistance(pos1, pos2, true) > 1000000.0)	// 1000 HU
+					continue;
+			}
+
 			static char id[64];
 			if(Saves_ClientCharId(target, id, sizeof(id)))
 			{
@@ -52,7 +153,13 @@ void Quests_MarkBookDirty(int client)
 	BookDirty[client] = true;
 }
 
-bool Quests_CanTurnIn(int client, const char[] name, char[] title = "", int length = 0)
+KeyValues Quests_KV()
+{
+	QuestKv.Rewind();
+	return QuestKv;
+}
+
+bool Quests_CanTurnIn(int client, const char[] name)
 {
 	bool result;
 
@@ -61,7 +168,7 @@ bool Quests_CanTurnIn(int client, const char[] name, char[] title = "", int leng
 	{
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
-			result = CanTurnInQuest(client, id, title, length);
+			result = CanTurnInQuest(client, id);
 	}
 	
 	return result;
@@ -202,6 +309,36 @@ static bool CanTurnInQuest(int client, const char[] id, char[] title = "", int l
 	return (canTurnIn || CvarRPGInfiniteLevelAndAmmo.BoolValue);
 }
 
+int Quests_GetStatus(int client, const char[] name)
+{
+	int value = -1;
+
+	static char id[64];
+	if(Saves_ClientCharId(client, id, sizeof(id)))
+	{
+		QuestKv.Rewind();
+		if(QuestKv.JumpToKey(name))
+		{
+			KeyValues kv = Saves_Kv("quests");
+			kv.JumpToKey(name, true);
+			value = kv.GetNum(id);
+			
+			if(value == Status_Completed)
+			{
+				int repeat = QuestKv.GetNum("repeattime");
+				if(repeat > 0)
+				{
+					Format(id, sizeof(id), "%s_t", id);
+					if(kv.GetNum(id) < (GetTime() - repeat - 40))
+						value = Status_NotStarted;
+				}
+			}
+		}
+	}
+
+	return value;
+}
+
 bool Quests_StartQuest(int client, const char[] name)
 {
 	static char id[64];
@@ -216,8 +353,8 @@ bool Quests_StartQuest(int client, const char[] name)
 			int previous = kv.GetNum(id);
 			if(previous != Status_InProgress)
 			{
+				ClientCommand(client, "playgamesound ui/quest_decode.wav");
 				SPrintToChat(client, "New Quest: %s", name);
-
 				kv.SetNum(id, Status_InProgress);
 
 				if(previous != Status_Canceled && QuestKv.JumpToKey("start"))
@@ -227,7 +364,7 @@ bool Quests_StartQuest(int client, const char[] name)
 						do
 						{
 							QuestKv.GetSectionName(id, sizeof(id));
-							TextStore_AddItemCount(client, id, QuestKv.GetNum(NULL_STRING, 1));
+							TextStore_AddItemCount(client, id, QuestKv.GetNum(NULL_STRING, 1), _,true);
 						}
 						while(QuestKv.GotoNextKey(false));
 					}
@@ -253,13 +390,16 @@ bool Quests_CancelQuest(int client, const char[] name)
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
 		{
-			SPrintToChat(client, "Quest Finished: %s", name);
-
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
-			kv.SetNum(id, Status_Canceled);
+			
+			if(kv.GetNum(id) == Status_InProgress)
+			{
+				SPrintToChat(client, "Quest Finished: %s", name);
+				kv.SetNum(id, Status_Canceled);
+				Quests_MarkBookDirty(client);
+			}
 
-			Quests_MarkBookDirty(client);
 			return true;
 		}
 	}
@@ -269,74 +409,92 @@ bool Quests_CancelQuest(int client, const char[] name)
 
 bool Quests_TurnIn(int client, const char[] name)
 {
-	static char id[64], name[64];
+	static char id[64], buffer[64];
 	if(Saves_ClientCharId(client, id, sizeof(id)))
 	{
 		QuestKv.Rewind();
 		if(QuestKv.JumpToKey(name))
 		{
-			SPrintToChat(client, "Quest Finished: %s", name);
-
 			KeyValues kv = Saves_Kv("quests");
 			kv.JumpToKey(name, true);
-			kv.SetNum(id, Status_Completed);
 
-			if(QuestKv.JumpToKey("give"))
+			if(kv.GetNum(id) != Status_Completed)
 			{
-				if(QuestKv.GotoFirstSubKey(false))
+				static const char sounds[][] =
 				{
-					do
-					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						TextStore_AddItemCount(client, name, -QuestKv.GetNum(NULL_STRING, 1));
-					}
-					while(QuestKv.GotoNextKey(false));
+					"one",
+					"two",
+					"three",
+					"four",
+					"five",
+					"six"
+				};
 
-					QuestKv.GoBack();
-				}
+				ClientCommand(client, "playgamesound ui/mm_level_%s_achieved.wav", sounds[GetURandomInt() % sizeof(sounds)]);
+				SPrintToChat(client, "Quest Finished: %s", name);
+				kv.SetNum(id, Status_Completed);
+				
+				Format(buffer, sizeof(buffer), "%s_t", id);
+				kv.SetNum(buffer, GetTime());
 
-				QuestKv.GoBack();
-			}
-
-			if(QuestKv.JumpToKey("kill"))
-			{
-				kv = Saves_Kv("quests");
-				kv.JumpToKey("_kills", true);
-
-				if(QuestKv.GotoFirstSubKey(false))
+				if(QuestKv.JumpToKey("give"))
 				{
-					do
+					if(QuestKv.GotoFirstSubKey(false))
 					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						if(kv.JumpToKey(name))
+						do
 						{
-							kv.SetNum(id, kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
-							kv.GoBack();
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							TextStore_AddItemCount(client, buffer, -QuestKv.GetNum(NULL_STRING, 1), _,true);
 						}
+						while(QuestKv.GotoNextKey(false));
+
+						QuestKv.GoBack();
 					}
-					while(QuestKv.GotoNextKey(false));
 
 					QuestKv.GoBack();
 				}
 
-				QuestKv.GoBack();
-			}
-
-			if(QuestKv.JumpToKey("reward"))
-			{
-				if(QuestKv.GotoFirstSubKey(false))
+				if(QuestKv.JumpToKey("kill"))
 				{
-					do
+					kv = Saves_Kv("quests");
+					kv.JumpToKey("_kills", true);
+
+					if(QuestKv.GotoFirstSubKey(false))
 					{
-						QuestKv.GetSectionName(name, sizeof(name));
-						TextStore_AddItemCount(client, name, QuestKv.GetNum(NULL_STRING, 1));
+						do
+						{
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							if(kv.JumpToKey(buffer))
+							{
+								kv.SetNum(id, 0);//kv.GetNum(id) - QuestKv.GetNum(NULL_STRING, 1));
+								kv.GoBack();
+							}
+						}
+						while(QuestKv.GotoNextKey(false));
+
+						QuestKv.GoBack();
 					}
-					while(QuestKv.GotoNextKey(false));
+
+					QuestKv.GoBack();
 				}
+
+				if(QuestKv.JumpToKey("reward"))
+				{
+					if(QuestKv.GotoFirstSubKey(false))
+					{
+						do
+						{
+							QuestKv.GetSectionName(buffer, sizeof(buffer));
+							TextStore_AddItemCount(client, buffer, QuestKv.GetNum(NULL_STRING, 1), _,true);
+						}
+						while(QuestKv.GotoNextKey(false));
+					}
+				}
+
+				Saves_SaveClient(client);
+				Quests_MarkBookDirty(client);
 			}
 
-			Saves_SaveClient(client);
-			Quests_MarkBookDirty(client);
 			return true;
 		}
 	}
@@ -358,42 +516,27 @@ bool Quests_BookMenu(int client)
 
 	int pages;
 	
-	static char steamid[64], name[64], buffer[512];
+	static char steamid[64], buffer[256];
 	if(Saves_ClientCharId(client, steamid, sizeof(steamid)))
 	{
 		QuestKv.Rewind();
 		QuestKv.GotoFirstSubKey();
 		do
 		{
-			QuestKv.GetSectionName(name, sizeof(name));
-			if(QuestKv.GotoFirstSubKey())
+			QuestKv.GetSectionName(buffer, sizeof(buffer));
+			
+			KeyValues kv = Saves_Kv("quests");
+			if(kv.JumpToKey(buffer))
 			{
-				do
+				if(kv.GetNum(steamid) == Status_InProgress)
 				{
-					KeyValues kv = Saves_Kv("quests");
-					if(kv.JumpToKey(name))
-					{
-						QuestKv.GetSectionName(buffer, sizeof(buffer));
-						if(kv.JumpToKey(buffer))
-						{
-							if(kv.GetNum(steamid) == Status_InProgress)
-							{
-								pages++;
+					if(BookPage[client] != ((pages++) / 2))
+						continue;
 
-								if((BookPage[client] / 2) != (pages / 2))
-									continue;
-
-								Format(buffer, sizeof(buffer), "%s - %s", name, buffer);
-								CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
-								Format(buffer, sizeof(buffer), "%s\n ", buffer);
-								menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
-							}
-						}
-					}
+					CanTurnInQuest(client, steamid, buffer, sizeof(buffer));
+					Format(buffer, sizeof(buffer), "%s\n ", buffer);
+					menu.AddItem(NULL_STRING, buffer, ITEMDRAW_DISABLED);
 				}
-				while(QuestKv.GotoNextKey());
-
-				QuestKv.GoBack();
 			}
 		}
 		while(QuestKv.GotoNextKey());
@@ -416,7 +559,7 @@ bool Quests_BookMenu(int client)
 			menu.AddItem(NULL_STRING, NULL_STRING, ITEMDRAW_SPACER);
 		}
 		
-		if((pages / 2) > (BookPage[client] / 2))
+		if(((pages - 1) / 2) > BookPage[client])
 		{
 			menu.AddItem(NULL_STRING, "Next");
 		}
@@ -471,12 +614,9 @@ public int Quests_BookHandle(Menu menu, MenuAction action, int client, int choic
 	return 0;
 }
 
-static Handle TimerZoneEditing[MAXTF2PLAYERS];
 static char CurrentSectionEditing[MAXTF2PLAYERS][64];
 static char CurrentQuestEditing[MAXTF2PLAYERS][64];
 static char CurrentKeyEditing[MAXTF2PLAYERS][64];
-static char CurrentNPCEditing[MAXTF2PLAYERS][64];
-static char CurrentZoneEditing[MAXTF2PLAYERS][64];
 
 void Quests_EditorMenu(int client)
 {
@@ -486,204 +626,161 @@ void Quests_EditorMenu(int client)
 
 	if(CurrentKeyEditing[client][0])
 	{
-		// Set item amount
-		// Click (0) to remove
+		menu.SetTitle("Actors\n%s - %s\n ", CurrentQuestEditing[client], CurrentSectionEditing[client]);
+
+		bool invalid;
+		if(CurrentSectionEditing[client][0])
+		{
+			if(StrEqual(CurrentSectionEditing[client], "kill"))
+			{
+			}
+			else if(!TextStore_IsValidName(CurrentKeyEditing[client]))
+			{
+				FormatEx(buffer1, sizeof(buffer1), "\"%s\" {WARNING: Item does not exist}", CurrentKeyEditing[client]);
+				menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+				invalid = true;
+			}
+		}
+
+		if(!invalid)
+		{
+			FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
+			menu.AddItem("1", buffer1, ITEMDRAW_DISABLED);
+		}
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustQuestSharedKey);
 	}
 	else if(CurrentSectionEditing[client][0])
 	{
-		// View item and amounts
-		// Type to add 1 new item
-	}
-	else if(CurrentKeyEditing[client][0])
-	{
-		// Edit questline item
-	}
-	else if(CurrentQuestEditing[client][0])
-	{
-		// Questline details
-		// View reward/give/etc with amount of entries
-	}
-	else if(StrEqual(CurrentKeyEditing[client], "zone"))
-	{
-		menu.SetTitle("Quests\n%s\n ", CurrentNPCEditing[client]);
-		
-		KeyValues kv = Zones_GetKv();
-		kv.GotoFirstSubKey();
-
-		do
-		{
-			kv.GetSectionName(buffer1, sizeof(buffer1));
-			menu.AddItem(buffer1, buffer1);
-		}
-		while(kv.GotoNextKey());
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPCKey);
-	}
-	else if(CurrentKeyEditing[client][0])
-	{
-		menu.SetTitle("Quests\n%s\n ", CurrentNPCEditing[client]);
-		
-		FormatEx(buffer1, sizeof(buffer1), "Type to set value for \"%s\"", CurrentKeyEditing[client]);
-		menu.AddItem("", buffer1, ITEMDRAW_DISABLED);
-
-		menu.AddItem("", "Set To Default");
-
-		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPCKey);
-	}
-	else if(CurrentNPCEditing[client][0])
-	{
 		QuestKv.Rewind();
-		bool missing = !QuestKv.JumpToKey(CurrentNPCEditing[client]);
+		QuestKv.JumpToKey(CurrentQuestEditing[client]);
+		bool missing = !QuestKv.JumpToKey(CurrentSectionEditing[client]);
 
-		menu.SetTitle("Quests\n%s\nClick to set it's value:\n ", CurrentNPCEditing[client]);
+		menu.SetTitle("Quests\n%s - %s\n ", CurrentQuestEditing[client], CurrentSectionEditing[client]);
 
-		if(!missing)
+		menu.AddItem("", "Type to add an item", ITEMDRAW_DISABLED);
+
+		if(!missing && QuestKv.GotoFirstSubKey(false))
 		{
-			if(QuestKv.GotoFirstSubKey())
+			if(StrEqual(CurrentSectionEditing[client], "kill"))
 			{
 				do
 				{
 					QuestKv.GetSectionName(buffer1, sizeof(buffer1));
-					menu.AddItem(buffer1, buffer1);
+					Format(buffer2, sizeof(buffer2), "%s x%d", buffer1, QuestKv.GetNum(NULL_STRING));
+					menu.AddItem(buffer1, buffer2);
 				}
-				while(QuestKv.GotoNextKey());
-				QuestKv.GoBack();
+				while(QuestKv.GotoNextKey(false));
 			}
-
-			menu.AddItem("new", "New Quest (NOT FINISHED :3)\n ", ITEMDRAW_DISABLED);
-		}
-		
-		if(missing)
-		{
-			strcopy(buffer1, sizeof(buffer1), CurrentZoneEditing[client]);
-		}
-		else
-		{
-			QuestKv.GetString("zone", buffer1, sizeof(buffer1));
-		}
-		
-		FormatEx(buffer2, sizeof(buffer2), "Zone: \"%s\"%s", buffer1, Zones_GetKv().JumpToKey(buffer1) ? "" : " {WARNING: Zone does not exist}");
-		menu.AddItem("zone", buffer2);
-
-		QuestKv.GetString("model", buffer1, sizeof(buffer1), "error.mdl");
-		FormatEx(buffer2, sizeof(buffer2), "Model: \"%s\"%s", buffer1, FileExists(buffer1) ? "" : " {WARNING: Model does not exist}");
-		menu.AddItem("model", buffer2);
-
-		FormatEx(buffer2, sizeof(buffer2), "Scale: %f", QuestKv.GetFloat("scale", 1.0));
-		menu.AddItem("scale", buffer2);
-
-		float vec[3];
-		QuestKv.GetVector("pos", vec);
-		FormatEx(buffer2, sizeof(buffer2), "Position: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("pos", buffer2);
-
-		QuestKv.GetVector("ang", vec);
-		FormatEx(buffer2, sizeof(buffer2), "Angle: %.0f %.0f %.0f", vec[0], vec[1], vec[2]);
-		menu.AddItem("ang", buffer2);
-
-		QuestKv.GetString("sound_talk", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Talk Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_talk", buffer2);
-
-		QuestKv.GetString("sound_leave", buffer1, sizeof(buffer1));
-		FormatEx(buffer2, sizeof(buffer2), "Leave Sound: \"%s\"%s", buffer1, (!buffer1[0] || PrecacheScriptSound(buffer1)) ? "" : " {WARNING: Script does not exist}");
-		menu.AddItem("sound_leave", buffer2);
-
-		if(!missing)
-		{
-			QuestKv.GetString("anim_idle", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Idle Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_idle", buffer2);
-
-			QuestKv.GetString("anim_talk", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Talk Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_talk", buffer2);
-
-			QuestKv.GetString("anim_leave", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Leave Animation: \"%s\"", buffer1);
-			menu.AddItem("anim_leave", buffer2);
-
-			QuestKv.GetString("wear1", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 1: \"%s\"", buffer1);
-			menu.AddItem("wear1", buffer2);
-
-			QuestKv.GetString("wear2", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 2: \"%s\"", buffer1);
-			menu.AddItem("wear2", buffer2);
-
-			QuestKv.GetString("wear3", buffer1, sizeof(buffer1));
-			FormatEx(buffer2, sizeof(buffer2), "Cosmetic 3: \"%s\"", buffer1);
-			menu.AddItem("wear3", buffer2);
-
-			menu.AddItem("delete", "Delete NPC");
+			else
+			{
+				do
+				{
+					QuestKv.GetSectionName(buffer1, sizeof(buffer1));
+					Format(buffer2, sizeof(buffer2), "%s x%d%s", buffer1, QuestKv.GetNum(NULL_STRING), TextStore_IsValidName(buffer1) ? "" : " {WARNING: Item does not exist}");
+					menu.AddItem(buffer1, buffer2);
+				}
+				while(QuestKv.GotoNextKey(false));
+			}
 		}
 
 		menu.ExitBackButton = true;
-		menu.Display(client, AdjustNPC);
+		menu.Display(client, AdjustQuestSection);
 	}
-	else if(CurrentZoneEditing[client][0])
+	else if(CurrentQuestEditing[client][0])
 	{
-		menu.SetTitle("Quests\n%s\nType in chat to create a new NPC\n ", CurrentZoneEditing[client]);
-
 		QuestKv.Rewind();
-		QuestKv.GotoFirstSubKey();
-		do
+		QuestKv.JumpToKey(CurrentQuestEditing[client]);
+
+		menu.SetTitle("Quests\n%s\n ", CurrentQuestEditing[client]);
+
+		int repeat = QuestKv.GetNum("repeattime");
+		if(repeat < 1)
 		{
-			QuestKv.GetString("zone", buffer1, sizeof(buffer1));
-			if(strlen(CurrentZoneEditing[client]) < 2 || StrEqual(CurrentZoneEditing[client], buffer1, false))
+			Format(buffer1, sizeof(buffer1), "Repeat: None");
+		}
+		else if(repeat > 40)
+		{
+			Format(buffer1, sizeof(buffer1), "Repeat: In %.4f Hours", repeat / 3600.0);
+		}
+		else
+		{
+			Format(buffer1, sizeof(buffer1), "Repeat: Always");
+		}
+		menu.AddItem("_repeattime", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Start Quest Give Items (%d Entries)", CountEntries("start"));
+		menu.AddItem("start", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Turn In Quest Rewards (%d Entries)\n ", CountEntries("reward"));
+		menu.AddItem("reward", buffer1);
+
+		menu.AddItem("reward", "Objectives:", ITEMDRAW_DISABLED);
+
+		Format(buffer1, sizeof(buffer1), "Equip Item (%d Entries)", CountEntries("equip"));
+		menu.AddItem("equip", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Kill NPC (%d Entries)", CountEntries("kill"));
+		menu.AddItem("kill", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Give Item (%d Entries)", CountEntries("give"));
+		menu.AddItem("give", buffer1);
+
+		Format(buffer1, sizeof(buffer1), "Have Item (%d Entries)", CountEntries("obtain"));
+		menu.AddItem("obtain", buffer1);
+
+		menu.AddItem("delete", "Delete");
+
+		menu.ExitBackButton = true;
+		menu.Display(client, AdjustQuest);
+	}
+	else
+	{
+		menu.SetTitle("Quests\nSelect a quest:\n ");
+
+		menu.AddItem("new", "Type in chat to create a new Quest", ITEMDRAW_DISABLED);
+		
+		QuestKv.Rewind();
+		if(QuestKv.GotoFirstSubKey())
+		{
+			do
 			{
 				QuestKv.GetSectionName(buffer1, sizeof(buffer1));
 				menu.AddItem(buffer1, buffer1);
 			}
+			while(QuestKv.GotoNextKey());
 		}
-		while(QuestKv.GotoNextKey());
 
 		menu.ExitBackButton = true;
-		menu.Display(client, NPCPicker);
-
-		if(strlen(CurrentZoneEditing[client]) > 1)
-		{
-			Zones_RenderZone(client, CurrentZoneEditing[client]);
-			delete TimerZoneEditing[client];
-			TimerZoneEditing[client] = CreateTimer(1.0, Timer_RefreshHud, client);
-		}
+		menu.Display(client, QuestPicker);
 	}
-	else
+}
+
+static int CountEntries(const char[] section)
+{
+	int count;
+
+	if(QuestKv.JumpToKey(section))
 	{
-		menu.SetTitle("Quests\n \nImportant Note:\nQuestline names have to be unique or they will be synced!\n \nSelect a zone:\n ");
-
-		KeyValues zones = Zones_GetKv();
-
-		menu.AddItem(" ", "All Zones");
-		
-		if(zones.GotoFirstSubKey())
+		if(QuestKv.GotoFirstSubKey(false))
 		{
 			do
 			{
-				zones.GetSectionName(buffer1, sizeof(buffer1));
-				menu.AddItem(buffer1, buffer1);
+				count++;
 			}
-			while(zones.GotoNextKey());
+			while(QuestKv.GotoNextKey(false));
+
+			QuestKv.GoBack();
 		}
 
-		menu.ExitBackButton = true;
-		menu.Display(client, ZonePicker);
+		QuestKv.GoBack();
 	}
+
+	return count;
 }
 
-static Action Timer_RefreshHud(Handle timer, int client)
-{
-	TimerZoneEditing[client] = null;
-	if(Editor_MenuFunc(client) != NPCPicker)
-		return Plugin_Stop;
-	
-	Quests_EditorMenu(client);
-	return Plugin_Continue;
-}
-
-static void ZonePicker(int client, const char[] key)
+static void QuestPicker(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
@@ -691,70 +788,58 @@ static void ZonePicker(int client, const char[] key)
 		return;
 	}
 
-	strcopy(CurrentZoneEditing[client], sizeof(CurrentZoneEditing[]), key);
+	strcopy(CurrentQuestEditing[client], sizeof(CurrentQuestEditing[]), key);
 	Quests_EditorMenu(client);
 }
 
-static void NPCPicker(int client, const char[] key)
+static void AdjustQuest(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
-		CurrentZoneEditing[client][0] = 0;
-		Editor_MainMenu(client);
-		return;
-	}
-
-	strcopy(CurrentNPCEditing[client], sizeof(CurrentNPCEditing[]), key);
-	Quests_EditorMenu(client);
-}
-
-static void AdjustNPC(int client, const char[] key)
-{
-	if(StrEqual(key, "back"))
-	{
-		CurrentNPCEditing[client][0] = 0;
+		CurrentQuestEditing[client][0] = 0;
 		Quests_EditorMenu(client);
 		return;
 	}
 
 	QuestKv.Rewind();
-	if(!QuestKv.JumpToKey(CurrentNPCEditing[client]))
-	{
-		QuestKv.JumpToKey(CurrentNPCEditing[client], true);
-		QuestKv.SetString("zone", CurrentZoneEditing[client]);
-	}
+	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
 
-	if(StrEqual(key, "pos"))
-	{
-		float pos[3];
-		GetClientPointVisible(client, _, _, _, pos);
-		QuestKv.SetVector("pos", pos);
-	}
-	else if(StrEqual(key, "ang"))
-	{
-		float ang[3];
-		GetClientEyeAngles(client, ang);
-		QuestKv.SetVector("ang", ang);
-	}
-	else if(StrEqual(key, "delete"))
+	if(StrEqual(key, "delete"))
 	{
 		QuestKv.DeleteThis();
-		CurrentNPCEditing[client][0] = 0;
+		CurrentQuestEditing[client][0] = 0;
+	}
+	else if(key[0] == '_')
+	{
+		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key[1]);
+		Quests_EditorMenu(client);
 	}
 	else
 	{
-		strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+		strcopy(CurrentSectionEditing[client], sizeof(CurrentSectionEditing[]), key);
 		Quests_EditorMenu(client);
 		return;
 	}
 
 	SaveQuestsKv();
 	Quests_ConfigSetup();
-	Zones_Rebuild();
 	Quests_EditorMenu(client);
 }
 
-static void AdjustNPCKey(int client, const char[] key)
+static void AdjustQuestSection(int client, const char[] key)
+{
+	if(StrEqual(key, "back"))
+	{
+		CurrentSectionEditing[client][0] = 0;
+		Quests_EditorMenu(client);
+		return;
+	}
+
+	strcopy(CurrentKeyEditing[client], sizeof(CurrentKeyEditing[]), key);
+	Quests_EditorMenu(client);
+}
+
+static void AdjustQuestSharedKey(int client, const char[] key)
 {
 	if(StrEqual(key, "back"))
 	{
@@ -764,11 +849,23 @@ static void AdjustNPCKey(int client, const char[] key)
 	}
 
 	QuestKv.Rewind();
-	QuestKv.JumpToKey(CurrentNPCEditing[client], true);
-
-	if(key[0])
+	QuestKv.JumpToKey(CurrentQuestEditing[client], true);
+	if(CurrentSectionEditing[client][0])
+		QuestKv.JumpToKey(CurrentSectionEditing[client], true);
+	
+	int value;
+	if(StrEqual(CurrentKeyEditing[client], "repeattime"))
 	{
-		QuestKv.SetString(CurrentKeyEditing[client], key);
+		value = RoundFloat(StringToFloat(key) * 3600.0);
+	}
+	else
+	{
+		value = StringToInt(key);
+	}
+
+	if(value > 0)
+	{
+		QuestKv.SetNum(CurrentKeyEditing[client], value);
 	}
 	else
 	{
@@ -779,7 +876,6 @@ static void AdjustNPCKey(int client, const char[] key)
 
 	SaveQuestsKv();
 	Quests_ConfigSetup();
-	Zones_Rebuild();
 	Quests_EditorMenu(client);
 }
 
