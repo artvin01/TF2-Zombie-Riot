@@ -34,7 +34,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
 	float GameTime = GetGameTime();
 
-	i_swinged[attacker]+;
+	i_swinged[attacker] += 1;
 
 	if(f_rest_time[attacker] < GameTime)
 	{
