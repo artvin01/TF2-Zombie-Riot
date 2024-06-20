@@ -1,6 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
-static int i_shotsfired[MAXTF2PLAYERS];
+static int i_swinged[MAXTF2PLAYERS];
 
 #define OBUCH_MAX_DMG 1.25
 #define OBUCH_MAX_SPEED 0.5
