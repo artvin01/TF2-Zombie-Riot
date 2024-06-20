@@ -41,6 +41,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 	float GameTime = GetGameTime();
 
 	i_swinged[attacker] += 1;
+	PrintToChatAll("Hit");
 
 	if(f_rest_time[attacker] < GameTime)
 	{
@@ -62,7 +63,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		}
 	}
 
-	f_rest_time[attacker] = GameTime + 0.25;
+	f_rest_time[attacker] = GameTime + 0.05;
 
 }
 
