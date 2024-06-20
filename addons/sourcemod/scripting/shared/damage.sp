@@ -1507,13 +1507,12 @@ static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflic
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
-	}
-	
-	#if defined RUINA_BASE
+	}	
+#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
 	{
 		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
-	#endif
+#endif
 }
 #endif	// Non-RTS
