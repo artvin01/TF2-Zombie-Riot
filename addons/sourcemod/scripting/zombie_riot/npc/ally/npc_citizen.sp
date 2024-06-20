@@ -1482,7 +1482,7 @@ int Citizen_ShowInteractionHud(int entity, int client)
 	}
 	return 0;
 }
-
+/*
 int Citizen_BuildingInteract(int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1496,7 +1496,7 @@ int Citizen_BuildingInteract(int entity)
 	}
 	return 0;
 }
-
+*/
 bool Citizen_Interact(int client, int entity)
 {
 	if(i_NpcInternalId[entity] == NPCId)
@@ -1542,7 +1542,7 @@ bool Citizen_GivePerk(int entity, int type)
 	flPos[2] += 100.0;
 
 	npc.m_bRebelAgressive = false;
-
+/*
 	switch(npc.m_iBuildingType)
 	{
 		case 1:
@@ -1580,6 +1580,7 @@ bool Citizen_GivePerk(int entity, int type)
 		SDKUnhook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmit);
 		SDKHook(npc.m_iWearable2, SDKHook_SetTransmit, ParticleTransmitCitizen);
 	}
+*/
 	return true;
 }
 
@@ -1749,12 +1750,12 @@ void Citizen_SetupStart()
 				
 				static char buffer[32];
 				entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 				{
-					GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-					if(!StrContains(buffer, "zr_packapunch"))
+					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+					if(!StrContains(buffer, "obj_packapunch"))
 					{
-						WorldSpaceCenter(entity, vecTarget);
+						GetAbsOrigin(entity, vecTarget);
 						float dist = GetVectorDistance(vecTarget, vecMe, true);
 						if(!found || dist < distance)
 						{
@@ -1763,7 +1764,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
-				
+				/*
 				for(int client = 1; client <= MaxClients; client++)
 				{
 					if(IsClientInGame(client))
@@ -1785,6 +1786,7 @@ void Citizen_SetupStart()
 						}
 					}
 				}
+					*/
 				
 				if(Store_FindBarneyAGun(npc.index, npc.m_iGunValue, RoundToFloor(float(CurrentCash) * GetRandomFloat(npc.m_bAlyx ? 0.3 : 0.22, npc.m_bAlyx ? 0.4 : 0.3)), view_as<bool>(found)))
 				{
@@ -2024,14 +2026,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_sentrygun")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_healingstation"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_healingstation"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2041,7 +2043,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2063,8 +2065,8 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
+		*/
 	}
-
 	if(IsValidEnemy(npc.index, npc.m_iTarget, npc.m_bCamo))
 	{
 		npc.m_flidle_talk = FAR_FUTURE;
@@ -2724,14 +2726,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_perkmachine"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_perkmachine"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2742,7 +2744,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2765,7 +2767,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
@@ -2794,14 +2796,14 @@ public void Citizen_ClotThink(int iNPC)
 		}
 		
 		entity = MaxClients + 1;
-		while((entity = FindEntityByClassname(entity, "obj_dispenser")) != -1)
+		while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 		{
 			if(HealingCooldown[entity] < gameTime)
 			{
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "zr_armortable"))
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_armortable"))
 				{
-					WorldSpaceCenter(entity, vecTarget);
+					GetAbsOrigin(entity, vecTarget);
 					float dist = GetVectorDistance(vecTarget, vecMe, true);
 					if(dist < distance)
 					{
@@ -2812,7 +2814,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-		
+		/*
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(HealingCooldown[client] < gameTime && IsClientInGame(client))
@@ -2835,7 +2837,7 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		*/
 		if(npc.m_bSeakingGeneric)
 		{
 			WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
@@ -3346,15 +3348,15 @@ static bool RunFromNPC(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	if(StrContains(npc_classname, "npc_sawrunner"))
+	if(StrContains(npc_classname, "npc_sawrunner") != -1)
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_combine") && b_StaticNPC[entity])
+	else if(StrContains(npc_classname, "npc_stalker_combine") != -1 && b_StaticNPC[entity])
 	{
 		return true;
 	}
-	else if(StrContains(npc_classname, "npc_stalker_father") && b_StaticNPC[entity] && !b_movedelay[entity])
+	else if(StrContains(npc_classname, "npc_stalker_father") != -1 && b_StaticNPC[entity] && !b_movedelay[entity])
 	{
 		return true;
 	}

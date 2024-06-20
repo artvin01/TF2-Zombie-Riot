@@ -7,7 +7,7 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
@@ -174,7 +174,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
+void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
 		if(weapon < 1)
@@ -292,9 +292,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
-			guraneedGib = true;
-
-			
+			view_as<CClotBody>(victim).m_bGib = true;
+		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)
 		{

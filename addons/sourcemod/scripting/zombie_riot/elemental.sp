@@ -15,7 +15,7 @@ enum
 
 static const char ElementName[][] =
 {
-	"CO",
+	"AC",
 	"CH",
 	"CY",
 	"NE"
@@ -62,6 +62,9 @@ stock void Elemental_RemoveDamage(int entity, int amount)
 
 static int TriggerDamage(int entity, int type)
 {
+	if(entity <= MaxClients)
+		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
+	
 	switch(type)
 	{
 		case Element_Necrosis:
@@ -123,7 +126,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%t %d>", ElementName[low], lowHealth);
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d>", ElementName[low], lowHealth);
 	return true;
 }
 
@@ -194,8 +197,8 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health < 1)
+		int health = Object_GetRepairHealth(victim);
+		if(health < 1 || ignoreArmor)
 		{
 			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 		}
@@ -281,7 +284,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, 1.025, 1.0);			
+		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.001), 10.0);
 	}
 }
 
@@ -335,6 +338,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 			}
 		}
 	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.001), 10.0);
+	}
 }
 
 void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
@@ -364,8 +371,8 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				if(b_thisNpcIsARaid[victim])
 					time = 3.0;
 				
-				if(f_PotionShrinkEffect[victim] < (GetGameTime() + time))
-					f_PotionShrinkEffect[victim] =  (GetGameTime() + time);
+				if(f_EnfeebleEffect[victim] < (GetGameTime() + time))
+					f_EnfeebleEffect[victim] =  (GetGameTime() + time);
 			}
 		}
 	}

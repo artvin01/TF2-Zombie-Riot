@@ -5,9 +5,6 @@
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
-#if defined RPG || defined ZR
-float f_MedicCallIngore[MAXTF2PLAYERS];
-#endif
 
 void Commands_PluginStart()
 {
@@ -88,7 +85,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	else if(StrEqual(buffer, "+helpme_server", false))
 	{
 		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
-		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		f_MedicCallIngore[client] = GetGameTime() + 0.5;
 		bool has_been_done = BuildingCustomCommand(client);
 		if(has_been_done)
 		{
@@ -167,6 +164,9 @@ public Action OnJoinClass(int client, const char[] command, int args)
 		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
 		return Plugin_Continue;
 	}
+#if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
+#endif
 	//save clips to not insta reload. lol.
 	Clip_SaveAllWeaponsClipSizes(client);
 	int Health = GetClientHealth(client);
@@ -238,14 +238,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
-#if defined ZR
-	if(client && !AllowBuildingCurrently())
-		return Plugin_Handled;
-		
-	return Plugin_Continue;
-#else
 	return Plugin_Handled;
-#endif
 }
 
 public Action OnDropItem(int client, const char[] command, int args)
@@ -314,6 +307,7 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 					RPGCommands_TriggerMedicCall(client);
 #endif
 #if defined ZR
+					f_MedicCallIngore[client] = GetGameTime() + 0.5;
 					BuildingCustomCommand(client);
 #endif
 					return Plugin_Handled;

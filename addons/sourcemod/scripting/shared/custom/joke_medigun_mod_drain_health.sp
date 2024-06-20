@@ -340,15 +340,15 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
-		else if(What_type_Heal == 3.0)
+/*		else if(What_type_Heal == 3.0)
 		{
 			int new_ammo = GetAmmo(owner, 3);
 			int medigun_mode = GetEntProp(medigun, Prop_Send, "m_nChargeResistType");
-			/*
+			
 				0 = Bullet
 				1 = Blast
 				2 = Fire
-			*/
+			
 			
 			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 3) > 0)
 			{
@@ -481,6 +481,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
+		*/
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);

@@ -504,9 +504,7 @@
 	}
 	"Elite Sniper Pap 1"
 	{
-		"en"		"Deals more damage and causes targets to slow and take more damage."
-		"ru"		"Наносит больше урона и заставляет цели замедляться и получать больше урона."
-		"chi"       "造成更多伤害，并使目标减速和受到更多伤害。"
+		"en"		"Deals more damage and causes targets to slow and take more damage.\nto apply debuff, half charge within scope at minimum."
 	}
 	"Elite Sniper Pap 2"
 	{
@@ -1258,90 +1256,55 @@
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 	}
-	
-	"Buildable Elevation Desc"
-	{
-		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
-		"ru"	"В основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
-	    "chi"   "这主要是为了提升你的哨兵，让它可以更好地攻击，慎用。这个路障的生命值极低。"
-	}
-	
-	"Buildable Barricade Desc"
-	{
-		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
-	}
 	"There Can Be Only One Desc"
 	{
 		"en"	"Buy grigori some ammo and ontop of that, refesh the store!"
 		"chi"	"给神父买点弹药！（同时刷新商店）"
 	}
 	
-	"Buildable Barricade Desc Rogue"
+	"Decorative Object Desc"
 	{
-		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
-		"ru"	"Вы получаете 2 бесплатные баррикады в каждом бою, но из-за этого вы можете поставить только 2 баррикады одновременно."
-		"chi"	"每局获得两个免费路障，上限两个。"
+		"en"	"Good for stacking buildings, low hp."
 	}
-	
-	"Buildable Armortable Desc"
+	"Barricade Desc"
 	{
-		"en"	"usage of this machine will give you Armour.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам броню.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器会给你护甲。\n第一次购买时价格双倍"
+		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
 	}
-	
-	"Buildable Ammobox Desc"
+	"Armor Table Desc"
 	{
-		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам патроны для вашего текущего оружия.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器会给你目前所持的武器补充弹药。\n第一次购买时价格双倍"
+		"en"	"using gives you Armour."
 	}
-	
-	"Buildable Perk Machine Desc"
+	"Ammo Box Desc"
 	{
-		"en"	"usage of this machine will give you an extra perk that vanishes on death/downed.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам доп. перк, который исчезает при смерти/выведении из строя.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器可以选择一个Buff,但这会在你死亡后失效。\n第一次购买时价格双倍"
+		"en"	"using gives you ammo for your holding weapon."
 	}
-	
-	"Buildable Pack-a-Punch Desc"
+	"Perk Machine Desc"
 	{
-		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price.\nIf any other player with more upgrades then you exists that also has a pap, then they will get the majority of the cash."
-		"ru"	"Использование этой машины даст вам усиление вашему оружию за кредиты.\nПервая покупка стоит вдвое дороже.\nЕсли у любого другого игрока, у которого больше улучшений, чем у вас, также есть улучшайзер, то он получит большую часть денег."
-		"chi"	"使用机器可花钱升级武器。\n如果有另一个玩家也有升级机器，并且建筑升级比你高，他们则会获得你一部分建筑收入。"
+		"en"	"using will give you a perk that vanishes on death/downed."
 	}
-	
-	"Buildable Sentry Desc"
+	"Pack-a-Punch Desc"
 	{
-		"en"	"Infinite uses with cooldown.\nGood against everything."
-		"chi"	"无限使用次数，低冷却。\n稳定输出。"
+		"en"	"gives weapnos upgrades, person with the most upgrades gets the most cash instead."
 	}
-	
-	"Buildable Mortar Desc"
+	"Sentrygun Desc"
 	{
-		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown.\nDeals massive group damage, good against massses."
-		"ru"	"Нажмите «МЕДИК!», чтобы выбрать место, на которое мортира выпустит снаряд. Используется бесконечно с перезарядкой."
-		"chi"   "按E选择迫击炮发射炮弹的地点。无限次使用。"
+		"en"	"Good against everything."
 	}
-	
-	"Buildable Railgun Desc"
+	"Mortar Desc"
 	{
-		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown.\nDeals huge damage to the first enemy hit, good against single bosses."
-		"chi"	"呼叫医生发射高伤害激光。\n可穿通敌人，击中的第一个敌人受到极高伤害。\n对boss很有效。"
+		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto.\nDeals massive group damage, good against massses."
 	}
-	
-	"Buildable Healing Station Desc"
+	"Railgun Desc"
+	{
+		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
+	}
+	"Food Fridge Desc"
 	{
 		"en"	"Heals for 30 Health, scales with medigun upgrades."
-		"ru"	"Лечит на 30 ед. здоровья, увеличивается с улучшением лечеб. пушки."
-		"chi"   "治疗30点生命值，随着医疗升级而增加。"
 	}
-	
-	"Buildable Village Desc"
+	"Village Desc"
 	{
-		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
+		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
 	}
@@ -1972,12 +1935,12 @@
 		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nM2技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 	}
 
-	"Buildable Barracks Desc"
+	"Barracks Desc"
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
 		"chi"	"兵营内可以训练出你的私人军队！\n建筑升级加强兵营NPC，修复升级提供更多资源。\n对NPC按装弹键命令他们。"
 	}
-	"Buildable Barracks Desc Extra"
+	"Barracks Desc Extra"
 	{
 		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
 		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
@@ -3019,7 +2982,6 @@
 	"Tinker Workshop Desc"
 	{
 		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes."
-		"chi"	"高血量建筑，一直可以被修复。\n可以为武器附加随机属性。"
 	}
 	"Tinker Research Desc"
 	{
@@ -3072,5 +3034,21 @@
 	"West Pap 3 Desc"
 	{
 		"en"	"Increased damage, reload speed, and firerate"
+	}
+	"Railgun"
+	{
+		"en"	"Railgun"
+	}
+	"Railgun Desc"
+	{
+		"en"	"Fires a strong laser, weakened when mounted."
+	}
+	"Barracks"
+	{
+		"en"	"Barracks"
+	}
+	"Barracks Desc"
+	{
+		"en"	"Train your own army and upgrade them."
 	}
 }

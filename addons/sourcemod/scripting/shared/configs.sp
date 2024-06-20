@@ -67,6 +67,7 @@ void Configs_ConfigsExecuted()
 #endif
 	
 #if defined ZR
+	Building_ConfigSetup();
 	Items_SetupConfig();
 	Store_ConfigSetup();
 	Waves_SetupVote(kv);

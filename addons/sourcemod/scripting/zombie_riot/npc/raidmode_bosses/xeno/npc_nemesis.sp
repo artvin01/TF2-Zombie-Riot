@@ -1603,22 +1603,24 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 			SetGlobalTransTarget(victim);
 			ShowHudText(victim,  -1, "%t", "You have been Infected by Nemesis");
 			ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");		
-			float flPos[3];
-			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-			flPos[2] += 100.0;
-			int particle = ParticleEffectAt_Building_Custom(flPos, "powerup_icon_plague", victim);
-			flPos[2] -= 100.0;
-			int particle2 = ParticleEffectAt_Building_Custom(flPos, "powerup_plague_carrier", victim);
-			CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
+//		float flPos[3];
+//		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+//		flPos[2] += 100.0;
+//		int particle = ParticleEffectAt_Building_Custom(flPos, "powerup_icon_plague", victim);
+//		flPos[2] -= 100.0;
+//		int particle2 = ParticleEffectAt_Building_Custom(flPos, "powerup_plague_carrier", victim);
+//		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+//		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
 			int InfectionCount = 20;
 			StartBleedingTimer_Against_Client(victim, entity, 100.0, InfectionCount);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));
 			pack.WriteCell(EntIndexToEntRef(entity));
-			pack.WriteCell(EntIndexToEntRef(particle));
-			pack.WriteCell(EntIndexToEntRef(particle2));
+//			pack.WriteCell(EntIndexToEntRef(particle));
+//			pack.WriteCell(EntIndexToEntRef(particle2));
+			pack.WriteCell(-1);
+			pack.WriteCell(-1);
 			pack.WriteCell(InfectionCount);
 		}
 	}

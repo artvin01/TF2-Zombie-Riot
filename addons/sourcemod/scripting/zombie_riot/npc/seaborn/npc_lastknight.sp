@@ -244,7 +244,7 @@ public void LastKnight_ClotThink(int iNPC)
 					if(IsClientInGame(client) && GetClientTeam(client) == 2)
 					{
 						int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-						if(entity != INVALID_ENT_REFERENCE && i_WhatBuilding[entity] == BuildingSummoner)
+						if(entity != INVALID_ENT_REFERENCE/* && i_WhatBuilding[entity] == BuildingSummoner*/)
 						{
 							owner = client;
 							break;

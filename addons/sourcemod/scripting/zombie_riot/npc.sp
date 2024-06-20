@@ -16,6 +16,11 @@ static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
 static ArrayList NPCList;
 
+int SaveCurrentHpAt = -1;
+int SaveCurrentHpAtFirst = -1;
+int SaveCurrentHurtAt = -1;
+int HurtIttirationAt = 0;
+float AntiChatSpamDebug;
 enum struct NPCData
 {
 	char Plugin[64];
@@ -34,6 +39,7 @@ enum struct NPCData
 // FileNetwork_ConfigSetup needs to be ran first
 void NPC_ConfigSetup()
 {
+	AntiChatSpamDebug = 0.0;
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
@@ -57,6 +63,22 @@ void NPC_ConfigSetup()
 	PoisonZombie_OnMapStart_NPC();
 	FortifiedPoisonZombie_OnMapStart_NPC();
 	FatherGrigori_OnMapStart_NPC();
+
+	// Buildings
+	ObjectBarricade_MapStart();
+	ObjectAmmobox_MapStart();
+	ObjectDecorative_MapStart();
+	ObjectArmorTable_MapStart();
+	ObjectPerkMachine_MapStart();
+	ObjectPackAPunch_MapStart();
+	ObjectHealingStation_MapStart();
+	ObjectTinkerAnvil_MapStart();
+	ObjectSentrygun_MapStart();
+	ObjectMortar_MapStart();
+	ObjectRailgun_MapStart();
+	ObjectBarracks_MapStart();
+	ObjectVillage_MapStart();
+	// Buildings
 	
 	Combine_Police_Pistol_OnMapStart_NPC();
 	CombinePoliceSmg_OnMapStart_NPC();
@@ -482,7 +504,10 @@ int NPC_Add(NPCData data)
 		ThrowError("Invalid function name");
 
 	if(!TranslationPhraseExists(data.Name))
+	{
 		LogError("Translation '%s' does not exist", data.Name);
+		strcopy(data.Name, sizeof(data.Name), "nothing");
+	}
 
 	return NPCList.PushArray(data);
 }
@@ -735,6 +760,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_expidonsa_base.sp"
 #include "zombie_riot/npc/seaborn/npc_nethersea_shared.sp"
 
+//BUILDINGS
+#include "zombie_riot/object/obj_shared.sp"
+#include "zombie_riot/object/obj_armortable.sp"
+#include "zombie_riot/object/obj_decorative.sp"
+#include "zombie_riot/object/obj_perkmachine.sp"
+#include "zombie_riot/object/obj_healingstation.sp"
+#include "zombie_riot/object/obj_packapunch.sp"
+#include "zombie_riot/object/obj_barricade.sp"
+#include "zombie_riot/object/obj_ammobox.sp"
+#include "zombie_riot/object/obj_tinker_anvil.sp"
+#include "zombie_riot/object/obj_sentrygun.sp"
+#include "zombie_riot/object/obj_mortar.sp"
+#include "zombie_riot/object/obj_railgun.sp"
+#include "zombie_riot/object/obj_village.sp"
+#include "zombie_riot/object/obj_barracks.sp"
 //NORMAL
 
 #include "zombie_riot/npc/normal/npc_headcrabzombie.sp"
@@ -982,6 +1022,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bunker/npc_bunker_king_skeleton.sp"
 #include "zombie_riot/npc/bunker/npc_bunker_hhh.sp"
 */
+
+
 #include "zombie_riot/npc/ally/npc_barrack.sp"
 #include "zombie_riot/npc/ally/npc_barrack_militia.sp"
 #include "zombie_riot/npc/ally/npc_barrack_archer.sp"
@@ -994,7 +1036,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/npc_barrack_champion.sp"
 #include "zombie_riot/npc/ally/npc_barrack_monk.sp"
 #include "zombie_riot/npc/ally/npc_barrack_hussar.sp"
-#include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 #include "zombie_riot/npc/ally/npc_barrack_thorns.sp"
 #include "zombie_riot/npc/ally/npc_barrack_teutonic_knight.sp"
 #include "zombie_riot/npc/ally/npc_barrack_villager.sp"
@@ -1012,6 +1053,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
+
+
+#include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 
 #include "zombie_riot/npc/respawn/npc_stalker_combine.sp"
 #include "zombie_riot/npc/respawn/npc_stalker_father.sp"
@@ -1159,3 +1203,66 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+
+void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
+{
+	return;
+	//currently not needed!
+/*
+	if(!Citizen_IsIt(victim))
+		return;
+
+	//Reset all
+	char buffer[36];
+	char buffer2[36];
+	GetEntityClassname(victim, buffer, sizeof(buffer));
+	GetEntityClassname(attacker, buffer2, sizeof(buffer2));
+	if(HurtID < SaveCurrentHurtAt)
+	{
+		if(SaveCurrentHurtAt != -1)
+		{
+			if(SaveCurrentHpAtFirst == SaveCurrentHpAt)
+			{
+				LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "PREVIOUS NPC WAS INVULNERABLE? HurtIttirationAt %i",HurtIttirationAt);
+				if(AntiChatSpamDebug < GetGameTime())
+				{
+					AntiChatSpamDebug = GetGameTime() + 15.0;
+					PrintToChatAll("[Debug] PLEASE contact an admin!!!! This might spam! It looks like a friendly NPC cant die! Please give them this number too! %i",HurtIttirationAt);
+				}
+			//	HurtIttirationAt = 9999999;
+			//	RemoveEntity(victim);
+			}
+		}
+		SaveCurrentHpAt = 0;
+		SaveCurrentHurtAt = 0;
+		SaveCurrentHpAtFirst = 0;
+		HurtIttirationAt++;
+		LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "------------------------------");
+	}
+	SaveCurrentHurtAt = HurtID;
+
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(HurtID == 1)
+	{
+		SaveCurrentHpAtFirst = health;
+	}
+	SaveCurrentHpAt = health;
+	if(Citizen_ThatIsDowned(victim))
+		SaveCurrentHpAt = 0;
+		
+	LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "HurtIttirationAt %i Victim Id: %i Victimclassname %s VictimTeam %i\n	Attacker Id: %i Attackerclassname %s attackerTeam %i Damage %.1f HurtID %i victimAliveState %i\n AttackerAliveState %i AtBeginningHealth %i Current health %i ",
+	HurtIttirationAt,
+	victim,
+	buffer,
+	GetTeam(victim),
+	attacker,
+	buffer2,
+	GetTeam(attacker),
+	damage,
+	HurtID,
+	GetEntProp(victim, Prop_Data, "m_lifeState"),
+	GetEntProp(attacker, Prop_Data, "m_lifeState"),
+	SaveCurrentHpAtFirst,
+	SaveCurrentHpAt);
+	*/
+}

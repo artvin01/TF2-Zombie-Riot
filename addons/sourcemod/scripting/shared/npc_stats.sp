@@ -72,6 +72,7 @@ static float f3_WasPathingToHere[MAXENTITIES][3];
 Function func_NPCDeath[MAXENTITIES];
 Function func_NPCDeathForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
+Function func_NPCOnTakeDamagePost[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
 Function func_NPCFuncWin[MAXENTITIES];
 Function func_NPCAnimEvent[MAXENTITIES];
@@ -89,8 +90,8 @@ Function func_NPCInteract[MAXENTITIES];
 static int g_sModelIndexBloodDrop;
 static int g_sModelIndexBloodSpray;
 static float f_TimeSinceLastStunHit[MAXENTITIES];
-static bool b_EntityInCrouchSpot[MAXENTITIES];
-static bool b_NpcResizedForCrouch[MAXENTITIES];
+//static bool b_EntityInCrouchSpot[MAXENTITIES];
+//static bool b_NpcResizedForCrouch[MAXENTITIES];
 
 int i_EntitiesHitAoeSwing_NpcSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax_NpcSwing; //How many do we stack
@@ -231,8 +232,8 @@ void OnMapStart_NPC_Base()
 	HookEntityOutput("trigger_multiple", "OnEndTouch", NPCStats_EndTouch);
 
 	Zero(f_TimeSinceLastStunHit);
-	Zero(b_EntityInCrouchSpot);
-	Zero(b_NpcResizedForCrouch);
+//	Zero(b_EntityInCrouchSpot);
+//	Zero(b_NpcResizedForCrouch);
 	Zero(b_PlayerIsInAnotherPart);
 	Zero(b_EntityIsStairAbusing);
 	Zero(f_PredictDuration);
@@ -279,10 +280,12 @@ public Action NPCStats_StartTouch(const char[] output, int entity, int caller, f
 		char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
+/*
 			if(StrEqual(name, "npc_crouch_simulation"))
 			{
 				b_EntityInCrouchSpot[caller] = true;
 			}
+*/
 			if(StrEqual(name, "zr_spawner_scaler"))
 			{
 				b_PlayerIsInAnotherPart[caller] = true;
@@ -304,10 +307,12 @@ public Action NPCStats_EndTouch(const char[] output, int entity, int caller, flo
 		char name[32];
 		if(GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name)))
 		{
+/*
 			if(StrEqual(name, "npc_crouch_simulation"))
 			{
 				b_EntityInCrouchSpot[caller] = false;
 			}
+*/
 			if(StrEqual(name, "zr_spawner_scaler"))
 			{
 				b_PlayerIsInAnotherPart[caller] = false;
@@ -341,9 +346,8 @@ methodmap CClotBody < CBaseCombatCharacter
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
-						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
-						bool Ally_Collideeachother = false,
-						bool ForceNpcClipping = false)
+						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						bool Ally_Collideeachother = false)
 #endif
 	{
 
@@ -575,7 +579,6 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void PlayGibSoundMetal() { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
 	
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
 	}
@@ -1212,11 +1215,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_CantCollidieAlly[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_CantCollidieAlly[this.index] = TempValueForProperty; }
 	}
-	property bool bBuildingIsStacked
-	{
-		public get()							{ return b_BuildingIsStacked[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_BuildingIsStacked[this.index] = TempValueForProperty; }
-	}
 	property bool bBuildingIsPlaced
 	{
 		public get()							{ return b_bBuildingIsPlaced[this.index]; }
@@ -1340,11 +1338,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
+		/*
 		if(b_NpcResizedForCrouch[this.index])
 		{
 			speed_for_return *= 0.33333;
 		}
-		#if defined RUINA_BASE
+		*/
+		#if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index]> Gametime)
 		{
 			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
@@ -2268,6 +2268,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		int item = CreateEntityByName("prop_dynamic_override");
 		if(!IsValidEntity(item))
 		{
+			PrintToServer("Failed!!! Retry!!!!");
 			//warning, warning!!!
 			//infinite loop this untill it works!
 			//Tf2 has a very very very low chance to fail to spawn a prop, because reasons!
@@ -3372,19 +3373,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
-		func_NPCDeath[pThis] = INVALID_FUNCTION;
-		func_NPCOnTakeDamage[pThis] = INVALID_FUNCTION;
-		func_NPCThink[pThis] = INVALID_FUNCTION;
-		func_NPCDeathForward[pThis] = INVALID_FUNCTION;
-		func_NPCFuncWin[pThis] = INVALID_FUNCTION;
-		func_NPCAnimEvent[pThis] = INVALID_FUNCTION;
-		func_NPCActorEmoted[pThis] = INVALID_FUNCTION;
-		func_NPCInteract[pThis] = INVALID_FUNCTION;
+		NPCStats_SetFuncsToZero(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
 		MakeObjectIntangeable(pThis);
 		b_ThisEntityIgnored[pThis] = true;
-	//	b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[pThis] = true;
 	//Do not remove pather here.
 		RemoveNpcFromEnemyList(pThis, true);
 		b_StaticNPC[pThis] = false;
@@ -3943,8 +3937,7 @@ public bool TeleportDetectEnemy(int entity, int contentsMask, any iExclude)
 	}
 	return false;
 }
-
-stock bool Player_Teleport_Safe(int client, float endPos[3])
+stock bool Player_Teleport_Safe(int client, float endPos[3], bool teleport = true)
 {
 	bool FoundSafeSpot = false;
 
@@ -4058,7 +4051,8 @@ stock bool Player_Teleport_Safe(int client, float endPos[3])
 
 	if(FoundSafeSpot)
 	{
-		TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
+		if(teleport)
+			TeleportEntity(client, endPos, NULL_VECTOR, NULL_VECTOR);
 	}
 	return FoundSafeSpot;
 }
@@ -4185,7 +4179,7 @@ public int Action_CommandApproach(NextBotAction action, int actor, const float p
 
 bool Allowbuildings_BulletAndMeleeTraceAlly = false;
 
-void Allowbuildings_BulletAndMeleeTraceAllyLogic(bool Enableornot)
+stock void Allowbuildings_BulletAndMeleeTraceAllyLogic(bool Enableornot)
 {
 	Allowbuildings_BulletAndMeleeTraceAlly = Enableornot;
 }
@@ -4201,7 +4195,19 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 		}
 	}
 #endif
-	if(!Allowbuildings_BulletAndMeleeTraceAlly && i_IsABuilding[entity])
+	if(Allowbuildings_BulletAndMeleeTraceAlly)
+	{
+		if(b_ThisEntityIgnored[entity])
+		{
+			return false;
+		}	
+		if(i_IsABuilding[entity])
+			return !(entity == iExclude);
+			
+		return false;
+	}
+	
+	if(i_IsABuilding[entity])
 	{
 		return false;
 	}
@@ -4209,15 +4215,14 @@ public bool BulletAndMeleeTraceAlly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
+
 	if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
-
 	else if(!b_NpcHasDied[entity])
 	{
 		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return !(entity == iExclude);
-			
 		}
 		else if (b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
 		{
@@ -4518,16 +4523,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
-			
-#if defined ZR
-			if(b_bBuildingIsPlaced[enemy])
-#elseif !defined RTS
-			if(!GetEntProp(enemy, Prop_Send, "m_bCarried") &&
-				!GetEntProp(enemy, Prop_Send, "m_bPlacing"))
-#endif
-			{
-				return true;
-			}
+			if(b_ThisEntityIgnoredBeingCarried[enemy])
+				return false;
+				
+			return true;
 		}
 	}
 	return false;
@@ -4777,18 +4776,15 @@ stock int GetClosestTarget(int entity,
 	if(!IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers))
 #endif
 	{
-		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+		int entity_close = -1;
+		while((entity_close=FindEntityByClassname(entity_close, "obj_*")) != -1) //BUILDINGS!
 		{
-			int entity_close = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if(entity_close != entity && IsValidEntity(entity_close) && entity_close != ingore_client)
+			if(entity_close != entity && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
 				if(GetTeam(entity_close) != SearcherNpcTeam && !b_ThisEntityIgnored[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //make sure it doesnt target buildings that are picked up and special cases with special building types that arent ment to be targeted
 				{
-#if defined ZR
-					if(!npc.bBuildingIsPlaced)
-						continue;
-#elseif defined RTS
+#if defined RTS
 					if(ExtraValidityFunction == INVALID_FUNCTION)
 					{
 						// Ignore resources and allies
@@ -4802,9 +4798,6 @@ stock int GetClosestTarget(int entity,
 						if(!Object_GetResource(entity_close) && RTS_IsEntAlly(entity, entity_close))
 							continue;
 					}
-#else
-					if(GetEntProp(entity_close, Prop_Send, "m_bCarried") || GetEntProp(entity_close, Prop_Send, "m_bPlacing"))
-						continue;
 #endif
 
 #if !defined RTS
@@ -5495,7 +5488,7 @@ public void NpcBaseThink(int iNPC)
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
 		NpcDrawWorldLogic(iNPC);
-		f_TextEntityDelay[iNPC] = GetGameTime() + 0.25;
+		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
 		Npc_DebuffWorldTextUpdate(npc);
 		IsEntityInvincible_Shield(iNPC);
 #if defined RTS
@@ -5544,7 +5537,7 @@ public void NpcBaseThink(int iNPC)
 		RPGNpc_UpdateHpHud(iNPC);
 	}
 #endif
-
+	/*
 	if(b_EntityInCrouchSpot[iNPC])
 	{
 		if(!b_NpcResizedForCrouch[iNPC])
@@ -5563,6 +5556,7 @@ public void NpcBaseThink(int iNPC)
 			b_NpcResizedForCrouch[iNPC] = false;
 		}
 	}
+	*/
 	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
@@ -5571,7 +5565,6 @@ public void NpcBaseThink(int iNPC)
 #else
 	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red && !i_NpcIsABuilding[iNPC])
 #endif
-
 	{
 		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
@@ -5612,12 +5605,7 @@ public void NpcBaseThink(int iNPC)
 				hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 				hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 			}
-			if(b_NpcResizedForCrouch[iNPC])
-			{
-				hullcheckmaxs_Player[2] = 41.0;
-			}
 		
-
 			int Hit_player = IsSpaceOccupiedOnlyPlayers(flMyPos, hullcheckmins_Player, hullcheckmaxs_Player, iNPC);
 			if (Hit_player) //The boss will start to merge with player, STOP!
 			{
@@ -5707,7 +5695,7 @@ public void NpcBaseThink(int iNPC)
 			{
 				if(f_UnstuckTimerCheck[iNPC] < GetGameTime())
 				{
-					f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; 
+					f_UnstuckTimerCheck[iNPC] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
 					//every 3 seconds we shall do an emenergency check
 				}
 				else
@@ -5725,7 +5713,7 @@ public void NpcBaseThink(int iNPC)
 			}
 		}
 		
-		f_UnstuckTimerCheck[iNPC] = GetGameTime() + 3.0; //they were in the air regardless, add time.
+		f_UnstuckTimerCheck[iNPC] = GetGameTime() + GetRandomFloat(2.8, 3.5);  //they were in the air regardless, add time.
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
 		if(b_IsGiant[iNPC])
@@ -5748,10 +5736,12 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
+		/*
 		if(b_NpcResizedForCrouch[iNPC])
 		{
 			hullcheckmaxs[2] = 41.0;
 		}
+		*/
 		hullcheckmins[2] += 17.0;
 		if (npc.IsOnGround()) //npcs can slightly clip if on ground due to giants massive height for example.
 		{
@@ -7662,6 +7652,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 {
 	func_NPCDeath[entity] = INVALID_FUNCTION;
 	func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
+	func_NPCOnTakeDamagePost[entity] = INVALID_FUNCTION;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	func_NPCDeathForward[entity] = INVALID_FUNCTION;
 	func_NPCFuncWin[entity] = INVALID_FUNCTION;
@@ -7748,7 +7739,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_CantCollidie[entity] = false;
 	b_CollidesWithEachother[entity] = false;
 	b_CantCollidieAlly[entity] = false;
-	b_BuildingIsStacked[entity] = false;
 	b_bBuildingIsPlaced[entity] = false;
 	b_XenoInfectedSpecialHurt[entity] = false;
 	fl_XenoInfectedSpecialHurtTime[entity] = 0.0;
@@ -7878,6 +7868,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CudgelDebuff[entity] = 0.0;
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
+	f_EnfeebleEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -7901,8 +7892,8 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	i_TextEntity[entity][3] = -1;
 	i_TextEntity[entity][4] = -1;
 	i_NpcIsABuilding[entity] = false;
-	b_EntityInCrouchSpot[entity] = false;
-	b_NpcResizedForCrouch[entity] = false;
+//	b_EntityInCrouchSpot[entity] = false;
+//	b_NpcResizedForCrouch[entity] = false;
 	i_Changed_WalkCycle[entity] = -1;
 	f_TextEntityDelay[entity] = 0.0;
 	f_CheckIfStuckPlayerDelay[entity] = 0.0;
@@ -8527,6 +8518,7 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_CudgelDebuff[enemy] = 0.0;
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
+	f_EnfeebleEffect[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
@@ -9555,11 +9547,12 @@ stock void EntityIsInHazard_Teleport(int entity)
 		hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 		hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 	}
-
+	/*
 	if(b_NpcResizedForCrouch[entity])
 	{
 		hullcheckmaxs_Player[2] = 41.0;
-	}		
+	}	
+	*/	
 	if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 	{
 		TeleportBackToLastSavePosition(entity);
@@ -9591,7 +9584,7 @@ void SaveLastValidPositionEntity(int entity)
 	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
 		return;
 
-	f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 0.5;
+	f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + GetRandomFloat(1.5, 2.2);
 	//dont save location too often
 
 	if(entity <= MaxClients)
@@ -9648,8 +9641,6 @@ void SaveLastValidPositionEntity(int entity)
 			return;
 		}
 	
-
-
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 
@@ -9679,11 +9670,12 @@ void SaveLastValidPositionEntity(int entity)
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-
+		/*
 		if(b_NpcResizedForCrouch[entity])
 		{
 			hullcheckmaxs_Player[2] = 41.0;
 		}	
+		*/
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 

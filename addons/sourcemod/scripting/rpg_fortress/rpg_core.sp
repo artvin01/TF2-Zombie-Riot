@@ -1029,3 +1029,23 @@ void RPGCore_CancelMovementAbilities(int client)
 {
 	AircutterCancelAbility(client);
 }
+
+void RPG_FlatRes(int victim, int attacker, int weapon, float &damage)
+{
+	float FlatDamageResistance = RPGStats_FlatDamageResistance(victim);
+	if(f_FlatDamagePiercing[attacker] != 1.0)
+	{
+		FlatDamageResistance *= f_FlatDamagePiercing[attacker];
+	}
+	if(IsValidEntity(weapon))
+	{
+		float DamagePiercing = Attributes_Get(weapon, 4005, 1.0);
+		FlatDamageResistance *= DamagePiercing;
+	}
+	float damageMinimum = (damage * 0.05);
+	damage -= FlatDamageResistance;
+	if(damage < damageMinimum)
+	{
+		damage = damageMinimum;
+	}
+}

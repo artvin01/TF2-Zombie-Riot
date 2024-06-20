@@ -369,7 +369,7 @@ methodmap BaseSquad < CClotBody
 						bool isGiant = false,
 						bool IgnoreBuildings = false,
 						bool IsRaidBoss = false,
-						float CustomThreeDimensions[3] = {0.0,0.0,0.0},
+						const float CustomThreeDimensions[3] = {0.0,0.0,0.0},
 						bool Ally_Collideeachother = false)
 	{
 		BaseSquad npc = view_as<BaseSquad>(CClotBody(vecPos, vecAng, model, modelscale, _, Ally, Ally_Invince, isGiant, IgnoreBuildings, IsRaidBoss, CustomThreeDimensions, Ally_Collideeachother));

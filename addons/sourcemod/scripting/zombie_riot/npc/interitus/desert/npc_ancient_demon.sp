@@ -462,7 +462,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	TE_Particle("teleported_blue", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int NpcSpawnDemon = NPC_CreateById(NPCId, -1, SelfPos, AllyAng, GetTeam(npc.index)); //can only be enemy
 	i_RaidGrantExtra[ally] = 999;
-	if(IsValidEntity(NpcSpawnDemon) && !VIPBuilding_Active())
+	if(IsValidEntity(NpcSpawnDemon))
 	{
 		flMaxHealth /= 40;
 		if(GetTeam(NpcSpawnDemon) != TFTeam_Red)
