@@ -196,12 +196,13 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
+
+		OnTimer[client]=CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		if(OnTimer[client])
 		{
 			KillTimer(OnTimer[client]);
 			OnTimer[client] = null;
 		}
-		OnTimer[client]=CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -289,7 +290,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		
 		
-		if(!Overheat[client])
+		if(!Overheat[owner])
 		{
 			float spawnLoc[3];
 			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
