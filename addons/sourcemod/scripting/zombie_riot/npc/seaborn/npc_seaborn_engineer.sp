@@ -147,14 +147,14 @@ public void SeabornEngineer_ClotThink(int iNPC)
 		{
 			if(!npc.m_iTarget && b_bBuildingIsPlaced[npc.m_iTargetAlly])
 			{
-				//KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
+				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
 
 				float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
 				float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
 
 				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
 				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
-
+/*
 				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
 				if(repair < 1)
 				{
@@ -164,7 +164,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 				{
 					Building_SetBuildingRepair(npc.m_iTargetAlly, repair - 150);
 				}
-
+*/
 				npc.m_flNextThinkTime = gameTime + 0.4;
 				return;
 			}
@@ -191,8 +191,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
-				CClotBody building = view_as<CClotBody>(entity);
-				if(!building.bBuildingIsStacked && building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				//CClotBody building = view_as<CClotBody>(entity);
+				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
 					b_ThisEntityIgnored[entity] = true;
 
@@ -259,7 +259,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 					int target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
 					{
-						//KillFeed_SetKillIcon(npc.index, "wrench");
+						KillFeed_SetKillIcon(npc.index, "wrench");
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);

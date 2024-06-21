@@ -267,10 +267,10 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		
-		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MUDROCK_RAGE");
+		npc.SetActivity("ACT_TrueStrength_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
 		npc.PlayIntroStartSound();
@@ -1017,7 +1017,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				{
 					npc.m_iAttackType = 0;
 
-					//KillFeed_SetKillIcon(npc.index, "sword");
+					KillFeed_SetKillIcon(npc.index, "sword");
 
 					int HowManyEnemeisAoeMelee = 64;
 					Handle swingTrace;
@@ -1075,7 +1075,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(PlaySound)
 						npc.PlayMeleeSound();
 
-					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 			case 10:	// DEPLOY_MANHACK - Frame 32
@@ -1807,30 +1807,6 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	
 	TE_SendToAll();
 }
-
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-			
-	int ICE_INT = PrecacheModel(sprite);
-		
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-		
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
-}
-
 stock void BobPullTarget(int bobnpc, int enemy)
 {
 	CClotBody npc = view_as<CClotBody>(bobnpc);
@@ -2020,7 +1996,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_2, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	//KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
+	KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
 
 	if(NpcStats_IsEnemySilenced(entity))
 		kick = false;
@@ -2060,7 +2036,7 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 	}
 	delete pack;
 
-	//KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
+	KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 }
 
 

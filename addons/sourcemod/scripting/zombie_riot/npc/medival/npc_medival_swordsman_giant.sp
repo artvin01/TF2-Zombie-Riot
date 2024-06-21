@@ -344,7 +344,7 @@ public void MedivalSwordsmanGiant_ClotThink(int iNPC)
 								{
 									float damage = 180.0;
 
-									if(Medival_Difficulty_Level > 1.0)
+									if(Medival_Difficulty_Level < 0.93)
 									{
 										damage = 240.0;
 									}

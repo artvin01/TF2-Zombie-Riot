@@ -20,7 +20,6 @@ static ArrayList SpawnerList;
 static ConVar MapSpawnersActive;
 static float HighestPoints;
 static float LastNamedSpawn;
-static int BadSpotPoints[MAXTF2PLAYERS];
 
 void Spawns_PluginStart()
 {
@@ -412,95 +411,4 @@ int GetRandomActiveSpawner(const char[] name = "")
 		return spawn.EntRef;
 	}
 	return -1;
-}
-
-void Spawns_CheckBadClient(int client)
-{
-	if(!IsPlayerAlive(client) || TeutonType[client] != TEUTON_NONE)
-	{
-		BadSpotPoints[client] = 0;
-		return;
-	}
-
-	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
-	{
-		// In air or water
-		BadSpotPoints[client]++;
-		return;
-	}
-
-	if(Waves_InSetup())
-		return;
-
-	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
-	int GroundEntity = EntRefToEntIndex(RefGround);
-	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
-	{
-		//client is ontop of something, dont do more, they have some way to be put down.
-		return;
-	}
-
-	int bad;
-
-	float pos1[3], pos2[3];
-	WorldSpaceCenter(client, pos1);
-	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 100.0, false, true);
-	if(area == NULL_AREA)
-	{
-		// Not near a nav mesh, bad
-		bad = 5;
-		BadSpotPoints[client] += 5;
-	}
-	else
-	{
-		int npcs;
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
-			{
-				WorldSpaceCenter(client, pos2);
-				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-				if(startArea == NULL_AREA)
-					continue;	// NPC on a bad nav??
-
-				if(!TheNavMesh.BuildPath(startArea, area, pos1))
-				{
-					bad++;
-					BadSpotPoints[client]++;
-				}
-				
-				if(npcs++ > 4)
-					break;
-			}
-		}
-	}
-
-	if(bad > 4)
-	{
-		if(BadSpotPoints[client] > 29)
-		{
-			float damage = 5.0;
-			NpcStuckZoneWarning(client, damage, 0);	
-			if(damage >= 0.25)
-			{
-				SDKHooks_TakeDamage(client, 0, 0, damage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE, -1, _, _, _, ZR_STAIR_ANTI_ABUSE_DAMAGE);
-			}
-		}
-	}
-	else if(BadSpotPoints[client] > 0)
-	{
-		BadSpotPoints[client]--;
-	}
-
-	/*
-	public native bool BuildPath( CNavArea startArea, 
-		CNavArea goalArea, 
-		const float goalPos[3], 
-		NavPathCostFunctor costFunc = INVALID_FUNCTION,
-		CNavArea &closestArea = NULL_AREA, 
-		float maxPathLength = 0.0,
-		int teamID = TEAM_ANY,
-		bool ignoreNavBlockers = false);
-	*/
 }

@@ -87,7 +87,7 @@ methodmap SeaSpewer < CSeaBody
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
-		//KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
+		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -289,10 +289,10 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
 			if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
 			{
-				CClotBody building = view_as<CClotBody>(entity);
-				if(building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && Can_I_See_Enemy_Only(npc.index, entity))
+			//	CClotBody building = view_as<CClotBody>(entity);
+				if(!b_ThisEntityIgnoredByOtherNpcsAggro[entity] && Can_I_See_Enemy_Only(npc.index, entity))
 				{
-					if(silenced || building.bBuildingIsStacked || !SeaFounder_TouchingNethersea(entity))
+					if(silenced || !SeaFounder_TouchingNethersea(entity))
 					{
 						WorldSpaceCenter(entity, vecTarget);
 						if(GetVectorDistance(vecTarget, vecMe, true) > 48400.0)	// 1.1 * 200

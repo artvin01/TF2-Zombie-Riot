@@ -303,12 +303,15 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 {
 	if(!do_original && entity <= MaxClients)
 	{
-		if(origin[1] != NULL_VECTOR[1])
+		if(origin[1] != NULL_VECTOR[1] || origin[0] != NULL_VECTOR[0] || origin[2] != NULL_VECTOR[2])
 		{
+			if(origin[0] == 0.0 && origin[1] == 0.0 && origin[2] == 0.0)
+				LogStackTrace("Possible unintended 0 0 0 teleport");
+			
 			Custom_SDKCall_SetLocalOrigin(entity, origin);
 		}
 
-		if(angles[1] != NULL_VECTOR[1])
+		if(angles[1] != NULL_VECTOR[1] || angles[0] != NULL_VECTOR[0] || angles[2] != NULL_VECTOR[2])
 		{
 			if(entity <= MaxClients)
 			{
@@ -322,7 +325,7 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 			}
 		}
 
-		if(velocity[1] != NULL_VECTOR[1])
+		if(velocity[0] != NULL_VECTOR[0] || velocity[1] != NULL_VECTOR[1] || velocity[2] != NULL_VECTOR[2])
 		{
 			Custom_SetAbsVelocity(entity, velocity);
 		}
@@ -356,6 +359,7 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 void Edited_TF2_RegeneratePlayer(int client)
 {
 #if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 #if defined ZR
@@ -376,6 +380,7 @@ void Edited_TF2_RegeneratePlayer(int client)
 stock void Edited_TF2_RespawnPlayer(int client)
 {
 #if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 

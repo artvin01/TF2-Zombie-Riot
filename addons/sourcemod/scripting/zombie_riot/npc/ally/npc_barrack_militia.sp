@@ -30,7 +30,7 @@ methodmap BarrackMilitia < BarrackBody
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-		//KillFeed_SetKillIcon(npc.index, "boston_basher");
+		KillFeed_SetKillIcon(npc.index, "boston_basher");
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackMilitia_NPCDeath;

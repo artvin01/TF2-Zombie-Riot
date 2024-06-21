@@ -161,7 +161,7 @@ methodmap SawRunner < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		//KillFeed_SetKillIcon(npc.index, "headtaker");
+		KillFeed_SetKillIcon(npc.index, "headtaker");
 		
 		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -370,7 +370,7 @@ public void SawRunner_ClotThink(int iNPC)
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 99999.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle

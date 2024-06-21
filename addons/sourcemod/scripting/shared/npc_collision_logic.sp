@@ -20,6 +20,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		return false;
 	}
+	//it ignores all npc collisions
+	if(b_ThisEntityIgnoredBeingCarried[bot_entidx])
+		return false;
 
 #if defined ZR
 	//if the bots team is player team, then they cant collide with any entities that have this flag.
@@ -56,6 +59,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return true;
 		}
+		if(/*extrarules == 0 && */b_AllowCollideWithSelfTeam[bot_entidx] && b_AllowCollideWithSelfTeam[otherindex])
+		{
+			return true;
+		}
 		return false;
 	}
 	//the collided index is a player.
@@ -66,6 +73,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+#if defined RPG
+		if(OnTakeDamageRpgPartyLogic(bot_entidx, otherindex, GetGameTime()))
+			return false;
+#endif
 		//we collided with a player, change target.
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
@@ -77,8 +88,12 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			return false;
 		}
+		if(b_ThisEntityIgnoredBeingCarried[otherindex])
+			return false;
+
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+			
 		return true;
 	}
 	//always collide with vehicles if on opesite teams.

@@ -301,7 +301,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 125.0;
 
-					if(Medival_Difficulty_Level > 2.0)
+					if(Medival_Difficulty_Level < 0.85)
 					{
 						damage = 150.0;
 					}

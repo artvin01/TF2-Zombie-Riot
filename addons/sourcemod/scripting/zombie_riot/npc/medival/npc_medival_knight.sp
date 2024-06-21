@@ -293,7 +293,7 @@ public void MedivalKnight_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 40.0;
 
-					if(Medival_Difficulty_Level > 2.0)
+					if(Medival_Difficulty_Level < 0.85)
 					{
 						damage = 50.0;
 					}

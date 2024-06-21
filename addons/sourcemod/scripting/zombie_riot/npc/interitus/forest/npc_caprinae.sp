@@ -82,7 +82,7 @@ methodmap Caprinae < CClotBody
 		npc.Anger = (data[0] && !Rogue_Paradox_RedMoon());
 		i_NpcWeight[npc.index] = npc.Anger ? 1 : 3;
 		npc.SetActivity("ACT_MP_RUN_PASSTIME");
-		//KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
+		KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

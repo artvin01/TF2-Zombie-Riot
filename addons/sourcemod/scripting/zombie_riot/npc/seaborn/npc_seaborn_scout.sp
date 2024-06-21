@@ -90,7 +90,7 @@ methodmap SeabornScout < CClotBody
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
-		//KillFeed_SetKillIcon(npc.index, "bat");
+		KillFeed_SetKillIcon(npc.index, "bat");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

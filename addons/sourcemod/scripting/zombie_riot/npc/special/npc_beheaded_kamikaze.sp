@@ -106,7 +106,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		//KillFeed_SetKillIcon(npc.index, "bomb");
+		KillFeed_SetKillIcon(npc.index, "bomb");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

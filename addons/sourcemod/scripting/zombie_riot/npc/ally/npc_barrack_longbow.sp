@@ -27,7 +27,7 @@ methodmap BarrackLongbow < BarrackBody
 		BarrackLongbow npc = view_as<BarrackLongbow>(BarrackBody(client, vecPos, vecAng, "350",_,_,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-		//KillFeed_SetKillIcon(npc.index, "huntsman");
+		KillFeed_SetKillIcon(npc.index, "huntsman");
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = BarrackLongbow_NPCDeath;

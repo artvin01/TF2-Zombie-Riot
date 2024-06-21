@@ -130,19 +130,6 @@ void SDKCall_Setup()
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
 
-#if defined ZR
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectDispenser = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectDispenser::MakeCarriedObject");
-	
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
-#endif
-
-	
 	//from kenzzer
 	
 	StartPrepSDKCall(SDKCall_Entity);
@@ -474,7 +461,32 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	{
 		Address address = DHook_CTeamplayRoundBasedRules();
 		if(address != Address_Null)
+		{
 			SDKCall(SDKResetPlayerAndTeamReadyState, address);
+			return;
+		}
+	}
+
+	int entity = FindEntityByClassname(-1, "tf_gamerules");
+	if(entity == -1)
+		return;
+	
+	static int Size1;
+	if(!Size1)
+		Size1 = GetEntPropArraySize(entity, Prop_Send, "m_bTeamReady");
+	
+	for(int i; i < Size1; i++)
+	{
+		SetEntProp(entity, Prop_Send, "m_bTeamReady", false, _, i);
+	}
+	
+	static int Size2;
+	if(!Size2)
+		Size2 = GetEntPropArraySize(entity, Prop_Send, "m_bPlayerReady");
+	
+	for(int i; i < Size2; i++)
+	{
+		SetEntProp(entity, Prop_Send, "m_bPlayerReady", false, _, i);
 	}
 }
 #endif

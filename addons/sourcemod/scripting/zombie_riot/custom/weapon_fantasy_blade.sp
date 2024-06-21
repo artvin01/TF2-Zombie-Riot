@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define H_SLICER_AMOUNT 6
 
 /*
 	Shards:

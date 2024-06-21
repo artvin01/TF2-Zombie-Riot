@@ -269,6 +269,9 @@ void Rogue_PluginStart()
 	RegAdminCmd("zr_giveartifact", Rogue_DebugGive, ADMFLAG_ROOT);
 	RegAdminCmd("zr_skipbattle", Rogue_DebugSkip, ADMFLAG_ROOT);
 	RegAdminCmd("zr_setstage", Rogue_DebugSet, ADMFLAG_ROOT);
+	
+	LoadTranslations("zombieriot.phrases.rogue"); 
+	LoadTranslations("zombieriot.phrases.rogue.paradox"); 
 }
 
 public Action Rogue_DebugGive(int client, int args)
@@ -474,6 +477,8 @@ void Rogue_SetupVote(KeyValues kv)
 
 		kv.GoBack();
 	}
+
+	SteamWorks_UpdateGameTitle();
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -833,11 +838,28 @@ void Rogue_BattleVictory()
 
 	if(BattleIngots > 0)
 	{
-		if(RogueTheme == BobChaos && (GetURandomInt() % 8) < BattleIngots)
+		switch(RogueTheme)
 		{
-			Artifact artifact;
-			if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
-				Rogue_GiveNamedArtifact(artifact.Name);
+			case BobChaos:
+			{
+				if((GetURandomInt() % 8) < BattleIngots)
+				{
+					Artifact artifact;
+					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
+				}
+			}
+			case BlueParadox:
+			{
+				if(BattleIngots > 4)
+				{
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+				}
+				else
+				{
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 3);
+				}
+			}
 		}
 
 		if(Rogue_HasFriendship())
@@ -1069,6 +1091,7 @@ void Rogue_NextProgress()
 				CurrentStage = -1;
 				CurrentCount = -1;
 				ExtraStageCount = 0;
+				SteamWorks_UpdateGameTitle();
 
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1568,7 +1591,7 @@ static void StartStage(const Stage stage)
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			RemoveEntity(entity);
 	}
 
@@ -1647,7 +1670,7 @@ static void TeleportToSpawn()
 	for(int i; i < i_MaxcountBuilding; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
-		if(entity != INVALID_ENT_REFERENCE && !i_BeingCarried[entity] && IsValidEntity(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
 			RemoveEntity(entity);
 	}
 }
@@ -2108,18 +2131,6 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false)
 							Call_Finish();
 						}
 					}
-
-					for(int a; a < i_MaxcountBuilding; a++)
-					{
-						int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
-						{
-							Call_StartFunction(null, artifact.FuncAlly);
-							Call_PushCell(entity);
-							Call_PushCell(INVALID_HANDLE);
-							Call_Finish();
-						}
-					}
 				}
 			}
 
@@ -2235,14 +2246,18 @@ stock int Rogue_GetChaosLevel()
 	return 0;
 }
 
-stock void Rogue_AddChaos(int amount)
+stock void Rogue_AddChaos(int amount, bool silent = false)
 {
 	int change = amount;
+
+	Rogue_Paradox_AddChaos(change);
 
 	CurrentChaos += change;
 
 	Waves_UpdateMvMStats();
-	CPrintToChatAll("%t", "Gained Chaos", change);
+
+	if(!silent)
+		CPrintToChatAll("%t", "Gained Chaos", change);
 }
 
 stock void Rogue_RemoveChaos(int amount)
@@ -2285,14 +2300,28 @@ int Rogue_GetRound()	// Waves_GetRound()
 	return ProgressTimer ? CurrentFloor : CurrentRound;
 }
 
+int Rogue_GetFloor()
+{
+	return CurrentFloor;
+}
+
 int Rogue_GetWave()	// Waves_GetWave()
 {
 	return ProgressTimer ? CurrentCount : CurrentWave;
 }
 
+int Rogue_GetCount()
+{
+	return CurrentCount;
+}
+
 int Rogue_GetRoundScale()
 {
-	if(Waves_InFreeplay())
+	if(Rogue_Started())
+	{
+		return (CurrentFloor * 15) + (CurrentCount * 2);
+	}
+	else if(Waves_InFreeplay())
 	{
 		int RoundGive = CurrentRound;
 		if(RoundGive < 60)
@@ -2303,7 +2332,7 @@ int Rogue_GetRoundScale()
 	}
 	else
 	{
-		return Rogue_Started() ? ((CurrentFloor * 15) + (CurrentCount * 2)) : CurrentRound;
+		return CurrentRound;
 	}
 }
 
@@ -2558,3 +2587,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/hand_of_elder_mages.sp"
 
 #include "roguelike/paradox_theme.sp"
+#include "roguelike/paradox_generic.sp"

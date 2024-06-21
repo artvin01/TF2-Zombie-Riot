@@ -64,6 +64,16 @@ public void ZombiefiedCombineSwordsman_OnMapStart_NPC()
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl");
 
 	PrecacheModel("models/zombie/classic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Zombie Combine Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombiefied_combine_soldier_swordsman");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
 }
 
 methodmap ZombiefiedCombineSwordsman < CClotBody
@@ -116,13 +126,11 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 	}
 	public ZombiefiedCombineSwordsman(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
+		ZombiefiedCombineSwordsman npc = view_as<ZombiefiedCombineSwordsman>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false, true));
 		
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = ZOMBIEFIED_COMBINE_SWORDSMAN;
-		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_IDLE");
@@ -139,9 +147,9 @@ methodmap ZombiefiedCombineSwordsman < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, ZombiefiedCombineSwordsman_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, ZombiefiedCombineSwordsman_ClotThink);
+		func_NPCDeath[npc.index] = ZombiefiedCombineSwordsman_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = ZombiefiedCombineSwordsman_OnTakeDamage;
+		func_NPCThink[npc.index] = ZombiefiedCombineSwordsman_ClotThink;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
@@ -212,8 +220,8 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_RUN", "ACT_IDLE", 240.0, gameTime);
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_RUN", "ACT_IDLE", 300.0, gameTime);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -224,19 +232,21 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 60.0;
+					float damage = 26000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						//KillFeed_SetKillIcon(npc.index, "sword");
+						KillFeed_SetKillIcon(npc.index, "sword");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
@@ -256,7 +266,8 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3];
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 			{
@@ -271,7 +282,8 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3];
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
 			npc.FaceTowards(vecTarget, 30000.0);
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
@@ -297,7 +309,9 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 				//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 				vecTarget[2] += 15.0;
-				MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+				float vecTarget2[3];
+				WorldSpaceCenter(npc.index, vecTarget2);
+				MakeVectorFromPoints(vecTarget2, vecTarget, vecDirShooting);
 				GetVectorAngles(vecDirShooting, vecDirShooting);
 				vecDirShooting[1] = eyePitch[1];
 				GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -309,22 +323,27 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 				vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 				NormalizeVector(vecDir, vecDir);
 
-				//KillFeed_SetKillIcon(npc.index, "taunt_pyro");
+				KillFeed_SetKillIcon(npc.index, "taunt_pyro");
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 20.0, 100.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, vecTarget2, vecDir, 20000.0, 800.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 		}
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -342,7 +361,7 @@ public void ZombiefiedCombineSwordsman_ClotThink(int iNPC)
 		{
 			npc.m_iState = 2; //Throw a Shield.
 		}
-		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5) && npc.m_flNextRangedAttack < gameTime)
+		else if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.5) && npc.m_flNextRangedAttack < gameTime)
 		{
 			npc.m_iState = 3; //Engage in Close Range Destruction.
 		}
@@ -478,8 +497,6 @@ public void ZombiefiedCombineSwordsman_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, ZombiefiedCombineSwordsman_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, ZombiefiedCombineSwordsman_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

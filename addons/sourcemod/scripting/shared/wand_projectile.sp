@@ -189,7 +189,6 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
-	
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
