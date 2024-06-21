@@ -199,6 +199,7 @@ public void Shell_VictorianTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	if(IsValidEntity(weapon))
 	{
+		//if(damagetype & DMG_CLUB)
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -211,6 +212,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float BaseDMG = 700.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+		BaseDMG *= Attributes_Get(weapon, 1, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
