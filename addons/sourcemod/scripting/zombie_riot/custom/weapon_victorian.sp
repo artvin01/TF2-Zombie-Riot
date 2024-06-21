@@ -197,9 +197,9 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
 		int particle_Hand = ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
-		SetParent(client, particle, "effect_hand_r");
+		SetParent(client, particle_Hand, "effect_hand_r");
 
-		Mega_Burst[client] = False;
+		Mega_Burst[client] = false;
 
 		PrintToChatAll("MEGA Fire");
 	}
