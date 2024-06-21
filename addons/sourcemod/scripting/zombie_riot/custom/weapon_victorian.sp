@@ -75,7 +75,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		//Toggle_Burst[client] = false;
 		//During_Ability[client] = false;
 		Overheat[client] = false;
-		//Mega_Burst[client] = false;
+		Mega_Burst[client] = false;
 		return Plugin_Stop;
 	}	
 
@@ -91,7 +91,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		//Toggle_Burst[client] = false;
 		//During_Ability[client] = false;
 		Overheat[client] = false;
-		//Mega_Burst[client] = false;
+		Mega_Burst[client] = false;
 	}
 	return Plugin_Continue;
 }
@@ -164,10 +164,14 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
-	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
+	if(!Overheat[client])
+	{
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
+		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
-	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
+		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
+	}
+
 
 	if(how_many_supercharge_left[client] > 0)
 	{
@@ -192,7 +196,13 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
-		ApplyTempAttrib(weapon, 6, 9999.0, Cooldown);
+		if(OnTimer[client])
+		{
+			KillTimer(OnTimer[client]);
+			OnTimer[client] = null;
+		}
+		OnTimer[client]=CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -218,6 +228,12 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	*/
 }
 
+public Action Timer_Booooool(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+    Overheat[client] = false;
+    return Plugin_Stop;
+}
 public void Shell_VictorianTouch(int entity, int target)
 {
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -255,7 +271,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		{
 			BaseDMG *= 1.25;
 			PrintToChatAll("Strong Boom");
-			if(how_many_supercharge_left[owner] <= 5)
+			if(how_many_supercharge_left[owner] < 5)
 			{
 				BaseDMG *= 1.2;
 				PrintToChatAll("Stronger Boom");
@@ -271,18 +287,21 @@ public void Shell_VictorianTouch(int entity, int target)
 			BaseDMG *= 1.0;
 			PrintToChatAll("Boom");
 		}
-
-		float spawnLoc[3];
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
-
-		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
-
-		if(IsValidEntity(particle))
+		
+		
+		if(!Overheat[client])
 		{
-			RemoveEntity(particle);
+			float spawnLoc[3];
+			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+			EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
+			ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
+			
+			if(IsValidEntity(particle))
+			{
+				RemoveEntity(particle);
+			}
+			RemoveEntity(entity);
 		}
-		RemoveEntity(entity);
 	}
 	else
 	{
