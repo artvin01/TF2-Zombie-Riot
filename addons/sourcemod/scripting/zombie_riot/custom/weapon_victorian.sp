@@ -310,7 +310,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
-			how_many_shots_reserved = how_many_supercharge_left[client];
+			how_many_shots_reserved = how_many_supercharge_left;
 			Mega_Burst[client] = true;
 			PrintToChatAll("Super Shot Ready!");
 		}
