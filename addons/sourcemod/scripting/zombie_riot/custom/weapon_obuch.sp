@@ -3,7 +3,7 @@
 static int i_swinged[MAXTF2PLAYERS];
 static float f_rest_time[MAXTF2PLAYERS];
 
-#define OBUCH_MAX_DMG 1.25
+#define OBUCH_MAX_DMG 1.2
 #define OBUCH_MAX_SPEED 0.67
 #define OBUCH_MAX_SWING 60
 
@@ -42,7 +42,6 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 
 	i_swinged[attacker] += 1;
 
-	PrintToChatAll("HIT");
 
 	if(f_rest_time[attacker] < GameTime)
 	{
@@ -58,14 +57,12 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 			damage*=OBUCH_MAX_DMG;
 			//swingspeed *= OBUCH_MAX_SPEED;
 			Attributes_Set(weapon, 6, OBUCH_MAX_SPEED);
-			PrintToChatAll("MAX POWER");
 		}
 		else
 		{
 			damage*=ratio;
-			swingspeed*=1.0/ratio;
+			swingspeed*=0.9375/ratio;
 			Attributes_Set(weapon, 6, swingspeed);
-			PrintToChatAll("CHARGING");
 		}
 	}
 
