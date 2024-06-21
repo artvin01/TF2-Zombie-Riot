@@ -196,14 +196,15 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
-
-		OnTimer[client]=CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		//Give_bomb_back[client] = 
+		CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+		/*
 		if(OnTimer[client])
 		{
 			KillTimer(OnTimer[client]);
 			OnTimer[client] = null;
 		}
-
+		*/
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
