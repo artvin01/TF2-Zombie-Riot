@@ -24,7 +24,7 @@ void ResetMapStartVictoria()
 {
 	Victoria_Map_Precache();
 	Zero(f_VIChuddelay);
-	Zero(how_many_times_fired);
+	//Zero(how_many_times_fired);
 	Zero(how_many_supercharge_left);
 	Zero(how_many_shots_reserved);
 }
@@ -74,7 +74,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		DestroyVictoriaEffect(client);
 		//Toggle_Burst[client] = false;
 		//During_Ability[client] = false;
-		//Overheat[client] = false;
+		Overheat[client] = false;
 		//Mega_Burst[client] = false;
 		return Plugin_Stop;
 	}	
@@ -90,7 +90,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		DestroyVictoriaEffect(client);
 		//Toggle_Burst[client] = false;
 		//During_Ability[client] = false;
-		//Overheat[client] = false;
+		Overheat[client] = false;
 		//Mega_Burst[client] = false;
 	}
 	return Plugin_Continue;
@@ -173,11 +173,14 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	{
 		//During_Ability[client] = true;
 		how_many_supercharge_left[client] -= 1;
+		PrintToChatAll("Ammo -1");
 	}
 	if(Mega_Burst[client])
 	{
+		how_many_supercharge_left[client] = 0;
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		int flHealth = GetClientHealth(client);
+		float Cooldown = 5.0;
 
 		int health = flMaxHealth / how_many_shots_reserved[client];
 		flHealth -= health;
@@ -185,7 +188,17 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		{
 			flHealth = 1;
 		}
-		SetEntityHealth(client, flHealth);
+		SetEntityHealth(client, flHealth);	
+
+		Cooldown *= how_many_shots_reserved[client];
+		Overheat[client] = true;
+		ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+		ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
+
+		PrintToChatAll("MEGA Fire");
 	}
 	/*
 	if(!During_Ability[client])
@@ -204,7 +217,8 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	{
 		//During_Ability[client] = false;
 		how_many_supercharge_left[client] = 0;
-		how_many_times_fired[client] = 0;
+		//how_many_times_fired[client] = 0;
+		PrintToChatAll("Else for fire");
 	}
 }
 
@@ -233,42 +247,38 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-
+/*
 		if(how_many_times_fired[owner] >= 5 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.5;
 			how_many_times_fired[owner] = 0;
 			Radius *= 1.25;
 		}
-		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
+*/
+		if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.25;
+			PrintToChatAll("Strong Boom");
 			if(how_many_supercharge_left[owner] <= 5)
 			{
 				BaseDMG *= 1.2;
+				PrintToChatAll("Stronger Boom");
 			}
 		}
 		else if(Mega_Burst[owner])
 		{
 			BaseDMG *= how_many_shots_reserved[owner];
-			float Cooldown = 5.0;
-			Cooldown *= how_many_shots_reserved[owner];
-			Overheat[owner] = true;
-			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
-			float flPos[3]; // original
-			float flAng[3]; // original
-			GetAttachment(owner, "effect_hand_r", flPos, flAng);
-			ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
+			PrintToChatAll("Mega Boom");
 		}
 		else
 		{
 			BaseDMG *= 1.0;
+			PrintToChatAll("Boom");
 		}
 
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
-		PrintToChatAll("Boom");
 
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 
@@ -280,7 +290,7 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	else
 	{
-		PrintToChatAll("haha error message :) complain to Beep :)"); //error message lol
+		PrintToChatAll("Cheeky attack cancel exploit won't work lul"); //error message lol
 	}
 	
 }
@@ -295,13 +305,14 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			how_many_supercharge_left[client] += 10;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
+			PrintToChatAll("Ammo replenished");
 		}
 		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
-			how_many_shots_reserved = how_many_supercharge_left;
-			how_many_supercharge_left[client] = 0;
+			how_many_shots_reserved = how_many_supercharge_left[client];
 			Mega_Burst[client] = true;
+			PrintToChatAll("Super Shot Ready!");
 		}
 		else
 		{
