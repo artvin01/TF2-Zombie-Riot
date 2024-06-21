@@ -4,10 +4,11 @@
 static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 #define SOUND_VIC_IMPACT "weapons/explode1.wav"
-#define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
-#define MAX_VICTORIAN_CHARGE 5
-#define MAX_VICTORIAN_SUPERCHARGE 10
+//#define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
+//#define MAX_VICTORIAN_CHARGE 5
+//#define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
+/*
 static int how_many_times_fired[MAXTF2PLAYERS];
 static int how_many_supercharge_left[MAXTF2PLAYERS];
 static int how_many_shots_reserved[MAXTF2PLAYERS];
@@ -17,14 +18,15 @@ static bool Mega_Burst[MAXPLAYERS];
 static bool Overheat[MAXPLAYERS];
 static float f_VIChuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_VICAbilityActive[MAXPLAYERS+1]={0.0, ...};
+*/
 
 void ResetMapStartVictoria()
 {
 	Victoria_Map_Precache();
-	Zero(f_VIChuddelay);
-	Zero(how_many_times_fired);
-	Zero(how_many_supercharge_left);
-	Zero(how_many_shots_reserved);
+	//Zero(f_VIChuddelay);
+	//Zero(how_many_times_fired);
+	//Zero(how_many_supercharge_left);
+	//Zero(how_many_shots_reserved);
 }
 void Victoria_Map_Precache()
 {
@@ -70,10 +72,10 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	{
 		h_TimerVictorianLauncherManagement[client] = null;
 		DestroyVictoriaEffect(client);
-		Toggle_Burst[client] = false;
-		During_Ability[client] = false;
-		Overheat[client] = false;
-		Mega_Burst[client] = false;
+		//Toggle_Burst[client] = false;
+		//During_Ability[client] = false;
+		//Overheat[client] = false;
+		//Mega_Burst[client] = false;
 		return Plugin_Stop;
 	}	
 
@@ -81,19 +83,19 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		CreateVictoriaEffect(client);
-		Victorian_Cooldown_Logic(client, weapon);
+		//Victorian_Cooldown_Logic(client, weapon);
 	}
 	else
 	{
 		DestroyVictoriaEffect(client);
-		Toggle_Burst[client] = false;
-		During_Ability[client] = false;
-		Overheat[client] = false;
-		Mega_Burst[client] = false;
+		//Toggle_Burst[client] = false;
+		//During_Ability[client] = false;
+		//Overheat[client] = false;
+		//Mega_Burst[client] = false;
 	}
 	return Plugin_Continue;
 }
-
+/*
 public void Victorian_Cooldown_Logic(int client, int weapon)
 {
 	if(f_VIChuddelay[client] < GetGameTime())
@@ -141,11 +143,11 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 		}
 	}
 }
-
+*/
 public void Weapon_Victoria(int client, int weapon, bool crit)
 {
 	float damage = 300.0;
-	damage *= 0.8; //Reduction
+	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
 	float speed = 1000.0;
@@ -165,7 +167,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
-
+/*
 	if(how_many_supercharge_left[client] > 0)
 	{
 		During_Ability[client] = true;
@@ -188,6 +190,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		how_many_supercharge_left[client] = 0;
 		how_many_times_fired[client] = 0;
 	}
+*/
 }
 
 public void Shell_VictorianTouch(int entity, int target)
@@ -214,7 +217,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-
+/*
 		if(how_many_times_fired[owner] >= 5 && !During_Ability[owner] &&!Mega_Burst[owner])
 		{
 			BaseDMG *= 1.5;
@@ -241,6 +244,7 @@ public void Shell_VictorianTouch(int entity, int target)
 			GetAttachment(owner, "effect_hand_r", flPos, flAng);
 			ParticleEffectAt(flPos, "raygun_projectile_red_crit", Cooldown);
 		}
+*/
 		else
 		{
 			BaseDMG *= 1.0;
@@ -264,6 +268,7 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	
 }
+/*
 public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
@@ -306,7 +311,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
-
+*/
 void CreateVictoriaEffect(int client)
 {
 	DestroyVictoriaEffect(client);
