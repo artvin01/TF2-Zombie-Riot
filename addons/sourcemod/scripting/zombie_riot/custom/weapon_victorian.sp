@@ -144,7 +144,7 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 		}
 	}
 }
-*/
+
 public void Weapon_Victoria(int client, int weapon, bool crit)
 {
 	float damage = 10.0;
@@ -206,7 +206,6 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		how_many_supercharge_left[client] = 0;
 		how_many_times_fired[client] = 0;
 	}
-*/
 }
 
 public void Shell_VictorianTouch(int entity, int target)
