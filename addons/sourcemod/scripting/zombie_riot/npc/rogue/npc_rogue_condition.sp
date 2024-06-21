@@ -24,13 +24,17 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 			"10"
 		*/
 
-		float rand = GetURandomFloat();
-		float value = StringToFloat(buffers[0]);
-		if(value >= 1.0)
-			rand *= 100.0;
-		
-		if(value < rand)
-			return -1;
+		if(!Rogue_Paradox_IgnoreOdds())
+		{
+			float rand = GetURandomFloat();
+			float value = StringToFloat(buffers[0]);
+			if(value >= 1.0)
+				rand *= 100.0;
+			
+			value += (Rogue_GetChaosLevel() * 0.1);
+			if(value < rand)
+				return -1;
+		}
 	}
 	else 
 	{
