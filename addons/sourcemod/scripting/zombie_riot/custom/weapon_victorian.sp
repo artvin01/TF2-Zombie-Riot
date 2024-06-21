@@ -258,7 +258,7 @@ public void Shell_VictorianTouch(int entity, int target)
 			float flPos[3]; // original
 			float flAng[3]; // original
 			GetAttachment(owner, "effect_hand_r", flPos, flAng);
-			ParticleEffectAt(flPos, "raygun_projectile_red_crit", Cooldown);
+			ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
 		}
 		else
 		{
@@ -324,8 +324,8 @@ void CreateVictoriaEffect(int client)
 	
 	float flPos[3];
 	float flAng[3];
-	GetAttachment (client, "effect_hand_r", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "raygun_projectile_red", 0.0);
+	GetAttachment (client, "eyeglow_l", flPos, flAng);
+	int particle = ParticleEffectAt(flPos, "hwn_skeleton_glow_red", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
