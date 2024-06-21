@@ -4,29 +4,29 @@
 static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 #define SOUND_VIC_IMPACT "weapons/explode1.wav"
-//#define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
-//#define MAX_VICTORIAN_CHARGE 5
-//#define MAX_VICTORIAN_SUPERCHARGE 10
+#define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
+#define MAX_VICTORIAN_CHARGE 5
+#define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
-/*
-static int how_many_times_fired[MAXTF2PLAYERS];
+
+//static int how_many_times_fired[MAXTF2PLAYERS];
 static int how_many_supercharge_left[MAXTF2PLAYERS];
 static int how_many_shots_reserved[MAXTF2PLAYERS];
-static bool During_Ability[MAXPLAYERS];
-static bool Toggle_Burst[MAXPLAYERS];
+//static bool During_Ability[MAXPLAYERS];
+//static bool Toggle_Burst[MAXPLAYERS];
 static bool Mega_Burst[MAXPLAYERS];
 static bool Overheat[MAXPLAYERS];
 static float f_VIChuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_VICAbilityActive[MAXPLAYERS+1]={0.0, ...};
-*/
+
 
 void ResetMapStartVictoria()
 {
 	Victoria_Map_Precache();
-	//Zero(f_VIChuddelay);
-	//Zero(how_many_times_fired);
-	//Zero(how_many_supercharge_left);
-	//Zero(how_many_shots_reserved);
+	Zero(f_VIChuddelay);
+	Zero(how_many_times_fired);
+	Zero(how_many_supercharge_left);
+	Zero(how_many_shots_reserved);
 }
 void Victoria_Map_Precache()
 {
@@ -83,7 +83,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
 		CreateVictoriaEffect(client);
-		//Victorian_Cooldown_Logic(client, weapon);
+		Victorian_Cooldown_Logic(client, weapon);
 	}
 	else
 	{
@@ -95,7 +95,6 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	}
 	return Plugin_Continue;
 }
-/*
 public void Victorian_Cooldown_Logic(int client, int weapon)
 {
 	if(f_VIChuddelay[client] < GetGameTime())
@@ -111,6 +110,7 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 					{
 						PrintHintText(client,"SUPER SHOT READY! [Next shot: X %i DMG]", how_many_shots_reserved[client]);
 					}
+					/*
 					else if(!During_Ability[client] && !Mega_Burst[client])
 					{
 						if(how_many_times_fired[client] < MAX_VICTORIAN_CHARGE)
@@ -122,6 +122,7 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 							PrintHintText(client,"Flare Shot Ready");
 						}
 					}
+					*/
 					else
 					{
 						PrintHintText(client,"Charged Rockets [%i%/%i]", how_many_supercharge_left[client], MAX_VICTORIAN_SUPERCHARGE);
@@ -167,12 +168,26 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
 	SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
-/*
+
 	if(how_many_supercharge_left[client] > 0)
 	{
-		During_Ability[client] = true;
+		//During_Ability[client] = true;
 		how_many_supercharge_left[client] -= 1;
 	}
+	if(Mega_Burst[client])
+	{
+		int flMaxHealth = SDKCall_GetMaxHealth(client);
+		int flHealth = GetClientHealth(client);
+
+		int health = flMaxHealth / IntToString(how_many_shots_reserved);
+		flHealth -= health;
+		if((flHealth) < 1)
+		{
+			flHealth = 1;
+		}
+		SetEntityHealth(client, flHealth);
+	}
+	/*
 	if(!During_Ability[client])
 	{
 		if(how_many_times_fired[client] <= MAX_VICTORIAN_CHARGE)
@@ -184,9 +199,10 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 			how_many_times_fired[client] = MAX_VICTORIAN_CHARGE;
 		}
 	}
+	*/
 	else
 	{
-		During_Ability[client] = false;
+		//During_Ability[client] = false;
 		how_many_supercharge_left[client] = 0;
 		how_many_times_fired[client] = 0;
 	}
@@ -218,12 +234,12 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-/*
-		if(how_many_times_fired[owner] >= 5 && !During_Ability[owner] &&!Mega_Burst[owner])
+
+		if(how_many_times_fired[owner] >= 5 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.5;
 			how_many_times_fired[owner] = 0;
-			Radius *= 1.5;
+			Radius *= 1.25;
 		}
 		else if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
@@ -249,7 +265,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		{
 			BaseDMG *= 1.0;
 		}
-*/
+
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
@@ -269,12 +285,12 @@ public void Shell_VictorianTouch(int entity, int target)
 	}
 	
 }
-/*
+
 public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left > 5.0)
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left[client] = 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
@@ -286,17 +302,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 			Rogue_OnAbilityUse(weapon);
 			how_many_shots_reserved = how_many_supercharge_left;
 			how_many_supercharge_left = 0.0;
-			int flMaxHealth = SDKCall_GetMaxHealth(client);
-			int flHealth = GetClientHealth(client);
 			Mega_Burst[client] = true;
-			
-			int health = flMaxHealth / IntToString(how_many_supercharge_left);
-			flHealth = health;
-			if((flHealth) < 1)
-			{
-				flHealth = 1;
-			}
-			SetEntityHealth(client, flHealth);
 		}
 		else
 		{
@@ -312,7 +318,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
-*/
+
 void CreateVictoriaEffect(int client)
 {
 	DestroyVictoriaEffect(client);
