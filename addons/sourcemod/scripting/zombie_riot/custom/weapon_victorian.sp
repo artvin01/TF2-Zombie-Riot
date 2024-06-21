@@ -250,9 +250,9 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		else if(Mega_Burst[owner])
 		{
-			BaseDMG *= how_many_shots_reserved[client];
+			BaseDMG *= how_many_shots_reserved[owner];
 			float Cooldown = 5.0;
-			Cooldown *= how_many_shots_reserved[client];
+			Cooldown *= how_many_shots_reserved[owner];
 			Overheat[owner] = true;
 			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
 			float flPos[3]; // original
