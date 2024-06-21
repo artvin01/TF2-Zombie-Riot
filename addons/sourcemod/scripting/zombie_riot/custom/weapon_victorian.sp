@@ -9,7 +9,7 @@ static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
 
-//static int how_many_times_fired[MAXTF2PLAYERS];
+static int how_many_times_fired[MAXTF2PLAYERS];
 static int how_many_supercharge_left[MAXTF2PLAYERS];
 static int how_many_shots_reserved[MAXTF2PLAYERS];
 //static bool During_Ability[MAXPLAYERS];
