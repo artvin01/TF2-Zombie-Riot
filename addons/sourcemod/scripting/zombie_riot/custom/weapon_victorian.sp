@@ -179,7 +179,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		int flHealth = GetClientHealth(client);
 
-		int health = flMaxHealth / how_many_shots_reserved;
+		int health = flMaxHealth / how_many_shots_reserved[client];
 		flHealth -= health;
 		if((flHealth) < 1)
 		{
@@ -250,9 +250,9 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		else if(Mega_Burst[owner])
 		{
-			BaseDMG *= how_many_shots_reserved;
+			BaseDMG *= how_many_shots_reserved[client];
 			float Cooldown = 5.0;
-			Cooldown *= how_many_shots_reserved;
+			Cooldown *= how_many_shots_reserved[client];
 			Overheat[owner] = true;
 			ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
 			float flPos[3]; // original
@@ -293,14 +293,14 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
-			how_many_supercharge_left[client] += 10.0;
+			how_many_supercharge_left[client] += 10;
 			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
 		}
 		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			how_many_shots_reserved = how_many_supercharge_left;
-			how_many_supercharge_left[client] = 0.0;
+			how_many_supercharge_left[client] = 0;
 			Mega_Burst[client] = true;
 		}
 		else
