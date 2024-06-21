@@ -2229,4 +2229,8 @@
 	{
 		"en"	"Forest Hitman"
 	}
+	"Mr.X"
+	{
+		"en"	"Mr.X"
+	}
 }

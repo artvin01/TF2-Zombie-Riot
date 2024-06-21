@@ -457,6 +457,7 @@ void NPC_ConfigSetup()
 	RaidbossSilvester_OnMapStart();
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
+	RaidbossMrX_OnMapStart();
 	GodArkantos_OnMapStart();
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
@@ -1059,6 +1060,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
+#include "zombie_riot/npc/raidmode_bosses/xeno/npc_mrx.sp"
 
 #include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
 #include "zombie_riot/npc/seaborn/npc_seacrawler.sp"
