@@ -146,7 +146,7 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 */
 public void Weapon_Victoria(int client, int weapon, bool crit)
 {
-	float damage = 150.0;
+	float damage = 50.0;
 	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
@@ -210,7 +210,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 1000.0;
+		float BaseDMG = 2000.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;
