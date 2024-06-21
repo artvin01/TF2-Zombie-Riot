@@ -210,7 +210,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 700.0;
+		float BaseDMG = 100.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 		BaseDMG *= Attributes_Get(weapon, 1, 1.0);
 
@@ -319,10 +319,11 @@ void CreateVictoriaEffect(int client)
 	DestroyVictoriaEffect(client);
 	
 	float flPos[3];
-	GetEntPropVector(client, Prop_Data, "eyeglow_R", flPos);
+	float flAng[3];
+	GetEntPropVector(client, Prop_Data, "eyeglow_L", flPos);
 	int particle = ParticleEffectAt(flPos, "raygun_projectile_blue", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle);
+	SetParent(client, particle, "eyeglow_L");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
 }
 void DestroyVictoriaEffect(int client)
