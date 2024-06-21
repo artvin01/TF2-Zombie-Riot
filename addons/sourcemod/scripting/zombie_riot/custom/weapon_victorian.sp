@@ -246,11 +246,11 @@ public void Shell_VictorianTouch(int entity, int target)
 			GetAttachment(owner, "effect_hand_r", flPos, flAng);
 			ParticleEffectAt(flPos, "raygun_projectile_red_crit", Cooldown);
 		}
-*/
 		else
 		{
 			BaseDMG *= 1.0;
 		}
+*/
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
