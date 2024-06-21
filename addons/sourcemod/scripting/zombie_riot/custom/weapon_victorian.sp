@@ -213,13 +213,6 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		}
 	}
 	*/
-	else
-	{
-		//During_Ability[client] = false;
-		how_many_supercharge_left[client] = 0;
-		//how_many_times_fired[client] = 0;
-		PrintToChatAll("Else for fire");
-	}
 }
 
 public void Shell_VictorianTouch(int entity, int target)
