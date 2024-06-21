@@ -192,11 +192,14 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
-		ApplyTempAttrib(weapon, 6, 0.0, Cooldown);
+		ApplyTempAttrib(weapon, 6, 9999.0, Cooldown);
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
-		ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
+		int particle_Hand = ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
+		SetParent(client, particle, "effect_hand_r");
+
+		Mega_Burst[client] = False;
 
 		PrintToChatAll("MEGA Fire");
 	}
