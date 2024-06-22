@@ -1,4 +1,7 @@
 static bool HeavyWind;
+#pragma semicolon 1
+#pragma newdecls required
+
 static bool ExtremeHeat;
 static bool RedMoon;
 static bool StartEasyMode;
