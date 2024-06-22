@@ -1087,8 +1087,10 @@ public Action Neuvellete_tick(int client)
 		PosEffects = Pos;
 		
 		int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+		bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//note: redo the laser turning so its less choopy, also make it use ENV beams instead of Te
 		
-		if(IsValidEntity(viewmodelModel))
+		if(IsValidEntity(viewmodelModel) && !HasWings)
 		{
 			float flAng[3];
 			GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	
