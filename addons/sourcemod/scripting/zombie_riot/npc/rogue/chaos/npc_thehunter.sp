@@ -316,7 +316,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 				else
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, CountPlayersOnServer() * 50.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(!dieingstate[client] && IsPlayerAlive(target))
+					if(!dieingstate[target] && IsPlayerAlive(target))
 						TF2_AddCondition(target, TFCond_MarkedForDeath, 120.0);
 				}
 			} 
