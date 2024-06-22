@@ -1437,7 +1437,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 }
 
-static void GiveOneRevive()
+void GiveOneRevive()
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{

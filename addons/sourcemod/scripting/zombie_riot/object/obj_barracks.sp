@@ -694,6 +694,9 @@ void Barracks_BuildingThink(int entity)
 	if(!IsValidClient(client))
 		return;
 	
+	if(GetTeam(client) != 2)
+		return;
+		
 	bool mounted = (Building_Mounted[client] == i_PlayerToCustomBuilding[client]);
 	SummonerRenerateResources(client, 1.0);
 	//used to be 1.0, but we think 2x as much, ill still buff it abit.
