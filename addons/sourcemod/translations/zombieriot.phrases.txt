@@ -1600,7 +1600,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) + press TAB to show current weapon!"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
 	}
 	"Father Grigori's Store"
 	{

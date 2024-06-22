@@ -1,11 +1,33 @@
 static bool HeavyWind;
+#pragma semicolon 1
+#pragma newdecls required
+
 static bool ExtremeHeat;
 static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
 static bool StartCamping;
+static bool ForceNextHunter;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
+
+public float Rogue_Encounter_ForcedHunterBattle()
+{
+	ForceNextHunter = true;
+	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
+	return 0.0;
+}
+
+bool Rogue_Paradox_IgnoreOdds()
+{
+	if(ForceNextHunter)
+	{
+		ForceNextHunter = false;
+		return true;
+	}
+
+	return false;
+}
 
 bool Rogue_Paradox_ExtremeHeat()
 {

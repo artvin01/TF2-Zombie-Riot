@@ -1711,11 +1711,11 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
+stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0, bool respectSetting = true)
 {
 	//allow settings for the sick who cant handle screenshake.
 	//can cause headaches.
-	if(!b_HudScreenShake[client])
+	if(respectSetting && !b_HudScreenShake[client])
 	{
 		return false;
 	}
@@ -2603,7 +2603,10 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 #if defined ZR
 	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
-		return -1;
+		if(b_NpcIsTeamkiller[owner_projectile])
+			return other_entity;
+		else
+			return -1;
 	}
 #endif
 	else if(other_entity <= MaxClients)
@@ -3918,10 +3921,10 @@ stock bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[
 	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
 	return HazardResult;
 }
-stock bool IsPointNoBuild(const float pos1[3])
+stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
-	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
 	return HazardResult;
 }
 

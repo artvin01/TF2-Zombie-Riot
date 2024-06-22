@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SELL_AMOUNT 0.7
+#define SELL_AMOUNT 0.9
 
 static const int SlotLimits[] =
 {
@@ -1369,7 +1369,6 @@ void Store_Reset()
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 	}
-	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -1388,6 +1387,11 @@ void Store_Reset()
 			item.CurrentClipSaved[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
+	}
+	for(int c; c<MAXTF2PLAYERS; c++)
+	{
+		CashSpentGivePostSetup[c] = 0;
+		CashSpentGivePostSetupWarning[c] = false;
 	}
 	if(StoreBalanceLog)
 	{
@@ -5068,11 +5072,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else
 								{
+									b_WeaponHasNoClip[entity] = false;
 									if(!info.HasNoClip)
 									{
-									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
+									}
+									else
+									{
+										b_WeaponHasNoClip[entity] = true;
 									}
 									if(info.NoHeadshot)
 									{
@@ -5100,8 +5108,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						//CANT USE AMMO 1 or 2 or something,
 						//Allows you to switch to the weapon even though it has no ammo, there is PROOOOOOOOOOOOOOOOOOOBAABLY no weapon in the game that actually uses this
 						//IF IT DOES!!! then make an exception, but as far as i know, no need.	
-						
-						if(info.Ammo/* != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply*/) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
+						/*
+						if(info.Ammo) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
@@ -5109,6 +5117,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							SetAmmo(client, 30, 99999);
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
+						*/
 					}
 					
 					if(info.IsWand > 0)
@@ -5908,7 +5917,6 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
@@ -5920,15 +5928,18 @@ void GiveCredits(int client, int credits, bool building)
 		int CreditsGive = credits / 2;
 		CashSpentGivePostSetup[client] += CreditsGive;
 		CashSpent[client] -= CreditsGive;
+		CashRecievedNonWave[client] += CreditsGive;
 	}
 	else
 	{
+		CashSpentGivePostSetup[client] += credits;
 		CashSpent[client] -= credits;
 	}
 }
 
 void GrantCreditsBack(int client)
 {
+	CashRecievedNonWave[client] += CashSpentGivePostSetup[client];
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;

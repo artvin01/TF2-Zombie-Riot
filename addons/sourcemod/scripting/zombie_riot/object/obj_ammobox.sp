@@ -95,7 +95,6 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 		{
 			int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 			Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
-			Resupplies_Supplied[owner] += 2;
 		}
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 999999.4;
 	}
@@ -111,14 +110,14 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 bool AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
+/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		if(IsValidEntity(weapon1))
 		{
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0)
+			if(Ammo_type > 0 && Ammo_type != 7)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
@@ -129,6 +128,7 @@ bool AmmoboxUsed(int client, int entity)
 			}
 		}
 	}
+*/
 	if(IsValidEntity(weapon))
 	{
 		if(i_IsWandWeapon[weapon])

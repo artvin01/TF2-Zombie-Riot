@@ -157,7 +157,7 @@ static void ClotThink(int iNPC)
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 
-			int particle = ParticleEffectAt(pos, "unusual_eyes_purple_parent", 0.0);
+			int particle = ParticleEffectAt(pos, "unusual_sapper_teamcolor_blue", 0.0);
 			SetParent(npc.index, particle, "head", {0.0, 0.0, -1.0});
 			npc.m_iWearable3 = particle;
 

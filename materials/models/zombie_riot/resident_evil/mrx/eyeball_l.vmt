@@ -1,0 +1,18 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\zombie_riot\resident_evil\mrx\eyeball_l"
+$AmbientOcclTexture 		"models\zombie_riot\resident_evil\mrx\eyeball_irons_shader_col" 
+$Envmap "Engine/eye-reflection-cubemap-" 
+$CorneaTexture "Engine/eye-cornea" 
+$EyeballRadius "0.2" 
+$AmbientOcclColor "[.9 .9 .9]" Default 0.33, 0.33, 0.33 
+$Dilation ".40" 
+$ParallaxStrength "0" 
+$CorneaBumpStrength ".1" 
+$halflambert 1
+$nodecal 1
+$ambientocclusion 0
+
+$RaytraceSphere 0
+$SphereTexkillCombo 0
+}

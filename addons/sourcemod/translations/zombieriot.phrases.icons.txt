@@ -22,6 +22,10 @@
 		"pt"		"Nemesis, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
 	}
+	"Mrx Arrived."
+	{
+		"en" 		"Mrx... Is here."
+	}
 	"Arkantos Arrived"
 	{
 		"en" 		"The Atlantean and great leader Arkantos arrived."

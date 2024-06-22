@@ -349,6 +349,7 @@ void Rogue_MapStart()
 	InRogueMode = false;
 	Zero(f_ProvokedAngerCD);
 	Rogue_Paradox_MapStart();
+	Rogue_ParadoxShop_Fail();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -835,6 +836,7 @@ void Rogue_BattleVictory()
 	ReviveAll();
 	Waves_RoundEnd();
 	Store_RogueEndFightReset();
+	Rogue_ParadoxShop_Victory();
 
 	if(BattleIngots > 0)
 	{
@@ -853,11 +855,11 @@ void Rogue_BattleVictory()
 			{
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
-				}
-				else
-				{
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 3);
+				}
+				else if(BattleIngots > 1)
+				{
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
 				}
 			}
 		}
@@ -895,6 +897,8 @@ void Rogue_BattleVictory()
 
 bool Rogue_BattleLost()
 {
+	Rogue_ParadoxShop_Fail();
+
 	if(BonusLives > 0 && !RequiredBattle)
 	{
 		if(BonusLives > 1)
@@ -2175,6 +2179,16 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 	}
 }
 
+stock ArrayList Rogue_GetCurrentCollection()
+{
+	return CurrentCollection;
+}
+
+stock ArrayList Rogue_GetCurrentArtifacts()
+{
+	return Artifacts;
+}
+
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
@@ -2588,3 +2602,4 @@ bool IS_MusicReleasingRadio()
 
 #include "roguelike/paradox_theme.sp"
 #include "roguelike/paradox_generic.sp"
+#include "roguelike/paradox_encounters.sp"

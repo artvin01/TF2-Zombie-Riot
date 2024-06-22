@@ -41,6 +41,7 @@ int TeamFreeForAll = 50;
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
+bool b_NameNoTranslation[MAXENTITIES];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -4374,14 +4375,7 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 					return false;
 				}
 			}
-			if(GetEntProp(index, Prop_Data, "m_iHealth") > 0)
-			{
-				return true;	
-			}
-			else
-			{
-				return false;
-			}	
+			return true;
 		}
 		else
 		{
@@ -5619,7 +5613,6 @@ public void NpcBaseThink(int iNPC)
 					//if still stuck after 1 second...
 					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
 					//give them 2 seconds to unstuck themselves
-					
 				}
 			}
 			//This is a tempomary fix. find a better one for players getting stuck.
@@ -6229,6 +6222,8 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 			SetParent(prop, particle);
 		}
 	}
+	
+	CreateTimer(Random_time - 1.5, Prop_Gib_FadeSet, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(Random_time, Timer_RemoveEntity_Prop_Gib, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 //	CreateTimer(1.5, Timer_DisableMotion, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	return prop;
@@ -6280,6 +6275,15 @@ void GibCollidePlayerInteraction(int gib, int player)
 }
 #endif
 
+public Action Prop_Gib_FadeSet(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		SetEntityRenderFx(entity, RENDERFX_FADE_FAST);
+	}
+	return Plugin_Stop;
+}
 public Action Timer_RemoveEntity_Prop_Gib(Handle timer, any entid)
 {
 	int entity = EntRefToEntIndex(entid);
@@ -7669,6 +7673,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
+	b_NameNoTranslation[entity] = false;
 #endif
 	c_NpcName[entity][0] = 0;
 
@@ -8949,7 +8954,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 static int b_TouchedEntity[MAXENTITIES];
 
 //TODO: teleport entities instead, but this is easier to i sleep :)
-stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
+stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
 	static float flMyPos[3];
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
@@ -9042,7 +9047,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage)
 		}
 		
 		SDKHooks_TakeDamage(b_TouchedEntity[entity_traced], iNPC, iNPC, damage, DMG_CRUSH, -1, _);
-		if(GetTeam(iNPC) != TFTeam_Red)
+		if(CauseKnockback && GetTeam(iNPC) != TFTeam_Red)
 		{
 			if(b_NpcHasDied[b_TouchedEntity[entity_traced]])
 			{
