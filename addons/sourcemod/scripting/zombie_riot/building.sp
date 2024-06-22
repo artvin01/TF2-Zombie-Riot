@@ -320,11 +320,11 @@ static void BuildingMenu(int client)
 	}
 	else
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[AmmoData][0]);
-		menu.AddItem(buffer1, buffer1, cash < AmmoData[AmmoData][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
+		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
-		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[AmmoData][0] * 10);
-		menu.AddItem(buffer1, buffer1, cash < (AmmoData[AmmoData][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10);
+		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 	}
 
 	int items;
