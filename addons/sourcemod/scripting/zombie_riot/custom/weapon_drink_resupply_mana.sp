@@ -12,6 +12,7 @@ public void Weapon_Magic_Restore(int client, int weapon, const char[] classname,
 		{
 			Give_bomb_back[client] = CreateTimer(60.0, Give_Back_Magic_Restore, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(60.0, Give_Back_Magic_Restore_Ammo, client, TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(59.5, ResetWeaponAmmoStatus, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 			GrenadeApplyCooldownHud(client, 60.0);
 			if(Handle_on[client])
 			{

@@ -149,6 +149,8 @@ stock void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
+	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 #endif
 
 #if defined NOG
@@ -164,18 +166,80 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
+bool WeaponWasGivenAmmo[MAXENTITIES];
+
+void WeaponWeaponAdditionOnRemoved(int entity)
+{
+	WeaponWasGivenAmmo[entity] = false;
+}
+
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	if(Ammo_type > 0 && Ammo_type != 7)
+	int ie, weapon1;
+	while(TF2_GetItem(client, weapon1, ie))
 	{
-		//found a weapon that has ammo.
-		if(GetAmmo(client, Ammo_type) <= 0)
+		if(IsValidEntity(weapon1))
 		{
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Warn Client Ammo None");
+			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
+			{
+				WeaponWasGivenAmmo[weapon1] = false;
+			}
+			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+			if(Ammo_type > 0)
+			{
+				//found a weapon that has ammo.
+				if(GetAmmo(client, Ammo_type) <= 0)
+				{
+					WeaponWasGivenAmmo[weapon1] = true;
+					if(b_WeaponHasNoClip[weapon1])
+					{
+						SetAmmo(client, Ammo_type, 1);
+						CurrentAmmo[client][Ammo_type] = -1;
+					}
+					else
+					{
+						int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+						SetEntData(weapon1, iAmmoTable, 1);
+						SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
+					}
+					//we give these weapons atleast 1 clip, this is to ensure you can switch to them client side.
+					//we also set WeaponWasGivenAmmo, so when you actually switch to the weapon, its clip gets set to 0.
+				}
+			}
 		}
 	}
+	return Plugin_Continue;
+}
+
+public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		WeaponWasGivenAmmo[entity] = false;
+	}
+}
+public Action WeaponSwtichToWarningPost(int client, int weapon)
+{
+	if(WeaponWasGivenAmmo[weapon])
+	{
+		if(b_WeaponHasNoClip[weapon])
+		{
+			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			if(GetAmmo(client, Ammo_type) <= 1)
+			{
+				SetAmmo(client, Ammo_type, 0);
+			}
+		}
+		else
+		{
+			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+			SetEntData(weapon, iAmmoTable, 0);
+			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+		}
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+	}
+	WeaponWasGivenAmmo[weapon] = false;
 	return Plugin_Continue;
 }
 

@@ -110,7 +110,7 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 bool AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
+/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
@@ -128,6 +128,7 @@ bool AmmoboxUsed(int client, int entity)
 			}
 		}
 	}
+*/
 	if(IsValidEntity(weapon))
 	{
 		if(i_IsWandWeapon[weapon])

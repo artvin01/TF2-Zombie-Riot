@@ -5068,11 +5068,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else
 								{
+									b_WeaponHasNoClip[entity] = false;
 									if(!info.HasNoClip)
 									{
-									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
+									}
+									else
+									{
+										b_WeaponHasNoClip[entity] = true;
 									}
 									if(info.NoHeadshot)
 									{
@@ -5100,8 +5104,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						//CANT USE AMMO 1 or 2 or something,
 						//Allows you to switch to the weapon even though it has no ammo, there is PROOOOOOOOOOOOOOOOOOOBAABLY no weapon in the game that actually uses this
 						//IF IT DOES!!! then make an exception, but as far as i know, no need.	
-						
-						if(info.Ammo/* != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply*/) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
+						/*
+						if(info.Ammo) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
@@ -5109,6 +5113,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 							SetAmmo(client, 30, 99999);
 							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
+						*/
 					}
 					
 					if(info.IsWand > 0)
