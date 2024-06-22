@@ -138,7 +138,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
+	if(victim <= MaxClients && victim > 0)
 	{
 		Armor_DebuffType[victim] = 1;
 		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
