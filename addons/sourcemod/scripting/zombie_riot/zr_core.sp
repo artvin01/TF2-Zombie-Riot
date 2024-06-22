@@ -749,7 +749,7 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	
-	CreateTimer(1.0, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(0.2, GetTimerAndNullifyMusicMVM_Timer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
 	RemoveAllCustomMusic();
@@ -779,7 +779,6 @@ public Action GlobalTimer(Handle timer)
 			}
 			*/
 			PlayerApplyDefaults(client);
-			Spawns_CheckBadClient(client);
 		}
 	}
 	

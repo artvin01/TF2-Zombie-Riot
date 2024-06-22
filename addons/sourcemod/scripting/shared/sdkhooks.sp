@@ -6,6 +6,7 @@ static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
+static float f_EntityOutOfNav[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -24,6 +25,7 @@ void SDKHooks_ClearAll()
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
 	Zero(f_EntityHazardCheckDelay);
+	Zero(f_EntityOutOfNav);
 	
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
@@ -342,6 +344,11 @@ public void OnPostThink(int client)
 			{
 				EntityIsInHazard_Teleport(client);
 				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
+			if(f_EntityOutOfNav[client] < GetGameTime())
+			{
+				Spawns_CheckBadClient(client);
+				f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			}
 		}
 		SaveLastValidPositionEntity(client);
