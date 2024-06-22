@@ -218,6 +218,7 @@ public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 	{
 		WeaponWasGivenAmmo[entity] = false;
 	}
+	return Plugin_Handled;
 }
 public Action WeaponSwtichToWarningPost(int client, int weapon)
 {
