@@ -389,7 +389,7 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(other, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle) && particle != 0)
 		{
 			RemoveEntity(particle);
@@ -696,7 +696,7 @@ public void Melee_LapplandArkTouch(int entity, int target)
 		}
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		
@@ -860,7 +860,7 @@ float Npc_OnTakeDamage_LappLand(float damage ,int attacker, int damagetype, int 
 {
 	if(inflictor == attacker) //make sure it doesnt gain things here if the projectile hit.
 	{
-		if(damagetype & DMG_CLUB) //We only count normal melee hits.
+		if((damagetype & DMG_CLUB) || (damagetype & DMG_PLASMA)) //We only count normal melee hits.
 		{
 			if(f_LappLandAbilityActive[attacker] < GetGameTime())
 			{
@@ -1046,7 +1046,7 @@ public void Melee_QuibaiArkTouch(int entity, int target)
 		}
 		ChangeAttackspeedQuibai(owner,weapon);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		
 		

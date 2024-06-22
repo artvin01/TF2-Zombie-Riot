@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 #if defined ZR
-float f_MedicCallIngore[MAXTF2PLAYERS];
 bool b_HoldingInspectWeapon[MAXTF2PLAYERS];
 static bool BlockNext[MAXTF2PLAYERS];
 #endif
@@ -12,7 +11,6 @@ void Commands_PluginStart()
 	AddCommandListener(OnNavCommand);
 	AddCommandListener(OnAutoTeam, "autoteam");
 	AddCommandListener(OnAutoTeam, "jointeam");
-	AddCommandListener(OnJoinClass, "joinclass");
 	AddCommandListener(OnBuildCmd, "build");
 	AddCommandListener(OnDropItem, "dropitem");
 	AddCommandListener(OnTaunt, "taunt");
@@ -20,9 +18,14 @@ void Commands_PluginStart()
 	AddCommandListener(OnSayCommand, "say");
 	AddCommandListener(OnSayCommand, "say_team");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	AddCommandListener(Command_Voicemenu, "voicemenu");
 #endif
+
+#if defined ZR || defined RPG
+	AddCommandListener(OnJoinClass, "joinclass");
+#endif
+
 }
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
@@ -39,11 +42,14 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	}
 #endif
 	
+#if defined RTS_CAMERA
 	if(RTSCamera_ClientCommandKeyValues(client, buffer))
 	{
 		return Plugin_Handled;
 	}
-	else if(StrEqual(buffer, "+use_action_slot_item_server", false))
+#endif
+
+	if(StrEqual(buffer, "+use_action_slot_item_server", false))
 	{
 #if defined ZR
 		b_HoldingInspectWeapon[client] = true;
@@ -79,7 +85,7 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 	else if(StrEqual(buffer, "+helpme_server", false))
 	{
 		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
-		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		f_MedicCallIngore[client] = GetGameTime() + 0.5;
 		bool has_been_done = BuildingCustomCommand(client);
 		if(has_been_done)
 		{
@@ -95,7 +101,18 @@ public Action OnClientCommandKeyValues(int client, KeyValues kv)
 		
 		//This is an extra slot, incase you want to use it for anything.
 	}
-	
+#elseif defined RPG
+	if(StrEqual(buffer, "+inspect_server", false))
+	{
+		TextStore_Inspect(client);
+	}
+	else if(StrEqual(buffer, "+helpme_server", false))
+	{
+		//add a delay, so if you call E it doesnt do the voice menu one, though keep the voice menu one for really epic cfg nerds.
+		f_MedicCallIngore[client] = GetGameTime() + 1.0;
+		RPGCommands_TriggerMedicCall(client);
+		return Plugin_Handled;
+	}
 #endif
 	return Plugin_Continue;
 }
@@ -109,6 +126,7 @@ public Action OnNavCommand(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
+#if defined ZR
 public Action OnJoinClass(int client, const char[] command, int args)
 {
 	bool FailedInstachange = false;
@@ -134,6 +152,11 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	GetCmdArgString(Bufferlol,sizeof(Bufferlol));
 	TFClassType ClassChangeTo = TF2_GetClass(Bufferlol);
 	
+	if(ClassChangeTo <= TFClass_Unknown)
+	{
+		return Plugin_Handled;
+	}
+	
 	if(FailedInstachange)
 	{
 		CurrentClass[client] = ClassChangeTo;
@@ -141,6 +164,9 @@ public Action OnJoinClass(int client, const char[] command, int args)
 		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
 		return Plugin_Continue;
 	}
+#if defined ZR
+	TransferDispenserBackToOtherEntity(client, true);
+#endif
 	//save clips to not insta reload. lol.
 	Clip_SaveAllWeaponsClipSizes(client);
 	int Health = GetClientHealth(client);
@@ -160,6 +186,26 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	PrintToChat(client, "You changed classes immedietly!");
 	return Plugin_Handled;
 }
+#endif
+
+#if defined RPG
+
+bool RPGCommands_TriggerMedicCall(int client)
+{
+	bool CanTransform = RPGCore_ClientCanTransform(client);
+	if(CanTransform)
+		TransformButton(client);
+	
+	return CanTransform;
+}
+public Action OnJoinClass(int client, const char[] command, int args)
+{
+	if(client && GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"))
+		return Plugin_Handled;
+	
+	return Plugin_Continue;
+}
+#endif
 
 public void Removeinvul1frame(int ref)
 {
@@ -192,14 +238,7 @@ public Action OnAutoTeam(int client, const char[] command, int args)
 
 public Action OnBuildCmd(int client, const char[] command, int args)
 {
-#if defined ZR
-	if(client && !AllowBuildingCurrently())
-		return Plugin_Handled;
-		
-	return Plugin_Continue;
-#else
 	return Plugin_Handled;
-#endif
 }
 
 public Action OnDropItem(int client, const char[] command, int args)
@@ -232,6 +271,9 @@ public Action OnSayCommand(int client, const char[] command, int args)
 #endif
 	
 #if defined RPG
+	if(Editor_SayCommand(client))
+		return Plugin_Handled;
+	
 	if(TextStore_SayCommand(client))
 		return Plugin_Handled;
 	
@@ -242,7 +284,7 @@ public Action OnSayCommand(int client, const char[] command, int args)
 	return Plugin_Continue;
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public Action Command_Voicemenu(int client, const char[] command, int args)
 {
 	if(client && args == 2 && IsPlayerAlive(client))
@@ -254,16 +296,21 @@ public Action Command_Voicemenu(int client, const char[] command, int args)
 			GetCmdArg(2, arg, sizeof(arg));
 			if(arg[0] == '0')
 			{
+#if defined ZR
 				if(TeutonType[client] != TEUTON_NONE)
 					return Plugin_Handled;
+#endif
 
 				if(f_MedicCallIngore[client] < GetGameTime())
 				{
-					bool has_been_done = BuildingCustomCommand(client);
-					if(has_been_done)
-					{
-						return Plugin_Handled;
-					}
+#if defined RPG
+					RPGCommands_TriggerMedicCall(client);
+#endif
+#if defined ZR
+					f_MedicCallIngore[client] = GetGameTime() + 0.5;
+					BuildingCustomCommand(client);
+#endif
+					return Plugin_Handled;
 				}
 			}
 		}

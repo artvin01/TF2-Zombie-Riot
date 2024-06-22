@@ -94,6 +94,7 @@ static ArrayList MiniBosses;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
+static int FakeMaxWaves;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
@@ -148,6 +149,7 @@ void Waves_MapStart()
 	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
+	FakeMaxWaves = 0;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -565,6 +567,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -784,7 +787,6 @@ void Waves_RoundStart()
 		Store_Reset();
 		CurrentGame = GetTime();
 		CurrentCash = StartCash;
-		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
 		for(int client=1; client<=MaxClients; client++)
 		{
 			CurrentAmmo[client] = CurrentAmmo[0];
@@ -1111,7 +1113,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 			CurrentCash += round.Cash;
 			if(round.Cash)
 			{
@@ -1454,6 +1455,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
+
+			SteamWorks_UpdateGameTitle();
 			
 			//MUSIC LOGIC
 			if(CurrentRound == length)
@@ -1570,7 +1573,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(0, 99, 1);
+				Store_RandomizeNPCStore(0, _, true);
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(0);
 				
@@ -1582,7 +1585,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Store_RandomizeNPCStore(0);
 
 			
-			Store_RandomizeNPCStore(0, 99, 1);
+			Store_RandomizeNPCStore(0, _, true);
 		}
 	}
 	else if(Rogue_Mode())
@@ -1878,6 +1881,11 @@ int Waves_GetRound()
 	return CurrentRound;
 }
 
+int Waves_GetMaxRound()
+{
+	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
+}
+
 public int Waves_GetWave()
 {
 	if(Rogue_Mode())
@@ -1927,11 +1935,13 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 
 void WaveEndLogicExtra()
 {
+	Building_WaveEnd();
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
 	LeperResetUses();
+	Building_ResetRewardValuesWave();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{
@@ -2293,6 +2303,9 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
+			if(FakeMaxWaves)
+				maxwaves = FakeMaxWaves;
+
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
@@ -2390,9 +2403,9 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			KillFeed_ForceClear();
+		//	KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
-
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2401,6 +2414,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 		case 2:	// Waiting
 		{
@@ -2415,7 +2429,7 @@ void Waves_SetReadyStatus(int status)
 			
 			KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
-			
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2424,6 +2438,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 	}
 }
@@ -2509,6 +2524,7 @@ void Waves_SetDifficultyName(const char[] name)
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), name);
 	WavesUpdateDifficultyName();
+	SteamWorks_UpdateGameTitle();
 }
 
 void WavesUpdateDifficultyName()

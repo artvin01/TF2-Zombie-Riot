@@ -599,7 +599,23 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 					damage *= Attributes_Get(weapon, 2, 1.0);
 
 					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
-					damage *= i_HowManyBombsOnThisEntity[npc][client];
+					int BomsToBoomCalc = BomsToBoom;
+					
+					if(BomsToBoomCalc > 250)
+					{
+						int BomsToBoomCalcPost = 250;
+						BomsToBoomCalc -= 250;
+						BomsToBoomCalc /= 4;
+						BomsToBoomCalc += BomsToBoomCalcPost;
+					}
+					else if(BomsToBoomCalc > 150)
+					{
+						int BomsToBoomCalcPost = 150;
+						BomsToBoomCalc -= 150;
+						BomsToBoomCalc /= 2;
+						BomsToBoomCalc += BomsToBoomCalcPost;
+					}
+					damage *= BomsToBoomCalc;
 
 					float EntLoc2[3];
 					

@@ -1,3 +1,19 @@
+# WARNING! READ!
+
+USE 32 BIT SERVER AS OF NOW!
+this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
+there are some things missing as its still a WIP fix:
+
+-Killfeed bots
+
+-MVM hud setting resetting
+
+-Bob the second not listenign to commands
+
+-EDAlloc remover, i.e. edicts being reserved.
+
+some more...
+
 # TF2 Zombie Riot
 
 You fight against AI enemies/Zombies with allies and try to win/suvive as long as possible, You buy weapons and or upgrade them from previous ones. Stay together and beat them
@@ -14,6 +30,9 @@ If you wish to use this plugin for your own server, please keep all the credits 
 Do not go above 14 players(you can have 32 slots, i recommend 16+) but dont allow more inside the plugin itself (Inside queue.sp), as the server doesnt support that interms of performance, the npc's are limited at 32 for a reason.
 The performance heavy things are Lagcompensation and pathfinder, but i tried to optimise those as much as i could.
 Most of the code is made towards client prediction to make the best experience.
+
+Use THIS compiler version if you dont want any wierd issues:
+1.12.0.7053
 
 Also keep in mind that i (artvin) started coding here with only half a year of knowledege so you'll see a fuckton of shitcode.
 

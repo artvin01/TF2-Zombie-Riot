@@ -662,7 +662,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		SeaSlider_AddNeuralDamage(target, client, 10, _, true);
+		Elemental_AddNervousDamage(target, client, 10, _, true);
 		f_HussarBuff[target] = GetGameTime() + 10.0;
 
 		if(target > MaxClients)

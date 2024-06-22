@@ -24,24 +24,6 @@ enum struct KillFeed
 	bool silent_kill;
 }
 
-#if defined ZR
-static const char BuildingName[][] =
-{
-	"Building",
-	"Barricade",
-	"Elevation",
-	"AmmoBox",
-	"Armortable",
-	"Perk Machine",
-	"Pack-a-Punch",
-	"Railgun",
-	"Sentry",
-	"Mortar",
-	"Healing Station",
-	"Barracks"
-};
-#endif
-
 static int Bots[2];
 static int ForceTeam[MAXTF2PLAYERS];
 static char KillIcon[MAXENTITIES][32];
@@ -51,6 +33,8 @@ static Handle FeedTimer;
 
 void AdjustBotCount()
 {
+	return;
+	/*
 	int botcount = 0;
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -77,6 +61,7 @@ void AdjustBotCount()
 			break;
 		}
 	}
+	*/
 }
 
 void KillFeed_PluginStart()
@@ -86,29 +71,20 @@ void KillFeed_PluginStart()
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsFakeClient(client) && !IsClientSourceTV(client))
-		{
-			for(int i; i < sizeof(Bots); i++)
-			{
-				if(!Bots[i])
-				{
-					Bots[i] = client;
-					break;
-				}
-			}
-		}
+		if(IsClientInGame(client))
+			KillFeed_ClientPutInServer(client);
 	}
 }
 
 void KillFeed_ClientPutInServer(int client)
 {
-	if(IsFakeClient(client) && !IsClientSourceTV(client))
+	if(IsFakeClient(client))
 	{
-		ForceTeam[client] = 3;
+		ForceTeam[client] = IsClientSourceTV(client) ? TFTeam_Spectator : TFTeam_Blue;
 	
 		for(int i; i < sizeof(Bots); i++)
 		{
-			if(!Bots[i])
+			if(!Bots[i] || IsClientSourceTV(Bots[i]))
 			{
 				Bots[i] = client;
 				break;
@@ -117,6 +93,8 @@ void KillFeed_ClientPutInServer(int client)
 	}
 }
 
+/*
+#if defined ZR
 void MoveBotToSpectator(int client)
 {
 	if(FeedTimer == null && GetTeam(client) == TFTeam_Red)
@@ -127,6 +105,9 @@ void MoveBotToSpectator(int client)
 		b_IsPlayerABot[client] = true;
 	}
 }
+#endif
+*/
+
 void KillFeed_ClientDisconnect(int client)
 {
 	for(int i; i < sizeof(Bots); i++)
@@ -155,7 +136,7 @@ void KillFeed_ClientDisconnect(int client)
 						}
 					}
 
-					if(!found && IsClientInGame(target) && IsFakeClient(target) && !IsClientSourceTV(client))
+					if(!found && IsClientInGame(target) && IsFakeClient(target))
 					{
 						Bots[sizeof(Bots) - 1] = target;
 						break;
@@ -173,7 +154,7 @@ void KillFeed_EntityCreated(int entity)
 	KillIcon[entity][0] = 0;
 }
 
-void KillFeed_SetKillIcon(int entity, const char[] icon)
+stock void KillFeed_SetKillIcon(int entity, const char[] icon)
 {
 	strcopy(KillIcon[entity], sizeof(KillIcon[]), icon);
 }
@@ -183,7 +164,7 @@ int KillFeed_GetBotTeam(int client)
 	return ForceTeam[client];
 }
 
-void KillFeed_ForceClear()
+stock void KillFeed_ForceClear()
 {
 	LowList.Clear();
 	HighList.Clear();
@@ -191,6 +172,9 @@ void KillFeed_ForceClear()
 
 void KillFeed_SetBotTeam(int client, int team)
 {
+	if(IsClientSourceTV(client))
+		return;
+	
 	int teamSet = team;
 
 	if(teamSet < TFTeam_Unassigned)
@@ -205,15 +189,11 @@ void KillFeed_SetBotTeam(int client, int team)
 #if defined ZR
 static bool BuildingFullName(int entity, char[] buffer, int length)
 {
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))
 		return false;
 
-	int index = i_WhatBuilding[entity];
-	if(index >= sizeof(BuildingName))
-		index = 0;
-	
-	Format(buffer, length, "%s (%N)", BuildingName[index], owner);
+	Format(buffer, length, "%s (%N)", c_NpcName[owner], owner);
 	return true;
 }
 #endif
@@ -237,13 +217,13 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
 		feed.victim_team = GetTeam(victim);
-		NPC_GetNameById(i_NpcInternalId[victim], feed.victim_name, sizeof(feed.victim_name));
+		strcopy(feed.victim_name, sizeof(feed.victim_name), c_NpcName[victim]);
 		
 		botNum++;
 
-		priority = feed.victim_team != 3;
-
 #if defined ZR
+		priority = feed.victim_team != TFTeam_Blue;
+		
 		if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			priority = true;
 
@@ -293,14 +273,18 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
-			if(!Bots[botNum])
-				return;
-			
-			feed.attacker = GetClientUserId(Bots[botNum]);
-			feed.attacker_team = GetTeam(attacker);
-			NPC_GetNameById(i_NpcInternalId[attacker], feed.attacker_name, sizeof(feed.attacker_name));
-			
-			botNum++;
+			if(Bots[botNum])
+			{
+				feed.attacker = GetClientUserId(Bots[botNum]);
+				feed.attacker_team = GetTeam(attacker);
+				strcopy(feed.attacker_name, sizeof(feed.attacker_name), c_NpcName[attacker]);
+				
+				botNum++;
+			}
+			else
+			{
+				feed.attacker = -1;
+			}
 		}
 #if defined ZR
 		else if(i_IsABuilding[attacker])
@@ -530,6 +514,21 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 		{
 			event.SetBool("silent_kill", false);
 
+#if defined RPG
+			bool hasVictim = IsValidClient(victim) && !IsFakeClient(victim);
+			bool hasAttacker = IsValidClient(attacker) && !IsFakeClient(attacker);
+			bool hasAssister = IsValidClient(assister) && !IsFakeClient(assister);
+			for(int target = 1; target <= MaxClients; target++)
+			{
+				if(target == victim || target == attacker || target == assister ||
+				  (hasVictim && Party_IsClientMember(target, victim)) ||
+				  (hasAttacker && Party_IsClientMember(target, attacker)) ||
+				  (hasAssister && Party_IsClientMember(target, assister)))
+				{
+					event.FireToClient(target);
+				}
+			}
+#else
 			if(victim)
 				event.FireToClient(victim);
 			
@@ -538,6 +537,7 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 			
 			if(assister)
 				event.FireToClient(assister);
+#endif
 		}
 		else
 		{
@@ -547,20 +547,19 @@ public Action KillFeed_ShowTimer(Handle timer, ArrayList list)
 					event.FireToClient(client);
 			}
 		}
-		if(IsValidClient(victim) && IsFakeClient(victim) && !IsClientSourceTV(victim))
-		{
+
+		if(IsValidClient(victim) && IsFakeClient(victim))
 			KillFeed_SetBotTeam(victim, TFTeam_Blue);
-		}
-		if(IsValidClient(attacker) && IsFakeClient(attacker) && !IsClientSourceTV(attacker))
-		{
+		
+		if(IsValidClient(attacker) && IsFakeClient(attacker))
 			KillFeed_SetBotTeam(attacker, TFTeam_Blue);
-		}
-		if(IsValidClient(assister) && IsFakeClient(assister) && !IsClientSourceTV(assister))
-		{
+		
+		if(IsValidClient(assister) && IsFakeClient(assister))
 			KillFeed_SetBotTeam(assister, TFTeam_Blue);
-		}
+
 		event.Cancel();
 	}
+	
 	FeedTimer = CreateTimer(0.3, KillFeed_NextTimer);
 	return Plugin_Continue;
 }

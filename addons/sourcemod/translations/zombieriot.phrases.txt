@@ -1339,12 +1339,11 @@
 	}
 	"Ammobox Tooltip"
 	{
-		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon."
-		"ru" 		"Нажмите ПЕРЕЗАРЯДКА на ящике с боеприпасами для получения боеприпасов для оружия в руках."
-		"de"		"Drücke NACHLADEN an der Munitionsbox um Munition für deine aktuelle Waffe zubekommen."
-		"pt"		"Pegue mais munição apertando o botão de RECARREGAR enquanto olha para caixa de munições."
-		"nl"		"Druk op te HERLAAD toets om via de ammunitiekist ammunitie te krijgen voor uw huidige wapen."
-		"chi"       "对着弹药箱按下R键可以补充你手持的武器弹药"
+		"en" 		"Press RELOAD on the Ammobox to gain Ammo for your current holding weapon.\nWill try to fill empty weapons first in your inventory."
+	}
+	"Warn Client Ammo None"
+	{
+		"en" 		"The weapon you tried to switch to has no ammo, Get ammo from an ammo box, itll auto fill the ammo for that weapon instead!"
 	}
 	"Armortable Tooltip"
 	{
@@ -1601,7 +1600,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) + press TAB to show current weapon!"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
 	}
 	"Father Grigori's Store"
 	{
@@ -3143,5 +3142,25 @@
 	"Bring up Class Change Menu"
 	{
 		"en"	"Bring up Class Change Menu"
+	}
+	"Corrode"
+	{
+		"en"	"Corrode"
+	}
+	"Chaos"
+	{
+		"en"	"Chaos"
+	}
+	"Cyro"
+	{
+		"en"	"Cyro"
+	}
+	"Necrosis"
+	{
+		"en"	"Necrosis"
+	}
+	"Building Menu"
+	{
+		"en"	"Building Menu\nHold crouch for more info"
 	}
 }

@@ -76,5 +76,5 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -E -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
+          spcomp -O2 -v2 -i "include" -o npc_framework.smx npc_framework.sp
         working-directory: ${{ env.SCRIPTS_PATH }}

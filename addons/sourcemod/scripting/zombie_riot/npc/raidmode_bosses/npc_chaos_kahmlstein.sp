@@ -1489,7 +1489,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
+							Elemental_AddChaosDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
@@ -1812,7 +1812,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			

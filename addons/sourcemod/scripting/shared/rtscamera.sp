@@ -5,6 +5,8 @@
 	https://github.com/geominorai/sm-rts-starter
 */
 
+#define RTS_CAMERA
+
 #define ZERO_VECTOR		{0.0, 0.0, 0.0}
 #define DEFAULT_ANGLES		{60.0, 45.0, 0.0}
 #define AXIS_OFFSET		0.196350 // FLOAT_PI/16
@@ -1009,7 +1011,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 	{
 		if(!holding[Key_Ctrl])
 			ClearSelected(client);
-		
+	/*	
 #if defined ZR
 		char npc_classname[60];
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
@@ -1022,7 +1024,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 					SelectUnit(client, entity);
 			}
 		}
-#endif
+#endif*/
 	}
 
 	// Cursor point and rectangle selection through a stationary viewport
@@ -1439,7 +1441,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 					if(!success)
 						RTS_PlaySound(entity, client, Sound_Move);
 					
-#elseif defined ZR
+/*#elseif defined ZR
 
 					f3_SpawnPosition[entity] = vecMovePos;
 
@@ -1456,7 +1458,7 @@ static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int t
 						
 						case Move_Patrol:
 							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-					}
+					}*/
 #endif
 
 					success = true;
@@ -1939,7 +1941,7 @@ stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3
 	return true;
 }
 
-bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
+stock bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
 {
 	bool result;
 	if(BindingKey[client] != -1)
@@ -2136,7 +2138,7 @@ static stock bool IsSelectableUnitEntity(int client, int entity)
 		{
 			return true;
 		}
-#elseif defined ZR
+/*#elseif defined ZR
 		if(!b_NpcHasDied[entity])
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
@@ -2144,7 +2146,7 @@ static stock bool IsSelectableUnitEntity(int client, int entity)
 			{
 				return true;
 			}
-		}
+		}*/
 #endif
 	}
 
@@ -2186,12 +2188,12 @@ static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 			
 			return true;
 		}
-#elseif defined ZR
+/*#elseif defined ZR
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 		{
 			return true;
-		}
+		}*/
 #endif
 	}
 

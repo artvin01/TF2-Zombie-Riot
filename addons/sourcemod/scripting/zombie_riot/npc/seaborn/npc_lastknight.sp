@@ -244,7 +244,7 @@ public void LastKnight_ClotThink(int iNPC)
 					if(IsClientInGame(client) && GetClientTeam(client) == 2)
 					{
 						int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
-						if(entity != INVALID_ENT_REFERENCE && i_WhatBuilding[entity] == BuildingSummoner)
+						if(entity != INVALID_ENT_REFERENCE/* && i_WhatBuilding[entity] == BuildingSummoner*/)
 						{
 							owner = client;
 							break;
@@ -492,7 +492,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 	else if(attacker > MaxClients)
 	{
 		if(!b_NpcHasDied[attacker] && f_TimeFrozenStill[attacker] < gameTime)
-			Cryo_FreezeZombie(attacker);
+			Cryo_FreezeZombie(attacker, npc.m_iPhase ? 1 : 0);
 	}
 	else if(!TF2_IsPlayerInCondition(attacker, TFCond_Dazed))
 	{

@@ -18,7 +18,7 @@ static Handle g_hCTFCreateArrow;
 //static Handle g_hSDKPlaySpecificSequence;
 //static Handle g_hDoAnimationEvent;
 
-#if defined ZR
+#if defined ZR || defined RPG
 static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
@@ -63,37 +63,6 @@ void SDKCall_Setup()
 	if(!g_hSetLocalOrigin)
 		LogError("[Gamedata] Could not find CBaseEntity::SetLocalOrigin");
 
-#if defined ZR
-	//CBaseAnimating::LookupBone( const char *szName )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseEntity::SetLocalOrigin");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if ((g_hLookupBone = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::LookupBone signature!");
-	
-	//void CBaseAnimating::GetBonePosition ( int iBone, Vector &origin, QAngle &angles )
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetBonePosition");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if ((g_hGetBonePosition = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create SDKCall for CBaseAnimating::GetBonePosition signature!");
-#endif
-
-	//	https://github.com/Wilzzu/testing/blob/18a3680a9a1c8bdabc30c504bbf9467ac6e7d7b4/samu/addons/sourcemod/scripting/shavit-replay.sp
-
-	//	Thanks to nosoop for pointing soemthing like this out to me
-	//	https://discord.com/channels/335290997317697536/335290997317697536/1038513919695802488  in the allied modders discord
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "NextBotCreatePlayerBot<CTFBot>");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);       // const char *name
-	PrepSDKCall_AddParameter(SDKType_Bool, SDKPass_Plain);   // bool bReportFakeClient
-	PrepSDKCall_SetReturnInfo(SDKType_CBasePlayer, SDKPass_Pointer); // CTFBot*
-	gH_BotAddCommand = EndPrepSDKCall();
-
-	if(!gH_BotAddCommand)
-		SetFailState("[Gamedata] Unable to prepare SDKCall for NextBotCreatePlayerBot<CTFBot>");
-
 	//CBasePlayer
 	StartPrepSDKCall(SDKCall_Player);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBasePlayer::SnapEyeAngles");
@@ -131,7 +100,7 @@ void SDKCall_Setup()
 	if(!g_hImpulse)
 		LogError("[Gamedata] Could not find CBasePlayer::CheatImpulseCommands");
 
-#if defined ZR
+#if defined ZR || defined RPG
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFPlayerShared::RecalculatePlayerBodygroups");
 	if((g_hRecalculatePlayerBodygroups = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CTFPlayerShared::RecalculatePlayerBodygroups");
@@ -160,19 +129,7 @@ void SDKCall_Setup()
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
 	g_hSDKUpdateBlocked = EndPrepSDKCall();
-	
-#if defined ZR
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectDispenser::MakeCarriedObject");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectDispenser = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectDispenser::MakeCarriedObject");
-	
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CObjectSentrygun::MakeCarriedObject");
-	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer); //Player
-	if ((g_hSDKMakeCarriedObjectSentry = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed To create SDKCall for CObjectSentrygun::MakeCarriedObject");
-#endif
-	
+
 	//from kenzzer
 	
 	StartPrepSDKCall(SDKCall_Entity);
@@ -211,11 +168,13 @@ void SDKCall_Setup()
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
 	
 #if defined ZR
+/*
 	StartPrepSDKCall(SDKCall_Raw);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
 	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
 	if(!SDKResetPlayerAndTeamReadyState)
 		LogError("[Gamedata] Could not find CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
+*/		
 #endif
 	
 	delete gamedata;
@@ -235,8 +194,8 @@ stock void SDKCall_GetShootSound(int entity, int index, char[] buffer, int lengt
 
 //( const Vector &vecOrigin, const QAngle &vecAngles, const float fSpeed, const float fGravity, ProjectileType_t projectileType, CBaseEntity *pOwner, CBaseEntity *pScorer )
 
-#if defined ZR
-int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
+#if defined ZR || defined RPG
+stock int SDKCall_CTFCreateArrow(float VecOrigin[3], float VecAngles[3], const float fSpeed, const float fGravity, int projectileType, int Owner, int Scorer)
 {
 	if(g_hCTFCreateArrow)
 		return SDKCall(g_hCTFCreateArrow, VecOrigin, VecAngles, fSpeed, fGravity, projectileType, Owner, Scorer);
@@ -300,8 +259,8 @@ void SDKCall_SetAbsAngle(int index, float AbsAngle[3])
 }
 */
 
-#if defined ZR
-void SDKCall_RecalculatePlayerBodygroups(int index)
+#if defined ZR || defined RPG
+stock void SDKCall_RecalculatePlayerBodygroups(int index)
 {
 	if(g_hRecalculatePlayerBodygroups)
 	{
@@ -341,7 +300,7 @@ public Address GetStudioHdr(int index)
 	return Address_Null;
 }	
 
-void SnapEyeAngles(int client, float viewAngles[3])
+void SnapEyeAngles(int client, const float viewAngles[3])
 {
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }
@@ -372,23 +331,12 @@ void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 	SDKCall(g_hGetVectors, client, pForward, pRight, pUp);
 }
 
-#if defined ZR
-void GetBoneAnglesAndPos(int client, char[] BoneName, float origin[3], float angles[3])
-{
-	int iBone = SDKCall(g_hLookupBone, client, BoneName);
-	if(iBone == -1)
-		return;
-		
-	SDKCall(g_hGetBonePosition, client, iBone, origin, angles);
-}
-#endif
-
 void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 {
 	SDKCall(SDKBecomeRagdollOnClient, entity, vec);
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 {
 	if(g_GottenAddressesForLagComp)
@@ -424,7 +372,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 #if !defined NOG
 	SpawningBot = true;
 #endif
-
+	
 	int bot = SDKCall(
 	gH_BotAddCommand,
 	Name, // name
@@ -442,7 +390,7 @@ stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
 
 //BIG thanks to backwards#8236 on discord for helping me out, YOU ARE MY HERO.
 
-#if defined ZR
+#if defined ZR || defined RPG
 void Sdkcall_Load_Lagcomp()
 {
 	if(!g_GottenAddressesForLagComp)
@@ -513,7 +461,32 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	{
 		Address address = DHook_CTeamplayRoundBasedRules();
 		if(address != Address_Null)
+		{
 			SDKCall(SDKResetPlayerAndTeamReadyState, address);
+			return;
+		}
+	}
+
+	int entity = FindEntityByClassname(-1, "tf_gamerules");
+	if(entity == -1)
+		return;
+	
+	static int Size1;
+	if(!Size1)
+		Size1 = GetEntPropArraySize(entity, Prop_Send, "m_bTeamReady");
+	
+	for(int i; i < Size1; i++)
+	{
+		SetEntProp(entity, Prop_Send, "m_bTeamReady", false, _, i);
+	}
+	
+	static int Size2;
+	if(!Size2)
+		Size2 = GetEntPropArraySize(entity, Prop_Send, "m_bPlayerReady");
+	
+	for(int i; i < Size2; i++)
+	{
+		SetEntProp(entity, Prop_Send, "m_bPlayerReady", false, _, i);
 	}
 }
 #endif

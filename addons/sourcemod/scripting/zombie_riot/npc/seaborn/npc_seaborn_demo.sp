@@ -196,5 +196,5 @@ public void SeabornDemo_ExplodePost(int attacker, int victim, float damage, int 
 {
 	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
 	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
-	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage * 2.0));
+	Elemental_AddNervousDamage(victim, attacker, RoundToCeil(damage * 2.0));
 }

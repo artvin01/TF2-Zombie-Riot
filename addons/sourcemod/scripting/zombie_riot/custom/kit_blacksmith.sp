@@ -15,7 +15,7 @@ enum struct TinkerEnum
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
+static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
 static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
@@ -88,6 +88,11 @@ void Blacksmith_ExtraDesc(int client, int index)
 	}
 }
 
+bool Blacksmith_IsASmith(int client)
+{
+	return view_as<bool>(EffectTimer[client]);
+}
+
 void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
@@ -132,7 +137,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
@@ -219,42 +224,6 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 
 	ApplyTempAttrib(weapon, 2, 2.0, 2.0);
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
-}
-
-public Action Blacksmith_BuildingTimer(Handle timer, int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(entity == -1)
-		return Plugin_Stop;
-	
-	int maxRepair = Building_Max_Health[entity] * 2;
-
-	if(Building_cannot_be_repaired[entity])
-	{
-		int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth") + (maxRepair / 1500);
-		if(maxhealth >= Building_Max_Health[entity])
-		{
-			Building_Repair_Health[entity] += Building_Max_Health[entity] - maxhealth;
-			if(Building_Repair_Health[entity] >= maxRepair)
-				Building_Repair_Health[entity] = maxRepair - 1;
-			
-			maxhealth = Building_Max_Health[entity];
-			Building_cannot_be_repaired[entity] = false;
-		}
-
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-	}
-	else if(Building_Repair_Health[entity] < maxRepair)
-	{
-		Building_Repair_Health[entity] += (maxRepair / 1500);
-		if(Building_Repair_Health[entity] > maxRepair)
-			Building_Repair_Health[entity] = maxRepair;
-		
-		int progress = (Building_Repair_Health[entity] - 1) * 100 / Building_Max_Health[entity];
-		SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress + 1);
-	}
-
-	return Plugin_Continue;
 }
 
 void Blacksmith_BuildingUsed(int entity, int client, int owner)
@@ -662,6 +631,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	if(!Rogue_Mode() && owner != client)
 	{
+		/*
 		if(i_Healing_station_money_limit[owner][client] < 20)
 		{
 			i_Healing_station_money_limit[owner][client]++;
@@ -671,6 +641,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			SetGlobalTransTarget(owner);
 			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
 		}
+		*/
 
 		switch(tinker.Rarity)
 		{

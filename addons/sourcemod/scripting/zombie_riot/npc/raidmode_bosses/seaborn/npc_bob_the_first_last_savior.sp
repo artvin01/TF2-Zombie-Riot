@@ -270,7 +270,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MUDROCK_RAGE");
+		npc.SetActivity("ACT_TrueStrength_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
 		npc.PlayIntroStartSound();
@@ -1437,7 +1437,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 }
 
-static void GiveOneRevive()
+void GiveOneRevive()
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1807,30 +1807,6 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 	
 	TE_SendToAll();
 }
-
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-			
-	int ICE_INT = PrecacheModel(sprite);
-		
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-		
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
-}
-
 stock void BobPullTarget(int bobnpc, int enemy)
 {
 	CClotBody npc = view_as<CClotBody>(bobnpc);
@@ -2034,11 +2010,11 @@ void BobInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			
-			if(kick)
+			if(kick && victim <= MaxClients)
 			{
 				if(victim <= MaxClients)
 				{
@@ -2099,10 +2075,15 @@ public void Bob_Rocket_Particle_StartTouch(int entity, int target)
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 
+		if(target > MaxClients) //make sure barracks units arent shit
+		{
+			DamageDeal *= 0.4;
+		}
+
 		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
 		{
 			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
-			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+			Explode_Logic_Custom(DamageDeal, inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
 		}
 		else
 		{
