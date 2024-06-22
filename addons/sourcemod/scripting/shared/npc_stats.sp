@@ -10013,9 +10013,12 @@ void Spawns_CheckBadClient(int client)
 #endif
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
 	{
-		// In air or water
 		BadSpotPoints[client]++;
-		return;
+		if(f_ClientInAirSince[client] > GetGameTime())
+		{
+			// In air or water
+			return;
+		}
 	}
 
 #if defined ZR
@@ -10035,14 +10038,15 @@ void Spawns_CheckBadClient(int client)
 	int bad;
 
 	float pos1[3], pos2[3];
-	WorldSpaceCenter(client, pos1);
-	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 100.0, false, true);
+	GetClientAbsOrigin(client, pos1);
+	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 50.0, false, true);
 	if(area == NULL_AREA)
 	{
 		// Not near a nav mesh, bad
 		bad = 5;
 		BadSpotPoints[client] += 5;
 	}
+	/*
 	else
 	{
 		int npcs;
@@ -10067,10 +10071,11 @@ void Spawns_CheckBadClient(int client)
 			}
 		}
 	}
+	*/
 
 	if(bad > 4)
 	{
-		if(BadSpotPoints[client] > 29)
+		if(BadSpotPoints[client] > 14)
 		{
 			float damage = 5.0;
 			NpcStuckZoneWarning(client, damage, 0);	
@@ -10082,7 +10087,7 @@ void Spawns_CheckBadClient(int client)
 	}
 	else if(BadSpotPoints[client] > 0)
 	{
-		BadSpotPoints[client]--;
+		BadSpotPoints[client] -= 2;
 	}
 
 	/*

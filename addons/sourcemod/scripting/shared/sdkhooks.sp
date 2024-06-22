@@ -418,6 +418,7 @@ public void OnPostThink(int client)
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
+			f_ClientInAirSince[client] = GetGameTime() + 5.0;
 			b_PlayerWasAirbornKnockbackReduction[client] = true;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}

@@ -743,6 +743,7 @@ bool b_CannotBeStunned[MAXENTITIES];
 bool b_CannotBeKnockedUp[MAXENTITIES];
 bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
+float f_ClientInAirSince[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
 bool b_ProjectileCollideWithPlayerOnly[MAXENTITIES];
