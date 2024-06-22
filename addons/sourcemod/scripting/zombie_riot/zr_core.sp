@@ -176,7 +176,8 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98,
-	WEAPON_WEST_REVOLVER = 99
+	WEAPON_WEST_REVOLVER = 99,
+	WEAPON_OBUCH = 100
 }
 
 enum
@@ -501,6 +502,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
 #include "zombie_riot/custom/weapon_deagle_west.sp"
+#include "zombie_riot/custom/weapon_obuch.sp"
 
 void ZR_PluginLoad()
 {
@@ -736,6 +738,7 @@ void ZR_MapStart()
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
 	Object_MapStart();
+	Obuch_Mapstart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

@@ -825,9 +825,13 @@
 	}
 	"Hammer Pap 3"
 	{
-		"en"	"Increased damage"
+		"en"	"Massivly Increased damage"
 		"ru"	"Увеличенный урон."
 		"chi"	"增加伤害"
+	}
+	"Hammer Pap 4"
+	{
+		"en"	"Slightly faster swinging speed and increased damage. Your damage, swing speed, and melee resistance will go up the more you hit the enemies"
 	}
 	
 	"Fire Axe Desc"
