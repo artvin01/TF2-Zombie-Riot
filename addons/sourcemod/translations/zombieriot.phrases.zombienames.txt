@@ -2233,4 +2233,20 @@
 	{
 		"en"	"Mr.X"
 	}
+	"Xeno Acclaimed Swordsman"
+	{
+		"en"	"Xeno Acclaimed Swordsman"
+	}
+	"Xeno Early Infected"
+	{
+		"en"	"Xeno Early Infected"
+	}
+	"Xeno Patient Few"
+	{
+		"en"	"Xeno Patient Few"
+	}
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
 }

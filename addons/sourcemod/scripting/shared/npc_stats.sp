@@ -41,6 +41,7 @@ int TeamFreeForAll = 50;
 int i_TeamGlow[MAXENTITIES]={-1, ...};
 int Shared_BEAM_Laser;
 char c_NpcName[MAXENTITIES][255];
+bool b_NameNoTranslation[MAXENTITIES];
 int i_SpeechBubbleEntity[MAXENTITIES];
 PathFollower g_NpcPathFollower[ZR_MAX_NPCS];
 static int g_modelArrow;
@@ -7673,6 +7674,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ThisNpcIsImmuneToNuke[entity] = false;
 	b_ThisNpcIsSawrunner[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
+	b_NameNoTranslation[entity] = false;
 #endif
 	c_NpcName[entity][0] = 0;
 

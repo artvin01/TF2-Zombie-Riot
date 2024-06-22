@@ -222,8 +222,15 @@ methodmap RaidbossNemesis < CClotBody
 		RaidModeTime = GetGameTime(npc.index) + 200.0;
 
 
+		bool final = StrContains(data, "final_item") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
+
 		if(XenoExtraLogic())
-			RaidModeTime = GetGameTime(npc.index) + 250.0;
+			RaidModeTime = GetGameTime(npc.index) + 9999999.0;
 
 		npc.m_flMeleeArmor = 1.25; 		//Melee should be rewarded for trying to face this monster
 
@@ -231,12 +238,6 @@ methodmap RaidbossNemesis < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_TANK;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 1.5;
-		bool final = StrContains(data, "final_item") != -1;
-		
-		if(final)
-		{
-			i_RaidGrantExtra[npc.index] = 1;
-		}
 
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -328,6 +329,22 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		return;
 	}
 
+	//Set raid to this one incase the previous one has died or somehow vanished
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+	{
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
+	}
+	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
+	{	
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
+	
 
 	npc.Update();
 
@@ -1737,14 +1754,17 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 
 public void Raidmode_Nemesis_Win(int entity)
 {
-	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
-	if(XenoExtraLogic())
+	if(RaidBossActive == EntIndexToEntRef(entity) && i_RaidGrantExtra[entity] == 1)
 	{
-		CPrintToChatAll("{snow}???{default}: That was too close, they cant get further, i trust you nemesis to annihilate anyone else left.");
+		if(XenoExtraLogic())
+		{
+			CPrintToChatAll("{crimson}You afterall... had no change.");
+		}
+		else
+		{
+			CPrintToChatAll("{snow}???{default}: Good job nemesis, head back to the lab.");
+		}
 	}
-	else
-	{
-		CPrintToChatAll("{snow}???{default}: Good job nemesis, head back to the lab.");
-	}
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

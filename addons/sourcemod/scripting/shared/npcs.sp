@@ -1766,7 +1766,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		RPGSpawns_UpdateHealthNpc(victim);
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
 #else
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		if(!b_NameNoTranslation[npc.index])
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		}
+		else
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		}
 #endif
 		
 		//add debuff

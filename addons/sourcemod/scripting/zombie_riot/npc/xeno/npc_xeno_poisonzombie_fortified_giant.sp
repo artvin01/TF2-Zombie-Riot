@@ -146,7 +146,9 @@ methodmap XenoFortifiedGiantPoisonZombie < CClotBody
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
+		SetVariantInt(15);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -186,9 +188,6 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 {
 	XenoFortifiedGiantPoisonZombie npc = view_as<XenoFortifiedGiantPoisonZombie>(iNPC);
 	
-	//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
-	SetVariantInt(15);
-	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
