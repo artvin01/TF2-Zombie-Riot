@@ -190,17 +190,22 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
 				{
-					WeaponWasGivenAmmo[weapon1] = true;
 					if(b_WeaponHasNoClip[weapon1])
 					{
+						WeaponWasGivenAmmo[weapon1] = true;
 						SetAmmo(client, Ammo_type, 1);
 						CurrentAmmo[client][Ammo_type] = -1;
 					}
 					else
-					{
+					{			
 						int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-						SetEntData(weapon1, iAmmoTable, 1);
-						SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
+						int GetClip = GetEntData(weapon1, iAmmoTable, 4);
+						if(GetClip == 0)
+						{
+							WeaponWasGivenAmmo[weapon1] = true;
+							SetEntData(weapon1, iAmmoTable, 1);
+							SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
+						}
 					}
 					//we give these weapons atleast 1 clip, this is to ensure you can switch to them client side.
 					//we also set WeaponWasGivenAmmo, so when you actually switch to the weapon, its clip gets set to 0.
@@ -238,18 +243,10 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 			SetEntData(weapon, iAmmoTable, 0);
 			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
 		}
-		RequestFrame(OnWeaponSwitchFrameWeaponFunc, EntIndexToEntRef(weapon));
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
 	}
 	WeaponWasGivenAmmo[weapon] = false;
 	return Plugin_Continue;
-}
-void OnWeaponSwitchFrameWeaponFunc(int ref)
-{
-	int weapon = EntRefToEntIndex(ref);
-	if (IsValidEntity(weapon))
-	{
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
-	}
 }
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)

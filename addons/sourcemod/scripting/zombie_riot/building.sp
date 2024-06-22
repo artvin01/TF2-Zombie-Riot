@@ -393,6 +393,7 @@ static void BuildingMenu(int client)
 
 	if(menu.ItemCount <= 2)
 	{
+		delete menu;
 		//retry
 		MenuPage[client] = 0;
 		BuildingMenu(client);
