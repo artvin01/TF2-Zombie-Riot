@@ -142,6 +142,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 	{
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
+			int buttons = GetClientButtons(client);
 			bool reload = (buttons & IN_RELOAD) != 0;
 			bool crouch = (buttons & IN_DUCK) != 0;
 			if(reload && !crouch)
