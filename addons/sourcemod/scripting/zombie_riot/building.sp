@@ -391,6 +391,14 @@ static void BuildingMenu(int client)
 		menu.AddItem(buffer2, buffer1, allowed ? ITEMDRAW_DEFAULT : ITEMDRAW_DISABLED);
 	}
 
+	if(menu.ItemCount <= 2)
+	{
+		//retry
+		MenuPage[client] = 0;
+		BuildingMenu(client);
+		return;
+	}
+
 	for(int i = menu.ItemCount; i < (MenuPage[client] ? 7 : 8); i++)
 	{
 		menu.AddItem(buffer2, buffer2, ITEMDRAW_SPACER);

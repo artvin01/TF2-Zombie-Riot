@@ -238,12 +238,19 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 			SetEntData(weapon, iAmmoTable, 0);
 			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
 		}
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		RequestFrame(OnWeaponSwitchFrameWeaponFunc, EntIndexToEntRef(weapon));
 	}
 	WeaponWasGivenAmmo[weapon] = false;
 	return Plugin_Continue;
 }
-
+void OnWeaponSwitchFrameWeaponFunc(int ref)
+{
+	int weapon = EntRefToEntIndex(ref);
+	if (IsValidEntity(weapon))
+	{
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+	}
+}
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {

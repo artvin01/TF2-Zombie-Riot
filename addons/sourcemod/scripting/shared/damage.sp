@@ -11,6 +11,7 @@
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	LogEntryInvicibleTest(victim, attacker, damage, 5);
+	
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
@@ -69,6 +70,12 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
+	{
+		damage = 0.0;
+		return true;
+	}
+
 	float GameTime = GetGameTime();
 
 	if(f_MultiDamageTaken[victim] != 1.0)

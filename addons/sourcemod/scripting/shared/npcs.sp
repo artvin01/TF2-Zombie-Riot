@@ -1036,6 +1036,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 		return;
+		
 	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
 	if(AttackerOverride > 0)
 	{
