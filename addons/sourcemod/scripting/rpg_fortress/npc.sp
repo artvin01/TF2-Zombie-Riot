@@ -578,3 +578,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
 #include "rpg_fortress/npc/combine/npc_combine_turtle.sp"
 */
+
+
+
+void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
+{
+	return;
+}

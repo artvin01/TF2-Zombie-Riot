@@ -163,6 +163,12 @@ void NPC_ConfigSetup()
 	XenoPyroGiant_OnMapStart_NPC();
 	XenoCombineDeutsch_OnMapStart_NPC();
 	XenoSpyMainBoss_OnMapStart_NPC();
+
+
+	XenoAcclaimedSwordsman_OnMapStart_NPC();
+	XenoFortifiedEarlyZombie_OnMapStart_NPC();
+	XenoPatientFew_OnMapStart_NPC();
+	XenoOuroborosEkas_OnMapStart_NPC();
 	
 	NaziPanzer_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
@@ -457,6 +463,7 @@ void NPC_ConfigSetup()
 	RaidbossSilvester_OnMapStart();
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
+	RaidbossMrX_OnMapStart();
 	GodArkantos_OnMapStart();
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
@@ -858,6 +865,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno/npc_xeno_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_spy_boss.sp"
 
+#include "zombie_riot/npc/xeno_lab/npc_xeno_acclaimed_swordsman.sp"
+#include "zombie_riot/npc/xeno_lab/npc_xeno_early_infected.sp"
+#include "zombie_riot/npc/xeno_lab/npc_xeno_patient_few.sp"
+#include "zombie_riot/npc/xeno_lab/npc_xeno_ekas_robo.sp"
+
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
@@ -1059,6 +1071,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
+#include "zombie_riot/npc/raidmode_bosses/xeno/npc_mrx.sp"
 
 #include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
 #include "zombie_riot/npc/seaborn/npc_seacrawler.sp"
