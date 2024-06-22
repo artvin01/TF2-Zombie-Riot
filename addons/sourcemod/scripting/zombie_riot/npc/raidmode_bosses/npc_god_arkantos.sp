@@ -425,7 +425,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	//float point impresicion...
 	if(ArkantoSpeedint[npc.index] == 320)
 	{
-		if(f_GodArkantosBuff[npc.index] > gameTime)
+		if(f_GodArkantosBuff[npc.index] > GetGameTime())
 		{
 			npc.m_flSpeed = 220.0;
 			ArkantoSpeedint[npc.index] = 220;
@@ -433,7 +433,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	else if(ArkantoSpeedint[npc.index] == 220)
 	{
-		if(f_GodArkantosBuff[npc.index] < gameTime)
+		if(f_GodArkantosBuff[npc.index] < GetGameTime())
 		{
 			ArkantoSpeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;

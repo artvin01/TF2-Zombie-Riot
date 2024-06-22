@@ -100,7 +100,7 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 		npc.PlayShootSound();
 		if(IsValidEnemy(npc.index, target))
 		{
-			float damageDealt = 5.0;
+			float damageDealt = 10.0;
 			damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
 			if(ShouldNpcDealBonusDamage(target))
 				damageDealt *= 3.0;

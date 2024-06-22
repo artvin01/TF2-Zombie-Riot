@@ -176,7 +176,10 @@ enum
 	WEAPON_COSMIC_PILLAR = 96,
 	WEAPON_COSMIC_RAILCANNON = 97,
 	WEAPON_GRENADEHUD = 98,
-	WEAPON_WEST_REVOLVER = 99
+	WEAPON_WEST_REVOLVER = 99,
+	WEAPON_OBUCH = 100,
+	WEAPON_VICTORIAN_LAUNCHER = 101,
+	WEAPON_BOOM_HAMMER = 102
 }
 
 enum
@@ -476,7 +479,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_gladiia.sp"
 #include "zombie_riot/custom/weapon_vampire_knives.sp"
 #include "zombie_riot/custom/weapon_judge.sp"
-//#include "zombie_riot/custom/weapon_board.sp"
+#include "zombie_riot/custom/weapon_board.sp"
 #include "zombie_riot/custom/wand/weapon_german_caster.sp"
 #include "zombie_riot/custom/weapon_sensal.sp"
 #include "zombie_riot/custom/weapon_hazard.sp"
@@ -502,6 +505,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_messenger.sp"
 #include "zombie_riot/custom/kit_blacksmith.sp"
 #include "zombie_riot/custom/weapon_deagle_west.sp"
+#include "zombie_riot/custom/weapon_victorian.sp"
+#include "zombie_riot/custom/weapon_obuch.sp"
 
 void ZR_PluginLoad()
 {
@@ -531,6 +536,7 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_give_dialog", Command_GiveDialogBox, ADMFLAG_ROOT, "Give a dialog box");
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
+	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	
 	#if defined RUINA_BASE
 	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
@@ -720,7 +726,7 @@ void ZR_MapStart()
 	Saga_MapStart();
 	Beam_Wand_Pap_OnMapStart();
 	Gladiia_MapStart();
-//	WeaponBoard_Precache();
+	WeaponBoard_Precache();
 	Weapon_German_MapStart();
 	Weapon_Ludo_MapStart();
 	Ion_Beam_Wand_MapStart();
@@ -738,6 +744,8 @@ void ZR_MapStart()
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
 	Object_MapStart();
+	ResetMapStartVictoria();
+	Obuch_Mapstart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1023,6 +1031,24 @@ public Action Command_TestTutorial(int client, int args)
 	{
 		StartTutorial(targets[target]);
 	}
+	return Plugin_Handled;
+}
+
+public Action CommandDebugHudTest(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: wat <cash>");
+        return Plugin_Handled;
+    }
+
+	char buf[12];
+	GetCmdArg(1, buf, sizeof(buf));
+	
+	SetHudTextParams(-1.0, -1.0, 1.0, 255, 255, 255, 255, 0, 0.01, 0.01);
+	ShowHudText(client, -1,"Debug : %s",buf);	
+
 	return Plugin_Handled;
 }
 

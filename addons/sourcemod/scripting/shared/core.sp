@@ -455,6 +455,7 @@ float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
+bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
@@ -2334,10 +2335,12 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 			{
 				Queue_Menu(client);
 			}
+			/*
 			else if(b_HoldingInspectWeapon[client])
 			{
 				Store_OpenItemPage(client);
 			}
+			*/
 			else
 			{
 				Store_Menu(client);
@@ -2883,7 +2886,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Wands_Potions_EntityCreated(entity);
 		Saga_EntityCreated(entity);
 		Mlynar_EntityCreated(entity);
-//		Board_EntityCreated(entity);
+		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
 		Elemental_ClearDamage(entity);
@@ -3330,6 +3333,7 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+		WeaponWeaponAdditionOnRemoved(entity);
 		CurrentEntities--;
 	//	CreateTimer(1.01, Timer_FreeEdict);
 

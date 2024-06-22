@@ -149,6 +149,8 @@ stock void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
+	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 #endif
 
 #if defined NOG
@@ -164,21 +166,88 @@ stock void SDKHook_HookClient(int client)
 #endif
 }
 
+bool WeaponWasGivenAmmo[MAXENTITIES];
+
+void WeaponWeaponAdditionOnRemoved(int entity)
+{
+	WeaponWasGivenAmmo[entity] = false;
+}
+
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-	if(Ammo_type > 0)
+	int ie, weapon1;
+	while(TF2_GetItem(client, weapon1, ie))
 	{
-		//found a weapon that has ammo.
-		if(GetAmmo(client, Ammo_type) <= 0)
+		if(IsValidEntity(weapon1))
 		{
-			SetGlobalTransTarget(client);
-			PrintToChat(client, "%t", "Warn Client Ammo None");
+			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
+			{
+				WeaponWasGivenAmmo[weapon1] = false;
+			}
+			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+			if(Ammo_type > 0)
+			{
+				//found a weapon that has ammo.
+				if(GetAmmo(client, Ammo_type) <= 0)
+				{
+					if(b_WeaponHasNoClip[weapon1])
+					{
+						WeaponWasGivenAmmo[weapon1] = true;
+						SetAmmo(client, Ammo_type, 1);
+						CurrentAmmo[client][Ammo_type] = -1;
+					}
+					else
+					{			
+						int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+						int GetClip = GetEntData(weapon1, iAmmoTable, 4);
+						if(GetClip == 0)
+						{
+							WeaponWasGivenAmmo[weapon1] = true;
+							SetEntData(weapon1, iAmmoTable, 1);
+							SetEntProp(weapon1, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets	
+						}
+					}
+					//we give these weapons atleast 1 clip, this is to ensure you can switch to them client side.
+					//we also set WeaponWasGivenAmmo, so when you actually switch to the weapon, its clip gets set to 0.
+				}
+			}
 		}
 	}
 	return Plugin_Continue;
 }
 
+public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (IsValidEntity(entity))
+	{
+		WeaponWasGivenAmmo[entity] = false;
+	}
+	return Plugin_Handled;
+}
+public Action WeaponSwtichToWarningPost(int client, int weapon)
+{
+	if(WeaponWasGivenAmmo[weapon])
+	{
+		if(b_WeaponHasNoClip[weapon])
+		{
+			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+			if(GetAmmo(client, Ammo_type) <= 1)
+			{
+				SetAmmo(client, Ammo_type, 0);
+			}
+		}
+		else
+		{
+			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+			SetEntData(weapon, iAmmoTable, 0);
+			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+		}
+		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+	}
+	WeaponWasGivenAmmo[weapon] = false;
+	return Plugin_Continue;
+}
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
@@ -847,10 +916,20 @@ public void OnPostThink(int client)
 				percentage *= value;
 			//melee res
 			percentage *= percentage_Global;
+			had_An_ability = false;
 			if(percentage != 100.0 && percentage > 0.0)
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [♈ %.0f%%]", buffer, percentage);
-				had_An_ability = true;
+				if(percentage < 10.0)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s [☛%.2f%%", buffer, percentage);
+					had_An_ability = true;
+				}
+				else
+				{
+
+					FormatEx(buffer, sizeof(buffer), "%s [☛%.0f%%", buffer, percentage);
+					had_An_ability = true;
+				}
 			}
 			
 			percentage = 100.0;
@@ -862,11 +941,47 @@ public void OnPostThink(int client)
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
 				percentage *= value;
+			
+			/*
+			This ugly code is made so formatting it looks better, isntead of [res][res]
+			itll be [res-res]
+			So tis easier to read.
 
+			*/
 			if(percentage != 100.0 && percentage > 0.0)
 			{
-				FormatEx(buffer, sizeof(buffer), "%s [♐ %.0f%%]", buffer, percentage);
-				had_An_ability = true;
+				if(had_An_ability)
+				{
+					FormatEx(buffer, sizeof(buffer), "%s|", buffer);
+					if(percentage < 10.0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s➶%.2f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s➶%.0f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+				}
+				else
+				{
+					if(percentage < 10.0)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [➶%.2f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+					else
+					{
+						FormatEx(buffer, sizeof(buffer), "%s [➶%.0f%%]", buffer, percentage);
+						had_An_ability = true;
+					}
+				}
+			}
+			else
+			{
+				if(had_An_ability)
+					FormatEx(buffer, sizeof(buffer), "%s]", buffer);
 			}
 			if(percentage_Global <= 0.0)
 			{
@@ -1977,7 +2092,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	{
 		return Plugin_Handled;
 	}
-
+	/*
 	if(StrContains(sample, "sentry_", true) != -1)
 	{
 		volume *= 0.4;
@@ -1988,6 +2103,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			
 		return Plugin_Changed;
 	}
+	*/
 	if(StrContains(sample, "misc/halloween/spell_") != -1)
 	{
 		volume *= 0.75;
@@ -2142,7 +2258,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 		}
 		case WEAPON_BOARD:
 		{
-//			return Player_OnTakeDamage_Board_Hud(victim);
+			return Player_OnTakeDamage_Board_Hud(victim);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{

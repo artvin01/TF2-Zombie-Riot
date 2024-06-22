@@ -11,6 +11,7 @@
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	LogEntryInvicibleTest(victim, attacker, damage, 5);
+	
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
@@ -69,6 +70,12 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
+	{
+		damage = 0.0;
+		return true;
+	}
+
 	float GameTime = GetGameTime();
 
 	if(f_MultiDamageTaken[victim] != 1.0)
@@ -582,7 +589,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_BOARD:
 		{
-//			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
+			return Player_OnTakeDamage_Board(victim, damage, attacker, equipped_weapon, damagePosition);
 		}
 		case WEAPON_LEPER_MELEE_PAP, WEAPON_LEPER_MELEE:
 		{
@@ -850,6 +857,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Npc_OnTakeDamage_DimensionalRipper(attacker);
 		}	
+		case WEAPON_OBUCH:
+		{
+			Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
+		}
 	}
 #endif
 

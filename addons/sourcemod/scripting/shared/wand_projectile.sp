@@ -332,6 +332,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Gun_MessengerTouch(entity, target);
 		}
+		case WEAPON_VICTORIAN_LAUNCHER:
+		{
+			Shell_VictorianTouch(entity, target);
+		}
 	}
 #endif
 }

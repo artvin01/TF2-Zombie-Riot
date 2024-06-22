@@ -770,19 +770,23 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	{
 		damage *= 0.5;
 	}
-	else if(damagetype & (DMG_CLUB))
+	else
 	{
-		if(CurrentPlayers == 1)
+		damage *= 0.75;
+		if(damagetype & (DMG_CLUB))
 		{
-			damage *= 0.65;
-		}
-		else if(CurrentPlayers <= 4)
-		{
-			damage *= 0.6;
-		}
-		else
-		{
-			damage *= 0.75;
+			if(CurrentPlayers == 1)
+			{
+				damage *= 0.75;
+			}
+			else if(CurrentPlayers <= 4)
+			{
+				damage *= 0.7;
+			}
+			else
+			{
+				damage *= 0.8;
+			}
 		}
 	}
 	BarrackBody npc = view_as<BarrackBody>(victim);

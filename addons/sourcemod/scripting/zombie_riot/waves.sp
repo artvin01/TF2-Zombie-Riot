@@ -787,7 +787,6 @@ void Waves_RoundStart()
 		Store_Reset();
 		CurrentGame = GetTime();
 		CurrentCash = StartCash;
-		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
 		for(int client=1; client<=MaxClients; client++)
 		{
 			CurrentAmmo[client] = CurrentAmmo[0];

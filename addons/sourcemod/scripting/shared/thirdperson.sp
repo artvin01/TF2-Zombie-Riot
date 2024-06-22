@@ -89,6 +89,7 @@ public Action Timer_EnableFp(Handle timer, any userid)
 
 public Action Timer_EnableFp_Force(Handle timer, int client)
 {
+/*
 #if defined ZR
 	if(IsValidEntity(Building_Mounted[client]))
 	{
@@ -96,7 +97,7 @@ public Action Timer_EnableFp_Force(Handle timer, int client)
 		return Plugin_Handled;
 	}
 #endif
-
+*/
 	SetVariantInt(0);					
 	AcceptEntityInput(client, "SetForcedTauntCam");
 	return Plugin_Stop;
@@ -104,6 +105,7 @@ public Action Timer_EnableFp_Force(Handle timer, int client)
 
 public Action Timer_EnableTp_Force(Handle timer, int client)
 {
+/*
 #if defined ZR
 	if(IsValidEntity(Building_Mounted[client]))
 	{
@@ -111,6 +113,7 @@ public Action Timer_EnableTp_Force(Handle timer, int client)
 		return Plugin_Handled;
 	}
 #endif
+*/
 
 	SetVariantInt(1);					
 	AcceptEntityInput(client, "SetForcedTauntCam");
@@ -144,11 +147,13 @@ public Action Command_TpOn(int client, int args)
 		return Plugin_Handled;
 	}
 #if defined ZR
+/*
 	if(IsValidEntity(Building_Mounted[client]))
 	{
 		PrintToChat(client,"You cannot change third person while mounting.");
 		return Plugin_Handled;
 	}
+*/
 	if(dieingstate[client] > 0)
 	{
 		return Plugin_Handled;
@@ -181,11 +186,13 @@ public Action Command_TpOff(int client, int args)
 		return Plugin_Handled;
 	}
 #if defined ZR
+/*
 	if(IsValidEntity(Building_Mounted[client]))
 	{
 		PrintToChat(client,"You cannot change third person while mounting.");
 		return Plugin_Handled;
 	}
+*/
 #endif
 	if (IsPlayerAlive(client))
 	{

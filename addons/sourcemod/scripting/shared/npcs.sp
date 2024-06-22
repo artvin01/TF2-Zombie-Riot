@@ -1036,6 +1036,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 #if defined ZR
 	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
 		return;
+		
 	int AttackerOverride = EntRefToEntIndex(i_NpcOverrideAttacker[attacker]);
 	if(AttackerOverride > 0)
 	{
@@ -1573,6 +1574,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	
 	int weapon = GetEntPropEnt(attacker, Prop_Send, "m_hActiveWeapon");
 	bool armor_added = false;
+	bool ResAdded = false;
 	
 	if(b_NpcIsInvulnerable[victim])
 	{
@@ -1629,11 +1631,13 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			
 			if(percentage < 10.0)
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.2f%%]", Debuff_Adder, percentage);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.2f%%", Debuff_Adder, percentage);
+				ResAdded = true;
 			}
 			else
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♈ %.0f%%]", Debuff_Adder, percentage);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☛%.0f%%", Debuff_Adder, percentage);
+				ResAdded = true;
 			}
 			armor_added = true;
 		}
@@ -1672,16 +1676,35 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 				percentage *= 0.25;
 
 #endif
-
-			if(percentage < 10.0)
+			if(ResAdded)
 			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.2f%%]", Debuff_Adder, percentage);
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
+				if(percentage < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s➶%.2f%%]", Debuff_Adder, percentage);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s➶%.0f%%]", Debuff_Adder, percentage);
+				}
 			}
 			else
-			{
-				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [♐ %.0f%%]", Debuff_Adder, percentage);
+			{	
+				if(percentage < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [➶%.2f%%]", Debuff_Adder, percentage);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [➶%.0f%%]", Debuff_Adder, percentage);
+				}
 			}
 			armor_added = true;
+		}
+		else
+		{
+			if(ResAdded)
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s]", Debuff_Adder);
 		}
 	}
 
@@ -1691,7 +1714,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	}
 	else if(Debuff_added)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s | %s\n", Debuff_Adder_left,Debuff_Adder_right);
+		if(Debuff_Adder_left[0] && Debuff_Adder_right[0])
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s | %s\n", Debuff_Adder_left,Debuff_Adder_right);
+		else
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s\n", Debuff_Adder_left,Debuff_Adder_right);
 	}
 #if defined ZR
 	if(EntRefToEntIndex(RaidBossActive) != victim)
@@ -1743,7 +1769,14 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		RPGSpawns_UpdateHealthNpc(victim);
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
 #else
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		if(!b_NameNoTranslation[npc.index])
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%t\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		}
+		else
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s / %s",c_NpcName[victim], c_Health, c_MaxHealth);
+		}
 #endif
 		
 		//add debuff

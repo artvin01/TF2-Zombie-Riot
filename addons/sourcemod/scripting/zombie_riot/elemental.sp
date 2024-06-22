@@ -101,13 +101,16 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	float gameTime = GetGameTime();
 	if(f_ArmorCurrosionImmunity[entity] > gameTime)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%s %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
+		// An elemental effect is in cooldown
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
 		return true;
 	}
 	
+	// Don't display anything after 5 seconds of nothing
 	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
 	
+	// Find the element that's closest to trigger
 	int low = -1;
 	int lowHealth = 1000000;
 	for(int i; i < Element_MAX; i++)
@@ -123,10 +126,12 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		}
 	}
 
+	// Nothing found
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d>", ElementName[low], lowHealth);
+	// <CY 50%>
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d%%>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
 	return true;
 }
 

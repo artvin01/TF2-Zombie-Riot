@@ -666,6 +666,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else if(Village_Flags[client] & VILLAGE_400)
 	{
+		/*
 		if(Village_TierExists[0] == 5)
 		{
 			menu.AddItem("", TranslateItemName(viewer, "Rebel Mentoring", ""), ITEMDRAW_DISABLED);
@@ -679,13 +680,15 @@ static void VillageUpgradeMenu(int client, int viewer)
 			menu.AddItem("", "Village becomes an attacking sentry, plus all Rebels in", ITEMDRAW_DISABLED);
 			menu.AddItem("", "radius attack faster, deal more damage, and start with $1750.\n ", ITEMDRAW_DISABLED);
 		}
+		*/
 	}
 	else if(Village_Flags[client] & VILLAGE_300)
-	{
+	{	/*
 		FormatEx(buffer, sizeof(buffer), "%s [3 Bananas]%s", TranslateItemName(viewer, "Rebel Mentoring", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : "");
 		menu.AddItem(VilN(VILLAGE_400), buffer, (!owner || points < 3) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "All Rebels in radius start with $500,", ITEMDRAW_DISABLED);
 		menu.AddItem("", "increased range and attack speed.\n ", ITEMDRAW_DISABLED);
+		*/
 	}
 	else if(Village_Flags[client] & VILLAGE_200)
 	{
@@ -697,11 +700,16 @@ static void VillageUpgradeMenu(int client, int viewer)
 		}
 		else
 		{
+			menu.AddItem("", "PATH LOCKED.", ITEMDRAW_DISABLED);
+		//	menu.AddItem("", "Increases attack speed and reloadspeed of all", ITEMDRAW_DISABLED);
+		//	menu.AddItem("", "players and allies in the radius.\n ", ITEMDRAW_DISABLED);
+			/*
 			FormatEx(buffer, sizeof(buffer), "%s [2 Bananas]%s", TranslateItemName(viewer, "Rebel Training", ""), Village_TierExists[0] == 5 ? " [Tier 5 Exists]" : Village_TierExists[0] == 4 ? " [Tier 4 Exists]" : Village_TierExists[0] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_300), buffer, (!owner || points < 2) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "All Rebels in radius get", ITEMDRAW_DISABLED);
 			menu.AddItem("", "more range and more damage.\n", ITEMDRAW_DISABLED);
 			menu.AddItem("", "Village will spawn rebels every 3 waves upto 3\n ", ITEMDRAW_DISABLED);
+			*/
 		}
 	}
 	else if(Village_Flags[client] & VILLAGE_100)
@@ -889,6 +897,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 						RemoveEntity(entity);
 						f_BuildingIsNotReady[client] = 0.0; 
 					}
+					/*
 					int count;
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
@@ -902,12 +911,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					
 					if(count < MAX_REBELS_ALLOWED)
 						Citizen_SpawnAtPoint(_, client);
+						*/
 				}
 				case VILLAGE_400:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 4);
 					Village_TierExists[0] = 4;
-
+				/*
 					int count;
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
@@ -921,12 +931,13 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					
 					if(count < MAX_REBELS_ALLOWED)
 						Citizen_SpawnAtPoint(_, client);
+					*/
 				}
 				case VILLAGE_300:
 				{
 					Store_SetNamedItem(client, "Village NPC Expert", 3);
 					Village_TierExists[0] = 3;
-
+				/*
 					int count;
 					int i = MaxClients + 1;
 					while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
@@ -940,6 +951,7 @@ public int VillageUpgradeMenuH(Menu menu, MenuAction action, int client, int cho
 					
 					if(count < MAX_REBELS_ALLOWED)
 						Citizen_SpawnAtPoint(_, client);
+					*/
 				}
 				case VILLAGE_200:
 				{

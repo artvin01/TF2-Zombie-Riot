@@ -705,7 +705,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
+		if(target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
@@ -714,7 +714,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
-		else if(target > -1 && Item_Index == 214)
+		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{
 			i_ExplosiveProjectileHexArray[weapon] = 0;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;

@@ -91,6 +91,7 @@ methodmap NPCActor < CClotBody
 		
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
+		b_NpcIsInvulnerable[npc.index] = true;
 		npc.m_bisWalking = false;
 		npc.Anger = false;
 		b_DoNotUnStuck[npc.index] = true;

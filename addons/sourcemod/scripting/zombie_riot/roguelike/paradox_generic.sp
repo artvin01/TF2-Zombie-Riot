@@ -1,3 +1,176 @@
+#pragma semicolon 1
+#pragma newdecls required
+
+static ArrayList ShopListing;
+
+public float Rogue_Encounter_ParadoxShop()
+{
+	delete ShopListing;
+	ShopListing = new ArrayList(sizeof(Artifact));
+
+	Artifact artifact;
+
+	int ingots = Rogue_GetIngots();
+
+	if(ingots > 7)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 8) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	if(ingots > 11)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+			ShopListing.PushArray(artifact);
+		
+		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	if(ingots > 17)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 18) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	if(ingots > 23)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 24) != -1)
+			ShopListing.PushArray(artifact);
+	}
+
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "*")) != -1)
+	{
+		if(entity < MAXENTITIES)
+		{
+			GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
+			if(StrEqual(artifact.Name, "zr_store_prop", false))
+				AcceptEntityInput(entity, "Disable");
+		}
+	}
+
+	StartShopVote();
+	return 35.0;
+}
+static void StartShopVote()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
+	Vote vote;
+
+	Artifact artifact;
+	int ingots = Rogue_GetIngots();
+	int length = ShopListing.Length;
+	for(int i; i < length; i++)
+	{
+		ShopListing.GetArray(i, artifact);
+
+		int cost = artifact.ShopCost;
+
+		Rogue_ParadoxGeneric_ShopCost(cost);
+
+		strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+		Format(vote.Append, sizeof(vote.Append), " △%d", cost);
+		strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+		IntToString(i, vote.Config, sizeof(vote.Config));
+		vote.Locked = ingots < cost;
+		list.PushArray(vote);
+	}
+
+	if(length)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Steal Grigori");
+		vote.Append[0] = 0;
+		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
+		strcopy(vote.Config, sizeof(vote.Config), "-2");
+		list.PushArray(vote);
+	}
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+	vote.Append[0] = 0;
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	strcopy(vote.Config, sizeof(vote.Config), "-1");
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(length ? 30.0 : 3.0);
+}
+public void Rogue_Vote_Shop2Encounter(const Vote vote)
+{
+	Artifact artifact;
+	int index = StringToInt(vote.Config);
+	switch(index)
+	{
+		case -1:
+		{
+			delete ShopListing;
+
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "*")) != -1)
+			{
+				if(entity < MAXENTITIES)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
+					if(StrEqual(artifact.Name, "zr_store_prop", false))
+						AcceptEntityInput(entity, "Disable");
+				}
+			}
+		}
+		case -2:
+		{
+			Rogue_StartThisBattle(5.0);
+			Rogue_SetBattleIngots(1);
+			Rogue_GiveNamedArtifact("Mark of a Thief", true);
+
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "*")) != -1)
+			{
+				if(entity < MAXENTITIES)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
+					if(StrEqual(artifact.Name, "zr_store_prop", false))
+						AcceptEntityInput(entity, "Disable");
+				}
+			}
+		}
+		default:
+		{
+			ShopListing.GetArray(index, artifact);
+			ShopListing.Erase(index);
+
+			Rogue_GiveNamedArtifact(artifact.Name);
+
+			int cost = artifact.ShopCost;
+
+			Rogue_ParadoxGeneric_ShopCost(cost);
+			
+			Rogue_AddIngots(-cost, true);
+
+			StartShopVote();
+			Rogue_SetProgressTime(35.0, false);
+		}
+	}
+}
+void Rogue_ParadoxShop_Victory()
+{
+	if(ShopListing)
+	{
+		Artifact artifact;
+
+		int length = ShopListing.Length;
+		for(int i; i < length; i++)
+		{
+			ShopListing.GetArray(i, artifact);
+			Rogue_GiveNamedArtifact(artifact.Name);
+		}
+
+		delete ShopListing;
+	}
+}
+void Rogue_ParadoxShop_Fail()
+{
+	delete ShopListing;
+}
+
 static void GiveShield(int amount)
 {
 	for(int client = 1; client <= MaxClients; client++)
@@ -16,13 +189,7 @@ static void GiveShield(int amount)
 		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == TFTeam_Red)
-			{
-				BarrackBody npc = view_as<BarrackBody>(entity);
-				if(npc.OwnerUserId)	// Barracks Unit
-				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + amount);
-				}
-			}
+				SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + amount);
 		}
 	}
 }
@@ -428,3 +595,84 @@ public void Rogue_Fowlbeast_Ally(int entity, StringMap map)
 		}
 	}
 }
+
+public void Rogue_QueenFellowship_Collect()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			int health = GetClientHealth(client);
+			if(health > 0)
+			{
+				int maxhealth = SDKCall_GetMaxHealth(client);
+				if(health > maxhealth)
+				{
+					health -= maxhealth;
+				}
+				else
+				{
+					health = 0;
+				}
+
+				SetEntityHealth(client, health + (maxhealth * 5) + 500);
+			}
+		}
+	}
+
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		{
+			if(GetTeam(entity) == TFTeam_Red)
+			{
+				int health = GetEntProp(entity, Prop_Data, "m_iHealth");
+				if(health > 0)
+				{
+					int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+					if(health > maxhealth)
+					{
+						health -= maxhealth;
+					}
+					else
+					{
+						health = 0;
+					}
+
+					SetEntProp(entity, Prop_Data, "m_iHealth", health + (maxhealth * 5) + 500);
+				}
+			}
+		}
+	}
+}
+
+public void Rogue_AncientTreeFruit_Collect()
+{
+	Artifact artifact;
+	for(int i; i < 3; i++)
+	{
+		if(Rogue_GetRandomArtfiact(artifact, true, 12) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+	}
+}
+
+static bool ShopSale;
+
+void Rogue_ParadoxGeneric_ShopCost(int &cost)
+{
+	if(ShopSale)
+		cost /= 2;
+}
+
+public void Rogue_ShopSale_Collect()
+{
+	ShopSale = true;
+}
+
+public void Rogue_ShopSale_Remove()
+{
+	ShopSale = false;
+}
+
+

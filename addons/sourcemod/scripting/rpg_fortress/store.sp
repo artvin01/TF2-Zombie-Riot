@@ -1391,7 +1391,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								{
 									if(!info.HasNoClip)
 									{
-									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
 									}

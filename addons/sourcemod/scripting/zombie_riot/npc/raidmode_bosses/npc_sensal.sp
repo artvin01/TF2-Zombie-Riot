@@ -305,7 +305,11 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		
+		bool tripple = StrContains(data, "triple_enemies") != -1;
+		if(tripple)
+		{
+			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -549,6 +553,11 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{

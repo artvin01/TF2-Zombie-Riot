@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_HandMulti_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == 1 || i_WeaponArchetype[entity] == 2)	// Multi Pellet
