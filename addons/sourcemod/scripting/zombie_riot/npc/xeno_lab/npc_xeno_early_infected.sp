@@ -244,9 +244,9 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 125.0;
+					float damage = 90.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage *= 2.0;
+						damage *= 1.2;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

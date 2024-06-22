@@ -246,9 +246,9 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 750.0;
+					float damage = 500.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage *= 4.0;
+						damage *= 1.5;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

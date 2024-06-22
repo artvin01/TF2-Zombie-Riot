@@ -391,9 +391,9 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 400.0;
+					float damage = 300.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage *= 2.0;
+						damage *= 1.3;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

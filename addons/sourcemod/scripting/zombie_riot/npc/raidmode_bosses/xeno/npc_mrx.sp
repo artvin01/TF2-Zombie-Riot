@@ -386,6 +386,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				npc.m_flGetClosestTargetTime = 0.0;
 				npc.m_flDoingAnimation = 0.0;
 				Mr_xWalkingAnimInit(npc.index);
+				npc.m_flDoingAnimation = gameTime + 1.0;
 			}
 			return;
 		}

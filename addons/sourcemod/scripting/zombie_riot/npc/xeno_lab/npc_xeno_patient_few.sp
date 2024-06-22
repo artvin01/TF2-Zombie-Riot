@@ -236,7 +236,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					TR_GetEndPosition(vecHit, swingTrace);
 					float damage = 999999.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage = 5000.0;
+						damage = 3000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

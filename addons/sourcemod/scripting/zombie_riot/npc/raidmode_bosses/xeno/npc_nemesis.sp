@@ -1173,12 +1173,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		{
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
 			{
-				if(XenoExtraLogic())
-				{
-					Items_GiveNamedItem(client_repat, "Mr. X's Files");
-					CPrintToChat(client_repat, "{default}Something doesnt feel right, you decide to not rip its heart but instead take something else: {green}''Mr. X's Files''{default}!");
-				}
-				else
+				if(!XenoExtraLogic())
 				{
 					Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
 					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
