@@ -276,13 +276,13 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 static int H_Tick_Count[MAXENTITIES];
 static int H_Tick_Count_Max[MAXENTITIES];
 
-#define H_SLICER_AMOUNT 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
+#define H_SLICER_AMOUNT_WITCH 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
 
 static int H_i_Slicer_Throttle[MAXENTITIES];
 
-static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
+static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
 static float H_fl_starting_vec[MAXENTITIES][3];
-static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
+static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
 
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
@@ -300,7 +300,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 	float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
 	
 	ang_Look[1] -= wide_set;
-	float type = (wide_set*2) / H_SLICER_AMOUNT;
+	float type = (wide_set*2) / H_SLICER_AMOUNT_WITCH;
 	ang_Look[1] -= type;
 	if(ang_Look[1]>360.0)
 	{
@@ -311,7 +311,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 		ang_Look[1] +=360.0;
 	}
 		
-	for(int i=1 ; i<=H_SLICER_AMOUNT+1 ; i++)
+	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
 	{
 		H_fl_current_vec[client][i] = Npc_Vec;
 		
@@ -363,7 +363,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 	float Spn_Vec[3];
 	Spn_Vec = H_fl_starting_vec[client];
 	
-	for(int i=1 ; i<=H_SLICER_AMOUNT+1 ; i++)
+	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
 	{
 		float Trg_Vec[3], Cur_Vec[3], vecAngles[3], Direction[3];
 	
@@ -398,7 +398,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 	if(H_i_Slicer_Throttle[client]>2)
 	{
 		H_i_Slicer_Throttle[client] = 0;
-		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
+		for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH ; i++)
 		{
 				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 10000.0);
 				
