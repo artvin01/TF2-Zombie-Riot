@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_BonusLife_Collect()
 {
 	Rogue_AddBonusLife(1);

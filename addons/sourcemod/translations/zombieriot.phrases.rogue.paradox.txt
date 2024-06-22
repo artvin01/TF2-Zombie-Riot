@@ -434,172 +434,108 @@
 	{
 		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
 	}
-	""
+	"Missing Mountains"
 	{
-		"en"	""
+		"en"	"Missing Mountains"
 	}
-	" Desc"
+	"Missing Mountains Lore"
 	{
-		"en"	""
+		"en"	"Just as you are about to make a misstep, someone pulls you backward.\nThe mountains' shadows overlap, and a distorted darkness creeps across your eyes.\nIn the face of your trepidation, the fortuneteller-looking woman asks you to draw a card."
 	}
-	""
+	"Missing Mountains Option 1"
 	{
-		"en"	""
+		"en"	"Pick the tarot card on the left"
 	}
-	" Desc"
+	"Missing Mountains Lore 1"
 	{
-		"en"	""
+		"en"	"''Don't be afraid of your own fate... and don't fear turning away from it either.''"
 	}
-	""
+	"Missing Mountains Option 2"
 	{
-		"en"	""
+		"en"	"Pick the tarot card on the right"
 	}
-	" Desc"
+	"Missing Mountains Lore 2"
 	{
-		"en"	""
+		"en"	"''Be at ease, the object he left behind is untainted.''"
 	}
-	""
+	"Missing Mountains Option 3"
 	{
-		"en"	""
+		"en"	"Pick the discarded tarot card by her hand"
 	}
-	" Desc"
+	"Missing Mountains Desc 3"
 	{
-		"en"	""
+		"en"	"{yellow}Gain 7 Australium Ingots"
 	}
-	""
+	"Missing Mountains Lore 3a"
 	{
-		"en"	""
+		"en"	"You can't clearly see her expression. Is it regret... or relief? She removes the purse on her, claiming that it is ''something useless I've lost to you.''"
 	}
-	" Desc"
+	"Missing Mountains Lore 3b"
 	{
-		"en"	""
+		"en"	"You can't clearly see her expression. Is it regret... or relief? She only replies, ''Your mind is no longer clear.''"
 	}
-	""
+	"Clairvoyance"
 	{
-		"en"	""
+		"en"	"Clairvoyance's Direction"
 	}
-	" Desc"
+	"Clairvoyance Lore"
 	{
-		"en"	""
+		"en"	"The blizzard on the uninhabited icefield makes it impossible to see anything,\nand you and your team fight the extreme cold as you try your best to keep up with the mysterious procession in black.\nWhere are these Wildingens headed to?"
 	}
-	""
+	"Clairvoyance Option 1"
 	{
-		"en"	""
+		"en"	"Tell me about the ''Tool''"
 	}
-	" Desc"
+	"Clairvoyance Lore 1"
 	{
-		"en"	""
+		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
 	}
-	""
+	"Clairvoyance Option 2"
 	{
-		"en"	""
+		"en"	"Tell me about the ''Path''"
 	}
-	" Desc"
+	"Clairvoyance Lore 2"
 	{
-		"en"	""
+		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
 	}
-	""
+	"Clairvoyance Option 3"
 	{
-		"en"	""
+		"en"	"Perhaps we can help each other out"
 	}
-	" Desc"
+	"Clairvoyance Lore 3a"
 	{
-		"en"	""
+		"en"	"The bird-like Wildingens gradually walk further and further away. It seems none of them believe that you can be of any help to them. But you find something by the bonfire embers they left behind."
 	}
-	""
+	"Clairvoyance Lore 3b"
 	{
-		"en"	""
+		"en"	"The Wildingens see the chaos in your mind and gradually walk further and further away, leaving nothing behind for you."
 	}
-	" Desc"
+	"Clairvoyance Option 4"
 	{
-		"en"	""
+		"en"	"Tell me about the ''Wildingen''"
 	}
-	""
+	"Clairvoyance Lore 4"
 	{
-		"en"	""
+		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
 	}
-	" Desc"
+	"Printer Lore"
 	{
-		"en"	""
+		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
 	}
-	""
+	"Printer Lore 1a"
 	{
-		"en"	""
+		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as you quickly grab what's left. Your original item and a duplicate."
 	}
-	" Desc"
+	"Printer Lore 1b"
 	{
-		"en"	""
+		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap."
 	}
-	""
+	"Printer Option 2"
 	{
-		"en"	""
+		"en"	"Rather not use this"
 	}
-	" Desc"
+	"Printer Lore 2"
 	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
-	}
-	""
-	{
-		"en"	""
-	}
-	" Desc"
-	{
-		"en"	""
+		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
 	}
 }

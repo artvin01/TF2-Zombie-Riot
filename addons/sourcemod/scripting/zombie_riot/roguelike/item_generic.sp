@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_None_Remove()
 {
 	// Nothing happens when removed

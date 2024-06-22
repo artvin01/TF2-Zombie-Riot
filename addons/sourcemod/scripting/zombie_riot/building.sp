@@ -30,20 +30,20 @@ static const char BuildingPlugin[][] =
 static const int BuildingCost[sizeof(BuildingPlugin)] =
 {
 	//-50,
-	550,
+	560,
 	0,
 
-	575,
-	375,
-	975,
-	975,
+	579,
+	379,
+	979,
+	979,
 
-	590,
-	590,
-	590,
-	590,
-	1190,
-	1190,
+	587,
+	587,
+	587,
+	587,
+	1187,
+	1179,
 
 	400
 };
@@ -283,7 +283,7 @@ static int GetCost(int id, float multi)
 	if(Rogue_Mode())
 		return 0;
 	
-	int cost_extra = RoundFloat((BuildingHealth[id] * multi / 3.0) * 1.25);
+	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
 	if(cost_extra <= 0)
 	{
 		cost_extra = 0;
@@ -297,6 +297,7 @@ static void BuildingMenu(int client)
 		return;
 	
 	int metal = GetAmmo(client, Ammo_Metal);
+	int cash = CurrentCash - CashSpent[client];
 	float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
@@ -310,8 +311,23 @@ static void BuildingMenu(int client)
 
 	menu.SetTitle("%t\n ", "Building Menu");
 
-	int items;
 	char buffer1[196], buffer2[64];
+
+	if(ducking)
+	{
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_SPACER);
+	}
+	else
+	{
+		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
+		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+
+		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10);
+		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+	}
+
+	int items;
 	for(int i; i < sizeof(BuildingPlugin); i++)
 	{
 		int cost = GetCost(i, multi);
@@ -419,6 +435,26 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				switch(choice)
 				{
+					case 0:
+					{
+						CashSpent[client] += AmmoData[Ammo_Metal][0];
+						CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
+						ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+						
+						int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
+						SetAmmo(client, Ammo_Metal, ammo);
+						CurrentAmmo[client][Ammo_Metal] = ammo;
+					}
+					case 1:
+					{
+						CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
+						CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
+						ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+						
+						int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
+						SetAmmo(client, Ammo_Metal, ammo);
+						CurrentAmmo[client][Ammo_Metal] = ammo;
+					}
 					case 7:
 					{
 						MenuPage[client]--;
@@ -478,7 +514,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 									Building_PlayerWieldsBuilding(client, entity);
 									Barracks_UpdateEntityUpgrades(entity, client, true, _);
 
-									SetAmmo(client, Ammo_Metal, metal - cost);
+									metal -= cost;
+									SetAmmo(client, Ammo_Metal, metal);
+									CurrentAmmo[client][Ammo_Metal] = metal;
 									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[id];
 								}
 							}
