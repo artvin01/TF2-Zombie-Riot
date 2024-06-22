@@ -28,7 +28,7 @@ void TheHunter_Setup()
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Forest Hitman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_TheHunter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_thehunter");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
@@ -70,7 +70,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
-//		KillFeed_SetKillIcon(npc.index, "machina");
+		KillFeed_SetKillIcon(npc.index, "headshot");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -307,15 +307,16 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				if(Rogue_Paradox_RedMoon() || TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
+				if(target > MaxClients || Rogue_Paradox_RedMoon() || TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 100000.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+					if(target <= MaxClients)
+						TF2_RemoveCondition(target, TFCond_MarkedForDeath);
 				}
 				else
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, CountPlayersOnServer() * 50.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(IsPlayerAlive(target))
+					if(!dieingstate[client] && IsPlayerAlive(target))
 						TF2_AddCondition(target, TFCond_MarkedForDeath, 120.0);
 				}
 			} 
