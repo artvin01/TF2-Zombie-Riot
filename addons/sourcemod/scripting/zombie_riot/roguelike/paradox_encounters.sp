@@ -31,13 +31,13 @@ public void Rogue_Vote_MissingMountains(const Vote vote, int index)
 	{
 		case 0:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
 			PrintToChatAll("%t", "Missing Mountains Lore 1");
+			Rogue_GiveNamedArtifact(vote.Config);
 		}
 		case 1:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
 			PrintToChatAll("%t", "Missing Mountains Lore 2");
+			Rogue_GiveNamedArtifact(vote.Config);
 		}
 		default:
 		{
@@ -92,17 +92,16 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 	{
 		case 0:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
 			PrintToChatAll("%t", "Clairvoyance Lore 1");
+			Rogue_GiveNamedArtifact(vote.Config);
 		}
 		case 1:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
 			PrintToChatAll("%t", "Clairvoyance Lore 2");
+			Rogue_GiveNamedArtifact(vote.Config);
 		}
 		case 3:
 		{
-			Rogue_GiveNamedArtifact(vote.Config);
 			PrintToChatAll("%t", "Clairvoyance Lore 4");
 
 			Artifact artifact;
@@ -125,5 +124,75 @@ public void Rogue_Vote_Clairvoyance(const Vote vote, int index)
 				
 			}
 		}
+	}
+}
+
+public float Rogue_Encounter_Printer()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Printer, "Printer Lore");
+	Vote vote;
+
+	ArrayList collection = Rogue_GetCurrentCollection();
+
+	if(collection)
+	{
+		collection = collection.Clone();
+		collection.Sort(Sort_Random, Sort_Integer);
+		
+		Artifact artifact;
+		int found;
+		int length = collection.Length;
+		for(int i; i < length; i++)
+		{
+			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
+
+			if(artifact.FuncCollect == INVALID_FUNCTION &&
+			   artifact.FuncRemove != INVALID_FUNCTION)
+			{
+				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Config Info");
+				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
+				list.PushArray(vote);
+				
+				if(++found > 2)
+					break;
+			}
+		}
+
+		delete collection;
+	}
+
+	strcopy(vote.Name, sizeof(vote.Name), "Printer Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Unknown Artifact Desc");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+public void Rogue_Vote_Printer(const Vote vote, int index)
+{
+	if(vote.Config[0])
+	{
+		if(Rogue_GetChaosLevel() > 3)
+		{
+			PrintToChatAll("%t", "Printer Lore 1b", vote.Config);
+			Rogue_RemoveNamedArtifact(vote.Config);
+			Rogue_AddIngots(30);
+		}
+		else
+		{
+			PrintToChatAll("%t", "Printer Lore 1a");
+			Rogue_GiveNamedArtifact(vote.Config);
+		}
+	}
+	else
+	{
+		PrintToChatAll("%t", "Printer Lore 2");
+
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
 	}
 }

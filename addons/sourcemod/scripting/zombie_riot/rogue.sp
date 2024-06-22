@@ -2179,6 +2179,16 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 	}
 }
 
+stock ArrayList Rogue_GetCurrentCollection()
+{
+	return CurrentCollection;
+}
+
+stock ArrayList Rogue_GetCurrentArtifacts()
+{
+	return Artifacts;
+}
+
 int Rogue_GetIngots()
 {
 	return CurrentIngots;
@@ -2592,3 +2602,4 @@ bool IS_MusicReleasingRadio()
 
 #include "roguelike/paradox_theme.sp"
 #include "roguelike/paradox_generic.sp"
+#include "roguelike/paradox_encounters.sp"

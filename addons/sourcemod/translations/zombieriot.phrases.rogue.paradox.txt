@@ -518,4 +518,24 @@
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
 	}
+	"Printer Lore"
+	{
+		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
+	}
+	"Printer Lore 1a"
+	{
+		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as you quickly grab what's left. Your original item and a duplicate."
+	}
+	"Printer Lore 1b"
+	{
+		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap."
+	}
+	"Printer Option 2"
+	{
+		"en"	"Rather not use this"
+	}
+	"Printer Lore 2"
+	{
+		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
+	}
 }
