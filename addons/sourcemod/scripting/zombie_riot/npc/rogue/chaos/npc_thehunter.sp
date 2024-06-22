@@ -27,7 +27,7 @@ void TheHunter_Setup()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Forest Hitman");
+	strcopy(data.Name, sizeof(data.Name), "Wildingen Hitman");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_thehunter");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
@@ -81,7 +81,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 0;
 
-		npc.m_flNextMeleeAttack = GetGameTime() + 20.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 15.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -90,6 +90,7 @@ methodmap TheHunter < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_bStaticNPC = true;
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
@@ -327,7 +328,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 3.05;
 		npc.m_flDoingAnimation = gameTime + 2.95;
-		npc.m_flNextMeleeAttack = gameTime + 20.0 - (Rogue_GetChaosLevel() * 4.0);
+		npc.m_flNextMeleeAttack = gameTime + 15.0 - (Rogue_GetChaosLevel() * 3.0);
 	}
 	return 1;
 }

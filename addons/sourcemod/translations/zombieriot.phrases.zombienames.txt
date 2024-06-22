@@ -2225,9 +2225,9 @@
 	{
 		"en"	"Bob the Second"
 	}
-	"Forest Hitman"
+	"Wildingen Hitman"
 	{
-		"en"	"Forest Hitman"
+		"en"	"Wildingen Hitman"
 	}
 	"Mr.X"
 	{
