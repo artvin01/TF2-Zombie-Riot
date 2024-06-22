@@ -5613,7 +5613,6 @@ public void NpcBaseThink(int iNPC)
 					//if still stuck after 1 second...
 					f_AntiStuckPhaseThrough[Hit_player] = GetGameTime() + 1.0;
 					//give them 2 seconds to unstuck themselves
-					
 				}
 			}
 			//This is a tempomary fix. find a better one for players getting stuck.

@@ -274,6 +274,7 @@ methodmap RaidbossMrX < CClotBody
 		
 		if(final)
 		{
+			RaidModeTime = GetGameTime(npc.index) + 99999.0;
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_duo_battle.mp3", 171, true, 1.3);
 			i_RaidGrantExtra[npc.index] = 1;
 		}
@@ -377,7 +378,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 		}
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, 1000.0, .ingore_client = npc.m_iLastChargedTarget);
+			npc.m_iTarget = GetClosestTarget(npc.index, true, 1000.0, .ingore_client = npc.m_iLastChargedTarget);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 			
 			if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -527,6 +528,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				if(IsValidEntity(client))
 				{
 					SDKHooks_TakeDamage(client, npc.index, npc.index, 7000.0, DMG_CRUSH, -1);
+					f_AntiStuckPhaseThrough[client] = GetGameTime() + 2.0;
 					if(client <= MaxClients)
 						Client_Shake(client, 0, 20.0, 20.0, 1.0, false);
 
@@ -539,6 +541,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 						SetEntityMoveType(client, MOVETYPE_WALK); //can move XD
 						SetEntityCollisionGroup(client, 5);
 					}
+					b_DoNotUnStuck[client] = false;
 					
 					float pos[3];
 					float Angles[3];
@@ -547,6 +550,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 					GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 					TeleportEntity(client, pos, Angles, NULL_VECTOR);
 				}
+				i_GrabbedThis[npc.index] = 0;
 			}
 		}
 		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
@@ -786,12 +790,14 @@ public void RaidbossMrX_ClotThink(int iNPC)
 			}
 			case 4:
 			{
+				npc.m_flNextRangedAttackHappening = 0.0;
 				npc.m_iLastChargedTarget = 0;
 				npc.m_flRushAttackCD = gameTime + 30.0;
 				npc.m_flRushAttack = gameTime + 7.0;
 				Mr_xWalkingAnimInit(npc.index);
 				npc.m_flDoingAnimation = gameTime + 0.7;
 				npc.m_flGetClosestTargetTime = 0.0;
+				npc.m_flNextRangedAttack += 7.0;
 			}
 		}
 	}
@@ -941,6 +947,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 
 		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 		TeleportEntity(client, pos, Angles, NULL_VECTOR);
+		b_DoNotUnStuck[client] = false;
 	}	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
