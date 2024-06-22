@@ -1369,7 +1369,6 @@ void Store_Reset()
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 	}
-	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -1388,6 +1387,11 @@ void Store_Reset()
 			item.CurrentClipSaved[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
+	}
+	for(int c; c<MAXTF2PLAYERS; c++)
+	{
+		CashSpentGivePostSetup[c] = 0;
+		CashSpentGivePostSetupWarning[c] = false;
 	}
 	if(StoreBalanceLog)
 	{
