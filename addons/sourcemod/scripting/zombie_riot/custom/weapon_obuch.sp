@@ -26,7 +26,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 }
 */
 
-public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
+public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon, float &damage)
 {
 	if(weapon >= MaxClients)
 	{
@@ -41,6 +41,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		{
 			attacks_made[attacker] = 3;
 		}
+		damage *= 1.0 + 0.33/attacks_made[attacker];
 		Attributes_Set(weapon, 396, RampagerAttackSpeed(attacks_made[attacker]));
 		f_ModifThirdPersonAttackspeed[weapon] = (1.0 / RampagerAttackSpeed(attacks_made[attacker]));
 		if(Handle_on[attacker])
