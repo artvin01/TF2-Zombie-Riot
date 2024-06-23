@@ -398,7 +398,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && !Overheat)
+		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
