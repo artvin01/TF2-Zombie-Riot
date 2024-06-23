@@ -238,7 +238,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
-		int particle_Hand = ParticleEffectAt(flPos, "spell_fireball_small_red", Cooldown);
+		int particle_Hand = ParticleEffectAt(flPos, "loose_cannon_buildup_smoke3b", Cooldown);
 		SetParent(client, particle_Hand, "effect_hand_r");
 
 		Mega_Burst[client] = false;
@@ -404,9 +404,15 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 			Ability_Apply_Cooldown(client, slot, 60.0);
 			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 0.6);
 			During_Ability[client] = true;
-			CreateTimer(30.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(30, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			PrintToChatAll("Rapid Shot Activated");
-			ApplyTempAttrib(weapon, 6, 0.8, 30.0);
+			ApplyTempAttrib(weapon, 6, 0.5, 30.0);
+			float flPos[3]; // original
+			float flAng[3]; // original
+			GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
+			int particle_Base = ParticleEffectAt(flPos, "medic_resist_fire", 30.0);
+			SetParent(client, particle_Base, "m_vecAbsOrigin");
 		}
 		else
 		{
@@ -425,6 +431,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 public Action Timer_RapidFire(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
+	PrintToChatAll("Rapid Hyper Activate");
 	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
@@ -459,7 +466,7 @@ void CreateVictoriaEffect(int client)
 	float flPos[3];
 	float flAng[3];
 	GetAttachment (client, "eyeglow_l", flPos, flAng);
-	int particle = ParticleEffectAt(flPos, "hwn_skeleton_glow_red", 0.0);
+	int particle = ParticleEffectAt(flPos, "eye_powerup_red_lvl_2", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
@@ -470,14 +477,7 @@ void CreateVictoriaEffect(int client)
 
 	if(Super_Hot[client])
 	{
-		if(IsValidEntity(viewmodelModel))
-		{
-			IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
-		}
-		if(IsValidEntity(viewmodelModel_Hand))
-		{
-			IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
-		}
+
 	}
 }
 void DestroyVictoriaEffect(int client)
@@ -487,11 +487,5 @@ void DestroyVictoriaEffect(int client)
 	{
 		RemoveEntity(entity);
 	}
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-	int viewmodelModel_Hand;
-	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
-	ExtinguishTarget(viewmodelModel);
-	ExtinguishTarget(viewmodelModel_Hand);
 	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
 }
