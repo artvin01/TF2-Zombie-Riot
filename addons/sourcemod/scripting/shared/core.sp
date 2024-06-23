@@ -619,6 +619,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+float f_TimeSinceLastGiveWeapon[MAXTF2PLAYERS]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
@@ -839,7 +840,6 @@ Handle g_hGetVectors;
 Handle g_hLookupActivity;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
-Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
 DynamicHook g_DHookMedigunPrimary; 
@@ -3318,7 +3318,9 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+#if defined ZR
 		WeaponWeaponAdditionOnRemoved(entity);
+#endif
 		CurrentEntities--;
 	//	CreateTimer(1.01, Timer_FreeEdict);
 

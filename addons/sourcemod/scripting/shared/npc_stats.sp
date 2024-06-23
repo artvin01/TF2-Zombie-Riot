@@ -10020,12 +10020,12 @@ void Spawns_CheckBadClient(int client)
 			return;
 		}
 	}
-
+/*
 #if defined ZR
 	if(Waves_InSetup())
 		return;
 #endif
-
+*/
 	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
 	int GroundEntity = EntRefToEntIndex(RefGround);
 	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
@@ -10037,45 +10037,63 @@ void Spawns_CheckBadClient(int client)
 
 	int bad;
 
-	float pos1[3], pos2[3];
+	float pos1[3];
 	GetClientAbsOrigin(client, pos1);
-	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 50.0, false, true);
+	pos1[2] += 25.0;
+	CNavArea area;
+	area = TheNavMesh.GetNavArea(pos1, 65.0);
+	//no nav area directly under them
 	if(area == NULL_AREA)
 	{
-		// Not near a nav mesh, bad
-		bad = 5;
-		BadSpotPoints[client] += 5;
-	}
-	/*
-	else
-	{
-		int npcs;
-		for(int i; i < i_MaxcountNpcTotal; i++)
+		pos1[2] -= 25.0;
+		area = TheNavMesh.GetNearestNavArea(pos1, false, 55.0, false, true);
+		if(area == NULL_AREA)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			// Not near a nav mesh, bad
+			bad = 5;
+			BadSpotPoints[client] += 5;
+		}
+		else
+		{
+			int NavAttribs = area.GetAttributes();
+			if(NavAttribs & NAV_MESH_DONT_HIDE)
 			{
-				WorldSpaceCenter(client, pos2);
-				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-				if(startArea == NULL_AREA)
-					continue;	// NPC on a bad nav??
-
-				if(!TheNavMesh.BuildPath(startArea, area, pos1))
-				{
-					bad++;
-					BadSpotPoints[client]++;
-				}
-				
-				if(npcs++ > 4)
-					break;
+				//This nav is designated as bad, give them full points instantly.
+				bad = 5;
+				BadSpotPoints[client] = 45;
 			}
 		}
+		/*
+		else
+		{
+			int npcs;
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+				{
+					WorldSpaceCenter(client, pos2);
+					CNavArea startArea = TheNavMesh.GetNavArea(pos2);
+					if(startArea == NULL_AREA)
+						continue;	// NPC on a bad nav??
+
+					if(!TheNavMesh.BuildPath(startArea, area, pos1))
+					{
+						bad++;
+						BadSpotPoints[client]++;
+					}
+					
+					if(npcs++ > 4)
+						break;
+				}
+			}
+		}
+		*/
 	}
-	*/
 
 	if(bad > 4)
 	{
-		if(BadSpotPoints[client] > 14)
+		if(BadSpotPoints[client] > 29)
 		{
 			float damage = 5.0;
 			NpcStuckZoneWarning(client, damage, 0);	
@@ -10087,7 +10105,7 @@ void Spawns_CheckBadClient(int client)
 	}
 	else if(BadSpotPoints[client] > 0)
 	{
-		BadSpotPoints[client] -= 2;
+		BadSpotPoints[client] -= 3;
 	}
 
 	/*

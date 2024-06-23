@@ -3,7 +3,6 @@
 
 static Handle SDKEquipWearable;
 static Handle SDKGetMaxHealth;
-//static Handle g_hGetAttachment;
 //static Handle g_hStudio_FindAttachment;
 
 static Handle g_hSetAbsOrigin;
@@ -144,14 +143,6 @@ void SDKCall_Setup()
 	SDKBecomeRagdollOnClient = EndPrepSDKCall();
 	if(!SDKBecomeRagdollOnClient)
 		LogError("[Gamedata] Could not find CBaseAnimating::BecomeRagdollOnClient");
-
-
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetAttachment");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);	//iAttachment
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absOrigin
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK); //absAngles
-	if((g_hGetAttachment = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Call for CBaseAnimating::GetAttachment");
 	
 	StartPrepSDKCall(SDKCall_Static);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "Studio_FindAttachment");
@@ -305,26 +296,10 @@ void SnapEyeAngles(int client, const float viewAngles[3])
 	SDKCall(g_hSnapEyeAngles, client, viewAngles);
 }
 
-/*void SetAbsVelocity(int client, float viewAngles[3])
-{
-	SDKCall(g_hSetAbsVelocity, client, viewAngles);
-}*/
-
 void GetAttachment(int index, const char[] szName, float absOrigin[3], float absAngles[3])
 {
-	SDKCall(g_hGetAttachment, index, FindAttachment(index, szName), absOrigin, absAngles);
+	GetEntityAttachment(index, FindAttachment(index, szName), absOrigin, absAngles);
 }	
-/*
-bool SDKCall_PlaySpecificSequence(int iClient, const char[] sAnimationName)
-{
-	return SDKCall(g_hSDKPlaySpecificSequence, iClient, sAnimationName);
-}
-
-void SDKCall_DoAnimationEvent(int iClient, int event_int, int extra_data = 0)
-{
-	SDKCall(g_hDoAnimationEvent, iClient, event_int, extra_data);
-}*/
-
 
 void GetVectors(int client, float pForward[3], float pRight[3], float pUp[3])
 {
