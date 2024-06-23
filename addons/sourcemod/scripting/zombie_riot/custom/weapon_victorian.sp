@@ -41,6 +41,7 @@ void Victoria_Map_Precache()
 	PrecacheSound(SOUND_VIC_CHARGE_ACTIVATE);
 	PrecacheSound(SOUND_VIC_SUPER_CHARGE);
 	PrecacheSound(SOUND_RAPID_SHOT_ACTIVATE);
+	PrecacheSound(SOUND_RAPID_SHOT_HYPER);
 }
 
 
@@ -402,7 +403,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
-			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 0.6);
+			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 1.0);
 			During_Ability[client] = true;
 			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(30, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
