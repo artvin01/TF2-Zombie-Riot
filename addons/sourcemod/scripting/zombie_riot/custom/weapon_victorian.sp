@@ -8,6 +8,7 @@ static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_SUPER_CHARGE 	"ambient/portcullis_up.wav"
 #define SOUND_RAPID_SHOT_ACTIVATE "items/powerup_pickup_precision.wav"
 #define SOUND_RAPID_SHOT_HYPER "mvm/mvm_warning.wav"
+#define SOUND_OVERHEAT "weapons/medigun_heal_disrupt.wav"
 //#define MAX_VICTORIAN_CHARGE 5
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
@@ -204,7 +205,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	{
 		//During_Ability[client] = true;
 		how_many_supercharge_left[client] -= 1;
-		PrintToChatAll("Ammo -1");
+		//PrintToChatAll("Ammo -1");
 	}
 	if(Mega_Burst[client])
 	{
@@ -223,6 +224,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
+		EmitSoundToAll(SOUND_OVERHEAT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 		//Give_bomb_back[client] = 
 		CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		/*
@@ -235,12 +237,12 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
-		int particle_Hand = ParticleEffectAt(flPos, "buildingdamage_dispenser_fire1", Cooldown);
+		int particle_Hand = ParticleEffectAt(flPos, "flaregun_trail_crit_red", Cooldown);
 		SetParent(client, particle_Hand, "effect_hand_r");
 
 		Mega_Burst[client] = false;
 
-		PrintToChatAll("MEGA Fire");
+		//PrintToChatAll("MEGA Fire");
 	}
 	/*
 	if(!During_Ability[client])
@@ -262,6 +264,7 @@ public Action Timer_Booooool(Handle timer, any userid)
 	int client = GetClientOfUserId(userid);
 	Overheat[client] = false;
 	During_Ability[client] = false;
+	Super_Hot[client] =false;
 	return Plugin_Stop;
 }
 public void Shell_VictorianTouch(int entity, int target)
@@ -298,30 +301,33 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 */		if(During_Ability[owner])
 		{
-			BaseDMG *= 1.1;
-			
-			PrintToChatAll("Rapid Boom");
+			BaseDMG *= 0.8;
+			if(Super_Hot[client])
+			{
+				BaseDMG *= 1.2;
+			}
+			//PrintToChatAll("Rapid Boom");
 		}
 		if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
-			BaseDMG *= 1.25;
-			PrintToChatAll("Strong Boom");
+			BaseDMG *= 1.2;
+			//PrintToChatAll("Strong Boom");
 			if(how_many_supercharge_left[owner] < 5)
 			{
-				BaseDMG *= 1.2;
-				PrintToChatAll("Stronger Boom");
+				BaseDMG *= 1.1;
+				//PrintToChatAll("Stronger Boom");
 			}
 		}
 		else if(Mega_Burst[owner])
 		{
 			BaseDMG *= how_many_shots_reserved[owner];
 			Radius *= 1 + how_many_shots_reserved[owner]/2;
-			PrintToChatAll("Mega Boom");
+			//PrintToChatAll("Mega Boom");
 		}
 		else
 		{
 			BaseDMG *= 1.0;
-			PrintToChatAll("Boom");
+			//PrintToChatAll("Boom");
 		}
 		
 		
@@ -358,14 +364,14 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Ability_Apply_Cooldown(client, slot, 50.0);
 				how_many_supercharge_left[client] += 10;
 				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
-				PrintToChatAll("Ammo replenished");
+				//PrintToChatAll("Ammo replenished");
 			}
 			else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 			{
 				Rogue_OnAbilityUse(weapon);
 				how_many_shots_reserved = how_many_supercharge_left;
 				Mega_Burst[client] = true;
-				PrintToChatAll("Super Shot Ready!");
+				//PrintToChatAll("Super Shot Ready!");
 			}
 			else
 			{
@@ -377,7 +383,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				ClientCommand(client, "playgamesound items/medshotno1.wav");
 				SetDefaultHudPosition(client);
 				SetGlobalTransTarget(client);
-				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability on cooldown", Ability_CD);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			}
 		}
 		else
@@ -403,7 +409,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 			During_Ability[client] = true;
 			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(30, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-			PrintToChatAll("Rapid Shot Activated");
+			//PrintToChatAll("Rapid Shot Activated");
 			ApplyTempAttrib(weapon, 6, 0.5, 30.0);
 			float flPos[3]; // original
 			float flAng[3]; // original
@@ -421,15 +427,20 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability on cooldown", Ability_CD);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		}
 	}
 }
 public Action Timer_RapidFire(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
-	PrintToChatAll("Rapid Hyper Activate");
+	//PrintToChatAll("Rapid Hyper Activate");
 	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
+	float flPos[3]; // original
+	float flAng[3]; // original
+	GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
+	int particle_Base = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 15.0);
+	SetParent(client, particle_Base, "m_vecAbsOrigin");
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
 	return Plugin_Stop;
@@ -441,7 +452,7 @@ public Action Victorian_DrainHealth(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 		{
-			int health = GetClientHealth(client) * 95 / 100;
+			int health = GetClientHealth(client) * 98 / 100;
 			if(health < 100)
 				health = 100;
 			
@@ -467,12 +478,6 @@ void CreateVictoriaEffect(int client)
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
-
-
-	if(Super_Hot[client])
-	{
-
-	}
 }
 void DestroyVictoriaEffect(int client)
 {
