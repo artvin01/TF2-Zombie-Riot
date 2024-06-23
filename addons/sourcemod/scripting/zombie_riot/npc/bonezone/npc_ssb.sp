@@ -41,6 +41,8 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define SND_SUMMON_LOOP			")ambient/halloween/underground_wind_lp_02.wav"
 #define SND_SPIN_WHOOSH			")misc/halloween/strongman_fast_whoosh_01.wav"
 #define SND_SPIN_HIT			")misc/halloween/strongman_fast_impact_01.wav"
+#define SND_NECROBLAST_CHARGEUP		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_chargeup.mp3"
+#define SND_NECROBLAST_BIGBANG		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_extra.mp3"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -340,6 +342,8 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_SUMMON_LOOP);
 	PrecacheSound(SND_SPIN_WHOOSH);
 	PrecacheSound(SND_SPIN_HIT);
+	PrecacheSound(SND_NECROBLAST_CHARGEUP);
+	PrecacheSound(SND_NECROBLAST_BIGBANG);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -479,8 +483,8 @@ int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to defa
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 //float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 //float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
-float SSB_SpecialCDMin[4] = { 0.0, 0.0, 0.0, 8.0 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 0.0, 0.0, 0.0, 8.0 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 0.0 };	//The minimum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 0.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -510,14 +514,15 @@ float Summon_DamageTracker[MAXENTITIES];							//Don't touch this, it's just use
 
 //SPOOKY SPECIAL #3 - SOUL HARVESTER: SSB takes an immobile stance where he raises his arms and attempts to drain the life of all nearby enemies, drawing them in as they rapidly
 //take damage which is then given to SSB as healing. This ability is immune to damage falloff.
-float Harvester_Delay[4] = { 4.0, 3.75, 3.5, 3.0 };					//Delay until the effects of this ability activate.
-float Harvester_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };				//Duration of the ability.
-float Harvester_Radius[4] = { 400.0, 500.0, 600.0, 800.0 };			//Radius.
-float Harvester_Resistance[4] = { 0.75, 0.7, 0.66, 0.5 };			//Amount to multiply damage dealt to SSB during this ability.
-float Harvester_DMG[4] = { 5.0, 10.0, 15.0, 20.0 };					//Damage dealt per 0.1s to all enemies within Soul Harvester's radius.
-float Harvester_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };				//Amount to multiply damage dealt to entities.
-float Harvester_HealRatio[4] = { 1.0, 3.0, 9.0, 20.0 };				//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
-float Harvester_PullStrength[4] = { 200.0, 250.0, 300.0, 350.0 };	//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
+float Harvester_Delay[4] = { 4.0, 4.0, 4.0, 4.0 };							//Delay until the effects of this ability activate.
+float Harvester_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };						//Duration of the ability.
+float Harvester_Radius[4] = { 600.0, 800.0, 1200.0, 1200.0 };				//Radius.
+float Harvester_Resistance[4] = { 0.75, 0.7, 0.66, 0.5 };					//Amount to multiply damage dealt to SSB during this ability.
+float Harvester_DMG[4] = { 10.0, 20.0, 35.0, 50.0 };						//Damage dealt per 0.1s to all enemies within Soul Harvester's radius.
+float Harvester_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };						//Amount to multiply damage dealt to entities.
+float Harvester_HealRatio[4] = { 4.0, 6.0, 8.0, 10.0 };						//Amount to heal SSB per point of damage dealt by this attack. Note that he only heals when hitting players, not NPCs.
+float Harvester_PullStrength[4] = { 400.0, 450.0, 500.0, 550.0 };			//Strength of the pull effect. Note that this is for point-blank, and is scaled downwards the further the target is.
+float Harvester_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The minimum percentage of the pull force to use, depending on how far the target is. It's recommended to be at least a *little* bit above 0.0, because otherwise the knockback from the damage will outweigh the pull if you're far enough away and actually *push* you, making escape easier.
 
 //SPOOKY SPECIAL #4 - HELL IS HERE: SSB takes - you guessed it - an immobile stance where he thrusts his arms forward and begins to fire a barrage of homing skulls.
 //This ability functions like a supercharged version of the Nightmare Volley Spell Card. SSB CAN turn during this ability.
@@ -546,7 +551,7 @@ float Spin_Interval[4] = { 0.33, 0.3, 0.25, 0.2 };					//Interval in which the h
 float Spin_Duration[4] = {7.0, 8.0, 9.0, 10.0 };					//Duration of the ability.
 float Spin_Speed[4] = { 600.0, 700.0, 800.0, 900.0 };				//SSB's movement speed while spinning.
 float Spin_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };				//Amount to multiply damage dealt to entities.
-float Spin_KB[4] = { 300.0, 600.0, 900.0, 1200.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
+float Spin_KB[4] = { 900.0, 1200.0, 1500.0, 1800.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
 //SPECIAL NOTE FOR SPIN 2 WIN: Friction and acceleration seem to be inextricably linked. You will need the perfect blend of both to get the effects you're looking for, 
 //so don't just change these willy-nilly without testing first.
 float Spin_Friction[4] = { 0.5, 0.75, 1.0, 1.5 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
@@ -757,9 +762,9 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, _, false, _, Harvester_Delay[0] + Harvester_Duration[0] + 2.2));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
 
 	//Wave 30:
 	//Spell Cards:
@@ -770,6 +775,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[1] + 1.6));
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[1] + 2.2));
+	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, _, false, _, Harvester_Delay[1] + Harvester_Duration[1] + 2.2));
 	PushArrayCell(SSB_Specials[1], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
 
 	//Wave 45:
@@ -783,6 +789,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[2] + 1.6));
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[2] + 2.2));
+	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, _, false, _, Harvester_Delay[2] + Harvester_Duration[2] + 2.2));
 	PushArrayCell(SSB_Specials[2], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[2] + Spin_Duration[2] + 1.0));
 
 	//Wave 60+:
@@ -797,6 +804,7 @@ static void SSB_PrepareAbilities()
 	//Spooky Specials:
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[3] + 1.6));
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, _, false, _, Summon_Duration[3] + 2.2));
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, _, false, _, Harvester_Delay[3] + Harvester_Duration[3] + 2.2));
 	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[3] + Spin_Duration[3] + 1.0));
 }
 
@@ -2672,7 +2680,7 @@ public Action Summoner_Spawn(Handle timer, DataPack pack)
 	//	- Phase 0: Already finished, should ONLY be able to summon Basic Bones, Beefy Bones, and 2x Brittle Bones.
 	//	- Phase 1: Normal pirate-themed skeletons.
 	//	- Phase 2: Medieval-era skeletons.
-	//	- Phase 3: Literally any non-boss skeleton.
+	//	- Phase 3: Literally any non-boss skeleton, minion stats are mega-buffed.
 	switch(phase)
 	{
 		case 0:
@@ -2899,7 +2907,23 @@ public void Spin_Logic(DataPack pack)
 public void Spin_OnHit(int attacker, int victim, float damage, int weapon)
 {
 	EmitSoundToAll(SND_SPIN_HIT, victim, _, _, _, _, GetRandomInt(70, 100));
-	//TODO: Knockback
+
+	float dummy[3], pos[3], pos2[3], ang[3];
+	WorldSpaceCenter(victim, pos2);
+	Priest_GetAngleToPoint(attacker, pos, pos2, dummy, ang);
+
+	if (ang[0] > -20.0)
+		ang[0] = -20.0;
+
+	GetAngleVectors(ang, dummy, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(dummy, Spin_KB[SSB_WavePhase]);
+
+	float vel[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", vel);
+	for (int vec = 0; vec < 3; vec++)
+		vel[vec] += dummy[vec];
+
+	TeleportEntity(victim, _, _, vel);
 }
 
 public void Special_Harvester(SupremeSpookmasterBones ssb, int target)
@@ -2945,8 +2969,8 @@ public void Harvester_Begin(DataPack pack)
 		RequestFrame(Harvester_Logic, pack);
 		WritePackCell(pack, EntIndexToEntRef(user));
 		WritePackCell(pack, phase);
-		WritePackCell(pack, gt + Harvester_Duration[phase]);
-		WritePackCell(pack, gt + 0.1);
+		WritePackFloat(pack, gt + Harvester_Duration[phase]);
+		WritePackFloat(pack, gt + 0.1);
 
 		return;
 	}
@@ -2985,23 +3009,23 @@ public void Harvester_Logic(DataPack pack)
 
 	if (gt >= nextHit)
 	{
-		//TODO: Damage, visual indicator
-
 		float pos[3];
-		GetEntPropVector(ssb.index, Prop_Send, "m_vecAbsOrigin", pos);
+		GetEntPropVector(ssb.index, Prop_Data, "m_vecAbsOrigin", pos);
 
 		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 		Explode_Logic_Custom(Harvester_DMG[phase], ssb.index, ssb.index, 0, pos, Harvester_Radius[phase], 1.0, 1.0, isBlue, 9999, _, Harvester_EntityMult[phase], Harvester_OnHit);
 
 		nextHit = gt + 0.1;
+
+		spawnRing_Vectors(pos, Harvester_Radius[phase] * 2.0, 0.0, 0.0, 0.0, "materials/sprites/lgtning.vmt", 0, 60, 255, 255, 1, 0.1, 16.0, 2.0, 1);
 	}
 
 	pack = new DataPack();
 	RequestFrame(Harvester_Logic, pack);
 	WritePackCell(pack, EntIndexToEntRef(user));
 	WritePackCell(pack, phase);
-	WritePackCell(pack, endTime);
-	WritePackCell(pack, nextHit);
+	WritePackFloat(pack, endTime);
+	WritePackFloat(pack, nextHit);
 }
 
 public void Harvester_OnHit(int attacker, int victim, float damage, int weapon)
@@ -3024,7 +3048,36 @@ public void Harvester_OnHit(int attacker, int victim, float damage, int weapon)
 		SetEntProp(attacker, Prop_Data, "m_iHealth", hp);
 	}
 
-	//TODO: VFX, pull
+	float userPos[3], vicPos[3];
+	WorldSpaceCenter(attacker, userPos);
+	WorldSpaceCenter(victim, vicPos);
+
+	float multiplier = 1.0 - (GetVectorDistance(userPos, vicPos) / Harvester_Radius[SSB_WavePhase]);
+	if (multiplier < Harvester_MinPullStrengthMultiplier[SSB_WavePhase])
+		multiplier = Harvester_MinPullStrengthMultiplier[SSB_WavePhase];
+
+	float pullStrength = Harvester_PullStrength[SSB_WavePhase] * multiplier;
+
+	static float angles[3];
+	GetVectorAnglesTwoPoints(userPos, vicPos, angles);
+
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		angles[0] = 0.0;
+
+	float velocity[3], currentVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecVelocity", currentVelocity);
+	GetAngleVectors(angles, velocity, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(velocity, -pullStrength);
+																
+	if (GetEntityFlags(victim) & FL_ONGROUND)
+		velocity[2] = fmax(25.0, velocity[2]);
+
+	for (int i = 0; i < 3; i++)
+		velocity[i] += currentVelocity[i];
+												
+	TeleportEntity(victim, NULL_VECTOR, NULL_VECTOR, velocity);   
+
+	//TODO: VFX, play sound at victim's location
 }
 
 bool SSB_UsingAbility[MAXENTITIES];
@@ -3146,6 +3199,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 	{
 		int rand = GetRandomInt(0, sizeof(g_SSBNecroBlastWarning_Sounds) - 1);
 		EmitSoundToAll(g_SSBNecroBlastWarning_Sounds[rand], _, _, 120);
+		EmitSoundToAll(SND_NECROBLAST_CHARGEUP, _, _, 120);
 
 		CPrintToChatAll(g_SSBNecroBlastWarning_Captions[rand]);
 
@@ -3160,6 +3214,7 @@ methodmap SupremeSpookmasterBones < CClotBody
 		EmitSoundToAll(g_SSBNecroBlast_Sounds[rand], _, _, 120);
 		CPrintToChatAll(g_SSBNecroBlast_Captions[rand]);
 		EmitSoundToAll(SND_NECROBLAST_EXTRA_1, _, _, 120, _, _, GetRandomInt(70, 90));
+		EmitSoundToAll(SND_NECROBLAST_BIGBANG, _, _, 120);
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlast()");
