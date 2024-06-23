@@ -302,7 +302,7 @@ public void Shell_VictorianTouch(int entity, int target)
 */		if(During_Ability[owner])
 		{
 			BaseDMG *= 0.8;
-			if(Super_Hot[client])
+			if(Super_Hot[owner])
 			{
 				BaseDMG *= 1.2;
 			}
@@ -438,6 +438,7 @@ public Action Timer_RapidFire(Handle timer, any userid)
 	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
 	float flPos[3]; // original
 	float flAng[3]; // original
+	Super_Hot[owner] = true;
 	GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
 	int particle_Base = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 15.0);
 	SetParent(client, particle_Base, "m_vecAbsOrigin");
