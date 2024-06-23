@@ -438,7 +438,7 @@ public Action Timer_RapidFire(Handle timer, any userid)
 	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
 	float flPos[3]; // original
 	float flAng[3]; // original
-	Super_Hot[owner] = true;
+	Super_Hot[client] = true;
 	GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
 	int particle_Base = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 15.0);
 	SetParent(client, particle_Base, "m_vecAbsOrigin");
