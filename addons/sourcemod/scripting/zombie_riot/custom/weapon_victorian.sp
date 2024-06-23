@@ -404,7 +404,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 60.0);
+			Ability_Apply_Cooldown(client, slot, 90.0);
 			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 1.0);
 			During_Ability[client] = true;
 			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
