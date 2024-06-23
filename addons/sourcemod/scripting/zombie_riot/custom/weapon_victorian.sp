@@ -102,6 +102,12 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	}
 	return Plugin_Continue;
 }
+
+public void Victorian_Melee_Swing(float &CustomMeleeRange, float &CustomMeleeWide)
+{
+	CustomMeleeRange = 50.0;
+	CustomMeleeWide = 20.0;
+}
 public void Victorian_Cooldown_Logic(int client, int weapon)
 {
 	if(f_VIChuddelay[client] < GetGameTime())
@@ -162,7 +168,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 600.0;
+	float speed = 500.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -286,7 +292,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 2750.0;
+		float BaseDMG = 2500.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;

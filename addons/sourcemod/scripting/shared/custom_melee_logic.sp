@@ -221,6 +221,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
 			}
+			case WEAPON_VICTORIAN_LAUNCHER;
+			{
+				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
+			}
 		}	
 	}
 #endif
