@@ -299,7 +299,7 @@ public void Shell_VictorianTouch(int entity, int target)
 			how_many_times_fired[owner] = 0;
 			Radius *= 1.25;
 		}
-*/		if(During_Ability[client])
+*/		if(During_Ability[owner])
 		{
 			BaseDMG *= 1.1;
 			
