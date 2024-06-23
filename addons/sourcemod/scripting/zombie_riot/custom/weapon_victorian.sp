@@ -5,19 +5,23 @@ static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
 #define SOUND_VIC_IMPACT "weapons/explode1.wav"
 #define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
-#define MAX_VICTORIAN_CHARGE 5
+#define SOUND_VIC_SUPER_CHARGE 	"ambient/portcullis_up.wav"
+#define SOUND_RAPID_SHOT_ACTIVATE "items/powerup_pickup_precision.wav"
+//#define MAX_VICTORIAN_CHARGE 5
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
-
-static int how_many_times_fired[MAXTF2PLAYERS];
+static int hurt_count[MAXTF2PLAYERS];
+//static int how_many_times_fired[MAXTF2PLAYERS];
 static int how_many_supercharge_left[MAXTF2PLAYERS];
 static int how_many_shots_reserved[MAXTF2PLAYERS];
-//static bool During_Ability[MAXPLAYERS];
+static bool During_Ability[MAXPLAYERS];
+static bool Super_Hot[MAXPLAYERS];
 //static bool Toggle_Burst[MAXPLAYERS];
 static bool Mega_Burst[MAXPLAYERS];
 static bool Overheat[MAXPLAYERS];
 static float f_VIChuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_VICAbilityActive[MAXPLAYERS+1]={0.0, ...};
+static float Victorian_Rapid_Spread = 3.0;
 
 
 void ResetMapStartVictoria()
@@ -26,12 +30,16 @@ void ResetMapStartVictoria()
 	Zero(f_VIChuddelay);
 	//Zero(how_many_times_fired);
 	Zero(how_many_supercharge_left);
+	Zero(hurt_count);
 	Zero(how_many_shots_reserved);
 }
 void Victoria_Map_Precache()
 {
 	PrecacheSound(SOUND_VIC_SHOT);
 	PrecacheSound(SOUND_VIC_IMPACT);
+	PrecacheSound(SOUND_VIC_CHARGE_ACTIVATE);
+	PrecacheSound(SOUND_VIC_SUPER_CHARGE);
+	PrecacheSound(SOUND_RAPID_SHOT_ACTIVATE);
 }
 
 
@@ -73,7 +81,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		h_TimerVictorianLauncherManagement[client] = null;
 		DestroyVictoriaEffect(client);
 		//Toggle_Burst[client] = false;
-		//During_Ability[client] = false;
+		During_Ability[client] = false;
 		Overheat[client] = false;
 		Mega_Burst[client] = false;
 		return Plugin_Stop;
@@ -89,7 +97,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	{
 		DestroyVictoriaEffect(client);
 		//Toggle_Burst[client] = false;
-		//During_Ability[client] = false;
+		During_Ability[client] = false;
 		Overheat[client] = false;
 		Mega_Burst[client] = false;
 	}
@@ -167,9 +175,26 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	time *= Attributes_Get(weapon, 101, 1.0);
 
 	time *= Attributes_Get(weapon, 102, 1.0);
-
+	
 	if(!Overheat[client])
 	{
+		/*
+		float Angles[3];
+		if(During_Ability[client])
+		{
+			for (int spread = 0; spread < 3; spread++)
+			{
+				GetClientEyeAngles(client, Angles);
+				Angles[spread] += GetRandomFloat(-Victorian_Rapid_Spread, Victorian_Rapid_Spread);
+			}
+
+		}
+		else
+		{
+			Angles[spread] = 0
+		}
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",Angles,false);
+		*/
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
 		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
@@ -238,6 +263,7 @@ public Action Timer_Booooool(Handle timer, any userid)
 {
     int client = GetClientOfUserId(userid);
     Overheat[client] = false;
+	During_Ability[client] = false;
     return Plugin_Stop;
 }
 public void Shell_VictorianTouch(int entity, int target)
@@ -272,7 +298,12 @@ public void Shell_VictorianTouch(int entity, int target)
 			how_many_times_fired[owner] = 0;
 			Radius *= 1.25;
 		}
-*/
+*/		if(During_Ability)
+		{
+			BaseDMG *= 1.1;
+			
+			PrintToChatAll("Rapid Boom");
+		}
 		if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.25;
@@ -286,6 +317,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		else if(Mega_Burst[owner])
 		{
 			BaseDMG *= how_many_shots_reserved[owner];
+			Radius *= 1 + how_many_shots_reserved[owner]/2;
 			PrintToChatAll("Mega Boom");
 		}
 		else
@@ -320,20 +352,60 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 {
 	if(IsValidEntity(client))
 	{
-		if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left[client] == 0.0)
+		if(!During_Ability[client])
 		{
-			Rogue_OnAbilityUse(weapon);
-			Ability_Apply_Cooldown(client, slot, 50.0);
-			how_many_supercharge_left[client] += 10;
-			EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
-			PrintToChatAll("Ammo replenished");
+			if (Ability_Check_Cooldown(client, slot) < 0.0 && how_many_supercharge_left[client] == 0.0)
+			{
+				Rogue_OnAbilityUse(weapon);
+				Ability_Apply_Cooldown(client, slot, 50.0);
+				how_many_supercharge_left[client] += 10;
+				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
+				PrintToChatAll("Ammo replenished");
+			}
+			else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
+			{
+				Rogue_OnAbilityUse(weapon);
+				how_many_shots_reserved = how_many_supercharge_left;
+				Mega_Burst[client] = true;
+				PrintToChatAll("Super Shot Ready!");
+			}
+			else
+			{
+				float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+				if(Ability_CD <= 0.0)
+					Ability_CD = 0.0;
+			
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				SetDefaultHudPosition(client);
+				SetGlobalTransTarget(client);
+				ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability on cooldown", Ability_CD);
+			}
 		}
-		else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
+		else
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction,"You cannot use 2 abilities at the same time");
+		}
+
+	}
+}
+
+public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
+{
+	if(IsValidEntity(client))
+	{
+		if (Ability_Check_Cooldown(client, slot) < 0.0 && !Overheat)
 		{
 			Rogue_OnAbilityUse(weapon);
-			how_many_shots_reserved = how_many_supercharge_left;
-			Mega_Burst[client] = true;
-			PrintToChatAll("Super Shot Ready!");
+			Ability_Apply_Cooldown(client, slot, 60.0);
+			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
+			During_Ability[client] = true;
+			CreateTimer(30.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			PrintToChatAll("Rapid Shot Activated");
+			ApplyTempAttrib(weapon, 6, 0.8, 30.0);
 		}
 		else
 		{
@@ -349,6 +421,34 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
+public Action Timer_RapidFire(Handle timer, any userid)
+{
+    int client = GetClientOfUserId(userid);
+	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
+    return Plugin_Stop;
+}
+public Action Victorian_DrainHealth(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+		{
+			int health = GetClientHealth(client) * 95 / 100;
+			if(health < 100)
+				health = 100;
+			
+			SetEntityHealth(client, health);
+			return Plugin_Continue;
+		}
+	}
+	else
+	{
+		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
+	}
+	return Plugin_Stop;
+}
 
 void CreateVictoriaEffect(int client)
 {
@@ -361,6 +461,22 @@ void CreateVictoriaEffect(int client)
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+
+	if(Super_Hot[client])
+	{
+		if(IsValidEntity(viewmodelModel))
+		{
+			IgniteTargetEffect(viewmodelModel, FIRSTPERSON, client);
+		}
+		if(IsValidEntity(viewmodelModel_Hand))
+		{
+			IgniteTargetEffect(viewmodelModel_Hand, THIRDPERSON, client);
+		}
+	}
 }
 void DestroyVictoriaEffect(int client)
 {
@@ -369,5 +485,11 @@ void DestroyVictoriaEffect(int client)
 	{
 		RemoveEntity(entity);
 	}
+	int viewmodelModel;
+	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+	int viewmodelModel_Hand;
+	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	ExtinguishTarget(viewmodelModel);
+	ExtinguishTarget(viewmodelModel_Hand);
 	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
 }
