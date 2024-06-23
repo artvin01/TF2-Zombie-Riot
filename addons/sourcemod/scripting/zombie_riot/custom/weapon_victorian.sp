@@ -235,11 +235,12 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 			OnTimer[client] = null;
 		}
 		*/
-		float flPos[3]; // original
-		float flAng[3]; // original
-		GetAttachment(client, "effect_hand_r", flPos, flAng);
-		int particle_Hand = ParticleEffectAt(flPos, "flaregun_trail_crit_red", Cooldown);
-		SetParent(client, particle_Hand, "effect_hand_r");
+		float flPos[3];
+		float flAng[3];
+		GetAttachment (client, "effect_hand_r", flPos, flAng);
+		int particle_hand = ParticleEffectAt(flPos, "flaregun_trail_crit_red", Cooldown);
+		AddEntityToThirdPersonTransitMode(client, particle);
+		SetParent(client, particle_hand, "effect_hand_r");
 
 		Mega_Burst[client] = false;
 
