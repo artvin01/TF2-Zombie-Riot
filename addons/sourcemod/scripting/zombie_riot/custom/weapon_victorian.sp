@@ -98,10 +98,6 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	else
 	{
 		DestroyVictoriaEffect(client);
-		//Toggle_Burst[client] = false;
-		During_Ability[client] = false;
-		Overheat[client] = false;
-		Mega_Burst[client] = false;
 	}
 	return Plugin_Continue;
 }
@@ -133,7 +129,7 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 						}
 					}
 					*/
-					else if(!Mega_Burst[client] && how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 5)
+					else if(!Mega_Burst[client] && how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
 					{
 						PrintHintText(client,"Charged Rockets [%i%/%i] \n Press M2 Again to Fire all at once", how_many_supercharge_left[client], MAX_VICTORIAN_SUPERCHARGE);
 					}
@@ -239,7 +235,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		float flPos[3]; // original
 		float flAng[3]; // original
 		GetAttachment(client, "effect_hand_r", flPos, flAng);
-		int particle_Hand = ParticleEffectAt(flPos, "loose_cannon_buildup_smoke3b", Cooldown);
+		int particle_Hand = ParticleEffectAt(flPos, "buildingdamage_dispenser_fire1", Cooldown);
 		SetParent(client, particle_Hand, "effect_hand_r");
 
 		Mega_Burst[client] = false;
@@ -471,10 +467,7 @@ void CreateVictoriaEffect(int client)
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(client, particle, "eyeglow_l");
 	i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
-	int viewmodelModel;
-	viewmodelModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-	int viewmodelModel_Hand;
-	viewmodelModel_Hand = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+
 
 	if(Super_Hot[client])
 	{
