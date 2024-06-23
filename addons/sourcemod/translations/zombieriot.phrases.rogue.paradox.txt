@@ -528,7 +528,8 @@
 	}
 	"Printer Lore 1b"
 	{
-		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap."
+		"#format"	"{1:t}"
+		"en"		"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap, {yellow}{1}{default} is gone."
 	}
 	"Printer Option 2"
 	{
@@ -537,5 +538,17 @@
 	"Printer Lore 2"
 	{
 		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
+	}
+	"Wish Fulfilled"
+	{
+		"en"	"Wish Fulfilled"
+	}
+	"Wish Fulfilled Lore"
+	{
+		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
+	}
+	"Chaos Inflicted"
+	{
+		"en"	""
 	}
 }
