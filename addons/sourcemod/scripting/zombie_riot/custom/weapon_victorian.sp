@@ -261,10 +261,10 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 public Action Timer_Booooool(Handle timer, any userid)
 {
-    int client = GetClientOfUserId(userid);
-    Overheat[client] = false;
+	int client = GetClientOfUserId(userid);
+	Overheat[client] = false;
 	During_Ability[client] = false;
-    return Plugin_Stop;
+	return Plugin_Stop;
 }
 public void Shell_VictorianTouch(int entity, int target)
 {
@@ -423,10 +423,10 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 }
 public Action Timer_RapidFire(Handle timer, any userid)
 {
-    int client = GetClientOfUserId(userid);
+	int client = GetClientOfUserId(userid);
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
-    return Plugin_Stop;
+	return Plugin_Stop;
 }
 public Action Victorian_DrainHealth(Handle timer, int userid)
 {
