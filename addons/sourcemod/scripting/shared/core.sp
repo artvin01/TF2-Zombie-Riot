@@ -645,6 +645,7 @@ int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
+bool WildingenBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
@@ -2860,6 +2861,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		WildingenBuilder[entity] = false;
 		Armor_Charge[entity] = 0;
 #endif
 

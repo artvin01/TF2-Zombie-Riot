@@ -541,12 +541,15 @@ public void BuilderMenu(int client)
 	{	
 		CancelClientMenu(client);
 		SetStoreMenuLogic(client, false);
-		static char buffer[64];
+		static char buffer[128];
 		Menu menu = new Menu(BuilderMenuM);
 
 		SetGlobalTransTarget(client);
 		
 		menu.SetTitle("%t", "Extra Menu");
+		
+		FormatEx(buffer, sizeof(buffer), "%t", "Deleting buildings refunds text");
+		menu.AddItem("-999", buffer, ITEMDRAW_DISABLED);
 
 		FormatEx(buffer, sizeof(buffer), "%t", "Mark Building For Deletion");
 		menu.AddItem("-1", buffer);
@@ -851,7 +854,7 @@ public int DestroyAllSelfBuildings_Menu(Menu menu, MenuAction action, int client
 								{
 									if(!Can_I_See_Enemy_Only(client, entity))
 									{
-										RemoveEntity(entity);	
+										DeleteAndRefundBuilding(client, entity);
 									}
 								}
 							}
@@ -1331,7 +1334,7 @@ public int DeleteBuildingMenu(Menu menu, MenuAction action, int client, int choi
 						int entity = EntRefToEntIndex(i_BuildingSelectedToBeDeleted[client]);
 						if (IsValidEntity(entity))
 						{
-							RemoveEntity(entity);
+							DeleteAndRefundBuilding(client, entity);
 						}
 					}
 				}

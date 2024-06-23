@@ -200,8 +200,8 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, 1);
-						CurrentAmmo[client][Ammo_type] = -1;
+						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
+						CurrentAmmo[client][Ammo_type] = 0;
 					}
 					else
 					{			
@@ -244,7 +244,7 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 			if(GetAmmo(client, Ammo_type) <= 1)
 			{
-				SetAmmo(client, Ammo_type, 0);
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
 			}
 		}
 		else

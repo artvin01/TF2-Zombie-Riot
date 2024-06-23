@@ -5629,10 +5629,10 @@ public void NpcBaseThink(int iNPC)
 			//If NPCs some how get out of bounds
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
-			flMyPos_Bounds[2] += 25.0;
-			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			flMyPos_Bounds[2] += 1.0;
+			if(TR_PointOutsideWorld(flMyPos_Bounds) || IsBoxHazard(flMyPos_Bounds, {-20.0,-20.0,0.0}, {20.0,2.0,70.0}))
 			{
-				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
 #if defined ZR
 				int target = 0;

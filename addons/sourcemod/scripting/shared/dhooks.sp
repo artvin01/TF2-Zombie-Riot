@@ -1057,6 +1057,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
+			//ignore buildings, neccecary during some situations
+			if(i_IsABuilding[entity2])
+			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[entity1])
+				{
+					return false;
+				}
+			}
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
