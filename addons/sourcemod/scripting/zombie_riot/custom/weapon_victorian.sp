@@ -123,7 +123,11 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 						}
 					}
 					*/
-					else
+					else if(!Mega_Burst[client] && how_many_supercharge_left[client]=<5)
+					{
+						PrintHintText(client,"Charged Rockets [%i%/%i] \n Press M2 Again to Fire all at once", how_many_supercharge_left[client], MAX_VICTORIAN_SUPERCHARGE);
+					}
+					else if(!Mega_Burst[client] && how_many_supercharge_left[client]>5)
 					{
 						PrintHintText(client,"Charged Rockets [%i%/%i]", how_many_supercharge_left[client], MAX_VICTORIAN_SUPERCHARGE);
 					}
