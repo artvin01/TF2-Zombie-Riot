@@ -7,6 +7,7 @@ static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
 #define SOUND_VIC_SUPER_CHARGE 	"ambient/portcullis_up.wav"
 #define SOUND_RAPID_SHOT_ACTIVATE "items/powerup_pickup_precision.wav"
+#define SOUND_RAPID_SHOT_HYPER "mvm/mvm_warning.wav"
 //#define MAX_VICTORIAN_CHARGE 5
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
@@ -401,7 +402,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 60.0);
-			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
+			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 0.6);
 			During_Ability[client] = true;
 			CreateTimer(30.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			PrintToChatAll("Rapid Shot Activated");
@@ -424,6 +425,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 public Action Timer_RapidFire(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
+	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
 	return Plugin_Stop;
