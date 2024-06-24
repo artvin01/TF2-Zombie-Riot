@@ -332,26 +332,26 @@ public void Shell_VictorianTouch(int entity, int target)
 			Radius *= 1 + how_many_shots_reserved[owner]/2;
 			//PrintToChatAll("Mega Boom");
 		}
+		if(Overheat[owner])
+		{
+			BaseDMG *= 0.2;
+		}
 		else
 		{
 			BaseDMG *= 1.0;
 			//PrintToChatAll("Boom");
 		}
-		
-		
-		if(!Overheat[owner])
-		{
-			float spawnLoc[3];
-			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-			EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
-			ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 			
-			if(IsValidEntity(particle))
-			{
-				RemoveEntity(particle);
-			}
-			RemoveEntity(entity);
+		float spawnLoc[3];
+		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
+		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
+		
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
 		}
+		RemoveEntity(entity);
 	}
 	else
 	{
@@ -447,10 +447,10 @@ public Action Timer_RapidFire(Handle timer, any userid)
 	float flPos[3]; // original
 	float flAng[3]; // original
 	Super_Hot[client] = true;
-	GetAttachment(client, "head", flPos, flAng);
-	int particle_Base = ParticleEffectAt(flPos, "utaunt_glowyplayer_orange_parent", 15.0);
+	GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
+	int particle_Base = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 15.0);
 	AddEntityToThirdPersonTransitMode(client, particle_Base);
-	SetParent(client, particle_Base, "head");
+	SetParent(client, particle_Base, "m_vecAbsOrigin");
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
 	return Plugin_Stop;
