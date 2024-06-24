@@ -50,9 +50,26 @@ static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
 static float fl_shield_break_timeout[MAXENTITIES];
-static int i_shield_color[3] = {0, 255, 255};			//does this work?
+static int i_shield_color[3] = {0, 0, 0};			
 /*
-	0, 255, 0  //Green.
+	0, 0, 0			//mostly white, and the top	| 0 0 0
+	0, 255, 0 		//Green.					| 0 1 0
+	0, 255, 255		//light blue				| 0 1 1
+	255, 0, 255		//deep sea blue				| 1 0 1
+	0, 0, 255		//lighter deep sea blue		| 0 0 1
+	255, 255, 0		//nuclear green				| 1 1 0
+	255, 0, 0		//red but its faint			| 1 0 0
+*/
+
+/*
+	0 0 0		//Y
+	0 0 1		//Y
+	0 1 0		//Y
+	0 1 1		//Y
+	1 0 0		//Y
+	1 0 1		//Y
+	1 1 0		//Y
+	1 1 1
 */
 
 //these scales on wavecount
@@ -2646,7 +2663,7 @@ Names per stage:
 
 */
 
-stock void Lanius_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
+stock void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {
 	int part1 = CreateEntityByName("info_particle_system");
 	if(IsValidEdict(part1))

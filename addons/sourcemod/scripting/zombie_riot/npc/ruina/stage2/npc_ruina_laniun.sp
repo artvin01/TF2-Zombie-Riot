@@ -176,11 +176,10 @@ methodmap Laniun < CClotBody
 		
 		/*
 			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
-			festive eyelander		"models/weapons/c_models/c_claymore/c_claymore_xmas.mdl"
-			Berliner's bucket helm	"models/player/items/medic/berliners_bucket_helm.mdl"
-			Diplomat 				"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 			tuxxy					"models/player/items/all_class/tuxxy_scout.mdl"
 			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
+			Breakneck Baggies		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
+			Arthropod's				"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -197,12 +196,39 @@ methodmap Laniun < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");	//claidemor	
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");	
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");	
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");	
-		npc.m_iWearable5 = npc.EquipItem("head", "models/player/items/all_class/tuxxy_scout.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl");
+		char Items[][] = {
+			"models/workshop/player/items/all_class/jogon/jogon_scout.mdl",
+			"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl",
+			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
+			"models/player/items/all_class/tuxxy_scout.mdl",
+			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
+			RUINA_CUSTOM_MODELS
+		};
+		
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -212,7 +238,9 @@ methodmap Laniun < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(RUINA_LAN_SWORD_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -239,9 +267,7 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
-	
-	
-	
+
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -260,8 +286,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 2.5);
-
+	Ruina_Add_Battery(npc.index, 5.0);
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
@@ -274,7 +299,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.17);
+		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.3);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -282,7 +307,7 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
+		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (750.0 * 750.0))
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
 			static float flVel[3];
@@ -292,7 +317,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
-				npc.m_flNextTeleport = GameTime + 25.0;
+				
 				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos);
 					
 					
@@ -309,6 +334,8 @@ static void ClotThink(int iNPC)
 						float effect_duration = 0.25;
 	
 						end_offset = vPredictedPos;
+
+						npc.m_flNextTeleport = GameTime + 20.0;
 										
 						for(int help=1 ; help<=8 ; help++)
 						{	
@@ -332,10 +359,10 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 50.0;
-		Melee.bonus_dmg = 250.0;
+		Melee.damage = 175.0;			//heavy, but slow
+		Melee.bonus_dmg = 500.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-		Melee.swing_speed = 0.475;
+		Melee.swing_speed = 2.2;
 		Melee.swing_delay = 0.37;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
@@ -365,7 +392,7 @@ static void ClotThink(int iNPC)
 
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 25);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

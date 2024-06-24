@@ -244,6 +244,9 @@ methodmap Magnium < CClotBody
 
 		SetVariantInt(RUINA_HAND_CREST_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 				
 		fl_ruina_battery[npc.index] = 0.0;

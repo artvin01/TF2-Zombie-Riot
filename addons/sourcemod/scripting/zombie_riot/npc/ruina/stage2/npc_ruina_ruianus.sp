@@ -197,7 +197,6 @@ methodmap Ruianus < CClotBody
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -206,6 +205,9 @@ methodmap Ruianus < CClotBody
 
 		SetVariantInt(RUINA_BLADE_1);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");	
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		//fl_ruina_battery[npc.index] = 0.0;
 		//b_ruina_battery_ability_active[npc.index] = false;

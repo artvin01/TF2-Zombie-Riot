@@ -38,6 +38,11 @@ $bodygroup "hand_crest_v1"
 	blank
 	studio "hand_crest_v1.smd"
 }
+$bodygroup "lan_sword_v1"	
+{							
+	blank
+	studio "lan_sword_v1.smd"
+}
 
 
 
@@ -52,8 +57,8 @@ $illumposition 0.096 -0.043 13.267
 $mostlyopaque
 
 $cdmaterials "models\custom_weaponry\"
-$cdmaterials "models\weapons\w_wrench\"	//it has gold!	w_wrench01_gold
-$cdmaterials "models\weapons\c_items\"		//MORE GOLD 	c_saxxy.vmt
+$cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
+$cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0
