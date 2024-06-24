@@ -619,6 +619,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+float f_TimeSinceLastGiveWeapon[MAXTF2PLAYERS]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
@@ -644,6 +645,7 @@ int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
+bool WildingenBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
@@ -839,7 +841,6 @@ Handle g_hGetVectors;
 Handle g_hLookupActivity;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
-Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
 DynamicHook g_DHookMedigunPrimary; 
@@ -2860,6 +2861,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		WildingenBuilder[entity] = false;
 		Armor_Charge[entity] = 0;
 #endif
 
@@ -3318,42 +3320,26 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+#if defined ZR
 		WeaponWeaponAdditionOnRemoved(entity);
+#endif
 		CurrentEntities--;
-	//	CreateTimer(1.01, Timer_FreeEdict);
 
-		//OnEntityDestroyed_LagComp(entity);
 		if(entity > MaxClients)
 		{
 
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
-
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif
-			RemoveNpcThingsAgain(entity);
 #if !defined NOG
 			IsCustomTfGrenadeProjectile(entity, 0.0);
 #endif
-			if(h_NpcCollissionHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
-				}
-			}
-			if(h_NpcSolidHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcSolidHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
-				}
-			}
 		}
 		NPCStats_SetFuncsToZero(entity);
 	}
