@@ -205,7 +205,7 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 			menu.AddItem("0", "Fish Market (Anti-Seaborn)");
 			menu.AddItem("1", "Martial Artist (Retreats, Stuns)");
 			menu.AddItem("2", "The Investigator (Steal Attack Speed, Anti-Stun)");
-			menu.AddItem("3", "Wine Market (Ranged, Self Revive)");
+			menu.AddItem("3", "Wine Market (Ranged Guns, Self Revive)");
 		}
 	}
 
