@@ -517,7 +517,7 @@ bool Merchant_OnLethalDamage(int client)
 	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] == Merchant_Swire)
 	{
 		int ammo = GetAmmo(client, Ammo_Metal);
-		int cost = MERCHANT_METAL_DRAIN * 5 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		int cost = MERCHANT_METAL_DRAIN * 10 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
 		if(ammo >= cost)
 		{
 			SetAmmo(client, Ammo_Metal, ammo - cost);
