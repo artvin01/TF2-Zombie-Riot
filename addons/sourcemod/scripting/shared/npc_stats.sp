@@ -3207,6 +3207,21 @@ static void OnDestroy(CClotBody body)
 	{
 		RemoveFromNpcPathList(body);
 	}
+	RemoveNpcThingsAgain(body.index);
+	if(h_NpcCollissionHookType[body.index] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[body.index]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+		}
+	}
+	if(h_NpcSolidHookType[body.index] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcSolidHookType[body.index]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+		}
+	}
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
@@ -3323,7 +3338,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
-	//	SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		OnKillUniqueWeapon(iAttacker, iWeapon, pThis);
@@ -5465,12 +5479,7 @@ public void NpcBaseThink(int iNPC)
 		return;
 	}
 	SaveLastValidPositionEntity(iNPC);
-
-#if defined ZR || defined RPG
-	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
-#else
-	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
-#endif
+	NpcSetGravity(npc,iNPC);
 	
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
@@ -5529,35 +5538,38 @@ public void NpcBaseThink(int iNPC)
 		RPGNpc_UpdateHpHud(iNPC);
 	}
 #endif
-	/*
-	if(b_EntityInCrouchSpot[iNPC])
-	{
-		if(!b_NpcResizedForCrouch[iNPC])
-		{
-			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
-			b_NpcResizedForCrouch[iNPC] = true;
-		}
-	}
-	else //only turn off if outside.
-	{
-		if(b_NpcResizedForCrouch[iNPC])
-		{
-			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 2.0);
-			b_NpcResizedForCrouch[iNPC] = false;
-		}
-	}
-	*/
-	static float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
+
+	NpcStuckInSomething(npc,iNPC);
+
+	Function func = func_NPCThink[iNPC];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(iNPC);
+		Call_Finish();
+	}
+	NpcStuckInSomething(npc,iNPC);
+}
+
+public void NpcSetGravity(CClotBody npc, int iNPC)
+{
+#if defined ZR || defined RPG
+	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+#else
+	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+#endif
+}
+public void NpcOutOfBounds(CClotBody npc, int iNPC)
+{
 #if defined RTS
 	if(!i_NpcIsABuilding[iNPC])
 #else
 	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red && !i_NpcIsABuilding[iNPC])
 #endif
 	{
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
@@ -5618,7 +5630,6 @@ public void NpcBaseThink(int iNPC)
 			//This is a tempomary fix. find a better one for players getting stuck.
 		}
 	}
-
 #if defined ZR
 	else if(GetTeam(iNPC) == TFTeam_Red && !i_NpcIsABuilding[iNPC])
 	{
@@ -5627,6 +5638,8 @@ public void NpcBaseThink(int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			//If NPCs some how get out of bounds
+			static float flMyPos[3];
+			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
 			flMyPos_Bounds[2] += 1.0;
@@ -5666,18 +5679,9 @@ public void NpcBaseThink(int iNPC)
 		}
 	}
 #endif	// Non-RTS
-
-	//TODO:
-	//Rewrite  ::Update func inside nextbots instead of doing this.
-	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
-	Function func = func_NPCThink[iNPC];
-	if(func && func != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, func);
-		Call_PushCell(iNPC);
-		Call_Finish();
-		//todo: convert all on death and on take damage to this.
-	}
+}
+public void NpcStuckInSomething(CClotBody npc, int iNPC)
+{
 	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC] == 0)
@@ -5750,6 +5754,8 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmins[2] -= 1.0;			
 		}
 	
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
 		if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
 		{
@@ -5821,7 +5827,6 @@ public void NpcBaseThink(int iNPC)
 		}
 	}	
 }
-
 float f3_KnockbackToTake[MAXENTITIES][3];
 
 stock void Custom_Knockback(int attacker,
@@ -9561,7 +9566,8 @@ stock void EntityIsInHazard_Teleport(int entity)
 		TeleportBackToLastSavePosition(entity);
 	}
 }
-void TeleportBackToLastSavePosition(int entity)
+
+public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
@@ -9581,7 +9587,7 @@ void TeleportBackToLastSavePosition(int entity)
 	}
 }
 
-void SaveLastValidPositionEntity(int entity)
+public void SaveLastValidPositionEntity(int entity)
 {
 	//first see if they are on the ground
 	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
@@ -9673,12 +9679,6 @@ void SaveLastValidPositionEntity(int entity)
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-		/*
-		if(b_NpcResizedForCrouch[entity])
-		{
-			hullcheckmaxs_Player[2] = 41.0;
-		}	
-		*/
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 

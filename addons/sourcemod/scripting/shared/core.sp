@@ -3324,40 +3324,22 @@ public void OnEntityDestroyed(int entity)
 		WeaponWeaponAdditionOnRemoved(entity);
 #endif
 		CurrentEntities--;
-	//	CreateTimer(1.01, Timer_FreeEdict);
 
-		//OnEntityDestroyed_LagComp(entity);
 		if(entity > MaxClients)
 		{
 
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
-
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif
-			RemoveNpcThingsAgain(entity);
 #if !defined NOG
 			IsCustomTfGrenadeProjectile(entity, 0.0);
 #endif
-			if(h_NpcCollissionHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
-				}
-			}
-			if(h_NpcSolidHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcSolidHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
-				}
-			}
 		}
 		NPCStats_SetFuncsToZero(entity);
 	}
