@@ -2397,7 +2397,7 @@ static Action ReadyUpHack(Handle timer)
 			if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
 			{
 				players++;
-				if(GameRules_GetProp("m_bIsReadyUp", _, client))
+				if(GameRules_GetProp("m_bPlayerReady", _, client))
 					ready++;
 			}
 		}
