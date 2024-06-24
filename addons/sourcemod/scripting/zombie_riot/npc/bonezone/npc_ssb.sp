@@ -489,7 +489,7 @@ float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 0.0 }; //The maximum cooldown betw
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
 float Necrotic_Delay[4] = { 1.5, 1.35, 1.2, 1.15 };				//Time until the laser is fired after SSB enters his stance. Note that 1.16 is ALWAYS added to this for the intro sequence.
-float Necrotic_DMG[4] = { 800.0, 2000.0, 5000.0, 12500.0 };		//Damage dealt by the laser.
+float Necrotic_DMG[4] = { 2400.0, 6000.0, 15000.0, 37500.0 };	//Damage dealt by the laser.
 float Necrotic_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };		//Amount to multiply damage dealt by the laser to entities.
 float Necrotic_Width[4] = { 400.0, 475.0, 550.0, 625.0 };		//Laser width, in hammer units.
 float Necrotic_SelfKB[4] = { 800.0, 1200.0, 1600.0, 2000.0 };	//Amount of knockback taken by SSB when the laser is fired.
@@ -762,9 +762,8 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, _, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
-	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, _, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, _, false, _, Necrotic_Delay[0] + 1.6));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, _, false, _, Summon_Duration[0] + 2.2));
 
 	//Wave 30:
 	//Spell Cards:
