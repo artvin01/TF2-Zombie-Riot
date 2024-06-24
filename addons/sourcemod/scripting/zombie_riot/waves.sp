@@ -2403,6 +2403,9 @@ static Action ReadyUpHack(Handle timer)
 		}
 		
 		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
+		if(time > 0.0)
+			time -= GetGameTime();
+		
 		if(time > 10.0 || time < 0.0)
 		{
 			float set = -1.0;
@@ -2418,6 +2421,9 @@ static Action ReadyUpHack(Handle timer)
 
 			if(time != set && (time < 0.0 || set < time))
 			{
+				if(set > 0.0)
+					set += GetGameTime();
+				
 				GameRules_SetPropFloat("m_flRestartRoundTime", set);
 			}
 
