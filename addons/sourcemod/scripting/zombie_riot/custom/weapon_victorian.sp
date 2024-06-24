@@ -447,9 +447,10 @@ public Action Timer_RapidFire(Handle timer, any userid)
 	float flPos[3]; // original
 	float flAng[3]; // original
 	Super_Hot[client] = true;
-	GetAttachment(client, "m_vecAbsOrigin", flPos, flAng);
-	int particle_Base = ParticleEffectAt(flPos, "utaunt_lavalamp_yellow_glow", 15.0);
-	SetParent(client, particle_Base, "m_vecAbsOrigin");
+	GetAttachment(client, "head", flPos, flAng);
+	int particle_Base = ParticleEffectAt(flPos, "utaunt_glowyplayer_orange_parent", 15.0);
+	AddEntityToThirdPersonTransitMode(client, particle_Base);
+	SetParent(client, particle_Base, "head");
 	CreateTimer(0.1, Victorian_DrainHealth, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy, 15.0, client);
 	return Plugin_Stop;
