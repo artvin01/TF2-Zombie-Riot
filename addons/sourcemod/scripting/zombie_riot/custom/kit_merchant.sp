@@ -97,6 +97,7 @@ static Action TimerEffect(Handle timer, int client)
 							
 							MerchantThink(client, cost);
 							SetAmmo(client, Ammo_Metal, ammo - cost);
+							CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 						}
 
 						return Plugin_Continue;
@@ -521,6 +522,7 @@ bool Merchant_OnLethalDamage(int client)
 		if(ammo >= cost)
 		{
 			SetAmmo(client, Ammo_Metal, ammo - cost);
+			CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 			MerchantEffect[client]++;
 
 			SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 7 / 10);
@@ -677,6 +679,7 @@ static void MerchantStart(int client, int slot)
 		MerchantAbilitySlot[client] = slot;
 		MerchantWeaponRef[client] = EntIndexToEntRef(weapon);
 		SetAmmo(client, Ammo_Metal, ammo - cost);
+		CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 
 		float damage = 2.0;
 		float speed = 0.5;
