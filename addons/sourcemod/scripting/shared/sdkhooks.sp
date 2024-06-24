@@ -6,6 +6,7 @@ static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
+static float f_EntityOutOfNav[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -24,6 +25,7 @@ void SDKHooks_ClearAll()
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
 	Zero(f_EntityHazardCheckDelay);
+	Zero(f_EntityOutOfNav);
 	
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
@@ -146,11 +148,12 @@ stock void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
-
+#if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+#endif
 #endif
 
 #if defined NOG
@@ -168,6 +171,7 @@ stock void SDKHook_HookClient(int client)
 
 bool WeaponWasGivenAmmo[MAXENTITIES];
 
+#if defined ZR 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
 	WeaponWasGivenAmmo[entity] = false;
@@ -175,6 +179,9 @@ void WeaponWeaponAdditionOnRemoved(int entity)
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
+	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
+		return Plugin_Continue;
+
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
@@ -193,8 +200,8 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, 1);
-						CurrentAmmo[client][Ammo_type] = -1;
+						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
+						CurrentAmmo[client][Ammo_type] = 0;
 					}
 					else
 					{			
@@ -227,6 +234,9 @@ public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 }
 public Action WeaponSwtichToWarningPost(int client, int weapon)
 {
+	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
+		return Plugin_Continue;
+
 	if(WeaponWasGivenAmmo[weapon])
 	{
 		if(b_WeaponHasNoClip[weapon])
@@ -234,7 +244,7 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 			if(GetAmmo(client, Ammo_type) <= 1)
 			{
-				SetAmmo(client, Ammo_type, 0);
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
 			}
 		}
 		else
@@ -248,6 +258,7 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 	WeaponWasGivenAmmo[weapon] = false;
 	return Plugin_Continue;
 }
+#endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
@@ -336,12 +347,21 @@ public void OnPostThink(int client)
 #if defined ZR
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 #endif
-
 		{
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
 				EntityIsInHazard_Teleport(client);
 				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
+		}
+#if defined ZR
+		if(dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
+#endif
+		{
+			if(f_EntityOutOfNav[client] < GetGameTime())
+			{
+				Spawns_CheckBadClient(client);
+				f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			}
 		}
 		SaveLastValidPositionEntity(client);
@@ -418,6 +438,7 @@ public void OnPostThink(int client)
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
+			f_ClientInAirSince[client] = GetGameTime() + 5.0;
 			b_PlayerWasAirbornKnockbackReduction[client] = true;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
@@ -427,6 +448,10 @@ public void OnPostThink(int client)
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
+			//when they land, check if they are in a bad pos
+			Spawns_CheckBadClient(client);
+			//no need to recheck when they land
+			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
 			Attributes_Set(EntityWearable, 252, 1.0);
 		}
@@ -590,7 +615,11 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
+					if(MaxHealth > 3000)
+						MaxHealth = 3000.0;
+						
+					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
 				}
 			}
 		}

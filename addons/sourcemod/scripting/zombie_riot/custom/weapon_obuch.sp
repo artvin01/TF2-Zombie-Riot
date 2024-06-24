@@ -1,16 +1,13 @@
 #pragma semicolon 1
 #pragma newdecls required
-static int i_swinged[MAXTF2PLAYERS];
-static float f_rest_time[MAXTF2PLAYERS];
 
-#define OBUCH_MAX_DMG 1.2
-#define OBUCH_MAX_SPEED 0.67
-#define OBUCH_MAX_SWING 60
+static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
+static int attacks_made[MAXPLAYERS+1]={8, ...};
+static int weapon_id[MAXPLAYERS+1]={0, ...};
+static bool Handle_on[MAXPLAYERS+1]={false, ...};
 
 public void Obuch_Mapstart()
 {
-	Zero(f_rest_time);
-	Zero(i_swinged);
 	ObuchHammer_Map_Precache();
 }
 void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds or something.
@@ -26,48 +23,50 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 	ApplyTempAttrib(weapon, 2, 1.1, 1.2);
 	ApplyTempAttrib(weapon, 206, 0.95, 1.2);
 	PrintToChatAll("Hit");
-	
 }
 */
 
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
-	float damage = Attributes_Get(weapon, 2, 1.0);
-	damage *= Attributes_Get(weapon, 1, 1.0);
-	float swingspeed = Attributes_Get(weapon, 6, 1.0);
-	swingspeed *= Attributes_Get(weapon, 5, 1.0);
-
+	if(weapon >= MaxClients)
+	{
+		weapon_id[attacker] = EntIndexToEntRef(weapon);
+		attacks_made[attacker] -= 1;
+				
+		if (attacks_made[attacker] <= 3)
+		{
+			attacks_made[attacker] = 3;
+		}
+		if (attacks_made[attacker] <= 3)
+		{
+			attacks_made[attacker] = 3;
+		}
+		Attributes_Set(weapon, 396, RampagerAttackSpeed(attacks_made[attacker]));
+		f_ModifThirdPersonAttackspeed[weapon] = (1.0 / RampagerAttackSpeed(attacks_made[attacker]));
+		if(Handle_on[attacker])
+		{
+			delete Revert_Weapon_Back_Timer[attacker];
+		}
+		Revert_Weapon_Back_Timer[attacker] = CreateTimer(3.0, Reset_weapon_Obuch, attacker, TIMER_FLAG_NO_MAPCHANGE);
+		Handle_on[attacker] = true;
+	}
 	EmitSoundToAll("weapons/bat_baseball_hit_flesh.wav", attacker, SNDCHAN_STATIC, 80, _, 0.9, 120);
-	float GameTime = GetGameTime();
+}
 
-	i_swinged[attacker] += 1;
-
-
-	if(f_rest_time[attacker] < GameTime)
+public Action Reset_weapon_Obuch(Handle cut_timer, int client)
+{
+	if (IsValidClient(client))
 	{
-		i_swinged[attacker]=0;
-		Attributes_Set(weapon, 6, 2.5);
-	}
-	else
-	{
-		float ratio =  1 + float(i_swinged[attacker])/OBUCH_MAX_SWING;
-
-		if(ratio>=OBUCH_MAX_DMG)
+		attacks_made[client] = 8;
+		if(IsValidEntity(EntRefToEntIndex(weapon_id[client])))
 		{
-			damage*=OBUCH_MAX_DMG;
-			//swingspeed *= OBUCH_MAX_SPEED;
-			Attributes_Set(weapon, 6, OBUCH_MAX_SPEED);
-		}
-		else
-		{
-			damage*=ratio;
-			swingspeed*=0.9375/ratio;
-			Attributes_Set(weapon, 6, swingspeed);
+			Attributes_Set((EntRefToEntIndex(weapon_id[client])), 396, RampagerAttackSpeed(attacks_made[client]));
+			f_ModifThirdPersonAttackspeed[EntRefToEntIndex(weapon_id[client])] = (1.0 / RampagerAttackSpeed(attacks_made[client]));
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
 	}
-
-	f_rest_time[attacker] = GameTime + 2.50;
-
+	Handle_on[client] = false;
+	return Plugin_Handled;
 }
 
 /*

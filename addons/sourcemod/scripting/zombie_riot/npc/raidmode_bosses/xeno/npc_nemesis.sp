@@ -1754,7 +1754,7 @@ public void Raidmode_Nemesis_Win(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{crimson}You afterall... had no change.");
+			CPrintToChatAll("{crimson}You afterall... had no chance.");
 		}
 		else
 		{

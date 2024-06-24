@@ -526,7 +526,7 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = Blacksmith_IsASmith(client) ? 0 : 1;
+	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client)) ? 0 : 1;
 
 	return (!count && maxcount);
 }
@@ -850,6 +850,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	maxAllowed += Merchant_Additional_SupportBuildings(client); 
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;

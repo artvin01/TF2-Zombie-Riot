@@ -564,6 +564,9 @@ static int VillagePointsLeft(int client)
 	
 	if(Store_HasNamedItem(client, "Construction Killer"))	// 25 -> 44
 		level += 19;
+
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
+		level += 50;
 	
 	for(int i = 1; i < sizeof(VillageCosts); i++)
 	{

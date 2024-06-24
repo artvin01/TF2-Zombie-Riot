@@ -1107,9 +1107,13 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
 		SupplyRate[client] += 10;
 	
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
+		SupplyRate[client] += 10;
+
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = (CivType[client] || Items_HasNamedItem(client, "Medieval Crown"));
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
+	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 }
 
 void SummonerRenerateResources(int client, float multi, bool allowgold = false)
