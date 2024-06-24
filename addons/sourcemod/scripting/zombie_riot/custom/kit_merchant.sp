@@ -150,6 +150,7 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Reload to Interact");
+		return;
 	}
 
 	if(dieingstate[client] != 0 || (Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue))
