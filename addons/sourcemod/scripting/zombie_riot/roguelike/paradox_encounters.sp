@@ -150,7 +150,7 @@ public float Rogue_Encounter_Printer()
 			   artifact.FuncRemove != INVALID_FUNCTION)
 			{
 				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
-				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Config Info");
+				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
 				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
 				list.PushArray(vote);
 				
@@ -177,7 +177,7 @@ public void Rogue_Vote_Printer(const Vote vote, int index)
 	{
 		if(Rogue_GetChaosLevel() > 3)
 		{
-			PrintToChatAll("%t", "Printer Lore 1b", vote.Config);
+			CPrintToChatAll("%t", "Printer Lore 1b", vote.Config);
 			Rogue_RemoveNamedArtifact(vote.Config);
 			Rogue_AddIngots(30);
 		}
@@ -191,6 +191,50 @@ public void Rogue_Vote_Printer(const Vote vote, int index)
 	{
 		PrintToChatAll("%t", "Printer Lore 2");
 
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+	}
+}
+
+public float Rogue_Encounter_WishFulfilled()
+{
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_WishFulfilled, "Wish Fulfilled Lore");
+	Vote vote;
+
+	Artifact artifact;
+	int chaos = Rogue_GetChaosLevel();
+
+	for(int i = 3; i > 0; i--)
+	{
+		if(chaos > i)
+		{
+			strcopy(vote.Name, sizeof(vote.Name), "Unknown Artifact");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Unknown Artifact Desc");
+			vote.Config[0] = 0;
+			list.PushArray(vote);
+		}
+		else if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+		{
+			strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+			strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+			vote.Config[0] = 1;
+			list.PushArray(vote);
+		}
+	}
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+public void Rogue_Vote_WishFulfilled(const Vote vote, int index)
+{
+	if(vote.Config[0])
+	{
+		Rogue_GiveNamedArtifact(vote.Name);
+	}
+	else
+	{
 		Artifact artifact;
 		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);

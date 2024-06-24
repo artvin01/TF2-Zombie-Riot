@@ -170,23 +170,23 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					return Plugin_Continue;
 				}
 			}
-			i_AdditionalSupportBuildings[client] = 0;
-			SmithLevel[client] = -1;
 		}
-		
-		if(ParticleRef[client] != -1)
+		else
 		{
-			int entity = EntRefToEntIndex(ParticleRef[client]);
-			if(entity > MaxClients)
+			if(ParticleRef[client] != -1)
 			{
-				TeleportEntity(entity, OFF_THE_MAP);
-				RemoveEntity(entity);
+				int entity = EntRefToEntIndex(ParticleRef[client]);
+				if(entity > MaxClients)
+				{
+					TeleportEntity(entity, OFF_THE_MAP);
+					RemoveEntity(entity);
+				}
+
+				ParticleRef[client] = -1;
 			}
 
-			ParticleRef[client] = -1;
+			return Plugin_Continue;
 		}
-
-		return Plugin_Continue;
 	}
 
 	SmithLevel[client] = -1;

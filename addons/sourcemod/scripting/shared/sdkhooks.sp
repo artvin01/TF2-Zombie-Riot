@@ -617,7 +617,7 @@ public void OnPostThink(int client)
 				{
 					float MaxHealth = float(SDKCall_GetMaxHealth(client));
 					if(MaxHealth > 3000)
-						MaxHealth = 3000;
+						MaxHealth = 3000.0;
 						
 					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
 				}
