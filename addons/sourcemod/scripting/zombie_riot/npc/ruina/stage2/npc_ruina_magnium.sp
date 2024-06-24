@@ -252,10 +252,6 @@ methodmap Magnium < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc		
 
-		Ruina_Clean_Particles(npc.index);
-
-		Magnium_Create_Hand_Crest(npc.index);
-
 		fl_multi_attack_delay[npc.index] = 0.0;
 
 		npc.Anger = false;
@@ -516,84 +512,6 @@ static void Func_On_Proj_Touch(int projectile, int other)
 
 	Ruina_Remove_Projectile(projectile);
 }
-static void Magnium_Create_Hand_Crest(int client)
-{
-	/*
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(client, "effect_hand_r", flPos, flAng);
-	
-	
-	int r, g, b;
-	float f_start, f_end, amp;
-	r = 1;
-	g = 175;
-	b = 255;
-	f_start = 1.0;
-	f_end = 1.0;
-	amp = 0.1;
-	
-	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
-	
-	
-	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);
-	
-	SetParent(particle_0, particle_1);
-	
-	
-	//X axis- Left, Right	//this one im almost fully sure of
-	//Y axis - Foward, Back
-	//Z axis - Up Down
-	
-	
-	int particle_2 = InfoTargetParentAt({0.0, 0.0, 15.0}, "", 0.0);
-	int particle_2_1 = InfoTargetParentAt({0.0, 0.0, -15.0}, "", 0.0);
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_2, particle_2_1, "",_, true);
-	
-	int particle_4 = InfoTargetParentAt({15.0, 0.0, 0.0}, "", 0.0);
-	int particle_4_1 = InfoTargetParentAt({-15.0, 0.0, 0.0}, "", 0.0);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_4, particle_4_1, "",_, true);
-	
-	int particle_5 = InfoTargetParentAt({7.5, 0.0, 7.5}, "", 0.0);
-	int particle_5_1 = InfoTargetParentAt({-7.5, 0.0, -7.5}, "", 0.0);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_5, particle_5_1, "",_, true);
-	
-	int particle_6 = InfoTargetParentAt({-7.5, 0.0, 7.5}, "", 0.0);
-	int particle_6_1 = InfoTargetParentAt({7.5, 0.0, -7.5}, "", 0.0);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_6, particle_6_1, "",_, true);
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
-	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "effect_hand_r",_);
-
-	
-	i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	
-	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
-	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
-	i_particle_ref_id[client][2] = EntIndexToEntRef(particle_2);
-	i_particle_ref_id[client][3] = EntIndexToEntRef(particle_4);
-	i_particle_ref_id[client][4] = EntIndexToEntRef(particle_4_1);
-	i_particle_ref_id[client][5] = EntIndexToEntRef(particle_5);
-	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_5_1);
-	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_6);
-	i_particle_ref_id[client][8] = EntIndexToEntRef(particle_6_1);
-	*/
-	
-}
-
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Magnium npc = view_as<Magnium>(victim);
@@ -623,9 +541,6 @@ static void NPC_Death(int entity)
 	}
 
 	Ruina_NPCDeath_Override(npc.index);
-	
-	Ruina_Clean_Particles(npc.index);
-
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
