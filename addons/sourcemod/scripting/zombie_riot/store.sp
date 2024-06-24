@@ -2656,7 +2656,7 @@ static void MenuPage(int client, int section)
 			char buffer[512];
 			
 			int level = item.Owned[client] - 1;
-			if(level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
+			if(item.ParentKit || level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 0;
 			
 			item.GetItemInfo(level, info);
@@ -3125,7 +3125,6 @@ static void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
-			item.GetItemInfo(0, info);
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
@@ -3778,7 +3777,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					else
 					{
 						int level = item.Owned[client]-1;
-						if(level < 0)
+						if(item.ParentKit || level < 0)
 							level = 0;
 
 						item.GetItemInfo(level, info);
@@ -4013,7 +4012,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					{
 						int cash = CurrentCash - CashSpent[client];
 						int level = item.Owned[client] - 1;
-						if(level < 0)
+						if(item.ParentKit || level < 0)
 							level = 0;
 						
 						item.GetItemInfo(level, info);
@@ -4081,8 +4080,11 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
 							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
-									
-								item.GetItemInfo(item.Owned[client]-1, info);
+								int level = item.Owned[client] - 1;
+								if(item.ParentKit)
+									level = 0;
+								
+								item.GetItemInfo(level, info);
 
 								int sell = item.Sell[client];
 								if(item.BuyWave[client] == Rogue_GetRoundScale())
@@ -4526,7 +4528,7 @@ void Store_ApplyAttribs(int client)
 		for(int i; i < length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
@@ -4815,7 +4817,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			static ItemInfo info;
 			static Item item;
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 
@@ -4977,7 +4979,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	if(index > 0 && index < length)
 	{
 		StoreItems.GetArray(index, item);
-		if(item.Owned[client] > 0)	
+		if(item.Owned[client] > 0 && !item.ParentKit)	
 		{
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
@@ -5300,7 +5302,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])

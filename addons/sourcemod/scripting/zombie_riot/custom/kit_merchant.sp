@@ -819,7 +819,7 @@ static void MerchantStart(int client, int slot)
 		{
 			float pos[3]; GetClientAbsOrigin(client, pos);
 			pos[2] += 1.0;
-			
+
 			int entity = ParticleEffectAt(pos, particle, -1.0);
 			if(entity > MaxClients)
 			{
@@ -830,6 +830,7 @@ static void MerchantStart(int client, int slot)
 
 		MerchantAddAttrib(client, 2, damage);
 		MerchantAddAttrib(client, 6, speed);
+		SetPlayerActiveWeapon(client, weapon);
 	}
 }
 
@@ -877,7 +878,7 @@ static void MerchantEnd(int client)
 			for(int i; i < length; i++)
 			{
 				MerchantAttribs[client].GetArray(i, array);
-				Attributes_SetMulti(weapon, view_as<int>(array[0]), view_as<float>(array[1]));
+				Attributes_SetMulti(weapon, view_as<int>(array[0]), 1.0 / view_as<float>(array[1]));
 			}
 		}
 	}
