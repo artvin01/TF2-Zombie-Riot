@@ -260,7 +260,6 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		AddEntityToThirdPersonTransitMode(client, particle_hand);
 		SetParent(client, particle_hand, "effect_hand_r");
 
-		Mega_Burst[client] = false;
 
 		//PrintToChatAll("MEGA Fire");
 	}
@@ -338,7 +337,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		else if(Mega_Burst[owner])
 		{
-			BaseDMG *= how_many_shots_reserved[owner];
+			BaseDMG *= 1.1 * how_many_shots_reserved[owner];
 			Radius *= 1 + how_many_shots_reserved[owner]/2;
 			//PrintToChatAll("Mega Boom");
 		}
@@ -347,7 +346,8 @@ public void Shell_VictorianTouch(int entity, int target)
 			BaseDMG *= 1.0;
 			//PrintToChatAll("Boom");
 		}
-			
+		
+		Mega_Burst[owner] = false;
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.6, GetRandomInt(55, 80));
