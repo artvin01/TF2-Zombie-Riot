@@ -200,8 +200,18 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		}
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",Angles,false);
 		*/
-		
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
+		if(Super_Hot && !Mega_Burst)
+		{
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "utaunt_glowyplayer_orange_glow",_,false);
+		}
+		else if(!Super_Hot && Mega_Burst))
+		{
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "critical_rocket_red",_,false);
+		}
+		else if(!Super_Hot && !Mega_Burst)
+		{
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
+		}
 		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
@@ -331,10 +341,6 @@ public void Shell_VictorianTouch(int entity, int target)
 			BaseDMG *= how_many_shots_reserved[owner];
 			Radius *= 1 + how_many_shots_reserved[owner]/2;
 			//PrintToChatAll("Mega Boom");
-		}
-		if(Overheat[owner])
-		{
-			BaseDMG *= 0.2;
 		}
 		else
 		{
