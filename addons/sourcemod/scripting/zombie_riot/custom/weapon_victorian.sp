@@ -2,13 +2,13 @@
 #pragma newdecls required
 
 static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
-#define SOUND_VIC_SHOT 	"weapons/doom_rocket_launcher.wav"
+#define SOUND_VIC_SHOT 	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define SOUND_VIC_IMPACT "weapons/explode1.wav"
 #define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
 #define SOUND_VIC_SUPER_CHARGE 	"ambient/portcullis_up.wav"
 #define SOUND_RAPID_SHOT_ACTIVATE "items/powerup_pickup_precision.wav"
 #define SOUND_RAPID_SHOT_HYPER "mvm/mvm_warning.wav"
-#define SOUND_OVERHEAT "weapons/medigun_heal_disrupt.wav"
+#define SOUND_OVERHEAT "player/medigun_charged_death.wav"
 //#define MAX_VICTORIAN_CHARGE 5
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
@@ -43,6 +43,7 @@ void Victoria_Map_Precache()
 	PrecacheSound(SOUND_VIC_SUPER_CHARGE);
 	PrecacheSound(SOUND_RAPID_SHOT_ACTIVATE);
 	PrecacheSound(SOUND_RAPID_SHOT_HYPER);
+	PrecacheSound(SOUND_OVERHEAT);
 }
 
 
@@ -216,7 +217,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
 			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
-		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
+		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 0.9, 100);
 	}
 
 
@@ -377,7 +378,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Rogue_OnAbilityUse(weapon);
 				Ability_Apply_Cooldown(client, slot, 50.0);
 				how_many_supercharge_left[client] += 10;
-				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 0.6);
+				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 100, _, 1.1);
 				//PrintToChatAll("Ammo replenished");
 			}
 			else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
@@ -385,6 +386,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Rogue_OnAbilityUse(weapon);
 				how_many_shots_reserved = how_many_supercharge_left;
 				Mega_Burst[client] = true;
+				EmitSoundToAll(SOUND_VIC_SUPER_CHARGE, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
 				//PrintToChatAll("Super Shot Ready!");
 			}
 			else
@@ -419,7 +421,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		{
 			Rogue_OnAbilityUse(weapon);
 			Ability_Apply_Cooldown(client, slot, 90.0);
-			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 1.0);
+			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 1.1);
 			During_Ability[client] = true;
 			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(30.0, Timer_RapidfireOut, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -456,7 +458,7 @@ public Action Timer_RapidFire(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	//PrintToChatAll("Rapid Hyper Activate");
-	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 150, _, 0.6);
+	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 150, _, 0.9);
 	float flPos[3]; // original
 	float flAng[3]; // original
 	Super_Hot[client] = true;
