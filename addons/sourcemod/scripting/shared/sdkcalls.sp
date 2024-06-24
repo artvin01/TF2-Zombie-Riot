@@ -430,8 +430,9 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	
 	for(int i; i < Size1; i++)
 	{
-		GameRules_SetProp("m_bTeamReady", 0, .element=i);
+		SetEntProp(entity, Prop_Send, "m_bTeamReady", false, _, i);
 	}
+
 	static int Size2;
 	if(!Size2)
 	{
@@ -440,7 +441,7 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	
 	for(int i; i < Size2; i++)
 	{
-		GameRules_SetProp("m_bPlayerReady", 0, .element=i);
+		SetEntProp(entity, Prop_Send, "m_bPlayerReady", false, _, i);
 	}
 }
 #endif
