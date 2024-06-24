@@ -2067,6 +2067,10 @@
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
 	}
+	"Deleting buildings refunds text"
+	{
+		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
+	}
 	"Press your action slot (h) to access an extra menu!"
 	{
 		"en"	"Press your action slot (h) to access an extra menu!"

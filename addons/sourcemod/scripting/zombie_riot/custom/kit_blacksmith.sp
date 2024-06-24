@@ -149,6 +149,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
 						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
+						CurrentAmmo[client][3] = GetAmmo(client, 3);
 					}
 
 					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];

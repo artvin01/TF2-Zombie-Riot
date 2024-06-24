@@ -692,6 +692,10 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetNumAttributes(weapon, 0);
 
 #if defined ZR || defined RPG
+
+#if defined ZR
+	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
+#endif
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{

@@ -89,7 +89,7 @@ static float f_NemesisRandomInfectionCycle[MAXENTITIES];
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];
 static int i_lastTargetCharged[MAXENTITIES];
-#define MRX_MODEL "models/zombie_riot/bosses/mrx/x_normal_2.mdl"
+#define MRX_MODEL "models/zombie_riot/bosses/mrx/x_normal_3.mdl"
 
 void RaidbossMrX_OnMapStart()
 {

@@ -320,8 +320,8 @@ static void BuildingMenu(int client)
 	}
 	else
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
-		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer1, sizeof(buffer1), "%t", "Extra Menu");
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DEFAULT);
 
 		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)\n ", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10);
 		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -446,13 +446,8 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 				{
 					case 0:
 					{
-						CashSpent[client] += AmmoData[Ammo_Metal][0];
-						CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
-						ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-						
-						int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
-						SetAmmo(client, Ammo_Metal, ammo);
-						CurrentAmmo[client][Ammo_Metal] = ammo;
+						BuilderMenu(client);
+						return 0;
 					}
 					case 1:
 					{
@@ -519,6 +514,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										SetEntProp(obj.index, Prop_Data, "m_iRepairMax", maxrepair);
 										SetEntProp(obj.index, Prop_Data, "m_iRepair", repair);
 									}
+									GiveBuildingMetalCostOnBuy(entity, cost);
 
 									Building_PlayerWieldsBuilding(client, entity);
 									Barracks_UpdateEntityUpgrades(entity, client, true, _);
@@ -1426,6 +1422,15 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.35));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.35));
 		}
+		if(!WildingenBuilder[entity] && WildingenBuilder[client])
+		{
+			WildingenBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+		}
 		if(FinalBuilder[entity] && !FinalBuilder[client])
 		{
 			FinalBuilder[entity] = false;
@@ -1827,4 +1832,56 @@ bool BuildingValidPositionFinal(float AbsOrigin[3], int entity)
 	}
 	//it passed all checks, allow building.
 	return true;
+}
+
+int MetalSpendOnBuilding[MAXENTITIES];
+
+void GiveBuildingMetalCostOnBuy(int entity, int cost)
+{	
+	MetalSpendOnBuilding[entity] = cost;
+}
+void DeleteAndRefundBuilding(int client, int entity)
+{	
+	int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
+	int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
+	int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	
+	int MaxTotal = MaxRepair + MaxHealth;
+	int Total = Repair + Health;
+
+	float RatioReturn = float(Total) / float(MaxTotal);
+	
+	int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+	SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
+	CurrentAmmo[client][3] = GetAmmo(client, 3);
+
+	RemoveEntity(entity);
+}
+
+
+void Building_Check_ValidSupportcount(int client)
+{
+	if(i_HealthBeforeSuit[client] > 0)
+		return;
+		
+	if(f_HealthBeforeSuittime[client] > GetGameTime())
+		return;
+
+	int maxcount = Object_MaxSupportBuildings(client);
+	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++) //BUILDINGS!
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
+		if(IsValidEntity(entity) && BuildingIsSupport(entity))
+		{
+			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+			if(builder_owner == client)
+			{
+				if(Object_SupportBuildings(client) > maxcount)
+				{
+					SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", -1);
+				}
+			}
+		}
+	}
 }
