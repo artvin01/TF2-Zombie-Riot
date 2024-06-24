@@ -926,8 +926,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if((damagetype & DMG_DROWN))
 #endif
 	{
-		damage = 0.0;
-		Damageaftercalc = 0.0;
+		damage = 5.0;
+		Damageaftercalc = 5.0;
 		TeleportBackToLastSavePosition(victim);
 		return Plugin_Handled;
 	}

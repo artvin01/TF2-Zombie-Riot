@@ -329,10 +329,13 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 			bool blocking = EntRefToEntIndex(MerchantEffect[attacker]) == victim;
 			bool elite = MerchantLevel[attacker] > 2;
 
+			float pos1[3];
+			GetClientAbsOrigin(attacker, pos1);
+			ParticleEffectAt(pos1, elite ? "heavy_ring_of_fire_fp" : "heavy_ring_of_fire_fp_child03", 0.5);
+
 			if(blocking || elite)
 			{
-				float pos1[3], pos2[3];
-				GetClientAbsOrigin(attacker, pos1);
+				float pos2[3];
 
 				bool alone = true;
 				for(int i; i < i_MaxcountNpcTotal; i++)
@@ -677,12 +680,18 @@ static void MerchantStart(int client, int slot)
 		float damage = 2.0;
 		float speed = 0.5;
 
+		char particle[64];
+
 		switch(MerchantStyle[client])
 		{
 			case Merchant_Jaye:
 			{
+				ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+
 				if(MerchantEffect[client])
 				{
+					strcopy(particle, sizeof(particle), "utaunt_balloonicorn_reindeer_snowfloor");
+
 					// Healing
 					switch(MerchantLevel[client])
 					{
@@ -701,6 +710,8 @@ static void MerchantStart(int client, int slot)
 				}
 				else
 				{
+					strcopy(particle, sizeof(particle), "utaunt_arcane_green_sparkle_ring");
+
 					// Silence
 					switch(MerchantLevel[client])
 					{
@@ -726,6 +737,8 @@ static void MerchantStart(int client, int slot)
 			}
 			case Merchant_Nothing:
 			{
+				ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+				
 				if(MerchantEffect[client] >= 0)
 				{
 					MerchantLeftAt[client] = GetGameTime();
@@ -747,35 +760,71 @@ static void MerchantStart(int client, int slot)
 
 					switch(MerchantEffect[client])
 					{
+						case Nothing_Debuff:
+						{
+							strcopy(particle, sizeof(particle), "utaunt_arcane_green_sparkle_ring");
+						}
 						case Nothing_Damage:
+						{
 							speed *= MerchantLevel[client] > 4 ? 0.78125 : 0.8;
-						
+							strcopy(particle, sizeof(particle), "utaunt_arcane_yellow_sparkle_ring");
+						}
 						case Nothing_Res:
+						{
 							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.5 : (MerchantLevel[client] == 3 ? 0.6 : 0.55)));
+							strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
+						}
 					}
+				}
+				else
+				{
+					strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
 				}
 			}
 			case Merchant_Lee:
 			{
+				strcopy(particle, sizeof(particle), "utaunt_gifts_floorglow_brown");
+				
 				if(MerchantLevel[client] > 2)
 				{
+					ClientCommand(client, "playgamesound mvm/mvm_tank_horn.wav");
+
 					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
 					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.3 : 0.4);
 					MerchantAddAttrib(client, 206, 0.75);
 				}
 				else
 				{
+					ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+					
 					damage *= 1.4;
 					MerchantAddAttrib(client, 205, 0.75);
 				}
 			}
 			case Merchant_Swire:
 			{
+				strcopy(particle, sizeof(particle), "utaunt_electricity_cloud_electricity_WY");
+				
+				ClientCommand(client, "playgamesound mvm/sentrybuster/mvm_sentrybuster_intro.wav");
+
 				SetAmmo(client, Ammo_Merchant, 1);
 
 				Store_GiveSpecificItem(client, "Loyalty and Generosity");
 				Store_GiveSpecificItem(client, "Courtesy Gift");
 				Store_GiveSpecificItem(client, "Lavish and Prodigal");
+			}
+		}
+
+		if(particle[0])
+		{
+			float pos[3]; GetClientAbsOrigin(client, pos);
+			pos[2] += 1.0;
+			
+			int entity = ParticleEffectAt(pos, particle, -1.0);
+			if(entity > MaxClients)
+			{
+				SetParent(client, entity);
+				ParticleRef[client] = EntIndexToEntRef(entity);
 			}
 		}
 
@@ -875,6 +924,8 @@ static void MerchantEnd(int client)
 			}
 		}
 	}
+
+	ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
 
 	b_IsCannibal[client] = false;
 	MerchantWeaponRef[client] = -1;
