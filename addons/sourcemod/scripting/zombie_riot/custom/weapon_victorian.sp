@@ -200,17 +200,17 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		}
 		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",Angles,false);
 		*/
-		if(Super_Hot && !Mega_Burst)
+		if(Super_Hot[client] && !Mega_Burst[client])
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "utaunt_glowyplayer_orange_glow",_,false);
 			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
-		else if(!Super_Hot && Mega_Burst)
+		else if(!Super_Hot[client] && Mega_Burst[client])
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "critical_rocket_red",_,false);
 			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
-		else if(!Super_Hot && !Mega_Burst)
+		else if(!Super_Hot[client] && !Mega_Burst[client])
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
 			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
