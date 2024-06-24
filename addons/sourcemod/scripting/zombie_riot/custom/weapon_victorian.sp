@@ -244,7 +244,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
-		EmitSoundToAll(SOUND_OVERHEAT, client, SNDCHAN_AUTO, 150, _, 1.0);
+		EmitSoundToAll(SOUND_OVERHEAT, client, SNDCHAN_AUTO, 150, _, 1.3);
 		//Give_bomb_back[client] = 
 		CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		/*
@@ -351,7 +351,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		Mega_Burst[owner] = false;
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, _, 100, _,0.9, GetRandomInt(55, 80));
+		EmitSoundToAll(SOUND_VIC_IMPACT, client, SNDCHAN_AUTO, 140, _, 0.9, GetRandomInt(55, 80));
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 		
 		if(IsValidEntity(particle))
@@ -378,7 +378,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Rogue_OnAbilityUse(weapon);
 				Ability_Apply_Cooldown(client, slot, 50.0);
 				how_many_supercharge_left[client] += 10;
-				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 150, _, 1.0);
+				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 150, _, 1.1);
 				//PrintToChatAll("Ammo replenished");
 			}
 			else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
@@ -386,7 +386,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Rogue_OnAbilityUse(weapon);
 				how_many_shots_reserved = how_many_supercharge_left;
 				Mega_Burst[client] = true;
-				EmitSoundToAll(SOUND_VIC_SUPER_CHARGE, client, SNDCHAN_AUTO, 150, _, 1.0);
+				EmitSoundToAll(SOUND_VIC_SUPER_CHARGE, client, SNDCHAN_AUTO, 150, _, 1.3);
 				//PrintToChatAll("Super Shot Ready!");
 			}
 			else
