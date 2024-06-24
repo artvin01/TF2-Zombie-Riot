@@ -84,9 +84,10 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 		h_TimerVictorianLauncherManagement[client] = null;
 		DestroyVictoriaEffect(client);
 		//Toggle_Burst[client] = false;
-		During_Ability[client] = false;
-		Overheat[client] = false;
-		Mega_Burst[client] = false;
+		//During_Ability[client] = false;
+		//Overheat[client] = false;
+		//Mega_Burst[client] = false;
+		//Super_Hot = false;
 		return Plugin_Stop;
 	}	
 
@@ -168,7 +169,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 450.0;
+	float speed = 400.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -202,7 +203,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		*/
 		if(Super_Hot[client] && !Mega_Burst[client])
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "utaunt_glowyplayer_orange_glow",_,false);
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "flaregun_trail_crit_red",_,false);
 			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
 		else if(!Super_Hot[client] && Mega_Burst[client])
@@ -282,8 +283,6 @@ public Action Timer_Booooool(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	Overheat[client] = false;
-	During_Ability[client] = false;
-	Super_Hot[client] =false;
 	return Plugin_Stop;
 }
 public void Shell_VictorianTouch(int entity, int target)
@@ -303,7 +302,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 2500.0;
+		float BaseDMG = 2100.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;
@@ -423,7 +422,7 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 			EmitSoundToAll(SOUND_RAPID_SHOT_ACTIVATE, client, SNDCHAN_AUTO, 120, _, 1.0);
 			During_Ability[client] = true;
 			CreateTimer(15.0, Timer_RapidFire, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
-			CreateTimer(30, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(30.0, Timer_RapidfireOut, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 			//PrintToChatAll("Rapid Shot Activated");
 			ApplyTempAttrib(weapon, 6, 0.5, 30.0);
 			float flPos[3]; // original
@@ -446,11 +445,18 @@ public void Victorian_Rapidshot(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
+public Action Timer_RapidfireOut(Handle timer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	During_Ability[client] = false;
+	Super_Hot[client] =false;
+	return Plugin_Stop;
+}
 public Action Timer_RapidFire(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	//PrintToChatAll("Rapid Hyper Activate");
-	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 140, _, 0.6);
+	EmitSoundToAll(SOUND_RAPID_SHOT_HYPER, client, SNDCHAN_AUTO, 150, _, 0.6);
 	float flPos[3]; // original
 	float flAng[3]; // original
 	Super_Hot[client] = true;
