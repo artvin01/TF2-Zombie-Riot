@@ -1,177 +1,98 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define TINKER_LIMIT	4
-
-enum struct TinkerEnum
+enum
 {
-	int AccountId;
-	int StoreIndex;
-	int Attrib[TINKER_LIMIT];
-	float Value[TINKER_LIMIT];
-	float Luck[TINKER_LIMIT];
-	char Name[64];
-	int Rarity;
+	Merchant_Fish = 0,
+	Merchant_MartialArt,
+	Merchant_Agency,
+	Merchant_Wine
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
-static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
-static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
+static int MerchantLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
+static bool MerchantActive[MAXTF2PLAYERS];
 
 static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
+static int MerchantStyle[MAXTF2PLAYERS] = {-1, ...};
 static Handle EffectTimer[MAXTF2PLAYERS];
 
-static ArrayList Tinkers;
-
-void Blacksmith_RoundStart()
+void Merchant_RoundStart()
 {
 	Zero(i_AdditionalSupportBuildings);
-	delete Tinkers;
+
+	for(int i; i < sizeof(MerchantStyle); i++)
+	{
+		MerchantStyle[i] = -1;
+	}
 }
 
-int Blacksmith_Additional_SupportBuildings(int client)
+int Merchant_Additional_SupportBuildings(int client)
 {
 	return i_AdditionalSupportBuildings[client];
 }
 
-bool Blacksmith_HasTinker(int client, int index)
-{
-	if(Tinkers)
-	{
-		int account = GetSteamAccountID(client, false);
-		if(account)
-		{
-			static TinkerEnum tinker;
-			int length = Tinkers.Length;
-			for(int a; a < length; a++)
-			{
-				Tinkers.GetArray(a, tinker);
-				if(tinker.AccountId == account && tinker.StoreIndex == index)
-					return true;
-			}
-		}
-	}
-	
-	return false;
-}
-
-void Blacksmith_ExtraDesc(int client, int index)
-{
-	if(Tinkers)
-	{
-		int account = GetSteamAccountID(client, false);
-		if(account)
-		{
-			static TinkerEnum tinker;
-			int length = Tinkers.Length;
-			for(int a; a < length; a++)
-			{
-				Tinkers.GetArray(a, tinker);
-				if(tinker.AccountId == account && tinker.StoreIndex == index)
-				{
-					CPrintToChat(client, "{yellow}%s (Tier %d)", tinker.Name, tinker.Rarity + 1);
-
-					for(int b; b < sizeof(tinker.Attrib); b++)
-					{
-						if(!tinker.Attrib[b])
-							break;
-						
-						PrintAttribValue(client, tinker.Attrib[b], tinker.Value[b], tinker.Luck[b]);
-					}
-
-					break;
-				}
-			}
-		}
-	}
-}
-
-bool Blacksmith_IsASmith(int client)
+bool Merchant_IsAMerchant(int client)
 {
 	return view_as<bool>(EffectTimer[client]);
 }
 
-void Blacksmith_Enable(int client, int weapon)
+void Merchant_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MERCHANT)
 	{
-		SmithLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+		MerchantLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
-		if(SmithLevel[client] >= sizeof(MetalGain))
-			SmithLevel[client] = sizeof(MetalGain) - 1;
+		if(MerchantLevel[client] >= sizeof(SupportBuildings))
+			MerchantLevel[client] = sizeof(SupportBuildings) - 1;
 
-		delete EffectTimer[client];
-		EffectTimer[client] = CreateTimer(0.5, Blacksmith_TimerEffect, client, TIMER_REPEAT);
+		if(!EffectTimer[client])
+			EffectTimer[client] = CreateTimer(0.5, TimerEffect, client, TIMER_REPEAT);
 
-		i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
-	}
-
-	if(Tinkers)
-	{
-		int account = GetSteamAccountID(client, false);
-		if(account)
-		{
-			static TinkerEnum tinker;
-			int length = Tinkers.Length;
-			for(int a; a < length; a++)
-			{
-				Tinkers.GetArray(a, tinker);
-				if(tinker.AccountId == account && tinker.StoreIndex == StoreWeapon[weapon])
-				{
-					for(int b; b < sizeof(tinker.Attrib); b++)
-					{
-						if(!tinker.Attrib[b])
-							break;
-						
-						Attributes_SetMulti(weapon, tinker.Attrib[b], tinker.Value[b]);
-					}
-
-					break;
-				}
-			}
-		}
+		i_AdditionalSupportBuildings[client] = SupportBuildings[MerchantLevel[client]];
 	}
 }
 
-public Action Blacksmith_TimerEffect(Handle timer, int client)
+static Action TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client) && SmithLevel[client] > -1)
+	if(IsClientInGame(client) && MerchantLevel[client] > -1)
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
-			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
 			if(weapon != -1)
 			{
-				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
+				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MERCHANT)
 				{
-					if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+					if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
-						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
-					}
+						if(!Waves_InSetup())
+							SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) - MetalGain[MerchantLevel[client]]);
 
-					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
-
-					if(ParticleRef[client] == -1)
-					{
-						float pos[3]; GetClientAbsOrigin(client, pos);
-						pos[2] += 1.0;
-
-						int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
-						if(entity > MaxClients)
+						if(ParticleRef[client] == -1)
 						{
-							SetParent(client, entity);
-							ParticleRef[client] = EntIndexToEntRef(entity);
+							float pos[3]; GetClientAbsOrigin(client, pos);
+							pos[2] += 1.0;
+
+							int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
+							if(entity > MaxClients)
+							{
+								SetParent(client, entity);
+								ParticleRef[client] = EntIndexToEntRef(entity);
+							}
 						}
 					}
-					
+
+					MerchantActive[client] = false;
 					return Plugin_Continue;
 				}
 			}
 		}
 		else
 		{
+			MerchantActive[client] = false;
+
 			if(ParticleRef[client] != -1)
 			{
 				int entity = EntRefToEntIndex(ParticleRef[client]);
@@ -188,7 +109,8 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 		}
 	}
 
-	SmithLevel[client] = -1;
+	MerchantLevel[client] = -1;
+	MerchantActive[client] = false;
 		
 	if(ParticleRef[client] != -1)
 	{
@@ -206,8 +128,16 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 	return Plugin_Stop;
 }
 
-public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slot)
+public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int slot)
 {
+	if(MerchantStyle[client] < 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Reload to Interact");
+	}
+
 	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -218,7 +148,7 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	}
 
 	Rogue_OnAbilityUse(weapon);
-	Ability_Apply_Cooldown(client, slot, 10.0);
+	Ability_Apply_Cooldown(client, slot, 30.0);
 
 	ClientCommand(client, "playgamesound weapons/gunslinger_three_hit.wav");
 
@@ -226,9 +156,66 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-void Blacksmith_BuildingUsed(int entity, int client, int owner)
+public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int slot)
 {
-	if(owner == -1 || SmithLevel[owner] < 0)
+	Menu menu = new Menu(MerchantMenuH);
+
+	menu.SetTitle("Select Merchant Style:\n ");
+
+	menu.AddItem("0", "Fish Market (Anti-Seaborn)");
+
+	if(MerchantLevel[client] < 1)
+	{
+		menu.AddItem("-1", "Martial Artist (Upgrade Needed)", ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.AddItem("1", "Martial Artist (Retreats, Stuns, Rerolls)");
+	}
+
+	if(MerchantLevel[client] < 2)
+	{
+		menu.AddItem("-1", "The Agency (Upgrade Needed)", ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.AddItem("2", "The Agency (Steal Attack Speed, Anti-Stun)");
+	}
+
+	if(MerchantLevel[client] < 3)
+	{
+		menu.AddItem("-1", "Wine Market (Upgrade Needed)", ITEMDRAW_DISABLED);
+	}
+	else
+	{
+		menu.AddItem("3", "Wine Market (Ranged, Self Revives)");
+	}
+
+	menu.Display(client, MENU_TIME_FOREVER);
+}
+
+static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			delete menu;
+		}
+		case MenuAction_Select:
+		{
+			char buffer[6];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+
+			MerchantStyle[client] = StringToInt(buffer);
+		}
+	}
+	return 0;
+}
+
+void Merchant_BuildingUsed(int entity, int client, int owner)
+{
+	if(owner == -1 || MerchantLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
@@ -284,7 +271,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith No Attribs");
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Merchant No Attribs");
 
 			ApplyBuildingCollectCooldown(entity, client, 2.0);
 			return;
@@ -296,7 +283,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	}
 	else
 	{
-		switch(SmithLevel[owner])
+		switch(MerchantLevel[owner])
 		{
 			case 0, 1:
 			{
@@ -571,7 +558,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Blacksmith Underleveled");
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Merchant Underleveled");
 
 			ApplyBuildingCollectCooldown(entity, client, 2.0);
 			return;
@@ -623,7 +610,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		}
 	}
 
-	float cooldown = Cooldowns[SmithLevel[owner]];
+	float cooldown = Cooldowns[MerchantLevel[owner]];
 	if(client != owner && Store_HasWeaponKit(client))
 		cooldown *= 0.5;
 	
@@ -639,7 +626,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 			GiveCredits(owner, 20, true);
 			SetDefaultHudPosition(owner);
 			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
+			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Merchant Used");
 		}
 		*/
 

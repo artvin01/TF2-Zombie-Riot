@@ -2381,6 +2381,27 @@ static int SetupFlags(const Enemy data, bool support)
 	return flags;
 }
 
+static Handle ReadyUpTimer;
+
+static Action ReadyUpHack(Handle timer)
+{
+	// We can't call ResetPlayerAndTeamReadyState to reset m_bPlayerReadyBefore
+	// So the timer won't go down as players ready up again
+	// Were doing it ourselves here
+
+	int ready, players;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
+		{
+			players++;
+			GameRules_GetProp("m_bIsReadyUp")
+		}
+	}
+
+	return Plugin_Continue;
+}
+
 void Waves_SetReadyStatus(int status)
 {
 	switch(status)

@@ -25,7 +25,7 @@ public const int AmmoData[][] =
 	{ 0, 0 },			//N/A
 	{ 0, 0 },			//Primary
 	{ 0, 4222 },		//Secondary
-	{ 10, 50 },			//Metal, reduced by x10 as a temp fix
+	{ 10, 50 },			//Metal
 	{ 0, 0 },			//Ball
 	{ 0, 0 },			//Food
 	{ 0, 0 },			//Jar
@@ -179,7 +179,8 @@ enum
 	WEAPON_WEST_REVOLVER = 99,
 	WEAPON_OBUCH = 100,
 	WEAPON_VICTORIAN_LAUNCHER = 101,
-	WEAPON_BOOM_HAMMER = 102
+	WEAPON_BOOM_HAMMER = 102,
+	WEAPON_MERCHANT = 103
 }
 
 enum
@@ -506,6 +507,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_deagle_west.sp"
 #include "zombie_riot/custom/weapon_victorian.sp"
 #include "zombie_riot/custom/weapon_obuch.sp"
+#include "zombie_riot/custom/kit_merchant.sp"
 
 void ZR_PluginLoad()
 {

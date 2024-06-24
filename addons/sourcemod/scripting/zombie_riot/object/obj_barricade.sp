@@ -45,7 +45,7 @@ public bool ObjectBarricade_CanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = ObjectBarricade_Buildings(client) + ActiveCurrentNpcsBarracks(client, true);
-		maxcount = 4;
+		maxcount = Merchant_IsAMerchant(client) ? 0 : 4;
 		if(count >= maxcount)
 			return false;
 	}
