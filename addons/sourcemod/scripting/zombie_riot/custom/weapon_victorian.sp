@@ -204,7 +204,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "utaunt_glowyplayer_orange_glow",_,false);
 		}
-		else if(!Super_Hot && Mega_Burst))
+		else if(!Super_Hot && Mega_Burst)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "critical_rocket_red",_,false);
 		}
