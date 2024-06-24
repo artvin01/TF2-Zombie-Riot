@@ -5,10 +5,10 @@ static Handle h_TimerVictorianLauncherManagement[MAXPLAYERS+1] = {null, ...};
 #define SOUND_VIC_SHOT 	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define SOUND_VIC_IMPACT "weapons/explode1.wav"
 #define SOUND_VIC_CHARGE_ACTIVATE 	"items/powerup_pickup_agility.wav"
-#define SOUND_VIC_SUPER_CHARGE 	"ambient/portcullis_up.wav"
+#define SOUND_VIC_SUPER_CHARGE 	"ambient/cp_harbor/furnace_1_shot_05.wav"
 #define SOUND_RAPID_SHOT_ACTIVATE "items/powerup_pickup_precision.wav"
 #define SOUND_RAPID_SHOT_HYPER "mvm/mvm_warning.wav"
-#define SOUND_OVERHEAT "player/medigun_charged_death.wav"
+#define SOUND_OVERHEAT "player/medic_charged_death.wav"
 //#define MAX_VICTORIAN_CHARGE 5
 #define MAX_VICTORIAN_SUPERCHARGE 10
 static int i_VictoriaParticle[MAXTF2PLAYERS];
