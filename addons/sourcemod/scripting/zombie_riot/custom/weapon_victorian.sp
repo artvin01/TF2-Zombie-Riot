@@ -168,7 +168,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 500.0;
+	float speed = 450.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
@@ -176,7 +176,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	speed *= Attributes_Get(weapon, 475, 1.0);
 
 
-	float time = 2000.0/speed;
+	float time = 1200.0/speed;
 	time *= Attributes_Get(weapon, 101, 1.0);
 
 	time *= Attributes_Get(weapon, 102, 1.0);
@@ -203,18 +203,19 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 		if(Super_Hot && !Mega_Burst)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "utaunt_glowyplayer_orange_glow",_,false);
+			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
 		else if(!Super_Hot && Mega_Burst)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "critical_rocket_red",_,false);
+			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
 		else if(!Super_Hot && !Mega_Burst)
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
+			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		}
 		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 140, _, 1.0, 70);
-
-		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 	}
 
 
