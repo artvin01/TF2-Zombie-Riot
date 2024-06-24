@@ -103,7 +103,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-public void Victorian_Melee_Swing(float &CustomMeleeRange, float &CustomMeleeWide)
+void Victorian_Melee_Swing(float &CustomMeleeRange, float &CustomMeleeWide)
 {
 	CustomMeleeRange = 50.0;
 	CustomMeleeWide = 20.0;
