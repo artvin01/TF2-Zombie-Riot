@@ -975,9 +975,10 @@ static void MerchantThink(int client, int &cost)
 			if(GetAmmo(client, Ammo_Heal) < 300)
 				SetAmmo(client, Ammo_Heal, 300);
 
-			if(!(GetURandomInt() % 6))
+			int ammo = GetAmmo(client, Ammo_Merchant);
+			if(ammo < 10 && !(GetURandomInt() % 6))
 			{
-				SetAmmo(client, Ammo_Merchant, GetAmmo(client, Ammo_Merchant) + 1);
+				SetAmmo(client, Ammo_Merchant, ammo + 1);
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 			}
