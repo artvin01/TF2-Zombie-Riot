@@ -1731,7 +1731,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		float HealAmmount = 20.0;
 
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, !Merchant_IsAMerchant(owner));
 		
 
 		
