@@ -240,11 +240,12 @@ methodmap Magia_Anchor < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
+		
+
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
 		Ruina_Set_No_Retreat(npc.index);
 		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
-
-		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;

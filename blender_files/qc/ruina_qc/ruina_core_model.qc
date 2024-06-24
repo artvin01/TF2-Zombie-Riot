@@ -1,4 +1,5 @@
 // Created by Crowbar 0.71
+// Warp_Ruina_Model
 
 $modelname "zombie_riot/ruina/ruina_models_1.mdl"
 
@@ -46,6 +47,8 @@ $illumposition 0.096 -0.043 13.267
 $mostlyopaque
 
 $cdmaterials "models\custom_weaponry\"
+$cdmaterials "models\weapons\w_wrench\"	//it has gold!	w_wrench01_gold
+$cdmaterials "models\weapons\c_items\"		//MORE GOLD 	c_saxxy.vmt
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

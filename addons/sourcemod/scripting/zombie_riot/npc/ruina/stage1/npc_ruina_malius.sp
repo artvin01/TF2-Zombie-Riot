@@ -220,8 +220,9 @@ methodmap Malius < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Battery_Buffer(npc.index, true);
+		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		Ruina_Set_Battery_Buffer(npc.index, true);
 		return npc;
 	}
 	
