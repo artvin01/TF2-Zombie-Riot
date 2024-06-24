@@ -2565,7 +2565,7 @@ Names per stage:
 		Battery: Gives a set amt of battery to nearby npc's
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.	Is a stronger variant, does an animation and stands still while casting the battery buff.
 		Stage 3: Null
 		Stage 4: Null
 
