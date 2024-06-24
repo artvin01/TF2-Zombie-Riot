@@ -244,7 +244,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 
 		Cooldown *= how_many_shots_reserved[client];
 		Overheat[client] = true;
-		EmitSoundToAll(SOUND_OVERHEAT, client, SNDCHAN_AUTO, 150, _, 1.3);
+		EmitSoundToAll(SOUND_OVERHEAT, client, SNDCHAN_AUTO, 150, _, 1.3, 70);
 		//Give_bomb_back[client] = 
 		CreateTimer(Cooldown, Timer_Booooool, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		/*
