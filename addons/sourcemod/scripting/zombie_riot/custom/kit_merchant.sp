@@ -89,7 +89,7 @@ static Action TimerEffect(Handle timer, int client)
 						{
 							int ammo = GetAmmo(client, Ammo_Metal);
 							int cost = MERCHANT_METAL_DRAIN / 2;
-							if(cost < ammo)
+							if(cost > ammo)
 							{
 								MerchantEnd(client);
 								return Plugin_Continue;
