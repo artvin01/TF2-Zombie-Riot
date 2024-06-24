@@ -28,10 +28,6 @@ static Handle g_hSDKUpdateBlocked;
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
 
-#if defined ZR
-static Handle SDKResetPlayerAndTeamReadyState;
-#endif
-
 void SDKCall_Setup()
 {
 	GameData gamedata = LoadGameConfigFile("sm-tf2.games");
@@ -157,16 +153,6 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
-#if defined ZR
-/*
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
-	SDKResetPlayerAndTeamReadyState = EndPrepSDKCall();
-	if(!SDKResetPlayerAndTeamReadyState)
-		LogError("[Gamedata] Could not find CTeamplayRoundBasedRules::ResetPlayerAndTeamReadyState");
-*/		
-#endif
 	
 	delete gamedata;
 }
@@ -432,36 +418,29 @@ stock void Manual_Impulse_101(int client, int health)
 #if defined ZR
 void SDKCall_ResetPlayerAndTeamReadyState()
 {
-	if(SDKResetPlayerAndTeamReadyState)
-	{
-		Address address = DHook_CTeamplayRoundBasedRules();
-		if(address != Address_Null)
-		{
-			SDKCall(SDKResetPlayerAndTeamReadyState, address);
-			return;
-		}
-	}
-
 	int entity = FindEntityByClassname(-1, "tf_gamerules");
 	if(entity == -1)
 		return;
-	
+
 	static int Size1;
 	if(!Size1)
+	{
 		Size1 = GetEntPropArraySize(entity, Prop_Send, "m_bTeamReady");
+	}
 	
 	for(int i; i < Size1; i++)
 	{
-		SetEntProp(entity, Prop_Send, "m_bTeamReady", false, _, i);
+		GameRules_SetProp("m_bTeamReady", 0, .element=i);
 	}
-	
 	static int Size2;
 	if(!Size2)
+	{
 		Size2 = GetEntPropArraySize(entity, Prop_Send, "m_bPlayerReady");
+	}
 	
 	for(int i; i < Size2; i++)
 	{
-		SetEntProp(entity, Prop_Send, "m_bPlayerReady", false, _, i);
+		GameRules_SetProp("m_bPlayerReady", 0, .element=i);
 	}
 }
 #endif
