@@ -913,7 +913,8 @@ enum
 		RUINA_QUINCY_BOW 		= 4,
 		RUINA_BLADE_1			= 8,
 		RUINA_MAGI_GUN			= 16,
-		RUINA_STAFF_1			= 32
+		RUINA_STAFF_1			= 32,
+		RUINA_HAND_CREST_1		= 64
 	}
 #endif
 

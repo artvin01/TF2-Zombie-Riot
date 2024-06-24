@@ -180,9 +180,18 @@ methodmap Magnium < CClotBody
 			nunhood						//Xms2013_Medic_Hood
 			ramses regalia				//Hw2013_Ramses_Regalia
 			lo-grav loafers				//Hw2013_Moon_Boots
-			angel of death				//Xms2013_Medic_Robe
+			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
+			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
 		
 		*/
+		char Items[][] = {
+			"models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl",
+			"models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl",
+			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
+			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
+			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
+			RUINA_CUSTOM_MODELS
+		};
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -198,21 +207,30 @@ methodmap Magnium < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
+
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+
 		
 		
 		int skin = 1;	//1=blue, 0=red
@@ -222,6 +240,10 @@ methodmap Magnium < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(RUINA_HAND_CREST_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 				
 				
 		fl_ruina_battery[npc.index] = 0.0;
@@ -233,6 +255,10 @@ methodmap Magnium < CClotBody
 		Ruina_Clean_Particles(npc.index);
 
 		Magnium_Create_Hand_Crest(npc.index);
+
+		fl_multi_attack_delay[npc.index] = 0.0;
+
+		npc.Anger = false;
 		
 		return npc;
 	}
@@ -270,7 +296,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 2.0);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -281,19 +307,83 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		
+
+		npc.Anger = true;
+
+		npc.m_flNextMeleeAttack = 0.0;		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Master_Apply_Speed_Buff(npc.index, 125.0, 1.0, 1.12);
+		Master_Apply_Speed_Buff(npc.index, 150.0, 1.0, 1.12);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
-			
+
+		if(npc.Anger)
+		{
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+			{
+				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*20)
+				{
+					npc.Anger = false;
+
+					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
+
+					npc.FaceTowards(vecTarget, 100000.0);
+					npc.AddGesture("ACT_MP_THROW");
+
+					Ruina_Projectiles Projectile;
+
+					Projectile.iNPC = npc.index;
+					Projectile.Start_Loc = Npc_Vec;
+					float Ang[3];
+					MakeVectorFromPoints(Npc_Vec, vecTarget, Ang);
+					GetVectorAngles(Ang, Ang);
+					Ang[0] = -45.0;
+					Projectile.Angles = Ang;
+					Projectile.speed = 600.0;
+					Projectile.radius = 300.0;
+					Projectile.damage = 450.0;
+					Projectile.bonus_dmg = 2.5;
+					Projectile.Time = 10.0;
+
+					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);	
+
+					if(IsValidEntity(Proj))
+					{
+						Projectile.Apply_Particle("raygun_projectile_blue");
+						Projectile.Size = 2.0;
+						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS);
+						if(IsValidEntity(ModelApply))
+						{
+							float angles[3];
+							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+							angles[1]+=90.0;
+							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+							SetVariantInt(RUINA_ICBM);
+							AcceptEntityInput(ModelApply, "SetBodyGroup");
+						}
+
+						float 	Homing_Power = 15.0,
+								Homing_Lockon = 90.0;
+
+						Initiate_HomingProjectile(Proj,
+						npc.index,
+						Homing_Lockon,			// float lockonAngleMax,
+						Homing_Power,			// float homingaSec,
+						true,					// bool LockOnlyOnce,
+						true,					// bool changeAngles,
+						Ang);
+					}
+				}
+			}
+		}		
 		if(flDistanceToTarget < 100000)
 		{
 			int Enemy_I_See;
@@ -327,83 +417,77 @@ static void ClotThink(int iNPC)
 			npc.m_bPathing = true;
 			npc.m_bAllowBackWalking=false;
 		}
-			
+
+		if(npc.m_bAllowBackWalking)
+			npc.FaceTowards(vecTarget, 2000.0);
+
 		//Target close enough to hit
-		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
 		{
-			//Look at target so we hit.
-			//npc.FaceTowards(vecTarget, 1000.0);				
-			//Can we attack right now?
-			if(npc.m_flNextMeleeAttack < GameTime)
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 			{
-				//Play attack ani
-				if (!npc.m_flAttackHappenswillhappen)
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
-					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
-
-					npc.FaceTowards(vecTarget, 100000.0);
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+1.0;
-					npc.m_flAttackHappenswillhappen = true;
-					float flPos[3]; // original
-					float flAng[3]; // original
-						
-					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-						
-					float projectile_speed = 1000.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
-
-					Ruina_Projectiles Projectile;
-
-					Projectile.iNPC = npc.index;
-					Projectile.Start_Loc = flPos;
-					float Ang[3];
-					MakeVectorFromPoints(flPos, target_vec, Ang);
-					GetVectorAngles(Ang, Ang);
-					Projectile.Angles = Ang;
-					Projectile.speed = 1000.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 500.0;
-					Projectile.bonus_dmg = 2.5;
-					Projectile.Time = 10.0;
-					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);
-					
-
-					if(IsValidEntity(Proj))
+					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						Projectile.Apply_Particle("raygun_projectile_blue");
-
-						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS);
-						if(IsValidEntity(ModelApply))
+						if(npc.m_iState == 1)
 						{
-							float angles[3];
-							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-							angles[1]+=90.0;
-							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
-							SetVariantInt(RUINA_ICBM);
-							AcceptEntityInput(ModelApply, "SetBodyGroup");
+							npc.m_iState = 0;
+							npc.m_flNextMeleeAttack = GameTime + 3.5;
+						}
+						else
+						{
+							npc.m_iState = 1;
+						}
+						
+						fl_multi_attack_delay[npc.index] = GameTime + 0.3;
+
+						fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
+
+						npc.FaceTowards(vecTarget, 100000.0);
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.PlayMeleeSound();
+
+						float 	flPos[3], // original
+								flAng[3]; // original
+							
+						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+
+						float 	projectile_speed = 800.0,
+								target_vec[3];
+
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+
+			
+						int Proj = npc.FireParticleRocket(target_vec, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+
+						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
+						{
+							float 	Homing_Power = 7.0,
+									Homing_Lockon = 50.0;
+
+							float Ang[3];
+							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+							GetVectorAngles(Ang, Ang);
+
+							Initiate_HomingProjectile(Proj,
+							npc.index,
+							Homing_Lockon,			// float lockonAngleMax,
+							Homing_Power,			// float homingaSec,
+							true,					// bool LockOnlyOnce,
+							true,					// bool changeAngles,
+							Ang);
 						}
 					}
-					
-
-					
-					
-		
-					//npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-						
-				}
-				else
-				{
-					npc.m_flAttackHappenswillhappen = false;
 				}
 			}
 		}
 		else
 		{
 			npc.StartPathing();
-				
 		}
 	}
 	else
@@ -422,6 +506,8 @@ static void Func_On_Proj_Touch(int projectile, int other)
 	{
 		owner = 0;
 	}
+
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 500);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -432,6 +518,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 }
 static void Magnium_Create_Hand_Crest(int client)
 {
+	/*
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -493,15 +580,6 @@ static void Magnium_Create_Hand_Crest(int client)
 	
 	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	/*i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser_ref_id[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
-	
 	
 	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
 	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
@@ -512,6 +590,7 @@ static void Magnium_Create_Hand_Crest(int client)
 	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_5_1);
 	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_6);
 	i_particle_ref_id[client][8] = EntIndexToEntRef(particle_6_1);
+	*/
 	
 }
 
@@ -556,5 +635,9 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	
 }

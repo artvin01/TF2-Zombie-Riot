@@ -300,7 +300,7 @@ static void ClotThink(int iNPC)
 
 		npc.m_flSpeed = 0.0;
 
-		TE_SetupBeamRingPoint(Npc_Vec, 500*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
 		npc.m_flRangedArmor = 0.5;
@@ -311,7 +311,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 500.0, 50.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
@@ -343,7 +343,6 @@ static void ClotThink(int iNPC)
 		}
 			
 	}
-	
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -394,8 +393,11 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+			npc.FaceTowards(vecTarget, 2000.0);
+
 		Maliana_SelfDefense(npc, GameTime, Anchor_Id);
-		npc.FaceTowards(vecTarget);
 	}
 	else
 	{

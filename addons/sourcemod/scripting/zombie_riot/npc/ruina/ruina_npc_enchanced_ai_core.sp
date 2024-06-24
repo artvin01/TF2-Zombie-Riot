@@ -93,6 +93,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 
 int i_laz_entity[MAXENTITIES];
+float fl_multi_attack_delay[MAXENTITIES];
 
 enum
 {
@@ -1042,9 +1043,10 @@ enum struct Ruina_Projectiles
 
 		return particle;
 	}
+	float Size;
 	int Apply_Model(char[] Model_Path)
 	{
-		int ModelApply = ApplyCustomModelToWandProjectile(this.Projectile_Index, Model_Path, 1.0, "icbm_idle");
+		int ModelApply = ApplyCustomModelToWandProjectile(this.Projectile_Index, Model_Path, this.Size, "icbm_idle");
 
 		if(!IsValidEntity(ModelApply))
 			return -1;
@@ -2456,14 +2458,13 @@ Names per stage:
 		Battery: Buff's nearby Ranged npc's speed
 
 		Stage 1: Done.
-		Stage 2: Needs work.
+		Stage 2: Done
 		Stage 3: Null
 		Stage 4: Null
 
 		Magnia:
 		{
 			ICBM: Gains the ability to launch a "homing" projectile rocket.
-			ICBM's near a Magnia or above have homing. or other npc's that have this attribute. otherwise it just Goes straight. 
 		}
 	}
 	//created
