@@ -192,7 +192,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0)
+			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
@@ -1890,6 +1890,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Changed;
+		}
+		else if(Merchant_OnLethalDamage(victim))
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 0.1);
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}

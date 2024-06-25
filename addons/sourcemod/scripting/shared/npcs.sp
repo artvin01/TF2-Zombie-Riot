@@ -926,8 +926,8 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	if((damagetype & DMG_DROWN))
 #endif
 	{
-		damage = 0.0;
-		Damageaftercalc = 0.0;
+		damage = 5.0;
+		Damageaftercalc = 5.0;
 		TeleportBackToLastSavePosition(victim);
 		return Plugin_Handled;
 	}
@@ -1482,6 +1482,11 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		
 		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s▼", Debuff_Adder_left);
+	}
+	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
+	{
+		Debuff_added = true;
+		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%s☯", Debuff_Adder_right);
 	}
 	if(NpcStats_IsEnemySilenced(victim))
 	{
@@ -2038,6 +2043,12 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	else if(f_PotionShrinkEffect[npc] > GameTime)
 		return true;
 	else if(f_EnfeebleEffect[npc] > GameTime)
+		return true;
+	else if(f_LeeMinorEffect[npc] > GameTime)
+		return true;
+	else if(f_LeeMajorEffect[npc] > GameTime)
+		return true;
+	else if(f_LeeSuperEffect[npc] > GameTime)
 		return true;
 	else if(f_GodArkantosBuff[npc] > GameTime)
 		return true;

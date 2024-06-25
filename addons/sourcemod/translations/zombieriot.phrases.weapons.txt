@@ -2354,4 +2354,36 @@
 		"en"	"Tinker Ranger"
 		"chi"	"匠工射手"
 	}
+	"The Merchant"
+	{
+		"en"	"The Merchant"
+	}
+	"Merchant's Wrench"
+	{
+		"en"	"Merchant's Wrench"
+	}
+	"Merchant Emergency Button"
+	{
+		"en"	"Merchant Emergency Button"
+	}
+	"The Merchant Skilled"
+	{
+		"en"	"The Merchant: Skilled"
+	}
+	"The Merchant Elite"
+	{
+		"en"	"The Merchant: Elite"
+	}
+	"The Merchant Mastery 1"
+	{
+		"en"	"The Merchant: Mastery 1"
+	}
+	"The Merchant Mastery 2"
+	{
+		"en"	"The Merchant: Mastery 2"
+	}
+	"The Merchant Mastery 3"
+	{
+		"en"	"The Merchant: Mastery 3"
+	}
 }

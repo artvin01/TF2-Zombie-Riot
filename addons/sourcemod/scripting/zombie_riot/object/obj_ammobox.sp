@@ -95,6 +95,7 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 		{
 			int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 			Building_GiveRewardsUse(client, owner, 10, true, 0.35, true);
+			Barracks_TryRegenIfBuilding(client);
 		}
 		npc.m_flAttackHappens = GetGameTime(npc.index) + 999999.4;
 	}

@@ -7879,6 +7879,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
 	f_EnfeebleEffect[entity] = 0.0;
+	f_LeeMinorEffect[entity] = 0.0;
+	f_LeeMajorEffect[entity] = 0.0;
+	f_LeeSuperEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -8529,6 +8532,9 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
 	f_EnfeebleEffect[enemy] = 0.0;
+	f_LeeMinorEffect[enemy] = 0.0;
+	f_LeeMajorEffect[enemy] = 0.0;
+	f_LeeSuperEffect[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }

@@ -159,7 +159,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
 
-						int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
+						int entity = ParticleEffectAt(pos, "utaunt_hellpit_middlebase", -1.0);
 						if(entity > MaxClients)
 						{
 							SetParent(client, entity);
