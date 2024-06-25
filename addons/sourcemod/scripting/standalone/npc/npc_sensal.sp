@@ -920,7 +920,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
-				Zero(i_EntitiesHitAoeSwing_NpcSwing);
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)

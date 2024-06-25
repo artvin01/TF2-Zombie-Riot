@@ -644,6 +644,7 @@ int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
+bool b_XenoVial[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];

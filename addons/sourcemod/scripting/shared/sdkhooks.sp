@@ -654,7 +654,11 @@ public void OnPostThink(int client)
 			}
 			if(b_NemesisHeart[client])
 			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
+				float HealRate = 1.0;
+				if(b_XenoVial[client])
+					HealRate = 1.5;
+
+				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 		}
 
@@ -1791,6 +1795,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 	}
 	
+	//Fall damage logic
 	if(damagetype & DMG_FALL)
 	{
 #if defined RPG
@@ -1812,6 +1817,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
+	//Damage was done by a player
 	else if(attacker <= MaxClients && attacker > 0 && attacker != 0)
 	{
 #if defined RPG
@@ -1867,41 +1873,48 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 	
 #if defined ZR
+	//damage is more then their health, they will die.
 	if(RoundToCeil(damage) >= flHealth)
 	{
+		//the client has a suit, save them !!
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
-			damage = float(flHealth - 1); //survive with 1 hp!, and return their hp later
+			damage = 0.0;
 			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
 			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
 			float startPosition[3];
 			GetClientAbsOrigin(victim, startPosition);
 			startPosition[2] += 25.0;
 			makeexplosion(victim, victim, startPosition, "", 0, 0);
+			GiveCompleteInvul(victim, 0.5);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
+		//the client was the last man on the server, or alone, give them spawn protection
+		//dont do this if they are under specter saw revival
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
-			damage = float(flHealth - 1); //survive with 1 hp!
+			damage = 0.0;
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 
-			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
+		//if they were supposed to die, but had protection from the marchant kit, do this instead.
 		else if(Merchant_OnLethalDamage(victim))
 		{
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
+		//all checps passed, now go into here
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
+			//are they alone? is any player alive that isnt downed left?
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1913,7 +1926,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					}
 				}
 			}
-			
+			//there was no one left, they are the only one left, trigger last man.
 			if(!Any_Left && !SpecterCheckIfAutoRevive(victim))
 			{
 				// Trigger lastman
@@ -1926,12 +1939,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			i_AmountDowned[victim] += 1;
 			Rogue_PlayerDowned();
 			
+			//there are players still left, down them.
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
-			//	SetVariantString("TLK_DIED");
-			//	AcceptEntityInput(victim, "SpeakResponseConcept");
 				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
 				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
 				{
@@ -1955,9 +1967,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				Attributes_Set(victim, 489, 0.65);
-			//	Attributes_Set(victim, 820, 1.0);
-			//	Attributes_Set(victim, 819, 1.0);	
+				if(b_XenoVial[victim])
+					Attributes_Set(victim, 489, 1.1);
+				else
+					Attributes_Set(victim, 489, 0.65);
+
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
 
@@ -1965,15 +1979,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				if(!autoRevive)
 				{
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][0]);
-					if(entity > MaxClients)
+					if(IsValidEntity(entity))
 						RemoveEntity(entity);
 					
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][1]);
-					if(entity > MaxClients)
+					if(IsValidEntity(entity))
 						RemoveEntity(entity);
 
-
-					
 					entity = TF2_CreateGlow(victim);
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
