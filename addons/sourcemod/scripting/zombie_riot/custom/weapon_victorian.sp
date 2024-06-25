@@ -361,11 +361,6 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		RemoveEntity(entity);
 	}
-	else
-	{
-		PrintToChatAll("Cheeky attack cancel exploit won't work lul"); //error message lol
-	}
-	
 }
 
 public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
