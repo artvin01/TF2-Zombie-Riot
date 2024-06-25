@@ -314,6 +314,10 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 							stun = 2.5;
 						}
 					}
+					if(b_thisNpcIsARaid[victim])
+					{
+						stun *= 0.25;
+					}
 
 					FreezeNpcInTime(victim, stun);
 				}

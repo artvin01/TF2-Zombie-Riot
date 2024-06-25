@@ -8467,7 +8467,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(b_thisNpcIsARaid[npc] && Duration_Stun >= 1.0)
+	if(b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
