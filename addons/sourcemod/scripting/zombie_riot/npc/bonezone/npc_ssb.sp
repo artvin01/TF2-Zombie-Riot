@@ -2907,18 +2907,59 @@ public void Special_Spin(SupremeSpookmasterBones ssb, int target)
 	ssb.UsingAbility = true;
 	ssb.Pause();
 	ssb.PlaySpinIntro();
-	//TODO: Needs intro sequence
 
-	//int iActivity = ssb.LookupActivity("ACT_SUMMONERS_STANCE_INTRO");
-	//if(iActivity > 0) ssb.StartActivity(iActivity);
+	int iActivity = ssb.LookupActivity("ACT_SPIN2WIN_INTRO");
+	if(iActivity > 0) ssb.StartActivity(iActivity);
 
-	float begin = GetGameTime(ssb.index) + Spin_Delay[SSB_WavePhase];
+	float begin = GetGameTime(ssb.index) + Spin_Delay[SSB_WavePhase] + 0.83;
 
 	DataPack pack = new DataPack();
 	RequestFrame(Spin_Begin, pack);
 	WritePackCell(pack, EntIndexToEntRef(ssb.index));
 	WritePackCell(pack, SSB_WavePhase);
 	WritePackFloat(pack, begin);
+
+
+	begin -= Spin_Delay[SSB_WavePhase];
+	DataPack pack2 = new DataPack();
+	RequestFrame(Spin_IntroLogic, pack2);
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack, begin);
+	WritePackFloat(pack, GetGameTime(ssb.index) + 0.3);
+}
+
+public void Spin_IntroLogic(DataPack pack)
+{
+	ResetPack(pack);
+	int ent = EntRefToEntIndex(ReadPackCell(pack));
+	float endTime = ReadPackFloat(pack);
+	float hammerSpawn = ReadPackFloat(pack);
+
+	delete pack;
+
+	if (!IsValidEntity(ent))
+		return;
+
+	SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+	float gt = GetGameTime(ssb.index);
+	if (gt >= endTime)
+	{
+		int iActivity = ssb.LookupActivity("ACT_SPIN2WIN_INTRO_LOOP");
+		if(iActivity > 0) ssb.StartActivity(iActivity);
+		return;
+	}
+
+	if (gt >= hammerSpawn)
+	{
+		//TODO: Hammer spawn VFX/SFX
+		hammerSpawn += 999999.0;
+	}
+
+	pack = new DataPack();
+	WritePackCell(pack, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack, endTime);
+	WritePackFloat(pack, hammerSpawn);
+	RequestFrame(Spin_IntroLogic, pack);
 }
 
 public void Spin_Begin(DataPack pack)
@@ -2955,7 +2996,10 @@ public void Spin_Begin(DataPack pack)
 		WritePackFloat(pack, GetGameTime(user) + Spin_Interval[phase]);
 		WritePackFloat(pack, GetGameTime(user) + Spin_Duration[phase]);
 
-		//TODO: Needs looping sequence while active
+		int iActivity = ssb.LookupActivity("ACT_SPIN2WIN_ACTIVE");
+		if(iActivity > 0) ssb.StartActivity(iActivity);
+
+		//TODO: Funny AAAAAAAAAAA sound while active
 
 		return;
 	}
