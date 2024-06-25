@@ -2120,6 +2120,9 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+//	PrintToChatAll("%s",sample);
+//	PrintToChatAll("entity%i",entity);
+//	PrintToChatAll("channel %i",channel);
 	if(StrContains(sample, "weapons/dispenser_idle.wav", true) != -1)
 	{
 		return Plugin_Handled;

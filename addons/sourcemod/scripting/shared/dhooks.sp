@@ -934,6 +934,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
 		{
+			if(b_IsATrigger[entity2])
+			{
+				return false;
+			}
 			if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
@@ -988,6 +992,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 						}						
 					}
 				}
+				return false;
+			}
+			if(b_IsATrigger[entity2])
+			{
 				return false;
 			}
 			else if(b_IgnoredByPlayerProjectiles[entity2])
@@ -1901,18 +1909,6 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 	return MRES_Supercede;
 }
 
-Address DHook_CTeamplayRoundBasedRules()
-{
-	return CTeamplayRoundBasedRules;
-}
-/*
-static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
-{
-	GetTimerAndNullifyMusicMVM();
-	CTeamplayRoundBasedRules = address;
-	return MRES_Ignored;
-}
-*/
 public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
 	/*

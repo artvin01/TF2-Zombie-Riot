@@ -23,7 +23,7 @@ static bool Mega_Burst[MAXPLAYERS];
 static bool Overheat[MAXPLAYERS];
 static float f_VIChuddelay[MAXPLAYERS+1]={0.0, ...};
 static float f_VICAbilityActive[MAXPLAYERS+1]={0.0, ...};
-static float Victorian_Rapid_Spread = 3.0;
+static float f_ProjectileSinceSpawn[MAXENTITIES];
 
 
 void ResetMapStartVictoria()
@@ -34,6 +34,8 @@ void ResetMapStartVictoria()
 	Zero(how_many_supercharge_left);
 	Zero(hurt_count);
 	Zero(how_many_shots_reserved);
+	Zero(f_ProjectileSinceSpawn);
+	PrecacheSound("weapons/crit_power.wav");
 }
 void Victoria_Map_Precache()
 {
@@ -59,7 +61,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 			delete h_TimerVictorianLauncherManagement[client];
 			h_TimerVictorianLauncherManagement[client] = null;
 			DataPack pack;
-			h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.1, Timer_Management_Victoria, pack, TIMER_REPEAT);
+			h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.25, Timer_Management_Victoria, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
 		}
@@ -69,7 +71,7 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
 		DataPack pack;
-		h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.1, Timer_Management_Victoria, pack, TIMER_REPEAT);
+		h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.25, Timer_Management_Victoria, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -95,7 +97,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateVictoriaEffect(client);
+		CreateVictoriaEffect(weapon_holding, client);
 		Victorian_Cooldown_Logic(client, weapon);
 	}
 	else
@@ -166,57 +168,54 @@ public void Victorian_Cooldown_Logic(int client, int weapon)
 
 public void Weapon_Victoria(int client, int weapon, bool crit)
 {
+	int new_ammo = GetAmmo(client, 8);
+	if(new_ammo < 3)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
+	new_ammo -= 3;
+	SetAmmo(client, 8, new_ammo);
+	CurrentAmmo[client][8] = GetAmmo(client, 8);
 	float damage = 10.0;
-	//damage *= 0.8; //Reduction
+	
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 200.0;
+	float speed = 800.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
 
 	speed *= Attributes_Get(weapon, 475, 1.0);
 
-
-	float time = 1200.0/speed;
-	time *= Attributes_Get(weapon, 101, 1.0);
-
-	time *= Attributes_Get(weapon, 102, 1.0);
 	
 	if(!Overheat[client])
 	{
-		/*
 		float Angles[3];
-		if(During_Ability[client])
-		{
-			for (int spread = 0; spread < 3; spread++)
-			{
-				GetClientEyeAngles(client, Angles);
-				Angles[spread] += GetRandomFloat(-Victorian_Rapid_Spread, Victorian_Rapid_Spread);
-			}
 
-		}
-		else
+		GetClientEyeAngles(client, Angles);
+		Angles[0] -= 40.0;
+		if(Angles[0] < -89.0)
 		{
-			Angles[spread] = 0
+			Angles[0] = -89.0;
 		}
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",Angles,false);
-		*/
+
+		int projectile;
 		if(Super_Hot[client] && !Mega_Burst[client])
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "flaregun_trail_crit_red",_,false);
-			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
+			projectile = Wand_Projectile_Spawn(client, speed, 9.0, damage, -1, weapon, "flaregun_trail_crit_red",Angles,false);
 		}
 		else if(!Super_Hot[client] && Mega_Burst[client])
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "critical_rocket_red",_,false);
-			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
+			projectile = Wand_Projectile_Spawn(client, speed, 9.0, damage, -1, weapon, "critical_rocket_red",Angles,false);
 		}
 		else if(!Super_Hot[client] && !Mega_Burst[client])
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_VICTORIAN_LAUNCHER, weapon, "rockettrail",_,false);
-			SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
+			projectile = Wand_Projectile_Spawn(client, speed, 9.0, damage, -1, weapon, "rockettrail",Angles,false);
 		}
+		f_ProjectileSinceSpawn[projectile] = GetGameTime() + 1.0;
+		WandProjectile_ApplyFunctionToEntity(projectile, Shell_VictorianTouch);
+		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
 		EmitSoundToAll(SOUND_VIC_SHOT, client, SNDCHAN_AUTO, 70, _, 0.9);
 	}
 
@@ -287,6 +286,11 @@ public Action Timer_Booooool(Handle timer, any userid)
 }
 public void Shell_VictorianTouch(int entity, int target)
 {
+	if (target < 0)	
+	{
+		//hits soemthing it shouldnt, ignore entirely.
+		return;
+	}
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	if(IsValidEntity(weapon))
@@ -302,8 +306,24 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 2000.0;
+		float BaseDMG = 950.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+
+		if(f_ProjectileSinceSpawn[entity] > GetGameTime())
+		{
+			float Ratio = f_ProjectileSinceSpawn[entity] - GetGameTime();
+			if(Ratio < 0.0)
+			{
+				Ratio = 0.01;
+			}
+			Ratio *= -1.0;
+			Ratio += 1.0;
+			if(Ratio < 0.25)
+			{
+				Ratio = 0.25;
+			}
+			BaseDMG *= Ratio;
+		}
 
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
@@ -339,7 +359,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		else if(Mega_Burst[owner])
 		{
-			BaseDMG *= 1.2 * how_many_shots_reserved[owner];
+			BaseDMG *= 1.3 * how_many_shots_reserved[owner];
 			Radius *= 1 + how_many_shots_reserved[owner]/2;
 			//PrintToChatAll("Mega Boom");
 		}
@@ -352,7 +372,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		Mega_Burst[owner] = false;
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, entity, 120,_, 0.9, 70);
+		EmitAmbientSound(SOUND_VIC_IMPACT, spawnLoc, entity, 70,_, 0.9, 70);
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 		
 		if(IsValidEntity(particle))
@@ -361,11 +381,6 @@ public void Shell_VictorianTouch(int entity, int target)
 		}
 		RemoveEntity(entity);
 	}
-	else
-	{
-		PrintToChatAll("Cheeky attack cancel exploit won't work lul"); //error message lol
-	}
-	
 }
 
 public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
@@ -493,8 +508,17 @@ public Action Victorian_DrainHealth(Handle timer, int userid)
 	return Plugin_Stop;
 }
 
-void CreateVictoriaEffect(int client)
+void CreateVictoriaEffect(int weapon, int client)
 {
+	int new_ammo = GetAmmo(client, 8);
+	PrintHintText(client,"Rockets: %i", new_ammo);
+	StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+	TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
+	StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
+	if(!IsValidEntity(i_VictoriaParticle[client]))
+	{
+		return;
+	}
 	DestroyVictoriaEffect(client);
 	
 	float flPos[3];
