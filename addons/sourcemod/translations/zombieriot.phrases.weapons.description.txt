@@ -3055,6 +3055,18 @@
 	{
 		"en"	"Train your own army and upgrade them."
 	}
+	"Victorian 1 Desc"
+	{
+		"en"	"The pride of Victoria. A melee weapon that can fire aoe rockets which will travel in arc. \nHas really slow attack speed and grants heavy ranged resistance. \n You will be vulnerable to melee damages"
+	}
+	"Victorian 2 Desc"
+	{
+		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
+	}
+	"Victorian 3 Desc"
+	{
+		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
+  }
 	"The Merchant Desc"
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
