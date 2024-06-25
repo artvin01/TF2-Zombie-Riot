@@ -83,6 +83,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Draedon(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Draedon < CClotBody
 {
 	
@@ -206,7 +208,8 @@ methodmap Draedon < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 300.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -348,6 +351,14 @@ static void ClotThink(int iNPC)
 			npc.m_bPathing = true;
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}	
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 			
 		//Target close enough to hit
 		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
@@ -364,7 +375,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+1.0;
+					npc.m_flNextMeleeAttack = GameTime+2.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -388,11 +399,8 @@ static void ClotThink(int iNPC)
 		}
 		else
 		{
-			npc.StartPathing();
-				
+			npc.StartPathing();				
 		}
-			
-
 	}
 	else
 	{

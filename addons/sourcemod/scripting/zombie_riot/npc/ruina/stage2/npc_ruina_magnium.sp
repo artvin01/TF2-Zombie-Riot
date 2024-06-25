@@ -83,6 +83,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Magnium(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Magnium < CClotBody
 {
 	
@@ -203,7 +205,8 @@ methodmap Magnium < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 300.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -418,7 +421,13 @@ static void ClotThink(int iNPC)
 		}
 
 		if(npc.m_bAllowBackWalking)
-			npc.FaceTowards(vecTarget, 2000.0);
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+			
 
 		//Target close enough to hit
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
@@ -432,14 +441,14 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						if(npc.m_iState == 1)
+						if(npc.m_iState >= 1)
 						{
 							npc.m_iState = 0;
-							npc.m_flNextMeleeAttack = GameTime + 3.5;
+							npc.m_flNextMeleeAttack = GameTime + 4.0;
 						}
 						else
 						{
-							npc.m_iState = 1;
+							npc.m_iState++;
 						}
 						
 						fl_multi_attack_delay[npc.index] = GameTime + 0.3;

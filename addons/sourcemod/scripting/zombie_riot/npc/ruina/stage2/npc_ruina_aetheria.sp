@@ -79,6 +79,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Aetheria(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
 methodmap Aetheria < CClotBody
 {
 	
@@ -186,7 +187,8 @@ methodmap Aetheria < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -338,6 +340,14 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}	
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 		
 		Aetheria_SelfDefense(npc, GameTime, Anchor_Id);
 	}
@@ -454,17 +464,6 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-	if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.0)
-	{
-		npc.FaceTowards(vecTarget, 20000.0);
-	}
-
-	if(npc.m_flNextTeleport < gameTime)
-	{
-		npc.m_flNextTeleport = gameTime + 1.0;
-		npc.FaceTowards(vecTarget, 20000.0);
-	}
-
 	if(npc.m_flAttackHappens > gameTime)
 	{
 		npc.m_flSpeed = 0.0;
@@ -523,7 +522,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 				Ruina_Projectiles Projectile;
 				float Projectile_Time = 2.5;
 
-				float projectile_speed = 2500.0;	
+				float projectile_speed = 2250.0;	
 				float target_vec[3];
 				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, _,target_vec);
 
@@ -548,8 +547,8 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 					i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
 				
 
-					float 	f_start = 2.5,
-							f_end = 1.5,
+					float 	f_start = 3.5,
+							f_end = 2.5,
 							amp = 0.25;
 					
 					int r = 1,
@@ -580,7 +579,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 				float DamageDone = 50.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.75;
 			}
 			
 		}

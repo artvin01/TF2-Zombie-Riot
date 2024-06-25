@@ -63,6 +63,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Lazius(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Lazius < CClotBody
 {	
 	public void PlayIdleAlertSound() {
@@ -147,7 +149,8 @@ methodmap Lazius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 285.0;
+		fl_npc_basespeed = 285.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -291,6 +294,17 @@ static void ClotThink(int iNPC)
 			npc.m_bAllowBackWalking=false;
 		}
 
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			if(npc.m_flAttackHappens > GameTime - 1.0)
+				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
+			else
+				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+
 		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
 		{
 			if(flDistanceToTarget<(1000.0*1000.0))
@@ -433,11 +447,6 @@ static void ClotThink(int iNPC)
 			Laser.damagetype = DMG_PLASMA;
 
 			Laser.Deal_Damage();
-		}
-		else
-		{
-			if(npc.m_bAllowBackWalking)
-				npc.FaceTowards(vecTarget, 2000.0);
 		}
 	}
 	else

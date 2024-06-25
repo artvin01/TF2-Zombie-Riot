@@ -73,6 +73,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Maliana(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Maliana < CClotBody
 {
 	
@@ -187,7 +189,8 @@ methodmap Maliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 300.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 
@@ -395,7 +398,12 @@ static void ClotThink(int iNPC)
 		}
 
 		if(npc.m_bAllowBackWalking)
-			npc.FaceTowards(vecTarget, 2000.0);
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}	
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 
 		Maliana_SelfDefense(npc, GameTime, Anchor_Id);
 	}
@@ -483,7 +491,7 @@ static void Maliana_SelfDefense(Maliana npc, float gameTime, int Anchor_Id)	//ty
 			//This will predict as its relatively easy to dodge
 			Maliana_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.0;
 			npc.PlayRangedReloadSound();
 		}
 	}

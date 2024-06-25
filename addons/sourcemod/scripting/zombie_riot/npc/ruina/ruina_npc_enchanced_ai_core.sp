@@ -81,6 +81,8 @@ static int i_shield_color[3] = {0, 0, 0};
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY	0.75
+#define RUINA_FACETOWARDS_BASE_TURNSPEED 475.0
 
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
@@ -1313,36 +1315,36 @@ static void Apply_Sickness(int iNPC, int Target)
 		Radius		= 100.0;
 		color 		= {255, 0, 0, 255};
 		dmg 		= mana;	//evil.
-		time 		= 9.0;
+		time 		= 5.0;
 		Timeout 	= 6.0;
-		Slow_Time 	= 2.0;
+		Slow_Time 	= 5.0;
 	}
 	else if(wave<=30)
 	{
 		Radius		= 125.0;
 		color 		= {255, 150, 150, 255};
 		dmg 		= mana*1.25;
-		time 		= 8.0;
+		time 		= 4.5;
 		Timeout 	= 5.5;
-		Slow_Time 	= 2.0;
+		Slow_Time 	= 5.0;
 	}
 	else if(wave<=45)
 	{
 		Radius		= 175.0;
 		color 		= {255, 200, 200, 255};
 		dmg 		= mana*1.5;
-		time 		= 7.0;
+		time 		= 4.0;
 		Timeout 	= 5.0;
-		Slow_Time 	= 2.0;
+		Slow_Time 	= 5.5;
 	}
 	else
 	{
 		Radius		= 200.0;
 		color 		= {255, 255, 255, 255};
 		dmg 		= mana*2.0;
-		time 		= 6.0;
+		time 		= 3.0;
 		Timeout 	= 4.5;
-		Slow_Time 	= 2.0;
+		Slow_Time 	= 6.0;
 	}
 
 	fl_mana_sickness_timeout[Target] = GameTime + Timeout;
@@ -1350,7 +1352,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);
+	TF2_StunPlayer(Target, Slow_Time, 0.75, TF_STUNFLAG_SLOWDOWN);
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
@@ -2594,6 +2596,16 @@ static void Ruina_Teleport_Entity(int entity, float loc[3])
 }*/
 
 /*
+
+Lower speed while going backwards
+Lower turn speeds:
+Aether
+Astriana - make it turn, but slow
+Draedon - make it turn, but slow
+Europis - already turns, just make it turn a tiny bit faster
+Lazius
+Magnium
+Maliana
 
 Names per stage:
 	Stage 1 -> Stage 2 -> Stage 3 -> Starge 4.
