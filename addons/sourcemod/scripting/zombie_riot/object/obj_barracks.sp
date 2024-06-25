@@ -676,7 +676,26 @@ public void Building_Summoner(int client, int entity)
 }
 
 
-
+void Barracks_TryRegenIfBuilding(int client, float ammount = 1.0)
+{
+	int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+	if(IsValidEntity(entity))
+	{
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_barracks", false) != -1)
+		{
+			//regen barracks resoruces
+			SummonerRenerateResources(client, 20.0 * ammount);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Barracks Gained Resources");
+			f_VillageSavingResources[client] = GetGameTime() + 0.25;
+			BarracksSaveResources(client);
+		}
+	}
+}
 void Barracks_BuildingThink(int entity)
 {
 	BarrackBody npc = view_as<BarrackBody>(entity);
@@ -1112,10 +1131,9 @@ void CheckSummonerUpgrades(int client)
 
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
-	PrintToChatAll("test1 %i",MedievalUnlock[client]);
+
 	if(!MedievalUnlock[client])
 		MedievalUnlock[client] = view_as<bool>(CivType[client]);
-	PrintToChatAll("test2 %i",MedievalUnlock[client]);
 
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
@@ -1163,11 +1181,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 			}
 			GoldSupplyRate *= multi;
 			GoldAmount[client] += GoldSupplyRate;
-			PrintToChatAll("Try Regen Gold");
 		}
-		PrintToChatAll("GoldAmount %f",GoldAmount[client]);
-		PrintToChatAll("WoodAmount %f",WoodAmount[client]);
-		PrintToChatAll("FoodAmount %f",FoodAmount[client]);
 
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())

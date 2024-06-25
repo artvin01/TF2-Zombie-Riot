@@ -1454,6 +1454,20 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 #endif
 
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		/*
+		//if the building is ignored, prevent interaction with it.
+		//Edit: if its a barricade this is ignored so they can reclaim it.
+#if defined ZR
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
+#endif	
+			return false;
+			*/
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
+			return false;
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1536,6 +1550,9 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined ZR
 		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
 #endif	
+			return false;
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
 	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])

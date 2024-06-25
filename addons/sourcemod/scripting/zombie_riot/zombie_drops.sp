@@ -500,6 +500,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Ammo Activated");
+							Barracks_TryRegenIfBuilding(client_Hud, 4);
 						}
 					}
 					AcceptEntityInput(entity, "KillHierarchy"); 
