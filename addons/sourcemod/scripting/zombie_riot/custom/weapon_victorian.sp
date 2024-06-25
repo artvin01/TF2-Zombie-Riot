@@ -302,7 +302,7 @@ public void Shell_VictorianTouch(int entity, int target)
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 
-		float BaseDMG = 2100.0;
+		float BaseDMG = 2000.0;
 		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
 
 		float Radius = EXPLOSION_RADIUS;
