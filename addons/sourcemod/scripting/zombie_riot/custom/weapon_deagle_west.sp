@@ -140,45 +140,43 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 {
 	if(IsValidEntity(client))
 	{
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+			return;
+		}
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
-			int buttons = GetClientButtons(client);
-			bool reload = (buttons & IN_RELOAD) != 0;
-			bool crouch = (buttons & IN_DUCK) != 0;
-			if(reload && !crouch)
+			Rogue_OnAbilityUse(weapon);
+			Ability_Apply_Cooldown(client, slot, 60.0);
+			EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
+			ApplyTempAttrib(weapon, 6, 0.1, 1.5);
+			ApplyTempAttrib(weapon, 2, 1.3, 1.5);
+			ApplyTempAttrib(weapon, 97, 0.01, 1.5);
+			MakePlayerGiveResponseVoice(client, 1);
+
+			Handle swingTrace;
+			float vecSwingForward[3];
+			StartLagCompensation_Base_Boss(client);
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, true); //infinite range, and does not ignore walls!
+			FinishLagCompensation_Base_boss();
+
+				
+			int target = TR_GetEntityIndex(swingTrace);	
+			delete swingTrace;
+			if(!IsValidEnemy(client, target, true))
 			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "Press Crouch Button at the same time to use ability");
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+				return;
 			}
-			else if (reload && crouch)
-			{
-				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 60.0);
-				EmitSoundToAll(SOUND_REVOLVER_NOON, client, SNDCHAN_AUTO, 140, _, 0.6);
-				ApplyTempAttrib(weapon, 6, 0.1, 1.5);
-				ApplyTempAttrib(weapon, 2, 1.3, 1.5);
-				ApplyTempAttrib(weapon, 97, 0.01, 1.5);
-				MakePlayerGiveResponseVoice(client, 1);
-
-				Handle swingTrace;
-				float vecSwingForward[3];
-				StartLagCompensation_Base_Boss(client);
-				DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, true); //infinite range, and does not ignore walls!
-				FinishLagCompensation_Base_boss();
-
-					
-				int target = TR_GetEntityIndex(swingTrace);	
-				delete swingTrace;
-				if(!IsValidEnemy(client, target, true))
-				{
-					ClientCommand(client, "playgamesound items/medshotno1.wav");
-					return;
-				}
-				i_West_Target[client] = EntIndexToEntRef(target);
+			i_West_Target[client] = EntIndexToEntRef(target);
 
 
-				TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
-				f_West_Aim_Duration[client] = GetGameTime() + 2.0;	
-			}
+			TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
+			f_West_Aim_Duration[client] = GetGameTime() + 2.0;	
 		}
 		else
 		{
