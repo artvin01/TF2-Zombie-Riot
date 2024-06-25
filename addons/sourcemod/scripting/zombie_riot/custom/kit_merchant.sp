@@ -964,7 +964,7 @@ static void MerchantThink(int client, int &cost)
 				TF2_RemoveCondition(client, TFCond_Dazed);
 
 				int entity = EntRefToEntIndex(MerchantEffect[client]);
-				if(entity != -1)
+				if(IsValidEnemy(client, entity, true, true))
 				{
 					if(!b_thisNpcIsARaid[entity])
 						FreezeNpcInTime(entity, 3.0);

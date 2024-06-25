@@ -329,7 +329,6 @@ public void Shell_VictorianTouch(int entity, int target)
 		Radius *= Attributes_Get(weapon, 99, 1.0);
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
-		Falloff *= 0.5;
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 /*
 		if(how_many_times_fired[owner] >= 5 && !Mega_Burst[owner])
