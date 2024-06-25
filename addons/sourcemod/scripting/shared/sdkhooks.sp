@@ -1893,6 +1893,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Changed;
 		}
+		else if(Merchant_OnLethalDamage(victim))
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 0.1);
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Changed;
+		}
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
 			bool Any_Left = false;

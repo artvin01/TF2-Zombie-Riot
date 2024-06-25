@@ -434,7 +434,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 		if(attacker <= MaxClients && attacker > 0)
 		{
 			if(IsValidEntity(weapon))
-				damage = NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
 	}
 #endif
@@ -538,6 +538,19 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 		
 		damage *= resist;
 	}
+
+	if(f_LeeSuperEffect[attacker] > GameTime)
+	{
+		damage *= 0.72;
+	}
+	else if(f_LeeMajorEffect[attacker] > GameTime)
+	{
+		damage *= 0.86;
+	}
+	else if(f_LeeMinorEffect[attacker] > GameTime)
+	{
+		damage *= 0.93;
+	}
 	
 	if(f_Ruina_Attack_Buff[attacker] > GameTime)
 		damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
@@ -610,6 +623,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
 			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
 	}
 	return damage;
@@ -861,6 +878,14 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
 		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
+		case WEAPON_MERCHANTGUN:
+		{
+			Merchant_GunTakeDamage(victim, attacker, damage);
+		}
 	}
 #endif
 
@@ -874,7 +899,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	return damage;
 }
 
-static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 #if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -883,9 +908,12 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, i
 		{
 			Saga_OnTakeDamage(victim, attacker, damage, weapon, damagetype);
 		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
+		}
 	}
 #endif
-	return damage;
 }
 
 #if defined RPG

@@ -3,6 +3,7 @@
 
 // Metal drain per second
 #define MERCHANT_METAL_DRAIN	10
+#define Ammo_Merchant	28
 
 enum
 {
@@ -10,6 +11,13 @@ enum
 	Merchant_Nothing,
 	Merchant_Lee,
 	Merchant_Swire
+}
+
+enum
+{
+	Nothing_Debuff = 0,
+	Nothing_Damage,
+	Nothing_Res,
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
@@ -73,7 +81,7 @@ static Action TimerEffect(Handle timer, int client)
 				int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
 				if(weapon != -1)
 				{
-					if(GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
+					if(MerchantStyle[client] == Merchant_Swire || GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
 						b_IsCannibal[client] = true;
 
@@ -81,21 +89,22 @@ static Action TimerEffect(Handle timer, int client)
 						{
 							int ammo = GetAmmo(client, Ammo_Metal);
 							int cost = MERCHANT_METAL_DRAIN / 2;
-							if(cost < ammo)
+							if(cost > ammo)
 							{
-								MerchantWeaponRef[client] = -1;
-								return TimerEffect(null, client);
+								MerchantEnd(client);
+								return Plugin_Continue;
 							}
 							
 							MerchantThink(client, cost);
 							SetAmmo(client, Ammo_Metal, ammo - cost);
+							CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 						}
 
 						return Plugin_Continue;
 					}
 				}
 
-				MerchantWeaponRef[client] = -1;
+				MerchantEnd(client);
 			}
 
 			if(MerchantWeaponRef[client] == -1)
@@ -104,40 +113,13 @@ static Action TimerEffect(Handle timer, int client)
 				if(weapon != -1)
 				{
 					if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MERCHANT)
-					{
-						if(ParticleRef[client] != -1)
-						{
-							int entity = EntRefToEntIndex(ParticleRef[client]);
-							if(entity > MaxClients)
-							{
-								TeleportEntity(entity, OFF_THE_MAP);
-								RemoveEntity(entity);
-							}
-
-							ParticleRef[client] = -1;
-						}
-
 						return Plugin_Continue;
-					}
 				}
 			}
 		}
 		else
 		{
-			MerchantWeaponRef[client] = -1;
-
-			if(ParticleRef[client] != -1)
-			{
-				int entity = EntRefToEntIndex(ParticleRef[client]);
-				if(entity > MaxClients)
-				{
-					TeleportEntity(entity, OFF_THE_MAP);
-					RemoveEntity(entity);
-				}
-
-				ParticleRef[client] = -1;
-			}
-
+			MerchantEnd(client);
 			return Plugin_Continue;
 		}
 	}
@@ -169,9 +151,10 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Reload to Interact");
+		return;
 	}
 
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(dieingstate[client] != 0 || (Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue))
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -185,6 +168,9 @@ public void Weapon_MerchantSecondary_M2(int client, int weapon, bool crit, int s
 
 public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int slot)
 {
+	if(MerchantWeaponRef[client] != -1)
+		MerchantEnd(client);
+
 	Menu menu = new Menu(MerchantMenuH);
 
 	menu.SetTitle("Select Merchant Style:\n ");
@@ -220,7 +206,7 @@ public void Weapon_MerchantSecondary_R(int client, int weapon, bool crit, int sl
 			menu.AddItem("0", "Fish Market (Anti-Seaborn)");
 			menu.AddItem("1", "Martial Artist (Retreats, Stuns)");
 			menu.AddItem("2", "The Investigator (Steal Attack Speed, Anti-Stun)");
-			menu.AddItem("3", "Wine Market (Ranged, Self Revive)");
+			menu.AddItem("3", "Wine Market (Ranged Guns, Self Revive)");
 		}
 	}
 
@@ -237,13 +223,313 @@ static int MerchantMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			char buffer[6];
+			char buffer[4];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 
 			MerchantStyle[client] = StringToInt(buffer);
 		}
 	}
 	return 0;
+}
+
+public void Weapon_MerchantPrimary_M2(int client, int weapon, bool crit, int slot)
+{
+	Store_SwapItems(client);
+}
+
+void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
+{
+	if(MerchantWeaponRef[attacker] == -1)
+		return;
+	
+	switch(MerchantStyle[attacker])
+	{
+		case Merchant_Jaye:
+		{
+			// Jaye: Bonus Damage vs Seaborn
+			if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+			{
+				switch(MerchantLevel[attacker])
+				{
+					case 1:
+						damage *= 1.125;
+					
+					case 2:
+						damage *= 1.15;
+					
+					case 3:
+						damage *= 1.25;
+					
+					case 4:
+						damage *= 1.275;
+					
+					case 5:
+						damage *= 1.3;
+				}
+			}
+
+			// Jaye: Silence Effect
+			if(!MerchantEffect[attacker])
+				NpcStats_SilenceEnemy(victim, MerchantLevel[attacker] > 3 ? 2.0 : 1.0);
+		}
+		case Merchant_Nothing:
+		{
+			if(MerchantEffect[attacker] >= 0)
+			{
+				float gameTime = GetGameTime();
+				
+				// Nothing: Debuff Effect
+				if(MerchantEffect[attacker] == Nothing_Debuff)
+				{
+					float time = gameTime + 2.5;
+					if(f_CrippleDebuff[victim] < time)
+						f_CrippleDebuff[victim] = time;
+				}
+
+				// Nothing: Stun Effect
+				if((MerchantLeftAt[attacker] + (MerchantLevel[attacker] == 5 ? 3.0 : 4.0)) < gameTime)
+				{
+					float stun;
+
+					switch(MerchantLevel[attacker])
+					{
+						case 2:
+						{
+							damage *= 1.25;
+							stun = 1.5;
+						}
+						case 3:
+						{
+							damage *= 1.5;
+							stun = 2.0;
+						}
+						case 4:
+						{
+							damage *= 1.65;
+							stun = 2.5;
+						}
+						case 5:
+						{
+							damage *= 1.75;
+							stun = 2.5;
+						}
+					}
+
+					FreezeNpcInTime(victim, stun);
+				}
+
+				MerchantLeftAt[attacker] = GetGameTime();
+			}
+		}
+		case Merchant_Lee:
+		{
+			f_BombEntityWeaponDamageApplied[victim][attacker] = damage * (MerchantLevel[attacker] > 4 ? 0.133333 : 0.1);
+			i_HowManyBombsOnThisEntity[victim][attacker]++;
+			i_HowManyBombsHud[victim]++;
+			Apply_Particle_Teroriser_Indicator(victim);
+
+			bool blocking = EntRefToEntIndex(MerchantEffect[attacker]) == victim;
+			bool elite = MerchantLevel[attacker] > 2;
+
+			float pos1[3];
+			GetClientAbsOrigin(attacker, pos1);
+			ParticleEffectAt(pos1, elite ? "heavy_ring_of_fire_fp" : "heavy_ring_of_fire_fp_child03", 0.5);
+
+			if(blocking || elite)
+			{
+				float pos2[3];
+
+				bool alone = true;
+				for(int i; i < i_MaxcountNpcTotal; i++)
+				{
+					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+					if(entity != -1 && entity != victim && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+					{
+						GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+						if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
+						{
+							alone = false;
+							
+							if(elite)
+							{
+								if(i_NpcWeight[entity] < 3 && !b_NoKnockbackFromSources[entity])
+								{
+									FreezeNpcInTime(entity, 0.1);
+
+									if(i_NpcWeight[entity] != 2)
+										Custom_Knockback(attacker, entity, 400.0, true, true, true);
+								}
+							}
+							else
+							{
+								break;
+							}
+						}
+					}
+				}
+
+				if(blocking)
+				{
+					int strength = elite ? 1 : 0;
+					if(alone)
+						strength++;
+					
+					float reduce;
+					switch(strength)
+					{
+						case 0:
+						{
+							f_LeeMinorEffect[victim] = GetGameTime() + 0.75;
+							reduce -= 0.035;
+						}
+						case 1:
+						{
+							f_LeeMajorEffect[victim] = GetGameTime() + 0.75;
+							reduce -= 0.07;
+						}
+						case 2:
+						{
+							f_LeeSuperEffect[victim] = GetGameTime() + 0.75;
+							reduce -= 0.14;
+						}
+					}
+
+					SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") - reduce);
+				}
+			}
+		}
+	}
+}
+
+void Merchant_GunTakeDamage(int victim, int attacker, float &damage)
+{
+	if(MerchantWeaponRef[attacker] == -1)
+		return;
+	
+	damage *= Attributes_GetOnPlayer(attacker, 287, true) / Attributes_GetOnPlayer(attacker, 343, true, true);
+
+	int force = MerchantLevel[attacker] > 4 ? 4 : 3;
+	if(i_NpcWeight[victim] < force && !b_NoKnockbackFromSources[victim])
+	{
+		Custom_Knockback(attacker, victim, 400.0, true, true, true);
+	}
+}
+
+void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
+{
+	if(MerchantWeaponRef[attacker] == -1)
+		return;
+	
+	// Jaye: Healing Effect
+	if(MerchantStyle[attacker] == Merchant_Jaye && MerchantEffect[attacker])
+	{
+		float base = 65.0 * Attributes_Get(weapon, 2, 1.0);
+		if(damage && base)
+		{
+			// Res/Buffs effects healing
+			float healing = damage / base;
+			if(healing > 2.0)
+				healing = 2.0;
+
+			int health = GetClientHealth(attacker);
+			int target = health < SDKCall_GetMaxHealth(attacker) ? attacker : 0;
+			if(!target)
+				health = 9999;
+			
+			float pos1[3], pos2[3];
+			GetClientAbsOrigin(attacker, pos1);
+			
+			for(int i = 1; i <= MaxClients; i++)
+			{
+				if(i != attacker && TeutonType[i] == TEUTON_NONE && !dieingstate[i] && IsClientInGame(i) && IsPlayerAlive(i))
+				{
+					GetClientAbsOrigin(attacker, pos2);
+					if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
+					{
+						int hp = GetClientHealth(i);
+						if(hp > 0 && hp < health && hp < SDKCall_GetMaxHealth(i))
+						{
+							target = i;
+							health = hp;
+						}
+					}
+				}
+			}
+
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != -1 && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
+				{
+					GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
+					{
+						int hp = GetEntProp(entity, Prop_Data, "m_iHealth");
+						if(hp > 0 && hp < health && hp < GetEntProp(entity, Prop_Data, "m_iMaxHealth"))
+						{
+							target = entity;
+							health = hp;
+						}
+					}
+				}
+			}
+
+			if(target)
+			{
+				healing *= MerchantLevel[attacker] * 25.0;
+
+				HealEntityGlobal(attacker, target, healing, 1.0, 1.0);
+			}
+		}
+	}
+}
+
+void Merchant_SelfTakeDamage(int victim, int attacker, float &damage)
+{
+	if(MerchantWeaponRef[victim] == -1)
+		return;
+	
+	switch(MerchantStyle[victim])
+	{
+		case Merchant_Nothing:
+		{
+			int maxhealth = SDKCall_GetMaxHealth(victim);
+			if((GetClientHealth(victim) - RoundFloat(damage)) < (maxhealth / 5))
+			{
+				float healing = MerchantLevel[victim] > 1 ? (0.5 + (MerchantLevel[victim] * 0.05)) : 0.45;
+				HealEntityGlobal(victim, victim, maxhealth * healing, 1.0, 5.0, HEAL_SELFHEAL);
+				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 5.0, victim);
+				MerchantEnd(victim);
+			}
+		}
+		case Merchant_Lee:
+		{
+			//float pos1[3], pos2[3];
+			//GetClientAbsOrigin(victim, pos1);
+			//GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2);
+			//if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
+			MerchantEffect[victim] = EntIndexToEntRef(attacker);
+		}
+	}
+}
+
+bool Merchant_OnLethalDamage(int client)
+{
+	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] == Merchant_Swire)
+	{
+		int ammo = GetAmmo(client, Ammo_Metal);
+		int cost = MERCHANT_METAL_DRAIN * 10 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		if(ammo >= cost)
+		{
+			SetAmmo(client, Ammo_Metal, ammo - cost);
+			CurrentAmmo[client][Ammo_Metal] = ammo - cost;
+			MerchantEffect[client]++;
+
+			SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 7 / 10);
+			return true;
+		}
+	}
+	return false;
 }
 
 static void MerchantStart(int client, int slot)
@@ -315,6 +601,8 @@ static void MerchantStart(int client, int slot)
 		}
 		case Merchant_Nothing:
 		{
+			MerchantEffect[client] = MerchantLevel[client] > 1 ? (GetURandomInt() % 3) : -1;
+
 			if((MerchantLeftAt[client] + 10.0) > GetGameTime())
 			{
 				// Redeploy has a discount
@@ -347,23 +635,26 @@ static void MerchantStart(int client, int slot)
 		}
 		case Merchant_Lee:
 		{
+			MerchantEffect[client] = -1;
+
 			switch(MerchantLevel[client])
 			{
 				case 2:
 					fcost = 19.0;
 				
 				case 3:
-					fcost = 18.0;
+					fcost = 20.0;
 				
 				case 4:
-					fcost = 17.0;
+					fcost = 19.0;
 				
 				case 5:	// Module
-					fcost = 13.666667;
+					fcost = 15.666667;
 			}
 		}
 		case Merchant_Swire:
 		{
+			MerchantEffect[client] = 0;
 			fcost = 9.0;
 		}
 	}
@@ -376,7 +667,7 @@ static void MerchantStart(int client, int slot)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "No Ammo Supplies");
-		Ability_Apply_Cooldown(client, slot, 1.0);
+		Ability_Apply_Cooldown(client, slot, 0.3);
 		return;
 	}
 
@@ -388,16 +679,23 @@ static void MerchantStart(int client, int slot)
 		MerchantAbilitySlot[client] = slot;
 		MerchantWeaponRef[client] = EntIndexToEntRef(weapon);
 		SetAmmo(client, Ammo_Metal, ammo - cost);
+		CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 
 		float damage = 2.0;
 		float speed = 0.5;
+
+		char particle[64];
 
 		switch(MerchantStyle[client])
 		{
 			case Merchant_Jaye:
 			{
+				ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+
 				if(MerchantEffect[client])
 				{
+					strcopy(particle, sizeof(particle), "utaunt_balloonicorn_reindeer_snowfloor");
+
 					// Healing
 					switch(MerchantLevel[client])
 					{
@@ -416,6 +714,8 @@ static void MerchantStart(int client, int slot)
 				}
 				else
 				{
+					strcopy(particle, sizeof(particle), "utaunt_arcane_green_sparkle_ring");
+
 					// Silence
 					switch(MerchantLevel[client])
 					{
@@ -439,10 +739,102 @@ static void MerchantStart(int client, int slot)
 					}
 				}
 			}
+			case Merchant_Nothing:
+			{
+				ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+				
+				if(MerchantEffect[client] >= 0)
+				{
+					MerchantLeftAt[client] = GetGameTime();
+
+					switch(MerchantLevel[client])
+					{
+						case 2:
+							damage *= 1.4;
+						
+						case 3:
+							damage *= 1.5;
+						
+						case 4:
+							damage *= 1.55;
+						
+						case 5:
+							damage *= 1.6;
+					}
+
+					switch(MerchantEffect[client])
+					{
+						case Nothing_Debuff:
+						{
+							strcopy(particle, sizeof(particle), "utaunt_arcane_green_sparkle_ring");
+						}
+						case Nothing_Damage:
+						{
+							speed *= MerchantLevel[client] > 4 ? 0.78125 : 0.8;
+							strcopy(particle, sizeof(particle), "utaunt_arcane_yellow_sparkle_ring");
+						}
+						case Nothing_Res:
+						{
+							MerchantAddAttrib(client, 206, (MerchantLevel[client] == 6 ? 0.5 : (MerchantLevel[client] == 3 ? 0.6 : 0.55)));
+							strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
+						}
+					}
+				}
+				else
+				{
+					strcopy(particle, sizeof(particle), "utaunt_arcane_purple_sparkle_ring");
+				}
+			}
+			case Merchant_Lee:
+			{
+				strcopy(particle, sizeof(particle), "utaunt_gifts_floorglow_brown");
+				
+				if(MerchantLevel[client] > 2)
+				{
+					ClientCommand(client, "playgamesound mvm/mvm_tank_horn.wav");
+
+					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
+					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.3 : 0.4);
+					MerchantAddAttrib(client, 206, 0.75);
+				}
+				else
+				{
+					ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
+					
+					damage *= 1.4;
+					MerchantAddAttrib(client, 205, 0.75);
+				}
+			}
+			case Merchant_Swire:
+			{
+				strcopy(particle, sizeof(particle), "utaunt_electricity_cloud_electricity_WY");
+				
+				ClientCommand(client, "playgamesound mvm/sentrybuster/mvm_sentrybuster_intro.wav");
+
+				SetAmmo(client, Ammo_Merchant, 1);
+
+				Store_GiveSpecificItem(client, "Loyalty and Generosity");
+				Store_GiveSpecificItem(client, "Courtesy Gift");
+				Store_GiveSpecificItem(client, "Lavish and Prodigal");
+			}
+		}
+
+		if(particle[0])
+		{
+			float pos[3]; GetClientAbsOrigin(client, pos);
+			pos[2] += 1.0;
+
+			int entity = ParticleEffectAt(pos, particle, -1.0);
+			if(entity > MaxClients)
+			{
+				SetParent(client, entity);
+				ParticleRef[client] = EntIndexToEntRef(entity);
+			}
 		}
 
 		MerchantAddAttrib(client, 2, damage);
 		MerchantAddAttrib(client, 6, speed);
+		SetPlayerActiveWeapon(client, weapon);
 	}
 }
 
@@ -466,8 +858,18 @@ static void MerchantAddAttrib(int client, int attrib, float value)
 static void MerchantEnd(int client)
 {
 	if(MerchantWeaponRef[client] == -1)
-	{
 		return;
+
+	if(ParticleRef[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ParticleRef[client]);
+		if(entity > MaxClients)
+		{
+			TeleportEntity(entity, OFF_THE_MAP);
+			RemoveEntity(entity);
+		}
+
+		ParticleRef[client] = -1;
 	}
 
 	int weapon = EntRefToEntIndex(MerchantWeaponRef[client]);
@@ -480,7 +882,7 @@ static void MerchantEnd(int client)
 			for(int i; i < length; i++)
 			{
 				MerchantAttribs[client].GetArray(i, array);
-				Attributes_SetMulti(weapon, view_as<int>(array[0]), view_as<float>(array[1]));
+				Attributes_SetMulti(weapon, view_as<int>(array[0]), 1.0 / view_as<float>(array[1]));
 			}
 		}
 	}
@@ -505,10 +907,36 @@ static void MerchantEnd(int client)
 
 		Ability_Apply_Cooldown(client, MerchantAbilitySlot[client], cooldown, weapon);
 	}
+	
+	Store_RemoveSpecificItem(client, "Loyalty and Generosity");
+	Store_RemoveSpecificItem(client, "Courtesy Gift");
+	Store_RemoveSpecificItem(client, "Lavish and Prodigal");
 
+	for( int entity = 1; entity <= MAXENTITIES; entity++ ) 
+	{
+		if (IsValidEntity(entity))
+		{
+			static char buffer[64];
+			GetEntityClassname(entity, buffer, sizeof(buffer));
+			if(IsEntitySpikeValue(entity) == 1 && !StrContains(buffer, "tf_projectile_pipe_remote"))
+			{
+				int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+				if(owner == client) //Hardcode to this index.
+				{
+					SetEntitySpike(entity, 0);
+					RemoveEntity(entity);
+				}
+			}
+		}
+	}
+
+	ClientCommand(client, "playgamesound player/invuln_off_vaccinator.wav");
+
+	b_IsCannibal[client] = false;
 	MerchantWeaponRef[client] = -1;
 	MerchantLeftAt[client] = GetGameTime();
 	delete MerchantAttribs[client];
+	SetAmmo(client, Ammo_Merchant, 0);
 }
 
 static void MerchantThink(int client, int &cost)
@@ -517,22 +945,46 @@ static void MerchantThink(int client, int &cost)
 	{
 		case Merchant_Jaye:
 		{
-			if(MerchantLevel[client] > 3)
+			if(MerchantLevel[client] > 2)
 				cost = cost * 2 / 3;
 		}
 		case Merchant_Nothing:
 		{
-			if(MerchantLevel[client] > 4)
+			if(MerchantLevel[client] > 3)
 				cost = cost * 2 / 3;
 		}
 		case Merchant_Lee:
 		{
-			if(MerchantLevel[client] > 5)
+			if(MerchantLevel[client] > 2 && TF2_IsPlayerInCondition(client, TFCond_Dazed))
+			{
+				TF2_RemoveCondition(client, TFCond_Dazed);
+
+				int entity = EntRefToEntIndex(MerchantEffect[client]);
+				if(entity != -1)
+				{
+					if(!b_thisNpcIsARaid[entity])
+						FreezeNpcInTime(entity, 3.0);
+				}
+
+				cost += MERCHANT_METAL_DRAIN * 2;
+			}
+			else if(MerchantLevel[client] > 4)
+			{
 				cost = cost * 2 / 3;
+			}
 		}
 		case Merchant_Swire:
 		{
-			
+			if(GetAmmo(client, Ammo_Heal) < 300)
+				SetAmmo(client, Ammo_Heal, 300);
+
+			int ammo = GetAmmo(client, Ammo_Merchant);
+			if(ammo < 10 && !(GetURandomInt() % 6))
+			{
+				SetAmmo(client, Ammo_Merchant, ammo + 1);
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
+			}
 		}
 	}
 }
