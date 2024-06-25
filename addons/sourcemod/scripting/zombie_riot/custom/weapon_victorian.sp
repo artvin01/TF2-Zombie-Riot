@@ -351,7 +351,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		Mega_Burst[owner] = false;
 		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitSoundToAll(SOUND_VIC_IMPACT, client, SNDCHAN_AUTO, 140, _, 0.9, GetRandomInt(55, 80));
+		EmitSoundToAll(SOUND_VIC_IMPACT, entity, SNDCHAN_AUTO, 140, _, 0.9, GetRandomInt(55, 80));
 		ParticleEffectAt(position, "rd_robot_explosion_smoke_linger", 1.0);
 		
 		if(IsValidEntity(particle))

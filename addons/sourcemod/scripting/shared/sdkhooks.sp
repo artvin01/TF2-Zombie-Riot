@@ -192,7 +192,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0)
+			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)

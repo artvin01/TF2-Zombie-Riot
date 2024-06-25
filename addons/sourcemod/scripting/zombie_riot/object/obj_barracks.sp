@@ -320,10 +320,10 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 		if(f_MedicCallIngore[client] < GetGameTime())
 			return false;
 
-		SummonerMenu(Owner, client);
+		OpenSummonerMenu(Owner, client);
 		return true;
 	}
-	SummonerMenu(Owner, client);
+	OpenSummonerMenu(Owner, client);
 	return true;
 }
 
@@ -850,7 +850,7 @@ void Barracks_BuildingThink(int entity)
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(InMenu[i] == client)
-			SummonerMenu(client, i);
+			OpenSummonerMenu(client, i);
 	}
 			
 	//they do not even have the first upgrade, do not think, but dont cancel.
@@ -1111,7 +1111,12 @@ void CheckSummonerUpgrades(int client)
 		SupplyRate[client] += 10;
 
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = (CivType[client] || Items_HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
+	PrintToChatAll("test1 %i",MedievalUnlock[client]);
+	if(!MedievalUnlock[client])
+		MedievalUnlock[client] = view_as<bool>(CivType[client]);
+	PrintToChatAll("test2 %i",MedievalUnlock[client]);
+
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 }
@@ -1158,7 +1163,11 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 			}
 			GoldSupplyRate *= multi;
 			GoldAmount[client] += GoldSupplyRate;
+			PrintToChatAll("Try Regen Gold");
 		}
+		PrintToChatAll("GoldAmount %f",GoldAmount[client]);
+		PrintToChatAll("WoodAmount %f",WoodAmount[client]);
+		PrintToChatAll("FoodAmount %f",FoodAmount[client]);
 
 	}
 	if(f_VillageSavingResources[client] < GetGameTime())
@@ -1167,7 +1176,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		BarracksSaveResources(client);
 	}
 }
-/*
+
 static void OpenSummonerMenu(int client, int viewer)
 {
 	if(client == viewer)
@@ -1175,7 +1184,7 @@ static void OpenSummonerMenu(int client, int viewer)
 	
 	SummonerMenu(client, viewer);
 }
-*/
+
 
 static void SummonerMenu(int client, int viewer)
 {
@@ -1638,7 +1647,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						b_InUpgradeMenu[client] = true;
 					}
 					
-					SummonerMenu(client, client);
+					OpenSummonerMenu(client, client);
 					return 0;
 				}
 
@@ -1757,7 +1766,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 					}
 
-					SummonerMenu(client, client);
+					OpenSummonerMenu(client, client);
 				}
 			}
 			else
@@ -1786,7 +1795,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					f3_SpawnPosition[client][2] = 0.0;
 				}
 				
-				SummonerMenu(client, client);
+				OpenSummonerMenu(client, client);
 			}
 		}
 	}
