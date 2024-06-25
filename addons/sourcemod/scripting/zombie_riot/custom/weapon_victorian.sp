@@ -170,7 +170,7 @@ public void Weapon_Victoria(int client, int weapon, bool crit)
 	//damage *= 0.8; //Reduction
 	damage *= Attributes_Get(weapon, 2, 1.0);	
 
-	float speed = 400.0;
+	float speed = 200.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 
 	speed *= Attributes_Get(weapon, 104, 1.0);
