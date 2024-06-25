@@ -108,6 +108,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
 #define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
 
+#define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 
 int i_laz_entity[MAXENTITIES];
 float fl_multi_attack_delay[MAXENTITIES];
@@ -198,7 +199,7 @@ public void Ruina_Ai_Core_Mapstart()
 
 	i_magia_anchors_active=0;
 	
-	
+	PrecacheModel(BEAM_COMBINE_BLACK, true);
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
@@ -1230,10 +1231,12 @@ enum struct Ruina_Self_Defense
 
 static float fl_mana_sickness_multi[MAXENTITIES];
 static int i_mana_sickness_flat[MAXENTITIES];
-stock void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0)
+static bool b_override_Sickness[MAXENTITIES];
+void Ruina_AOE_Add_Mana_Sickness(float Loc[3], int iNPC, float range, float Multi, int flat_amt=0, bool override = false)
 {
 	fl_mana_sickness_multi[iNPC] = Multi;
 	i_mana_sickness_flat[iNPC] = flat_amt;
+	b_override_Sickness[iNPC] = override;
 	Explode_Logic_Custom(0.0, iNPC, iNPC, -1, Loc, range, _, _, true, 99, false, _, Ruina_Apply_Mana_Debuff);
 }
 void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
@@ -1245,89 +1248,221 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 		return;
 
 	float GameTime = GetGameTime();
+
+	bool override = b_override_Sickness[entity];
 	
-	if(fl_mana_sickness_timeout[victim] > GameTime)
+	if(fl_mana_sickness_timeout[victim] > GameTime && !override)
 		return;
 		
 	float Multi = fl_mana_sickness_multi[entity];
 	int flat_amt = i_mana_sickness_flat[entity];
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
+	b_override_Sickness[entity] = false;
+
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
 
-	if(OverMana_Ratio>2.1)
+	if(OverMana_Ratio>2.0)
 	{
 		Apply_Sickness(entity, victim);
 	}
 }
-stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0)
+stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_amt=0, bool override = false)
 {
 	if(IsValidClient(Target))
 	{
 		float GameTime = GetGameTime();
 
-		if(fl_mana_sickness_timeout[Target] > GameTime)
+		if(fl_mana_sickness_timeout[Target] > GameTime && !override)
 			return;
 
 		float OverMana_Ratio = Current_Mana[Target]/max_mana[Target];
 
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
-		if(OverMana_Ratio>2.1)
+		if(OverMana_Ratio>2.0)
 		{
 			Apply_Sickness(iNPC, Target);
 		}
 	}
 }
+//Once target has too much mana, aka 2x their max, an ION cannon that does true damage that scales on how much max mana they have is fired
 static void Apply_Sickness(int iNPC, int Target)
 {
-	//CPrintToChatAll("Player: %N got nuked due to overmana", Target);
+	//Override means that it WILL IGNORE the grace timeout period.
 	Current_Mana[Target] = 0;
 	float GameTime = GetGameTime();
-	
 
 	int wave = ZR_GetWaveCount()+1;
 
-	float dmg = 250.0;
-	float time = 2.5;
+	float 	dmg 		= 250.0,
+			time 		= 2.5,		//how long until it goes boom
+			Timeout	 	= 5.0,		//how long is the grace period for the mana sickness
+			Slow_Time	= 2.0,		//how long the slowdown lasts
+			Radius		= 100.0;	//self explanitory
 
 	float mana = max_mana[Target];
 
-	if(mana <=400.0)
+	int color[4];
+
+	if(mana <=400.0)	//a base mana asumption
 		mana=400.0;
 
 	if(wave<=15)
 	{
-		dmg =mana;	//evil.
-		time = 2.5;
+		Radius		= 100.0;
+		color 		= {255, 0, 0, 255};
+		dmg 		= mana;	//evil.
+		time 		= 9.0;
+		Timeout 	= 6.0;
+		Slow_Time 	= 2.0;
 	}
 	else if(wave<=30)
 	{
-		dmg = mana*1.25;
-		time = 4.5;
+		Radius		= 125.0;
+		color 		= {255, 150, 150, 255};
+		dmg 		= mana*1.25;
+		time 		= 8.0;
+		Timeout 	= 5.5;
+		Slow_Time 	= 2.0;
 	}
 	else if(wave<=45)
 	{
-		dmg = mana*1.5;
-		time = 6.5;
+		Radius		= 175.0;
+		color 		= {255, 200, 200, 255};
+		dmg 		= mana*1.5;
+		time 		= 7.0;
+		Timeout 	= 5.0;
+		Slow_Time 	= 2.0;
 	}
 	else
 	{
-		dmg = mana*2.0;
-		time = 9.0;
+		Radius		= 200.0;
+		color 		= {255, 255, 255, 255};
+		dmg 		= mana*2.0;
+		time 		= 6.0;
+		Timeout 	= 4.5;
+		Slow_Time 	= 2.0;
 	}
 
-	fl_mana_sickness_timeout[Target] = GameTime + time;
+	fl_mana_sickness_timeout[Target] = GameTime + Timeout;
 
-	Mana_Regen_Delay[Target] = GameTime + time;
-	Mana_Regen_Block_Timer[Target] = GameTime + time;
+	Mana_Regen_Delay[Target] = GameTime + Timeout;
+	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, time, 0.9, TF_STUNFLAG_SLOWDOWN);	//hefty slow	
+	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);
 
-	bool sawrunner = b_ThisNpcIsSawrunner[iNPC];
-	b_ThisNpcIsSawrunner[iNPC] = true;
-	SDKHooks_TakeDamage(Target, iNPC, iNPC, dmg, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-	b_ThisNpcIsSawrunner[iNPC] = sawrunner;
+	float end_point[3];
+	GetClientAbsOrigin(Target, end_point);
+	end_point[2]+=10.0;
+
+	float Thickness = 6.0;
+	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
+	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, color, 1, 0);
+	TE_SendToAll();
+
+	DataPack pack;
+	CreateDataTimer(time, Ruina_Mana_Sickness_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+	pack.WriteCell(EntIndexToEntRef(iNPC));
+	pack.WriteFloatArray(end_point, sizeof(end_point));
+	pack.WriteCellArray(color, sizeof(color));
+	pack.WriteFloat(Radius);
+	pack.WriteFloat(dmg);
+
+	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=500.0; end_point[2]-=100.0;
+
+	int laser;
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
+
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	
+}
+static float fl_ion_dmage;
+static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
+{
+	data.Reset();
+	int iNPC = EntRefToEntIndex(data.ReadCell());
+	float end_point[3];
+	int color[4];
+	data.ReadFloatArray(end_point, sizeof(end_point));
+	data.ReadCellArray(color, sizeof(color));
+	float Radius	= data.ReadFloat();
+	float dmg 		= data.ReadFloat();
+
+	//DMG_SLASH is true dmg?
+
+	float Thickness = 6.0;
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
+
+	fl_ion_dmage = dmg;
+
+	if(IsValidEntity(iNPC))
+	{
+		Explode_Logic_Custom(0.0, 
+		iNPC,		//client
+		iNPC, 		//ent
+		-1,			//wep
+		end_point, 
+		Radius,
+		_,			//fallof multi hit hard explain
+		_, 			//falloff max
+		true, 		//blue npc
+		_, 			//max targets hit
+		_, 			//ignite
+		_,		//dmg multi vs 
+		OnSicknessExplosion_Logic
+		);
+		TE_Particle("spell_batball_impact_blue", end_point, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	}
+	else
+	{
+		Explode_Logic_Custom(0.0, 
+		0,		//client
+		0, 		//ent
+		-1,			//wep
+		end_point, 
+		Radius,
+		_,			//fallof multi hit hard explain
+		_, 			//falloff max
+		true, 		//blue npc
+		_, 			//max targets hit
+		_, 			//ignite
+		_,		//dmg multi vs 
+		OnSicknessExplosion_Logic
+		);
+		TE_Particle("spell_batball_impact_blue", end_point, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	}
+
+	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
+
+	int laser;
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
+	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
+	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	return Plugin_Stop;
+}
+static void OnSicknessExplosion_Logic(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if(GetTeam(victim) != GetTeam(entity))
+	{
+		bool sawrunner = b_ThisNpcIsSawrunner[entity];
+		b_ThisNpcIsSawrunner[entity] = true;
+		
+		if(victim <= MaxClients)
+			SDKHooks_TakeDamage(victim, entity, entity, fl_ion_dmage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+		else
+			SDKHooks_TakeDamage(victim, entity, entity, fl_ion_dmage*2.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+
+		b_ThisNpcIsSawrunner[entity] = sawrunner;
+	}
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
