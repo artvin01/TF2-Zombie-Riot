@@ -325,11 +325,16 @@ public void Shell_VictorianTouch(int entity, int target)
 			BaseDMG *= Ratio;
 		}
 
+
 		float Radius = EXPLOSION_RADIUS;
 		Radius *= Attributes_Get(weapon, 99, 1.0);
 
 		float Falloff = Attributes_Get(weapon, 117, 1.0);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		if(RaidbossIgnoreBuildingsLogic(1))
+		{
+			Radius *= 1.5;
+		}
 /*
 		if(how_many_times_fired[owner] >= 5 && !Mega_Burst[owner])
 		{
@@ -349,6 +354,7 @@ public void Shell_VictorianTouch(int entity, int target)
 		if(how_many_supercharge_left[owner] > 0 && !Mega_Burst[owner])
 		{
 			BaseDMG *= 1.2;
+			Radius *= 1.2;
 			//PrintToChatAll("Strong Boom");
 			if(how_many_supercharge_left[owner] < 5)
 			{
@@ -393,7 +399,7 @@ public void Victorian_Chargeshot(int client, int weapon, bool crit, int slot)
 				Rogue_OnAbilityUse(weapon);
 				Ability_Apply_Cooldown(client, slot, 50.0);
 				how_many_supercharge_left[client] += 10;
-				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.1);
+				EmitSoundToAll(SOUND_VIC_CHARGE_ACTIVATE, client, SNDCHAN_AUTO, 70, _, 1.3);
 				//PrintToChatAll("Ammo replenished");
 			}
 			else if (how_many_supercharge_left[client] <= 5 && how_many_supercharge_left[client] > 0)
