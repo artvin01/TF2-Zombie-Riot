@@ -483,10 +483,6 @@ static void Kill_Ability(int iNPC)
 		i_projectile_ref[iNPC][i] = INVALID_ENT_REFERENCE;
 	}
 }
-static void Func_On_Proj_Touch(int projectile, int other)	//don't actually do anything, instead we are using a timer to delete stuff.
-{
-	//Ruina_Remove_Projectile(projectile);
-}
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 50);
