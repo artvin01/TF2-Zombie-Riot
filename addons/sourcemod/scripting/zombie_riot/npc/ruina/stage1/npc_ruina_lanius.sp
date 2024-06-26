@@ -379,7 +379,7 @@ static void ClotThink(int iNPC)
 
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 25);
 }
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

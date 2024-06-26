@@ -920,6 +920,7 @@ enum
 		RUINA_STAFF_1			= 32,
 		RUINA_HAND_CREST_1		= 64,
 		RUINA_LAN_SWORD_1		= 128,
+		RUINA_EUR_STAFF_1		= 256
 	}
 #endif
 

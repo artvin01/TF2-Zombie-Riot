@@ -2598,15 +2598,7 @@ static void Ruina_Teleport_Entity(int entity, float loc[3])
 
 /*
 
-Lower speed while going backwards
-Lower turn speeds:
-Aether
-Astriana - make it turn, but slow
-Draedon - make it turn, but slow
-Europis - already turns, just make it turn a tiny bit faster
-Lazius
-Magnium
-Maliana
+Add sound effects to mana sickness ION's
 
 Names per stage:
 	Stage 1 -> Stage 2 -> Stage 3 -> Starge 4.

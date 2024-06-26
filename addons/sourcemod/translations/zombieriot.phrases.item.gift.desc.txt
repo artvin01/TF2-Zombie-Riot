@@ -1339,7 +1339,7 @@
 	}
 	"Europis Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nAdditionally, when it duplicates itself, any Ruina Npc nearby will have their speed heavily buffed\nIt also weilds a pizza cutter as its magic weapon!"
 	}
 	"Draedon Desc"
 	{

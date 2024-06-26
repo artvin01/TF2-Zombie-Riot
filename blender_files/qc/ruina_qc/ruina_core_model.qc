@@ -43,6 +43,11 @@ $bodygroup "lan_sword_v1"
 	blank
 	studio "lan_sword_v1.smd"
 }
+$bodygroup "eur_staff_v1"	
+{							
+	blank
+	studio "eur_staff_v1.smd"
+}
 
 
 
