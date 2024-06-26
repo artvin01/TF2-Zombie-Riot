@@ -11,31 +11,31 @@
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	LogEntryInvicibleTest(victim, attacker, damage, 5);
+	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
-	LogEntryInvicibleTest(victim, attacker, damage, 6);
+	//LogEntryInvicibleTest(victim, attacker, damage, 6);
 	if(victim <= MaxClients)
 	{
 #if !defined RTS
 		if(Damage_PlayerVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 7);
+		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
 	else if(!b_NpcHasDied[victim])
 	{
 		if(Damage_NPCVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 8);
+		//LogEntryInvicibleTest(victim, attacker, damage, 8);
 	}
 	else if(i_IsABuilding[victim])
 	{
 		if(Damage_BuildingVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 9);
+		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 
 	if(attacker > 0)
@@ -43,26 +43,26 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 		if(Damage_AnyAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 
-		LogEntryInvicibleTest(victim, attacker, damage, 13);
+		//LogEntryInvicibleTest(victim, attacker, damage, 13);
 		if(attacker <= MaxClients)
 		{
 #if !defined RTS
 			if(Damage_PlayerAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 #endif
-			LogEntryInvicibleTest(victim, attacker, damage, 14);
+			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
 			if(Damage_NPCAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 15);
+			//LogEntryInvicibleTest(victim, attacker, damage, 15);
 		}
 		else if(i_IsABuilding[attacker])
 		{
 			if(Damage_BuildingAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 16);
+			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
 	}
 
