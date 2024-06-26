@@ -150,7 +150,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
 		//so they dont get stuck on entities in the air.
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+		//todo: Fix them
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -200,6 +201,8 @@ public void Wand_Base_StartTouch(int entity, int other)
 		return;
 	}
 #if defined ZR
+	//OLD CODE!!! DONT USE BELOW!!!
+	//USE WandProjectile_ApplyFunctionToEntity
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -331,10 +334,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		case WEAPON_MESSENGER_LAUNCHER:
 		{
 			Gun_MessengerTouch(entity, target);
-		}
-		case WEAPON_VICTORIAN_LAUNCHER:
-		{
-			Shell_VictorianTouch(entity, target);
 		}
 	}
 #endif

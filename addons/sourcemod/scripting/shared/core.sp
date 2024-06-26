@@ -646,6 +646,7 @@ int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
+bool b_XenoVial[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
@@ -1113,6 +1114,7 @@ bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
 bool b_ShowNpcHealthbar[MAXENTITIES];
 bool b_TryToAvoidTraverse[MAXENTITIES];
 bool b_NoKnockbackFromSources[MAXENTITIES];
+bool b_IsATrigger[MAXENTITIES];
 int i_NpcWeight[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
@@ -2887,6 +2889,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		GlassBuilder[entity] = false;
 		WildingenBuilder[entity] = false;
 		Armor_Charge[entity] = 0;
+		b_IsATrigger[entity] = false;
 #endif
 
 #if defined ZR || defined RPG
@@ -3085,6 +3088,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "trigger_teleport")) //npcs think they cant go past this sometimes, lol
 		{
+			b_IsATrigger[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -3183,6 +3187,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		*/
 		else if(!StrContains(classname, "trigger_hurt"))
 		{
+			b_IsATrigger[entity] = true;
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
 			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
 		}

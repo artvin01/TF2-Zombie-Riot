@@ -314,6 +314,10 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 							stun = 2.5;
 						}
 					}
+					if(b_thisNpcIsARaid[victim])
+					{
+						stun *= 0.25;
+					}
 
 					FreezeNpcInTime(victim, stun);
 				}
@@ -960,7 +964,7 @@ static void MerchantThink(int client, int &cost)
 				TF2_RemoveCondition(client, TFCond_Dazed);
 
 				int entity = EntRefToEntIndex(MerchantEffect[client]);
-				if(entity != -1)
+				if(IsValidEnemy(client, entity, true, true))
 				{
 					if(!b_thisNpcIsARaid[entity])
 						FreezeNpcInTime(entity, 3.0);

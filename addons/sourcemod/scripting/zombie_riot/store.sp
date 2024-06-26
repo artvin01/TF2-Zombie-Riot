@@ -4671,7 +4671,10 @@ void Store_ApplyAttribs(int client)
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		Attributes_Set(client, 489, 0.65);
+		if(b_XenoVial[client])
+			Attributes_Set(client, 489, 1.1);
+		else
+			Attributes_Set(client, 489, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
@@ -4864,6 +4867,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	else
 	{
 		b_NemesisHeart[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Xeno Virus Vial"))
+	{
+		b_XenoVial[client] = true;
+	}
+	else
+	{
+		b_XenoVial[client] = false;
 	}
 	if(Items_HasNamedItem(client, "Overlords Final Wish"))
 	{

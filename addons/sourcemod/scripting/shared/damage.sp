@@ -1402,10 +1402,14 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	}
 #endif
 
+//when downed, reduce dmg
 #if defined ZR
 	if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 	{
-		damage *= 0.25;
+		if(b_XenoVial[attacker])
+			damage *= 0.65;
+		else
+			damage *= 0.25;
 	}
 #endif
 	//NPC STUFF FOR RECORD AND ON KILL
