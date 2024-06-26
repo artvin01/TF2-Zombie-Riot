@@ -1131,7 +1131,7 @@
 	}
 	"Theocracy Desc"
 	{
-		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multipl targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
+		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multiple targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
 	}
 	"Benera Desc"
 	{
@@ -1167,11 +1167,11 @@
 	}
 	"Lanius Desc"
 	{
-		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems having warriors are inevitable...\nBattery: boosts the speed of friendly melee units"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are inevitable no matter the culture...\nBattery: boosts the speed of friendly melee units"
 	}
 	"Magia Desc"
 	{
-		"en"	"A Basic Mage of the Ruanians\nStays holds a magic crest\nBattery: boosts the speed of friendly ranged units"
+		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
 	}
 	"Heavy Punuel Desc"
 	{
@@ -1315,19 +1315,19 @@
 	}
 	"Malius Desc"
 	{
-		"en"	"Has the ability to boost nearby npc's battery"
+		"en"	"Has the ability to boost nearby npc's battery\nIts best to take these out first..."
 	}
 	"Laz Desc"
 	{
-		"en"	"A magical laser wielding mage\nits laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
+		"en"	"A magical laser wielding mage\nIts laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
 	}
 	"Laniun Desc"	//Need descs
 	{
-		"en"	"A stronger variant of Lanius"
+		"en"	"A stronger variant of Lanius\nHowever, anything inbetween where it teleported takes a bit of damage."
 	}
 	"Magnium Desc"
 	{
-		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
 	}
 	"Stellaria Desc"
 	{
@@ -1355,7 +1355,7 @@
 	}
 	"Ruianus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Alongside what the previou one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
 	}
 	"Lazius Desc"
 	{
