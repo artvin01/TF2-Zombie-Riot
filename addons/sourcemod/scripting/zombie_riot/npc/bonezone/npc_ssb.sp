@@ -43,6 +43,7 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define SND_SPIN_HIT			")misc/halloween/strongman_fast_impact_01.wav"
 #define SND_NECROBLAST_CHARGEUP		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_chargeup.mp3"
 #define SND_NECROBLAST_BIGBANG		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_extra.mp3"
+#define SND_SPIN2WIN_ACTIVE		")zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_spin2win_active.mp3"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -359,6 +360,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_SPIN_HIT);
 	PrecacheSound(SND_NECROBLAST_CHARGEUP);
 	PrecacheSound(SND_NECROBLAST_BIGBANG);
+	PrecacheSound(SND_SPIN2WIN_ACTIVE);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -442,13 +444,14 @@ int i_SkullParticle[MAXENTITIES] = { -1, ... };					//The particle associated wi
 
 //SPELL CARD #2 - CURSED CROSS: SSB stops in place and begins to charge up. Once ready: SSB fires a cross of deathly green lasers from his position.
 //These lasers have infinite piercing and are not subject to falloff.
-float Cross_DMG[4] = { 400.0, 800.0, 1600.0, 2400.0 };		//Laser damage.
+float Cross_DMG[4] = { 400.0, 600.0, 800.0, 1000.0 };		//Laser damage.
 float Cross_EntityMult[4] = { 2.0, 4.0, 6.0, 8.0 };			//Amount to multiply damage dealt by lasers to entities.
-float Cross_Range[4] = { 1200.0, 2400.0, 3600.0, 4800.0 };		//Laser range.
-float Cross_Width[4] = { 120.0, 120.0, 120.0, 120.0 };		//Laser hitbox width.
+float Cross_Range[4] = { 1200.0, 2400.0, 3600.0, 4800.0 };	//Laser range.
+float Cross_Width[4] = { 120.0, 90.0, 70.0, 60.0 };			//Laser hitbox width.
 float Cross_Delay[4] = { 3.0, 2.75, 2.5, 2.25 };			//Delay until the lasers are fired once this Spell Card is activated.
 float Cross_Space[4] = { 60.0, 45.0, 30.0, 20.0 };			//Angles between each laser fired by this ability. Lower = more lasers are fired. Number of lasers = 360 / this. Players CAN be hit by multiple lasers.
 bool SSB_LaserHit[MAXENTITIES] = { false, ... };			//Used exclusively to see if an entity was hit by any of SSB's laser effects.
+float Cross_Pos[MAXENTITIES][3];		//The position this ability was activated at. Used so indicator beams are accurate.
 
 //SPELL CARD #3 - CHAOS BARRAGE: SSB launches a bunch of weak laser projectiles in random directions. These lasers deal no damage and do not touch players.
 //After a short delay, the lasers freeze in place. Then, after another delay, the lasers fly towards whoever is closest and deal damage on contact.
@@ -457,8 +460,8 @@ int Barrage_PerWave[4] = { 2, 2, 3, 3 };							//The number of projectiles fired
 float Barrage_WaveDelay[4] = { 0.2, 0.15, 0.1, 0.05 };				//Delay between projectile waves.
 float Barrage_InitialVelocity[4] = { 400.0, 400.0, 400.0, 400.0 };	//Projectile velocity before they pause.
 float Barrage_PauseDelay[4] = { 1.0, 0.86, 0.76, 0.66};				//Time until projectiles pause.
-float Barrage_PauseDuration[4] = {1.66, 1.0, 0.66, 0.33};			//Projectile pause duration.
-float Barrage_Velocity[4] = { 2000.0, 2200.0, 2200.0, 2200.0 }; 	//Projectile velocity after they unpause.
+float Barrage_PauseDuration[4] = {1.66, 1.5, 1.33, 1.2 };			//Projectile pause duration.
+float Barrage_Velocity[4] = { 1200.0, 1200.0, 1400.0, 1600.0 }; 	//Projectile velocity after they unpause.
 float Barrage_DMG[4] = { 20.0, 25.0, 30.0, 40.0 };					//Projectile base damage.
 bool Barrage_Prediction[4] = { false, false, true, true };			//Whether or not the projectiles should predict target movement once they become lethal.
 float f_BarrageProjectileDMG[MAXENTITIES];							//Ignore this.
@@ -519,10 +522,10 @@ ArrayList SSB_Specials[4];								//DO NOT TOUCH THIS DIRECTLY!!!! This is used 
 int SSB_LastSpecial[MAXENTITIES] = { -1, ... };			//The most recently-used special. Used so that the same special cannot be used twice in a row.
 int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to default to if none of the other Spooky Specials are successfully cast.
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
-float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
-//float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 0.0 };	//The minimum cooldown between specials.
-//float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 0.0 }; //The maximum cooldown between specials.
+//float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
+//float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 10.0 };	//The minimum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 20.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -583,17 +586,17 @@ float Hell_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };				//Distance to spread s
 //SPOOKY SPECIAL #5 - SPIN 2 WIN: SSB pulls out his trusty Mortis Masher and begins to spin wildly. During this, he moves VERY quickly, but has his friction reduced, making
 //him prone to overshooting his target.
 float Spin_Delay[4] = { 3.0, 3.0, 3.0, 3.0 };						//Time until the spin begins.
-float Spin_DMG[4] = { 100.0, 150.0, 200.0, 400.0 };					//Damage dealt per interval to anyone close enough during the spin.
+float Spin_DMG[4] = { 200.0, 300.0, 400.0, 800.0 };					//Damage dealt per interval to anyone close enough during the spin.
 float Spin_Radius[4] = { 120.0, 120.0, 120.0, 120.0 };				//Radius in which SSB's hammer will bludgeon players while he is spinning.
 float Spin_Interval[4] = { 0.33, 0.3, 0.25, 0.2 };					//Interval in which the hammer will hit anyone who is too close.
-float Spin_Duration[4] = {7.0, 8.0, 9.0, 10.0 };					//Duration of the ability.
+float Spin_Duration[4] = { 9.0, 9.0, 9.0, 9.0 };					//Duration of the ability.
 float Spin_Speed[4] = { 600.0, 700.0, 800.0, 900.0 };				//SSB's movement speed while spinning.
 float Spin_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };				//Amount to multiply damage dealt to entities.
 float Spin_KB[4] = { 900.0, 1200.0, 1500.0, 1800.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
 //SPECIAL NOTE FOR SPIN 2 WIN: Friction and acceleration seem to be inextricably linked. You will need the perfect blend of both to get the effects you're looking for, 
 //so don't just change these willy-nilly without testing first.
-float Spin_Friction[4] = { 0.5, 0.75, 1.0, 1.5 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
-float Spin_Acceleration[4] = { 1200.0, 1540.0, 2000.0, 2520.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
+float Spin_Friction[4] = { 0.5, 0.66, 0.85, 1.0 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
+float Spin_Acceleration[4] = { 1200.0, 1540.0, 2000.0, 2250.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
 
 //SPOOKY SPECIAL #6 - MEGA MORTIS: SSB once again pulls out his trusty Mortis Masher and lifts it high into the air, charging it with necrotic energy. After X second(s),
 //he slams it down, dealing massive damage within a large radius to anybody who is on the ground. Anyone who is directly hit by the hammer itself is instantly killed,
@@ -808,8 +811,9 @@ static void SSB_PrepareAbilities()
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("NIGHTMARE VOLLEY", 0.5, 0, SpellCard_NightmareVolley));
 	PushArrayCell(SSB_SpellCards[0], SSB_CreateAbility("CURSED CROSS", 0.66, 0, SpellCard_CursedCross, SSB_Filter_MustBeOnGround, _, true, Cross_Delay[0]));
 	//Spooky Specials:
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, SSB_Filter_MustBeOnGround, false, _, Necrotic_Delay[0] + 1.6));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, SSB_Filter_MustBeOnGround, false, _, Summon_Duration[0] + 2.2));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, SSB_Filter_MustBeOnGround, false, _, Necrotic_Delay[0] + 1.6));
+	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, SSB_Filter_MustBeOnGround, false, _, Summon_Duration[0] + 2.2));
+	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, SSB_Filter_MustBeOnGround, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
 
 	//Wave 30:
 	//Spell Cards:
@@ -1081,11 +1085,11 @@ public void SpellCard_CursedCross(SupremeSpookmasterBones ssb, int target)
 		WritePackFloat(pack, GetGameTime(ssb.index) + 0.58);
 	}
 
-	float pos[3], ang[3];
+	float ang[3];
 	GetEntPropVector(ssb.index, Prop_Data, "m_angRotation", ang);
 	ang[0] = 0.0;
 	ang[2] = 0.0;
-	WorldSpaceCenter(ssb.index, pos);
+	WorldSpaceCenter(ssb.index, Cross_Pos[ssb.index]);
 
 	for (float mod = 0.0; mod < 360.0; mod += Cross_Space[SSB_WavePhase])
 	{
@@ -1093,9 +1097,12 @@ public void SpellCard_CursedCross(SupremeSpookmasterBones ssb, int target)
 		shootAng = ang;
 		shootAng[1] += mod;
 
-		GetPointFromAngles(pos, shootAng, Cross_Range[SSB_WavePhase], shootPos, Priest_OnlyHitWorld, MASK_SHOT);
-		SpawnBeam_Vectors(pos, shootPos, Cross_Delay[SSB_WavePhase], 20, 200, 80, 90, PrecacheModel("materials/sprites/laserbeam.vmt"), 24.0, 24.0, _, 0.0);
+		GetPointFromAngles(Cross_Pos[ssb.index], shootAng, Cross_Range[SSB_WavePhase], shootPos, Priest_OnlyHitWorld, MASK_SHOT);
+		SpawnBeam_Vectors(Cross_Pos[ssb.index], shootPos, Cross_Delay[SSB_WavePhase], 20, 200, 80, 90, PrecacheModel("materials/sprites/laserbeam.vmt"), 24.0, 24.0, _, 0.0);
 	}
+
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+		SSB_LaserHit[victim] = false;
 }
 
 public void Cross_ChangeToLoop(DataPack pack)
@@ -1135,11 +1142,10 @@ public Action Cross_Cast(Handle timer, int ref)
 		EmitSoundToAll(Cross_BlastSFX[i], ssb.index, _, 120, _, _, 80);
 	}
 
-	float pos[3], ang[3], hullMin[3], hullMax[3];
+	float ang[3], hullMin[3], hullMax[3];
 	GetEntPropVector(ssb.index, Prop_Data, "m_angRotation", ang);
 	ang[0] = 0.0;
 	ang[2] = 0.0;
-	WorldSpaceCenter(ssb.index, pos);
 	hullMin[0] = -Cross_Width[SSB_WavePhase];
 	hullMin[1] = hullMin[0];
 	hullMin[2] = hullMin[0];
@@ -1153,9 +1159,9 @@ public Action Cross_Cast(Handle timer, int ref)
 		shootAng = ang;
 		shootAng[1] += mod;
 
-		GetPointFromAngles(pos, shootAng, Cross_Range[SSB_WavePhase], shootPos, Priest_OnlyHitWorld, MASK_SHOT);
+		GetPointFromAngles(Cross_Pos[ssb.index], shootAng, Cross_Range[SSB_WavePhase], shootPos, Priest_OnlyHitWorld, MASK_SHOT);
 
-		TR_TraceHullFilter(pos, shootPos, hullMin, hullMax, 1073741824, SSB_LaserTrace, ssb.index);
+		TR_TraceHullFilter(Cross_Pos[ssb.index], shootPos, hullMin, hullMax, 1073741824, SSB_LaserTrace, ssb.index);
 			
 		for (int victim = 1; victim < MAXENTITIES; victim++)
 		{
@@ -1180,10 +1186,10 @@ public Action Cross_Cast(Handle timer, int ref)
 		}
 			
 		ParticleEffectAt(shootPos, PARTICLE_GREENBLAST_SSB, 2.0);
-		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
-		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
-		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 6.0, 6.0, _, 10.0);
-		SpawnBeam_Vectors(pos, shootPos, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
+		SpawnBeam_Vectors(Cross_Pos[ssb.index], shootPos, 0.25, 20, 255, 120, 255, PrecacheModel("materials/sprites/lgtning.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(Cross_Pos[ssb.index], shootPos, 0.25, 20, 255, 20, 255, PrecacheModel("materials/sprites/glow02.vmt"), 12.0, 12.0, _, 0.0);
+		SpawnBeam_Vectors(Cross_Pos[ssb.index], shootPos, 0.25, 20, 255, 120, 180, PrecacheModel("materials/sprites/lgtning.vmt"), 6.0, 6.0, _, 10.0);
+		SpawnBeam_Vectors(Cross_Pos[ssb.index], shootPos, 0.25, 20, 255, 120, 80, PrecacheModel("materials/sprites/lgtning.vmt"), 2.0, 2.0, _, 20.0);
 	}
 
 	return Plugin_Continue;
@@ -1199,7 +1205,6 @@ public Action Cross_RevertAnim(Handle timer, int ref)
 	ssb.Unpause();
 	ssb.UsingAbility = false;
 	ssb.RevertSequence();
-	SSB_Movement_Data_RestoreFromValues(ssb);
 
 	return Plugin_Continue;
 }
@@ -2919,18 +2924,18 @@ public void Special_Spin(SupremeSpookmasterBones ssb, int target)
 	WritePackCell(pack, SSB_WavePhase);
 	WritePackFloat(pack, begin);
 
-
 	begin -= Spin_Delay[SSB_WavePhase];
 	DataPack pack2 = new DataPack();
 	RequestFrame(Spin_IntroLogic, pack2);
-	WritePackCell(pack, EntIndexToEntRef(ssb.index));
-	WritePackFloat(pack, begin);
-	WritePackFloat(pack, GetGameTime(ssb.index) + 0.3);
+	WritePackCell(pack2, EntIndexToEntRef(ssb.index));
+	WritePackFloat(pack2, begin);
+	WritePackFloat(pack2, GetGameTime(ssb.index) + 0.3);
 }
 
 public void Spin_IntroLogic(DataPack pack)
 {
 	ResetPack(pack);
+
 	int ent = EntRefToEntIndex(ReadPackCell(pack));
 	float endTime = ReadPackFloat(pack);
 	float hammerSpawn = ReadPackFloat(pack);
@@ -2956,10 +2961,10 @@ public void Spin_IntroLogic(DataPack pack)
 	}
 
 	pack = new DataPack();
+	RequestFrame(Spin_IntroLogic, pack);
 	WritePackCell(pack, EntIndexToEntRef(ssb.index));
 	WritePackFloat(pack, endTime);
 	WritePackFloat(pack, hammerSpawn);
-	RequestFrame(Spin_IntroLogic, pack);
 }
 
 public void Spin_Begin(DataPack pack)
@@ -2999,7 +3004,14 @@ public void Spin_Begin(DataPack pack)
 		int iActivity = ssb.LookupActivity("ACT_SPIN2WIN_ACTIVE");
 		if(iActivity > 0) ssb.StartActivity(iActivity);
 
-		//TODO: Funny AAAAAAAAAAA sound while active
+		ssb.SetPlaybackRate(3.0 * (0.13 / Spin_Interval[SSB_WavePhase]));
+
+		EmitSoundToAll(SND_SPIN2WIN_ACTIVE, ssb.index, _, 120);
+		EmitSoundToAll(SND_PULL_ACTIVATED);
+		
+		float pos[3];
+		GetEntPropVector(ssb.index, Prop_Data, "m_vecAbsOrigin", pos);
+		ParticleEffectAt(pos, PARTICLE_TARTARUS_BEGIN, 2.0);
 
 		return;
 	}
@@ -3031,6 +3043,8 @@ public void Spin_Logic(DataPack pack)
 	{
 		//TODO: Needs outro anim
 		ssb.UsingAbility = false;
+		ssb.RevertSequence();
+		ssb.SetPlaybackRate(1.0);
 
 		SSB_Movement_Data_RestoreFromValues(ssb);
 
@@ -3045,7 +3059,10 @@ public void Spin_Logic(DataPack pack)
 		bool isBlue = GetEntProp(ssb.index, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
 		Explode_Logic_Custom(Spin_DMG[phase], ssb.index, ssb.index, 0, pos, Spin_Radius[phase], 1.0, 1.0, isBlue, 999, _, Spin_EntityMult[phase], Spin_OnHit);
 
-		EmitSoundToAll(SND_SPIN_WHOOSH, ssb.index, _, 120, _, _, GetRandomInt(70, 120));
+		int pitch = GetRandomInt(70, 120);
+		EmitSoundToAll(SND_SPIN_WHOOSH, ssb.index, _, 120, _, _, pitch);
+		EmitSoundToAll(SND_SPIN_WHOOSH, ssb.index, _, 120, _, _, pitch);
+		EmitSoundToAll(SND_SPIN_WHOOSH, ssb.index, _, 120, _, _, pitch);
 
 		nextHit = gt + Spin_Interval[phase];
 	}
@@ -3257,16 +3274,16 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_Paused[this.index] = true;
 		this.StopPathing();
 		this.m_bPathing = false;
-		SSB_Movement_Data_ReadValues(this);
+		/*SSB_Movement_Data_ReadValues(this);
 		this.m_flSpeed = 0.0;
 		this.GetBaseNPC().flFrictionSideways = 999999.0;
 		this.GetBaseNPC().flFrictionForward = 999999.0;
-		this.GetBaseNPC().flAcceleration = 0.0;
+		this.GetBaseNPC().flAcceleration = 0.0;*/
 	}
 
 	public void Unpause()
 	{
-		SSB_Movement_Data_RestoreFromValues(this);
+		//SSB_Movement_Data_RestoreFromValues(this);
 		SSB_Paused[this.index] = false;
 		this.StartPathing();
 		this.m_bPathing = true;
