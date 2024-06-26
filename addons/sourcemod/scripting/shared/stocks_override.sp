@@ -364,10 +364,10 @@ void Edited_TF2_RegeneratePlayer(int client)
 #endif
 #if defined ZR
 	KillDyingGlowEffect(client);
+	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
 #endif
 	ForcePlayerCrouch(client, false);
 	//delete at all times, they have no purpose here, you respawn.
-	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
 	TF2_RegeneratePlayer(client);
 
 	//player needs to be fully nowmally visible.
@@ -387,10 +387,10 @@ stock void Edited_TF2_RespawnPlayer(int client)
 
 #if defined ZR
 	KillDyingGlowEffect(client);
+	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
 #endif
 	ForcePlayerCrouch(client, false);
 	//delete at all times, they have no purpose here, you respawn.
-	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
 	TF2_RespawnPlayer(client);
 
 	//player needs to be fully nowmally visible.

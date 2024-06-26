@@ -1465,8 +1465,12 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 			return false;
 			*/
 		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+#if defined ZR
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
+#else
+		return false;
+#endif
 	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
@@ -1549,11 +1553,13 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		//Edit: if its a barricade this is ignored so they can reclaim it.
 #if defined ZR
 		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
-#endif	
 			return false;
 		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
+#else
+		return false;
+#endif
 	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{

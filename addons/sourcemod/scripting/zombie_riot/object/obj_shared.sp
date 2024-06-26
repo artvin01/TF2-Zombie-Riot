@@ -888,16 +888,16 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	if((damagetype & DMG_CRUSH))
 		return Plugin_Handled;
 
-	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
-		return Plugin_Handled;
-
 	if(Resistance_for_building_High[victim] > GetGameTime())
 	{
 		damage *= 0.75;
 	}
 
 	damage *= 0.1;
-	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	{
+		return Plugin_Handled;
+	}
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;
