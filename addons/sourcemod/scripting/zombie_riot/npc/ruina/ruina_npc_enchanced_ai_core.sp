@@ -992,7 +992,7 @@ enum struct Ruina_Projectiles
 
 	int Projectile_Index;
 
-	int Launch_Projectile(Function Custom_Projectile_Touch)
+	int Launch_Projectile(Function Custom_Projectile_Touch = INVALID_FUNCTION)
 	{	
 		float Velocity[3];
 
@@ -1090,7 +1090,7 @@ enum struct Ruina_Projectiles
 		Vel[2] = Sine(DegToRad(this.Angles[0]))*-this.speed;
 	}
 }
-static void Ruina_Projectile_Touch(int entity, int target)
+void Ruina_Projectile_Touch(int entity, int target)
 {
 	Function func = Func_Ruina_Proj_Touch[entity];
 
@@ -1357,7 +1357,6 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
-	end_point[2]+=10.0;
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, color, 1, 0);
@@ -1367,7 +1366,7 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	DataPack pack;
 	CreateDataTimer(time, Ruina_Mana_Sickness_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
-	pack.WriteCell(EntIndexToEntRef(iNPC));
+	pack.WriteCell(GetTeam(iNPC));
 	pack.WriteFloatArray(end_point, sizeof(end_point));
 	pack.WriteCellArray(color, sizeof(color));
 	pack.WriteFloat(Radius);
@@ -1382,11 +1381,10 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	
 }
-static float fl_ion_dmage;
 static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 {
 	data.Reset();
-	int iNPC = EntRefToEntIndex(data.ReadCell());
+	int Team = data.ReadCell();
 	float end_point[3];
 	int color[4];
 	data.ReadFloatArray(end_point, sizeof(end_point));
@@ -1400,43 +1398,75 @@ static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
 
-	fl_ion_dmage = dmg;
+	Radius = Radius*Radius;
 
-	if(IsValidEntity(iNPC))
+	for(int client = 1; client <= MaxClients; client++)
 	{
-		Explode_Logic_Custom(0.0, 
-		iNPC,		//client
-		iNPC, 		//ent
-		-1,			//wep
-		end_point, 
-		Radius,
-		_,			//fallof multi hit hard explain
-		_, 			//falloff max
-		true, 		//blue npc
-		_, 			//max targets hit
-		_, 			//ignite
-		_,		//dmg multi vs 
-		OnSicknessExplosion_Logic
-		);
-		TE_Particle("spell_batball_impact_blue", end_point, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		if(view_as<CClotBody>(client).m_bThisEntityIgnored)
+			continue;
+		
+		if(!IsClientInGame(client))
+		 	continue;	
+
+		if(!IsEntityAlive(client))
+			continue;
+		
+		if(GetTeam(client) == Team)
+			continue;
+		
+		float Vic_Pos[3];
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", Vic_Pos);
+
+		if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
+			continue;
+
+		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+
+		int laser;
+		laser = ConnectWithBeam(-1, client, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
+		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
-	else
+	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		Explode_Logic_Custom(0.0, 
-		0,		//client
-		0, 		//ent
-		-1,			//wep
-		end_point, 
-		Radius,
-		_,			//fallof multi hit hard explain
-		_, 			//falloff max
-		true, 		//blue npc
-		_, 			//max targets hit
-		_, 			//ignite
-		_,		//dmg multi vs 
-		OnSicknessExplosion_Logic
-		);
-		TE_Particle("spell_batball_impact_blue", end_point, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
+		{
+			if(GetTeam(entity) == Team)
+				continue;
+
+			float Vic_Pos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Vic_Pos);
+
+			if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
+				continue;
+
+			SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+
+			int laser;
+			laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
+			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+
+	for(int a; a < i_MaxcountBuilding; a++)
+	{
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		if(entity != INVALID_ENT_REFERENCE)
+		{
+			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+			{
+				float Vic_Pos[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", Vic_Pos);
+
+				if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
+					continue;
+
+				SDKHooks_TakeDamage(entity, 0, 0, dmg*2.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+				int laser;
+				laser = ConnectWithBeam(-1, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK, end_point);
+				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
 	}
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
@@ -1448,24 +1478,6 @@ static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
-}
-static void OnSicknessExplosion_Logic(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(GetTeam(victim) != GetTeam(entity))
-	{
-		bool sawrunner = b_ThisNpcIsSawrunner[entity];
-		b_ThisNpcIsSawrunner[entity] = true;
-		
-		if(victim <= MaxClients)
-			SDKHooks_TakeDamage(victim, entity, entity, fl_ion_dmage, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-		else
-			SDKHooks_TakeDamage(victim, entity, entity, fl_ion_dmage*2.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-
-		b_ThisNpcIsSawrunner[entity] = sawrunner;
-	}
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
@@ -2600,6 +2612,11 @@ static void Ruina_Teleport_Entity(int entity, float loc[3])
 
 Add sound effects to mana sickness ION's
 
+Mana Sickness:
+Its a special effect for ruina.
+If a player gets more then 2x thier max mana, an ION cannon is fired onto their location, the stats scale on the current "stage"
+Additionally, they get slowed a bit, and lose all their mana alongside their mana regen being blocked.
+
 Names per stage:
 	Stage 1 -> Stage 2 -> Stage 3 -> Starge 4.
 
@@ -2621,7 +2638,9 @@ Names per stage:
 
 		Magnia:
 		{
+			Fire 2 projectils in a row, with a reload between them
 			ICBM: Gains the ability to launch a "homing" projectile rocket.
+			Additionally: while the battery boost is active fired projectiles have homing
 		}
 	}
 	//created
@@ -2635,13 +2654,13 @@ Names per stage:
 		Battery: Buff's nearby Melee npc's speed
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
 
 		Laniun:
 		{
-			
+			Is just stronger variant + Teleport deals damage to targets hit
 		}
 
 
@@ -2683,9 +2702,15 @@ Names per stage:
 		Battery: Summons itself.
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null	
 		Stage 4: Null
+
+		Europis
+		{
+			Battery: Alongside summoning itself, it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
+			Also the summon now includes Magia and Lanius from the previous stage.
+		}
 	}
 	//created
 	6: Daedalus -> Draedon -> Draeonis -> Draconia
@@ -2696,9 +2721,14 @@ Names per stage:
 		Battery: Provides shield to npc's within range.
 
 		Stage 1: Done.
-		Stage 2: Done. Is just a buffed version.
+		Stage 2: Done. 
 		Stage 3: Null
 		Stage 4: Null
+
+		Draedon
+		{
+			Its just a buffed version.
+		}
 	}
 	//created
 	7: Aether -> Aetheria -> Aetherium -> Aetherianus
@@ -2710,9 +2740,14 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 
 		Stage 1: Done.
-		Stage 2: Done. Bow model done. maybe just requires a bit of paintwork.
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
+
+		Aetheria
+		{
+			battery: gains the ability to shoot a laser projectile of D00M
+		}
 	}
 	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
@@ -2723,9 +2758,14 @@ Names per stage:
 		Battery: Gives a set amt of battery to nearby npc's
 
 		Stage 1: Done.
-		Stage 2: Done.	Is a stronger variant, does an animation and stands still while casting the battery buff.
+		Stage 2: Done.	
 		Stage 3: Null
 		Stage 4: Null
+
+		Maliana
+		{
+			Is a stronger variant, does an animation and stands still while casting the battery buff.
+		}
 
 		Maliana:
 
@@ -2740,9 +2780,16 @@ Names per stage:
 		Passive: damage taken is healed to allies around.
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
+
+		Ruianus
+		{
+			Every 20 seconds fire a fantasmal wave.
+			This fantasmal wave can be dodged by simply jumping over it.
+			Additionally, a portion of the damage dealt by this wave is transfered over to the healing amount.
+		}
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
 	{
@@ -2754,6 +2801,11 @@ Names per stage:
 		Stage 2: Done.	Lazius
 		Stage 3: Null	Lazines
 		Stage 4: Null	Lazurus
+
+		Lazius
+		{
+			battery: shoot a stronger variant of the laser, has better homing too
+		}
 	}
 	//created
 	11: Drone -> Dronian -> Dronis -> Dronianis
@@ -2767,6 +2819,11 @@ Names per stage:
 		Stage 2: Needs concept, sp exists
 		Stage 3: Null
 		Stage 4: Null
+
+		Dronian
+		{
+
+		}
 	}
 
 	Valiant	//Gonna be set into special, like expi spies.

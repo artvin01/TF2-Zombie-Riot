@@ -226,6 +226,8 @@ methodmap Laniun < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
+		npc.Anger = false;
+
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
 		return npc;
@@ -274,6 +276,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
+		npc.Anger = true;
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
@@ -308,12 +311,25 @@ static void ClotThink(int iNPC)
 					if(Succeed)
 					{
 						npc.PlayTeleportSound();
+
+						Ruina_Laser_Logic Laser;
+
+						Laser.client = npc.index;
+						Laser.Start_Point = Npc_Vec;
+						Laser.End_Point = vPredictedPos;
+						Laser.Radius = 7.5;
+						Laser.Damage = 100.0;
+						Laser.Bonus_Damage = 600.0;
+						Laser.damagetype = DMG_PLASMA;
+						Laser.Deal_Damage(On_LaserHit);
 							
 						float effect_duration = 0.25;
 	
 						end_offset = vPredictedPos;
 
-						npc.m_flNextTeleport = GameTime + 20.0;
+						npc.m_flNextTeleport = GameTime + (npc.Anger ? 10.0 : 20.0);
+
+						npc.Anger = false;
 										
 						for(int help=1 ; help<=8 ; help++)
 						{	
@@ -371,6 +387,10 @@ static void ClotThink(int iNPC)
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 25);
+}
+static void On_LaserHit(int client, int Target, int damagetype, float damage)
+{
+	Ruina_Add_Mana_Sickness(client, Target, 0.1, 50);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {

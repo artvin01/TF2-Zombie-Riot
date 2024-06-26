@@ -565,9 +565,10 @@ public void OnPostThink(int client)
 					
 		Mana_Hud_Delay[client] = 0.0;
 	}
-
-	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	//A part of Ruina's special mana "corrosion"
+	//A part of Ruina's special mana "corrosion"
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0) && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))	
 	{
+		//if they are using a magic weapon, don't take away the overmana. can be both a good and bad thing, good in non ruina situations, possibly bad in ruina situations
 		//the +10 is for rounding errors.
 		if(Mana_Loss_Delay[client] < GameTime)
 		{
@@ -1145,7 +1146,7 @@ public void OnPostThink(int client)
 						if(blue<0)
 							blue=0;
 					}
-					else	//Player is DANGEROUSLY close to getting nuked due to overmana!
+					else	//Player is DANGEROUSLY close to getting targeted by a ruina ion due to overmana!
 					{
 						red 	= 255;
 						green 	= 0;
