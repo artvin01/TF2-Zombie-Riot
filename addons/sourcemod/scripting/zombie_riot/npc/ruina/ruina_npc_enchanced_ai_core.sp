@@ -2827,6 +2827,7 @@ Names per stage:
 		}
 	}
 
+	Todo: Rewrite these. mostly the anchor and Valiant. as for the weaver, mostly how it attacks.
 	Valiant	//Gonna be set into special, like expi spies.
 	{
 		State: Independant
