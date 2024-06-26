@@ -66,6 +66,8 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define PARTICLE_SKULL_MINI					"flaregun_trail_red"
 #define PARTICLE_PORTAL_PURPLE				"eyeboss_tp_vortex"
 #define PARTICLE_SUMMON_VANISH				"ghost_appearation"
+#define PARTICLE_SPIN_TRAIL_1				"critgun_weaponmodel_red"
+#define PARTICLE_SPIN_TRAIL_2				"critgun_weaponmodel_blu"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -3012,6 +3014,14 @@ public void Spin_Begin(DataPack pack)
 		float pos[3];
 		GetEntPropVector(ssb.index, Prop_Data, "m_vecAbsOrigin", pos);
 		ParticleEffectAt(pos, PARTICLE_TARTARUS_BEGIN, 2.0);
+
+		for (int i = 1; i <= 8; i++)
+		{
+			char point[255];
+			Format(point, sizeof(point), "hammer_%i", i);
+
+			SSB_AttachParticle(ssb.index, i % 2 == 0 ? PARTICLE_SPIN_TRAIL_1 : PARTICLE_SPIN_TRAIL_2, Spin_Duration[SSB_WavePhase], point);
+		}
 
 		return;
 	}
