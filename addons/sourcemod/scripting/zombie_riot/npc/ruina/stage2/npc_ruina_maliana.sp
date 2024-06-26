@@ -169,7 +169,7 @@ methodmap Maliana < CClotBody
 		
 		*/
 
-		char Items[][] = {
+		static const char Items[][] = {
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl",
 			"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl",
@@ -178,6 +178,20 @@ methodmap Maliana < CClotBody
 			"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl",
 			RUINA_CUSTOM_MODELS
 		};
+
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_STAFF_1);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -193,48 +207,6 @@ methodmap Maliana < CClotBody
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-
-		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-
-		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-
-		SetVariantInt(RUINA_STAFF_1);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				

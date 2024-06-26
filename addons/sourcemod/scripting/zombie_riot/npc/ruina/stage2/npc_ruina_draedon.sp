@@ -188,15 +188,7 @@ methodmap Draedon < CClotBody
 			
 		*/
 
-		char Items[][] = {
-			"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl",
-			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl",
-			"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl",
-			"models/player/items/medic/berliners_bucket_helm.mdl",
-			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
-			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
-			RUINA_CUSTOM_MODELS
-		};
+		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -212,48 +204,31 @@ methodmap Draedon < CClotBody
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		static const char Items[][] = {
+			"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl",
+			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl",
+			"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl",
+			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
+			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
+			RUINA_CUSTOM_MODELS
+		};
 
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
-		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
 
 		SetVariantInt(RUINA_MAGI_GUN);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;

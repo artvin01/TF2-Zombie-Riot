@@ -186,7 +186,7 @@ methodmap Magnium < CClotBody
 			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
 		
 		*/
-		char Items[][] = {
+		static const char Items[][] = {
 			"models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl",
 			"models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
@@ -194,6 +194,20 @@ methodmap Magnium < CClotBody
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
 			RUINA_CUSTOM_MODELS
 		};
+
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_HAND_CREST_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -209,52 +223,15 @@ methodmap Magnium < CClotBody
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", Items[0]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", Items[1]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("head", Items[3]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-
-		
-		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-
-		SetVariantInt(RUINA_HAND_CREST_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
+			
 
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-				
+		AcceptEntityInput(npc.index, "SetBodyGroup");			
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
+		fl_ruina_battery_timeout[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc		
 
@@ -324,7 +301,7 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-		if(npc.Anger)
+		if(npc.Anger && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			int Enemy_I_See;
 				
@@ -333,6 +310,8 @@ static void ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*20)
 				{
+					fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
+
 					npc.Anger = false;
 
 					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;

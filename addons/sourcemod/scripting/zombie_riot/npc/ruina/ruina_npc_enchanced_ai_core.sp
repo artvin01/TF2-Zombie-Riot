@@ -28,6 +28,7 @@ static bool b_is_battery_buffed[MAXENTITIES];
 float fl_ruina_battery[MAXENTITIES];
 bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
+float fl_ruina_battery_timeout[MAXENTITIES];
 
 float fl_ruina_stella_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
