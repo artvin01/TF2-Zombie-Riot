@@ -1870,7 +1870,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
-	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	{
+		return Plugin_Handled;
+	}
 	
 #if defined ZR
 	//damage is more then their health, they will die.

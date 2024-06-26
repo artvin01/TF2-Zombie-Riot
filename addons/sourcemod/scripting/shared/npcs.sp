@@ -957,7 +957,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 	else if(damage < 9999999.9)
 	{
-		Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+		if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+		{
+			return Plugin_Handled;
+		}
 
 #if defined ZR
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))

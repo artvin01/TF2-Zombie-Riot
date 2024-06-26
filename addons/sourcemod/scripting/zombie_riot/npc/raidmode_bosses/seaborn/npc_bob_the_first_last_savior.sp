@@ -1437,7 +1437,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 }
 
-void GiveOneRevive()
+void GiveOneRevive(bool ignorelimit = false)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1472,7 +1472,7 @@ void GiveOneRevive()
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 			
 			i_AmountDowned[client]--;
-			if(i_AmountDowned[client] < 0)
+			if(!ignorelimit && i_AmountDowned[client] < 0)
 				i_AmountDowned[client] = 0;
 			
 			DoOverlay(client, "", 2);

@@ -8,6 +8,7 @@
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
 
+
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	LogEntryInvicibleTest(victim, attacker, damage, 5);
@@ -70,11 +71,6 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
-	{
-		damage = 0.0;
-		return true;
-	}
 
 	float GameTime = GetGameTime();
 
@@ -133,7 +129,18 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
 		return false;
-	
+
+	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+	{
+#if defined RPG
+		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+#endif
+			return true;
+
+#if defined RPG
+		LastHitRef[victim] = EntIndexToEntRef(attacker);
+#endif	
+	}
 	float GameTime = GetGameTime();
 
 	if(Medival_Difficulty_Level != 0.0)
@@ -444,6 +451,13 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 
 stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(!b_NpcIsTeamkiller[attacker])
+	{
+		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
