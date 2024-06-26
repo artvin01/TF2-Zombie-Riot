@@ -1272,5 +1272,5 @@ void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 	GetEntProp(attacker, Prop_Data, "m_lifeState"),
 	SaveCurrentHpAtFirst,
 	SaveCurrentHpAt);
-	*/
 }
+*/
