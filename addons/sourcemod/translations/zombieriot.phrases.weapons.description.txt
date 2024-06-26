@@ -3066,14 +3066,14 @@
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
-	
+	}
 	"The Merchant Desc"
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
 	}
 	"Merchant Pap 1 Desc"
 	{
-		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP and has reduced cooldown"
+		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
 	}
 	"Merchant Pap 2 Desc"
 	{

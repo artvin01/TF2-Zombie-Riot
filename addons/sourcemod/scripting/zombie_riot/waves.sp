@@ -2457,8 +2457,8 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			if(!ReadyUpTimer)
-				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+			//if(!ReadyUpTimer)
+			//	ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
 			
 		//	KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();

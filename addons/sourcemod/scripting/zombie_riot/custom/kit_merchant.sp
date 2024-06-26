@@ -287,8 +287,10 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				}
 
 				// Nothing: Stun Effect
-				if((MerchantLeftAt[attacker] + (MerchantLevel[attacker] == 5 ? 3.0 : 4.0)) < gameTime)
+				if(TF2_IsPlayerInCondition(attacker, TFCond_FocusBuff))
 				{
+					TF2_RemoveCondition(attacker, TFCond_FocusBuff);
+					
 					float stun;
 
 					switch(MerchantLevel[attacker])
@@ -314,10 +316,9 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 							stun = 2.5;
 						}
 					}
+
 					if(b_thisNpcIsARaid[victim])
-					{
 						stun *= 0.25;
-					}
 
 					FreezeNpcInTime(victim, stun);
 				}
@@ -512,7 +513,8 @@ void Merchant_SelfTakeDamage(int victim, int attacker, float &damage)
 			//GetClientAbsOrigin(victim, pos1);
 			//GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", pos2);
 			//if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
-			MerchantEffect[victim] = EntIndexToEntRef(attacker);
+			if(IsValidEnemy(victim, attacker, true, true))
+				MerchantEffect[victim] = EntIndexToEntRef(attacker);
 		}
 	}
 }
@@ -905,7 +907,7 @@ static void MerchantEnd(int client)
 			}
 			case Merchant_Nothing:
 			{
-				cooldown = 5.0;
+				//cooldown = 5.0;
 			}
 		}
 
@@ -954,8 +956,15 @@ static void MerchantThink(int client, int &cost)
 		}
 		case Merchant_Nothing:
 		{
+			if(MerchantLevel[client] > 2 && !TF2_IsPlayerInCondition(client, TFCond_FocusBuff))
+			{
+				if((MerchantLeftAt[client] + (MerchantLevel[client] == 5 ? 6.0 : 8.0)) < GetGameTime())
+					TF2_AddCondition(client, TFCond_FocusBuff);
+			}
+
 			if(MerchantLevel[client] > 3)
 				cost = cost * 2 / 3;
+			
 		}
 		case Merchant_Lee:
 		{
