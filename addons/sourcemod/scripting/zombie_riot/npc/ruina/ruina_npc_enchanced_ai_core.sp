@@ -1357,6 +1357,7 @@ static void Apply_Sickness(int iNPC, int Target)
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
+	end_point[2]+=5.0;
 
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, color, 1, 0);
