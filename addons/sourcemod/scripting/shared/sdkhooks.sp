@@ -521,6 +521,8 @@ public void OnPostThink(int client)
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
 
+		has_mage_weapon[client] = false;
+		
 		Mana_Regen_Tick = true;
 
 		int i, entity;
