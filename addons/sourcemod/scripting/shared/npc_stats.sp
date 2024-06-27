@@ -2329,7 +2329,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	float offset = 0.0,
 	bool DontParent = false)
 	{
-		int item = CreateEntityByName("prop_dynamic");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -3207,6 +3207,21 @@ static void OnDestroy(CClotBody body)
 	{
 		RemoveFromNpcPathList(body);
 	}
+	RemoveNpcThingsAgain(body.index);
+	if(h_NpcCollissionHookType[body.index] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcCollissionHookType[body.index]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
+		}
+	}
+	if(h_NpcSolidHookType[body.index] != 0)
+	{
+		if(!DHookRemoveHookID(h_NpcSolidHookType[body.index]))
+		{
+			PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
+		}
+	}
 	b_ThisWasAnNpc[body.index] = false;
 	b_NpcHasDied[body.index] = true;
 	b_StaticNPC[body.index] = false;
@@ -3323,7 +3338,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		
 		CClotBody npc = view_as<CClotBody>(pThis);
 		npc.m_flNextDelayTime = 999999.9; //disable them thinking.
-	//	SDKUnhook(pThis, SDKHook_Think, NpcBaseThink);
 		SDKUnhook(pThis, SDKHook_ThinkPost, NpcBaseThinkPost);
 #if defined ZR
 		OnKillUniqueWeapon(iAttacker, iWeapon, pThis);
@@ -5465,12 +5479,7 @@ public void NpcBaseThink(int iNPC)
 		return;
 	}
 	SaveLastValidPositionEntity(iNPC);
-
-#if defined ZR || defined RPG
-	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
-#else
-	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
-#endif
+	NpcSetGravity(npc,iNPC);
 	
 	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
 	{
@@ -5529,35 +5538,38 @@ public void NpcBaseThink(int iNPC)
 		RPGNpc_UpdateHpHud(iNPC);
 	}
 #endif
-	/*
-	if(b_EntityInCrouchSpot[iNPC])
-	{
-		if(!b_NpcResizedForCrouch[iNPC])
-		{
-			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 0.5);
-			b_NpcResizedForCrouch[iNPC] = true;
-		}
-	}
-	else //only turn off if outside.
-	{
-		if(b_NpcResizedForCrouch[iNPC])
-		{
-			float scale = GetEntPropFloat(iNPC, Prop_Send, "m_flModelScale");
-			SetEntPropFloat(iNPC, Prop_Send, "m_flModelScale", scale * 2.0);
-			b_NpcResizedForCrouch[iNPC] = false;
-		}
-	}
-	*/
-	static float flMyPos[3];
-	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
+
+	NpcStuckInSomething(npc,iNPC);
+
+	Function func = func_NPCThink[iNPC];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(iNPC);
+		Call_Finish();
+	}
+	NpcStuckInSomething(npc,iNPC);
+}
+
+public void NpcSetGravity(CClotBody npc, int iNPC)
+{
+#if defined ZR || defined RPG
+	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+#else
+	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+#endif
+}
+public void NpcOutOfBounds(CClotBody npc, int iNPC)
+{
 #if defined RTS
 	if(!i_NpcIsABuilding[iNPC])
 #else
 	if(!IsEntityTowerDefense(iNPC) && GetTeam(iNPC) != TFTeam_Red && !i_NpcIsABuilding[iNPC])
 #endif
 	{
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		float GameTime = GetGameTime();
 		//If NPCs some how get out of bounds
 		if(f_StuckOutOfBoundsCheck[iNPC] < GameTime)
@@ -5618,7 +5630,6 @@ public void NpcBaseThink(int iNPC)
 			//This is a tempomary fix. find a better one for players getting stuck.
 		}
 	}
-
 #if defined ZR
 	else if(GetTeam(iNPC) == TFTeam_Red && !i_NpcIsABuilding[iNPC])
 	{
@@ -5627,12 +5638,14 @@ public void NpcBaseThink(int iNPC)
 		{
 			f_StuckOutOfBoundsCheck[iNPC] = GameTime + 10.0;
 			//If NPCs some how get out of bounds
+			static float flMyPos[3];
+			GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
-			flMyPos_Bounds[2] += 25.0;
-			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			flMyPos_Bounds[2] += 1.0;
+			if(TR_PointOutsideWorld(flMyPos_Bounds) || IsBoxHazard(flMyPos_Bounds, {-20.0,-20.0,0.0}, {20.0,2.0,70.0}))
 			{
-				LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
 				
 #if defined ZR
 				int target = 0;
@@ -5666,18 +5679,9 @@ public void NpcBaseThink(int iNPC)
 		}
 	}
 #endif	// Non-RTS
-
-	//TODO:
-	//Rewrite  ::Update func inside nextbots instead of doing this.
-	// !npc.IsOnGround()  is commented out as sometimes npcs can be inside walls while still retaining isonground
-	Function func = func_NPCThink[iNPC];
-	if(func && func != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, func);
-		Call_PushCell(iNPC);
-		Call_Finish();
-		//todo: convert all on death and on take damage to this.
-	}
+}
+public void NpcStuckInSomething(CClotBody npc, int iNPC)
+{
 	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
 	{
 		if(i_FailedTriesUnstuck[iNPC] == 0)
@@ -5750,6 +5754,8 @@ public void NpcBaseThink(int iNPC)
 			hullcheckmins[2] -= 1.0;			
 		}
 	
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
 		if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
 		{
@@ -5821,7 +5827,6 @@ public void NpcBaseThink(int iNPC)
 		}
 	}	
 }
-
 float f3_KnockbackToTake[MAXENTITIES][3];
 
 stock void Custom_Knockback(int attacker,
@@ -7872,6 +7877,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_DuelStatus[entity] = 0.0;
 	f_PotionShrinkEffect[entity] = 0.0;
 	f_EnfeebleEffect[entity] = 0.0;
+	f_LeeMinorEffect[entity] = 0.0;
+	f_LeeMajorEffect[entity] = 0.0;
+	f_LeeSuperEffect[entity] = 0.0;
 	b_NoKnockbackFromSources[entity] = false;
 	
 	fl_TotalArmor[entity] = 1.0;
@@ -8459,7 +8467,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(b_thisNpcIsARaid[npc] && Duration_Stun >= 1.0)
+	if(b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
@@ -8522,6 +8530,9 @@ void NPCStats_RemoveAllDebuffs(int enemy)
 	f_MaimDebuff[enemy] = 0.0;
 	f_PotionShrinkEffect[enemy] = 0.0;
 	f_EnfeebleEffect[enemy] = 0.0;
+	f_LeeMinorEffect[enemy] = 0.0;
+	f_LeeMajorEffect[enemy] = 0.0;
+	f_LeeSuperEffect[enemy] = 0.0;
 	f_SpecterDyingDebuff[enemy] = 0.0;
 	f_PassangerDebuff[enemy] = 0.0;
 }
@@ -9561,7 +9572,8 @@ stock void EntityIsInHazard_Teleport(int entity)
 		TeleportBackToLastSavePosition(entity);
 	}
 }
-void TeleportBackToLastSavePosition(int entity)
+
+public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
@@ -9581,7 +9593,7 @@ void TeleportBackToLastSavePosition(int entity)
 	}
 }
 
-void SaveLastValidPositionEntity(int entity)
+public void SaveLastValidPositionEntity(int entity)
 {
 	//first see if they are on the ground
 	if(f_GameTimeTeleportBackSave_OutOfBounds[entity] > GetGameTime())
@@ -9673,12 +9685,6 @@ void SaveLastValidPositionEntity(int entity)
 			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-		/*
-		if(b_NpcResizedForCrouch[entity])
-		{
-			hullcheckmaxs_Player[2] = 41.0;
-		}	
-		*/
 		if(IsBoxHazard(AbsOrigin, hullcheckmins_Player, hullcheckmaxs_Player))
 			return;
 
@@ -10013,16 +10019,19 @@ void Spawns_CheckBadClient(int client)
 #endif
 	if(!(GetEntityFlags(client) & (FL_ONGROUND|FL_INWATER)))
 	{
-		// In air or water
 		BadSpotPoints[client]++;
-		return;
+		if(f_ClientInAirSince[client] > GetGameTime())
+		{
+			// In air or water
+			return;
+		}
 	}
-
+/*
 #if defined ZR
 	if(Waves_InSetup())
 		return;
 #endif
-
+*/
 	int RefGround =  GetEntPropEnt(client, Prop_Send, "m_hGroundEntity");
 	int GroundEntity = EntRefToEntIndex(RefGround);
 	if(GroundEntity > 0 && GroundEntity < MAXENTITIES)
@@ -10034,38 +10043,58 @@ void Spawns_CheckBadClient(int client)
 
 	int bad;
 
-	float pos1[3], pos2[3];
-	WorldSpaceCenter(client, pos1);
-	CNavArea area = TheNavMesh.GetNearestNavArea(pos1, false, 100.0, false, true);
+	float pos1[3];
+	GetClientAbsOrigin(client, pos1);
+	pos1[2] += 25.0;
+	CNavArea area;
+	area = TheNavMesh.GetNavArea(pos1, 65.0);
+	//no nav area directly under them
 	if(area == NULL_AREA)
 	{
-		// Not near a nav mesh, bad
-		bad = 5;
-		BadSpotPoints[client] += 5;
-	}
-	else
-	{
-		int npcs;
-		for(int i; i < i_MaxcountNpcTotal; i++)
+		pos1[2] -= 25.0;
+		area = TheNavMesh.GetNearestNavArea(pos1, false, 55.0, false, true);
+		if(area == NULL_AREA)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+			// Not near a nav mesh, bad
+			bad = 5;
+			BadSpotPoints[client] += 5;
+		}
+		else
+		{
+			int NavAttribs = area.GetAttributes();
+			if(NavAttribs & NAV_MESH_DONT_HIDE)
 			{
-				WorldSpaceCenter(client, pos2);
-				CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-				if(startArea == NULL_AREA)
-					continue;	// NPC on a bad nav??
-
-				if(!TheNavMesh.BuildPath(startArea, area, pos1))
-				{
-					bad++;
-					BadSpotPoints[client]++;
-				}
-				
-				if(npcs++ > 4)
-					break;
+				//This nav is designated as bad, give them full points instantly.
+				bad = 5;
+				BadSpotPoints[client] = 45;
 			}
 		}
+		/*
+		else
+		{
+			int npcs;
+			for(int i; i < i_MaxcountNpcTotal; i++)
+			{
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
+				{
+					WorldSpaceCenter(client, pos2);
+					CNavArea startArea = TheNavMesh.GetNavArea(pos2);
+					if(startArea == NULL_AREA)
+						continue;	// NPC on a bad nav??
+
+					if(!TheNavMesh.BuildPath(startArea, area, pos1))
+					{
+						bad++;
+						BadSpotPoints[client]++;
+					}
+					
+					if(npcs++ > 4)
+						break;
+				}
+			}
+		}
+		*/
 	}
 
 	if(bad > 4)
@@ -10082,7 +10111,7 @@ void Spawns_CheckBadClient(int client)
 	}
 	else if(BadSpotPoints[client] > 0)
 	{
-		BadSpotPoints[client]--;
+		BadSpotPoints[client] -= 3;
 	}
 
 	/*

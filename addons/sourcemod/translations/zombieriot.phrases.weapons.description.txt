@@ -3055,4 +3055,40 @@
 	{
 		"en"	"Train your own army and upgrade them."
 	}
+	"Victorian 1 Desc"
+	{
+		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
+	}
+	"Victorian 2 Desc"
+	{
+		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
+	}
+	"Victorian 3 Desc"
+	{
+		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
+	}
+	"The Merchant Desc"
+	{
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
+	}
+	"Merchant Pap 1 Desc"
+	{
+		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
+	}
+	"Merchant Pap 2 Desc"
+	{
+		"en"	"Fish Market can replace Silence with Heal-on-Hit\nMartial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
+	}
+	"Merchant Pap 3 Desc"
+	{
+		"en"	"Fish Market drains less metal\nThe Investigator pushes other enemies back when attacking and can repel stuns back to the attacker\nWine Merchant is unlocked, provides 3 ranged weapons with ammo over time, self-revives at the cost of metal"
+	}
+	"Merchant Pap 4 Desc"
+	{
+		"en"	"Base stats improved\nMartial Artist drains less metal"
+	}
+	"Merchant Pap 5 Desc"
+	{
+		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
+	}
 }

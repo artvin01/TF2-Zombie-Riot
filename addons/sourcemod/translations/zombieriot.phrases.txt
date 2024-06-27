@@ -3163,4 +3163,8 @@
 	{
 		"en"	"Building Menu\nHold crouch for more info"
 	}
+	"Barracks Gained Resources"
+	{
+		"en"	"Your barracks gained resouces from this action!"
+	}
 }

@@ -187,6 +187,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 
+
 native any FuncToVal(Function bruh);
 
 enum
@@ -500,6 +501,9 @@ float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
 float f_EnfeebleEffect[MAXENTITIES];
+float f_LeeMinorEffect[MAXENTITIES];
+float f_LeeMajorEffect[MAXENTITIES];
+float f_LeeSuperEffect[MAXENTITIES];
 int BleedAmountCountStack[MAXENTITIES];
 bool b_HasBombImplanted[MAXENTITIES];
 int i_RaidGrantExtra[MAXENTITIES];
@@ -619,6 +623,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
+float f_TimeSinceLastGiveWeapon[MAXTF2PLAYERS]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
@@ -640,10 +645,12 @@ int i_MaxSupportBuildingsLimit[MAXTF2PLAYERS];
 bool b_AggreviatedSilence[MAXTF2PLAYERS];
 bool b_ArmorVisualiser[MAXENTITIES];
 bool b_BobsCuringHand[MAXTF2PLAYERS];
+bool b_XenoVial[MAXTF2PLAYERS];
 int b_BobsCuringHand_Revived[MAXTF2PLAYERS];
 bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
+bool WildingenBuilder[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
@@ -743,6 +750,7 @@ bool b_CannotBeStunned[MAXENTITIES];
 bool b_CannotBeKnockedUp[MAXENTITIES];
 bool b_CannotBeSlowed[MAXENTITIES];
 float f_NpcTurnPenalty[MAXENTITIES];
+float f_ClientInAirSince[MAXENTITIES];
 bool b_IsInUpdateGroundConstraintLogic;
 bool b_IgnorePlayerCollisionNPC[MAXENTITIES];
 bool b_ProjectileCollideWithPlayerOnly[MAXENTITIES];
@@ -838,7 +846,6 @@ Handle g_hGetVectors;
 Handle g_hLookupActivity;
 Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
-Handle g_hGetAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
 DynamicHook g_DHookMedigunPrimary; 
@@ -864,6 +871,9 @@ float f_IsThisExplosiveHitscan[MAXENTITIES];
 float f_CustomGrenadeDamage[MAXENTITIES];
 
 float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
+
+float TickrateModify;
+int TickrateModifyInt;
 
 enum
 {
@@ -1088,6 +1098,7 @@ bool b_thisNpcIsARaid[MAXENTITIES]; //This is used for scaling.
 bool b_ShowNpcHealthbar[MAXENTITIES];
 bool b_TryToAvoidTraverse[MAXENTITIES];
 bool b_NoKnockbackFromSources[MAXENTITIES];
+bool b_IsATrigger[MAXENTITIES];
 int i_NpcWeight[MAXENTITIES]; //This is used for scaling.
 bool b_StaticNPC[MAXENTITIES];
 float f3_VecTeleportBackSave[MAXENTITIES][3];
@@ -1464,6 +1475,11 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
+
+    float tickrate = 1.0 / GetTickInterval();
+	TickrateModifyInt = RoundToNearest(tickrate);
+
+    TickrateModify = tickrate / 66.0;
 }
 /*
 public void OnAllPluginsLoaded()
@@ -2736,6 +2752,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponBodygroup[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_EnfeebleEffect[entity] = 0.0;
+		f_LeeMinorEffect[entity] = 0.0;
+		f_LeeMajorEffect[entity] = 0.0;
+		f_LeeSuperEffect[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
 		f_DelayAttackspeedPreivous[entity] = 1.0;
@@ -2859,7 +2878,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
+		WildingenBuilder[entity] = false;
 		Armor_Charge[entity] = 0;
+		b_IsATrigger[entity] = false;
 #endif
 
 #if defined ZR || defined RPG
@@ -3058,6 +3079,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "trigger_teleport")) //npcs think they cant go past this sometimes, lol
 		{
+			b_IsATrigger[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -3156,6 +3178,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		*/
 		else if(!StrContains(classname, "trigger_hurt"))
 		{
+			b_IsATrigger[entity] = true;
 			SDKHook(entity, SDKHook_StartTouch, SDKHook_SafeSpot_StartTouch);
 			SDKHook(entity, SDKHook_EndTouch, SDKHook_SafeSpot_EndTouch);
 		}
@@ -3317,42 +3340,26 @@ public void OnEntityDestroyed(int entity)
 	
 	if(entity > 0 && entity < MAXENTITIES)
 	{
+#if defined ZR
 		WeaponWeaponAdditionOnRemoved(entity);
+#endif
 		CurrentEntities--;
-	//	CreateTimer(1.01, Timer_FreeEdict);
 
-		//OnEntityDestroyed_LagComp(entity);
 		if(entity > MaxClients)
 		{
 
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
-
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif
-			RemoveNpcThingsAgain(entity);
 #if !defined NOG
 			IsCustomTfGrenadeProjectile(entity, 0.0);
 #endif
-			if(h_NpcCollissionHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcCollissionHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcCollissionHookType");
-				}
-			}
-			if(h_NpcSolidHookType[entity] != 0)
-			{
-				if(!DHookRemoveHookID(h_NpcSolidHookType[entity]))
-				{
-					PrintToConsoleAll("Somehow Failed to unhook h_NpcSolidHookType");
-				}
-			}
 		}
 		NPCStats_SetFuncsToZero(entity);
 	}

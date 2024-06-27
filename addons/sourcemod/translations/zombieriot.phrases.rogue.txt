@@ -629,6 +629,18 @@
 	{
 		"en"	"Uncertain Goals"
 	}
+	"Uncertain Goals 1"
+	{
+		"en"	"Uncertain Goals 1"
+	}
+	"Uncertain Goals 2"
+	{
+		"en"	"Uncertain Goals 2"
+	}
+	"Uncertain Goals 3"
+	{
+		"en"	"Uncertain Goals 3"
+	}
 	"Water Fountain"
 	{
 		"en"	"Water Fountain"

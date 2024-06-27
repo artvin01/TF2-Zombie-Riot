@@ -1901,7 +1901,8 @@ public Action BlitzLight_TBB_Tick(int client)
 		Stage3_Multi[client] = 1.0;
 	}
 		
-	BlitzLight_DMG[npc.index]=BlitzLight_DMG_Base[npc.index]*(1+Stage3_Multi[client]);				//damage scales on duration.
+	BlitzLight_DMG[npc.index]=BlitzLight_DMG_Base[npc.index]*(1+Stage3_Multi[client]) / TickrateModify;				//damage scales on duration.
+
 	BlitzLight_DMG_Radius[npc.index]=BlitzLight_Scale3[npc.index]*Stage3_Multi[client]+1.0;
 	
 	if(fl_BlitzLight_Throttle[npc.index] < GetGameTime(npc.index))
@@ -1944,12 +1945,12 @@ public void BlitzLight_Invoke(int ref, float timer, float charge)
 		BlitzLight_Duration_notick[npc.index] = GetGameTime(npc.index) + charge;	//Charge time.
 		
 		float time=BlitzLight_Duration[npc.index]+charge;	//Another value in a temp timer.
-		BlitzLight_Duration[npc.index]*=66.0;	//Converts the duration into ticks
+		BlitzLight_Duration[npc.index]*=TickrateModifyInt;	//Converts the duration into ticks
 		
 		//Convert the time into tick amount
-		TickCount_Stage1[npc.index]=RoundToFloor(((charge/2)+charge)*66);
-		TickCount_Stage2[npc.index]=RoundToFloor(((timer/3)+charge)*66);
-		TickCount_Stage3[npc.index]=RoundToFloor((((timer/3)*2)+charge)*66);
+		TickCount_Stage1[npc.index]=RoundToFloor(((charge/2)+charge)*TickrateModifyInt);
+		TickCount_Stage2[npc.index]=RoundToFloor(((timer/3)+charge)*TickrateModifyInt);
+		TickCount_Stage3[npc.index]=RoundToFloor((((timer/3)*2)+charge)*TickrateModifyInt);
 
 		if(b_lost)
 		{

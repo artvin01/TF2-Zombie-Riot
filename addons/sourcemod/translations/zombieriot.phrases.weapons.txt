@@ -2067,6 +2067,10 @@
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
 	}
+	"Deleting buildings refunds text"
+	{
+		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
+	}
 	"Press your action slot (h) to access an extra menu!"
 	{
 		"en"	"Press your action slot (h) to access an extra menu!"
@@ -2349,5 +2353,37 @@
 	{
 		"en"	"Tinker Ranger"
 		"chi"	"匠工射手"
+	}
+	"The Merchant"
+	{
+		"en"	"The Merchant"
+	}
+	"Merchant's Wrench"
+	{
+		"en"	"Merchant's Wrench"
+	}
+	"Merchant Emergency Button"
+	{
+		"en"	"Merchant Emergency Button"
+	}
+	"The Merchant Skilled"
+	{
+		"en"	"The Merchant: Skilled"
+	}
+	"The Merchant Elite"
+	{
+		"en"	"The Merchant: Elite"
+	}
+	"The Merchant Mastery 1"
+	{
+		"en"	"The Merchant: Mastery 1"
+	}
+	"The Merchant Mastery 2"
+	{
+		"en"	"The Merchant: Mastery 2"
+	}
+	"The Merchant Mastery 3"
+	{
+		"en"	"The Merchant: Mastery 3"
 	}
 }

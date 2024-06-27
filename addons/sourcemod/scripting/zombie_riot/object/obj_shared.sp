@@ -29,6 +29,7 @@ static Function FuncCanBuild[MAXENTITIES];
 static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
+static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
@@ -65,7 +66,7 @@ void Object_MapStart()
 void Object_PluginStart()
 {
 	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
-	factory.DeriveFromClass("prop_dynamic");
+	factory.DeriveFromClass("prop_dynamic_override");
 	factory.BeginDataMapDesc()
 	.DefineIntField("m_iRepair")
 	.DefineIntField("m_iRepairMax")
@@ -106,6 +107,8 @@ methodmap ObjectGeneric < CClotBody
 						bool DoFakeModel = true)
 	{
 		int obj = CreateEntityByName("obj_building");
+		b_IsEntityAlwaysTranmitted[obj] = true;
+		Hook_DHook_UpdateTransmitState(obj);
 		DispatchKeyValueVector(obj, "origin",	 vecPos);
 		DispatchKeyValueVector(obj, "angles",	 vecAng);
 		DispatchKeyValue(obj,		 "model",	 model);
@@ -113,7 +116,6 @@ methodmap ObjectGeneric < CClotBody
 		DispatchKeyValue(obj,	   "solid", "2");
 		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
 		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
-		b_IsEntityAlwaysTranmitted[obj] = true;
 		DispatchSpawn(obj);
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
@@ -183,6 +185,7 @@ methodmap ObjectGeneric < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;
 		}
+		
 		entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
 		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
@@ -205,7 +208,7 @@ methodmap ObjectGeneric < CClotBody
 	float offset = 0.0,
 	bool DontParent = false)
 	{
-		int item = CreateEntityByName("prop_dynamic");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -433,78 +436,59 @@ methodmap ObjectGeneric < CClotBody
 
 static Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
-	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
-	{
-		if(b_FirstPersonUsesWorldModel[client])
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-		}
-		if(owner == client)
-		{
-			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
-			{
-				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-			}
-		}
-		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-		}
-		return Plugin_Stop;
-	}
-	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
+	return SetTransmit_BuildingShared(entity, client, true);
 }
 
 static Action SetTransmit_BuildingReady(int entity, int client)
 {
-	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
-	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
-	{
-		if(b_FirstPersonUsesWorldModel[client])
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-		}
-		if(owner == client)
-		{
-			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
-			{
-				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-			}
-		}
-		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-		}
-		return Plugin_Stop;
-	}
-	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
+	return SetTransmit_BuildingShared(entity, client, false);
 }
 
-static Action SetTransmit_BuildingShared(int owner, int entity, int client, bool reverse)
+static Action SetTransmit_BuildingShared(int entity, int client, bool reverse)
 {
 	if(client < 1 || client > MaxClients)
 		return Plugin_Continue;
 	
+	int building = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(building == -1)
+	{
+		RemoveEntity(entity);
+		return Plugin_Continue;
+	}
+	
+	bool hide;
+	int owner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
+	
 	if(owner != -1)
 	{
-		bool result = true;
-
-		if(FuncCanUse[owner] && FuncCanUse[owner] != INVALID_FUNCTION)
+		if(EntRefToEntIndex(Building_Mounted[building]) == owner)
 		{
-			Call_StartFunction(null, FuncCanUse[owner]);
-			Call_PushCell(owner);
-			Call_PushCell(client);
-			Call_Finish(result);
-		}
+			hide = true;
 
-		return (result ^ reverse) ? Plugin_Continue : Plugin_Stop;
+			if(b_FirstPersonUsesWorldModel[client])
+			{
+				hide = false;
+			}
+			else if(owner == client)
+			{
+				if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+				{
+					hide = false;
+				}
+			}
+			else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+			{
+				hide = false;
+			}
+		}
+		else
+		{
+			hide = !CanUseBuilding[building][client];
+		}
 	}
 
-	RemoveEntity(entity);
-	return Plugin_Stop;
+	//abomination
+	return (hide ^ reverse /*^ InvertTransmitLogic(client)*/) ? Plugin_Stop : Plugin_Continue;
 }
 
 public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
@@ -526,7 +510,7 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 		return false;
 	
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = Blacksmith_IsASmith(client) ? 0 : 1;
+	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client)) ? 0 : 1;
 
 	return (!count && maxcount);
 }
@@ -557,7 +541,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	objstats.m_flNextDelayTime = gameTime + 0.1;
+	objstats.m_flNextDelayTime = gameTime + 0.2;
 	BuildingDisplayRepairLeft(objstats.index);
 	
 
@@ -639,6 +623,21 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			SetEntProp(objstats.index, Prop_Data, "m_iRepair", repair);
 		}
 		*/
+		
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(FuncCanUse[objstats.index] && FuncCanUse[objstats.index] != INVALID_FUNCTION && IsClientInGame(target) && IsPlayerAlive(target))
+			{
+				Call_StartFunction(null, FuncCanUse[objstats.index]);
+				Call_PushCell(objstats.index);
+				Call_PushCell(target);
+				Call_Finish(CanUseBuilding[objstats.index][target]);
+			}
+			else
+			{
+				CanUseBuilding[objstats.index][target] = true;
+			}
+		}
 
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
@@ -850,6 +849,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
+	maxAllowed += Merchant_Additional_SupportBuildings(client); 
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;
@@ -887,16 +887,16 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	if((damagetype & DMG_CRUSH))
 		return Plugin_Handled;
 
-	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
-		return Plugin_Handled;
-
 	if(Resistance_for_building_High[victim] > GetGameTime())
 	{
 		damage *= 0.75;
 	}
 
 	damage *= 0.1;
-	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	{
+		return Plugin_Handled;
+	}
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;

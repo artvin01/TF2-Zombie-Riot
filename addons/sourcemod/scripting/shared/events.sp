@@ -19,6 +19,7 @@ void Events_PluginStart()
 	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
 	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
+	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -68,6 +69,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundStart();
 	Waves_RoundStart();
 	Blacksmith_RoundStart();
+	Merchant_RoundStart();
 #endif
 
 #if defined RPG
@@ -505,6 +507,15 @@ public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
 public Action OnWinPanel(Event event, const char[] name, bool dontBroadcast)
 {
 	return Plugin_Handled;
+}
+
+public Action OnRestartTimer(Event event, const char[] name, bool dontBroadcast)
+{
+	if(event.GetInt("time") != 9)
+		return Plugin_Continue;
+	
+	event.BroadcastDisabled = true;
+	return Plugin_Changed;
 }
 
 /*

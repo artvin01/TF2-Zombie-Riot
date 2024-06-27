@@ -320,10 +320,10 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 		if(f_MedicCallIngore[client] < GetGameTime())
 			return false;
 
-		SummonerMenu(Owner, client);
+		OpenSummonerMenu(Owner, client);
 		return true;
 	}
-	SummonerMenu(Owner, client);
+	OpenSummonerMenu(Owner, client);
 	return true;
 }
 
@@ -676,7 +676,26 @@ public void Building_Summoner(int client, int entity)
 }
 
 
-
+void Barracks_TryRegenIfBuilding(int client, float ammount = 1.0)
+{
+	int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[client]);
+	if(IsValidEntity(entity))
+	{
+		static char plugin[64];
+		NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+		if(StrContains(plugin, "obj_barracks", false) != -1)
+		{
+			//regen barracks resoruces
+			SummonerRenerateResources(client, 20.0 * ammount);
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Barracks Gained Resources");
+			f_VillageSavingResources[client] = GetGameTime() + 0.25;
+			BarracksSaveResources(client);
+		}
+	}
+}
 void Barracks_BuildingThink(int entity)
 {
 	BarrackBody npc = view_as<BarrackBody>(entity);
@@ -850,7 +869,7 @@ void Barracks_BuildingThink(int entity)
 	for(int i = 1; i <= MaxClients; i++)
 	{
 		if(InMenu[i] == client)
-			SummonerMenu(client, i);
+			OpenSummonerMenu(client, i);
 	}
 			
 	//they do not even have the first upgrade, do not think, but dont cancel.
@@ -1107,9 +1126,17 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Cosmic Repair Handling book"))
 		SupplyRate[client] += 10;
 	
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
+		SupplyRate[client] += 10;
+
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
-	MedievalUnlock[client] = (CivType[client] || Items_HasNamedItem(client, "Medieval Crown"));
+	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
+
+	if(!MedievalUnlock[client])
+		MedievalUnlock[client] = view_as<bool>(CivType[client]);
+
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
+	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 }
 
 void SummonerRenerateResources(int client, float multi, bool allowgold = false)
@@ -1163,7 +1190,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		BarracksSaveResources(client);
 	}
 }
-/*
+
 static void OpenSummonerMenu(int client, int viewer)
 {
 	if(client == viewer)
@@ -1171,7 +1198,7 @@ static void OpenSummonerMenu(int client, int viewer)
 	
 	SummonerMenu(client, viewer);
 }
-*/
+
 
 static void SummonerMenu(int client, int viewer)
 {
@@ -1634,7 +1661,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						b_InUpgradeMenu[client] = true;
 					}
 					
-					SummonerMenu(client, client);
+					OpenSummonerMenu(client, client);
 					return 0;
 				}
 
@@ -1753,7 +1780,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 					}
 
-					SummonerMenu(client, client);
+					OpenSummonerMenu(client, client);
 				}
 			}
 			else
@@ -1782,7 +1809,7 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 					f3_SpawnPosition[client][2] = 0.0;
 				}
 				
-				SummonerMenu(client, client);
+				OpenSummonerMenu(client, client);
 			}
 		}
 	}

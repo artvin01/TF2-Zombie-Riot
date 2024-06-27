@@ -322,7 +322,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 	{
-		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 65.0);
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -383,6 +383,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
+			HealByThis = float(HealByThis) / TickrateModify;
 			if(XenoExtraLogic())
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
@@ -1180,6 +1181,17 @@ public void RaidbossNemesis_NPCDeath(int entity)
 				}
 			}
 		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+				{
+					f_HussarBuff[other] = FAR_FUTURE;
+				}
+			}
+		}
 	}
 	
 	Citizen_MiniBossDeath(entity);
@@ -1659,8 +1671,8 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 //		int particle2 = ParticleEffectAt_Building_Custom(flPos, "powerup_plague_carrier", victim);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
-			int InfectionCount = 20;
-			StartBleedingTimer_Against_Client(victim, entity, 100.0, InfectionCount);
+			int InfectionCount = 15;
+			StartBleedingTimer_Against_Client(victim, entity, 150.0, InfectionCount);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));
@@ -1718,7 +1730,7 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 			GetEntPropVector(AllyClient, Prop_Data, "m_vecAbsOrigin", entity_angles); 				
 			float Distance = GetVectorDistance(vAngles, entity_angles);
-			if(Distance < 65.0)
+			if(Distance < 30.0)
 			{		
 				NemesisHitInfection(entity, AllyClient, 0.0 , -1);
 			}
@@ -1754,7 +1766,7 @@ public void Raidmode_Nemesis_Win(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{crimson}You afterall... had no change.");
+			CPrintToChatAll("{crimson}You afterall... had no chance.");
 		}
 		else
 		{

@@ -7077,7 +7077,7 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 {
 	// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
 	
-	if(!Waves_InSetup())
+//	if(!Waves_InSetup())
 	{
 		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 10.0 : 20.0);
 

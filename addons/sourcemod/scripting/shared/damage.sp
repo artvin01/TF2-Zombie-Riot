@@ -8,33 +8,34 @@
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
 
+
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	LogEntryInvicibleTest(victim, attacker, damage, 5);
+	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
-	LogEntryInvicibleTest(victim, attacker, damage, 6);
+	//LogEntryInvicibleTest(victim, attacker, damage, 6);
 	if(victim <= MaxClients)
 	{
 #if !defined RTS
 		if(Damage_PlayerVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 7);
+		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
 	else if(!b_NpcHasDied[victim])
 	{
 		if(Damage_NPCVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 8);
+		//LogEntryInvicibleTest(victim, attacker, damage, 8);
 	}
 	else if(i_IsABuilding[victim])
 	{
 		if(Damage_BuildingVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 9);
+		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 
 	if(attacker > 0)
@@ -42,26 +43,26 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 		if(Damage_AnyAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 
-		LogEntryInvicibleTest(victim, attacker, damage, 13);
+		//LogEntryInvicibleTest(victim, attacker, damage, 13);
 		if(attacker <= MaxClients)
 		{
 #if !defined RTS
 			if(Damage_PlayerAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 #endif
-			LogEntryInvicibleTest(victim, attacker, damage, 14);
+			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
 			if(Damage_NPCAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 15);
+			//LogEntryInvicibleTest(victim, attacker, damage, 15);
 		}
 		else if(i_IsABuilding[attacker])
 		{
 			if(Damage_BuildingAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 16);
+			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
 	}
 
@@ -70,11 +71,6 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 
 stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(!b_NpcIsTeamkiller[attacker] && GetTeam(attacker) == GetTeam(victim))
-	{
-		damage = 0.0;
-		return true;
-	}
 
 	float GameTime = GetGameTime();
 
@@ -133,7 +129,18 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 	if(attacker > MaxClients && b_ThisNpcIsSawrunner[attacker])
 		return false;
-	
+
+	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+	{
+#if defined RPG
+		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+#endif
+			return true;
+
+#if defined RPG
+		LastHitRef[victim] = EntIndexToEntRef(attacker);
+#endif	
+	}
 	float GameTime = GetGameTime();
 
 	if(Medival_Difficulty_Level != 0.0)
@@ -434,7 +441,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 		if(attacker <= MaxClients && attacker > 0)
 		{
 			if(IsValidEntity(weapon))
-				damage = NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
+				NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);	
 		}
 	}
 #endif
@@ -444,6 +451,13 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 
 stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(!b_NpcIsTeamkiller[attacker])
+	{
+		if(GetTeam(attacker) == GetTeam(victim)) //should be entirely ignored
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
@@ -538,6 +552,19 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 		
 		damage *= resist;
 	}
+
+	if(f_LeeSuperEffect[attacker] > GameTime)
+	{
+		damage *= 0.72;
+	}
+	else if(f_LeeMajorEffect[attacker] > GameTime)
+	{
+		damage *= 0.86;
+	}
+	else if(f_LeeMinorEffect[attacker] > GameTime)
+	{
+		damage *= 0.93;
+	}
 	
 	if(f_Ruina_Attack_Buff[attacker] > GameTime)
 		damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
@@ -610,6 +637,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		case WEAPON_HEAVY_PARTICLE_RIFLE:
 		{
 			return Player_OnTakeDamage_Heavy_Particle_Rifle(victim, damage, attacker, equipped_weapon, damagePosition);
+		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
 	}
 	return damage;
@@ -790,7 +821,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			if(b_thisNpcIsARaid[victim])
 			{
-				damage *= 1.4; //due to how dangerous it is to get closer.
+				damage *= 1.1; //due to how dangerous it is to get closer.
 			}
 		}
 		case WEAPON_VAMPKNIVES_1:
@@ -861,6 +892,14 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Npc_OnTakeDamage_ObuchHammer(attacker, weapon);
 		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
+		case WEAPON_MERCHANTGUN:
+		{
+			Merchant_GunTakeDamage(victim, attacker, damage);
+		}
 	}
 #endif
 
@@ -874,7 +913,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 	return damage;
 }
 
-static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+static stock void NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 #if defined ZR
 	switch(i_CustomWeaponEquipLogic[weapon])
@@ -883,9 +922,12 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(int victim, i
 		{
 			Saga_OnTakeDamage(victim, attacker, damage, weapon, damagetype);
 		}
+		case WEAPON_MERCHANT:
+		{
+			Merchant_NPCTakeDamagePost(attacker, damage, weapon);
+		}
 	}
 #endif
-	return damage;
 }
 
 #if defined RPG
@@ -1374,10 +1416,14 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	}
 #endif
 
+//when downed, reduce dmg
 #if defined ZR
 	if(dieingstate[attacker] > 0 && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_IGNORE_DEATH_PENALTY))
 	{
-		damage *= 0.25;
+		if(b_XenoVial[attacker])
+			damage *= 0.65;
+		else
+			damage *= 0.25;
 	}
 #endif
 	//NPC STUFF FOR RECORD AND ON KILL

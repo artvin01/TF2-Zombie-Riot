@@ -174,6 +174,9 @@ public void SepcialBackstabLaughSpy(int attacker)
 {
 	EmitSoundToAll(g_WeebKnifeLaughBackstab[GetRandomInt(0, sizeof(g_WeebKnifeLaughBackstab) - 1)], attacker, SNDCHAN_VOICE, 70, _, 1.0);
 }
+#if defined RPG
+#define WEAPON_BOOM_HAMMER 10000
+#endif
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
@@ -220,6 +223,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
+			}
+			case WEAPON_VICTORIAN_LAUNCHER:
+			{
+				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
 			}
 		}	
 	}

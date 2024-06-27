@@ -2381,6 +2381,60 @@ static int SetupFlags(const Enemy data, bool support)
 	return flags;
 }
 
+static Handle ReadyUpTimer;
+
+static Action ReadyUpHack(Handle timer)
+{
+	// We can't call ResetPlayerAndTeamReadyState to reset m_bPlayerReadyBefore
+	// So the timer won't go down as players ready up again
+	// Were doing it ourselves here
+
+	if(FindEntityByClassname(-1, "tf_gamerules") != -1 && GameRules_GetRoundState() == RoundState_BetweenRounds)
+	{
+		int ready, players;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
+			{
+				players++;
+				if(GameRules_GetProp("m_bPlayerReady", _, client))
+					ready++;
+			}
+		}
+		
+		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
+		if(time > 0.0)
+			time -= GetGameTime();
+		
+		if(time > 10.0 || time < 0.0)
+		{
+			float set = -1.0;
+			
+			if(ready == players)
+			{
+				set = 10.0;
+			}
+			else if(ready > 0)
+			{
+				set = 150.0 - (120.0 * float(ready - 1) / float(players - 1));
+			}
+
+			if(time != set && (time < 0.0 || set < time))
+			{
+				if(set > 0.0)
+					set += GetGameTime();
+				
+				GameRules_SetPropFloat("m_flRestartRoundTime", set);
+			}
+
+			return Plugin_Continue;
+		}
+	}
+
+	ReadyUpTimer = null;
+	return Plugin_Stop;
+}
+
 void Waves_SetReadyStatus(int status)
 {
 	switch(status)
@@ -2402,6 +2456,9 @@ void Waves_SetReadyStatus(int status)
 			int objective = GetObjectiveResource();
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
+			
+			//if(!ReadyUpTimer)
+			//	ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
 			
 		//	KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();

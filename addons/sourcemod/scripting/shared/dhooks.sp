@@ -934,6 +934,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
 		{
+			if(b_IsATrigger[entity2])
+			{
+				return false;
+			}
 			if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
@@ -988,6 +992,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 						}						
 					}
 				}
+				return false;
+			}
+			if(b_IsATrigger[entity2])
+			{
 				return false;
 			}
 			else if(b_IgnoredByPlayerProjectiles[entity2])
@@ -1057,6 +1065,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
+			//ignore buildings, neccecary during some situations
+			if(i_IsABuilding[entity2])
+			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[entity1])
+				{
+					return false;
+				}
+			}
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
@@ -1723,7 +1739,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		float HealAmmount = 20.0;
 
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, !Merchant_IsAMerchant(owner));
 		
 
 		
@@ -1893,18 +1909,6 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 	return MRES_Supercede;
 }
 
-Address DHook_CTeamplayRoundBasedRules()
-{
-	return CTeamplayRoundBasedRules;
-}
-/*
-static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
-{
-	GetTimerAndNullifyMusicMVM();
-	CTeamplayRoundBasedRules = address;
-	return MRES_Ignored;
-}
-*/
 public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
 	/*

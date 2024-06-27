@@ -1437,7 +1437,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 }
 
-void GiveOneRevive()
+void GiveOneRevive(bool ignorelimit = false)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1472,7 +1472,7 @@ void GiveOneRevive()
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 			
 			i_AmountDowned[client]--;
-			if(i_AmountDowned[client] < 0)
+			if(!ignorelimit && i_AmountDowned[client] < 0)
 				i_AmountDowned[client] = 0;
 			
 			DoOverlay(client, "", 2);
@@ -1859,7 +1859,7 @@ void BobInitiatePunch(int entity, float VectorTarget[3], float VectorStart[3], f
 	RaidbossBobTheFirst npc = view_as<RaidbossBobTheFirst>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 

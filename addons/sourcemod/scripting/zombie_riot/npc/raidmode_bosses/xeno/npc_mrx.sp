@@ -89,7 +89,7 @@ static float f_NemesisRandomInfectionCycle[MAXENTITIES];
 static float f_MassRushHitAttack[MAXENTITIES];
 static float f_MassRushHitAttackCD[MAXENTITIES];
 static int i_lastTargetCharged[MAXENTITIES];
-#define MRX_MODEL "models/zombie_riot/bosses/mrx/x_normal_2.mdl"
+#define MRX_MODEL "models/zombie_riot/bosses/mrx/x_normal_3.mdl"
 
 void RaidbossMrX_OnMapStart()
 {
@@ -274,7 +274,8 @@ methodmap RaidbossMrX < CClotBody
 		
 		if(final)
 		{
-			RaidModeTime = GetGameTime(npc.index) + 99999.0;
+			RaidModeTime = GetGameTime(npc.index) + 600.0;
+			WaveStart_SubWaveStart(GetGameTime() + 800.0);
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_duo_battle.mp3", 171, true, 1.3);
 			i_RaidGrantExtra[npc.index] = 1;
 		}
@@ -283,7 +284,7 @@ methodmap RaidbossMrX < CClotBody
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_x_solo.mp3", 127, true, 1.6);
 		}
 
-		GiveOneRevive();
+		GiveOneRevive(true);
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 
@@ -420,6 +421,7 @@ public void RaidbossMrX_ClotThink(int iNPC)
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
+
 				for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 				{
 					if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
@@ -1010,6 +1012,17 @@ public void RaidbossMrX_NPCDeath(int entity)
 				if(XenoExtraLogic())
 				{
 					CPrintToChat(client_repat, "{green}Mr.X Escapes... but heavily wounded...");
+				}
+			}
+		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+				{
+					f_HussarBuff[other] = FAR_FUTURE;
 				}
 			}
 		}

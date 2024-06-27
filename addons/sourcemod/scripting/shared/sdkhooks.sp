@@ -6,6 +6,7 @@ static float i_WasInMarkedForDeath[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
+static float f_EntityOutOfNav[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -24,6 +25,7 @@ void SDKHooks_ClearAll()
 		i_WhatLevelForHudIsThisClientAt[client] = 2000000000; //two billion
 	}
 	Zero(f_EntityHazardCheckDelay);
+	Zero(f_EntityOutOfNav);
 	
 	Zero(i_WasInUber);
 	Zero(i_WasInMarkedForDeath);
@@ -146,11 +148,12 @@ stock void SDKHook_HookClient(int client)
 
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
-
+#if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+#endif
 #endif
 
 #if defined NOG
@@ -168,6 +171,7 @@ stock void SDKHook_HookClient(int client)
 
 bool WeaponWasGivenAmmo[MAXENTITIES];
 
+#if defined ZR 
 void WeaponWeaponAdditionOnRemoved(int entity)
 {
 	WeaponWasGivenAmmo[entity] = false;
@@ -175,6 +179,9 @@ void WeaponWeaponAdditionOnRemoved(int entity)
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
+	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
+		return Plugin_Continue;
+
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
@@ -185,7 +192,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0)
+			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
@@ -193,8 +200,8 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, 1);
-						CurrentAmmo[client][Ammo_type] = -1;
+						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
+						CurrentAmmo[client][Ammo_type] = 0;
 					}
 					else
 					{			
@@ -227,6 +234,9 @@ public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 }
 public Action WeaponSwtichToWarningPost(int client, int weapon)
 {
+	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
+		return Plugin_Continue;
+
 	if(WeaponWasGivenAmmo[weapon])
 	{
 		if(b_WeaponHasNoClip[weapon])
@@ -234,7 +244,7 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 			if(GetAmmo(client, Ammo_type) <= 1)
 			{
-				SetAmmo(client, Ammo_type, 0);
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
 			}
 		}
 		else
@@ -248,6 +258,7 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 	WeaponWasGivenAmmo[weapon] = false;
 	return Plugin_Continue;
 }
+#endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
 {
@@ -336,12 +347,21 @@ public void OnPostThink(int client)
 #if defined ZR
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 #endif
-
 		{
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
 				EntityIsInHazard_Teleport(client);
 				f_EntityHazardCheckDelay[client] = GetGameTime() + 0.25;
+			}
+		}
+#if defined ZR
+		if(dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
+#endif
+		{
+			if(f_EntityOutOfNav[client] < GetGameTime())
+			{
+				Spawns_CheckBadClient(client);
+				f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			}
 		}
 		SaveLastValidPositionEntity(client);
@@ -418,6 +438,7 @@ public void OnPostThink(int client)
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
+			f_ClientInAirSince[client] = GetGameTime() + 5.0;
 			b_PlayerWasAirbornKnockbackReduction[client] = true;
 			Attributes_Set(EntityWearable, 252, 0.5);
 		}
@@ -427,6 +448,10 @@ public void OnPostThink(int client)
 		int EntityWearable = EntRefToEntIndex(i_StickyAccessoryLogicItem[client]);
 		if(EntityWearable > 0)
 		{
+			//when they land, check if they are in a bad pos
+			Spawns_CheckBadClient(client);
+			//no need to recheck when they land
+			f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			b_PlayerWasAirbornKnockbackReduction[client] = false;
 			Attributes_Set(EntityWearable, 252, 1.0);
 		}
@@ -590,7 +615,11 @@ public void OnPostThink(int client)
 				}
 				else
 				{
-					healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					float MaxHealth = float(SDKCall_GetMaxHealth(client));
+					if(MaxHealth > 3000)
+						MaxHealth = 3000.0;
+						
+					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
 				}
 			}
 		}
@@ -625,7 +654,11 @@ public void OnPostThink(int client)
 			}
 			if(b_NemesisHeart[client])
 			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
+				float HealRate = 1.0;
+				if(b_XenoVial[client])
+					HealRate = 1.5;
+
+				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 		}
 
@@ -1762,6 +1795,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 	}
 	
+	//Fall damage logic
 	if(damagetype & DMG_FALL)
 	{
 #if defined RPG
@@ -1783,6 +1817,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;	
 		}
 	}
+	//Damage was done by a player
 	else if(attacker <= MaxClients && attacker > 0 && attacker != 0)
 	{
 #if defined RPG
@@ -1835,37 +1870,54 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
 
-	Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	if(Damage_Modifiy(victim, attacker, inflictor, damage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
+	{
+		return Plugin_Handled;
+	}
 	
 #if defined ZR
+	//damage is more then their health, they will die.
 	if(RoundToCeil(damage) >= flHealth)
 	{
+		//the client has a suit, save them !!
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
-			damage = float(flHealth - 1); //survive with 1 hp!, and return their hp later
+			damage = 0.0;
 			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
 			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
 			float startPosition[3];
 			GetClientAbsOrigin(victim, startPosition);
 			startPosition[2] += 25.0;
 			makeexplosion(victim, victim, startPosition, "", 0, 0);
+			GiveCompleteInvul(victim, 0.5);
 			CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(victim), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
+		//the client was the last man on the server, or alone, give them spawn protection
+		//dont do this if they are under specter saw revival
 		else if((LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
-			damage = float(flHealth - 1); //survive with 1 hp!
+			damage = 0.0;
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 
-			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
-			return Plugin_Changed;
+			return Plugin_Handled;
 		}
+		//if they were supposed to die, but had protection from the marchant kit, do this instead.
+		else if(Merchant_OnLethalDamage(victim))
+		{
+			damage = 0.0;
+			GiveCompleteInvul(victim, 0.1);
+			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
+			return Plugin_Handled;
+		}
+		//all checps passed, now go into here
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
+			//are they alone? is any player alive that isnt downed left?
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -1877,7 +1929,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 					}
 				}
 			}
-			
+			//there was no one left, they are the only one left, trigger last man.
 			if(!Any_Left && !SpecterCheckIfAutoRevive(victim))
 			{
 				// Trigger lastman
@@ -1890,12 +1942,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			i_AmountDowned[victim] += 1;
 			Rogue_PlayerDowned();
 			
+			//there are players still left, down them.
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
-			//	SetVariantString("TLK_DIED");
-			//	AcceptEntityInput(victim, "SpeakResponseConcept");
 				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
 				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
 				{
@@ -1919,9 +1970,11 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SetEntityCollisionGroup(victim, 1);
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
-				Attributes_Set(victim, 489, 0.65);
-			//	Attributes_Set(victim, 820, 1.0);
-			//	Attributes_Set(victim, 819, 1.0);	
+				if(b_XenoVial[victim])
+					Attributes_Set(victim, 489, 1.1);
+				else
+					Attributes_Set(victim, 489, 0.65);
+
 				TF2_AddCondition(victim, TFCond_SpeedBuffAlly, 0.00001);
 				int entity;
 
@@ -1929,15 +1982,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				if(!autoRevive)
 				{
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][0]);
-					if(entity > MaxClients)
+					if(IsValidEntity(entity))
 						RemoveEntity(entity);
 					
 					entity = EntRefToEntIndex(i_DyingParticleIndication[victim][1]);
-					if(entity > MaxClients)
+					if(IsValidEntity(entity))
 						RemoveEntity(entity);
 
-
-					
 					entity = TF2_CreateGlow(victim);
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 255, 0, 255}));
@@ -2084,6 +2135,9 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+//	PrintToChatAll("%s",sample);
+//	PrintToChatAll("entity%i",entity);
+//	PrintToChatAll("channel %i",channel);
 	if(StrContains(sample, "weapons/dispenser_idle.wav", true) != -1)
 	{
 		return Plugin_Handled;

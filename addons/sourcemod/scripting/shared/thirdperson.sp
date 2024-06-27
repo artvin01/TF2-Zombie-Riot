@@ -125,7 +125,7 @@ public Action Timer_EnableTp(Handle timer, any userid)
 	int client = GetClientOfUserId(userid);
 	if (client && IsClientInGame(client) && IsPlayerAlive(client))				// Perhaps their ent could take the input if they are dead.
 	{
-
+/*
 #if defined ZR
 		if(IsValidEntity(Building_Mounted[client]))
 		{
@@ -133,7 +133,7 @@ public Action Timer_EnableTp(Handle timer, any userid)
 			return Plugin_Handled;
 		}
 #endif
-
+*/
 		SetVariantInt(1);													// Enable TP camera
 		AcceptEntityInput(client, "SetForcedTauntCam");
 	}
