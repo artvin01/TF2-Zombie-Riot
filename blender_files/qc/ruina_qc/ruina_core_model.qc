@@ -23,10 +23,10 @@ $bodygroup "ruina_blade"	//done
 	blank
 	studio "ruina_blade.smd"
 }
-$bodygroup "ruina_magi_gun"	//done
+$bodygroup "RUINA_MAGI_GUN_1"	//done
 {
 	blank
-	studio "ruina_magi_gun.smd"
+	studio "RUINA_MAGI_GUN_1.smd"
 }
 $bodygroup "ruina_staff_1"	//done
 {							
@@ -57,6 +57,11 @@ $bodygroup "radar_gun_v1"
 {							
 	blank
 	studio "radar_gun_v1.smd"
+}
+$bodygroup "healing_staff_1"	
+{							
+	blank
+	studio "healing_staff_1.smd"
 }
 
 

@@ -200,7 +200,7 @@ methodmap Draedon < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		fl_npc_basespeed = 300.0;
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -227,7 +227,7 @@ methodmap Draedon < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
 
-		SetVariantInt(RUINA_MAGI_GUN);
+		SetVariantInt(RUINA_MAGI_GUN_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 				
 		fl_ruina_battery[npc.index] = 0.0;

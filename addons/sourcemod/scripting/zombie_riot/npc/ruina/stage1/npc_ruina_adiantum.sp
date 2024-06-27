@@ -225,7 +225,7 @@ methodmap Adiantum < CClotBody
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 225.0;
 		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;

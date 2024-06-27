@@ -225,7 +225,7 @@ methodmap Theocracy < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 330.0;
 
 		npc.StartPathing();
 		

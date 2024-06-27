@@ -211,7 +211,7 @@ methodmap Aetheria < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_QUINCY_BOW);
+		SetVariantInt(RUINA_QUINCY_BOW_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 			
 		fl_ruina_battery[npc.index] = 0.0;

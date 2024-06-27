@@ -167,7 +167,7 @@ methodmap Ruriana < CClotBody
 		*/
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 270.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		

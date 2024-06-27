@@ -2676,9 +2676,14 @@ Names per stage:
 		Battery: Massive AOE healing for 2.5 seconds
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
+
+		Stellaria
+		{
+			is just stronger variant
+		}
 	}
 	//created
 	4: Astria -> Astriana -> Astrianis -> Astrianious

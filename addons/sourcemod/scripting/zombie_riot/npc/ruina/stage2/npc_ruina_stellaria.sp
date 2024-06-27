@@ -184,16 +184,18 @@ methodmap Stellaria < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		npc.m_flSpeed = 225.0;
+		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
 		static const char Items[][] = {
 			"models/player/items/medic/berliners_bucket_helm.mdl",
-			"models/player/items/medic/medic_blighted_beak.mdl",
+			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_bunnyhoppers_ballistics_vest/dec15_bunnyhoppers_ballistics_vest.mdl",
 			"models/workshop/player/items/medic/jul13_emergency_supplies/jul13_emergency_supplies.mdl",
-			"models/player/items/all_class/hwn_spellbook_complete.mdl"
+			"models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl",
+			RUINA_CUSTOM_MODELS,
+			RUINA_CUSTOM_MODELS
 		};
 		
 		
@@ -205,8 +207,13 @@ methodmap Stellaria < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		//npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,2.0,85.0);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_HALO_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+		SetVariantInt(RUINA_HEALING_STAFF_1);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 				
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -257,7 +264,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.5);
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -300,11 +307,11 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
+					Stella_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 				}
 				else	
 				{
-					Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
+					Stella_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -314,7 +321,7 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
+				Stella_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 			
 			}	
 		}
@@ -519,5 +526,9 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	
 }

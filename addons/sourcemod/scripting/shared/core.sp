@@ -917,16 +917,17 @@ enum
 	enum	//can have a maximum of 16 (I think)
 	{		//Also, once done, move as many as I can into custom weaponry_1, then leave the leftovers in the seperate ones
 		RUINA_ICBM 				= 1,
-		RUINA_HALO1 			= 2,
-		RUINA_QUINCY_BOW 		= 4,
+		RUINA_HALO_1 			= 2,
+		RUINA_QUINCY_BOW_1 		= 4,
 		RUINA_BLADE_1			= 8,
-		RUINA_MAGI_GUN			= 16,
+		RUINA_MAGI_GUN_1			= 16,
 		RUINA_STAFF_1			= 32,
 		RUINA_HAND_CREST_1		= 64,
 		RUINA_LAN_SWORD_1		= 128,
 		RUINA_EUR_STAFF_1		= 256,
 		RUINA_DAGGER_1			= 512,
-		RUINA_RADAR_GUN_1		= 1024
+		RUINA_RADAR_GUN_1		= 1024,
+		RUINA_HEALING_STAFF_1	= 2048
 	}
 #endif
 
