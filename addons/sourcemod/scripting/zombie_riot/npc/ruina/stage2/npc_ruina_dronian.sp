@@ -4,14 +4,14 @@
 static const char g_DeathSounds[][] = {
 	"vo/spy_paincrticialdeath01.mp3",
 	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
 	"vo/spy_painsharp01.mp3",
 	"vo/spy_painsharp02.mp3",
 	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
 static const char g_IdleSounds[][] = {
@@ -20,28 +20,29 @@ static const char g_IdleSounds[][] = {
 	"vo/spy_laughshort03.mp3",
 	"vo/spy_laughshort04.mp3",
 	"vo/spy_laughshort05.mp3",
-	"vo/spy_laughshort06.mp3",
+	"vo/spy_laughshort06.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/spy_battlecry01.mp3",
 	"vo/spy_battlecry02.mp3",
 	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/spy_battlecry04.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/knife_swing.wav"
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
 
 void Dronian_OnMapStart_NPC()

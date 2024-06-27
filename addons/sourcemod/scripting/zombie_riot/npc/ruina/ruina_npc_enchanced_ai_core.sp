@@ -2817,13 +2817,13 @@ Names per stage:
 		it only exists as a minnion to be spammed. it has nothing special for now
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
 
 		Dronian
 		{
-
+			is just a stronger variant
 		}
 	}
 
