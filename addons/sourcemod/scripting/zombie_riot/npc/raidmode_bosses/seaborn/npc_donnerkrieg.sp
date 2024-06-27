@@ -2754,6 +2754,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
+					Dmg /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 				}
@@ -2767,11 +2768,14 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 						Dmg *= 5.0;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					Dmg /= TickrateModify;
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)
 						damage = 4;
+						
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -2780,6 +2784,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
 						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -3197,6 +3202,7 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 				neural_damage = 4;
 
 			ion_damage[npc.index] = float(neural_damage);
+			ion_damage[npc.index] /= TickrateModify;
 
 			if(shake)
 				Explode_Logic_Custom(damage*0.5, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 2.5, Donner_Neural_Tweak_shake);
@@ -3210,6 +3216,8 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 				neural_damage = 8;
 
 			ion_damage[npc.index] = float(neural_damage);
+
+			ion_damage[npc.index] /= TickrateModify;
 
 			if(shake)
 				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);

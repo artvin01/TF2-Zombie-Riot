@@ -750,7 +750,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Horizontal_Slicer_Tick);
 }
@@ -863,7 +863,7 @@ static void Vertical_Slicer(int client, float vecTarget[3], float time, float da
 	
 	i_Slicer_Throttle[client] = 0;
 	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Vertical_Slicer_Tick);
 }

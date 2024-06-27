@@ -187,6 +187,7 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 
 #define ENERGY_BALL_MODEL	"models/weapons/w_models/w_drg_ball.mdl"
 
+
 native any FuncToVal(Function bruh);
 
 enum
@@ -871,6 +872,9 @@ float f_CustomGrenadeDamage[MAXENTITIES];
 
 float f_TraceAttackWasTriggeredSameFrame[MAXENTITIES];
 
+float TickrateModify;
+int TickrateModifyInt;
+
 enum
 {
 	STEPTYPE_NONE = 0,
@@ -1471,6 +1475,11 @@ public void OnPluginStart()
 			OnEntityCreated(entity,strClassname);
 		}
 	}
+
+    float tickrate = 1.0 / GetTickInterval();
+	TickrateModifyInt = RoundToNearest(tickrate);
+
+    TickrateModify = tickrate / 66.0;
 }
 /*
 public void OnAllPluginsLoaded()
