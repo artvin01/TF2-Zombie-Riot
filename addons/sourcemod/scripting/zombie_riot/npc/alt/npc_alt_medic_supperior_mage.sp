@@ -548,7 +548,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability_Anger(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 750;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = RoundToFloor(33 * TickrateModify);
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_Duration[client] = 1.5;
@@ -607,7 +607,7 @@ void NPC_ALT_MEDIC_SUPPERIOR_MAGE_TBB_Ability(int client)
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_MaxDistance[client] = 500;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_BeamRadius[client] = 10;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ColorHex[client] = ParseColor("0509FA");
-	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = 33;
+	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_ChargeUpTime[client] = RoundToFloor(33 * TickrateModify);
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_CloseBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_FarBuildingDPT[client] = 0.0;
 	NPC_ALT_MEDIC_SUPPERIOR_MAGE_BEAM_Duration[client] = 1.5;
