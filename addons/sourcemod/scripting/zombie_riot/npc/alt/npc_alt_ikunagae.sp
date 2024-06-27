@@ -847,7 +847,7 @@ public Action Spin_To_Win_TBB_Tick(int client)
 		fl_Spin_to_win_Angle[npc.index] = 0.0;
 	}
 	int testing = i_spin_to_win_Severity[npc.index];
-	if(i_spin_to_win_throttle[npc.index]>15)//Very fast
+	if(i_spin_to_win_throttle[npc.index]> RoundToFloor(15*TickrateModify))//Very fast
 	{
 		i_spin_to_win_throttle[npc.index] = 0;
 		if(b_spin_to_win_Alternate[npc.index])
@@ -1208,7 +1208,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 1000;
 	Ikunagae_BEAM_BeamRadius[client] = 10;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c1f7f4");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_Duration[client] = 0.25;

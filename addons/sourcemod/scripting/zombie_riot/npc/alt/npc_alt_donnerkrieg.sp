@@ -996,7 +996,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 1000;
 	NightmareCannon_BEAM_BeamRadius[client] = 10;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 12;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 0.25;
@@ -1065,7 +1065,7 @@ void NightmareCannon_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 10000;
 	NightmareCannon_BEAM_BeamRadius[client] = 150;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 150;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(150 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 15.0;
