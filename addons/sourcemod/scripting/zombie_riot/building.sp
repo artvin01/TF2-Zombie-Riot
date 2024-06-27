@@ -280,15 +280,18 @@ static bool HasWrench(int client)
 
 static int GetCost(int id, float multi)
 {
-	if(Rogue_Mode())
-		return 0;
-	
+	int buildCost = BuildingCost[id];
 	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
 	if(cost_extra <= 0)
 	{
 		cost_extra = 0;
 	}
-	return BuildingCost[id] + cost_extra;
+	buildCost = buildCost + cost_extra;
+
+	if(Rogue_Mode())
+		buildCost /= 3;
+	
+	return buildCost;
 }
 
 static void BuildingMenu(int client)

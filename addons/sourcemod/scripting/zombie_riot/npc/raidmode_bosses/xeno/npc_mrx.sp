@@ -274,8 +274,8 @@ methodmap RaidbossMrX < CClotBody
 		
 		if(final)
 		{
-			RaidModeTime = GetGameTime(npc.index) + 99999.0;
-			WaveStart_SubWaveStart(GetGameTime() + 99999.0);
+			RaidModeTime = GetGameTime(npc.index) + 600.0;
+			WaveStart_SubWaveStart(GetGameTime() + 800.0);
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_duo_battle.mp3", 171, true, 1.3);
 			i_RaidGrantExtra[npc.index] = 1;
 		}

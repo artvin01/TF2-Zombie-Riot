@@ -1365,6 +1365,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?

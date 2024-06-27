@@ -904,6 +904,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
+	frames = RoundToNearest(TickrateModify * float(frames));
 	DataPack pack = new DataPack();
 	pack.WriteCell(frames);
 	pack.WriteFunction(func);

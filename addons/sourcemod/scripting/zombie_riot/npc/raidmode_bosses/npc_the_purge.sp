@@ -577,7 +577,7 @@ static void ClotThink(int iNPC)
 					
 					float vecDir[3];
 
-					float damage = RaidModeScaling * 0.05;
+					float damage = RaidModeScaling * 0.15;
 					
 					npc.m_flSpeed -= 1.0;
 					if(npc.m_flSpeed < 0.0)
