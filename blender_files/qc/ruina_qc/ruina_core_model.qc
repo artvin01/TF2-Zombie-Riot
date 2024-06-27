@@ -53,6 +53,11 @@ $bodygroup "dagger_v1"
 	blank
 	studio "dagger_v1.smd"
 }
+$bodygroup "radar_gun_v1"	
+{							
+	blank
+	studio "radar_gun_v1.smd"
+}
 
 
 

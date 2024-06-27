@@ -2686,12 +2686,17 @@ Names per stage:
 		state: Master AI.
 		Class: Engie
 		Slow itself, boots nearby npc speed passively.
-		Battery: Nearby npc's gain the ability to teleporto once. cannot have multiple "charges" (since its a bool)
+		Battery: Nearby npc's gain the ability to teleport once. cannot have multiple "charges" (since its a bool)
 
 		Stage 1: Done.
-		Stage 2: Needs concept, sp exists
+		Stage 2: Done.
 		Stage 3: Null
 		Stage 4: Null
+
+		Astriana
+		{
+			is simply stronger.
+		}
 	}
 
 	//created
