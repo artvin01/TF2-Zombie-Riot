@@ -5539,8 +5539,8 @@ public void NpcBaseThink(int iNPC)
 	}
 #endif
 
-
-	NpcStuckInSomething(npc,iNPC);
+	//Is the NPC out of bounds, or inside a player
+	NpcOutOfBounds(npc,iNPC);
 
 	Function func = func_NPCThink[iNPC];
 	if(func && func != INVALID_FUNCTION)
@@ -5549,6 +5549,7 @@ public void NpcBaseThink(int iNPC)
 		Call_PushCell(iNPC);
 		Call_Finish();
 	}
+	//is the NPC inside an object
 	NpcStuckInSomething(npc,iNPC);
 }
 

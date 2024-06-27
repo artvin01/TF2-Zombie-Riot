@@ -383,7 +383,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
-			HealByThis = float(HealByThis) / TickrateModify;
+			HealByThis = RoundToCeil(float(HealByThis) / TickrateModify);
 			if(XenoExtraLogic())
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
