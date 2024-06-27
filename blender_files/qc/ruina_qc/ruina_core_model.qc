@@ -48,6 +48,11 @@ $bodygroup "eur_staff_v1"
 	blank
 	studio "eur_staff_v1.smd"
 }
+$bodygroup "dagger_v1"	
+{							
+	blank
+	studio "dagger_v1.smd"
+}
 
 
 
