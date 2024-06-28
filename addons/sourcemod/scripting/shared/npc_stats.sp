@@ -412,6 +412,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 		SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
+		SetEntityMoveType(npc, MOVETYPE_CUSTOM);
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
@@ -5488,6 +5489,9 @@ public void NpcBaseThink(int iNPC)
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
+		//this is just as a temp fix, remove whenver.
+		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
+
 		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
 		Npc_DebuffWorldTextUpdate(npc);
@@ -5644,10 +5648,22 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
 			flMyPos_Bounds[2] += 1.0;
-			if(TR_PointOutsideWorld(flMyPos_Bounds) || IsBoxHazard(flMyPos_Bounds, {-20.0,-20.0,0.0}, {20.0,2.0,70.0}))
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+			bool OutOfBounds = false;
+			if(IsBoxHazard(flMyPos_Bounds, hullcheckmins_Player, hullcheckmaxs_Player))
+			{
+				OutOfBounds = true;
+			}
+			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			{
+				OutOfBounds = true;
+			}
+			if(OutOfBounds)
 			{
 			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-				
 #if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -5672,7 +5688,6 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				}
 				else
 #endif
-				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}

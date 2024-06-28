@@ -77,10 +77,8 @@ static char g_NeckSnap[][] =
 
 static int i_GrabbedThis[MAXENTITIES];
 static float fl_RegainWalkAnim[MAXENTITIES];
-static float fl_OverrideWalkDest[MAXENTITIES];
 
 static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
 static int i_SideHurtWhich[MAXENTITIES];
 static float f_NemesisImmuneToInfection[MAXENTITIES];
 static float f_NemesisSpecialDeathAnimation[MAXENTITIES];

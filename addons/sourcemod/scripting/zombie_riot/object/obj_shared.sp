@@ -986,7 +986,6 @@ void BuildingDisplayRepairLeft(int entity)
 		Offset[2] += 6.0;
 		Format(HealthText, sizeof(HealthText), "%s", "Ready!");
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 0, HealthColour, objstats.index);
-		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 		OwnerOfText[TextEntity] = EntIndexToEntRef(objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable5 = TextEntity;	

@@ -16,11 +16,13 @@ static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
 static ArrayList NPCList;
 
+/*
 int SaveCurrentHpAt = -1;
 int SaveCurrentHpAtFirst = -1;
 int SaveCurrentHurtAt = -1;
 int HurtIttirationAt = 0;
 float AntiChatSpamDebug;
+*/
 enum struct NPCData
 {
 	char Plugin[64];

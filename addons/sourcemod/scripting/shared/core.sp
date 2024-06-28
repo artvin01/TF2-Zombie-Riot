@@ -1476,10 +1476,10 @@ public void OnPluginStart()
 		}
 	}
 
-    float tickrate = 1.0 / GetTickInterval();
+	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
-    TickrateModify = tickrate / 66.0;
+	TickrateModify = tickrate / 66.0;
 }
 /*
 public void OnAllPluginsLoaded()

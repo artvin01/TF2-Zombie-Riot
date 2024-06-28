@@ -29,6 +29,25 @@ bool Stock_IsValidEntity(int entity)
 
 #define IsValidEntity Stock_IsValidEntity
 
+
+#define SDKHooks_TakeDamage Stock_TakeDamage
+
+stock void Stock_SetEntityMoveType(int entity, MoveType mt)
+{
+	if(b_ThisWasAnNpc[entity] && mt != MOVETYPE_CUSTOM)
+	{
+		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
+		return;
+	}
+	else
+	{
+		SetEntityMoveType(entity);
+	}
+}
+
+#define SetEntityMoveType Stock_SetEntityMoveType
+
+
 #define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
 
 /*
