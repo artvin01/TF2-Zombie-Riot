@@ -828,7 +828,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							npc.SetActivity("ACT_RAID_TYRAND");
+							npc.SetActivity("ACT_FT2_ATTACK_2");
 							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())

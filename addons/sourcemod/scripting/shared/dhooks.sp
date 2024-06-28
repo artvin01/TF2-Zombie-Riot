@@ -1486,7 +1486,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		Queue_AddPoint(client);
 	
 	
-	if(f_WasRecentlyRevivedViaNonWave[client] > GetGameTime())
+	if(f_WasRecentlyRevivedViaNonWaveClassChange[client] > GetGameTime())
 	{	
 		return MRES_Ignored;
 	}

@@ -804,7 +804,7 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	return Plugin_Changed;
 }
-/*
+
 bool BarrackBody_Interact(int client, int entity)
 {
 	if(!IsValidClient(client))
@@ -812,7 +812,6 @@ bool BarrackBody_Interact(int client, int entity)
 		
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
-	PrintToChatAll("Classname entity whtaever %s",npc_classname);	
 	if(!StrEqual(npc_classname, "npc_barrack_building"))
 	{
 		BarrackBody npc = view_as<BarrackBody>(entity);
@@ -820,19 +819,18 @@ bool BarrackBody_Interact(int client, int entity)
 		{
 			if(npc.m_bSelectableByAll)
 			{
-				//if(IsValidEntity(i_HasSentryGunAlive[client]))
-					ShowMenu(client, entity);
+				ShowMenu(client, entity);
+				return true;
 			}
 			else if(npc.OwnerUserId == GetClientUserId(client))
 			{
 				ShowMenu(client, entity);
+				return true;
 			}
 		}
-		return true;
 	}
 	return false;
 }
-*/
 void BarracksEntityCreated(int entity)
 {
 	BarrackOwner[entity] = 0;

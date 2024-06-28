@@ -1953,7 +1953,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
-		else if(Merchant_OnLethalDamage(victim))
+		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
