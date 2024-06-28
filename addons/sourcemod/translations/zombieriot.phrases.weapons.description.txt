@@ -1202,8 +1202,7 @@
 	
 	"Aresenal's Tripmine Layer Desc"
 	{
-		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this.\nPress m2 while looking up twice to pick up all your spikes at once." 
-		"chi"	"与布哨伤害同步升级，不受武器升级影响。\n向上看时双击M2回收所有炸弹。"
+		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this.\nPress m2 while looking up twice to pick up all your spikes at once.´nArms after 0.5 seconds, and warms up to full dmg after 1 second." 
 	}
 	
 	"Heavy Charge Builder Laser Desc"

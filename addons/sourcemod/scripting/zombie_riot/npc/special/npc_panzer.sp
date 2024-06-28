@@ -83,8 +83,8 @@ public void NaziPanzer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nazi Panzer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_panzer");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "nazipanzer_icon");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -971,7 +971,7 @@ public Action Timer_Pull_Target(Handle timer, DataPack pack)
 	float velocity[3];
 	MakeVectorFromPoints(pos, cpos, velocity);
 	NormalizeVector(velocity, velocity);
-	ScaleVector(velocity, -450.0);
+	ScaleVector(velocity, -800.0);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	return Plugin_Continue;
 }

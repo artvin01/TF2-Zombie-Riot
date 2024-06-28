@@ -658,6 +658,13 @@ bool Object_Interact(int client, int weapon, int obj)
 		MountedObjectInteracted = true;
 	}
 
+	Function func = func_NPCInteract[entity];
+	if(!func || func == INVALID_FUNCTION)
+		return false;
+
+	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)
+		return false;
+
 	bool result;
 	
 	static char plugin[64];
@@ -702,7 +709,7 @@ bool Object_Interact(int client, int weapon, int obj)
 			//dont interact with buildings if you are carring something
 			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && !BuildingIsBeingCarried(entity))
 			{
-				Function func = func_NPCInteract[entity];
+				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, func);

@@ -2439,10 +2439,10 @@ stock void GetTimerAndNullifyMusicMVM()
 	*/
 }
 
-bool PlayerIsInNpcBattle(int client)
+bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 {
 	bool InBattle = false;
-	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+	if(f_InBattleHudDisableDelay[client] > (GetGameTime() + ExtradelayTime))
 		InBattle = true;
 
 	return InBattle;

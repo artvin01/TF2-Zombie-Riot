@@ -326,7 +326,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int iExclude)
 void AlliedSensalFireLaser(int target, AlliedSensalAbility npc)
 {
 	int owner = GetEntPropEnt(npc.index, Prop_Data, "m_hOwnerEntity");
-	float SelfVecPos[3]; WorldSpaceCenter(target, SelfVecPos);
+	float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
 	float TargetVecPos[3]; WorldSpaceCenter(target, TargetVecPos);
 	Allied_Sensal_InitiateLaserAttack(owner, npc.index, TargetVecPos, SelfVecPos, npc);
 }

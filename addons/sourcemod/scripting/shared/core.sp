@@ -3515,7 +3515,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		static float vecEndOrigin[3];
-		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+		int entity = GetClientPointVisible(client, 60.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
 		if(entity > 0)
 		{
 
@@ -3539,10 +3539,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					
 				if(Object_Interact(client, weapon, entity))
 					return true;
-				
+
 				//shouldnt invalidate clicking, makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
+
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
@@ -3553,12 +3554,16 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
-				
+
+				/*
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
-				
+
+				PrintToChatAll("test6");
 				if (GetTeam(entity) != TFTeam_Red)
 					return false;
+				PrintToChatAll("test7");
+				*/
 			}
 #endif
 			

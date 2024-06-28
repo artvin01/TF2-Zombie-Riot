@@ -264,6 +264,10 @@ void Building_WaveEnd()
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
+	MenuPage[client] = 0;
+	if(MenuTimer[client] != null)
+		delete MenuTimer[client];
+
 	BuildingMenu(client);
 }
 
@@ -439,11 +443,13 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 		}
 		case MenuAction_Select:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 
 			if(HasWrench(client))
 			{
