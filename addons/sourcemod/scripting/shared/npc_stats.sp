@@ -402,7 +402,6 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		AddEntityToLagCompList(npc);
 
-		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
