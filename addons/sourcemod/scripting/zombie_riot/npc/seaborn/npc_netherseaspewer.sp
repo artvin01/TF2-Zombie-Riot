@@ -169,7 +169,7 @@ public void SeaSpewer_ClotThink(int iNPC)
 	if(npc.m_iTarget > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
-		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float vecTarget[3];
 		float distance = GetVectorDistance(vecTarget, vecMe, true);		
 		
 		if(distance < npc.GetLeadRadius())
@@ -196,6 +196,8 @@ public void SeaSpewer_ClotThink(int iNPC)
 
 				for(int i; i < count; i++)
 				{
+					WorldSpaceCenter(enemy[i], vecTarget);
+
 					PredictSubjectPositionForProjectiles(npc, enemy[i], 1200.0, _,vecTarget);
 
 					int entity = npc.FireArrow(vecTarget, npc.m_bElite ? 240.0 : 195.0, 1200.0, "models/weapons/w_bugbait.mdl");
@@ -266,7 +268,7 @@ static int GetAnyTargets(SeaSpewer npc, const float vecMe[3], int[] enemy, int c
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
-		if(entity != INVALID_ENT_REFERENCE && entity != npc.index)
+		if(IsValidEntity(entity) && entity != npc.index)
 		{
 			if(!view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity) && GetTeam(entity) != team && Can_I_See_Enemy_Only(npc.index, entity))
 			{

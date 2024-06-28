@@ -4517,6 +4517,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 			{
 				return false;
 			}
+			if(BuildingIsBeingCarried(enemy))
+			{
+				return false;
+			}
 #endif
 
 #if defined RTS

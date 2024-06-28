@@ -693,9 +693,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 
 #if defined ZR || defined RPG
 
-#if defined ZR
-	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
-#endif
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
@@ -708,6 +705,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	delete weapon;
 	if(entity > MaxClients)
 	{
+#if defined ZR
+	f_TimeSinceLastGiveWeapon[entity] = 0.0;
+#endif
 		Attributes_EntityDestroyed(entity);
 
 		for(int i; i < count; i++)
@@ -2826,6 +2826,7 @@ int inflictor = 0)
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
+		maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
 	}
 #endif
 
@@ -3404,6 +3405,9 @@ public void MakeExplosionFrameLater(DataPack pack)
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
+#if defined ZR
+	WeaponSwtichToWarningPostDestroyed(weapon);
+#endif
 	/*
 	char buffer[64];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
@@ -3996,7 +4000,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
-
+		
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));

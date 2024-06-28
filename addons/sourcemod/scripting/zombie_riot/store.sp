@@ -5946,8 +5946,8 @@ void GiveCredits(int client, int credits, bool building)
 	}
 	else
 	{
-		CashSpentGivePostSetup[client] += credits;
 		CashSpent[client] -= credits;
+		CashRecievedNonWave[client] += credits;
 	}
 }
 

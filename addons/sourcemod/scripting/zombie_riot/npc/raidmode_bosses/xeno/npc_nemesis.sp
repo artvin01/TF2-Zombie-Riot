@@ -811,7 +811,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
-						if(npc.m_iChanged_WalkCycle != 3) 
+						if(npc.m_iChanged_WalkCycle != 13) 
 						{
 							//the enemy is still close, do another attack.
 							float flPos[3]; // original
@@ -828,9 +828,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							int iActivity = npc.LookupActivity("ACT_RAID_TYRAND");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_RAID_TYRAND");
+							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())
 							{
@@ -859,8 +858,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.SetActivity("ACT_FT2_WALK");
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
@@ -963,11 +961,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.0;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
-				if(npc.m_iChanged_WalkCycle != 1) 
+				if(npc.m_iChanged_WalkCycle != 15) 
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_ATTACK_1");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_FT2_ATTACK_1");
+					npc.m_iChanged_WalkCycle = 15;
 					npc.m_bisWalking = false;
 					if(XenoExtraLogic())
 					{

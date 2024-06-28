@@ -346,6 +346,7 @@ float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
 float MultiGlobalArkantos = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
@@ -643,6 +644,7 @@ void ZR_MapStart()
 	Zero(healing_cooldown);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
+	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
 	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();

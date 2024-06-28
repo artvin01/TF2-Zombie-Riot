@@ -190,6 +190,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		Cash /= 2;
 		AmmoSupply *= 0.5;
 	}
+	
 	AmmoSupply *= 0.65;
 	if(CashLimit)
 	{

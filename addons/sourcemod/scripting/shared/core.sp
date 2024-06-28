@@ -623,7 +623,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
-float f_TimeSinceLastGiveWeapon[MAXTF2PLAYERS]={1.0, ...};
+float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
@@ -2734,6 +2734,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
+		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
@@ -3347,13 +3348,13 @@ public void OnEntityDestroyed(int entity)
 
 		if(entity > MaxClients)
 		{
-
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
+			WeaponSwtichToWarningPostDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif

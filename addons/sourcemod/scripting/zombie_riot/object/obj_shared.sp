@@ -663,7 +663,12 @@ bool Object_Interact(int client, int weapon, int obj)
 		return false;
 
 	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)
-		return false;
+	{
+		//self mounted ignores this.
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+			return false;
+	}
+
 
 	bool result;
 	

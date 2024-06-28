@@ -23,6 +23,11 @@ static int coins_flipped[MAXTF2PLAYERS];
 		
 // Ability_Check_Cooldown(client, slot);
 
+void CoinEntityCreated(int entity)
+{
+	mb_coin[entity] = false;
+}
+
 public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
@@ -423,7 +428,6 @@ stock void Do_Coin_calc(int victim)
 	
 	if (IsValidEntity(Closest_entity))
 	{
-		
 		SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg

@@ -1632,6 +1632,7 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		MakeObjectIntangeable(KamlcloneSpawn);
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
+		b_NpcIsInvulnerable[KamlcloneSpawn] = true;
 		b_ThisNpcIsImmuneToNuke[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;
