@@ -21,7 +21,6 @@ static DynamicHook g_DHookScoutSecondaryFire;
 
 #if defined ZR
 static bool IsRespawning;
-static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 //static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited

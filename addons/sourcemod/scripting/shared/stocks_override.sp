@@ -41,7 +41,7 @@ stock void Stock_SetEntityMoveType(int entity, MoveType mt)
 	}
 	else
 	{
-		SetEntityMoveType(entity);
+		SetEntityMoveType(entity, mt);
 	}
 }
 
