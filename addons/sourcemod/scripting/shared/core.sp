@@ -3516,7 +3516,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		static float vecEndOrigin[3];
-		int entity = GetClientPointVisible(client, 60.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#if defined ZR
+		int entity = GetClientPointVisible(client, 70.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#else
+		int entity = GetClientPointVisible(client, 100.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#endif
 		if(entity > 0)
 		{
 

@@ -3904,7 +3904,7 @@ stock void WorldSpaceCenter(int entity, float vecPos[3])
 {
 	//We need to do an exception here, if we detect that we actually make the size bigger via lag comp
 	//then we just get an offset of the abs origin, abit innacurate but it works like a charm.
-	if(b_LagCompNPC_ExtendBoundingBox)
+	if(b_LagCompNPC_ExtendBoundingBox || i_IsABuilding[entity])
 	{
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", vecPos);
 		//did you know abs origin only exists for the server? crazy right

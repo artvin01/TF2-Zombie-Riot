@@ -203,12 +203,12 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
-				if(GetAmmo(client, Ammo_type) <= 0)
+				if(CurrentAmmo[client][Ammo_type] <= 0)
 				{
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
+						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] + 1);
 						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
 					}
 					else
@@ -277,9 +277,9 @@ void WeaponSwtichToWarningPostFrame(int ref)
 				{
 					int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
 
-					if(GetAmmo(client, Ammo_type) >= 1)
+					if(CurrentAmmo[client][Ammo_type] >= 1)
 					{
-						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
+						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
 						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
 					}
 				}
@@ -1669,7 +1669,7 @@ public void OnPostThink(int client)
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
-			int entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
+			int entity = GetClientPointVisible(client,70.0,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
 			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
