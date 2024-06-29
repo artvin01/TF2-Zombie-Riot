@@ -2249,4 +2249,8 @@
 	{
 		"en"	"Ouroboros Ekas"
 	}
+	"Fallen Warrior"
+	{
+		"en"	"Red, the fallen one"
+	}
 }

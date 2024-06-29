@@ -75,8 +75,9 @@ void FallenWarrior_OnMapStart()
 	PrecacheSound("weapons/bat_baseball_hit_flesh.wav");
 	PrecacheSound("misc/rd_spaceship01.wav");
 	PrecacheSound("npc/metropolice/vo/infection.wav");
+	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "misc/outer_space_transition_01.wav");
+	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
 	data.IconCustom = false;
@@ -167,7 +168,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.0", GetPanzerHealth(), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", GetPanzerHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
