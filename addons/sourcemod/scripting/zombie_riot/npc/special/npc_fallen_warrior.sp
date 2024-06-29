@@ -27,20 +27,23 @@ static char g_KillSounds[][] =
 	"npc/metropolice/vo/king.wav",
 	"npc/metropolice/vo/needanyhelpwiththisone.wav",
 	"npc/metropolice/vo/pickupthecan1.wav",
-
-	"npc/metropolice/vo/pickupthecan3.wav",
+};
+static char g_IdleAlertedSounds[][] = 
+{
+	"npc/metropolice/vo/pickupthecan2.wav",
 	"npc/metropolice/vo/sociocide.wav",
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
 	"npc/metropolice/vo/youknockeditover.wav",
-	"npc/metropolice/takedown.wav"
-};
+}
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
 
 void FallenWarrior_OnMapStart()
 {
-	
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_KillSounds)); i++) { PrecacheSound(g_KillSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
@@ -194,6 +197,15 @@ methodmap FallenWarrior < CClotBody
 public void FallenWarrior_ClotThink(int iNPC)
 {
 	FallenWarrior npc = view_as<FallenWarrior>(iNPC);
+	public void PlayIdleAlertSound() 
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -302,7 +314,7 @@ public void FallenWarrior_NPCDeath(int entity)
 }
 
 
-void FallenWarriotSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
+void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{

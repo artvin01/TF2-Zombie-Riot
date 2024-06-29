@@ -175,6 +175,7 @@ void NPC_ConfigSetup()
 	NecroCombine_OnMapStart_NPC();
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
+	FallenWarrior_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
