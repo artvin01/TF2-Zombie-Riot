@@ -78,12 +78,12 @@ static int i_shield_color[3] = {0, 0, 0};
 #define RUINA_BOSS_NPC_MAX_SHIELD 		250.0
 #define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	1000.0
 #define RUINA_SHIELD_NPC_TIMEOUT 		15.0
-#define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"
+#define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY	0.75
-#define RUINA_FACETOWARDS_BASE_TURNSPEED 475.0
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.75	//for npc's that walk backwards, how much slower (or faster :3) should be walk
+#define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 
 static bool b_master_is_rallying[MAXENTITIES];
 static bool b_force_reasignment[MAXENTITIES];
@@ -95,7 +95,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define RUINA_AI_CORE_REFRESH_MASTER_ID_TIMER 30.0	//how often do the npc's try to get a new master, ignored by master refind
 
-#define RUINA_INTERNAL_HEALING_COOLDOWN 2.5			//This is a particle effect cooldown, to prevent too many of them appearing/blinding people.
+#define RUINA_INTERNAL_HEALING_COOLDOWN 1.0			//This is a particle effect cooldown, to prevent too many of them appearing/blinding people.
 #define RUINA_INTERNAL_TELEPORT_COOLDOWN 5.0		//to prevent master npc's from teleporting the same npc 5 times in a row... also same reason as above
 
 #define RUINA_NPC_PITCH 115
@@ -1559,31 +1559,30 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 
 	SetEntProp(npc.index, Prop_Data, "m_iHealth", Healed_Health);
 
-	/*
+	//Todo: Test if this works properly!
+
 	float GameTime = GetGameTime(npc.index);
-	switch(GetRandomInt(0,2))	//TODO: Redo this effect so it parents the particle to the root of the npc. same thing for the teleport 
+
+	if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
+		return;
+
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	WorldSpaceVec[2]+=10.0;
+
+	fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
+
+	char Particle[30];
+	
+	switch(GetRandomInt(0,2))
 	{
+		case 0:
+			Particle = "spell_cast_wheel_red";
 		case 1:
-		{
-			if(fl_ruina_internal_healing_timer[npc.index]>GameTime)
-				return;
-
-			fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
-
-			//Ruina_AttachParticle(npc.index, "spell_cast_wheel_red", RUINA_INTERNAL_HEALING_COOLDOWN*0.95, "head");
-			
-			float Loc[3];
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
-			Loc[2]+=75.0;
-			int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
-			if(IsValidEntity(entity))
-			{
-				Ruina_AttachParticle(entity, "spell_cast_wheel_red", 2.4, "nozzle");
-				//Ruina_Move_Entity(entity, Loc, 5.0);
-			}
-		}
+			Particle = "spell_cast_wheel_blue";
 	}
-	*/
+	int Healing_Effect = ParticleEffectAt_Parent(WorldSpaceVec, Particle, npc.index, "", {0.0,0.0,0.0});
+
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(Healing_Effect), TIMER_FLAG_NO_MAPCHANGE);
 }
 public void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {

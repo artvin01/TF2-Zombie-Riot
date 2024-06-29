@@ -386,7 +386,12 @@ static void Europa_Spawn_Minnions(Europa npc)
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+
+				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 			}
+
+			
 		}
 	}
 }
@@ -410,6 +415,8 @@ static void Europa_Spawn_Self(Europa npc)
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+		float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 	}
 }
 static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty artvin
