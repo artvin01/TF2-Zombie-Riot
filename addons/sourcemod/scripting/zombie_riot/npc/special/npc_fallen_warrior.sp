@@ -51,6 +51,14 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/samurai/tf_katana_05.wav",
 	"weapons/samurai/tf_katana_06.wav",
 };
+static const char g_IntroSounds[][] =
+{
+	"misc/outer_space_transition_01.wav",
+};
+static const char g_DeathSounds[][] =
+{
+	"misc/rd_spaceship01.wav",
+};
 
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
@@ -62,8 +70,13 @@ void FallenWarrior_OnMapStart()
 	for (int i = 0; i < (sizeof(g_KillSounds)); i++) { PrecacheSound(g_KillSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_IntroSounds)); i++) { PrecacheSound(g_IntroSounds[i]); }
+	for (int i = 0; i < (sizeof(g_DeathSounds)); i++) { PrecacheSound(g_DeathSounds[i]); }
+	PrecacheSound("weapons/bat_baseball_hit_flesh.wav");
+	PrecacheSound("misc/rd_spaceship01.wav");
+	PrecacheSound("npc/metropolice/vo/infection.wav");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
+	strcopy(data.Name, sizeof(data.Name), "misc/outer_space_transition_01.wav");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
 	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai");
 	data.IconCustom = false;
@@ -127,11 +140,11 @@ methodmap FallenWarrior < CClotBody
 	}
 	public void PlayDeathSound()
 	{
-		EmitCustomToAll("misc/outer_space_transition_01.wav", _, _, _, _, 2.0, 70);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, 2.0, 70);
 	}
 	public void PlayIntroSound()
 	{
-		EmitCustomToAll("misc/rd_spaceship01.wav", _, _, _, _, 3.0, 80);
+		EmitSoundToAll(g_IntroSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, 2.0);
 	}
 	public void PlayFriendlySound()
 	{
