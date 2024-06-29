@@ -35,7 +35,8 @@ static char g_IdleAlertedSounds[][] =
 	"npc/metropolice/vo/watchit.wav",
 	"npc/metropolice/vo/xray.wav",
 	"npc/metropolice/vo/youknockeditover.wav",
-}
+};
+
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
 
