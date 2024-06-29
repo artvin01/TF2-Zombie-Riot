@@ -476,7 +476,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	if(f_PernellBuff[attacker] > GameTime)
 		damage += basedamage * 0.5; //50% more damage!
 	
-	if(f_GodArkantosBuff[attacker] > GameTime)
+	if(f_GodAlaxiosBuff[attacker] > GameTime)
 		damage += basedamage * 0.5; //50% more damage!
 	
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime)
@@ -1456,7 +1456,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	{
 		damage *= 0.6;
 	}
-	if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+	if(f_GodAlaxiosBuff[victim] > GameTime) //hussar!
 	{
 		damage *= 0.75;
 	}

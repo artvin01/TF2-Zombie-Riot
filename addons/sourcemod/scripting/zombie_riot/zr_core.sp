@@ -271,7 +271,7 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 //int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_ArkantosBuffItem[MAXENTITIES];
+bool b_AlaxiosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
@@ -344,7 +344,7 @@ int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 float MultiGlobal = 0.25;
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
-float MultiGlobalArkantos = 0.25;
+float MultiGlobalAlaxios = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 

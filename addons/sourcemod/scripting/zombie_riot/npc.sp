@@ -466,7 +466,7 @@ void NPC_ConfigSetup()
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
 	RaidbossMrX_OnMapStart();
-	GodArkantos_OnMapStart();
+	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
@@ -898,7 +898,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
-#include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_god_alaxios.sp"
 
 
 //Ruina

@@ -1942,7 +1942,7 @@ stock void DelayEffectOnHorn(int ref)
 
 	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
 
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		int r = 200;
 		int g = 200;

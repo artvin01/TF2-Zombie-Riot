@@ -484,7 +484,7 @@ float f_Ruina_Defense_Buff[MAXENTITIES];
 float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
 float f_Ruina_Attack_Buff[MAXENTITIES];
 float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
-float f_GodArkantosBuff[MAXENTITIES];
+float f_GodAlaxiosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
@@ -2768,7 +2768,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
 		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
 		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
-		f_GodArkantosBuff[entity] = 0.0;
+		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
