@@ -252,7 +252,7 @@ methodmap FallenWarrior < CClotBody
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 
-		npc.b_SwordIgnition = false;
+		npc.Anger = false;
 
 		Citizen_MiniBossSpawn();
 		return npc;
@@ -294,10 +294,10 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_flSpeed *= 1.5;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
-		if(!npc.b_SwordIgnition)
+		if(!npc.Anger)
 		{
 			IgniteTargetEffect(npc.m_iWearable5);
-			npc.b_SwordIgnition = true;
+			npc.Anger = true;
 		}
 	}
 	else
