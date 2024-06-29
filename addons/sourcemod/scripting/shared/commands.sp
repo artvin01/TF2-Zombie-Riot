@@ -178,6 +178,8 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	GetClientEyeAngles(client,clientveceye);
 	TF2_SetPlayerClass_ZR(client, ClassChangeTo);
 	CurrentClass[client] = ClassChangeTo;
+	f_WasRecentlyRevivedViaNonWaveClassChange[client] = GetGameTime() + 0.5;
+	f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
 	DHook_RespawnPlayer(client);
 	Store_GiveAll(client, Health);
 	TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);

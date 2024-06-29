@@ -271,7 +271,7 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 //int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_ArkantosBuffItem[MAXENTITIES];
+bool b_AlaxiosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
@@ -344,8 +344,9 @@ int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 float MultiGlobal = 0.25;
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
-float MultiGlobalArkantos = 0.25;
+float MultiGlobalAlaxios = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
@@ -643,6 +644,7 @@ void ZR_MapStart()
 	Zero(healing_cooldown);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
+	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
 	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
@@ -2439,10 +2441,10 @@ stock void GetTimerAndNullifyMusicMVM()
 	*/
 }
 
-bool PlayerIsInNpcBattle(int client)
+bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 {
 	bool InBattle = false;
-	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+	if(f_InBattleHudDisableDelay[client] > (GetGameTime() + ExtradelayTime))
 		InBattle = true;
 
 	return InBattle;

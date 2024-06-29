@@ -345,7 +345,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
 }
@@ -456,7 +456,7 @@ static void Create_Laser_Hell(int client, float vecTarget[3])
 	TE_SetupBeamPoints(Vec_offset, skyloc, gLaser2, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll(0.0);
 	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 }

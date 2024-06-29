@@ -26,11 +26,11 @@
 	{
 		"en" 		"Mrx... Is here."
 	}
-	"Arkantos Arrived"
+	"Alaxios Arrived"
 	{
-		"en" 		"The Atlantean and great leader Arkantos arrived."
+		"en" 		"The Atlantean and great leader Alaxios arrived."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
-		"pt"		"The Atlantean and great leader Arkantos chegou."
+		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 	}
 	"Sensal Arrived"
@@ -247,7 +247,19 @@
 		"en" 		"His motivating speech enables enemies."
 		"chi"		"他的发言鼓励着尸群。"
 	}
-	"Fallen Warrior 1"
+	"Spirit Spawns 1"
+	{
+		"en" 		"A spitit appeared... release it before its too late!"
+	}
+	"Spirit Spawns 2"
+	{
+		"en" 		"Dont let it touch you!"
+	}
+	"Spirit Spawns 3"
+	{
+		"en" 		"Dont be alone!"
+	}
+  "Fallen Warrior 1"
 	{
 		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
 	}
@@ -258,5 +270,5 @@
 	"Fallen Warrior 3"
 	{
 		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
-	}
+  }
 }

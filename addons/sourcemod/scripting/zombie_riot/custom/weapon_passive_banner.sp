@@ -11,7 +11,7 @@ Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 float BannerDefaultRange(int client)
 {
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		return 511225.0; //1.1x range
 	}

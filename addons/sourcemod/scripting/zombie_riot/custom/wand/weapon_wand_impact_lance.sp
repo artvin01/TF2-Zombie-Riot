@@ -372,7 +372,7 @@ static void Throw_Lance(int client, float speed, float damage, int weapon)
 		SDKHook(entity, SDKHook_StartTouch, Impact_Lance_StartTouch);
 		Impact_Lance_Effects_Projectile(client, entity);
 		
-		if(!Items_HasNamedItem(client, "Arkantos's Godly assistance"))
+		if(!Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 		{
 
 			DataPack pack2;

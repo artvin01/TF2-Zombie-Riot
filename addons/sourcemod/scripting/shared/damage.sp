@@ -11,31 +11,31 @@
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	LogEntryInvicibleTest(victim, attacker, damage, 5);
+	//LogEntryInvicibleTest(victim, attacker, damage, 5);
 	
 	if(Damage_AnyVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 		return true;
 
-	LogEntryInvicibleTest(victim, attacker, damage, 6);
+	//LogEntryInvicibleTest(victim, attacker, damage, 6);
 	if(victim <= MaxClients)
 	{
 #if !defined RTS
 		if(Damage_PlayerVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 7);
+		//LogEntryInvicibleTest(victim, attacker, damage, 7);
 #endif
 	}
 	else if(!b_NpcHasDied[victim])
 	{
 		if(Damage_NPCVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 8);
+		//LogEntryInvicibleTest(victim, attacker, damage, 8);
 	}
 	else if(i_IsABuilding[victim])
 	{
 		if(Damage_BuildingVictim(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
-		LogEntryInvicibleTest(victim, attacker, damage, 9);
+		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
 
 	if(attacker > 0)
@@ -43,26 +43,26 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float based
 		if(Damage_AnyAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 			return true;
 
-		LogEntryInvicibleTest(victim, attacker, damage, 13);
+		//LogEntryInvicibleTest(victim, attacker, damage, 13);
 		if(attacker <= MaxClients)
 		{
 #if !defined RTS
 			if(Damage_PlayerAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
 #endif
-			LogEntryInvicibleTest(victim, attacker, damage, 14);
+			//LogEntryInvicibleTest(victim, attacker, damage, 14);
 		}
 		else if(!b_NpcHasDied[attacker])
 		{
 			if(Damage_NPCAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 15);
+			//LogEntryInvicibleTest(victim, attacker, damage, 15);
 		}
 		else if(i_IsABuilding[attacker])
 		{
 			if(Damage_BuildingAttacker(victim, attacker, inflictor, basedamage, damage, damagetype, weapon, damageForce, damagePosition, damagecustom))
 				return true;
-			LogEntryInvicibleTest(victim, attacker, damage, 16);
+			//LogEntryInvicibleTest(victim, attacker, damage, 16);
 		}
 	}
 
@@ -476,7 +476,7 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	if(f_PernellBuff[attacker] > GameTime)
 		damage += basedamage * 0.5; //50% more damage!
 	
-	if(f_GodArkantosBuff[attacker] > GameTime)
+	if(f_GodAlaxiosBuff[attacker] > GameTime)
 		damage += basedamage * 0.5; //50% more damage!
 	
 	if(f_Ocean_Buff_Stronk_Buff[attacker] > GameTime)
@@ -821,7 +821,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			if(b_thisNpcIsARaid[victim])
 			{
-				damage *= 1.4; //due to how dangerous it is to get closer.
+				damage *= 1.1; //due to how dangerous it is to get closer.
 			}
 		}
 		case WEAPON_VAMPKNIVES_1:
@@ -1353,7 +1353,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	{
 		//arrows ignore inflictor?
 #if defined ZR
-		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker];
+		f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker] + 2.0;
 #endif
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
@@ -1456,7 +1456,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	{
 		damage *= 0.6;
 	}
-	if(f_GodArkantosBuff[victim] > GameTime) //hussar!
+	if(f_GodAlaxiosBuff[victim] > GameTime) //hussar!
 	{
 		damage *= 0.75;
 	}

@@ -4492,13 +4492,13 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
-	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
+	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
-		b_ArkantosBuffItem[client] = true;
+		b_AlaxiosBuffItem[client] = true;
 	}
 	else
 	{
-		b_ArkantosBuffItem[client] = false;
+		b_AlaxiosBuffItem[client] = false;
 	}
 
 	if(i_CurrentEquippedPerk[client] == 4)
@@ -5531,6 +5531,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
+		Enable_Obuch(client, entity);
 		Enable_Judge(client, entity);
 		Enable_SpikeLayer(client, entity);
 		Enable_SensalWeapon(client, entity);
@@ -5946,8 +5947,8 @@ void GiveCredits(int client, int credits, bool building)
 	}
 	else
 	{
-		CashSpentGivePostSetup[client] += credits;
 		CashSpent[client] -= credits;
+		CashRecievedNonWave[client] += credits;
 	}
 }
 

@@ -10,8 +10,8 @@
 
 
 //NOTE!!!! this affects ALL STATS, how fast it turns, how fast it deal damage, etc etc etc
-#define NEUVELLETE_THROTTLE_SPEED 6.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
-#define NEUVELLETE_TE_DURATION 6.6/66.0
+#define NEUVELLETE_THROTTLE_SPEED 6.0/float(TickrateModifyInt)	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
+#define NEUVELLETE_TE_DURATION 6.6/float(TickrateModifyInt)
 
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
