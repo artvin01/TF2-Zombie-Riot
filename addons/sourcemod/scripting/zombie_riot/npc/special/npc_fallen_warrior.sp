@@ -168,7 +168,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", GetPanzerHealth(), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", GetPanzerHealth(), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
@@ -195,6 +195,9 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
+
 		func_NPCDeath[npc.index] = view_as<Function>(FallenWarrior_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(FallenWarrior_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(FallenWarrior_ClotThink);
@@ -219,20 +222,23 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
@@ -277,12 +283,12 @@ public void FallenWarrior_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed *= 1.5;
 		TrueArmor *= 0.5;
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
-		IgniteTargetEffect(npc.m_iWearable6);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
+		IgniteTargetEffect(npc.m_iWearable5);
 	}
 	else
 	{
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 	}
 	fl_TotalArmor[npc.index] = TrueArmor;
 
@@ -318,7 +324,10 @@ public void FallenWarrior_ClotThink(int iNPC)
 public Action FallenWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	FallenWarrior npc = view_as<FallenWarrior>(victim);
-		
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
+	{
+		npc.m_bLostHalfHealth = true;
+	}
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -345,8 +354,6 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
 	
 	npc.PlayDeathSound();
 	CPrintToChatAll("{crimson}Red{default}: Thank... you...");
@@ -378,9 +385,13 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				{
 					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
+					{
 						damageDealt *= 1.5;
+					}	
 					if(npc.m_bLostHalfHealth)
+					{
 						damageDealt *= 2.0;
+					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
