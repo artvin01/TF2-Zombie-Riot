@@ -93,6 +93,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 {
 	return FallenWarrior(client, vecPos, vecAng, ally, data);
 }
+static int i_fallen_eyeparticle[MAXENTITIES];
+static int i_fallen_headparticle[MAXENTITIES];
 
 static char[] GetPanzerHealth()
 {
@@ -249,6 +251,12 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
+		float flPos[3], flAng[3];
+				
+		npc.GetAttachment("head", flPos, flAng);
+		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-10.0,0.0}));
+		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "eyeglow_L", {0.0,-10.0,0.0}));
+
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
@@ -374,6 +382,19 @@ public void FallenWarrior_NPCDeath(int entity)
 	
 	npc.PlayDeathSound();
 	CPrintToChatAll("{crimson}Red{default}: Thank... you...");
+
+	int particle = EntRefToEntIndex(i_fallen_headparticle[npc.index]);
+	int particleeye = EntRefToEntIndex(i_fallen_eyeparticle[npc.index]);
+	if(IsValidEntity(particle))
+	{
+		RemoveEntity(particle);
+		i_fallen_headparticle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+	if(IsValidEntity(particleeye))
+	{
+		RemoveEntity(particle);
+		i_fallen_eyeparticle[npc.index]=INVALID_ENT_REFERENCE;
+	}
 
 	Citizen_MiniBossDeath(entity);
 }
