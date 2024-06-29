@@ -292,7 +292,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_bLostHalfHealth)
 	{
-		npc.m_flSpeed = 350;
+		npc.m_flSpeed += 100;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
