@@ -252,7 +252,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		AnarchyRunoverSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		FallenWarriotSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -262,7 +262,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertKhazaan_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action FallenWarrior_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	FallenWarrior npc = view_as<FallenWarrior>(victim);
 		
@@ -302,7 +302,7 @@ public void FallenWarrior_NPCDeath(int entity)
 }
 
 
-void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
+void FallenWarriotSelfDefense(DesertAtilla npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
