@@ -235,7 +235,7 @@ methodmap FallenWarrior < CClotBody
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
