@@ -988,9 +988,9 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		if(f_Data_InBattleHudDisableDelay[inflictor] + 2.0 != 0.0)
 		{
-			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor];
-			f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
+			f_InBattleHudDisableDelay[inflictor] = GetGameTime() + f_Data_InBattleHudDisableDelay[inflictor] + 2.0;
 		}
+		f_InBattleDelay[inflictor] = GetGameTime() + 3.0;
 	}
 #endif
 	
@@ -1529,7 +1529,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "P%s", Debuff_Adder_right);
 	}
-	if(f_GodArkantosBuff[victim] > GameTime)
+	if(f_GodAlaxiosBuff[victim] > GameTime)
 	{
 		Debuff_added = true;
 		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "ß%s", Debuff_Adder_right);
@@ -2053,7 +2053,7 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_LeeSuperEffect[npc] > GameTime)
 		return true;
-	else if(f_GodArkantosBuff[npc] > GameTime)
+	else if(f_GodAlaxiosBuff[npc] > GameTime)
 		return true;
 	else if(f_Ocean_Buff_Stronk_Buff[npc] > GameTime)
 		return true;

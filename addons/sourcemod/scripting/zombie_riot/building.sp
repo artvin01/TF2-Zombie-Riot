@@ -123,6 +123,8 @@ static Handle MenuTimer[MAXTF2PLAYERS];
 static int Player_BuildingBeingCarried[MAXTF2PLAYERS];
 static int i_IDependOnThisBuilding[MAXENTITIES];
 static float PlayerWasHoldingProp[MAXTF2PLAYERS];
+float PreventSameFrameActivation[2][MAXPLAYERS + 1];
+int RandomIntSameRequestFrame[MAXPLAYERS + 1];
 
 bool BuildingIsSupport(int entity)
 {
@@ -188,6 +190,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		Cash /= 2;
 		AmmoSupply *= 0.5;
 	}
+	
 	AmmoSupply *= 0.65;
 	if(CashLimit)
 	{
@@ -262,6 +265,10 @@ void Building_WaveEnd()
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
+	MenuPage[client] = 0;
+	if(MenuTimer[client] != null)
+		delete MenuTimer[client];
+
 	BuildingMenu(client);
 }
 
@@ -437,11 +444,13 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 		}
 		case MenuAction_Select:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 
 			if(HasWrench(client))
 			{
@@ -1578,8 +1587,6 @@ public bool BuildingCustomCommand(int client)
 	return false;
 }
 
-
-
 int i2_MountedInfoAndBuilding[2][MAXPLAYERS + 1];
 
 public void MountBuildingToBack(int client, int weapon, bool crit)
@@ -1615,17 +1622,25 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	Building_RotateAllDepencencies(entity);
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-	ModelScale *= 0.5;
+	ModelScale *= 0.33;
 
 	b_ThisEntityIgnored[entity] = true;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 	
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
 	if(IsValidEntity(objstats.m_iWearable1))
+	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
+		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = true;		
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+	}
 
 	if(IsValidEntity(objstats.m_iWearable2))
+	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
+		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = true;		
+		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+	}
 
 	if(IsValidEntity(objstats.m_iWearable3))
 	{
@@ -1637,6 +1652,48 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 		SetVariantString("0");
 		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
 	}
+	if(IsValidEntity(objstats.m_iWearable5))
+	{
+		SetVariantString("6");
+		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
+		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
+		SDKHook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
+	}
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	SDKCall_SetLocalOrigin(entity, flPos);	
+	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(RandomIntSameRequestFrame[client]);
+
+	RequestFrames(ParentDelayFrameForReasons, 1, pack);
+	Building_Mounted[entity] = EntIndexToEntRef(client);
+	Building_Mounted[client] = EntIndexToEntRef(entity);
+	
+	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
+	//all checks succeeded, now mount the building onto their back!
+}
+
+//its delayed to fix various issues regarding rendering
+void ParentDelayFrameForReasons(DataPack pack)
+{
+	pack.Reset();
+	
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int RandomInt = pack.ReadCell();
+	delete pack;
+
+	if(!IsValidEntity(client))
+		return;
+
+	if(!IsValidEntity(entity))
+		return;
+
+	if(RandomIntSameRequestFrame[client] != RandomInt)
+		return;
 
 	int Wearable;
 	Wearable = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -1646,17 +1703,13 @@ public void MountBuildingToBack(int client, int weapon, bool crit)
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(Wearable, "flag", flPos, flAng);
+
 	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
 	SetParent(Wearable, InfoTarget, "flag",_);
 	SDKCall_SetLocalOrigin(entity, flPos);	
 	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
 	SetParent(InfoTarget, entity, _, _, _);
-	Building_Mounted[client] = EntIndexToEntRef(entity);
-	Building_Mounted[entity] = EntIndexToEntRef(client);
-	
 	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
-	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
-	//all checks succeeded, now mount the building onto their back!
 }
 
 static Handle Timer_TransferOwnerShip[MAXTF2PLAYERS];
@@ -1670,8 +1723,14 @@ static Action Timer_KillMountedStuff(Handle timer, int client)
 	return Plugin_Stop;
 }
 
+
 void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 {
+	if(PreventSameFrameActivation[view_as<int>(DontEquip)][client] == GetGameTime())
+		return;
+		
+	PreventSameFrameActivation[view_as<int>(DontEquip)][client] = GetGameTime();
+
 	int entity = EntRefToEntIndex(i2_MountedInfoAndBuilding[1][client]);
 
 	if(DontEquip && IsValidEntity(entity))
@@ -1712,18 +1771,20 @@ void TransferDispenserBackToOtherEntity(int client, bool DontEquip = false)
 	{
 		delete Timer_TransferOwnerShip[client];
 	}
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(Wearable, "flag", flPos, flAng);
-	int InfoTarget = InfoTargetParentAt(flPos,"", 0.0);
-	SetParent(Wearable, InfoTarget, "flag",_);
-	SDKCall_SetLocalOrigin(entity, flPos);	
-	SetEntPropVector(entity, Prop_Data, "m_angRotation", flAng);
-	SetParent(InfoTarget, entity, _, _, _);
-	Building_Mounted[client] = EntIndexToEntRef(entity);
-	Building_Mounted[entity] = EntIndexToEntRef(client);
 
-	i2_MountedInfoAndBuilding[0][client] = EntIndexToEntRef(InfoTarget);
+	float flPos[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);
+	SDKCall_SetLocalOrigin(entity, flPos);	
+	RandomIntSameRequestFrame[client] = GetRandomInt(-999999,9999999);
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteCell(RandomIntSameRequestFrame[client]);
+
+	RequestFrames(ParentDelayFrameForReasons, 6, pack);
+	Building_Mounted[entity] = EntIndexToEntRef(client);
+	Building_Mounted[client] = EntIndexToEntRef(entity);
+	
 	i2_MountedInfoAndBuilding[1][client] = EntIndexToEntRef(entity);
 }
 void UnequipDispenser(int client, bool destroy = false)
@@ -1774,16 +1835,26 @@ void UnequipDispenser(int client, bool destroy = false)
 	b_ThisEntityIgnored[entity] = false;
 	b_ThisEntityIsAProjectileForUpdateContraints[entity] = false;
 	float ModelScale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
-	ModelScale *= 2.0;
+	ModelScale *= 3.0;
 
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", ModelScale);
 	if(IsValidEntity(objstats.m_iWearable1))
 	{
 		SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_flModelScale", ModelScale);
+		b_IsEntityAlwaysTranmitted[objstats.m_iWearable1] = false;
+	//	SetEntPropFloat(objstats.m_iWearable1, Prop_Send, "m_fadeMaxDist", 0.0);		
+		SDKUnhook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
+		SDKHook(objstats.m_iWearable1, SDKHook_SetTransmit, SetTransmit_BuildingNotReady);
 	}
 
 	if(IsValidEntity(objstats.m_iWearable2))
+	{
 		SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_flModelScale", ModelScale);
+		b_IsEntityAlwaysTranmitted[objstats.m_iWearable2] = false;
+	//	SetEntPropFloat(objstats.m_iWearable2, Prop_Send, "m_fadeMaxDist", 0.0);		
+		SDKUnhook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);
+		SDKHook(objstats.m_iWearable2, SDKHook_SetTransmit, SetTransmit_BuildingReady);	
+	}
 
 	if(IsValidEntity(objstats.m_iWearable3))
 	{
@@ -1794,6 +1865,12 @@ void UnequipDispenser(int client, bool destroy = false)
 	{
 		SetVariantString("6");
 		AcceptEntityInput(objstats.m_iWearable4, "SetTextSize");
+	}
+	if(IsValidEntity(objstats.m_iWearable5))
+	{
+		SetVariantString("0");
+		AcceptEntityInput(objstats.m_iWearable5, "SetTextSize");
+		SDKUnhook(objstats.m_iWearable5, SDKHook_SetTransmit, SetTransmit_BuildingReadyTestThirdPersonIgnore);
 	}
 
 	Building_PlayerWieldsBuilding(client, entity);

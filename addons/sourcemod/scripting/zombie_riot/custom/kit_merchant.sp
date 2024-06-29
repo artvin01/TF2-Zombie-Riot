@@ -519,12 +519,16 @@ void Merchant_SelfTakeDamage(int victim, int attacker, float &damage)
 	}
 }
 
-bool Merchant_OnLethalDamage(int client)
+bool Merchant_OnLethalDamage(int attacker, int client)
 {
 	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] == Merchant_Swire)
 	{
 		int ammo = GetAmmo(client, Ammo_Metal);
-		int cost = MERCHANT_METAL_DRAIN * 10 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		int cost = MERCHANT_METAL_DRAIN * 13 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		if(attacker > 0 && b_thisNpcIsARaid[attacker])
+		{
+			cost *= 2;
+		}
 		if(ammo >= cost)
 		{
 			SetAmmo(client, Ammo_Metal, ammo - cost);

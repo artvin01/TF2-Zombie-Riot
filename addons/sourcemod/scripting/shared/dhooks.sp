@@ -21,7 +21,6 @@ static DynamicHook g_DHookScoutSecondaryFire;
 
 #if defined ZR
 static bool IsRespawning;
-static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 //static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
@@ -1020,15 +1019,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 #endif	
 			}
-			/*
-#if defined ZR
-			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
-			{
-				Hose_Touch(entity1, entity2);
-				return false;
-			}
-#endif	
-*/
 			//ally projectiles do not collide with players unless they only go for players
 			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
@@ -1495,8 +1485,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
-	GiveCompleteInvul(client, 2.0);
 	
+	if(f_WasRecentlyRevivedViaNonWaveClassChange[client] > GetGameTime())
+	{	
+		return MRES_Ignored;
+	}
+	GiveCompleteInvul(client, 2.0);
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
@@ -1948,7 +1942,7 @@ stock void DelayEffectOnHorn(int ref)
 
 	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
 
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		int r = 200;
 		int g = 200;

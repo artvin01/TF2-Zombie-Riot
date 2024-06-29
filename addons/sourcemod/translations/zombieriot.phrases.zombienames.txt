@@ -1578,9 +1578,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Arkantos"
+	"God Alaxios"
 	{
-		"en"		"God Arkantos"
+		"en"		"God Alaxios"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -2248,5 +2248,13 @@
 	"Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
+	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
 	}
 }

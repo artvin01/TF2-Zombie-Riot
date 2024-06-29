@@ -211,8 +211,6 @@ public void Moab_ClotThink(int iNPC)
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			
-			
 			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
 			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}

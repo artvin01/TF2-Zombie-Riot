@@ -83,7 +83,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 			case 4:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_god_arkantos");
+				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
 				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			case 5:
@@ -612,7 +612,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 47:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be God Arkantos!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be God Alaxios!");
 			RaidFight = 4;
 		}
 		case 48:

@@ -487,6 +487,7 @@ float f_Ruina_Attack_Buff[MAXENTITIES];
 float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
 #endif
 float f_GodArkantosBuff[MAXENTITIES];
+float f_GodAlaxiosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
 float f_BannerDurationActive[MAXENTITIES];
@@ -625,7 +626,7 @@ float f_DelayAttackspeedAnimation[MAXTF2PLAYERS +1];
 float f_DelayAttackspeedPanicAttack[MAXENTITIES];
 
 #if defined ZR 
-float f_TimeSinceLastGiveWeapon[MAXTF2PLAYERS]={1.0, ...};
+float f_TimeSinceLastGiveWeapon[MAXENTITIES]={1.0, ...};
 int i_WeaponAmmoAdjustable[MAXENTITIES];
 int Resupplies_Supplied[MAXTF2PLAYERS];
 bool b_LeftForDead[MAXTF2PLAYERS];
@@ -1501,10 +1502,10 @@ public void OnPluginStart()
 		}
 	}
 
-    float tickrate = 1.0 / GetTickInterval();
+	float tickrate = 1.0 / GetTickInterval();
 	TickrateModifyInt = RoundToNearest(tickrate);
 
-    TickrateModify = tickrate / 66.0;
+	TickrateModify = tickrate / 66.0;
 }
 /*
 public void OnAllPluginsLoaded()
@@ -2760,6 +2761,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
+		CoinEntityCreated(entity);
 #endif
 		b_ThisWasAnNpc[entity] = false;
 #if defined ZR
@@ -2791,6 +2793,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Ruina_Reset_Starts_Npc(entity);
 #endif
 		f_GodArkantosBuff[entity] = 0.0;
+		f_Ruina_Speed_Buff[entity] = 0.0;
+		f_Ruina_Defense_Buff[entity] = 0.0;
+		f_Ruina_Attack_Buff[entity] = 0.0;
+		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
+		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
+		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
+		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;
 		b_NoKnockbackFromSources[entity] = false;
@@ -3370,13 +3379,13 @@ public void OnEntityDestroyed(int entity)
 
 		if(entity > MaxClients)
 		{
-
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
+			WeaponSwtichToWarningPostDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif
@@ -3538,7 +3547,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
 		static float vecEndOrigin[3];
-		int entity = GetClientPointVisible(client, _, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#if defined ZR
+		int entity = GetClientPointVisible(client, 70.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#else
+		int entity = GetClientPointVisible(client, 100.0, _, _, vecEndOrigin); //So you can also correctly interact with players holding shit.
+#endif
 		if(entity > 0)
 		{
 
@@ -3562,10 +3575,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 					
 				if(Object_Interact(client, weapon, entity))
 					return true;
-				
+
 				//shouldnt invalidate clicking, makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
+
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
@@ -3576,12 +3590,10 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//interacting with citizens shouldnt invalidate clicking, it makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Citizen_Interact(client, entity))
 					return false;
-				
+
 				if(Is_Reload_Button && BarrackBody_Interact(client, entity))
 					return true;
 				
-				if (GetTeam(entity) != TFTeam_Red)
-					return false;
 			}
 #endif
 			

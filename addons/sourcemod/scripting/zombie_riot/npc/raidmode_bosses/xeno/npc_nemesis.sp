@@ -383,14 +383,18 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
-			HealByThis = float(HealByThis) / TickrateModify;
+			HealByThis = RoundToCeil(float(HealByThis) / TickrateModify);
 			if(XenoExtraLogic())
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
 			}
+			else
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis));
+			}
+			
 			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 			{
-				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			}
 		}
@@ -807,7 +811,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
-						if(npc.m_iChanged_WalkCycle != 3) 
+						if(npc.m_iChanged_WalkCycle != 13) 
 						{
 							//the enemy is still close, do another attack.
 							float flPos[3]; // original
@@ -824,9 +828,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							int iActivity = npc.LookupActivity("ACT_RAID_TYRAND");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_FT2_ATTACK_2");
+							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())
 							{
@@ -855,8 +858,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.SetActivity("ACT_FT2_WALK");
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
@@ -959,11 +961,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.0;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
-				if(npc.m_iChanged_WalkCycle != 1) 
+				if(npc.m_iChanged_WalkCycle != 15) 
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_ATTACK_1");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_FT2_ATTACK_1");
+					npc.m_iChanged_WalkCycle = 15;
 					npc.m_bisWalking = false;
 					if(XenoExtraLogic())
 					{
@@ -1167,7 +1168,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
