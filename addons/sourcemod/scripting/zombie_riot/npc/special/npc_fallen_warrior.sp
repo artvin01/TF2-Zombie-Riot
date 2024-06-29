@@ -211,6 +211,7 @@ methodmap FallenWarrior < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = GetGameTime();
+		npc.b_SwordIgnition = false;
 		
 		
 		int skin = 1;
@@ -232,15 +233,15 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 175, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.1");
+		SetVariantString("1.0");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 150, 200, 255);
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.2");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("0.9");
+		SetVariantString("1.3");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 150, 200, 255);
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
@@ -292,7 +293,11 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_flSpeed *= 1.5;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
-		IgniteTargetEffect(npc.m_iWearable5);
+		if(!npc.b_SwordIgnition)
+		{
+			IgniteTargetEffect(npc.m_iWearable5);
+			npc.b_SwordIgnition = true;
+		}
 	}
 	else
 	{
