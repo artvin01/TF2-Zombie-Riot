@@ -196,7 +196,7 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
+		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 
 		func_NPCDeath[npc.index] = view_as<Function>(FallenWarrior_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(FallenWarrior_OnTakeDamage);
@@ -218,7 +218,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum23_preventative_measure/sum23_preventative_measure.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
 
@@ -232,7 +232,7 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 175, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.0");
+		SetVariantString("1.4");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 150, 200, 255);
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
