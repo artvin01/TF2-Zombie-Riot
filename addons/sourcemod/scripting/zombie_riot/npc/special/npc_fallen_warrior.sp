@@ -91,6 +91,15 @@ static char[] GetPanzerHealth()
 }
 methodmap FallenWarrior < CClotBody
 {
+	public void PlayIdleAlertSound() 
+	{
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+	}
 	public void PlayHurtSound()
 	{
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -198,15 +207,6 @@ methodmap FallenWarrior < CClotBody
 public void FallenWarrior_ClotThink(int iNPC)
 {
 	FallenWarrior npc = view_as<FallenWarrior>(iNPC);
-	public void PlayIdleAlertSound() 
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -272,6 +272,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
+
 	npc.PlayIdleAlertSound();
 }
 
