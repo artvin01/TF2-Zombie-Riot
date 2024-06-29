@@ -36,6 +36,21 @@ static char g_IdleAlertedSounds[][] =
 	"npc/metropolice/vo/xray.wav",
 	"npc/metropolice/vo/youknockeditover.wav",
 };
+static const char g_MeleeHitSounds[][] = 
+{
+	"weapons/samurai/tf_katana_slice_01.wav",
+	"weapons/samurai/tf_katana_slice_02.wav",
+	"weapons/samurai/tf_katana_slice_03.wav",
+};
+static const char g_MeleeAttackSounds[][] = 
+{
+	"weapons/samurai/tf_katana_01.wav",
+	"weapons/samurai/tf_katana_02.wav",
+	"weapons/samurai/tf_katana_03.wav",
+	"weapons/samurai/tf_katana_04.wav",
+	"weapons/samurai/tf_katana_05.wav",
+	"weapons/samurai/tf_katana_06.wav",
+};
 
 static float i_ClosestAllyCDTarget[MAXENTITIES];
 
@@ -45,6 +60,8 @@ void FallenWarrior_OnMapStart()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_KillSounds)); i++) { PrecacheSound(g_KillSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
@@ -123,12 +140,16 @@ methodmap FallenWarrior < CClotBody
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll("weapons/samurai/tf_katana_slice_03.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
 		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+	}
+	public void PlayMeleeHitSound() 
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
