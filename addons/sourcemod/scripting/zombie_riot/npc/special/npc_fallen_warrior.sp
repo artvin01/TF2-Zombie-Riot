@@ -211,7 +211,6 @@ methodmap FallenWarrior < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = GetGameTime();
-		npc.b_SwordIgnition = false;
 		
 		
 		int skin = 1;
@@ -252,6 +251,8 @@ methodmap FallenWarrior < CClotBody
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
+
+		npc.b_SwordIgnition = false;
 
 		Citizen_MiniBossSpawn();
 		return npc;
