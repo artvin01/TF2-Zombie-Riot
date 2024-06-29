@@ -121,11 +121,11 @@ methodmap FallenWarrior < CClotBody
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.0", GetPanzerHealth(), ally));
-        
+		
 		i_NpcWeight[npc.index] = 4;
-        FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-        int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
+		int iActivity = npc.LookupActivity("ACT_CUSTOM_WALK_SAMURAI");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		if(ally == TFTeam_Red)
@@ -137,7 +137,7 @@ methodmap FallenWarrior < CClotBody
 			npc.PlayIntroSound();
 		}
 		
-        npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -148,7 +148,7 @@ methodmap FallenWarrior < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(FallenWarrior_ClotThink);
 		
 		npc.m_bLostHalfHealth = false;
-        npc.m_bThisNpcIsABoss = true;
+		npc.m_bThisNpcIsABoss = true;
 
 		//IDLE
 		npc.m_iState = 0;
@@ -179,7 +179,7 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
-        SetVariantString("1.5");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		float wave = float(ZR_GetWaveCount()+1);
@@ -221,13 +221,13 @@ public void FallenWarrior_ClotThink(int iNPC)
 	}
 	float TrueArmor = 1.0;
 
-    if(npc.m_bLostHalfHealth)
-    {
-        npc.m_flSpeed *= 1.5;
-        TrueArmor *= 0.5;
-        SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
-        IgniteTargetEffect(npc.m_iWearable6);
-    }
+	if(npc.m_bLostHalfHealth)
+	{
+		npc.m_flSpeed *= 1.5;
+		TrueArmor *= 0.5;
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
+		IgniteTargetEffect(npc.m_iWearable6);
+	}
 	else
 	{
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
@@ -296,7 +296,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	
 	npc.PlayDeathSound();
-    CPrintToChatAll("{crimson}Red{default}: Thank... you...");
+	CPrintToChatAll("{crimson}Red{default}: Thank... you...");
 
 	Citizen_MiniBossDeath(entity);
 }
@@ -326,8 +326,8 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
-                    if(npc.m_bLostHalfHealth)
-                        damageDealt *= 2.0;
+					if(npc.m_bLostHalfHealth)
+						damageDealt *= 2.0;
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
@@ -350,16 +350,16 @@ void DesertAtillaSelfDefense(DesertAtilla npc, float gameTime, int target, float
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-                float fasterattack = 2.0;
-                if(npc.m_bLostHalfHealth)
-                {
-                    npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
-                    fasterattack /= 2;
-                }
-                else
-                {
-                    npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_CALM");
-                }
+				float fasterattack = 2.0;
+				if(npc.m_bLostHalfHealth)
+				{
+					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
+					fasterattack /= 2;
+				}
+				else
+				{
+					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_CALM");
+				}
 				
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
