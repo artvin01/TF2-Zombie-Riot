@@ -221,13 +221,13 @@ methodmap FallenWarrior < CClotBody
 		float size = 1.4;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl", "", skin, size);
+		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl", "", skin, size);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl", "", skin, 0.5);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl", "", skin, size);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl", "", skin, size);
+		npc.m_iWearable4 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl", "", skin, size);
 
 		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl", "", skin, size);
 
