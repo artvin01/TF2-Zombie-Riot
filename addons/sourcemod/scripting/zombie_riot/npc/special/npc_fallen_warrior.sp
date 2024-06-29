@@ -218,52 +218,35 @@ methodmap FallenWarrior < CClotBody
 		
 		
 		int skin = 1;
+		float size = 1.4;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl", "", skin, size);
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl", "", skin, 3.0);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl", "", skin, size);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl", "", skin, size);
 
-		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl", "", skin, size);
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl", "", 2, size);
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.4");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 175, 150, 150, 255);
-
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
-
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("5.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntityRenderColor(npc.m_iWearable2, 100, 50, 50, 255);
-
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+
+		SetEntityRenderColor(npc.m_iWearable1, 175, 150, 150, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 100, 50, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
-
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
-		SetVariantString("1.3");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
 		float wave = float(ZR_GetWaveCount()+1);
@@ -407,7 +390,11 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			static float MaxVec[3];
+			static float MinVec[3];
+			MaxVec = {100.0,100.0,100.0};
+			MinVec = {-100.0,-100.0,-100.0};
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, MaxVec,MinVec)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
