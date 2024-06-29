@@ -137,29 +137,29 @@ methodmap FallenWarrior < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
 	}
 	public void PlayDeathSound()
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, 2.0, 70);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, BOSS_ZOMBIE_VOLUME, 70);
 	}
 	public void PlayIntroSound()
 	{
-		EmitSoundToAll(g_IntroSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, 2.0);
+		EmitSoundToAll(g_IntroSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayFriendlySound()
 	{
-		EmitSoundToAll("npc/metropolice/vo/infection.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 80);
+		EmitSoundToAll("npc/metropolice/vo/infection.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitSoundToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 70);
 	}
 	public void PlayMeleeHitSound() 
 	{
