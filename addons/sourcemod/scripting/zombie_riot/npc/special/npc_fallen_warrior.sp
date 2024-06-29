@@ -421,7 +421,6 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 							}
 						}
 					}
-					}
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
