@@ -137,7 +137,7 @@ methodmap FallenWarrior < CClotBody
 			return;
 		
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
 	}
 	public void PlayDeathSound()
 	{
