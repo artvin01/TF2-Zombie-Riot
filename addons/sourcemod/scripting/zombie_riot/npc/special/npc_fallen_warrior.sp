@@ -249,9 +249,10 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
 		SetVariantString("5.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable2, 100, 50, 50, 255);
 
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("0.9");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
@@ -263,7 +264,7 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
@@ -288,7 +289,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
+		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -416,7 +417,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 125.0;
+					float damageDealt = 150.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damageDealt *= 1.5;
