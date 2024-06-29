@@ -221,7 +221,7 @@ methodmap FallenWarrior < CClotBody
 		float size = 1.2;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl", "", skin, size);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl", "", skin, size);
 
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl", "", skin, 1.0);
 
