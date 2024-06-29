@@ -1168,7 +1168,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)

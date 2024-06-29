@@ -247,4 +247,16 @@
 		"en" 		"His motivating speech enables enemies."
 		"chi"		"他的发言鼓励着尸群。"
 	}
+	"Spirit Spawns 1"
+	{
+		"en" 		"A spitit appeared... release it before its too late!"
+	}
+	"Spirit Spawns 2"
+	{
+		"en" 		"Dont let it touch you!"
+	}
+	"Spirit Spawns 3"
+	{
+		"en" 		"Dont be alone!"
+	}
 }

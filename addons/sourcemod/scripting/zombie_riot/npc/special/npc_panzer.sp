@@ -290,6 +290,7 @@ methodmap NaziPanzer < CClotBody
 		func_NPCDeath[npc.index] = NaziPanzer_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = NaziPanzer_OnTakeDamage;
 		func_NPCThink[npc.index] = NaziPanzer_ClotThink;
+		f_HeadshotDamageMultiNpc[npc.index] = 0.7;
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, NaziPanzer_ClotDamagedPost);
@@ -631,13 +632,13 @@ public void NaziPanzer_ClotThink(int iNPC)
 						}
 					}
 					delete swingTrace;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
 					npc.m_flAttackHappenswillhappen = false;
 				}
 				else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
 				{
 					npc.m_flAttackHappenswillhappen = false;
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.2;
+					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7;
 				}
 			}
 			

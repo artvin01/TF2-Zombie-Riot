@@ -2249,4 +2249,12 @@
 	{
 		"en"	"Ouroboros Ekas"
 	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
+	}
 }

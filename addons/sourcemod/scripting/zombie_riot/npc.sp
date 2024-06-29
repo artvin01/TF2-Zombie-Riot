@@ -173,6 +173,8 @@ void NPC_ConfigSetup()
 	XenoOuroborosEkas_OnMapStart_NPC();
 	
 	NaziPanzer_OnMapStart_NPC();
+	WanderingSpirit_OnMapStart_NPC();
+	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
 	NecroCombine_OnMapStart_NPC();
 	NecroCalcium_OnMapStart_NPC();
@@ -878,6 +880,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
 #include "zombie_riot/npc/special/npc_doctor.sp"
+#include "zombie_riot/npc/special/npc_wandering_spirit.sp"
+#include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
