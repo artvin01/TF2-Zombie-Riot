@@ -645,7 +645,8 @@ static void ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
-						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+						npc.FireRocket(vecTarget, RaidModeScaling, 900.0);
+					//	npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
 					}
