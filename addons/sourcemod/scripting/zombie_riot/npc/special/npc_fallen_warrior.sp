@@ -95,7 +95,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 static char[] GetPanzerHealth()
 {
-	int health = 110;
+	int health = 100;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
@@ -114,7 +114,7 @@ static char[] GetPanzerHealth()
 		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
-	health /= 1.5;
+	health /= 3.0;
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
@@ -205,11 +205,14 @@ methodmap FallenWarrior < CClotBody
 		npc.m_bLostHalfHealth = false;
 		npc.m_bThisNpcIsABoss = true;
 
+		npc.m_flMeleeArmor = 1.2; 		
+		npc.m_flRangedArmor = 0.9;
+
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flNextRangedAttack = GetGameTime();
 		
 		
@@ -291,7 +294,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_bLostHalfHealth)
 	{
-		npc.m_flSpeed *= 1.5;
+		npc.m_flSpeed *= 1.3;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
