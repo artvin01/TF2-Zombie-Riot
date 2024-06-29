@@ -223,8 +223,6 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
 
 	if(npc.m_flAttackHappens)
 	{

@@ -2024,7 +2024,7 @@ void Silvester_TBB_Ability(int client)
 	Silvester_BEAM_MaxDistance[client] = 2000;
 	Silvester_BEAM_BeamRadius[client] = 45;
 	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = 200;
+	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
 	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
 	Silvester_BEAM_Duration[client] = 6.0;
@@ -2219,6 +2219,7 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}

@@ -402,7 +402,6 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		AddEntityToLagCompList(npc);
 
-		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
 		i_FailedTriesUnstuck[npc] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
@@ -412,6 +411,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 		SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
+		SetEntityMoveType(npc, MOVETYPE_CUSTOM);
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
@@ -1335,7 +1335,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
-		if(f_GodArkantosBuff[this.index] > Gametime)
+		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.50;
 		}
@@ -2329,7 +2329,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	float offset = 0.0,
 	bool DontParent = false)
 	{
-		int item = CreateEntityByName("prop_dynamic");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
 
 		if(model_size == 1.0)
@@ -3910,7 +3910,7 @@ stock void WorldSpaceCenter(int entity, float vecPos[3])
 		//did you know abs origin only exists for the server? crazy right
 		
 		//This is usually the middle, so this should work out just fine!
-		
+	
 		if(b_IsGiant[entity])
 		{
 			vecPos[2] += 64.0;
@@ -4513,6 +4513,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 #if defined ZR
 			if(RaidbossIgnoreBuildingsLogic(2))
+			{
+				return false;
+			}
+			if(BuildingIsBeingCarried(enemy))
 			{
 				return false;
 			}
@@ -5488,6 +5492,9 @@ public void NpcBaseThink(int iNPC)
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
+		//this is just as a temp fix, remove whenver.
+		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
+
 		NpcDrawWorldLogic(iNPC);
 		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
 		Npc_DebuffWorldTextUpdate(npc);
@@ -5539,8 +5546,8 @@ public void NpcBaseThink(int iNPC)
 	}
 #endif
 
-
-	NpcStuckInSomething(npc,iNPC);
+	//Is the NPC out of bounds, or inside a player
+	NpcOutOfBounds(npc,iNPC);
 
 	Function func = func_NPCThink[iNPC];
 	if(func && func != INVALID_FUNCTION)
@@ -5549,6 +5556,7 @@ public void NpcBaseThink(int iNPC)
 		Call_PushCell(iNPC);
 		Call_Finish();
 	}
+	//is the NPC inside an object
 	NpcStuckInSomething(npc,iNPC);
 }
 
@@ -5643,10 +5651,22 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
 			flMyPos_Bounds[2] += 1.0;
-			if(TR_PointOutsideWorld(flMyPos_Bounds) || IsBoxHazard(flMyPos_Bounds, {-20.0,-20.0,0.0}, {20.0,2.0,70.0}))
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+			bool OutOfBounds = false;
+			if(IsBoxHazard(flMyPos_Bounds, hullcheckmins_Player, hullcheckmaxs_Player))
+			{
+				OutOfBounds = true;
+			}
+			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			{
+				OutOfBounds = true;
+			}
+			if(OutOfBounds)
 			{
 			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-				
 #if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -5671,7 +5691,6 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				}
 				else
 #endif
-				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}
@@ -7893,7 +7912,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
-	f_GodArkantosBuff[entity] = 0.0;
+	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	f_RaidStunResistance[entity] = 0.0;

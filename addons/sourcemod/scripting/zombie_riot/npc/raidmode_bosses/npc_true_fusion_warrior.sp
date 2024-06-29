@@ -1106,7 +1106,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200 * TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 6.0;
@@ -1169,7 +1169,7 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 4.0;
@@ -1365,6 +1365,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?

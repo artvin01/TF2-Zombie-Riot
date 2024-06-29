@@ -179,29 +179,37 @@ void WeaponWeaponAdditionOnRemoved(int entity)
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
-		return Plugin_Continue;
-
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		if(IsValidEntity(weapon1))
 		{
+			if(weapon == 0)
+			{
+				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon2 == weapon1)
+					continue;
+			}
+			/*
+			if(f_TimeSinceLastGiveWeapon[weapon1] > GetGameTime())
+				return Plugin_Continue;
+
 			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
 			{
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
+			*/
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
 			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
-				if(GetAmmo(client, Ammo_type) <= 0)
+				if(CurrentAmmo[client][Ammo_type] <= 0)
 				{
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
-						CurrentAmmo[client][Ammo_type] = 0;
+						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] + 1);
+						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
 					}
 					else
 					{			
@@ -232,31 +240,69 @@ public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 	}
 	return Plugin_Handled;
 }
-public Action WeaponSwtichToWarningPost(int client, int weapon)
+void WeaponSwtichToWarningPostDestroyed(int weapon)
 {
-	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
-		return Plugin_Continue;
-
 	if(WeaponWasGivenAmmo[weapon])
 	{
-		if(b_WeaponHasNoClip[weapon])
-		{
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-			if(GetAmmo(client, Ammo_type) <= 1)
-			{
-				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
-			}
-		}
-		else
-		{
-			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-			SetEntData(weapon, iAmmoTable, 0);
-			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
-		}
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+		WeaponSwtichToWarningPost(client, weapon);
 	}
-	WeaponWasGivenAmmo[weapon] = false;
+}
+
+public Action WeaponSwtichToWarningPost(int client, int weapon)
+{
+	RequestFrame(WeaponSwtichToWarningPostFrame, EntIndexToEntRef(weapon));
 	return Plugin_Continue;
+}
+
+void WeaponSwtichToWarningPostFrame(int ref)
+{
+	int weapon = EntRefToEntIndex(ref);
+	if(!IsValidEntity(weapon))
+		return;
+
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidClient(client))
+		return;
+
+	int ie, weapon1;
+	while(TF2_GetItem(client, weapon1, ie))
+	{
+		if(IsValidEntity(weapon1))
+		{
+			if(WeaponWasGivenAmmo[weapon1])
+			{
+				f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
+				if(b_WeaponHasNoClip[weapon1])
+				{
+					int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+
+					if(CurrentAmmo[client][Ammo_type] >= 1)
+					{
+						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
+						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
+					}
+				}
+				else
+				{
+					int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+					SetEntData(weapon1, iAmmoTable, 0);
+					SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+				}
+				SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+			}
+			WeaponWasGivenAmmo[weapon1] = false;
+		}
+	}
+	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 5, EntIndexToEntRef(client));
+}
+void WeaponSwtichToWarningPostFrameRegive(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+
+	WeaponSwtichToWarning(client, 0);
 }
 #endif
 #if defined ZR || defined RPG
@@ -1225,7 +1271,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
 		}
-/*
+
 		static int VillageBuffs;
 		VillageBuffs = Building_GetClientVillageFlags(client);
 
@@ -1259,7 +1305,7 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
 		}
-*/
+
 #endif
 
 		if(Increaced_Overall_damage_Low[client] > GameTime)
@@ -1623,7 +1669,7 @@ public void OnPostThink(int client)
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
-			int entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
+			int entity = GetClientPointVisible(client,70.0,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
 			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
@@ -1907,7 +1953,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
-		else if(Merchant_OnLethalDamage(victim))
+		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);

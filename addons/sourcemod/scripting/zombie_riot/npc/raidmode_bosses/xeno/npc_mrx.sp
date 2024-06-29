@@ -77,10 +77,8 @@ static char g_NeckSnap[][] =
 
 static int i_GrabbedThis[MAXENTITIES];
 static float fl_RegainWalkAnim[MAXENTITIES];
-static float fl_OverrideWalkDest[MAXENTITIES];
 
 static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
 static int i_SideHurtWhich[MAXENTITIES];
 static float f_NemesisImmuneToInfection[MAXENTITIES];
 static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
@@ -274,7 +272,8 @@ methodmap RaidbossMrX < CClotBody
 		
 		if(final)
 		{
-			RaidModeTime = GetGameTime(npc.index) + 99999.0;
+			RaidModeTime = GetGameTime(npc.index) + 600.0;
+			WaveStart_SubWaveStart(GetGameTime() + 800.0);
 			Music_SetRaidMusicSimple("#zombiesurvival/xeno_raid/mr_duo_battle.mp3", 171, true, 1.3);
 			i_RaidGrantExtra[npc.index] = 1;
 		}
@@ -988,7 +987,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 0 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
@@ -1011,6 +1010,17 @@ public void RaidbossMrX_NPCDeath(int entity)
 				if(XenoExtraLogic())
 				{
 					CPrintToChat(client_repat, "{green}Mr.X Escapes... but heavily wounded...");
+				}
+			}
+		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+				{
+					f_HussarBuff[other] = FAR_FUTURE;
 				}
 			}
 		}

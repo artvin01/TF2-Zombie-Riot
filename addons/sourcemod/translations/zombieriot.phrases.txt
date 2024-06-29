@@ -3018,7 +3018,7 @@
 	{
 		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
 	}
-	"God Arkantos Desc"
+	"God Alaxios Desc"
 	{
 		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 	}

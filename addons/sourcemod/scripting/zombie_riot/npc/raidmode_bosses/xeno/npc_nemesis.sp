@@ -322,7 +322,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	}
 	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
 	{
-		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 65.0);
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -383,13 +383,18 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
+			HealByThis = RoundToCeil(float(HealByThis) / TickrateModify);
 			if(XenoExtraLogic())
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
 			}
+			else
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis));
+			}
+			
 			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 			{
-				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			}
 		}
@@ -806,7 +811,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
-						if(npc.m_iChanged_WalkCycle != 3) 
+						if(npc.m_iChanged_WalkCycle != 13) 
 						{
 							//the enemy is still close, do another attack.
 							float flPos[3]; // original
@@ -823,9 +828,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							int iActivity = npc.LookupActivity("ACT_RAID_TYRAND");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_FT2_ATTACK_2");
+							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())
 							{
@@ -854,8 +858,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.SetActivity("ACT_FT2_WALK");
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
@@ -958,11 +961,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.0;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
-				if(npc.m_iChanged_WalkCycle != 1) 
+				if(npc.m_iChanged_WalkCycle != 15) 
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_ATTACK_1");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_FT2_ATTACK_1");
+					npc.m_iChanged_WalkCycle = 15;
 					npc.m_bisWalking = false;
 					if(XenoExtraLogic())
 					{
@@ -1166,7 +1168,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
@@ -1177,6 +1179,17 @@ public void RaidbossNemesis_NPCDeath(int entity)
 				{
 					Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
 					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
+				}
+			}
+		}
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != INVALID_ENT_REFERENCE && other != npc.index)
+			{
+				if(IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
+				{
+					f_HussarBuff[other] = FAR_FUTURE;
 				}
 			}
 		}
@@ -1659,8 +1672,8 @@ void NemesisHitInfection(int entity, int victim, float damage, int weapon)
 //		int particle2 = ParticleEffectAt_Building_Custom(flPos, "powerup_plague_carrier", victim);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 //		CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(particle2), TIMER_FLAG_NO_MAPCHANGE);
-			int InfectionCount = 20;
-			StartBleedingTimer_Against_Client(victim, entity, 100.0, InfectionCount);
+			int InfectionCount = 15;
+			StartBleedingTimer_Against_Client(victim, entity, 150.0, InfectionCount);
 			DataPack pack;
 			CreateDataTimer(0.5, Timer_Nemesis_Infect_Allies, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(victim));
@@ -1718,7 +1731,7 @@ public Action Timer_Nemesis_Infect_Allies(Handle timer, DataPack pack)
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", vAngles); 
 			GetEntPropVector(AllyClient, Prop_Data, "m_vecAbsOrigin", entity_angles); 				
 			float Distance = GetVectorDistance(vAngles, entity_angles);
-			if(Distance < 65.0)
+			if(Distance < 30.0)
 			{		
 				NemesisHitInfection(entity, AllyClient, 0.0 , -1);
 			}

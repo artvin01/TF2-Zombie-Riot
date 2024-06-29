@@ -29,10 +29,15 @@ static Function FuncCanBuild[MAXENTITIES];
 static Function FuncShowInteractHud[MAXENTITIES];
 
 static int Building_Max_Health[MAXENTITIES]={0, ...};
+static bool CanUseBuilding[MAXENTITIES][MAXTF2PLAYERS];
 int i_MachineJustClickedOn[MAXTF2PLAYERS];
 static float RotateByDefault[MAXENTITIES]={0.0, ...};
 int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
+int OwnerOfText[MAXENTITIES];
+
+#define EFL_FORCE_CHECK_TRANSMIT (1 << 7)
+#define EFL_IN_SKYBOX (1 << 17)
 
 #define MAX_REBELS_ALLOWED 4
 
@@ -65,7 +70,7 @@ void Object_MapStart()
 void Object_PluginStart()
 {
 	CEntityFactory factory = new CEntityFactory("obj_building", _, OnDestroy);
-	factory.DeriveFromClass("prop_dynamic");
+	factory.DeriveFromClass("prop_dynamic_override");
 	factory.BeginDataMapDesc()
 	.DefineIntField("m_iRepair")
 	.DefineIntField("m_iRepairMax")
@@ -91,6 +96,10 @@ static void OnDestroy(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 
 	Building_RotateAllDepencencies(entity);
 }
@@ -106,6 +115,8 @@ methodmap ObjectGeneric < CClotBody
 						bool DoFakeModel = true)
 	{
 		int obj = CreateEntityByName("obj_building");
+		b_IsEntityAlwaysTranmitted[obj] = true;
+		Hook_DHook_UpdateTransmitState(obj);
 		DispatchKeyValueVector(obj, "origin",	 vecPos);
 		DispatchKeyValueVector(obj, "angles",	 vecAng);
 		DispatchKeyValue(obj,		 "model",	 model);
@@ -113,7 +124,6 @@ methodmap ObjectGeneric < CClotBody
 		DispatchKeyValue(obj,	   "solid", "2");
 		DispatchKeyValue(obj,	   "physdamagescale", "0.0");
 		DispatchKeyValue(obj,	   "minhealthdmg", "0.0");
-		b_IsEntityAlwaysTranmitted[obj] = true;
 		DispatchSpawn(obj);
 
 		ObjectGeneric objstats = view_as<ObjectGeneric>(obj);
@@ -183,11 +193,15 @@ methodmap ObjectGeneric < CClotBody
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 			objstats.m_iWearable1 = entity;
 		}
+		
 		entity = objstats.EquipItemSeperate("partyhat", model,_,_,_,FakemodelOffset);
 		SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 		SDKHook(entity, SDKHook_SetTransmit, SetTransmit_BuildingReady);
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", objstats.index);
 		objstats.m_iWearable2 = entity;
+
+		//think once
+		ObjBaseThink(objstats.index);
 
 		return objstats;
 	}
@@ -205,9 +219,8 @@ methodmap ObjectGeneric < CClotBody
 	float offset = 0.0,
 	bool DontParent = false)
 	{
-		int item = CreateEntityByName("prop_dynamic");
+		int item = CreateEntityByName("prop_dynamic_override");
 		DispatchKeyValue(item, "model", model);
-
 		if(model_size == 1.0)
 		{
 			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Data, "m_flModelScale"));
@@ -242,47 +255,14 @@ methodmap ObjectGeneric < CClotBody
 			AcceptEntityInput(item, "SetAnimation");
 		}
 
-#if defined RPG
-		SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 1600.0);
-		SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 1800.0);
-#endif
+	//	SetEntPropFloat(item, Prop_Send, "m_fadeMinDist", 0.0);
+	//	SetEntPropFloat(item, Prop_Send, "m_fadeMaxDist", 100.0);	
 
 		SetVariantString("!activator");
 		AcceptEntityInput(item, "SetParent", this.index);
 		MakeObjectIntangeable(item);
 		return item;
 	} 
-	/*
-	
-	public void SetActivity(const char[] animation, bool Is_sequence = false)
-	{
-		if(IsValidEntity(this.m_iWearable1))
-		{
-			SetVariantString(animation);
-			AcceptEntityInput(this.m_iWearable1, "SetAnimation");
-		}
-		if(IsValidEntity(this.m_iWearable2))
-		{
-			SetVariantString(animation);
-			AcceptEntityInput(this.m_iWearable2, "SetAnimation");
-		}
-	}
-	public void SetPlaybackRate(float flSpeedAnim)
-	{
-		char FloatString[8];
-		FloatToString(flSpeedAnim, FloatString, sizeof(FloatString));
-		if(IsValidEntity(this.m_iWearable1))
-		{
-			SetVariantString(FloatString);
-			AcceptEntityInput(this.m_iWearable1, "SetPlayBackRate");
-		}
-		if(IsValidEntity(this.m_iWearable2))
-		{
-			SetVariantString(FloatString);
-			AcceptEntityInput(this.m_iWearable2, "SetPlayBackRate");
-		}
-	}
-	*/
 	public void SetActivity(const char[] animation, bool Is_sequence = false)
 	{
 		if(IsValidEntity(this.m_iWearable1))
@@ -309,21 +289,6 @@ methodmap ObjectGeneric < CClotBody
 			npcstats.SetPlaybackRate(flSpeedAnim);
 		}
 	}
-/*
-	public void Update()
-	{
-		if(IsValidEntity(this.m_iWearable1))
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable1);
-			npcstats.Update();
-		}
-		if(IsValidEntity(this.m_iWearable2))
-		{
-			CClotBody npcstats = view_as<CClotBody>(this.m_iWearable2);
-			npcstats.Update();
-		}
-	}
-	*/
 	property int m_iWearable1
 	{
 		public get()		 
@@ -431,80 +396,59 @@ methodmap ObjectGeneric < CClotBody
 	}
 }
 
-static Action SetTransmit_BuildingNotReady(int entity, int client)
+public Action SetTransmit_BuildingNotReady(int entity, int client)
 {
-	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
-	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
-	{
-		if(b_FirstPersonUsesWorldModel[client])
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-		}
-		if(owner == client)
-		{
-			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
-			{
-				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-			}
-		}
-		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
-		}
-		return Plugin_Stop;
-	}
-	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, true);
+	return SetTransmit_BuildingShared(entity, client, true);
 }
 
-static Action SetTransmit_BuildingReady(int entity, int client)
+public Action SetTransmit_BuildingReady(int entity, int client)
 {
-	int OwnerBuilding = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	int owner = GetEntPropEnt(OwnerBuilding, Prop_Send, "m_hOwnerEntity");
-	if(EntRefToEntIndex(Building_Mounted[OwnerBuilding]) == owner)
-	{
-		if(b_FirstPersonUsesWorldModel[client])
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-		}
-		if(owner == client)
-		{
-			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
-			{
-				return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-			}
-		}
-		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
-		{
-			return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
-		}
-		return Plugin_Stop;
-	}
-	return SetTransmit_BuildingShared(OwnerBuilding, entity, client, false);
+	return SetTransmit_BuildingShared(entity, client, false);
+}
+public Action SetTransmit_BuildingReadyTestThirdPersonIgnore(int entity, int client)
+{
+	return SetTransmit_BuildingShared(entity, client, false, true);
 }
 
-static Action SetTransmit_BuildingShared(int owner, int entity, int client, bool reverse)
+static Action SetTransmit_BuildingShared(int entity, int client, bool reverse, bool Ignorethird = false)
 {
 	if(client < 1 || client > MaxClients)
 		return Plugin_Continue;
 	
+	int building;
+	if(Ignorethird)
+	{
+		building = EntRefToEntIndex(OwnerOfText[entity]);
+	}
+	else
+	{
+		building = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	}
+	if(building == -1)
+	{
+		RemoveEntity(entity);
+		return Plugin_Continue;
+	}
+	int owner;
+
+		
+	owner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
+	
+	bool hide;
 	if(owner != -1)
 	{
-		bool result = true;
-
-		if(FuncCanUse[owner] && FuncCanUse[owner] != INVALID_FUNCTION)
+		if(!Ignorethird && EntRefToEntIndex(Building_Mounted[building]) == owner)
 		{
-			Call_StartFunction(null, FuncCanUse[owner]);
-			Call_PushCell(owner);
-			Call_PushCell(client);
-			Call_Finish(result);
+			return Plugin_Continue;
 		}
-
-		return (result ^ reverse) ? Plugin_Continue : Plugin_Stop;
+		else
+		{
+			hide = !CanUseBuilding[building][client];	
+		}
 	}
 
-	RemoveEntity(entity);
-	return Plugin_Stop;
+	//abomination
+	return (hide ^ reverse /*^ InvertTransmitLogic(client)*/) ? Plugin_Stop : Plugin_Continue;
 }
 
 public bool ObjectGeneric_CanBuild(int client, int &count, int &maxcount)
@@ -557,7 +501,7 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		Call_Finish();
 	}
 
-	objstats.m_flNextDelayTime = gameTime + 0.1;
+	objstats.m_flNextDelayTime = gameTime + 0.2;
 	BuildingDisplayRepairLeft(objstats.index);
 	
 
@@ -618,27 +562,20 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 	}
 	else
 	{
-		// Update max health/repair if attributes changed on the player
-		//issue: unequip lowest, buy best, place, and so on.
-		//we need to make this work only once when the building is made.
-		//or we block uneqiupping and selling of building upgrades.
-		/*
-		int expected = RoundFloat(Building_Max_Health[objstats.index] * Object_GetMaxHealthMulti(owner));
-		if(maxhealth && expected && maxhealth != expected)
+		for(int target = 1; target <= MaxClients; target++)
 		{
-			float change = float(expected) / float(maxhealth);
-
-			maxhealth = expected;
-			health = RoundFloat(float(health) * change);
-			int maxrepair = RoundFloat(float(GetEntProp(objstats.index, Prop_Data, "m_iRepairMax")) * change);
-			int repair = RoundFloat(float(GetEntProp(objstats.index, Prop_Data, "m_iRepair")) * change);
-			
-			SetEntProp(objstats.index, Prop_Data, "m_iMaxHealth", maxhealth);
-			SetEntProp(objstats.index, Prop_Data, "m_iHealth", health);
-			SetEntProp(objstats.index, Prop_Data, "m_iRepairMax", maxrepair);
-			SetEntProp(objstats.index, Prop_Data, "m_iRepair", repair);
+			if(FuncCanUse[objstats.index] && FuncCanUse[objstats.index] != INVALID_FUNCTION && IsClientInGame(target) && IsPlayerAlive(target))
+			{
+				Call_StartFunction(null, FuncCanUse[objstats.index]);
+				Call_PushCell(objstats.index);
+				Call_PushCell(target);
+				Call_Finish(CanUseBuilding[objstats.index][target]);
+			}
+			else
+			{
+				CanUseBuilding[objstats.index][target] = true;
+			}
 		}
-		*/
 
 		if(i_NpcInternalId[objstats.index] == ObjectBarricade_ID())
 		{
@@ -665,6 +602,16 @@ bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 		if(wearable != -1)
 		{
 			SetEntityRenderColor(wearable, r, g, 0, 100);
+			/*
+			if(b_Anger[wearable])
+			{
+				this.SetSequence(0);	
+			}
+			else
+			{
+				this.SetSequence(0);
+			}
+			*/
 		}
 		
 		wearable = objstats.m_iWearable2;
@@ -711,6 +658,18 @@ bool Object_Interact(int client, int weapon, int obj)
 		MountedObjectInteracted = true;
 	}
 
+	Function func = func_NPCInteract[entity];
+	if(!func || func == INVALID_FUNCTION)
+		return false;
+
+	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)
+	{
+		//self mounted ignores this.
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+			return false;
+	}
+
+
 	bool result;
 	
 	static char plugin[64];
@@ -755,7 +714,7 @@ bool Object_Interact(int client, int weapon, int obj)
 			//dont interact with buildings if you are carring something
 			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && !BuildingIsBeingCarried(entity))
 			{
-				Function func = func_NPCInteract[entity];
+				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, func);
@@ -938,6 +897,18 @@ public void ObjBaseThinkPost(int building)
 public void ObjBaseThink(int building)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	//Fixes some issues when mounted
+	int wearable = objstats.m_iWearable1;
+	if(wearable != -1)
+	{			
+		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+	}
+	wearable = objstats.m_iWearable2;
+	if(wearable != -1)
+	{
+		SetEntProp(wearable, Prop_Send, "m_fEffects", GetEntProp(wearable, Prop_Send, "m_fEffects") ^ EF_PARENT_ANIMATES);
+	}
+
 	//do not think if you are being carried.
 	if(BuildingIsBeingCarried(building))
 		return;
@@ -945,7 +916,6 @@ public void ObjBaseThink(int building)
 	ObjectGeneric_ClotThink(objstats);
 }
 
-int OwnerOfText[MAXENTITIES];
 void BuildingDisplayRepairLeft(int entity)
 {
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
@@ -1015,7 +985,22 @@ void BuildingDisplayRepairLeft(int entity)
 		OwnerOfText[TextEntity] = Owner;
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable4 = TextEntity;	
-	//	SDKHook(TextEntity, SDKHook_SetTransmit, SetTransmit_OwnerOfBuilding);
+	}
+	
+	if(!IsValidEntity(objstats.m_iWearable5))
+	{
+		HealthColour[0] = 0;
+		HealthColour[1] = 255;
+		HealthColour[2] = 0;
+		HealthColour[3] = 255;
+		float Offset[3];
+		Offset[2] = f3_CustomMinMaxBoundingBox[entity][2] * 0.4;
+		Offset[2] += 6.0;
+		Format(HealthText, sizeof(HealthText), "%s", "Ready!");
+		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 0, HealthColour, objstats.index);
+		OwnerOfText[TextEntity] = EntIndexToEntRef(objstats.index);
+		DispatchKeyValue(TextEntity, "font", "4");
+		objstats.m_iWearable5 = TextEntity;	
 	}
 }
 /*

@@ -1123,7 +1123,7 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 		GetVectorAngles(vecAngles, vecAngles);
 						
 		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, fl_heavens_speed);
+		ScaleVector(Direction, fl_heavens_speed/TickrateModify);
 		AddVectors(loc, Direction, loc);
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
@@ -1165,7 +1165,7 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[2] = 237;
 		}
 
-		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, infection, false);
+		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage/TickrateModify, fl_heavens_radius, infection, false);
 		
 		fl_Heavens_Loc[i] = loc;
 
@@ -1187,7 +1187,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 	UserAng[1] = fl_Heavens_Angle;
 	UserAng[2] = 0.0;
 	
-	fl_Heavens_Angle += 1.5*ratio;	//make it so the spining starts to slowdown the more "charged" up the ability becomes until it just stops spinning
+	fl_Heavens_Angle +=(1.5*ratio)/TickrateModify;	//make it so the spining starts to slowdown the more "charged" up the ability becomes until it just stops spinning
 	
 	if(fl_Heavens_Angle>=360.0)
 	{
@@ -2484,22 +2484,22 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 	float speed = 750.0;
 	bool hover=  false;
-	float crystal_turn_speed = 3.5;
+	float crystal_turn_speed = 3.5/TickrateModify;
 	if(npc.Anger)
 	{
 		speed=250.0;
 		hover=true;
-		crystal_turn_speed = 4.5;
+		crystal_turn_speed = 4.5/TickrateModify;
 	}	
 
 	if(wave>=60)
 	{
 		speed=250.0;
 		hover=true;
-		crystal_turn_speed = 4.5;
+		crystal_turn_speed = 4.5/TickrateModify;
 	}
 
-	fl_spinning_angle[npc.index]+=2.0;
+	fl_spinning_angle[npc.index]+=2.0/TickrateModify;
 		
 	if(fl_spinning_angle[npc.index]>=360.0)
 		fl_spinning_angle[npc.index] = 0.0;
@@ -2754,6 +2754,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
+					Dmg /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 				}
@@ -2767,11 +2768,14 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 						Dmg *= 5.0;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					Dmg /= TickrateModify;
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)
 						damage = 4;
+						
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -2780,6 +2784,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
 						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -3212,9 +3217,9 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 			ion_damage[npc.index] = float(neural_damage);
 
 			if(shake)
-				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
 			else
-				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
 	}
 }

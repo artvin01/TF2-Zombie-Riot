@@ -42,8 +42,16 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
+				{
+					return false;
+				}
+				if(b_ThisEntityIgnoredBeingCarried[otherindex])
+					return false;
+
 				if(extrarules == 0)
 					NpcStartTouch(bot_entidx,otherindex);
+					
 				return true;
 			}
 		}
