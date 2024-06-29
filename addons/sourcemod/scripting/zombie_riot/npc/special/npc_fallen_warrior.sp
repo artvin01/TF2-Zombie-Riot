@@ -254,8 +254,8 @@ methodmap FallenWarrior < CClotBody
 		float flPos[3], flAng[3];
 				
 		npc.GetAttachment("head", flPos, flAng);
-		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-10.0,15.0}));
-		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,-10.0,20.0}));
+		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,10.0,-15.0}));
+		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,15.0,-17.0}));
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
