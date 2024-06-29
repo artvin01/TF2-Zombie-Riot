@@ -105,7 +105,7 @@ methodmap FallenWarrior < CClotBody
 	}
 	public void PlayFriendlySound()
 	{
-		EmitCustomToAll("npc/metropolice/vo/infection.wav",, this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 80);
+		EmitCustomToAll("npc/metropolice/vo/infection.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 80);
 	}
 	public void PlayMeleeSound()
 	{
