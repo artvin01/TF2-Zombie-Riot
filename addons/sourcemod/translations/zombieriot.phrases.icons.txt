@@ -247,4 +247,16 @@
 		"en" 		"His motivating speech enables enemies."
 		"chi"		"他的发言鼓励着尸群。"
 	}
+	"Fallen Warrior 1"
+	{
+		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
+	}
+	"Fallen Warrior 2"
+	{
+		"en" 		"Spread the Chaos, corrupt them all."
+	}
+	"Fallen Warrior 3"
+	{
+		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
+	}
 }
