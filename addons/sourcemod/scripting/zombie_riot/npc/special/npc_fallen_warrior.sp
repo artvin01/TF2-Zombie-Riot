@@ -168,7 +168,7 @@ methodmap FallenWarrior < CClotBody
 
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.3", GetPanzerHealth(), ally));
+		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.5", GetPanzerHealth(), ally));
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup"); 
