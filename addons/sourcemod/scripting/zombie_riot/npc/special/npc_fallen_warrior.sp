@@ -223,7 +223,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl", "", skin, size);
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl", "", skin, 3.0);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/demolitionists_dustcatcher/demolitionists_dustcatcher.mdl", "", skin, 0.7);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl", "", skin, size);
 
@@ -246,7 +246,7 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable3, 100, 50, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
-		SetEntityRenderColor(npc.m_iWearable5, 50, 50, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
 		float wave = float(ZR_GetWaveCount()+1);
