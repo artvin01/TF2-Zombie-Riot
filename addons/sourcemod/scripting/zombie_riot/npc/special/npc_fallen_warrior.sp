@@ -51,11 +51,11 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/samurai/tf_katana_05.wav",
 	"weapons/samurai/tf_katana_06.wav",
 };
-static const char g_IntroSounds[][] =
+static const char  g_DeathSounds[][] =
 {
 	"misc/outer_space_transition_01.wav",
 };
-static const char g_DeathSounds[][] =
+static const char g_IntroSounds[][] =
 {
 	"misc/rd_spaceship01.wav",
 };
@@ -240,7 +240,7 @@ methodmap FallenWarrior < CClotBody
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.3");
+		SetVariantString("1.6");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 150, 200, 255);
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
