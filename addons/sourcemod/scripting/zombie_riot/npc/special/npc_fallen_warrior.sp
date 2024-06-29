@@ -226,7 +226,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
 
 		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 
@@ -234,20 +234,20 @@ methodmap FallenWarrior < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetVariantString("2.0");
+		SetVariantString("4.0");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 175, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("3.0");
+		SetVariantString("5.0");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("2.5");
+		SetVariantString("4.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.3");
+		SetVariantString("1.1");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
@@ -255,8 +255,8 @@ methodmap FallenWarrior < CClotBody
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
-		SetVariantString("1.6");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		SetVariantString("1.3");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
