@@ -149,17 +149,17 @@ methodmap FallenWarrior < CClotBody
 	}
 	public void PlayFriendlySound()
 	{
-		EmitCustomToAll("npc/metropolice/vo/infection.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 80);
+		EmitSoundToAll("npc/metropolice/vo/infection.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 2.0, 80);
 	}
 	public void PlayMeleeSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 1.0;
-		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
 	}
 	public void PlayKillSound()
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 2.0;
-		EmitCustomToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
+		EmitSoundToAll(g_KillSounds[GetRandomInt(0, sizeof(g_KillSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, 3.0, 70);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -169,6 +169,10 @@ methodmap FallenWarrior < CClotBody
 	public FallenWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		FallenWarrior npc = view_as<FallenWarrior>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.2", GetPanzerHealth(), ally));
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup"); 
+
 		
 		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
