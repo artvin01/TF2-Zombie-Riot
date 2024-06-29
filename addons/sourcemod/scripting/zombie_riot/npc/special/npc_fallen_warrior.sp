@@ -228,6 +228,8 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.2");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 175, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.1");
