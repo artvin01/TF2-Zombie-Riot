@@ -263,12 +263,14 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 
 		npc.Anger = false;
+		npc.Speedboost = false;
 
 		Citizen_MiniBossSpawn();
 		return npc;
@@ -307,6 +309,11 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_bLostHalfHealth)
 	{
+		if(!npc.Speedboost)
+		{
+			npc.m_flSpeed += 100;
+			npc.Speedboost = true;
+		}
 		npc.m_flSpeed *= 1.3;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
@@ -384,6 +391,8 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	
 	npc.PlayDeathSound();
 	CPrintToChatAll("{crimson}Red{default}: Thank... you...");
@@ -460,7 +469,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				if(npc.m_bLostHalfHealth)
 				{
 					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
-					fasterattack /= 2;
+					fasterattack /= 2.5;
 				}
 				else
 				{
