@@ -2251,6 +2251,6 @@
 	}
 	"Fallen Warrior"
 	{
-		"en"	"Red, the fallen one"
+		"en"	"Red the Fallen One"
 	}
 }
