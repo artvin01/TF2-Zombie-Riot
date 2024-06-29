@@ -76,6 +76,7 @@ void FallenWarrior_OnMapStart()
 	PrecacheSound("misc/rd_spaceship01.wav");
 	PrecacheSound("npc/metropolice/vo/infection.wav");
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel("models/player/soldier.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Fallen Warrior");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_fallen_warrior");
@@ -221,7 +222,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_soldier.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl");
 
@@ -229,21 +230,21 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 
-		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.4");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 175, 150, 150, 255);
+		SetVariantString("2.0");
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 175, 150, 150, 255);
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.6");
+		SetVariantString("3.0");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.6");
+		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.3");
@@ -253,8 +254,8 @@ methodmap FallenWarrior < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.4");
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
+		SetVariantString("1.6");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		float wave = float(ZR_GetWaveCount()+1);
