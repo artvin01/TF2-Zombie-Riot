@@ -229,7 +229,7 @@ methodmap FallenWarrior < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 
-		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models\workshop\player\items\soldier\hwn2023_warlocks_warcloak\hwn2023_warlocks_warcloak.mdl");
+		npc.m_iWearable6 = npc.EquipItem("weapon_bone", "models/workshop/player/items/soldier/hwn2023_warlocks_warcloak/hwn2023_warlocks_warcloak.mdl");
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
