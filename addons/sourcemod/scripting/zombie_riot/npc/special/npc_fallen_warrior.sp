@@ -270,7 +270,6 @@ methodmap FallenWarrior < CClotBody
 		npc.m_flWaveScale = wave;
 
 		npc.Anger = false;
-		npc.Speedboost = false;
 
 		Citizen_MiniBossSpawn();
 		return npc;
@@ -309,12 +308,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_bLostHalfHealth)
 	{
-		if(!npc.Speedboost)
-		{
-			npc.m_flSpeed += 100;
-			npc.Speedboost = true;
-		}
-		npc.m_flSpeed *= 1.3;
+		npc.m_flSpeed = 350;
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
@@ -469,7 +463,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				if(npc.m_bLostHalfHealth)
 				{
 					npc.AddGesture("ACT_CUSTOM_ATTACK_SAMURAI_ANGRY");
-					fasterattack /= 2.5;
+					fasterattack /= 2;
 				}
 				else
 				{
