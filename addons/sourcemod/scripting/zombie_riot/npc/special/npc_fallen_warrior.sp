@@ -296,6 +296,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	
 	npc.PlayDeathSound();
+    CPrintToChatAll("{crimson}Red{default}: Thank... you...");
 
 	Citizen_MiniBossDeath(entity);
 }
