@@ -233,27 +233,33 @@ methodmap FallenWarrior < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetVariantString("4.0");
+		SetVariantString("1.4");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 175, 150, 150, 255);
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetVariantString("5.0");
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetVariantString("4.0");
+		SetVariantString("5.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetVariantString("1.1");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 200, 150, 150, 255);
+		SetVariantString("0.9");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
+
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 2);
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
