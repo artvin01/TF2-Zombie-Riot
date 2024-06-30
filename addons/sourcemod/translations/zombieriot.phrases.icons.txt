@@ -259,7 +259,7 @@
 	{
 		"en" 		"Dont be alone!"
 	}
-  "Fallen Warrior 1"
+	"Fallen Warrior 1"
 	{
 		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
 	}
@@ -270,5 +270,5 @@
 	"Fallen Warrior 3"
 	{
 		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
-  }
+	}
 }

@@ -151,8 +151,10 @@ stock void SDKHook_HookClient(int client)
 #if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
+/*
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+*/
 #endif
 #endif
 
@@ -179,6 +181,17 @@ void WeaponWeaponAdditionOnRemoved(int entity)
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
+	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
+	{
+		if(GetAmmo(client, Ammo_type) <= 0)
+		{
+			SetGlobalTransTarget(client);
+			PrintToChat(client, "%t", "Warn Client Ammo None");
+		}
+	}
+
+	/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
@@ -190,7 +203,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 				if(weapon2 == weapon1)
 					continue;
 			}
-			/*
+			
 			if(f_TimeSinceLastGiveWeapon[weapon1] > GetGameTime())
 				return Plugin_Continue;
 
@@ -198,7 +211,7 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			{
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
-			*/
+			
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
 			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
@@ -228,9 +241,10 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			}
 		}
 	}
+	*/
 	return Plugin_Continue;
 }
-
+/*
 public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -258,11 +272,11 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 void WeaponSwtichToWarningPostFrame(int ref)
 {
 	int weapon = EntRefToEntIndex(ref);
-	if(weapon != -1)
+	if(weapon == -1)
 		return;
 
 	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	if(client != -1)
+	if(client == -1)
 		return;
 
 	int ie, weapon1;
@@ -299,11 +313,12 @@ void WeaponSwtichToWarningPostFrame(int ref)
 void WeaponSwtichToWarningPostFrameRegive(int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	if(client != -1)
+	if(client == -1)
 		return;
 
 	WeaponSwtichToWarning(client, 0);
 }
+*/
 #endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)

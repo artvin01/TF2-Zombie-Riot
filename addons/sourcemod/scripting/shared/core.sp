@@ -3358,7 +3358,7 @@ public void OnEntityDestroyed(int entity)
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
-			WeaponSwtichToWarningPostDestroyed(entity);
+		//	WeaponSwtichToWarningPostDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif

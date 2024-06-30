@@ -3406,7 +3406,7 @@ stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
 #if defined ZR
-	WeaponSwtichToWarningPostDestroyed(weapon);
+//	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
 	/*
 	char buffer[64];
