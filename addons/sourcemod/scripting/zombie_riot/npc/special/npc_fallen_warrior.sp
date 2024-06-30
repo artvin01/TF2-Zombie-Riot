@@ -223,7 +223,7 @@ methodmap FallenWarrior < CClotBody
 		float size = 1.2;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl", "", 2, size);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_nightbane_brim/hwn2022_nightbane_brim.mdl", "", 2, 1.3);
 
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl", "", skin, 1.0);
 
@@ -248,7 +248,7 @@ methodmap FallenWarrior < CClotBody
 		SetEntityRenderColor(npc.m_iWearable2, 200, 150, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 50, 50, 255);
-		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 150, 150, 150, 255);
 		SetEntityRenderColor(npc.m_iWearable6, 200, 150, 100, 255);
 
 		float flPos[3], flAng[3];
@@ -300,7 +300,14 @@ public void FallenWarrior_ClotThink(int iNPC)
 
 	if(npc.m_bLostHalfHealth)
 	{
-		npc.m_flSpeed += 100;
+		if(npc.m_flSpeed > 250)
+		{
+			m_flSpeed = 250;
+		}
+		if(npc.m_flSpeed < 250)
+		{
+			npc.m_flSpeed += 100;
+		}
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
 		if(!npc.Anger)
