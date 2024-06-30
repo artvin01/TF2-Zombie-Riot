@@ -494,6 +494,7 @@ float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
 float f_AncientBannerNpcBuff[MAXENTITIES];
+float f_FallenWarriorDebuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
@@ -1081,6 +1082,7 @@ float h_BonusDmgToSpecialArrow[MAXENTITIES];
 int f_ArrowTrailParticle[MAXENTITIES]={INVALID_ENT_REFERENCE, ...};
 bool b_IsEntityAlwaysTranmitted[MAXENTITIES];
 bool b_IsEntityNeverTranmitted[MAXENTITIES];
+bool b_NoHealthbar[MAXENTITIES];
 
 //Arrays for npcs!
 int i_NoEntityFoundCount[MAXENTITIES]={0, ...};
@@ -2757,7 +2759,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR
-		i_CustomWeaponEquipLogic[entity] = 0;
+		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
 		BarracksEntityCreated(entity);
@@ -2825,6 +2827,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Is_a_Medic[entity] = false;
 		b_IsEntityAlwaysTranmitted[entity] = false;
 		b_IsEntityNeverTranmitted[entity] = false;
+		b_NoHealthbar[entity] = false;
 
 		//Normal entity render stuff, This should be set to these things on spawn, just to be sure.
 		b_DoNotIgnoreDuringLagCompAlly[entity] = false;
@@ -2926,6 +2929,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
+		FallenWarriorEntityCreated(entity);
 		Elemental_ClearDamage(entity);
 #endif
 

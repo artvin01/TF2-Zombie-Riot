@@ -319,6 +319,11 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
+	if(npc.m_iGunType == 0)
+	{
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ RaidModeScaling * 0.1);
+	}
+
 	if(target > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -412,6 +417,8 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
+					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Quad Burst Launcher online.");
 				}
 				case 9:	// Grenade -> Fists
 				{
@@ -425,6 +432,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Weapons Error. Run over targets.");
 				}
 				case 10:	// Healing -> Fists
 				{
@@ -433,6 +441,7 @@ static void ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 400.0;
 					cooldown = 5.0;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
 				}
 			}
 
@@ -645,7 +654,15 @@ static void ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
-						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+						npc.FireRocket(vecTarget, RaidModeScaling, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 800.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 800.0);
+						PredictSubjectPositionForProjectiles(npc, target, 600.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 600.0);
+						PredictSubjectPositionForProjectiles(npc, target, 350.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 350.0);
+
+					//	npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
 					}
@@ -655,6 +672,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.StopPathing();
 				npc.SetActivity("taunt_cheers_heavy", true);
+				npc.SetWeaponModel("models/workshop/weapons/c_models/c_scotland_shard/c_scotland_shard.mdl");
 			}
 			case 11:	// Minigun
 			{

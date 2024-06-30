@@ -169,9 +169,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		//IDLE
 		npc.m_flSpeed = 600.0;
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
+		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
 		

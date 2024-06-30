@@ -1922,19 +1922,22 @@ void GiveBuildingMetalCostOnBuy(int entity, int cost)
 }
 void DeleteAndRefundBuilding(int client, int entity)
 {	
-	int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
-	int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
-	int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-	
-	int MaxTotal = MaxRepair + MaxHealth;
-	int Total = Repair + Health;
+	if(IsValidClient(client))
+	{
+		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
+		int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
+		int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
+		int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		
+		int MaxTotal = MaxRepair + MaxHealth;
+		int Total = Repair + Health;
 
-	float RatioReturn = float(Total) / float(MaxTotal);
-	
-	int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
-	SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
-	CurrentAmmo[client][3] = GetAmmo(client, 3);
+		float RatioReturn = float(Total) / float(MaxTotal);
+		
+		int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+		SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
+		CurrentAmmo[client][3] = GetAmmo(client, 3);
+	}
 
 	RemoveEntity(entity);
 }

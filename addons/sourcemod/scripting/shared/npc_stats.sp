@@ -3385,6 +3385,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
 
+		SetEntProp(pThis, Prop_Data, "m_lifeState", 2);
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
@@ -3407,7 +3408,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			else
 			{
 				Npc_DoGibLogic(pThis);
-			//	#endif	
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -3720,22 +3720,10 @@ public void SetNpcToDeadViaGib(int pThis)
 #if defined ZR
 	b_thisNpcHasAnOutline[pThis] = false;
 #endif
-	
 	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
+	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
-	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
-	/*
-	if(PF_Exists(pThis))
-	{
-		PF_Destroy(pThis);
-	}	
-	*/
-}
-
-public Action SDKHook_Settransmit_Hide(int entity, int client)
-{
-	return Plugin_Handled;
 }
 
 public void Kill_Npc(int ref)
@@ -5418,6 +5406,14 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	if(b_NpcHasDied[entity])
 	{
 		return;
+	}
+	if(b_NoHealthbar[npc.index])
+	{
+		if(IsValidEntity(npc.m_iTeamGlow)) 
+		{
+			RemoveEntity(npc.m_iTeamGlow);
+		}	
+		return;	
 	}
 	//they have a custom outline.
 	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
@@ -8825,7 +8821,7 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 #if defined ZR
 public void Npc_BossHealthBar(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index])
+	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity5))
 		{
@@ -8897,7 +8893,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index])
+	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity4))
 		{

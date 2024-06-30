@@ -75,7 +75,7 @@ methodmap VengefullSpirit < CClotBody
 		npc.m_iState = 4;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 340.0;
+		npc.m_flSpeed = 325.0;
 		npc.m_bCamo = true;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -83,8 +83,9 @@ methodmap VengefullSpirit < CClotBody
 
 		TeleportDiversioToRandLocation(npc.index);
 
+		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
-		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		b_thisNpcHasAnOutline[npc.index] = true; 
 		
 		return npc;
 	}
@@ -196,9 +197,9 @@ void VengefullSpiritSelfDefense(VengefullSpirit npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 90.0;
+					float damageDealt = 45.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
@@ -209,7 +210,6 @@ void VengefullSpiritSelfDefense(VengefullSpirit npc, float gameTime, int target,
 					if(target <= MaxClients)
 					{
 						Client_Shake(target, 0, 100.0, 100.0, 0.5, false);
-						TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 					}
 				} 

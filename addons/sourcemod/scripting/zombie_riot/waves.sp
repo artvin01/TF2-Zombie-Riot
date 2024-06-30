@@ -1942,6 +1942,7 @@ void WaveEndLogicExtra()
 	Rapier_CashWaveEnd();
 	LeperResetUses();
 	Building_ResetRewardValuesWave();
+	FallenWarriorGetRandomSeedEachWave();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{

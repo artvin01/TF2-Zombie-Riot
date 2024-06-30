@@ -53,7 +53,7 @@ methodmap WanderingSpirit < CClotBody
 	
 	public WanderingSpirit(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSawRunnerHealth(), ally));
+		WanderingSpirit npc = view_as<WanderingSpirit>(CClotBody(vecPos, vecAng, "models/stalker.mdl", "1.15", GetSpiritHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -95,8 +95,9 @@ methodmap WanderingSpirit < CClotBody
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 500.0);
 		TeleportDiversioToRandLocation(npc.index);
 
+		b_NoHealthbar[npc.index] = true; //Makes it so they never have an outline
 		GiveNpcOutLineLastOrBoss(npc.index, false);
-		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+		b_thisNpcHasAnOutline[npc.index] = true; 
 		
 		return npc;
 	}
@@ -116,8 +117,8 @@ static void Internal_ClotThink(int iNPC)
 	{
 		return;
 	}
+	WanderingSpiritIsEnemyClose(iNPC);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-	WanderingSpiritIsEnemyClose(npc.index);
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -231,7 +232,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						TF2_StunPlayer(target, 0.5, 0.9, TF_STUNFLAG_SLOWDOWN);
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 						npc.m_iState -= 1;
-						maxhealth *= 2;
+						maxhealth /= 6;
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 						if(npc.m_iState <= 0)
 						{
@@ -240,7 +241,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 							CPrintToChatAll("{crimson}The spirit is unable to move on and splits apart...");
 							float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 							float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-							for(int loop=1; loop<=CountPlayersOnRed(1); loop++)
+							for(int loop=1; loop<=CountPlayersOnRed(); loop++)
 							{
 								int spawn_index = NPC_CreateByName("npc_vengefull_spirit", -1, pos, ang, GetTeam(npc.index));
 								if(spawn_index > MaxClients)
@@ -316,9 +317,9 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 
 
 
-static char[] GetSawRunnerHealth()
+static char[] GetSpiritHealth()
 {
-	int health = 20;
+	int health = 40;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

@@ -1247,7 +1247,7 @@ void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
 
 					npc.PlayMeleeSound();
 
-					npc.AddGesture("ACT_ALAXIOS_ATTACK_FAST");
+					npc.AddGesture("ACT_ARKANTOS_ATTACK_FAST");
 							
 					npc.m_flAttackHappens = gameTime + 0.25;
 

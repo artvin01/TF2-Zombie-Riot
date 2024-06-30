@@ -1525,4 +1525,36 @@
 	{
 		"en"	"An Rouge Expidonsan Doctor who refused to stay with his people, he hates them, he hates everyone.\nSimular to doctor pernell, he buffs allies."
 	}
+	"Fallen Warrior Desc"
+	{
+		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
+	}
+	"Xeno Acclaimed Swordsman Desc"
+	{
+		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+	}
+	"Xeno Acclaimed Swordsman Desc"
+	{
+		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+	}
+	"Wandering Spirit Desc"
+	{
+		"en"	"Spirit that couldnt move on, free it.\nDeals Massive damage, heals on attack, if it hits 4 players it splits apart."
+	}
+	"Ouroboros Ekas Desc"
+	{
+		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
+	}
+	"Xeno Patient Few Desc"
+	{
+		"en"	"Oneshots any player that isnt ubered.\nDeals massive damage to cades.\nWhen hurt, gains a short burst of speed."
+	}
+	"Xeno Early Infected Desc"
+	{
+		"en"	"Very fast but loses its speed once hit."
+	}
+	"Mr.X Desc"
+	{
+		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
+	}
 }
