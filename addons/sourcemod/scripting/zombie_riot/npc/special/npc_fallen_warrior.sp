@@ -95,6 +95,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 }
 static int i_fallen_eyeparticle[MAXENTITIES];
 static int i_fallen_headparticle[MAXENTITIES];
+static int i_fallen_bodyparticle[MAXENTITIES];
 
 static char[] GetPanzerHealth()
 {
@@ -256,6 +257,7 @@ methodmap FallenWarrior < CClotBody
 		npc.GetAttachment("head", flPos, flAng);
 		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,13.0,-10.0}));
 		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,17.0,-15.0}));
+		i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "head", {0.0,0.0,0.0}));
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
@@ -392,6 +394,7 @@ public void FallenWarrior_NPCDeath(int entity)
 
 	int particle = EntRefToEntIndex(i_fallen_headparticle[npc.index]);
 	int particleeye = EntRefToEntIndex(i_fallen_eyeparticle[npc.index]);
+	int particlebody = EntRefToEntIndex(i_fallen_bodyparticle[npc.index]);
 	if(IsValidEntity(particle))
 	{
 		RemoveEntity(particle);
@@ -401,6 +404,11 @@ public void FallenWarrior_NPCDeath(int entity)
 	{
 		RemoveEntity(particle);
 		i_fallen_eyeparticle[npc.index]=INVALID_ENT_REFERENCE;
+	}
+	if(IsValidEntity(particlebody))
+	{
+		RemoveEntity(particle);
+		i_fallen_bodyparticle[npc.index]=INVALID_ENT_REFERENCE;
 	}
 
 	Citizen_MiniBossDeath(entity);
@@ -494,3 +502,33 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 		}
 	}
 }
+
+/*
+stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
+{
+    Address address = TF2Attrib_GetByDefIndex(entity, index);
+    if(address != Address_Null)
+    {
+        TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
+
+        DataPack pack;
+        CreateDataTimer(duration, Temp_RestoryAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
+        pack.WriteCell(EntIndexToEntRef(entity));
+        pack.WriteCell(index);
+        pack.WriteFloat(multi);
+    }
+}
+public Action Temp_RestoryAttrib(Handle timer, DataPack pack)
+{
+    pack.Reset();
+    int entity = EntRefToEntIndex(pack.ReadCell());
+    if(entity != INVALID_ENT_REFERENCE)
+    {
+        int index = pack.ReadCell();
+        Address address = TF2Attrib_GetByDefIndex(entity, index);
+        if(address != Address_Null)
+            TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
+    }
+    return Plugin_Stop;
+}
+*/
