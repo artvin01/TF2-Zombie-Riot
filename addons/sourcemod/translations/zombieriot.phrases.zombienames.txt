@@ -2257,4 +2257,8 @@
 	{
 		"en"	"Vengefull Spirit"
 	}
+  "Fallen Warrior"
+	{
+		"en"	"Red the Fallen One"
+  }
 }
