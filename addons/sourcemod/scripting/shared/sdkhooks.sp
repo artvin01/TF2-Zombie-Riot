@@ -258,48 +258,48 @@ public Action WeaponSwtichToWarningPost(int client, int weapon)
 void WeaponSwtichToWarningPostFrame(int ref)
 {
 	int weapon = EntRefToEntIndex(ref);
-	if(!IsValidEntity(weapon))
+	if(weapon != -1)
 		return;
 
 	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidClient(client))
+	if(client != -1)
 		return;
 
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
-		if(IsValidEntity(weapon1))
+		if(WeaponWasGivenAmmo[weapon1])
 		{
-			if(WeaponWasGivenAmmo[weapon1])
+			f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
+			if(b_WeaponHasNoClip[weapon1])
 			{
-				f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
-				if(b_WeaponHasNoClip[weapon1])
-				{
-					int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+				int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
 
-					if(CurrentAmmo[client][Ammo_type] >= 1)
-					{
-						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
-						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
-					}
-				}
-				else
+				if(CurrentAmmo[client][Ammo_type] >= 1)
 				{
-					int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-					SetEntData(weapon1, iAmmoTable, 0);
-					SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+					SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
+					CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
 				}
-				SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
 			}
-			WeaponWasGivenAmmo[weapon1] = false;
+			else
+			{
+				static int iAmmoTable;
+				if(!iAmmoTable)
+					iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+				
+				SetEntData(weapon1, iAmmoTable, 0);
+				SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+			}
+			SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
 		}
+		WeaponWasGivenAmmo[weapon1] = false;
 	}
 	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 1, EntIndexToEntRef(client));
 }
 void WeaponSwtichToWarningPostFrameRegive(int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	if(!IsValidClient(client))
+	if(client != -1)
 		return;
 
 	WeaponSwtichToWarning(client, 0);
