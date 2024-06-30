@@ -350,6 +350,8 @@ void NPC_ConfigSetup()
 	Ruianus_OnMapStart_NPC();
 	Lazius_OnMapStart_NPC();
 	Dronian_OnMapStart_NPC();
+	Lex_OnMapStart_NPC();
+	Iana_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -940,6 +942,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_ruianus.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_lazius.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_dronian.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_lex.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_iana.sp"
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"

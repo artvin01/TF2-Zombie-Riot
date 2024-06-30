@@ -156,8 +156,7 @@ methodmap Maliana < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-		
+		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
@@ -166,9 +165,7 @@ methodmap Maliana < CClotBody
 			Bone Cone			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl"
 			Sleuth Suit			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl"
 			airtight arsonist	"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl"
-		
 		*/
-
 		static const char Items[][] = {
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl",

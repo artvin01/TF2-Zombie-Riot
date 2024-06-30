@@ -2261,4 +2261,12 @@
 	{
 		"en"	"Guln the Fallen One"
 	}
+	"Lex"
+	{
+		"en"	"Lex"
+	}
+	"Iana"
+	{
+		"en"	"Iana"
+	}
 }

@@ -1557,4 +1557,12 @@
 	{
 		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
 	}
+	"Lex Desc"
+	{
+		"en"	"The first half of Lexiana"
+	}
+	"Iana Desc"
+	{
+		"en"	"The second half of Lexiana"
+	}
 }
