@@ -403,15 +403,11 @@ public void FallenWarrior_NPCDeath(int entity)
 		}
 		case 3:
 		{
-			CPrintToChatAll("{crimson}Red{default}: Captain...");
+			CPrintToChatAll("{crimson}Red{default}: Bob...");
 		}
 		case 4:
 		{
 			CPrintToChatAll("{crimson}Red{default}: Must... stop...");
-		}
-		default: //This should not happen
-		{
-			ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
 		}
 	}
 	
