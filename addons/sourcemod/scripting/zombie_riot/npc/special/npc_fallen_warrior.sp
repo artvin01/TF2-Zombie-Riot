@@ -256,8 +256,8 @@ methodmap FallenWarrior < CClotBody
 				
 		npc.GetAttachment("head", flPos, flAng);
 		i_fallen_headparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_smoking", npc.index, "head", {0.0,-5.0,-10.0}));
-		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,-3.0,-15.0}));
-		i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {0.0,0.0,0.0}));
+		i_fallen_eyeparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "unusual_psychic_eye_white_glow", npc.index, "head", {0.0,5.0,-15.0}));
+		i_fallen_bodyparticle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "env_snow_light_001", npc.index, "m_vecAbsOrigin", {0.0,-200.0,0.0}));
 
 		float wave = float(ZR_GetWaveCount()+1);
 		wave *= 0.1;
@@ -390,7 +390,31 @@ public void FallenWarrior_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	
 	npc.PlayDeathSound();
-	CPrintToChatAll("{crimson}Red{default}: Thank... you...");
+
+	switch(GetRandomInt(1, 4))
+	{
+		case 1:
+		{
+			CPrintToChatAll("{crimson}Red{default}: Thank... you...");
+		}
+		case 2:
+		{
+			CPrintToChatAll("{crimson}Red{default}: This feelings...");
+		}
+		case 3:
+		{
+			CPrintToChatAll("{crimson}Red{default}: Captain...");
+		}
+		case 4:
+		{
+			CPrintToChatAll("{crimson}Red{default}: Must... stop...");
+		}
+		default: //This should not happen
+		{
+			ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+		}
+	}
+	
 
 	int particle = EntRefToEntIndex(i_fallen_headparticle[npc.index]);
 	int particleeye = EntRefToEntIndex(i_fallen_eyeparticle[npc.index]);
