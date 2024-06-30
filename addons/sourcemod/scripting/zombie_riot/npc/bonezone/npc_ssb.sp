@@ -44,6 +44,7 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define SND_NECROBLAST_CHARGEUP		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_chargeup.mp3"
 #define SND_NECROBLAST_BIGBANG		"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_necroticblast_extra.mp3"
 #define SND_SPIN2WIN_ACTIVE		")zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_spin2win_active.mp3"
+#define SND_STUNNED				"misc/halloween/merasmus_stun.wav"
 
 #define PARTICLE_SSB_SPAWN					"doomsday_tentpole_vanish01"
 #define PARTICLE_OBJECTSPAWN_1				"merasmus_spawn_flash"
@@ -66,8 +67,9 @@ static float SSB_RaidPower[4] = { 0.001, 0.01, 0.1, 1.0 };
 #define PARTICLE_SKULL_MINI					"flaregun_trail_red"
 #define PARTICLE_PORTAL_PURPLE				"eyeboss_tp_vortex"
 #define PARTICLE_SUMMON_VANISH				"ghost_appearation"
-#define PARTICLE_SPIN_TRAIL_1				"critgun_weaponmodel_red"
-#define PARTICLE_SPIN_TRAIL_2				"critgun_weaponmodel_blu"
+#define PARTICLE_SPIN_TRAIL_1				"halloween_pickup_active_green"//"critgun_weaponmodel_red"
+#define PARTICLE_SPIN_TRAIL_2				"halloween_pickup_active_green"//"critgun_weaponmodel_blu"
+#define PARTICLE_STUNNED					"merasmus_dazed"
 
 static char Volley_HomingSFX[][] = {
 	")items/halloween/witch01.wav",
@@ -169,6 +171,18 @@ static char g_SSBHellIsHere_Captions[][] = {
 	"{haunted}Supreme Spookmaster Bones{default}: {cyan}I AM A GOD!{default}",
 	"{haunted}Supreme Spookmaster Bones{default}: {cyan}TAKE THIS!{default}",
 	"{haunted}Supreme Spookmaster Bones{default}: {cyan}I AM THE MASTER NOW!{default}"
+};
+
+static char g_SSBStunned_Sounds[][] = {
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_stunned_1.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_stunned_2.mp3",
+	"zombie_riot/the_bone_zone/supreme_spookmaster_bones/ssb_stunned_3.mp3"
+};
+
+static char g_SSBStunned_Captions[][] = {
+	"{haunted}Supreme Spookmaster Bones{default}: {yellow}UH, W-w-w-WHAT?!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {yellow}Oh, woah woah woah, WOAH WOAH WOAH, WOAHWOAHWOAHWOAHWOAHWOAH, dude, woah, hello!{default}",
+	"{haunted}Supreme Spookmaster Bones{default}: {yellow}Oooohhh no.... what the fuck?{default}"
 };
 
 static char g_SSBIntro_Sounds[][] = {
@@ -326,6 +340,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_SSBLoss_Sounds));   i++) { PrecacheSound(g_SSBLoss_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBLossEasterEgg_Sounds));   i++) { PrecacheSound(g_SSBLossEasterEgg_Sounds[i]);   }
 	for (int i = 0; i < (sizeof(g_SSBGenericWindup_Sounds));   i++) { PrecacheSound(g_SSBGenericWindup_Sounds[i]);   }
+	for (int i = 0; i < (sizeof(g_SSBStunned_Sounds));   i++) { PrecacheSound(g_SSBStunned_Sounds[i]);   }
 
 	PrecacheModel(MODEL_SSB);
 	PrecacheModel(MODEL_SKULL);
@@ -363,6 +378,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_NECROBLAST_CHARGEUP);
 	PrecacheSound(SND_NECROBLAST_BIGBANG);
 	PrecacheSound(SND_SPIN2WIN_ACTIVE);
+	PrecacheSound(SND_STUNNED);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
@@ -594,11 +610,12 @@ float Spin_Interval[4] = { 0.33, 0.3, 0.25, 0.2 };					//Interval in which the h
 float Spin_Duration[4] = { 9.0, 9.0, 9.0, 9.0 };					//Duration of the ability.
 float Spin_Speed[4] = { 600.0, 700.0, 800.0, 900.0 };				//SSB's movement speed while spinning.
 float Spin_EntityMult[4] = { 10.0, 10.0, 10.0, 10.0 };				//Amount to multiply damage dealt to entities.
-float Spin_KB[4] = { 900.0, 1200.0, 1500.0, 1800.0 };					//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
+float Spin_KB[4] = { 900.0, 1200.0, 1500.0, 1800.0 };				//Knockback velocity applied to players who get hit. This prevents the ability from just straight-up killing people if they fail to sidestep and SSB gets caught on them, and also makes the ability more fun.
+float Spin_StunTime[4] = { 6.0, 4.5, 3.0, 0.0 };					//Duration to stun SSB for when he stops spinning.
 //SPECIAL NOTE FOR SPIN 2 WIN: Friction and acceleration seem to be inextricably linked. You will need the perfect blend of both to get the effects you're looking for, 
 //so don't just change these willy-nilly without testing first.
 float Spin_Friction[4] = { 0.5, 0.66, 0.85, 1.0 };					//SSB's friction while spinning. Higher friction will make Spin 2 Win harder to avoid. (5.0 = default friction)
-float Spin_Acceleration[4] = { 1200.0, 1540.0, 2000.0, 2250.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
+float Spin_Acceleration[4] = { 1200.0, 1500.0, 1800.0, 2100.0 };	//SSB's acceleration while spinning (friction does nothing if this is not set). Usually, 2 * Spin_Speed is the optimal value for this. Higher makes it harder to avoid.
 
 //SPOOKY SPECIAL #6 - MEGA MORTIS: SSB once again pulls out his trusty Mortis Masher and lifts it high into the air, charging it with necrotic energy. After X second(s),
 //he slams it down, dealing massive damage within a large radius to anybody who is on the ground. Anyone who is directly hit by the hammer itself is instantly killed,
@@ -3051,12 +3068,25 @@ public void Spin_Logic(DataPack pack)
 
 	if (gt >= endTime)
 	{
-		//TODO: Needs outro anim
-		ssb.UsingAbility = false;
-		ssb.RevertSequence();
 		ssb.SetPlaybackRate(1.0);
-
 		SSB_Movement_Data_RestoreFromValues(ssb);
+
+		if (Spin_StunTime[SSB_WavePhase] <= 0.0)
+		{
+			ssb.UsingAbility = false;
+			ssb.RevertSequence();
+		}
+		else
+		{
+			ssb.PlayStun();
+			ssb.Pause();
+			int iActivity = ssb.LookupActivity("ACT_SPIN2WIN_STUNNED");
+			if(iActivity > 0) ssb.StartActivity(iActivity);
+
+			SSB_AttachParticle(ssb.index, PARTICLE_STUNNED, Spin_StunTime[SSB_WavePhase], "root", 100.0);
+
+			CreateTimer(Spin_StunTime[SSB_WavePhase], Spin_StopStun, EntIndexToEntRef(ssb.index), TIMER_FLAG_NO_MAPCHANGE);
+		}
 
 		return;
 	}
@@ -3083,6 +3113,20 @@ public void Spin_Logic(DataPack pack)
 	WritePackCell(pack, phase);
 	WritePackFloat(pack, nextHit);
 	WritePackFloat(pack, endTime);
+}
+
+public Action Spin_StopStun(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (IsValidEntity(ent))
+	{
+		SupremeSpookmasterBones ssb = view_as<SupremeSpookmasterBones>(ent);
+		ssb.UsingAbility = false;
+		ssb.RevertSequence();
+		ssb.Unpause();
+	}
+
+	return Plugin_Continue;
 }
 
 public void Spin_OnHit(int attacker, int victim, float damage, int weapon)
@@ -3377,6 +3421,18 @@ methodmap SupremeSpookmasterBones < CClotBody
 		EmitSoundToAll(g_SSBGenericWindup_Sounds[rand], _, _, 120);
 		CPrintToChatAll(g_SSBGenericWindup_Captions[rand]);
 
+
+		#if defined DEBUG_SOUND
+		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlastWarning()");
+		#endif
+	}
+
+	public void PlayStun()
+	{
+		int rand = GetRandomInt(0, sizeof(g_SSBStunned_Sounds) - 1);
+		EmitSoundToAll(g_SSBStunned_Sounds[rand], _, _, 120);
+		CPrintToChatAll(g_SSBStunned_Captions[rand]);
+		EmitSoundToAll(SND_STUNNED);
 
 		#if defined DEBUG_SOUND
 		PrintToServer("CSupremeSpookmasterBones::PlayNecroBlastWarning()");
