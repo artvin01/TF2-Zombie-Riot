@@ -361,7 +361,7 @@ static void ClotThink(int iNPC)
 	
 	if(fl_ruina_battery[npc.index]>3000.0)	//every 30 seconds.
 	{
-		Master_Apply_Shield_Buff(npc.index, 150.0, 0.9);	//90% shield
+		Master_Apply_Shield_Buff(npc.index, 150.0, 0.1);	//90% shield
 		fl_ruina_battery[npc.index] = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;		
 	}

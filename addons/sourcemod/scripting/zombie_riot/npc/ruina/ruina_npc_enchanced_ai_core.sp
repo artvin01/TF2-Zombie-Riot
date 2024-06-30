@@ -298,7 +298,9 @@ public void Ruina_Npc_Give_Shield(int client, float strenght)
 	if(fl_shield_break_timeout[client] > GameTime)
 		return;
 	
-	fl_shield_break_timeout[client] = GameTime + 999.0;
+	Ruina_Remove_Shield(client);
+
+	fl_shield_break_timeout[client] = GameTime + 120.0;
 	
 	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
 	int wave =(ZR_GetWaveCount()+1);
@@ -326,16 +328,17 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 		Ruina_Update_Shield(victim);
 		
 		//remove shield damage dependant on damage dealt
-		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strength[victim];	
+		fl_ruina_shield_power[victim] -= damage*(1.0-fl_ruina_shield_strength[victim]);	
 		//if the shield is still intact remove all damage
 		if(fl_ruina_shield_power[victim]>=0.0)		
 		{
+			fl_TotalArmor[victim] = fl_ruina_shield_strength[victim];
 			if(fl_ontake_sound_timer[victim]<=GameTime)
 			{
 				fl_ontake_sound_timer[victim] = GameTime + 0.25;
 				EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 			}
-			damage -= damage*fl_ruina_shield_strength[victim];
+			//damage -= damage*fl_ruina_shield_strength[victim];
 			b_ruina_shield_active[victim] = true;
 			//also remove kb dependant on strength
 			damageForce[0] = damageForce[0]*fl_ruina_shield_strength[victim];	
@@ -349,10 +352,12 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 			fl_ruina_shield_power[victim] = 0.0;
 			b_ruina_shield_active[victim] = false;
 			Ruina_Remove_Shield(victim);
+			fl_TotalArmor[victim] = 1.0;
 		}
 	}
 	else
 	{
+		fl_TotalArmor[victim] = 1.0;
 		Ruina_Remove_Shield(victim);
 	}
 }
@@ -360,6 +365,7 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 static void Ruina_Remove_Shield(int client)
 {
 	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
+	fl_TotalArmor[client] = 1.0;
 	if(IsValidEntity(i_shield_entity))
 	{
 		fl_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
