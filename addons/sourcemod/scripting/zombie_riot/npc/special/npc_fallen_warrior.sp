@@ -302,7 +302,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 	{
 		if(npc.m_flSpeed > 250)
 		{
-			m_flSpeed = 250;
+			npc.m_flSpeed = 250;
 		}
 		if(npc.m_flSpeed < 250)
 		{
