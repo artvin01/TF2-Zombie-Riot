@@ -46,7 +46,7 @@ static bool b_ruina_allow_teleport[MAXENTITIES];
 	/// Ruina Shields ///
 
 static float fl_ruina_shield_power[MAXENTITIES];
-static float fl_ruina_shield_strenght[MAXENTITIES];
+static float fl_ruina_shield_strength[MAXENTITIES];
 static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
@@ -159,7 +159,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	Zero(fl_ruina_shield_power);
 	Zero(fl_ruina_shield_timer);
-	Zero(fl_ruina_shield_strenght);
+	Zero(fl_ruina_shield_strength);
 	Zero(b_ruina_shield_active);
 	Zero(i_shield_effect);
 	Zero(fl_shield_break_timeout);
@@ -313,7 +313,7 @@ public void Ruina_Npc_Give_Shield(int client, float strenght)
 	Shield_Power *= wave;
 	
 	fl_ruina_shield_power[client] = Shield_Power;
-	fl_ruina_shield_strenght[client] = strenght;
+	fl_ruina_shield_strength[client] = strenght;
 	
 	Ruina_Update_Shield(client);
 }
@@ -326,7 +326,7 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 		Ruina_Update_Shield(victim);
 		
 		//remove shield damage dependant on damage dealt
-		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strenght[victim];	
+		fl_ruina_shield_power[victim] -= damage*fl_ruina_shield_strength[victim];	
 		//if the shield is still intact remove all damage
 		if(fl_ruina_shield_power[victim]>=0.0)		
 		{
@@ -335,12 +335,12 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 				fl_ontake_sound_timer[victim] = GameTime + 0.25;
 				EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 			}
-			damage -= damage*fl_ruina_shield_strenght[victim];
+			damage -= damage*fl_ruina_shield_strength[victim];
 			b_ruina_shield_active[victim] = true;
 			//also remove kb dependant on strength
-			damageForce[0] = damageForce[0]*fl_ruina_shield_strenght[victim];	
-			damageForce[1] = damageForce[1]*fl_ruina_shield_strenght[victim];
-			damageForce[2] = damageForce[2]*fl_ruina_shield_strenght[victim];
+			damageForce[0] = damageForce[0]*fl_ruina_shield_strength[victim];	
+			damageForce[1] = damageForce[1]*fl_ruina_shield_strength[victim];
+			damageForce[2] = damageForce[2]*fl_ruina_shield_strength[victim];
 			
 			
 		}

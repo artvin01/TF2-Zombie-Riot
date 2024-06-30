@@ -284,7 +284,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//70% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe

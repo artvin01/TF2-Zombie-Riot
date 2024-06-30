@@ -50,6 +50,14 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
+static char g_AngerSounds[][] = {	//todo: make it different!
+	"vo/medic_cartgoingforwardoffense01.mp3",
+	"vo/medic_cartgoingforwardoffense02.mp3",
+	"vo/medic_cartgoingforwardoffense03.mp3",
+	"vo/medic_cartgoingforwardoffense06.mp3",
+	"vo/medic_cartgoingforwardoffense07.mp3",
+	"vo/medic_cartgoingforwardoffense08.mp3",
+};
 
 void Lex_OnMapStart_NPC()
 {
@@ -75,6 +83,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(g_AngerSounds);
 
 	PrecacheModel("models/player/medic.mdl");
 }
@@ -196,6 +205,16 @@ methodmap Lex < CClotBody
 		#endif
 	}
 	
+	public void PlayAngerSound() {
+	
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::Playnpc.AngerSound()");
+		#endif
+	}
+
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
@@ -246,6 +265,7 @@ methodmap Lex < CClotBody
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
+			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",						//Quantum Armour Aquired
 			RUINA_CUSTOM_MODELS
 		};
 
@@ -257,11 +277,11 @@ methodmap Lex < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -286,8 +306,9 @@ methodmap Lex < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		fl_ruina_battery_timeout[npc.index] = 0.0;
-		
+
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc		
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_RANGED_NPC, true, 15, 6);
 
 		Delete_Beacons(npc.index);
 
@@ -338,15 +359,12 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>1000.0)
+	if(fl_ruina_battery[npc.index]>3000.0)	//every 30 seconds.
 	{
+		Master_Apply_Shield_Buff(npc.index, 150.0, 0.9);	//90% shield
 		fl_ruina_battery[npc.index] = 0.0;
-
-		npc.Anger = true;
-
 		npc.m_flNextMeleeAttack = 0.0;		
 	}
-
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -455,12 +473,17 @@ static void ClotThink(int iNPC)
 						{
 							fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
-							fl_multi_attack_delay[npc.index] = GameTime + 0.5;
+							fl_multi_attack_delay[npc.index] = GameTime + 0.2;
 
 							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 							npc.PlayMeleeSound();
 
-							float projectile_speed = GetRandomFloat(590.0, 600.0);
+							float Min,Max;
+
+							Min = (npc.Anger ? 800.0 : 400.0);
+							Max = (npc.Anger ? 1200.0 : 800.0);
+
+							float projectile_speed = GetRandomFloat(Min, Max);
 
 							int RNG = GetRandomInt(0, 3);
 							float fRNG = GetRandomFloat(0.1, 1.0);
@@ -556,7 +579,7 @@ static void ClotThink(int iNPC)
 }
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	Ruina_Add_Mana_Sickness(client, target, 0.1, 10);
+	Ruina_Add_Mana_Sickness(client, target, 0.01, 10);
 }
 static Action Lex_Slow_Projectiles(Handle Timer, int ref)
 {
@@ -613,6 +636,20 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
+	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
+		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	
+	float Ratio = (float(Health)/float(MaxHealth));
+	if(!npc.Anger && Ratio < 0.75) 
+	{
+		npc.Anger = true; //	>:(
+		npc.PlayAngerSound();
+
+		if(npc.m_bThisNpcIsABoss)
+		{
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		}
+	}
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -648,5 +685,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	
 }
