@@ -85,9 +85,6 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_bStaticNPC = true;
 		AddNpcToAliveList(npc.index, 1);
 
-		GiveNpcOutLineLastOrBoss(npc.index, false);
-		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
-
 		Zero(fl_AlreadyStrippedMusic);
 
 		npc.m_iState = -1;

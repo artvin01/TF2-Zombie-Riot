@@ -55,7 +55,7 @@ methodmap MedivalTrebuchet < CClotBody
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
 		npc.m_flMeleeArmor = 2.0;
-		npc.m_flRangedArmor = 0.25;
+		npc.m_flRangedArmor = 0.01;
 		SDKHook(npc.index, SDKHook_Touch, RamTouchDamageTouch);
 		
 		return npc;

@@ -294,7 +294,7 @@ void WeaponSwtichToWarningPostFrame(int ref)
 			WeaponWasGivenAmmo[weapon1] = false;
 		}
 	}
-	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 5, EntIndexToEntRef(client));
+	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 1, EntIndexToEntRef(client));
 }
 void WeaponSwtichToWarningPostFrameRegive(int ref)
 {
