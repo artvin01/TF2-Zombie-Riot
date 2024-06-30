@@ -328,19 +328,19 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-				{
-					Music_Stop_All(client); //This is actually more expensive then i thought.
-				}
-				SetMusicTimer(client, GetTime() + 8);
-				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 3.0;
-			}
-		}
 		//PluginBot_NormalJump(npc.index);
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+			}
+			SetMusicTimer(client, GetTime() + 3);
+			fl_AlreadyStrippedMusic[client] = GetEngineTime() + 2.5;
+		}
 	}
 	float TrueArmor = 1.0;
 
@@ -592,7 +592,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					float damageDealt = 150.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 1.5;
+						damageDealt *= 2.5;
 					}	
 					if(npc.m_bLostHalfHealth)
 					{
