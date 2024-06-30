@@ -491,6 +491,7 @@ float f_BannerDurationActive[MAXENTITIES];
 float f_BannerAproxDur[MAXENTITIES];
 float f_BuffBannerNpcBuff[MAXENTITIES];
 float f_AncientBannerNpcBuff[MAXENTITIES];
+float f_FallenWarriorDebuff[MAXENTITIES];
 float f_BattilonsNpcBuff[MAXENTITIES];
 float f_MaimDebuff[MAXENTITIES];
 float f_PassangerDebuff[MAXENTITIES];
@@ -2897,6 +2898,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Board_EntityCreated(entity);
 
 		BannerOnEntityCreated(entity);
+		FallenWarriorEntityCreated(entity);
 		Elemental_ClearDamage(entity);
 #endif
 

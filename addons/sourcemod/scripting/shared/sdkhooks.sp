@@ -1358,6 +1358,11 @@ public void OnPostThink(int client)
 			had_An_ability = true;
 			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
 		}
+		if(f_FallenWarriorDebuff[client] > GameTime) 
+		{
+			had_An_ability = true;
+			Format(bufferbuffs, sizeof(bufferbuffs), "⋡%s", bufferbuffs);
+		}
 #if defined RPG
 		switch(BubbleProcStatusLogicCheck(client))
 		{

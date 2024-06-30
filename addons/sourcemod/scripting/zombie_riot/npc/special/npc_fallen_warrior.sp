@@ -60,7 +60,28 @@ static const char g_IntroSounds[][] =
 	"misc/rd_spaceship01.wav",
 };
 
-static float i_ClosestAllyCDTarget[MAXENTITIES];
+static bool b_ClientHasAncientBanner[MAXENTITIES];
+static bool b_EntityRecievedBuff[MAXENTITIES];
+static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
+int GetRandomSeedEachWave;
+
+#define GULN_DEBUFF_RANGE 500.0
+
+void FallenWarriorEntityCreated(int entity)
+{
+	b_ClientHasAncientBanner[entity] = false;
+	b_EntityRecievedBuff[entity] = false;
+	f_FallenWarriorDebuff[entity] = 0.0;
+}
+
+void FallenWarriorGetRandomSeedEachWave()
+{
+	int oldseed = GetRandomSeedEachWave;
+	GetRandomSeedEachWave = GetURandomInt();
+	//prevent 1 in 4 billion chance.
+	if(oldseed == GetRandomSeedEachWave)
+		GetRandomSeedEachWave += 1;
+}
 
 
 void FallenWarrior_OnMapStart()
@@ -118,7 +139,7 @@ static char[] GetPanzerHealth()
 		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
-	health /= 3.0;
+	health /= 3;
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
@@ -149,6 +170,10 @@ methodmap FallenWarrior < CClotBody
 	}
 	public void PlayIntroSound()
 	{
+		if(this.m_flNextRangedAttack > GetGameTime(this.index))
+			return;
+		
+		this.m_flNextRangedAttack = GetGameTime(this.index) + 5.0;
 		EmitSoundToAll(g_IntroSounds[GetRandomInt(0, sizeof(g_IntroSounds) - 1)],  _, _, _, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayFriendlySound()
@@ -201,6 +226,10 @@ methodmap FallenWarrior < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 100, 100, 255);
+		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
+		{
+			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
+		}
 
 		func_NPCDeath[npc.index] = view_as<Function>(FallenWarrior_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(FallenWarrior_OnTakeDamage);
@@ -209,8 +238,8 @@ methodmap FallenWarrior < CClotBody
 		npc.m_bLostHalfHealth = false;
 		npc.m_bThisNpcIsABoss = true;
 
-		npc.m_flMeleeArmor = 1.2; 		
-		npc.m_flRangedArmor = 0.9;
+		npc.m_flMeleeArmor = 1.35; 		
+		npc.m_flRangedArmor = 0.8;
 
 		//IDLE
 		npc.m_iState = 0;
@@ -292,23 +321,38 @@ public void FallenWarrior_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
-
+	
+	
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				{
+					Music_Stop_All(client); //This is actually more expensive then i thought.
+				}
+				SetMusicTimer(client, GetTime() + 8);
+				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 3.0;
+			}
+		}
+		//PluginBot_NormalJump(npc.index);
 	}
 	float TrueArmor = 1.0;
 
 	if(npc.m_bLostHalfHealth)
 	{
-		if(npc.m_flSpeed > 250)
+		if(npc.m_flSpeed > 250.0)
 		{
-			npc.m_flSpeed = 250;
+			npc.m_flSpeed = 250.0;
 		}
-		if(npc.m_flSpeed < 250)
+		if(npc.m_flSpeed < 250.0)
 		{
-			npc.m_flSpeed += 100;
+			npc.m_flSpeed += 100.0;
 		}
 		TrueArmor *= 0.5;
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 2);
@@ -325,12 +369,17 @@ public void FallenWarrior_ClotThink(int iNPC)
 	fl_TotalArmor[npc.index] = TrueArmor;
 
 	
+	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, GetTeam(npc.index));
+
+	float Range = GULN_DEBUFF_RANGE;
+	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
@@ -350,6 +399,7 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 
+	npc.PlayIntroSound();
 	npc.PlayIdleAlertSound();
 }
 
@@ -395,19 +445,19 @@ public void FallenWarrior_NPCDeath(int entity)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Red{default}: Thank... you...");
+			CPrintToChatAll("{crimson}Guln{default}: Thank... you...");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{crimson}Red{default}: This feelings...");
+			CPrintToChatAll("{crimson}Guln{default}: This feeling...");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{crimson}Red{default}: Bob...");
+			CPrintToChatAll("{crimson}Guln{default}: Bob... My friend...");
 		}
 		case 4:
 		{
-			CPrintToChatAll("{crimson}Red{default}: Must... stop...");
+			CPrintToChatAll("{crimson}Guln{default}: Must... stop...");
 		}
 	}
 	
@@ -431,9 +481,88 @@ public void FallenWarrior_NPCDeath(int entity)
 		i_fallen_bodyparticle[npc.index]=INVALID_ENT_REFERENCE;
 	}
 
+	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+//	int entity3 = MakeSmokestack(VecSelfNpcabs);
+
+	DataPack pack;
+	CreateDataTimer(0.1, Timer_FallenWarrior, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+
+	for(int i; i < 3; i++)
+	{
+		pack.WriteFloat(VecSelfNpcabs[i]);
+	}
+	pack.WriteCell(GetRandomSeedEachWave);
+//	pack.WriteCell(EntIndexToEntRef(entity3));
+	pack.WriteCell(GetTeam(npc.index));
+
 	Citizen_MiniBossDeath(entity);
 }
 
+
+#define PARTICLE_SMOKE		"particle/SmokeStack.vmt"
+stock int MakeSmokestack(const float vPos[3])
+{
+	int entity = CreateEntityByName("env_smokestack");
+	DispatchKeyValue(entity, "WindSpeed", "0");
+	DispatchKeyValue(entity, "WindAngle", "0");
+	DispatchKeyValue(entity, "twist", "0");
+	DispatchKeyValue(entity, "StartSize", "30");
+	DispatchKeyValue(entity, "SpreadSpeed", "1");
+	DispatchKeyValue(entity, "Speed", "30");
+	DispatchKeyValue(entity, "SmokeMaterial", PARTICLE_SMOKE);
+	DispatchKeyValue(entity, "roll", "0");
+	DispatchKeyValue(entity, "rendercolor", "50 50 50");
+	DispatchKeyValue(entity, "renderamt", "50");
+	DispatchKeyValue(entity, "Rate", "10");
+	DispatchKeyValue(entity, "JetLength", "30");
+	DispatchKeyValue(entity, "InitialState", "0");
+	DispatchKeyValue(entity, "EndSize", "25");
+	DispatchKeyValue(entity, "BaseSpread", "15");
+
+	DispatchSpawn(entity);
+	ActivateEntity(entity);
+	TeleportEntity(entity, vPos, NULL_VECTOR, NULL_VECTOR);
+	AcceptEntityInput(entity, "TurnOn");
+
+	SetVariantString("OnUser1 !self:TurnOff::0.6:1");
+	AcceptEntityInput(entity, "AddOutput");
+	AcceptEntityInput(entity, "FireUser1");
+
+	return entity;
+}
+
+public Action Timer_FallenWarrior(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	float VecSelfNpcabs[3];
+	for(int i; i < 3; i++)
+	{
+		VecSelfNpcabs[i] = pack.ReadFloat();
+	}
+	int RandomSeed = pack.ReadCell();
+//	int SmokeEntity = pack.ReadCell();
+	if(RandomSeed != GetRandomSeedEachWave)
+	{
+//		if(IsValidEntity(SmokeEntity))
+//			RemoveEntity(SmokeEntity);
+
+		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+		return Plugin_Stop;
+	}
+	int Team = pack.ReadCell();
+
+	FallenWarrior_ApplyDebuffInLocation(VecSelfNpcabs, Team);
+	float Range = GULN_DEBUFF_RANGE;
+	spawnRing_Vectors(VecSelfNpcabs, Range * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 125, 50, 50, 200, 1, /*duration*/ 0.11, 20.0, 5.0, 1);	
+
+	return Plugin_Continue;
+}
+
+public Action Timer_FallenWarrior_ClearDebuffs(Handle timer)
+{
+	FallenWarrior_ApplyDebuffInLocation({0.0,0.0,0.0}, 0);
+	return Plugin_Stop;
+}
 
 void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, float distance)
 {
@@ -522,33 +651,159 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 		}
 	}
 }
-
 /*
-stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
-{
-    Address address = TF2Attrib_GetByDefIndex(entity, index);
-    if(address != Address_Null)
-    {
-        TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) * multi);
-
-        DataPack pack;
-        CreateDataTimer(duration, Temp_RestoryAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
-        pack.WriteCell(EntIndexToEntRef(entity));
-        pack.WriteCell(index);
-        pack.WriteFloat(multi);
-    }
-}
-public Action Temp_RestoryAttrib(Handle timer, DataPack pack)
-{
-    pack.Reset();
-    int entity = EntRefToEntIndex(pack.ReadCell());
-    if(entity != INVALID_ENT_REFERENCE)
-    {
-        int index = pack.ReadCell();
-        Address address = TF2Attrib_GetByDefIndex(entity, index);
-        if(address != Address_Null)
-            TF2Attrib_SetByDefIndex(entity, index, TF2Attrib_GetValue(address) / pack.ReadFloat());
-    }
-    return Plugin_Stop;
-}
+	type:
+	1: client
+	2: entity
 */
+
+static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
+{
+	if(type == 1)
+	{
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			if(!b_EntityRecievedBuff[weapon])
+			{
+				if(GrantBuff)
+				{
+					b_EntityRecievedBuff[weapon] = true;
+					if(Attributes_Has(weapon, 6))
+						Attributes_SetMulti(weapon, 6, buffammount);	// Fire Rate
+					
+					if(Attributes_Has(weapon, 97))
+						Attributes_SetMulti(weapon, 97, buffammount);	// Reload Time
+					
+					if(Attributes_Has(weapon, 8))
+						Attributes_SetMulti(weapon, 8, buffammount2);	// Heal Rate
+				}
+			}
+			else
+			{
+				if(!GrantBuff)
+				{
+					if(b_EntityRecievedBuff[weapon])
+					{
+						b_EntityRecievedBuff[weapon] = false;
+						if(Attributes_Has(weapon, 6))
+							Attributes_SetMulti(weapon, 6, 1.0 / buffammount);	// Fire Rate
+						
+						if(Attributes_Has(weapon, 97))
+							Attributes_SetMulti(weapon, 97, 1.0 / buffammount);	// Reload Time
+						
+						if(Attributes_Has(weapon, 8))
+							Attributes_SetMulti(weapon, 8, 1.0 / buffammount2);	// Heal Rate
+					}
+				}
+			}
+		}
+	}
+	else if(type == 2)
+	{
+		char npc_classname[60];
+		NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+		if(StrEqual(npc_classname, "npc_citizen"))
+		{
+			Citizen npc = view_as<Citizen>(entity);
+			if(!b_EntityRecievedBuff[entity])
+			{
+				if(GrantBuff)
+				{
+					b_EntityRecievedBuff[entity] = true;
+					npc.m_fGunFirerate *= buffammount;
+					npc.m_fGunReload *= buffammount;
+				}
+			}
+			else
+			{
+				if(!GrantBuff)
+				{
+					b_EntityRecievedBuff[entity] = false;
+					npc.m_fGunFirerate /= buffammount;
+					npc.m_fGunReload /= buffammount;
+				}
+			}
+		}
+		else if(entity > MaxClients)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(!b_EntityRecievedBuff[entity])
+			{
+				if(GrantBuff)
+				{
+					b_EntityRecievedBuff[entity] = true;
+					npc.BonusFireRate *= buffammount;
+				}
+			}
+			else
+			{
+				if(!GrantBuff)
+				{
+					b_EntityRecievedBuff[entity] = false;
+					npc.BonusFireRate /= buffammount;
+				}
+			}
+		}
+	}
+}
+
+
+
+void FallenWarrior_ApplyDebuffInLocation(float BannerPos[3], int Team)
+{
+	float targPos[3];
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
+		{
+			GetClientAbsOrigin(ally, targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			{
+				f_FallenWarriorDebuff[ally] = GetGameTime() + 0.5;
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) != Team)
+		{
+			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
+			if (GetVectorDistance(BannerPos, targPos, true) <= (GULN_DEBUFF_RANGE * GULN_DEBUFF_RANGE))
+			{
+				f_FallenWarriorDebuff[ally] = GetGameTime() + 0.5;
+			}
+		}
+	}
+	
+	for(int ally=1; ally<=MaxClients; ally++)
+	{
+		if(IsClientInGame(ally) && IsPlayerAlive(ally) && GetTeam(ally) != Team)
+		{
+			if(f_FallenWarriorDebuff[ally] > GetGameTime())
+			{
+				ModifyEntityAncientBuff(ally, 1, 1.5, true, 0.5);
+			}
+			else
+			{
+				ModifyEntityAncientBuff(ally, 1, 1.5, false, 0.5);
+			}
+		}
+	}
+	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
+	{
+		int ally = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
+		if (IsValidEntity(ally) && !b_NpcHasDied[ally] && GetTeam(ally) == TFTeam_Red)
+		{
+			if(f_FallenWarriorDebuff[ally] > GetGameTime() && GetTeam(ally) != Team)
+			{
+				ModifyEntityAncientBuff(ally, 2, 1.5, true, 0.5);
+			}
+			else
+			{
+				ModifyEntityAncientBuff(ally, 2, 1.5, false, 0.5);
+			}
+		}
+	}
+}

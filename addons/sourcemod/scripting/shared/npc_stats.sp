@@ -3383,6 +3383,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
 
+		SetEntProp(pThis, Prop_Data, "m_lifeState", 2);
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
@@ -3405,7 +3406,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			else
 			{
 				Npc_DoGibLogic(pThis);
-			//	#endif	
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -3718,22 +3718,10 @@ public void SetNpcToDeadViaGib(int pThis)
 #if defined ZR
 	b_thisNpcHasAnOutline[pThis] = false;
 #endif
-	
 	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
+	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
-	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
-	/*
-	if(PF_Exists(pThis))
-	{
-		PF_Destroy(pThis);
-	}	
-	*/
-}
-
-public Action SDKHook_Settransmit_Hide(int entity, int client)
-{
-	return Plugin_Handled;
 }
 
 public void Kill_Npc(int ref)

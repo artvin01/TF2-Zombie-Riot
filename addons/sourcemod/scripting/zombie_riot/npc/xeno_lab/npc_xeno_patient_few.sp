@@ -137,8 +137,6 @@ methodmap XenoPatientFew < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
-		SetVariantInt(15);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 	
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	

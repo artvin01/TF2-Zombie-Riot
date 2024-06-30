@@ -1354,6 +1354,12 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		
 		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "⌁");
 	}
+	if (f_FallenWarriorDebuff[victim] > GameTime)
+	{
+		Debuff_added = true;
+		
+		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s⋡", Debuff_Adder_left);	
+	}
 	if(f_LudoDebuff[victim] > GameTime)
 	{
 		Debuff_added = true;
@@ -2002,6 +2008,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 	if(f_HighTeslarDebuff[npc] > GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
+		return true;
+	else if(f_FallenWarriorDebuff[npc] > GameTime)
 		return true;
 	else if(f_LudoDebuff[npc] > GameTime)
 		return true;
