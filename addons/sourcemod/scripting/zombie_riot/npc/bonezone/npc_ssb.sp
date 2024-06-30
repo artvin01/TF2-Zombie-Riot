@@ -638,9 +638,10 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 //		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
 //		- WITNESS THE SKULL: The skull needs an ambient looping sound.
 //		- Necrotic Blast: Add a pose sequence to be used while he's in the air due to self-knockback.
-//		- Spin 2 Win: Needs all animations and a sound loop which is emitted from his location while it is active.
+//		- Spin 2 Win: Rework intro animation, add VFX/SFX for the moment the hammer appears.
 //		- Death Magnetic, Necrotic Barrage, Ring of Tartarus: Replace tether beam flashes with control point particles.
 //	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
+//		- ...but does he really NEED a melee attack? Maybe scrap this.
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
 //		- Wave Phase 1: Gains access to Spin 2 Win and Soul Harvester.
