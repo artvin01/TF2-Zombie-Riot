@@ -685,9 +685,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal."
-		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 10%% сопр. во время лечен."
-		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar."
 	}
 	
 	"Battle Medigun Desc"
