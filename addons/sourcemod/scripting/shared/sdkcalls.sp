@@ -22,8 +22,6 @@ static Handle g_hSDKStartLagComp;
 static Handle g_hSDKEndLagComp;
 #endif
 
-static Handle g_hSDKUpdateBlocked;
-
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
@@ -120,11 +118,6 @@ void SDKCall_Setup()
 	g_hCTFCreateArrow = EndPrepSDKCall();
 	if(!g_hCTFCreateArrow)
 		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");
-		
-	StartPrepSDKCall(SDKCall_Static);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFNavMesh::ComputeBlockedArea");
-	g_hSDKUpdateBlocked = EndPrepSDKCall();
-
 	//from kenzzer
 	
 	StartPrepSDKCall(SDKCall_Entity);
@@ -325,7 +318,13 @@ void EndPlayerOnlyLagComp(int client)
 
 void UpdateBlockedNavmesh()
 {
-	SDKCall(g_hSDKUpdateBlocked);
+	sv_cheats.IntValue = 1;
+	//this updates the nav.
+	ServerCommand("nav_load");
+	sv_cheats.IntValue = 0;
+	
+	//This broke and is probably inlined, above is a way easier method.
+//	SDKCall(g_hSDKUpdateBlocked);
 }	
 
 stock int SpawnBotCustom(const char[] Name, bool bReportFakeClient)
