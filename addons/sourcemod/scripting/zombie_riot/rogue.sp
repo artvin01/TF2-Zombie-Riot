@@ -1401,7 +1401,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 				if(!choice || VotedFor[client] != choice)
 				{
 					VotedFor[client] = choice;
-					if(VotedFor[client] == 0)
+					if(VotedFor[client] == 0 || choice > Voting.Length)
 					{
 						VotedFor[client] = -1;
 					}
