@@ -349,11 +349,13 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
-					if(healTarget <= MaxClients && dieingstate[healTarget] > 0)
+#if defined ZR
+					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
 						ReviveClientFromOrToEntity(healTarget, owner);
 					}
 					else
+#endif
 					{
 						if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
 						{
