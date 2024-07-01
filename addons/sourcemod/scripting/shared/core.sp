@@ -2000,8 +2000,10 @@ public void OnClientPutInServer(int client)
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
+	
 	f_ClientReviveDelay[client] = 0.0;
 	f_ClientBeingReviveDelay[client] = 0.0;
+	f_ClientReviveDelayMax[client] = 0.0;
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
