@@ -71,7 +71,7 @@ public void XenoFortifiedEarlyZombie_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie_forti");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -168,7 +168,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 600.0;
+		npc.m_flSpeed = 550.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
@@ -199,7 +199,7 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 
 	if(npc.bXenoInfectedSpecialHurt)
 	{
-		npc.m_flSpeed = 290.0;
+		npc.m_flSpeed = 260.0;
 	}
 	if(npc.m_blPlayHurtAnimation)
 	{

@@ -1533,17 +1533,13 @@
 	{
 		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
 	}
-	"Xeno Acclaimed Swordsman Desc"
-	{
-		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
-	}
 	"Wandering Spirit Desc"
 	{
 		"en"	"Spirit that couldnt move on, free it.\nDeals Massive damage, heals on attack, if it hits 4 players it splits apart."
 	}
 	"Ouroboros Ekas Desc"
 	{
-		"en"	"Buffs all enemies on the field massively, if its the last one alive, it gains 5x speed, 2x res."
+		"en"	"Buffs all enemies on the field massively (Can be silenced), if its the last one alive, it gains 5x speed, 2x res."
 	}
 	"Xeno Patient Few Desc"
 	{
