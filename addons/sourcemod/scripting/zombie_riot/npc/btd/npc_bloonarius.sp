@@ -283,7 +283,7 @@ methodmap Bloonarius < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		
-		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
+		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);

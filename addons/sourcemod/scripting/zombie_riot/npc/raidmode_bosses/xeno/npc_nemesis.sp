@@ -324,26 +324,26 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
 	}
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime < GetGameTime(npc.index))
 	{
-		return;
+		//Set raid to this one incase the previous one has died or somehow vanished
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		{
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+			{
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+				{
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
+			}
+		}
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
+		npc.m_flNextDelayTime > GetGameTime(npc.index) + 0.1;
 	}
 
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 	
 
 	npc.Update();

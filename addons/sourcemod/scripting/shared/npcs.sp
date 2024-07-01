@@ -1495,7 +1495,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
 	{
 		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%s☯", Debuff_Adder_right);
+		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s☯", Debuff_Adder_left);
 	}
 	if(NpcStats_IsEnemySilenced(victim))
 	{

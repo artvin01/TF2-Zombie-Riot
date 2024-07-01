@@ -370,6 +370,14 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount_Self *= 0.25;
 						}
+						if(dieingstate[owner] > 0)
+						{
+							healing_Amount_Self = 0.0;
+						}
+						if(dieingstate[healTarget] > 0)
+						{
+							healing_Amount = 0.0;
+						}
 						float flMaxHealth;
 						//The healing is less then 1 ? Do own logic.
 						if(!Is_Allied_Npc)
