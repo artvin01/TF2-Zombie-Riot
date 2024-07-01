@@ -68,7 +68,7 @@ public void XenoFortifiedEarlyZombie_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Early Infected");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_early_infected");
-	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie_forti");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Xeno;

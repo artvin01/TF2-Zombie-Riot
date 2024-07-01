@@ -52,7 +52,7 @@ public void XenoPatientFew_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Patient Few");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_patient_few");
-	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Xeno;
