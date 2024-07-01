@@ -525,6 +525,8 @@ public ItemResult TextStore_Item(int client, bool equipped, KeyValues item, int 
 
 void TextStore_ClientDisconnect(int client)
 {
+	MenuType[client] = 0;
+	
 	for(int i = SpellList.Length - 1; i >= 0; i--)
 	{
 		static SpellEnum spell;
