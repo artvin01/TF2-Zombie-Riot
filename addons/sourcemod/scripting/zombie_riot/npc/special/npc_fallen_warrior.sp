@@ -492,7 +492,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		pack.WriteFloat(VecSelfNpcabs[i]);
 	}
 	pack.WriteCell(GetRandomSeedEachWave);
-//	pack.WriteCell(EntIndexToEntRef(entity3));
+	pack.WriteCell(1);
 	pack.WriteCell(GetTeam(npc.index));
 
 	Citizen_MiniBossDeath(entity);
@@ -539,15 +539,26 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 	{
 		VecSelfNpcabs[i] = pack.ReadFloat();
 	}
-	int RandomSeed = pack.ReadCell();
-//	int SmokeEntity = pack.ReadCell();
-	if(RandomSeed != GetRandomSeedEachWave)
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-//		if(IsValidEntity(SmokeEntity))
-//			RemoveEntity(SmokeEntity);
-
 		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		return Plugin_Stop;
+	}
+	int RandomSeed = pack.ReadCell();
+	bool StayOneMoreWave = pack.ReadCell();
+	if(RandomSeed != GetRandomSeedEachWave)
+	{
+		pack.Position--;
+		pack.WriteCell(0, false);
+		pack.Position--;
+		pack.Position--;
+		pack.WriteCell(GetRandomSeedEachWave, false);
+		pack.Position++;
+		if(!StayOneMoreWave)
+		{
+			CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+			return Plugin_Stop;	
+		}
 	}
 	int Team = pack.ReadCell();
 

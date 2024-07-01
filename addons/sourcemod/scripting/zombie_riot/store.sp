@@ -4468,6 +4468,7 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
+	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
 	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
