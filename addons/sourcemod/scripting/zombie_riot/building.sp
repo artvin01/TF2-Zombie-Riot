@@ -534,7 +534,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 									metal -= cost;
 									SetAmmo(client, Ammo_Metal, metal);
 									CurrentAmmo[client][Ammo_Metal] = metal;
-									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[id];
+									float CooldownGive = BuildingCooldown[id];
+									if(Rogue_Mode())
+										CooldownGive *= 0.5;
+										
+									Cooldowns[client][id] = GetGameTime() + CooldownGive;
 								}
 							}
 						}

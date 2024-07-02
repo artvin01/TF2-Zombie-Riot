@@ -396,6 +396,8 @@ const int i_MaxcountBuilding = ZR_MAX_BUILDINGS;
 int i_ObjectsBuilding[ZR_MAX_BUILDINGS];
 
 float f_ClientReviveDelay[MAXENTITIES];
+float f_ClientReviveDelayMax[MAXENTITIES];
+float f_ClientBeingReviveDelay[MAXENTITIES];
 
 #define MAXSTICKYCOUNTTONPC 12
 const int i_MaxcountSticky = MAXSTICKYCOUNTTONPC;
@@ -2028,7 +2030,10 @@ public void OnClientPutInServer(int client)
 	AdjustBotCount();
 	WeaponClass[client] = TFClass_Scout;
 #endif
+	
 	f_ClientReviveDelay[client] = 0.0;
+	f_ClientBeingReviveDelay[client] = 0.0;
+	f_ClientReviveDelayMax[client] = 0.0;
 	
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
@@ -2417,13 +2422,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				{
 					ReviveClientFromOrToEntity(target, client);
 				}
-				else if (was_reviving[client])
-				{
-					SetEntityMoveType(target, MOVETYPE_WALK);
-					was_reviving[client] = false;
-					PrintCenterText(client, "");
-					PrintCenterText(target, "");
-				}
 			}
 			else if(target > MaxClients)
 			{
@@ -2452,33 +2450,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						PrintCenterText(client, "%t", "Reviving", ticks);
 					}
 				}
-				else if (was_reviving[client])
-				{
-					was_reviving[client] = false;
-					PrintCenterText(client, "");
-				}
-			}
-			else if (was_reviving[client])
-			{
-				was_reviving[client] = false;
-				PrintCenterText(client, "");
-				if(IsValidClient(was_reviving_this[client]))
-				{
-					SetEntityMoveType(was_reviving_this[client], MOVETYPE_WALK);
-					PrintCenterText(was_reviving_this[client], "");
-				}
 			}
 		}
-		else if (was_reviving[client])
-		{
-			was_reviving[client] = false;
-			PrintCenterText(client, "");
-			if(IsValidClient(was_reviving_this[client]))
-			{
-				SetEntityMoveType(was_reviving_this[client], MOVETYPE_WALK);
-				PrintCenterText(was_reviving_this[client], "");
-			}
-		}
+		ClientRevivalTickLogic(client);
 	}
 #endif	// ZR
 #endif	// ZR & RPG
@@ -3389,7 +3363,7 @@ public void OnEntityDestroyed(int entity)
 			i_ExplosiveProjectileHexArray[entity] = 0; //reset on destruction.
 			
 #if defined ZR
-			WeaponSwtichToWarningPostDestroyed(entity);
+		//	WeaponSwtichToWarningPostDestroyed(entity);
 			i_WandIdNumber[entity] = -1;
 			SkyboxProps_OnEntityDestroyed(entity);
 #endif
@@ -3792,10 +3766,20 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 {
 	bool WasClientReviving = true;
 	if(client > MaxClients)
+	{
 		WasClientReviving = false;
+	}
+	else
+	{
+		if(f_ClientReviveDelayMax[client] > GetGameTime())
+		{
+			return;
+		}
+		f_ClientReviveDelayMax[client] = GetGameTime() + 0.09;
+	}
 
 	float GameTime = GetGameTime();
-
+	
 	SetEntityMoveType(target, MOVETYPE_NONE);
 	if(WasClientReviving)
 	{
@@ -3803,6 +3787,8 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		f_DelayLookingAtHud[client] = GameTime + 0.5;
 	}
 	f_DelayLookingAtHud[target] = GameTime + 0.5;
+	f_ClientBeingReviveDelay[target] = GameTime + 0.15;
+
 	if(WasClientReviving)
 		PrintCenterText(client, "%t", "Reviving", dieingstate[target]);
 
@@ -3897,6 +3883,20 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		SetEntityRenderColor(target, 255, 255, 255, 255);
 		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
+		f_ClientBeingReviveDelay[target] = 0.0;
+	}
+}
+
+void ClientRevivalTickLogic(int client)
+{
+	if(!f_ClientBeingReviveDelay[client])
+		return;
+	
+	if(f_ClientBeingReviveDelay[client] < GetGameTime())
+	{
+		f_ClientBeingReviveDelay[client] = 0.0;
+		SetEntityMoveType(client, MOVETYPE_WALK);
+		PrintCenterText(client, "");
 	}
 }
 #endif	// ZR

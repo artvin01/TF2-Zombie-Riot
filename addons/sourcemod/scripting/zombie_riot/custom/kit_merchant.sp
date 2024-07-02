@@ -385,17 +385,17 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 						case 0:
 						{
 							f_LeeMinorEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.035;
+							reduce = 0.035;
 						}
 						case 1:
 						{
 							f_LeeMajorEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.07;
+							reduce = 0.07;
 						}
 						case 2:
 						{
 							f_LeeSuperEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.14;
+							reduce = 0.14;
 						}
 					}
 

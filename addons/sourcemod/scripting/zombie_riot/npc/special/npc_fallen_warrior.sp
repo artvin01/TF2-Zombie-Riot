@@ -328,19 +328,19 @@ public void FallenWarrior_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 		
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
-				{
-					Music_Stop_All(client); //This is actually more expensive then i thought.
-				}
-				SetMusicTimer(client, GetTime() + 8);
-				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 3.0;
-			}
-		}
 		//PluginBot_NormalJump(npc.index);
+	}
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+			{
+				Music_Stop_All(client); //This is actually more expensive then i thought.
+			}
+			SetMusicTimer(client, GetTime() + 3);
+			fl_AlreadyStrippedMusic[client] = GetEngineTime() + 2.5;
+		}
 	}
 	float TrueArmor = 1.0;
 
@@ -492,7 +492,7 @@ public void FallenWarrior_NPCDeath(int entity)
 		pack.WriteFloat(VecSelfNpcabs[i]);
 	}
 	pack.WriteCell(GetRandomSeedEachWave);
-//	pack.WriteCell(EntIndexToEntRef(entity3));
+	pack.WriteCell(1);
 	pack.WriteCell(GetTeam(npc.index));
 
 	Citizen_MiniBossDeath(entity);
@@ -539,15 +539,26 @@ public Action Timer_FallenWarrior(Handle timer, DataPack pack)
 	{
 		VecSelfNpcabs[i] = pack.ReadFloat();
 	}
-	int RandomSeed = pack.ReadCell();
-//	int SmokeEntity = pack.ReadCell();
-	if(RandomSeed != GetRandomSeedEachWave)
+	if(RaidbossIgnoreBuildingsLogic(1))
 	{
-//		if(IsValidEntity(SmokeEntity))
-//			RemoveEntity(SmokeEntity);
-
 		CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
 		return Plugin_Stop;
+	}
+	int RandomSeed = pack.ReadCell();
+	bool StayOneMoreWave = pack.ReadCell();
+	if(RandomSeed != GetRandomSeedEachWave)
+	{
+		pack.Position--;
+		pack.WriteCell(0, false);
+		pack.Position--;
+		pack.Position--;
+		pack.WriteCell(GetRandomSeedEachWave, false);
+		pack.Position++;
+		if(!StayOneMoreWave)
+		{
+			CreateTimer(0.7, Timer_FallenWarrior_ClearDebuffs, _, TIMER_FLAG_NO_MAPCHANGE);
+			return Plugin_Stop;	
+		}
 	}
 	int Team = pack.ReadCell();
 
@@ -592,7 +603,7 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 					float damageDealt = 150.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 1.5;
+						damageDealt *= 2.5;
 					}	
 					if(npc.m_bLostHalfHealth)
 					{

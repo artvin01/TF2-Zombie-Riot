@@ -97,7 +97,7 @@ public void XenoSpyMainBoss_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "spy_x10_main");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

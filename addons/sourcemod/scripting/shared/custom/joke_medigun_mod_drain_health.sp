@@ -118,29 +118,14 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
 	{
-#if defined ZR
-		if(dieingstate[owner] > 0)
-		{
-			DHookSetReturn(hReturn, false);
-			return MRES_Supercede;	
-		}
-#endif
 		if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
-#if defined ZR
-			if (target > 0 && target <= MaxClients && dieingstate[owner] == 0 && dieingstate[target] == 0)	//only allow player heal IF you have attribute.
-			{
-				DHookSetReturn(hReturn, true);
-				return MRES_Supercede;
-			}
-#else
 			if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
 			{
 				DHookSetReturn(hReturn, true);
 				return MRES_Supercede;
 			}
-#endif
 			else if(!b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
 			{
 				DHookSetReturn(hReturn, true);
@@ -220,12 +205,6 @@ public void Medigun_ClearAll()
 
 public MRESReturn OnMedigunPostFramePost(int medigun) {
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
-#if defined ZR
-	if(dieingstate[owner] > 0)
-	{
-		return MRES_Ignored;	
-	}
-#endif
 	if(medigun_heal_delay[owner] < GetGameTime())
 	{
 		medigun_heal_delay[owner] = GetGameTime() + 0.1;
@@ -263,7 +242,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 #if defined ZR						
 					if(LastMann)	
 						flDrainRate *= 2.0;
-
 #endif					
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
@@ -340,148 +318,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
 		}
-/*		else if(What_type_Heal == 3.0)
-		{
-			int new_ammo = GetAmmo(owner, 3);
-			int medigun_mode = GetEntProp(medigun, Prop_Send, "m_nChargeResistType");
-			
-				0 = Bullet
-				1 = Blast
-				2 = Fire
-			
-			
-			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 3) > 0)
-			{
-				bool team = GetTeam(owner)==GetTeam(healTarget);
-		//		float flDrainRate = 100.0;
-				
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				
-				int What_Uber_Type;
-				
-				if(TF2_IsPlayerInCondition(owner, TFCond_UberBulletResist))
-					What_Uber_Type = 0;
-					
-				else if(TF2_IsPlayerInCondition(owner, TFCond_UberBlastResist))
-					What_Uber_Type = 1;
-					
-				else if(TF2_IsPlayerInCondition(owner, TFCond_UberFireResist))
-					What_Uber_Type = 2;
-					
-				else
-					What_Uber_Type = -1;
-						
-				if(What_Uber_Type == -1)
-				{
-					flChargeLevel += 0.15*GetGameFrameTime();
-					
-					if (flChargeLevel > 1.0)
-					{
-						flChargeLevel = 1.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
-				
-				if(team)
-				{
-					float healing_Amount;
-					float how_high_is_attribute_medigun = Attributes_Get(medigun, 95, 1.0);
-					how_high_is_attribute_medigun *= Attributes_GetOnPlayer(owner, 95, true, true);
-					
-					if (how_high_is_attribute_medigun == 0.0)
-						how_high_is_attribute_medigun = 1.0;
-					
-					if(medigun_mode == 0 || medigun_mode == 2)
-					{
-						if(What_Uber_Type == 0)
-							healing_Amount = 36.0 * how_high_is_attribute_medigun;
-						else if(What_Uber_Type == 2)
-							healing_Amount = 15.0 * how_high_is_attribute_medigun;
-						else if  (medigun_mode == 2)
-							healing_Amount = 6.0 * how_high_is_attribute_medigun;
-						else if  (medigun_mode == 0)
-							healing_Amount = 12.0 * how_high_is_attribute_medigun;
-					}
-					else
-						healing_Amount = 5.0 * how_high_is_attribute_medigun;
-						
-						
-					if(medigun_mode == 1)
-					{
-						if(What_Uber_Type == 1)
-							Increaced_Sentry_damage_High[healTarget] = GetGameTime() + 0.11;
-							
-						else
-							Increaced_Sentry_damage_Low[healTarget] = GetGameTime() + 0.11;
-					}
-					
-					int i_HealingAmount = RoundToCeil(healing_Amount);
-					int flHealth = GetEntProp(healTarget, Prop_Send, "m_iHealth");
-					int Healing_Value = i_HealingAmount;
-					int newHealth = flHealth + i_HealingAmount;
-					
-					int max_health = GetEntProp(healTarget, Prop_Send, "m_iMaxHealth");
-					
-					if(newHealth >= max_health)
-					{
-						i_HealingAmount -= newHealth - max_health;
-						newHealth = max_health;
-					}
-					
-					int Remove_Ammo = i_HealingAmount / 3;
-					
-					if  (medigun_mode == 2)
-					{
-						Remove_Ammo = i_HealingAmount / 6;
-					}
-					
-					if(Remove_Ammo < 0)
-					{
-						Remove_Ammo = 0;
-					}
-					
-					new_ammo -= Remove_Ammo;
-					
-					if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
-					{
-						SetVariantInt(Healing_Value);
-						AcceptEntityInput(healTarget, "AddHealth");
-					}
-				}
-#if defined ZR			
-				SetAmmo(owner, 3, new_ammo);
-				CurrentAmmo[owner][3] = GetAmmo(owner, 3);
-#endif
-			}
-			if(medigun_hud_delay[owner] < GetGameTime())
-			{
-				if(IsValidEntity(healTarget) && healTarget>MaxClients)
-				{
-					int healthbuilding = GetEntProp(healTarget, Prop_Data, "m_iHealth");
-					if(medigun_mode == 0)
-						PrintHintText(owner,"[Heal Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
-					else if(medigun_mode == 1)
-						PrintHintText(owner,"[Damage Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
-					else if(medigun_mode == 2)
-						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i\nHealth [%i/%i]\nRepair Left: [%i]", new_ammo,healthbuilding,Building_Max_Health[healTarget],Building_Repair_Health[healTarget]);
-				}
-				else
-				{
-					if(medigun_mode == 0)
-						PrintHintText(owner,"[Heal Mode] Metal: %i", new_ammo);
-					else if(medigun_mode == 1)
-						PrintHintText(owner,"[Damage Mode] Metal: %i", new_ammo);
-					else if(medigun_mode == 2)
-						PrintHintText(owner,"[Metal-Efficient Mode] Metal: %i", new_ammo);
-					
-				}
-						
-				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
-				medigun_hud_delay[owner] = GetGameTime() + 0.5;
-			}
-		}
-		*/
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
 			int new_ammo = GetAmmo(owner, 21);
@@ -513,115 +349,131 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
-						
-					if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+#if defined ZR
+					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						healing_Amount *= 0.25;
-					}	
-
-					if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
-					{
-						healing_Amount *= 0.25;
-					}
-					if(f_TimeUntillNormalHeal[owner] > GetGameTime())
-					{
-						healing_Amount_Self *= 0.25;
-					}
-					float flMaxHealth;
-					//The healing is less then 1 ? Do own logic.
-					if(!Is_Allied_Npc)
-					{
-						if(What_type_Heal != 5.0)
-							flMaxHealth = 1.5;
-						else
-							flMaxHealth = 1.75;
+						ReviveClientFromOrToEntity(healTarget, owner);
 					}
 					else
+#endif
 					{
-						if(What_type_Heal != 5.0)
-							flMaxHealth = 1.25;
+						if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+						{
+							healing_Amount *= 0.25;
+						}	
+
+						if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+						{
+							healing_Amount *= 0.25;
+						}
+						if(f_TimeUntillNormalHeal[owner] > GetGameTime())
+						{
+							healing_Amount_Self *= 0.25;
+						}
+						if(owner <= MaxClients && dieingstate[owner] > 0)
+						{
+							healing_Amount_Self = 0.0;
+						}
+						if(healTarget <= MaxClients && dieingstate[healTarget] > 0)
+						{
+							healing_Amount = 0.0;
+						}
+						float flMaxHealth;
+						//The healing is less then 1 ? Do own logic.
+						if(!Is_Allied_Npc)
+						{
+							if(What_type_Heal != 5.0)
+								flMaxHealth = 1.5;
+							else
+								flMaxHealth = 1.75;
+						}
 						else
-							flMaxHealth = 1.45;
-					}
-					flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
+						{
+							if(What_type_Heal != 5.0)
+								flMaxHealth = 1.25;
+							else
+								flMaxHealth = 1.45;
+						}
+						flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
 
 #if defined ZR
-					if(What_type_Heal == 6.0)
-					{
-						float Healing_GiveArmor = 0.35;
-
-						if(healTarget <= MaxClients)
+						if(What_type_Heal == 6.0)
 						{
+							float Healing_GiveArmor = 0.35;
+
+							if(healTarget <= MaxClients)
+							{
+								Healing_GiveArmor *= Healing_Value;
+
+								if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+								{
+									Healing_GiveArmor *= 0.25;
+								}
+								if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
+								{
+									Healing_GiveArmor *= 0.25;
+								}	
+								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							}
+
+							
+							Healing_GiveArmor = 0.35;
+
 							Healing_GiveArmor *= Healing_Value;
 
-							if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+							if(f_TimeUntillNormalHeal[owner] > GetGameTime())
 							{
 								Healing_GiveArmor *= 0.25;
 							}
-							if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
-							{
-								Healing_GiveArmor *= 0.25;
-							}	
-							GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
+							GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
 						}
-
-						
-						Healing_GiveArmor = 0.35;
-
-						Healing_GiveArmor *= Healing_Value;
-
-						if(f_TimeUntillNormalHeal[owner] > GetGameTime())
-						{
-							Healing_GiveArmor *= 0.25;
-						}
-						GiveArmorViaPercentage(owner, Healing_GiveArmor, 1.0, true);
-					}
 #endif
 
-					i_targethealedLastBy[healTarget] = owner;
-					//self heal
-					int ammoSubtract;
-					ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
-					new_ammo -= ammoSubtract;
-					ApplyHealEvent(owner, ammoSubtract);
+						i_targethealedLastBy[healTarget] = owner;
+						//self heal
+						int ammoSubtract;
+						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
+						new_ammo -= ammoSubtract;
+						ApplyHealEvent(owner, ammoSubtract);
 
-					//Ally Heal
-					ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
-					new_ammo -= ammoSubtract;
+						//Ally Heal
+						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
+						new_ammo -= ammoSubtract;
 
-					if(!b_NpcHasDied[healTarget])
-					{
-						Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-					}
-					else //is a player probably.
-					{
+						if(!b_NpcHasDied[healTarget])
+						{
+							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
+						}
+						else //is a player probably.
+						{
 
-						ApplyHealEvent(healTarget, ammoSubtract);
-					}
-					
-					float duration;
+							ApplyHealEvent(healTarget, ammoSubtract);
+						}
+						
+						float duration;
 
-					duration = Increaced_Overall_damage_Low[owner] - GetGameTime();
-					if(duration < 1.2)
-					{
-						Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
+						duration = Increaced_Overall_damage_Low[owner] - GetGameTime();
+						if(duration < 1.2)
+						{
+							Increaced_Overall_damage_Low[owner] = GetGameTime() + 1.0;
+						}
+						duration = Resistance_Overall_Low[owner] - GetGameTime();
+						if(duration < 1.2)
+						{
+							Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
+						}
+						duration = Increaced_Overall_damage_Low[healTarget] - GetGameTime();
+						if(duration < 1.2)
+						{
+							Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
+						}
+						duration = Resistance_Overall_Low[healTarget] - GetGameTime();
+						if(duration < 1.2)
+						{
+							Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
+						}
+						
 					}
-					duration = Resistance_Overall_Low[owner] - GetGameTime();
-					if(duration < 1.2)
-					{
-						Resistance_Overall_Low[owner] = GetGameTime() + 1.0;
-					}
-					duration = Increaced_Overall_damage_Low[healTarget] - GetGameTime();
-					if(duration < 1.2)
-					{
-						Increaced_Overall_damage_Low[healTarget] = GetGameTime() + 1.0;
-					}
-					duration = Resistance_Overall_Low[healTarget] - GetGameTime();
-					if(duration < 1.2)
-					{
-						Resistance_Overall_Low[healTarget] = GetGameTime() + 1.0;
-					}
-					
 				}
 #if defined ZR
 				SetAmmo(owner, 21, new_ammo);

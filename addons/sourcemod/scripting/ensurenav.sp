@@ -149,7 +149,6 @@ static Action sm_mark_walk(int client, int args)
 
 static Action sm_nav_edit_mode(int client, int args)
 {
-
 	if(localplayer_index.IntValue != -1)
 	{
 		localplayer_index.IntValue = -1;

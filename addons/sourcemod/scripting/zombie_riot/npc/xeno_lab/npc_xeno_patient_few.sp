@@ -52,10 +52,10 @@ public void XenoPatientFew_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Patient Few");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_patient_few");
-	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -230,9 +230,9 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 999999.0;
+					float damage = 5000.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage = 3000.0;
+						damage = 2500.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

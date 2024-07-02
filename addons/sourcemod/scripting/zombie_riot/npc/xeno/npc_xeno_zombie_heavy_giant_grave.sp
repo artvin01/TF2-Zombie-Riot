@@ -62,7 +62,7 @@ public void XenoHeavyGiant_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
