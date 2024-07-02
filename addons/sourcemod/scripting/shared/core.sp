@@ -3772,14 +3772,14 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	{
 		speed = 12;
 	}
-	else if(medigun > 0)
-	{
-		speed *= 2;
-	}
 	else
 	{
 		if(WasClientReviving)
 			speed = 6;
+	}
+	if(medigun > 0)
+	{
+		speed /= 2;
 	}
 
 	Rogue_ReviveSpeed(speed);
