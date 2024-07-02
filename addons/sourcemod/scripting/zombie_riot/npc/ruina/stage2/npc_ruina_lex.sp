@@ -250,8 +250,8 @@ methodmap Lex < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		/*
+		//now all thats left is the cosmetics, wings, halo, and 2nd boss + fusing with 2nd boss!
+		/*	get new cosmetics.
 			nunhood						//Xms2013_Medic_Hood
 			ramses regalia				//Hw2013_Ramses_Regalia
 			lo-grav loafers				//Hw2013_Moon_Boots
@@ -417,7 +417,6 @@ static void ClotThink(int iNPC)
 				}
 			}
 		}
-	
 		if(flDistanceToTarget < 100000)
 		{
 			int Enemy_I_See;
