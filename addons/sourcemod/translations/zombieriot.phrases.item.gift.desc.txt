@@ -598,11 +598,11 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"Assigned to watcing over Blitzkrieg, she has mastered the art of light and energy\nThanks to those arts she posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs\nAlso posses elf ears, just don't get poked by them"
+		"en"		"Forced into servitutde by Blitzkrieg\nHer name stolen away, replaced with a codename, similar to Blitzkrieg's own name\nPosses a powerful ''Nightmare Cannon''\nIt is advised to not touch it.."
 	}
 	"Schwertkrieg Desc"
 	{
-		"en"		"Assigned to watcing over Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
 	}
 	"Phantom Knight Desc"
 	{
@@ -1273,7 +1273,7 @@
 	{
 		"en"	"What can be as strong as Bob?"
 	}
-	"Stella Desc"
+	"Helia Desc"
 	{
 		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
 	}
@@ -1329,9 +1329,9 @@
 	{
 		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
 	}
-	"Stellaria Desc"
+	"Heliara Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Helia"
 	}
 	"Astriana Desc"
 	{
@@ -1560,5 +1560,9 @@
 	"Iana Desc"
 	{
 		"en"	"The second half of Lexiana"
+	}
+	"Stella Desc"
+	{
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: Lowers the "corosion" index by 1)"
 	}
 }

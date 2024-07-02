@@ -51,11 +51,11 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 
-void Stella_OnMapStart_NPC()
+void Helia_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Stella");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stella");
+	strcopy(data.Name, sizeof(data.Name), "Helia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_helia");
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
@@ -78,11 +78,11 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Stella(client, vecPos, vecAng, ally);
+	return Helia(client, vecPos, vecAng, ally);
 }
 
 
-methodmap Stella < CClotBody
+methodmap Helia < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -163,9 +163,9 @@ methodmap Stella < CClotBody
 	}
 	
 	
-	public Stella(int client, float vecPos[3], float vecAng[3], int ally)
+	public Helia(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Stella npc = view_as<Stella>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Helia npc = view_as<Helia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -228,7 +228,7 @@ methodmap Stella < CClotBody
 
 		Ruina_Set_Healer(npc.index);
 		
-		Stella_Create_Crest(npc.index);
+		Helia_Create_Crest(npc.index);
 		
 		return npc;
 	}
@@ -240,7 +240,7 @@ methodmap Stella < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Stella npc = view_as<Stella>(iNPC);
+	Helia npc = view_as<Helia>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -283,12 +283,12 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		fl_ruina_stella_healing_timer[npc.index]=0.0;
+		fl_ruina_helia_healing_timer[npc.index]=0.0;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0, {255, 255, 255, 255});
+		Helia_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0, {255, 255, 255, 255});
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -312,11 +312,11 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
+					Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
 				}
 				else	
 				{
-					Stella_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
+					Helia_Healing_Logic(npc.index, 150, 250.0, GameTime, 3.5, {20, 150, 255, 150});
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -326,7 +326,7 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				Stella_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
+				Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
 			
 			}	
 		}
@@ -380,7 +380,7 @@ static void OnRuina_MeleeAttack(int iNPC, int Target)
 static int i_particle[MAXENTITIES][11];
 static int i_laser[MAXENTITIES][9];
 
-static void Stella_Create_Crest(int client)
+static void Helia_Create_Crest(int client)
 {
 	float flPos[3];
 	float flAng[3];
@@ -492,7 +492,7 @@ static void Delete_Hand_Crest(int client)
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Stella npc = view_as<Stella>(victim);
+	Helia npc = view_as<Helia>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -511,7 +511,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Stella npc = view_as<Stella>(entity);
+	Helia npc = view_as<Helia>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

@@ -30,7 +30,7 @@ bool b_ruina_battery_ability_active[MAXENTITIES];
 float fl_ruina_battery_timer[MAXENTITIES];
 float fl_ruina_battery_timeout[MAXENTITIES];
 
-float fl_ruina_stella_healing_timer[MAXENTITIES];
+float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
 #define RUINA_ANCHOR_HARD_LIMIT 10
@@ -173,7 +173,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_npc_no_retreat);
 	Zero(b_npc_healer);
 	Zero(fl_npc_healing_duration);
-	Zero(fl_ruina_stella_healing_timer);
+	Zero(fl_ruina_helia_healing_timer);
 	Zero(fl_ruina_internal_healing_timer);
 
 	Zero(fl_ruina_internal_teleport_timer);
@@ -1554,22 +1554,22 @@ public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 }
 #define RUINA_BUFF_AMTS 5
-public void Stella_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
+public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
-	if(fl_ruina_stella_healing_timer[npc.index]<=GameTime)
+	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		float Thickness = 6.0;
 		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, cylce_speed, Thickness, 0.5, color, 1, 0);
 		TE_SendToAll();
 		
-		fl_ruina_stella_healing_timer[npc.index]=cylce_speed+GameTime;
+		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
 		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
 }
-static void Stella_Healing_Buff(int baseboss_index, float Power)
+static void Helia_Healing_Buff(int baseboss_index, float Power)
 {
 	int Healing = RoundToFloor(Power);
 
@@ -1873,7 +1873,7 @@ public void Ruina_Healing_Buff(int entity, int victim, float damage, int weapon)
 	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
 	{
 		float amt = fl_buff_amt[entity];
-		Stella_Healing_Buff(victim, amt);
+		Helia_Healing_Buff(victim, amt);
 	}
 }
 /*
@@ -2727,7 +2727,7 @@ Names per stage:
 
 	}
 	//created
-	3: Stella -> Stellaria -> Stellaris -> Stellarionus
+	3: Helia -> Heliara -> Heliaris -> Heliarionus
 	{
 		state: Independant AI.
 		Class: Medic

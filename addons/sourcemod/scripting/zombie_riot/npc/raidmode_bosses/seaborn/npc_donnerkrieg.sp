@@ -167,7 +167,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	donner_sea_created=false;
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Name, sizeof(data.Name), "Stella");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_donnerkrieg");
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;

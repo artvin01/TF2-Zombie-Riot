@@ -2527,7 +2527,7 @@
 	}
 	"Neuv pap5"
 	{
-		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all he knows..."
+		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all that she knows..."
 		"chi"	"终于，你看到了女巫的样貌。\n貌似，''Donnerkrieg''的技巧也是从她这学的..."
 	}
 	"Skill Point Info"

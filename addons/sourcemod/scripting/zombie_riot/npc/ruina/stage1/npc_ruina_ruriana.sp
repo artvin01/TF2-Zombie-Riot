@@ -339,7 +339,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		//CPrintToChatAll("Healing: %i",healing);
 			
-		Stella_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 1, 1, 175});
+		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 1, 1, 175});
 
 		i_damage_taken[npc.index]=0;
 	}

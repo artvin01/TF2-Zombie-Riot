@@ -328,7 +328,7 @@ void NPC_ConfigSetup()
 	Adiantum_OnMapStart_NPC();
 	Lanius_OnMapStart_NPC();
 	Magia_OnMapStart_NPC();
-	Stella_OnMapStart_NPC();
+	Helia_OnMapStart_NPC();
 	Astria_OnMapStart_NPC();
 	Aether_OnMapStart_NPC();
 	Europa_OnMapStart_NPC();
@@ -341,7 +341,7 @@ void NPC_ConfigSetup()
 	//Stage 2.
 	Laniun_OnMapStart_NPC();
 	Magnium_OnMapStart_NPC();
-	Stellaria_OnMapStart_NPC();
+	Heliara_OnMapStart_NPC();
 	Astriana_OnMapStart_NPC();
 	Europis_OnMapStart_NPC();
 	Draedon_OnMapStart_NPC();
@@ -920,7 +920,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_adiantum.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_lanius.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_magia.sp"
-#include "zombie_riot/npc/ruina/stage1/npc_ruina_stella.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_helia.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_astria.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_aether.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_europa.sp"
@@ -933,7 +933,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //Stage 2
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_laniun.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_magnium.sp"
-#include "zombie_riot/npc/ruina/stage2/npc_ruina_stellaria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_heliara.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_astriana.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_europis.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_draedon.sp"

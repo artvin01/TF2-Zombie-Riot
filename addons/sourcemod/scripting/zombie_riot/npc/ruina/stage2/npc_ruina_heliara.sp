@@ -51,11 +51,11 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 
-void Stellaria_OnMapStart_NPC()
+void Heliara_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Stellaria");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellaria");
+	strcopy(data.Name, sizeof(data.Name), "Heliara");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_heliara");
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
@@ -78,11 +78,11 @@ static void ClotPrecache()
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Stellaria(client, vecPos, vecAng, ally);
+	return Heliara(client, vecPos, vecAng, ally);
 }
 
 
-methodmap Stellaria < CClotBody
+methodmap Heliara < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -163,9 +163,9 @@ methodmap Stellaria < CClotBody
 	}
 	
 	
-	public Stellaria(int client, float vecPos[3], float vecAng[3], int ally)
+	public Heliara(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Stellaria npc = view_as<Stellaria>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Heliara npc = view_as<Heliara>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -226,7 +226,7 @@ methodmap Stellaria < CClotBody
 
 		Ruina_Set_Healer(npc.index);
 		
-		Stellaria_Create_Crest(npc.index);
+		Heliara_Create_Crest(npc.index);
 		
 		return npc;
 	}
@@ -238,7 +238,7 @@ methodmap Stellaria < CClotBody
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Stellaria npc = view_as<Stellaria>(iNPC);
+	Heliara npc = view_as<Heliara>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -279,12 +279,12 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		fl_ruina_stella_healing_timer[npc.index]=0.0;
+		fl_ruina_helia_healing_timer[npc.index]=0.0;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Stella_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0, {255, 255, 255, 255});
+		Helia_Healing_Logic(npc.index, 500, 750.0, GameTime, 1.0, {255, 255, 255, 255});
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -307,11 +307,11 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					Stella_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 				}
 				else	
 				{
-					Stella_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
+					Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -321,7 +321,7 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				Stella_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+				Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 			
 			}	
 		}
@@ -375,7 +375,7 @@ static void OnRuina_MeleeAttack(int iNPC, int Target)
 static int i_particle[MAXENTITIES][11];
 static int i_laser[MAXENTITIES][9];
 
-static void Stellaria_Create_Crest(int client)
+static void Heliara_Create_Crest(int client)
 {
 	float flPos[3];
 	float flAng[3];
@@ -487,7 +487,7 @@ static void Delete_Hand_Crest(int client)
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Stellaria npc = view_as<Stellaria>(victim);
+	Heliara npc = view_as<Heliara>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -506,7 +506,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Stellaria npc = view_as<Stellaria>(entity);
+	Heliara npc = view_as<Heliara>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
