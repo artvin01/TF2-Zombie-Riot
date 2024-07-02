@@ -3762,7 +3762,7 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 }
 
 #if defined ZR
-void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
+void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int medigun = 0)
 {
 	bool WasClientReviving = true;
 	if(client > MaxClients)
@@ -3808,6 +3808,10 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		if(WasClientReviving)
 			speed = 6;
 	}
+	if(medigun > 0)
+	{
+		speed /= 2;
+	}
 
 	Rogue_ReviveSpeed(speed);
 	dieingstate[target] -= speed;
@@ -3821,6 +3825,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0)
 		}
 		if(extralogic)
 		{
+			i_AmountDowned[target]--;
 			b_BobsCuringHand_Revived[target] = 0;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);

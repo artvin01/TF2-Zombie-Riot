@@ -1177,7 +1177,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 			{
 				if(!XenoExtraLogic())
 				{
-					Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
+					Items_GiveNamedItem(client_repat, "Calmaticus' Heart Piece");
 					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
 				}
 			}

@@ -723,7 +723,7 @@ public void OnPostThink(int client)
 			{
 				float HealRate = 1.0;
 				if(b_XenoVial[client])
-					HealRate = 1.5;
+					HealRate = 1.15;
 
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
 			}
@@ -2043,7 +2043,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
 				if(b_XenoVial[victim])
-					Attributes_Set(victim, 489, 1.1);
+					Attributes_Set(victim, 489, 0.85);
 				else
 					Attributes_Set(victim, 489, 0.65);
 
