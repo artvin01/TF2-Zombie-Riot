@@ -411,7 +411,8 @@ static void ClotThink(int iNPC)
 					b_ruina_battery_ability_active[npc.index] = false;
 					fl_ruina_battery_timeout[npc.index] = GameTime + 15.0;
 					
-					npc.FaceTowards(new_vec, 20000.0);	//we turn, veri fast indeed
+					npc.FaceTowards(new_vec, 40000.0);	//we turn, veri fast indeed
+					npc.FaceTowards(new_vec, 40000.0);	//we turn, veri fast indeed
 
 					return;
 				}
