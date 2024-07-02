@@ -1601,7 +1601,7 @@ static void Stella_Healing_Buff(int baseboss_index, float Power)
 		return;
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-	WorldSpaceVec[2]+=10.0;
+	WorldSpaceVec[2]-=25.0;
 
 	fl_ruina_internal_healing_timer[npc.index]=GameTime+RUINA_INTERNAL_HEALING_COOLDOWN;
 
