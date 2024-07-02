@@ -352,7 +352,10 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 10.0);	//10
+	if(npc.m_flDoingAnimation > GameTime)
+		Ruina_Add_Battery(npc.index, 5.0);	//10
+	else
+		Ruina_Add_Battery(npc.index, 10.0);	//10
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -361,19 +364,12 @@ static void ClotThink(int iNPC)
 	
 	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
+		b_ruina_battery_ability_active[npc.index] = true;
 		Master_Apply_Shield_Buff(npc.index, 100.0, 0.1);	//90% shield to all but itself. tiny radius tho
 		fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
 		Ruina_Npc_Give_Shield(npc.index, 0.1);				//give the shield to itself.
 		fl_ruina_battery[npc.index] = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;		
-		Initiate_Laser(npc);
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
-		{
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			npc.FaceTowards(vecTarget, 20000.0);	//we turn, veri fast indeed
-		}	
-
-		
 	}
 
 	if(npc.m_flDoingAnimation > GameTime)
@@ -399,6 +395,28 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+		if(b_ruina_battery_ability_active[npc.index] && fl_ruina_battery_timeout[npc.index] < GameTime)
+		{
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+			{
+				float new_vec[3]; WorldSpaceCenter(Enemy_I_See, new_vec);
+				float Difference = FloatAbs(Npc_Vec[2]-new_vec[2]);
+				if(Difference < 65.0)	//make sure its more or less the same height as the npc
+				{
+					Initiate_Laser(npc);
+					b_ruina_battery_ability_active[npc.index] = false;
+					fl_ruina_battery_timeout[npc.index] = GameTime + 15.0;
+					
+					npc.FaceTowards(new_vec, 20000.0);	//we turn, veri fast indeed
+
+					return;
+				}
+			}
+		}
 	
 		if(flDistanceToTarget < 100000)
 		{
