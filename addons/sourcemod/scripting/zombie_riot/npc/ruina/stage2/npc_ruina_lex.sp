@@ -352,18 +352,46 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 10.0);
+	Ruina_Add_Battery(npc.index, 10.0);	//10
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>3000.0)	//every 30 seconds.
+	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
-		Master_Apply_Shield_Buff(npc.index, 150.0, 0.1);	//90% shield
+		Master_Apply_Shield_Buff(npc.index, 100.0, 0.1);	//90% shield to all but itself. tiny radius tho
+		fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
+		Ruina_Npc_Give_Shield(npc.index, 0.1);				//give the shield to itself.
 		fl_ruina_battery[npc.index] = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;		
+		Initiate_Laser(npc);
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex))
+		{
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			npc.FaceTowards(vecTarget, 20000.0);	//we turn, veri fast indeed
+		}	
+
+		
+	}
+
+	if(npc.m_flDoingAnimation > GameTime)
+	{
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flSpeed = 0.0;
+
+		if(fl_ruina_battery_timer[npc.index] > GameTime)
+		{
+			npc.m_iState = 0;
+			Delete_Beacons(npc.index);
+			npc.m_flNextMeleeAttack = GameTime + 9.0;
+
+			fl_ruina_battery_timer[npc.index] = 0.0;
+		}
+
+		return;
 	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -450,8 +478,7 @@ static void ClotThink(int iNPC)
 					Laser.damagetype = DMG_PLASMA;
 
 					Laser.Deal_Damage(On_LaserHit);
-
-						
+	
 					Previous_Proj = Proj;
 				}
 			}
@@ -633,6 +660,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
@@ -640,6 +669,12 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	
 	float Ratio = (float(Health)/float(MaxHealth));
+
+	if(Ratio < 0.1 && npc.m_flDoingAnimation > GetGameTime())	//tl;dr, can't let him die during laser.
+	{
+		damage = 0.0;
+	}
+
 	if(!npc.Anger && Ratio < 0.75) 
 	{
 		npc.Anger = true; //	>:(
@@ -661,6 +696,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	return Plugin_Changed;
 }
 
+static int i_ring_dots[MAXENTITIES][3];
+
 static void NPC_Death(int entity)
 {
 	Lex npc = view_as<Lex>(entity);
@@ -672,6 +709,19 @@ static void NPC_Death(int entity)
 	Delete_Beacons(npc.index);
 
 	Ruina_NPCDeath_Override(npc.index);
+
+	SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
+
+	for(int i= 0 ; i < 3 ; i++)
+	{
+		int dot = EntRefToEntIndex(i_ring_dots[npc.index][i]);
+		if(IsValidEntity(dot))
+		{
+			RemoveEntity(dot);
+		}
+		i_ring_dots[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
+	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
@@ -688,4 +738,305 @@ static void NPC_Death(int entity)
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	
+}
+
+static Action Laser_Revert(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidEntity(client))
+	{
+		Lex npc = view_as<Lex>(client);
+		npc.m_flSpeed = fl_npc_basespeed;
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
+
+		SetVariantInt(RUINA_W30_HAND_CREST);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.0;
+	}
+
+	return Plugin_Stop;
+}
+
+static int i_effect_amt[MAXENTITIES];
+
+static void Initiate_Laser(Lex npc)
+{
+	int iActivity = npc.LookupActivity("ACT_MP_CROUCH_SECONDARY");
+	if(iActivity > 0) npc.StartActivity(iActivity);
+
+	npc.m_flRangedArmor = 0.5;
+	npc.m_flMeleeArmor = 0.5;
+
+	float Duration = 5.5;
+
+	float GameTime = GetGameTime();
+
+	npc.m_flDoingAnimation = GameTime + Duration;
+
+	for(int i=0 ; i < 3 ; i++)
+	{
+		int dot = EntRefToEntIndex(i_ring_dots[npc.index][i]);
+		if(IsValidEntity(dot))
+		{
+			RemoveEntity(dot);
+		}
+		i_ring_dots[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
+	
+	CreateTimer(Duration, Laser_Revert, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+
+	fl_ruina_throttle[npc.index] = 0.0;
+	i_effect_amt[npc.index] = 0;
+	npc.m_flReloadIn = GameTime + 0.75;
+
+	float npc_vec[3];
+	GetAbsOrigin(npc.index, npc_vec);
+
+	for(int i=0 ; i < 2 ; i ++)
+	{
+		int dot = Ruina_Create_Entity(npc_vec, 0.0, true);
+
+		if(IsValidEntity(dot))
+		{
+			i_ring_dots[npc.index][i] = EntIndexToEntRef(dot);
+		}
+	}
+
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+
+	npc_vec[2]-=30.0;
+
+	int Hand_Thing = Ruina_Create_Entity(npc_vec, 0.0, true);
+	if(IsValidEntity(Hand_Thing))	//now then, I could just simply go into blender and rotate this thing, and honestly thats a simple thing to do. BUT, im far too lazy right now to open blender, rotate a bit, recompile and then replace the models. so Im doing this far far stupider and harder method
+	{
+		//but I still did it this way and so I saved 1 body group for the model pack!
+		//Also I thought at first doing this would be easy....
+		i_ring_dots[npc.index][2] = EntIndexToEntRef(Hand_Thing);
+		int ModelApply = ApplyCustomModelToWandProjectile(Hand_Thing, RUINA_CUSTOM_MODELS, 1.0, "");
+		SetVariantInt(RUINA_W30_HAND_CREST);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
+
+		float flPos[3], flAng[3];
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			float vecAngles[3];
+			MakeVectorFromPoints(npc_vec, vecTarget, vecAngles);
+			GetVectorAngles(vecAngles, vecAngles);
+			vecAngles[0] = 0.0;
+			TeleportEntity(Hand_Thing, NULL_VECTOR, vecAngles, NULL_VECTOR);
+		}	
+
+		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+		GetEntPropVector(Hand_Thing, Prop_Data, "m_angRotation", flAng);
+		flAng[0]+=90.0;
+
+		TeleportEntity(Hand_Thing, NULL_VECTOR, flAng, NULL_VECTOR);
+
+	}
+
+	
+	SDKHook(npc.index, SDKHook_Think, Laser_Tick);
+}
+
+static Action Laser_Tick(int client)
+{
+	Lex npc = view_as<Lex>(client);
+
+	float GameTime = GetGameTime();
+
+	if(npc.m_flDoingAnimation < GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
+
+		for(int i=0 ; i < 3 ; i++)
+		{
+			int dot = EntRefToEntIndex(i_ring_dots[npc.index][i]);
+			if(IsValidEntity(dot))
+			{
+				RemoveEntity(dot);
+			}
+			i_ring_dots[npc.index][i] = INVALID_ENT_REFERENCE;
+		}
+
+		return Plugin_Stop;
+	}
+
+	if(fl_ruina_throttle[npc.index] > GameTime)
+		return Plugin_Continue;
+
+	if(npc.m_flReloadIn > GameTime)
+	{
+		return Plugin_Continue;
+	}
+	
+	fl_ruina_throttle[npc.index] = GameTime + 0.1;
+
+	Ruina_Laser_Logic Laser;
+
+	float Radius = 25.0;
+
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Basic(2500.0);
+	Laser.Radius = Radius;
+	Laser.Damage = 100.0;
+	Laser.Bonus_Damage = 200.0;
+	Laser.damagetype = DMG_PLASMA;
+	Laser.Deal_Damage(On_LaserHit_Big);
+
+	if(i_effect_amt[npc.index] < 5)
+	{
+		float Start_Vec[3], End_Vec[3];
+		float flPos[3]; // original
+		float flAng[3]; // original
+		GetAttachment(client, "effect_hand_r", flPos, flAng);
+		End_Vec = Laser.End_Point;
+		Start_Vec = flPos;
+
+		i_effect_amt[npc.index] ++;
+
+		float diameter = ClampBeamWidth(Radius * 2.0);
+
+		Do_Laser_Effects(npc, Start_Vec, End_Vec, diameter);
+
+	}
+	return Plugin_Continue;
+}
+static void On_LaserHit_Big(int client, int target, int damagetype, float damage)
+{
+	Ruina_Add_Mana_Sickness(client, target, 0.05, 12);
+}
+static void Do_Laser_Effects(Lex npc, float Start[3], float End[3], float diameter)
+{
+	float GameTime = GetGameTime();
+	float TE_Duration = npc.m_flDoingAnimation - GameTime;
+
+	int color[4];
+	Ruina_Color(color);
+
+	color[3] = 75;
+
+	int dots[2];
+	bool valid = true;
+
+	float vecAngles[3];
+	MakeVectorFromPoints(Start, End, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+
+	float Offset_Start[3];
+
+	Get_Fake_Forward_Vec(100.0, vecAngles, Offset_Start, Start);
+
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
+
+
+
+	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, diameter, diameter, 0, 0.25, colorLayer1, 24);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, diameter*0.4, diameter*0.8, 1, 0.25, colorLayer2, 3);
+	TE_SendToAll();
+	colorLayer3[3]+=100;
+	if(colorLayer3[3]>255)
+		colorLayer3[3] = 255;
+	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, diameter*0.5, diameter*0.5, 1, 2.0, colorLayer3, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 66, TE_Duration, diameter*0.2, diameter*0.4, 1, 1.0, colorLayer4, 3);
+	TE_SendToAll();
+
+	diameter *=0.8;
+
+	TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, 0.0, diameter, 0, 0.1, colorLayer1, 24);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.8, 1, 0.1, colorLayer2, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.6, 1, 1.0, colorLayer3, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.4, 1, 5.0, colorLayer4, 3);
+	TE_SendToAll();
+
+	int Hand = EntRefToEntIndex(i_ring_dots[npc.index][2]);
+	if(IsValidEntity(Hand))
+	{
+		Start[2]-=2.0;	//very slightly offset it.
+		TeleportEntity(Hand, Start, NULL_VECTOR, NULL_VECTOR);
+		Start[2]+=2.0;
+	}
+
+	float Dist = 30.0;
+	for(int i=0 ; i < 2 ; i++)
+	{
+		int dot = EntRefToEntIndex(i_ring_dots[npc.index][i]);
+
+		float Ring_Loc[3]; Ring_Loc = Offset_Start;
+		if(IsValidEntity(dot))
+		{
+			dots[i] = dot;
+
+			float tmp[3];
+			float actualBeamOffset[3];
+			float BEAM_BeamOffset[3];
+			BEAM_BeamOffset[0] = 0.0;
+			BEAM_BeamOffset[1] = 0.0;
+			BEAM_BeamOffset[2] = 0.0;
+			switch(i)
+			{	
+				case 0:
+				{	
+					BEAM_BeamOffset[0] = -12.0;
+					//BEAM_BeamOffset[1] = -0.1;
+					BEAM_BeamOffset[2] = -Dist;
+				}
+				case 1:
+				{
+					BEAM_BeamOffset[0] = 12.0;
+					//BEAM_BeamOffset[1] = 0.1;
+					BEAM_BeamOffset[2] = Dist;
+				}
+				
+			}
+
+			tmp[0] = BEAM_BeamOffset[0];
+			tmp[1] = BEAM_BeamOffset[1];
+			tmp[2] = 0.0;
+			VectorRotate(BEAM_BeamOffset, vecAngles, actualBeamOffset);
+			actualBeamOffset[2] = BEAM_BeamOffset[2];
+			Ring_Loc[0] += actualBeamOffset[0];
+			Ring_Loc[1] += actualBeamOffset[1];
+			Ring_Loc[2] += actualBeamOffset[2];
+
+			TeleportEntity(dot, Ring_Loc, NULL_VECTOR, NULL_VECTOR);
+		}
+		else
+		{
+			valid = false;
+		}
+	}
+	if(valid)
+	{
+		TE_SetupBeamRing(dots[0], dots[1], g_Ruina_BEAM_Combine_Black, g_Ruina_BEAM_Laser, 0, 10, TE_Duration, 7.5, 1.0, color, 10, 0);	
+		TE_SendToAll();
+	}
+
+	
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
 }

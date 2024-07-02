@@ -50,7 +50,7 @@ static float fl_ruina_shield_strength[MAXENTITIES];
 static float fl_ruina_shield_timer[MAXENTITIES];
 static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
-static float fl_shield_break_timeout[MAXENTITIES];
+float fl_ruina_shield_break_timeout[MAXENTITIES];
 static int i_shield_color[3] = {0, 0, 0};			
 /*
 	0, 0, 0			//mostly white, and the top	| 0 0 0
@@ -115,6 +115,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 int i_laz_entity[MAXENTITIES];
 float fl_multi_attack_delay[MAXENTITIES];
+float fl_ruina_throttle[MAXENTITIES];
 
 enum
 {
@@ -136,6 +137,9 @@ enum
 static char gLaser1;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
+int g_Ruina_BEAM_Combine_Black;
+int g_Ruina_BEAM_Combine_Blue;
+int g_Ruina_BEAM_lightning;
 
 public void Ruina_Ai_Core_Mapstart()
 {
@@ -162,7 +166,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_shield_strength);
 	Zero(b_ruina_shield_active);
 	Zero(i_shield_effect);
-	Zero(fl_shield_break_timeout);
+	Zero(fl_ruina_shield_break_timeout);
 	Zero(fl_ontake_sound_timer);
 	
 	Zero(b_npc_low_health);
@@ -184,6 +188,9 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_is_battery_buffed);
 
 	Zero(i_laz_entity);
+
+	Zero(fl_multi_attack_delay);
+	Zero(fl_ruina_throttle);
 	
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
@@ -203,14 +210,19 @@ public void Ruina_Ai_Core_Mapstart()
 	i_magia_anchors_active=0;
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
+	
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
+	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
+	g_Ruina_BEAM_Combine_Blue 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+
+	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
 }
 public void Ruina_Set_Heirarchy(int client, int type)
 {
-	fl_shield_break_timeout[client] = 0.0;
+	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
 	b_master_exists[client] = false;
@@ -279,7 +291,7 @@ public void Ruina_Master_Release_Slaves(int client)
 	b_master_is_acepting[client] = false;
 	//CPrintToChatAll("Master Released Slaves");
 }
-public void Ruina_Master_Accpet_Slaves(int client)
+void Ruina_Master_Accpet_Slaves(int client)
 {
 	i_master_current_slaves[client] = 0;	//reset
 	b_force_reasignment[client]=false;
@@ -292,15 +304,15 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 	Ruina_Npc_Shield_Logic(victim, damage, damageForce, GameTime);
 	Ruina_OnTakeDamage_Extra_Logic(victim, GameTime, damage);
 }
-public void Ruina_Npc_Give_Shield(int client, float strenght)
+void Ruina_Npc_Give_Shield(int client, float strenght)
 {
 	float GameTime = GetGameTime();
-	if(fl_shield_break_timeout[client] > GameTime)
+	if(fl_ruina_shield_break_timeout[client] > GameTime)
 		return;
 	
 	Ruina_Remove_Shield(client);
 
-	fl_shield_break_timeout[client] = GameTime + 120.0;
+	fl_ruina_shield_break_timeout[client] = GameTime + 120.0;
 	
 	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
 	int wave =(ZR_GetWaveCount()+1);
@@ -368,7 +380,7 @@ static void Ruina_Remove_Shield(int client)
 	fl_TotalArmor[client] = 1.0;
 	if(IsValidEntity(i_shield_entity))
 	{
-		fl_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
+		fl_ruina_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
 		RemoveEntity(i_shield_entity);
 	}
 }
@@ -1320,7 +1332,6 @@ static void Apply_Sickness(int iNPC, int Target)
 	if(wave<=15)
 	{
 		Radius		= 100.0;
-		color 		= {255, 0, 0, 255};
 		dmg 		= mana;	//evil.
 		time 		= 5.0;
 		Timeout 	= 6.0;
@@ -1329,7 +1340,6 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=30)
 	{
 		Radius		= 125.0;
-		color 		= {255, 150, 150, 255};
 		dmg 		= mana*1.25;
 		time 		= 4.5;
 		Timeout 	= 5.5;
@@ -1338,7 +1348,6 @@ static void Apply_Sickness(int iNPC, int Target)
 	else if(wave<=45)
 	{
 		Radius		= 175.0;
-		color 		= {255, 200, 200, 255};
 		dmg 		= mana*1.5;
 		time 		= 4.0;
 		Timeout 	= 5.0;
@@ -1347,12 +1356,13 @@ static void Apply_Sickness(int iNPC, int Target)
 	else
 	{
 		Radius		= 200.0;
-		color 		= {255, 255, 255, 255};
 		dmg 		= mana*2.0;
 		time 		= 3.0;
 		Timeout 	= 4.5;
 		Slow_Time 	= 6.0;
 	}
+
+	Ruina_Color(color);
 
 	fl_mana_sickness_timeout[Target] = GameTime + Timeout;
 
@@ -1385,8 +1395,26 @@ static void Apply_Sickness(int iNPC, int Target)
 	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
 
 	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-
-	
+}
+void Ruina_Color(int color[4])
+{
+	int wave = ZR_GetWaveCount()+1;
+	if(wave<=15)
+	{
+		color 	= {255, 0, 0, 255};
+	}
+	else if(wave<=30)
+	{
+		color 	= {255, 150, 150, 255};
+	}
+	else if(wave<=45)
+	{	
+		color 	= {255, 200, 200, 255};
+	}
+	else
+	{
+		color 	= {255, 255, 255, 255};
+	}
 }
 static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 {
@@ -2360,7 +2388,7 @@ static int Ruina_Create_Entity_Specific(float Loc[3], int old_particle=-1, float
 		return old_particle;
 	}
 }
-static int Ruina_Create_Entity(float Loc[3], float duration)
+int Ruina_Create_Entity(float Loc[3], float duration, int noclip = false)
 {
 	int prop = CreateEntityByName("prop_physics_override");
 	
@@ -2380,13 +2408,19 @@ static int Ruina_Create_Entity(float Loc[3], float duration)
 		SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
 		
 		MakeObjectIntangeable(prop);
-
-		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
 		
-		if (duration > 0.0)
+		if(noclip)
+		{
+			SetEntityMoveType(prop, MOVETYPE_NOCLIP);
+		}
+
+		if(duration > 0.0)
 		{
 			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
+
+		TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
+		
 		return prop;
 	}
 	else
@@ -2579,35 +2613,56 @@ void Ruina_Clean_Particles(int client)
 		i_laser_ref_id[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
-/*static void Ruina_Move_Entity(int entity, float loc[3], float speed=10.0)
+void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 {
 	if(IsValidEntity(entity))	
 	{
-		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
-		
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
-		
-		MakeVectorFromPoints(Entity_Loc, loc, vecView);
-		GetVectorAngles(vecView, vecView);
-		
-		float dist = GetVectorDistance(Entity_Loc, loc);
-
-		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
-		
-		Entity_Loc[0]+=vecFwd[0] * dist;
-		Entity_Loc[1]+=vecFwd[1] * dist;
-		Entity_Loc[2]+=vecFwd[2] * dist;
+		if(old)
+		{
+			//the version bellow creates some "funny" movements/interactions..
+			float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+					
+			MakeVectorFromPoints(Entity_Loc, loc, vecView);
+			GetVectorAngles(vecView, vecView);
 			
-		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
-			
-		SubtractVectors(Entity_Loc, vecFwd, vecVel);
-		ScaleVector(vecVel, speed);
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecVel);
+			float dist = GetVectorDistance(Entity_Loc, loc);
 
+			GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+		
+			Entity_Loc[0]+=vecFwd[0] * dist;
+			Entity_Loc[1]+=vecFwd[1] * dist;
+			Entity_Loc[2]+=vecFwd[2] * dist;
+			
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+			
+			SubtractVectors(Entity_Loc, vecFwd, vecVel);
+			ScaleVector(vecVel, 10.0);
+
+			TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
+		}
+		else
+		{
+			float flNewVec[3], flRocketPos[3];
+			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", flRocketPos);
+			float Ratio = (GetVectorDistance(loc, flRocketPos))/250.0;
+
+			if(Ratio<0.075)
+				Ratio=0.075;
+
+			float flSpeedInit = 1250.0*Ratio;
+		
+			SubtractVectors(loc, flRocketPos, flNewVec);
+			NormalizeVector(flNewVec, flNewVec);
+			
+			float flAng[3];
+			GetVectorAngles(flNewVec, flAng);
+			
+			ScaleVector(flNewVec, flSpeedInit);
+			TeleportEntity(entity, NULL_VECTOR, Ang, flNewVec);
+		}
 	}
-	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
-	
 }
+/*
 static void Ruina_Teleport_Entity(int entity, float loc[3])
 {
 	if(IsValidEntity(entity))	
