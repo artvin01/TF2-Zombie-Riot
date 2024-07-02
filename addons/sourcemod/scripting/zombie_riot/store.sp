@@ -4673,7 +4673,7 @@ void Store_ApplyAttribs(int client)
 	{
 		ForcePlayerCrouch(client, true);
 		if(b_XenoVial[client])
-			Attributes_Set(client, 489, 1.1);
+			Attributes_Set(client, 489, 0.85);
 		else
 			Attributes_Set(client, 489, 0.65);
 	}
