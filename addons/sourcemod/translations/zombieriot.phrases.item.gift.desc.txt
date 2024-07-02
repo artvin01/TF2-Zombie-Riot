@@ -598,11 +598,11 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
+		"en"		"Assigned to watcing over Blitzkrieg, she has mastered the art of light and energy\nThanks to those arts she posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs\nAlso posses elf ears, just don't get poked by them"
 	}
 	"Schwertkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+		"en"		"Assigned to watcing over Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
 	}
 	"Phantom Knight Desc"
 	{
@@ -1031,11 +1031,11 @@
 	}
 	"Barracks SchwertKrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Holy Knight Desc"
 	{

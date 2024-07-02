@@ -217,7 +217,7 @@
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
-		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
+		"en"	"Donnerkrieg And Schwertkrieg Have Returned"
 		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
 		"chi"	"Donnerkrieg和Schwertkrieg回来了。"
 	}
