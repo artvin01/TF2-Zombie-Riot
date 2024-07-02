@@ -352,7 +352,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 #if defined ZR
 					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						ReviveClientFromOrToEntity(healTarget, owner);
+						ReviveClientFromOrToEntity(healTarget, owner,_, 1);
 					}
 					else
 #endif
