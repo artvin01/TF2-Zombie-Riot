@@ -405,7 +405,7 @@ static void ClotThink(int iNPC)
 			{
 				float new_vec[3]; WorldSpaceCenter(Enemy_I_See, new_vec);
 				float Difference = FloatAbs(Npc_Vec[2]-new_vec[2]);
-				if(Difference < 65.0)	//make sure its more or less the same height as the npc
+				if(Difference < 45.0)	//make sure its more or less the same height as the npc
 				{
 					Initiate_Laser(npc);
 					b_ruina_battery_ability_active[npc.index] = false;
