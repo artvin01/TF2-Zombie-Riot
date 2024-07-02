@@ -3731,7 +3731,7 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 }
 
 #if defined ZR
-void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int medigun)
+void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int medigun = 0,)
 {
 	bool WasClientReviving = true;
 	if(client > MaxClients)
