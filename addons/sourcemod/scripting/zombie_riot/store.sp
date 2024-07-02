@@ -4861,7 +4861,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	*/
 
-	if(Items_HasNamedItem(client, "Nemesis's Heart Piece"))
+	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
 	{
 		b_NemesisHeart[client] = true;
 	}

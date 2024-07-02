@@ -3794,6 +3794,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		}
 		if(extralogic)
 		{
+			i_AmountDowned[target]--;
 			b_BobsCuringHand_Revived[target] = 0;
 		}
 		SetEntityMoveType(target, MOVETYPE_WALK);

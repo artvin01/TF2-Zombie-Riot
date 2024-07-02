@@ -807,7 +807,7 @@
 	}
 	"Nemesis Desc"
 	{
-		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -1551,6 +1551,6 @@
 	}
 	"Mr.X Desc"
 	{
-		"en"	"Activator of the xeno infection source.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
+		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
 	}
 }
