@@ -525,7 +525,7 @@ int i_NervousImpairmentArrowAmount[MAXENTITIES];
 int i_ChaosArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
-float f_UnstuckTimerCheck[MAXENTITIES];
+float f_UnstuckTimerCheck[MAXENTITIES][2];
 int i_PullTowardsTarget[MAXENTITIES];
 float f_PullStrength[MAXENTITIES];
 
@@ -2702,7 +2702,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_BackstabDmgMulti[entity] = 0.0;
 #endif
 		f_KnockbackPullDuration[entity] = 0.0;
-		f_DoNotUnstuckDuration[entity] = 0.0;
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR

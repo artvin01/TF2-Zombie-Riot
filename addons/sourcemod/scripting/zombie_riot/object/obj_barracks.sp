@@ -1170,16 +1170,11 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 
 		if(MedievalUnlock[client] || allowgold)
 		{
-			float GoldSupplyRate = SupplyRate[client] / 1500.0;
+			float GoldSupplyRate = SupplyRateCalc / 750.0;
 			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
 			{
 				GoldSupplyRate *= 1.25;
 			}
-			if(i_CurrentEquippedPerk[client] == 7)
-			{
-				GoldSupplyRate *= 1.25;
-			}
-			GoldSupplyRate *= multi;
 			GoldAmount[client] += GoldSupplyRate;
 		}
 

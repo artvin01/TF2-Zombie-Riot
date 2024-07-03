@@ -2392,6 +2392,15 @@ static Action ReadyUpHack(Handle timer)
 
 	if(FindEntityByClassname(-1, "tf_gamerules") != -1 && GameRules_GetRoundState() == RoundState_BetweenRounds)
 	{
+		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
+		if(time > 0.0)
+			time -= GetGameTime();
+
+		if(time < 12.0 && time > 8.0)
+		{
+			GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+			return Plugin_Continue;
+		}
 		int ready, players;
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -2403,17 +2412,13 @@ static Action ReadyUpHack(Handle timer)
 			}
 		}
 		
-		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
-		if(time > 0.0)
-			time -= GetGameTime();
-		
-		if(time > 10.0 || time < 0.0)
+		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
 			
 			if(ready == players)
 			{
-				set = 10.0;
+				set = 12.0;
 			}
 			else if(ready > 0)
 			{
@@ -2458,11 +2463,12 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
+			SDKCall_ResetPlayerAndTeamReadyState();
+
 			if(!ReadyUpTimer)
 				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
 			
 		//	KillFeed_ForceClear();
-			SDKCall_ResetPlayerAndTeamReadyState();
 			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{

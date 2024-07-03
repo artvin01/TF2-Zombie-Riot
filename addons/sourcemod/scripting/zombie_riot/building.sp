@@ -1120,6 +1120,9 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 		return false;
 	}
 	
+	if(b_ThisEntityIgnored[entity])
+		return false;
+
 	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
 	{
 		return true;
@@ -1313,7 +1316,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	}
 	
 	int HealGiven;
-	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
+	if(newHealth >= 1 && Healing_Value >= 1) //for some reason its able to set it to 1
 	{
 		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / 3);
 		if(HealGiven <= 0)
