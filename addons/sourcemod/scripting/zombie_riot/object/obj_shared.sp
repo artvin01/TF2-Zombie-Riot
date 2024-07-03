@@ -659,7 +659,7 @@ bool Object_Interact(int client, int weapon, int obj)
 	}
 
 	Function func = func_NPCInteract[entity];
-	if(!func || func == INVALID_FUNCTION)
+	if((!func || func == INVALID_FUNCTION) && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		return false;
 
 	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)

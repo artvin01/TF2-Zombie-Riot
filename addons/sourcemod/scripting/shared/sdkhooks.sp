@@ -327,41 +327,6 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-/*
-#if defined ZR
-	if(CvarMpSolidObjects)
-	{
-		if(RaidbossIgnoreBuildingsLogic(1))
-		{
-			if(i_PreviousBuildingCollision[client] == -1)
-			{
-				i_PreviousBuildingCollision[client] = b_PhaseThroughBuildingsPerma[client];
-			}
-			b_PhaseThroughBuildingsPerma[client] = 2;
-		}
-		else
-		{
-			if(i_PreviousBuildingCollision[client] != -1)
-			{
-				if(i_PreviousBuildingCollision[client] != 2)
-				{
-				}
-				b_PhaseThroughBuildingsPerma[client] = i_PreviousBuildingCollision[client];
-			}
-			i_PreviousBuildingCollision[client] = -1;
-		}
-		
-		if(b_PhaseThroughBuildingsPerma[client] == 0)
-		{
-			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
-		}
-		else
-		{
-			CvarMpSolidObjects.IntValue = 0;
-		}
-	}
-#endif	// ZR
-*/
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 }
 #endif	// ZR & RPG
@@ -433,30 +398,6 @@ public void OnPostThink(int client)
 		b_DisplayDamageHud[client] = false;
 		Calculate_And_Display_HP_Hud(client);
 	}
-/*
-#if defined ZR
-	if(b_PhaseThroughBuildingsPerma[client] == 2)
-	{
-		if(ReplicateClient_Tfsolidobjects[client] != 0)
-		{
-			ReplicateClient_Tfsolidobjects[client] = 0;
-			CvarMpSolidObjects.ReplicateToClient(client, "0");
-		}
-	}
-	else
-	{
-		if(b_PhaseThroughBuildingsPerma[client] == 1)
-		{
-			b_PhaseThroughBuildingsPerma[client] = 0;
-			if(ReplicateClient_Tfsolidobjects[client] != 1)
-			{
-				ReplicateClient_Tfsolidobjects[client] = 1;
-				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
-			}
-		}
-	}
-#endif
-*/
 	if(b_AntiSlopeCamp[client])
 	{	
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
@@ -1499,47 +1440,6 @@ public void OnPostThink(int client)
 		}
 		ArmorDisplayClient(client);
 
-		/*
-		char buffer[64];
-		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
-		if(IsValidEntity(converted_ref))
-		{	
-			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
-			bool DoSentryCheck = false;
-			switch(BuildingIconType(client))
-			{
-				case 3,4,8,9:
-					DoSentryCheck = true;
-			}
-
-			if(DoSentryCheck) //all non supportive, like sentry and so on.
-			{
-				Cooldowntocheck = f_BuildingIsNotReady[client];
-			}
-
-			Cooldowntocheck -= GetGameTime();
-
-			if(Cooldowntocheck < 0.0)
-			{
-				Cooldowntocheck = 0.0;
-			}
-
-			switch(BuildingIconType(client))
-			{
-				case 1: //armor table
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nAR\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nAR\n", Cooldowntocheck);
-					}
-				}
-			}
-		}
-		*/
 		char buffer[64];
 		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
@@ -2207,9 +2107,10 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-//	PrintToChatAll("%s",sample);
-//	PrintToChatAll("entity%i",entity);
-//	PrintToChatAll("channel %i",channel);
+	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
+	{
+		return Plugin_Handled;
+	}
 	if(StrContains(sample, "weapons/dispenser_idle.wav", true) != -1)
 	{
 		return Plugin_Handled;

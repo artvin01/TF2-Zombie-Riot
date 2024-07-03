@@ -2286,9 +2286,7 @@
 	}
 	"Crouch To See Info Barracks"
 	{
-		"en"		"Crouch to see descriptions!"
-		"ru"		"Пригнитесь, чтобы посмотреть описание!"
-		"chi"		"蹲下可以查看描述!"
+		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!\nPerkmachine perks work on units!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{

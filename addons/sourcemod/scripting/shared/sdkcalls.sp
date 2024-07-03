@@ -318,10 +318,10 @@ void EndPlayerOnlyLagComp(int client)
 
 void UpdateBlockedNavmesh()
 {
-	sv_cheats.IntValue = 1;
+//	sv_cheats.IntValue = 1;
 	//this updates the nav.
-	ServerCommand("nav_load");
-	sv_cheats.IntValue = 0;
+	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
+//	sv_cheats.IntValue = 0;
 	
 	//This broke and is probably inlined, above is a way easier method.
 //	SDKCall(g_hSDKUpdateBlocked);
@@ -429,7 +429,7 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	
 	for(int i; i < Size1; i++)
 	{
-		SetEntProp(entity, Prop_Send, "m_bTeamReady", false, _, i);
+		GameRules_SetProp("m_bTeamReady", false, _, i);
 	}
 
 	static int Size2;
@@ -440,7 +440,7 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	
 	for(int i; i < Size2; i++)
 	{
-		SetEntProp(entity, Prop_Send, "m_bPlayerReady", false, _, i);
+		GameRules_SetProp("m_bPlayerReady", false, _, i);
 	}
 }
 #endif

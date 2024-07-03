@@ -49,6 +49,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 				if(b_ThisEntityIgnoredBeingCarried[otherindex])
 					return false;
 
+				if(b_ThisEntityIgnored[otherindex])
+					return false;
+
 				if(extrarules == 0)
 					NpcStartTouch(bot_entidx,otherindex);
 					
@@ -99,6 +102,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_ThisEntityIgnoredBeingCarried[otherindex])
 			return false;
 
+		if(b_ThisEntityIgnored[otherindex])
+			return false;
+					
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
 			
@@ -109,6 +115,7 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+		
 		return true;
 	}
 	//other entity is an npc

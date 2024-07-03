@@ -458,6 +458,11 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 			return true;
 		}
 	}
+	if(b_ThisEntityIgnored[victim])
+	{
+		damage = 0.0;
+		return true;
+	}
 	OnTakeDamageNpcBaseArmorLogic(victim, attacker, damage, damagetype, _,weapon);
 	return false;
 }
