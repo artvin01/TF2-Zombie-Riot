@@ -217,9 +217,9 @@
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
-		"en"	"Donnerkrieg And Schwertkrieg Have Returned"
-		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
-		"chi"	"Donnerkrieg和Schwertkrieg回来了。"
+		"en"	"Stella And SCHWERTKRIEG_TEMP_NAME Have Returned"
+		"pt"	"Stella e SCHWERTKRIEG_TEMP_NAME retornaram."
+		"chi"	"Stella和SCHWERTKRIEG_TEMP_NAME回来了。"
 	}
 	"Diversionistico Spawn"
 	{

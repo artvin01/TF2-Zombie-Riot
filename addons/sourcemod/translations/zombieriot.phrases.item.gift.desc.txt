@@ -1565,4 +1565,8 @@
 	{
 		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: Lowers the "corosion" index by 1)"
 	}
+	"SCHWERTKRIEG_TEMP_NAME Desc"
+	{
+		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time SCHWERTKRIEG_TEMP_NAME preforms a strike, these swords ''regenerate''"
+	}
 }

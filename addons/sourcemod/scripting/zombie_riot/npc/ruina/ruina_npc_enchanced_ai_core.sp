@@ -2590,9 +2590,9 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 
 	/// Custom Hand Particles or body or wings or halo or whatnot ///
 
-#define RUINA_MAX_PARTICLE_ENTS 12
+#define RUINA_MAX_PARTICLE_ENTS 15
 
-//Current highest particle amt: 12.
+//Current highest particle amt: 15.
 
 int i_particle_ref_id[MAXENTITIES][RUINA_MAX_PARTICLE_ENTS];
 int i_laser_ref_id[MAXENTITIES][RUINA_MAX_PARTICLE_ENTS];

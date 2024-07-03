@@ -508,7 +508,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
 		
-		CPrintToChatAll("{aqua}Donnerkrieg{snow}: We have arrived to render judgement");
+		CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
 		
 		Donnerkrieg_Wings_Create(npc);
 
@@ -903,17 +903,17 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 			int ally = EntRefToEntIndex(i_ally_index);
 			if(IsValidEntity(ally))
 			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: You think thats how you fight us two?", name_color, text_color);
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You think thats how you fight us two?", name_color, text_color);
 			}
 			else
 			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh my, how annoying this has become...", name_color, text_color);
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh my, how annoying this has become...", name_color, text_color);
 			}
 			CPrintToChatAll(text_lines);
 		}
 		else
 		{
-			CPrintToChatAll("{crimson}Schwertkrieg{snow}: Ayaya?");
+			CPrintToChatAll("{crimson}SCHWERTKRIEG_TEMP_NAME{snow}: Ayaya?");
 		}
 		
 	}
@@ -2082,11 +2082,11 @@ static void Internal_NPCDeath(int entity)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let {crimson}Schwertkrieg{snow} handle this");
+						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let {crimson}SCHWERTKRIEG_TEMP_NAME{snow} handle this");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: You still have {crimson}Schwertkrieg{snow} to deal with... heh");
+						CPrintToChatAll("{aqua}Stella{snow}: You still have {crimson}SCHWERTKRIEG_TEMP_NAME{snow} to deal with... heh");
 					}
 				}
 			}
@@ -2096,11 +2096,11 @@ static void Internal_NPCDeath(int entity)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let this slide,{crimson} for now.");
+						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let this slide,{crimson} for now.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
+						CPrintToChatAll("{aqua}Stella{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
 					}
 				}
 			}
@@ -2111,15 +2111,15 @@ static void Internal_NPCDeath(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Huh, I guess our turn's over");
+					CPrintToChatAll("{aqua}Stella{snow}: Huh, I guess our turn's over");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh boy, this is gonna be fun to watch");
+					CPrintToChatAll("{aqua}Stella{snow}: Oh boy, this is gonna be fun to watch");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: I wanted to play with them more, allas");
+					CPrintToChatAll("{aqua}Stella{snow}: I wanted to play with them more, allas");
 				}
 			}
 			
@@ -3326,18 +3326,18 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 			{
 				case 1:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}Thats it {%s}i'm going to kill you", name_color, text_color, name_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}Thats it {%s}i'm going to kill you{%s}.", name_color, text_color, name_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you", name_color, text_color, name_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you{%s}.", name_color, text_color, name_color, danger_color, text_color);	
 				}
 				case 2:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
 				}
 				case 3:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near", name_color, text_color, danger_color, name_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near{%s}.", name_color, text_color, danger_color, name_color, text_color, danger_color, text_color);		
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near", name_color, text_color, danger_color, name_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near{%s}.", name_color, text_color, danger_color, name_color, text_color, danger_color, text_color);		
 				}
 				case 4:
 				{
@@ -3345,36 +3345,36 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 					{
 						case 5:
 						{
-							//CPrintToChatAll("{%s}Donnerkrieg{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
+							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
 							b_train_line_used[npc.index] = true;
 						}				
 						default:
 						{
-							//CPrintToChatAll("{%s}Donnerkrieg{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
+							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
 						}
 					}
 				}
 				case 5: 
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);
+					//CPrintToChatAll("{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);
 					b_fuck_you_line_used[npc.index] = true;
 				}
 				case 6:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this{%s}.", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this{%s}.", name_color, text_color, danger_color, text_color);	
 				}
 				case 7:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh how {%s}Tiny{%s} you all look from up here.", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh how {%s}Tiny{%s} you all look from up here.", name_color, text_color, danger_color, text_color);	
 				}
 				case 8:
 				{
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: heh {%s}This is{%s} gonna be funny.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: heh {%s}This is{%s} gonna be funny.", name_color, text_color, danger_color, text_color);	
 				}
 				case 9:
 				{
@@ -3382,11 +3382,11 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 					{
 						case 5:
 						{
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}Oya{%s}?", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Oya{%s}?", name_color, text_color, danger_color, text_color);	
 						}				
 						default:
 						{
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
 						}
 					}
 				}
@@ -3400,29 +3400,29 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 				{
 					case 1:
 					{
-						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}NIGHTMARE, CANNON!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}NIGHTMARE, CANNON{%s}!", name_color, text_color, danger_color, text_color);
+						//CPrintToChatAll("{%s}Stella{%s}: {%s}NIGHTMARE, CANNON!", name_color, text_color, danger_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}NIGHTMARE, CANNON{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 2:
 					{
-						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE{%s}!", name_color, text_color, danger_color, text_color);
+						//CPrintToChatAll("{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 3:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}COSMIC ANNIHILATION{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}COSMIC ANNIHILATION{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 4:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}DIVINE RETRIBUTION{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}DIVINE RETRIBUTION{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 5:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}CALL OF THE BEYOND{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}CALL OF THE BEYOND{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 6:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}PUNISHMENT OF HER {%s}GRACE{%s}!", name_color, text_color, danger_color, name_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PUNISHMENT OF HER {%s}GRACE{%s}!", name_color, text_color, danger_color, name_color, text_color);
 					}
 				}
 			}
@@ -3430,17 +3430,17 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 			{
 				if(b_train_line_used[npc.index])
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
 					b_train_line_used[npc.index] = false;
 					extra_lines = "...";
 				}
 				else if(b_fuck_you_line_used[npc.index])
 				{
 					b_fuck_you_line_used[npc.index] = false;
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: However its still{%s} worth the effort", name_color, text_color, danger_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: However its still{%s} worth the effort", name_color, text_color, danger_color);	
 
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: However its still{%s} worth the effort{%s}.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: However its still{%s} worth the effort{%s}.", name_color, text_color, danger_color, text_color);	
 					extra_lines = "";
 				}
 				

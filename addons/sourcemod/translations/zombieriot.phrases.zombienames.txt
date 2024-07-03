@@ -1941,6 +1941,10 @@
 	{
 		"en"	"Stella"
 	}
+	"SCHWERTKRIEG_TEMP_NAME"
+	{
+		"en"	"SCHWERTKRIEG_TEMP_NAME"
+	}
 	"Heliara"
 	{
 		"en"	"Heliara"

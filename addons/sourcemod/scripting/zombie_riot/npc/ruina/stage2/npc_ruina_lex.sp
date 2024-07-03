@@ -250,22 +250,22 @@ methodmap Lex < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		//now all thats left is the cosmetics, wings, halo, and 2nd boss + fusing with 2nd boss!
-		/*	get new cosmetics.
-			nunhood						//Xms2013_Medic_Hood
-			ramses regalia				//Hw2013_Ramses_Regalia
+		//now all thats left is the, wings, halo, and 2nd boss + fusing with 2nd boss!
+		/*
+			Berliner					"models/player/items/medic/berliners_bucket_helm.mdl"
+			Hong kong cone				"models/workshop/player/items/all_class/fall2013_hong_kong_cone/fall2013_hong_kong_cone_medic.mdl"
 			lo-grav loafers				//Hw2013_Moon_Boots
 			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
 			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
 		
 		*/
 		static const char Items[][] = {
-			"models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl",
-			"models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl",
+			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/workshop/player/items/all_class/fall2013_hong_kong_cone/fall2013_hong_kong_cone_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
-			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",						//Quantum Armour Aquired
+			RUINA_CUSTOM_MODELS,
 			RUINA_CUSTOM_MODELS
 		};
 
@@ -277,11 +277,14 @@ methodmap Lex < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,2.0,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		SetVariantInt(RUINA_HALO_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -296,8 +299,7 @@ methodmap Lex < CClotBody
 		fl_npc_basespeed = 300.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.StartPathing();
-			
+		npc.StartPathing();	
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
@@ -315,6 +317,10 @@ methodmap Lex < CClotBody
 		fl_multi_attack_delay[npc.index] = 0.0;
 
 		npc.m_iState = 0;
+
+		Ruina_Clean_Particles(npc.index);
+
+		Create_Wings(npc);
 
 		npc.Anger = false;
 		
@@ -724,6 +730,8 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
+	Ruina_Clean_Particles(npc.index);
+
 	Delete_Beacons(npc.index);
 
 	Ruina_NPCDeath_Override(npc.index);
@@ -1057,4 +1065,166 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
+}
+static void Create_Wings(Lex npc)	//temp until real ones can be made
+{
+
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	int red = 185;
+	int green = 205;
+	int blue = 237;
+	float flPos[3];
+	float flAng[3];
+
+
+	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+	GetAttachment(npc.index, "back_lower", flPos, flAng);
+	Custom_SDKCall_SetLocalOrigin(ParticleOffsetMain, flPos);
+	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
+	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
+
+
+	//Left
+
+	float core_loc[3] = {0.0, 15.0, -20.0};
+
+
+	//upper left
+
+	int particle_upper_left_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	
+	float start_1 = 2.0;
+	float end_1 = 0.5;
+	float amp =0.1;
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+
+	int particle_upper_left_wing_1 = InfoTargetParentAt({7.5, 0.0, -9.5}, "", 0.0);	//middle mid
+	int particle_upper_left_wing_2 = InfoTargetParentAt({20.5, 10.0, -15.0}, "", 0.0);		//middle lower
+	int particle_upper_left_wing_3 = InfoTargetParentAt({5.0, -25.0, 0.0}, "", 0.0);		//middle up	
+
+	int particle_upper_left_wing_4 = InfoTargetParentAt({50.0, -15.0, 5.0}, "", 0.0);	//side up
+	int particle_upper_left_wing_5 = InfoTargetParentAt({60.0, -10.0, 10.0}, "", 0.0);	//side mid
+	int particle_upper_left_wing_6 = InfoTargetParentAt({55.0, 0.0, 2.5}, "", 0.0);	//side low
+
+
+	SetParent(particle_upper_left_core, particle_upper_left_wing_1, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_2, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_3, "",_, true);
+
+	SetParent(particle_upper_left_core, particle_upper_left_wing_4, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_5, "",_, true);
+	SetParent(particle_upper_left_core, particle_upper_left_wing_6, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_upper_left_core, flPos);
+	SetEntPropVector(particle_upper_left_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_upper_left_core, "",_);
+
+	//start_1 = 2.0;
+	//end_1 = 0.5;
+	//amp =0.1;
+
+	int laser_upper_left_wing_1 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	int laser_upper_left_wing_2 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	
+	int laser_upper_left_wing_3 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_upper_left_wing_4 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_left_wing_5 = ConnectWithBeamClient(particle_upper_left_wing_3, particle_upper_left_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_upper_left_wing_6 = ConnectWithBeamClient(particle_upper_left_wing_2, particle_upper_left_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_left_wing_7 = ConnectWithBeamClient(particle_upper_left_wing_4, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	
+	i_particle_ref_id[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
+	i_particle_ref_id[npc.index][1] = EntIndexToEntRef(particle_upper_left_core);
+	i_laser_ref_id[npc.index][0] = EntIndexToEntRef(laser_upper_left_wing_1);
+	i_laser_ref_id[npc.index][1] = EntIndexToEntRef(laser_upper_left_wing_2);
+	i_laser_ref_id[npc.index][2] = EntIndexToEntRef(laser_upper_left_wing_3);
+	i_laser_ref_id[npc.index][3] = EntIndexToEntRef(laser_upper_left_wing_4);
+	i_laser_ref_id[npc.index][4] = EntIndexToEntRef(laser_upper_left_wing_5);
+	i_laser_ref_id[npc.index][5] = EntIndexToEntRef(laser_upper_left_wing_6);
+	i_laser_ref_id[npc.index][6] = EntIndexToEntRef(laser_upper_left_wing_7);
+
+
+	i_particle_ref_id[npc.index][2] = EntIndexToEntRef(particle_upper_left_wing_1);
+	i_particle_ref_id[npc.index][3] = EntIndexToEntRef(particle_upper_left_wing_2);
+	i_particle_ref_id[npc.index][4] = EntIndexToEntRef(particle_upper_left_wing_3);
+	i_particle_ref_id[npc.index][5] = EntIndexToEntRef(particle_upper_left_wing_4);
+	i_particle_ref_id[npc.index][6] = EntIndexToEntRef(particle_upper_left_wing_5);
+	i_particle_ref_id[npc.index][7] = EntIndexToEntRef(particle_upper_left_wing_6);
+
+
+	//upper right
+
+	int particle_upper_right_core = InfoTargetParentAt(core_loc, "", 0.0);
+
+
+	/*
+		X = +Left, -Right
+		Y = -Up, +Down
+		Z = +Backwards, -Forward
+	*/
+
+	int particle_upper_right_wing_1 = InfoTargetParentAt({-7.5, 0.0, -9.5}, "", 0.0);	//middle mid
+	int particle_upper_right_wing_2 = InfoTargetParentAt({-20.5, 10.0, -15.0}, "", 0.0);		//middle lower
+	int particle_upper_right_wing_3 = InfoTargetParentAt({-5.0, -25.0, 0.0}, "", 0.0);		//middle up	
+
+	int particle_upper_right_wing_4 = InfoTargetParentAt({-50.0, -15.0, 5.0}, "", 0.0);	//side up
+	int particle_upper_right_wing_5 = InfoTargetParentAt({-60.0, -10.0, 10.0}, "", 0.0);	//side mid
+	int particle_upper_right_wing_6 = InfoTargetParentAt({-55.0, 0.0, 2.5}, "", 0.0);	//side low
+
+
+	SetParent(particle_upper_right_core, particle_upper_right_wing_1, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_2, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_3, "",_, true);
+
+	SetParent(particle_upper_right_core, particle_upper_right_wing_4, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_5, "",_, true);
+	SetParent(particle_upper_right_core, particle_upper_right_wing_6, "",_, true);
+
+
+
+	Custom_SDKCall_SetLocalOrigin(particle_upper_right_core, flPos);
+	SetEntPropVector(particle_upper_right_core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, particle_upper_right_core, "",_);
+
+	//start_1 = 2.0;
+	//end_1 = 0.5;
+	//amp =0.1;
+
+	int laser_upper_right_wing_1 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	int laser_upper_right_wing_2 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
+	
+	int laser_upper_right_wing_3 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
+	int laser_upper_right_wing_4 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_right_wing_5 = ConnectWithBeamClient(particle_upper_right_wing_3, particle_upper_right_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
+	int laser_upper_right_wing_6 = ConnectWithBeamClient(particle_upper_right_wing_2, particle_upper_right_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
+
+	int laser_upper_right_wing_7 = ConnectWithBeamClient(particle_upper_right_wing_4, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+
+	i_particle_ref_id[npc.index][8] = EntIndexToEntRef(particle_upper_right_core);
+	i_laser_ref_id[npc.index][7] = EntIndexToEntRef(laser_upper_right_wing_1);
+	i_laser_ref_id[npc.index][8] = EntIndexToEntRef(laser_upper_right_wing_2);
+	i_laser_ref_id[npc.index][9] = EntIndexToEntRef(laser_upper_right_wing_3);
+	i_laser_ref_id[npc.index][10] = EntIndexToEntRef(laser_upper_right_wing_4);
+	i_laser_ref_id[npc.index][11] = EntIndexToEntRef(laser_upper_right_wing_5);
+	i_laser_ref_id[npc.index][12] = EntIndexToEntRef(laser_upper_right_wing_6);
+	i_laser_ref_id[npc.index][13] = EntIndexToEntRef(laser_upper_right_wing_7);
+
+	i_particle_ref_id[npc.index][9] = EntIndexToEntRef(particle_upper_right_wing_1);
+	i_particle_ref_id[npc.index][10] = EntIndexToEntRef(particle_upper_right_wing_2);
+	i_particle_ref_id[npc.index][11] = EntIndexToEntRef(particle_upper_right_wing_3);
+	i_particle_ref_id[npc.index][12] = EntIndexToEntRef(particle_upper_right_wing_4);
+	i_particle_ref_id[npc.index][13] = EntIndexToEntRef(particle_upper_right_wing_5);
+	i_particle_ref_id[npc.index][14] = EntIndexToEntRef(particle_upper_right_wing_6);
 }

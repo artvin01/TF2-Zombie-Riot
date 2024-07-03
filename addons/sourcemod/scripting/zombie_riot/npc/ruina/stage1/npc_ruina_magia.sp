@@ -385,6 +385,9 @@ static void ClotThink(int iNPC)
 
 static void Magia_Create_Hand_Crest(int client)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
