@@ -59,6 +59,10 @@ static char g_AngerSounds[][] = {	//todo: make it different!
 	"vo/medic_cartgoingforwardoffense08.mp3",
 };
 
+#define LEX_LASER_LOOP_SOUND	"player/taunt_rocket_hover_loop.wav"//"weapons/gauss/chargeloop.wav"
+#define LEX_LASER_LOOP_SOUND1	"ambient/machines/combine_shield_touch_loop1.wav"
+#define LEX_LASER_ENDSOUND		"weapons/physcannon/physcannon_drop.wav"
+
 void Lex_OnMapStart_NPC()
 {
 
@@ -85,11 +89,15 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 
+	PrecacheSound(LEX_LASER_LOOP_SOUND);
+	PrecacheSound(LEX_LASER_LOOP_SOUND1);
+	PrecacheSound(LEX_LASER_ENDSOUND);
+
 	PrecacheModel("models/player/medic.mdl");
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Lex(client, vecPos, vecAng, ally);
+	return Lex(client, vecPos, vecAng, ally, data);
 }
 
 static float fl_npc_basespeed;
@@ -147,7 +155,7 @@ static void Delete_Beacons(int iNPC)
 		i_laser_beacons[iNPC][i] = INVALID_ENT_REFERENCE;
 	}
 }
-
+static bool b_solo[MAXENTITIES];
 methodmap Lex < CClotBody
 {
 	
@@ -239,7 +247,7 @@ methodmap Lex < CClotBody
 	}
 	
 	
-	public Lex(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Lex npc = view_as<Lex>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
@@ -250,7 +258,7 @@ methodmap Lex < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		//now all thats left is the, wings, halo, and 2nd boss + fusing with 2nd boss!
+		//now all thats left is the, wings, and 2nd boss + fusing with 2nd boss!
 		/*
 			Berliner					"models/player/items/medic/berliners_bucket_helm.mdl"
 			Hong kong cone				"models/workshop/player/items/all_class/fall2013_hong_kong_cone/fall2013_hong_kong_cone_medic.mdl"
@@ -323,9 +331,100 @@ methodmap Lex < CClotBody
 		Create_Wings(npc);
 
 		npc.Anger = false;
+
+		b_solo[npc.index] =  StrContains(data, "solo") != -1;
+
+		RequestFrame(Do_OnSpawn, npc);
 		
 		return npc;
 	}
+}
+
+enum struct AllyData
+{
+	int ally;
+
+	void Do_Default(Lex npc)
+	{
+		if(!this.IsAlive(npc))
+			return;
+		
+		bool close = this.IsClose(npc);
+
+		if(close)
+		{
+			if(this.IsLowHealth(npc))
+			{
+				this.Fuse(npc);
+			}
+			else	//Initiate a buff between the 2.
+			{
+
+			}
+		}
+		
+	}
+	void Initiate_Follow(Lex npc)	//set pathing towards ally.
+	{
+
+	}
+	bool IsClose(Lex npc)			//check if we are close enough to initate fusion
+	{
+		
+		return false;
+	}
+	bool IsLowHealth(Lex npc)		//only allow walking close if both npc's are bellow 50% hp.
+	{
+		int Ally = EntRefToEntIndex(this.ally);
+		int Health 		= GetEntProp(Ally, Prop_Data, "m_iHealth"),
+			MaxHealth 	= GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
+
+		float Ratio = (float(Health)/float(MaxHealth));
+
+		if(Ratio > 0.5)
+			return false;
+		
+		Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
+		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+		if(Ratio > 0.5)
+			return false;
+
+		this.Initiate_Follow(npc);
+
+		return true;
+	}
+	bool IsAlive(Lex npc)
+	{
+		if(b_solo[npc.index])
+			return false;
+		
+		return IsValidAlly(npc.index, EntRefToEntIndex(this.ally));
+	}
+	void Fuse(Lex npc)
+	{
+
+	}
+	void Share_Damage(Lex npc)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
+	{
+
+	}
+	void Spawn_Ally(Lex npc)
+	{
+		this.ally = -1;
+
+
+	}
+}
+
+static AllyData struct_Ally[MAXENTITIES];
+
+static void Do_OnSpawn(Lex npc)
+{
+	if(b_solo[npc.index])
+		return;
+	
+	struct_Ally[npc.index].Spawn_Ally(npc);
 }
 
 //TODO 
@@ -419,6 +518,11 @@ static void ClotThink(int iNPC)
 					
 					npc.FaceTowards(new_vec, 40000.0);	//we turn, veri fast indeed
 					npc.FaceTowards(new_vec, 40000.0);	//we turn, veri fast indeed
+
+					EmitSoundToAll(LEX_LASER_LOOP_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
+					EmitSoundToAll(LEX_LASER_LOOP_SOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
+					EmitSoundToAll(LEX_LASER_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
+					EmitSoundToAll(LEX_LASER_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
 
 					return;
 				}
@@ -736,6 +840,14 @@ static void NPC_Death(int entity)
 
 	Ruina_NPCDeath_Override(npc.index);
 
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+
 	SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
 
 	for(int i= 0 ; i < 3 ; i++)
@@ -880,6 +992,17 @@ static Action Laser_Tick(int client)
 	if(npc.m_flDoingAnimation < GameTime)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Laser_Tick);
+
+		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
+		EmitSoundToAll(LEX_LASER_ENDSOUND, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL);
+
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND);
+
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
+		StopSound(npc.index, SNDCHAN_STATIC, LEX_LASER_LOOP_SOUND1);
 
 		for(int i=0 ; i < 3 ; i++)
 		{
@@ -1153,7 +1276,7 @@ static void Create_Wings(Lex npc)	//temp until real ones can be made
 			green =0;
 			blue = 255;
 		}*/
-		
+
 		int Lasers_Int = 7;
 		int Lasers[7];
 		Lasers[0] = ConnectWithBeamClient(Particle_Wings[i][0], Particle_Wings[i][1], red, green, blue, start_1, start_1, amp, LASERBEAM);
