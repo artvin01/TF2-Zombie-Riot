@@ -277,7 +277,7 @@ methodmap Lex < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,2.0,85.0);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
@@ -1071,12 +1071,12 @@ static void Create_Wings(Lex npc)	//temp until real ones can be made
 
 	if(AtEdictLimit(EDICT_NPC))
 		return;
+
 	int red = 185;
 	int green = 205;
 	int blue = 237;
 	float flPos[3];
 	float flAng[3];
-
 
 	int ParticleOffsetMain = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 	GetAttachment(npc.index, "back_lower", flPos, flAng);
@@ -1084,16 +1084,11 @@ static void Create_Wings(Lex npc)	//temp until real ones can be made
 	SetEntPropVector(ParticleOffsetMain, Prop_Data, "m_angRotation", flAng); 
 	SetParent(npc.index, ParticleOffsetMain, "back_lower",_);
 
-
-	//Left
-
 	float core_loc[3] = {0.0, 15.0, -20.0};
 
-
-	//upper left
-
-	int particle_upper_left_core = InfoTargetParentAt(core_loc, "", 0.0);
-
+	float Offset[3];
+	Offset[0] = 15.0;
+	Offset[2] = 15.0;		//+foroward, -back
 
 	
 	float start_1 = 2.0;
@@ -1106,125 +1101,76 @@ static void Create_Wings(Lex npc)	//temp until real ones can be made
 		Z = +Backwards, -Forward
 	*/
 
-	int particle_upper_left_wing_1 = InfoTargetParentAt({7.5, 0.0, -9.5}, "", 0.0);	//middle mid
-	int particle_upper_left_wing_2 = InfoTargetParentAt({20.5, 10.0, -15.0}, "", 0.0);		//middle lower
-	int particle_upper_left_wing_3 = InfoTargetParentAt({5.0, -25.0, 0.0}, "", 0.0);		//middle up	
+	int Wing_Ints = 6;
 
-	int particle_upper_left_wing_4 = InfoTargetParentAt({50.0, -15.0, 5.0}, "", 0.0);	//side up
-	int particle_upper_left_wing_5 = InfoTargetParentAt({60.0, -10.0, 10.0}, "", 0.0);	//side mid
-	int particle_upper_left_wing_6 = InfoTargetParentAt({55.0, 0.0, 2.5}, "", 0.0);	//side low
+	float Wing_Loc[2][6][3];
 
+	Wing_Loc[0][0] = {7.5, 0.0, -9.5};
+	Wing_Loc[0][1] = {20.5, 10.0, -15.0};
+	Wing_Loc[0][2] = {5.0, -25.0, 0.0};
+	Wing_Loc[0][3] = {50.0, -15.0, 5.0};
+	Wing_Loc[0][4] = {60.0, -10.0, 10.0};
+	Wing_Loc[0][5] = {55.0, 0.0, 2.5};
 
-	SetParent(particle_upper_left_core, particle_upper_left_wing_1, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_2, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_3, "",_, true);
+	//Add the offsets and core values
+	for(int i=0; i < Wing_Ints ; i ++) {AddVectors(Wing_Loc[0][i], core_loc, Wing_Loc[0][i]);}
+	for(int i=0; i < Wing_Ints ; i ++) {AddVectors(Wing_Loc[0][i], Offset, Wing_Loc[0][i]);}
 
-	SetParent(particle_upper_left_core, particle_upper_left_wing_4, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_5, "",_, true);
-	SetParent(particle_upper_left_core, particle_upper_left_wing_6, "",_, true);
+	//Copy over the vectors from left to right and invert the "direction"
+	for(int i=0; i < Wing_Ints ; i ++) {Wing_Loc[1][i] = Wing_Loc[0][i];}
+	for(int i=0; i < Wing_Ints ; i ++) {Wing_Loc[1][i][0]*=-1.0;}
 
+	int Particle_Core = InfoTargetParentAt(core_loc, "", 0.0);
 
+	i_particle_ref_id[npc.index][0] = EntIndexToEntRef(Particle_Core);
+	i_particle_ref_id[npc.index][1] = EntIndexToEntRef(ParticleOffsetMain);
 
-	Custom_SDKCall_SetLocalOrigin(particle_upper_left_core, flPos);
-	SetEntPropVector(particle_upper_left_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_upper_left_core, "",_);
+	int Particle_Wings[2][6];
 
-	//start_1 = 2.0;
-	//end_1 = 0.5;
-	//amp =0.1;
+	for(int i=0 ; i < 2 ; i++)
+	{
+		//CPrintToChatAll("We are making wing nr: %i", i);
+		for(int y= 0 ; y < Wing_Ints ; y++)
+		{
+			Particle_Wings[i][y] = InfoTargetParentAt(Wing_Loc[i][y], "", 0.0);
+			SetParent(Particle_Core, Particle_Wings[i][y], "",_, true);
+			//CPrintToChatAll("Loc:%f\n%f\n%f", Wing_Loc[i][y][0], Wing_Loc[i][y][1], Wing_Loc[i][y][2]);
 
-	int laser_upper_left_wing_1 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	int laser_upper_left_wing_2 = ConnectWithBeamClient(particle_upper_left_wing_1, particle_upper_left_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	
-	int laser_upper_left_wing_3 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_upper_left_wing_4 = ConnectWithBeamClient(particle_upper_left_wing_5, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
+			i_particle_ref_id[npc.index][Wing_Ints*i+y+2] = EntIndexToEntRef(Particle_Wings[i][y]);
+			//CPrintToChatAll("Index loop %i", Wing_Ints*i+y+2);
+		}
+		//Now, this part can't be automated unfortunately :( or well not fully
+		/*
+		if(i==1)
+		{
+			red= 255;
+			green =0;
+			blue = 0;
+		}
+		else
+		{
+			red= 0;
+			green =0;
+			blue = 255;
+		}*/
+		
+		int Lasers_Int = 7;
+		int Lasers[7];
+		Lasers[0] = ConnectWithBeamClient(Particle_Wings[i][0], Particle_Wings[i][1], red, green, blue, start_1, start_1, amp, LASERBEAM);
+		Lasers[1] = ConnectWithBeamClient(Particle_Wings[i][0], Particle_Wings[i][2], red, green, blue, start_1, start_1, amp, LASERBEAM);
+		Lasers[2] = ConnectWithBeamClient(Particle_Wings[i][4], Particle_Wings[i][3], red, green, blue, end_1, end_1, amp, LASERBEAM);
+		Lasers[3] = ConnectWithBeamClient(Particle_Wings[i][4], Particle_Wings[i][5], red, green, blue, end_1, end_1, amp, LASERBEAM);
+		Lasers[4] = ConnectWithBeamClient(Particle_Wings[i][2], Particle_Wings[i][3], red, green, blue, start_1, end_1, amp, LASERBEAM);
+		Lasers[5] = ConnectWithBeamClient(Particle_Wings[i][1], Particle_Wings[i][5], red, green, blue, start_1, end_1, amp, LASERBEAM);
+		Lasers[6] = ConnectWithBeamClient(Particle_Wings[i][3], Particle_Wings[i][5], red, green, blue, end_1, end_1, amp, LASERBEAM);
 
-	int laser_upper_left_wing_5 = ConnectWithBeamClient(particle_upper_left_wing_3, particle_upper_left_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_upper_left_wing_6 = ConnectWithBeamClient(particle_upper_left_wing_2, particle_upper_left_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_left_wing_7 = ConnectWithBeamClient(particle_upper_left_wing_4, particle_upper_left_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	
-	i_particle_ref_id[npc.index][0] = EntIndexToEntRef(ParticleOffsetMain);
-	i_particle_ref_id[npc.index][1] = EntIndexToEntRef(particle_upper_left_core);
-	i_laser_ref_id[npc.index][0] = EntIndexToEntRef(laser_upper_left_wing_1);
-	i_laser_ref_id[npc.index][1] = EntIndexToEntRef(laser_upper_left_wing_2);
-	i_laser_ref_id[npc.index][2] = EntIndexToEntRef(laser_upper_left_wing_3);
-	i_laser_ref_id[npc.index][3] = EntIndexToEntRef(laser_upper_left_wing_4);
-	i_laser_ref_id[npc.index][4] = EntIndexToEntRef(laser_upper_left_wing_5);
-	i_laser_ref_id[npc.index][5] = EntIndexToEntRef(laser_upper_left_wing_6);
-	i_laser_ref_id[npc.index][6] = EntIndexToEntRef(laser_upper_left_wing_7);
-
-
-	i_particle_ref_id[npc.index][2] = EntIndexToEntRef(particle_upper_left_wing_1);
-	i_particle_ref_id[npc.index][3] = EntIndexToEntRef(particle_upper_left_wing_2);
-	i_particle_ref_id[npc.index][4] = EntIndexToEntRef(particle_upper_left_wing_3);
-	i_particle_ref_id[npc.index][5] = EntIndexToEntRef(particle_upper_left_wing_4);
-	i_particle_ref_id[npc.index][6] = EntIndexToEntRef(particle_upper_left_wing_5);
-	i_particle_ref_id[npc.index][7] = EntIndexToEntRef(particle_upper_left_wing_6);
-
-
-	//upper right
-
-	int particle_upper_right_core = InfoTargetParentAt(core_loc, "", 0.0);
-
-
-	/*
-		X = +Left, -Right
-		Y = -Up, +Down
-		Z = +Backwards, -Forward
-	*/
-
-	int particle_upper_right_wing_1 = InfoTargetParentAt({-7.5, 0.0, -9.5}, "", 0.0);	//middle mid
-	int particle_upper_right_wing_2 = InfoTargetParentAt({-20.5, 10.0, -15.0}, "", 0.0);		//middle lower
-	int particle_upper_right_wing_3 = InfoTargetParentAt({-5.0, -25.0, 0.0}, "", 0.0);		//middle up	
-
-	int particle_upper_right_wing_4 = InfoTargetParentAt({-50.0, -15.0, 5.0}, "", 0.0);	//side up
-	int particle_upper_right_wing_5 = InfoTargetParentAt({-60.0, -10.0, 10.0}, "", 0.0);	//side mid
-	int particle_upper_right_wing_6 = InfoTargetParentAt({-55.0, 0.0, 2.5}, "", 0.0);	//side low
-
-
-	SetParent(particle_upper_right_core, particle_upper_right_wing_1, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_2, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_3, "",_, true);
-
-	SetParent(particle_upper_right_core, particle_upper_right_wing_4, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_5, "",_, true);
-	SetParent(particle_upper_right_core, particle_upper_right_wing_6, "",_, true);
-
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_upper_right_core, flPos);
-	SetEntPropVector(particle_upper_right_core, Prop_Data, "m_angRotation", flAng); 
-	SetParent(ParticleOffsetMain, particle_upper_right_core, "",_);
-
-	//start_1 = 2.0;
-	//end_1 = 0.5;
-	//amp =0.1;
-
-	int laser_upper_right_wing_1 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_2, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	int laser_upper_right_wing_2 = ConnectWithBeamClient(particle_upper_right_wing_1, particle_upper_right_wing_3, red, green, blue, start_1, start_1, amp, LASERBEAM);
-	
-	int laser_upper_right_wing_3 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_4, red, green, blue, end_1, end_1, amp, LASERBEAM);
-	int laser_upper_right_wing_4 = ConnectWithBeamClient(particle_upper_right_wing_5, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_right_wing_5 = ConnectWithBeamClient(particle_upper_right_wing_3, particle_upper_right_wing_4, red, green, blue, start_1, end_1, amp, LASERBEAM);
-	int laser_upper_right_wing_6 = ConnectWithBeamClient(particle_upper_right_wing_2, particle_upper_right_wing_6, red, green, blue, start_1, end_1, amp, LASERBEAM);
-
-	int laser_upper_right_wing_7 = ConnectWithBeamClient(particle_upper_right_wing_4, particle_upper_right_wing_6, red, green, blue, end_1, end_1, amp, LASERBEAM);
-
-	i_particle_ref_id[npc.index][8] = EntIndexToEntRef(particle_upper_right_core);
-	i_laser_ref_id[npc.index][7] = EntIndexToEntRef(laser_upper_right_wing_1);
-	i_laser_ref_id[npc.index][8] = EntIndexToEntRef(laser_upper_right_wing_2);
-	i_laser_ref_id[npc.index][9] = EntIndexToEntRef(laser_upper_right_wing_3);
-	i_laser_ref_id[npc.index][10] = EntIndexToEntRef(laser_upper_right_wing_4);
-	i_laser_ref_id[npc.index][11] = EntIndexToEntRef(laser_upper_right_wing_5);
-	i_laser_ref_id[npc.index][12] = EntIndexToEntRef(laser_upper_right_wing_6);
-	i_laser_ref_id[npc.index][13] = EntIndexToEntRef(laser_upper_right_wing_7);
-
-	i_particle_ref_id[npc.index][9] = EntIndexToEntRef(particle_upper_right_wing_1);
-	i_particle_ref_id[npc.index][10] = EntIndexToEntRef(particle_upper_right_wing_2);
-	i_particle_ref_id[npc.index][11] = EntIndexToEntRef(particle_upper_right_wing_3);
-	i_particle_ref_id[npc.index][12] = EntIndexToEntRef(particle_upper_right_wing_4);
-	i_particle_ref_id[npc.index][13] = EntIndexToEntRef(particle_upper_right_wing_5);
-	i_particle_ref_id[npc.index][14] = EntIndexToEntRef(particle_upper_right_wing_6);
+		for(int x=0 ; x < Lasers_Int ; x++)
+		{
+			i_laser_ref_id[npc.index][x+Lasers_Int*i] = EntIndexToEntRef(Lasers[x]);
+			//CPrintToChatAll("Laser loop %i", x+Lasers_Int*i);
+		}
+	}
+	Custom_SDKCall_SetLocalOrigin(Particle_Core, flPos);
+	SetEntPropVector(Particle_Core, Prop_Data, "m_angRotation", flAng); 
+	SetParent(ParticleOffsetMain, Particle_Core, "",_);
 }

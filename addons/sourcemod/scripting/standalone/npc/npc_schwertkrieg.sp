@@ -168,7 +168,7 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero(fl_groupteleport_timer);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Name, sizeof(data.Name), "SCHWERTKRIEG_TEMP_NAME");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_schwertkrieg");
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -685,7 +685,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
-					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
+					CPrintToChatAll("{crimson}SCHWERTKRIEG_TEMP_NAME{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 
