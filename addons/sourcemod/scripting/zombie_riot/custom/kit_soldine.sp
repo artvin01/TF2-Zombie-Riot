@@ -19,7 +19,7 @@ void West_Map_Precache()
 {
 	PrecacheSound(SOUND_JUMP);
 	PrecacheSound(SOUND_JUMP_MARKET);
-    PrecacheSound(SOUND_MARKET_EXPLOSION);
+	PrecacheSound(SOUND_MARKET_EXPLOSION);
 }
 
 public void Enable_Kit_Soldine(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
@@ -58,7 +58,7 @@ public Action Timer_Management_Soldine_Kit(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerSoldineKitManagement[client] = null;
-        FistReady = false;
+		FistReady = false;
 		return Plugin_Stop;
 	}	
 
@@ -101,11 +101,11 @@ public void Soldine_Jump(int client, int weapon, bool crit, int slot)
 			ScaleVector(velocity, knockback);
 			if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
 	  		{
-	      		velocity[2] = fmax(velocity[2], 600.0);
+		  		velocity[2] = fmax(velocity[2], 600.0);
 	 		}
 			else
 	  		{
-				velocity[2] += 300.0;    // a little boost to alleviate arcing issues
+				velocity[2] += 300.0;	// a little boost to alleviate arcing issues
 	  		}
 			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 			CreateTimer(0.2, Timer_SoldineActivation, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -129,22 +129,22 @@ void Soldine_Fist_Swing(int client, float &CustomMeleeRange, float &CustomMeleeW
 	CustomMeleeRange = 50.0;
 	CustomMeleeWide = 20.0;
 
-    if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
-    {
-        CustomMeleeRange *= 1.5;
-        CustomeMeleeWide *= 1.5;
-    }
-    else
-    {
-        CustomMeleeRange = 50.0;
-	    CustomMeleeWide = 20.0;
-    }
+	if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+	{
+		CustomMeleeRange *= 1.5;
+		CustomeMeleeWide *= 1.5;
+	}
+	else
+	{
+		CustomMeleeRange = 50.0;
+		CustomMeleeWide = 20.0;
+	}
 }
 
 void SoldineFist_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)
 {
-    if  ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
-    {
+	if  ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+	{
 
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -169,11 +169,11 @@ void SoldineFist_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 			BaseDMG *= 1.5;
 		}
 
-        float spawnLoc[3];
+		float spawnLoc[3];
 		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 		EmitAmbientSound(SOUND_MARKET_EXPLOSION, spawnLoc, entity, 70,_, 1.2);
 		ParticleEffectAt(position, "hightower_explosion", 1.5);
-    }
+	}
 }
 
 public Action Timer_SoldineActivation(Handle timer, any userid)
@@ -194,16 +194,16 @@ void CreateSoldineEffect(int client)
 	}
 	DestroySoldineEffect(client);
 	if(FistReady)
-    {
+	{
 		TF2_AddCondition(client, TFCond_KingAura);
-       	float flPos[3];
-        float flAng[3];
-        GetAttachment (client, "effect_hand_r", flPos, flAng);
-        int particle = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.0);
-        AddEntityToThirdPersonTransitMode(client, particle);
-        SetParent(client, particle, "effect_hand_r");
-        i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
-    }
+	   	float flPos[3];
+		float flAng[3];
+		GetAttachment (client, "effect_hand_r", flPos, flAng);
+		int particle = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.0);
+		AddEntityToThirdPersonTransitMode(client, particle);
+		SetParent(client, particle, "effect_hand_r");
+		i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+	}
 
 }
 void DestroySoldineEffect(int client)
