@@ -57,7 +57,7 @@ public Action Timer_Management_Soldine_Kit(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_TimerSoldineKitManagement[client] = null;
-		FistReady = false;
+		FistReady[client] = false;
 		return Plugin_Stop;
 	}	
 
@@ -75,7 +75,7 @@ public Action Timer_Management_Soldine_Kit(Handle timer, DataPack pack)
 
 	if(GetEntityFlags(client) & FL_ONGROUND)
 	{
-		FistReady = false;
+		FistReady[client] = false;
 		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
 	}
 		
@@ -184,7 +184,7 @@ public Action Timer_SoldineActivation(Handle timer, any userid)
 	//PrintToChatAll("Rapid Hyper Activate");
 	EmitSoundToAll(SOUND_JUMP_Activation, client, SNDCHAN_AUTO, 70, _, 1.2);
 	TF2_AddCondition(client, TFCond_HalloweenCritCandy);
-	FistReady = true;
+	FistReady[client] = true;
 	return Plugin_Stop;
 }
 
@@ -195,7 +195,7 @@ void CreateSoldineEffect(int client)
 		return;
 	}
 	DestroySoldineEffect(client);
-	if(FistReady)
+	if(FistReady[client])
 	{
 		TF2_AddCondition(client, TFCond_KingAura);
 	   	float flPos[3];
