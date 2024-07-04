@@ -76,7 +76,7 @@ void Barracks_Combine_Pistol_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barracks_Combine_Pistol(client, vecPos, vecAng, team);
+	return Barracks_Combine_Pistol(client, vecPos, vecAng, ally);
 }
 
 methodmap Barracks_Combine_Pistol < BarrackBody
