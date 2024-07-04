@@ -74,7 +74,7 @@ void Barracks_Combine_Pistol_Precache()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, const float vecPos[3], const float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barracks_Combine_Pistol(client, vecPos, vecAng, team);
 }
