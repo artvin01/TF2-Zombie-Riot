@@ -218,8 +218,8 @@ static void ClotThink(int iNPC)
 				npc.m_flAttackHappens = 0.0;
 				
 				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
+				npc.FaceTowards(vecTarget, 20000.0);
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
