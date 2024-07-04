@@ -140,18 +140,18 @@ void Soldine_Fist_Swing(int client, float &CustomMeleeRange, float &CustomMeleeW
 	}
 }
 
-void SoldineFist_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)
+void SoldineFist_OnTakeDamage(int attacker,int victim, int damagetype,int weapon)
 {
 	if ((GetEntityFlags(attacker) & FL_ONGROUND) != 0 || GetEntProp(attacker, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(attacker, TFCond_HalloweenCritCandy))
 	{
 		if(damagetype & DMG_CLUB)
 		{
 			static float angles[3];
-			GetEntPropVector(attacker, Prop_Send, "m_angRotation", angles);
+			GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			float position[3];
-			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", position);
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
 
 			int owner = EntRefToEntIndex(i_WandOwner[attacker]);
 
@@ -171,7 +171,7 @@ void SoldineFist_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 
 			float spawnLoc[3];
 			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-			EmitAmbientSound(SOUND_MARKET_EXPLOSION, spawnLoc, entity, 70,_, 1.2);
+			EmitAmbientSound(SOUND_MARKET_EXPLOSION, spawnLoc, victim, 70,_, 1.2);
 			ParticleEffectAt(position, "hightower_explosion", 1.5);
 		}
 

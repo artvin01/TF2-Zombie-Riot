@@ -908,7 +908,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_KIT_SOLDINE:
 		{
-			SoldineFist_OnTakeDamage(attacker,victim, damagetype,weapon, damage);
+			SoldineFist_OnTakeDamage(attacker,victim, damagetype,weapon);
 		}
 	}
 #endif
