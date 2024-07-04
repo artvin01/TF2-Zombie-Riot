@@ -430,6 +430,53 @@ static int SummonerBase[][] =
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
+static const char SummonerCombineNPC[][] =
+{
+	"npc_barrack_combine_pistol",
+	
+	"npc_barrack_combine_smg",
+	"npc_barrack_combine_swordsman",
+	
+	"npc_barrack_combine_ar2",
+	"npc_barrack_combine_ddt",
+	
+	"npc_barrack_combine_shotgun",
+	"npc_barrack_combine_giant_swordsman",
+	
+	"npc_barrack_combine_elite",
+	"npc_barrack_combine_collos",
+	
+	"npc_barrack_combine_sniper",
+	"npc_barrack_combine_giant_ddt",
+	
+	"npc_barrack_combine_overlord",
+	"npc_barrack_villager"
+};
+
+static int SummonerCombine[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
+	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+
+	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+
+	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+
+	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+
+	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+
+	{ 0, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	
+	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+};
+
 static const char SummonerThornsNPC[][] =
 {
 	"npc_barrack_militia",
@@ -589,6 +636,11 @@ static void SetupNPCIndexes()
 		SummonerBase[i][NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
 	}
 
+	for(int i; i < sizeof(SummonerCombineNPC); i++)
+	{
+		SummonerCombineNPC[i][NPCIndex] = NPC_GetByPlugin(SummonerCombineNPC[i]);
+	}
+
 	for(int i; i < sizeof(SummonerThorns); i++)
 	{
 		SummonerThorns[i][NPCIndex] = NPC_GetByPlugin(SummonerThornsNPC[i]);
@@ -606,6 +658,9 @@ static int GetUnitCount(int civ)
 	{
 		case Thorns:
 			return sizeof(SummonerThorns);
+		
+		case Combine:
+			return sizeof(SummonerCombine);
 			
 		case Alternative:
 			return sizeof(SummonerAlternative);
@@ -621,6 +676,9 @@ static int GetSData(int civ, int unit, int index)
 	{
 		case Thorns:
 			return SummonerThorns[unit][index];
+
+		case Combine:
+			return SummonerCombine[unit][index];
 			
 		case Alternative:
 			return SummonerAlternative[unit][index];
