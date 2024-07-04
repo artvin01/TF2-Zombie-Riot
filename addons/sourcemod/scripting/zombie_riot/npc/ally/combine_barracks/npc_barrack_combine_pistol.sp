@@ -156,6 +156,9 @@ static void ClotThink(int iNPC)
 {
 	Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(iNPC);
 	float gameTime = GetGameTime(npc.index);
+
+    int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
+    
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
