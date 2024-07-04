@@ -213,6 +213,6 @@ void DestroySoldineEffect(int client)
 	{
 		RemoveEntity(entity);
 	}
-	TF2_RemoveCondition(int client, TFCond_KingAura);
+	TF2_RemoveCondition(client, TFCond_KingAura);
 	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
 }
