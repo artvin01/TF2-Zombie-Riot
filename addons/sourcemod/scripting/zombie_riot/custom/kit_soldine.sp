@@ -13,9 +13,9 @@ static bool FistReady[MAXPLAYERS];
 
 void ResetMapStartSoldine()
 {
-	West_Map_Precache();
+	Soldine_Map_Precache();
 }
-void West_Map_Precache()
+void Soldine_Map_Precache()
 {
 	PrecacheSound(SOUND_JUMP);
 	PrecacheSound(SOUND_JUMP_MARKET);
