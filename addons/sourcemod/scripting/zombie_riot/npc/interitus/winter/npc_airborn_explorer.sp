@@ -368,7 +368,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 				{
 					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 2.0;
 
 					if (!npc.IsOnGround())
 					{

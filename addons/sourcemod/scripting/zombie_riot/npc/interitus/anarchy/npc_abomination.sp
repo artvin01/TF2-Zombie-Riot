@@ -396,7 +396,7 @@ public void AnarchyAbomination_Rocket_Particle_StartTouch(int entity, int target
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
 		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= 5.0;
+			DamageDeal *= 2.5;
 
 		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
 
