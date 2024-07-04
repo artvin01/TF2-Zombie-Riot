@@ -906,6 +906,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Merchant_GunTakeDamage(victim, attacker, damage);
 		}
+		case WEAPON_KIT_SOLDINE:
+		{
+			Merchant_GunTakeDamage(victim, attacker, damage);
+		}
 	}
 #endif
 

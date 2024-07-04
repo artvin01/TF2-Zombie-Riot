@@ -181,7 +181,8 @@ enum
 	WEAPON_VICTORIAN_LAUNCHER = 101,
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
-	WEAPON_MERCHANTGUN = 104
+	WEAPON_MERCHANTGUN = 104,
+	WEAPON_KIT_SOLDINE = 105
 }
 
 enum
@@ -510,6 +511,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_victorian.sp"
 #include "zombie_riot/custom/weapon_obuch.sp"
 #include "zombie_riot/custom/kit_merchant.sp"
+#include "zombie_riot/custom/kit_soldine.sp"
 
 void ZR_PluginLoad()
 {
@@ -748,6 +750,7 @@ void ZR_MapStart()
 	Object_MapStart();
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
+	ResetMapStartSoldine();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

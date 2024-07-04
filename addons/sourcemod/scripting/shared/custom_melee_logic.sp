@@ -228,6 +228,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
 			}
+			case WEAPON_KIT_SOLDINE:
+			{
+				Soldine_Fist_Swing(client, CustomMeleeRange, CustomMeleeWide);
+			}
 		}	
 	}
 #endif
