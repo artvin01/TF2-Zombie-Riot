@@ -118,10 +118,10 @@ methodmap Barracks_Combine_Pistol < BarrackBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
 	}
 	
-	public Barracks_Combine_Pistol(int client, const float vecPos[3], const float vecAng[3], int team)
+	public Barracks_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
-		
+
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		
