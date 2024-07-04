@@ -67,7 +67,7 @@ public Action Timer_Management_Soldine_Kit(Handle timer, DataPack pack)
 	{
 		CreateSoldineEffect(client);
 		Victorian_Cooldown_Logic(client, weapon);
-		TF2_RemoveCondition(int client, TFCond_KingAura);
+		TF2_RemoveCondition(client, TFCond_KingAura);
 	}
 	else
 	{
