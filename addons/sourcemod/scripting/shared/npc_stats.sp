@@ -5843,6 +5843,11 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		//This was an enemy.
+		if(Rogue_Mode())
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+			return;
+		}
 		int Spawner_entity = GetRandomActiveSpawner();
 		if(IsValidEntity(Spawner_entity))
 		{
