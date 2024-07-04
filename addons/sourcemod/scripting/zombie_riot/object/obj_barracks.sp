@@ -363,6 +363,7 @@ enum
 	Default = 0,
 	Thorns = 1,
 	Alternative = 2,
+	Combine = 3,
 	Civ_number_2
 }
 
