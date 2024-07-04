@@ -65,6 +65,7 @@ enum struct Round
 	int GrigoriMaxSellsItems;
 	float Setup;
 	bool NoMiniboss;
+	bool NoBarney;
 	ArrayList Waves;
 	
 	char Skyname[64];
@@ -598,6 +599,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
 		round.NoMiniboss = view_as<bool>(kv.GetNum("no_miniboss"));
+		round.NoBarney = view_as<bool>(kv.GetNum("no_barney"));
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
@@ -1296,7 +1298,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			panzer_chance--;
 			//always increace chance of miniboss.
-			if(!rogue && CurrentRound == 4)
+			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
