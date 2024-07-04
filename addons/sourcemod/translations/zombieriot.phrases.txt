@@ -3165,4 +3165,9 @@
 	{
 		"en"	"Your barracks gained resouces from this action!"
 	}
+	"Resource Gain Mult Villager"
+	{
+		"#format"	"{1:.1f},{2:.1f}"
+		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
+	}
 }
