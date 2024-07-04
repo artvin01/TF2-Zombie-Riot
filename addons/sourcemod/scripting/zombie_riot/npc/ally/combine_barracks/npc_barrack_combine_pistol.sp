@@ -120,7 +120,7 @@ methodmap Barracks_Combine_Pistol < BarrackBody
 	
 	public Barracks_Combine_Pistol(int client, const float vecPos[3], const float vecAng[3], int team)
 	{
-		Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(CClotBody(vecPos, vecAng, "models/police.mdl", "1.15", "200", team));
+		Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
