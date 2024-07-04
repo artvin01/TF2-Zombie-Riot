@@ -286,7 +286,7 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 				{
 					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.5;
+						damageDealt *= 1.75;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
