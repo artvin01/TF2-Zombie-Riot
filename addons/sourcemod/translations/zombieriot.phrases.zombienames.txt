@@ -707,6 +707,10 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
