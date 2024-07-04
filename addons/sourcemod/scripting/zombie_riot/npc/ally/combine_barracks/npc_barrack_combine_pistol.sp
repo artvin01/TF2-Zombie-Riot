@@ -157,7 +157,7 @@ static void ClotThink(int iNPC)
 	Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(iNPC);
 	float gameTime = GetGameTime(npc.index);
 
-	int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
+	int client = BarrackBody_ThinkTarget(npc.index, true, gameTime);
 	
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -221,8 +221,10 @@ static void ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
 				{
-					target = TR_GetEntityIndex(swingTrace);
-
+					int target = TR_GetEntityIndex(swingTrace);	
+					
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
 					if(target > 0)
 					{
 						npc.PlayMeleeHitSound();
