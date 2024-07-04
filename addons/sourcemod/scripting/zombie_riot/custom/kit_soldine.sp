@@ -2,8 +2,7 @@
 #pragma newdecls required
 
 static Handle h_TimerSoldineKitManagement[MAXPLAYERS+1] = {null, ...};
-static float f_West_Aim_Duration[MAXPLAYERS+1];
-static int i_West_Target[MAXPLAYERS+1];
+static int i_SoldineParticle[MAXTF2PLAYERS];
 
 #define SOUND_JUMP 	"weapon/rocket_ll_shoot.wav"
 #define SOUND_JUMP_Activation 	"items/powerup_pickup_agility.wav"
@@ -18,7 +17,7 @@ void ResetMapStartSoldine()
 void Soldine_Map_Precache()
 {
 	PrecacheSound(SOUND_JUMP);
-	PrecacheSound(SOUND_JUMP_MARKET);
+	PrecacheSound(SOUND_JUMP_Activation);
 	PrecacheSound(SOUND_MARKET_EXPLOSION);
 }
 
@@ -132,7 +131,7 @@ void Soldine_Fist_Swing(int client, float &CustomMeleeRange, float &CustomMeleeW
 	if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 	{
 		CustomMeleeRange *= 1.5;
-		CustomeMeleeWide *= 1.5;
+		CustomMeleeWide *= 1.5;
 	}
 	else
 	{
@@ -143,36 +142,39 @@ void Soldine_Fist_Swing(int client, float &CustomMeleeRange, float &CustomMeleeW
 
 void SoldineFist_OnTakeDamage(int attacker, float &damage, int weapon, int zr_damage_custom)
 {
-	if  ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
+	if ((GetEntityFlags(attacker) & FL_ONGROUND) != 0 || GetEntProp(attacker, Prop_Send, "m_nWaterLevel") >= 1 && TF2_IsPlayerInCondition(attacker, TFCond_HalloweenCritCandy))
 	{
-
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		float position[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-
-		float BaseDMG = 1000.0;
-		BaseDMG *= Attributes_Get(weapon, 2, 1.0);
-		BaseDMG *= Attributes_Get(weapon, 1, 1.0);
-
-		float Radius = EXPLOSION_RADIUS;
-		Radius *= Attributes_Get(weapon, 99, 1.0);
-
-		float Falloff = Attributes_Get(weapon, 117, 1.0);
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		if(RaidbossIgnoreBuildingsLogic(1))
+		if(damagetype & DMG_CLUB)
 		{
-			BaseDMG *= 1.5;
+			static float angles[3];
+			GetEntPropVector(attacker, Prop_Send, "m_angRotation", angles);
+			float vecForward[3];
+			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+			float position[3];
+			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", position);
+
+			int owner = EntRefToEntIndex(i_WandOwner[attacker]);
+
+			float BaseDMG = 1000.0;
+			BaseDMG *= Attributes_Get(weapon, 2, 1.0);
+			BaseDMG *= Attributes_Get(weapon, 1, 1.0);
+
+			float Radius = EXPLOSION_RADIUS;
+			Radius *= Attributes_Get(weapon, 99, 1.0);
+
+			float Falloff = Attributes_Get(weapon, 117, 1.0);
+			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				BaseDMG *= 1.5;
+			}
+
+			float spawnLoc[3];
+			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+			EmitAmbientSound(SOUND_MARKET_EXPLOSION, spawnLoc, entity, 70,_, 1.2);
+			ParticleEffectAt(position, "hightower_explosion", 1.5);
 		}
 
-		float spawnLoc[3];
-		Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-		EmitAmbientSound(SOUND_MARKET_EXPLOSION, spawnLoc, entity, 70,_, 1.2);
-		ParticleEffectAt(position, "hightower_explosion", 1.5);
 	}
 }
 
@@ -188,7 +190,7 @@ public Action Timer_SoldineActivation(Handle timer, any userid)
 
 void CreateSoldineEffect(int client)
 {
-	if(!IsValidEntity(i_VictoriaParticle[client]))
+	if(!IsValidEntity(i_SoldineParticle[client]))
 	{
 		return;
 	}
@@ -202,17 +204,17 @@ void CreateSoldineEffect(int client)
 		int particle = ParticleEffectAt(flPos, "raygun_projectile_blue_crit", 0.0);
 		AddEntityToThirdPersonTransitMode(client, particle);
 		SetParent(client, particle, "effect_hand_r");
-		i_VictoriaParticle[client][0] = EntIndexToEntRef(particle);
+		i_SoldineParticle[client][0] = EntIndexToEntRef(particle);
 	}
 
 }
 void DestroySoldineEffect(int client)
 {
-	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+	int entity = EntRefToEntIndex(i_SoldineParticle[client]);
 	if(IsValidEntity(entity))
 	{
 		RemoveEntity(entity);
 	}
 	TF2_RemoveCondition(client, TFCond_KingAura);
-	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
+	i_SoldineParticle[client] = INVALID_ENT_REFERENCE;
 }
