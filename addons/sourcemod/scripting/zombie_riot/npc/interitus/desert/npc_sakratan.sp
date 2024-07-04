@@ -270,8 +270,8 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 30.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+				//	if(ShouldNpcDealBonusDamage(target))
+				//		damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
