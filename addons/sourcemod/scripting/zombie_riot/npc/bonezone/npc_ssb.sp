@@ -3228,8 +3228,6 @@ public void Harvester_Logic(DataPack pack)
 		ssb.RevertSequence();
 		ssb.DmgMult = 1.0;
 
-		//TODO: Outro sequence
-
 		return;
 	}
 
