@@ -1,0 +1,18 @@
+
+"Phrases"
+{
+	"Capacity"
+	{
+		"#format"	"{1:d}"
+		"en" 		"Capacity: [{1}]"
+	}
+	"Zombie In Battle Logic Setting"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"In Battle Time: [{1}]"
+	}
+	"Show Ragdoll Hint Message"
+	{
+		"en"		"Please set, set ''g_ragdoll_fadespeed'' to NOT 0, in the console! any value higher then 0 works (1 is good enough, 600 is default)! If you dont do this, you WILL crash!"
+	}
+}

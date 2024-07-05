@@ -70,6 +70,10 @@ static void ClotPrecache()
 	{
 		PrecacheSoundCustom(SoundZomgPop[i]);
 	}
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
 	
 	PrecacheModel("models/zombie_riot/btd/bad.mdl");
 }

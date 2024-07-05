@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_BonusLife_Collect()
 {
 	Rogue_AddBonusLife(1);
@@ -73,12 +76,10 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 public void Rogue_Spearhead_Weapon(int entity)

@@ -64,6 +64,8 @@ enum struct Round
 	bool SpawnGrigori;
 	int GrigoriMaxSellsItems;
 	float Setup;
+	bool NoMiniboss;
+	bool NoBarney;
 	ArrayList Waves;
 	
 	char Skyname[64];
@@ -94,6 +96,7 @@ static ArrayList MiniBosses;
 static float Cooldown;
 static bool InSetup;
 //static bool InFreeplay;
+static int FakeMaxWaves;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
@@ -148,6 +151,7 @@ void Waves_MapStart()
 	delete g_AllocPooledStringCache;
 	FogEntity = INVALID_ENT_REFERENCE;
 	SkyNameRestore[0] = 0;
+	FakeMaxWaves = 0;
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -565,6 +569,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
+	FakeMaxWaves = kv.GetNum("fakemaxwaves");
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -593,6 +598,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
+		round.NoMiniboss = view_as<bool>(kv.GetNum("no_miniboss"));
+		round.NoBarney = view_as<bool>(kv.GetNum("no_barney"));
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
@@ -784,7 +791,6 @@ void Waves_RoundStart()
 		Store_Reset();
 		CurrentGame = GetTime();
 		CurrentCash = StartCash;
-		PrintToChatAll("%t", "Be sure to spend all your starting cash!");
 		for(int client=1; client<=MaxClients; client++)
 		{
 			CurrentAmmo[client] = CurrentAmmo[0];
@@ -1084,7 +1090,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = playercount * 0.2;
-					MultiGlobalArkantos = multiBoss;
+					MultiGlobalAlaxios = multiBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -1111,7 +1117,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 			CurrentCash += round.Cash;
 			if(round.Cash)
 			{
@@ -1291,17 +1296,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(!rogue && CurrentRound == 4)
+			panzer_chance--;
+			//always increace chance of miniboss.
+			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(CurrentRound == 11)
+			else if(CurrentRound == 11 && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > 11 && round.Setup <= 30.0))
+			else if((CurrentRound > 11 && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				panzer_spawn = chance;
@@ -1312,7 +1319,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				else
 				{
-					panzer_chance--;
 					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
@@ -1454,6 +1460,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					}
 				}
 			}
+
+			SteamWorks_UpdateGameTitle();
 			
 			//MUSIC LOGIC
 			if(CurrentRound == length)
@@ -1570,7 +1578,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
-				Store_RandomizeNPCStore(0, 99, 1);
+				Store_RandomizeNPCStore(0, _, true);
 				if(refreshNPCStore)
 					Store_RandomizeNPCStore(0);
 				
@@ -1582,7 +1590,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				Store_RandomizeNPCStore(0);
 
 			
-			Store_RandomizeNPCStore(0, 99, 1);
+			Store_RandomizeNPCStore(0, _, true);
 		}
 	}
 	else if(Rogue_Mode())
@@ -1878,6 +1886,11 @@ int Waves_GetRound()
 	return CurrentRound;
 }
 
+int Waves_GetMaxRound()
+{
+	return FakeMaxWaves ? FakeMaxWaves : (Rounds.Length-1);
+}
+
 public int Waves_GetWave()
 {
 	if(Rogue_Mode())
@@ -1927,11 +1940,14 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 
 void WaveEndLogicExtra()
 {
+	Building_WaveEnd();
 	SeaFounder_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
 	LeperResetUses();
+	Building_ResetRewardValuesWave();
+	FallenWarriorGetRandomSeedEachWave();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{
@@ -2056,7 +2072,7 @@ void DoGlobalMultiScaling()
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
-	MultiGlobalArkantos = playercount * 0.2;
+	MultiGlobalAlaxios = playercount * 0.2;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2293,6 +2309,9 @@ static void UpdateMvMStatsFrame()
 			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
+			if(FakeMaxWaves)
+				maxwaves = FakeMaxWaves;
+
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveCount", CurrentRound + 1);
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineMaxWaveCount", CurrentRound < maxwaves ? maxwaves : 0);
 
@@ -2368,6 +2387,65 @@ static int SetupFlags(const Enemy data, bool support)
 	return flags;
 }
 
+static Handle ReadyUpTimer;
+
+static Action ReadyUpHack(Handle timer)
+{
+	// We can't call ResetPlayerAndTeamReadyState to reset m_bPlayerReadyBefore
+	// So the timer won't go down as players ready up again
+	// Were doing it ourselves here
+
+	if(FindEntityByClassname(-1, "tf_gamerules") != -1 && GameRules_GetRoundState() == RoundState_BetweenRounds)
+	{
+		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
+		if(time > 0.0)
+			time -= GetGameTime();
+
+		if(time < 12.0 && time > 8.0)
+		{
+			GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+			return Plugin_Continue;
+		}
+		int ready, players;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == TFTeam_Red)
+			{
+				players++;
+				if(GameRules_GetProp("m_bPlayerReady", _, client))
+					ready++;
+			}
+		}
+		
+		if(time > 12.0 || time < 0.0)
+		{
+			float set = -1.0;
+			
+			if(ready == players)
+			{
+				set = 12.0;
+			}
+			else if(ready > 0)
+			{
+				set = 150.0 - (120.0 * float(ready - 1) / float(players - 1));
+			}
+
+			if(time != set && (time < 0.0 || set < time))
+			{
+				if(set > 0.0)
+					set += GetGameTime();
+				
+				GameRules_SetPropFloat("m_flRestartRoundTime", set);
+			}
+
+			return Plugin_Continue;
+		}
+	}
+
+	ReadyUpTimer = null;
+	return Plugin_Stop;
+}
+
 void Waves_SetReadyStatus(int status)
 {
 	switch(status)
@@ -2390,9 +2468,13 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
 
+			if(!ReadyUpTimer)
+				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+			
+		//	KillFeed_ForceClear();
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2401,6 +2483,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 		case 2:	// Waiting
 		{
@@ -2415,7 +2498,7 @@ void Waves_SetReadyStatus(int status)
 			
 			KillFeed_ForceClear();
 			SDKCall_ResetPlayerAndTeamReadyState();
-			
+			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{
 				if(IsClientInGame(client))
@@ -2424,6 +2507,7 @@ void Waves_SetReadyStatus(int status)
 						KillFeed_SetBotTeam(client, TFTeam_Blue);
 				}
 			}
+			*/
 		}
 	}
 }
@@ -2509,6 +2593,7 @@ void Waves_SetDifficultyName(const char[] name)
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), name);
 	WavesUpdateDifficultyName();
+	SteamWorks_UpdateGameTitle();
 }
 
 void WavesUpdateDifficultyName()

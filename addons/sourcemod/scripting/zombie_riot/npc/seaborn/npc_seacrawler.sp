@@ -35,7 +35,7 @@ void SeaCrawler_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seacrawler");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_crawler");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -177,7 +177,7 @@ public void SeaCrawler_ExplodePost(int attacker, int victim, float damage, int w
 {
 	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
 	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
-	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage));
+	Elemental_AddNervousDamage(victim, attacker, RoundToCeil(damage));
 }
 
 public Action SeaCrawler_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)

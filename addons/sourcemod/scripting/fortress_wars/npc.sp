@@ -19,7 +19,10 @@ int NPC_Add(NPCData data)
 		ThrowError("Invalid function name");
 
 	if(!TranslationPhraseExists(data.Name))
+	{
 		LogError("Translation '%s' does not exist", data.Name);
+		strcopy(data.Name, sizeof(data.Name), "nothing");
+	}
 	
 	char buffer[32];
 	FormatEx(buffer, sizeof(buffer), "%s Desc", data.Name);

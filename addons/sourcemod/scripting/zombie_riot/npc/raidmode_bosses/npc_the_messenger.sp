@@ -1130,7 +1130,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								if(NpcStats_IsEnemySilenced(npc.index))
 									ChaosDamage = 100;
 
-								Sakratan_AddNeuralDamage(targetTrace, npc.index, ChaosDamage, true, true);
+								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
 							}
 
 							if(!Knocked)
@@ -1233,7 +1233,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 					ChaosDamage = 30;
 			}
 
-			Sakratan_AddNeuralDamage(target, owner, ChaosDamage, true, true);
+			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
 		}
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))

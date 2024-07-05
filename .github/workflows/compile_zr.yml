@@ -43,6 +43,7 @@ jobs:
           wget "https://raw.githubusercontent.com/nosoop/SM-TFUtils/master/scripting/include/tf2utils.inc"
           wget "https://raw.githubusercontent.com/Batfoxkid/File-Network/main/scripting/include/filenetwork.inc"
           wget "https://raw.githubusercontent.com/nosoop/SMExt-SourceScramble/master/scripting/include/sourcescramble.inc"
+          wget "https://raw.githubusercontent.com/KyleSanderson/SteamWorks/master/Pawn/includes/SteamWorks.inc"
           wget "https://raw.githubusercontent.com/TF2-DMB/CBaseNPC/master/scripting/include/cbasenpc.inc"
           mkdir cbasenpc
           cd cbasenpc
@@ -76,7 +77,7 @@ jobs:
       
       - name: Compile ${{ matrix.sm-version }}
         run: |
-          spcomp -E -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
+          spcomp -O2 -v2 -i "include" -o zombie_riot.smx zombie_riot.sp
         working-directory: ${{ env.SCRIPTS_PATH }}
       
       - name: Upload Artifacts

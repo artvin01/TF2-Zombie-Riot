@@ -25,8 +25,8 @@ void SpecialDoctor_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rouge Expidonsan Doctor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_special");
-	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "expidonsan_doctor");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;

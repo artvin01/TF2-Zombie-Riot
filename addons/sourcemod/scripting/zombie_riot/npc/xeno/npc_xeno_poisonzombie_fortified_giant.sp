@@ -54,7 +54,7 @@ public void XenoFortifiedGiantPoisonZombie_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -146,7 +146,9 @@ methodmap XenoFortifiedGiantPoisonZombie < CClotBody
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		
+		//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
+		SetVariantInt(15);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
@@ -186,9 +188,6 @@ public void XenoFortifiedGiantPoisonZombie_ClotThink(int iNPC)
 {
 	XenoFortifiedGiantPoisonZombie npc = view_as<XenoFortifiedGiantPoisonZombie>(iNPC);
 	
-	//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
-	SetVariantInt(15);
-	AcceptEntityInput(iNPC, "SetBodyGroup");
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{

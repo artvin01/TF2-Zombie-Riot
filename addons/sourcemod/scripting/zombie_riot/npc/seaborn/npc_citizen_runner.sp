@@ -37,7 +37,7 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false,_,_,_,_,_,true));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false));
 		
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");

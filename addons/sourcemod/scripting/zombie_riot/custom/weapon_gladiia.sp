@@ -470,7 +470,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			
-			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
+			SDKHooks_TakeDamage(entity, client, client, damage, DMG_PLASMA, weapon);
 
 			EmitSoundToAll("weapons/grappling_hook_impact_flesh.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 			EmitSoundToAll("weapons/grappling_hook_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -550,13 +550,22 @@ void Gladiia_WandTouch(int entity, int target)
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);
+		
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(particle > MaxClients)
+			RemoveEntity(particle);
+		
+		EmitGameSoundToAll("Underwater.BulletImpact", entity);
+		RemoveEntity(entity);
 	}
-
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if(particle > MaxClients)
-		RemoveEntity(particle);
-	
-	EmitGameSoundToAll("Underwater.BulletImpact", entity);
-	RemoveEntity(entity);
+	else if(target == 0)
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(particle > MaxClients)
+			RemoveEntity(particle);
+		
+		EmitGameSoundToAll("Underwater.BulletImpact", entity);
+		RemoveEntity(entity);
+	}
 }

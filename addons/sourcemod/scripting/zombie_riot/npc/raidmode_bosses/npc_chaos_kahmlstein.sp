@@ -1489,7 +1489,7 @@ int ChaosKahmlsteinSelfDefense(ChaosKahmlstein npc, float gameTime, int target, 
 								}
 							}
 
-							Sakratan_AddNeuralDamage(targetTrace, npc.index, 100, true, true);
+							Elemental_AddChaosDamage(targetTrace, npc.index, 100, true, true);
 
 							if(!Knocked)
 								Custom_Knockback(npc.index, targetTrace, 650.0); 
@@ -1632,6 +1632,7 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		MakeObjectIntangeable(KamlcloneSpawn);
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
+		b_NpcIsInvulnerable[KamlcloneSpawn] = true;
 		b_ThisNpcIsImmuneToNuke[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;
@@ -1655,7 +1656,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 
@@ -1812,7 +1813,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			

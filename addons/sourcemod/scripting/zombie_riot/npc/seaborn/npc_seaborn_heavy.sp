@@ -181,7 +181,7 @@ public void SeabornHeavy_ClotThink(int iNPC)
 					{
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 10);
+						Elemental_AddNervousDamage(target, npc.index, 10);
 					}
 				}
 

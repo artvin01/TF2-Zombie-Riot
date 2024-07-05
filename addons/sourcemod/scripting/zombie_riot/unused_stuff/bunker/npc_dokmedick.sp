@@ -1206,7 +1206,7 @@ public void MoonLight_Invoke(int ref, int enemy, float timer, float charge)
 		timer+=charge;
 
 		float time=MoonLight_Duration[npc.index]+charge;
-		MoonLight_Duration[npc.index]*=66.0;
+		MoonLight_Duration[npc.index]*=float(TickrateModifyInt);
 		//MoonLight_RemainingDuration[npc.index] = 0.0;
 		
 		MoonLight_Scale2_timer[npc.index]=GetGameTime(npc.index)+(timer/3)+charge;	//makes it so the 3 beam rings spawn in 3 seperate times.

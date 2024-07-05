@@ -56,7 +56,7 @@ void Cosmic_Map_Precache()
 
 static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1]={null, ...};
 static bool Handle_on[MAXPLAYERS+1]={false, ...};
-static int Cosmic_Dmg_Throttle[MAXPLAYERS+1]={0,...};
+static float Cosmic_Dmg_Throttle[MAXPLAYERS+1]={0.0,...};
 static int Cosmic_TE_Throttle[MAXPLAYERS+1]={0,...};
 static int Cosmic_Heat[MAXPLAYERS+1]={0,...};
 static float Cosmic_Heat_Max[MAXPLAYERS+1]={0.0,...};
@@ -97,18 +97,18 @@ public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 	{
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
-	Cosmic_Heat_Max[client]=1350.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 2.5;	//how fast the beam is
+	Cosmic_Heat_Max[client]=1350.0*TickrateModify; //How much heat before we force a shutdown.
+	Cosmic_Base_BeamSpeed[client] = 2.5/TickrateModify;	//how fast the beam is
 	Cosmic_Radius[client] = 100.0;	//damage radius
 	Cosmic_Terror_Pap[client]=0;
 	i_effect_amount[client] = 3;
-	fl_sping_speed[client] = 1.5;
+	fl_sping_speed[client] = 1.5/TickrateModify;
 	float time = 4.0;
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
 	Cosmic_Terror_Sound_Charge_Timer[client]=time/4.0;
 	Cosmic_Terror_Charge_Timer_Base[client] = time;
 	//Nothing configure here.
-	Cosmic_Dmg_Throttle[client]=0;
+	Cosmic_Dmg_Throttle[client]=0.0;
 	Cosmic_TE_Throttle[client]=0;
 	Cosmic_Terror_Sound_Tick[client]=0;
 	Cosmic_Terror_Charge_Sound_interval[client]=0;
@@ -124,8 +124,8 @@ public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 	{
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
-	Cosmic_Heat_Max[client]=1750.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 3.5;	//how fast the beam is
+	Cosmic_Heat_Max[client]=1750.0*TickrateModify; //How much heat before we force a shutdown.
+	Cosmic_Base_BeamSpeed[client] = 3.5/TickrateModify;	//how fast the beam is
 	Cosmic_Radius[client] = 120.0;	//damage radius
 	Cosmic_Terror_Pap[client]=1;
 	i_effect_amount[client] = 5;
@@ -133,10 +133,10 @@ public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
 	Cosmic_Terror_Sound_Charge_Timer[client]=time/4.0;
 	Cosmic_Terror_Charge_Timer_Base[client] = time;
-	fl_sping_speed[client] = 1.1;
+	fl_sping_speed[client] = 1.1/TickrateModify;
 	
 	//Nothing configure here.
-	Cosmic_Dmg_Throttle[client]=0;
+	Cosmic_Dmg_Throttle[client]=0.0;
 	Cosmic_TE_Throttle[client]=0;
 	Cosmic_Terror_Sound_Tick[client]=0;
 	Cosmic_Terror_Charge_Sound_interval[client]=0;
@@ -152,11 +152,11 @@ public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 	{
 		PrintHintText(client,"You ran out of Laser Battery!");
 	}
-	Cosmic_Heat_Max[client]=2500.0; //How much heat before we force a shutdown.
-	Cosmic_Base_BeamSpeed[client] = 4.5;	//how fast the beam is
+	Cosmic_Heat_Max[client]=2500.0*TickrateModify; //How much heat before we force a shutdown.
+	Cosmic_Base_BeamSpeed[client] = 4.5/TickrateModify;	//how fast the beam is
 	Cosmic_Radius[client] = 150.0;	//damage radius
 
-	fl_sping_speed[client] = 0.75;
+	fl_sping_speed[client] = 0.75/TickrateModify;
 	Cosmic_Terror_Pap[client]=2;
 	float time = 2.0;
 	Cosmic_Terror_Charge_Timer[client]=GetGameTime()+time;	//Charge time for the beam.
@@ -167,7 +167,7 @@ public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 	b_arced_number[client] = false;
 	
 	//Nothing configure here.
-	Cosmic_Dmg_Throttle[client]=0;
+	Cosmic_Dmg_Throttle[client]=0.0;
 	Cosmic_TE_Throttle[client]=0;
 	Cosmic_Terror_Sound_Tick[client]=0;
 	Cosmic_Terror_Charge_Sound_interval[client]=0;
@@ -182,7 +182,7 @@ public void Cosmic_Activate(int client, int weapon)
 			Cosmic_DMG[client]=100.0;
 			Cosmic_DMG[client] *= Attributes_Get(weapon, 1, 1.0);
 			Cosmic_DMG[client] *= Attributes_Get(weapon, 2, 1.0);
-			Cosmic_DMG[client] *= Attributes_Get(weapon, 476, 1.0);
+			Cosmic_DMG[client] *= Attributes_Get(weapon, 1000, 1.0);
 			
 			CosmicActualDamage[client] = Cosmic_DMG[client];
 			
@@ -589,7 +589,7 @@ void Cosmic_Terror_FullCharge(int client)
 		//CPrintToChatAll("Deactivated");
 	}
 	int new_ammo = GetAmmo(client, 23);
-	if(Cosmic_Terror_GiveAmmo_interval[client] >= 5)
+	if(Cosmic_Terror_GiveAmmo_interval[client] >= RoundToCeil(5*TickrateModify))
 	{
 		if(new_ammo >= 1)
 		{
@@ -676,7 +676,6 @@ void Cosmic_Terror_FullCharge(int client)
 	TE_SetupBeamPoints(Cosmic_BeamLoc[client], SkyLoc, BeamWand_Laser, 0, 0, 0, 0.1, 45.0, 45.0, 0, 2.5, colour, 1);
 	TE_SendToAll();
 	
-	
 	Cosmic_Terror_Do_Dmg(client);
 	
 	int Heat = RoundToFloor((Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client]);
@@ -695,7 +694,7 @@ void Cosmic_Terror_FullCharge(int client)
 		Cosmic_Terror_Hud_Delay[client]=gametime+0.5;
 	}
 	
-	if(Cosmic_Terror_Sound_Tick[client]>=11)
+	if(Cosmic_Terror_Sound_Tick[client]>=RoundToCeil(11 * TickrateModify))
 	{
 		EmitSoundToAll(SND_WELD_SOUND, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.15, SNDPITCH_NORMAL, -1, Cosmic_BeamLoc[client]);
 		int pitch = 25+100-Heat;
@@ -714,7 +713,7 @@ void Cosmic_Terror_FullCharge(int client)
 		Client_Side_Effect_Vec[1]=Cosmic_BeamLoc[client][1];
 		Client_Side_Effect_Vec[2]=Cosmic_BeamLoc[client][2]+10;
 		
-		if(Cosmic_TE_Throttle[client]>=1)
+		if(Cosmic_TE_Throttle[client]>=RoundToCeil(1*TickrateModify))
 		{
 			float range = Cosmic_Radius[client];
 			Cosmic_TE_Throttle[client]=0;
@@ -724,7 +723,7 @@ void Cosmic_Terror_FullCharge(int client)
 			Cosmic_Terror_Create_Hexagon(client, Client_Side_Effect_Vec, range*0.9, colour, 5, _, 5.0, 5.0);
 
 			
-			if(Cosmic_Terror_Pap[client]>=2)
+			if(Cosmic_Terror_Pap[client]>=RoundToCeil(2*TickrateModify))
 			{
 				float UserAng[3];
 				
@@ -827,17 +826,13 @@ static void spawnRing_Vector_Client(int client, float center[3], float range, fl
 }
 public void Cosmic_Terror_Do_Dmg(int client)
 {
-	if(Cosmic_Dmg_Throttle[client]>10)
+	if(Cosmic_Dmg_Throttle[client] < GetGameTime())
 	{
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(CosmicActualDamage[client], client, client, -1, Cosmic_BeamLoc[client], Cosmic_Radius[client]);
 		FinishLagCompensation_Base_boss();
-		Cosmic_Dmg_Throttle[client]=0;
-	}
-	else
-	{
-		Cosmic_Dmg_Throttle[client]++;
+		Cosmic_Dmg_Throttle[client] = GetGameTime()+0.1;
 	}
 }
 

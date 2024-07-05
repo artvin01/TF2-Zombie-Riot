@@ -26,7 +26,9 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);
+#if defined ZR
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
+#endif
 	zr_showdamagehud = CreateConVar("zr_showdamagehud", "0", "If to show the damage dealt HUD when hitting NPCs");
 }
 

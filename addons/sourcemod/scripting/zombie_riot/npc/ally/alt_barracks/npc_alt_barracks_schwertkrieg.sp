@@ -435,25 +435,3 @@ void Barrack_Alt_Shwertkrieg_NPCDeath(int entity)
 		
 	BarrackBody_NPCDeath(npc.index);
 }
-static void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-	
-	int ICE_INT = PrecacheModel(sprite);
-	
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-	
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
-}

@@ -305,7 +305,11 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		
+		bool tripple = StrContains(data, "triple_enemies") != -1;
+		if(tripple)
+		{
+			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -401,6 +405,11 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
+		
+		float flPos[3]; // original
+		float flAng[3]; // original
+		npc.GetAttachment("head", flPos, flAng);
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_fire", npc.index, "head", {0.0,0.0,0.0});
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -545,6 +554,11 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -657,6 +671,8 @@ static void Internal_NPCDeath(int entity)
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
 	
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))

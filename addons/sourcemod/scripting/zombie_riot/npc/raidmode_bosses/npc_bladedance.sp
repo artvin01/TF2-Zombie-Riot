@@ -288,7 +288,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			{
 				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
-					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
+					f_GodAlaxiosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}
@@ -311,7 +311,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 				npc.FireRocket(vPredictedPos, 1000.0, 400.0, "models/effects/combineball.mdl");
 				npc.PlayRangedSound();
 
-				SeaSlider_AddNeuralDamage(npc.m_iTarget, npc.index, 200);
+				Elemental_AddNervousDamage(npc.m_iTarget, npc.index, 200);
 			}
 		}
 	}

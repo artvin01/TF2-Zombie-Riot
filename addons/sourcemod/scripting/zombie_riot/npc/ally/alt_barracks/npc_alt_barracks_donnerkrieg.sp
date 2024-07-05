@@ -26,8 +26,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 
-#define MAX_TARGETS_HIT 10
-
 static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
 static int Ikunagae_BEAM_Laser;
@@ -380,7 +378,7 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 
 	tickCountClient[client] = 0;
 
@@ -403,7 +401,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");
-	Ikunagae_BEAM_ChargeUpTime[client] = 50;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(50 * TickrateModify);
 	Ikunagae_BEAM_Duration[client] = 10.0;
 
 	Ikunagae_BEAM_IsUsing[client] = true;

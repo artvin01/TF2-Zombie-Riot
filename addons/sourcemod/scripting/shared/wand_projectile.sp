@@ -1,12 +1,18 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#if defined ZR
+#if defined ZR || defined RPG
 static int i_ProjectileIndex;
+Function func_WandOnTouch[MAXENTITIES];
 
 void WandStocks_Map_Precache()
 {
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
+}
+
+stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+{
+	func_WandOnTouch[projectile] = Function;
 }
 #endif
 
@@ -27,8 +33,8 @@ void WandProjectile_GamedataInit()
 	EntityFactory.Install();
 }
 
-#if defined ZR
-int Wand_Projectile_Spawn(int client,
+#if defined ZR || defined RPG
+stock int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
 float damage,
@@ -136,7 +142,18 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time > 60.0)
+		{
+			time = 60.0;
+		}
+#if defined RPG
+		//average is 10.
+		if(time < 0.1)
+		{
+			time = 10.0;
+		}
+#endif
+		if(time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
@@ -144,7 +161,8 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
 		//so they dont get stuck on entities in the air.
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
+		//todo: Fix them
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -179,10 +197,23 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	return Plugin_Stop; 
 }
 
-#if defined ZR
+#if defined ZR || defined RPG
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
+	Function func = func_WandOnTouch[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushCell(target);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+		return;
+	}
+#if defined ZR
+	//OLD CODE!!! DONT USE BELOW!!!
+	//USE WandProjectile_ApplyFunctionToEntity
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -316,6 +347,7 @@ public void Wand_Base_StartTouch(int entity, int other)
 			Gun_MessengerTouch(entity, target);
 		}
 	}
+#endif
 }
 #endif
 
@@ -335,6 +367,9 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+#if defined ZR || defined RPG
+	func_WandOnTouch[body.index] = INVALID_FUNCTION;
+#endif
 	return;
 }
 

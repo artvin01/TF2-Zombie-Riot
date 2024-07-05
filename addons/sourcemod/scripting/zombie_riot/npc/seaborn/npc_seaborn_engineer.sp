@@ -154,17 +154,17 @@ public void SeabornEngineer_ClotThink(int iNPC)
 
 				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
 				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
-
+/*
 				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
 				if(repair < 1)
 				{
-					SeaSlider_AddNeuralDamage(npc.m_iTargetAlly, npc.index, 75);
+					Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
 				}
 				else
 				{
 					Building_SetBuildingRepair(npc.m_iTargetAlly, repair - 150);
 				}
-
+*/
 				npc.m_flNextThinkTime = gameTime + 0.4;
 				return;
 			}
@@ -191,8 +191,8 @@ public void SeabornEngineer_ClotThink(int iNPC)
 			int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 			if(entity != INVALID_ENT_REFERENCE)
 			{
-				CClotBody building = view_as<CClotBody>(entity);
-				if(!building.bBuildingIsStacked && building.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				//CClotBody building = view_as<CClotBody>(entity);
+				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 				{
 					b_ThisEntityIgnored[entity] = true;
 
@@ -263,7 +263,7 @@ public void SeabornEngineer_ClotThink(int iNPC)
 
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 150.0 : 75.0, DMG_CLUB);
-						SeaSlider_AddNeuralDamage(target, npc.index, 15);
+						Elemental_AddNervousDamage(target, npc.index, 15);
 					}
 				}
 

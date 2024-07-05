@@ -127,7 +127,7 @@ public void XenoFatherGrigori_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "grigori");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -244,7 +244,7 @@ methodmap XenoFatherGrigori < CClotBody
 	
 	public XenoFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally));
+		XenoFatherGrigori npc = view_as<XenoFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		

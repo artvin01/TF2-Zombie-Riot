@@ -33,6 +33,10 @@
 		"en"	"Nightmares Evolve"
 		"pt"	"Pesadelos Evolvem"
 	}
+	"Losted Ingots"
+	{
+		"en" "Losted Ingots"
+	}
 	"Time Stands Still"
 	{
 		"en"	"Time Stands Still"
@@ -87,16 +91,6 @@
 		"en"	"{green}Gained {1} Australium Ingots!"
 		"pt"	"{green}Adquiriu {1} Barras de Australium!"
 		"ru"	"{green}Получено {1} слитков австралия!"
-	}
-	"Gained Chaos"
-	{
-		"#format"	"{1:d}"
-		"en"		"{red}Gained {1} Chaos Instability!"
-	}
-	"Losted Chaos"
-	{
-		"#format"	"{1:d}"
-		"en"		"{green}Losted {1} Chaos Instability!"
 	}
 	"Australium Ingots"
 	{
@@ -634,6 +628,18 @@
 	"Uncertain Goals"
 	{
 		"en"	"Uncertain Goals"
+	}
+	"Uncertain Goals 1"
+	{
+		"en"	"Uncertain Goals 1"
+	}
+	"Uncertain Goals 2"
+	{
+		"en"	"Uncertain Goals 2"
+	}
+	"Uncertain Goals 3"
+	{
+		"en"	"Uncertain Goals 3"
 	}
 	"Water Fountain"
 	{

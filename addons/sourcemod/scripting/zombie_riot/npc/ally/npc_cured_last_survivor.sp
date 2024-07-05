@@ -325,7 +325,7 @@ methodmap CuredFatherGrigori < CClotBody
 	
 	public CuredFatherGrigori(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/monk.mdl", "1.15", "10000", ally, true, false));
+		CuredFatherGrigori npc = view_as<CuredFatherGrigori>(CClotBody(vecPos, vecAng, "models/zombie_riot/hl2/monk.mdl", "1.15", "10000", ally, true, false));
 		
 		i_NpcWeight[npc.index] = 999;
 		

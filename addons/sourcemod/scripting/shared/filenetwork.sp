@@ -13,9 +13,38 @@ static int ExtraLevel[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
+	RegServerCmd("zr_showfilenetlist", DebugCommand);
+
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+}
+
+static Action DebugCommand(int args)
+{
+	char buffer[PLATFORM_MAX_PATH];
+
+	if(SoundList)
+	{
+		int length = SoundList.Length;
+		for(int i; i < length; i++)
+		{
+			SoundList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	if(ExtraList)
+	{
+		int length = ExtraList.Length;
+		for(int i; i < length; i++)
+		{
+			ExtraList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	return Plugin_Handled;
 }
 
 void FileNetwork_MapEnd()
@@ -49,13 +78,24 @@ void FileNetwork_ClientDisconnect(int client)
 	ExtraLevel[client] = 0;
 }
 
+#if defined RPG
+void FileNetwork_ConfigSetup()
+#else
 void FileNetwork_ConfigSetup(KeyValues map)
+#endif
 {
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "downloads");
+
 	KeyValues kv = new KeyValues("Downloads");
 	kv.ImportFromFile(buffer);
 
+	
+#if defined RPG
+	RPG_BuildPath(buffer, sizeof(buffer), "downloads");
+	KeyValues enabled = new KeyValues("Packages");
+	enabled.ImportFromFile(buffer);
+#else
 	KeyValues enabled;
 	if(map)
 	{
@@ -66,6 +106,7 @@ void FileNetwork_ConfigSetup(KeyValues map)
 
 	if(!enabled)
 	{
+#if defined ZR
 		zr_downloadconfig.GetString(buffer, sizeof(buffer));
 		if(buffer[0])
 		{
@@ -80,7 +121,9 @@ void FileNetwork_ConfigSetup(KeyValues map)
 			enabled = kv;
 			enabled.JumpToKey("Default");
 		}
+#endif
 	}
+#endif
 
 	ArrayList list = new ArrayList(ByteCountToCells(sizeof(buffer)));
 
@@ -130,6 +173,13 @@ void FileNetwork_ConfigSetup(KeyValues map)
 		while(kv.GotoNextKey());
 
 		LockStringTables(save);
+	}
+
+#if !defined RPG
+	if(enabled != map && enabled != kv)
+#endif
+	{
+		delete enabled;
 	}
 
 	delete list;
@@ -298,8 +348,8 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		{
 			static char filecheck[PLATFORM_MAX_PATH];
 			Format(filecheck, sizeof(filecheck), "download/%s", file);
-			if(!DeleteFile(filecheck))
-				LogError("Failed to delete file \"%s\"", file);
+			DeleteFile(filecheck);
+				//LogError("Failed to delete file \"%s\"", file);
 		}
 	}
 
@@ -357,8 +407,8 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
 			{
 				LogError("Failed to queue file \"%s\" to client", filecheck);
-				if(!DeleteFile(filecheck))
-					LogError("Failed to delete file \"%s\"", filecheck);
+				DeleteFile(filecheck);
+					//LogError("Failed to delete file \"%s\"", filecheck);
 			}
 #endif
 			pack.Reset();
@@ -389,8 +439,8 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 	if(StartedQueue[client] && !success)
 		LogError("Failed to send file \"%s\" to client", file);
 	
-	if(!DeleteFile(file))
-		LogError("Failed to delete file \"%s\"", file);
+	DeleteFile(file);
+		//LogError("Failed to delete file \"%s\"", file);
 }
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
@@ -430,7 +480,7 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
 	{
 		if(soundlevel == -1)
-			ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+			LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
 
 		return false;
 	}

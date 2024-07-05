@@ -273,7 +273,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 public void TidelinkedBishop_DownedThink(int entity)
 {
 	TidelinkedBishop npc = view_as<TidelinkedBishop>(entity);
-	npc.SetActivity("ACT_MUDROCK_RAGE");
+	npc.SetActivity("ACT_TrueStrength_RAGE");
 	npc.SetPlaybackRate(0.5);
 	SDKUnhook(entity, SDKHook_Think, TidelinkedBishop_DownedThink);
 }

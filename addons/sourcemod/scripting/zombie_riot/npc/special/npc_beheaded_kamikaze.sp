@@ -140,7 +140,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(ally != TFTeam_Red)
+		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
 			{

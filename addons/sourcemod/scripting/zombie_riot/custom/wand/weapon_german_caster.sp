@@ -9,6 +9,7 @@ static Handle GermanTimer[MAXTF2PLAYERS];
 static Handle GermanSilence[MAXTF2PLAYERS];
 static int GermanCharges[MAXTF2PLAYERS];
 static int GermanWeapon[MAXTF2PLAYERS];
+static int GermanAltModule[MAXTF2PLAYERS];
 static float f3_GermanFiredFromHere[MAXENTITIES][3];
 
 void Weapon_German_MapStart()
@@ -19,12 +20,26 @@ void Weapon_German_MapStart()
 
 public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int slot)
 {
+	GermanAltModule[client] = 0;
 	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
 }
 
 public void Weapon_German_M1_Module(int client, int weapon, bool &result, int slot)
 {
+	GermanAltModule[client] = 0;
 	Weapon_German_M1(client, weapon, GermanSilence[client] ? 5 : 4);
+}
+
+public void Weapon_German_M1_AltModule(int client, int weapon, bool &result, int slot)
+{
+	GermanAltModule[client] = 1;
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
+}
+
+public void Weapon_German_M1_AltModule2(int client, int weapon, bool &result, int slot)
+{
+	GermanAltModule[client] = 2;
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
 }
 
 static void Weapon_German_M1(int client, int weapon, int maxcharge)
@@ -275,6 +290,15 @@ void Weapon_German_WandTouch(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
+		if(GermanAltModule[owner] > 0)
+			Elemental_AddNecrosisDamage(target, owner, RoundFloat(DamageWand), weapon);
+
+		if(GermanAltModule[owner] > 1)
+		{
+			if(f_ArmorCurrosionImmunity[target] > GetGameTime())
+				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		}
+
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)
 			RemoveEntity(particle);

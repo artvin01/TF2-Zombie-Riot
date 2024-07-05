@@ -79,10 +79,10 @@ methodmap SeaPredator < CSeaBody
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
 
-		SeaPredator npc = view_as<SeaPredator>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", carrier ? "1350" : (elite ? "1500" : "1200"), ally, false));
-		// 4000 x 0.3
-		// 5000 x 0.3
-		// 4500 x 0.3
+		SeaPredator npc = view_as<SeaPredator>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", carrier ? "4500" : (elite ? "5000" : "4000"), ally, false));
+		// 4000 x 1.0
+		// 5000 x 1.0
+		// 4500 x 1.0
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -218,7 +218,7 @@ public void SeaPredator_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.1));
+						Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.1));
 						// 450 x 0.1 x 0.15
 						// 550 x 0.1 x 0.15
 					}
@@ -260,7 +260,7 @@ public Action SeaPredator_OnTakeDamage(int victim, int &attacker, int &inflictor
 	float gameTime = GetGameTime(npc.index);
 
 	static int Pity;
-	if(Pity < 30 && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (npc.m_bElite ? 4 : 3)))
+	if(Pity < 99 && SeaFounder_TouchingNethersea(npc.index) && npc.m_flNextDelayTime <= (gameTime + DEFAULT_UPDATE_DELAY_FLOAT) && !NpcStats_IsEnemySilenced(npc.index) && (GetURandomInt() % (npc.m_bElite ? 19 : 9)))
 	{
 		if(attacker <= MaxClients && attacker > 0)
 		{

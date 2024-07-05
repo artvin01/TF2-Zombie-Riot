@@ -19,15 +19,12 @@ void Events_PluginStart()
 	HookEvent("mvm_begin_wave", OnSetupFinished, EventHookMode_PostNoCopy);
 	HookEvent("mvm_wave_failed", OnWinPanel, EventHookMode_Pre);
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
+	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 #endif
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
-
-//#if defined ZR
-	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
-//#endif
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
@@ -68,9 +65,14 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundStart();
 	Waves_RoundStart();
 	Blacksmith_RoundStart();
+	Merchant_RoundStart();
 #endif
 
-#if defined RTS
+#if defined RPG
+	Zones_RoundStart();
+#endif
+
+#if defined RPG || defined RTS
 	ServerCommand("mp_waitingforplayers_cancel 1");
 #endif
 }
@@ -99,28 +101,6 @@ public Action OnPlayerTeam(Event event, const char[] name, bool dontBroadcast)
 			OnAutoTeam(client, name, 0);
 		}
 	}
-#if defined ZR
-	//Ty to Keldra#1114 on discord to pointing this out.
-	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(client)
-	{	
-		/*
-		TFTeam_Unassigned = 0,
-		TFTeam_Spectator = 1,
-		TFTeam_Red = 2,
-		TFTeam_Blue = 3
-		*/
-		int team = event.GetInt("team");
-		switch(team)
-		{
-			case 0,1,3: //either team ? kill dispenser!
-			{
-				DestroyDispenser(client);
-			}
-		}
-	}
-#endif
-
 	
 	if(event.GetBool("silent"))
 		return Plugin_Continue;
@@ -163,6 +143,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
 			Armor_Charge[client] = 0;
+			Building_ResetRewardValues(client);
 		}
 	}
 
@@ -192,6 +173,9 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
+#if defined ZR
+		TransferDispenserBackToOtherEntity(client, true);
+#endif
 #if defined RPG
 		TextStore_DepositBackpack(client, false, Level[client] < 5);
 #endif
@@ -207,11 +191,12 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	  	AcceptEntityInput(client, "SetCustomModel");
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
+
 		ViewChange_DeleteHands(client);
 		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
-		if(b_IsPlayerNiko[client] || b_HideCosmeticsPlayer[client])
+		if(b_HideCosmeticsPlayer[client])
 		{
 		  	int entity = MaxClients+1;
 			while(TF2_GetWearable(client, entity))
@@ -284,7 +269,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			
 			if(TeutonType[client] == TEUTON_WAITING)
 			{
-				damage *= 0.33;
+				damage *= 0.65;
 			}
 			
 	   		Attributes_Set(weapon_index, 2, damage);
@@ -377,12 +362,13 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		
 		SetAmmo(client, 1, 9999);
 		SetAmmo(client, 2, 9999);
-		SetAmmo(client, Ammo_Metal, CurrentAmmo[client][Ammo_Metal]);
+		SetAmmo(client, Ammo_Metal, 9999);
 		SetAmmo(client, Ammo_Jar, 1);
 		for(int i=Ammo_Pistol; i<Ammo_MAX; i++)
 		{
-			SetAmmo(client, i, CurrentAmmo[client][i]);
+			SetAmmo(client, i, 9999);
 		}
+		//In RPG Ammo is infinite and used in a different way.
 		UpdateLevelAbovePlayerText(client);
 
 		RequestFrame(UpdateHealthFrame, userid);
@@ -424,10 +410,10 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		Waves_PlayerSpawn(client);
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 		Thirdperson_PlayerSpawn(client);
 #endif
-
+		/*
 		// Resets the hand/arm pos for melee weapons 
 		//it doesnt do it on its own, and weapon such as the song of the ocean due to this
 		//come out from behind and it litterally looks like a dick
@@ -440,6 +426,9 @@ public void OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
 		index = npc.LookupPoseParameter("r_arm");
 		if(index >= 0)
 			npc.SetPoseParameter(index, 0.0);
+
+			THis now crashes in 64bit? perhaps?
+		*/
 	}
 }
 
@@ -449,35 +438,24 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
-#if defined ZR
+#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
 
 #if defined ZR
 	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), dieingstate[client] ? -69 : 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
+#elseif defined RPG
+	KillFeed_Show(client, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), 0, event.GetInt("weaponid"), event.GetInt("damagebits"));
 #endif
 
 #if defined ZR
+	UnequipDispenser(client, true);
 	ArmorDisplayClient(client, true);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(-1);
 	Update_Ammo(pack);
 	Escape_DropItem(client);
-	if(g_CarriedDispenser[client] != INVALID_ENT_REFERENCE)
-	{
-		DestroyDispenser(client);
-
-		int obj = EntRefToEntIndex(g_CarriedDispenser[client]);
-		if(obj != INVALID_ENT_REFERENCE)
-			KillFeed_Show(obj, event.GetInt("inflictor_entindex"), EntRefToEntIndex(LastHitRef[client]), -69, event.GetInt("weaponid"), event.GetInt("damagebits"));
-	}
-	else
-	{
-		Building_Mounted[client] = 0;
-		Player_Mounting_Building[client] = false;
-		g_CarriedDispenser[client] = INVALID_ENT_REFERENCE; //Just remove entirely, just make sure.
-	}
 
 	//Incase they die, do suit!
 	if(!Rogue_Mode())
@@ -500,9 +478,10 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 #if defined RPG
 	TextStore_DepositBackpack(client, true);
 	UpdateLevelAbovePlayerText(client, true);
+	De_TransformClient(client);
 #endif
 
-#if defined ZR
+#if defined ZR || defined RPG
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif
@@ -524,6 +503,15 @@ public Action OnBroadcast(Event event, const char[] name, bool dontBroadcast)
 public Action OnWinPanel(Event event, const char[] name, bool dontBroadcast)
 {
 	return Plugin_Handled;
+}
+
+public Action OnRestartTimer(Event event, const char[] name, bool dontBroadcast)
+{
+	if(event.GetInt("time") != 9)
+		return Plugin_Continue;
+	
+	event.BroadcastDisabled = true;
+	return Plugin_Changed;
 }
 
 /*

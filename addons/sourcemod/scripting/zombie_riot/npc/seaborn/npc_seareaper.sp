@@ -48,7 +48,7 @@ void SeaReaper_Precache()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seareaper");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_reaper");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -238,7 +238,7 @@ public void SeaReaper_ClotThink(int iNPC)
 						// 400 x 0.15 x 0.5
 						// 500 x 0.15 x 0.5
 
-						SeaSlider_AddNeuralDamage(target, npc.index, npc.m_bElite ? 4 : 3);
+						Elemental_AddNervousDamage(target, npc.index, npc.m_bElite ? 4 : 3);
 						// 400 x 0.1 x 0.15 x 0.5
 						// 500 x 0.1 x 0.15 x 0.5
 					}
@@ -279,7 +279,7 @@ public void SeaRepear_ExplodePost(int attacker, int victim, float damage, int we
 {
 	float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 	ParticleEffectAt(vic_vec, "water_bulletsplash01", 1.5);
-	SeaSlider_AddNeuralDamage(victim, attacker, view_as<SeaReaper>(attacker).m_bElite ? 15 : 12);
+	Elemental_AddNervousDamage(victim, attacker, view_as<SeaReaper>(attacker).m_bElite ? 15 : 12);
 	// 400 x 0.2 x 0.15
 	// 500 x 0.2 x 0.15
 }

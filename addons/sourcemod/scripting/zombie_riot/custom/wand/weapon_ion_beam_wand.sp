@@ -10,8 +10,8 @@
 
 
 //NOTE!!!! this affects ALL STATS, how fast it turns, how fast it deal damage, etc etc etc
-#define NEUVELLETE_THROTTLE_SPEED 6.0/66.0	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
-#define NEUVELLETE_TE_DURATION 6.6/66.0
+#define NEUVELLETE_THROTTLE_SPEED 6.0/float(TickrateModifyInt)	//this thing was a bitch to try and figure out correctly the timings, and even then its not perfect
+#define NEUVELLETE_TE_DURATION 6.6/float(TickrateModifyInt)
 
 #define MAX_NEUVELLETE_TARGETS_HIT 10	//how many targets the laser can penetrate BASELINE!!!!
 
@@ -1087,8 +1087,10 @@ public Action Neuvellete_tick(int client)
 		PosEffects = Pos;
 		
 		int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+
+		bool HasWings = view_as<bool>(Store_HasNamedItem(client, "Magia Wings [???]"));	//note: redo the laser turning so its less choopy, also make it use ENV beams instead of Te
 		
-		if(IsValidEntity(viewmodelModel))
+		if(IsValidEntity(viewmodelModel) && !HasWings)
 		{
 			float flAng[3];
 			GetAttachment(viewmodelModel, "effect_hand_r", PosEffects, flAng);	

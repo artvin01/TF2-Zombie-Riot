@@ -369,6 +369,16 @@ stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, in
 	}
 }
 
+stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul = INVALID_FUNCTION)
+{
+	char buffer[64];
+	kv.GetString(string, buffer, sizeof(buffer));
+	if(buffer[0])
+		return GetFunctionByName(null, buffer);
+
+	return defaul;
+}
+
 static bool i_PreviousInteractedEntityDo[MAXENTITIES];
 
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
@@ -681,7 +691,8 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-#if defined ZR
+#if defined ZR || defined RPG
+
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
@@ -694,6 +705,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	delete weapon;
 	if(entity > MaxClients)
 	{
+#if defined ZR
+	f_TimeSinceLastGiveWeapon[entity] = 0.0;
+#endif
 		Attributes_EntityDestroyed(entity);
 
 		for(int i; i < count; i++)
@@ -723,7 +737,7 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 	}
 
-#if defined ZR
+#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 #endif
 	return entity;
@@ -890,6 +904,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
+	frames = RoundToNearest(TickrateModify * float(frames));
 	DataPack pack = new DataPack();
 	pack.WriteCell(frames);
 	pack.WriteFunction(func);
@@ -1042,6 +1057,17 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	}
 	return Plugin_Stop;
 }
+public Action Timer_RemoveEntityParticle(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		AcceptEntityInput(entid, "ClearParent");
+		TeleportEntity(entid, {16000.0,16000.0,16000.0});
+		CreateTimer(0.1, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
+}
 
 public Action Timer_RemoveEntity_CustomProjectile(Handle timer, DataPack pack)
 {
@@ -1127,7 +1153,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
+stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype, int customtype = 0)
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
@@ -1139,6 +1165,7 @@ stock void StartBleedingTimer(int entity, int client, float damage, int amount, 
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(damagetype);
+		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
 		pack.WriteCell(amount);
 	}
@@ -1179,9 +1206,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
+	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -1213,8 +1241,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	*/
 
 #if defined ZR
-	if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
-		return 0;
+	if(reciever <= MaxClients)
+		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+			return 0;
 #endif
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
@@ -1222,8 +1251,8 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 #if defined ZR
 		if(b_HealthyEssence)
 			HealTotal *= 1.25;
-		bool RegrowthBlock,camoblock;
- 		Building_CamoOrRegrowBlocker(healer, camoblock, RegrowthBlock);
+		bool RegrowthBlock;
+ 		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
 		if(RegrowthBlock)
 		{
 			HealTotal *= 0.5;
@@ -1426,6 +1455,23 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 	}
 #endif
 
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		//if the building is ignored, prevent interaction with it.
+		//Edit: if its a barricade this is ignored so they can reclaim it.
+#if defined ZR
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
+#endif	
+			return false;
+			
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+#if defined ZR
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
+			return false;
+#else
+		return false;
+#endif
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1500,6 +1546,22 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 	}
 #endif	
+
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		//if the building is ignored, prevent interaction with it.
+		//Edit: if its a barricade this is ignored so they can reclaim it.
+#if defined ZR
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
+			return false;
+
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
+			return false;
+#else
+		return false;
+#endif
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1677,11 +1739,11 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 	return !(entity == iExclude);
 }
 
-stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
+stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0, bool respectSetting = true)
 {
 	//allow settings for the sick who cant handle screenshake.
 	//can cause headaches.
-	if(!b_HudScreenShake[client])
+	if(respectSetting && !b_HudScreenShake[client])
 	{
 		return false;
 	}
@@ -2569,16 +2631,31 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 #if defined ZR
 	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
-		return -1;
+		if(b_NpcIsTeamkiller[owner_projectile])
+			return other_entity;
+		else
+			return -1;
 	}
 #endif
 	else if(other_entity <= MaxClients)
 	{
-		return -1;
+#if defined RPG
+		if(RPGCore_PlayerCanPVP(owner_projectile, other_entity))
+			return other_entity;
+		else
+			return -1;
+#else
+			return -1;
+#endif	
 	}
 //	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
 	else if(!b_NpcHasDied[other_entity]) //way less cheap, lets see how that goes.
 	{
+#if defined RPG
+	int owner = GetEntPropEnt(owner_projectile, Prop_Send, "m_hOwnerEntity");
+	if(OnTakeDamageRpgPartyLogic(other_entity, owner, GetGameTime()))
+		return -1;
+#endif
 		return other_entity;
 	}
 	return 0;
@@ -2662,19 +2739,23 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[2] *= -1.0;
 }
 
-#if defined ZR
 int CountPlayersOnRed(int alive = 0)
 {
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
+#if defined ZR
 		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
+#else
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2)
+#endif
 		{
 			if(alive == 0)
 			{
 				amount++;
 				continue;
 			}
+#if defined ZR
 			else
 			{
 				if(alive == 1) //check if just not teuton
@@ -2694,13 +2775,14 @@ int CountPlayersOnRed(int alive = 0)
 					}
 				}
 			}
+#endif
 		}
 	}
 	
 	return amount;
 	
 }
-#endif
+
 
 int CountPlayersOnServer()
 {
@@ -2739,11 +2821,12 @@ int inflictor = 0)
 
 	float damage_reduction = 1.0;
 
-#if defined ZR
+#if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
+		maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
 	}
 #endif
 
@@ -2980,7 +3063,9 @@ int inflictor = 0)
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
-				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
+				//dont do damage ticks if its actually 0 dmg.
+				if(damage_1 != 0.0)
+					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3317,6 +3402,20 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
+stock void SetPlayerActiveWeapon(int client, int weapon)
+{
+	TF2Util_SetPlayerActiveWeapon(client, weapon);
+#if defined ZR
+//	WeaponSwtichToWarningPostDestroyed(weapon);
+#endif
+	/*
+	char buffer[64];
+	GetEntityClassname(weapon, buffer, sizeof(buffer));
+	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
+	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
+	OnWeaponSwitchPost(client, weapon);
+	*/
+}
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
 {
@@ -3366,6 +3465,13 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+}
+
+public void RemoveInvul(int client)
+{
+	f_ClientInvul[client] = 0.0;
+	TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
+	TF2_RemoveCondition(client, TFCond_MegaHeal);
 }
 
 stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
@@ -3513,8 +3619,10 @@ int BrushToEntity(int brush)
 
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
+	Stats_UpdateLevel(client);
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
 	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
+	int textentity3 = EntRefToEntIndex(i_TextEntity[client][2]);
 	if(deleteText)
 	{
 		if(IsValidEntity(textentity))
@@ -3525,21 +3633,21 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		{
 			RemoveEntity(textentity2);
 		}
+		if(IsValidEntity(textentity3))
+		{
+			RemoveEntity(textentity3);
+		}
 	}
 	if(deleteText)
 		return;
 		
+	char LVLBuffer[64];
+	IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
+	ThousandString(LVLBuffer, sizeof(LVLBuffer));
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3548,19 +3656,9 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
-	//	b_TextEntityToOwner[textentityMade] = client;
-	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
-	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
 	}
 	if(IsValidEntity(textentity2))
 	{
@@ -3597,7 +3695,103 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		
 		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
 	}
+	if(IsValidEntity(textentity3))
+	{
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+		DispatchKeyValue(textentity3, "message", c_Powerlevel);
+		char sColor[32];
+		
+
+		// form.Name
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", color4[0], color4[1], color4[2], color4[3]);
+		DispatchKeyValue(textentity3,     "color", sColor);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 130.0;
+
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		int textentityMade = SpawnFormattedWorldText(c_Powerlevel, OffsetFromHead, 10, color4, client, false);
+		
+		i_TextEntity[client][2] = EntIndexToEntRef(textentityMade);
+	}
 }
+
+float RPGStocks_CalculatePowerLevel(int client)
+{
+	int total;
+	float BigTotal;
+	total = Stats_Strength(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Precision(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Artifice(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Endurance(client);
+	total *= 2;
+	BigTotal += float(total);
+
+	total = Stats_Structure(client);
+	total *= 4;
+	BigTotal += float(total);
+
+	total = Stats_Capacity(client);
+	total *= 3;
+	BigTotal += float(total);
+
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	float ResMulti;
+	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	
+	BigTotal *= (1.0 / ResMulti);
+
+	//These stats are abit different
+	total = Stats_Agility(client);
+	total *= 30;
+	BigTotal += float(total);
+	//luck doesnt exist
+
+	return BigTotal;
+}
+
 /*
 public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 {
@@ -3614,28 +3808,13 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 #endif
 
 
-stock void spawnRing_Vectors(float center[3],
- float range,
-  float modif_X,
-  float modif_Y,
-   float modif_Z,
-    char sprite[255],
-	 int r,
-	  int g,
-	   int b,
-	    int alpha,
-		 int fps,
-		  float life,
-		   float width,
-		    float amp,
-			 int speed,
-			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0, int client = 0) //Spawns a TE beam ring at a client's/entity's location
 {
-	float Center_Internal[3];
-	Center_Internal = center;
-	Center_Internal[0] += modif_X;
-	Center_Internal[1] += modif_Y;
-	Center_Internal[2] += modif_Z;
+	float PosUse[3];
+	PosUse = center;
+	PosUse[0] += modif_X;
+	PosUse[1] += modif_Y;
+	PosUse[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3650,8 +3829,15 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
+	TE_SetupBeamRingPoint(PosUse, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	if(client > 0)
+	{
+		TE_SendToClient(client);
+	}
+	else
+	{
+		TE_SendToAll();
+	}
 }
 
 stock char[] CharInt(int value)
@@ -3767,10 +3953,10 @@ stock bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[
 	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
 	return HazardResult;
 }
-stock bool IsPointNoBuild(const float pos1[3])
+stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
-	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
 	return HazardResult;
 }
 
@@ -3814,7 +4000,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
-
+		
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
@@ -4063,7 +4249,6 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	return HealAmount;
 }
 
-#if defined ZR
 static const char g_ScoutDownedResponse[][] = {
 	"vo/scout_paincrticialdeath01.mp3",
 	"vo/scout_paincrticialdeath02.mp3",
@@ -4320,11 +4505,8 @@ void PrecachePlayerGiveGiveResponseVoice()
 }
 
 
-void MakePlayerGiveResponseVoice(int client, int status)
+stock void MakePlayerGiveResponseVoice(int client, int status)
 {
-	if(b_IsPlayerNiko[client])
-		return;
-	
 	int ClassShown = view_as<int>(CurrentClass[client]);
 
 	switch(status)
@@ -4500,6 +4682,7 @@ void MakePlayerGiveResponseVoice(int client, int status)
 	}
 }
 
+#if defined ZR
 void KillDyingGlowEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
@@ -4651,7 +4834,6 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
@@ -4960,4 +5142,9 @@ stock bool FailTranslation(const char[] phrase)
 	
 	LogError("Translation '%s' does not exist", phrase);
 	return true;
+}
+
+stock any GetItemInArray(any[] array, int pos)
+{
+	return array[pos];
 }

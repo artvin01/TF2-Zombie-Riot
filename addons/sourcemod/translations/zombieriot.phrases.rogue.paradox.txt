@@ -1,0 +1,554 @@
+"Phrases"
+{
+	"Gained Chaos"
+	{
+		"#format"	"{1:d}"
+		"en"		"{red}Gained {1} Chaos Instability!"
+	}
+	"Losted Chaos"
+	{
+		"#format"	"{1:d}"
+		"en"		"{green}Losted {1} Chaos Instability!"
+	}
+	"Compass and Map"
+	{
+		"en"	"Compass and Map"
+	}
+	"Compass and Map Desc"
+	{
+		"en"	"Go the right way, nothing more.\n{green}Enemies move 20%% slower, take 35%% more damage, and deal 35%% less damage\n{green}Gain 75%% less Chaos Infliction"
+	}
+	"Healing Supplies"
+	{
+		"en"	"Healing Supplies"
+	}
+	"Healing Supplies Desc"
+	{
+		"en"	"To always be careful of the unknown.\n{green}Restores last stand effect"
+	}
+	"Camping Supplies"
+	{
+		"en"	"Camping Supplies"
+	}
+	"Camping Supplies Desc"
+	{
+		"en"	"Stay longer so we can search more.\n{yellow}Adds an extra stage to every floor"
+	}
+	"Trading Supplies"
+	{
+		"en"	"Trading Supplies"
+	}
+	"Trading Supplies Desc"
+	{
+		"en"	"Bring some cash for trading later.\n{green}Gain 20 Australium Ingots"
+	}
+	"Weapon Supplies"
+	{
+		"en"	"Weapon Supplies"
+	}
+	"Weapon Supplies Desc"
+	{
+		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 credits and 30 ammo supplies"
+	}
+	"Something Else"
+	{
+		"en"	"Something Else"
+	}
+	"Something Else Desc"
+	{
+		"en"	"You brought something else with you.\n{red}Gain 30 Chaos Infliction"
+	}
+	"Small Comic Book"
+	{
+		"en"	"Small Comic Book"
+	}
+	"Small Comic Book Desc"
+	{
+		"en"	"A comic that explains how Xeno came to be, you may know who made this.\n{green}Allies gain 2000 barrier"
+	}
+	"Large Comic Book"
+	{
+		"en"	"Large Comic Book"
+	}
+	"Large Comic Book Desc"
+	{
+		"en"	"It's a bit heavy, the written date is in the future.\n{green}Allies gain 3000 barrier"
+	}
+	"Hot Water Kettle"
+	{
+		"en"	"Hot Water Kettle"
+	}
+	"Hot Water Kettle Desc"
+	{
+		"en"	"Want to make some noodles?\n{green}+1000 Credits, Allies gain +125 max health"
+	}
+	"Special Suppressor"
+	{
+		"en"	"Special Suppressor"
+	}
+	"Special Suppressor Desc"
+	{
+		"en"	"Something used in the past to deal with Xeno.\n{green}Allies gain +250 max health"
+	}
+	"Stone Gargoyle"
+	{
+		"en"	"Stone Gargoyle"
+	}
+	"Stone Gargoyle Desc"
+	{
+		"en"	"Fits at the palm of your hand.\n{green}Allies gain +375 max health"
+	}
+	"Vampire's Bed"
+	{
+		"en"	"Vampire's Bed"
+	}
+	"Vampire's Bed Desc"
+	{
+		"en"	"Just be glad it's empty.\n{green}Allies gain +500 max health"
+	}
+	"Proof of Longevity"
+	{
+		"en"	"Proof of Longevity"
+	}
+	"Proof of Longevity Desc"
+	{
+		"en"	"A tree branch that has withered and flourished.\n{green}Allies gain +750 max health"
+	}
+	"Banshee's Kiss"
+	{
+		"en"	"Banshee's Kiss"
+	}
+	"Banshee's Kiss Desc"
+	{
+		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Credits"
+	}
+	"Blood Diamond"
+	{
+		"en"	"Blood Diamond"
+	}
+	"Blood Diamond Desc"
+	{
+		"en"	"A pretty ring, who gonna wear it?\n{green}+25 Australium Ingots"
+	}
+	"Fissured Restraints"
+	{
+		"en"	"Fissured Restraints"
+	}
+	"Fissured Restraints Desc"
+	{
+		"en"	"It seems this sturdy band was once used to restrain something terrifying...\n{green}Enemies gain -7%% damage"
+	}
+	"Abyssal Wyrdmask"
+	{
+		"en"	"Abyssal Wyrdmask"
+	}
+	"Abyssal Wyrdmask Desc"
+	{
+		"en"	"An eldritch mask not belonging to any culture you're familiar with.\n{green}Enemies gain -12%% damage"
+	}
+	"Godmother's Token"
+	{
+		"en"	"Godmother's Token"
+	}
+	"Godmother's Token Desc"
+	{
+		"en"	"A laurel of bones.\n{green}Enemies gain -17%% damage"
+	}
+	"The Whisperer in Darknight"
+	{
+		"en"	"''The Whisperer in Darknight''"
+	}
+	"The Whisperer in Darknight Desc"
+	{
+		"en"	"A black vinyl. DO. NOT. TOUCH. IT.\n{green}Enemies gain -10%% max health"
+	}
+	"Gold-Plated Dice"
+	{
+		"en"	"Gold-Plated Dice"
+	}
+	"Gold-Plated Dice Desc"
+	{
+		"en"	"The gold-plated die has one side representing life. As for the other nineteen sides...\n{green}Enemies gain -15%% max health"
+	}
+	"The Profound Silence"
+	{
+		"en"	"''The Profound Silence''"
+	}
+	"The Profound Silence Desc"
+	{
+		"en"	"A painting that depicts the greatest disaster in Iberian history.\n{green}Enemies gain -20%% max health"
+	}
+	"Emperor's Favor"
+	{
+		"en"	"Emperor's Favor"
+	}
+	"Emperor's Favor Desc"
+	{
+		"en"	"A very sharp letter opener.\n{green}Player melee weapons gain +15%% damage"
+	}
+	"Vieux Vanguard's Blade"
+	{
+		"en"	"Vieux Vanguard's Blade"
+	}
+	"Vieux Vanguard's Blade Desc"
+	{
+		"en"	"A lost blade to the vanguards of the deep sea.\n{green}Player melee weapons gain +25%% damage"
+	}
+	"Necklace of the Presence"
+	{
+		"en"	"Necklace of the Presence"
+	}
+	"Necklace of the Presence Desc"
+	{
+		"en"	"Faith hangs ten centimeters above your heart.\n{green}Player ranged weapons gain +15%% damage"
+	}
+	"Damaged Revolver Cylinder"
+	{
+		"en"	"Damaged Revolver Cylinder"
+	}
+	"Damaged Revolver Cylinder Desc"
+	{
+		"en"	"She never capitulated, even after enduring countless trials and tribulations.\n{green}Player ranged weapons gain +25%% damage"
+	}
+	"Royal Rapier"
+	{
+		"en"	"Royal Rapier"
+	}
+	"Royal Rapier Desc"
+	{
+		"en"	"A highly decorative rapier for nobles.\n{green}Player mage weapons gain +15%% damage"
+	}
+	"Silver Forks"
+	{
+		"en"	"Silver Forks"
+	}
+	"Silver Forks Desc"
+	{
+		"en"	"The Chief will not tolerate any mistakes on the table.\n{green}Player mage weapons gain +25%% damage"
+	}
+	"Noxious Hemostatic Agent"
+	{
+		"en"	"Noxious Hemostatic Agent"
+	}
+	"Noxious Hemostatic Agent Desc"
+	{
+		"en"	"Don't ask what's in it.\n{green}Allies gain +20%% max health"
+	}
+	"First Aid Kit"
+	{
+		"en"	"First Aid Kit"
+	}
+	"First Aid Kit Desc"
+	{
+		"en"	"What's different from the held weapon? I don't know.\n{green}Allies gain +35%% max health"
+	}
+	"Unknown Instrument"
+	{
+		"en"	"Unknown Instrument"
+	}
+	"Unknown Instrument Desc"
+	{
+		"en"	"Don't ask. It's for your own good.\n{green}Allies gain +50%% max health"
+	}
+	"Rusted Razor"
+	{
+		"en"	"Rusted Razor"
+	}
+	"Rusted Razor Desc"
+	{
+		"en"	"If you cut yourself with this, you know what will happen.\n{green}Enemies gain +15%% melee vulnerability"
+	}
+	"Carriage Driver's Whip"
+	{
+		"en"	"Carriage Driver's Whip"
+	}
+	"Carriage Driver's Whip Desc"
+	{
+		"en"	"As the troupe's carriage driver, he has no name and no past.\n{green}Enemies gain +25%% melee vulnerability"
+	}
+	"Avenger"
+	{
+		"en"	"''Avenger''"
+	}
+	"Avenger Desc"
+	{
+		"en"	"Looks like a pocket knife in a pouch.\n{green}Enemies gain +35%% melee vulnerability"
+	}
+	"Standard Anti-Riot Instrument"
+	{
+		"en"	"Standard Anti-Riot Instrument"
+	}
+	"Standard Anti-Riot Instrument Desc"
+	{
+		"en"	"For general zombie usage.\n{green}Enemies gain +15%% ranged vulnerability"
+	}
+	"Emperor's Collection"
+	{
+		"en"	"Emperor's Collection"
+	}
+	"Emperor's Collection Desc"
+	{
+		"en"	"A rock collection, what for?\n{green}Enemies gain +25%% ranged vulnerability"
+	}
+	"Brilliant Lament"
+	{
+		"en"	"''Brilliant Lament''"
+	}
+	"Brilliant Lament Desc"
+	{
+		"en"	"His blood yet flows. He has never left this place.\n{green}Enemies gain +35%% ranged vulnerability"
+	}
+	"Live Rose"
+	{
+		"en"	"Live Rose"
+	}
+	"Live Rose Desc"
+	{
+		"en"	"Is it you who nourish her, or is it her who protects you?\n{green}Players receive +20%% more health from healing"
+	}
+	"White Flower Crown"
+	{
+		"en"	"White Flower Crown"
+	}
+	"White Flower Crown Desc"
+	{
+		"en"	"A floral veil used in Vampire rituals.\n{green}Players receive +30%% more health from healing"
+	}
+	"Dancer's Bracelets"
+	{
+		"en"	"Dancer's Bracelets"
+	}
+	"Dancer's Bracelets Desc"
+	{
+		"en"	"The audience breaks to an applause as the well-trained dancers waltz around the traps on stage.\n{green}Allies gain 10%% dodge chance"
+	}
+	"Peek into the Eternal Night"
+	{
+		"en"	"''Peek into the Eternal Night''"
+	}
+	"Peek into the Eternal Night Desc"
+	{
+		"en"	"The moment she turns around to head north.\n{green}Players gain +25%% damage, +25%% firing speed {red}but -10 HP a second"
+	}
+	"Dead Tree's Echo"
+	{
+		"en"	"''Dead Tree's Echo''"
+	}
+	"Dead Tree's Echo Desc"
+	{
+		"en"	"Drum to call their ancestors' souls.\n{green}Players gain +20 HP a second {red}but -25%% max health"
+	}
+	"Frozen Whetstone"
+	{
+		"en"	"Frozen Whetstone"
+	}
+	"Frozen Whetstone Desc"
+	{
+		"en"	"The stone's surface is smooth as ice.\n{green}One player at a time will receive +100%% max health and +100%% damage bonus"
+	}
+	"Clairvoyant's Reveal"
+	{
+		"en"	"Clairvoyant's Reveal"
+	}
+	"Clairvoyant's Reveal Desc"
+	{
+		"en"	"There is no direction you can head to avoid misfortune.\n{yellow}Ally max health is randomly changed"
+	}
+	"Finshell Shield"
+	{
+		"en"	"Finshell Shield"
+	}
+	"Finshell Shield Desc"
+	{
+		"en"	"The stacks of distant trauma cannot surpass the layers of protection built by the body.\n{green}Allies gain a shield that blocks one instance of damage every 10 seconds"
+	}
+	"Empty Fowlbeast"
+	{
+		"en"	"Empty Fowlbeast"
+	}
+	"Empty Fowlbeast Desc"
+	{
+		"en"	"{green}Limited lifetime allies gain +30%% max health and +30%% damage, the owner gains +60%% damage for 10 seconds when summoned."
+	}
+	"Acahuallan Bowl"
+	{
+		"en"	"Acahuallan Bowl"
+	}
+	"Acahuallan Bowl Desc"
+	{
+		"en"	"Fruit is one of the locals' staples, often eaten fresh right off the tree.\n{green}Allies gain 1500 barrier"
+	}
+	"Defender-2"
+	{
+		"en"	"Defender-2"
+	}
+	"Defender-2 Desc"
+	{
+		"en"	"A mass-produced defensive-type drone.\n{green}Allies gain 2500 barrier"
+	}
+	"Golden Chalice"
+	{
+		"en"	"Golden Chalice"
+	}
+	"Golden Chalice Desc"
+	{
+		"en"	"Saints, knights, and pietists. All of them are madmen.\n{green}Ally attack speed increases based Australium Ingots amount"
+	}
+	"Queen's Fellowship"
+	{
+		"en"	"Queen's Fellowship"
+	}
+	"Queen's Fellowship Desc"
+	{
+		"en"	"...preparing for the calamity that would come to be known as the Profound Silence.\n{green}Ally health is converted into barrier with an additional 500"
+	}
+	"Ancient Tree Fruit"
+	{
+		"en"	"Ancient Tree Fruit"
+	}
+	"Ancient Tree Fruit Desc"
+	{
+		"en"	"When the tree bears fruit, the first four are taken.\n{green}Obtain 3 random artifacts"
+	}
+	"Steam Sale"
+	{
+		"en"	"Steam Sale"
+	}
+	"Steam Sale Desc"
+	{
+		"en"	"Promoted by [SMALL INDIE COMPANY] for [INSERT USER HERE].\n{green}Shop encounter prices are 50%% off"
+	}
+	"Steal Grigori"
+	{
+		"en"	"Take them from Father Grigori"
+	}
+	"Steal Grigori Desc"
+	{
+		"en"	"Fight Father Grigori for the chance to take all his items without pay"
+	}
+	"Mark of a Thief"
+	{
+		"en"	"Mark of a Thief"
+	}
+	"Mark of a Thief Desc"
+	{
+		"en"	"You tried to steal from Father Grigori, you will not return.\n{red}Shop encounters no longer appear"
+	}
+	"Missing Mountains"
+	{
+		"en"	"Missing Mountains"
+	}
+	"Missing Mountains Lore"
+	{
+		"en"	"Just as you are about to make a misstep, someone pulls you backward.\nThe mountains' shadows overlap, and a distorted darkness creeps across your eyes.\nIn the face of your trepidation, the fortuneteller-looking woman asks you to draw a card."
+	}
+	"Missing Mountains Option 1"
+	{
+		"en"	"Pick the tarot card on the left"
+	}
+	"Missing Mountains Lore 1"
+	{
+		"en"	"''Don't be afraid of your own fate... and don't fear turning away from it either.''"
+	}
+	"Missing Mountains Option 2"
+	{
+		"en"	"Pick the tarot card on the right"
+	}
+	"Missing Mountains Lore 2"
+	{
+		"en"	"''Be at ease, the object he left behind is untainted.''"
+	}
+	"Missing Mountains Option 3"
+	{
+		"en"	"Pick the discarded tarot card by her hand"
+	}
+	"Missing Mountains Desc 3"
+	{
+		"en"	"{yellow}Gain 7 Australium Ingots"
+	}
+	"Missing Mountains Lore 3a"
+	{
+		"en"	"You can't clearly see her expression. Is it regret... or relief? She removes the purse on her, claiming that it is ''something useless I've lost to you.''"
+	}
+	"Missing Mountains Lore 3b"
+	{
+		"en"	"You can't clearly see her expression. Is it regret... or relief? She only replies, ''Your mind is no longer clear.''"
+	}
+	"Clairvoyance"
+	{
+		"en"	"Clairvoyance's Direction"
+	}
+	"Clairvoyance Lore"
+	{
+		"en"	"The blizzard on the uninhabited icefield makes it impossible to see anything,\nand you and your team fight the extreme cold as you try your best to keep up with the mysterious procession in black.\nWhere are these Wildingens headed to?"
+	}
+	"Clairvoyance Option 1"
+	{
+		"en"	"Tell me about the ''Tool''"
+	}
+	"Clairvoyance Lore 1"
+	{
+		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
+	}
+	"Clairvoyance Option 2"
+	{
+		"en"	"Tell me about the ''Path''"
+	}
+	"Clairvoyance Lore 2"
+	{
+		"en"	"They sigh and march northward, none of them answering your question except for the one who hands you something as he passes by."
+	}
+	"Clairvoyance Option 3"
+	{
+		"en"	"Perhaps we can help each other out"
+	}
+	"Clairvoyance Lore 3a"
+	{
+		"en"	"The bird-like Wildingens gradually walk further and further away. It seems none of them believe that you can be of any help to them. But you find something by the bonfire embers they left behind."
+	}
+	"Clairvoyance Lore 3b"
+	{
+		"en"	"The Wildingens see the chaos in your mind and gradually walk further and further away, leaving nothing behind for you."
+	}
+	"Clairvoyance Option 4"
+	{
+		"en"	"Tell me about the ''Wildingen''"
+	}
+	"Clairvoyance Lore 4"
+	{
+		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
+	}
+	"Printer Lore"
+	{
+		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
+	}
+	"Printer Lore 1a"
+	{
+		"en"	"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as you quickly grab what's left. Your original item and a duplicate."
+	}
+	"Printer Lore 1b"
+	{
+		"#format"	"{1:t}"
+		"en"		"You put it into the printer as it starts making loud screeching noises. The machine catches on fire as your mind forces you to watch. When the fire clears, all that's left is scrap, {yellow}{1}{default} is gone."
+	}
+	"Printer Option 2"
+	{
+		"en"	"Rather not use this"
+	}
+	"Printer Lore 2"
+	{
+		"en"	"You notice there was an artifact left behind by the printer. You take it and leave the printer alone, better not take chances."
+	}
+	"Wish Fulfilled"
+	{
+		"en"	"Wish Fulfilled"
+	}
+	"Wish Fulfilled Lore"
+	{
+		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
+	}
+	"Chaos Inflicted"
+	{
+		"en"	""
+	}
+}
