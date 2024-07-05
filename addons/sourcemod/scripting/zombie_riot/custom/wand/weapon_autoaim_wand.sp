@@ -109,11 +109,15 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 					}
 					Projectile_Is_Silent[projectile] = true;
 
+					bool LockOnOnce = true;
+					if(IsValidEntity(target))
+						LockOnOnce = false;
+
 					Initiate_HomingProjectile(projectile,
 					client,
 						90.0,			// float lockonAngleMax,
 						5.0,				//float homingaSec,
-						true,				// bool LockOnlyOnce,
+						LockOnOnce,				// bool LockOnlyOnce,
 						true,				// bool changeAngles,
 						Angles,
 						target);			// float AnglesInitiate[3]);	
@@ -202,11 +206,15 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		int target = TR_GetEntityIndex(swingTrace);	
 		delete swingTrace;
 
+		bool LockOnOnce = true;
+		if(IsValidEntity(target))
+			LockOnOnce = false;
+
 		Initiate_HomingProjectile(projectile,
 		client,
 			90.0,			// float lockonAngleMax,
 			15.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
+			LockOnOnce,				// bool LockOnlyOnce,
 			true,				// bool changeAngles,
 			Angles,
 			target);			// float AnglesInitiate[3]);
