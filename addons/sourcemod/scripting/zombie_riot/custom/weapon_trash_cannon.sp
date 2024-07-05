@@ -806,7 +806,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	f_HealthBeforeHurt[victim] = 9999999999.0;		//A little hack to guarantee a freeze. Anything that doesn't have anywhere near 999 billion, 999 million, 999 thousand, 999 HP will always be frozen. 
+	Cryo_FreezeZombie(victim, 2);
 }
 
 public bool Trash_RollTrash(int client, int tier)
