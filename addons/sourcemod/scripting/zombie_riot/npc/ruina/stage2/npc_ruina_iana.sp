@@ -229,6 +229,7 @@ methodmap Iana < CClotBody
 		npc.Anger = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 6);
 		
 		return npc;
 	}
@@ -268,6 +269,12 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 5.0);
 	
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
+	}
+
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting

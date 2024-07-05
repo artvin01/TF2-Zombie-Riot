@@ -1738,7 +1738,7 @@ public void Master_Apply_Battery_Buff(int client, float range, float power)
 {
 	Apply_Master_Buff(client, RUINA_BATTERY_BUFF, range, 0.0, power);
 }
-static void Ruina_Special_Logic(int iNPC, int Target)
+void Ruina_Special_Logic(int iNPC, int Target)
 {
 	if(b_ruina_allow_teleport[iNPC])
 	{

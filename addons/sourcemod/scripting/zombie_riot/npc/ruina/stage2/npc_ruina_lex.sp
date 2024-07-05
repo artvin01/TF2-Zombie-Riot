@@ -245,7 +245,164 @@ methodmap Lex < CClotBody
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
 		#endif
 	}
-	
+
+	property int m_ially
+	{
+		public get()		{	return this.m_iOverlordComboAttack;	}
+		public set(int value) 	{	this.m_iOverlordComboAttack = value;	}
+	}
+	property float m_flRange
+	{
+		public get()			{	return this.m_flCharge_delay;	}
+		public set(float value) 	{	this.m_flCharge_delay = value;	}
+	}
+	property bool m_bRetreating
+	{
+		public get()							{ return b_Gunout[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
+	}
+	property bool m_bSolo
+	{
+		public get()							{ return b_solo[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_solo[this.index] = TempValueForProperty; }
+	}
+
+	public void Do_Default()
+	{
+		if(!this.IsAlive())
+			return;
+		
+		bool close = this.IsClose();
+
+		if(close)
+		{
+			if(this.IsLowHealth())
+			{
+				this.Fuse();
+			}
+			else	//Initiate a buff between the 2.
+			{
+				this.m_bRetreating = false;
+			}
+		}
+		
+	}
+	public void Initiate_Follow()	//set pathing towards ally.
+	{
+		int Ally = EntRefToEntIndex(this.m_ially);
+		this.m_bRetreating = true;
+		NPC_SetGoalEntity(this.index, Ally);
+		Ruina_Special_Logic(this.index, Ally);
+		this.StartPathing();
+	}
+	public bool IsClose()			//check if we are close enough to initate fusion
+	{
+		int Ally = EntRefToEntIndex(this.m_ially);
+		float victimPos[3];
+		float partnerPos[3];
+		GetEntPropVector(this.index, Prop_Send, "m_vecOrigin", partnerPos);
+		GetEntPropVector(Ally, Prop_Data, "m_vecAbsOrigin", victimPos); 
+		float Distance = GetVectorDistance(victimPos, partnerPos, true);
+		if(Distance < (this.m_flRange) && Can_I_See_Enemy_Only(this.index, Ally))
+		{
+			return true;
+		}
+		return false;
+	}
+	public bool IsLowHealth()		//only allow walking close if both npc's are bellow 50% hp.
+	{
+		int Ally = EntRefToEntIndex(this.m_ially);
+		int Health 		= GetEntProp(Ally, Prop_Data, "m_iHealth"),
+			MaxHealth 	= GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
+
+		float Ratio = (float(Health)/float(MaxHealth));
+
+		if(Ratio > 0.5)
+			return false;
+		
+		Health 		= GetEntProp(this.index, Prop_Data, "m_iHealth"),
+		MaxHealth 	= GetEntProp(this.index, Prop_Data, "m_iMaxHealth");
+
+		if(Ratio > 0.5)
+			return false;
+
+		this.Initiate_Follow();
+
+		return true;
+	}
+	public bool IsAlive()
+	{
+		if(this.m_bSolo)
+			return false;
+		
+		return IsValidAlly(this.index, EntRefToEntIndex(this.m_ially));
+	}
+	public void Fuse()
+	{
+
+	}
+	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
+	{
+		if(!this.IsAlive())
+			return;
+		
+		if(this.IsClose())
+		{	
+			int Ally = EntRefToEntIndex(this.m_ially);
+			damage *= 0.65;
+			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			damage *= 0.25;
+		}
+	}
+	public void Spawn_Ally()
+	{
+		this.m_ially = -1;
+
+		float pos[3]; GetEntPropVector(this.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(this.index, Prop_Data, "m_angRotation", ang);
+		int maxhealth;
+
+		maxhealth = GetEntProp(this.index, Prop_Data, "m_iHealth");
+		
+		maxhealth = RoundToFloor(maxhealth*1.5);
+
+		int spawn_index = NPC_CreateByName("npc_ruina_iana", this.index, pos, ang, GetTeam(this.index));
+		if(spawn_index > MaxClients)
+		{
+			this.m_ially = EntIndexToEntRef(spawn_index);
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+		}
+	}
+	public int Get_Target()
+	{
+		float GameTime = GetGameTime();
+		if(!this.IsAlive())
+		{
+			if(this.m_flGetClosestTargetTime < GameTime)
+			{
+				this.m_iTarget = GetClosestTarget(this.index);
+				this.m_flGetClosestTargetTime = GameTime + 1.0;
+			}
+		}
+		else
+		{
+			Iana ally = view_as<Iana>(EntRefToEntIndex(this.m_ially));
+
+			this.m_iTarget = ally.m_iTarget;
+
+			if(!IsValidEnemy(this.index, this.m_iTarget))
+			{
+				if(this.m_flGetClosestTargetTime < GameTime)
+				{
+					this.m_iTarget = GetClosestTarget(this.index);
+					this.m_flGetClosestTargetTime = GameTime + 1.0;
+				}
+			}
+		}
+		return this.m_iTarget;
+	}
 	
 	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -332,99 +489,26 @@ methodmap Lex < CClotBody
 
 		npc.Anger = false;
 
-		b_solo[npc.index] =  StrContains(data, "solo") != -1;
+		npc.m_bSolo =  StrContains(data, "solo") != -1;
 
-		RequestFrame(Do_OnSpawn, npc);
+		if(!npc.m_bSolo)
+			RequestFrame(Do_OnSpawn, npc.index);
 		
 		return npc;
 	}
 }
-
-enum struct AllyData
+static void Do_OnSpawn(int ref)
 {
-	int ally;
-
-	void Do_Default(Lex npc)
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
 	{
-		if(!this.IsAlive(npc))
-			return;
-		
-		bool close = this.IsClose(npc);
-
-		if(close)
-		{
-			if(this.IsLowHealth(npc))
-			{
-				this.Fuse(npc);
-			}
-			else	//Initiate a buff between the 2.
-			{
-
-			}
-		}
-		
+		Lex npc = view_as<Lex>(entity);
+		npc.m_flRange = (300.0*300.0);
+		npc.m_bRetreating = false;
+		npc.Spawn_Ally();
 	}
-	void Initiate_Follow(Lex npc)	//set pathing towards ally.
-	{
-
-	}
-	bool IsClose(Lex npc)			//check if we are close enough to initate fusion
-	{
-		
-		return false;
-	}
-	bool IsLowHealth(Lex npc)		//only allow walking close if both npc's are bellow 50% hp.
-	{
-		int Ally = EntRefToEntIndex(this.ally);
-		int Health 		= GetEntProp(Ally, Prop_Data, "m_iHealth"),
-			MaxHealth 	= GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
-
-		float Ratio = (float(Health)/float(MaxHealth));
-
-		if(Ratio > 0.5)
-			return false;
-		
-		Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-
-		if(Ratio > 0.5)
-			return false;
-
-		this.Initiate_Follow(npc);
-
-		return true;
-	}
-	bool IsAlive(Lex npc)
-	{
-		if(b_solo[npc.index])
-			return false;
-		
-		return IsValidAlly(npc.index, EntRefToEntIndex(this.ally));
-	}
-	void Fuse(Lex npc)
-	{
-
-	}
-	void Share_Damage(Lex npc)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
-	{
-
-	}
-	void Spawn_Ally(Lex npc)
-	{
-		this.ally = -1;
-
-
-	}
-}
-
-static AllyData struct_Ally[MAXENTITIES];
-
-static void Do_OnSpawn(Lex npc)
-{
-	if(b_solo[npc.index])
-		return;
 	
-	struct_Ally[npc.index].Spawn_Ally(npc);
+	
 }
 
 //TODO 
@@ -462,10 +546,12 @@ static void ClotThink(int iNPC)
 	else
 		Ruina_Add_Battery(npc.index, 10.0);	//10
 
-	
-	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+	int PrimaryThreatIndex = npc.Get_Target();
 
-	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+	npc.Do_Default();
+
+	if(!npc.m_bRetreating)
+		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
 	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
@@ -789,7 +875,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(attacker <= 0)
 		return Plugin_Continue;
 
-	
+	npc.Share_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
