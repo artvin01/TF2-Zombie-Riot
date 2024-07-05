@@ -32,12 +32,14 @@ public void Rusty_Rifle_ResetAll()
 	Zero(ability_cooldown);
 }
 
+#define SND_RUSTY_BIGSHOT_PREPARE	")player/taunt_rocket_hover_start.wav"
 #define SND_RUSTY_BIGSHOT		")mvm/giant_soldier/giant_soldier_rocket_shoot_crit.wav"
 #define SND_RUSTY_BIGSHOT_2		")mvm/giant_common/giant_common_explodes_01.wav"
 #define SND_RUSTY_BRAINBLAST	")mvm/giant_soldier/giant_soldier_explode.wav"
 
 void Rusty_Rifle_Precache()
 {
+	PrecacheSound(SND_RUSTY_BIGSHOT_PREPARE);
 	PrecacheSound(SND_RUSTY_BIGSHOT);
 	PrecacheSound(SND_RUSTY_BIGSHOT_2);
 	PrecacheSound(SND_RUSTY_BRAINBLAST);
@@ -64,7 +66,15 @@ public void BigShot_RevertAttribs(int ref)
 		return;
 
 	Attributes_Set(weapon, 305, 0.0);
-	Attributes_Set(weapon, 266, 0.0);
+}
+
+public void BigShot_RemoveForcedReload(int id)
+{
+	int client = GetClientOfUserId(id);
+	if (!IsValidClient(client))
+		return;
+
+	SetForceButtonState(client, false, IN_RELOAD);
 }
 
 public void Weapon_Rusty_Rifle_BigShot_Pap1(int client, int weapon, bool crit)
@@ -82,7 +92,7 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 	if (Ability_Check_Cooldown(client, 2) < 0.0)
 	{
 		float nextAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
-		if (GetGameTime() < nextAttack)
+		if (GetGameTime() < nextAttack || BigShot_Active[client])
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -91,13 +101,14 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 		}
 		else
 		{
-			//WHY WON'T YOU WORK??????????
 			Attributes_Set(weapon, 305, 1.0);
-			Attributes_Set(weapon, 266, float(BigShot_MaxTargets[tier]));
 
-			
 			Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
-			SetForceButtonState(client, true, IN_ATTACK);
+
+			SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
+			SetForceButtonState(client, true, IN_RELOAD);
+			RequestFrame(BigShot_RemoveForcedReload, GetClientUserId(client));
+			EmitSoundToAll(SND_RUSTY_BIGSHOT_PREPARE, client);
 			BigShot_Active[client] = true;
 			BigShot_Tier[client] = tier;
 		}
