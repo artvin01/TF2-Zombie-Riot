@@ -1146,9 +1146,11 @@
 	
 	"Homing Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies."
-		"ru"	"Расходует ману с каждым выстрелом. M2 - вызывает выстреливающий дробовик. Он стреляет снарядами в врагов."
-		"chi"   "每次射击消耗法力值。右键召唤散弹枪射击。这些射击击中敌人。"
+		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies if you look at them while shooting."
+	}
+	"Homing Staff Desc 2"
+	{
+		"en"	"Attacks faster, does more damage, m2 costs more mana and can be spammed at an extreme rate."
 	}
 	
 	"Wind Staff Desc"
@@ -2846,8 +2848,7 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
-		"chi"	"增加超量上限。\n25%% → 45%%（玩家）\n50%% → 75%%（NPC）"
+		"en"	"You have different medigun modes! use them for certain situations to boost melee, ranged, or both resitances."
 	}
 	"Medigun Desc Pap 2"
 	{

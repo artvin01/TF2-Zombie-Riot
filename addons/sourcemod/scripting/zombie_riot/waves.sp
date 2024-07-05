@@ -2088,9 +2088,14 @@ void DoGlobalMultiScaling()
 	}
 
 	PlayerCountBuffScaling = 4.0 / playercount;
-	if(PlayerCountBuffScaling < 1.0)
+	if(PlayerCountBuffScaling < 1.2)
 	{
-		PlayerCountBuffScaling = 1.0;
+		PlayerCountBuffScaling = 1.2;
+	}
+	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
+	if(PlayerCountResBuffScaling < 0.75)
+	{
+		PlayerCountResBuffScaling = 0.75;
 	}
 }
 

@@ -1338,249 +1338,10 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	char Debuff_Adder_left[64];
 	char Debuff_Adder_right[64];
 	char Debuff_Adder[64];
-		
-	bool Debuff_added = false;
+	EntityBuffHudShow(victim, attacker, Debuff_Adder_left, Debuff_Adder_right);
+	
 	float GameTime = GetGameTime();
 
-	if(f_HighTeslarDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "⌁⌁");
-	}
-	else if(f_LowTeslarDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "⌁");
-	}
-	if (f_FallenWarriorDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s⋡", Debuff_Adder_left);	
-	}
-	if(f_LudoDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s^", Debuff_Adder_left);	
-	}
-	if(f_SpadeLudoDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s^^", Debuff_Adder_left);	
-	}	
-	if(BleedAmountCountStack[victim] > 0) //bleed
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❣(%i)", Debuff_Adder_left, BleedAmountCountStack[victim]);			
-	}
-#if defined RPG
-	if(TrueStrength_StacksOnEntity(attacker, victim) > 0) //True stength!
-	{
-		Debuff_added = true;
-		
-		if(TrueStrength_StacksOnEntity(attacker, victim) < TrueStrength_StacksOnEntityMax(attacker))
-			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(%i/%i)", Debuff_Adder_left, TrueStrength_StacksOnEntity(attacker, victim), TrueStrength_StacksOnEntityMax(attacker));			
-		else
-			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sT(MAX)", Debuff_Adder_left);			
-	}
-	switch(BubbleProcStatusLogicCheck(victim))
-	{
-		case -1:
-		{
-			Debuff_added = true;
-			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%sB!", Debuff_Adder_right);
-		}
-		case 1:
-		{
-			Debuff_added = true;
-			Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "b!%s", Debuff_Adder_left);
-		}
-	}
-	if(victim < MaxClients)
-	{
-		if(TrueStength_ClientBuff(victim))
-		{
-			Debuff_added = true;
-			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%sT", Debuff_Adder_right);
-		}
-		float dummyNumber;
-		if(RPG_BobsPureRage(victim, -1, dummyNumber))
-		{
-			Debuff_added = true;
-			Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "%sRA", Debuff_Adder_right);
-		}
-		
-	}
-#endif
-
-#if defined ZR
-	if(i_HowManyBombsOnThisEntity[victim][attacker] > 0)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s!(%i)", Debuff_Adder_left, i_HowManyBombsOnThisEntity[victim][attacker]);
-	}
-#endif
-		
-	if(IgniteFor[victim] > 0) //burn
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s~", Debuff_Adder_left);			
-	}
-		
-	if(f_HighIceDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❅❅❅", Debuff_Adder_left);
-	}
-	else if(f_LowIceDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❅❅", Debuff_Adder_left);
-	}
-	else if (f_VeryLowIceDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s❅", Debuff_Adder_left);	
-	}
-	if (f_BuildingAntiRaid[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sR", Debuff_Adder_left);	
-	}
-		
-	if(f_WidowsWineDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s४", Debuff_Adder_left);
-	}
-		
-	if(f_CrippleDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s⯯", Debuff_Adder_left);
-	}
-
-	if(f_CudgelDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s‼", Debuff_Adder_left);
-	}
-
-	if(f_MaimDebuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s↓", Debuff_Adder_left);
-	}
-	if(f_PotionShrinkEffect[victim] > GameTime || f_EnfeebleEffect[victim] > GameTime)
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s▼", Debuff_Adder_left);
-	}
-	if(f_LeeMinorEffect[victim] > GameTime || f_LeeMajorEffect[victim] > GameTime || f_LeeSuperEffect[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%s☯", Debuff_Adder_left);
-	}
-	if(NpcStats_IsEnemySilenced(victim))
-	{
-		Debuff_added = true;
-		
-		Format(Debuff_Adder_left, sizeof(Debuff_Adder_left), "%sX", Debuff_Adder_left);
-	}
-	if(Increaced_Overall_damage_Low[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⌃%s", Debuff_Adder_right);
-	}
-	if(Resistance_Overall_Low[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⌅%s", Debuff_Adder_right);
-	}
-	if(f_EmpowerStateOther[victim] > GameTime) //Do not show fusion self buff.
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⍋%s", Debuff_Adder_right);
-	}
-#if defined ZR
-	if(VausMagicaShieldLeft(victim) > 0)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
-	}
-#endif
-	if(f_HussarBuff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "ᐩ%s", Debuff_Adder_right);
-	}
-	if(f_PernellBuff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "P%s", Debuff_Adder_right);
-	}
-	if(f_GodAlaxiosBuff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "ß%s", Debuff_Adder_right);
-	}
-	if(f_Ocean_Buff_Stronk_Buff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⍟%s", Debuff_Adder_right);
-	}
-	else if(f_Ocean_Buff_Weak_Buff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⌾%s", Debuff_Adder_right);
-	}
-	if(f_BattilonsNpcBuff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "⛨%s", Debuff_Adder_right);
-	}
-	if(f_BuffBannerNpcBuff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "↖%s", Debuff_Adder_right);
-	}
-	if(f_AncientBannerNpcBuff[victim] > GameTime) //hussar!
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "➤%s", Debuff_Adder_right);
-	}
-	
-	if(f_Ruina_Defense_Buff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "♜%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Speed_Buff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "♝%s", Debuff_Adder_right);
-	}
-	if(f_Ruina_Attack_Buff[victim] > GameTime)
-	{
-		Debuff_added = true;
-		Format(Debuff_Adder_right, sizeof(Debuff_Adder_right), "♟%s", Debuff_Adder_right);
-	}
 	
 	CClotBody npc = view_as<CClotBody>(victim);
 	
@@ -1607,16 +1368,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			if(f_MultiDamageTaken[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken[victim];
-			}
-			if(f_MultiDamageTaken_Flat[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken_Flat[victim];
-			}
 			int testvalue = 1;
-			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+			int DmgType = DMG_CLUB;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 
 #if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
@@ -1659,16 +1413,9 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			if(f_MultiDamageTaken[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken[victim];
-			}
-			if(f_MultiDamageTaken_Flat[victim] != 1.0)
-			{
-				percentage *= f_MultiDamageTaken_Flat[victim];
-			}
 			int testvalue = 1;
-			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, testvalue, testvalue, GetGameTime());
+			int DmgType = DMG_BULLET;
+			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 
 #if defined ZR
 			if(!b_thisNpcIsARaid[victim] && GetTeam(victim) != TFTeam_Red && XenoExtraLogic(true))
@@ -1724,7 +1471,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	{
 		Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s%s\n", Debuff_Adder_left,Debuff_Adder,Debuff_Adder_right);
 	}
-	else if(Debuff_added)
+	else if(Debuff_Adder_left[0] || Debuff_Adder_right[0])
 	{
 		if(Debuff_Adder_left[0] && Debuff_Adder_right[0])
 			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s | %s\n", Debuff_Adder_left,Debuff_Adder_right);
@@ -1917,7 +1664,19 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	}	
 	float DamageTest = 1.0;
 	int testvalue = 1;
-	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, testvalue, testvalue, GetGameTime());
+	int DmgType;
+	switch(type)
+	{
+		case 1:
+		{
+			DmgType = DMG_BULLET;
+		}
+		case 2:
+		{
+			DmgType = DMG_CLUB;
+		}
+	}
+	OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, DamageTest, DmgType, testvalue, GetGameTime());
 	if(DamageTest != 1.0)
 		return true;
 

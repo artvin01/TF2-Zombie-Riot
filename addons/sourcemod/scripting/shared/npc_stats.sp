@@ -1340,13 +1340,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
-		/*
-		if(b_NpcResizedForCrouch[this.index])
-		{
-			speed_for_return *= 0.33333;
-		}
-		*/
-		if(f_Ruina_Speed_Buff[this.index]> Gametime)
+		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
 			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
 		}
@@ -5727,6 +5721,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 
 		static float flMyPos[3];
 		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		flMyPos[2] += 35.0;
 		CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
 		if(area == NULL_AREA)
 		{
@@ -5736,6 +5731,12 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 				return;
 			}
 			i_FailedTriesUnstuck[iNPC][0] = 0;
+			flMyPos[2] -= 35.0;
+			area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
+			if(area != NULL_AREA)
+			{
+				return;
+			}
 			UnstuckStuckNpc(npc, iNPC);
 		}
 		else
@@ -10136,32 +10137,6 @@ void Spawns_CheckBadClient(int client)
 				BadSpotPoints[client] = 45;
 			}
 		}
-		/*
-		else
-		{
-			int npcs;
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
-				{
-					WorldSpaceCenter(client, pos2);
-					CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-					if(startArea == NULL_AREA)
-						continue;	// NPC on a bad nav??
-
-					if(!TheNavMesh.BuildPath(startArea, area, pos1))
-					{
-						bad++;
-						BadSpotPoints[client]++;
-					}
-					
-					if(npcs++ > 4)
-						break;
-				}
-			}
-		}
-		*/
 	}
 
 	if(bad > 4)

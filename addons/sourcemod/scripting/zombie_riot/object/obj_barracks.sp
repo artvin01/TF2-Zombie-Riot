@@ -1183,13 +1183,16 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 	}
 }
 
-float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false)
+float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false, bool visualise = false)
 {
 	float SupplyRateCalc = 1.0;
 	if(!gold)
 	{
-		float Multi_Extra = float(SupplyRate[client]) / 2.0;
-		SupplyRateCalc *= Multi_Extra;
+		if(visualise)
+		{
+			float Multi_Extra = float(SupplyRate[client]) / 2.0;
+			SupplyRateCalc *= Multi_Extra;
+		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 		{
 			SupplyRateCalc *= 1.25;
@@ -1258,11 +1261,11 @@ static void SummonerMenu(int client, int viewer)
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))
 	{
-		menu.SetTitle("%s\n%t\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], "Crouch To See Info Barracks", RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client), ResourceGenMulti(client, true));
+		menu.SetTitle("%s\n%t\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], "Crouch To See Info Barracks", RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client,_,_,true), ResourceGenMulti(client, true));
 	}
 	else
 	{
-		menu.SetTitle("%s\n\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client), ResourceGenMulti(client, true));	
+		menu.SetTitle("%s\n\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client,_,_,true), ResourceGenMulti(client, true));	
 	}
 
 	char buffer1[256];

@@ -202,7 +202,8 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 			{
 				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && !Is_a_Medic[client])
 				{
-					f_HussarBuff[client] = gameTime;
+					f_HussarBuff[client] = gameTime + 0.5;
+					f_BuffBannerNpcBuff[client] = gameTime + 0.5;
 				}
 			}
 		}
