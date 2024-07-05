@@ -906,6 +906,15 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Rusty Ability Blocked"
+	{
+		"en"		"You can't do that right now!"
+	}
+	"Rusty Ability Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Big Shot is on cooldown: {1}"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"

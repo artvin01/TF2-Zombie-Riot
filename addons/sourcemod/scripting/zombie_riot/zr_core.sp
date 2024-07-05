@@ -495,6 +495,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
+#include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -612,6 +613,7 @@ void ZR_MapStart()
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
+	Rusty_Rifle_ResetAll();
 	ShieldLogic_OnMapStart();
 	Weapon_RapierMapChange();
 	Rogue_OnAbilityUseMapStart();
@@ -737,6 +739,7 @@ void ZR_MapStart()
 	Flagellant_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
+	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();
