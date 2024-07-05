@@ -287,10 +287,14 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 		}
 	}
+	/*
+	Too strong.
+	Remove.
 	else if(i_IsABuilding[victim])	// Buildings
 	{
 		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.0001), 10.0, true);
 	}
+	*/
 }
 
 static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)

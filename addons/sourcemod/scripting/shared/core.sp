@@ -419,6 +419,8 @@ float Resistance_Overall_Low[MAXENTITIES];
 float f_EmpowerStateSelf[MAXENTITIES];
 float f_EmpowerStateOther[MAXENTITIES];
 
+float Adaptive_MedigunBuff[MAXENTITIES][3];
+
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
 bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
@@ -1685,6 +1687,7 @@ public void OnMapStart()
 	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
 	Zero(delay_hud);
 	Zero(Increaced_Overall_damage_Low);
+	Zero2(Adaptive_MedigunBuff);
 	Zero(Resistance_Overall_Low);
 	Zero(Increaced_Sentry_damage_Low);
 	Zero(Increaced_Sentry_damage_High);

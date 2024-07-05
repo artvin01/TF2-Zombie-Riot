@@ -289,10 +289,10 @@ methodmap ObjectBarracks < ObjectGeneric
 			SetEntityModel(npc.index, SUMMONER_MODEL_2);
 			if(IsValidEntity(npc.m_iWearable2))
 			{
-				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", 0.07);
+				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
 				SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
 			}
-			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.07);
+			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 			float minbounds[3] = {-18.0, -18.0, 0.0};
 			float maxbounds[3] = {18.0, 18.0, 40.0};
 			SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
@@ -655,7 +655,7 @@ public void Building_Summoner(int client, int entity)
 	BarracksCheckItems(client);
 	WoodAmount[client] *= 0.75;
 	FoodAmount[client] *= 0.75;
-	GoldAmount[client] *= 0.75;
+//	GoldAmount[client] *= 0.75;
 	if(CvarInfiniteCash.BoolValue)
 	{
 		WoodAmount[client] = 999999.0;
@@ -686,7 +686,7 @@ void Barracks_TryRegenIfBuilding(int client, float ammount = 1.0)
 		if(StrContains(plugin, "obj_barracks", false) != -1)
 		{
 			//regen barracks resoruces
-			SummonerRenerateResources(client, 20.0 * ammount);
+			SummonerRenerateResources(client, 20.0 * ammount, 0.0, true);
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
@@ -881,10 +881,10 @@ void Barracks_BuildingThink(int entity)
 		SetEntityModel(npc.index, SUMMONER_MODEL_2);
 		if(IsValidEntity(npc.m_iWearable2))
 		{
-			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", 0.07);
+			SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
 			SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
 		}
-		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", 0.07);
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 		float minbounds[3] = {-18.0, -18.0, 0.0};
 		float maxbounds[3] = {18.0, 18.0, 40.0};
 		SetEntPropVector(npc.index, Prop_Send, "m_vecMins", minbounds);
@@ -1139,14 +1139,60 @@ void CheckSummonerUpgrades(int client)
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
 }
 
-void SummonerRenerateResources(int client, float multi, bool allowgold = false)
+void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
 {
-	// 1 Supply = 1 Food Every 2 Seconds, 1 Wood Every 4 Seconds
-	
-	if(!Waves_InSetup())
+	bool AllowResoruceGen = false;
+
+	if(Rogue_Mode())
+	{
+		AllowResoruceGen = Waves_Started();
+	}
+	else
+	{
+		AllowResoruceGen = !Waves_InSetup();
+	}
+
+	if(ignoresetup)
+	{
+		AllowResoruceGen = true;
+	}
+
+	if(AllowResoruceGen)
 	{
 		float SupplyRateCalc = SupplyRate[client] / (LastMann ? 10.0 : 20.0);
 
+		SupplyRateCalc *= multi;
+
+		SupplyRateCalc *= ResourceGenMulti(client);
+		WoodAmount[client] += SupplyRateCalc * 1.15;
+		FoodAmount[client] += SupplyRateCalc * 1.40;
+
+		if(MedievalUnlock[client] || GoldGenMulti != 1.0)
+		{
+			float GoldSupplyRate = 0.01;
+			GoldSupplyRate *= multi;
+			GoldSupplyRate *= GoldGenMulti;
+			GoldSupplyRate *= ResourceGenMulti(client, true, true);
+			GoldAmount[client] += GoldSupplyRate;
+		}
+	}
+	if(f_VillageSavingResources[client] < GetGameTime())
+	{
+		f_VillageSavingResources[client] = GetGameTime() + 0.25;
+		BarracksSaveResources(client);
+	}
+}
+
+float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false, bool visualise = false)
+{
+	float SupplyRateCalc = 1.0;
+	if(!gold)
+	{
+		if(visualise)
+		{
+			float Multi_Extra = float(SupplyRate[client]) / 2.0;
+			SupplyRateCalc *= Multi_Extra;
+		}
 		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CONSCRIPTION)
 		{
 			SupplyRateCalc *= 1.25;
@@ -1157,33 +1203,32 @@ void SummonerRenerateResources(int client, float multi, bool allowgold = false)
 		}
 		if(Rogue_Mode())
 		{
-			SupplyRateCalc *= 5.0;
+			SupplyRateCalc *= 1.35;
 		}
 		if(RaidbossIgnoreBuildingsLogic(0))
 		{
 			SupplyRateCalc *= 1.25;
 		}
-		SupplyRateCalc *= multi;
-
-		WoodAmount[client] += SupplyRateCalc * 1.15;
-		FoodAmount[client] += SupplyRateCalc * 1.40;
-
-		if(MedievalUnlock[client] || allowgold)
-		{
-			float GoldSupplyRate = SupplyRateCalc / 750.0;
-			if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
-			{
-				GoldSupplyRate *= 1.25;
-			}
-			GoldAmount[client] += GoldSupplyRate;
-		}
-
 	}
-	if(f_VillageSavingResources[client] < GetGameTime())
+	else
 	{
-		f_VillageSavingResources[client] = GetGameTime() + 0.25;
-		BarracksSaveResources(client);
+		if(Rogue_Mode())
+		{
+			SupplyRateCalc *= 1.5;
+		}
+		if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_GOLDMINERS)
+		{
+			SupplyRateCalc *= 1.25;
+		}
+		if(!MedievalUnlock[client])
+		{
+			if(!allowgoldgen)
+			{
+				SupplyRateCalc = 0.0;
+			}
+		}
 	}
+	return SupplyRateCalc;
 }
 
 static void OpenSummonerMenu(int client, int viewer)
@@ -1216,11 +1261,11 @@ static void SummonerMenu(int client, int viewer)
 	SetGlobalTransTarget(viewer);
 	if(!(GetEntityFlags(viewer) & FL_DUCKING))
 	{
-		menu.SetTitle("%s\n%t\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], "Crouch To See Info Barracks", RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));
+		menu.SetTitle("%s\n%t\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], "Crouch To See Info Barracks", RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client,_,_,true), ResourceGenMulti(client, true));
 	}
 	else
 	{
-		menu.SetTitle("%s\n\n \n$%d £%d ¥%d\n ", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), RoundToFloor(GoldAmount[client]));	
+		menu.SetTitle("%s\n\n \n$%d £%d ¥%.1f\n%t\n", CivName[CivType[client]], RoundToFloor(WoodAmount[client]), RoundToFloor(FoodAmount[client]), GoldAmount[client], "Resource Gain Mult Villager", ResourceGenMulti(client,_,_,true), ResourceGenMulti(client, true));	
 	}
 
 	char buffer1[256];
@@ -1236,6 +1281,7 @@ static void SummonerMenu(int client, int viewer)
 	{
 		options_unitMax += 1;
 	}
+
 	if(b_InUpgradeMenu[viewer])
 	{
 		itemsAddedToList = 2;

@@ -3,13 +3,8 @@
 
 static bool Projectile_Is_Silent[MAXENTITIES]={false, ...};
 
-static float RMR_HomingPerSecond[MAXENTITIES];
 static int RMR_CurrentHomingTarget[MAXENTITIES];
-static bool RMR_HasTargeted[MAXENTITIES];
 static int RMR_RocketOwner[MAXENTITIES];
-static float RWI_HomeAngle[MAXENTITIES];
-static float RWI_LockOnAngle[MAXENTITIES];
-static float RMR_RocketVelocity[MAXENTITIES];
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 
@@ -34,16 +29,33 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 {
 	if(weapon >= MaxClients)
 	{
-		int mana_cost = 120;
+		int pap=0;
+		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+		int mana_cost = 140;
+		if(pap == 1)
+		{
+			mana_cost = 200;
+		}
 		if(mana_cost <= Current_Mana[client])
 		{
 			if (Ability_Check_Cooldown(client, slot) < 0.0)
 			{
 				Rogue_OnAbilityUse(weapon);
-				Ability_Apply_Cooldown(client, slot, 5.0);
+				if(pap == 0)
+				{
+					Ability_Apply_Cooldown(client, slot, 2.0);
+				}
+				else
+				{
+					Ability_Apply_Cooldown(client, slot, 0.5);
+				}
 				
 				float damage = 65.0;
 				damage *= Attributes_Get(weapon, 410, 1.0);
+
+				damage *= 1.1;
+				if(LastMann)
+					damage *= 0.33;
 				
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
@@ -64,27 +76,47 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 				time *= Attributes_Get(weapon, 101, 1.0);
 
 				time *= Attributes_Get(weapon, 102, 1.0);
+
+				time *= 0.75;
 					
 				EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM_ABILITY, client, _, 75, _, 0.8, 135);
-				
+				b_LagCompNPC_No_Layers = true;
+				StartLagCompensation_Base_Boss(client);
+				Handle swingTrace;
+				float vecSwingForward[3];
+				DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+				FinishLagCompensation_Base_boss();
+							
+				int target = TR_GetEntityIndex(swingTrace);	
+				delete swingTrace;
+			
 				float Angles[3];
 				for(int HowOften=0; HowOften<=10; HowOften++)
 				{
 					GetClientEyeAngles(client, Angles);
 					for (int spread = 0; spread < 3; spread++)
 					{
-						Angles[spread] += GetRandomFloat(-5.0, 5.0);
+						Angles[spread] += GetRandomFloat(-15.0, 15.0);
 					}
-					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
-					CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					int projectile;
+					if(pap == 0)
+					{
+						projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+					}
+					else
+					{
+						projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_stardust_white_parent", Angles);
+					}
 					Projectile_Is_Silent[projectile] = true;
-					RMR_HomingPerSecond[projectile] = 150.0;
-					RMR_RocketOwner[projectile] = client;
-					RMR_HasTargeted[projectile] = false;
-					RWI_HomeAngle[projectile] = 180.0;
-					RWI_LockOnAngle[projectile] = 180.0;
-					RMR_RocketVelocity[projectile] = speed;
-					RMR_CurrentHomingTarget[projectile] = -1;
+
+					Initiate_HomingProjectile(projectile,
+					client,
+						90.0,			// float lockonAngleMax,
+						5.0,				//float homingaSec,
+						true,				// bool LockOnlyOnce,
+						true,				// bool changeAngles,
+						Angles,
+						target);			// float AnglesInitiate[3]);	
 				}
 			}
 			else
@@ -138,7 +170,6 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		time *= Attributes_Get(weapon, 101, 1.0);
 		
 		time *= Attributes_Get(weapon, 102, 1.0);
-
 		float Angles[3];
 		GetClientEyeAngles(client, Angles);
 		for (int spread = 0; spread < 3; spread++)
@@ -146,16 +177,39 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 			Angles[spread] += GetRandomFloat(-5.0, 5.0);
 		}
 		EmitSoundToAll(SOUND_WAND_SHOT_AUTOAIM, client, _, 75, _, 0.7, 135);
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
-		CreateTimer(0.1, Homing_Shots_Repeat_Timer, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-		Projectile_Is_Silent[projectile] = true;
-		RMR_HomingPerSecond[projectile] = 150.0;
-		RMR_RocketOwner[projectile] = client;
-		RMR_HasTargeted[projectile] = false;
-		RWI_HomeAngle[projectile] = 180.0;
-		RWI_LockOnAngle[projectile] = 180.0;
-		RMR_RocketVelocity[projectile] = speed;
-		RMR_CurrentHomingTarget[projectile] = -1;
+
+		int pap=0;
+		pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+
+		int projectile;
+		if(pap == 0)
+		{
+			projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_tesla_flash", Angles);
+		}
+		else
+		{
+			projectile = Wand_Projectile_Spawn(client, speed, time, damage, 5/*Default wand*/, weapon, "unusual_stardust_white_parent", Angles);
+		}
+		
+
+		b_LagCompNPC_No_Layers = true;
+		StartLagCompensation_Base_Boss(client);
+		Handle swingTrace;
+		float vecSwingForward[3];
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
+		FinishLagCompensation_Base_boss();
+					
+		int target = TR_GetEntityIndex(swingTrace);	
+		delete swingTrace;
+
+		Initiate_HomingProjectile(projectile,
+		client,
+			90.0,			// float lockonAngleMax,
+			15.0,				//float homingaSec,
+			true,				// bool LockOnlyOnce,
+			true,				// bool changeAngles,
+			Angles,
+			target);			// float AnglesInitiate[3]);
 	}
 	else
 	{
@@ -165,6 +219,7 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
 	}
 }
+
 //Sarysapub1 code but fixed and altered to make it work for our base bosses
 #define TARGET_Z_OFFSET 40.0
 

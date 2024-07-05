@@ -64,6 +64,8 @@ enum struct Round
 	bool SpawnGrigori;
 	int GrigoriMaxSellsItems;
 	float Setup;
+	bool NoMiniboss;
+	bool NoBarney;
 	ArrayList Waves;
 	
 	char Skyname[64];
@@ -596,6 +598,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
+		round.NoMiniboss = view_as<bool>(kv.GetNum("no_miniboss"));
+		round.NoBarney = view_as<bool>(kv.GetNum("no_barney"));
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
@@ -1292,17 +1296,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(!rogue && CurrentRound == 4)
+			panzer_chance--;
+			//always increace chance of miniboss.
+			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(CurrentRound == 11)
+			else if(CurrentRound == 11 && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > 11 && round.Setup <= 30.0))
+			else if((CurrentRound > 11 && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				panzer_spawn = chance;
@@ -1313,7 +1319,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				else
 				{
-					panzer_chance--;
 					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
@@ -2083,9 +2088,14 @@ void DoGlobalMultiScaling()
 	}
 
 	PlayerCountBuffScaling = 4.0 / playercount;
-	if(PlayerCountBuffScaling < 1.0)
+	if(PlayerCountBuffScaling < 1.2)
 	{
-		PlayerCountBuffScaling = 1.0;
+		PlayerCountBuffScaling = 1.2;
+	}
+	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
+	if(PlayerCountResBuffScaling < 0.75)
+	{
+		PlayerCountResBuffScaling = 0.75;
 	}
 }
 
