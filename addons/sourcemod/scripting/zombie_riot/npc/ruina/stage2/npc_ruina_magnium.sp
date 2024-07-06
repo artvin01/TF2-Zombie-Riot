@@ -192,7 +192,7 @@ methodmap Magnium < CClotBody
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -340,7 +340,7 @@ static void ClotThink(int iNPC)
 					{
 						Projectile.Apply_Particle("raygun_projectile_blue");
 						Projectile.Size = 2.0;
-						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS);
+						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
 						if(IsValidEntity(ModelApply))
 						{
 							float angles[3];

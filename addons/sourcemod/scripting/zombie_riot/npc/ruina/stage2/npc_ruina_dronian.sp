@@ -189,7 +189,7 @@ methodmap Dronian < CClotBody
 			"models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl",
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

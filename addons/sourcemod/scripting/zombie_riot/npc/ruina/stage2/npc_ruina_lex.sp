@@ -430,8 +430,8 @@ methodmap Lex < CClotBody
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
-			RUINA_CUSTOM_MODELS,
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1,
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -974,7 +974,7 @@ static Action Laser_Revert(Handle timer, int ref)
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
-		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
+		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
@@ -1042,7 +1042,7 @@ static void Initiate_Laser(Lex npc)
 		//but I still did it this way and so I saved 1 body group for the model pack!
 		//Also I thought at first doing this would be easy....
 		i_ring_dots[npc.index][2] = EntIndexToEntRef(Hand_Thing);
-		int ModelApply = ApplyCustomModelToWandProjectile(Hand_Thing, RUINA_CUSTOM_MODELS, 1.0, "");
+		int ModelApply = ApplyCustomModelToWandProjectile(Hand_Thing, RUINA_CUSTOM_MODELS_1, 1.0, "");
 		SetVariantInt(RUINA_W30_HAND_CREST);
 		AcceptEntityInput(ModelApply, "SetBodyGroup");
 

@@ -173,7 +173,7 @@ methodmap Maliana < CClotBody
 			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl",
 			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl",
 			"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

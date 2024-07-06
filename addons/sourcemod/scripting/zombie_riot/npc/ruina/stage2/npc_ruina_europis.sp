@@ -168,7 +168,7 @@ methodmap Europis < CClotBody
 			"models/workshop/player/items/all_class/xms_beard/xms_beard_medic.mdl",
 			"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl",
 			"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

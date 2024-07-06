@@ -185,7 +185,7 @@ methodmap Draedon < CClotBody
 			"models/player/items/medic/berliners_bucket_helm.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
 			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

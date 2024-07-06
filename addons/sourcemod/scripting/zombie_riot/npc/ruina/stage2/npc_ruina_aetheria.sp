@@ -197,7 +197,7 @@ methodmap Aetheria < CClotBody
 			"models/player/items/medic/medic_ushanka.mdl",
 			"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl",
 			"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

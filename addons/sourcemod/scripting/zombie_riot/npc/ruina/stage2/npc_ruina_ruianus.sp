@@ -185,7 +185,7 @@ methodmap Ruianus < CClotBody
 			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl",
 			"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_medic.mdl",
 			"models/player/items/scout/rebel_cap.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};	
 		
 		int skin = 1;	//1=blue, 0=red
@@ -295,7 +295,7 @@ static void ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS);
+				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
 				SetVariantInt(RUINA_BLADE_1);
 				AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 			}

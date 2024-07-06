@@ -216,7 +216,7 @@ methodmap Astriana < CClotBody
 			"models/player/items/soldier/fdu.mdl",
 			"models/workshop/player/items/engineer/dec22_cool_warm_sweater_style2/dec22_cool_warm_sweater_style2.mdl",
 			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

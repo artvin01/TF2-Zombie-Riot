@@ -194,8 +194,8 @@ methodmap Heliara < CClotBody
 			"models/workshop/player/items/medic/dec15_bunnyhoppers_ballistics_vest/dec15_bunnyhoppers_ballistics_vest.mdl",
 			"models/workshop/player/items/medic/jul13_emergency_supplies/jul13_emergency_supplies.mdl",
 			"models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl",
-			RUINA_CUSTOM_MODELS,
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1,
+			RUINA_CUSTOM_MODELS_1
 		};
 		
 		

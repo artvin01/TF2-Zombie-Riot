@@ -202,7 +202,7 @@ methodmap Laniun < CClotBody
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/player/items/all_class/tuxxy_scout.mdl",
 			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
-			RUINA_CUSTOM_MODELS
+			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = 1;	//1=blue, 0=red

@@ -921,7 +921,7 @@ enum
 	2 - scythe_throw
 */
 #if defined RUINA_BASE
-	#define RUINA_CUSTOM_MODELS			"models/zombie_riot/ruina/ruina_models_1.mdl"
+	#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/ruina/ruina_models_1_1.mdl"
 	enum	//can have a maximum of 16 (I think)
 	{		//Also, once done, move as many as I can into custom weaponry_1, then leave the leftovers in the seperate ones
 		RUINA_ICBM 				= 1,		//1
@@ -1661,7 +1661,7 @@ public void OnMapStart()
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 
 #if defined RUINA_BASE
-	PrecacheModel(RUINA_CUSTOM_MODELS);
+	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 #endif
 	
 #if defined ZR
