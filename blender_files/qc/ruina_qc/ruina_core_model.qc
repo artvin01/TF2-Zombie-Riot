@@ -68,6 +68,11 @@ $bodygroup "w30_boss_crest"
 	blank
 	studio "w30_boss_crest.smd"
 }
+$bodygroup "iana_blade"	
+{							
+	blank
+	studio "iana_blade.smd"
+}
 
 
 

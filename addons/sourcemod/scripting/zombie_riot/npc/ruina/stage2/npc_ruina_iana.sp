@@ -216,7 +216,7 @@ methodmap Iana < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_LAN_SWORD_1);
+		SetVariantInt(RUINA_IANA_BLADE);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 				
