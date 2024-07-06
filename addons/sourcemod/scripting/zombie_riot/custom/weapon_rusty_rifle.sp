@@ -223,8 +223,9 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					}
 
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
-					penalizedDMG *= BigShot_PerBodyshotMult[BigShot_Tier[client]];
 				}
+
+				penalizedDMG *= BigShot_PerBodyshotMult[BigShot_Tier[client]];
 
 				if (i == GetArraySize(ordered) - 1)
 				{
