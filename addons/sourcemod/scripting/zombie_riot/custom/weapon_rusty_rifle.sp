@@ -22,8 +22,6 @@ static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active 
 
 static float Rusty_RaidMult = 2.0;
 
-static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
-
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
 static bool BigShot_Hit[2049] = { false, ... };
