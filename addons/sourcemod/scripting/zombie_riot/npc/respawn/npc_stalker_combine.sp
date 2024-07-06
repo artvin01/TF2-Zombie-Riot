@@ -40,11 +40,16 @@ methodmap StalkerShared < CClotBody
 			}
 		}
 
-		for(int i; i < 6; i++)
+		for(int i; i < 50; i++)
 		{
 			CNavArea RandomArea = PickRandomArea();
 			if(RandomArea != NULL_AREA)
 			{
+				int NavAttribs = RandomArea.GetAttributes();
+				if(NavAttribs & NAV_MESH_AVOID)
+				{
+					continue;
+				}
 				RandomArea.GetCenter(pos);
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
 					break;
