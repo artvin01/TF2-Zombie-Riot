@@ -248,7 +248,7 @@ methodmap RaidbossNemesis < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Mrx Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Nemesis Arrived.");
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;

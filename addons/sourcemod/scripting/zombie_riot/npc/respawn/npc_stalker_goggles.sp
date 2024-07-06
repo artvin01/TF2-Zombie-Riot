@@ -84,8 +84,6 @@ methodmap StalkerGoggles < StalkerShared
 		wave *= 0.1;
 		npc.m_flWaveScale = wave;
 		
-		
-
 		func_NPCDeath[npc.index] = StalkerGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = StalkerGoggles_OnTakeDamage;
 		func_NPCThink[npc.index] = StalkerGoggles_ClotThink;
@@ -205,7 +203,6 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	
 	fl_TotalArmor[npc.index] = 15.0 / float(CountPlayersOnRed());
 	fl_TotalArmor[npc.index] *= 0.25;
-	PrintToChatAll("fl_TotalArmor[npc.index] %f",fl_TotalArmor[npc.index]);
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	b_NpcIsInvulnerable[npc.index] = false;
