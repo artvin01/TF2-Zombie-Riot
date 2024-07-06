@@ -1639,6 +1639,7 @@ public void OnMapStart()
 	Building_MapStart();
 #endif
 
+	DamageModifMapStart();
 	SDKHooks_ClearAll();
 
 	Zero(f_MinicritSoundDelay);

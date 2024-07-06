@@ -3172,4 +3172,8 @@
 		"#format"	"{1:.1f},{2:.1f}"
 		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
 	}
+	"Barbarians Mind Warning"
+	{
+		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+	}
 }

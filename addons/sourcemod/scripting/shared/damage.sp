@@ -8,6 +8,11 @@
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
 
+float BarbariansMindNotif[MAXTF2PLAYERS];
+void DamageModifMapStart()
+{
+	Zero(BarbariansMindNotif);
+}
 
 stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -626,22 +631,49 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 }
 #endif	// ZR
 
-static bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype)
 {
-#if defined ZR
 	if(attacker <= MaxClients)
 	{
 		if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
 		{
-			if(damagetype & (DMG_CLUB|DMG_SLASH)) // if you want anything to be melee based, just give them this.
+			int slot = -1;
+			if(IsValidEntity(weapon))
 			{
+				char classname[64];
+				GetEntityClassname(weapon, classname, sizeof(classname));
+				slot = TF2_GetClassnameSlot(classname);
 
+				if(i_OverrideWeaponSlot[weapon] != -1)
+				{
+					slot = i_OverrideWeaponSlot[weapon];
+				}
+			}
+
+			if(slot == 2 || (damagetype & (DMG_CLUB|DMG_SLASH))) // if you want anything to be melee based, just give them this.
+			{
+				damage *= 1.1;
 			}
 			else
 			{
+				if(BarbariansMindNotif[attacker] > GetGameTime())
+				{
+					SetGlobalTransTarget(attacker);
+					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
+					BarbariansMindNotif[attacker] = GetGameTime() + 15.0;
+				}
 				return true;
 			}
 		}
+	}
+	return false;
+}
+static bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
+{
+#if defined ZR
+	if(BarbariansMindLogic(attacker, weapon, damage, damagetype))
+	{
+		return true;
 	}
 	if(damagecustom>=TF_CUSTOM_SPELL_TELEPORT && damagecustom<=TF_CUSTOM_SPELL_BATS)
 		return true;
@@ -1409,13 +1441,6 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	
 	Attributes_OnHit(attacker, victim, weapon, damage, damagetype);
 		
-#if defined ZR
-	if(i_BarbariansMind[attacker] == 1)	// Deal extra damage with melee, but none with everything else
-	{
-		if(damagetype & (DMG_CLUB|DMG_SLASH)) // if you want anything to be melee based, just give them this.
-			damage *= 1.10;
-	}
-#endif
 	return false;
 }
 
