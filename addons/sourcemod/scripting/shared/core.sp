@@ -938,6 +938,8 @@ enum
 		RUINA_HEALING_STAFF_1	= 2048,		//12
 		RUINA_W30_HAND_CREST	= 4096,		//13
 		RUINA_IANA_BLADE		= 8192		//14
+		//16384
+		//32768
 	}
 #endif
 
