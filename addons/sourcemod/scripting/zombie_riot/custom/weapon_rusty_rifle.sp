@@ -221,7 +221,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 1.25;
 					}
-					if (!b_IsGiant[victim] && b_thisNpcIsARaid[victim])
+					if (b_thisNpcIsARaid[victim])
 						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
 
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
