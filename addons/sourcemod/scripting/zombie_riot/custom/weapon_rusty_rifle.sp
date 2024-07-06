@@ -38,7 +38,10 @@ public void Rusty_Rifle_ResetAll()
 #define SND_RUSTY_BIGSHOT_2		")mvm/giant_common/giant_common_explodes_01.wav"
 #define SND_RUSTY_BRAINBLAST	")mvm/giant_soldier/giant_soldier_explode.wav"
 
-#define PARTICLE_BRAINBLAST		"drg_cow_explosioncore_charged"
+#define PARTICLE_BRAINBLAST_1		"drg_cow_explosioncore_charged"
+#define PARTICLE_BRAINBLAST_2		"drg_cow_explosioncore_charged_blue"
+#define PARTICLE_BIGSHOT_TRACER_1	"dxhr_sniper_rail_red"
+#define PARTICLE_BIGSHOT_TRACER_2	"dxhr_sniper_rail_blue"
 
 void Rusty_Rifle_Precache()
 {
@@ -46,6 +49,71 @@ void Rusty_Rifle_Precache()
 	PrecacheSound(SND_RUSTY_BIGSHOT);
 	PrecacheSound(SND_RUSTY_BIGSHOT_2);
 	PrecacheSound(SND_RUSTY_BRAINBLAST);
+}
+
+Handle Timer_Rusty[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
+static float f_NextRustyHUD[MAXPLAYERS + 1] = { 0.0, ... };
+
+public void Enable_Rusty_Rifle(int client, int weapon)
+{
+	if (Timer_Rusty[client] != null)
+	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RUSTY_RIFLE)
+		{
+			delete Timer_Rusty[client];
+			Timer_Rusty[client] = null;
+			DataPack pack;
+			Timer_Rusty[client] = CreateDataTimer(0.1, Timer_RustyControl, pack, TIMER_REPEAT);
+			pack.WriteCell(client);
+			pack.WriteCell(EntIndexToEntRef(weapon));
+		}
+		return;
+	}
+		
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_RUSTY_RIFLE)
+	{
+		DataPack pack;
+		Timer_Rusty[client] = CreateDataTimer(0.1, Timer_RustyControl, pack, TIMER_REPEAT);
+		pack.WriteCell(client);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		f_NextRustyHUD[client] = 0.0;
+	}
+}
+
+public Action Timer_RustyControl(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		Timer_Rusty[client] = null;
+		return Plugin_Stop;
+	}	
+
+	Rusty_HUD(client, weapon, false);
+
+	return Plugin_Continue;
+}
+
+public void Rusty_HUD(int client, int weapon, bool forced)
+{
+	if(f_NextRustyHUD[client] < GetGameTime() || forced)
+	{
+		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+		if(weapon_holding == weapon)
+		{
+			if (BigShot_Active[client])
+				PrintHintText(client, "Big Shot is loaded: fire!");
+			else
+				PrintHintText(client, "Big Shot is not loaded.");
+			
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+		}
+
+		f_NextRustyHUD[client] = GetGameTime() + 0.5;
+	}
 }
 
 public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
@@ -119,14 +187,11 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					int target = TR_GetEntityIndex(trace);
 					if (target > 0)
 					{
-						headshot = (TR_GetHitGroup(trace) == HITGROUP_HEAD);
+						headshot = (TR_GetHitGroup(trace) == HITGROUP_HEAD && !b_CannotBeHeadshot[victim]);
 						TR_GetEndPosition(hitPos, trace);
 					}
 				}
 				delete trace;
-
-				//if (headshot)
-					//TODO: Check for headshot immunity
 
 				if (headshot)
 				{
@@ -163,11 +228,11 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 
 				if (i == GetArraySize(ordered) - 1)
 				{
-					BigShot_SpawnTracer(client, hitPos);
+					BigShot_SpawnTracer(client, weapon, hitPos);
 
 					if (numHeadshots > 0 && BigShot_BrainBlast[BigShot_Tier[client]])
 					{
-						ParticleEffectAt(hitPos, PARTICLE_BRAINBLAST);
+						ParticleEffectAt(hitPos, BigShot_Tier[client] == 0 ? PARTICLE_BRAINBLAST_1 : PARTICLE_BRAINBLAST_2);
 						EmitSoundToAll(SND_RUSTY_BRAINBLAST, victim, _, 120);
 						EmitSoundToAll(SND_RUSTY_BRAINBLAST, victim, _, 120);
 
@@ -183,11 +248,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	}
 	else
 	{
-		Handle trace = getAimTrace(client);
-		float endPos[3];
-		TR_GetEndPosition(endPos, trace);
-		delete trace;
-		BigShot_SpawnTracer(client, endPos);
+		BigShot_SpawnTracer(client, weapon, endPos);
 	}
 
 	delete victims;
@@ -197,17 +258,18 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	EmitSoundToAll(SND_RUSTY_BIGSHOT, client);
 	EmitSoundToAll(SND_RUSTY_BIGSHOT_2, client, _, _, _, _, 80);
 	Client_Shake(client, SHAKE_START, 30.0, 150.0, 1.25);
+	Rusty_HUD(client, weapon, true);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
 }
 
-public int BigShot_SpawnTracer(int client, float endPos[3])
+public void BigShot_SpawnTracer(int client, int weapon, float endPos[3])
 {
 	float pos[3];
 	GetClientEyePosition(client, pos);
-	pos[2] -= 20.0;
+	pos[2] -= 15.0;
 
-	//TODO: Tracer beam particle
+	ShootLaser(weapon, BigShot_Tier[client] == 0 ? PARTICLE_BIGSHOT_TRACER_1 : PARTICLE_BIGSHOT_TRACER_2, pos, endPos);
 }
 
 public int BigShot_GetClosestInList(float pos[3], ArrayList &victims)
@@ -298,6 +360,7 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 			EmitSoundToAll(SND_RUSTY_BIGSHOT_PREPARE, client);
 			BigShot_Active[client] = true;
 			BigShot_Tier[client] = tier;
+			Rusty_HUD(client, weapon, true);
 		}
 	}
 	else
