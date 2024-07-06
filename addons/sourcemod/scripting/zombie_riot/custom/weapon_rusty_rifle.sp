@@ -228,7 +228,10 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 
 				if (i == GetArraySize(ordered) - 1)
 				{
-					BigShot_SpawnTracer(client, weapon, hitPos);
+					float userLoc[3];
+					WorldSpaceCenter(client, userLoc);
+					ConstrainDistance(pos, endPos, GetVectorDistance(pos, endPos), GetVectorDistance(userLoc, vicLoc), true);
+					BigShot_SpawnTracer(client, weapon, endPos);
 
 					if (numHeadshots > 0 && BigShot_BrainBlast[BigShot_Tier[client]])
 					{
