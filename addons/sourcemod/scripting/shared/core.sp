@@ -36,6 +36,8 @@
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
+#define TFTeam_Stalkers 		5
+
 #define TF2_GetClientTeam	PLZUSE_GetTeam
 #define TF2_ChangeClientTeam	PLZUSE_SetTeam
 
@@ -1669,6 +1671,7 @@ public void OnMapStart()
 	Building_MapStart();
 #endif
 
+	DamageModifMapStart();
 	SDKHooks_ClearAll();
 
 	Zero(f_MinicritSoundDelay);

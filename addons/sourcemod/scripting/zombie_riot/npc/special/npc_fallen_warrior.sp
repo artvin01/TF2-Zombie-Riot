@@ -600,7 +600,9 @@ void FallenWarriotSelfDefense(FallenWarrior npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 150.0;
+					float damageDealt = 110.0;
+					damageDealt *= npc.m_flWaveScale;
+
 					if(ShouldNpcDealBonusDamage(target))
 					{
 						damageDealt *= 2.5;

@@ -566,10 +566,10 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 2, 0.666, 10.0);
+					ApplyTempAttrib(entity, 2, 0.4, 10.0);
 					ApplyTempAttrib(entity, 6, 0.333, 10.0);
 					ApplyTempAttrib(entity, 97, 0.333, 10.0);
-					ApplyTempAttrib(entity, 410, 0.666, 10.0);
+					ApplyTempAttrib(entity, 410, 0.4, 10.0);
 					ApplyTempAttrib(entity, 733, 0.333, 10.0);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 

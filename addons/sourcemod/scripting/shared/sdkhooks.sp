@@ -395,8 +395,10 @@ public void OnPostThink(int client)
 	}
 	if(b_DisplayDamageHud[client])
 	{
-		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
+		if(Calculate_And_Display_HP_Hud(client))
+		{
+			b_DisplayDamageHud[client] = false;
+		}
 	}
 	if(b_AntiSlopeCamp[client])
 	{	

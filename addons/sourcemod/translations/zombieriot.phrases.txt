@@ -906,6 +906,15 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
+	"Rusty Ability Blocked"
+	{
+		"en"		"You can't do that right now!"
+	}
+	"Rusty Ability Cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Big Shot is on cooldown: {1}"
+	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
@@ -2997,9 +3006,9 @@
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
 	}
-	"Silvester Goggles Desc"
+	"Silvester Waldch Desc"
 	{
-		"en"	"Silvester fights with his laser and rock attacks while Blue Goggles snipes from a distance!"
+		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
 	}
 	"Xeno Hard Desc"
 	{
@@ -3162,5 +3171,9 @@
 	{
 		"#format"	"{1:.1f},{2:.1f}"
 		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
+	}
+	"Barbarians Mind Warning"
+	{
+		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
 	}
 }

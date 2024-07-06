@@ -353,6 +353,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
+
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			slot = i_OverrideWeaponSlot[weapon];
+		}
 		if(i_IsWandWeapon[weapon])
 		{
 			// Mage Weapon
