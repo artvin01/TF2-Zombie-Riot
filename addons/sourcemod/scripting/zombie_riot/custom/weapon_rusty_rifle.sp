@@ -20,6 +20,8 @@ static float BigShot_SmallRaidMult[2] = { 2.0, 2.0 };				//Amount to multiply da
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
 
+static float Rusty_RaidMult = 2.0;
+
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
 static bool BigShot_Hit[2049] = { false, ... };
@@ -54,6 +56,14 @@ void Rusty_Rifle_Precache()
 
 Handle Timer_Rusty[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 static float f_NextRustyHUD[MAXPLAYERS + 1] = { 0.0, ... };
+
+public float Rusty_OnNPCDamaged(int victim, int attacker, float damage)
+{
+	if (b_thisNpcIsARaid[victim])
+		return damage * Rusty_RaidMult;
+
+	return damage;
+}
 
 public void Enable_Rusty_Rifle(int client, int weapon)
 {
