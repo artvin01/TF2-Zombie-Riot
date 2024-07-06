@@ -97,7 +97,7 @@ void RaidbossMrX_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "mrx");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);

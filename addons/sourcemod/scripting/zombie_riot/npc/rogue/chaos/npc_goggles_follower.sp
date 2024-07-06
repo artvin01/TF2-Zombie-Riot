@@ -11,7 +11,7 @@ static int NPCId;
 void GogglesFollower_Setup()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
+	strcopy(data.Name, sizeof(data.Name), "Waldch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_goggles_follower");
 	strcopy(data.Icon, sizeof(data.Icon), "goggles");
 	data.IconCustom = false;

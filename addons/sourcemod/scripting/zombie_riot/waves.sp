@@ -1506,8 +1506,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					ResetReplications();
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
-					
-					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					if(!Music_Disabled())
+						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					
 
 					if(zr_allowfreeplay.BoolValue)

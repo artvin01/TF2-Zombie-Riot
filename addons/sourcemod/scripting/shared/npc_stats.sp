@@ -4448,9 +4448,22 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_IsAProjectile[index]))
+			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
-				return false;
+				if(GetTeam(enemy) == TFTeam_Stalkers)
+				{
+					if(GetTeam(index) != TFTeam_Red)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if(index > MaxClients && !b_IsAProjectile[index])
+					{
+						return false;
+					}	
+				}
 			}
 
 #if defined RTS
@@ -5485,9 +5498,8 @@ public void NpcBaseThink(int iNPC)
 	{
 		//this is just as a temp fix, remove whenver.
 		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
-
 		NpcDrawWorldLogic(iNPC);
-		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
+		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.25, 0.35);
 		Npc_DebuffWorldTextUpdate(npc);
 		IsEntityInvincible_Shield(iNPC);
 #if defined RTS

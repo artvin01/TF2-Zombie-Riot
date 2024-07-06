@@ -2997,9 +2997,9 @@
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
 	}
-	"Silvester Goggles Desc"
+	"Silvester Waldch Desc"
 	{
-		"en"	"Silvester fights with his laser and rock attacks while Blue Goggles snipes from a distance!"
+		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
 	}
 	"Xeno Hard Desc"
 	{

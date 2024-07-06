@@ -113,7 +113,7 @@ void RaidbossNemesis_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
