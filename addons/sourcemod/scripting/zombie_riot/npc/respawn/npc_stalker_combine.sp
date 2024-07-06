@@ -59,8 +59,8 @@ methodmap StalkerShared < CClotBody
 	}
 	property bool m_bChaseAnger	// If currently chasing a target down
 	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
+		public get()		{ return !b_DuringHook[this.index]; }
+		public set(bool value) 	{ b_DuringHook[this.index] = !value; }
 	}
 	property int m_iChaseVisable	// Time before we considered "lost them"
 	{
