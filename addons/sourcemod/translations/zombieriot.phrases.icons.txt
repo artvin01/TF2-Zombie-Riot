@@ -8,12 +8,9 @@
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
 		"chi"       "真正的融合战士已经到来。"
 	}
-	"Silvester And Blue Goggles Arrived."
+	"Silvester And Waldch Arrived."
 	{
-		"en" 		"Silvester And Blue Goggles Arrived."
-		"ru" 		"Сильвестр и Блу Гогглз прибыли."
-		"pt"		"Silvester e Blue Goggles chegou."
-		"chi" 		"西尔维斯特与Blue Goggles已来。" 
+		"en" 		"Silvester And Waldch Arrived."
 	}
 	"Nemesis Arrived."
 	{
@@ -270,5 +267,17 @@
 	"Fallen Warrior 3"
 	{
 		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
+	}
+	"Machina Waldch 1"
+	{
+		"en" 		"A machine trying to immitate Waldch."
+	}
+	"Machina Waldch 2"
+	{
+		"en" 		"Its on no ones side."
+	}
+	"Machina Waldch 3"
+	{
+		"en" 		"Long enough, and it might go away on its own."
 	}
 }

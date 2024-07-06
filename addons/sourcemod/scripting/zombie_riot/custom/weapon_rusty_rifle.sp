@@ -22,6 +22,8 @@ static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active 
 
 static float Rusty_RaidMult = 2.0;
 
+static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
+
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
 static bool BigShot_Hit[2049] = { false, ... };
@@ -219,7 +221,6 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 1.25;
 					}
-
 					if (!b_IsGiant[victim] && b_thisNpcIsARaid[victim])
 						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
 
@@ -235,10 +236,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 0.75;
 					}
-
-					if (!b_IsGiant[victim] && b_thisNpcIsARaid[victim])
-						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
-
+            
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 				}
 

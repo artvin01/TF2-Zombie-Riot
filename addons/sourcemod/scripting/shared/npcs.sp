@@ -1256,17 +1256,17 @@ stock void RemoveHudCooldown(int client)
 
 #define ZR_DEFAULT_HUD_OFFSET 0.15
 
-stock void Calculate_And_Display_HP_Hud(int attacker)
+stock bool Calculate_And_Display_HP_Hud(int attacker)
 {
 	int victim = EntRefToEntIndex(i_HudVictimToDisplay[attacker]);
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 	{
 		if(!IsValidClient(victim))
-			return;
+			return true;
 	}
 
 	if(!c_NpcName[victim][0])
-		return;
+		return true;
 
 #if defined ZR
 	bool raidboss_active = false;
@@ -1281,7 +1281,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		if(raid_entity != victim) //If a raid is alive, but the victim is not the raid! we need extra rules.
 		{
 			if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
-				return;
+				return false;
 			
 			f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 			f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;
@@ -1290,7 +1290,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 		{
 			//need a diff timer for raids, otherwise it cant display both huds!!
 			if(f_HudCooldownAntiSpamRaid[attacker] >= GetGameTime())
-				return;
+				return false;
 
 			f_HudCooldownAntiSpamRaid[attacker] = GetGameTime() + 0.2;
 		}
@@ -1298,7 +1298,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
-			return;
+			return false;
 		
 		f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
@@ -1616,6 +1616,7 @@ stock void Calculate_And_Display_HP_Hud(int attacker)
 
 	}
 #endif
+	return true;
 /*
 #if defined RPG
 	char level[32];

@@ -4,14 +4,25 @@
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_PlayMusicSound;
 
+static char g_MeleeAttackSounds[][] = {
+	"weapons/blade_slice_2.wav",
+	"weapons/blade_slice_3.wav",
+	"weapons/blade_slice_4.wav"
+};
+
+static char g_RangedAttackSounds[][] = {
+	"weapons/sniper_railgun_charged_shot_01.wav",
+	"weapons/sniper_railgun_charged_shot_02.wav"
+};
+
 void StalkerGoggles_OnMapStart()
 {
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
-	PrecacheSound("weapons/sniper_railgun_charged_shot_01.wav");
-	PrecacheSound("weapons/sniper_railgun_charged_shot_02.wav");
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	   i++) { PrecacheSound(g_MeleeAttackSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));		i++) { PrecacheSound(g_RangedAttackSounds[i]);		}
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Spawned Blue Goggles");
+	strcopy(data.Name, sizeof(data.Name), "Machina Waldch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_goggles");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
@@ -32,36 +43,31 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return StalkerGoggles(client, vecPos, vecAng, ally);
 }
 
+
 methodmap StalkerGoggles < StalkerShared
 {
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
 	public void PlayMeleeHitSound()
 	{
-		static const char RandomSound[][] =
-		{
-			"weapons/blade_slice_2.wav",
-			"weapons/blade_slice_3.wav",
-			"weapons/blade_slice_4.wav"
-		};
-
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound()
 	{
-		static const char RandomSound[][] =
-		{
-			"weapons/sniper_railgun_charged_shot_01.wav",
-			"weapons/sniper_railgun_charged_shot_02.wav"
-		};
-
-		EmitSoundToAll(RandomSound[GetURandomInt() % sizeof(RandomSound)], this.index, SNDCHAN_AUTO, SNDLEVEL_ROCKET, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public StalkerGoggles(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "66666666", ally));
+		ally = TFTeam_Stalkers;
+		//Team 5 could just be stalkers
+		StalkerGoggles npc = view_as<StalkerGoggles>(CClotBody(vecPos, vecAng, "models/bots/sniper/bot_sniper.mdl", "1.0", "6666666", ally, .IgnoreBuildings = true));
 		
 		i_NpcWeight[npc.index] = 5;
-		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
+	//	fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
@@ -73,14 +79,17 @@ methodmap StalkerGoggles < StalkerShared
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
-		
-		
 
+		float wave = float(ZR_GetWaveCount()+1);
+		wave *= 0.1;
+		npc.m_flWaveScale = wave;
+		
 		func_NPCDeath[npc.index] = StalkerGoggles_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = StalkerGoggles_OnTakeDamage;
 		func_NPCThink[npc.index] = StalkerGoggles_ClotThink;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
 		npc.m_bStaticNPC = true;
 		AddNpcToAliveList(npc.index, 1);
@@ -116,12 +125,21 @@ methodmap StalkerGoggles < StalkerShared
 		}
 		
 		i_Wearable[npc.index][0] = entity;
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/all_class/pyrovision_goggles_sniper.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/spr18_antarctic_eyewear/spr18_antarctic_eyewear_scout.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum19_wagga_wagga_wear/sum19_wagga_wagga_wear.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 65, 65, 255, 255);
+		npc.i_GunMode = Waves_GetRound();
+
+		TeleportDiversioToRandLocation(npc.index);
 
 		float flPos[3], flAng[3];
 		npc.GetAttachment("head", flPos, flAng);
-		npc.m_iWearable4 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 		
 		return npc;
 	}
@@ -145,6 +163,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 
+/*
 	if(!npc.m_iSurrender && Waves_InSetup())
 	{
 		for(int i; i < 9; i++)
@@ -158,6 +177,11 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		b_NpcIsInvulnerable[npc.index] = true;
 		FreezeNpcInTime(npc.index, 0.5);
 		return;
+	}
+	*/
+	if(npc.m_iSurrender)
+	{
+		GiveProgressDelay(0.5);
 	}
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -173,19 +197,12 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	static float vecMe[3], vecAng[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", vecMe); 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng);
-
-	// TODO: Test if needed, cause parenting
-	//int light = i_Wearable[npc.index][0];
-	//if(IsValidEntity(light))
-	//{
-	//	vecMe[2] += 40.0;
-	//	TeleportEntity(light, vecMe, vecAng, NULL_VECTOR);
-	//	vecMe[2] -= 40.0;
-	//}
 	
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 	
+	fl_TotalArmor[npc.index] = 15.0 / float(CountPlayersOnRed());
+	fl_TotalArmor[npc.index] *= 0.25;
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
 	b_NpcIsInvulnerable[npc.index] = false;
@@ -198,42 +215,51 @@ public void StalkerGoggles_ClotThink(int iNPC)
 
 	if(npc.m_iSurrender)
 	{
-		if(Waves_InSetup())
+		bool Docutscene = true;
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(entity != INVALID_ENT_REFERENCE && IsValidEnemy(npc.index, entity) && GetTeam(entity) != TFTeam_Red)
+			{
+				Docutscene = false;
+			}
+		}
+		if(Waves_InSetup() || Docutscene)
 		{
 			npc.m_flNextThinkTime = gameTime + 2.5;
-
 			switch(npc.m_iSurrender++)
 			{
 				case 1:	// 0.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: What are you waiting for...");
+					CPrintToChatAll("{darkblue}Waldch{default}: ...");
 				}
 				case 3:	// 5.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: ...");
+					CPrintToChatAll("{darkblue}Waldch{default}: They tried to re-create my consiousness.");
 				}
 				case 5:	// 10.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: This is already the end for me...");
+					CPrintToChatAll("{darkblue}Waldch{default}: Please halt the chaos.");
 				}
 				case 7:	// 15.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Why are you saving me..?");
+					CPrintToChatAll("{darkblue}Waldch{default}: It makes them.. create unholy beings.");
 				}
 				case 9:	// 20.0
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Oh I see...");
+					CPrintToChatAll("{darkblue}Waldch{default}: Such as me.");
 				}
 				case 10:	// 22.5
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just promise me one thing.");
+					CPrintToChatAll("{darkblue}Waldch{default}: Promise me something.");
 				}
 				case 11:	// 25.0
 				{
-					CPrintToChatAll("{blue}Blue Goggles{default}: Take care of {gold}Silvester{default}.");
+					CPrintToChatAll("{darkblue}Waldch{default}: Take care of {gold}Silvester{default}.");
 				}
 				case 12:	// 27.5
 				{
+					CPrintToChatAll("{darkblue}Waldch{default}: {crimson}FAILURE, CANNOT COPY PERSONALTIY.");
 					npc.m_bDissapearOnDeath = true;
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 
@@ -241,8 +267,8 @@ public void StalkerGoggles_ClotThink(int iNPC)
 					{
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 						{
-							Items_GiveNamedItem(client, "Head Equipped Blue Goggles");
-							CPrintToChat(client, "{default}You gained his favor, you obtained: {blue}''Head Equipped Blue Goggles''{default}!");
+							Items_GiveNamedItem(client, "Chaos Machina Waldch Chip");
+							CPrintToChat(client, "{default}This machine is fell, and gave...: {blue}''Chaos Machina Waldch Chip''{default}!");
 						}
 					}
 				}
@@ -250,17 +276,41 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 		return;
 	}
+	//2 waves passed or its a raid.
+	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann)
+	{
+		if(npc.m_iSurrender == 0)
+		{
+			i_RaidGrantExtra[npc.index] = 0;
+			b_DissapearOnDeath[npc.index] = true;
+			b_DoGibThisNpc[npc.index] = true;
+			SmiteNpcToDeath(npc.index);
+			return;
+		}
+	}
 
-	bool sniper = view_as<bool>(Waves_GetRound() % 2);
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRound());
 
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + GetRandomFloat(1.0, 2.0);
 	}
 
-	if(npc.m_flAttackHappens)
+	if(sniper)
+	{
+		npc.m_bisWalking = false;
+		npc.StopPathing();
+		
+		if(npc.m_iChanged_WalkCycle != 7)
+		{
+			npc.m_iChanged_WalkCycle = 7;
+			npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
+		}
+		BlueGogglesSelfDefense(npc, gameTime);
+	}
+	else if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
@@ -271,7 +321,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					if(target > 0)
@@ -279,10 +329,16 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						float vecHit[3];
 						TR_GetEndPosition(vecHit, swingTrace);
 
-						float damage = 250.0;
+						float damage = 150.0;
+						damage *= npc.m_flWaveScale;
 
 						if(ShouldNpcDealBonusDamage(npc.m_iTarget))
 							damage *= 4.0;
+						else
+						{
+							if(target > MAXTF2PLAYERS)
+								damage *= 10.0;
+						}
 						
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -338,19 +394,6 @@ public void StalkerGoggles_ClotThink(int iNPC)
 						{
 							npc.m_iChanged_WalkCycle = 7;
 							npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
-						}
-
-						if(state)
-						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-
-							float vecTarget[3]; PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 3500.0, _,vecTarget);
-							npc.FaceTowards(vecTarget, 30000.0);
-							
-							npc.PlayRangedSound();
-							npc.FireArrow(vecTarget, 1500.0, 3500.0);
-							
-							npc.m_flNextMeleeAttack = gameTime + 2.2;
 						}
 					}
 					else
@@ -554,7 +597,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Changed;
 	}
 
-	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 26000000 && Waves_GetRound() < 59)
+	if(GetEntProp(victim, Prop_Data, "m_iHealth") < 2600000 && Waves_GetRound() < 59)
 	{
 		npc.m_bChaseAnger = false;
 		npc.m_iSurrender = 1;
@@ -572,7 +615,7 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 		
-		CPrintToChatAll("{darkblue}Blue Goggles{default}: End it...");
+		CPrintToChatAll("{darkblue}Waldch{default}: Looks like my programming is going wrong.");
 
 		for(int i; i < 9; i++)
 		{
@@ -584,17 +627,11 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 		return Plugin_Handled;
 	}
 
-	damage *= 15.0 / float(PlayersInGame);
-
 	// Angry when injured
 	npc.m_bChaseAnger = true;
 	npc.m_iChaseAnger = 14;
 
-	if(!Waves_InSetup())
-		return Plugin_Changed;
-	
-	damage = 0.0;
-	return Plugin_Handled;
+	return Plugin_Changed;
 }
 
 void StalkerGoggles_NPCDeath(int entity)
@@ -618,4 +655,108 @@ void StalkerGoggles_NPCDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+}
+
+
+int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
+{
+	bool sniper = view_as<bool>((npc.i_GunMode + 1) == Waves_GetRound());
+	if(!npc.m_flAttackHappens)
+	{
+		if(IsValidEnemy(npc.index,npc.m_iTarget))
+		{
+			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
+			if(!IsValidEnemy(npc.index,npc.m_iTarget))
+			{
+				return 0;
+			}		
+		}
+		if(!IsValidEnemy(npc.index,npc.m_iTarget))
+		{
+			return 0;
+		}
+	}
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+	npc.FaceTowards(VecEnemy, 15000.0);
+
+	static float ThrowPos[MAXENTITIES][3];  
+	float origin[3], angles[3];
+	view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
+	if(npc.m_flDoingAnimation > gameTime)
+	{
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+		{
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+		}
+	}
+	else
+	{	
+		if(npc.m_flAttackHappens)
+		{
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			int Traced_Target = TR_GetEntityIndex(hTrace);
+			if(Traced_Target > 0)
+			{
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+			}
+			else if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;
+		}
+	}
+	if(npc.m_flAttackHappens)
+	{
+		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {255,0,0,255}, 3);
+		TE_SendToAll(0.0);
+	}
+			
+	npc.FaceTowards(ThrowPos[npc.index], 15000.0);
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < gameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+			
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
+			ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			npc.PlayRangedSound();
+			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+			if(IsValidEnemy(npc.index, target))
+			{
+				float damageDealt = 150.0;
+				damageDealt *= npc.m_flWaveScale;
+				if(target > MAXTF2PLAYERS)
+					damageDealt *= 10.0;
+				
+				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+			} 
+		}
+	}
+
+	if(gameTime > npc.m_flNextMeleeAttack)
+	{
+		npc.m_flAttackHappens = gameTime + 1.25;
+		npc.m_flDoingAnimation = gameTime + 0.65;
+		npc.m_flNextMeleeAttack = gameTime + 2.5;
+	}
+	return 1;
 }
