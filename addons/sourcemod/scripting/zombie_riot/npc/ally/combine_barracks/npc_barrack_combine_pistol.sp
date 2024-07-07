@@ -157,7 +157,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
-						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL", false);
+						npc.AddGesture("ACT_IDLE_ANGRY_PISTOL", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -191,7 +191,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_PISTOL", "ACT_WALK_PISTOL", 200000.0, _, true);
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_PISTOL", "ACT_RUN_PISTOL", 200000.0, _, true);
 	}
 }
 
