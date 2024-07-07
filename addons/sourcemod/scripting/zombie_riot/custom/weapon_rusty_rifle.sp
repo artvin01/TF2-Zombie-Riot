@@ -20,7 +20,7 @@ static float BigShot_SmallRaidMult[2] = { 2.0, 2.0 };				//Amount to multiply da
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
 
-static float Rusty_RaidMult = 1.5;
+static float Rusty_RaidMult = 1.4;
 
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };

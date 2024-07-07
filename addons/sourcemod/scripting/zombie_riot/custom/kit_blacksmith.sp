@@ -518,8 +518,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 							}
 							case 2:
 							{
-								RetryTillWin = 11;
-								TinkerSprayAndPray(tinker.Rarity, tinker);
+								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
+								{
+									RetryTillWin = 11;
+									TinkerSprayAndPray(tinker.Rarity, tinker);
+								}
 							}
 						}	
 					}
@@ -557,8 +560,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 							}
 							case 5:
 							{
-								RetryTillWin = 11;
-								TinkerSprayAndPray(tinker.Rarity, tinker);
+								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
+								{
+									RetryTillWin = 11;
+									TinkerSprayAndPray(tinker.Rarity, tinker);
+								}
 							}
 						}	
 					}
@@ -1443,19 +1449,19 @@ static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 		{
 			tinker.Value[0] = 1.2 + ExtraDamage;
 			tinker.Value[1] = 1.1 + attackspeedSpeedLuck;
-			tinker.Value[2] = 1.1 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.1 + reloadSpeedLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.3 + ExtraDamage;
 			tinker.Value[1] = 1.15 + attackspeedSpeedLuck;
-			tinker.Value[2] = 1.15 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.15 + reloadSpeedLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + ExtraDamage;
 			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
-			tinker.Value[2] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.2 + reloadSpeedLuck;
 		}
 	}
 }
