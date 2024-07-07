@@ -149,8 +149,6 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.m_flSpeed = 0.0;
-						
 						npc.AddGesture("ACT_RELOAD_PISTOL");
 						npc.m_flNextRangedAttack = GameTime + 1.35;
 						npc.m_iAttacksTillReload = 18;
@@ -161,7 +159,6 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.AddGesture("ACT_IDLE_ANGRY_PISTOL", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 						npc.FaceTowards(vecTarget, 300000.0);
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
@@ -176,6 +173,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
+							npc.m_flSpeed = 0.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 25, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
