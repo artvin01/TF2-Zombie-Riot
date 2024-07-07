@@ -9,38 +9,12 @@ static const char g_DeathSounds[][] =
 	"npc/metropolice/die4.wav"
 };
 
-static const char g_HurtSounds[][] =
-{
-	"npc/metropolice/pain1.wav",
-	"npc/metropolice/pain2.wav",
-	"npc/metropolice/pain3.wav"
-};
-
 static const char g_IdleSounds[][] =
 {
 	"npc/metropolice/vo/takecover.wav",
 	"npc/metropolice/vo/readytojudge.wav",
 	"npc/metropolice/vo/subject.wav",
 	"npc/metropolice/vo/subjectis505.wav"
-};
-
-static const char g_MeleeHitSounds[][] =
-{
-	"weapons/stunstick/stunstick_fleshhit1.wav",
-	"weapons/stunstick/stunstick_fleshhit2.wav"
-};
-
-static const char g_MeleeAttackSounds[][] =
-{
-	"weapons/stunstick/stunstick_swing1.wav",
-	"weapons/stunstick/stunstick_swing2.wav"
-};
-
-static const char g_MeleeMissSounds[][] =
-{
-	"weapons/stunstick/spark1.wav",
-	"weapons/stunstick/spark2.wav",
-	"weapons/stunstick/spark3.wav"
 };
 
 static const char g_RangedAttackSounds[][] =
@@ -56,20 +30,16 @@ static const char g_RangedReloadSound[][] =
 void Barracks_Combine_Pistol_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
-
-	PrecacheSound("player/flow.wav");
-	PrecacheModel("models/police.mdl");
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Metro Cop");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_pistol");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -79,265 +49,146 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Barracks_Combine_Pistol(client, vecPos, vecAng, ally);
 }
 
-methodmap Barracks_Combine_Pistol < BarrackBody
+methodmap Barrack_Combine_Pistol < BarrackBody
 {
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
-	public void PlayHurtSound()
+	public void PlayIdleAlertSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public void PlayDeathSound() 
-	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
 	}
-	public void PlayMeleeSound()
+	public void PlayPistolReload()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public void PlayMeleeHitSound()
+	public void PlayNPCDeath()
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
+		if(this.m_flNextIdleSound > GetGameTime(this.index))
+			return;
+		
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public void PlayMeleeMissSound()
-	{
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
-	}
-	public void PlayRangedSound()
-	{
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
-	}
-	public void PlayRangedReloadSound()
-	{
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
-	}
-	
-	public Barracks_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
-	{
-		Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 
+	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	{
+		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		
 		i_NpcWeight[npc.index] = 1;
-		npc.SetActivity("ACT_RUN");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
+		npc.m_flSpeed = 220.0;
 
-		func_NPCDeath[npc.index] = ClotDeath;
-		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
-		func_NPCThink[npc.index] = ClotThink;
-		
-		npc.m_flSpeed = 160.0;
-		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
-
+		npc.m_iAttacksTillReload = 18;
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flReloadDelay = 0.0;
-		npc.m_iAttacksTillReload = 12;
-		npc.m_fbGunout = false;
-
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl", _, _, 1.15);
-		AcceptEntityInput(npc.m_iWearable1, "Disable");
 		
-		npc.m_iWearable2 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_stunbaton.mdl", _, _, 1.15);
-
+		KillFeed_SetKillIcon(npc.index, "pistol");
+		
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
+		SetVariantString("1.15");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
 		return npc;
 	}
 }
 
-static void ClotThink(int iNPC)
+public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 {
-	Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(iNPC);
-	float gameTime = GetGameTime(npc.index);
-
-	int client = BarrackBody_ThinkTarget(npc.index, true, gameTime);
-	
-	if(npc.m_flNextDelayTime > gameTime)
-		return;
-	
-	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	npc.Update();
-
-	if(npc.m_blPlayHurtAnimation)
+	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(iNPC);
+	float GameTime = GetGameTime(iNPC);
+	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		if(npc.m_flAttackHappens == 0.0)
+		BarrackBody_ThinkTarget(npc.index, true, GameTime);
+		int PrimaryThreatIndex = npc.m_iTarget;
+		if(PrimaryThreatIndex > 0)
 		{
-			npc.AddGesture("ACT_GESTURE_FLINCH_HEAD", false);
-			npc.PlayHurtSound();
-		}
+			npc.PlayIdleAlertSound();
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-		npc.m_blPlayHurtAnimation = false;
-	}
-	
-	if(npc.m_flNextThinkTime > gameTime)
-		return;
-	
-	npc.m_flNextThinkTime = gameTime + 0.1;
-
-	int target = npc.m_iTarget;
-	if(npc.m_flGetClosestTargetTime < gameTime || !IsValidEnemy(npc.index, target))
-	{
-		target = GetClosestTarget(npc.index);
-		npc.m_iTarget = target;
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
-	}
-	
-	if(target > 0)
-	{
-		float vecTarget[3], vecMe[3];
-		WorldSpaceCenter(npc.index, vecMe);
-		WorldSpaceCenter(target, vecTarget);
-
-		float distance = GetVectorDistance(vecTarget, vecMe, true);		
-
-		if(distance < npc.GetLeadRadius())
-		{
-			float predictedPos[3];
-			PredictSubjectPosition(npc, target, _, _, predictedPos);
-			npc.SetGoalVector(predictedPos);
-		}
-		else 
-		{
-			npc.SetGoalEntity(target);
-		}
-		
-		if(npc.m_flAttackHappens)
-		{
-			// Swinging melee
-			npc.StartPathing();
-
-			if(npc.m_flAttackHappens < gameTime)
+			if(flDistanceToTarget < 300000.0)
 			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 20000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+				//Target close enough to hit
+				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					int target = TR_GetEntityIndex(swingTrace);	
-					
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					if(target > 0)
+					//Can we attack right now?
+					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 0), DMG_CLUB, -1, _, vecHit);
+						npc.m_flSpeed = 0.0;
+						
+						npc.AddGesture("ACT_RELOAD_PISTOL");
+						npc.m_flNextRangedAttack = gameTime + 1.35;
+						npc.m_iAttacksTillReload = 18;
+						npc.PlayPistolReload();
 					}
-					else
+					if(npc.m_flNextRangedAttack < GameTime)
 					{
-						npc.PlayMeleeMissSound();
+						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL", false);
+						npc.m_iTarget = Enemy_I_See;
+						npc.PlayRangedSound();
+						float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+						npc.FaceTowards(vecTarget, 300000.0);
+						npc.m_flSpeed = 0.0;
+						Handle swingTrace;
+						if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+						{
+							target = TR_GetEntityIndex(swingTrace);	
+								
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							float origin[3], angles[3];
+							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
+							
+							npc.m_flNextRangedAttack = gameTime + 0.2;
+							npc.m_iAttacksTillReload--;
+							
+							if(target > 0) 
+							{
+								SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 20, 1), DMG_CLUB, -1, _, vecHit);
+							} 
+						}
 					}
-				}
-
-				delete swingTrace;
-			}
-		}
-		else if(npc.m_flReloadDelay > gameTime || (distance > 62500.0 && distance < 122500.0))
-		{
-			// Using gun
-			npc.StopPathing();
-
-			if(!npc.m_fbGunout)
-			{
-				npc.SetActivity("ACT_IDLE_ANGRY_PISTOL");
-				AcceptEntityInput(npc.m_iWearable1, "Enable");
-				AcceptEntityInput(npc.m_iWearable2, "Disable");
-				npc.m_fbGunout = true;
-			}
-
-			if(npc.m_flNextRangedAttack < gameTime)
-			{
-				if(npc.m_iAttacksTillReload == 0)
-				{
-					// Reload
-					npc.AddGesture("ACT_RELOAD_PISTOL");
-					npc.m_flReloadDelay = gameTime + 1.4;
-					npc.m_flNextRangedAttack = npc.m_flReloadDelay;
-					npc.m_iAttacksTillReload = 12;
-					npc.PlayRangedReloadSound();
-				}
-				else
-				{
-					// Fire
-					npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL");
-					npc.FaceTowards(vecTarget, 10000.0);
-					npc.m_flNextRangedAttack = gameTime + 0.5;
-					npc.m_iAttacksTillReload--;
-
-					float eyePitch[3];
-					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
-					
-					float x = GetRandomFloat(-0.03, 0.03);
-					float y = GetRandomFloat(-0.03, 0.03);
-					
-					float vecDirShooting[3], vecRight[3], vecUp[3];
-					
-					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
-					GetVectorAngles(vecDirShooting, vecDirShooting);
-					vecDirShooting[1] = eyePitch[1];
-					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
-
-					vecDirShooting[0] += x * vecRight[0] + y * vecUp[0]; 
-					vecDirShooting[1] += x * vecRight[1] + y * vecUp[1]; 
-					vecDirShooting[2] += x * vecRight[2] + y * vecUp[2]; 
-					NormalizeVector(vecDirShooting, vecDirShooting);
-					
-					FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDirShooting, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),200.0, 1), 9000.0, DMG_BULLET, "bullet_tracer01_red");
-					
-					npc.PlayRangedSound();
 				}
 			}
 		}
 		else
 		{
-			// Using melee
-			npc.StartPathing();
-
-			if(npc.m_fbGunout)
-			{
-				npc.SetActivity("ACT_RUN");
-				AcceptEntityInput(npc.m_iWearable1, "Disable");
-				AcceptEntityInput(npc.m_iWearable2, "Enable");
-				npc.m_fbGunout = false;
-			}
-
-			if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
-			{
-				target = Can_I_See_Enemy(npc.index, target);
-				if(IsValidEnemy(npc.index, target))
-				{
-					npc.m_iTarget = target;
-					npc.m_flGetClosestTargetTime = gameTime + 1.0;
-
-					npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
-					npc.PlayMeleeSound();
-					
-					npc.m_flAttackHappens = gameTime + 0.4;
-					npc.m_flNextMeleeAttack = gameTime + 1.4;
-				}
-			}
+			npc.PlayIdleSound();
 		}
-	}
-	else
-	{
-		npc.SetActivity("ACT_IDLE");
-		npc.StopPathing();
-	}
 
-	npc.PlayIdleSound();
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_PISTOL", "ACT_WALK_PISTOL", 200000.0, _, true);
+	}
 }
 
-static void ClotDeath(int entity)
+void Barrack_Combine_Pistol_NPCDeath(int entity)
 {
-	Barracks_Combine_Pistol npc = view_as<Barracks_Combine_Pistol>(entity);
-	if(!npc.m_bGib)
-		npc.PlayDeathSound();
+	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(entity);
+	BarrackBody_NPCDeath(npc.index);
+	npc.PlayNPCDeath();
 }
