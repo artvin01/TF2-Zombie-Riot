@@ -27,6 +27,15 @@ static const char g_RangedReloadSound[][] =
 	"weapons/pistol/pistol_reload1.wav"
 };
 
+static const char g_IdleAlert[][] =
+{
+	"npc/metropolice/vo/airwatchsubjectis505.wav",
+	"npc/metropolice/vo/allunitscloseonsuspect.wav",
+	"npc/metropolice/vo/allunitsmovein.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/destroythatcover.wav"
+};
+
 void Barracks_Combine_Pistol_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -46,7 +55,7 @@ void Barracks_Combine_Pistol_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barracks_Combine_Pistol(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Pistol(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Combine_Pistol < BarrackBody
@@ -64,7 +73,7 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlert[GetRandomInt(0, sizeof(g_IdleAlert) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 	public void PlayRangedSound() {
