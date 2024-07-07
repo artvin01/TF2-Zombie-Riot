@@ -177,11 +177,8 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + 0.2;
 							npc.m_iAttacksTillReload--;
 							
-							if(target > 0) 
-							{
-								SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 20, 1), DMG_CLUB, -1, _, vecHit);
-							} 
-						}
+							SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 20, 1), DMG_CLUB, -1, _, vecHit);
+						} 						
 					}
 				}
 			}
