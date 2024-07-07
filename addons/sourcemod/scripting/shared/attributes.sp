@@ -337,7 +337,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			{
-				value /= 2.0;
+				value *= 0.5;
 			}
 
 			if(b_thisNpcIsARaid[victim])

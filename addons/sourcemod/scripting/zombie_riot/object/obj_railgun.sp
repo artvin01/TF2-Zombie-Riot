@@ -336,7 +336,7 @@ static void Railgun_Boom(int client, int obj)
 						First_Target_Hit = false;
 					}
 					float CalcDamageForceVec[3]; CalculateDamageForce(vecForward, 10000.0, CalcDamageForceVec);
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage/BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalcDamageForceVec, playerPos);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], obj, client, damage*BEAM_Targets_Hit[obj], DMG_PLASMA, -1, CalcDamageForceVec, playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[obj] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 				else
