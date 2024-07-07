@@ -166,7 +166,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
-							target = TR_GetEntityIndex(swingTrace);	
+							int target = TR_GetEntityIndex(swingTrace);	
 								
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
