@@ -461,6 +461,8 @@ void NPC_ConfigSetup()
 	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
 
+	//Combine Barracks
+	Barracks_Combine_Pistol_Precache();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
