@@ -188,7 +188,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_PISTOL", "ACT_RUN_PISTOL", 200000.0, _, true);
+		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_PISTOL", "ACT_RUN_PISTOL");
 	}
 }
 
