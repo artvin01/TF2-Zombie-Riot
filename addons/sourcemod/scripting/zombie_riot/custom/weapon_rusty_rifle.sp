@@ -16,7 +16,7 @@ static float BigShot_BrainBlastRadius[2] = { 0.0, 400.0 };			//The blast radius 
 static float BigShot_BrainBlastFalloff_Radius[2] = { 0.0, 0.5 };	//Maximum damage faloff of Brain Blast, based on radius.
 static float BigShot_BrainBlastFalloff_MultiHit[2] = { 0.0, 0.8 };	//Amount to multiply damage dealt by Brain Blast for each zombie it hits.
 static float BigShot_Cooldown[2] = { 15.0, 15.0 };					//Big Shot's cooldown.
-static float BigShot_SmallRaidMult[2] = { 2.0, 2.0 };				//Amount to multiply damage dealt by Big Shot to raids that are not giant.
+static float BigShot_SmallRaidMult[2] = { 1.33, 1.33 };				//Amount to multiply damage dealt by Big Shot to raids that are not giant.
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
 
@@ -213,11 +213,15 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 				{
 					DisplayCritAboveNpc(victim, client, true);
 
-					float dmg = baseDMG * 1.65;
+					float dmg = baseDMG;
 
 					if(i_HeadshotAffinity[client] == 1)
 					{
-						dmg *= 1.35;
+						dmg *= 2.0;
+					}
+					else
+					{
+						dmg *= 1.65;
 					}
 
 					if(i_CurrentEquippedPerk[client] == 5)
@@ -239,6 +243,8 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 0.75;
 					}
+					if (b_thisNpcIsARaid[victim])
+						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
             
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 				}
