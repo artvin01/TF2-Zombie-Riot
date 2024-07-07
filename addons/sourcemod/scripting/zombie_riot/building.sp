@@ -190,6 +190,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		Cash /= 2;
 		AmmoSupply *= 0.5;
 	}
+	
 	AmmoSupply *= 0.65;
 	if(CashLimit)
 	{
@@ -264,6 +265,10 @@ void Building_WaveEnd()
 
 public void Building_OpenMenuWeapon(int client, int weapon, bool crit, int slot)
 {
+	MenuPage[client] = 0;
+	if(MenuTimer[client] != null)
+		delete MenuTimer[client];
+
 	BuildingMenu(client);
 }
 
@@ -439,11 +444,13 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Cancel:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 		}
 		case MenuAction_Select:
 		{
-			delete MenuTimer[client];
+			if(MenuTimer[client] != null)
+				delete MenuTimer[client];
 
 			if(HasWrench(client))
 			{
@@ -527,7 +534,11 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 									metal -= cost;
 									SetAmmo(client, Ammo_Metal, metal);
 									CurrentAmmo[client][Ammo_Metal] = metal;
-									Cooldowns[client][id] = GetGameTime() + BuildingCooldown[id];
+									float CooldownGive = BuildingCooldown[id];
+									if(Rogue_Mode())
+										CooldownGive *= 0.5;
+										
+									Cooldowns[client][id] = GetGameTime() + CooldownGive;
 								}
 							}
 						}
@@ -1109,6 +1120,9 @@ public bool TraceRayFilterBuildOnBuildings(int entity, int contentsMask, any iEx
 		return false;
 	}
 	
+	if(b_ThisEntityIgnored[entity])
+		return false;
+
 	if(i_IsABuilding[entity]) // We don't want to build on teleporters(exploits, stuck, ...) You know what i mean.
 	{
 		return true;
@@ -1302,7 +1316,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	}
 	
 	int HealGiven;
-	if(newHealth > 1 && Healing_Value > 1) //for some reason its able to set it to 1
+	if(newHealth >= 1 && Healing_Value >= 1) //for some reason its able to set it to 1
 	{
 		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / 3);
 		if(HealGiven <= 0)
@@ -1915,19 +1929,22 @@ void GiveBuildingMetalCostOnBuy(int entity, int cost)
 }
 void DeleteAndRefundBuilding(int client, int entity)
 {	
-	int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
-	int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
-	int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-	
-	int MaxTotal = MaxRepair + MaxHealth;
-	int Total = Repair + Health;
+	if(IsValidClient(client))
+	{
+		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
+		int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
+		int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
+		int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		
+		int MaxTotal = MaxRepair + MaxHealth;
+		int Total = Repair + Health;
 
-	float RatioReturn = float(Total) / float(MaxTotal);
-	
-	int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
-	SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
-	CurrentAmmo[client][3] = GetAmmo(client, 3);
+		float RatioReturn = float(Total) / float(MaxTotal);
+		
+		int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+		SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
+		CurrentAmmo[client][3] = GetAmmo(client, 3);
+	}
 
 	RemoveEntity(entity);
 }

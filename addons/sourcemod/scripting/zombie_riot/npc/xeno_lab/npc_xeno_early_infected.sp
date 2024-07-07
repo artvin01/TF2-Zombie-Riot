@@ -68,10 +68,10 @@ public void XenoFortifiedEarlyZombie_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Early Infected");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_early_infected");
-	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie_forti");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -168,10 +168,8 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 600.0;
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
+		npc.m_flSpeed = 550.0;
+		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
 		
@@ -201,7 +199,7 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 
 	if(npc.bXenoInfectedSpecialHurt)
 	{
-		npc.m_flSpeed = 290.0;
+		npc.m_flSpeed = 260.0;
 	}
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -223,8 +221,6 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
 
 	if(npc.m_flAttackHappens)
 	{

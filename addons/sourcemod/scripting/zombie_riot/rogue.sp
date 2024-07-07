@@ -1401,7 +1401,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 				if(!choice || VotedFor[client] != choice)
 				{
 					VotedFor[client] = choice;
-					if(VotedFor[client] == 0)
+					if(VotedFor[client] == 0 || choice > Voting.Length)
 					{
 						VotedFor[client] = -1;
 					}
@@ -1596,7 +1596,10 @@ static void StartStage(const Stage stage)
 	{
 		entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
-			RemoveEntity(entity);
+		{
+			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+			DeleteAndRefundBuilding(builder_owner, entity);
+		}
 	}
 
 	if(b_LeaderSquad)
@@ -1675,7 +1678,10 @@ static void TeleportToSpawn()
 	{
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[i]);
 		if(entity != INVALID_ENT_REFERENCE && IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
-			RemoveEntity(entity);
+		{
+			int builder_owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+			DeleteAndRefundBuilding(builder_owner, entity);
+		}
 	}
 }
 

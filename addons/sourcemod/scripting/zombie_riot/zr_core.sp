@@ -181,7 +181,8 @@ enum
 	WEAPON_VICTORIAN_LAUNCHER = 101,
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
-	WEAPON_MERCHANTGUN = 104
+	WEAPON_MERCHANTGUN = 104,
+	WEAPON_RUSTY_RIFLE = 105
 }
 
 enum
@@ -240,6 +241,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
@@ -271,7 +273,7 @@ float FoodAmount[MAXTF2PLAYERS];
 float GoldAmount[MAXTF2PLAYERS];
 int SupplyRate[MAXTF2PLAYERS];
 //int i_PreviousBuildingCollision[MAXENTITIES];
-bool b_ArkantosBuffItem[MAXENTITIES];
+bool b_AlaxiosBuffItem[MAXENTITIES];
 int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
@@ -344,8 +346,9 @@ int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 float MultiGlobal = 0.25;
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalHealth = 1.0;
-float MultiGlobalArkantos = 0.25;
+float MultiGlobalAlaxios = 0.25;
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
+float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
@@ -493,6 +496,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
+#include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -610,6 +614,7 @@ void ZR_MapStart()
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
+	Rusty_Rifle_ResetAll();
 	ShieldLogic_OnMapStart();
 	Weapon_RapierMapChange();
 	Rogue_OnAbilityUseMapStart();
@@ -643,6 +648,7 @@ void ZR_MapStart()
 	Zero(healing_cooldown);
 	Zero(i_ThisEntityHasAMachineThatBelongsToClientMoney);
 	Zero(f_WasRecentlyRevivedViaNonWave);
+	Zero(f_WasRecentlyRevivedViaNonWaveClassChange);
 	Zero(f_TimeAfterSpawn);
 	Zero(f_ArmorCurrosionImmunity);
 	Reset_stats_Irene_Global();
@@ -734,6 +740,7 @@ void ZR_MapStart()
 	Flagellant_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
+	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();
@@ -2439,10 +2446,10 @@ stock void GetTimerAndNullifyMusicMVM()
 	*/
 }
 
-bool PlayerIsInNpcBattle(int client)
+bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 {
 	bool InBattle = false;
-	if(f_InBattleHudDisableDelay[client] > GetGameTime())
+	if(f_InBattleHudDisableDelay[client] > (GetGameTime() + ExtradelayTime))
 		InBattle = true;
 
 	return InBattle;

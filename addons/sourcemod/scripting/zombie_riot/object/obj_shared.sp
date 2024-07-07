@@ -658,6 +658,18 @@ bool Object_Interact(int client, int weapon, int obj)
 		MountedObjectInteracted = true;
 	}
 
+	Function func = func_NPCInteract[entity];
+	if((!func || func == INVALID_FUNCTION) && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
+		return false;
+
+	if(PlayerIsInNpcBattle(client, 1.0) && MountedObjectInteracted)
+	{
+		//self mounted ignores this.
+		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != client)
+			return false;
+	}
+
+
 	bool result;
 	
 	static char plugin[64];
@@ -702,7 +714,7 @@ bool Object_Interact(int client, int weapon, int obj)
 			//dont interact with buildings if you are carring something
 			if(MountedObjectInteracted || !IsPlayerCarringObject(client) && !BuildingIsBeingCarried(entity))
 			{
-				Function func = func_NPCInteract[entity];
+				func = func_NPCInteract[entity];
 				if(func && func != INVALID_FUNCTION)
 				{
 					Call_StartFunction(null, func);
@@ -838,6 +850,22 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	if(Resistance_for_building_High[victim] > GetGameTime())
 	{
 		damage *= 0.75;
+	}
+	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
+	{
+		int scale = Rogue_GetRoundScale();
+		if(scale < 2)
+		{
+			//damage *= 1.0;
+		}
+		else if(scale < 4)
+		{
+			damage *= 2.0;
+		}
+		else
+		{
+			damage *= 3.0;
+		}
 	}
 
 	damage *= 0.1;
@@ -986,7 +1014,6 @@ void BuildingDisplayRepairLeft(int entity)
 		Offset[2] += 6.0;
 		Format(HealthText, sizeof(HealthText), "%s", "Ready!");
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 0, HealthColour, objstats.index);
-		int Owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 		OwnerOfText[TextEntity] = EntIndexToEntRef(objstats.index);
 		DispatchKeyValue(TextEntity, "font", "4");
 		objstats.m_iWearable5 = TextEntity;	

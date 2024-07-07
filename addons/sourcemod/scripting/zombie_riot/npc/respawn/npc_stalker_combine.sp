@@ -11,7 +11,12 @@ methodmap StalkerShared < CClotBody
 		if(this.m_iTarget < 1)
 			return false;
 		
-		if(Can_I_See_Enemy(this.index, this.m_iTarget) == this.m_iTarget)
+		int EnemySee = Can_I_See_Enemy(this.index, this.m_iTarget);
+		if(IsValidEnemy(this.index, EnemySee))
+		{
+			this.m_iTarget = EnemySee;
+		}
+		if(IsValidEnemy(this.index, this.m_iTarget))
 		{
 			if(this.m_iChaseVisable < 6)
 				this.m_iChaseVisable++;
@@ -35,11 +40,16 @@ methodmap StalkerShared < CClotBody
 			}
 		}
 
-		for(int i; i < 6; i++)
+		for(int i; i < 50; i++)
 		{
 			CNavArea RandomArea = PickRandomArea();
 			if(RandomArea != NULL_AREA)
 			{
+				int NavAttribs = RandomArea.GetAttributes();
+				if(NavAttribs & NAV_MESH_AVOID)
+				{
+					continue;
+				}
 				RandomArea.GetCenter(pos);
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
 					break;
@@ -54,8 +64,8 @@ methodmap StalkerShared < CClotBody
 	}
 	property bool m_bChaseAnger	// If currently chasing a target down
 	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
+		public get()		{ return !b_DuringHook[this.index]; }
+		public set(bool value) 	{ b_DuringHook[this.index] = !value; }
 	}
 	property int m_iChaseVisable	// Time before we considered "lost them"
 	{

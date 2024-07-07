@@ -52,10 +52,10 @@ public void XenoPatientFew_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Xeno Patient Few");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_patient_few");
-	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie_forti");
+	strcopy(data.Icon, sizeof(data.Icon), "norm_poison_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -137,8 +137,6 @@ methodmap XenoPatientFew < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		//15 in this case is full, this probably works like flags. but its wierd, tbh just trial and error
-		SetVariantInt(15);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 	
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -213,8 +211,6 @@ public void XenoPatientFew_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
 
 	if(npc.m_flAttackHappens)
 	{
@@ -234,9 +230,9 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 999999.0;
+					float damage = 5000.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damage = 3000.0;
+						damage = 2500.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

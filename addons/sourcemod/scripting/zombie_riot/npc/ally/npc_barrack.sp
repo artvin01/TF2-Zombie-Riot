@@ -819,19 +819,18 @@ bool BarrackBody_Interact(int client, int entity)
 		{
 			if(npc.m_bSelectableByAll)
 			{
-				//if(IsValidEntity(i_HasSentryGunAlive[client]))
-					ShowMenu(client, entity);
+				ShowMenu(client, entity);
+				return true;
 			}
 			else if(npc.OwnerUserId == GetClientUserId(client))
 			{
 				ShowMenu(client, entity);
+				return true;
 			}
 		}
-		return true;
 	}
 	return false;
 }
-
 void BarracksEntityCreated(int entity)
 {
 	BarrackOwner[entity] = 0;

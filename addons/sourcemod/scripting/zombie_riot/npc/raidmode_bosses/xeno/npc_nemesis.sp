@@ -113,7 +113,7 @@ void RaidbossNemesis_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "nemesis_boss");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -248,7 +248,7 @@ methodmap RaidbossNemesis < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Mrx Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Nemesis Arrived.");
 			}
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -324,26 +324,26 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 	{
 		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
 	}
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime < GetGameTime(npc.index))
 	{
-		return;
+		//Set raid to this one incase the previous one has died or somehow vanished
+		if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		{
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+			{
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+				{
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
+			}
+		}
+		else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
+		npc.m_flNextDelayTime > GetGameTime(npc.index) + 0.1;
 	}
 
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)) || IsPartnerGivingUpSilvester(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
 	
 
 	npc.Update();
@@ -388,9 +388,13 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis * 2));
 			}
+			else
+			{
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis));
+			}
+			
 			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
 			{
-				
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 			}
 		}
@@ -807,7 +811,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 					if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0))
 					{
 
-						if(npc.m_iChanged_WalkCycle != 3) 
+						if(npc.m_iChanged_WalkCycle != 13) 
 						{
 							//the enemy is still close, do another attack.
 							float flPos[3]; // original
@@ -824,9 +828,8 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NemesisHitBoxStart[npc.index] = gameTime + 0.65;
 							f_NemesisHitBoxEnd[npc.index] = gameTime + 1.25;
 							f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
-							int iActivity = npc.LookupActivity("ACT_RAID_TYRAND");
-							if(iActivity > 0) npc.StartActivity(iActivity);
-							npc.m_iChanged_WalkCycle = 3;
+							npc.SetActivity("ACT_FT2_ATTACK_2");
+							npc.m_iChanged_WalkCycle = 13;
 							npc.m_bisWalking = false;
 							if(XenoExtraLogic())
 							{
@@ -855,8 +858,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			{
 				if(npc.m_iChanged_WalkCycle != 2) 	
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_WALK");
-					if(iActivity > 0) npc.StartActivity(iActivity);
+					npc.SetActivity("ACT_FT2_WALK");
 					npc.m_iChanged_WalkCycle = 2;
 					npc.m_bisWalking = true;
 					npc.m_flSpeed = 300.0;
@@ -959,11 +961,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				f_NemesisHitBoxEnd[npc.index] = gameTime + 1.0;
 				f_NemesisCauseInfectionBox[npc.index] = gameTime + 1.0;
 
-				if(npc.m_iChanged_WalkCycle != 1) 
+				if(npc.m_iChanged_WalkCycle != 15) 
 				{
-					int iActivity = npc.LookupActivity("ACT_FT2_ATTACK_1");
-					if(iActivity > 0) npc.StartActivity(iActivity);
-					npc.m_iChanged_WalkCycle = 1;
+					npc.SetActivity("ACT_FT2_ATTACK_1");
+					npc.m_iChanged_WalkCycle = 15;
 					npc.m_bisWalking = false;
 					if(XenoExtraLogic())
 					{
@@ -1167,7 +1168,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 1 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)
@@ -1176,7 +1177,7 @@ public void RaidbossNemesis_NPCDeath(int entity)
 			{
 				if(!XenoExtraLogic())
 				{
-					Items_GiveNamedItem(client_repat, "Nemesis's Heart Piece");
+					Items_GiveNamedItem(client_repat, "Calmaticus' Heart Piece");
 					CPrintToChat(client_repat, "{default}You cut its heart to ensure his death and gained: {green}''Nemesis's Heart Piece''{default}!");
 				}
 			}

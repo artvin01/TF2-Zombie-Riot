@@ -23,6 +23,11 @@ static int coins_flipped[MAXTF2PLAYERS];
 		
 // Ability_Check_Cooldown(client, slot);
 
+void CoinEntityCreated(int entity)
+{
+	mb_coin[entity] = false;
+}
+
 public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
@@ -423,8 +428,6 @@ stock void Do_Coin_calc(int victim)
 	
 	if (IsValidEntity(Closest_entity))
 	{
-		
-		SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
 		
@@ -432,6 +435,7 @@ stock void Do_Coin_calc(int victim)
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
 		if (mb_coin[Closest_entity] && !StrContains(classname, "prop_physics_multiplayer", true))
 		{
+			SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 			GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			ParticleEffectAt(chargerPos, "raygun_projectile_red_crit", 0.3);
 			

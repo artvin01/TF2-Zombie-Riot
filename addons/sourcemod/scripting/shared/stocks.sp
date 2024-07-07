@@ -693,9 +693,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 
 #if defined ZR || defined RPG
 
-#if defined ZR
-	f_TimeSinceLastGiveWeapon[client] = GetGameTime() + 0.3;
-#endif
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
@@ -708,6 +705,9 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	delete weapon;
 	if(entity > MaxClients)
 	{
+#if defined ZR
+	f_TimeSinceLastGiveWeapon[entity] = 0.0;
+#endif
 		Attributes_EntityDestroyed(entity);
 
 		for(int i; i < count; i++)
@@ -1457,14 +1457,13 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 
 	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
 	{
-		/*
 		//if the building is ignored, prevent interaction with it.
 		//Edit: if its a barricade this is ignored so they can reclaim it.
 #if defined ZR
 		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
 #endif	
 			return false;
-			*/
+			
 		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
 #if defined ZR
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
@@ -1555,6 +1554,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 #if defined ZR
 		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
 			return false;
+
 		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
@@ -2826,6 +2826,7 @@ int inflictor = 0)
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
+		maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
 	}
 #endif
 
@@ -3031,7 +3032,7 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
@@ -3059,12 +3060,14 @@ int inflictor = 0)
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
 				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+
+				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
 				if(damage_1 != 0.0)
-					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
+					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3072,10 +3075,8 @@ int inflictor = 0)
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
-				if(damage_1 == 0.0)
-					Call_PushFloat(damage_1);
-				else
-					Call_PushFloat(damage_1 / damage_reduction);
+				damage_1 *= damage_reduction;
+				Call_PushFloat(damage_1);
 					
 				Call_PushCell(weapon);
 				Call_Finish();
@@ -3404,6 +3405,9 @@ public void MakeExplosionFrameLater(DataPack pack)
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
 	TF2Util_SetPlayerActiveWeapon(client, weapon);
+#if defined ZR
+//	WeaponSwtichToWarningPostDestroyed(weapon);
+#endif
 	/*
 	char buffer[64];
 	GetEntityClassname(weapon, buffer, sizeof(buffer));
@@ -3996,7 +4000,7 @@ stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
-
+		
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));

@@ -402,7 +402,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 
 			float ExplodePos[3]; CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0, ExplodePos);
 
-			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
+			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 * damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD--;
 			times_hurt++;

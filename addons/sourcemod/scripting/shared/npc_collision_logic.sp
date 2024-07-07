@@ -31,6 +31,13 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_CantCollidieAlly[otherindex])
 			return false;
 	}	
+	if(b_ThisEntityIgnoredByOtherNpcsAggro[otherindex])
+	{
+		if(GetTeam(otherindex) == TFTeam_Stalkers && GetTeam(bot_entidx) != TFTeam_Red)
+		{
+			return false;
+		}
+	}
 	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 	{
 		CClotBody npc = view_as<CClotBody>(bot_entidx);
@@ -42,8 +49,19 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		{
 			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
+				{
+					return false;
+				}
+				if(b_ThisEntityIgnoredBeingCarried[otherindex])
+					return false;
+
+				if(b_ThisEntityIgnored[otherindex])
+					return false;
+
 				if(extrarules == 0)
 					NpcStartTouch(bot_entidx,otherindex);
+					
 				return true;
 			}
 		}
@@ -91,6 +109,9 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_ThisEntityIgnoredBeingCarried[otherindex])
 			return false;
 
+		if(b_ThisEntityIgnored[otherindex])
+			return false;
+					
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
 			
@@ -101,6 +122,7 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	{
 		if(extrarules == 0)
 			NpcStartTouch(bot_entidx,otherindex);
+		
 		return true;
 	}
 	//other entity is an npc

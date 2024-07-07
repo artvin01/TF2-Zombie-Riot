@@ -4468,6 +4468,7 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
+	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
 	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
@@ -4492,13 +4493,13 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
-	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
+	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
-		b_ArkantosBuffItem[client] = true;
+		b_AlaxiosBuffItem[client] = true;
 	}
 	else
 	{
-		b_ArkantosBuffItem[client] = false;
+		b_AlaxiosBuffItem[client] = false;
 	}
 
 	if(i_CurrentEquippedPerk[client] == 4)
@@ -4672,7 +4673,7 @@ void Store_ApplyAttribs(int client)
 	{
 		ForcePlayerCrouch(client, true);
 		if(b_XenoVial[client])
-			Attributes_Set(client, 489, 1.1);
+			Attributes_Set(client, 489, 0.85);
 		else
 			Attributes_Set(client, 489, 0.65);
 	}
@@ -4860,7 +4861,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	*/
 
-	if(Items_HasNamedItem(client, "Nemesis's Heart Piece"))
+	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
 	{
 		b_NemesisHeart[client] = true;
 	}
@@ -5531,6 +5532,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
+		Enable_Obuch(client, entity);
 		Enable_Judge(client, entity);
 		Enable_SpikeLayer(client, entity);
 		Enable_SensalWeapon(client, entity);
@@ -5544,6 +5546,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
+		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
@@ -5946,8 +5949,8 @@ void GiveCredits(int client, int credits, bool building)
 	}
 	else
 	{
-		CashSpentGivePostSetup[client] += credits;
 		CashSpent[client] -= credits;
+		CashRecievedNonWave[client] += credits;
 	}
 }
 

@@ -54,18 +54,18 @@ static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
 #define SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE	"misc/halloween/spell_mirv_explode_primary.wav"
 
-#define ARKANTOS_BUFF_MAXRANGE 500.0
+#define ALAXIOS_BUFF_MAXRANGE 500.0
 
 static int NPCId;
-public void GodArkantos_OnMapStart()
+public void GodAlaxios_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "God Arkantos");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_arkantos");
-	strcopy(data.Icon, sizeof(data.Icon), "arkantos");
+	strcopy(data.Name, sizeof(data.Name), "God Alaxios");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_god_alaxios");
+	strcopy(data.Icon, sizeof(data.Icon), "alaxios");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -87,22 +87,22 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return GodArkantos(client, vecPos, vecAng, ally, data);
+	return GodAlaxios(client, vecPos, vecAng, ally, data);
 }
-static float f_ArkantosCantDieLimit[MAXENTITIES];
+static float f_AlaxiosCantDieLimit[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 
-int ArkantoSpeedint[MAXENTITIES];
-methodmap GodArkantos < CClotBody
+int Alaxiosspeedint[MAXENTITIES];
+methodmap GodAlaxios < CClotBody
 {
-	property float m_flArkantosBuffEffect
+	property float m_flAlaxiosBuffEffect
 	{
 		public get()							{ return fl_AttackHappensMaximum[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
-	property float m_flReviveArkantosTime
+	property float m_flReviveAlaxiosTime
 	{
 		public get()							{ return fl_GrappleCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
@@ -155,7 +155,7 @@ methodmap GodArkantos < CClotBody
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 75.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
-		f_ArkantosCantDieLimit[this.index] = GetGameTime() + 0.5;
+		f_AlaxiosCantDieLimit[this.index] = GetGameTime() + 0.5;
 	}
 	public void PlayMeleeMissSound() 
 	{
@@ -169,12 +169,12 @@ methodmap GodArkantos < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 
-	public GodArkantos(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		GodArkantos npc = view_as<GodArkantos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
+		GodAlaxios npc = view_as<GodAlaxios>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.25", "25000", ally, false, false, true,true)); //giant!
 		
 		i_NpcWeight[npc.index] = 4;
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Arkantos_Win);
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Alaxios_Win);
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -197,7 +197,7 @@ methodmap GodArkantos < CClotBody
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_WALK");
 		npc.m_flSpeed = 320.0;
-		ArkantoSpeedint[npc.index] = 320;
+		Alaxiosspeedint[npc.index] = 320;
 	
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -211,7 +211,7 @@ methodmap GodArkantos < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Arkantos Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Alaxios Arrived");
 			}
 		}
 
@@ -239,13 +239,13 @@ methodmap GodArkantos < CClotBody
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		npc.Anger = false;
 
-		npc.m_flArkantosBuffEffect = GetGameTime() + 25.0;
+		npc.m_flAlaxiosBuffEffect = GetGameTime() + 25.0;
 		npc.m_flRangedSpecialDelay = GetGameTime() + 10.0;
 		npc.m_flNextRangedAttack = GetGameTime() + 15.0;
 		npc.m_flNextRangedAttackHappening = 0.0;
 		npc.g_TimesSummoned = 0;
 		npc.m_bWasSadAlready = false;
-		f_ArkantosCantDieLimit[npc.index] = 0.0;
+		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 		
 		if(RaidModeScaling < 55)
 		{
@@ -271,11 +271,11 @@ methodmap GodArkantos < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		
-		func_NPCDeath[npc.index] = GodArkantos_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = GodArkantos_OnTakeDamage;
-		func_NPCThink[npc.index] = GodArkantos_ClotThink;
+		func_NPCDeath[npc.index] = GodAlaxios_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = GodAlaxios_OnTakeDamage;
+		func_NPCThink[npc.index] = GodAlaxios_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, GodArkantos_OnTakeDamagePost);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, GodAlaxios_OnTakeDamagePost);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		SetVariantString("5.0");
@@ -309,9 +309,9 @@ methodmap GodArkantos < CClotBody
 
 //TODO 
 //Rewrite
-public void GodArkantos_ClotThink(int iNPC)
+public void GodAlaxios_ClotThink(int iNPC)
 {
-	GodArkantos npc = view_as<GodArkantos>(iNPC);
+	GodAlaxios npc = view_as<GodAlaxios>(iNPC);
 	
 	float gameTime = GetGameTime(npc.index);
 
@@ -324,15 +324,15 @@ public void GodArkantos_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{lightblue}God Arkantos{default}: You have no chance alone!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: You have no chance alone!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}God Arkantos{default}: Your weaponry frails in comaprison to Atlantis!!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Your weaponry frails in comaprison to Atlantis!!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{lightblue}God Arkantos{default}: Concider surrendering?!");
+					CPrintToChatAll("{lightblue}God Alaxios{default}: Concider surrendering?!");
 				}
 			}
 		}
@@ -353,7 +353,7 @@ public void GodArkantos_ClotThink(int iNPC)
 			}
 		}
 		ForcePlayerLoss();
-		CPrintToChatAll("{lightblue}God Arkantos{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
+		CPrintToChatAll("{lightblue}God Alaxios{default}: No.. No No!! They are comming, prepare to fight together NOW!!!");
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		for(int i; i<32; i++)
 		{
@@ -415,7 +415,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				TF2_StunPlayer(client, 0.5, 0.5, TF_STUNFLAGS_LOSERSTATE);
 			}
 		}
-		if(ArkantosForceTalk())
+		if(AlaxiosForceTalk())
 		{
 			npc.m_bDissapearOnDeath = true;
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
@@ -423,19 +423,19 @@ public void GodArkantos_ClotThink(int iNPC)
 		return;
 	}
 	//float point impresicion...
-	if(ArkantoSpeedint[npc.index] == 320)
+	if(Alaxiosspeedint[npc.index] == 320)
 	{
-		if(f_GodArkantosBuff[npc.index] > GetGameTime())
+		if(f_GodAlaxiosBuff[npc.index] > GetGameTime())
 		{
 			npc.m_flSpeed = 220.0;
-			ArkantoSpeedint[npc.index] = 220;
+			Alaxiosspeedint[npc.index] = 220;
 		}
 	}
-	else if(ArkantoSpeedint[npc.index] == 220)
+	else if(Alaxiosspeedint[npc.index] == 220)
 	{
-		if(f_GodArkantosBuff[npc.index] < GetGameTime())
+		if(f_GodAlaxiosBuff[npc.index] < GetGameTime())
 		{
-			ArkantoSpeedint[npc.index] = 320;
+			Alaxiosspeedint[npc.index] = 320;
 			npc.m_flSpeed = 320.0;
 		}		
 	}
@@ -474,14 +474,14 @@ public void GodArkantos_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	/*
-	if(npc.m_flReviveArkantosTime)
+	if(npc.m_flReviveAlaxiosTime)
 	{
-		if(npc.m_flReviveArkantosTime < gameTime)
+		if(npc.m_flReviveAlaxiosTime < gameTime)
 		{
 			if(npc.m_iChanged_WalkCycle == 5)
 			{
-				npc.m_flReviveArkantosTime = 0.0;
-				npc.ArkantosFakeDeathState(0);
+				npc.m_flReviveAlaxiosTime = 0.0;
+				npc.AlaxiosFakeDeathState(0);
 			}
 			else
 			{
@@ -499,7 +499,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 				SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
 				SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
-				npc.m_flReviveArkantosTime = 0.0;
+				npc.m_flReviveAlaxiosTime = 0.0;
 				b_ThisEntityIgnored[npc.index] = false;
 				b_DoNotUnStuck[npc.index] = false;
 			}
@@ -517,14 +517,14 @@ public void GodArkantos_ClotThink(int iNPC)
 		for(int targ; targ<i_MaxcountNpc; targ++)
 		{
 			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ARKANTOS)
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && i_NpcInternalId[baseboss_index] != RAIDMODE_GOD_ALAXIOS)
 			{
 				allyAlive = true;
 			}
 		}
 		if(!allyAlive)
 		{
-			npc.ArkantosFakeDeathState(0);
+			npc.AlaxiosFakeDeathState(0);
 		}
 		return;
 	}
@@ -554,7 +554,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		{
 			if(!npc.Anger)
 			{
-				ArkantosSayWordsAngry();
+				AlaxiosSayWordsAngry();
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
 			}
@@ -583,7 +583,7 @@ public void GodArkantos_ClotThink(int iNPC)
 	
 	if(f_TargetToWalkToDelay[npc.index] < gameTime)
 	{
-		if(npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
+		if(npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && !npc.m_flNextRangedAttackHappening && ZR_GetWaveCount()+1 > 30)
 		{
 			npc.m_iTargetWalkTo = GetClosestAlly(npc.index);	
 			if(npc.m_iTargetWalkTo == -1) //there was no alive ally, we will return to finding an enemy and killing them.
@@ -624,7 +624,7 @@ public void GodArkantos_ClotThink(int iNPC)
 		{
 			ActionToTake = -1;
 		}
-		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && !(ZR_GetWaveCount()+1 > 30 && npc.Anger && npc.m_flArkantosBuffEffect < GetGameTime(npc.index)))
+		else if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && !(ZR_GetWaveCount()+1 > 30 && npc.Anger && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index)))
 		{
 			if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (250.0 * 250.0) && npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 			{
@@ -639,11 +639,11 @@ public void GodArkantos_ClotThink(int iNPC)
 		}
 		else if(IsValidAlly(npc.index, npc.m_iTargetWalkTo) || npc.Anger)
 		{
-			if((npc.Anger || flDistanceToTarget < (125.0* 125.0)) && npc.m_flArkantosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
+			if((npc.Anger || flDistanceToTarget < (125.0* 125.0)) && npc.m_flAlaxiosBuffEffect < GetGameTime(npc.index) && ZR_GetWaveCount()+1 > 30)
 			{
 				//can only be above wave 15.
 				ActionToTake = -1;
-				GodArkantosAOEBuff(npc,GetGameTime(npc.index));
+				GodAlaxiosAOEBuff(npc,GetGameTime(npc.index));
 			}
 		}
 		else
@@ -664,7 +664,7 @@ public void GodArkantos_ClotThink(int iNPC)
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				
-				ArkantoSpeedint[npc.index] = 0;
+				Alaxiosspeedint[npc.index] = 0;
 				npc.m_flSpeed = 0.0;
 				if(npc.m_bPathing)
 				{
@@ -727,27 +727,27 @@ public void GodArkantos_ClotThink(int iNPC)
 	}
 	if(AllowSelfDefense)
 	{
-		GodArkantosSelfDefense(npc, gameTime);
+		GodAlaxiosSelfDefense(npc, gameTime);
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index)) 
 	{
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
-	GodArkantosHurricane(npc, gameTime);
-	GodArkantosJumpSpecial(npc, gameTime);
+	GodAlaxiosHurricane(npc, gameTime);
+	GodAlaxiosJumpSpecial(npc, gameTime);
 
 }
 	
-public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
-	GodArkantos npc = view_as<GodArkantos>(victim);
+	GodAlaxios npc = view_as<GodAlaxios>(victim);
 
-	if(npc.m_flReviveArkantosTime > GetGameTime(npc.index))
+	if(npc.m_flReviveAlaxiosTime > GetGameTime(npc.index))
 	{
 		damage = 0.0;
 		return Plugin_Handled;
@@ -786,16 +786,16 @@ public Action GodArkantos_OnTakeDamage(int victim, int &attacker, int &inflictor
 			damage = 0.0;
 			RaidModeTime += 60.0;
 			f_TalkDelayCheck = GetGameTime() + 4.0;
-			CPrintToChatAll("{lightblue}God Arkantos{default}: That's it, I will make you listen.");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: That's it, I will make you listen.");
 			return Plugin_Handled;
 		}
 	}
 	return Plugin_Changed;
 }
 
-public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	GodArkantos npc = view_as<GodArkantos>(victim);
+	GodAlaxios npc = view_as<GodAlaxios>(victim);
 	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Ratio = health / maxhealth;
@@ -807,8 +807,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(7.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(7.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -817,9 +817,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
 			
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_scout",_, RoundToCeil(4.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_archer",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_eagle_scout",_, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -827,32 +827,32 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			npc.PlaySummonSound();
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
-			ArkantosSayWords();
+			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(3.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(2.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(2.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(3.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalAlaxios), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalAlaxios), 1, true);		
 			}
 		}
 	}
@@ -865,9 +865,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(4.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow",_, RoundToCeil(4.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(4.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow",_, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -876,8 +876,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -885,32 +885,32 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_brawler",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_brawler",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
-			ArkantosSayWords();
+			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalAlaxios), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalAlaxios), RoundToCeil(2.0 * MultiGlobal), true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalArkantos), RoundToCeil(2.0 * MultiGlobal), true);				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalAlaxios), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalAlaxios), RoundToCeil(2.0 * MultiGlobal), true);				
 			}
 		}
 	}
@@ -923,10 +923,10 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_longbowmen",_, RoundToCeil(4.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_eagle_warrior",_, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_longbowmen",_, RoundToCeil(4.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -935,8 +935,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_knight",_, RoundToCeil(5.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_twohanded_swordsman",_, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -944,32 +944,32 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",_, RoundToCeil(2.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",_, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_light_cav",_, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",_, RoundToCeil(2.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
-			ArkantosSayWords();
+			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(5.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalArkantos), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(1.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(5.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalAlaxios), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalAlaxios), 1);
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalArkantos), 1, true);					
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalAlaxios), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalAlaxios), 1, true);					
 			}
 		}
 	}
@@ -982,9 +982,9 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(6.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_arbalest",50000, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_longbowmen",50000, RoundToCeil(4.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(6.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_arbalest",50000, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_longbowmen",50000, RoundToCeil(4.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.55 && npc.g_TimesSummoned < 2)
 		{
@@ -993,8 +993,8 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 			
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(12.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_samurai",75000, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_champion",75000, RoundToCeil(12.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_samurai",75000, RoundToCeil(12.0 * MultiGlobal));
 		}
 		else if(Ratio <= 0.35 && npc.g_TimesSummoned < 3)
 		{
@@ -1002,43 +1002,43 @@ public void GodArkantos_OnTakeDamagePost(int victim, int attacker, int inflictor
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobal));
-			GodArkantosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalArkantos), 1);
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobal));
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalAlaxios), 1);
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
-			ArkantosSayWords();
+			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
 			npc.PlaySummonSound();
 			if(npc.m_bWasSadAlready)
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(1.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(10.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalArkantos), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(1.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(10.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalAlaxios), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalAlaxios), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalAlaxios), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobal));
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalArkantos), 1);
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalArkantos), 1, true);		
-				GodArkantosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalArkantos), 1, true);				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobal));
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalAlaxios), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalAlaxios), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalAlaxios), 1, true);				
 			}
 		}
 	}
 }
 
-public void GodArkantos_NPCDeath(int entity)
+public void GodAlaxios_NPCDeath(int entity)
 {
-	GodArkantos npc = view_as<GodArkantos>(entity);
+	GodAlaxios npc = view_as<GodAlaxios>(entity);
 	if(!BlockLoseSay)
 	{
 		if(!npc.m_bDissapearOnDeath)
@@ -1050,19 +1050,19 @@ public void GodArkantos_NPCDeath(int entity)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: I have failed Atlantis...");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I have failed Atlantis...");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: How was my army defeated..?");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: How was my army defeated..?");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: You dont know what you are doing!");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: You dont know what you are doing!");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: We should be fighting together, not against each other, the {blue}sea{default} will be your doom...");
 			}
 		}
 	}
@@ -1093,9 +1093,9 @@ public void GodArkantos_NPCDeath(int entity)
 	Citizen_MiniBossDeath(entity);
 }
 
-void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int count, bool outline = false)
+void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int count, bool outline = false)
 {
-	if(GetTeam(arkantos) == TFTeam_Red)
+	if(GetTeam(alaxios) == TFTeam_Red)
 	{
 		count /= 2;
 		if(count < 1)
@@ -1104,10 +1104,10 @@ void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int
 		}
 		for(int Spawns; Spawns <= count; Spawns++)
 		{
-			float pos[3]; GetEntPropVector(arkantos, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(arkantos, Prop_Data, "m_angRotation", ang);
+			float pos[3]; GetEntPropVector(alaxios, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(alaxios, Prop_Data, "m_angRotation", ang);
 			
-			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(arkantos));
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(alaxios));
 			if(summon > MaxClients)
 			{
 				fl_Extra_Damage[summon] = 10.0;
@@ -1136,7 +1136,7 @@ void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;
 	enemy.ExtraSize = 1.0;		
-	enemy.Team = GetTeam(arkantos);
+	enemy.Team = GetTeam(alaxios);
 	for(int i; i<count; i++)
 	{
 		Waves_AddNextEnemy(enemy);
@@ -1144,7 +1144,7 @@ void GodArkantosSpawnEnemy(int arkantos, char[] plugin_name, int health = 0, int
 	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }
 
-void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
+void GodAlaxiosSelfDefense(GodAlaxios npc, float gameTime)
 {
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -1276,7 +1276,7 @@ void GodArkantosSelfDefense(GodArkantos npc, float gameTime)
 	}
 }
 
-void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
+void GodAlaxiosJumpSpecial(GodAlaxios npc, float gameTime)
 {
 	if(npc.m_flNextRangedSpecialAttackHappens)
 	{
@@ -1380,7 +1380,7 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 				npc.m_iChanged_WalkCycle = 4;
 				npc.SetActivity("ACT_WALK");
 				npc.StartPathing();
-				ArkantoSpeedint[npc.index] = 320;
+				Alaxiosspeedint[npc.index] = 320;
 				npc.m_flSpeed = 320.0;
 				npc.m_bisWalking = true;
 			}
@@ -1388,7 +1388,7 @@ void GodArkantosJumpSpecial(GodArkantos npc, float gameTime)
 	}
 }
 
-void GodArkantosHurricane(GodArkantos npc, float gameTime)
+void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 {
 	if(npc.m_flNextRangedAttackHappening)
 	{
@@ -1677,11 +1677,11 @@ void GodArkantosHurricane(GodArkantos npc, float gameTime)
 
 
 
-void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
+void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	if(npc.m_flArkantosBuffEffect < gameTime)
+	if(npc.m_flAlaxiosBuffEffect < gameTime)
 	{
 		bool buffed_anyone;
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
@@ -1692,9 +1692,9 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (ARKANTOS_BUFF_MAXRANGE * ARKANTOS_BUFF_MAXRANGE))
+					if(GetVectorDistance(pos1, pos2, true) < (ALAXIOS_BUFF_MAXRANGE * ALAXIOS_BUFF_MAXRANGE))
 					{
-						f_GodArkantosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
+						f_GodAlaxiosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
 						//Buff this entity.
 						buffed_anyone = true;	
 					}
@@ -1706,14 +1706,14 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 
 		if(buffed_anyone)
 		{
-			npc.m_flArkantosBuffEffect = gameTime + 10.0;
+			npc.m_flAlaxiosBuffEffect = gameTime + 10.0;
 			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
-				f_GodArkantosBuff[npc.index] = GetGameTime() + 5.0; //the buff for arkantos himself is half the time.
+				f_GodAlaxiosBuff[npc.index] = GetGameTime() + 5.0; //the buff for alaxios himself is half the time.
 			}
 			else
 			{
-				f_GodArkantosBuff[npc.index] = GetGameTime() + 3.0; //the buff for arkantos himself is half the time.
+				f_GodAlaxiosBuff[npc.index] = GetGameTime() + 3.0; //the buff for alaxios himself is half the time.
 			}
 			static int r;
 			static int g;
@@ -1733,74 +1733,74 @@ void GodArkantosAOEBuff(GodArkantos npc, float gameTime, bool mute = false)
 			}
 			static float UserLoc[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", UserLoc);
-			spawnRing(npc.index, ARKANTOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
-			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, ARKANTOS_BUFF_MAXRANGE * 2.0);		
+			spawnRing(npc.index, ALAXIOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 1.0, 6.0, 6.1, 1);
+			spawnRing_Vectors(UserLoc, 0.0, 0.0, 5.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.75, 12.0, 6.1, 1, ALAXIOS_BUFF_MAXRANGE * 2.0);		
 			npc.AddGestureViaSequence("g_wave");
 			if(!mute)
 			{
-				spawnRing(npc.index, ARKANTOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
-				spawnRing(npc.index, ARKANTOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
+				spawnRing(npc.index, ALAXIOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
+				spawnRing(npc.index, ALAXIOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
 				MedivalHussar npc_sound = view_as<MedivalHussar>(npc.index);
 				npc_sound.PlayMeleeWarCry();
 			}
 		}
 		else
 		{
-			npc.m_flArkantosBuffEffect = gameTime + 1.0; //Try again in a second.
+			npc.m_flAlaxiosBuffEffect = gameTime + 1.0; //Try again in a second.
 		}
 	}
 }
 
 
-void ArkantosSayWords()
+void AlaxiosSayWords()
 {
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: You don't know the dangers you're getting yourself into fighting me and my army at the same time!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: My army will always help me back up!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: My army will always help me back up!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Me and my army, as one, will never be defeated!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Me and my army, as one, will never be defeated!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Together for Atlantis! As one and for all!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Together for Atlantis! As one and for all!");
 		}
 	}
 }
 
-void ArkantosSayWordsAngry()
+void AlaxiosSayWordsAngry()
 {
 	RaidModeTime += 30.0;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR THE PEOPLE!!!!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR THE PEOPLE!!!!!!!!!!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR ALL THAT IS FORSAKEN!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR ALL THAT IS FORSAKEN!!!!!!!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR THE FUTURE!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR THE FUTURE!!!!!!!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: {crimson}FOR ATLANTIS!!!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR ATLANTIS!!!!!!!!!");
 		}
 	}
 }
 
 
-bool ArkantosForceTalk()
+bool AlaxiosForceTalk()
 {
 	if(i_TalkDelayCheck == 5)
 	{
@@ -1815,29 +1815,29 @@ bool ArkantosForceTalk()
 			case 0:
 			{
 				ReviveAll(true);
-				CPrintToChatAll("{lightblue}God Arkantos{default}: Since you refuse to listen, I will have to restrain you.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: Since you refuse to listen, I will have to restrain you.");
 				i_TalkDelayCheck += 1;
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: I am not your enemy and I can revive all my allies, so do not worry.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I am not your enemy and I can revive all my allies, so do not worry.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: The true enemy is the {blue}sea{default}, if we don't beat them, then were done for. They can infect any one of us.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: The true enemy is the {blue}sea{default}, if we don't beat them, then were done for. They can infect any one of us.");
 				i_TalkDelayCheck += 1;
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}God Arkantos{default}: I will hand you a bit of help as youre proven to be a strong foe.");
+				CPrintToChatAll("{lightblue}God Alaxios{default}: I will hand you a bit of help as youre proven to be a strong foe.");
 				i_TalkDelayCheck = 5;
 				for (int client = 0; client < MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 					{
-						Items_GiveNamedItem(client, "Arkantos's Godly assistance");
-						CPrintToChat(client, "{default}You feel something around you... and gained: {lightblue}''Arkantos's Godly assistance''{default}!");
+						Items_GiveNamedItem(client, "Alaxios's Godly assistance");
+						CPrintToChat(client, "{default}You feel something around you... and gained: {lightblue}''Alaxios's Godly assistance''{default}!");
 					}
 				}
 			}
@@ -1845,7 +1845,7 @@ bool ArkantosForceTalk()
 	}
 	return false;
 }
-public void Raidmode_Arkantos_Win(int entity)
+public void Raidmode_Alaxios_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
@@ -1853,19 +1853,19 @@ public void Raidmode_Arkantos_Win(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Atlantis will never fall!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Atlantis will never fall!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: I still have to take care of the {blue}deep sea{default}...");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: I still have to take care of the {blue}deep sea{default}...");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: Threaten our livelyhood and you pay!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: Threaten our livelyhood and you pay!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}God Arkantos{default}: I have to inform {blue}Sensal{default} about this.");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: I have to inform {blue}Sensal{default} about this.");
 		}
 	}
 }

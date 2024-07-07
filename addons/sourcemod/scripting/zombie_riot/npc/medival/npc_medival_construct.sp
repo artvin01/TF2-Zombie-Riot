@@ -324,10 +324,12 @@ public void MedivalConstruct_ClotThink(int iNPC)
 					{
 						damage = 2500.0;
 					}
+
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 					}
+					
 					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + RoundToCeil(damage * 0.5));
 				}
 				delete swingTrace;

@@ -64,6 +64,8 @@ enum struct Round
 	bool SpawnGrigori;
 	int GrigoriMaxSellsItems;
 	float Setup;
+	bool NoMiniboss;
+	bool NoBarney;
 	ArrayList Waves;
 	
 	char Skyname[64];
@@ -596,6 +598,8 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
 		round.Xp = kv.GetNum("xp");
 		round.Setup = kv.GetFloat("setup");
+		round.NoMiniboss = view_as<bool>(kv.GetNum("no_miniboss"));
+		round.NoBarney = view_as<bool>(kv.GetNum("no_barney"));
 
 		round.music_round_1.SetupKv("music_1", kv);
 		round.music_round_2.SetupKv("music_2", kv);
@@ -1086,7 +1090,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = playercount * 0.2;
-					MultiGlobalArkantos = multiBoss;
+					MultiGlobalAlaxios = multiBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -1292,17 +1296,19 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			if(!rogue && CurrentRound == 4)
+			panzer_chance--;
+			//always increace chance of miniboss.
+			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
 				Citizen_SpawnAtPoint("b");
 			}
-			else if(CurrentRound == 11)
+			else if(CurrentRound == 11 && !round.NoMiniboss)
 			{
 				panzer_spawn = true;
 				panzer_sound = true;
 				panzer_chance = 10;
 			}
-			else if((CurrentRound > 11 && round.Setup <= 30.0))
+			else if((CurrentRound > 11 && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
 				panzer_spawn = chance;
@@ -1313,7 +1319,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				}
 				else
 				{
-					panzer_chance--;
 					Flagellant_MiniBossChance(panzer_chance);
 				}
 			}
@@ -1501,8 +1506,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					ResetReplications();
 					cvarTimeScale.SetFloat(0.1);
 					CreateTimer(0.5, SetTimeBack);
-					
-					EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+					if(!Music_Disabled())
+						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					
 
 					if(zr_allowfreeplay.BoolValue)
@@ -1942,6 +1947,7 @@ void WaveEndLogicExtra()
 	Rapier_CashWaveEnd();
 	LeperResetUses();
 	Building_ResetRewardValuesWave();
+	FallenWarriorGetRandomSeedEachWave();
 	Zero(i_MaxArmorTableUsed);
 	for(int client; client <= MaxClients; client++)
 	{
@@ -2066,7 +2072,7 @@ void DoGlobalMultiScaling()
 
 	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
 	MultiGlobal = multi;
-	MultiGlobalArkantos = playercount * 0.2;
+	MultiGlobalAlaxios = playercount * 0.2;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2082,9 +2088,14 @@ void DoGlobalMultiScaling()
 	}
 
 	PlayerCountBuffScaling = 4.0 / playercount;
-	if(PlayerCountBuffScaling < 1.0)
+	if(PlayerCountBuffScaling < 1.2)
 	{
-		PlayerCountBuffScaling = 1.0;
+		PlayerCountBuffScaling = 1.2;
+	}
+	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
+	if(PlayerCountResBuffScaling < 0.75)
+	{
+		PlayerCountResBuffScaling = 0.75;
 	}
 }
 
@@ -2391,6 +2402,15 @@ static Action ReadyUpHack(Handle timer)
 
 	if(FindEntityByClassname(-1, "tf_gamerules") != -1 && GameRules_GetRoundState() == RoundState_BetweenRounds)
 	{
+		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
+		if(time > 0.0)
+			time -= GetGameTime();
+
+		if(time < 12.0 && time > 8.0)
+		{
+			GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 8.0);
+			return Plugin_Continue;
+		}
 		int ready, players;
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -2402,17 +2422,13 @@ static Action ReadyUpHack(Handle timer)
 			}
 		}
 		
-		float time = GameRules_GetPropFloat("m_flRestartRoundTime");
-		if(time > 0.0)
-			time -= GetGameTime();
-		
-		if(time > 10.0 || time < 0.0)
+		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
 			
 			if(ready == players)
 			{
-				set = 10.0;
+				set = 12.0;
 			}
 			else if(ready > 0)
 			{
@@ -2457,11 +2473,12 @@ void Waves_SetReadyStatus(int status)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			//if(!ReadyUpTimer)
-			//	ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+			SDKCall_ResetPlayerAndTeamReadyState();
+
+			if(!ReadyUpTimer)
+				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
 			
 		//	KillFeed_ForceClear();
-			SDKCall_ResetPlayerAndTeamReadyState();
 			/*
 			for(int client = 1; client <= MaxClients; client++)
 			{

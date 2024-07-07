@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_class_sawrunner"
+	"$basetexture" "hud/leaderboard_class_nazipanzer_icon"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

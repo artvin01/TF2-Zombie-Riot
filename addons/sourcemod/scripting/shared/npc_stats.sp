@@ -54,7 +54,7 @@ float f_AvoidObstacleNavTime[MAXENTITIES];
 float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 float b_AvoidObstacleType_Time[MAXENTITIES];
-int i_FailedTriesUnstuck[MAXENTITIES];
+int i_FailedTriesUnstuck[MAXENTITIES][2];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
@@ -402,9 +402,9 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		AddEntityToLagCompList(npc);
 
-		b_ThisWasAnNpc[npc] = true;
 		b_NpcHasDied[npc] = false;
-		i_FailedTriesUnstuck[npc] = 0;
+		i_FailedTriesUnstuck[npc][0] = 0;
+		i_FailedTriesUnstuck[npc][1] = 0;
 		flNpcCreationTime[npc] = GetGameTime();
 		DispatchSpawn(npc); //Do this at the end :)
 		Hook_DHook_UpdateTransmitState(npc);
@@ -412,6 +412,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		SDKHook(npc, SDKHook_OnTakeDamage, NPC_OnTakeDamage);
 		SDKHook(npc, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 		SetEntProp(npc, Prop_Send, "m_bGlowEnabled", false);
+		SetEntityMoveType(npc, MOVETYPE_CUSTOM);
 
 		CClotBody npcstats = view_as<CClotBody>(npc);
 
@@ -1335,17 +1336,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
-		if(f_GodArkantosBuff[this.index] > Gametime)
+		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.50;
 		}
-		/*
-		if(b_NpcResizedForCrouch[this.index])
-		{
-			speed_for_return *= 0.33333;
-		}
-		*/
-		if(f_Ruina_Speed_Buff[this.index]> Gametime)
+		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
 			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
 		}
@@ -3383,6 +3378,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
 
+		SetEntProp(pThis, Prop_Data, "m_lifeState", 2);
 		RemoveNpcThingsAgain(pThis);
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
@@ -3405,7 +3401,6 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			else
 			{
 				Npc_DoGibLogic(pThis);
-			//	#endif	
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -3718,22 +3713,10 @@ public void SetNpcToDeadViaGib(int pThis)
 #if defined ZR
 	b_thisNpcHasAnOutline[pThis] = false;
 #endif
-	
 	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
+	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
-	SDKHook(pThis, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
-	/*
-	if(PF_Exists(pThis))
-	{
-		PF_Destroy(pThis);
-	}	
-	*/
-}
-
-public Action SDKHook_Settransmit_Hide(int entity, int client)
-{
-	return Plugin_Handled;
 }
 
 public void Kill_Npc(int ref)
@@ -3910,7 +3893,7 @@ stock void WorldSpaceCenter(int entity, float vecPos[3])
 		//did you know abs origin only exists for the server? crazy right
 		
 		//This is usually the middle, so this should work out just fine!
-		
+	
 		if(b_IsGiant[entity])
 		{
 			vecPos[2] += 64.0;
@@ -4465,9 +4448,22 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_IsAProjectile[index]))
+			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
-				return false;
+				if(GetTeam(enemy) == TFTeam_Stalkers)
+				{
+					if(GetTeam(index) != TFTeam_Red)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if(index > MaxClients && !b_IsAProjectile[index])
+					{
+						return false;
+					}	
+				}
 			}
 
 #if defined RTS
@@ -4513,6 +4509,10 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		{
 #if defined ZR
 			if(RaidbossIgnoreBuildingsLogic(2))
+			{
+				return false;
+			}
+			if(BuildingIsBeingCarried(enemy))
 			{
 				return false;
 			}
@@ -5413,6 +5413,14 @@ void GiveNpcOutLineLastOrBoss(int entity, bool add)
 	{
 		return;
 	}
+	if(b_NoHealthbar[npc.index])
+	{
+		if(IsValidEntity(npc.m_iTeamGlow)) 
+		{
+			RemoveEntity(npc.m_iTeamGlow);
+		}	
+		return;	
+	}
 	//they have a custom outline.
 	//if !npc.m_bTeamGlowDefault is off, then that means that they have an outline that isnt set with this.
 	if((add && IsValidEntity(npc.m_iTeamGlow)) || !npc.m_bTeamGlowDefault)
@@ -5488,8 +5496,10 @@ public void NpcBaseThink(int iNPC)
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
+		//this is just as a temp fix, remove whenver.
+		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
 		NpcDrawWorldLogic(iNPC);
-		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
+		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.25, 0.35);
 		Npc_DebuffWorldTextUpdate(npc);
 		IsEntityInvincible_Shield(iNPC);
 #if defined RTS
@@ -5550,7 +5560,10 @@ public void NpcBaseThink(int iNPC)
 		Call_Finish();
 	}
 	//is the NPC inside an object
-	NpcStuckInSomething(npc,iNPC);
+	NpcStuckInSomething(npc, iNPC);
+
+	//is npc somehow outside any nav mesh
+	NpcStuckInSomethingOutOfBonunds(npc, iNPC);
 }
 
 public void NpcSetGravity(CClotBody npc, int iNPC)
@@ -5644,10 +5657,22 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			static float flMyPos_Bounds[3];
 			flMyPos_Bounds = flMyPos;
 			flMyPos_Bounds[2] += 1.0;
-			if(TR_PointOutsideWorld(flMyPos_Bounds) || IsBoxHazard(flMyPos_Bounds, {-20.0,-20.0,0.0}, {20.0,2.0,70.0}))
+			static float hullcheckmaxs_Player[3];
+			static float hullcheckmins_Player[3];
+			hullcheckmaxs_Player = view_as<float>( { 24.0, 24.0, 82.0 } );
+			hullcheckmins_Player = view_as<float>( { -24.0, -24.0, 0.0 } );	
+			bool OutOfBounds = false;
+			if(IsBoxHazard(flMyPos_Bounds, hullcheckmins_Player, hullcheckmaxs_Player))
+			{
+				OutOfBounds = true;
+			}
+			if(TR_PointOutsideWorld(flMyPos_Bounds))
+			{
+				OutOfBounds = true;
+			}
+			if(OutOfBounds)
 			{
 			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-				
 #if defined ZR
 				int target = 0;
 				for(int i=1; i<=MaxClients; i++)
@@ -5672,7 +5697,6 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 				}
 				else
 #endif
-				
 				{
 					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
 				}
@@ -5681,17 +5705,69 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 	}
 #endif	// Non-RTS
 }
+
+public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
+{
+	if (!b_DoNotUnStuck[iNPC])
+	{
+		if(i_FailedTriesUnstuck[iNPC][0] == 0)
+		{
+			if(f_UnstuckTimerCheck[iNPC][0] < GetGameTime())
+			{
+				f_UnstuckTimerCheck[iNPC][0] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
+				//every 3 seconds we shall do an emenergency check
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			if(!(i_FailedTriesUnstuck[iNPC][0] % 10))
+			{
+				i_FailedTriesUnstuck[iNPC][0] += 1;
+				return;
+			}
+		}
+
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		flMyPos[2] += 35.0;
+		CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
+		if(area == NULL_AREA)
+		{
+			i_FailedTriesUnstuck[iNPC][0] += 1;
+			if(i_FailedTriesUnstuck[iNPC][0] < (TickrateModifyInt * 5)) //we will wait about 5 seconds
+			{
+				return;
+			}
+			i_FailedTriesUnstuck[iNPC][0] = 0;
+			flMyPos[2] -= 35.0;
+			area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
+			if(area != NULL_AREA)
+			{
+				return;
+			}
+			UnstuckStuckNpc(npc, iNPC);
+		}
+		else
+		{
+			i_FailedTriesUnstuck[iNPC][0] = 0;
+		}
+	}
+}
 public void NpcStuckInSomething(CClotBody npc, int iNPC)
 {
-	if (/*!npc.IsOnGround() && */!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC] < GetGameTime())
+	if (!b_DoNotUnStuck[iNPC] && f_DoNotUnstuckDuration[iNPC][1] < GetGameTime())
 	{
-		if(i_FailedTriesUnstuck[iNPC] == 0)
+		if(i_FailedTriesUnstuck[iNPC][1] == 0)
 		{
 			if (npc.IsOnGround())
 			{
-				if(f_UnstuckTimerCheck[iNPC] < GetGameTime())
+				if(f_UnstuckTimerCheck[iNPC][1] < GetGameTime())
 				{
-					f_UnstuckTimerCheck[iNPC] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
+					f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5); 
 					//every 3 seconds we shall do an emenergency check
 				}
 				else
@@ -5702,14 +5778,16 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 		}
 		else
 		{
-			if(!(i_FailedTriesUnstuck[iNPC] % 10))
+			if(!(i_FailedTriesUnstuck[iNPC][1] % 10))
 			{
-				i_FailedTriesUnstuck[iNPC] += 1;
+				i_FailedTriesUnstuck[iNPC][1] += 1;
 				return;
 			}
 		}
+		static float flMyPos[3];
+		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
-		f_UnstuckTimerCheck[iNPC] = GetGameTime() + GetRandomFloat(2.8, 3.5);  //they were in the air regardless, add time.
+		f_UnstuckTimerCheck[iNPC][1] = GetGameTime() + GetRandomFloat(2.8, 3.5);  //they were in the air regardless, add time.
 		static float hullcheckmaxs[3];
 		static float hullcheckmins[3];
 		if(b_IsGiant[iNPC])
@@ -5732,12 +5810,6 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 			hullcheckmaxs = view_as<float>( { 24.0, 24.0, 82.0 } );
 			hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 		}
-		/*
-		if(b_NpcResizedForCrouch[iNPC])
-		{
-			hullcheckmaxs[2] = 41.0;
-		}
-		*/
 		hullcheckmins[2] += 17.0;
 		if (npc.IsOnGround()) //npcs can slightly clip if on ground due to giants massive height for example.
 		{
@@ -5754,79 +5826,83 @@ public void NpcStuckInSomething(CClotBody npc, int iNPC)
 			hullcheckmins[1] -= 1.0;
 			hullcheckmins[2] -= 1.0;			
 		}
-	
-		static float flMyPos[3];
-		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 
 		if(IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, iNPC))
 		{
 			if(!Npc_Teleport_Safe(npc.index, flMyPos, hullcheckmins, hullcheckmaxs))
 			{
-				i_FailedTriesUnstuck[iNPC] += 1;
-				if(i_FailedTriesUnstuck[iNPC] < 66) //we will wait about a second
+				i_FailedTriesUnstuck[iNPC][1] += 1;
+				if(i_FailedTriesUnstuck[iNPC][1] < TickrateModifyInt) //we will wait about a second
 				{
 					return;
 				}
-				i_FailedTriesUnstuck[iNPC] = 0;
+				i_FailedTriesUnstuck[iNPC][1] = 0;
 				//they are still stuck after so many tries and a second, teleport to safe location
 				//delete velocity.
-				static float vec3Origin[3];
-				npc.SetVelocity(vec3Origin);
-
-#if defined ZR
-				if(GetTeam(npc.index) != TFTeam_Red)
-				{
-					//This was an enemy.
-					int Spawner_entity = GetRandomActiveSpawner();
-					if(IsValidEntity(Spawner_entity))
-					{
-						float pos[3];
-						float ang[3];
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
-						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-						b_npcspawnprotection[iNPC] = true;
-						CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
-					}
-				}
-				else
-				{
-					//This is an ally.
-					int target = 0;
-					for(int i=1; i<=MaxClients; i++)
-					{
-						if(IsClientInGame(i))
-						{
-							if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-							{
-								target = i;
-								break;
-							}
-						}
-					}
-					
-					if(target)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-						GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-						ang[2] = 0.0;
-						TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-					}
-					else
-					{
-						RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-					}
-				}
-				//We have tried 64 differnet spots, yet they are still stuck, let them stay stuck.
-#endif	// ZR
+				UnstuckStuckNpc(npc, iNPC);
 			}
 		}
 		else
 		{
-			i_FailedTriesUnstuck[iNPC] = 0;
+			i_FailedTriesUnstuck[iNPC][1] = 0;
 		}
 	}	
+}
+void UnstuckStuckNpc(CClotBody npc, int iNPC)
+{
+	static float vec3Origin[3];
+	npc.SetVelocity(vec3Origin);
+#if defined ZR
+	if(GetTeam(npc.index) != TFTeam_Red)
+	{
+		//This was an enemy.
+		if(Rogue_Mode())
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+			return;
+		}
+		int Spawner_entity = GetRandomActiveSpawner();
+		if(IsValidEntity(Spawner_entity))
+		{
+			float pos[3];
+			float ang[3];
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
+			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
+			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+			b_npcspawnprotection[iNPC] = true;
+			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	else
+	{
+		//This is an ally.
+		int target = 0;
+		for(int i=1; i<=MaxClients; i++)
+		{
+			if(IsClientInGame(i))
+			{
+				if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+				{
+					target = i;
+					break;
+				}
+			}
+		}
+		
+		if(target)
+		{
+			float pos[3], ang[3];
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[2] = 0.0;
+			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+		}
+		else
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+		}
+	}
+#endif
 }
 float f3_KnockbackToTake[MAXENTITIES][3];
 
@@ -7697,6 +7773,9 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	f_DoNotUnstuckDuration[entity] = 0.0;
+	f_UnstuckTimerCheck[entity][0] = 0.0;
+	f_UnstuckTimerCheck[entity][1] = 0.0;
 	f_BubbleProcStatus[entity][0] = 0.0;
 	f_BubbleProcStatus[entity][1] = 0.0;
 	f_HeadshotDamageMultiNpc[entity] = 1.0;
@@ -7894,7 +7973,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_ScalesWithWaves[entity] = false;
 	f_PernellBuff[entity] = 0.0;
 	f_HussarBuff[entity] = 0.0;
-	f_GodArkantosBuff[entity] = 0.0;
+	f_GodAlaxiosBuff[entity] = 0.0;
 	f_StuckOutOfBoundsCheck[entity] = GetGameTime() + 2.0;
 	f_StunExtraGametimeDuration[entity] = 0.0;
 	f_RaidStunResistance[entity] = 0.0;
@@ -8805,7 +8884,7 @@ float NavAreaTravelDistance( const Vector &startPos, const Vector &goalPos, Cost
 #if defined ZR
 public void Npc_BossHealthBar(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index])
+	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity5))
 		{
@@ -8877,7 +8956,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 {
-	if(b_IsEntityNeverTranmitted[npc.index])
+	if(b_IsEntityNeverTranmitted[npc.index] || b_NoHealthbar[npc.index])
 	{
 		if(IsValidEntity(npc.m_iTextEntity4))
 		{
@@ -9107,7 +9186,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target)) //If one entity touches me, then i touch them
+	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target) && GetTeam(entity) != TFTeam_Stalkers) //If one entity touches me, then i touch them
 	{
 		NpcStartTouch(target, entity, true);
 	}
@@ -10070,32 +10149,6 @@ void Spawns_CheckBadClient(int client)
 				BadSpotPoints[client] = 45;
 			}
 		}
-		/*
-		else
-		{
-			int npcs;
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
-				{
-					WorldSpaceCenter(client, pos2);
-					CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-					if(startArea == NULL_AREA)
-						continue;	// NPC on a bad nav??
-
-					if(!TheNavMesh.BuildPath(startArea, area, pos1))
-					{
-						bad++;
-						BadSpotPoints[client]++;
-					}
-					
-					if(npcs++ > 4)
-						break;
-				}
-			}
-		}
-		*/
 	}
 
 	if(bad > 4)

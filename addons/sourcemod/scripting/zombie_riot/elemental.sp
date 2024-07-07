@@ -287,10 +287,14 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 		}
 	}
+	/*
+	Too strong.
+	Remove.
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.001), 10.0);
+		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.0001), 10.0, true);
 	}
+	*/
 }
 
 static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
@@ -314,7 +318,14 @@ static void SakratanGroupDebuffInternal(int victim, int attacker)
 		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 
 	b_ThisNpcIsSawrunner[attacker] = sawrunner;
-	IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+	if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
+	}
+	else
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
+	}
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
