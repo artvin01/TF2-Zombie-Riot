@@ -54,7 +54,7 @@ static int Fantasy_Blade_BEAM_BuildingHit[MAXENTITIES];
 
 #define FANTASY_BLADE_MAX_SHARDS 9.0
 #define FANTASY_BLADE_MAX_PENETRATION 15	//how many targets the blade will penetrate before killing itself
-#define FANTASY_BLADE_PENETRATION_FALLOFF 1.2	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
+#define FANTASY_BLADE_PENETRATION_FALLOFF 0.8	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
 
 #define FANTASY_BLADE_SHARDS_GAIN_PER_HIT 0.3
 
@@ -945,7 +945,7 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 			if(b_thisNpcIsARaid[victim])
 				damage_xd*= 1.25;
 				
-			SDKHooks_TakeDamage(victim, client, client, damage_xd/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, client, client, damage_xd*BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
 		}
 	}

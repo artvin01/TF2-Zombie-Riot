@@ -191,7 +191,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF)
 	{
-		Pen_FallOff = 1.45;
+		Pen_FallOff = 0.85;
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_3_TURNRATE)
 	{
