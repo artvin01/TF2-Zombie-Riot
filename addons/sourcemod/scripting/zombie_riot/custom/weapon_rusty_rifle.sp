@@ -20,7 +20,7 @@ static float BigShot_SmallRaidMult[2] = { 2.0, 2.0 };				//Amount to multiply da
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
 
-static float Rusty_RaidMult = 2.0;
+static float Rusty_RaidMult = 1.5;
 
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
@@ -60,7 +60,12 @@ static float f_NextRustyHUD[MAXPLAYERS + 1] = { 0.0, ... };
 public float Rusty_OnNPCDamaged(int victim, int attacker, float damage)
 {
 	if (b_thisNpcIsARaid[victim])
-		return damage * Rusty_RaidMult;
+	{
+		damage *= Rusty_RaidMult;
+		//Hard to hit non giant raids!
+		if(!b_IsGiant[victim])
+			damage *= 1.1;
+	}
 
 	return damage;
 }
@@ -276,7 +281,8 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	EmitSoundToAll(SND_RUSTY_BIGSHOT_2, client, _, _, _, _, 80);
 	Client_Shake(client, SHAKE_START, 30.0, 150.0, 1.25);
 	Rusty_HUD(client, weapon, true);
-	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
+	//doesnt matter which tier, same cooldown
+	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[1]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
 }
