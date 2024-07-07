@@ -174,11 +174,12 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + 0.1;
+							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							SDKHooks_TakeDamage(target, npc.index, GetClientOfUserId(npc.OwnerUserId), Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 20, 1), DMG_CLUB, -1, _, vecHit);
-						} 						
+						} 		
+						delete swingTrace;				
 					}
 				}
 			}
