@@ -622,14 +622,14 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					Enemy enemy;
 
 					enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
-					enemy.Health = 40000000;
+					enemy.Health = 2099999999;
 					enemy.Is_Boss = 2;
 					enemy.ExtraSpeed = 1.5;
 					enemy.ExtraDamage = 3.0;
 					enemy.ExtraMeleeRes = 0.5;
 					enemy.ExtraRangedRes = 0.5;
 					enemy.ExtraSize = 1.0;
-					enemy.Team = GetTeam(npc.index);
+					enemy.Team = 3;
 
 					Waves_AddNextEnemy(enemy);
 

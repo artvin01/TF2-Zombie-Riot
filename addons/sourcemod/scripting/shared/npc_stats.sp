@@ -1340,13 +1340,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
-		/*
-		if(b_NpcResizedForCrouch[this.index])
-		{
-			speed_for_return *= 0.33333;
-		}
-		*/
-		if(f_Ruina_Speed_Buff[this.index]> Gametime)
+		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
 			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
 		}
@@ -4454,9 +4448,22 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 				return false;
 			}
 			
-			if((b_ThisEntityIgnoredByOtherNpcsAggro[enemy] && index > MaxClients && !b_IsAProjectile[index]))
+			if(b_ThisEntityIgnoredByOtherNpcsAggro[enemy])
 			{
-				return false;
+				if(GetTeam(enemy) == TFTeam_Stalkers)
+				{
+					if(GetTeam(index) != TFTeam_Red)
+					{
+						return false;
+					}
+				}
+				else
+				{
+					if(index > MaxClients && !b_IsAProjectile[index])
+					{
+						return false;
+					}	
+				}
 			}
 
 #if defined RTS
@@ -5491,9 +5498,8 @@ public void NpcBaseThink(int iNPC)
 	{
 		//this is just as a temp fix, remove whenver.
 		SetEntityMoveType(iNPC, MOVETYPE_CUSTOM);
-
 		NpcDrawWorldLogic(iNPC);
-		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.5, 0.8);
+		f_TextEntityDelay[iNPC] = GetGameTime() + GetRandomFloat(0.25, 0.35);
 		Npc_DebuffWorldTextUpdate(npc);
 		IsEntityInvincible_Shield(iNPC);
 #if defined RTS
@@ -5727,6 +5733,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 
 		static float flMyPos[3];
 		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		flMyPos[2] += 35.0;
 		CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
 		if(area == NULL_AREA)
 		{
@@ -5736,6 +5743,12 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 				return;
 			}
 			i_FailedTriesUnstuck[iNPC][0] = 0;
+			flMyPos[2] -= 35.0;
+			area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
+			if(area != NULL_AREA)
+			{
+				return;
+			}
 			UnstuckStuckNpc(npc, iNPC);
 		}
 		else
@@ -9173,7 +9186,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 {
 	int entity = TouchedTarget;
 	CClotBody npc = view_as<CClotBody>(entity);
-	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target)) //If one entity touches me, then i touch them
+	if(!DoNotLoop && !b_NpcHasDied[target] && !IsEntityTowerDefense(target) && GetTeam(entity) != TFTeam_Stalkers) //If one entity touches me, then i touch them
 	{
 		NpcStartTouch(target, entity, true);
 	}
@@ -10136,32 +10149,6 @@ void Spawns_CheckBadClient(int client)
 				BadSpotPoints[client] = 45;
 			}
 		}
-		/*
-		else
-		{
-			int npcs;
-			for(int i; i < i_MaxcountNpcTotal; i++)
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
-				{
-					WorldSpaceCenter(client, pos2);
-					CNavArea startArea = TheNavMesh.GetNavArea(pos2);
-					if(startArea == NULL_AREA)
-						continue;	// NPC on a bad nav??
-
-					if(!TheNavMesh.BuildPath(startArea, area, pos1))
-					{
-						bad++;
-						BadSpotPoints[client]++;
-					}
-					
-					if(npcs++ > 4)
-						break;
-				}
-			}
-		}
-		*/
 	}
 
 	if(bad > 4)

@@ -353,6 +353,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
+
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			slot = i_OverrideWeaponSlot[weapon];
+		}
 		if(i_IsWandWeapon[weapon])
 		{
 			// Mage Weapon
@@ -1432,26 +1437,31 @@ static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Trigger");
 	tinker.Attrib[0] = 2; //Damage
 	tinker.Attrib[1] = 6; //attackspeed
+	tinker.Attrib[2] = 97; //Reload speed
 	
 	float ExtraDamage = (0.1 * (tinker.Luck[0]));
 	float attackspeedSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float reloadSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
 			tinker.Value[0] = 1.2 + ExtraDamage;
-			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.1 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.1 + reloadSpeedLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.3 + ExtraDamage;
-			tinker.Value[1] = 1.3 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.15 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.15 + reloadSpeedLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + ExtraDamage;
-			tinker.Value[1] = 1.35 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.2 + reloadSpeedLuck;
 		}
 	}
 }
@@ -1460,27 +1470,27 @@ static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "Spray and Pray");
 	tinker.Attrib[0] = 45; //BulletsPetShot
-	tinker.Attrib[2] = 106; //Accuracy
+	tinker.Attrib[1] = 2; //damage
 	
 	float BulletPetShotBonus = (0.1 * (tinker.Luck[0]));
-	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[1]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
 			tinker.Value[0] = 1.25 + BulletPetShotBonus;
-			tinker.Value[1] = 1.35 + AccuracySuffering;
+			tinker.Value[1] = 0.85 + AccuracySuffering;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.3 + BulletPetShotBonus;
-			tinker.Value[1] = 1.40 + AccuracySuffering;
+			tinker.Value[1] = 0.85 + AccuracySuffering;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + BulletPetShotBonus;
-			tinker.Value[1] = 1.45 + AccuracySuffering;
+			tinker.Value[1] = 0.85 + AccuracySuffering;
 		}
 	}
 }

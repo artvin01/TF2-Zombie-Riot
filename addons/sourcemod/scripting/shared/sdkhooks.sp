@@ -395,8 +395,10 @@ public void OnPostThink(int client)
 	}
 	if(b_DisplayDamageHud[client])
 	{
-		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
+		if(Calculate_And_Display_HP_Hud(client))
+		{
+			b_DisplayDamageHud[client] = false;
+		}
 	}
 	if(b_AntiSlopeCamp[client])
 	{	
@@ -883,18 +885,6 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= 0.65;
 			}
-			if(f_MultiDamageTaken[client] != 1.0)
-			{
-				percentage_Global *= f_MultiDamageTaken[client];
-			}
-			if(f_MultiDamageTaken_Flat[client] != 1.0)
-			{
-				percentage_Global *= f_MultiDamageTaken_Flat[client];
-			}
-			if(f_BattilonsNpcBuff[client] > GameTime)
-			{
-				percentage_Global *= RES_BATTILONS;
-			}	
 #if defined RPG
 			switch(BubbleProcStatusLogicCheck(client))
 			{
@@ -921,26 +911,6 @@ public void OnPostThink(int client)
 			}
 			RPG_BobsPureRage(client, -1, percentage_Global);
 #endif
-			if(f_HussarBuff[client] > GameTime)
-			{
-				percentage_Global *= 0.90;
-			}	
-			if(f_EmpowerStateOther[client] > GameTime) //Allow stacking.
-			{
-				percentage_Global *= 0.93;
-			}
-			if(f_EmpowerStateSelf[client] > GameTime) //Allow stacking.
-			{
-				percentage_Global *= 0.9;
-			}
-			if(i_CurrentEquippedPerk[client] == 2)
-			{
-				percentage_Global *= 0.85;
-			}
-			if(Resistance_Overall_Low[client] > GameTime)
-			{
-				percentage_Global *= RES_MEDIGUN_LOW;
-			}
 			percentage_Global *= Attributes_Get(weapon, 4009, 1.0);
 			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
@@ -952,6 +922,10 @@ public void OnPostThink(int client)
 			//melee res
 			percentage *= percentage_Global;
 			had_An_ability = false;
+			
+			int testvalue = 1;
+			int DmgType = DMG_CLUB;
+			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
 			{
 				if(percentage < 10.0)
@@ -983,6 +957,8 @@ public void OnPostThink(int client)
 			So tis easier to read.
 
 			*/
+			DmgType = DMG_BULLET;
+			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
 			{
 				if(had_An_ability)
@@ -1212,152 +1188,31 @@ public void OnPostThink(int client)
 #endif
 		}
 
-		had_An_ability = false;
-		char bufferbuffs[64];
 		//BUFFS!
+		char Debuff_Adder_left[64];
+		char Debuff_Adder_right[64];
+		char Debuff_Adder[64];
 
-#if defined ZR
-		if(Wands_Potions_HasBuff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌂%s", bufferbuffs);
-		}
-		if(Wands_Potions_HasTonicBuff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
-		}
+		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right);
 
-		static int VillageBuffs;
-		VillageBuffs = Building_GetClientVillageFlags(client);
+		if(Debuff_Adder_left[0])
+		{
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder_left, Debuff_Adder);
 
-		if(VillageBuffs & VILLAGE_000)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌒%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_200)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌭%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_030)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌬%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_050) //This has priority.
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍣%s", bufferbuffs);
-		}
-		else if(VillageBuffs & VILLAGE_040)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_005) //This has priority.
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
-		}
-
-#endif
-
-		if(Increaced_Overall_damage_Low[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
-		}
-		if(Resistance_Overall_Low[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
-		}
-		if(f_EmpowerStateSelf[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
-		}
-		if(f_EmpowerStateOther[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
-		}
-		if(f_HussarBuff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
-		}
-		if(f_Ocean_Buff_Stronk_Buff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍟%s", bufferbuffs);
-		}
-		else if(f_Ocean_Buff_Weak_Buff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌾%s", bufferbuffs);
-		}
-		if(f_BuffBannerNpcBuff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "↖%s", bufferbuffs);
-		}
-		if(f_BattilonsNpcBuff[client] > GameTime) 
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⛨%s", bufferbuffs);
-		}
-		if(f_AncientBannerNpcBuff[client] > GameTime) 
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
-		}
-		if(f_FallenWarriorDebuff[client] > GameTime) 
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⋡%s", bufferbuffs);
-		}
-#if defined RPG
-		switch(BubbleProcStatusLogicCheck(client))
-		{
-			case -1:
+			if(Debuff_Adder_right[0])
 			{
-				had_An_ability = true;
-				Format(bufferbuffs, sizeof(bufferbuffs), "B!%s", bufferbuffs);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 			}
-			case 1:
-			{
-				had_An_ability = true;
-				Format(bufferbuffs, sizeof(bufferbuffs), "b!%s", bufferbuffs);
-			}
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
 		}
-		if(TrueStength_ClientBuff(client))
+		else
 		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "T%s", bufferbuffs);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
 		}
-		float dummyNumber;
-		if(RPG_BobsPureRage(client, -1, dummyNumber))
+
+		if(Debuff_Adder[0])
 		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "RA%s", bufferbuffs);
-		}
-		if(WarCry_Enabled(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "w%s", bufferbuffs);
-		}
-		if(WarCry_Enabled_Buff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "W%s", bufferbuffs);
-		}
-#endif
-		if(had_An_ability)
-		{
-			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
+			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
 			HudY += -0.0345; //correct offset
 		}
 		if(buffer[0])

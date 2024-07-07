@@ -34,7 +34,7 @@ void ThePurge_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);

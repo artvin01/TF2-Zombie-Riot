@@ -216,7 +216,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 				{
 					float damageDealt = 400.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 100.0;
+						damageDealt *= 25.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
@@ -233,7 +233,6 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 						UTIL_ScreenFade(target, 66, 1, FFADE_OUT, 0, 0, 0, 255);
 						npc.m_iState -= 1;
 						maxhealth /= 6;
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 						if(npc.m_iState <= 0)
 						{
 							npc.m_iState = 0;

@@ -3032,7 +3032,7 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
@@ -3060,12 +3060,14 @@ int inflictor = 0)
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
 				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+
+				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
 				//dont do damage ticks if its actually 0 dmg.
 				if(damage_1 != 0.0)
-					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
+					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3073,10 +3075,8 @@ int inflictor = 0)
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
-				if(damage_1 == 0.0)
-					Call_PushFloat(damage_1);
-				else
-					Call_PushFloat(damage_1 / damage_reduction);
+				damage_1 *= damage_reduction;
+				Call_PushFloat(damage_1);
 					
 				Call_PushCell(weapon);
 				Call_Finish();
