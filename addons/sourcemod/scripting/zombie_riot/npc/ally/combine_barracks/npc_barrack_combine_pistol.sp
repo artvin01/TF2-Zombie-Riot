@@ -162,7 +162,6 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.PlayRangedSound();
 						float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 						npc.FaceTowards(vecTarget, 300000.0);
-						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
