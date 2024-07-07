@@ -7,10 +7,10 @@
 static int BigShot_MaxTargets[2] = { 4, 7 };						//The maximum number of zombies penetrated by the big shot.
 static int BigShot_BrainBlastMaxTargets[2] = { 0, 15 };				//The maximum number of zombies hit by Brain Blast explosions (Brain Blast: if the M2 headshots at least one zombie, trigger an explosion on the last zombie in the penetration chain, which gets stronger for every headshot in the chain.).
 
-static float BigShot_BaseDMG[2] = { 10.0,  12.5 };					//Base Big Shot damage. Note that this gets multiplied by the weapon's damage attribute. The Rusty Rifle's M1 base damage before attributes is 6.0, so this should be set relative to that.
-static float BigShot_PerHeadshotMult[2] = { 1.125, 1.125 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was headshot.
+static float BigShot_BaseDMG[2] = { 12.0,  15.0 };					//Base Big Shot damage. Note that this gets multiplied by the weapon's damage attribute. The Rusty Rifle's M1 base damage before attributes is 6.0, so this should be set relative to that.
+static float BigShot_PerHeadshotMult[2] = { 1.25, 1.25 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was headshot.
 static float BigShot_PerBodyshotMult[2] = { 0.66, 0.8 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was bodyshot. This is ignored for zombies which are headshot.
-static float BigShot_BrainBlastDMG[2] = { 0.0, 750.0 };				//The base damage of Brain Blast.
+static float BigShot_BrainBlastDMG[2] = { 0.0, 750.0 };			//The base damage of Brain Blast.
 static float BigShot_BrainBlastBonus[2] = { 0.0, 250.0 };			//Amount to increase Brain Blast explosion damage for every zombie in the chain past 1.
 static float BigShot_BrainBlastRadius[2] = { 0.0, 400.0 };			//The blast radius of blain blast.
 static float BigShot_BrainBlastFalloff_Radius[2] = { 0.0, 0.5 };	//Maximum damage faloff of Brain Blast, based on radius.
@@ -276,7 +276,6 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	EmitSoundToAll(SND_RUSTY_BIGSHOT_2, client, _, _, _, _, 80);
 	Client_Shake(client, SHAKE_START, 30.0, 150.0, 1.25);
 	Rusty_HUD(client, weapon, true);
-	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
 }
@@ -369,6 +368,8 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 		{
 			Attributes_Set(weapon, 305, 1.0);
 			Attributes_Set(weapon, 45, 0.0);
+
+			Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
 
 			SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
 			SetForceButtonState(client, true, IN_RELOAD);
