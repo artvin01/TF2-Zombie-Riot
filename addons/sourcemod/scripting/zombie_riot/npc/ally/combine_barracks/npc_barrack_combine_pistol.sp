@@ -151,7 +151,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.m_flSpeed = 0.0;
 						
 						npc.AddGesture("ACT_RELOAD_PISTOL");
-						npc.m_flNextRangedAttack = gameTime + 1.35;
+						npc.m_flNextRangedAttack = GameTime + 1.35;
 						npc.m_iAttacksTillReload = 18;
 						npc.PlayPistolReload();
 					}
@@ -160,11 +160,11 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+						float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 						npc.FaceTowards(vecTarget, 300000.0);
 						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
 							target = TR_GetEntityIndex(swingTrace);	
 								
@@ -174,7 +174,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = gameTime + 0.2;
+							npc.m_flNextRangedAttack = GameTime + 0.2;
 							npc.m_iAttacksTillReload--;
 							
 							if(target > 0) 
