@@ -8,7 +8,7 @@ static int BigShot_MaxTargets[2] = { 4, 7 };						//The maximum number of zombie
 static int BigShot_BrainBlastMaxTargets[2] = { 0, 15 };				//The maximum number of zombies hit by Brain Blast explosions (Brain Blast: if the M2 headshots at least one zombie, trigger an explosion on the last zombie in the penetration chain, which gets stronger for every headshot in the chain.).
 
 static float BigShot_BaseDMG[2] = { 12.0,  15.0 };					//Base Big Shot damage. Note that this gets multiplied by the weapon's damage attribute. The Rusty Rifle's M1 base damage before attributes is 6.0, so this should be set relative to that.
-static float BigShot_PerHeadshotMult[2] = { 1.25, 1.25 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was headshot.
+static float BigShot_PerHeadshotMult[2] = { 1.1, 1.12 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was headshot.
 static float BigShot_PerBodyshotMult[2] = { 0.66, 0.8 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was bodyshot. This is ignored for zombies which are headshot.
 static float BigShot_BrainBlastDMG[2] = { 0.0, 1000.0 };			//The base damage of Brain Blast.
 static float BigShot_BrainBlastBonus[2] = { 0.0, 500.0 };			//Amount to increase Brain Blast explosion damage for every zombie in the chain past 1.
@@ -386,6 +386,7 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 			SetForceButtonState(client, true, IN_RELOAD);
 			RequestFrame(BigShot_RemoveForcedReload, GetClientUserId(client));
 			EmitSoundToAll(SND_RUSTY_BIGSHOT_PREPARE, client);
+			Rogue_OnAbilityUse(weapon);
 			BigShot_Active[client] = true;
 			BigShot_Tier[client] = tier;
 			Rusty_HUD(client, weapon, true);
