@@ -276,6 +276,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	EmitSoundToAll(SND_RUSTY_BIGSHOT_2, client, _, _, _, _, 80);
 	Client_Shake(client, SHAKE_START, 30.0, 150.0, 1.25);
 	Rusty_HUD(client, weapon, true);
+	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
 }
@@ -368,8 +369,6 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 		{
 			Attributes_Set(weapon, 305, 1.0);
 			Attributes_Set(weapon, 45, 0.0);
-
-			Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
 
 			SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
 			SetForceButtonState(client, true, IN_RELOAD);
