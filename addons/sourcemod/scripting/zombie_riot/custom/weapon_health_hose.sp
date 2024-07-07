@@ -464,7 +464,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
 			{
-				HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+				HealAmmount *= 0.25; //make sure they dont get the full benifit if hurt recently.
 			}
 			
 			if(ammo_amount_left > RoundToCeil(HealAmmount))
