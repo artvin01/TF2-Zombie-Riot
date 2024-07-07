@@ -524,15 +524,15 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 	if(f_PotionShrinkEffect[attacker] > GameTime)
 	{
-		damage *= 0.5; //half the damage when small.
+		damage *= 0.75;
 	}
 
 	if(f_EnfeebleEffect[attacker] > GameTime)
 	{
 		// Enfeeble fades out with time
 		float resist = (f_EnfeebleEffect[attacker] - GameTime) / 15.0;
-		if(resist < 0.5)
-			resist = 0.5;
+		if(resist < 0.9)
+			resist = 0.9;
 		
 		damage *= resist;
 	}
@@ -755,9 +755,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		static int DummyAmmotype = 0; //useless but needed
 		NPC_TraceAttack(victim, attacker, inflictor, damage, damagetype, DummyAmmotype, 0, i_MeleeHitboxHit[attacker]);
 	}
-				
-		
-			
+	
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		case WEAPON_BOUNCING:
@@ -910,6 +908,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_MERCHANTGUN:
 		{
 			Merchant_GunTakeDamage(victim, attacker, damage);
+		}
+		case WEAPON_RUSTY_RIFLE:
+		{
+			return Rusty_OnNPCDamaged(victim, attacker, damage);
 		}
 	}
 #endif

@@ -7,7 +7,7 @@
 static int BigShot_MaxTargets[2] = { 4, 7 };						//The maximum number of zombies penetrated by the big shot.
 static int BigShot_BrainBlastMaxTargets[2] = { 0, 15 };				//The maximum number of zombies hit by Brain Blast explosions (Brain Blast: if the M2 headshots at least one zombie, trigger an explosion on the last zombie in the penetration chain, which gets stronger for every headshot in the chain.).
 
-static float BigShot_BaseDMG[2] = { 9.0,  12.0 };					//Base Big Shot damage. Note that this gets multiplied by the weapon's damage attribute. The Rusty Rifle's M1 base damage before attributes is 6.0, so this should be set relative to that.
+static float BigShot_BaseDMG[2] = { 12.0,  15.0 };					//Base Big Shot damage. Note that this gets multiplied by the weapon's damage attribute. The Rusty Rifle's M1 base damage before attributes is 6.0, so this should be set relative to that.
 static float BigShot_PerHeadshotMult[2] = { 1.25, 1.25 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was headshot.
 static float BigShot_PerBodyshotMult[2] = { 0.66, 0.8 };			//Amount to multiply the damage dealt to zombies in the penetration chain for each zombie before them in the chain which was bodyshot. This is ignored for zombies which are headshot.
 static float BigShot_BrainBlastDMG[2] = { 0.0, 1000.0 };			//The base damage of Brain Blast.
@@ -16,8 +16,11 @@ static float BigShot_BrainBlastRadius[2] = { 0.0, 400.0 };			//The blast radius 
 static float BigShot_BrainBlastFalloff_Radius[2] = { 0.0, 0.5 };	//Maximum damage faloff of Brain Blast, based on radius.
 static float BigShot_BrainBlastFalloff_MultiHit[2] = { 0.0, 0.8 };	//Amount to multiply damage dealt by Brain Blast for each zombie it hits.
 static float BigShot_Cooldown[2] = { 15.0, 15.0 };					//Big Shot's cooldown.
+static float BigShot_SmallRaidMult[2] = { 2.0, 2.0 };				//Amount to multiply damage dealt by Big Shot to raids that are not giant.
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
+
+static float Rusty_RaidMult = 1.4;
 
 //Client/entity-specific global variables below, don't touch these:
 static bool BigShot_Active[MAXPLAYERS + 1] = { false, ... };
@@ -53,6 +56,19 @@ void Rusty_Rifle_Precache()
 
 Handle Timer_Rusty[MAXPLAYERS + 1] = { INVALID_HANDLE, ... };
 static float f_NextRustyHUD[MAXPLAYERS + 1] = { 0.0, ... };
+
+public float Rusty_OnNPCDamaged(int victim, int attacker, float damage)
+{
+	if (b_thisNpcIsARaid[victim])
+	{
+		damage *= Rusty_RaidMult;
+		//Hard to hit non giant raids!
+		if(!b_IsGiant[victim])
+			damage *= 1.1;
+	}
+
+	return damage;
+}
 
 public void Enable_Rusty_Rifle(int client, int weapon)
 {
@@ -208,6 +224,8 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 1.25;
 					}
+					if (b_thisNpcIsARaid[victim])
+						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
 
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 					baseDMG *= BigShot_PerHeadshotMult[BigShot_Tier[client]];
@@ -221,7 +239,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 0.75;
 					}
-
+            
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 				}
 
@@ -263,6 +281,8 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	EmitSoundToAll(SND_RUSTY_BIGSHOT_2, client, _, _, _, _, 80);
 	Client_Shake(client, SHAKE_START, 30.0, 150.0, 1.25);
 	Rusty_HUD(client, weapon, true);
+	//doesnt matter which tier, same cooldown
+	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[1]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
 }
@@ -355,8 +375,6 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 		{
 			Attributes_Set(weapon, 305, 1.0);
 			Attributes_Set(weapon, 45, 0.0);
-
-			Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[tier]);
 
 			SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
 			SetForceButtonState(client, true, IN_RELOAD);

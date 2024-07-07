@@ -231,6 +231,12 @@ methodmap MedivalVillager < CClotBody
 				if(RandomArea == NULL_AREA) 
 					break; //No nav?
 
+				int NavAttribs = RandomArea.GetAttributes();
+				if(NavAttribs & NAV_MESH_AVOID)
+				{
+					continue;
+				}
+
 				float vecGoal[3]; RandomArea.GetCenter(vecGoal);
 
 				vecGoal[2] += 20.0;
@@ -509,8 +515,6 @@ public void MedivalVillager_ClotThink(int iNPC)
 			}
 			else
 			{
-
-				
 				npc.m_bisWalking = true;
 
 				VillagerSelfDefense(npc,GetGameTime(npc.index)); //This is for self defense, incase an enemy is too close. This isnt the villagers main thing.

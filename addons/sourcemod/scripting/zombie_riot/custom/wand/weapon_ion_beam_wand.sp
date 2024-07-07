@@ -185,7 +185,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_3_PENETRATION_FALLOFF)
 	{
-		Pen_FallOff = 1.45;
+		Pen_FallOff = 0.85;
 	}
 	if(flags & FLAG_NEUVELLETE_PAP_3_TURNRATE)
 	{
@@ -1364,7 +1364,7 @@ static void Prismatic_Damage_Trace(int client, float playerPos[3], float endVec_
 					WorldSpaceCenter(Victim, trg_loc);
 					
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
-					SDKHooks_TakeDamage(Victim, client, client, damage/BEAM_Targets_Hit, DMG_PLASMA, weapon_active, damage_force);
+					SDKHooks_TakeDamage(Victim, client, client, damage*BEAM_Targets_Hit, DMG_PLASMA, weapon_active, damage_force);
 					
 					BEAM_Targets_Hit *= fl_penetration_falloff[client];
 				}

@@ -294,7 +294,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 	static float LastKnownPos[3];
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
+		npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? 750.0 : 200.0);
 		npc.m_flGetClosestTargetTime = gameTime + GetRandomFloat(1.0, 2.0);
 	}
 
@@ -467,7 +467,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			case 0:
 			{
 				npc.m_bisWalking = true;
-				npc.m_flSpeed = npc.m_bChaseAnger ? 300.0 : 100.0;
+				npc.m_flSpeed = npc.m_bChaseAnger ? 320.0 : 280.0;
 
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
@@ -673,12 +673,12 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 		{
 			if(!Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 			{
-				npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
+				npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? 750.0 : 200.0);
 			}
 		}
 		else
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? FAR_FUTURE : 200.0);
+			npc.m_iTarget = GetClosestTarget(npc.index, _, sniper ? FAR_FUTURE : 500.0, true, _, _, _, true, sniper ? 750.0 : 200.0);
 			if(!IsValidEnemy(npc.index,npc.m_iTarget))
 			{
 				return 0;
