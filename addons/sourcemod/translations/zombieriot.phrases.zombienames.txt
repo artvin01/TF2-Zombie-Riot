@@ -1281,11 +1281,9 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Spawned Blue Goggles"
+	"Machina Waldch"
 	{
-		"en"		"Spawned Blue Goggles"
-		"pt"		"Blue Goggles Gerado"
-		"ru"		"Созданный Блу Гогглз"
+		"en"		"Machina Waldch"
 	}
 	"Silvester"
 	{
@@ -1293,11 +1291,10 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Blue Goggles"
+	"Waldch"
 	{
-		"en"		"Blue Goggles"
-		"pt"		"Blue Goggles"
-		"ru"		"Блу Гогглз"
+		"en"		"Waldch"
+		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
@@ -1578,9 +1575,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Arkantos"
+	"God Alaxios"
 	{
-		"en"		"God Arkantos"
+		"en"		"God Alaxios"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -2248,5 +2245,17 @@
 	"Ouroboros Ekas"
 	{
 		"en"	"Ouroboros Ekas"
+	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
+	}
+	"Fallen Warrior"
+	{
+		"en"	"Guln the Fallen One"
 	}
 }

@@ -16,11 +16,13 @@ static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
 static ArrayList NPCList;
 
+/*
 int SaveCurrentHpAt = -1;
 int SaveCurrentHpAtFirst = -1;
 int SaveCurrentHurtAt = -1;
 int HurtIttirationAt = 0;
 float AntiChatSpamDebug;
+*/
 enum struct NPCData
 {
 	char Plugin[64];
@@ -39,7 +41,7 @@ enum struct NPCData
 // FileNetwork_ConfigSetup needs to be ran first
 void NPC_ConfigSetup()
 {
-	AntiChatSpamDebug = 0.0;
+//	AntiChatSpamDebug = 0.0;
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
@@ -171,10 +173,13 @@ void NPC_ConfigSetup()
 	XenoOuroborosEkas_OnMapStart_NPC();
 	
 	NaziPanzer_OnMapStart_NPC();
+	WanderingSpirit_OnMapStart_NPC();
+	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
 	NecroCombine_OnMapStart_NPC();
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
+	FallenWarrior_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -464,7 +469,7 @@ void NPC_ConfigSetup()
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
 	RaidbossMrX_OnMapStart();
-	GodArkantos_OnMapStart();
+	GodAlaxios_OnMapStart();
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
@@ -876,6 +881,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
 #include "zombie_riot/npc/special/npc_doctor.sp"
+#include "zombie_riot/npc/special/npc_wandering_spirit.sp"
+#include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
+#include "zombie_riot/npc/special/npc_fallen_warrior.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -896,7 +904,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
-#include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_god_alaxios.sp"
 
 
 //Ruina

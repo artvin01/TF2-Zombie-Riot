@@ -385,17 +385,17 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 						case 0:
 						{
 							f_LeeMinorEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.035;
+							reduce = 0.035;
 						}
 						case 1:
 						{
 							f_LeeMajorEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.07;
+							reduce = 0.07;
 						}
 						case 2:
 						{
 							f_LeeSuperEffect[victim] = GetGameTime() + 0.75;
-							reduce -= 0.14;
+							reduce = 0.14;
 						}
 					}
 
@@ -519,19 +519,28 @@ void Merchant_SelfTakeDamage(int victim, int attacker, float &damage)
 	}
 }
 
-bool Merchant_OnLethalDamage(int client)
+bool Merchant_OnLethalDamage(int attacker, int client)
 {
 	if(MerchantWeaponRef[client] != -1 && MerchantStyle[client] == Merchant_Swire)
 	{
 		int ammo = GetAmmo(client, Ammo_Metal);
-		int cost = MERCHANT_METAL_DRAIN * 10 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		int cost = MERCHANT_METAL_DRAIN * 13 * RoundFloat(Pow(2.0, float(MerchantEffect[client])));
+		if(attacker > 0 && b_thisNpcIsARaid[attacker])
+		{
+			cost *= 2;
+		}
 		if(ammo >= cost)
 		{
 			SetAmmo(client, Ammo_Metal, ammo - cost);
 			CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 			MerchantEffect[client]++;
-
-			SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 7 / 10);
+			int HealAmount = SDKCall_GetMaxHealth(client) / 2;
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				HealAmount = (HealAmount * 3) / 4;
+			}
+			//during raids, heal half as much.
+			SetEntityHealth(client, HealAmount);
 			return true;
 		}
 	}
@@ -800,15 +809,15 @@ static void MerchantStart(int client, int slot)
 					ClientCommand(client, "playgamesound mvm/mvm_tank_horn.wav");
 
 					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
-					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.3 : 0.4);
-					MerchantAddAttrib(client, 206, 0.75);
+					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.7 : 0.75);
+					MerchantAddAttrib(client, 206, 0.85);
 				}
 				else
 				{
 					ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
 					
 					damage *= 1.4;
-					MerchantAddAttrib(client, 205, 0.75);
+					MerchantAddAttrib(client, 205, 0.85);
 				}
 			}
 			case Merchant_Swire:

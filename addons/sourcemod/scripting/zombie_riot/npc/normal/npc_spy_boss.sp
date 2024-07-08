@@ -348,7 +348,6 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
 	{
-		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		npc.m_flDead_Ringer_Invis_bool = false;
 			
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
@@ -633,8 +632,6 @@ public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor
 	
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index))
 	{
-		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
-		SDKHook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		

@@ -269,7 +269,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
 					pack.WriteCell(DMG_CLUB);	//dmg is club so it works with barbarains
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

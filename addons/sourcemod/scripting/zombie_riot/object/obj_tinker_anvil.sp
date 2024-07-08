@@ -60,6 +60,8 @@ static void ClotThink(ObjectTinkerAnvil npc)
 		repair += maxrepair / 1000;
 		if(repair > maxrepair)
 			repair = maxrepair;
+
+		SetEntProp(npc.index, Prop_Data, "m_iRepair", repair);
 	}
 }
 

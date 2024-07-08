@@ -151,8 +151,10 @@ stock void SDKHook_HookClient(int client)
 #if defined ZR
 	SDKUnhook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
 	SDKHook(client, SDKHook_WeaponCanSwitchTo, WeaponSwtichToWarning);
+/*
 	SDKUnhook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
 	SDKHook(client, SDKHook_WeaponCanSwitchToPost, WeaponSwtichToWarningPost);
+*/
 #endif
 #endif
 
@@ -179,29 +181,48 @@ void WeaponWeaponAdditionOnRemoved(int entity)
 
 public Action WeaponSwtichToWarning(int client, int weapon)
 {
-	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
-		return Plugin_Continue;
+	int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+	if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
+	{
+		if(GetAmmo(client, Ammo_type) <= 0)
+		{
+			SetGlobalTransTarget(client);
+			PrintToChat(client, "%t", "Warn Client Ammo None");
+		}
+	}
 
+	/*
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		if(IsValidEntity(weapon1))
 		{
+			if(weapon == 0)
+			{
+				int weapon2 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon2 == weapon1)
+					continue;
+			}
+			
+			if(f_TimeSinceLastGiveWeapon[weapon1] > GetGameTime())
+				return Plugin_Continue;
+
 			if(b_WeaponHasNoClip[weapon1] && !WeaponWasGivenAmmo[weapon1])
 			{
 				WeaponWasGivenAmmo[weapon1] = false;
 			}
+			
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
 			if(Ammo_type > 0 && Ammo_type < Ammo_MAX)
 			{
 				//found a weapon that has ammo.
-				if(GetAmmo(client, Ammo_type) <= 0)
+				if(CurrentAmmo[client][Ammo_type] <= 0)
 				{
 					if(b_WeaponHasNoClip[weapon1])
 					{
 						WeaponWasGivenAmmo[weapon1] = true;
-						SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + 1);
-						CurrentAmmo[client][Ammo_type] = 0;
+						SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] + 1);
+						CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
 					}
 					else
 					{			
@@ -220,9 +241,10 @@ public Action WeaponSwtichToWarning(int client, int weapon)
 			}
 		}
 	}
+	*/
 	return Plugin_Continue;
 }
-
+/*
 public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 {
 	int entity = EntRefToEntIndex(ref);
@@ -232,32 +254,71 @@ public Action ResetWeaponAmmoStatus(Handle cut_timer, int ref)
 	}
 	return Plugin_Handled;
 }
-public Action WeaponSwtichToWarningPost(int client, int weapon)
+void WeaponSwtichToWarningPostDestroyed(int weapon)
 {
-	if(f_TimeSinceLastGiveWeapon[client] > GetGameTime())
-		return Plugin_Continue;
-
 	if(WeaponWasGivenAmmo[weapon])
 	{
-		if(b_WeaponHasNoClip[weapon])
-		{
-			int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
-			if(GetAmmo(client, Ammo_type) <= 1)
-			{
-				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) -1);
-			}
-		}
-		else
-		{
-			int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
-			SetEntData(weapon, iAmmoTable, 0);
-			SetEntProp(weapon, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
-		}
-		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+		WeaponSwtichToWarningPost(client, weapon);
 	}
-	WeaponWasGivenAmmo[weapon] = false;
+}
+
+public Action WeaponSwtichToWarningPost(int client, int weapon)
+{
+	RequestFrame(WeaponSwtichToWarningPostFrame, EntIndexToEntRef(weapon));
 	return Plugin_Continue;
 }
+
+void WeaponSwtichToWarningPostFrame(int ref)
+{
+	int weapon = EntRefToEntIndex(ref);
+	if(weapon == -1)
+		return;
+
+	int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
+	if(client == -1)
+		return;
+
+	int ie, weapon1;
+	while(TF2_GetItem(client, weapon1, ie))
+	{
+		if(WeaponWasGivenAmmo[weapon1])
+		{
+			f_TimeSinceLastGiveWeapon[weapon1] = GetGameTime() + 0.05;
+			if(b_WeaponHasNoClip[weapon1])
+			{
+				int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
+
+				if(CurrentAmmo[client][Ammo_type] >= 1)
+				{
+					SetAmmo(client, Ammo_type, CurrentAmmo[client][Ammo_type] -1);
+					CurrentAmmo[client][Ammo_type] = GetAmmo(client, Ammo_type);
+				}
+			}
+			else
+			{
+				static int iAmmoTable;
+				if(!iAmmoTable)
+					iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+				
+				SetEntData(weapon1, iAmmoTable, 0);
+				SetEntProp(weapon1, Prop_Send, "m_iClip1", 0); // weapon clip amount bullets
+			}
+			SetEntPropFloat(weapon1, Prop_Send, "m_flNextSecondaryAttack", FAR_FUTURE);
+		}
+		WeaponWasGivenAmmo[weapon1] = false;
+	}
+	RequestFrames(WeaponSwtichToWarningPostFrameRegive, 1, EntIndexToEntRef(client));
+}
+void WeaponSwtichToWarningPostFrameRegive(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(client == -1)
+		return;
+
+	WeaponSwtichToWarning(client, 0);
+}
+*/
 #endif
 #if defined ZR || defined RPG
 public void OnPreThinkPost(int client)
@@ -266,41 +327,6 @@ public void OnPreThinkPost(int client)
 	{
 		SetEntProp(client, Prop_Send, "m_bAllowAutoMovement", 1);
 	}
-/*
-#if defined ZR
-	if(CvarMpSolidObjects)
-	{
-		if(RaidbossIgnoreBuildingsLogic(1))
-		{
-			if(i_PreviousBuildingCollision[client] == -1)
-			{
-				i_PreviousBuildingCollision[client] = b_PhaseThroughBuildingsPerma[client];
-			}
-			b_PhaseThroughBuildingsPerma[client] = 2;
-		}
-		else
-		{
-			if(i_PreviousBuildingCollision[client] != -1)
-			{
-				if(i_PreviousBuildingCollision[client] != 2)
-				{
-				}
-				b_PhaseThroughBuildingsPerma[client] = i_PreviousBuildingCollision[client];
-			}
-			i_PreviousBuildingCollision[client] = -1;
-		}
-		
-		if(b_PhaseThroughBuildingsPerma[client] == 0)
-		{
-			CvarMpSolidObjects.IntValue	= b_PhasesThroughBuildingsCurrently[client] ? 0 : 1;
-		}
-		else
-		{
-			CvarMpSolidObjects.IntValue = 0;
-		}
-	}
-#endif	// ZR
-*/
 	CvarAirAcclerate.FloatValue = b_AntiSlopeCamp[client] ? 2.0 : 10.0;
 }
 #endif	// ZR & RPG
@@ -369,33 +395,11 @@ public void OnPostThink(int client)
 	}
 	if(b_DisplayDamageHud[client])
 	{
-		b_DisplayDamageHud[client] = false;
-		Calculate_And_Display_HP_Hud(client);
-	}
-/*
-#if defined ZR
-	if(b_PhaseThroughBuildingsPerma[client] == 2)
-	{
-		if(ReplicateClient_Tfsolidobjects[client] != 0)
+		if(Calculate_And_Display_HP_Hud(client))
 		{
-			ReplicateClient_Tfsolidobjects[client] = 0;
-			CvarMpSolidObjects.ReplicateToClient(client, "0");
+			b_DisplayDamageHud[client] = false;
 		}
 	}
-	else
-	{
-		if(b_PhaseThroughBuildingsPerma[client] == 1)
-		{
-			b_PhaseThroughBuildingsPerma[client] = 0;
-			if(ReplicateClient_Tfsolidobjects[client] != 1)
-			{
-				ReplicateClient_Tfsolidobjects[client] = 1;
-				CvarMpSolidObjects.ReplicateToClient(client, "1"); //set replicate back to normal.
-			}
-		}
-	}
-#endif
-*/
 	if(b_AntiSlopeCamp[client])
 	{	
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
@@ -656,7 +660,7 @@ public void OnPostThink(int client)
 			{
 				float HealRate = 1.0;
 				if(b_XenoVial[client])
-					HealRate = 1.5;
+					HealRate = 1.15;
 
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
 			}
@@ -881,18 +885,6 @@ public void OnPostThink(int client)
 			{
 				percentage_Global *= 0.65;
 			}
-			if(f_MultiDamageTaken[client] != 1.0)
-			{
-				percentage_Global *= f_MultiDamageTaken[client];
-			}
-			if(f_MultiDamageTaken_Flat[client] != 1.0)
-			{
-				percentage_Global *= f_MultiDamageTaken_Flat[client];
-			}
-			if(f_BattilonsNpcBuff[client] > GameTime)
-			{
-				percentage_Global *= RES_BATTILONS;
-			}	
 #if defined RPG
 			switch(BubbleProcStatusLogicCheck(client))
 			{
@@ -919,26 +911,6 @@ public void OnPostThink(int client)
 			}
 			RPG_BobsPureRage(client, -1, percentage_Global);
 #endif
-			if(f_HussarBuff[client] > GameTime)
-			{
-				percentage_Global *= 0.90;
-			}	
-			if(f_EmpowerStateOther[client] > GameTime) //Allow stacking.
-			{
-				percentage_Global *= 0.93;
-			}
-			if(f_EmpowerStateSelf[client] > GameTime) //Allow stacking.
-			{
-				percentage_Global *= 0.9;
-			}
-			if(i_CurrentEquippedPerk[client] == 2)
-			{
-				percentage_Global *= 0.85;
-			}
-			if(Resistance_Overall_Low[client] > GameTime)
-			{
-				percentage_Global *= RES_MEDIGUN_LOW;
-			}
 			percentage_Global *= Attributes_Get(weapon, 4009, 1.0);
 			value = Attributes_FindOnPlayerZR(client, 206, true, 0.0, true, true);	// MELEE damage resistance
 			if(value)
@@ -950,6 +922,10 @@ public void OnPostThink(int client)
 			//melee res
 			percentage *= percentage_Global;
 			had_An_ability = false;
+			
+			int testvalue = 1;
+			int DmgType = DMG_CLUB;
+			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
 			{
 				if(percentage < 10.0)
@@ -981,6 +957,8 @@ public void OnPostThink(int client)
 			So tis easier to read.
 
 			*/
+			DmgType = DMG_BULLET;
+			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
 			{
 				if(had_An_ability)
@@ -1210,147 +1188,31 @@ public void OnPostThink(int client)
 #endif
 		}
 
-		had_An_ability = false;
-		char bufferbuffs[64];
 		//BUFFS!
+		char Debuff_Adder_left[64];
+		char Debuff_Adder_right[64];
+		char Debuff_Adder[64];
 
-#if defined ZR
-		if(Wands_Potions_HasBuff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌂%s", bufferbuffs);
-		}
-		if(Wands_Potions_HasTonicBuff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌇%s", bufferbuffs);
-		}
-/*
-		static int VillageBuffs;
-		VillageBuffs = Building_GetClientVillageFlags(client);
+		EntityBuffHudShow(client, -1, Debuff_Adder_left, Debuff_Adder_right);
 
-		if(VillageBuffs & VILLAGE_000)
+		if(Debuff_Adder_left[0])
 		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌒%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_200)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌭%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_030)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌬%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_050) //This has priority.
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍣%s", bufferbuffs);
-		}
-		else if(VillageBuffs & VILLAGE_040)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍤%s", bufferbuffs);
-		}
-		if(VillageBuffs & VILLAGE_005) //This has priority.
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "i%s", bufferbuffs);
-		}
-*/
-#endif
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder_left, Debuff_Adder);
 
-		if(Increaced_Overall_damage_Low[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌃%s", bufferbuffs);
-		}
-		if(Resistance_Overall_Low[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌅%s", bufferbuffs);
-		}
-		if(f_EmpowerStateSelf[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
-		}
-		if(f_EmpowerStateOther[client] > GameTime)
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍋%s", bufferbuffs);
-		}
-		if(f_HussarBuff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "ᐩ%s", bufferbuffs);
-		}
-		if(f_Ocean_Buff_Stronk_Buff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⍟%s", bufferbuffs);
-		}
-		else if(f_Ocean_Buff_Weak_Buff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⌾%s", bufferbuffs);
-		}
-		if(f_BuffBannerNpcBuff[client] > GameTime) //hussar!
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "↖%s", bufferbuffs);
-		}
-		if(f_BattilonsNpcBuff[client] > GameTime) 
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "⛨%s", bufferbuffs);
-		}
-		if(f_AncientBannerNpcBuff[client] > GameTime) 
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "➤%s", bufferbuffs);
-		}
-#if defined RPG
-		switch(BubbleProcStatusLogicCheck(client))
-		{
-			case -1:
+			if(Debuff_Adder_right[0])
 			{
-				had_An_ability = true;
-				Format(bufferbuffs, sizeof(bufferbuffs), "B!%s", bufferbuffs);
+				Format(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 			}
-			case 1:
-			{
-				had_An_ability = true;
-				Format(bufferbuffs, sizeof(bufferbuffs), "b!%s", bufferbuffs);
-			}
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
 		}
-		if(TrueStength_ClientBuff(client))
+		else
 		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "T%s", bufferbuffs);
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, Debuff_Adder_right);
 		}
-		float dummyNumber;
-		if(RPG_BobsPureRage(client, -1, dummyNumber))
+
+		if(Debuff_Adder[0])
 		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "RA%s", bufferbuffs);
-		}
-		if(WarCry_Enabled(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "w%s", bufferbuffs);
-		}
-		if(WarCry_Enabled_Buff(client))
-		{
-			had_An_ability = true;
-			Format(bufferbuffs, sizeof(bufferbuffs), "W%s", bufferbuffs);
-		}
-#endif
-		if(had_An_ability)
-		{
-			Format(buffer, sizeof(buffer), "%s\n%s", bufferbuffs, buffer);
+			Format(buffer, sizeof(buffer), "%s\n%s", Debuff_Adder, buffer);
 			HudY += -0.0345; //correct offset
 		}
 		if(buffer[0])
@@ -1427,47 +1289,6 @@ public void OnPostThink(int client)
 		}
 		ArmorDisplayClient(client);
 
-		/*
-		char buffer[64];
-		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
-		if(IsValidEntity(converted_ref))
-		{	
-			float Cooldowntocheck =	Building_Collect_Cooldown[converted_ref][client];
-			bool DoSentryCheck = false;
-			switch(BuildingIconType(client))
-			{
-				case 3,4,8,9:
-					DoSentryCheck = true;
-			}
-
-			if(DoSentryCheck) //all non supportive, like sentry and so on.
-			{
-				Cooldowntocheck = f_BuildingIsNotReady[client];
-			}
-
-			Cooldowntocheck -= GetGameTime();
-
-			if(Cooldowntocheck < 0.0)
-			{
-				Cooldowntocheck = 0.0;
-			}
-
-			switch(BuildingIconType(client))
-			{
-				case 1: //armor table
-				{
-					if(Cooldowntocheck > 0.0)
-					{
-						Format(buffer, sizeof(buffer), "%.1f\nAR\n", Cooldowntocheck);
-					}
-					else
-					{
-						Format(buffer, sizeof(buffer), "\nAR\n", Cooldowntocheck);
-					}
-				}
-			}
-		}
-		*/
 		char buffer[64];
 		int converted_ref = EntRefToEntIndex(Building_Mounted[client]);
 		if(IsValidEntity(converted_ref))
@@ -1623,7 +1444,7 @@ public void OnPostThink(int client)
 		//Doesnt reset often enough, fuck clientside.
 		if (IsPlayerAlive(client))
 		{
-			int entity = GetClientPointVisible(client,_,_,_,_,1); //allow them to get info if they stare at something for abit long
+			int entity = GetClientPointVisible(client,70.0,_,_,_,1); //allow them to get info if they stare at something for abit long
 			Building_ShowInteractionHud(client, entity);	
 			f_DelayLookingAtHud[client] = GameTime + 0.25;	
 		}
@@ -1907,7 +1728,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			return Plugin_Handled;
 		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
-		else if(Merchant_OnLethalDamage(victim))
+		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
@@ -1971,7 +1792,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				CClotBody player = view_as<CClotBody>(victim);
 				player.m_bThisEntityIgnored = true;
 				if(b_XenoVial[victim])
-					Attributes_Set(victim, 489, 1.1);
+					Attributes_Set(victim, 489, 0.85);
 				else
 					Attributes_Set(victim, 489, 0.65);
 
@@ -2135,9 +1956,10 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
-//	PrintToChatAll("%s",sample);
-//	PrintToChatAll("entity%i",entity);
-//	PrintToChatAll("channel %i",channel);
+	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
+	{
+		return Plugin_Handled;
+	}
 	if(StrContains(sample, "weapons/dispenser_idle.wav", true) != -1)
 	{
 		return Plugin_Handled;

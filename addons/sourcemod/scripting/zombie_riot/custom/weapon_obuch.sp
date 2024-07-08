@@ -18,13 +18,20 @@ void ObuchHammer_Map_Precache() //Anything that needs to be precaced like sounds
 /*
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
-
 	ApplyTempAttrib(weapon, 6, 0.7, 1.2);
 	ApplyTempAttrib(weapon, 2, 1.1, 1.2);
 	ApplyTempAttrib(weapon, 206, 0.95, 1.2);
 	PrintToChatAll("Hit");
 }
 */
+public void Enable_Obuch(int client, int weapon) 
+{
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OBUCH) 
+	{
+		attacks_made[client] += 1;
+		Npc_OnTakeDamage_ObuchHammer(client, weapon);
+	}
+}
 
 public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 {
@@ -41,7 +48,7 @@ public void Npc_OnTakeDamage_ObuchHammer(int attacker, int weapon)
 		{
 			attacks_made[attacker] = 3;
 		}
-		Attributes_Set(weapon, 396, RampagerAttackSpeed(attacks_made[attacker]));
+		Attributes_Set(weapon, 5, RampagerAttackSpeed(attacks_made[attacker]));
 		f_ModifThirdPersonAttackspeed[weapon] = (1.0 / RampagerAttackSpeed(attacks_made[attacker]));
 		if(Handle_on[attacker])
 		{
@@ -60,7 +67,7 @@ public Action Reset_weapon_Obuch(Handle cut_timer, int client)
 		attacks_made[client] = 8;
 		if(IsValidEntity(EntRefToEntIndex(weapon_id[client])))
 		{
-			Attributes_Set((EntRefToEntIndex(weapon_id[client])), 396, RampagerAttackSpeed(attacks_made[client]));
+			Attributes_Set((EntRefToEntIndex(weapon_id[client])), 5, RampagerAttackSpeed(attacks_made[client]));
 			f_ModifThirdPersonAttackspeed[EntRefToEntIndex(weapon_id[client])] = (1.0 / RampagerAttackSpeed(attacks_made[client]));
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
@@ -68,33 +75,3 @@ public Action Reset_weapon_Obuch(Handle cut_timer, int client)
 	Handle_on[client] = false;
 	return Plugin_Handled;
 }
-
-/*
-public void Melee_ObuchTouch(int entity, int target)
-{
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, entity, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
-
-		ApplyTempAttrib(weapon, 6, 0.8, 0.1);
-		ApplyTempAttrib(weapon, 2, 1.1, 0.1);
-
-		EmitSoundToAll(SOUND_AUTOAIM_IMPACT_FLESH_1, entity, SNDCHAN_STATIC, 80, _, 0.9, 120);
-
-		RemoveEntity(entity);
-	}
-}
-*/

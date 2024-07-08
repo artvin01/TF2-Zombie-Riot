@@ -74,7 +74,7 @@ public float Rogue_Encounter_Clairvoyance()
 	vote.Config[0] = 0;
 	list.PushArray(vote);
 
-	if(Rogue_HasNamedArtifact("Blue Goggles"))
+	if(Rogue_HasNamedArtifact("Waldch"))
 	{
 		strcopy(vote.Name, sizeof(vote.Name), "Clairvoyance Option 4");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Unknown Artifact Desc");

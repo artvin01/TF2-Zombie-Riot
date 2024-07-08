@@ -48,7 +48,7 @@ public void XenoOuroborosEkas_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "medic");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -200,9 +200,10 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 		{
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+				if(IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && !Is_a_Medic[client])
 				{
-					f_HussarBuff[client] = gameTime;
+					f_HussarBuff[client] = gameTime + 0.5;
+					f_BuffBannerNpcBuff[client] = gameTime + 0.5;
 				}
 			}
 		}
@@ -210,7 +211,7 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
+			if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team && !Is_a_Medic[entity])
 			{
 				f_HussarBuff[entity] = gameTime + 0.5;
 				f_BuffBannerNpcBuff[entity] = gameTime + 0.5;
@@ -225,8 +226,6 @@ public void XenoOuroborosEkas_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	
-	int PrimaryThreatIndex = npc.m_iTarget;
 
 	if(npc.m_flAttackHappens)
 	{

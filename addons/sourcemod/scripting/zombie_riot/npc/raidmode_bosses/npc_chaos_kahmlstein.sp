@@ -117,7 +117,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -1632,6 +1632,7 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		MakeObjectIntangeable(KamlcloneSpawn);
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
+		b_NpcIsInvulnerable[KamlcloneSpawn] = true;
 		b_ThisNpcIsImmuneToNuke[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;

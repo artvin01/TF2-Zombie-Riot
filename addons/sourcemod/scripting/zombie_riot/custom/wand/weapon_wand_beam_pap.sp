@@ -651,7 +651,7 @@ static void Beam_Wand_Laser_Attack(int client, float endVec_2[3], int num, float
 					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BEAM_Targets_Hit[client]);
+					pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
 					pack.WriteCell(DMG_PLASMA);
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

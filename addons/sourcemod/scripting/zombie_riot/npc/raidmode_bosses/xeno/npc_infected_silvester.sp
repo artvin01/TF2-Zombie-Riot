@@ -327,7 +327,7 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
 		bool final = StrContains(data, "final_item") != -1;
@@ -2024,7 +2024,7 @@ void Silvester_TBB_Ability(int client)
 	Silvester_BEAM_MaxDistance[client] = 2000;
 	Silvester_BEAM_BeamRadius[client] = 45;
 	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = 200;
+	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
 	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
 	Silvester_BEAM_Duration[client] = 6.0;
@@ -2291,16 +2291,16 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy then us, we can't beat him.");
 					else
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: It appears like you already know what you get yourself into.");
+						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
@@ -2775,11 +2775,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Too far.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better then to die to {green}Him.");
 		}
 	}
 }

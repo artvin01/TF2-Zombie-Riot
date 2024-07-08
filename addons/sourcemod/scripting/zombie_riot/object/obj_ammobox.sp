@@ -111,14 +111,14 @@ static bool ClotInteract(int client, int weapon, ObjectAmmobox npc)
 bool AmmoboxUsed(int client, int entity)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-/*
+
 	int ie, weapon1;
 	while(TF2_GetItem(client, weapon1, ie))
 	{
 		if(IsValidEntity(weapon1))
 		{
 			int Ammo_type = GetEntProp(weapon1, Prop_Send, "m_iPrimaryAmmoType");
-			if(Ammo_type > 0 && Ammo_type != 7)
+			if(Ammo_type > 0 && Ammo_type != Ammo_Potion_Supply && Ammo_type != Ammo_Hand_Grenade)
 			{
 				//found a weapon that has ammo.
 				if(GetAmmo(client, Ammo_type) <= 0)
@@ -129,7 +129,7 @@ bool AmmoboxUsed(int client, int entity)
 			}
 		}
 	}
-*/
+
 	if(IsValidEntity(weapon))
 	{
 		if(i_IsWandWeapon[weapon])

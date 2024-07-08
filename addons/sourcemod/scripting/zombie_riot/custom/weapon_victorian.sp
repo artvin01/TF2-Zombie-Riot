@@ -97,7 +97,7 @@ public Action Timer_Management_Victoria(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		CreateVictoriaEffect(weapon_holding, client);
+		CreateVictoriaEffect(client);
 		Victorian_Cooldown_Logic(client, weapon);
 	}
 	else
@@ -513,7 +513,7 @@ public Action Victorian_DrainHealth(Handle timer, int userid)
 	return Plugin_Stop;
 }
 
-void CreateVictoriaEffect(int weapon, int client)
+void CreateVictoriaEffect(int client)
 {
 	int new_ammo = GetAmmo(client, 8);
 	PrintHintText(client,"Rockets: %i", new_ammo);

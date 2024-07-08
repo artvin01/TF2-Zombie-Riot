@@ -684,11 +684,12 @@ void BingBangExplosionInternal(int attacker, int victim, float SelfVec[3], float
 		return;
 	//they are above the player atleast
 
+	AttackerPos2 -= 60.0;
 	float HeightDifference = VictimPos2 - AttackerPos2;
 	if(HeightDifference < 0.0)
 		HeightDifference *= -1.0;
 
-	if(HeightDifference > 500.0)
+	if(HeightDifference > 560.0)
 		return;
 
 	if(!Can_I_See_Enemy_Only(attacker, victim))

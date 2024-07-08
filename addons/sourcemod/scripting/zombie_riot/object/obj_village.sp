@@ -45,6 +45,8 @@ void ObjectVillage_MapStart()
 	PrecacheModel(VILLAGE_MODEL_LIGHTHOUSE);
 	PrecacheModel(VILLAGE_MODEL_MIDDLE);
 	PrecacheModel(VILLAGE_MODEL_REBEL);
+	PrecacheSound("items/powerup_pickup_uber.wav");
+	PrecacheSound("player/mannpower_invulnerable.wav");
 
 	delete Village_Effects;
 	Village_Effects = new ArrayList(sizeof(VillageBuff));
@@ -58,6 +60,23 @@ void ObjectVillage_MapStart()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+int Building_GetClientVillageFlags(int client)
+{
+	int applied;
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	VillageBuff buff;
+	int length = Village_Effects.Length;
+	for(int i; i < length; i++)
+	{
+		Village_Effects.GetArray(i, buff);
+		int entity = EntRefToEntIndex(buff.EntityRef);
+		if(entity == client || entity == weapon)
+			applied |= buff.Effects;
+	}
+
+	return applied;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -585,7 +604,7 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	if(f_BuildingIsNotReady[Owner] > gameTime)
 		return false;
 	
-	if(Owner == client && f_MedicCallIngore[Owner] < gameTime)
+	if(Owner == client && f_MedicCallIngore[Owner] > gameTime)
 	{
 		if(!(Village_Flags[Owner] & VILLAGE_040))
 		{

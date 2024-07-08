@@ -65,7 +65,7 @@ public void XenoEngineer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

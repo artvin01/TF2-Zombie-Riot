@@ -142,7 +142,18 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time > 60.0)
+		{
+			time = 60.0;
+		}
+#if defined RPG
+		//average is 10.
+		if(time < 0.1)
+		{
+			time = 10.0;
+		}
+#endif
+		if(time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);

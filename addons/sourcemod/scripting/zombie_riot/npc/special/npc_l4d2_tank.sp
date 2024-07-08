@@ -54,8 +54,8 @@ public void L4D2_Tank_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "L4D2 Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_l4d2_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "l4d2_tank");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;

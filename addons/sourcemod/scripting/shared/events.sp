@@ -25,10 +25,6 @@ void Events_PluginStart()
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
 	
 	HookEntityOutput("logic_relay", "OnTrigger", OnRelayTrigger);
-
-//#if defined ZR
-	//HookEntityOutput("logic_relay", "OnUser1", OnRelayFireUser1);
-//#endif
 }
 
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)

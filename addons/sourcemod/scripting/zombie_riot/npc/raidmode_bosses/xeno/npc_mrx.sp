@@ -77,10 +77,8 @@ static char g_NeckSnap[][] =
 
 static int i_GrabbedThis[MAXENTITIES];
 static float fl_RegainWalkAnim[MAXENTITIES];
-static float fl_OverrideWalkDest[MAXENTITIES];
 
 static float f3_LastValidPosition[MAXENTITIES][3]; //Before grab to be exact
-static int i_TankAntiStuck[MAXENTITIES];
 static int i_SideHurtWhich[MAXENTITIES];
 static float f_NemesisImmuneToInfection[MAXENTITIES];
 static float f_NemesisSpecialDeathAnimation[MAXENTITIES];
@@ -99,7 +97,7 @@ void RaidbossMrX_OnMapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "mrx");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -989,7 +987,7 @@ public void RaidbossMrX_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable7);
 
 	GiveProgressDelay(3.0);
-	RaidModeTime += 999.0; //cant afford to delete it, since duo.
+	RaidModeTime += 3.5; //cant afford to delete it, since duo.
 	if(i_RaidGrantExtra[npc.index] == 0 && GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
 		for (int client_repat = 0; client_repat < MaxClients; client_repat++)

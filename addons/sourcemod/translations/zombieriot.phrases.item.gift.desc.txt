@@ -789,7 +789,7 @@
 	{
 		"en"		"A different kind of infection on Father Grigori. Silent man.\nCan only attack by attacking or blocking him and loses immunity with the fall of Combines."
 	}
-	"Spawned Blue Goggles Desc"
+	"Machina Waldch Desc"
 	{
 		"en"		"Switches between going a charger melee with limited seeing range.\nAnd a standing still infinite range sniper.\nPrehaps stopping him before Wave 60 yields a different result?"
 	}
@@ -797,7 +797,7 @@
 	{
 		"en"		"The superpowered warrior returns but something is up. You cured him yes?\nHe brought along a friend this time to help.\nLaser resistance (can be silenced)."
 	}
-	"Blue Goggles Desc"
+	"Waldch Desc"
 	{
 		"en"		"A friend to Silvester and a gunslinger to various weapons and support tools.\nWhat are they doing fighting you?\nSniper attack prediction (can be silenced)."
 	}
@@ -807,7 +807,7 @@
 	}
 	"Nemesis Desc"
 	{
-		"en"		"The originator of the Xeno infection.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
+		"en"		"The originator of the Xeno infection, Real name was Calmaticus.\nThey tried to warn you, you didnt listen.\nHis regenerative phase resistance (can be silenced in half)."
 	}
 	"Shell Sea Runner Desc"
 	{
@@ -969,7 +969,7 @@
 	{
 		"en"		"Last hope against the deep sea.\nHas an ability when attacking enough, regens out of battle."
 	}
-	"God Arkantos Desc"
+	"God Alaxios Desc"
 	{
 		"en"		"Summons his army, each time he comes back he gains extra abilities.\nKill his army before him, otherwise he will revive and spawn more.\nCan buff his allies with a buff after wave 30 (silence will make him unable to buff himself when buffing allies)."
 	}
@@ -1524,5 +1524,33 @@
 	"Rouge Expidonsan Doctor Desc"
 	{
 		"en"	"An Rouge Expidonsan Doctor who refused to stay with his people, he hates them, he hates everyone.\nSimular to doctor pernell, he buffs allies."
+	}
+	"Fallen Warrior Desc"
+	{
+		"en"	"An elite Combine knight who was sent to battlement to deal with Chaos. \nHe fought for day and night, but he couldn't beat endless waves of chaos affliceted army. \n He now became one of the troops who spread chaos. \n He gains more speed, strength, and resistance when below half health, He slows down attackspeed when near his aura, stays on death."
+	}
+	"Xeno Acclaimed Swordsman Desc"
+	{
+		"en"	"Takes no damage after taking damage, Deals massive damage and prepares an assult of pulse attacks."
+	}
+	"Wandering Spirit Desc"
+	{
+		"en"	"Spirit that couldnt move on, free it.\nDeals Massive damage, heals on attack, if it hits 4 players it splits apart."
+	}
+	"Ouroboros Ekas Desc"
+	{
+		"en"	"Buffs all enemies on the field massively (Can be silenced), if its the last one alive, it gains 5x speed, 2x res."
+	}
+	"Xeno Patient Few Desc"
+	{
+		"en"	"Oneshots any player that isnt ubered.\nDeals massive damage to cades.\nWhen hurt, gains a short burst of speed."
+	}
+	"Xeno Early Infected Desc"
+	{
+		"en"	"Very fast but loses its speed once hit."
+	}
+	"Mr.X Desc"
+	{
+		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
 	}
 }

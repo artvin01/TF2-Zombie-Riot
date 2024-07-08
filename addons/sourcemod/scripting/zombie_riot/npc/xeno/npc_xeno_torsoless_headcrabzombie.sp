@@ -75,7 +75,7 @@ public void XenoTorsolessHeadcrabZombie_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "norm_headcrab_zombie");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

@@ -84,7 +84,7 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Common;
+	data.Category = Type_Xeno;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
