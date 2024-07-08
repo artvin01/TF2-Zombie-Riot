@@ -711,6 +711,10 @@
 	{
 		"en" 		"Metro Cop"
 	}
+	"Barracks Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"

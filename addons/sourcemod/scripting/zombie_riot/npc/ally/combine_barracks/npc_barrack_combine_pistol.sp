@@ -45,7 +45,7 @@ void Barracks_Combine_Pistol_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Metro Cop");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_pistol");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Combine_Sword");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -55,10 +55,10 @@ void Barracks_Combine_Pistol_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Pistol(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Sword(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Pistol < BarrackBody
+methodmap Barrack_Combine_Sword < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -100,15 +100,15 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Combine_Sword_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Sword_ClotThink;
 		npc.m_flSpeed = 220.0;
 
 		npc.m_iAttacksTillReload = 18;
@@ -124,9 +124,9 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 	}
 }
 
-public void Barrack_Combine_Pistol_ClotThink(int iNPC)
+public void Barrack_Combine_Sword_ClotThink(int iNPC)
 {
-	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(iNPC);
+	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -175,7 +175,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							npc.m_iAttacksTillReload--;
 							npc.m_flSpeed = 0.0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 25, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 25.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
@@ -195,9 +195,9 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Combine_Pistol_NPCDeath(int entity)
+void Barrack_Combine_Sword_NPCDeath(int entity)
 {
-	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(entity);
+	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }
