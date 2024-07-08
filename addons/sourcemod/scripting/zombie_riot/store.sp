@@ -5462,7 +5462,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 103, 1.2);
 				
 			if(Attributes_Has(entity, 106))
-				Attributes_SetMulti(entity, 106, 0.65);
+				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
 		//QUICK REVIVE!
@@ -5515,7 +5515,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
+		Enable_MG42(client, entity);
 		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
