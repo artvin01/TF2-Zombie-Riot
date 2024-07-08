@@ -66,10 +66,10 @@ void Barracks_Combine_Sword_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Pistol(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Sword(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Pistol < BarrackBody
+methodmap Barrack_Combine_Sword < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -135,9 +135,9 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
