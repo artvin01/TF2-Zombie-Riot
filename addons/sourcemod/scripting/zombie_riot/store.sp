@@ -5462,7 +5462,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 103, 1.2);
 				
 			if(Attributes_Has(entity, 106))
-				Attributes_SetMulti(entity, 106, 1.2);
+				Attributes_SetMulti(entity, 106, 0.65);
 		}
 
 		//QUICK REVIVE!
@@ -5471,12 +5471,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(Attributes_Has(entity, 8))
 			{
-				Attributes_SetMulti(entity, 8, 1.5);
+				Attributes_SetMulti(entity, 8, 1.15);
 			}
 			
 			if(Attributes_Has(client, 8)) //set it for client too if existant.
 			{
-				Attributes_SetMulti(client, 8, 1.5);
+				Attributes_SetMulti(client, 8, 1.15);
 			}
 
 			// Note: This can stack with multi weapons :|
