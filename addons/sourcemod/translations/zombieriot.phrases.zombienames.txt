@@ -568,6 +568,10 @@
 		"pt"		"Xeno Spy Main do X10"
 		"nl"		"Xeno X10 Spion Main"
 	}
+	"Xeno Malfunctioning Robot"
+	{
+		"en" 		"Xeno Malfunctioning Robot"
+	}
 
 	"Nazi Panzer"
 	{
@@ -827,12 +831,12 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 	}
-	"The Doctor"
+	"Doctor Purnell"
 	{
-		"en" 		"The Doctor"
-		"ru" 		"Доктор"
-		"pt"		"O Doutor"
-		"nl"		"De Dokter"
+		"en" 		"Doctor Purnell"
+		"ru" 		"Доктор Пурнелл"
+		"pt"		"Doutor Purnell"
+		"nl"		"Dokter Purnell"
 	}
 	"Book Simon"
 	{
@@ -840,6 +844,34 @@
 		"ru" 		"Книжный Саймон"
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
+	}
+	"Crazy Lady"
+	{
+		"en" 		"Crazy Lady"
+	}
+	"Faster"
+	{
+		"en" 		"Faster"
+	}
+	"Psycho"
+	{
+		"en" 		"Psycho"
+	}
+	"Sewmo"
+	{
+		"en" 		"Sewmo"
+	}
+	"Suicider"
+	{
+		"en" 		"Suicider"
+	}
+	"Cured Purnell"
+	{
+		"en" 		"Cured Purnell"
+	}
+	"Corrupted Barney"
+	{
+		"en" 		"Corrupted Barney"
 	}
 	"Kahmlstein"
 	{
@@ -1281,9 +1313,11 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Machina Waldch"
+	"Spawned Blue Goggles"
 	{
-		"en"		"Machina Waldch"
+		"en"		"Spawned Blue Goggles"
+		"pt"		"Blue Goggles Gerado"
+		"ru"		"Созданный Блу Гогглз"
 	}
 	"Silvester"
 	{
@@ -1291,10 +1325,11 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Waldch"
+	"Blue Goggles"
 	{
-		"en"		"Waldch"
-		"pt"		"Waldch"
+		"en"		"Blue Goggles"
+		"pt"		"Blue Goggles"
+		"ru"		"Блу Гогглз"
 	}
 	"Angeled Silvester"
 	{
@@ -1575,9 +1610,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Alaxios"
+	"God Arkantos"
 	{
-		"en"		"God Alaxios"
+		"en"		"God Arkantos"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -2222,40 +2257,8 @@
 	{
 		"en"	"Bob the Second"
 	}
-	"Wildingen Hitman"
+	"Forest Hitman"
 	{
-		"en"	"Wildingen Hitman"
-	}
-	"Mr.X"
-	{
-		"en"	"Mr.X"
-	}
-	"Xeno Acclaimed Swordsman"
-	{
-		"en"	"Xeno Acclaimed Swordsman"
-	}
-	"Xeno Early Infected"
-	{
-		"en"	"Xeno Early Infected"
-	}
-	"Xeno Patient Few"
-	{
-		"en"	"Xeno Patient Few"
-	}
-	"Ouroboros Ekas"
-	{
-		"en"	"Ouroboros Ekas"
-	}
-	"Wandering Spirit"
-	{
-		"en"	"Wandering Spirit"
-	}
-	"Vengefull Spirit"
-	{
-		"en"	"Vengefull Spirit"
-	}
-	"Fallen Warrior"
-	{
-		"en"	"Guln the Fallen One"
+		"en"	"Forest Hitman"
 	}
 }
