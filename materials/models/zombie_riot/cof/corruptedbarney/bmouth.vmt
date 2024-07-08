@@ -1,7 +1,0 @@
-"Teeth"
-{
-	"$basetexture" "models/zombie_riot/cof/corruptedbarney/bmouth"
-	"$model" 1
-	"$clientshader" "MouthShader"
-	"$halflambert" 1
-}

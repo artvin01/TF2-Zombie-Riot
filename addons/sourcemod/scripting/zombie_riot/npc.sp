@@ -495,14 +495,6 @@ void NPC_ConfigSetup()
 	Addiction_OnMapStart_NPC();
 	Doctor_MapStart();
 	Simon_MapStart();
-	Sewmo_OnMapStart_NPC();
-	Faster_OnMapStart_NPC();
-	Psycho_OnMapStart_NPC();
-	Suicider_OnMapStart_NPC();
-	Crazylady_OnMapStart_NPC();
-	CuredPurnell_OnMapStart_NPC();
-	CorruptedBarney_OnMapStart_NPC();
-	
 
 	// Bloon Raid Low Prio
 	Bloonarius_MapStart();
@@ -1020,14 +1012,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
-#include "zombie_riot/npc/cof/npc_sewmo.sp"
-#include "zombie_riot/npc/cof/npc_faster.sp"
-#include "zombie_riot/npc/cof/npc_psycho.sp"
-#include "zombie_riot/npc/cof/npc_suicider.sp"
-#include "zombie_riot/npc/cof/npc_crazylady.sp"
-#include "zombie_riot/npc/ally/npc_cured_purnell.sp"
-#include "zombie_riot/npc/cof/npc_corruptedbarney.sp"
-
 /*
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
 #include "zombie_riot/npc/bonezone/npc_beefybones.sp"
