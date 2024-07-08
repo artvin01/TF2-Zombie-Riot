@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_11"
+$modelname "zombie_riot/weapons/custom_weaponry_1_12"
 
 $bodygroup "scythe"
 {
@@ -38,9 +38,7 @@ $bodygroup "mg42"
 	studio "mg42.smd"
 }
 
-$MostlyOpaque
-
-$surfaceprop "metal"
+$surfaceprop "weapon"
 
 $contents "solid"
 
