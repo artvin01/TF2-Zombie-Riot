@@ -390,14 +390,21 @@ methodmap Lex < CClotBody
 		{
 			Iana ally = view_as<Iana>(EntRefToEntIndex(this.m_ially));
 
+			int Old_Target = this.m_iTarget;
+
 			this.m_iTarget = ally.m_iTarget;
 
 			if(!IsValidEnemy(this.index, this.m_iTarget))
 			{
-				if(this.m_flGetClosestTargetTime < GameTime)
+				this.m_iTarget = Old_Target;
+
+				if(!IsValidEnemy(this.index, this.m_iTarget) || this.m_flGetClosestTargetTime < GameTime)
 				{
-					this.m_iTarget = GetClosestTarget(this.index);
-					this.m_flGetClosestTargetTime = GameTime + 1.0;
+					if(this.m_flGetClosestTargetTime < GameTime)
+					{
+						this.m_iTarget = GetClosestTarget(this.index);
+						this.m_flGetClosestTargetTime = GameTime + 1.0;
+					}
 				}
 			}
 		}
