@@ -16,13 +16,11 @@ static float f_FactionCreditGainReduction[MAXTF2PLAYERS];
 
 static ArrayList NPCList;
 
-/*
 int SaveCurrentHpAt = -1;
 int SaveCurrentHpAtFirst = -1;
 int SaveCurrentHurtAt = -1;
 int HurtIttirationAt = 0;
 float AntiChatSpamDebug;
-*/
 enum struct NPCData
 {
 	char Plugin[64];
@@ -41,7 +39,7 @@ enum struct NPCData
 // FileNetwork_ConfigSetup needs to be ran first
 void NPC_ConfigSetup()
 {
-//	AntiChatSpamDebug = 0.0;
+	AntiChatSpamDebug = 0.0;
 	f_FactionCreditGain = 0.0;
 	Zero(f_FactionCreditGainReduction);
 
@@ -165,21 +163,13 @@ void NPC_ConfigSetup()
 	XenoPyroGiant_OnMapStart_NPC();
 	XenoCombineDeutsch_OnMapStart_NPC();
 	XenoSpyMainBoss_OnMapStart_NPC();
-
-
-	XenoAcclaimedSwordsman_OnMapStart_NPC();
-	XenoFortifiedEarlyZombie_OnMapStart_NPC();
-	XenoPatientFew_OnMapStart_NPC();
-	XenoOuroborosEkas_OnMapStart_NPC();
+	XenoMalfuncRobot_OnMapStart_NPC();
 	
 	NaziPanzer_OnMapStart_NPC();
-	WanderingSpirit_OnMapStart_NPC();
-	VengefullSpirit_OnMapStart_NPC();
 	BobTheGod_OnMapStart_NPC();
 	NecroCombine_OnMapStart_NPC();
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
-	FallenWarrior_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -468,8 +458,7 @@ void NPC_ConfigSetup()
 	RaidbossSilvester_OnMapStart();
 	RaidbossBlueGoggles_OnMapStart();
 	RaidbossNemesis_OnMapStart();
-	RaidbossMrX_OnMapStart();
-	GodAlaxios_OnMapStart();
+	GodArkantos_OnMapStart();
 	Sensal_OnMapStart_NPC();
 	Raidboss_Schwertkrieg_OnMapStart_NPC();
 	Raidboss_Donnerkrieg_OnMapStart_NPC();
@@ -495,6 +484,13 @@ void NPC_ConfigSetup()
 	Addiction_OnMapStart_NPC();
 	Doctor_MapStart();
 	Simon_MapStart();
+	Sewmo_OnMapStart_NPC();
+	Faster_OnMapStart_NPC();
+	Psycho_OnMapStart_NPC();
+	Suicider_OnMapStart_NPC();
+	Crazylady_OnMapStart_NPC();
+	CuredPurnell_OnMapStart_NPC();
+	CorruptedBarney_OnMapStart_NPC();
 
 	// Bloon Raid Low Prio
 	Bloonarius_MapStart();
@@ -838,6 +834,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno/npc_xeno_poisonzombie.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_poisonzombie_fortified.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_last_survivor.sp"
+#include "zombie_riot/npc/xeno/npc_xeno_malfunctioning_robot.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_combine_police_pistol.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_combine_police_smg.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_combine_soldier_ar2.sp"
@@ -870,20 +867,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/xeno/npc_xeno_combine_soldier_deutsch_ritter.sp"
 #include "zombie_riot/npc/xeno/npc_xeno_spy_boss.sp"
 
-#include "zombie_riot/npc/xeno_lab/npc_xeno_acclaimed_swordsman.sp"
-#include "zombie_riot/npc/xeno_lab/npc_xeno_early_infected.sp"
-#include "zombie_riot/npc/xeno_lab/npc_xeno_patient_few.sp"
-#include "zombie_riot/npc/xeno_lab/npc_xeno_ekas_robo.sp"
-
 #include "zombie_riot/npc/special/npc_panzer.sp"
 #include "zombie_riot/npc/special/npc_sawrunner.sp"
 #include "zombie_riot/npc/special/npc_l4d2_tank.sp"
 #include "zombie_riot/npc/special/npc_phantom_knight.sp"
 #include "zombie_riot/npc/special/npc_beheaded_kamikaze.sp"
 #include "zombie_riot/npc/special/npc_doctor.sp"
-#include "zombie_riot/npc/special/npc_wandering_spirit.sp"
-#include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
-#include "zombie_riot/npc/special/npc_fallen_warrior.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -904,7 +893,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/raidmode_bosses/npc_true_fusion_warrior.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
-#include "zombie_riot/npc/raidmode_bosses/npc_god_alaxios.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_god_arkantos.sp"
 
 
 //Ruina
@@ -1012,6 +1001,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_addiction.sp"
 #include "zombie_riot/npc/cof/npc_doctor.sp"
 #include "zombie_riot/npc/cof/npc_simon.sp"
+#include "zombie_riot/npc/cof/npc_sewmo.sp"
+#include "zombie_riot/npc/cof/npc_faster.sp"
+#include "zombie_riot/npc/cof/npc_psycho.sp"
+#include "zombie_riot/npc/cof/npc_suicider.sp"
+#include "zombie_riot/npc/cof/npc_crazylady.sp"
+#include "zombie_riot/npc/ally/npc_cured_purnell.sp"
+#include "zombie_riot/npc/cof/npc_corruptedbarney.sp"
+
 /*
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
 #include "zombie_riot/npc/bonezone/npc_beefybones.sp"
@@ -1079,7 +1076,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_silvester.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_infected_goggles.sp"
 #include "zombie_riot/npc/raidmode_bosses/xeno/npc_nemesis.sp"
-#include "zombie_riot/npc/raidmode_bosses/xeno/npc_mrx.sp"
 
 #include "zombie_riot/npc/seaborn/npc_firsttotalk.sp"
 #include "zombie_riot/npc/seaborn/npc_seacrawler.sp"
@@ -1219,12 +1215,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
-/*
+
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 {
 	return;
 	//currently not needed!
-
+/*
 	if(!Citizen_IsIt(victim))
 		return;
 
@@ -1280,5 +1276,5 @@ void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 	GetEntProp(attacker, Prop_Data, "m_lifeState"),
 	SaveCurrentHpAtFirst,
 	SaveCurrentHpAt);
+	*/
 }
-*/

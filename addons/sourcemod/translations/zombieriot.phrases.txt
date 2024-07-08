@@ -906,15 +906,6 @@
 		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
 		"chi"       "技能冷却还有 {1} 的时间!"
 	}
-	"Rusty Ability Blocked"
-	{
-		"en"		"You can't do that right now!"
-	}
-	"Rusty Ability Cooldown"
-	{
-		"#format"	"{1:.1f}"
-		"en"		"Big Shot is on cooldown: {1}"
-	}
 	"Crouch for ability"
 	{
 		"en" 		"Crouch to use this ability!"
@@ -1233,20 +1224,25 @@
 	}
 	"Debuff/Buff Explain 1"
 	{
-		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee %% damage taken, arrow means ranged %% damage taken."
+		"en" 		"BUFFS:\n⌒ : 10%% more projectile range and speed.\n⌭ : 5%% increased Heal/Firerate/Reload Rate.\n⌬ : 10%% more dmg.\n⍣ : 50%% Increased Heal/Firerate/Reload Rate.\n⍤ : 25%% Increased Heal/Firerate/Reload Rate.\n⌃ : 25%% more dmg\n⌅ : 15%% dmg resistance\n⍋ 7%% dmg resistance and 10%% more dmg.\nᐩ 5%% more dmg and resistance\nß : 50% increased dmg, resistance, and speed.\n⍟ : 25%% more dmg.\n⌾ : 10%% more dmg.\n↖ 35%% more dmg.\n⛨ 35%% dmg resistance."
+		"ru" 		"ПОЛОЖ. ЭФФ.:\n⌒ : На 10% увелич. дальн. и скор-ть полёта снаряда.\n⌭ : На 5%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⌬ : На 10%% увелич. урон.\n⍣ : На 50%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⍤ : На 25%% увелич. эффективн. лечения и скор-ть стрельбы/перезар.\n⌃ : На 25%% увелич. урон.\n⌅ : 15%% сопр. урону\n⍋ 7%% сопр. урону и на 10%% увелич. урон.\nᐩ На 5%% увелич. урона и сопр.\nß : На 50% увелич. урона, сопр. и скор-ть.\n⍟ : На 25%% увелич. урон.\n⌾ : На 10%% увелич. урон.\n↖ На 35%% увелич. урон.\n⛨ 35%% сопр. урону."
 	}
 	"Show Debuffs"
 	{
-		"en" 		"Extra Info"
+		"en" 		"Show Debuffs"
+		"pt"		"Exibir Debuffs"
+		"ru" 		"Негат. эфф."
 	}
 	"Show Buffs"
 	{
-		"en" 		"Extra Info"
+		"en" 		"Show Buffs"
+		"pt"		"Exibir Buffs"
+		"ru" 		"Полож. эфф."
 	}
 	"Debuff/Buff Explain 2"
 	{
-		"en" 		"There are too many buffs and debuffs to be shown.\nBuffs and debuffs will be on weapons themselves instead, not all are added currently in that list."
-	
+		"en" 		"DEBUFFS:\nPurple Armor Bar : if Full, get heavy true dmg + heavy slow.\n⌁ : 25%% more dmg taken and slower movementspeed.\n⌁⌁ : 35%% more dmg taken and slower movementspeed.\n❣ : Bleed Stacks\n~ : Burn/Ignite\n❅ : 5%% more dmg and slower movementspeed, each ❅ gives 5%% extra.\n४ : 35%% more dmg taken and heavy slow.\n⯯ : 40%% more dmg taken.\n‼ : 30%% more dmg taken.\n^ : 5-15% more damage taken, 10-30% slower movement speed.\n↓ : 65%% slower movement Speed.\nX : some enemies cant activate abilities.\n▼ : 35%% more dmg taken, 65%% slower, 50%% less dmg dealt."
+		"ru" 		"НЕГАТ. ЭФФ.:\nФиол. полоса брони : если заполнена, получ. тяж. полн. урон + тяж. замедл.\n⌁ : На 25%% увелич. получаем. урон и замедл. скор-ть передвиж.\n⌁⌁ : На 35%% увелич. получаем. урон и замедл. скор-ть передвиж.\n❣ : Уров. кровотеч.\n~ : Горение\n❅ : На 5%% увелич. получаем. урон и замедл. скор-ть передвиж., кажд. ❅ даёт 5%% доп.\n४ : На 35%% увелич. получаем. урон и тяж. замедл.\n⯯ : На 40%% увелич. получаем. урон.\n‼ : На 30%% увелич. получаем. урон.\n↓ : На 65%% замедл. скор-ть передвиж.\nX : некоторые враги не могут исп. способн.\n▼ : На 35%% увелич. получаем. урон, на 65%% медл., на 50%% меньш. наносим. урон."
 	}
 	"Command Help Explained"
 	{
@@ -1604,7 +1600,7 @@
 	}
 	"TF2: Zombie Riot"
 	{
-		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold TAB + (H) to show current weapon!"
+		"en" 		"TF2: Zombie Riot\nPress TAB again to close the menu!\nHold (H) + press TAB to show current weapon!"
 	}
 	"Father Grigori's Store"
 	{
@@ -2284,11 +2280,15 @@
 	}
 	"Buff/Debuff List"
 	{
-		"en"		"Buff and Debuff Explination"
+		"en"		"Buff/Debuff List"
+		"ru"		"Полож./негат. эфф."
+		"chi"		"Buff/Debuff 列表"
 	}
 	"Crouch To See Info Barracks"
 	{
-		"en"		"Crouch to see descriptions!\nTip:\nAmmoboxes give resources!\nPerkmachine perks work on units!"
+		"en"		"Crouch to see descriptions!"
+		"ru"		"Пригнитесь, чтобы посмотреть описание!"
+		"chi"		"蹲下可以查看描述!"
 	}
 	"Toggle Upgrade Menu Barracks"
 	{
@@ -3006,9 +3006,9 @@
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
 	}
-	"Silvester Waldch Desc"
+	"Silvester Goggles Desc"
 	{
-		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
+		"en"	"Silvester fights with his laser and rock attacks while Blue Goggles snipes from a distance!"
 	}
 	"Xeno Hard Desc"
 	{
@@ -3018,7 +3018,7 @@
 	{
 		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
 	}
-	"God Alaxios Desc"
+	"God Arkantos Desc"
 	{
 		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 	}
@@ -3163,17 +3163,8 @@
 	{
 		"en"	"Building Menu\nHold crouch for more info"
 	}
-	"Barracks Gained Resources"
+	"purnell_message"
 	{
-		"en"	"Your barracks gained resouces from this action!"
-	}
-	"Resource Gain Mult Villager"
-	{
-		"#format"	"{1:.1f},{2:.1f}"
-		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
-	}
-	"Barbarians Mind Warning"
-	{
-		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"en"	"Relax, I'm not one of them."
 	}
 }

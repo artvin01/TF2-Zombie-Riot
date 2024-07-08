@@ -1,0 +1,6 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/psycho/trojbak_textured"
+	"$surfaceprop" "BloodyFlesh"
+	"$surfaceprop2" "BloodyFlesh"
+}
