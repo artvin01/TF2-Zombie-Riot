@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_8"
+$modelname "zombie_riot/weapons/custom_weaponry_1_10"
 
 $bodygroup "scythe"
 {
@@ -29,7 +29,7 @@ $bodygroup "annabelle"
 $bodygroup "Shotgun_boomstick"
 {
 	blank
-	studio "mg42.smd"
+	studio "Shotgun_reference.smd"
 }
 
 $bodygroup "mg42"
@@ -49,6 +49,7 @@ $illumposition 0.096 -0.043 13.267
 $cdmaterials "models\custom_weaponry"
 $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
+$cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "wood\"
 $cdmaterials "props\"
 $cdmaterials ""
