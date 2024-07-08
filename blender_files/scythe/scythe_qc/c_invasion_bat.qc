@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_10"
+$modelname "zombie_riot/weapons/custom_weaponry_1_11"
 
 $bodygroup "scythe"
 {
@@ -53,6 +53,7 @@ $cdmaterials "models\Weapons\V_shotgun\"
 $cdmaterials "wood\"
 $cdmaterials "props\"
 $cdmaterials ""
+$cdmaterials "models\weapons\c_models\c_shotgun"
 
 $cbox 0 0 0 0 0 0
 
