@@ -298,7 +298,7 @@ static void ClotThink(int iNPC)
 			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
 				
 			Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
-			npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
+			npc.m_flNextRangedBarrage_Spam = GameTime + 20.0;
 		}
 
 		Ruina_Self_Defense Melee;

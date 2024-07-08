@@ -327,7 +327,7 @@ static void ClotThink(int iNPC)
 	
 						end_offset = vPredictedPos;
 
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 10.0 : 20.0);
+						npc.m_flNextTeleport = GameTime + (npc.Anger ? 25.0 : 35.0);
 
 						npc.Anger = false;
 										

@@ -288,7 +288,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>600 && npc.m_flNextTeleport < GameTime + 10.0)
+	if(fl_ruina_battery[npc.index]>1000 && npc.m_flNextTeleport < GameTime + 10.0)
 	{
 		Ruina_Master_Rally(npc.index, true);
 		Ruina_Master_Accpet_Slaves(npc.index);
@@ -301,11 +301,14 @@ static void ClotThink(int iNPC)
 
 	Astriana_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
 
-	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
+	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
 		npc.m_flNextTeleport = GameTime + 20.0;
+
+		int color[4];
+		Ruina_Color(color);
 
 		Astria_Teleport_Allies(npc.index, 350.0, {255, 150, 150, 255});
 
@@ -433,7 +436,7 @@ static void Astriana_SelfDefense(Astriana npc, float gameTime)	//ty artvin
 				float DamageDone = 45.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 			}
 		}
 	}

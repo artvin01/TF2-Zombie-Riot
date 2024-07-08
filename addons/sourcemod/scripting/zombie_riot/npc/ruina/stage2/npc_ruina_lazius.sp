@@ -242,8 +242,6 @@ static void ClotThink(int iNPC)
 		if(iPitch < 0)
 			return;		
 
-		
-						
 		//Body pitch
 		float v[3], ang[3];
 		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
@@ -317,7 +315,7 @@ static void ClotThink(int iNPC)
 				if(!IsValidEntity(Laser_End))
 				{
 					bool buffed = false;
-					if(fl_ruina_battery[npc.index]>300.0)
+					if(fl_ruina_battery[npc.index]>600.0)
 					{
 						fl_ruina_battery[npc.index] = 0.0;
 
@@ -328,7 +326,7 @@ static void ClotThink(int iNPC)
 					Ruina_Projectiles Projectile;
 
 					float Laser_Time = 5.0;
-					float Reload_Time = 10.0;
+					float Reload_Time = 13.0;
 					float Projectile_Time = buffed ? Reload_Time : Laser_Time;
 
 					float projectile_speed = buffed ? 420.0 : 500.0;	//in this case, slower is better

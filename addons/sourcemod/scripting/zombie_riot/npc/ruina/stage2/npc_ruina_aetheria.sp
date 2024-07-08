@@ -488,7 +488,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
-			if(fl_ruina_battery[npc.index]>300.0)
+			if(fl_ruina_battery[npc.index]>500.0)
 			{
 				fl_ruina_battery[npc.index] = 0.0;
 				npc.PlayHyperArrowSound();
@@ -496,7 +496,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
 				npc.PlayRangedReloadSound();
 
 				Ruina_Projectiles Projectile;
@@ -559,7 +559,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 				float DamageDone = 50.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.75;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
 			}
 			
 		}
@@ -581,7 +581,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					if(fl_ruina_battery[npc.index]>300.0)
+					if(fl_ruina_battery[npc.index]>500.0)
 					{
 						int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 
@@ -594,7 +594,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
 						npc.PlayRangedReloadSound();
 
 						

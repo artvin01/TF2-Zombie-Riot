@@ -444,7 +444,7 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.25;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 			}
 		}
 	}

@@ -308,7 +308,7 @@ static void ClotThink(int iNPC)
 					Ruina_Projectiles Projectile;
 
 					float Laser_Time = 5.0;
-					float Reload_Time = 10.0;
+					float Reload_Time = 13.5;
 
 					float projectile_speed = 500.0;
 					float target_vec[3];

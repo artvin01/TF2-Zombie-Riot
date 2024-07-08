@@ -257,7 +257,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 300.0, 0.5);	//50% block shield
+		Master_Apply_Shield_Buff(npc.index, 300.0, 0.75);	//25% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
@@ -323,7 +323,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+2.0;
+					npc.m_flNextMeleeAttack = GameTime+4.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original

@@ -281,7 +281,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>750.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -347,7 +347,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+1.0;
+					npc.m_flNextMeleeAttack = GameTime+2.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original

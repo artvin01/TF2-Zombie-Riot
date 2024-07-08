@@ -409,7 +409,7 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			float DamageDone = 25.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.25;
 		}
 	}
 	else
@@ -442,7 +442,7 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 					float DamageDone = 25.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.0;
 					npc.PlayRangedReloadSound();
 				}
 			}

@@ -465,7 +465,7 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 			float DamageDone = 75.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 			npc.PlayRangedReloadSound();
 		}
 	}
