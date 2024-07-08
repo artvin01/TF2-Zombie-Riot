@@ -50,9 +50,9 @@ void Barracks_Combine_Sword_Precache()
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheSoundArray(g_MeleeHitSounds);
-    PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
-    PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Swordsman");
@@ -145,13 +145,13 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Combine_Sword_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Sword_ClotThink;
 		npc.m_flSpeed = 230.0;
-        
+		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
-        npc.m_flRangedSpecialDelay = 0.0;
-        npc.m_flAttackHappens_bullshit = 0.0;
+		npc.m_flRangedSpecialDelay = 0.0;
+		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
@@ -173,12 +173,12 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-      	float TrueArmor = 1.0;
-        if(npc.m_fbRangedSpecialOn)
-        {
-            TrueArmor *= 0.15;
-        }
-        fl_TotalArmor[npc.index] = TrueArmor;
+	  	float TrueArmor = 1.0;
+		if(npc.m_fbRangedSpecialOn)
+		{
+			TrueArmor *= 0.15;
+		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
@@ -204,12 +204,12 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(!npc.m_fbRangedSpecialOn)
-                    {
-                        npc.AddGesture("ACT_PUSH_PLAYER");
-                        npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 1.5;
-                        npc.m_fbRangedSpecialOn = true;
-                        npc.PlayRangedAttackSecondarySound();
-                    }
+					{
+						npc.AddGesture("ACT_PUSH_PLAYER");
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 1.5;
+						npc.m_fbRangedSpecialOn = true;
+						npc.PlayRangedAttackSecondarySound();
+					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
@@ -229,10 +229,10 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
-                        if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-				        {
-					        npc.m_fbRangedSpecialOn = false;
-                        }
+						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+						{
+							npc.m_fbRangedSpecialOn = false;
+						}
 					}
 					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
