@@ -94,7 +94,7 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		#endif
 	}
 	
-	public void PlayDeathSound() {
+	public void PlayNPCDeath() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
@@ -184,6 +184,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
+			npc.PlayIdleAlertSound();
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
@@ -241,7 +242,10 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 				}
 			}
 		}
-
+		else
+		{
+			npc.PlayIdleSound();
+		}
 		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN");
 	}
 }
