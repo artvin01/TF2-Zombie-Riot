@@ -664,7 +664,7 @@
 	}
 	"SMG Pap 6"
 	{
-		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed.\nYou deal more damage the further away you are."
+		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed."
 	}
 	
 	"People Popper Desc"

@@ -66,10 +66,12 @@ public void CuredPurnell_OnMapStart_NPC()
 	NPCId = NPC_Add(data);
 }
 
+/*
 int CuredPurnell_ID()
 {
 	return NPCId;
 }
+*/
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
