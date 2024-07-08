@@ -1375,6 +1375,8 @@ static void Apply_Sickness(int iNPC, int Target)
 	GetClientAbsOrigin(Target, end_point);
 	end_point[2]+=5.0;
 
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, end_point);
+
 	float Thickness = 6.0;
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.75, color, 1, 0);
 	TE_SendToAll();
@@ -1416,7 +1418,7 @@ void Ruina_Color(int color[4])
 		color 	= {255, 255, 255, 255};
 	}
 }
-static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
+Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 {
 	data.Reset();
 	int Team = data.ReadCell();
@@ -1503,6 +1505,61 @@ static Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 			}
 		}
 	}
+
+	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
+
+	int laser;
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 7.0, 7.0, 1.0, BEAM_COMBINE_BLACK, end_point, Sky_Loc);
+	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 5.0, 5.0, 0.1, LASERBEAM, end_point, Sky_Loc);
+	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+	return Plugin_Stop;
+}
+Action Ruina_Generic_Ion(Handle Timer, DataPack data)
+{
+	data.Reset();
+	int iNPC =EntRefToEntIndex(data.ReadCell());
+	float end_point[3];
+	int color[4];
+	data.ReadFloatArray(end_point, sizeof(end_point));
+	data.ReadCellArray(color, sizeof(color));
+	float Radius	= data.ReadFloat();
+	float dmg 		= data.ReadFloat();
+	float Sickness_Multi = data.ReadFloat();
+	int Sickness_flat 	= data.ReadCell();
+	bool Override = data.ReadCell();
+
+	if(!IsValidEntity(iNPC))
+		return Plugin_Stop;
+	/*
+	stock void Explode_Logic_Custom(float damage,
+int client,
+int entity,
+int weapon,
+float spawnLoc[3] = {0.0,0.0,0.0},
+float explosionRadius = EXPLOSION_RADIUS,
+float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
+float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
+bool FromBlueNpc = false,
+int maxtargetshit = 10,
+bool ignite = false,
+float dmg_against_entity_multiplier = 3.0,
+Function FunctionToCallOnHit = INVALID_FUNCTION,
+Function FunctionToCallBeforeHit = INVALID_FUNCTION,
+int inflictor = 0)
+	*/
+
+	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _, Radius, _, _, true, _, _, 2.0);
+
+	if(Sickness_flat || Sickness_Multi)
+		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
+
+	float Thickness = 6.0;
+	TE_SetupBeamRingPoint(end_point, 0.0, Radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.75, Thickness, 0.75, color, 1, 0);
+	TE_SendToAll();
+
+
 
 	float Sky_Loc[3]; Sky_Loc = end_point; Sky_Loc[2]+=1000.0; end_point[2]-=100.0;
 
@@ -2154,8 +2211,6 @@ static Action Ruina_Ion_Timer(Handle time, DataPack pack)
 				AddVectors(cur_vec, Direction, cur_vec);
 				
 				fl_ion_current_location[ion] = cur_vec;
-				
-				
 				
 				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
 				float skyloc[3]; skyloc = cur_vec; skyloc[2] += 3000.0;

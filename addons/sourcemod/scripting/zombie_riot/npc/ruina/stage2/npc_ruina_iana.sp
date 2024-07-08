@@ -50,6 +50,14 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
+static char g_AngerSounds[][] = {	//todo: make it different!
+	"vo/medic_cartgoingforwardoffense01.mp3",
+	"vo/medic_cartgoingforwardoffense02.mp3",
+	"vo/medic_cartgoingforwardoffense03.mp3",
+	"vo/medic_cartgoingforwardoffense06.mp3",
+	"vo/medic_cartgoingforwardoffense07.mp3",
+	"vo/medic_cartgoingforwardoffense08.mp3",
+};
 
 void Iana_OnMapStart_NPC()
 {
@@ -74,6 +82,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(g_AngerSounds);
 	PrecacheModel("models/player/scout.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -83,7 +92,15 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Iana < CClotBody
 {
+	public void PlayAngerSound() {
 	
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::Playnpc.AngerSound()");
+		#endif
+	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -202,6 +219,7 @@ methodmap Iana < CClotBody
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/player/items/all_class/tuxxy_scout.mdl",
 			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
+			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -213,12 +231,14 @@ methodmap Iana < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,1.25,85.0);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_IANA_BLADE);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		SetVariantInt(RUINA_HALO_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-		
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -230,6 +250,8 @@ methodmap Iana < CClotBody
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 6);
+
+		npc.m_iState = 0;
 		
 		return npc;
 	}
@@ -275,7 +297,7 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GameTime + 1.0;
 	}
 
-	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+	int PrimaryThreatIndex = npc.m_iTarget;
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
@@ -283,7 +305,6 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
-		npc.Anger = true;
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
@@ -294,8 +315,11 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+		float Range_Min = (npc.Anger ? (100.0*100.0) : (125.0*125.0));
+		float Range_Max = (npc.Anger ? (1500.0*1500.0) : (1000.0*100.0));
 			
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (750.0 * 750.0))
+		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > Range_Min && flDistanceToTarget < Range_Max)
 		{
 			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
 			static float flVel[3];
@@ -306,13 +330,12 @@ static void ClotThink(int iNPC)
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
 				
-				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos);
-					
+				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos, true);
 					
 				float start_offset[3], end_offset[3];
 				start_offset = Npc_Vec;
 					
-				if(Tele_Check > 200.0)
+				if(Tele_Check > (100.0*100.0))
 				{
 					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 					if(Succeed)
@@ -334,9 +357,7 @@ static void ClotThink(int iNPC)
 	
 						end_offset = vPredictedPos;
 
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 10.0 : 20.0);
-
-						npc.Anger = false;
+						npc.m_flNextTeleport = GameTime + (npc.Anger ? 20.0 : 30.0);
 										
 						for(int help=1 ; help<=8 ; help++)
 						{	
@@ -352,7 +373,66 @@ static void ClotThink(int iNPC)
 					}
 				}
 			}
-		}		
+		}	
+
+		if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
+		{
+			int Enemy_I_See;
+				
+			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+			{
+				int amt_ion = (npc.Anger ? 30 : 15);
+				if(npc.m_iState < amt_ion)
+				{
+					npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.4 : 0.7);
+					npc.m_iState++;
+					float Time = (npc.Anger ? 0.6 : 1.0);
+					float Predicted_Pos[3],
+					SubjectAbsVelocity[3];
+
+					GetEntPropVector(Enemy_I_See, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+					ScaleVector(SubjectAbsVelocity, Time);
+					AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
+
+					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+
+					float Radius = (npc.Anger ? 125.0 : 100.0);
+					float dmg = (npc.Anger ? 450.0 : 300.0);
+					int color[4]; Ruina_Color(color);
+
+					float Thickness = 6.0;
+					TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+					TE_SendToAll();
+					TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
+					TE_SendToAll();
+		
+					DataPack pack;
+					CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+					pack.WriteCell(EntIndexToEntRef(npc.index));
+					pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
+					pack.WriteCellArray(color, sizeof(color));
+					pack.WriteFloat(Radius);
+					pack.WriteFloat(dmg);
+					pack.WriteFloat(0.1);
+					pack.WriteCell(100);
+					pack.WriteCell(false);
+
+					float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+
+					int laser;
+					laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+
+					CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+				}
+				else
+				{
+					npc.m_iState = 0;
+					npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 20.0 : 30.0);
+				}	
+			}
+		}
 
 		Ruina_Self_Defense Melee;
 
@@ -408,6 +488,22 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
+		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	
+	float Ratio = (float(Health)/float(MaxHealth));
+
+	if(!npc.Anger && Ratio < 0.75) 
+	{
+		npc.Anger = true; //	>:(
+		npc.PlayAngerSound();
+
+		if(npc.m_bThisNpcIsABoss)
+		{
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		}
+	}
 		
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
@@ -442,4 +538,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
