@@ -34,7 +34,7 @@ static char g_KilledEnemy[][] = {
 	"cof/purnell/kill4.mp3",
 };
 
-static int NPCId;
+//static int NPCId;
 
 public void CuredPurnell_OnMapStart_NPC()
 {
@@ -63,7 +63,7 @@ public void CuredPurnell_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
+//	NPCId = NPC_Add(data);
 }
 
 /*
