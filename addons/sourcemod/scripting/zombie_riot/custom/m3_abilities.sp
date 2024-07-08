@@ -1033,7 +1033,7 @@ public Action QuantumDeactivate(Handle cut_timer, int ref)
 
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 		ViewChange_DeleteHands(client);
-		//ViewChange_UpdateHands(client, CurrentClass[client]);
+		ViewChange_UpdateHands(client, CurrentClass[client]);
 		if(b_ActivatedDuringLastMann[client])
 		{
 			int MaxHealth = SDKCall_GetMaxHealth(client) * 2;
