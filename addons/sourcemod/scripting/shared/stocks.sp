@@ -735,6 +735,11 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		EquipPlayerWeapon(client, entity);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
+
+		//TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
+		//TF2Attrib_SetByDefIndex(entity, 725, 0.0);
+		//TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
+		//TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
 	}
 
 #if defined ZR || defined RPG
