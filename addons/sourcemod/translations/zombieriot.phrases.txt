@@ -3176,4 +3176,8 @@
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
 	}
+	"purnell_message"
+	{
+		"en"	"Relax, I'm not one of them."
+	}
 }
