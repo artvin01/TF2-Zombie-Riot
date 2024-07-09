@@ -15,7 +15,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
 
 #define QUINCY_BOW_HYPER_CHARGE	1000.0
-#define QUINCY_BOW_ONHIT_GAIN	25.0
+#define QUINCY_BOW_ONHIT_GAIN	50.0
 static float fl_hyper_arrow_charge[MAXTF2PLAYERS];
 
 float fl_trace_target_timeout[MAXTF2PLAYERS+1][MAXENTITIES];
