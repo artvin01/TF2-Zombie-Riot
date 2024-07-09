@@ -492,7 +492,6 @@ float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
 float f_Ruina_Attack_Buff[MAXENTITIES];
 float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
 #endif
-float f_GodArkantosBuff[MAXENTITIES];
 float f_GodAlaxiosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
@@ -2775,7 +2774,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #if defined RUINA_BASE
 		Ruina_Reset_Starts_Npc(entity);
 #endif
-		f_GodArkantosBuff[entity] = 0.0;
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
 		f_Ruina_Attack_Buff[entity] = 0.0;
