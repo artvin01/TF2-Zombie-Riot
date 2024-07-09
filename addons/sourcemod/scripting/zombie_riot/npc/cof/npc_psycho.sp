@@ -19,9 +19,6 @@ static const char g_MeleeHitSounds[][] = {
 
 void Psycho_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSoundCustom(g_DeathSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/zombie_riot/cof/psycho.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Psycho");
@@ -31,9 +28,16 @@ void Psycho_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSoundCustom(g_DeathSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {

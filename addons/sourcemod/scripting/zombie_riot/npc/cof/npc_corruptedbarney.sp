@@ -60,15 +60,6 @@ static char g_MeleeAttackSounds[][] = {
 
 void CorruptedBarney_OnMapStart_NPC()
 {
-	PrecacheSoundArray(g_DeathSounds);
-	PrecacheSoundArray(g_HurtSounds);
-	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundCustom(g_IntroSound);
-	PrecacheSoundCustom(g_SpawnSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundCustom(g_MeleeAttackSounds);
-	PrecacheSoundCustom(g_IdleAlertedSounds);
-	PrecacheSoundCustom("#zombiesurvival/cof/barney.mp3");
 	PrecacheModel("models/zombie_riot/cof/barney.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Corrupted Barney");
@@ -78,9 +69,22 @@ void CorruptedBarney_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
 }
 
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundCustom(g_IntroSound);
+	PrecacheSoundCustom(g_SpawnSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundCustom(g_MeleeAttackSounds);
+	PrecacheSoundCustom(g_IdleAlertedSounds);
+	PrecacheSoundCustom("#zombiesurvival/cof/barney.mp3");
+}
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {

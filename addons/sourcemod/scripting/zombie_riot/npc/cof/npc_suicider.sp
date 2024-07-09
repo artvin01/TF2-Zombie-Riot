@@ -29,10 +29,6 @@ static bool b_IsNightmare[MAXENTITIES];
 
 void Suicider_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSoundCustom(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSoundCustom(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSoundCustom(g_IntroSound[i]);		}
 	PrecacheModel(COF_SUICIDER_MODEL_PATH);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Suicider");
@@ -42,7 +38,16 @@ void Suicider_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSoundCustom(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSoundCustom(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSoundCustom(g_IntroSound[i]);		}
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
