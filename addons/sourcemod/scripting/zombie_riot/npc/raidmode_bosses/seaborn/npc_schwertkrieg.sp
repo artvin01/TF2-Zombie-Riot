@@ -153,7 +153,7 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero(fl_groupteleport_timer);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Name, sizeof(data.Name), "Karlas");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
