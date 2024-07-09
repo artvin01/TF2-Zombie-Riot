@@ -23,7 +23,7 @@ void Doctor_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Doctor Purnell");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_city");
-	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	strcopy(data.Icon, sizeof(data.Icon), "purnell");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;

@@ -16,7 +16,7 @@ void Simon_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Book Simon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_simon");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_libertylauncher");
+	strcopy(data.Icon, sizeof(data.Icon), "simon");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
