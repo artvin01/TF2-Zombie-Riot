@@ -3036,7 +3036,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
+		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
 	}
 	"Khaml Desc"
 	{
