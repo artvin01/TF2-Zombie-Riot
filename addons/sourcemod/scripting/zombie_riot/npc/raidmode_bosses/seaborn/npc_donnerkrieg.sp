@@ -419,6 +419,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCFuncWin[npc.index] = Win_Line;
 			
 		
 		/*
@@ -525,6 +526,25 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 	}
 	
 	
+}
+
+static void Win_Line(int entity)
+{	
+	char name_color[255]; name_color = "aqua";
+	char text_color[255]; text_color = "snow";
+
+	char text_lines[255];
+	int ally = EntRefToEntIndex(i_ally_index);
+	if(IsValidEntity(ally))
+	{
+		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+	}
+	else
+	{
+		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh my, how annoying this has become...", name_color, text_color);
+	}
+	b_donner_said_win_line = true;
+	CPrintToChatAll(text_lines);
 }
 
 void Donnerkrieg_SpawnAllyDuoRaid(int ref)

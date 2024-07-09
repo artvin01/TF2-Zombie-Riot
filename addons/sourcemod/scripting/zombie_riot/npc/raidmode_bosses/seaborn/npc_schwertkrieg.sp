@@ -448,12 +448,22 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		{
 			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
 		}
+
+		func_NPCFuncWin[npc.index] = Win_Line;
 		
 		
 		return npc;
 	}
 }
+static void Win_Line(int entity)
+{
+	if(b_raidboss_donnerkrieg_alive)
+		return;
+	
+	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
 
+	b_donner_said_win_line = true;
+}
 public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
