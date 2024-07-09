@@ -35,6 +35,19 @@ static const char g_RangedReloadSound[][] = {
 
 void Europis_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Europis");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_europis");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "pyro"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -42,18 +55,13 @@ void Europis_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/pyro.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Europis");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_europis");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Europis(client, vecPos, vecAng, ally);
 }
+
+static float fl_npc_basespeed;
 
 methodmap Europis < CClotBody
 {
@@ -132,8 +140,8 @@ methodmap Europis < CClotBody
 		
 		
 		/*
-			freedom staff		models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl
-			wraith wrap 	Hwn_Pyro_Spookyhood	"models/player/items/pyro/hwn_pyro_spookyhood.mdl"
+			All Father	"models/workshop/player/items/all_class/xms_beard/xms_beard_%s.mdl"
+			Big chief - "models/player/items/heavy/heavy_big_chief.mdl"
 			mair mask		"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
 			pyromancer		Dec2014_Pyromancers_Raiments	"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl"
 			hypno-eyes
@@ -150,36 +158,33 @@ methodmap Europis < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-    	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/hwn_pyro_spookyhood.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hazeguard/hazeguard.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		
+
+		static const char Items[][] = {
+			"models/player/items/heavy/heavy_big_chief.mdl",
+			"models/workshop/player/items/all_class/xms_beard/xms_beard_medic.mdl",
+			"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl",
+			"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl",
+			RUINA_CUSTOM_MODELS_1
+		};
+
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-				
-				
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _);
+		//npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_EUR_STAFF_1);
+		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -234,12 +239,13 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>6000.0)
+	if(fl_ruina_battery[npc.index]>4000.0)
 	{
 		if(Zombies_Currently_Still_Ongoing < NPC_HARD_LIMIT)
 		{
 			fl_ruina_battery[npc.index] = 0.0;
 			Europis_Spawn_Self(npc);
+			Master_Apply_Speed_Buff(npc.index, 100.0, 10.0, 1.75);	//a strong buff.
 		}
 		
 	}
@@ -325,7 +331,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -354,6 +360,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 }
 static void Europis_Spawn_Minnions(Europis npc)
 {
@@ -369,8 +377,20 @@ static void Europis_Spawn_Minnions(Europis npc)
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			
 			int spawn_index;
+
+			char NpcName[50];
+
+			switch(GetRandomInt(0, 5))
+			{
+				case 0:
+					NpcName = "npc_ruina_magia";
+				case 3:
+					NpcName = "npc_ruina_lanius";
+				default: 
+					NpcName = "npc_ruina_dronian";
+			}
 			
-			spawn_index = NPC_CreateByName("npc_ruina_dronian", npc.index, pos, ang, GetTeam(npc.index));
+			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 
 			if(spawn_index > MaxClients)
@@ -378,6 +398,9 @@ static void Europis_Spawn_Minnions(Europis npc)
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+
+				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 			}
 		}
 	}
@@ -395,13 +418,16 @@ static void Europis_Spawn_Self(Europis npc)
 	int spawn_index;
 			
 	spawn_index = NPC_CreateByName("npc_ruina_europis", npc.index, pos, ang, GetTeam(npc.index));
-	maxhealth = RoundToNearest(maxhealth * 0.75);
+	maxhealth = RoundToNearest(maxhealth * 0.8);
 
 	if(spawn_index > MaxClients)
 	{
 		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+
+		float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 	}
 }
 static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty artvin
@@ -417,6 +443,8 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
+
 	if(flDistanceToTarget < (1000.0*1000.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -434,7 +462,7 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 			{
 				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
-			float DamageDone = 50.0;
+			float DamageDone = 75.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -471,7 +499,7 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 					{
 						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
-					float DamageDone = 25.0;
+					float DamageDone = 50.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -482,7 +510,10 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 	}
 	if(npc.m_bAllowBackWalking)
 	{
-		npc.FaceTowards(vecTarget, 350.0);
-	}
+		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+	}	
+	else
+		npc.m_flSpeed = fl_npc_basespeed;
 	npc.m_iTarget = GetClosestEnemyToAttack;
 }

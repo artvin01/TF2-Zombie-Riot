@@ -183,11 +183,15 @@ enum
 	WEAPON_MERCHANT = 103,
 	WEAPON_MERCHANTGUN = 104,
 	WEAPON_RUSTY_RIFLE = 105,
-	WEAPON_MG42 = 106
+	WEAPON_MG42 = 106,
+	WEAPON_ION_BEAM_PULSE = 107,
+	WEAPON_ION_BEAM_NIGHT = 108,
+	WEAPON_ION_BEAM_FEED  = 109
 }
 
 enum
 {
+	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -546,8 +550,10 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	
+	#if defined RUINA_BASE
 	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
 	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
+	#endif
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);

@@ -1834,14 +1834,14 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
+	#if defined RUINA_BASE
 	else if(f_Ruina_Defense_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Speed_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
+	#endif
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
 		return true;

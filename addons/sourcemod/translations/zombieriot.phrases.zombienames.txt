@@ -1970,6 +1970,18 @@
 	{
 		"en"	"Stella"
 	}
+	"Karlas"
+	{
+		"en"	"Karlas"
+	}
+	"Heliara"
+	{
+		"en"	"Heliara"
+	}
+	"Helia"
+	{
+		"en"	"Helia"
+	}
 	"Astria"
 	{
 		"en"	"Astria"
@@ -2289,5 +2301,13 @@
 	"Fallen Warrior"
 	{
 		"en"	"Guln the Fallen One"
+	}
+	"Lex"
+	{
+		"en"	"Lex"
+	}
+	"Iana"
+	{
+		"en"	"Iana"
 	}
 }

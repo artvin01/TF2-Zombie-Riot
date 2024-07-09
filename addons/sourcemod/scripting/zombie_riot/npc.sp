@@ -320,6 +320,7 @@ void NPC_ConfigSetup()
 	Isharmla_Precache();
 	IsharmlaTrans_MapStart();
 	
+#if defined RUINA_BASE
 	//Ruina waves	//warp
 	Ruina_Ai_Core_Mapstart();
 	//Stage 1.
@@ -327,7 +328,7 @@ void NPC_ConfigSetup()
 	Adiantum_OnMapStart_NPC();
 	Lanius_OnMapStart_NPC();
 	Magia_OnMapStart_NPC();
-	Stella_OnMapStart_NPC();
+	Helia_OnMapStart_NPC();
 	Astria_OnMapStart_NPC();
 	Aether_OnMapStart_NPC();
 	Europa_OnMapStart_NPC();
@@ -340,7 +341,7 @@ void NPC_ConfigSetup()
 	//Stage 2.
 	Laniun_OnMapStart_NPC();
 	Magnium_OnMapStart_NPC();
-	Stellaria_OnMapStart_NPC();
+	Heliara_OnMapStart_NPC();
 	Astriana_OnMapStart_NPC();
 	Europis_OnMapStart_NPC();
 	Draedon_OnMapStart_NPC();
@@ -349,11 +350,15 @@ void NPC_ConfigSetup()
 	Ruianus_OnMapStart_NPC();
 	Lazius_OnMapStart_NPC();
 	Dronian_OnMapStart_NPC();
+	Lex_OnMapStart_NPC();
+	Iana_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
+
+#endif
 
 	//Expidonsa Waves
 //wave 1-15:
@@ -914,7 +919,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/raidmode_bosses/npc_blitzkrieg.sp"
 #include "zombie_riot/npc/raidmode_bosses/npc_god_alaxios.sp"
 
-
+#if defined RUINA_BASE
 //Ruina
 
 #include "zombie_riot/npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
@@ -923,7 +928,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_adiantum.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_lanius.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_magia.sp"
-#include "zombie_riot/npc/ruina/stage1/npc_ruina_stella.sp"
+#include "zombie_riot/npc/ruina/stage1/npc_ruina_helia.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_astria.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_aether.sp"
 #include "zombie_riot/npc/ruina/stage1/npc_ruina_europa.sp"
@@ -936,7 +941,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 //Stage 2
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_laniun.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_magnium.sp"
-#include "zombie_riot/npc/ruina/stage2/npc_ruina_stellaria.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_heliara.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_astriana.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_europis.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_draedon.sp"
@@ -945,14 +950,16 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_ruianus.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_lazius.sp"
 #include "zombie_riot/npc/ruina/stage2/npc_ruina_dronian.sp"
-
-
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_lex.sp"
+#include "zombie_riot/npc/ruina/stage2/npc_ruina_iana.sp"
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
+
+#endif
 
 //Alt
 

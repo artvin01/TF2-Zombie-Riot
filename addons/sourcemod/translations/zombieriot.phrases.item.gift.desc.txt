@@ -598,11 +598,11 @@
 	}
 	"Donnerkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, he has mastered the art of light and energy\nThanks to those arts he posses an EXTREMELY dangerous ''Nightmare Cannon''\nAvoid line of sight at all costs"
+		"en"		"Forced into servitutde by Blitzkrieg\nPosses a powerful ''Nightmare Cannon''\nIt is advised to not touch it.."
 	}
 	"Schwertkrieg Desc"
 	{
-		"en"		"A minion of Blitzkrieg, He poses the ability to teleport long distances\nHighly dangerous up close."
+		"en"		"Forced into servitutde by Blitzkrieg\nHe completely lost his individuality\nHe poses the ability to teleport long distances\nHighly dangerous up close."
 	}
 	"Phantom Knight Desc"
 	{
@@ -1031,11 +1031,11 @@
 	}
 	"Barracks SchwertKrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Donnerkrieg Desc"
 	{
-		"en"		"the only humans from blitz's army, from a city unknown now fighting with you together."
+		"en"		"the only human-like indivdual from blitz's army, from a city unknown, now fighting with you together."
 	}
 	"Barracks Holy Knight Desc"
 	{
@@ -1131,7 +1131,7 @@
 	}
 	"Theocracy Desc"
 	{
-		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multipl targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
+		"en"		"A pseudo magic knight, the first half of itself.\nBattery: The npc's Melee hits gain the ability to hit multiple targets, however each target takes the same amount of damage\nAdditionally, that damage is reduced for targets hit by the ''strings''\nMaster: Commands Melee npc's"
 	}
 	"Benera Desc"
 	{
@@ -1167,11 +1167,11 @@
 	}
 	"Lanius Desc"
 	{
-		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems having warriors are inevitable...\nBattery: boosts the speed of friendly melee units"
+		"en"	"A Simple Warrior of the Ruanians\nFunnily enough, even though they prefer magic, it seems that warriors are inevitable no matter the culture...\nBattery: boosts the speed of friendly melee units"
 	}
 	"Magia Desc"
 	{
-		"en"	"A Basic Mage of the Ruanians\nStays holds a magic crest\nBattery: boosts the speed of friendly ranged units"
+		"en"	"A Basic Mage of the Ruanians\nHolds a magic crest\nBattery: boosts the speed of friendly ranged units"
 	}
 	"Heavy Punuel Desc"
 	{
@@ -1273,7 +1273,7 @@
 	{
 		"en"	"What can be as strong as Bob?"
 	}
-	"Stella Desc"
+	"Helia Desc"
 	{
 		"en"		"This npc stays at a distance from the main fight.\nAny npc's within range of it are healed passively\nBattery: Heals a group of npc's regardless of range"
 	}
@@ -1295,7 +1295,7 @@
 	}
 	"Ruriana Desc"
 	{
-		"en"		"A more powerful Lanius, however lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
+		"en"		"A more powerful Lanius, additionally lacks the ability to teleport on its own, and lacks the speed buffing abilitity\nHowever, damage taken in the last 5 seconds gets converted into AOE healing with a 2 dmg to 1 healing ratio\nThe healing cap is 10%% of the npc's health"
 	}
 	"Valiant Desc"
 	{
@@ -1303,11 +1303,11 @@
 	}	
 	"Magia Anchor Desc"
 	{
-		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns..."
+		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
 	}
 	"Storm Weaver Desc"
 	{
-		"en"		"A servant of The Scourge" 	//NEED DESC
+		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
 	}
 	"Daedalus Desc"
 	{
@@ -1315,23 +1315,23 @@
 	}
 	"Malius Desc"
 	{
-		"en"	"Has the ability to boost nearby npc's battery"
+		"en"	"Has the ability to boost nearby npc's battery\nIts best to take these out first..."
 	}
 	"Laz Desc"
 	{
-		"en"	"A magical laser wielding mage"
+		"en"	"A magical laser wielding mage\nIts laser acts moreso like a rocket with slight homing\nRemember that when trying to dodge!"
 	}
 	"Laniun Desc"	//Need descs
 	{
-		"en"	"A stronger variant of Lanius"
+		"en"	"A stronger variant of Lanius\nHowever, anything inbetween where it teleported takes a bit of damage."
 	}
 	"Magnium Desc"
 	{
-		"en"	"A stronger magia, has a special magic ICBM, very dangerous"
+		"en"	"A stronger magia\nIt casts spell's slower, but can cast 2 of them in a short burst before needing to recharged\nin addition, it has a special magic homing ICBM, very dangerous"
 	}
-	"Stellaria Desc"
+	"Heliara Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Helia"
 	}
 	"Astriana Desc"
 	{
@@ -1339,15 +1339,15 @@
 	}
 	"Europis Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nAdditionally, when it duplicates itself, any Ruina Npc nearby will have their speed heavily buffed\nIt also weilds a pizza cutter as its magic weapon!"
 	}
 	"Draedon Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Daedalus\nthats it, oh also it holds a magic gun instead of a magic dumpster device"
 	}
 	"Aetheria Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Aether, its battery allows it to fire a powerfull laser.\nCaution is advised"
 	}
 	"Maliana Desc"
 	{
@@ -1355,11 +1355,11 @@
 	}
 	"Ruianus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Alongside what the previou one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
 	}
 	"Lazius Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger Laz, additionally it has the ability to fire an EVEN STRONGER laser!!! As its battery."
 	}
 	"Dronian Desc"
 	{
@@ -1552,5 +1552,21 @@
 	"Mr.X Desc"
 	{
 		"en"	"Activator of the xeno infection source, real name was Virothorn.\nCan dash, one grabs you which snaps your neck, the other hits repeatatly but different enemies in an AOE."
+	}
+	"Lex Desc"
+	{
+		"en"	"The first half of Lexiana"
+	}
+	"Iana Desc"
+	{
+		"en"	"The second half of Lexiana"
+	}
+	"Stella Desc"
+	{
+		"en"		"The true name of ''Donnerkrieg''\nHer spells are far more refined and ''pure'' compared to her enslaved state\nAlonside that she's wearing the most recent Ruanian fashion AND protective gear\nJust don't get poked by her ears...\n(Silence: Lowers the "corosion" index by 1)"
+	}
+	"Karlas Desc"
+	{
+		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time Karlas preforms a strike, these swords ''regenerate''"
 	}
 }

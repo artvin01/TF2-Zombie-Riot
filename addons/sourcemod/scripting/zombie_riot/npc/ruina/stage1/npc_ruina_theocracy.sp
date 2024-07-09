@@ -73,6 +73,19 @@ static int i_string_Theory_battery[MAXENTITIES];
 
 public void Theocracy_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Theocracy");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
+	data.Category = -1;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_charge_sound);
@@ -81,13 +94,6 @@ public void Theocracy_OnMapStart_NPC()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel(LASERBEAM);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Theocracy");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -219,7 +225,7 @@ methodmap Theocracy < CClotBody
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 		
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 330.0;
 
 		npc.StartPathing();
 		
@@ -319,114 +325,113 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+		if(npc.m_flDoingAnimation<=GameTime)
+			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+		
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.25);	//25% speed bonus, going bellow 1.0 will make npc's slower
+		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
+		
+		
+		if(fl_rally_timer[npc.index]<=GameTime && !b_rally_active[npc.index])
+		{
+			Ruina_Master_Rally(npc.index, true);	//start rally
+			fl_rally_timer[npc.index] = GameTime + 15.0;
+			b_rally_active[npc.index] = true;
+		}
+		if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GameTime)
+		{
+			Ruina_Master_Rally(npc.index, false);	//end rally
+			fl_rally_timer[npc.index] = GameTime + 10.0;
+			b_rally_active[npc.index] = false;
+		}
+		
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		
+		if(npc.m_flNextRangedBarrage_Spam < GameTime)
+		{	
 			
-			if(npc.m_flDoingAnimation<=GameTime)
-				Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_flSpeed = 0.0;
 			
-			Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
-			Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.25);	//25% speed bonus, going bellow 1.0 will make npc's slower
-			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
-			Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
-			
-			
-			if(fl_rally_timer[npc.index]<=GameTime && !b_rally_active[npc.index])
-			{
-				Ruina_Master_Rally(npc.index, true);	//start rally
-				fl_rally_timer[npc.index] = GameTime + 15.0;
-				b_rally_active[npc.index] = true;
-			}
-			if(b_rally_active[npc.index] && fl_rally_timer[npc.index]<=GameTime)
-			{
-				Ruina_Master_Rally(npc.index, false);	//end rally
-				fl_rally_timer[npc.index] = GameTime + 10.0;
-				b_rally_active[npc.index] = false;
-			}
-			
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-			
-			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			
-			if(npc.m_flNextRangedBarrage_Spam < GameTime)
-			{	
-				
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				npc.m_flSpeed = 0.0;
-				
-				npc.SetPlaybackRate(1.0);	
-				npc.SetCycle(0.0);
-						
-				npc.AddActivityViaSequence("taunt_yetipunch");
-				npc.m_flRangedArmor = 0.5;
-				npc.m_flMeleeArmor = 0.5;
-				npc.m_flDoingAnimation = GameTime + 6.25;
-				CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
-				
-				CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
-				
-				if(IsValidEntity(npc.m_iWearable3))
-					RemoveEntity(npc.m_iWearable3);
-			
-				
-				npc.m_flNextRangedBarrage_Spam = GameTime + 30.0;
-
-			}
+			npc.SetPlaybackRate(1.0);	
+			npc.SetCycle(0.0);
 					
-			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
-			{
-				//Look at target so we hit.
-			//	npc.FaceTowards(vecTarget, 1000.0);
+			npc.AddActivityViaSequence("taunt_yetipunch");
+			npc.m_flRangedArmor = 0.5;
+			npc.m_flMeleeArmor = 0.5;
+			npc.m_flDoingAnimation = GameTime + 6.25;
+			CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+			
+			CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+			
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+		
+			
+			npc.m_flNextRangedBarrage_Spam = GameTime + 30.0;
+
+		}
 				
-				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GameTime)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+		{
+			//Look at target so we hit.
+		//	npc.FaceTowards(vecTarget, 1000.0);
+			
+			//Can we attack right now?
+			if(npc.m_flNextMeleeAttack < GameTime)
+			{
+				//Play attack ani
+				if (!npc.m_flAttackHappenswillhappen)
 				{
-					//Play attack ani
-					if (!npc.m_flAttackHappenswillhappen)
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+					npc.m_flAttackHappens = GameTime+0.4;
+					npc.m_flAttackHappens_bullshit = GameTime+0.54;
+					npc.m_flAttackHappenswillhappen = true;
+				}
+					
+				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+				{
+					Handle swingTrace;
+					npc.FaceTowards(vecTarget, 20000.0);
+					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
-						npc.m_flAttackHappens = GameTime+0.4;
-						npc.m_flAttackHappens_bullshit = GameTime+0.54;
-						npc.m_flAttackHappenswillhappen = true;
-					}
+						int target = TR_GetEntityIndex(swingTrace);	
 						
-					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						Handle swingTrace;
-						npc.FaceTowards(vecTarget, 20000.0);
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						
+						if(target > 0) 
 						{
-							int target = TR_GetEntityIndex(swingTrace);	
 							
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
+							Theocracy_Melee_Hit(EntIndexToEntRef(npc.index), EntIndexToEntRef(target), vecHit);
 							
-							if(target > 0) 
-							{
-								
-								Theocracy_Melee_Hit(EntIndexToEntRef(npc.index), EntIndexToEntRef(target), vecHit);
-								
-								// Hit sound
-								npc.PlayMeleeHitSound();
-								
-							} 
-						}
-						delete swingTrace;
-						npc.m_flNextMeleeAttack = GameTime + 0.8;
-						npc.m_flAttackHappenswillhappen = false;
+							// Hit sound
+							npc.PlayMeleeHitSound();
+							
+						} 
 					}
-					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-					{
-						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GameTime + 0.8;
-					}
+					delete swingTrace;
+					npc.m_flNextMeleeAttack = GameTime + 0.8;
+					npc.m_flAttackHappenswillhappen = false;
+				}
+				else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+				{
+					npc.m_flAttackHappenswillhappen = false;
+					npc.m_flNextMeleeAttack = GameTime + 0.8;
 				}
 			}
-			else
-			{
-				npc.StartPathing();
-				
-			}
+		}
+		else
+		{
+			npc.StartPathing();
+			
+		}
 	}
 	else
 	{

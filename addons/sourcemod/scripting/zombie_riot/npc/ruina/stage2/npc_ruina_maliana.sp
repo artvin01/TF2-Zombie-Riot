@@ -45,6 +45,20 @@ static const char g_IdleSounds[][] = {
 
 void Maliana_OnMapStart_NPC()
 {
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Maliana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_maliana");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -53,18 +67,13 @@ void Maliana_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheModel("models/player/engineer.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Maliana");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_maliana");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Maliana(client, vecPos, vecAng, ally);
 }
+
+static float fl_npc_basespeed;
 
 methodmap Maliana < CClotBody
 {
@@ -146,19 +155,40 @@ methodmap Maliana < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PDA");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
 		
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-			Angel of death		"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl"
+			Iron Lung			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl"
 			demonic dome		"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl"
-			dread hiding hood	"models/workshop/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl"
-			construction pda	"models/weapons/c_models/c_builder/c_builder.mdl"
+			Bone Cone			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl"
+			Sleuth Suit			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl"
 			airtight arsonist	"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl"
-		
 		*/
+		static const char Items[][] = {
+			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
+			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl",
+			"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl",
+			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl",
+			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl",
+			"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl",
+			RUINA_CUSTOM_MODELS_1
+		};
+
+		int skin = 1;	//1=blue, 0=red
+		SetVariantInt(1);	
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_STAFF_1);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -170,52 +200,22 @@ methodmap Maliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 270.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/thief_sniper_cape/thief_sniper_cape.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_builder/c_builder.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
+
+		npc.Anger = false;
 		
-		Ruina_Set_Battery_Buffer(npc.index, true);
+		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
+		Ruina_Set_Battery_Buffer(npc.index, true);
 
 		return npc;
 	}
@@ -253,22 +253,67 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.25);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
-	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
+	
 	
 	if(fl_ruina_battery[npc.index]>500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
+
+		npc.AddActivityViaSequence("taunt_drg_melee");
+		npc.SetCycle(0.01);
+		npc.SetPlaybackRate(0.7);
+
+		npc.m_flSpeed = 0.0;
+
+		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
+		TE_SendToAll();
+
+		npc.m_flRangedArmor = 0.5;
+		npc.m_flMeleeArmor 	= 0.5;
+
+		npc.Anger = false;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 300.0, 25.0);
+		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+
+		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
+		{
+			npc.Anger = true;
+			npc.SetPlaybackRate(0.0);
+			npc.SetCycle(0.5);
+		}
+		else if(fl_ruina_battery_timer[npc.index] < GameTime + 1.0 && npc.Anger)
+		{
+			npc.Anger = false;
+			npc.SetPlaybackRate(0.5);
+		}	
+
+		return;
+	}
+	else
+	{
+
+		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+
+		if(npc.m_flSpeed != 300.0)
+		{
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+
+			npc.m_flSpeed = 300.0;
+			npc.m_flRangedArmor = 1.0;
+			npc.m_flMeleeArmor = 1.0;
+		}
+			
 	}
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -278,7 +323,6 @@ static void ClotThink(int iNPC)
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 			
 		if(!IsValidEntity(Anchor_Id))
@@ -321,8 +365,16 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}	
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+
 		Maliana_SelfDefense(npc, GameTime, Anchor_Id);
-		npc.FaceTowards(vecTarget);
 	}
 	else
 	{
@@ -408,7 +460,7 @@ static void Maliana_SelfDefense(Maliana npc, float gameTime, int Anchor_Id)	//ty
 			//This will predict as its relatively easy to dodge
 			Maliana_Effects_Attack(npc, vecTarget, GetClosestEnemyToAttack, flDistanceToTarget);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.0;
 			npc.PlayRangedReloadSound();
 		}
 	}
@@ -456,7 +508,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -489,5 +541,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 	
 }

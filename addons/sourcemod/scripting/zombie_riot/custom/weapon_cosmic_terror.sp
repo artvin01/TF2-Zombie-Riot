@@ -977,6 +977,9 @@ static void Kill_Railgun(int client)
 	b_Railgun_Charging[client]=false;
 }
 
+static float fl_innacuracy_angles[MAXTF2PLAYERS];
+static float fl_accuracy_multi[MAXTF2PLAYERS];
+static float fl_accuracy_switch_speed[MAXTF2PLAYERS];
 public void Cosmic_Terror_Railgun(int client, int weapon, bool &result, int slot)
 {
 	if(b_Railgun_Charging[client])
@@ -988,6 +991,12 @@ public void Cosmic_Terror_Railgun(int client, int weapon, bool &result, int slot
 	{
 		float GameTime = GetGameTime();
 
+
+		fl_accuracy_multi[client] = GetRandomFloat(-1.0, 1.0);
+
+		fl_accuracy_switch_speed[client] = GameTime + 0.25;
+
+		fl_innacuracy_angles[client] = GetRandomFloat(0.0, 360.0);
 		Cosmic_Terror_Trace_Delay[client] = 0.0;
 		b_Railgun_Charging[client]=true;
 		fl_Railgun_charge[client] = GameTime;
@@ -1022,18 +1031,14 @@ static void Railgun_Fire(int client)
 
 	if(Ratio > 0.0)
 	{
-		float tempAngles[3], EndLoc[3];
-		tempAngles[0] = 0.0;
-		tempAngles[1] = GetRandomFloat(0.0,360.0);
-		tempAngles[2] = 0.0;
+		float Accuracy_Angles[3];
+		Accuracy_Angles[0] = 0.0;
+		Accuracy_Angles[1] = fl_innacuracy_angles[client];
+		Accuracy_Angles[2] = 0.0;
+		Get_Fake_Forward_Vec(RAILGUN_INNACURACY_RANGE*Ratio, Accuracy_Angles, Loc, Loc);
 
-		Get_Fake_Forward_Vec(RAILGUN_INNACURACY_RANGE*Ratio, tempAngles, EndLoc, Loc);
-
-			
-		TE_SetupBeamPoints(EndLoc, Sky_Loc, BeamWand_Laser, 0, 0, 0, Time, Thicc1, Thicc2, 0, 1.0, color, 1);
+		TE_SetupBeamPoints(Loc, Sky_Loc, BeamWand_Laser, 0, 0, 0, Time, Thicc1, Thicc2, 0, 1.0, color, 1);
 		TE_SendToAll();	
-
-		Loc = EndLoc;
 	}
 	else
 	{
@@ -1140,9 +1145,23 @@ static Action Railgun_Think(int client)
 	float thicc = 3.0;
 	if(Ratio > 0.0)
 	{
-		float Range = RAILGUN_INNACURACY_RANGE * Ratio+Extra_Visual_Range;
 
-		TE_SetupBeamRingPoint(Loc, Range*2.0, Range*2.0+1.0, gLaser1, gLaser1, 0, 1, COSMIC_TERROR_TE_DELAY, thicc, 0.1, color, 1, 0);
+		float Range = Extra_Visual_Range;
+
+		fl_innacuracy_angles[client] += (3.5*Ratio)*fl_accuracy_multi[client];
+
+		if(fl_innacuracy_angles[client]>360.0)
+			fl_innacuracy_angles[client]=0.0;
+		if(fl_innacuracy_angles[client]<0.0)
+			fl_innacuracy_angles[client]=360.0;
+
+		float Accuracy_Angles[3], Location[3];
+		Accuracy_Angles[0] = 0.0;
+		Accuracy_Angles[1] = fl_innacuracy_angles[client];
+		Accuracy_Angles[2] = 0.0;
+		Get_Fake_Forward_Vec(RAILGUN_INNACURACY_RANGE*Ratio, Accuracy_Angles, Location, Loc);
+
+		TE_SetupBeamRingPoint(Location, Range*2.0, Range*2.0+1.0, gLaser1, gLaser1, 0, 1, COSMIC_TERROR_TE_DELAY, thicc, 0.1, color, 1, 0);
 		TE_SendToAll();
 
 		int Spam_Amt = 3;
@@ -1154,7 +1173,7 @@ static Action Railgun_Think(int client)
 			tempAngles[1] = Angles + (360.0/Spam_Amt)*i;
 			tempAngles[2] = 0.0;
 
-			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Loc);
+			Get_Fake_Forward_Vec(Range, tempAngles, EndLoc, Location);
 
 			TE_SetupGlowSprite(EndLoc, gGlow1, COSMIC_TERROR_TE_DELAY, 0.5, 50);
 			TE_SendToClient(client);
@@ -1231,6 +1250,8 @@ public void Cosmic_Terror_RailCannon(int client, int weapon, bool crit, int slot
 
 		fl_Railcannon_recharge[client] = GameTime+10.0;
 
+		CPrintToChatAll("railgun pew");
+
 		i_Railcannon_ammo[client]--;
 	}
 	else
@@ -1246,16 +1267,22 @@ static void Railcannon_Logic(int client, int weapon)
 {
 	float GameTime = GetGameTime();
 
+	if(fl_accuracy_switch_speed[client] < GameTime)
+	{
+		fl_accuracy_switch_speed[client] = GameTime + GetRandomFloat(0.25, 0.5);
+		fl_accuracy_multi[client] = GetRandomFloat(-1.0, 1.0);
+	}
+
 	if(fl_hud_timer[client] < GameTime)
 	{
 		fl_hud_timer[client] = GameTime+0.5;
 
-		int Heat = RoundToFloor((Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client]);
+		float Heat = (Cosmic_Heat[client]*100)/Cosmic_Heat_Max[client];
 
 		char HUDText[255] = "";
 		if(!b_Railgun_Charging[client])
 		{
-			Format(HUDText, sizeof(HUDText), "%sRailgun Offline | Heat: %i％\n", HUDText, Heat);
+			Format(HUDText, sizeof(HUDText), "Railgun Offline | Heat: Ę%.0f%%%%%%%%%Ė", Heat);
 		}
 		else
 		{
@@ -1266,7 +1293,7 @@ static void Railcannon_Logic(int client, int weapon)
 			if(Ratio>100.0)
 				Ratio = 100.0;
 
-			Format(HUDText, sizeof(HUDText), "%sRailgun Accuracy [%.0f％] | Heat: %i％\n", HUDText, Ratio, Heat);
+			Format(HUDText, sizeof(HUDText), "Railgun Accuracy [%.0f%%%%%%%%%] | Heat: Ę%.0f%%%%%%%%%Ė", Ratio, Heat);
 			
 		}
 
@@ -1275,7 +1302,7 @@ static void Railcannon_Logic(int client, int weapon)
 			float Ratio = 100.0 - 100.0*((fl_Railcannon_recharge[client] - GameTime)/10.0); 
 			if(Ratio>100.0)
 				Ratio=100.0;
-			Format(HUDText, sizeof(HUDText), "%sRailCannon | Power: %.0f％", HUDText, Ratio);
+			Format(HUDText, sizeof(HUDText), "%s\nRailCannon | Power: Ą%.0f%%%%%%%%%%Č", HUDText, Ratio);
 			Show_Railcannon_Ammo(client, HUDText);
 
 			if(fl_Ammo_Gain_Timer[client] < GameTime)
@@ -1290,7 +1317,7 @@ static void Railcannon_Logic(int client, int weapon)
 				}
 			}
 		}
-
+		Format_Fancy_Hud(HUDText);
 		PrintHintText(client, HUDText);
 		StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 	}
@@ -1310,6 +1337,13 @@ static void Railcannon_Logic(int client, int weapon)
 		if(Cosmic_Heat[client]>0)
 			Cosmic_Heat[client] -=1;
 	}
+}
+static void Format_Fancy_Hud(char Text[255])
+{
+	ReplaceString(Text, 128, "Ą", "「");
+	ReplaceString(Text, 128, "Č", "」");
+	ReplaceString(Text, 128, "Ę", "【");
+	ReplaceString(Text, 128, "Ė", "】");
 }
 static void Show_Railcannon_Ammo(int client, char HUDText[255])
 {
