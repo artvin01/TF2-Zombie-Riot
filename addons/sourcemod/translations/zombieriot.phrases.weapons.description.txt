@@ -3092,4 +3092,16 @@
 	{
 		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
 	}
+	"Chainsaw Pap 0"
+	{
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs."
+	}
+	"Chainsaw Pap 1"
+	{
+		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
+	}
+	"Chainsaw Pap 2"
+	{
+		"en"	"More damage, attacks faster, extend bleed duration."
+	}
 }

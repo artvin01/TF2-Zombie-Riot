@@ -186,7 +186,8 @@ enum
 	WEAPON_MG42 = 106,
 	WEAPON_ION_BEAM_PULSE = 107,
 	WEAPON_ION_BEAM_NIGHT = 108,
-	WEAPON_ION_BEAM_FEED  = 109
+	WEAPON_ION_BEAM_FEED  = 109,
+	WEAPON_CHAINSAW  = 110
 }
 
 enum
@@ -519,6 +520,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_obuch.sp"
 #include "zombie_riot/custom/kit_merchant.sp"
 #include "zombie_riot/custom/weapon_mg42.sp"
+#include "zombie_riot/custom/weapon_chainsaw.sp"
 
 void ZR_PluginLoad()
 {
@@ -752,6 +754,7 @@ void ZR_MapStart()
 	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
+	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();

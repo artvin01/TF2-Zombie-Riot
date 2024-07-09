@@ -5564,6 +5564,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
 		Enable_Victorian_Launcher(client, entity);
+		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 	}

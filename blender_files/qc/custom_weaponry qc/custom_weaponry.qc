@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_24"
+$modelname "zombie_riot/weapons/custom_weaponry_1_25"
 
 $bodygroup "scythe"
 {
@@ -38,6 +38,12 @@ $bodygroup "mg42"
 	studio "mg42.smd"
 }
 
+$bodygroup "chainsaw"
+{
+	blank
+	studio "chainsaw.smd"
+}
+
 $surfaceprop "weapon"
 
 $contents "solid"
@@ -45,6 +51,7 @@ $contents "solid"
 $illumposition 0.096 -0.043 13.267
 
 $cdmaterials "models\custom_weaponry"
+$cdmaterials "models\zombie_riot\cof\sawrunner\"
 $cdmaterials "models\weapons\c_items\"
 $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
