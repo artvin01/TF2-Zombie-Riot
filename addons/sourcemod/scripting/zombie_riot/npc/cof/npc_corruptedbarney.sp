@@ -46,10 +46,6 @@ static const char g_MeleeHitSounds[][] = {
 static const char g_IdleAlertedSounds[][] = {
 	"cof/corruptedbarney/alert2.mp3",
 	"cof/corruptedbarney/alert1.mp3",
-	"vo/npc/barney/ba_laugh01.wav",
-	"vo/npc/barney/ba_laugh02.wav",
-	"vo/npc/barney/ba_laugh03.wav",
-	"vo/npc/barney/ba_bringiton.wav",
 };
 
 static char g_MeleeAttackSounds[][] = {
@@ -78,11 +74,11 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundCustom(g_IntroSound);
-	PrecacheSoundCustom(g_SpawnSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundCustom(g_MeleeAttackSounds);
-	PrecacheSoundCustom(g_IdleAlertedSounds);
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_IntroSound));	i++) { PrecacheSoundCustom(g_IntroSound[i]);	}
+	for (int i = 0; i < (sizeof(g_SpawnSounds));	i++) { PrecacheSoundCustom(g_SpawnSounds[i]);	}
 	PrecacheSoundCustom("#zombiesurvival/cof/barney.mp3");
 }
 

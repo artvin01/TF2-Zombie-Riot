@@ -5444,7 +5444,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
-				Attributes_SetMulti(entity, 97, 0.65);
+				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
 		//DOUBLE TAP!

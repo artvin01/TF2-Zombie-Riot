@@ -48,20 +48,26 @@ static void TBB_Precahce_Boomstick()
 
 public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bool &result)
 {
+	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 4);
+
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
 		static float anglesB[3];
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -200.0;
+		float knockback = -200.0 * Ratio;
 		
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
 		else
-			velocity[2] += 100.0; // a little boost to alleviate arcing issues
-			
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
+
 			
 		float newVel[3];
 		
@@ -76,12 +82,19 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-	Client_Shake(client, 0, 35.0, 20.0, 0.8);
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	Client_Shake(client, 0, 35.0 * Ratio, 20.0 * Ratio, 0.8 * Ratio);
 }
 
 public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classname, bool &result)
 {
+	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
+
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
 		static float anglesB[3];
@@ -89,13 +102,17 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
 		
-		float knockback = -200.0;
-		
+		float knockback = -250.0 * Ratio;
+
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
 		else
-			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
 			
 			
 		float newVel[3];
@@ -111,8 +128,57 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0, 80);
-	Client_Shake(client, 0, 45.0, 30.0, 0.8);
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+	Client_Shake(client, 0, 45.0 * Ratio, 30.0 * Ratio, 0.8 * Ratio);
+}
+
+public void Weapon_Boom_Stick_Loudest(int client, int weapon, const char[] classname, bool &result)
+{
+	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 8);
+
+	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
+	{
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		
+		float knockback = -275.0 * Ratio;
+
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
+		else
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
+			
+			
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+						
+		for (int i = 0; i < 3; i++)
+		{
+			velocity[i] += newVel[i];
+		}
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	Client_Shake(client, 0, 50.0 * Ratio, 35.0 * Ratio, 0.9 * Ratio);
 }
 
 public void Marksman_boom_rifle(int client, int weapon, const char[] classname, bool &result)
@@ -145,19 +211,25 @@ public void Marksman_boom_rifle(int client, int weapon, const char[] classname, 
 
 public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] classname, bool &result)
 {
+	float Ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 6);
+
 	if(!TF2_IsPlayerInCondition(client, TFCond_RuneHaste))
 	{
 		static float anglesB[3];
 		GetClientEyeAngles(client, anglesB);
 		static float velocity[3];
 		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
-		float knockback = -200.0;
+		float knockback = -200.0 * Ratio;
 		
+		float TempRatio = Ratio;
+		if(TempRatio > 1.0)
+			TempRatio = 1.0;
+
 		ScaleVector(velocity, knockback);
 		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
-			velocity[2] = fmax(velocity[2], 300.0);
+			velocity[2] = fmax(velocity[2], 300.0 * TempRatio);
 		else
-			velocity[2] += 100.0; // a little boost to alleviate arcing issues
+			velocity[2] += 100.0 * TempRatio; // a little boost to alleviate arcing issues
 			
 		float newVel[3];
 		
@@ -172,9 +244,14 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 		
 		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 	}
-	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
-	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, 1.0);
-	Client_Shake(client, 0, 45.0, 30.0, 0.8);
+	float SoundRatio = 0.5 * Ratio;
+	if(SoundRatio > 1.0)
+		SoundRatio = 1.0;
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
+	Client_Shake(client, 0, 45.0 * Ratio, 30.0 * Ratio, 0.8 * Ratio);
 	
 	BEAM_Targets_Hit[client] = 0.0;
 	
@@ -499,4 +576,21 @@ static void TBB_Tick(int client)
 		}
 	}
 	FinishLagCompensation_Base_boss();
+}
+
+
+float BoomstickAdjustDamageAndAmmoCount(int weapon, int bulletsmax)
+{
+	int iAmmoTable = FindSendPropInfo("CBaseCombatWeapon", "m_iClip1");
+	int CurrentClip = GetEntData(weapon, iAmmoTable, 4);
+
+	float RatioMax;
+
+	RatioMax = float(CurrentClip) / float(bulletsmax);
+
+	SetEntData(weapon, iAmmoTable, 1);
+	SetEntProp(weapon, Prop_Send, "m_iClip1", 1); // weapon clip amount bullets
+	Attributes_Set(weapon, 1, RatioMax);
+
+	return RatioMax;
 }

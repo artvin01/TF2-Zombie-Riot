@@ -38,6 +38,7 @@ void Suicider_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPC_Add(data);
 }

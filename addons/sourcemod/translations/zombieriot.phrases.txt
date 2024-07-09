@@ -1071,11 +1071,7 @@
 	}	
 	"Speed Cola Recieved"
 	{
-		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
-		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезар., скорость смены оружия и реген. маны"
-		"pt"		"REFRI-VELOZ! 1.35x Velocidade de recarga, de troca e regeneração de mana"
-		"nl"		"SNELHEIDSCOLA! 1.35x Extra herlaadsnelheid, Wapenwisselingssnelheid en Mana generatie"
-		"chi" 		"极速可乐:武器切换、装填速度提升，法力恢复提升"
+		"en" 		"SPEED COLA! 1.3x Extra reload, switchspeed and Mana regen"
 	}
 	"Deadshot Daiquiri Recieved"
 	{

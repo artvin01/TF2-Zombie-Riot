@@ -34,8 +34,6 @@ static char g_KilledEnemy[][] = {
 	"cof/purnell/kill4.mp3",
 };
 
-static int NPCId;
-
 public void CuredPurnell_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]);	}
@@ -63,12 +61,6 @@ public void CuredPurnell_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
-}
-
-int CuredPurnell_ID()
-{
-	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
