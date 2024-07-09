@@ -507,6 +507,7 @@ void NPC_ConfigSetup()
 	Crazylady_OnMapStart_NPC();
 	CuredPurnell_OnMapStart_NPC();
 	CorruptedBarney_OnMapStart_NPC();
+	XenoMalfuncRobot_OnMapStart_NPC();
 	
 
 	// Bloon Raid Low Prio
@@ -1034,6 +1035,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/cof/npc_crazylady.sp"
 #include "zombie_riot/npc/ally/npc_cured_purnell.sp"
 #include "zombie_riot/npc/cof/npc_corruptedbarney.sp"
+#include "zombie_riot/npc/xeno/npc_xeno_malfunctioning_robot.sp"
 
 /*
 #include "zombie_riot/npc/bonezone/npc_basicbones.sp"
