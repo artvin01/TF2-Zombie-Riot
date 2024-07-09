@@ -22,6 +22,7 @@ void Simon_MapStart()
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPC_Add(data);
 }
 
@@ -34,7 +35,6 @@ static void ClotPrecache()
 	PrecacheSoundCustom("cof/simon/intro.mp3");
 	PrecacheSoundCustom("cof/simon/reload.mp3");
 	PrecacheSoundCustom("cof/simon/shoot.mp3");
-	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

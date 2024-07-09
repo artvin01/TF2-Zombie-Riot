@@ -434,8 +434,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once\nDeals 40%% dmg against raids."
-		"chi"		"弹夹可装4发弹药，同时发射。对boss造成40%%伤害"
+		"en"		"Load 4 bullets and shoot all at once\nDeals 10%% dmg against raids."
 	}
 	
 	"Boomstick Pap 1"
@@ -446,9 +445,7 @@
 	}
 	"Boomstick Pap 3"
 	{
-		"en"		"Increased damage and attackspeed."
-		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度."
+		"en"		"Increased damage and attackspeed, Louder and loads more clips!"
 	}
 	"Boomstick Pap 2"
 	{
@@ -1680,9 +1677,7 @@
 	
 	"Army Belt Desc"
 	{
-		"en"	"15%% Faster reload but have a 2x longer weapon switch"
-		"ru"	"На 15%% быстрая перезарядка, но в два раза более длительная смена оружия"
-		"chi"   "增加15%%的装填速度，但武器切换时间延长了2倍"
+		"en"	"5%% Faster reload but have a 2x longer weapon switch"
 	}
 	
 	"Headshot Affinity Desc"

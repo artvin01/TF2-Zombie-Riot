@@ -12,16 +12,12 @@ static char g_HurtSounds[][] = {
 
 static char g_IdleSounds[][] = {
 	"cof/suicider/slower_alert1.mp3",
+	"cof/suicider/slower_alert2.mp3",
+	"cof/suicider/slower_alert3.mp3",
 };
 
 static char g_IntroSound[][] = {
 	"cof/suicider/slower_alert1.mp3",
-};
-
-static char g_IdleAlertedSounds[][] = {
-	"cof/suicider/slower_alert1.mp3",
-	"cof/suicider/slower_alert2.mp3",
-	"cof/suicider/slower_alert3.mp3",
 };
 
 static float fl_DefaultSpeed_Suicider = 100.0;
@@ -33,11 +29,6 @@ static bool b_IsNightmare[MAXENTITIES];
 
 void Suicider_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSound(g_IntroSound[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheModel(COF_SUICIDER_MODEL_PATH);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Suicider");
@@ -47,7 +38,17 @@ void Suicider_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSoundCustom(g_DeathSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSoundCustom(g_HurtSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSoundCustom(g_IdleSounds[i]);		}
+	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSoundCustom(g_IntroSound[i]);		}
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -61,14 +62,14 @@ methodmap Suicider < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 	}
 	public void PlayIntro() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 
-		EmitSoundToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 6.0);
 	}
 	public void PlayHurtSound() {
@@ -77,10 +78,10 @@ methodmap Suicider < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() {
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayRangedSound() {
 		EmitCustomToAll("cof/purnell/shoot.mp3", this.index);

@@ -34,18 +34,16 @@ static char g_KilledEnemy[][] = {
 	"cof/purnell/kill4.mp3",
 };
 
-//static int NPCId;
-
 public void CuredPurnell_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSoundCustom(g_MeleeAttackSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSoundCustom(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
-	for (int i = 0; i < (sizeof(g_KilledEnemy));   i++) { PrecacheSound(g_KilledEnemy[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSoundCustom(g_RangedAttackSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSoundCustom(g_PullSounds[i]);   }
+	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSoundCustom(g_RangedReloadSound[i]);   }
+	for (int i = 0; i < (sizeof(g_KilledEnemy));   i++) { PrecacheSoundCustom(g_KilledEnemy[i]);   }
 	PrecacheModel("models/props_wasteland/rockgranite03b.mdl");
 	PrecacheModel("models/weapons/w_bullet.mdl");
 	PrecacheModel("models/weapons/w_grenade.mdl");
@@ -63,15 +61,7 @@ public void CuredPurnell_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
-//	NPCId = NPC_Add(data);
 }
-
-/*
-int CuredPurnell_ID()
-{
-	return NPCId;
-}
-*/
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -84,7 +74,7 @@ methodmap CuredPurnell < CClotBody
 {
 		
 	public void PlayRangedReloadSound() {
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0);
+		EmitCustomToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredPurnell::PlayRangedSound()");
@@ -94,7 +84,7 @@ methodmap CuredPurnell < CClotBody
 	public void PlayMeleeSound() {
 	//	if (GetRandomInt(0, 5) == 2)
 		{
-			EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+			EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 			
 			#if defined DEBUG_SOUND
 			PrintToServer("CCuredPurnell::PlayMeleeHitSound()");
@@ -103,7 +93,7 @@ methodmap CuredPurnell < CClotBody
 	}
 	
 	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 90, _, 1.0);
+		EmitCustomToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredPurnell::PlayRangedSound()");
@@ -111,7 +101,7 @@ methodmap CuredPurnell < CClotBody
 	}
 	
 	public void PlayKilledEnemy() {
-		EmitSoundToAll(g_KilledEnemy[GetRandomInt(0, sizeof(g_KilledEnemy) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitCustomToAll(g_KilledEnemy[GetRandomInt(0, sizeof(g_KilledEnemy) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		this.m_flNextIdleSound += 2.0;
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredPurnell::PlayRangedSound()");
@@ -119,7 +109,7 @@ methodmap CuredPurnell < CClotBody
 	}
 	
 	public void PlayPullSound() {
-		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
+		EmitCustomToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_VOICE, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredPurnell::PlayPullSound()");
@@ -136,7 +126,7 @@ methodmap CuredPurnell < CClotBody
 	}
 
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
+		EmitCustomToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CCuredPurnell::PlayMeleeHitSound()");
@@ -144,7 +134,7 @@ methodmap CuredPurnell < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
+		EmitCustomToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, 90, _, 1.0);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");

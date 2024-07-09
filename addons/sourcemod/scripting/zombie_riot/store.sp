@@ -1299,7 +1299,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 400, false, 5.0, false);
+							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
 					}
 				}
 				
@@ -5444,7 +5444,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
-				Attributes_SetMulti(entity, 97, 0.65);
+				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
 		//DOUBLE TAP!
