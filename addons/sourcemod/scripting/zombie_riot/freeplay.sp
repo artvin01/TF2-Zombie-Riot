@@ -76,6 +76,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 
 		switch(RaidFight)
 		{
+			case 2:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+			}
 			case 3:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_silvester");
@@ -90,6 +95,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
 				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+			}
+			case 6:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_sea_donnerkrieg");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
 			default:
 			{
@@ -602,7 +612,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 45:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be BlitzKrieg");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Blitzkrieg");
 			RaidFight = 2;
 		}
 		case 46:
