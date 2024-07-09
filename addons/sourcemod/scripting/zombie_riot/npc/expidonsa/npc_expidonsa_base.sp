@@ -42,12 +42,12 @@ stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int damagetype, int ZrDamageType)
+void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int damagetype, int ZrDamageType, int weapon)
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
 #if defined ZR
-		if(attacker <=MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
 		if(attacker <=MaxClients)
 #endif

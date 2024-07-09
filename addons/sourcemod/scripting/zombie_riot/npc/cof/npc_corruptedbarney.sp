@@ -99,7 +99,7 @@ methodmap CorruptedBarney < CClotBody
 	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
+			return; 
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-0.2, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 8.0);
 	}

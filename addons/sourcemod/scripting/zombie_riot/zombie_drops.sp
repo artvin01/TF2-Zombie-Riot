@@ -444,7 +444,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									{
 										int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-										if(weaponindex == 211)
+										if(weaponindex == 211 || weaponindex == 998)
 										{
 											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
@@ -455,10 +455,6 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										else if(weaponindex == 441 || weaponindex == 35)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
-										}
-										else if(weaponindex == 998)
-										{
-											AddAmmoClient(client_Hud, 3 ,_,4.0);
 										}
 										else if (i_WeaponAmmoAdjustable[weapon])
 										{

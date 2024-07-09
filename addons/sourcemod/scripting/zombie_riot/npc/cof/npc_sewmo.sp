@@ -58,7 +58,6 @@ methodmap Sewmo < CClotBody
 		
 		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
 	
 	public void PlayHurtSound() 
@@ -69,7 +68,6 @@ methodmap Sewmo < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitCustomToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
 	
 	public void PlayDeathSound() 
@@ -84,7 +82,6 @@ methodmap Sewmo < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitCustomToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
 	

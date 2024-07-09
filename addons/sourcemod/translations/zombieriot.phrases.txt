@@ -1079,9 +1079,9 @@
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
-		"chi"       "死神射击:提升1.35倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
+		"en" 		"DEADSHOT DAIQUIRI! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.2x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
+		"chi"       "死神射击:提升1.2倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
 	}
 	"Widows Wine Recieved"
 	{
