@@ -913,7 +913,7 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		}
 		else
 		{
-			CPrintToChatAll("{crimson}SCHWERTKRIEG_TEMP_NAME{snow}: Ayaya?");
+			CPrintToChatAll("{crimson}Karlas{snow}: Ayaya?");
 		}
 		
 	}
@@ -2082,11 +2082,11 @@ static void Internal_NPCDeath(int entity)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let {crimson}SCHWERTKRIEG_TEMP_NAME{snow} handle this");
+						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let {crimson}Karlas{snow} handle this");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{aqua}Stella{snow}: You still have {crimson}SCHWERTKRIEG_TEMP_NAME{snow} to deal with... heh");
+						CPrintToChatAll("{aqua}Stella{snow}: You still have {crimson}Karlas{snow} to deal with... heh");
 					}
 				}
 			}

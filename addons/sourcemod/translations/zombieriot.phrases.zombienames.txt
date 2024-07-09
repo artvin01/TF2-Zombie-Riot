@@ -1970,9 +1970,9 @@
 	{
 		"en"	"Stella"
 	}
-	"SCHWERTKRIEG_TEMP_NAME"
+	"Karlas"
 	{
-		"en"	"SCHWERTKRIEG_TEMP_NAME"
+		"en"	"Karlas"
 	}
 	"Heliara"
 	{

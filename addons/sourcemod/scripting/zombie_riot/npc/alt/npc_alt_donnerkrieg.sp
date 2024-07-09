@@ -398,7 +398,7 @@ static void Internal_ClotThink(int iNPC)
 				npc.m_bDissapearOnDeath = true;
 
 				CPrintToChatAll("{aqua}Stella{snow}: Oh also our true names are, {aqua}Stella{snow}, thats me");
-				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}SCHWERTKRIEG_TEMP_NAME{snow}!");
+				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 0; client < MaxClients; client++)
