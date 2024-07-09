@@ -320,7 +320,7 @@ void NPC_ConfigSetup()
 	Isharmla_Precache();
 	IsharmlaTrans_MapStart();
 	
-	#if defined RUINA_BASE
+#if defined RUINA_BASE
 	//Ruina waves	//warp
 	Ruina_Ai_Core_Mapstart();
 	//Stage 1.
@@ -358,7 +358,7 @@ void NPC_ConfigSetup()
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
 
-	#endif
+#endif
 
 	//Expidonsa Waves
 //wave 1-15:
