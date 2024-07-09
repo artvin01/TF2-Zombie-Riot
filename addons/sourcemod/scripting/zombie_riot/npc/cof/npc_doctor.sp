@@ -19,6 +19,21 @@ static char g_KillSounds[][] =
 
 void Doctor_MapStart()
 {
+	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Doctor Purnell");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_city");
+	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
 	PrecacheSoundCustom("cof/purnell/death.mp3");
@@ -28,18 +43,8 @@ void Doctor_MapStart()
 	PrecacheSoundCustom("cof/purnell/shoot.mp3");
 	PrecacheSoundCustom("cof/purnell/shove.mp3");
 	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
-
-	PrecacheModel("models/zombie_riot/cof/doctor_purnell.mdl");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "The Doctor");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_city");
-	strcopy(data.Icon, sizeof(data.Icon), "medic");
-	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_COF;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
 	return Doctor(client, vecPos, vecAng, ally, data);

@@ -1056,17 +1056,17 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 
 #if !defined RTS
-		if(inflictor > 0 && inflictor <= MaxClients)
-		{
-			GiveRageOnDamage(inflictor, Damageaftercalc);
-			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
-		}
-		else if(attacker > 0 && attacker <= MaxClients)
-		{
-			GiveRageOnDamage(attacker, Damageaftercalc);
-			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
-		}
-		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		GiveRageOnDamage(inflictor, Damageaftercalc);
+		Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		GiveRageOnDamage(attacker, Damageaftercalc);
+		Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
+	}
+	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 
 		Event event = CreateEvent("npc_hurt");
@@ -1724,25 +1724,28 @@ stock void ResetDamageHud(int client)
 	ShowSyncHudText(client, SyncHud, "");
 }
 
-stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
 {
 	b_DisplayDamageHud[attacker] = true;
 	i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
 	float GameTime = GetGameTime();
 	bool raidboss_active = false;
+
 	if(!b_NpcIsInvulnerable[victim])
 	{
 		if(RaidbossIgnoreBuildingsLogic())
 		{
 			raidboss_active = true;
 		}
-		if(overkill <= 0)
+		if(damage > 0.0)
 		{
-			Damage_dealt_in_total[attacker] += damage;
-		}
-		else
-		{
-			Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
+			float damageCalc = damage;
+			int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+			if(Health <= 0)
+			{
+				damageCalc += Health;
+			}
+			Damage_dealt_in_total[attacker] += damageCalc;
 		}
 		if(GameTime > f_damageAddedTogetherGametime[attacker])
 		{
@@ -1755,7 +1758,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		{
 			f_damageAddedTogether[attacker] += damage;
 		}
-		if(damage > 0)
+		if(damage > 0.0)
 		{
 			f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
 		}
@@ -1831,14 +1834,14 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
+	#if defined RUINA_BASE
 	else if(f_Ruina_Defense_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Speed_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
+	#endif
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
 		return true;

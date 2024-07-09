@@ -103,6 +103,20 @@ static int i_heavens_target_id[MAGIA_ANCHOR_MAX_IONS+1];
 void Magia_Anchor_OnMapStart_NPC()
 {
 	Zero(b_is_magia_tower);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magia Anchor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia_anchor");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "tower"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
+	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -113,13 +127,6 @@ void Magia_Anchor_OnMapStart_NPC()
 	PrecacheModel(RUINA_ANCHOR_MODEL);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
 	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Magia Anchor");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia_anchor");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -233,11 +240,12 @@ methodmap Magia_Anchor < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
+		
+
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
 		Ruina_Set_No_Retreat(npc.index);
 		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
-
-		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;

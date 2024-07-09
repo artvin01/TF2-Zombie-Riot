@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/omibox/barney/pupil_l"
+	"$iris" "models/omibox/barney/pupil_l"
+	"$halflambert" 1
+}
