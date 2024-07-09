@@ -706,8 +706,11 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	if(entity > MaxClients)
 	{
 #if defined ZR
-	f_TimeSinceLastGiveWeapon[entity] = 0.0;
+		f_TimeSinceLastGiveWeapon[entity] = 0.0;
 #endif
+		//static int fakeID = 1;
+		//SetItemID(entity, fakeID++);
+
 		Attributes_EntityDestroyed(entity);
 
 		for(int i; i < count; i++)
@@ -746,6 +749,17 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
 #endif
 	return entity;
+}
+
+void SetItemID(int weapon, int iIdx)
+{
+	char clsname[64];
+	if (GetEntityNetClass(weapon, clsname, sizeof(clsname)))
+	{
+		SetEntData(weapon, FindSendPropInfo(clsname, "m_iItemIDHigh") - 4, iIdx);	// m_iItemID
+		SetEntProp(weapon, Prop_Send, "m_iItemIDHigh", iIdx >> 32);
+		SetEntProp(weapon, Prop_Send, "m_iItemIDLow", iIdx & 0xFFFFFFFF);
+	}
 }
 
 //										 info.Attribs, info.Value, info.Attribs);

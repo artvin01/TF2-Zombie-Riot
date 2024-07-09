@@ -188,7 +188,7 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
-void ViewChange_Switch(int client, int active, const char[] buffer = "")
+void ViewChange_Switch(int client, int active, const char[] classname)
 {
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
 	if(entity != -1)
@@ -210,7 +210,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 		if(active != -1)
 		{
 			int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
-			TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+			TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(classname, true));
 
 			if(i_WeaponForceClass[active] > 0)
 			{
@@ -235,10 +235,11 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
 			*/
 			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
+			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 			
-			if(i_WeaponModelIndexOverride[active] > 0 || i_WeaponVMTExtraSetting[active] != -1 || i_WeaponBodygroup[active] != -1)
+			//if(i_WeaponModelIndexOverride[active] > 0 || i_WeaponVMTExtraSetting[active] != -1 || i_WeaponBodygroup[active] != -1)
 			{
 				entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
 				if(entity != -1)	// Weapon viewmodel
@@ -314,11 +315,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					SDKCall_EquipWearable(client, entity);
 				}
 				
-				HidePlayerWeaponModel(client, active);
-			}
-			else
-			{
-				ShowPlayerWeaponModel(client, active);
+				//HidePlayerWeaponModel(client, active);
 			}
 			
 			//if(WeaponClass[client] != class)
@@ -350,13 +347,13 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 #endif
 			MedicAdjustModel(client);
 
-			//int iMaxWeapons = GetMaxWeapons(client);
-			//for (int i = 0; i < iMaxWeapons; i++)
-			//{
-			//	int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-			//	if (iWeapon != INVALID_ENT_REFERENCE)
-			//		SetEntProp(iWeapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(iWeapon, Prop_Send, "m_nModelIndex"));
-			//}
+			int iMaxWeapons = GetMaxWeapons(client);
+			for (int i = 0; i < iMaxWeapons; i++)
+			{
+				int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+				if (iWeapon != INVALID_ENT_REFERENCE)
+					SetEntProp(iWeapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(iWeapon, Prop_Send, "m_nModelIndex"));
+			}
 
 			return;
 		}
@@ -435,8 +432,8 @@ static int CreateViewmodel(int iClient, int iModelIndex, int iWeapon, bool bCopy
 	
 	int iWearable = CreateEntityByName("tf_wearable_vm");
 	
-	//if (bCopy)	//Copy m_Item from weapon, so reskin stuffs can show
-	//	SDKCall_SetItem(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetItem), GetEntityAddress(iWeapon) + view_as<Address>(g_iOffsetItem));
+	if (bCopy)	//Copy m_Item from weapon, so reskin stuffs can show
+		SDKCall_SetItem(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetItem), GetEntityAddress(iWeapon) + view_as<Address>(g_iOffsetItem));
 	
 	float vecOrigin[3], vecAngles[3];
 	GetEntPropVector(iClient, Prop_Send, "m_vecOrigin", vecOrigin);
@@ -487,9 +484,4 @@ void HidePlayerWeaponModel(int client, int entity)
 	}
 	f_WeaponVolumeStiller[client] = f_WeaponVolumeStiller[entity];
 	f_WeaponVolumeSetRange[client] = f_WeaponVolumeSetRange[entity];
-}
-
-stock void ShowPlayerWeaponModel(int client, int entity)
-{
-
 }

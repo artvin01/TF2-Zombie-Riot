@@ -146,6 +146,11 @@ stock void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_PostThink, OnPostThink);
 	SDKHook(client, SDKHook_WeaponSwitchPost, OnWeaponSwitchPost);
 
+	SDKUnhook(client, SDKHook_WeaponEquip, OnWeaponEquip);
+	SDKUnhook(client, SDKHook_WeaponEquipPost, OnWeaponEquipPost);
+	SDKHook(client, SDKHook_WeaponEquip, OnWeaponEquip);
+	SDKHook(client, SDKHook_WeaponEquipPost, OnWeaponEquipPost);
+
 	SDKUnhook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 	SDKHook(client, SDKHook_PostThinkPost, OnPostThinkPost);
 #if defined ZR
@@ -2111,6 +2116,26 @@ public void OnWeaponSwitchPre(int client, int weapon)
 		{
 			Attributes_Set(weapon, 821, 0.0);
 		}
+	}
+}
+
+public Action OnWeaponEquip(int client, int weapon)
+{
+	// Set arms for the weapon were about to equip
+	char buffer[36];
+	GetEntityClassname(weapon, buffer, sizeof(buffer));
+	ViewChange_Switch(client, weapon, buffer);
+	return Plugin_Continue;
+}
+
+public void OnWeaponEquipPost(int client, int weapon)
+{
+	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(active != -1)
+	{
+		char buffer[36];
+		GetEntityClassname(active, buffer, sizeof(buffer));
+		ViewChange_Switch(client, active, buffer);
 	}
 }
 #endif	// Non-RTS
