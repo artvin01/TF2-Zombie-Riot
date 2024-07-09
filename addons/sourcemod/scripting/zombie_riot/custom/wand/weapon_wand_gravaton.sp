@@ -7,6 +7,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 static bool b_gained_charge[MAXTF2PLAYERS+1];
 static float fl_gravaton_duration[MAXTF2PLAYERS+1];
+static float f3_LastGravitonHitLoc[MAXTF2PLAYERS+1][3];
 
 
 #define GRAVATON_WAND_MAX_CHARGES 9.0
@@ -135,6 +136,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 
 	if(mana_cost <= Current_Mana[client])
 	{
+		bool WeakerCast = false;
 		float Time= 2.5;
 		float Range = 750.0;
 		float Radius = 250.0;
@@ -179,11 +181,25 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		FinishLagCompensation_Base_boss();
 		delete swingTrace;
 
+		float distance = GetVectorDistance(f3_LastGravitonHitLoc[client], vec);
+
+		if(distance < 30.0)
+		{
+			WeakerCast = true;
+			damage *= 0.5;
+		}
+		f3_LastGravitonHitLoc[client] = vec;
+
 		int color[4];
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
 		color[3] = 120;
+
+		if(WeakerCast)
+		{
+			color[3] = 60;
+		}
 
 		int loop_for = 7;
 		float Seperation = 12.5;
@@ -222,7 +238,9 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		}
 
 		if(RaidbossIgnoreBuildingsLogic(1))
-			Time /=2.0;
+			Time *= 0.5;
+
+		Time *= 0.75;
 
 		//effect_hand_l
 
