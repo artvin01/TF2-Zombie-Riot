@@ -61,6 +61,7 @@ public void CuredPurnell_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
