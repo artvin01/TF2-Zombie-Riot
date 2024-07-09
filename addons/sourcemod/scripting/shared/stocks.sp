@@ -732,14 +732,14 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", false, _, 3);
 		}
 
+		TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
+		TF2Attrib_SetByDefIndex(entity, 725, 0.0);
+		TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
+		TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
+
 		EquipPlayerWeapon(client, entity);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
-
-		//TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
-		//TF2Attrib_SetByDefIndex(entity, 725, 0.0);
-		//TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
-		//TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
 	}
 
 #if defined ZR || defined RPG
@@ -757,6 +757,11 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	{
 		Attributes_Set(weapon, attributes[i], values[i]);
 	}
+
+	TF2Attrib_SetByDefIndex(weapon, 834, view_as<float>(202));
+	TF2Attrib_SetByDefIndex(weapon, 725, 0.0);
+	TF2Attrib_SetByDefIndex(weapon, 866, view_as<float>(342536));
+	TF2Attrib_SetByDefIndex(weapon, 867, view_as<float>(7473985));
 }
 
 void RemoveAllDefaultAttribsExceptStrings(int entity)

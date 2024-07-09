@@ -5185,7 +5185,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
 
-					HidePlayerWeaponModel(client, entity);
+					//HidePlayerWeaponModel(client, entity);
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -5255,7 +5255,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 
-			HidePlayerWeaponModel(client, entity);
+			//HidePlayerWeaponModel(client, entity);
 			//hide original model
 			
 			SetEntData(entity, offset - 8, 0);	// m_iItemID
@@ -5282,6 +5282,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			Attributes_Set(entity, 263, 0.0);
 			Attributes_Set(entity, 264, 0.0);
+
+			TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
+			TF2Attrib_SetByDefIndex(entity, 725, 0.0);
+			TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
+			TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
+
 			EquipPlayerWeapon(client, entity);
 
 			if(use)
@@ -5567,6 +5573,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 	}
+
 	return entity;
 }
 

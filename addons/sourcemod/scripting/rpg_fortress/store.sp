@@ -1481,7 +1481,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
 
-					HidePlayerWeaponModel(client, entity);
+					//HidePlayerWeaponModel(client, entity);
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -1555,7 +1555,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
 			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 
-			HidePlayerWeaponModel(client, entity);
+			//HidePlayerWeaponModel(client, entity);
 			//hide original model
 			
 			static int offset;

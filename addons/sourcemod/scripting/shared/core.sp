@@ -716,10 +716,10 @@ int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
-int WeaponRef_viewmodel[MAXTF2PLAYERS];
-int HandRef[MAXTF2PLAYERS];
-int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
+int HandRef[MAXTF2PLAYERS] = {-1, ...};
+int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS] = {-1, ...};
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
