@@ -63,11 +63,11 @@ void CorruptedBarney_OnMapStart_NPC()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundArray(g_IntroSound);
-	PrecacheSoundArray(g_SpawnSounds);
+	PrecacheSoundCustom(g_IntroSound);
+	PrecacheSoundCustom(g_SpawnSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
-	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundCustom(g_MeleeAttackSounds);
+	PrecacheSoundCustom(g_IdleAlertedSounds);
 	PrecacheSoundCustom("#zombiesurvival/cof/barney.mp3");
 	PrecacheModel("models/zombie_riot/cof/barney.mdl");
 	NPCData data;
@@ -93,7 +93,7 @@ methodmap CorruptedBarney < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(8.0, 16.0);
 		
 	}
@@ -106,7 +106,7 @@ methodmap CorruptedBarney < CClotBody
 	public void PlayIntro() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], _, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-0.2, 100);
+		EmitCustomToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], _, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-0.2, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + 8.0;
 	}
 	public void PlayHurtSound() {
@@ -133,7 +133,7 @@ methodmap CorruptedBarney < CClotBody
 	public void PlayMeleeSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(1, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-0.2, 100);
+		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(1, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME-0.2, 100);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 5.0;
 	}
 	public void PlayMeleeHitSound() {

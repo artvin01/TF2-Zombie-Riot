@@ -12,16 +12,12 @@ static char g_HurtSounds[][] = {
 
 static char g_IdleSounds[][] = {
 	"cof/suicider/slower_alert1.mp3",
+	"cof/suicider/slower_alert2.mp3",
+	"cof/suicider/slower_alert3.mp3",
 };
 
 static char g_IntroSound[][] = {
 	"cof/suicider/slower_alert1.mp3",
-};
-
-static char g_IdleAlertedSounds[][] = {
-	"cof/suicider/slower_alert1.mp3",
-	"cof/suicider/slower_alert2.mp3",
-	"cof/suicider/slower_alert3.mp3",
 };
 
 static float fl_DefaultSpeed_Suicider = 100.0;
@@ -37,7 +33,6 @@ void Suicider_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IntroSound));		i++) { PrecacheSound(g_IntroSound[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	PrecacheModel(COF_SUICIDER_MODEL_PATH);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Suicider");
