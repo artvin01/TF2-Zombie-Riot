@@ -70,7 +70,7 @@ public void Npc_OnTakeDamage_Chainsaw(int client, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //Only count the usual melee only etc etc etc. 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 0.5, GetRandomInt(95,105));
+		EmitSoundToAll(g_MeleeHitSounds[GetURandomInt() % sizeof(g_MeleeHitSounds)], client, SNDCHAN_AUTO, 70, _, 0.55, GetRandomInt(95,105));
 	}
 }
 
@@ -91,12 +91,12 @@ public void Chainsaw_ability_Prethink(int client)
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_active < 0)
 		{
-			SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		if(!IsChainSaw(i_CustomWeaponEquipLogic[weapon_active]))
 		{
-			SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
@@ -108,7 +108,7 @@ public void Chainsaw_ability_Prethink(int client)
 	}
 	else
 	{
-		SDKUnhook(client, SDKHook_PreThink, Sensal_Ability_M2_Auto_Prethink);
+		SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
 		return;
 	}
 }
@@ -133,7 +133,7 @@ public void Chainsaw_SawAttack(int client, int weapon)
 		}
 	}
 	SetAmmo(client, 9, new_ammo - AmmoConsumption);
-	EmitSoundToAll(g_MeleeAttack[GetURandomInt() % sizeof(g_MeleeAttack)], client, SNDCHAN_AUTO, 70, _, 0.2, GetRandomInt(95,105));
+	EmitSoundToAll(g_MeleeAttack[GetURandomInt() % sizeof(g_MeleeAttack)], client, SNDCHAN_AUTO, 70, _, 0.3, GetRandomInt(95,105));
 	TF2_CalcIsAttackCritical(client, weapon, "", result);
 }
 
@@ -177,7 +177,7 @@ void ChainSawHudShow(int client)
 			ChainsawCancelSound(client);
 			return;
 		}
-		EmitCustomToAll("zombie_riot/sawrunner/chainsaw_loop.mp3", client, SNDCHAN_AUTO, 70, _, 0.25, 100);
+		EmitCustomToAll("zombie_riot/sawrunner/chainsaw_loop.mp3", client, SNDCHAN_AUTO, 70, _, 0.3, 100);
 		f_ChainsawPlaySound[client] = true;
 		f_ChainsawLoopSound[client] = GetGameTime() + 2.9;
 	}

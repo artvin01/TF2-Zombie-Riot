@@ -250,7 +250,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 
 	RaidModeScaling = float(GetURandomInt());
 	fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.5);
-	npc.m_flSpeed = GetRandomFloat(250.0, 400.0);
+	npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 	RaidModeTime = GetGameTime(npc.index) + GetRandomFloat(5.0, 555.0);
 	FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
 	CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
@@ -354,7 +354,7 @@ void CorruptedBarneySelfDefense(CorruptedBarney npc, float gameTime, int target,
 
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 350.0;
+					float damageDealt = 450.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 50.0;
 
