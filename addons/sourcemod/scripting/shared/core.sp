@@ -920,28 +920,27 @@ enum
 	1 - sensal scythe
 	2 - scythe_throw
 */
-#if defined RUINA_BASE
-	#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/ruina/ruina_models_1_1.mdl"
-	enum	//can have a maximum of 16 (I think)
-	{		//Also, once done, move as many as I can into custom weaponry_1, then leave the leftovers in the seperate ones
-		RUINA_ICBM 				= 1,		//1
-		RUINA_HALO_1 			= 2,		//2
-		RUINA_QUINCY_BOW_1 		= 4,		//3
-		RUINA_BLADE_1			= 8,		//4
-		RUINA_MAGI_GUN_1		= 16,		//5
-		RUINA_STAFF_1			= 32,		//6
-		RUINA_HAND_CREST_1		= 64,		//7
-		RUINA_LAN_SWORD_1		= 128,		//8
-		RUINA_EUR_STAFF_1		= 256,		//9
-		RUINA_DAGGER_1			= 512,		//10
-		RUINA_RADAR_GUN_1		= 1024,		//11
-		RUINA_HEALING_STAFF_1	= 2048,		//12
-		RUINA_W30_HAND_CREST	= 4096,		//13
-		RUINA_IANA_BLADE		= 8192		//14
-		//16384
-		//32768
-	}
-#endif
+
+#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
+enum	//can have a maximum of 16 (I think)	it appears if I try to make it go above 14 it starts glitching out
+{		
+	RUINA_ICBM 				= 1,		//1
+	RUINA_HALO_1 			= 2,		//2
+	RUINA_QUINCY_BOW_1 		= 4,		//3
+	RUINA_BLADE_1			= 8,		//4
+	RUINA_MAGI_GUN_1		= 16,		//5
+	RUINA_STAFF_1			= 32,		//6
+	RUINA_HAND_CREST_1		= 64,		//7
+	RUINA_LAN_SWORD_1		= 128,		//8
+	RUINA_EUR_STAFF_1		= 256,		//9
+	RUINA_DAGGER_1			= 512,		//10
+	RUINA_RADAR_GUN_1		= 1024,		//11
+	RUINA_HEALING_STAFF_1	= 2048,		//12
+	RUINA_W30_HAND_CREST	= 4096,		//13
+	RUINA_IANA_BLADE		= 8192,		//14
+}
+//RUINA_QUINCY_BOW_2		= 1
+
 
 
 
@@ -1662,9 +1661,7 @@ public void OnMapStart()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 
-#if defined RUINA_BASE
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
-#endif
 	
 #if defined ZR
 	Zero(i_CustomWeaponEquipLogic);

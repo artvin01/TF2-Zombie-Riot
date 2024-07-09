@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/ruina/ruina_models_1_1.mdl"
+$modelname "zombie_riot/weapons/ruina_models_1_1.mdl"
 
 $bodygroup "ruina_icbm"	//done
 {
@@ -77,7 +77,6 @@ $bodygroup "iana_blade"
 
 
 
-
 $surfaceprop "metal"
 
 $contents "solid"
@@ -102,26 +101,6 @@ $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
-	"custom_weaponry_1_anims\idle.smd"
-	fadein 0.2
-	fadeout 0.2
-	fps 30
-}
-
-$sequence "icbm_idle" {
-	"custom_weaponry_1_anims\icbm_idle.smd"
-	fadein 0.2
-	fadeout 0.2
-	fps 30
-}
-
-$sequence "quincy_idle" {
-	"custom_weaponry_1_anims\idle.smd"
-	fadein 0.2
-	fadeout 0.2
-	fps 30
-}
-$sequence "blade_idle" {
 	"custom_weaponry_1_anims\idle.smd"
 	fadein 0.2
 	fadeout 0.2

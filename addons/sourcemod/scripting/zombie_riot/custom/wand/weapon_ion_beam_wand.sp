@@ -39,6 +39,8 @@ static int i_Neuvellete_Skill_Points[MAXTF2PLAYERS + 1];
 
 static float fl_Special_Timer[MAXTF2PLAYERS + 1];
 
+static int i_pap[MAXTF2PLAYERS];
+
 
 static int BeamWand_Laser;
 static int BeamWand_Glow;
@@ -210,7 +212,14 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 	}
 
 	if(!IsValidEntity(weapon))
+	{
+		if(i_pap[client]>=5)
+		{
+			DamagE *= 2.0;
+		}
 		return;
+	}
+		
 
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
@@ -246,7 +255,7 @@ static void Neuvellete_Adjust_Stats_To_Flags(int client, float &Turn_Speed, floa
 		}
 		case WEAPON_ION_BEAM_PULSE:
 		{
-			if(GameTime > fl_Special_Timer[client] + 2.25)
+			if(GameTime > fl_Special_Timer[client] + 1.75)
 			{
 				Kill_Beam_Hook(client, 0.0);
 				return;
@@ -277,6 +286,8 @@ public void Activate_Neuvellete(int client, int weapon)
 			if(pap!=0 && pap < 6)
 				Give_Skill_Points(client, pap);
 
+			i_pap[client] = pap;
+
 			DataPack pack;
 			h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -290,6 +301,8 @@ public void Activate_Neuvellete(int client, int weapon)
 		int pap = Get_Pap(weapon);
 		if(pap!=0 && pap < 6)
 			Give_Skill_Points(client, pap);
+
+		i_pap[client] = pap;
 		
 		DataPack pack;
 		h_TimerNeuvellete_Management[client] = CreateDataTimer(0.1, Timer_Management_Neuvellete, pack, TIMER_REPEAT);
@@ -470,7 +483,7 @@ static bool Neuvellete_Loop_Logic(int client, int weapon)
 					fl_penetration_falloff[client] = Pen_Falloff;
 				}
 				
-				if(Get_Pap(weapon)>=3)
+				if(i_pap[client]>=3)
 				{
 					if(attack2 && fl_Ion_timer[client]<=GameTime)
 					{
@@ -573,7 +586,7 @@ static void Neuvellete_Hud(int client, int weapon)
 		Format(HUDText, sizeof(HUDText), "%sPrismatic Laser: [Offline]", HUDText);
 	}
 
-	if(Get_Pap(weapon)>=3)
+	if(i_pap[client]>=3)
 	{
 		if(fl_Ion_timer[client]<=GameTime)
 		{

@@ -2634,6 +2634,7 @@ static bool Ruina_Laser_BEAM_TraceUsers(int entity, int contentsMask)
 	}
 	return false;
 }
+/*
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
 	float Direction[3];
@@ -2642,7 +2643,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-
+*/
 	/// Custom Hand Particles or body or wings or halo or whatnot ///
 
 #define RUINA_MAX_PARTICLE_ENTS 15
@@ -2668,6 +2669,7 @@ void Ruina_Clean_Particles(int client)
 		i_laser_ref_id[client][i] = INVALID_ENT_REFERENCE;
 	}
 }
+/*
 void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 {
 	if(IsValidEntity(entity))	
@@ -2716,7 +2718,7 @@ void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 			TeleportEntity(entity, NULL_VECTOR, Ang, flNewVec);
 		}
 	}
-}
+}*/
 /*
 static void Ruina_Teleport_Entity(int entity, float loc[3])
 {

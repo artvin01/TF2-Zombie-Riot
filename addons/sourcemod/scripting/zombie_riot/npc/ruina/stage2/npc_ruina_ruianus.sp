@@ -274,7 +274,7 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-		if(b_ruina_battery_ability_active[npc.index] && !npc.Anger && flDistanceToTarget < 250000 && fl_ruina_battery_timeout[npc.index] < GameTIme)
+		if(b_ruina_battery_ability_active[npc.index] && !npc.Anger && flDistanceToTarget < 250000 && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
 			if(Difference < 65.0)	//make sure its more or less the same height as the npc

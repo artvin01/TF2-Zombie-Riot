@@ -2372,6 +2372,11 @@
 		"en"	"You can now fire a constant stream of magic arrows!\nAlso more damage and arrows fired per multi shot."
 		"chi"	"你的弓箭现在可以连发魔法箭矢！\n提高伤害和多发数量。"
 	}
+	"quincy pap arrow hyper"
+	{
+		"en"	"After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
+
+	}
 	"Taurus Judge Desc 1"
 	{
 		"en"	"This weapon comes with remarkable strength and deploys 30%% faster!\nUnfortunately, it only reloads when not equipped and fires slowly.\nGuranteed Gibs on kill if possible."
