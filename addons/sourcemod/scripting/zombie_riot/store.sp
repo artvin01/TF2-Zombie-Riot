@@ -1299,7 +1299,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 400, false, 5.0, false);
+							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
 					}
 				}
 				
