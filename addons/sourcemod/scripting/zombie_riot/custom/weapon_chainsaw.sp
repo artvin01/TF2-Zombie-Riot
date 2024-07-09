@@ -6,6 +6,7 @@ static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
 static bool f_ChainsawPlaySound[MAXPLAYERS+1];
 float f_AttackDelayChainsaw[MAXTF2PLAYERS];
 bool BarneyItem[MAXTF2PLAYERS];
+int SaveAmmoBarney[MAXTF2PLAYERS];
 
 static const char g_MeleeAttack[][] = {
 	"npc/roller/blade_out.wav",
@@ -124,7 +125,12 @@ public void Chainsaw_SawAttack(int client, int weapon)
 	int AmmoConsumption = 2;
 	if(BarneyItem[client])
 	{
-		AmmoConsumption = 1;
+		SaveAmmoBarney[client]++;
+		if(SaveAmmoBarney[client] >= 3)
+		{
+			SaveAmmoBarney[client] = 0;
+			AmmoConsumption = 1;
+		}
 	}
 	SetAmmo(client, 9, new_ammo - AmmoConsumption);
 	EmitSoundToAll(g_MeleeAttack[GetURandomInt() % sizeof(g_MeleeAttack)], client, SNDCHAN_AUTO, 70, _, 0.2, GetRandomInt(95,105));
