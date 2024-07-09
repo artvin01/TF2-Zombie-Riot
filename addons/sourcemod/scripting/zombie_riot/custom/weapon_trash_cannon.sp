@@ -59,7 +59,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on thi
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
 int i_IceMaxTargets[3] = { 3, 4, 5 };
 
-float f_IceChance[3] = { 0.00, 0.025, 0.05 };
+float f_IceChance[3] = { 0.00, 0.025, 0.03 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
 float f_IceRadius[3] = { 300.0, 350.0, 400.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
@@ -103,7 +103,7 @@ int i_MondoMaxTargets[3] = { 999, 999, 999 };
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
 float f_MondoDMG[3] = { 100000.0, 100000.0, 100000.0 };
-float f_MondoRadius[3] = { 1000.0, 1500.0, 2000.0 };
+float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
 
