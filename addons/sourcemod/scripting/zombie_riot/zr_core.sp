@@ -181,7 +181,9 @@ enum
 	WEAPON_VICTORIAN_LAUNCHER = 101,
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
-	WEAPON_MERCHANTGUN = 104
+	WEAPON_MERCHANTGUN = 104,
+	WEAPON_RUSTY_RIFLE = 105,
+	WEAPON_MG42 = 106
 }
 
 enum
@@ -240,6 +242,7 @@ float f_FreeplayDamageExtra = 1.0;
 int SalesmanAlive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what index is the raid?
 
 float PlayerCountBuffScaling = 1.0;
+float PlayerCountResBuffScaling = 1.0;
 int PlayersAliveScaling;
 int PlayersInGame;
 bool ZombieMusicPlayed;
@@ -494,6 +497,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/cosmetics/magia_cosmetics.sp"
 #include "zombie_riot/custom/wand/weapon_wand_impact_lance.sp"
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
+#include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
@@ -510,6 +514,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_victorian.sp"
 #include "zombie_riot/custom/weapon_obuch.sp"
 #include "zombie_riot/custom/kit_merchant.sp"
+#include "zombie_riot/custom/weapon_mg42.sp"
 
 void ZR_PluginLoad()
 {
@@ -611,6 +616,7 @@ void ZR_MapStart()
 	Wand_Default_Spell_ClearAll();
 	Wand_Necro_Spell_ClearAll();
 	Wand_Skull_Summon_ClearAll();
+	Rusty_Rifle_ResetAll();
 	ShieldLogic_OnMapStart();
 	Weapon_RapierMapChange();
 	Rogue_OnAbilityUseMapStart();
@@ -700,6 +706,7 @@ void ZR_MapStart()
 	Grenade_Custom_Precache();
 	Weapon_Tornado_Blitz_Precache();
 	BoomStick_MapPrecache();
+	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
 	TBB_Precahce_Mangler_2();
 	BeamWand_MapStart();
@@ -736,6 +743,7 @@ void ZR_MapStart()
 	Flagellant_MapStart();
 	Wand_Impact_Lance_Mapstart();
 	Trash_Cannon_Precache();
+	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
 	Gravaton_Wand_MapStart();

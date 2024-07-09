@@ -36,6 +36,8 @@
 #define TFTeam_Spectator 	1
 #define TFTeam_Red 		2
 #define TFTeam_Blue		3
+#define TFTeam_Stalkers 		5
+
 #define TF2_GetClientTeam	PLZUSE_GetTeam
 #define TF2_ChangeClientTeam	PLZUSE_SetTeam
 
@@ -419,6 +421,8 @@ float Resistance_Overall_Low[MAXENTITIES];
 float f_EmpowerStateSelf[MAXENTITIES];
 float f_EmpowerStateOther[MAXENTITIES];
 
+float Adaptive_MedigunBuff[MAXENTITIES][3];
+
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXTF2PLAYERS];;
 bool i_ClientHasCustomGearEquipped[MAXTF2PLAYERS]={false, ...};
@@ -794,10 +798,10 @@ float f_WeaponVolumeSetRange[MAXENTITIES];
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
 
 
-#define EXPLOSION_AOE_DAMAGE_FALLOFF 1.55
-#define LASER_AOE_DAMAGE_FALLOFF 1.65
+#define EXPLOSION_AOE_DAMAGE_FALLOFF 0.64
+#define LASER_AOE_DAMAGE_FALLOFF 0.6
 #define EXPLOSION_RADIUS 150.0
-#define EXPLOSION_RANGE_FALLOFF 0.5 //obsolete.
+#define EXPLOSION_RANGE_FALLOFF 0.5
 
 #if !defined NOG
 //#define DO_NOT_COMPENSATE_THESE 211, 442, 588, 30665, 264, 939, 880, 1123, 208, 1178, 594, 954, 1127, 327, 1153, 425, 1081, 740, 130, 595, 207, 351, 1083, 58, 528, 1151, 996, 1092, 752, 308, 1007, 1004, 1005, 206, 305
@@ -908,7 +912,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_24.mdl"
 
 #if defined ZR
 	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //0.0151 //Make it 0 for now
@@ -1637,6 +1641,7 @@ public void OnMapStart()
 	Building_MapStart();
 #endif
 
+	DamageModifMapStart();
 	SDKHooks_ClearAll();
 
 	Zero(f_MinicritSoundDelay);
@@ -1655,6 +1660,7 @@ public void OnMapStart()
 	Zero(f_ClientWasTooLongInsideHurtZoneDamageStairs);
 	Zero(delay_hud);
 	Zero(Increaced_Overall_damage_Low);
+	Zero2(Adaptive_MedigunBuff);
 	Zero(Resistance_Overall_Low);
 	Zero(Increaced_Sentry_damage_Low);
 	Zero(Increaced_Sentry_damage_High);

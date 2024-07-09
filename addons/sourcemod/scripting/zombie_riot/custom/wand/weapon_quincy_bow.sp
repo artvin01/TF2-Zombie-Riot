@@ -641,6 +641,8 @@ public void Quincy_Touch(int entity, int target)
 			if(i_quincy_penetrated[entity]>0)
 			{
 				float dmg_pen = LASER_AOE_DAMAGE_FALLOFF * i_quincy_penetrated[entity];
+				if(dmg_pen < 1.0)
+					dmg_pen = 1.0;
 				dmg_deal /=dmg_pen;
 			}
 			SDKHooks_TakeDamage(target, owner, owner, dmg_deal, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?

@@ -385,6 +385,13 @@
 				"windows"	"\x55\x8B\xEC\x57\x8B\x7D\x08\x85\xFF\x75\x2A\x33\xC0\x5F\x5D\xC3\x53"
 				"linux"		"@_Z14LookupActivityP10CStudioHdrPKc"
 			}
+			"CEconItemView::operator="
+			{
+				// From Randomizer
+				"library"	"server"
+				"linux"		"@_ZN13CEconItemViewaSERKS_"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x08\x53\x56\x8B\xF1\x57\x8B\x7D\x08\x8D\x5E\x18"
+			}
 		}
 		"Functions"
 		{

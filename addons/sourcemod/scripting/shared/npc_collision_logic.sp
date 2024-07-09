@@ -31,6 +31,13 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		if(b_CantCollidieAlly[otherindex])
 			return false;
 	}	
+	if(b_ThisEntityIgnoredByOtherNpcsAggro[otherindex])
+	{
+		if(GetTeam(otherindex) == TFTeam_Stalkers && GetTeam(bot_entidx) != TFTeam_Red)
+		{
+			return false;
+		}
+	}
 	if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 	{
 		CClotBody npc = view_as<CClotBody>(bot_entidx);

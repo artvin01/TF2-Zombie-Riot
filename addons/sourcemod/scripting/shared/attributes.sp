@@ -28,6 +28,21 @@ bool Attribute_ServerSide(int attribute)
 	}
 	return false;
 }
+/*
+	There are attributes that are used only for ZR that dont actually exist
+	there are described here:
+	4001: Extra melee range
+	4002: Medigun overheal
+	4007: Melee resisance while equipped in hand
+	4008: Ranged resistance while equipped in hand
+	4009: total damage reduced while in hand
+	4010: RPG ONLY!!! Stats to use while in hand only such as STR or END or DEX
+	4011: Explosive weapon limit on hit if its not on default, default is 10 (hits only 10 enemies.), you can reduce it to 2 for example, if your explosive weapon has tiny AOE
+	733: Magic shot cost
+	410: Magic damage % 
+
+	most of these are via %, 1.0 means just 100% normal, 0.5 means half, 1.5 means 50% more
+*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
@@ -322,7 +337,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			{
-				value /= 2.0;
+				value *= 0.5;
 			}
 
 			if(b_thisNpcIsARaid[victim])

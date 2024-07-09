@@ -117,7 +117,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);

@@ -355,6 +355,9 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				float cooldown = float(healing) / 5.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
+					
+				if(cooldown > 15.0)
+					cooldown = 15.0;
 				
 				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
 

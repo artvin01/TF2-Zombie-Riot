@@ -655,13 +655,16 @@
 	}
 	"SMG Pap 4"
 	{
-		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size.\nArchetype changes to ''Infinite Fire''"
+		"en"	"+DMG, infinite clip.\nArchetype changes to ''Infinite Fire''"
 	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
 	}
 	"SMG Pap 5"
 	{
-		"en"	"Massively increased damage and attackspeed and clip size and way longer reload time."
-		"chi"   "大量增加伤害，攻击速度，弹夹大小和更长的装填时间。"
+		"en"	"+DMG, +firereate, +clip, -reload."
+	}
+	"SMG Pap 6"
+	{
+		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed."
 	}
 	
 	"People Popper Desc"
@@ -1146,9 +1149,11 @@
 	
 	"Homing Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies."
-		"ru"	"Расходует ману с каждым выстрелом. M2 - вызывает выстреливающий дробовик. Он стреляет снарядами в врагов."
-		"chi"   "每次射击消耗法力值。右键召唤散弹枪射击。这些射击击中敌人。"
+		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies if you look at them while shooting."
+	}
+	"Homing Staff Desc 2"
+	{
+		"en"	"Attacks faster, does more damage, m2 costs more mana and can be spammed at an extreme rate."
 	}
 	
 	"Wind Staff Desc"
@@ -1432,9 +1437,9 @@
 	
 	"Accurate Marksman Desc"
 	{
-		"en"	"20%% more accuracy and 20%% faster projectile speed"
-		"ru"	"На 20%% выше точность и на 20%% выше скорость снаряда."
-		"chi"   "射击精度提高20%%、射速提高20%%"
+		"en"	"10%% more accuracy and 20%% faster projectile speed"
+		"ru"	"На 10%% выше точность и на 20%% выше скорость снаряда."
+		"chi"   "射击精度提高10%%、射速提高20%%"
 	}
 	
 	"Ammo Coat Desc"
@@ -2846,8 +2851,7 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
-		"chi"	"增加超量上限。\n25%% → 45%%（玩家）\n50%% → 75%%（NPC）"
+		"en"	"You have different medigun modes! use them for certain situations to boost melee, ranged, or both resitances."
 	}
 	"Medigun Desc Pap 2"
 	{

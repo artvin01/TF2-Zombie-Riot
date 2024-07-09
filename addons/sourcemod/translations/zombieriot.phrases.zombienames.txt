@@ -568,6 +568,10 @@
 		"pt"		"Xeno Spy Main do X10"
 		"nl"		"Xeno X10 Spion Main"
 	}
+	"Xeno Malfunctioning Robot"
+	{
+		"en" 		"Xeno Malfunctioning Robot"
+	}
 
 	"Nazi Panzer"
 	{
@@ -827,12 +831,12 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 	}
-	"The Doctor"
+	"Doctor Purnell"
 	{
-		"en" 		"The Doctor"
-		"ru" 		"Доктор"
-		"pt"		"O Doutor"
-		"nl"		"De Dokter"
+		"en" 		"Doctor Purnell"
+		"ru" 		"Доктор Пурнелл"
+		"pt"		"Doutor Purnell"
+		"nl"		"Dokter Purnell"
 	}
 	"Book Simon"
 	{
@@ -840,6 +844,34 @@
 		"ru" 		"Книжный Саймон"
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
+	}
+	"Crazy Lady"
+	{
+		"en" 		"Crazy Lady"
+	}
+	"Faster"
+	{
+		"en" 		"Faster"
+	}
+	"Psycho"
+	{
+		"en" 		"Psycho"
+	}
+	"Sewmo"
+	{
+		"en" 		"Sewmo"
+	}
+	"Suicider"
+	{
+		"en" 		"Suicider"
+	}
+	"Cured Purnell"
+	{
+		"en" 		"Cured Purnell"
+	}
+	"Corrupted Barney"
+	{
+		"en" 		"Corrupted Barney"
 	}
 	"Kahmlstein"
 	{
@@ -1281,11 +1313,9 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Spawned Blue Goggles"
+	"Machina Waldch"
 	{
-		"en"		"Spawned Blue Goggles"
-		"pt"		"Blue Goggles Gerado"
-		"ru"		"Созданный Блу Гогглз"
+		"en"		"Machina Waldch"
 	}
 	"Silvester"
 	{
@@ -1293,11 +1323,10 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Blue Goggles"
+	"Waldch"
 	{
-		"en"		"Blue Goggles"
-		"pt"		"Blue Goggles"
-		"ru"		"Блу Гогглз"
+		"en"		"Waldch"
+		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{

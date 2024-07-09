@@ -534,8 +534,13 @@ bool Merchant_OnLethalDamage(int attacker, int client)
 			SetAmmo(client, Ammo_Metal, ammo - cost);
 			CurrentAmmo[client][Ammo_Metal] = ammo - cost;
 			MerchantEffect[client]++;
-
-			SetEntityHealth(client, SDKCall_GetMaxHealth(client) * 7 / 10);
+			int HealAmount = SDKCall_GetMaxHealth(client) / 2;
+			if(RaidbossIgnoreBuildingsLogic(1))
+			{
+				HealAmount = (HealAmount * 3) / 4;
+			}
+			//during raids, heal half as much.
+			SetEntityHealth(client, HealAmount);
 			return true;
 		}
 	}
@@ -804,15 +809,15 @@ static void MerchantStart(int client, int slot)
 					ClientCommand(client, "playgamesound mvm/mvm_tank_horn.wav");
 
 					damage *= (MerchantLevel[client] > 4 ? 1.5 : (MerchantLevel[client] == 4 ? 1.45 : 1.4));
-					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.3 : 0.4);
-					MerchantAddAttrib(client, 206, 0.75);
+					MerchantAddAttrib(client, 205, MerchantLevel[client] > 4 ? 0.7 : 0.75);
+					MerchantAddAttrib(client, 206, 0.85);
 				}
 				else
 				{
 					ClientCommand(client, "playgamesound player/invuln_on_vaccinator.wav");
 					
 					damage *= 1.4;
-					MerchantAddAttrib(client, 205, 0.75);
+					MerchantAddAttrib(client, 205, 0.85);
 				}
 			}
 			case Merchant_Swire:

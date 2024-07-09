@@ -80,6 +80,7 @@ void Medigun_PersonOnMapStart() {
 	
 }
 
+int MedigunModeSet[MAXTF2PLAYERS];
 
 void Medigun_OnEntityCreated(int entity) 
 {
@@ -349,6 +350,30 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
+
+
+
+					if(What_type_Heal == 5.0)
+					{
+						switch(MedigunModeSet[owner])
+						{
+							case 0:
+							{
+								Adaptive_MedigunBuff[owner][0] = GetGameTime() + 0.15;
+								Adaptive_MedigunBuff[healTarget][0] = GetGameTime() + 0.15;
+							}
+							case 1:
+							{
+								Adaptive_MedigunBuff[owner][1] = GetGameTime() + 0.15;
+								Adaptive_MedigunBuff[healTarget][1] = GetGameTime() + 0.15;
+							}
+							case 2:
+							{
+								Adaptive_MedigunBuff[owner][2] = GetGameTime() + 0.15;
+								Adaptive_MedigunBuff[healTarget][2] = GetGameTime() + 0.15;
+							}
+						}
+					}
 #if defined ZR
 					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
@@ -362,13 +387,13 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 							healing_Amount *= 0.25;
 						}	
 
-						if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
+						if(f_TimeUntillNormalHeal[healTarget] - 2.0 > GetGameTime())
 						{
-							healing_Amount *= 0.25;
+							healing_Amount *= 0.33;
 						}
-						if(f_TimeUntillNormalHeal[owner] > GetGameTime())
+						if(f_TimeUntillNormalHeal[owner] - 2.0 > GetGameTime())
 						{
-							healing_Amount_Self *= 0.25;
+							healing_Amount_Self *= 0.33;
 						}
 						if(owner <= MaxClients && dieingstate[owner] > 0)
 						{
@@ -378,24 +403,18 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount = 0.0;
 						}
+
 						float flMaxHealth;
 						//The healing is less then 1 ? Do own logic.
 						if(!Is_Allied_Npc)
 						{
-							if(What_type_Heal != 5.0)
-								flMaxHealth = 1.5;
-							else
-								flMaxHealth = 1.75;
+							flMaxHealth = 1.5;
 						}
 						else
 						{
-							if(What_type_Heal != 5.0)
-								flMaxHealth = 1.25;
-							else
-								flMaxHealth = 1.45;
+							flMaxHealth = 1.25;
 						}
 						flMaxHealth *= Attributes_Get(medigun, 4002, 1.0);
-
 #if defined ZR
 						if(What_type_Heal == 6.0)
 						{
@@ -407,11 +426,11 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 								if(f_TimeUntillNormalHeal[healTarget] > GetGameTime())
 								{
-									Healing_GiveArmor *= 0.25;
+									Healing_GiveArmor *= 0.33;
 								}
 								if(i_targethealedLastBy[healTarget] != owner) //If youre healing someone thats already being healed, then the healing amount will be heavily reduced.
 								{
-									Healing_GiveArmor *= 0.25;
+									Healing_GiveArmor *= 0.33;
 								}	
 								GiveArmorViaPercentage(healTarget, Healing_GiveArmor, 1.0, true);
 							}
@@ -482,7 +501,28 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			}
 			if(medigun_hud_delay[owner] < GetGameTime())
 			{
-				PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
+				if(What_type_Heal != 5.0)
+				{
+					PrintHintText(owner,"Medigun Medicine Fluid: %iml", new_ammo);
+				}
+				else
+				{
+					switch(MedigunModeSet[owner])
+					{
+						case 0:
+						{
+							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: General", new_ammo);
+						}
+						case 1:
+						{
+							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Melee", new_ammo);
+						}
+						case 2:
+						{
+							PrintHintText(owner,"Medigun Medicine Fluid: %iml\nMode: Ranged", new_ammo);
+						}
+					}
+				}
 				StopSound(owner, SNDCHAN_STATIC, "UI/hint.wav");
 				medigun_hud_delay[owner] = GetGameTime() + 0.5;
 			}
@@ -740,4 +780,16 @@ float MedigunGetUberDuration(int owner)
 		Attribute = 1.0;
 	}
 	return Attribute;
+}
+
+
+
+public void Adaptive_MedigunChangeBuff(int client, int weapon, bool crit, int slot)
+{
+	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
+	MedigunModeSet[client]++;
+	if(MedigunModeSet[client] > 2)
+	{
+		MedigunModeSet[client] = 0;
+	}
 }
