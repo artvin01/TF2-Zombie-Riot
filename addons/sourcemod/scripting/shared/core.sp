@@ -719,10 +719,10 @@ int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
-int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
-int HandRef[MAXTF2PLAYERS] = {-1, ...};
-int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
-int i_Worldmodel_WeaponModel[MAXTF2PLAYERS] = {-1, ...};
+int WeaponRef_viewmodel[MAXTF2PLAYERS];
+int HandRef[MAXTF2PLAYERS];
+int i_Viewmodel_PlayerModel[MAXENTITIES];
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
@@ -915,7 +915,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_10.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_24.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -942,6 +942,7 @@ enum
 		//32768
 	}
 #endif
+
 
 
 #if defined ZR

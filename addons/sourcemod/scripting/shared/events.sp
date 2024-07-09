@@ -193,7 +193,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 
 		ViewChange_DeleteHands(client);
-		//ViewChange_UpdateHands(client, CurrentClass[client]);
+		ViewChange_UpdateHands(client, CurrentClass[client]);
 		TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
 		if(b_HideCosmeticsPlayer[client])

@@ -1,6 +1,6 @@
 // Created by Crowbar 0.71
 
-$modelname "zombie_riot/weapons/custom_weaponry_1_10"
+$modelname "zombie_riot/weapons/custom_weaponry_1_24"
 
 $bodygroup "scythe"
 {
@@ -38,20 +38,17 @@ $bodygroup "mg42"
 	studio "mg42.smd"
 }
 
-$MostlyOpaque
-
-$surfaceprop "metal"
+$surfaceprop "weapon"
 
 $contents "solid"
 
 $illumposition 0.096 -0.043 13.267
 
 $cdmaterials "models\custom_weaponry"
+$cdmaterials "models\weapons\c_items\"
 $cdmaterials "models\weapons\v_crossbow\"
 $cdmaterials "models\weapons\w_annabelle\"
 $cdmaterials "models\Weapons\V_shotgun\"
-$cdmaterials "wood\"
-$cdmaterials "props\"
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

@@ -183,9 +183,10 @@ enum
 	WEAPON_MERCHANT = 103,
 	WEAPON_MERCHANTGUN = 104,
 	WEAPON_RUSTY_RIFLE = 105,
-	WEAPON_ION_BEAM_PULSE = 106,
-	WEAPON_ION_BEAM_NIGHT = 107,
-	WEAPON_ION_BEAM_FEED  = 108
+	WEAPON_MG42 = 106,
+	WEAPON_ION_BEAM_PULSE = 107,
+	WEAPON_ION_BEAM_NIGHT = 108,
+	WEAPON_ION_BEAM_FEED  = 109
 }
 
 enum
@@ -517,6 +518,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_victorian.sp"
 #include "zombie_riot/custom/weapon_obuch.sp"
 #include "zombie_riot/custom/kit_merchant.sp"
+#include "zombie_riot/custom/weapon_mg42.sp"
 
 void ZR_PluginLoad()
 {
@@ -710,6 +712,7 @@ void ZR_MapStart()
 	Grenade_Custom_Precache();
 	Weapon_Tornado_Blitz_Precache();
 	BoomStick_MapPrecache();
+	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
 	TBB_Precahce_Mangler_2();
 	BeamWand_MapStart();

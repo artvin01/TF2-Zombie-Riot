@@ -814,3 +814,8 @@ bool Item_ClientHasAllRarity(int client, int rarity)
 	}
 	return false;
 }
+
+public void MapChooser_OnClientItem(int client, const char[] item, int amount, bool &result)
+{
+	result = Items_HasNamedItem(client, item);
+}
