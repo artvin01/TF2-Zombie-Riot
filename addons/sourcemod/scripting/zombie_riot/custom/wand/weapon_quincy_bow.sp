@@ -227,6 +227,8 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 
 		Quincy_Damage_Trace(client, Origin, vecHit, Radius, damage);
 
+		Client_Shake(client, 0, 35.0, 20.0, 0.8);
+
 		Origin[2]-=15.0;
 		vecHit[2]-=15.0;
 
