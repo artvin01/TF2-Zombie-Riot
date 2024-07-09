@@ -975,7 +975,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
 		return Plugin_Stop;
 	
-	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 1.0);
+	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 0.8);
 	
 	for (int i = 0; i < i_MissilesCount[tier]; i++)
 	{
@@ -1010,7 +1010,7 @@ public MRESReturn Missiles_Explode(int entity)
 	
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_EXPLOSION_GENERIC, 1.0);
-	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 0.8);
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
@@ -1057,7 +1057,7 @@ public Action Missiles_BeginHoming(Handle begin, int ref)
 		float ang[3];
 		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
 		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
-		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
 	return Plugin_Stop;
