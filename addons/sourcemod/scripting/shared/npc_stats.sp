@@ -1340,12 +1340,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
-		/*
-		if(b_NpcResizedForCrouch[this.index])
-		{
-			speed_for_return *= 0.33333;
-		}
-		*/
 #if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
