@@ -2781,7 +2781,7 @@
 	}
 	"Gravton Wand desc0"
 	{
-		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed.\nCasting a spell too close to the same position heavily weakens the spell."
 		"chi"	"强力的AOE魔法，M1召唤出一个带有缓慢延迟的引力爆炸。"
 	}
 	"Gravton Wand desc1"
