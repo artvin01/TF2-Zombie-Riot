@@ -199,6 +199,14 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Your Hyper Arrow Is still cooling");
 			return;
 		}
+		if(Current_Mana[client] < 500.0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana", 500.0);
+			return;
+		}
 		fl_hyper_arrow_charge[client] = 0.0;
 
 		fl_quincy_hyper_arrow_timeout[client] = GetGameTime() + 15.0;
