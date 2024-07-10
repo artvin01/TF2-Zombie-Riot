@@ -1958,7 +1958,7 @@ static void Internal_NPCDeath(int entity)
 				}
 				case 3:
 				{
-					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO, {crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
+					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO,{crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
 				}
 			}
 		}
