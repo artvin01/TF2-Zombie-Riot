@@ -93,20 +93,20 @@ methodmap CorruptedBarney < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitCustomToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(8.0, 16.0);
 		
 	}
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return; 
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(3.0, 8.0);
 	}
 	public void PlayIntro() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitCustomToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], _, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitCustomToAll(g_IntroSound[GetRandomInt(0, sizeof(g_IntroSound) - 1)], _, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + 8.0;
 	}
 	public void PlayHurtSound() {
@@ -115,12 +115,12 @@ methodmap CorruptedBarney < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 
 	public void PlaySpawnSound() {
 	
-		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitCustomToAll(g_SpawnSounds[GetRandomInt(0, sizeof(g_SpawnSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayDeathSound()");
@@ -128,16 +128,16 @@ methodmap CorruptedBarney < CClotBody
 	}
 
 	public void PlayDeathSound() {
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}
 	public void PlayMeleeSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(1, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitCustomToAll(g_MeleeAttackSounds[GetRandomInt(1, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextHurtSound = GetGameTime(this.index) + 5.0;
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 	}	
 	
 	public CorruptedBarney(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -246,15 +246,42 @@ public void CorruptedBarney_ClotThink(int iNPC)
 	{
 		return;
 	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	RaidModeScaling = float(GetURandomInt());
-	fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.5);
-	npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
-	RaidModeTime = GetGameTime(npc.index) + GetRandomFloat(5.0, 555.0);
-	FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
-	CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
-	
+	if(!npc.Anger)
+	{
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+		RaidModeScaling = float(GetURandomInt());
+		fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.5);
+		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
+		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+	}
+	else
+	{
+		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
+		RaidModeScaling = float(GetURandomInt());
+		fl_TotalArmor[npc.index] = GetRandomFloat(0.21, 0.35);
+		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
+		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		CPrintToChatAll("{midnightblue}%c%c%c%c%c{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
+		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
+		char Buffer[32];
+		for(int client; client <= MaxClients; client++)
+		{
+			if(IsValidClient(client))
+			{
+				Client_Shake(client, 0, 7.0, 7.0, 0.1, false);
+				FormatEx(Buffer, sizeof(Buffer), "Barney %i", GetRandomInt(1, 2500));
+				SetClientName(client, Buffer);
+				SetEntPropString(client, Prop_Data, "m_szNetname", Buffer);
+				IncreaceEntityDamageTakenBy(client, GetRandomFloat(0.05, 0.1), 0.1, true);
+			}
+		}
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -292,6 +319,11 @@ public Action CorruptedBarney_OnTakeDamage(int victim, int &attacker, int &infli
 {
 	CorruptedBarney npc = view_as<CorruptedBarney>(victim);
 		
+	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+	{
+		npc.Anger = true; //	>:(
+	}
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
@@ -357,6 +389,11 @@ void CorruptedBarneySelfDefense(CorruptedBarney npc, float gameTime, int target,
 					float damageDealt = 450.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 50.0;
+
+					if(npc.Anger)
+					{
+						damageDealt *= 1.25;
+					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
