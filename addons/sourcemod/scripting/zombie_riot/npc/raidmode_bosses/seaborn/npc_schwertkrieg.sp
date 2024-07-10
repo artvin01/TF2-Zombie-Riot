@@ -1946,7 +1946,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{
-			switch(GetRandomInt(1,2))	//warp
+			switch(GetRandomInt(1,3))	//warp
 			{
 				case 1:
 				{
@@ -1955,6 +1955,10 @@ static void Internal_NPCDeath(int entity)
 				case 2:
 				{
 					CPrintToChatAll("{aqua}Stella{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO, {crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
 				}
 			}
 		}
