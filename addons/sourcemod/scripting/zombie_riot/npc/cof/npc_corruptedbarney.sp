@@ -269,8 +269,11 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
 		char Buffer[32];
-		GlobalExtraCash = GetURandomInt();
-		Ammo_Count_Ready = GetURandomInt();
+		if(i_RaidGrantExtra[npc.index] == 1)
+		{
+			GlobalExtraCash = GetURandomInt();
+			Ammo_Count_Ready = GetURandomInt();
+		}
 		for(int client; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client))
@@ -284,10 +287,11 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				f_damageAddedTogether[client] = float(GetURandomInt());
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
 				i_CurrentEquippedPerk[client] = GetRandomInt(1,6);
-				i_AmountDowned[client] = GetRandomInt(-99999999, 500000);
+				i_AmountDowned[client] = GetRandomInt(-500000, 500000);
 				
 				KillFeed_Show(client, client, client, client, -1, 0, false);
-				CashSpent[client] = GetURandomInt();
+				if(i_RaidGrantExtra[npc.index] == 1)
+					CashSpent[client] = GetURandomInt();
 			}
 		}
 	}
