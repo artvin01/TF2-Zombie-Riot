@@ -822,6 +822,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
 		}
+		case WEAPON_CHAINSAW:
+		{
+			Npc_OnTakeDamage_Chainsaw(attacker, damagetype);
+		}
 		case WEAPON_SPEEDFISTS:
 		{
 			Npc_OnTakeDamage_SpeedFists(attacker,victim, damage);

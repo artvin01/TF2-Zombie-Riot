@@ -320,6 +320,13 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+
+#if !defined RTS
+float f_damageAddedTogether[MAXTF2PLAYERS];
+float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+int i_HudVictimToDisplay[MAXTF2PLAYERS];
+#endif
+
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
@@ -914,7 +921,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_24.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -3109,6 +3116,12 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
+		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_door"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;

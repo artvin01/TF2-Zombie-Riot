@@ -22,6 +22,15 @@ static float i_ClosestAllyCDTarget[MAXENTITIES];
 void SpecialDoctor_OnMapStart()
 {
 	
+	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
+	for (int i = 0; i < (sizeof(g_KillSounds));	   i++) { PrecacheSoundCustom(g_KillSounds[i]);	   }
+	PrecacheSoundCustom("cof/purnell/death.mp3");
+	PrecacheSoundCustom("cof/purnell/intro.mp3");
+	PrecacheSoundCustom("cof/purnell/converted.mp3");
+	PrecacheSoundCustom("cof/purnell/reload.mp3");
+	PrecacheSoundCustom("cof/purnell/shoot.mp3");
+	PrecacheSoundCustom("cof/purnell/shove.mp3");
+	PrecacheSoundCustom("cof/purnell/meleehit.mp3");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Rouge Expidonsan Doctor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_doctor_special");

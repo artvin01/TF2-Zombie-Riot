@@ -41,7 +41,8 @@ void Addiction_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Addiction");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_addiction");
-	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	strcopy(data.Icon, sizeof(data.Icon), "psycho");
+	//already downlowded for psycho
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
