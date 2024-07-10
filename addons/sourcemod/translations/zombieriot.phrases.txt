@@ -3176,4 +3176,12 @@
 	{
 		"en"	"Relax, I'm not one of them."
 	}
+	"Set modifier set to"
+	{
+		"en"	"Set modifier set to"
+	}
+	"Vote for the modifier"
+	{
+		"en"	"Vote for the modifier"
+	}
 }

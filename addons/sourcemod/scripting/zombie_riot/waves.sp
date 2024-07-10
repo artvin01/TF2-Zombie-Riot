@@ -81,7 +81,7 @@ enum struct Round
 enum struct Vote
 {
 	char Name[64];
-	char Config[64];
+	char Config[256];
 	int Level;
 	char Desc[256];
 	char Append[64];
@@ -260,7 +260,7 @@ bool Waves_CallVote(int client, int force = 0)
 			float multi = float(vote.Level) / 1000.0;
 
 			int length = VotingMods.Length;
-			for(int i; i < length; i++)
+			for(int i = 1; i < length; i++)
 			{
 				VotingMods.GetArray(i, vote);
 				vote.Name[0] = CharToUpper(vote.Name[0]);
@@ -511,13 +511,16 @@ void Waves_SetupVote(KeyValues map)
 		if(kv.GotoFirstSubKey())
 		{
 			VotingMods = new ArrayList(sizeof(Vote));
-
+			strcopy(vote.Name, sizeof(vote.Name), "Standard");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Standard Desc");
+			vote.Config[0] = 0;
+			vote.Level = 0;
+			VotingMods.PushArray(vote);
 			do
 			{
 				vote.Level = RoundFloat(kv.GetFloat("level", 1.0) * 1000.0);
 
 				kv.GetString("func_collect", vote.Config, sizeof(vote.Config));
-
 				kv.GetString("func_remove", vote.Name, sizeof(vote.Name));
 				Format(vote.Config, sizeof(vote.Config), "%s;%s", vote.Config, vote.Name);
 
@@ -886,6 +889,7 @@ void Waves_RoundStart()
 	}
 	else
 	{
+		LogStackTrace("AAAAAAA");
 		delete VotingMods;
 		Waves_SetReadyStatus(1);
 	}
@@ -1065,7 +1069,9 @@ public Action Waves_EndVote(Handle timer, float time)
 
 					if(VotingMods)
 					{
+						Zero(VotedFor);
 						VoteEndTime = GetGameTime() + 30.0;
+						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 					}
 					else

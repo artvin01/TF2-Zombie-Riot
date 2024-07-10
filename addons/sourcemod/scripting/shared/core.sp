@@ -3125,6 +3125,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_door"))
 		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
