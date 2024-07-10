@@ -156,6 +156,7 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 bool b_donner_said_win_line;
+bool b_schwert_ded;
 
 //static bool b_spawn_bob;
 
@@ -313,6 +314,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_donner_said_win_line = false;
+		b_schwert_ded = false;
 
 		//fl_divine_intervention_retry = GetGameTime() + 10.0;
 
@@ -535,13 +537,13 @@ static void Win_Line(int entity)
 
 	char text_lines[255];
 	int ally = EntRefToEntIndex(i_ally_index);
-	if(IsValidEntity(ally))
+	if(IsValidEntity(ally) && !b_schwert_ded)
 	{
 		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
 	}
 	else
 	{
-		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh my, how annoying this has become...", name_color, text_color);
+		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased {snow} your existance", name_color, text_color);
 	}
 	b_donner_said_win_line = true;
 	CPrintToChatAll(text_lines);
@@ -2096,7 +2098,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(wave<60)
 		{
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				switch(GetRandomInt(1,2))	//warp
 				{
