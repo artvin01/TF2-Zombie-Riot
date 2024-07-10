@@ -1256,6 +1256,7 @@ float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
+float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -2895,6 +2896,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;

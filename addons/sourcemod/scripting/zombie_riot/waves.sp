@@ -1020,7 +1020,14 @@ public Action Waves_EndVote(Handle timer, float time)
 				Vote vote;
 				list.GetArray(highest, vote);
 				
-				delete list;
+				if(VotingMods == list)
+				{
+					delete VotingMods;
+				}
+				else
+				{
+					delete Voting;
+				}
 				
 				if(normal)
 				{
@@ -1110,7 +1117,14 @@ public Action Waves_EndVote(Handle timer, float time)
 		}
 		else
 		{
-			delete list;
+			if(VotingMods == list)
+			{
+				delete VotingMods;
+			}
+			else
+			{
+				delete Voting;
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -1209,14 +1223,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					//If its any boss, then make it scale like old.
 					count = RoundToNearest(float(count) * multiBoss);
 				}
+				count = RoundToNearest(float(count) * ZRModifs_MaxSpawnWaveModif());
 			}
 			
 			if(count < 1) //So its always 1
 				count = 1;
 				
 			
-			if(count > 150) //So its always less then 150.
-				count = 150;
+			if(count > 250) //So its always less then 250.
+				count = 250;
 			
 			if(wave.EnemyData.Team != TFTeam_Red)
 			{
