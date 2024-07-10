@@ -17,11 +17,16 @@ static const char g_MeleeHitSounds[][] = {
 	"npc/manhack/grind_flesh2.wav",
 	"npc/manhack/grind_flesh3.wav",
 };
+static const char g_MeleeHitSoundFloor[][] = {
+	"ambient/sawblade_impact1.wav",
+	"ambient/sawblade_impact2.wav",
+};
 
 void Mapstart_Chainsaw()
 {
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttack);
+	PrecacheSoundArray(g_MeleeHitSoundFloor);
 	Zero(f_ChainSawhuddelay);
 	Zero(f_AttackDelayChainsaw);
 	Zero(f_ChainsawLoopSound);
@@ -133,8 +138,19 @@ public void Chainsaw_SawAttack(int client, int weapon)
 		}
 	}
 	SetAmmo(client, 9, new_ammo - AmmoConsumption);
-	EmitSoundToAll(g_MeleeAttack[GetURandomInt() % sizeof(g_MeleeAttack)], client, SNDCHAN_AUTO, 70, _, 0.3, GetRandomInt(95,105));
 	TF2_CalcIsAttackCritical(client, weapon, "", result);
+}
+
+void EmitSoundChainsaw(int client, int sound)
+{
+	if(sound == 1)
+	{
+		EmitSoundToAll(g_MeleeAttack[GetURandomInt() % sizeof(g_MeleeAttack)], client, SNDCHAN_AUTO, 70, _, 0.3, GetRandomInt(95,105));
+	}
+	else
+	{
+		EmitSoundToAll(g_MeleeHitSoundFloor[GetURandomInt() % sizeof(g_MeleeHitSoundFloor)], client, SNDCHAN_AUTO, 70, _, 0.3, GetRandomInt(95,105));
+	}
 }
 
 public Action Timer_Management_ChainSaw(Handle timer, DataPack pack)
