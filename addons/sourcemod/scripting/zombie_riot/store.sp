@@ -5244,7 +5244,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 6 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 194, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);

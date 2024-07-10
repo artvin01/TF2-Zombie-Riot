@@ -708,8 +708,8 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 #if defined ZR
 		f_TimeSinceLastGiveWeapon[entity] = 0.0;
 #endif
-		//static int fakeID = 1;
-		//SetItemID(entity, fakeID++);
+		static int fakeID = 10000;
+		SetItemID(entity, fakeID++);
 
 		Attributes_EntityDestroyed(entity);
 
@@ -740,9 +740,10 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 		TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
 		TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
 
-		EquipPlayerWeapon(client, entity);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
+
+		EquipPlayerWeapon(client, entity);
 	}
 
 #if defined ZR || defined RPG

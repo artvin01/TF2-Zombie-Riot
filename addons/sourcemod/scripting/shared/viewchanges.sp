@@ -426,19 +426,38 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 
 static int CreateViewmodel(int iClient, int iModelIndex, int iWeapon, bool bCopy = false)
 {
-	static int g_iOffsetItem;
-	if(!g_iOffsetItem)
-		g_iOffsetItem = FindSendPropInfo("CTFWearable", "m_Item");
+	static int g_iOffsetWearable;
+	if(!g_iOffsetWearable)
+		g_iOffsetWearable = FindSendPropInfo("CTFWearable", "m_Item");
 	
 	int iWearable = CreateEntityByName("tf_wearable_vm");
 	
 	if (bCopy)	//Copy m_Item from weapon, so reskin stuffs can show
-		SDKCall_SetItem(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetItem), GetEntityAddress(iWeapon) + view_as<Address>(g_iOffsetItem));
-	
+		SDKCall_SetItem(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetWearable), GetEntityAddress(iWeapon) + view_as<Address>(g_iOffsetWearable));
+
 	float vecOrigin[3], vecAngles[3];
 	GetEntPropVector(iClient, Prop_Send, "m_vecOrigin", vecOrigin);
 	GetEntPropVector(iClient, Prop_Send, "m_angRotation", vecAngles);
 	TeleportEntity(iWearable, vecOrigin, vecAngles, NULL_VECTOR);
+
+	if (bCopy)
+	{
+		/*for(int i; i < 400; i += 4)
+		{
+			any value = LoadFromAddress(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetWearable) + view_as<Address>(i), NumberType_Int32);
+			PrintToChatAll("+%d   %d  %x  %f", i, value, value, value);
+		}*/
+
+		// Sus list
+		// 36, 
+
+		PrintToChatAll("Ent: %d", iWearable);
+		SetEntData(iWearable, g_iOffsetWearable + 16, -384889798, 4);
+		SetEntData(iWearable, g_iOffsetWearable + 20, 2, 4);
+		SetEntData(iWearable, g_iOffsetWearable + 24, 2, 4);
+		SetEntData(iWearable, g_iOffsetWearable + 28, -384889798, 4);
+		SetEntData(iWearable, g_iOffsetWearable + 36, -2147483183, 4);
+	}
 	
 	SetEntProp(iWearable, Prop_Send, "m_bValidatedAttachedEntity", true);
 	SetEntPropEnt(iWearable, Prop_Send, "m_hOwnerEntity", iClient);
@@ -447,7 +466,7 @@ static int CreateViewmodel(int iClient, int iModelIndex, int iWeapon, bool bCopy
 	
 	DispatchSpawn(iWearable);
 	
-	TF2Attrib_SetByDefIndex(iWearable, 731, 1.0);
+	//TF2Attrib_SetByDefIndex(iWearable, 731, 1.0);
 	TF2Attrib_SetByDefIndex(iWearable, 834, view_as<float>(202));
 	TF2Attrib_SetByDefIndex(iWearable, 725, 0.0);
 	TF2Attrib_SetByDefIndex(iWearable, 866, view_as<float>(342536));
