@@ -1221,12 +1221,6 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 	}
 }
 
-#if !defined RTS
-static float f_damageAddedTogether[MAXTF2PLAYERS];
-static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
-static int i_HudVictimToDisplay[MAXTF2PLAYERS];
-#endif
-
 void CleanAllNpcArray()
 {
 #if defined ZR

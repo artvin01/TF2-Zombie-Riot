@@ -320,6 +320,13 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+
+#if !defined RTS
+float f_damageAddedTogether[MAXTF2PLAYERS];
+float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+int i_HudVictimToDisplay[MAXTF2PLAYERS];
+#endif
+
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	

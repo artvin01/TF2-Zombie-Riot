@@ -251,7 +251,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 	{
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 		RaidModeScaling = float(GetURandomInt());
-		fl_TotalArmor[npc.index] = GetRandomFloat(0.25, 0.5);
+		fl_TotalArmor[npc.index] = GetRandomFloat(0.001, 0.005);
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
@@ -261,10 +261,10 @@ public void CorruptedBarney_ClotThink(int iNPC)
 	{
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
 		RaidModeScaling = float(GetURandomInt());
-		fl_TotalArmor[npc.index] = GetRandomFloat(0.21, 0.35);
+		fl_TotalArmor[npc.index] = GetRandomFloat(0.001, 1000.0);
 		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
 		CPrintToChatAll("{midnightblue}%c%c%c%c%c{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
@@ -278,6 +278,9 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				SetClientName(client, Buffer);
 				SetEntPropString(client, Prop_Data, "m_szNetname", Buffer);
 				IncreaceEntityDamageTakenBy(client, GetRandomFloat(0.05, 0.1), 0.1, true);
+				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
+				f_damageAddedTogether[client] = float(GetURandomInt());
+				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
 			}
 		}
 	}
@@ -319,6 +322,9 @@ public Action CorruptedBarney_OnTakeDamage(int victim, int &attacker, int &infli
 {
 	CorruptedBarney npc = view_as<CorruptedBarney>(victim);
 		
+	damage *= 0.25;
+	
+	damage *= (1.0 / fl_TotalArmor[npc.index]);
 	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
