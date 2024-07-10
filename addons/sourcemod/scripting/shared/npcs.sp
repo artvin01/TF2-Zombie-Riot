@@ -258,7 +258,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
+				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
 				{
 					if(GetTeam(entity_Spawner) != TFTeam_Red)
@@ -341,6 +341,16 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
+					if(GetTeam(entity_Spawner) == 2)
+					{
+						Rogue_AllySpawned(entity_Spawner);
+						Waves_AllySpawned(entity_Spawner);
+					}
+					else
+					{
+						Rogue_EnemySpawned(entity_Spawner);
+						Waves_EnemySpawned(entity_Spawner);
+					}
 
 					if(Waves_InFreeplay())
 						Freeplay_SpawnEnemy(entity_Spawner);
@@ -403,7 +413,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue);
+	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue,_,true);
 	if(entity != -1)
 	{
 		NpcAddedToZombiesLeftCurrently(entity, true);
@@ -427,6 +437,16 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
 
+		if(GetTeam(entity) == 2)
+		{
+			Rogue_AllySpawned(entity);
+			Waves_AllySpawned(entity);
+		}
+		else
+		{
+			Rogue_EnemySpawned(entity);
+			Waves_EnemySpawned(entity);
+		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
 	}
@@ -1009,7 +1029,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -2172,6 +2192,7 @@ int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 			maxenemies = RoundToCeil(float(maxenemies) * 1.25);
 		}
 	}
+	maxenemies = RoundToCeil(float(maxenemies) * ZRModifs_MaxSpawnsAlive());
 	return maxenemies;
 }
 #endif

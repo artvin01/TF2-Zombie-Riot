@@ -1301,10 +1301,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 1.25;
 		}
 #endif
-		if(b_npcspawnprotection[this.index])
-		{
-			speed_for_return *= 1.35;
-		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			if(!b_thisNpcIsARaid[this.index])
@@ -1506,11 +1502,15 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
+		if(b_npcspawnprotection[this.index])
+		{
+			return 400.0;
+		}
 		float speed_for_return;
 		
 		speed_for_return = this.m_flSpeed;
 		
-		speed_for_return *= this.GetDebuffPercentage();
+		speed_for_return *= this.GetDebuffPercentage();	
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[this.index] && GetTeam(this.index) != TFTeam_Red && XenoExtraLogic(true))
@@ -10037,7 +10037,14 @@ void ExtinguishTarget(int target)
 
 void IsEntityInvincible_Shield(int entity)
 {
-	if(!b_NpcIsInvulnerable[entity] || b_ThisEntityIgnored[entity])
+	bool NpcInvulShieldDisplay;
+	if(b_npcspawnprotection[entity])
+		NpcInvulShieldDisplay = true;
+
+	if(b_NpcIsInvulnerable[entity])
+		NpcInvulShieldDisplay = true;
+	
+	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
 	{
 		IsEntityInvincible_ShieldRemove(entity);
 		return;
@@ -10045,8 +10052,14 @@ void IsEntityInvincible_Shield(int entity)
 	if(IsValidEntity(i_InvincibleParticle[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
-		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		if(b_NpcIsInvulnerable[entity])
+		{
+			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		}
+		else if(b_npcspawnprotection[entity])
+		{
+			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+		}
 		return;
 	}
 
@@ -10060,7 +10073,14 @@ void IsEntityInvincible_Shield(int entity)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 0, 255, 0, 255);
+	if(b_NpcIsInvulnerable[entity])
+	{
+		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+	}
+	else if(b_npcspawnprotection[entity])
+	{
+		SetEntityRenderColor(Shield, 0, 50, 50, 35);
+	}
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 
 	i_InvincibleParticle[entity] = EntIndexToEntRef(Shield);

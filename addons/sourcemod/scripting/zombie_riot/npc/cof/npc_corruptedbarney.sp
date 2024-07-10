@@ -254,8 +254,8 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		fl_TotalArmor[npc.index] = GetRandomFloat(0.001, 0.005);
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
-		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 	}
 	else
 	{
@@ -264,8 +264,8 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		fl_TotalArmor[npc.index] = GetRandomFloat(0.001, 1000.0);
 		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
-		CPrintToChatAll("{midnightblue}%c%c%c%c%c{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700), GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700),GetRandomInt(1, 700));
+		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		CPrintToChatAll("{midnightblue}%c%c%c%c%c{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
 		char Buffer[32];

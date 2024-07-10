@@ -718,7 +718,10 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	}
 #if !defined RPG
 	if(b_npcspawnprotection[victim])
-		damage *= 0.25;
+		damage *= 0.05;
+
+	if(b_npcspawnprotection[attacker])
+		damage *= 1.5;
 #endif
 		
 #if defined ZR
@@ -1894,4 +1897,19 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		}
 	}
 #endif
+
+	//Display Modifiers here.
+	char BufferAdd[6];
+	ZRModifs_CharBuffToAdd(BufferAdd);
+	if(BufferAdd[0])
+	{
+		if(GetTeam(victim) != TFTeam_Red)
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_right);
+		}
+		else
+		{
+			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
+		}
+	}
 }
