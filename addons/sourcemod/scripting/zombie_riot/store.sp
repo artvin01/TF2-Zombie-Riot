@@ -4595,6 +4595,7 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
 
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
@@ -5490,6 +5491,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
