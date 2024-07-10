@@ -2988,8 +2988,7 @@ Names per stage:
 
 
 */
-
-stock void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
+void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {
 	int part1 = CreateEntityByName("info_particle_system");
 	if(IsValidEdict(part1))
