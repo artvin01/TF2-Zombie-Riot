@@ -1569,4 +1569,8 @@
 	{
 		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time Karlas preforms a strike, these swords ''regenerate''"
 	}
+	"Chaos Intrusion Desc"
+	{
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 35%% more enemies, spawn 15%% faster, and 10%% more zombies are alive at once.\nEnemeis deal 20%% more damage, have 30%% more HP (Gib treshhold stays.) and are 5%% faster."
+	}
 }

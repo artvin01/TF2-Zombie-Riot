@@ -7,8 +7,8 @@ void ZRModifs_ChaosIntrusionNPC(int iNpc)
 {
 	fl_Extra_Damage[iNpc] *= 1.2;
 	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
-	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.35));
-	fl_GibVulnerablity[iNpc] *= 1.35;
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.30));
+	fl_GibVulnerablity[iNpc] *= 1.30;
 	fl_Extra_Speed[iNpc] *= 1.05;
 }
 
