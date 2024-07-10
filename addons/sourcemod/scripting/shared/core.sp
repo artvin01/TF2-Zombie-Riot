@@ -878,7 +878,7 @@ DynamicHook g_DHookRocketExplode; //from mikusch but edited
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
-bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
+float f_GibHealingAmount[MAXENTITIES];
 //GLOBAL npc things
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
@@ -1714,7 +1714,7 @@ public void OnMapStart()
 	Zero(f_ClientInvul);
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
-	Zero(b_LimitedGibGiveMoreHealth);
+	Zero(f_GibHealingAmount);
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
