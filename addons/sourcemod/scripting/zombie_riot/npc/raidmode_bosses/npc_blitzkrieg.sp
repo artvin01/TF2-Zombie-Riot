@@ -1442,14 +1442,13 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		}
 		if(i_currentwave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 		{
-			CPrintToChatAll("{crimson}Blitzkrieg{default}: The siblings have been reborn.");
+			CPrintToChatAll("{crimson}Blitzkrieg{default}: And now its those two's turn");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 
 			spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			if(spawn_index > MaxClients)
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Ay, Donnerkrieg, how ya doin?");
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

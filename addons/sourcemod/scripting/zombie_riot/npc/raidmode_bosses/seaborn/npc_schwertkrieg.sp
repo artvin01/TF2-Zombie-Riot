@@ -448,12 +448,22 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		{
 			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
 		}
+
+		func_NPCFuncWin[npc.index] = Win_Line;
 		
 		
 		return npc;
 	}
 }
+static void Win_Line(int entity)
+{
+	if(b_raidboss_donnerkrieg_alive)
+		return;
+	
+	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
 
+	b_donner_said_win_line = true;
+}
 public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
@@ -701,7 +711,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
-					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
+					CPrintToChatAll("{crimson}Karlas{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 
@@ -1921,6 +1931,7 @@ static void Internal_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	int ally = EntRefToEntIndex(i_ally_index);
+	b_schwert_ded = true;
 	if(IsValidEntity(ally))
 	{
 		Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
@@ -1935,7 +1946,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{
-			switch(GetRandomInt(1,2))	//warp
+			switch(GetRandomInt(1,3))	//warp
 			{
 				case 1:
 				{
@@ -1944,6 +1955,10 @@ static void Internal_NPCDeath(int entity)
 				case 2:
 				{
 					CPrintToChatAll("{aqua}Stella{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO,{crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
 				}
 			}
 		}
