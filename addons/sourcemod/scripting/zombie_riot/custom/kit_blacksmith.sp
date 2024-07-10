@@ -1480,17 +1480,17 @@ static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 		case 0:
 		{
 			tinker.Value[0] = 1.25 + BulletPetShotBonus;
-			tinker.Value[1] = 0.85 + AccuracySuffering;
+			tinker.Value[1] = 0.85 - AccuracySuffering;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.3 + BulletPetShotBonus;
-			tinker.Value[1] = 0.85 + AccuracySuffering;
+			tinker.Value[1] = 0.8 - AccuracySuffering;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + BulletPetShotBonus;
-			tinker.Value[1] = 0.85 + AccuracySuffering;
+			tinker.Value[1] = 0.75 - AccuracySuffering;
 		}
 	}
 }
