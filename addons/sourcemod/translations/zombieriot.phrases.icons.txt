@@ -214,9 +214,9 @@
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
-		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
-		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
-		"chi"	"Donnerkrieg和Schwertkrieg回来了。"
+		"en"	"Stella And Karlas Have Returned"
+		"pt"	"Stella e Karlas retornaram."
+		"chi"	"Stella和Karlas回来了。"
 	}
 	"Diversionistico Spawn"
 	{

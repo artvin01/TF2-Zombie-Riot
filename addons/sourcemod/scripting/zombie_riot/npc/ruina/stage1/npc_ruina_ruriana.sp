@@ -44,6 +44,19 @@ static int i_damage_taken[MAXENTITIES];
 
 void Ruriana_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ruriana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_ruriana");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
@@ -51,14 +64,10 @@ void Ruriana_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	Zero(i_damage_taken);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ruriana");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_ruriana");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
+	PrecacheModel("models/player/medic.mdl");
 }
+
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Ruriana(client, vecPos, vecAng, ally);
@@ -158,7 +167,7 @@ methodmap Ruriana < CClotBody
 		*/
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 270.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -195,6 +204,9 @@ methodmap Ruriana < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		//fl_ruina_battery[npc.index] = 0.0;
 		//b_ruina_battery_ability_active[npc.index] = false;
@@ -327,7 +339,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		//CPrintToChatAll("Healing: %i",healing);
 			
-		Stella_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 1, 1, 175});
+		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 1, 1, 175});
 
 		i_damage_taken[npc.index]=0;
 	}

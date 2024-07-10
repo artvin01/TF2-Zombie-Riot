@@ -325,7 +325,7 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 #endif
 
 #if defined ZR || defined NOG
-		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim]);
+		VausMagicaShieldLogicNpcOnTakeDamage(attacker, victim, damage, damagetype,i_HexCustomDamageTypes[victim], weapon);
 #endif
 
 #if defined ZR
@@ -821,6 +821,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_FANTASY_BLADE:
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
+		}
+		case WEAPON_CHAINSAW:
+		{
+			Npc_OnTakeDamage_Chainsaw(attacker, damagetype);
 		}
 		case WEAPON_SPEEDFISTS:
 		{
@@ -1618,12 +1622,13 @@ static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflic
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
-	}
-	
+	}	
+#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
 	{
 		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
+#endif
 }
 #endif	// Non-RTS
 
@@ -1834,6 +1839,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "➤%s", Debuff_Adder_right);
 	}
+#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "♜%s", Debuff_Adder_right);
@@ -1846,6 +1852,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "♟%s", Debuff_Adder_right);
 	}
+#endif
 #if defined ZR
 	if(victim <= MaxClients)
 	{

@@ -121,6 +121,7 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [some Gamedata and source scramble](https://github.com/sapphonie/tf2-edict-limiter/releases/tag/v3.0.4)
+ONLY install gamedata for edict limiter, NOT the plugin FOR edict limiter.
 
 ## Credits
 

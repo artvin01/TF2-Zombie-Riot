@@ -1340,10 +1340,12 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
+#if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
 			speed_for_return *= f_Ruina_Speed_Buff_Amt[this.index];
 		}
+#endif
 
 #if defined ZR
 		SeabornVanguard_SpeedBuff(this, speed_for_return);	
@@ -3294,13 +3296,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		SDKUnhook(pThis, SDKHook_OnTakeDamagePost, NPC_OnTakeDamage_Post);	
 
 #if defined ZR || defined RPG
-		int Health = -GetEntProp(pThis, Prop_Data, "m_iHealth");
-
 		if(client > 0 && client <= MaxClients)
-		{	
-			int overkill = RoundToNearest(Damage[pThis] - float(Health));
-
-	//		PlayFakeDeathSound(client);
+		{
 			if(i_HasBeenHeadShotted[pThis])
 				i_Headshots[client] += 1; //Award 1 headshot point, only once.
 
@@ -3309,7 +3306,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 
 			i_KillsMade[client] += 1;
 			RemoveHudCooldown(client);
-			Calculate_And_Display_hp(client, pThis, Damage[pThis], true, overkill);
+			Calculate_And_Display_hp(client, pThis, 0.0, true);
 		}
 #endif
 		
@@ -5735,7 +5732,20 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 		GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		flMyPos[2] += 35.0;
 		CNavArea area = TheNavMesh.GetNavArea(flMyPos, 200.0);
-		if(area == NULL_AREA)
+		int PassCheck = 0;
+		if(area != NULL_AREA)
+		{
+			int NavAttribs = area.GetAttributes();
+			if(NavAttribs & NAV_MESH_DONT_HIDE)
+			{
+				PassCheck = 2;
+			}
+		}
+		else
+		{
+			PassCheck = 1;
+		}
+		if(PassCheck)
 		{
 			i_FailedTriesUnstuck[iNPC][0] += 1;
 			if(i_FailedTriesUnstuck[iNPC][0] < (TickrateModifyInt * 5)) //we will wait about 5 seconds
@@ -5745,7 +5755,7 @@ public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 			i_FailedTriesUnstuck[iNPC][0] = 0;
 			flMyPos[2] -= 35.0;
 			area = TheNavMesh.GetNearestNavArea(flMyPos, false, 55.0, false, true);
-			if(area != NULL_AREA)
+			if(area != NULL_AREA && PassCheck == 1)
 			{
 				return;
 			}

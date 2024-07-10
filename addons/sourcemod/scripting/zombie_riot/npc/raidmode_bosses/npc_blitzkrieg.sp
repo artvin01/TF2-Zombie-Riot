@@ -1415,7 +1415,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		if(i_currentwave[npc.index]==45)
 		{
-			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have joined the battle.");
+			CPrintToChatAll("{crimson}Blitzkrieg{default}: The minnion's have joined the battle.");
 		}
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 		int heck;
@@ -1442,7 +1442,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		}
 		if(i_currentwave[npc.index]>=60)	//Only spawns if the wave is 60 or beyond.
 		{
-			CPrintToChatAll("{crimson}Blitzkrieg{default}: The brothers have been reborn.");
+			CPrintToChatAll("{crimson}Blitzkrieg{default}: The siblings have been reborn.");
 			maxhealth=RoundToNearest((heck/5)*zr_smallmapbalancemulti.FloatValue);	//mid squishy
 
 			spawn_index = NPC_CreateByName("npc_alt_donnerkrieg", npc.index, pos, ang, GetTeam(npc.index), "raid_ally");

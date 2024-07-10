@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/corruptedbarney/pupil_l"
+	"$iris" "models/zombie_riot/cof/corruptedbarney/pupil_l"
+	"$halflambert" 1
+}

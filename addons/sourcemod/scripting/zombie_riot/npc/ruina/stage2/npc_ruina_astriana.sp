@@ -55,6 +55,19 @@ static const char g_RangedAttackSounds[][] = {
 
 void Astriana_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Astriana");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astriana");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -66,18 +79,14 @@ void Astriana_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	
 	PrecacheModel("models/player/engineer.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Astriana");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astriana");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
+	
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Astriana(client, vecPos, vecAng, ally);
 }
+
+static float fl_npc_basespeed;
 
 methodmap Astriana < CClotBody
 {
@@ -178,13 +187,11 @@ methodmap Astriana < CClotBody
 		
 		
 		/*
-			resuce ranger
-			Arctic mole
-			berliner's bucker helm	Berliners_Bucket_Helm
-			big chief				Heavy_Big_Chief
-			cadaver's capper		Hw2013_Soldier_Jiangshi_Hat
-			gaelic garb				Jul13_Gaelic_Garb
-		
+			Arctic mole					"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl"
+			berliner's bucker helm		"models/player/items/medic/berliners_bucket_helm.mdl"
+			fancy						"models/player/items/soldier/fdu.mdl"
+			"models/workshop/player/items/engineer/dec22_cool_warm_sweater_style2/dec22_cool_warm_sweater_style2.mdl"
+			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -197,42 +204,35 @@ methodmap Astriana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 225.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tele_shotgun/c_tele_shotgun.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/heavy/heavy_big_chief.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hw2013_soldier_jiangshi_hat/hw2013_soldier_jiangshi_hat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		
+		static const char Items[][] = {
+
+			"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl",
+			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/player/items/soldier/fdu.mdl",
+			"models/workshop/player/items/engineer/dec22_cool_warm_sweater_style2/dec22_cool_warm_sweater_style2.mdl",
+			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
+			RUINA_CUSTOM_MODELS_1
+		};
+
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);	
+
+		SetVariantInt(RUINA_RADAR_GUN_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		
@@ -259,8 +259,6 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
-	
-	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -279,7 +277,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 2.5);
+	Ruina_Add_Battery(npc.index, 3.0);
 
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -290,7 +288,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>750 && npc.m_flNextTeleport < GameTime + 10.0)
+	if(fl_ruina_battery[npc.index]>1000 && npc.m_flNextTeleport < GameTime + 10.0)
 	{
 		Ruina_Master_Rally(npc.index, true);
 		Ruina_Master_Accpet_Slaves(npc.index);
@@ -303,13 +301,16 @@ static void ClotThink(int iNPC)
 
 	Astriana_SelfDefense(npc, GameTime);	//note: Masters can use this method, but slaves should still use primarythreatindex rather then finding via distance.
 
-	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1250.0)
+	if(npc.m_flNextTeleport < GameTime && fl_ruina_battery[npc.index]>1500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		npc.m_flNextTeleport = GameTime + 30.0;
+		npc.m_flNextTeleport = GameTime + 20.0;
 
-		Astria_Teleport_Allies(npc.index, 350.0, {20, 150, 255, 150});
+		int color[4];
+		Ruina_Color(color);
+
+		Astria_Teleport_Allies(npc.index, 350.0, {255, 150, 150, 255});
 
 		Ruina_Master_Release_Slaves(npc.index);
 	}
@@ -432,12 +433,19 @@ static void Astriana_SelfDefense(Astriana npc, float gameTime)	//ty artvin
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
-				float DamageDone = 25.0;
+				float DamageDone = 45.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.25;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
 			}
 		}
 	}
+	if(npc.m_bAllowBackWalking)
+	{
+		npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+		npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+	}
+	else
+		npc.m_flSpeed = fl_npc_basespeed;
 	npc.m_iTarget = GetClosestEnemyToAttack;
 }

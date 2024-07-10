@@ -1071,17 +1071,13 @@
 	}	
 	"Speed Cola Recieved"
 	{
-		"en" 		"SPEED COLA! 1.35x Extra reload, switchspeed and Mana regen"
-		"ru" 		"БЫСТРОКОЛА! 1.35x доп. скорости перезар., скорость смены оружия и реген. маны"
-		"pt"		"REFRI-VELOZ! 1.35x Velocidade de recarga, de troca e regeneração de mana"
-		"nl"		"SNELHEIDSCOLA! 1.35x Extra herlaadsnelheid, Wapenwisselingssnelheid en Mana generatie"
-		"chi" 		"极速可乐:武器切换、装填速度提升，法力恢复提升"
+		"en" 		"SPEED COLA! 1.3x Extra reload, switchspeed and Mana regen"
 	}
 	"Deadshot Daiquiri Recieved"
 	{
-		"en" 		"DEADSHOT DAIQUIRI! 1.35x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
-		"pt"		"TIRO MORTO DE DAIQUIRI! 1.35x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
-		"chi"       "死神射击:提升1.35倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
+		"en" 		"DEADSHOT DAIQUIRI! 1.2x Weapon accuracy and 1.25x Extra Headshot and backstab damage\n 1.2x Projectile Speed."
+		"pt"		"TIRO MORTO DE DAIQUIRI! 1.2x Precisão de armas e 1.25x dano extra em tiros na cabeça e backstabs\n 1.2x velocidade de projetil."
+		"chi"       "死神射击:提升1.2倍的武器精准度+1.25倍背刺和爆头伤害+1.2倍射速"
 	}
 	"Widows Wine Recieved"
 	{
@@ -3040,7 +3036,7 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Schwertkrieg charges you down with his sword while Donnerkrieg fires laser attacks!"
+		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
 	}
 	"Khaml Desc"
 	{
@@ -3175,5 +3171,9 @@
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+	}
+	"purnell_message"
+	{
+		"en"	"Relax, I'm not one of them."
 	}
 }
