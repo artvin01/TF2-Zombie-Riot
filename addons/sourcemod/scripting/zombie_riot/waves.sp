@@ -1229,7 +1229,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					//If its any boss, then make it scale like old.
 					count = RoundToNearest(float(count) * multiBoss);
 				}
-				count = RoundToNearest(float(count) * ZRModifs_MaxSpawnWaveModif());
 			}
 			
 			if(count < 1) //So its always 1
@@ -2268,6 +2267,7 @@ void DoGlobalMultiScaling()
 		MultiGlobalHealth = 1.0;
 		MultiGlobalEnemy = multi;
 	}
+	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
 
 	PlayerCountBuffScaling = 4.0 / playercount;
 	if(PlayerCountBuffScaling < 1.2)
