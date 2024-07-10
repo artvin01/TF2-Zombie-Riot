@@ -269,6 +269,8 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
 		char Buffer[32];
+		GlobalExtraCash = GetURandomInt();
+		Ammo_Count_Ready = GetURandomInt();
 		for(int client; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client))
@@ -281,6 +283,11 @@ public void CorruptedBarney_ClotThink(int iNPC)
 				Attributes_Set(client, 26, GetRandomFloat(2500.0, 5000.0));
 				f_damageAddedTogether[client] = float(GetURandomInt());
 				f_damageAddedTogetherGametime[client] = GetGameTime() + 0.6;
+				i_CurrentEquippedPerk[client] = GetRandomInt(1,6);
+				i_AmountDowned[client] = GetRandomInt(-99999999, 500000);
+				
+				KillFeed_Show(client, client, client, client, -1, 0, false);
+				CashSpent[client] = GetURandomInt();
 			}
 		}
 	}
@@ -364,7 +371,7 @@ public void CorruptedBarney_NPCDeath(int entity)
 			if(IsValidClient(client_repat) && GetClientTeam(client_repat) == 2 && TeutonType[client_repat] != TEUTON_WAITING)
 			{
 				Items_GiveNamedItem(client_repat, "Corrupted Barney's Chainsaw");
-				CPrintToChat(client_repat, "{default}Corrupted Barney Vanishes and leaves...: {green}''Corrupted Barney's Chainsaw''{default}!");
+				CPrintToChat(client_repat, "{default}Corrupted Barney Vanishes and leaves...: {crimson}''Corrupted Barney's Chainsaw''{default}!");
 			}
 		}
 	}
