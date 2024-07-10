@@ -539,11 +539,35 @@ static void Win_Line(int entity)
 	int ally = EntRefToEntIndex(i_ally_index);
 	if(IsValidEntity(ally) && !b_schwert_ded)
 	{
-		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: HAH, the {darkblue}sea{snow} isn't THAT hard to beat", name_color, text_color);
+			}
+			case 2:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh boy, their ragdoll's were {gold}amazing{snow}!", name_color, text_color);
+			}
+		}
 	}
 	else
 	{
-		Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased {snow} your existance", name_color, text_color);
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased{snow} your existance", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Well, atleast I still have {purple}Twirl{snow}...", name_color, text_color);
+			}
+		}	
 	}
 	b_donner_said_win_line = true;
 	CPrintToChatAll(text_lines);
