@@ -523,6 +523,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		//Reused silvester duo code here
 		
 		RequestFrame(Donnerkrieg_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
