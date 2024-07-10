@@ -96,11 +96,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
 				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
 			}
-			case 6:
+			/*case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sea_donnerkrieg");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
-			}
+			}*/
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
