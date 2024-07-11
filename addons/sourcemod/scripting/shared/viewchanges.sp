@@ -452,7 +452,11 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 	
 	DispatchSpawn(wearable);
 	
-	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelIndex);	// After DispatchSpawn, otherwise CEconItemView overrides it
+	// After DispatchSpawn, otherwise CEconItemView overrides it
+	for(int i; i < 4; i++)
+	{
+		SetEntProp(wearable, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, i);
+	}
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
