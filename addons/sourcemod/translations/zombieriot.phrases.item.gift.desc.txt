@@ -1591,6 +1591,6 @@
 	}
 	"Old Times Desc"
 	{
-		"en"	"Experience ZR on how it feels to be a newbie.\nWaves spawn 45%% more enemies, spawn 25%% faster, and 15%% more zombies are alive at once.\nEnemeis deal 15%% more damage, and 25&% more to cades, have 50%% more HP and are 7%% faster.\nYou have 1 less down, enemies heal 50% more."
+		"en"	"Experience ZR on how it feels to be a newbie.\n45%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +7%% faster.\n1 less down, enemies heal 50%% more."
 	}
 }

@@ -1180,12 +1180,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
 			DoGlobalMultiScaling();
-			float playercount = float(CountPlayersOnRed());
-					
-			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-			{
-				playercount = 0.70;
-			}
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -1219,16 +1213,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			if(wave.EnemyData.Does_Not_Scale == 0)
 			{
-				if(Is_a_boss == 0)
-				{
-					count = RoundToNearest(float(count) * MultiGlobalEnemy);
-				}
-				else
-				{
-					float multiBoss = playercount * 0.25;
-					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count) * multiBoss);
-				}
+				count = RoundToNearest(float(count) * MultiGlobalEnemy);
 			}
 			
 			if(count < 1) //So its always 1
@@ -1262,13 +1247,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				*/
 				if(ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.34;
+					multiBoss = MultiGlobalHighHealthBoss;
 				}
 
 				if(!ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.2;
-					MultiGlobalAlaxios = multiBoss;
+					multiBoss = MultiGlobalHealthBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -2249,11 +2233,12 @@ void DoGlobalMultiScaling()
 		playercount = 0.70;
 	}
 			
-	float multi = Pow(1.08, playercount);
+	float multi = Pow(1.105, playercount);
 
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
-	MultiGlobal = multi;
-	MultiGlobalAlaxios = playercount * 0.2;
+	multi -= 0.49090205063; //So if its 4 players, it defaults to 1.0
+	
+	MultiGlobalHealthBoss = playercount * 0.2;
+	MultiGlobalHighHealthBoss = playercount * 0.34;
 
 	float cap = zr_enemymulticap.FloatValue;
 

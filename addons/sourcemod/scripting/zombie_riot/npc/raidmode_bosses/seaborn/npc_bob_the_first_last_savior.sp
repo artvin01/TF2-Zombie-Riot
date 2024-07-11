@@ -565,15 +565,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
 			
-			// Play funny animation intro
-			NPC_StopPathing(npc.index);
-			npc.m_flNextThinkTime = FAR_FUTURE;
-			GivePlayerItems(1);
-			ForcePlayerWin();
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") -1);
+			fl_Extra_Damage[npc.index] = 999.9;
+			fl_Extra_Speed[npc.index] = 5.0;
+			RaidModeTime = FAR_FUTURE;
 		}
-
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)

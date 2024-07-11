@@ -349,22 +349,27 @@ float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
-float MultiGlobal = 0.25;
+
 float MultiGlobalEnemy = 0.25;
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increaced
+//isnt affected when selecting Modificators.
 float MultiGlobalHealth = 1.0;
-float MultiGlobalAlaxios = 0.25;
+//See above
+
+float MultiGlobalHealthBoss = 0.25;
+//This is normal boss scaling, this scales ontop of enemies spawning
+
+float MultiGlobalHighHealthBoss = 0.34;
+//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 
-//bool b_AllowBuildCommand[MAXPLAYERS + 1];
-
 int Building_Mounted[MAXENTITIES];
 
-//bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
-//bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1][2];
