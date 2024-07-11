@@ -2310,4 +2310,48 @@
 	{
 		"en"	"Iana"
 	}
+	"Magianas"
+	{
+		"en"	"Magianas"
+	}
+	"Loonaris"
+	{
+		"en"	"Loonaris"
+	}
+	"Heliaris"
+	{
+		"en"	"Heliaris"
+	}
+	"Astrianis"
+	{
+		"en"	"Astrianis"
+	}
+	"Eurainis"
+	{
+		"en"	"Eurainis"
+	}
+	"Draeonis"
+	{
+		"en"	"Draeonis"
+	}
+	"Aetherium"
+	{
+		"en"	"Aetherium"
+	}
+	"Malianium"
+	{
+		"en"	"Malianium"
+	}
+	"Rulius"
+	{
+		"en"	"Rulius"
+	}
+	"Lazines"
+	{
+		"en"	"Lazines"
+	}
+	"Dronis"
+	{
+		"en"	"Dronis"
+	}
 }

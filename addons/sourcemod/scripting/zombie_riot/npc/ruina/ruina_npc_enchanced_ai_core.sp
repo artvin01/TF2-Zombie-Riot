@@ -2751,7 +2751,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Magnia:
@@ -2773,7 +2773,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Laniun:
@@ -2794,7 +2794,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Stellaria
@@ -2812,7 +2812,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Astriana
@@ -2831,7 +2831,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null	
+		Stage 3: sp exists.	
 		Stage 4: Null
 
 		Europis
@@ -2850,7 +2850,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done. 
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Draedon
@@ -2869,7 +2869,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Aetheria
@@ -2887,7 +2887,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.	
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Maliana
@@ -2900,7 +2900,8 @@ Names per stage:
 		Npc's within range have their passive battery gain boosted
 	}
 	//created
-	9: Ruriana -> Ruianus -> Ruliana -> Ruina
+	
+	9: Ruriana -> Ruianus -> Rulius -> Rulianius
 	{
 		State: Master AI.
 		Class: Medic.
@@ -2909,7 +2910,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Ruianus
@@ -2927,7 +2928,7 @@ Names per stage:
 
 		Stage 1: Done.	Laz
 		Stage 2: Done.	Lazius
-		Stage 3: Null	Lazines
+		Stage 3: sp exists.	Lazines
 		Stage 4: Null	Lazurus
 
 		Lazius
@@ -2945,7 +2946,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: Null
+		Stage 3: sp exists.
 		Stage 4: Null
 
 		Dronian
@@ -2982,9 +2983,20 @@ Names per stage:
 
 	Stage 2 specials:
 
+	Lex. - Boss. W30.	- Change lifeloss sounds. Add a few unique medic lines for when using abilities.
+	Iana - Boss. W30.	- Ion cannon needs sound effects. Change lifeloss sounds. Add some of scouts unique lines.
+
 	Stage 3 specials:
 
+	Ruliana - Boss W45 
+
 	Stage 4 specials:
+
+
+	Ruliana: - Blitzkrieg was based off of her. so has a similar-ish theme of rocket spam. but gonna need to do make it seems different so its not just a copy of blitz.
+	Is a "super boss". so only one of her.
+	Custom model somewhat goes into the hand, *hinting towards Reiuji*. see about making wings with a custom model too.
+	Medic class.
 
 
 */

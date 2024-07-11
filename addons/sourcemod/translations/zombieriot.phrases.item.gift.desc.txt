@@ -1569,4 +1569,48 @@
 	{
 		"en"		"The true name of ''Schwertkrieg''\nAlongside his teleport strike becoming stronger, he gains the ability to manipulate multiple swords around himself\nThese swords have a duration, every time Karlas preforms a strike, these swords ''regenerate''"
 	}
+	"Magianas Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Loonaris Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Heliaris Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Astrianis Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Eurainis Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Draeonis Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Aetherium Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Malianium Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Rulius Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Lazines Desc"
+	{
+		"en"	"Aya?"
+	}
+	"Dronis Desc"
+	{
+		"en"	"Aya?"
+	}
 }

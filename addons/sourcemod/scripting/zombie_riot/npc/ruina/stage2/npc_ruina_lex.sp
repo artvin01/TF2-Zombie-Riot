@@ -839,7 +839,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		damage = 0.0;
 	}
 
-	if(!npc.Anger && Ratio < 0.75) 
+	if(!npc.Anger && Ratio < 0.5) 
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
