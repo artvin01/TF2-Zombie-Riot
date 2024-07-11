@@ -805,12 +805,12 @@ void BuildingPickUp(int BuildingNPC)
 	}
 	GrabThrottle[BuildingNPC] = GetGameTime() + 0.1;
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
-	PlayerWasHoldingProp[client] = GetGameTime() + 0.2;
 	if(!IsValidClient(client))
 	{
 		RemoveEntity(BuildingNPC);
 		return;
 	}
+	PlayerWasHoldingProp[client] = GetGameTime() + 0.2;
 	if(!IsPlayerAlive(client))
 	{
 		Player_BuildingBeingCarried[client] = 0;

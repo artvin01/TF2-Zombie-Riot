@@ -171,14 +171,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		if(nonBossSpawners == 1)
 		{
-			spawn.Cooldown = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
 		else if(name[0])
 		{
 			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
 			float baseTime = 2.0 + (nonBossSpawners * 0.15);
 
-			spawn.Cooldown = gameTime + (baseTime / playerSpeedUp);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
 		}
 		else
 		{
@@ -195,7 +195,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			// 2.9 / 2.5 = 1.16 slowest
 			// 1.16 / 4 = 0.29 fastest
 
-			spawn.Cooldown = gameTime + (baseTime / nearSpeedUp / playerSpeedUp);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / nearSpeedUp / playerSpeedUp));
 		}
 	}
 	else	// Override cooldown time

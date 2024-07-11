@@ -444,7 +444,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
 		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red && !b_NpcIsInvulnerable[i])
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))

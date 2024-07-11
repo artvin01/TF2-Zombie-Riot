@@ -1303,7 +1303,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 400, false, 5.0, false);
+							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
 					}
 				}
 				
@@ -4599,6 +4599,19 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
+
+	int entity = -1;
+	while(TF2_GetWearable(client, entity))
+	{
+		int ref = EntIndexToEntRef(entity);
+		if(ref == i_Viewmodel_PlayerModel[client] ||
+		   ref == WeaponRef_viewmodel[client] ||
+		   ref == i_WeaponModelIndexOverride[client])
+			continue;
+		
+		Attributes_RemoveAll(entity);
+	}
 
 	int entity = -1;
 	while(TF2_GetWearable(client, entity))
@@ -4789,6 +4802,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2Attrib_SetByDefIndex(ViewmodelPlayerModel, 319, BANNER_DURATION_FIX_FLOAT);
 		//do not save this.
 		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
+		PrintToChatAll("ViewmodelPlayerModel: %d", ViewmodelPlayerModel);
 	}
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
@@ -5449,7 +5463,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
-				Attributes_SetMulti(entity, 97, 0.65);
+				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
 		//DOUBLE TAP!
@@ -5495,6 +5509,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5569,6 +5584,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
 		Enable_Victorian_Launcher(client, entity);
+		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 	}
