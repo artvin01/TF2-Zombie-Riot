@@ -2592,8 +2592,11 @@ static Action ReadyUpHack(Handle timer)
 		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
+
+			// Artvin Request: Start instantly at half players ready up
+			ready *= 2;
 			
-			if(ready == players)
+			if(ready >= players)
 			{
 				set = 12.0;
 			}
