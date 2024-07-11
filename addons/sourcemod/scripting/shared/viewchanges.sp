@@ -296,8 +296,6 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 					AcceptEntityInput(entity, "SetBodyGroup");
 				}
 
-				ImportSkinAttribs(entity, active);
-
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -308,6 +306,8 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				DispatchSpawn(entity);
 				SetVariantString("!activator");
 				ActivateEntity(entity);
+
+				ImportSkinAttribs(entity, active);
 
 				i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
 			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
