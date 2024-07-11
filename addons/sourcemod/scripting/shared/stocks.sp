@@ -754,8 +754,6 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	{
 		Attributes_Set(weapon, attributes[i], values[i]);
 	}
-
-	Attributes_Set(weapon, 834, 202.0);
 }
 
 void RemoveAllDefaultAttribsExceptStrings(int entity)
