@@ -248,8 +248,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
+			int model = GetEntProp(active, Prop_Send, "m_iWorldModelIndex");
 			
-			entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
+			entity = CreateViewmodel(client, model, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : model, active, true);
 			if(entity != -1)	// Weapon viewmodel
 			{
 				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
@@ -426,14 +427,14 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	{
 		int hand_index = view_as<int>(class);
 
-		entity = CreateViewmodel(client, HandIndex[hand_index], weapon);
+		entity = CreateViewmodel(client, HandIndex[hand_index], _, weapon);
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}
 	return entity;
 }
 
-static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = false)
+static int CreateViewmodel(int client, int modelAnims, int modelOverride = -1, int weapon = -1, bool copy = false)
 {
 	int wearable = CreateEntityByName("tf_wearable_vm");
 	
@@ -452,12 +453,13 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 	
 	DispatchSpawn(wearable);
 	
-	// After DispatchSpawn, otherwise CEconItemView overrides it
+	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelAnims);	// After DispatchSpawn, otherwise CEconItemView overrides it
+	
 	for(int i; i < 4; i++)
 	{
-		SetEntProp(wearable, Prop_Send, "m_nModelIndexOverrides", modelIndex, _, i);
+		SetEntProp(wearable, Prop_Send, "m_nModelIndexOverrides", modelOverride, _, i);
 	}
-	
+
 	SetVariantString("!activator");
 	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
 
