@@ -4607,18 +4607,6 @@ void Store_ApplyAttribs(int client)
 		int ref = EntIndexToEntRef(entity);
 		if(ref == i_Viewmodel_PlayerModel[client] ||
 		   ref == WeaponRef_viewmodel[client] ||
-		   ref == i_WeaponModelIndexOverride[client])
-			continue;
-		
-		Attributes_RemoveAll(entity);
-	}
-
-	int entity = -1;
-	while(TF2_GetWearable(client, entity))
-	{
-		int ref = EntIndexToEntRef(entity);
-		if(ref == i_Viewmodel_PlayerModel[client] ||
-		   ref == WeaponRef_viewmodel[client] ||
 		   ref == i_Worldmodel_WeaponModel[client])
 			continue;
 		
