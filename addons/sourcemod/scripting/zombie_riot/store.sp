@@ -101,6 +101,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -276,7 +277,10 @@ enum struct ItemInfo
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum(buffer, -1));
 
 		Format(buffer, sizeof(buffer), "%sweapon_bodygroup", prefix);
-		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum(buffer, -1));
+		this.Weapon_Bodygroup	= kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%sweapon_fakeindex", prefix);
+		this.Weapon_FakeIndex	= kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
@@ -4603,7 +4607,7 @@ void Store_ApplyAttribs(int client)
 		int ref = EntIndexToEntRef(entity);
 		if(ref == i_Viewmodel_PlayerModel[client] ||
 		   ref == WeaponRef_viewmodel[client] ||
-		   ref == i_WeaponModelIndexOverride[client])
+		   ref == i_Worldmodel_WeaponModel[client])
 			continue;
 		
 		Attributes_RemoveAll(entity);
@@ -4623,7 +4627,7 @@ void Store_ApplyAttribs(int client)
 			int ref = EntIndexToEntRef(entity);
 			if(ref == i_Viewmodel_PlayerModel[client] ||
 			   ref == WeaponRef_viewmodel[client] ||
-			   ref == i_WeaponModelIndexOverride[client])
+			   ref == i_Worldmodel_WeaponModel[client])
 				continue;
 			
 			//Attributes_RemoveAll(entity);
@@ -4786,7 +4790,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2Attrib_SetByDefIndex(ViewmodelPlayerModel, 319, BANNER_DURATION_FIX_FLOAT);
 		//do not save this.
 		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
-		PrintToChatAll("ViewmodelPlayerModel: %d", ViewmodelPlayerModel);
 	}
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
@@ -5190,6 +5193,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;

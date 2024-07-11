@@ -170,6 +170,7 @@ public Action Command_TpOn(int client, int args)
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		thirdperson[client] = false;		
+		ViewChange_Update(client);
 	}
 
 #if defined RPG
@@ -198,6 +199,7 @@ public Action Command_TpOff(int client, int args)
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
+		ViewChange_Update(client);
 	}
 
 	thirdperson[client] = false;

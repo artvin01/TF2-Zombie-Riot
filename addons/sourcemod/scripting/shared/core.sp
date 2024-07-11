@@ -799,6 +799,7 @@ int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
 int i_WeaponVMTExtraSetting[MAXENTITIES];
 int i_WeaponBodygroup[MAXENTITIES];
+int i_WeaponFakeIndex[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
@@ -2768,6 +2769,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponModelIndexOverride[entity] = 0;
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
+		i_WeaponFakeIndex[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_EnfeebleEffect[entity] = 0.0;
 		f_LeeMinorEffect[entity] = 0.0;
@@ -3499,42 +3501,52 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	if(IsValidClient(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
+	if(IsValidClient(client) && IsPlayerAlive(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
 	{
-		if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+		switch(condition)
 		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if(condition == TFCond_Slowed && IsPlayerAlive(client))
-		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if (condition == TFCond_Taunting && IsPlayerAlive(client))
-		{
-			if(!b_TauntSpeedIncreace[client])
+			case TFCond_Zoomed:
 			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != -1)
+				ViewChange_Update(client);
+
+				if(thirdperson[client])
 				{
-					static char classname[64];
-					GetEntityClassname(weapon_holding, classname, sizeof(classname));
-					if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+					SetVariantInt(1);
+					AcceptEntityInput(client, "SetForcedTauntCam");
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				}
+			}
+			case TFCond_Slowed:
+			{
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			}
+			case TFCond_Taunting:
+			{
+				ViewChange_Update(client);
+
+				if(!b_TauntSpeedIncreace[client])
+				{
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
 					{
-						float attack_speed;
-					
-						attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
-						
-						if(attack_speed > 5.0)
+						static char classname[64];
+						GetEntityClassname(weapon_holding, classname, sizeof(classname));
+						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 						{
-							attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							float attack_speed;
+						
+							attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+							
+							if(attack_speed > 5.0)
+							{
+								attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							}
+							Attributes_Set(client, 201, attack_speed);
 						}
-						Attributes_Set(client, 201, attack_speed);
-					}
-					else
-					{	
-						Attributes_Set(client, 201, 1.0);
+						else
+						{	
+							Attributes_Set(client, 201, 1.0);
+						}
 					}
 				}
 			}
@@ -3661,7 +3673,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		{	
 			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
 			{
-				PrintToChatAll("Oh no!!!");
 				if(!item)
 					return Plugin_Stop;
 				
@@ -3673,7 +3684,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 	else
 	{
-		//return Plugin_Stop;
+		return Plugin_Stop;
 	}
 #endif
 	return Plugin_Continue;

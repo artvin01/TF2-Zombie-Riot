@@ -188,6 +188,19 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
+void ViewChange_Update(int client, bool full = true)
+{
+	if(full)
+		ViewChange_DeleteHands(client);
+	
+	char classname[36];
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+		GetEntityClassname(weapon, classname, sizeof(classname));
+	
+	ViewChange_Switch(client, weapon, classname);
+}
+
 void ViewChange_Switch(int client, int active, const char[] classname)
 {
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
@@ -238,8 +251,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
+			int model = GetEntProp(active, Prop_Send, "m_iWorldModelIndex");
 			
-			entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
+			entity = CreateViewmodel(client, model, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : model, active, true);
 			if(entity != -1)	// Weapon viewmodel
 			{
 				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
@@ -416,14 +430,14 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	{
 		int hand_index = view_as<int>(class);
 
-		entity = CreateViewmodel(client, HandIndex[hand_index], weapon);
+		entity = CreateViewmodel(client, HandIndex[hand_index], HandIndex[hand_index], weapon);
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}
 	return entity;
 }
 
-static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = false)
+static int CreateViewmodel(int client, int modelAnims, int modelOverride, int weapon, bool copy = false)
 {
 	int wearable = CreateEntityByName("tf_wearable_vm");
 	
@@ -442,8 +456,16 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 	
 	DispatchSpawn(wearable);
 	
-	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelIndex);	// After DispatchSpawn, otherwise CEconItemView overrides it
-	
+	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelAnims);	// After DispatchSpawn, otherwise CEconItemView overrides it
+	/*
+	char buffer[256];
+	ModelIndexToString(modelAnims, buffer, sizeof(buffer));
+	PrintToChatAll("Anims: '%s'", buffer);
+	ModelIndexToString(modelOverride, buffer, sizeof(buffer));
+	PrintToChatAll("Override: '%s'", buffer);
+*/
+	SetEntProp(wearable, Prop_Data, "m_nModelIndexOverrides", modelOverride);
+
 	SetVariantString("!activator");
 	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
 
@@ -454,7 +476,7 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 
 static void ImportSkinAttribs(int wearable, int weapon)
 {
-	int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	int index = i_WeaponFakeIndex[weapon] > 0 ? i_WeaponFakeIndex[weapon] : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
