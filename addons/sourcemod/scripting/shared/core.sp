@@ -3501,42 +3501,52 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	if(IsValidClient(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
+	if(IsValidClient(client) && IsPlayerAlive(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
 	{
-		if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+		switch(condition)
 		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if(condition == TFCond_Slowed && IsPlayerAlive(client))
-		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if (condition == TFCond_Taunting && IsPlayerAlive(client))
-		{
-			if(!b_TauntSpeedIncreace[client])
+			case TFCond_Zoomed:
 			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != -1)
+				ViewChange_Update(client);
+
+				if(thirdperson[client])
 				{
-					static char classname[64];
-					GetEntityClassname(weapon_holding, classname, sizeof(classname));
-					if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+					SetVariantInt(1);
+					AcceptEntityInput(client, "SetForcedTauntCam");
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				}
+			}
+			case TFCond_Slowed:
+			{
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			}
+			case TFCond_Taunting:
+			{
+				ViewChange_Update(client);
+
+				if(!b_TauntSpeedIncreace[client])
+				{
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
 					{
-						float attack_speed;
-					
-						attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
-						
-						if(attack_speed > 5.0)
+						static char classname[64];
+						GetEntityClassname(weapon_holding, classname, sizeof(classname));
+						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 						{
-							attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							float attack_speed;
+						
+							attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+							
+							if(attack_speed > 5.0)
+							{
+								attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							}
+							Attributes_Set(client, 201, attack_speed);
 						}
-						Attributes_Set(client, 201, attack_speed);
-					}
-					else
-					{	
-						Attributes_Set(client, 201, 1.0);
+						else
+						{	
+							Attributes_Set(client, 201, 1.0);
+						}
 					}
 				}
 			}

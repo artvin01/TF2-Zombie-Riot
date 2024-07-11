@@ -188,6 +188,16 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
+void ViewChange_Update(int client)
+{
+	char classname[36];
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon != -1)
+		GetEntityClassname(weapon, classname, sizeof(classname));
+
+	ViewChange_Switch(client, weapon, classname);
+}
+
 void ViewChange_Switch(int client, int active, const char[] classname)
 {
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);

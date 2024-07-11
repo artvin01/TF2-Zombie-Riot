@@ -2097,15 +2097,8 @@ public void OnWeaponSwitchFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
-		if(weapon != -1)
-		{
-			char buffer[36];
-			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			ViewChange_Switch(client, weapon, buffer);
-			// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
-		}
+		ViewChange_Update(client);
+		// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
 	}
 }
 
