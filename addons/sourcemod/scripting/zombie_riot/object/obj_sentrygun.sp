@@ -40,9 +40,17 @@ methodmap ObjectSentrygun < ObjectGeneric
 		npc.FuncCanBuild = ObjectGeneric_CanBuildSentry;
 		func_NPCThink[npc.index] = ObjectSentrygun_ClotThink;
 		SetRotateByDefaultReturn(npc.index, 180.0);
+		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
+		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
 
 		return npc;
 	}
+}
+
+//think every tick.
+public void ObjBaseThinkPostSentry(int building)
+{
+	CBaseCombatCharacter(building).SetNextThink(GetGameTime());
 }
 
 void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
@@ -56,7 +64,7 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 	float gameTime = GetGameTime(npc.index);
 	float ReduceTime = Attributes_GetOnPlayer(Owner, 343, true, true);
 	npc.m_flNextDelayTime = gameTime + (0.1 * ReduceTime);
-	CBaseCombatCharacter(npc.index).SetNextThink(GetGameTime() + (0.1 * ReduceTime)); //this needs to be set, otherwise it doesnt think fast enough to shoot
+//	CBaseCombatCharacter(npc.index).SetNextThink(GetGameTime() + (0.1 * ReduceTime)); //this needs to be set, otherwise it doesnt think fast enough to shoot
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		float DistanceLimit = 1000.0;
