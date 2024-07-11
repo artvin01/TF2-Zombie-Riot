@@ -258,7 +258,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
+				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
 				{
 					if(GetTeam(entity_Spawner) != TFTeam_Red)
@@ -341,6 +341,16 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
+					if(GetTeam(entity_Spawner) == 2)
+					{
+						Rogue_AllySpawned(entity_Spawner);
+						Waves_AllySpawned(entity_Spawner);
+					}
+					else
+					{
+						Rogue_EnemySpawned(entity_Spawner);
+						Waves_EnemySpawned(entity_Spawner);
+					}
 
 					if(Waves_InFreeplay())
 						Freeplay_SpawnEnemy(entity_Spawner);
@@ -403,7 +413,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue);
+	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue,_,true);
 	if(entity != -1)
 	{
 		NpcAddedToZombiesLeftCurrently(entity, true);
@@ -427,6 +437,16 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
 
+		if(GetTeam(entity) == 2)
+		{
+			Rogue_AllySpawned(entity);
+			Waves_AllySpawned(entity);
+		}
+		else
+		{
+			Rogue_EnemySpawned(entity);
+			Waves_EnemySpawned(entity);
+		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
 	}
@@ -1009,7 +1029,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -1056,17 +1076,17 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 
 #if !defined RTS
-		if(inflictor > 0 && inflictor <= MaxClients)
-		{
-			GiveRageOnDamage(inflictor, Damageaftercalc);
-			Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
-		}
-		else if(attacker > 0 && attacker <= MaxClients)
-		{
-			GiveRageOnDamage(attacker, Damageaftercalc);
-			Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
-		}
-		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		GiveRageOnDamage(inflictor, Damageaftercalc);
+		Calculate_And_Display_hp(inflictor, victim, Damageaftercalc, false);
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		GiveRageOnDamage(attacker, Damageaftercalc);
+		Calculate_And_Display_hp(attacker, victim, Damageaftercalc, false);	
+	}
+	OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 
 		Event event = CreateEvent("npc_hurt");
@@ -1220,12 +1240,6 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 		}
 	}
 }
-
-#if !defined RTS
-static float f_damageAddedTogether[MAXTF2PLAYERS];
-static float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
-static int i_HudVictimToDisplay[MAXTF2PLAYERS];
-#endif
 
 void CleanAllNpcArray()
 {
@@ -1600,7 +1614,14 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 
-		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+		if(!b_NameNoTranslation[victim])
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+		}
+		else
+		{
+			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%s\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
+		}
 		
 		//add debuff
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n%s", ExtraHudHurt, Debuff_Adder);
@@ -1724,25 +1745,28 @@ stock void ResetDamageHud(int client)
 	ShowSyncHudText(client, SyncHud, "");
 }
 
-stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore, int overkill = 0)
+stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool ignore)
 {
 	b_DisplayDamageHud[attacker] = true;
 	i_HudVictimToDisplay[attacker] = EntIndexToEntRef(victim);
 	float GameTime = GetGameTime();
 	bool raidboss_active = false;
+
 	if(!b_NpcIsInvulnerable[victim])
 	{
 		if(RaidbossIgnoreBuildingsLogic())
 		{
 			raidboss_active = true;
 		}
-		if(overkill <= 0)
+		if(damage > 0.0)
 		{
-			Damage_dealt_in_total[attacker] += damage;
-		}
-		else
-		{
-			Damage_dealt_in_total[attacker] += overkill; //dont award for overkilling.
+			float damageCalc = damage;
+			int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
+			if(Health <= 0)
+			{
+				damageCalc += Health;
+			}
+			Damage_dealt_in_total[attacker] += damageCalc;
 		}
 		if(GameTime > f_damageAddedTogetherGametime[attacker])
 		{
@@ -1755,7 +1779,7 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 		{
 			f_damageAddedTogether[attacker] += damage;
 		}
-		if(damage > 0)
+		if(damage > 0.0)
 		{
 			f_damageAddedTogetherGametime[attacker] = GameTime + 0.6;
 		}
@@ -1831,14 +1855,14 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_AncientBannerNpcBuff[npc] > GameTime)
 		return true;
+	#if defined RUINA_BASE
 	else if(f_Ruina_Defense_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Speed_Buff[npc] > GameTime)
 		return true;
 	else if(f_Ruina_Attack_Buff[npc] > GameTime)
 		return true;
-	else if(f_Ruina_Attack_Buff[npc] > GameTime)
-		return true;
+	#endif
 #if defined RPG
 	else if(TrueStrength_StacksOnEntity(client, npc))
 		return true;
@@ -2168,6 +2192,7 @@ int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 			maxenemies = RoundToCeil(float(maxenemies) * 1.25);
 		}
 	}
+	maxenemies = RoundToCeil(float(maxenemies) * ZRModifs_MaxSpawnsAlive());
 	return maxenemies;
 }
 #endif

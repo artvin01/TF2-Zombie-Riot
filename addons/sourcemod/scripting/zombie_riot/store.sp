@@ -1299,7 +1299,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 400, false, 5.0, false);
+							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
 					}
 				}
 				
@@ -4595,6 +4595,7 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
 
 	StringMapSnapshot snapshot = map.Snapshot();
 	int entity = client;
@@ -5444,7 +5445,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
-				Attributes_SetMulti(entity, 97, 0.65);
+				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
 		//DOUBLE TAP!
@@ -5462,7 +5463,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 103, 1.2);
 				
 			if(Attributes_Has(entity, 106))
-				Attributes_SetMulti(entity, 106, 1.2);
+				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
 		//QUICK REVIVE!
@@ -5471,12 +5472,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(Attributes_Has(entity, 8))
 			{
-				Attributes_SetMulti(entity, 8, 1.5);
+				Attributes_SetMulti(entity, 8, 1.15);
 			}
 			
 			if(Attributes_Has(client, 8)) //set it for client too if existant.
 			{
-				Attributes_SetMulti(client, 8, 1.5);
+				Attributes_SetMulti(client, 8, 1.15);
 			}
 
 			// Note: This can stack with multi weapons :|
@@ -5490,6 +5491,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5515,7 +5517,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
+		Enable_MG42(client, entity);
 		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
@@ -5562,6 +5566,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
 		Enable_Victorian_Launcher(client, entity);
+		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 	}

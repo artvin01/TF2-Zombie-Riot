@@ -518,12 +518,16 @@ public void OnPostThink(int client)
 		}
 	}
 
+	bool Mana_Regen_Tick = false;
+
 	if(Rogue_CanRegen() && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
 	{
 		Mana_Regen_Delay[client] = GameTime + 0.4;
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
-			
+
 		has_mage_weapon[client] = false;
+		
+		Mana_Regen_Tick = true;
 
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
@@ -569,11 +573,13 @@ public void OnPostThink(int client)
 					
 		Mana_Hud_Delay[client] = 0.0;
 	}
-
-	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	//A part of Ruina's special mana "corrosion"
+	//A part of Ruina's special mana "corrosion"
+	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	
 	{
+		//if they are using a magic weapon, don't take away the overmana. can be both a good and bad thing, good in non ruina situations, possibly bad in ruina situations
 		//the +10 is for rounding errors.
-		if(Mana_Loss_Delay[client] < GameTime)
+		//CPrintToChatAll("Overmana decay triggered");
+		if(Mana_Loss_Delay[client] < GameTime && Mana_Regen_Tick)
 		{
 			Mana_Loss_Delay[client] = GameTime + 0.4;
 		
@@ -1123,7 +1129,7 @@ public void OnPostThink(int client)
 						if(blue<0)
 							blue=0;
 					}
-					else	//Player is DANGEROUSLY close to getting nuked due to overmana!
+					else	//Player is DANGEROUSLY close to getting targeted by a ruina ion due to overmana!
 					{
 						red 	= 255;
 						green 	= 0;

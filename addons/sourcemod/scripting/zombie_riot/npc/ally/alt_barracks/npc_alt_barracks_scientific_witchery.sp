@@ -511,42 +511,43 @@ static Action Scientific_Witchery_TBB_Ability(int client)
 
 static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[3], float radius, float dmg)
 {
-	
-			Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
-	
-			static float hullMin[3];
-			static float hullMax[3];
 
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Scientific_Witchery_BEAM_HitDetected[i] = false;
-			}
-			
-			hullMin[0] = -radius;
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			BEAM_Targets_Hit[client] = 1.0;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
-				{
-					int inflictor = GetClientOfUserId(npc.OwnerUserId);
-					if(inflictor==-1)
-					{
-						inflictor=client;
-					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-					BEAM_Targets_Hit[client] *= 1.2;
-				}
-			}
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
 
+	static float hullMin[3];
+	static float hullMax[3];
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		Scientific_Witchery_BEAM_HitDetected[i] = false;
+	}
+	
+	hullMin[0] = -radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+	
+	BEAM_Targets_Hit[client] = 1.0;
+	
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
+		{
+			int inflictor = GetClientOfUserId(npc.OwnerUserId);
+			if(inflictor==-1)
+			{
+				inflictor=client;
+			}
+			SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+		}
+	}
+	
+	
 }
 static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {

@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/zombie_riot/cof/runningcrazy/hair_textured"
+	"$translucent" 1
+}

@@ -27,8 +27,9 @@ static const char g_MeleeHitSounds[][] = {
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
 #define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
-#define RUINA_STORM_WEAVER_MODEL_SIZE "2.0"	//1.0
-#define RUINA_STORM_WEAVER_LENGHT 12	//10
+#define RUINA_STORM_WEAVER_MODEL_SIZE "2.0"	//2.0
+#define RUINA_STELLAR_WEAVER_SEPERATION_DISTANCE 50.0	//50.0
+#define RUINA_STORM_WEAVER_LENGHT 12	//12
 
 #define RUINA_STORM_WEAVER_NOCLIP_SPEED 35.0
 #define RUINA_STORM_WEAVER_FLIGHT_SPEED 315.0
@@ -57,7 +58,21 @@ static bool b_ignore_npc[MAXENTITIES];
 
 void Ruina_Storm_Weaver_MapStart()
 {
+	//beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "tank"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	Zero(b_ignore_npc);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -72,15 +87,6 @@ void Ruina_Storm_Weaver_MapStart()
 	Zero(i_storm_weaver_damage_instance);
 
 	b_stellar_weaver_summoned=false;
-
-	//beam_model = PrecacheModel(BLITZLIGHT_SPRITE);
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Stellar Weaver");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_stellar_weaver");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -306,7 +312,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
-		fl_distance_to_keep[npc.index] = 50.0;
+		fl_distance_to_keep[npc.index] = RUINA_STELLAR_WEAVER_SEPERATION_DISTANCE;
 	}
 	return spawn_index;
 }
@@ -339,11 +345,11 @@ public void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3], boo
 	float speed = 100.0;	//speed
 	float dist2 = GetVectorDistance(Entity_Loc, loc);
 
-	if(dist2>(150.0))	//just force teleport in these cases
-	{
-		TeleportEntity(npc.index, loc, NULL_VECTOR, NULL_VECTOR);
-		return;
-	}
+	//if(dist2>(150.0))	//just force teleport in these cases
+	//{
+	//	TeleportEntity(npc.index, loc, NULL_VECTOR, NULL_VECTOR);
+	//	return;
+	//}
 
 	if(dist2<speed)
 		speed = dist2;

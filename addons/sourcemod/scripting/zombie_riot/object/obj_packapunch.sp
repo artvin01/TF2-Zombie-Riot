@@ -73,7 +73,7 @@ bool Pap_WeaponCheck(int client, bool force = false)
 	
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_ION_BEAM:
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_FEED, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_PULSE:
 		{
 			b_LastWeaponCheckBias[client] = true;
 		}
@@ -100,7 +100,7 @@ static bool ClotInteract(int client, int weapon, ObjectPackAPunch npc)
 	
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_ION_BEAM:
+		case WEAPON_ION_BEAM, WEAPON_ION_BEAM_FEED, WEAPON_ION_BEAM_NIGHT, WEAPON_ION_BEAM_PULSE:
 		{
 			int buttons = GetClientButtons(client);
 			bool attack2 = (buttons & IN_ATTACK2) != 0;

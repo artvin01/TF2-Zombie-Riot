@@ -320,6 +320,13 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+
+#if !defined RTS
+float f_damageAddedTogether[MAXTF2PLAYERS];
+float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+int i_HudVictimToDisplay[MAXTF2PLAYERS];
+#endif
+
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
@@ -484,12 +491,14 @@ float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
+#if defined RUINA_BASE
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
 float f_Ruina_Defense_Buff[MAXENTITIES];
 float f_Ruina_Defense_Buff_Amt[MAXENTITIES];
 float f_Ruina_Attack_Buff[MAXENTITIES];
 float f_Ruina_Attack_Buff_Amt[MAXENTITIES];
+#endif
 float f_GodAlaxiosBuff[MAXENTITIES];
 float f_Ocean_Buff_Weak_Buff[MAXENTITIES];
 float f_Ocean_Buff_Stronk_Buff[MAXENTITIES];
@@ -869,7 +878,7 @@ DynamicHook g_DHookRocketExplode; //from mikusch but edited
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
-bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
+float f_GibHealingAmount[MAXENTITIES];
 //GLOBAL npc things
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
@@ -912,7 +921,34 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
+/*
+	1 - sensal scythe
+	2 - scythe_throw
+*/
+
+#define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
+enum	//can have a maximum of 16 (I think)	it appears if I try to make it go above 14 it starts glitching out
+{		
+	RUINA_ICBM 				= 1,		//1
+	RUINA_HALO_1 			= 2,		//2
+	RUINA_QUINCY_BOW_1 		= 4,		//3
+	RUINA_BLADE_1			= 8,		//4
+	RUINA_MAGI_GUN_1		= 16,		//5
+	RUINA_STAFF_1			= 32,		//6
+	RUINA_HAND_CREST_1		= 64,		//7
+	RUINA_LAN_SWORD_1		= 128,		//8
+	RUINA_EUR_STAFF_1		= 256,		//9
+	RUINA_DAGGER_1			= 512,		//10
+	RUINA_RADAR_GUN_1		= 1024,		//11
+	RUINA_HEALING_STAFF_1	= 2048,		//12
+	RUINA_W30_HAND_CREST	= 4096,		//13
+	RUINA_IANA_BLADE		= 8192,		//14
+}
+//RUINA_QUINCY_BOW_2		= 1
+
+
+
 
 #if defined ZR
 	#define DEFAULT_UPDATE_DELAY_FLOAT 0.0 //0.0151 //Make it 0 for now
@@ -1220,6 +1256,7 @@ float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
+float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1630,6 +1667,8 @@ public void OnMapStart()
 
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
+
+	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	
 #if defined ZR
 	Zero(i_CustomWeaponEquipLogic);
@@ -1675,7 +1714,7 @@ public void OnMapStart()
 	Zero(f_ClientInvul);
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
-	Zero(b_LimitedGibGiveMoreHealth);
+	Zero(f_GibHealingAmount);
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
@@ -2016,12 +2055,9 @@ public void OnClientPutInServer(int client)
 	f_HussarBuff[client] = 0.0;
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
-	f_Ruina_Speed_Buff[client] = 0.0;
-	f_Ruina_Defense_Buff[client] = 0.0;
-	f_Ruina_Attack_Buff[client] = 0.0;
-	f_Ruina_Speed_Buff_Amt[client] = 0.0;
-	f_Ruina_Defense_Buff_Amt[client] = 0.0;
-	f_Ruina_Attack_Buff_Amt[client] = 0.0;
+#if defined RUINA_BASE
+	Ruina_Reset_Starts_Npc(client);
+#endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
 	
@@ -2743,6 +2779,9 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 #endif
 		f_HussarBuff[entity] = 0.0;
+#if defined RUINA_BASE
+		Ruina_Reset_Starts_Npc(entity);
+#endif
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
 		f_Ruina_Attack_Buff[entity] = 0.0;
@@ -2857,6 +2896,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
@@ -3079,6 +3119,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_door"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;

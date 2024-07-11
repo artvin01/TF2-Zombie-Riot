@@ -4,14 +4,14 @@
 static const char g_DeathSounds[][] = {
 	"vo/spy_paincrticialdeath01.mp3",
 	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
 	"vo/spy_painsharp01.mp3",
 	"vo/spy_painsharp02.mp3",
 	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/spy_painsharp04.mp3"
 };
 
 static const char g_IdleSounds[][] = {
@@ -20,31 +20,46 @@ static const char g_IdleSounds[][] = {
 	"vo/spy_laughshort03.mp3",
 	"vo/spy_laughshort04.mp3",
 	"vo/spy_laughshort05.mp3",
-	"vo/spy_laughshort06.mp3",
+	"vo/spy_laughshort06.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
 	"vo/spy_battlecry01.mp3",
 	"vo/spy_battlecry02.mp3",
 	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
+	"vo/spy_battlecry04.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav"
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/knife_swing.wav"
 };
 
 static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/bat_draw_swoosh2.wav"
 };
 
 void Dronian_OnMapStart_NPC()
+{
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Dronian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_dronian");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "spy"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -55,12 +70,6 @@ void Dronian_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 
 	PrecacheModel("models/player/spy.mdl");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dronian");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dronian");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -148,16 +157,15 @@ methodmap Dronian < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
 		/*
 			Bunsen Brave		Robo_Heavy_Chief
-			Claid					"models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-			Dark Helm - Dronian		Hw2013_The_Dark_Helm_(Class)
-			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-			Herzenvrecher		"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
+			Dark Helm -	
+			fancy dress uniform		"models/player/items/soldier/fdu.mdl"
+			assassin's attire		"models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl"
 		
 		*/
 		
@@ -175,35 +183,28 @@ methodmap Dronian < CClotBody
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		
+
+		static const char Items[][] = {
+			"models/player/items/soldier/fdu.mdl",
+			"models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl",
+			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
+			"models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl",
+			RUINA_CUSTOM_MODELS_1
+		};
+
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
+		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
+		//npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_DAGGER_1);
+		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
@@ -258,11 +259,11 @@ static void ClotThink(int iNPC)
 		Melee.iNPC = npc.index;
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
-		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
-		Melee.damage = 25.0;
-		Melee.bonus_dmg = 125.0;
-		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-		Melee.swing_speed = 0.54;
+		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
+		Melee.damage = 75.0;
+		Melee.bonus_dmg = 300.0;
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
+		Melee.swing_speed = 1.2;
 		Melee.swing_delay = 0.4;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
@@ -291,7 +292,7 @@ static void ClotThink(int iNPC)
 }
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 50);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -302,7 +303,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{

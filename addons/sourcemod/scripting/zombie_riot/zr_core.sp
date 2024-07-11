@@ -182,11 +182,17 @@ enum
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
 	WEAPON_MERCHANTGUN = 104,
-	WEAPON_RUSTY_RIFLE = 105
+	WEAPON_RUSTY_RIFLE = 105,
+	WEAPON_MG42 = 106,
+	WEAPON_ION_BEAM_PULSE = 107,
+	WEAPON_ION_BEAM_NIGHT = 108,
+	WEAPON_ION_BEAM_FEED  = 109,
+	WEAPON_CHAINSAW  = 110
 }
 
 enum
 {
+	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -513,6 +519,8 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/weapon_victorian.sp"
 #include "zombie_riot/custom/weapon_obuch.sp"
 #include "zombie_riot/custom/kit_merchant.sp"
+#include "zombie_riot/custom/weapon_mg42.sp"
+#include "zombie_riot/custom/weapon_chainsaw.sp"
 
 void ZR_PluginLoad()
 {
@@ -544,8 +552,10 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
 	
+	#if defined RUINA_BASE
 	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
 	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
+	#endif
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
@@ -704,6 +714,7 @@ void ZR_MapStart()
 	Grenade_Custom_Precache();
 	Weapon_Tornado_Blitz_Precache();
 	BoomStick_MapPrecache();
+	MG42_Map_Precache();
 	Charged_Handgun_Map_Precache();
 	TBB_Precahce_Mangler_2();
 	BeamWand_MapStart();
@@ -743,6 +754,7 @@ void ZR_MapStart()
 	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
 	ResetMapStartRedBladeWeapon();
+	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();
 	Heavy_Particle_Rifle_Mapstart();
 	Precache_Railcannon();
@@ -1784,7 +1796,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += Healing_done_in_total[client] / 4;
 	
-	Points += RoundToCeil(Damage_dealt_in_total[client]) / 200;
+	Points += RoundToCeil(Damage_dealt_in_total[client]) / 50;
 
 	i_Damage_dealt_in_total[client] = RoundToCeil(Damage_dealt_in_total[client]);
 	
