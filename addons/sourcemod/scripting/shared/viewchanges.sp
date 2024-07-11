@@ -76,6 +76,13 @@ void ViewChange_MapStart()
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
+
+	// TODO: Move this to PluginEnd
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "tf_wearable_vm")) != -1)
+	{
+		RemoveEntity(entity);
+	}
 }
 
 void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
@@ -119,7 +126,7 @@ void ViewChange_PlayerModel(int client)
 
 	int team = GetClientTeam(client);
 	int entity = CreateEntityByName("tf_wearable");
-	if(entity > MaxClients)	// playermodel
+	if(entity != -1)	// playermodel
 	{
 #if defined ZR
 		if(TeutonType[client] == TEUTON_NONE)
@@ -167,9 +174,9 @@ void ViewChange_PlayerModel(int client)
 		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
 		//get its attachemt once, it probably has to authorise it once to work correctly for later.
 		//otherwise, trying to get its attachment breaks, i dont know why, it has to be here.
-		float flPos[3];
-		float flAng[3];
-		GetAttachment(entity, "flag", flPos, flAng);
+//		float flPos[3];
+//		float flAng[3];
+//		GetAttachment(entity, "flag", flPos, flAng);
 #if defined ZR
 		TransferDispenserBackToOtherEntity(client, false);
 #endif
@@ -181,23 +188,29 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
-void ViewChange_Switch(int client, int active, const char[] buffer = "")
+void ViewChange_Switch(int client, int active, const char[] classname)
 {
 	int entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
-	if(entity > MaxClients)
-		TF2_RemoveWearable(client, entity);
+	if(entity != -1)
+	{
+		RemoveEntity(entity);
+		WeaponRef_viewmodel[client] = -1;
+	}
 	
 	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
-	if(entity > MaxClients)
+	if(entity != -1)
+	{
 		TF2_RemoveWearable(client, entity);
+		i_Worldmodel_WeaponModel[client] = -1;
+	}
 
 	entity = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
-	if(entity > MaxClients)
+	if(entity != -1)
 	{
-		if(active > MaxClients)
+		if(active != -1)
 		{
 			int itemdefindex = GetEntProp(active, Prop_Send, "m_iItemDefinitionIndex");
-			TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(buffer, true));
+			TFClassType class = TF2_GetWeaponClass(itemdefindex, CurrentClass[client], TF2_GetClassnameSlot(classname, true));
 
 			if(i_WeaponForceClass[active] > 0)
 			{
@@ -222,34 +235,14 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
 			*/
 			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
+			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 			
-			entity = CreateEntityByName("tf_wearable_vm");
-			if(entity > MaxClients)	// Weapon viewmodel
+			entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
+			if(entity != -1)	// Weapon viewmodel
 			{
-				int team = GetClientTeam(client);
-				if(i_WeaponModelIndexOverride[active] > 0)
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
-				else
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
-
-				
-				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-				SetTeam(entity, team);
-				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-				SetEntityCollisionGroup(entity, 11);
-				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-				
-				DispatchSpawn(entity);
-				SetVariantString("!activator");
-				ActivateEntity(entity);
-
 				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
-			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
-
-				SDKCall_EquipWearable(client, entity);
 
 				if(i_WeaponVMTExtraSetting[active] != -1)
 				{
@@ -274,7 +267,7 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			}
 
 			entity = CreateEntityByName("tf_wearable");
-			if(entity > MaxClients)	// Weapon worldmodel
+			if(entity != -1)	// Weapon worldmodel
 			{
 				int team = GetClientTeam(client);
 				if(i_WeaponModelIndexOverride[active] > 0)
@@ -303,6 +296,8 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 					AcceptEntityInput(entity, "SetBodyGroup");
 				}
 
+				ImportSkinAttribs(entity, active);
+
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -316,23 +311,22 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 
 				i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
 			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
-
+				
 				SDKCall_EquipWearable(client, entity);
 			}
 			
 			HidePlayerWeaponModel(client, active);
-					
+			
 			//if(WeaponClass[client] != class)
 			{
 				WeaponClass[client] = class;
 				
 				TF2_SetPlayerClass_ZR(client, WeaponClass[client], _, false);
 				Store_ApplyAttribs(client);
-				
-				ViewChange_DeleteHands(client);
-				ViewChange_UpdateHands(client, CurrentClass[client]);
-				
 			}
+			
+			//ViewChange_DeleteHands(client);
+			ViewChange_UpdateHands(client, CurrentClass[client]);
 
 #if defined ZR
 			if(TeutonType[client] == TEUTON_NONE)
@@ -351,14 +345,23 @@ void ViewChange_Switch(int client, int active, const char[] buffer = "")
 			UpdatePlayerFakeModel(client);
 #endif
 			MedicAdjustModel(client);
+
+			int iMaxWeapons = GetMaxWeapons(client);
+			for (int i = 0; i < iMaxWeapons; i++)
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+				if (weapon != INVALID_ENT_REFERENCE)
+					SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
+			}
+
 			return;
 		}
 	}
+
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
-	WeaponRef_viewmodel[client] = INVALID_ENT_REFERENCE;
-	i_Worldmodel_WeaponModel[client] = INVALID_ENT_REFERENCE;
 }
+
 void MedicAdjustModel(int client)
 {
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -395,36 +398,73 @@ void MedicAdjustModel(int client)
 void ViewChange_DeleteHands(int client)
 {
 	int entity = EntRefToEntIndex(HandRef[client]);
-	if(entity > MaxClients)
-		TF2_RemoveWearable(client, entity);
+	if(entity != -1)
+		RemoveEntity(entity);
 
 	HandRef[client] = INVALID_ENT_REFERENCE;
 }
 
 int ViewChange_UpdateHands(int client, TFClassType class)
 {
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	int entity = EntRefToEntIndex(HandRef[client]);
-	if(entity <= MaxClients)
+	if(entity != -1)
 	{
-		entity = CreateEntityByName("tf_wearable_vm");
-		if(entity > MaxClients)
-		{
-			int hand_index = view_as<int>(class);
-			
-			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[hand_index]);
-			SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-			SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-			SetEntityCollisionGroup(entity, 11);
-			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-			DispatchSpawn(entity);
-			SetVariantString("!activator");
-			ActivateEntity(entity);
-			SDKCall_EquipWearable(client, entity);
+		SetEntPropEnt(entity, Prop_Send, "m_hWeaponAssociatedWith", weapon);
+	}
+	else
+	{
+		int hand_index = view_as<int>(class);
+
+		entity = CreateViewmodel(client, HandIndex[hand_index], weapon);
+		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
-		}
 	}
 	return entity;
+}
+
+static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = false)
+{
+	int wearable = CreateEntityByName("tf_wearable_vm");
+	
+	float vecOrigin[3], vecAngles[3];
+	GetEntPropVector(client, Prop_Send, "m_vecOrigin", vecOrigin);
+	GetEntPropVector(client, Prop_Send, "m_angRotation", vecAngles);
+	TeleportEntity(wearable, vecOrigin, vecAngles, NULL_VECTOR);
+
+	if(copy)
+		ImportSkinAttribs(wearable, weapon);
+	
+	SetEntProp(wearable, Prop_Send, "m_bValidatedAttachedEntity", true);
+	SetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity", client);
+	SetEntProp(wearable, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetEntProp(wearable, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_BONEMERGE_FASTCULL);
+	
+	DispatchSpawn(wearable);
+	
+	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelIndex);	// After DispatchSpawn, otherwise CEconItemView overrides it
+	
+	SetVariantString("!activator");
+	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
+
+	SetEntPropEnt(wearable, Prop_Send, "m_hWeaponAssociatedWith", weapon);
+	
+	return wearable;
+}
+
+static void ImportSkinAttribs(int wearable, int weapon)
+{
+	int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
+	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
+	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
+	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
+	Attributes_Set(wearable, 867, float(index));//Attributes_Get(weapon, 867, 0.0));
+	Attributes_Set(wearable, 2013, Attributes_Get(weapon, 2013, 0.0));
+	Attributes_Set(wearable, 2014, Attributes_Get(weapon, 2014, 0.0));
+	Attributes_Set(wearable, 2025, Attributes_Get(weapon, 2025, 0.0));
+	Attributes_Set(wearable, 2027, Attributes_Get(weapon, 2027, 0.0));
+	Attributes_Set(wearable, 2053, Attributes_Get(weapon, 2053, 0.0));
 }
 
 void HidePlayerWeaponModel(int client, int entity)

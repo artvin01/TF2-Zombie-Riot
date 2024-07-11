@@ -671,7 +671,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	{
 		custom_classSetting = 0;
 	}
-	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
+	int weapon = SpawnWeaponBase(client, name, index, level, qual, custom_classSetting);
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
@@ -679,7 +679,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	return weapon;
 }
 
-stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
+static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
 	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
@@ -706,14 +706,15 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	if(entity > MaxClients)
 	{
 #if defined ZR
-	f_TimeSinceLastGiveWeapon[entity] = 0.0;
+		f_TimeSinceLastGiveWeapon[entity] = 0.0;
 #endif
+
 		Attributes_EntityDestroyed(entity);
 
-		for(int i; i < count; i++)
-		{
-			Attributes_Set(entity, attrib[i], value[i]);
-		}
+		//for(int i; i < count; i++)
+		//{
+		//	Attributes_Set(entity, attrib[i], value[i]);
+		//}
 		
 		if(StrEqual(name, "tf_weapon_sapper"))
 		{
@@ -732,14 +733,10 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", false, _, 3);
 		}
 
-		EquipPlayerWeapon(client, entity);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 
-		//TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
-		//TF2Attrib_SetByDefIndex(entity, 725, 0.0);
-		//TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
-		//TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
+		EquipPlayerWeapon(client, entity);
 	}
 
 #if defined ZR || defined RPG

@@ -725,10 +725,10 @@ int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
-int WeaponRef_viewmodel[MAXTF2PLAYERS];
-int HandRef[MAXTF2PLAYERS];
-int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
+int HandRef[MAXTF2PLAYERS] = {-1, ...};
+int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS] = {-1, ...};
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
@@ -3661,6 +3661,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		{	
 			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
 			{
+				PrintToChatAll("Oh no!!!");
 				if(!item)
 					return Plugin_Stop;
 				
@@ -3672,7 +3673,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 	else
 	{
-		return Plugin_Stop;
+		//return Plugin_Stop;
 	}
 #endif
 	return Plugin_Continue;

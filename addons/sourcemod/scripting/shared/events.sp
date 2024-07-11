@@ -261,7 +261,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			//apply model correctly.
 
 
-	   		ViewChange_Switch(client, weapon_index);
+	   		ViewChange_Switch(client, weapon_index, "tf_weapon_sword");
 
 	   		TF2Attrib_RemoveAll(weapon_index);
 	   		
