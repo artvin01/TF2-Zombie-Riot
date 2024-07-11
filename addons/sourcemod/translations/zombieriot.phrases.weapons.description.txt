@@ -1862,6 +1862,10 @@
 		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
 		"chi" "什么比一个激光更好?\n当然是更多激光！\n多亏这些光束，我们成功复刻出了月球之力！\n警告:购买时保修失效。"
 	}
+	"Cosmic Terror Extra Desc"
+	{
+		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
+	}
 
 	"Alchemist Potion Desc"
 	{
