@@ -25,7 +25,6 @@ static Handle g_hSDKEndLagComp;
 
 static Handle SDKGetShootSound;
 static Handle SDKBecomeRagdollOnClient;
-static Handle SDKSetItem;
 
 void SDKCall_Setup()
 {
@@ -147,14 +146,6 @@ void SDKCall_Setup()
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
 	if((g_hGetVectors = EndPrepSDKCall()) == INVALID_HANDLE) SetFailState("Failed to create Virtual Call for CBaseEntity::GetVectors!");
-	
-	StartPrepSDKCall(SDKCall_Raw);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CEconItemView::operator=");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_ByValue);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_ByValue);
-	SDKSetItem = EndPrepSDKCall();
-	if(!SDKSetItem)
-		LogError("[Gamedata] Could not find CEconItemView::operator=");
 	
 	delete gamedata;
 }
@@ -453,9 +444,3 @@ void SDKCall_ResetPlayerAndTeamReadyState()
 	}
 }
 #endif
-
-void SDKCall_SetItem(Address pItem, Address pOther)
-{
-	if(SDKSetItem)
-		SDKCall(SDKSetItem, pItem, pOther);
-}

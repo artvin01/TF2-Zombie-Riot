@@ -235,88 +235,87 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				using EF_NODRAW works but it makes the animations mess up for spectators, currently no fix is known.
 			*/
 			//SetEntProp(client, Prop_Send, "m_bDrawViewmodel", 1);
-			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+			//SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 			
 			SetEntProp(entity, Prop_Send, "m_nModelIndex", HandIndex[class]);
 			
-			//if(i_WeaponModelIndexOverride[active] > 0 || i_WeaponVMTExtraSetting[active] != -1 || i_WeaponBodygroup[active] != -1)
+			entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
+			if(entity != -1)	// Weapon viewmodel
 			{
-				entity = CreateViewmodel(client, i_WeaponModelIndexOverride[active] > 0 ? i_WeaponModelIndexOverride[active] : GetEntProp(active, Prop_Send, "m_iWorldModelIndex"), active, true);
-				if(entity != -1)	// Weapon viewmodel
-				{
-					WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
+				WeaponRef_viewmodel[client] = EntIndexToEntRef(entity);
 
-					if(i_WeaponVMTExtraSetting[active] != -1)
-					{
-						i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
+				if(i_WeaponVMTExtraSetting[active] != -1)
+				{
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
 #if defined ZR
-						if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
-						{
-							SensalApplyRecolour(client, entity);
-						}
-						else
-#endif
-
-						{
-							SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
-						}
-					}
-					if(i_WeaponBodygroup[active] != -1)
+					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
 					{
-						SetVariantInt(i_WeaponBodygroup[active]);
-						AcceptEntityInput(entity, "SetBodyGroup");
+						SensalApplyRecolour(client, entity);
 					}
-				}
-
-				entity = CreateEntityByName("tf_wearable");
-				if(entity != -1)	// Weapon worldmodel
-				{
-					int team = GetClientTeam(client);
-					if(i_WeaponModelIndexOverride[active] > 0)
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
 					else
-						SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
-					
-					if(i_WeaponVMTExtraSetting[active] != -1)
-					{
-						i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
-#if defined ZR
-						if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
-						{
-							SensalApplyRecolour(client, entity);
-						}
-						else
 #endif
 
-						{
-							SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
-						}
-					}
-					if(i_WeaponBodygroup[active] != -1)
 					{
-						SetVariantInt(i_WeaponBodygroup[active]);
-						AcceptEntityInput(entity, "SetBodyGroup");
+						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
 					}
-
-					SetEntProp(entity, Prop_Send, "m_fEffects", 129);
-					SetTeam(entity, team);
-					SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
-					SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
-					SetEntityCollisionGroup(entity, 11);
-					SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
-					
-					DispatchSpawn(entity);
-					SetVariantString("!activator");
-					ActivateEntity(entity);
-
-					i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
-				//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
-
-					SDKCall_EquipWearable(client, entity);
 				}
-				
-				//HidePlayerWeaponModel(client, active);
+				if(i_WeaponBodygroup[active] != -1)
+				{
+					SetVariantInt(i_WeaponBodygroup[active]);
+					AcceptEntityInput(entity, "SetBodyGroup");
+				}
 			}
+
+			entity = CreateEntityByName("tf_wearable");
+			if(entity != -1)	// Weapon worldmodel
+			{
+				int team = GetClientTeam(client);
+				if(i_WeaponModelIndexOverride[active] > 0)
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_WeaponModelIndexOverride[active]);
+				else
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", GetEntProp(active, Prop_Send, "m_iWorldModelIndex"));
+				
+				if(i_WeaponVMTExtraSetting[active] != -1)
+				{
+					i_WeaponVMTExtraSetting[entity] = i_WeaponVMTExtraSetting[active];
+#if defined ZR
+					if(IsSensalWeapon(i_CustomWeaponEquipLogic[active]))
+					{
+						SensalApplyRecolour(client, entity);
+					}
+					else
+#endif
+
+					{
+						SetEntityRenderColor(entity, 255, 255, 255, i_WeaponVMTExtraSetting[active]);
+					}
+				}
+				if(i_WeaponBodygroup[active] != -1)
+				{
+					SetVariantInt(i_WeaponBodygroup[active]);
+					AcceptEntityInput(entity, "SetBodyGroup");
+				}
+
+				ImportSkinAttribs(entity, active);
+
+				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+				SetTeam(entity, team);
+				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
+				SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+				SetEntityCollisionGroup(entity, 11);
+				SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", 1);
+				
+				DispatchSpawn(entity);
+				SetVariantString("!activator");
+				ActivateEntity(entity);
+
+				i_Worldmodel_WeaponModel[client] = EntIndexToEntRef(entity);
+			//	SetEntPropFloat(entity, Prop_Send, "m_flPoseParameter", GetEntPropFloat(active, Prop_Send, "m_flPoseParameter"));
+				
+				SDKCall_EquipWearable(client, entity);
+			}
+			
+			HidePlayerWeaponModel(client, active);
 			
 			//if(WeaponClass[client] != class)
 			{
@@ -324,10 +323,10 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 				
 				TF2_SetPlayerClass_ZR(client, WeaponClass[client], _, false);
 				Store_ApplyAttribs(client);
-				
-				ViewChange_DeleteHands(client);
-				ViewChange_UpdateHands(client, CurrentClass[client]);
 			}
+			
+			//ViewChange_DeleteHands(client);
+			ViewChange_UpdateHands(client, CurrentClass[client]);
 
 #if defined ZR
 			if(TeutonType[client] == TEUTON_NONE)
@@ -350,9 +349,9 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			int iMaxWeapons = GetMaxWeapons(client);
 			for (int i = 0; i < iMaxWeapons; i++)
 			{
-				int iWeapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
-				if (iWeapon != INVALID_ENT_REFERENCE)
-					SetEntProp(iWeapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(iWeapon, Prop_Send, "m_nModelIndex"));
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+				if (weapon != INVALID_ENT_REFERENCE)
+					SetEntProp(weapon, Prop_Send, "m_nCustomViewmodelModelIndex", GetEntProp(weapon, Prop_Send, "m_nModelIndex"));
 			}
 
 			return;
@@ -424,62 +423,42 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	return entity;
 }
 
-static int CreateViewmodel(int iClient, int iModelIndex, int iWeapon, bool bCopy = false)
+static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = false)
 {
-	static int g_iOffsetWearable;
-	if(!g_iOffsetWearable)
-		g_iOffsetWearable = FindSendPropInfo("CTFWearable", "m_Item");
+	int wearable = CreateEntityByName("tf_wearable_vm");
 	
-	int iWearable = CreateEntityByName("tf_wearable_vm");
-	
-	if (bCopy)	//Copy m_Item from weapon, so reskin stuffs can show
-		SDKCall_SetItem(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetWearable), GetEntityAddress(iWeapon) + view_as<Address>(g_iOffsetWearable));
-
 	float vecOrigin[3], vecAngles[3];
-	GetEntPropVector(iClient, Prop_Send, "m_vecOrigin", vecOrigin);
-	GetEntPropVector(iClient, Prop_Send, "m_angRotation", vecAngles);
-	TeleportEntity(iWearable, vecOrigin, vecAngles, NULL_VECTOR);
+	GetEntPropVector(client, Prop_Send, "m_vecOrigin", vecOrigin);
+	GetEntPropVector(client, Prop_Send, "m_angRotation", vecAngles);
+	TeleportEntity(wearable, vecOrigin, vecAngles, NULL_VECTOR);
 
-	if (bCopy)
-	{
-		/*for(int i; i < 400; i += 4)
-		{
-			any value = LoadFromAddress(GetEntityAddress(iWearable) + view_as<Address>(g_iOffsetWearable) + view_as<Address>(i), NumberType_Int32);
-			PrintToChatAll("+%d   %d  %x  %f", i, value, value, value);
-		}*/
-
-		// Sus list
-		// 36, 
-
-		PrintToChatAll("Ent: %d", iWearable);
-		SetEntData(iWearable, g_iOffsetWearable + 16, -384889798, 4);
-		SetEntData(iWearable, g_iOffsetWearable + 20, 2, 4);
-		SetEntData(iWearable, g_iOffsetWearable + 24, 2, 4);
-		SetEntData(iWearable, g_iOffsetWearable + 28, -384889798, 4);
-		SetEntData(iWearable, g_iOffsetWearable + 36, -2147483183, 4);
-	}
+	if(copy)
+		ImportSkinAttribs(wearable, weapon);
 	
-	SetEntProp(iWearable, Prop_Send, "m_bValidatedAttachedEntity", true);
-	SetEntPropEnt(iWearable, Prop_Send, "m_hOwnerEntity", iClient);
-	SetEntProp(iWearable, Prop_Send, "m_iTeamNum", GetClientTeam(iClient));
-	SetEntProp(iWearable, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_BONEMERGE_FASTCULL);
+	SetEntProp(wearable, Prop_Send, "m_bValidatedAttachedEntity", true);
+	SetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity", client);
+	SetEntProp(wearable, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetEntProp(wearable, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_BONEMERGE_FASTCULL);
 	
-	DispatchSpawn(iWearable);
+	DispatchSpawn(wearable);
 	
-	//TF2Attrib_SetByDefIndex(iWearable, 731, 1.0);
-	TF2Attrib_SetByDefIndex(iWearable, 834, view_as<float>(202));
-	TF2Attrib_SetByDefIndex(iWearable, 725, 0.0);
-	TF2Attrib_SetByDefIndex(iWearable, 866, view_as<float>(342536));
-	TF2Attrib_SetByDefIndex(iWearable, 867, view_as<float>(7473985));
-	
-	SetEntProp(iWearable, Prop_Send, "m_nModelIndex", iModelIndex);	// After DispatchSpawn, otherwise CEconItemView overrides it
+	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelIndex);	// After DispatchSpawn, otherwise CEconItemView overrides it
 	
 	SetVariantString("!activator");
-	AcceptEntityInput(iWearable, "SetParent", GetEntPropEnt(iClient, Prop_Send, "m_hViewModel"));
+	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
 
-	SetEntPropEnt(iWearable, Prop_Send, "m_hWeaponAssociatedWith", iWeapon);
+	SetEntPropEnt(wearable, Prop_Send, "m_hWeaponAssociatedWith", weapon);
 	
-	return iWearable;
+	return wearable;
+}
+
+static void ImportSkinAttribs(int wearable, int weapon)
+{
+	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"));
+	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
+	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
+	Attributes_Set(wearable, 866, Attributes_Get(weapon, 866, 0.0));
+	Attributes_Set(wearable, 867, Attributes_Get(weapon, 867, 0.0));
 }
 
 void HidePlayerWeaponModel(int client, int entity)

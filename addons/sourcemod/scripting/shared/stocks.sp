@@ -671,7 +671,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	{
 		custom_classSetting = 0;
 	}
-	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
+	int weapon = SpawnWeaponBase(client, name, index, level, qual, custom_classSetting);
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
@@ -679,7 +679,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	return weapon;
 }
 
-stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
+static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
 	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
@@ -708,15 +708,13 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 #if defined ZR
 		f_TimeSinceLastGiveWeapon[entity] = 0.0;
 #endif
-		static int fakeID = 10000;
-		SetItemID(entity, fakeID++);
 
 		Attributes_EntityDestroyed(entity);
 
-		for(int i; i < count; i++)
-		{
-			Attributes_Set(entity, attrib[i], value[i]);
-		}
+		//for(int i; i < count; i++)
+		//{
+		//	Attributes_Set(entity, attrib[i], value[i]);
+		//}
 		
 		if(StrEqual(name, "tf_weapon_sapper"))
 		{
@@ -735,11 +733,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", false, _, 3);
 		}
 
-		TF2Attrib_SetByDefIndex(entity, 834, view_as<float>(202));
-		TF2Attrib_SetByDefIndex(entity, 725, 0.0);
-		TF2Attrib_SetByDefIndex(entity, 866, view_as<float>(342536));
-		TF2Attrib_SetByDefIndex(entity, 867, view_as<float>(7473985));
-
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 
@@ -752,17 +745,6 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	return entity;
 }
 
-void SetItemID(int weapon, int iIdx)
-{
-	char clsname[64];
-	if (GetEntityNetClass(weapon, clsname, sizeof(clsname)))
-	{
-		SetEntData(weapon, FindSendPropInfo(clsname, "m_iItemIDHigh") - 4, iIdx);	// m_iItemID
-		SetEntProp(weapon, Prop_Send, "m_iItemIDHigh", iIdx >> 32);
-		SetEntProp(weapon, Prop_Send, "m_iItemIDLow", iIdx & 0xFFFFFFFF);
-	}
-}
-
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
@@ -773,10 +755,7 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 		Attributes_Set(weapon, attributes[i], values[i]);
 	}
 
-	TF2Attrib_SetByDefIndex(weapon, 834, view_as<float>(202));
-	TF2Attrib_SetByDefIndex(weapon, 725, 0.0);
-	TF2Attrib_SetByDefIndex(weapon, 866, view_as<float>(342536));
-	TF2Attrib_SetByDefIndex(weapon, 867, view_as<float>(7473985));
+	Attributes_Set(weapon, 834, 202.0);
 }
 
 void RemoveAllDefaultAttribsExceptStrings(int entity)
