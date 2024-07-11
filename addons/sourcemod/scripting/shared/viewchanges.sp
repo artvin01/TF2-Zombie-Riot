@@ -427,7 +427,7 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	{
 		int hand_index = view_as<int>(class);
 
-		entity = CreateViewmodel(client, HandIndex[hand_index], _, weapon);
+		entity = CreateViewmodel(client, HandIndex[hand_index], HandIndex[hand_index], weapon);
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}
