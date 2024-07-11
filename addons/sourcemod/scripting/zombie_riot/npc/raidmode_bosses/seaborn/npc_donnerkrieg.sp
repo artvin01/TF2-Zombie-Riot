@@ -156,6 +156,7 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 bool b_donner_said_win_line;
+bool b_schwert_ded;
 
 //static bool b_spawn_bob;
 
@@ -313,6 +314,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_donner_said_win_line = false;
+		b_schwert_ded = false;
 
 		//fl_divine_intervention_retry = GetGameTime() + 10.0;
 
@@ -419,6 +421,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCFuncWin[npc.index] = Win_Line;
 			
 		
 		/*
@@ -520,11 +523,56 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		//Reused silvester duo code here
 		
 		RequestFrame(Donnerkrieg_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
 	
 	
+}
+
+static void Win_Line(int entity)
+{	
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+
+	char text_lines[255];
+	int ally = EntRefToEntIndex(i_ally_index);
+	if(IsValidEntity(ally) && !b_schwert_ded)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: HAH, the {darkblue}sea{snow} isn't THAT hard to beat", name_color, text_color);
+			}
+			case 2:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh boy, their ragdoll's were {gold}amazing{snow}!", name_color, text_color);
+			}
+		}
+	}
+	else
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased{snow} your existance", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Well, atleast I still have {purple}Twirl{snow}...", name_color, text_color);
+			}
+		}	
+	}
+	b_donner_said_win_line = true;
+	CPrintToChatAll(text_lines);
 }
 
 void Donnerkrieg_SpawnAllyDuoRaid(int ref)
@@ -602,6 +650,39 @@ static void Internal_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
+	}
+
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
+
+			char text_lines[255];
+			int ally = EntRefToEntIndex(i_ally_index);
+			if(IsValidEntity(ally) && !b_schwert_ded)
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ahaha, its almost over now, just{crimson} one more left{snow}!", name_color, text_color);
+					}
+					case 1:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: We'd better not choke now...", name_color, text_color);
+					}
+				}
+			}
+			else
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: I'm about to turn into an unrecognisable mass of sea for {crimson}what you've DONE TO MY BELOVED", name_color, text_color);
+			}
+			CPrintToChatAll(text_lines);
+		}
 	}
 		
 	float GameTime = GetGameTime(npc.index);
@@ -896,12 +977,12 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		b_donner_said_win_line = true;
 		if(donner_alive)
 		{
-			char name_color[255]; name_color = "aqua";
-			char text_color[255]; text_color = "snow";
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
 
 			char text_lines[255];
 			int ally = EntRefToEntIndex(i_ally_index);
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You think thats how you fight us two?", name_color, text_color);
 			}
@@ -2076,7 +2157,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(wave<60)
 		{
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				switch(GetRandomInt(1,2))	//warp
 				{
@@ -3309,9 +3390,9 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 
 static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 {
-	char name_color[255]; name_color = "aqua";
-	char text_color[255]; text_color = "snow";
-	char danger_color[255]; danger_color = "crimson";
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+	char danger_color[] = "crimson";
 
 	char text_lines[255];
 

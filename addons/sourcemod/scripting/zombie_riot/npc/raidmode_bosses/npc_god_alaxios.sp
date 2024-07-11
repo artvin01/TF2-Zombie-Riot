@@ -444,24 +444,16 @@ public void GodAlaxios_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(npc.Anger)
+	if(npc.m_flDoingSpecial < gameTime)
 	{
-		npc.m_flRangedArmor = 0.3;
-		npc.m_flMeleeArmor = 0.35;
+		npc.m_flRangedArmor = 1.0;
+		npc.m_flMeleeArmor = 1.25;
 	}
 	else
 	{
-		if(npc.m_flDoingSpecial < gameTime)
-		{
-			npc.m_flRangedArmor = 1.0;
-			npc.m_flMeleeArmor = 1.25;
-		}
-		else
-		{
-			npc.m_flRangedArmor = 0.5;
-			npc.m_flMeleeArmor = 0.65;
-		}		
-	}
+		npc.m_flRangedArmor = 0.5;
+		npc.m_flMeleeArmor = 0.65;
+	}		
 
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -557,6 +549,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				AlaxiosSayWordsAngry();
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 6) / 7);
 			}
 		}
 	}

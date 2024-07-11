@@ -1575,7 +1575,7 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 		{
 			return MRES_Ignored;
 		}
-		if(WeaponClass[GetChargeEffectBeingProvided] > 0)
+		if(WeaponClass[GetChargeEffectBeingProvided] > view_as<TFClassType>(0))
 			TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		GetChargeEffectBeingProvided = 0;
 	}

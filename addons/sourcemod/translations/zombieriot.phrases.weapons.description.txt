@@ -2781,7 +2781,7 @@
 	}
 	"Gravton Wand desc0"
 	{
-		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed.\nCasting a spell too close to the same position heavily weakens the spell."
 		"chi"	"强力的AOE魔法，M1召唤出一个带有缓慢延迟的引力爆炸。"
 	}
 	"Gravton Wand desc1"
@@ -3091,5 +3091,17 @@
 	"Merchant Pap 5 Desc"
 	{
 		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
+	}
+	"Chainsaw Pap 0"
+	{
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
+	}
+	"Chainsaw Pap 1"
+	{
+		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
+	}
+	"Chainsaw Pap 2"
+	{
+		"en"	"More damage, attacks faster, extend bleed duration."
 	}
 }

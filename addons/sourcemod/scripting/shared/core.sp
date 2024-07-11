@@ -320,6 +320,13 @@ bool i_HasBeenHeadShotted[MAXENTITIES];
 int g_particleImpactFlesh;
 int g_particleImpactRubber;
 
+
+#if !defined RTS
+float f_damageAddedTogether[MAXTF2PLAYERS];
+float f_damageAddedTogetherGametime[MAXTF2PLAYERS];
+int i_HudVictimToDisplay[MAXTF2PLAYERS];
+#endif
+
 bool b_NetworkedCrouch[MAXTF2PLAYERS];	
 bool b_AntiSlopeCamp[MAXTF2PLAYERS];	
 float f_CooldownForHurtParticle[MAXENTITIES];	
@@ -871,7 +878,7 @@ DynamicHook g_DHookRocketExplode; //from mikusch but edited
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
-bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
+float f_GibHealingAmount[MAXENTITIES];
 //GLOBAL npc things
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
@@ -914,7 +921,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_24.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -1249,6 +1256,7 @@ float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
+float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1706,7 +1714,7 @@ public void OnMapStart()
 	Zero(f_ClientInvul);
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
-	Zero(b_LimitedGibGiveMoreHealth);
+	Zero(f_GibHealingAmount);
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
@@ -2888,6 +2896,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
@@ -3110,6 +3119,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
+			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
+			npc.bCantCollidie = true;
+			npc.bCantCollidieAlly = true;
+		}
+		else if(!StrContains(classname, "func_door"))
+		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;

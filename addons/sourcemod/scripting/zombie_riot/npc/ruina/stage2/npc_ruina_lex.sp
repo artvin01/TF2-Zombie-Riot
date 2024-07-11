@@ -266,35 +266,6 @@ methodmap Lex < CClotBody
 		public get()							{ return b_solo[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_solo[this.index] = TempValueForProperty; }
 	}
-
-	public void Do_Default()
-	{
-		if(!this.IsAlive())
-			return;
-		
-		bool close = this.IsClose();
-
-		if(close)
-		{
-			if(this.IsLowHealth())
-			{
-				this.Fuse();
-			}
-			else	//Initiate a buff between the 2.
-			{
-				this.m_bRetreating = false;
-			}
-		}
-		
-	}
-	public void Initiate_Follow()	//set pathing towards ally.
-	{
-		int Ally = EntRefToEntIndex(this.m_ially);
-		this.m_bRetreating = true;
-		NPC_SetGoalEntity(this.index, Ally);
-		Ruina_Special_Logic(this.index, Ally);
-		this.StartPathing();
-	}
 	public bool IsClose()			//check if we are close enough to initate fusion
 	{
 		int Ally = EntRefToEntIndex(this.m_ially);
@@ -309,37 +280,12 @@ methodmap Lex < CClotBody
 		}
 		return false;
 	}
-	public bool IsLowHealth()		//only allow walking close if both npc's are bellow 50% hp.
-	{
-		int Ally = EntRefToEntIndex(this.m_ially);
-		int Health 		= GetEntProp(Ally, Prop_Data, "m_iHealth"),
-			MaxHealth 	= GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
-
-		float Ratio = (float(Health)/float(MaxHealth));
-
-		if(Ratio > 0.5)
-			return false;
-		
-		Health 		= GetEntProp(this.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(this.index, Prop_Data, "m_iMaxHealth");
-
-		if(Ratio > 0.5)
-			return false;
-
-		this.Initiate_Follow();
-
-		return true;
-	}
 	public bool IsAlive()
 	{
 		if(this.m_bSolo)
 			return false;
 		
 		return IsValidAlly(this.index, EntRefToEntIndex(this.m_ially));
-	}
-	public void Fuse()
-	{
-
 	}
 	public void Share_Damage(int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)	//share the damage taken across both. but it will still do 25%? more dmg to the on being attacked.
 	{
@@ -349,9 +295,8 @@ methodmap Lex < CClotBody
 		if(this.IsClose())
 		{	
 			int Ally = EntRefToEntIndex(this.m_ially);
-			damage *= 0.65;
+			damage *= 0.5;
 			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
-			damage *= 0.25;
 		}
 	}
 	public void Spawn_Ally()
@@ -554,8 +499,6 @@ static void ClotThink(int iNPC)
 		Ruina_Add_Battery(npc.index, 10.0);	//10
 
 	int PrimaryThreatIndex = npc.Get_Target();
-
-	npc.Do_Default();
 
 	if(!npc.m_bRetreating)
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
