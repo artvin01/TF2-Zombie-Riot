@@ -86,7 +86,7 @@ public void Cosmic_Terror_Pap0(int client, int weapon, bool &result, int slot)
 {
 	Cosmic_Heat_Max[client]=1350.0*TickrateModify; //How much heat before we force a shutdown.
 	float speed = 2.5/TickrateModify;	//how fast the beam is
-	Cosmic_Radius[client] = 40.0;	//damage radius
+	Cosmic_Radius[client] = 30.0;	//damage radius
 	Cosmic_Terror_Pap[client]=0;
 	i_effect_amount[client] = 3;
 	fl_sping_speed[client] = 1.5/TickrateModify;
@@ -114,7 +114,7 @@ public void Cosmic_Terror_Pap1(int client, int weapon, bool &result, int slot)
 {
 	Cosmic_Heat_Max[client]=1750.0*TickrateModify; //How much heat before we force a shutdown.
 	float speed = 3.5/TickrateModify;	//how fast the beam is
-	Cosmic_Radius[client] = 50.0;	//damage radius
+	Cosmic_Radius[client] = 40.0;	//damage radius
 	Cosmic_Terror_Pap[client]=1;
 	i_effect_amount[client] = 5;
 	float time = 3.0;
@@ -143,7 +143,7 @@ public void Cosmic_Terror_Pap2(int client, int weapon, bool &result, int slot)
 {
 	Cosmic_Heat_Max[client]=2500.0*TickrateModify; //How much heat before we force a shutdown.
 	float speed = 4.5/TickrateModify;	//how fast the beam is
-	Cosmic_Radius[client] = 60.0;	//damage radius
+	Cosmic_Radius[client] = 50.0;	//damage radius
 
 	fl_sping_speed[client] = 0.75/TickrateModify;
 	Cosmic_Terror_Pap[client]=2;
