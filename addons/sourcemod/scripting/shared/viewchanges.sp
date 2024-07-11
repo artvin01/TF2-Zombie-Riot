@@ -434,7 +434,7 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	return entity;
 }
 
-static int CreateViewmodel(int client, int modelAnims, int modelOverride = -1, int weapon = -1, bool copy = false)
+static int CreateViewmodel(int client, int modelAnims, int modelOverride, int weapon, bool copy = false)
 {
 	int wearable = CreateEntityByName("tf_wearable_vm");
 	
