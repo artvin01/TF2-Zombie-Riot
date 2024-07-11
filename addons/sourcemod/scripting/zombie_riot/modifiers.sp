@@ -89,3 +89,8 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		}
 	}
 }
+
+int CurrentModifOn()
+{
+	return CurrentModifActive;
+}

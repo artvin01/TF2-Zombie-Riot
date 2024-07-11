@@ -426,8 +426,9 @@ stock void Do_Coin_calc(int victim)
 	float targPos[3];
 	float chargerPos[3];
 		
+	SetTeam(victim, TFTeam_Red);
 	int Closest_entity = GetClosestTarget_Coin(victim);
-	
+	SetTeam(victim, TFTeam_Spectator);
 	if (IsValidEntity(Closest_entity))
 	{
 		damage_multiplier[victim] *= 1.6;
@@ -679,9 +680,7 @@ stock int GetClosestTarget_Coin(int entity)
 	{
 		if (IsValidEntity(new_entity) && !b_NpcHasDied[new_entity])
 		{
-			static char classname[36];
-			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetTeam(new_entity) != GetTeam(entity)) && entity != new_entity)
+			if(IsValidEnemy(entity, new_entity))
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
