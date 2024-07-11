@@ -295,7 +295,7 @@ public void WindStaffM2_Think(int client)
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
 				float TornadoRange = 300.0;
-				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,0.52,_,false);
+				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,0.52,_,false, 4);
 				float flCarrierPos[3];//, targPos[3];
 				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
 				flCarrierPos[2] += 15.0;
@@ -780,7 +780,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],0.45,_,false);
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],0.45,_,false, 4);
 	
 	return Plugin_Continue;
 }

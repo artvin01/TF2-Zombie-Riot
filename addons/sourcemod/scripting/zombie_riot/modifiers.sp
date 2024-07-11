@@ -57,7 +57,7 @@ public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 
 public void ZRModifs_OldTimesNPC(int iNpc)
 {
-	fl_Extra_Damage[iNpc] *= 1.20;
+	fl_Extra_Damage[iNpc] *= 1.15;
 	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.50));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.50));
