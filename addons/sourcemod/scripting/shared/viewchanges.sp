@@ -188,13 +188,16 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
-void ViewChange_Update(int client)
+void ViewChange_Update(int client, bool full = true)
 {
+	if(full)
+		ViewChange_DeleteHands(client);
+	
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
 		GetEntityClassname(weapon, classname, sizeof(classname));
-
+	
 	ViewChange_Switch(client, weapon, classname);
 }
 

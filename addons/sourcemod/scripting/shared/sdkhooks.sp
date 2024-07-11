@@ -2097,7 +2097,7 @@ public void OnWeaponSwitchFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		ViewChange_Update(client);
+		ViewChange_Update(client, false);
 		// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
 	}
 }
