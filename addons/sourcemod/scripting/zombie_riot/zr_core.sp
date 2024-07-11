@@ -825,6 +825,8 @@ void ZR_ClientPutInServer(int client)
 {
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
+	if(CurrentModifOn() == 2)
+		i_AmountDowned[client] = 1;
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
@@ -2027,6 +2029,9 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
+			if(CurrentModifOn() == 2)
+				i_AmountDowned[client] = 1;
+
 			DoOverlay(client, "", 2);
 			if(GetClientTeam(client)==2)
 			{

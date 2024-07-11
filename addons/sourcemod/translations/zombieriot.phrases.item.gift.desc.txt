@@ -1585,4 +1585,12 @@
 	{
 		"en"	"Play as intended!\nAny other Modifcation might go off the rails.\nBe warned!!!!"
 	}
+	"Old Times"
+	{
+		"en"	"Old Times"
+	}
+	"Old Times Desc"
+	{
+		"en"	"Experience ZR on how it feels to be a newbie.\nWaves spawn 45%% more enemies, spawn 25%% faster, and 15%% more zombies are alive at once.\nEnemeis deal 20%% more damage, have 50%% more HP (Gib treshhold stays.) and are 7%% faster.\nYou have 1 less down."
+	}
 }

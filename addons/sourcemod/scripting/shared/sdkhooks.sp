@@ -1863,6 +1863,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			{
 				damage = 99999.9;
 				i_AmountDowned[victim] = 0;
+				if(CurrentModifOn() == 2)
+					i_AmountDowned[victim] = 1;
 				return Plugin_Changed;
 			}
 		}
