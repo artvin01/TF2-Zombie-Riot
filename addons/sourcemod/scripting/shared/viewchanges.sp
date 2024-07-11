@@ -454,11 +454,17 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 
 static void ImportSkinAttribs(int wearable, int weapon)
 {
-	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"));
+	int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
-	Attributes_Set(wearable, 866, Attributes_Get(weapon, 866, 0.0));
-	Attributes_Set(wearable, 867, Attributes_Get(weapon, 867, 0.0));
+	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
+	Attributes_Set(wearable, 867, float(index));//Attributes_Get(weapon, 867, 0.0));
+	Attributes_Set(wearable, 2013, Attributes_Get(weapon, 2013, 0.0));
+	Attributes_Set(wearable, 2014, Attributes_Get(weapon, 2014, 0.0));
+	Attributes_Set(wearable, 2025, Attributes_Get(weapon, 2025, 0.0));
+	Attributes_Set(wearable, 2027, Attributes_Get(weapon, 2027, 0.0));
+	Attributes_Set(wearable, 2053, Attributes_Get(weapon, 2053, 0.0));
 }
 
 void HidePlayerWeaponModel(int client, int entity)
