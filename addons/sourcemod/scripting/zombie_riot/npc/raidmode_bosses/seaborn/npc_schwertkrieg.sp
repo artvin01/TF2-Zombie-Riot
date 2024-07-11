@@ -153,7 +153,7 @@ void Raidboss_Schwertkrieg_OnMapStart_NPC()
 	Zero(fl_groupteleport_timer);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Schwertkrieg");
+	strcopy(data.Name, sizeof(data.Name), "Karlas");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_schwertkrieg");
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
@@ -448,12 +448,22 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		{
 			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
 		}
+
+		func_NPCFuncWin[npc.index] = Win_Line;
 		
 		
 		return npc;
 	}
 }
+static void Win_Line(int entity)
+{
+	if(b_raidboss_donnerkrieg_alive)
+		return;
+	
+	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
 
+	b_donner_said_win_line = true;
+}
 public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
@@ -701,7 +711,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
-					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
+					CPrintToChatAll("{crimson}Karlas{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 
@@ -1181,11 +1191,49 @@ static bool Schwert_Do_Group_Tele(int iNPC, int PrimaryThreatIndex)
 }
 #define SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS 750.0
 
+static void Schwertkrieg_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
+{
+	float originalPostionTrace[3];
+	float startPostionTrace[3];
+	float endPostionTrace[3];
+	endPostionTrace = vecorigin;
+	startPostionTrace = vecorigin;
+	originalPostionTrace = vecorigin;
+	startPostionTrace[2] += StepHeight;
+	endPostionTrace[2] -= 5000.0;
+
+	float vecHullMins[3];
+	vecHullMins = vecHull;
+
+	vecHullMins[0] *= -1.0;
+	vecHullMins[1] *= -1.0;
+	vecHullMins[2] *= -1.0;
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID,HitOnlyWorld, 0);
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		// This is the point on the actual surface (the hull could have hit space)
+		TR_GetEndPosition(vecorigin, trace);	
+	}
+	vecorigin[0] = originalPostionTrace[0];
+	vecorigin[1] = originalPostionTrace[1];
+
+	float VecCalc = (vecorigin[2] - startPostionTrace[2]);
+	if(VecCalc > (StepHeight - (vecHull[2] + 2.0)) || VecCalc > (StepHeight - (vecHull[2] + 2.0)) ) //This means it was inside something, in this case, we take the normal non traced position.
+	{
+		vecorigin[2] = originalPostionTrace[2];
+	}
+
+	delete trace;
+	//if it doesnt hit anything, then it just does buisness as usual
+}
+
 static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location[3])
 {
 	float Boom_Time = 5.0;
 
-	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Location);
+	Schwertkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Location);
 
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
 	if(npc.Anger)
@@ -1423,7 +1471,7 @@ static bool Schwert_Teleport(int iNPC, float vecTarget[3], float Min_Range)
 			
 			for(int help=1 ; help<=8 ; help++)
 			{	
-				Schwert_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+				Schwert_Teleport_Effect("drg_manmelter_trail_blue", effect_duration, start_offset, end_offset);
 				
 				start_offset[2] += 12.5;
 				end_offset[2] += 12.5;
@@ -1883,6 +1931,7 @@ static void Internal_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	int ally = EntRefToEntIndex(i_ally_index);
+	b_schwert_ded = true;
 	if(IsValidEntity(ally))
 	{
 		Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
@@ -1897,15 +1946,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{
-			switch(GetRandomInt(1,2))	//warp
+			switch(GetRandomInt(1,3))	//warp
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, Guess I'll handle this alone");
+					CPrintToChatAll("{aqua}Stella{snow}: Hmph, Guess I'll handle this alone");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
+					CPrintToChatAll("{aqua}Stella{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO,{crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
 				}
 			}
 		}
@@ -1956,6 +2009,26 @@ static void Internal_NPCDeath(int entity)
 	}
 		
 }
+static Action Schwert_Timer_Move_Particle(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	float end_point[3];
+	end_point[0] = pack.ReadCell();
+	end_point[1] = pack.ReadCell();
+	end_point[2] = pack.ReadCell();
+	float duration = pack.ReadCell();
+	
+	if(IsValidEntity(entity) && entity > MaxClients)
+	{
+		TeleportEntity(entity, end_point, NULL_VECTOR, NULL_VECTOR);
+		if (duration > 0.0)
+		{
+			CreateTimer(duration, Timer_RemoveEntity, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	return Plugin_Continue;
+}
 static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float start_point[3], float end_point[3])
 {
 	int part1 = CreateEntityByName("info_particle_system");
@@ -1969,7 +2042,7 @@ static void Schwert_Teleport_Effect(char type[255], float duration = 0.0, float 
 		AcceptEntityInput(part1, "Start");
 		
 		DataPack pack;
-		CreateDataTimer(0.1, Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
+		CreateDataTimer(0.1, Schwert_Timer_Move_Particle, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(part1));
 		pack.WriteCell(end_point[0]);
 		pack.WriteCell(end_point[1]);

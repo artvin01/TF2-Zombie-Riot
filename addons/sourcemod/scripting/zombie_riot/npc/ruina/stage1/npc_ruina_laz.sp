@@ -36,19 +36,25 @@ static const char g_RangedReloadSound[][] = {
 
 void Laz_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Laz");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_laz");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "demo"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/demo.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Laz");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_laz");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -139,7 +145,7 @@ methodmap Laz < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 285.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -166,6 +172,8 @@ methodmap Laz < CClotBody
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
+
+		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
 		
@@ -233,11 +241,21 @@ static void ClotThink(int iNPC)
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 		if(iPitch < 0)
 			return;		
+
+		
 						
 		//Body pitch
 		float v[3], ang[3];
 		float SelfVec[3]; WorldSpaceCenter(npc.index, SelfVec);
-		SubtractVectors(SelfVec, vecTarget, v); 
+		if(!IsValidEntity(EntRefToEntIndex(i_laz_entity[npc.index])))
+			SubtractVectors(SelfVec, vecTarget, v); 
+		else
+		{
+			float Proj_Vec[3];
+			GetEntPropVector(EntRefToEntIndex(i_laz_entity[npc.index]), Prop_Data, "m_vecAbsOrigin", Proj_Vec);
+			SubtractVectors(SelfVec, Proj_Vec, v); 
+			npc.FaceTowards(Proj_Vec, 20000.0);
+		}
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 								
@@ -279,66 +297,119 @@ static void ClotThink(int iNPC)
 			npc.m_bAllowBackWalking=false;
 		}
 
-		//note: redo this so its basically not a copy of the pistoleers from expidonsa...
 		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
 		{
-			if(flDistanceToTarget<(500.0*500.0))
+			if(flDistanceToTarget<(750.0*750.0))
 			{
-				float Charge_Time = 2.5;	//how long it takes to fire the laser
-				npc.m_flAttackHappens = Charge_Time + 1.0 + GameTime;	//show the laser visuals
-				npc.m_flNextRangedBarrage_Spam = GameTime + Charge_Time-1.0;	//for how long can the npc turn until it stops turning towards the target
-				npc.m_flNextMeleeAttack = GameTime + Charge_Time;
-				npc.m_flNextRangedAttack = GameTime + 10.0;
-				npc.PlayRangedReloadSound();
+				int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+				
+				if(!IsValidEntity(Laser_End))
+				{
+					Ruina_Projectiles Projectile;
+
+					float Laser_Time = 5.0;
+					float Reload_Time = 13.5;
+
+					float projectile_speed = 500.0;
+					float target_vec[3];
+					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+
+					Projectile.iNPC = npc.index;
+					Projectile.Start_Loc = SelfVec;
+					float Ang[3];
+					MakeVectorFromPoints(SelfVec, target_vec, Ang);
+					GetVectorAngles(Ang, Ang);
+					Projectile.Angles = Ang;
+					Projectile.speed = projectile_speed;
+					Projectile.radius = 0.0;
+					Projectile.damage = 100.0;
+					Projectile.bonus_dmg = 200.0;
+					Projectile.Time = Laser_Time;
+					Projectile.visible = false;
+					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
+
+					if(IsValidEntity(Proj))
+					{
+						npc.PlayMeleeSound();
+						npc.m_flNextRangedAttack = GameTime + Reload_Time;
+
+						npc.m_flAttackHappens = GameTime + Laser_Time;
+
+						i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
+						//CPrintToChatAll("Laser end created and is valid");
+
+						Initiate_HomingProjectile(Proj,
+						npc.index,
+						75.0,			// float lockonAngleMax,
+						7.5,			// float homingaSec,
+						true,			// bool LockOnlyOnce,
+						true,			// bool changeAngles,
+						Ang);			// float AnglesInitiate[3]);
+
+						float 	f_start = 1.5,
+								f_end = 0.75,
+								amp = 0.25;
+						
+						int r = 200,
+							g = 200,
+							b = 200;
+
+						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
+					}
+				}
 			}
 		}
 		if(npc.m_flAttackHappens > GameTime)	//attack is active
 		{
-			int color[4];
-			float time=0.1;
-			float size[2];
-			float amp = 0.1;
-			color = {175, 175, 175, 255};
-			size[0] = 7.5; size[1] = 5.0;
 
-			if(npc.m_flNextRangedBarrage_Spam > GameTime)	//turn towards enemy
+			int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+
+			if(!IsValidEntity(Laser_End))
 			{
-				npc.FaceTowards(vecTarget, 20000.0);
-			}
-			else
-			{
-				color = {100, 255, 100, 255};
-				size[0] = 7.5; size[1] = 5.0;
-				amp = 1.0;
-				time = 0.2;
-				npc.FaceTowards(vecTarget, 175.0);
+				//CPrintToChatAll("Delete laser end due to invalid");
+				npc.m_flAttackHappens = 0.0;
+				i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
+
+				npc.PlayRangedReloadSound();
+
+				return;
 			}
 
+			float Proj_Vec[3];
+			GetEntPropVector(Laser_End, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
 			
 
-			bool attack=false;
-			if(npc.m_flNextMeleeAttack < GameTime)	//attack!
-			{
-				npc.m_flAttackHappens = 0.0;
-				color = {127, 255, 255, 255};
-				time = 0.5;
-				size[0] = 15.0; size[1] = 7.5;
-				attack=true;
-				amp = 5.0;
-				npc.PlayMeleeSound();
-				
-			}
-			float EndLoc[3];
-			EndLoc = Do_Laz_Laser_Effects(npc.index, color, size, time, 975.0, amp);	//reuse the location since lazy to do another trace.
+			//int color[4];
+			//float time=0.1;
+			//float size[2];
+			//float amp = 0.1;
+			//color = {175, 175, 175, 255};
+			//size[0] = 7.5; size[1] = 5.0;
 
-			if(attack)
-			{
-				float Npc_Loc[3];
-				WorldSpaceCenter(npc.index, Npc_Loc);
-				float dmg = 50.0;
-				float radius = 25.0;
-				Ruina_Laser_Damage_Trace(npc.index, Npc_Loc, EndLoc, radius, dmg, 6.0);
-			}
+			npc.FaceTowards(Proj_Vec, 20000.0);
+				
+			Ruina_Laser_Logic Laser;
+
+			Laser.client = npc.index;
+			Laser.Start_Point = SelfVec;
+			Laser.End_Point = Proj_Vec;
+
+			//float flPos[3], flAng[3]; // original
+			//GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+
+			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
+			//TE_SendToAll();
+
+			float dmg = 7.5;
+			float radius = 15.0;
+
+			Laser.Radius = radius;
+			Laser.Damage = dmg;
+			Laser.Bonus_Damage = dmg*6.0;
+			Laser.damagetype = DMG_PLASMA;
+
+			Laser.Deal_Damage();
 		}
 		else
 		{
@@ -356,6 +427,35 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+static void Func_On_Proj_Touch(int projectile, int other)
+{
+	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+	{
+		owner = 0;
+	}
+	else
+	{
+		Laz npc = view_as<Laz>(owner);
+		npc.m_flAttackHappens = 0.0;
+		npc.PlayRangedReloadSound();
+		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
+	}
+		
+	float ProjectileLoc[3];
+	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	if(IsValidEnemy(owner, other))
+	{
+		float Dmg = fl_ruina_Projectile_dmg[projectile];
+		if(ShouldNpcDealBonusDamage(other))
+			Dmg = fl_ruina_Projectile_bonus_dmg[projectile];
+		
+		SDKHooks_TakeDamage(other, owner, owner, Dmg, DMG_PLASMA, -1, _, ProjectileLoc);
+	}
+
+	Ruina_Remove_Projectile(projectile);
+}
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
@@ -366,7 +466,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -383,6 +483,14 @@ static void NPC_Death(int entity)
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
+	}
+
+	int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
+
+	if(IsValidEntity(Laser_End))
+	{
+		RemoveEntity(Laser_End);
+		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
 	}
 	
 	Ruina_NPCDeath_Override(entity);

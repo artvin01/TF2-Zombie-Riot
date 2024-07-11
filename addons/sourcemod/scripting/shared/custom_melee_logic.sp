@@ -546,10 +546,23 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		TR_GetEndPosition(vecHit, swingTrace);	
 #if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
+		bool DontPlaySound = false;
 		if(target < 1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
+				case WEAPON_CHAINSAW:
+				{
+					DontPlaySound = true;
+					if(target == 0)
+					{
+						EmitSoundChainsaw(client, 0);
+					}
+					else
+					{
+						EmitSoundChainsaw(client, 1);
+					}
+				}
 				case WEAPON_LAPPLAND: //yes, if we miss, then we do other stuff.
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
@@ -579,7 +592,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 #endif
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
-		if(soundIndex > 0)
+		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
 			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])

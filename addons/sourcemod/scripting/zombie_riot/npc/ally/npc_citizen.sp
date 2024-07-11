@@ -1666,6 +1666,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
 
 	Rogue_AllySpawned(npc.index);
+	Waves_AllySpawned(npc.index);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);

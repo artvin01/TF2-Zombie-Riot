@@ -32,5 +32,19 @@
 	{
 		"en"		"Chaos Kahmlstein"
 	}
+	"Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+		"pt"		"Donnerkrieg"
+		"ru"		"Доннеркриг"
+		"nl"		"Donnerkrieg"
+	}
+	"Schwertkrieg"
+	{
+		"en"		"Schwertkrieg"
+		"pt"		"Schwertkrieg"
+		"ru"		"Шверткриг"
+		"nl"		"Schwertkrieg"
+	}
 	
 }

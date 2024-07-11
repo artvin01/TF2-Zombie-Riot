@@ -434,8 +434,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once\nDeals 40%% dmg against raids."
-		"chi"		"弹夹可装4发弹药，同时发射。对boss造成40%%伤害"
+		"en"		"Load 4 bullets and shoot all at once\nDeals 10%% dmg against raids."
 	}
 	
 	"Boomstick Pap 1"
@@ -446,9 +445,7 @@
 	}
 	"Boomstick Pap 3"
 	{
-		"en"		"Increased damage and attackspeed."
-		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度."
+		"en"		"Increased damage and attackspeed, Louder and loads more clips!"
 	}
 	"Boomstick Pap 2"
 	{
@@ -1680,9 +1677,7 @@
 	
 	"Army Belt Desc"
 	{
-		"en"	"15%% Faster reload but have a 2x longer weapon switch"
-		"ru"	"На 15%% быстрая перезарядка, но в два раза более длительная смена оружия"
-		"chi"   "增加15%%的装填速度，但武器切换时间延长了2倍"
+		"en"	"5%% Faster reload but have a 2x longer weapon switch"
 	}
 	
 	"Headshot Affinity Desc"
@@ -2372,6 +2367,11 @@
 		"en"	"You can now fire a constant stream of magic arrows!\nAlso more damage and arrows fired per multi shot."
 		"chi"	"你的弓箭现在可以连发魔法箭矢！\n提高伤害和多发数量。"
 	}
+	"quincy pap arrow hyper"
+	{
+		"en"	"After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
+
+	}
 	"Taurus Judge Desc 1"
 	{
 		"en"	"This weapon comes with remarkable strength and deploys 30%% faster!\nUnfortunately, it only reloads when not equipped and fires slowly.\nGuranteed Gibs on kill if possible."
@@ -2532,7 +2532,7 @@
 	}
 	"Neuv pap5"
 	{
-		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all he knows..."
+		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all that she knows..."
 		"chi"	"终于，你看到了女巫的样貌。\n貌似，''Donnerkrieg''的技巧也是从她这学的..."
 	}
 	"Skill Point Info"
@@ -2781,7 +2781,7 @@
 	}
 	"Gravton Wand desc0"
 	{
-		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed.\nCasting a spell too close to the same position heavily weakens the spell."
 		"chi"	"强力的AOE魔法，M1召唤出一个带有缓慢延迟的引力爆炸。"
 	}
 	"Gravton Wand desc1"
@@ -3091,5 +3091,17 @@
 	"Merchant Pap 5 Desc"
 	{
 		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
+	}
+	"Chainsaw Pap 0"
+	{
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
+	}
+	"Chainsaw Pap 1"
+	{
+		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
+	}
+	"Chainsaw Pap 2"
+	{
+		"en"	"More damage, attacks faster, extend bleed duration."
 	}
 }

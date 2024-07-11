@@ -718,7 +718,10 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	}
 #if !defined RPG
 	if(b_npcspawnprotection[victim])
-		damage *= 0.25;
+		damage *= 0.05;
+
+	if(b_npcspawnprotection[attacker])
+		damage *= 1.5;
 #endif
 		
 #if defined ZR
@@ -821,6 +824,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_FANTASY_BLADE:
 		{
 			Npc_OnTakeDamage_Fantasy_Blade(attacker, damagetype);
+		}
+		case WEAPON_CHAINSAW:
+		{
+			Npc_OnTakeDamage_Chainsaw(attacker, damagetype);
 		}
 		case WEAPON_SPEEDFISTS:
 		{
@@ -1618,12 +1625,13 @@ static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflic
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
-	}
-	
+	}	
+#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime) //This is a resistance buff, but it works differently, so let it stay here for now.
 	{
 		damage -= basedamage * f_Ruina_Defense_Buff_Amt[victim];	//x% dmg resist
 	}
+#endif
 }
 #endif	// Non-RTS
 
@@ -1834,6 +1842,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "➤%s", Debuff_Adder_right);
 	}
+#if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "♜%s", Debuff_Adder_right);
@@ -1846,6 +1855,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "♟%s", Debuff_Adder_right);
 	}
+#endif
 #if defined ZR
 	if(victim <= MaxClients)
 	{
@@ -1887,4 +1897,19 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		}
 	}
 #endif
+
+	//Display Modifiers here.
+	char BufferAdd[6];
+	ZRModifs_CharBuffToAdd(BufferAdd);
+	if(BufferAdd[0])
+	{
+		if(GetTeam(victim) != TFTeam_Red)
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_right);
+		}
+		else
+		{
+			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
+		}
+	}
 }

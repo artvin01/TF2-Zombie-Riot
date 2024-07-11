@@ -53,7 +53,19 @@ static char g_TeleportSounds[][] = {
 
 void Magia_OnMapStart_NPC()
 {
-
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Magia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -64,13 +76,6 @@ void Magia_OnMapStart_NPC()
 	PrecacheSoundArray(g_TeleportSounds);
 
 	PrecacheModel("models/player/medic.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Magia");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -217,6 +222,8 @@ methodmap Magia < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 				
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -224,6 +231,9 @@ methodmap Magia < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
+
+		Ruina_Clean_Particles(npc.index);
+
 		Magia_Create_Hand_Crest(npc.index);
 		
 		return npc;
@@ -271,11 +281,10 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>750.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
-		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
@@ -338,7 +347,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+1.0;
+					npc.m_flNextMeleeAttack = GameTime+2.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -374,11 +383,11 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static int i_particle[MAXENTITIES][11];
-static int i_laser[MAXENTITIES][8];
-
 static void Magia_Create_Hand_Crest(int client)
 {
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(client, "effect_hand_r", flPos, flAng);
@@ -432,49 +441,34 @@ static void Magia_Create_Hand_Crest(int client)
 	SetParent(client, particle_0, "effect_hand_r",_);
 
 	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
 	
-	/*i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
-	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
+	/*i_laser_ref_id[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_2_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_4_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_5_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6, 255, 0, 0, f_start, f_end, amp, LASERBEAM));
+	i_laser_ref_id[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_3_1, particle_6_1, 255, 0, 0, f_start, f_end, amp, LASERBEAM));*/
 	
 	
-	i_particle[client][0] = EntIndexToEntRef(particle_0);
-	i_particle[client][1] = EntIndexToEntRef(particle_1);
-	i_particle[client][2] = EntIndexToEntRef(particle_2);
-	i_particle[client][3] = EntIndexToEntRef(particle_4);
-	i_particle[client][4] = EntIndexToEntRef(particle_4_1);
-	i_particle[client][5] = EntIndexToEntRef(particle_5);
-	i_particle[client][6] = EntIndexToEntRef(particle_5_1);
-	i_particle[client][7] = EntIndexToEntRef(particle_6);
-	i_particle[client][8] = EntIndexToEntRef(particle_6_1);
+	i_particle_ref_id[client][0] = EntIndexToEntRef(particle_0);
+	i_particle_ref_id[client][1] = EntIndexToEntRef(particle_1);
+	i_particle_ref_id[client][2] = EntIndexToEntRef(particle_2);
+	i_particle_ref_id[client][3] = EntIndexToEntRef(particle_4);
+	i_particle_ref_id[client][4] = EntIndexToEntRef(particle_4_1);
+	i_particle_ref_id[client][5] = EntIndexToEntRef(particle_5);
+	i_particle_ref_id[client][6] = EntIndexToEntRef(particle_5_1);
+	i_particle_ref_id[client][7] = EntIndexToEntRef(particle_6);
+	i_particle_ref_id[client][8] = EntIndexToEntRef(particle_6_1);
 	
-}
-static void Delete_Hand_Crest(int client)
-{
-	for(int laser=0 ; laser<4 ; laser++)
-	{
-		int entity = EntRefToEntIndex(i_laser[client][laser]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-	for(int particle=0 ; particle < 9 ; particle++)
-	{
-		int entity = EntRefToEntIndex(i_particle[client][particle]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
 }
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -486,7 +480,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -505,9 +499,9 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	Ruina_NPCDeath_Override(entity);
+	Ruina_NPCDeath_Override(npc.index);
 	
-	Delete_Hand_Crest(entity);
+	Ruina_Clean_Particles(npc.index);
 
 		
 	if(IsValidEntity(npc.m_iWearable2))

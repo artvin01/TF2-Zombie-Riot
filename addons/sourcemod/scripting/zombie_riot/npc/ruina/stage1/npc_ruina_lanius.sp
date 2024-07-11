@@ -53,6 +53,19 @@ static char g_TeleportSounds[][] = {
 
 void Lanius_OnMapStart_NPC()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Lanius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lanius");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -62,13 +75,6 @@ void Lanius_OnMapStart_NPC()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/scout.mdl");
-
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Lanius");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lanius");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -187,7 +193,7 @@ methodmap Lanius < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -273,10 +279,10 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>750.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
+		fl_ruina_battery_timer[npc.index] = GameTime + 1.5;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
@@ -300,7 +306,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
-				npc.m_flNextTeleport = GameTime + 30.0;
+				npc.m_flNextTeleport = GameTime + 45.0;
 				float Tele_Check = GetVectorDistance(VecSelfNpc, vPredictedPos);
 					
 					
@@ -373,7 +379,7 @@ static void ClotThink(int iNPC)
 
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 25);
 }
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -386,7 +392,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
