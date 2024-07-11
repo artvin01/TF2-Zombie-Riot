@@ -1532,23 +1532,6 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
-	/*
-	stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
-float spawnLoc[3] = {0.0,0.0,0.0},
-float explosionRadius = EXPLOSION_RADIUS,
-float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
-float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
-bool FromBlueNpc = false,
-int maxtargetshit = 10,
-bool ignite = false,
-float dmg_against_entity_multiplier = 3.0,
-Function FunctionToCallOnHit = INVALID_FUNCTION,
-Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = 0)
-	*/
 
 	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _, Radius, _, _, true, _, _, 2.0);
 

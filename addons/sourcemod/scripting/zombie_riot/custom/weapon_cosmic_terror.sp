@@ -867,7 +867,7 @@ public void Cosmic_Terror_Do_Dmg(int client)
 		float dmg = Cosmic_DMG[client];
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-		Explode_Logic_Custom(dmg, client, client, -1, Cosmic_BeamLoc[client], Cosmic_Radius[client]);
+		Explode_Logic_Custom(dmg, client, client, -1, Cosmic_BeamLoc[client], Cosmic_Radius[client], _,_,_, 4);
 		FinishLagCompensation_Base_boss();
 		Cosmic_Dmg_Throttle[client] = GetGameTime()+0.1;
 	}
