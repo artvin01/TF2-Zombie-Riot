@@ -3673,7 +3673,6 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 		{	
 			case 57, 131, 133, 231, 405, 406, 444, 608, 642, 1099, 1144:
 			{
-				PrintToChatAll("Oh no!!!");
 				if(!item)
 					return Plugin_Stop;
 				
@@ -3685,7 +3684,7 @@ public Action TF2Items_OnGiveNamedItem(int client, char[] classname, int index, 
 	}
 	else
 	{
-		//return Plugin_Stop;
+		return Plugin_Stop;
 	}
 #endif
 	return Plugin_Continue;

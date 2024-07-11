@@ -455,10 +455,7 @@ static int CreateViewmodel(int client, int modelAnims, int modelOverride, int we
 	
 	SetEntProp(wearable, Prop_Send, "m_nModelIndex", modelAnims);	// After DispatchSpawn, otherwise CEconItemView overrides it
 	
-	for(int i; i < 4; i++)
-	{
-		SetEntProp(wearable, Prop_Send, "m_nModelIndexOverrides", modelOverride, _, i);
-	}
+	SetEntProp(wearable, Prop_Data, "m_nModelIndexOverrides", modelOverride);
 
 	SetVariantString("!activator");
 	AcceptEntityInput(wearable, "SetParent", GetEntPropEnt(client, Prop_Send, "m_hViewModel"));
