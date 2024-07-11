@@ -81,6 +81,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -162,6 +163,7 @@ enum struct ItemInfo
 		
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum("weapon_vmt_setting", -1));
 		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum("weapon_bodygroup", -1));
+		this.Weapon_FakeIndex	= view_as<int>(kv.GetNum("weapon_fakeindex", -1));
 		this.WeaponSizeOverride			= kv.GetFloat("weapon_custom_size", 1.0);
 		this.ThirdpersonAnimModif			= kv.GetFloat("modif_attackspeed_anim", 1.0);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat("weapon_custom_size_viewmodel", 1.0);
@@ -1480,6 +1482,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;

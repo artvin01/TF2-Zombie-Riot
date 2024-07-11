@@ -454,7 +454,7 @@ static int CreateViewmodel(int client, int modelIndex, int weapon, bool copy = f
 
 static void ImportSkinAttribs(int wearable, int weapon)
 {
-	int index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
+	int index = i_WeaponFakeIndex[weapon] > 0 ? i_WeaponFakeIndex[weapon] : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));

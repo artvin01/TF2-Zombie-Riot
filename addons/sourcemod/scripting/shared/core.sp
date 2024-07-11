@@ -790,6 +790,7 @@ int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
 int i_WeaponVMTExtraSetting[MAXENTITIES];
 int i_WeaponBodygroup[MAXENTITIES];
+int i_WeaponFakeIndex[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
@@ -2732,6 +2733,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponModelIndexOverride[entity] = 0;
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
+		i_WeaponFakeIndex[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_EnfeebleEffect[entity] = 0.0;
 		f_LeeMinorEffect[entity] = 0.0;
