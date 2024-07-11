@@ -4789,7 +4789,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		TF2Attrib_SetByDefIndex(ViewmodelPlayerModel, 319, BANNER_DURATION_FIX_FLOAT);
 		//do not save this.
 		i_StickyAccessoryLogicItem[client] = EntIndexToEntRef(ViewmodelPlayerModel);
-		PrintToChatAll("ViewmodelPlayerModel: %d", ViewmodelPlayerModel);
 	}
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
