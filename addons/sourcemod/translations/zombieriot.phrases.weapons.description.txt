@@ -266,9 +266,7 @@
 	}
 	"Deagle Pap 3"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n3 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	
 	"Flamethrower Pap 1"
