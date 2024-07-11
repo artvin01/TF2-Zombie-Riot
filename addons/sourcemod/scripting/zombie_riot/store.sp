@@ -4606,7 +4606,7 @@ void Store_ApplyAttribs(int client)
 		int ref = EntIndexToEntRef(entity);
 		if(ref == i_Viewmodel_PlayerModel[client] ||
 		   ref == WeaponRef_viewmodel[client] ||
-		   ref == i_WeaponModelIndexOverride[client])
+		   ref == i_Worldmodel_WeaponModel[client])
 			continue;
 		
 		Attributes_RemoveAll(entity);
@@ -4626,7 +4626,7 @@ void Store_ApplyAttribs(int client)
 			int ref = EntIndexToEntRef(entity);
 			if(ref == i_Viewmodel_PlayerModel[client] ||
 			   ref == WeaponRef_viewmodel[client] ||
-			   ref == i_WeaponModelIndexOverride[client])
+			   ref == i_Worldmodel_WeaponModel[client])
 				continue;
 			
 			//Attributes_RemoveAll(entity);
