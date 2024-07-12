@@ -17,6 +17,10 @@ void Flametail_RoundStart()
 	KaziBuffed = false;
 }
 
+bool IsWeaponKazimierz(int weapon)
+{
+	return (i_WeaponArchetype[weapon] == 23 || i_CustomWeaponEquipLogic[weapon] == WEAPON_NEARL);
+}
 bool FlameTail_Global_Buff()
 {
 	return KaziBuffed;
@@ -189,7 +193,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 		if(damagetype & DMG_CLUB)
 		{
 			int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-			if(weapon != -1 && i_WeaponArchetype[weapon] == 23)
+			if(weapon != -1 && IsWeaponKazimierz(weapon))
 			{
 				bool found;
 

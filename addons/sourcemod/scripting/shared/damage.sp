@@ -1915,7 +1915,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			{
 				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
 			}
-			if(FlameTail_Global_Buff() && i_WeaponArchetype[Victim_weapon] == 23)
+			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
 				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
 			}

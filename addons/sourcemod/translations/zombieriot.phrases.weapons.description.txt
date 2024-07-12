@@ -1793,9 +1793,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration''"
-		"ru"	"M2 способность меняется.\nПоместите гигантский меч перед собой, нанося урон.\nОглушает всех врагов в радиусе действия.\nВы получаете крупные усиления.\nУдар по врагам фокусирующим мечом, даёт 2x урона.\nАрхетип меняется на «Аберрация»"
-		"chi"	"技能更改：\n在地面上插入一把巨剑，造成伤害。\n范围内所有敌人被眩晕，你获得大量buff。\n攻击巨剑的敌人受到二倍伤害。\n类型更为''另类''"
+		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration'' AND ''Kazimierz''.\nSilvester must have been there..."
 	}
 
 	
