@@ -309,15 +309,17 @@ static char g_SSBVictorySpeech_Captions[][] = {
 	"When they get to the front of that queue, I have to {yellow}judge them personally{default}. That means I have to read their entire life story. {red}It's a lot of paperwork!{default}",
 	//"Dealing with just one of you {olive}mortals{default}can take up to an hour, sometimes even longer!",
 	"Do you have {crimson}ANY IDEA{default} how much overtime I have to clock in for you people every time there's a {orange}war{default}, or an {red}apocalyptic event{default} like this?",
-	"I haven't had so much as a {orange}single minute{default} of free time since those {red}bastard cat people{default} let their silly little infection breach containment.",
+	"I haven't had so much as a {orange}single minute{default} of free time since those {red}bastard cat people{default} let their silly little infection breach containment, and that's not even mentioning all of the trouble caused by those {vintage}disgusting fish people{default}.",
+	"Don't even get me started on that {crimson}ABSOLUTE BASTARD KAHMLSTEIN{default}... It's just been headache after headache for me down there, dealing with all of this.",
+	"I used to think the {green}Ruanians{default} and their magic were proof that you mortals weren't ALL bad, but even THEY messed up by somehow managing to build {haunted}a robot that can be infected by a disease{default}... Like, WHAT? {red}HOW DO YOU MESS UP THAT BADLY?{default}",
 	"So I thought, {haunted}''hey! If there are no more mortals, there won't be any mortals that I need to judge!''{default} Brilliant idea, right? At least, I thought so.",
 	"...But fine, I'll admit it: Maybe trying to {red}wipe out all of humanity{default} wasn't the {yellow}best{default} way to get some relief from my day job.",
 	//"You people seem {green}more than capable{default}. I guess I'll just go back to my office and let you all put a stop to this zombie ordeal on your own.",
 	"...",
-	"Right, I guess you're probably {yellow}expecting something{default} for all of that. And I suppose I probably should give you something for the trouble I caused...",
+	"Right, I guess you're probably {yellow}expecting something{default} for all of that. And I suppose I probably should give you something for your trouble...",
 	"{green}Here. {default}Call this number if you ever need help, and I'll {teal}send up some of my guys to help.{default}",
 	"You'd better put a stop to this infection, though. After all, if I see you in my queue before this zombie apocalypse is over...",
-	"{crimson}You won't like your judgment."
+	"{crimson}You're going to have a very bad time in the afterlife."
 };
 
 public void SupremeSpookmasterBones_OnMapStart_NPC()
@@ -628,30 +630,43 @@ float Mortis_Falloff_Radius[4] = { 0.5, 0.5, 0.5, 0.5 };			//Falloff based on ra
 float Mortis_Falloff_MultiHit[4] = { 1.0, 1.0, 1.0, 1.0 };			//Amount to multiply damage dealt for each target hit.
 float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity applied to each target hit.
 
-//TODO:
+//ULTIMATE ABILITY - SUPREME SLAYER: A supercharged special stance in which SSB begins to levitate. During this, his movement speed and damage are increased, and his cooldowns
+//are decreased. Spooky Specials are blocked while this is active. This ability is permanently activated if the mercs run out of time, and can also be temporarily activated upon
+//reaching a certain health threshold.
+float Slayer_Duration[4] = { 10.0, 15.0, 20.0, 25.0 };			//Duration (ignored if triggered by mercs running out of time).
+float Slayer_SpeedMult[4] = { 1.1, 1.1, 1.15, 1.2 };			//Movement speed multiplier.
+float Slayer_DMGMult[4] = { 2.0, 2.0, 2.0, 2.0 };				//Damage multiplier.
+float Slayer_CDR[4]	= { 1.5, 2.0, 3.0, 4.0 };					//Amount to divide Spell Card cooldowns while active.
+float Slayer_YouAreAllGoingToDie[4] = { 3.0, 3.0, 3.0, 3.0 };	//Amount to multiply all Supreme Slayer stats if it was triggered by the mercs running out of time.
+
+//TO-DO:
+//	- The following abilities still need their base functionality coded:
+//		- Hell is Here
+//		- MEGA-MORTIS
+//	- The following abilities need animations:
+//		- Hell is Here (Wind-Up, Intro Delay Loop, Active Loop)
+//		- MEGA-MORTIS (Wind-Up, Intro Delay Loop, Swing)
+//		- Death Magnetic (Wind-Up, Intro Delay, Activation, attach particle to hand while charging and have player tether beams emit from that hand)
+//		- Necrotic Bombardment, Ring of Tartarus (Finger Snap Gesture, activation beams should spawn from the hand)
+//		- Necrotic Cataclysm (Knockback Pose)
+//		- Spin 2 Win (Reworked Intro Sequence, Hammer Spawn VFX)
 //	- All specials and spells.
 //		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
 //		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
 //		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
-//	- Finalize the VFX/SFX on the following abilities:
-//		- Death Magnetic: Needs wind-up, charge loop, and cast animations. Attach particle to hand while charging and have player tether beams emit from that hand.
-//		- Necrotic Bombardment AND Ring of Tartarus: Add a gesture sequence where SSB raises his hand and snaps his fingers. The timing of these abilities should be synced to the moment he snaps his fingers, and the indicator beams should spawn from that hand as well.
-//		- WITNESS THE SKULL: The skull needs an ambient looping sound.
-//		- Necrotic Blast: Add a pose sequence to be used while he's in the air due to self-knockback.
-//		- Spin 2 Win: Rework intro animation, add VFX/SFX for the moment the hammer appears.
-//		- Death Magnetic, Necrotic Barrage, Ring of Tartarus: Replace tether beam flashes with control point particles.
-//	- Generic melee attack. On wave phases 0 and 1, he should just slap people, but on wave phases 2+ he should try to smash them with his hammer. This is obviously far stronger, which makes him way harder to just face-tank, but has a longer wind-up and more end lag.
-//		- ...but does he really NEED a melee attack? Maybe scrap this.
+//	- Make Supreme Slayer stance:
+//		- Entered after reaching 33% HP on wave phase 3. Increases movement speed by 66%, triples damage output, and reduces cooldowns by 66%.
+//		- Spooky Specials are blocked during this, but he spams the hell out of Spell Cards (not including Cursed Cross, Death Magnetic, or Ring of Tartarus, which are also blocked).
+//		- Periodically summons clones which fire miniature Necrotic Cataclysm blasts at the nearest player.
+//		- Lasts for 30 seconds.
+//		- Entered permanently with mega-buffed stats when the mercenaries run out of time on any wave phase.
+
+//NOTES (NOT TO-DO)
 //	- Note: intended Spooky Special unlock progression is as follows:
 //		- Wave Phase 0: Necrotic Blast, Master of the Damned
 //		- Wave Phase 1: Gains access to Spin 2 Win and Soul Harvester.
 //		- Wave Phase 2: Gains access to Hell is Here.
 //		- Wave Phase 3: Gains access to MEGA MORTIS.
-//	- Make Supreme Slayer stance:
-//		- Entered after reaching 33% HP on wave phase 3. Increases movement speed by 66%, triples damage output, and reduces cooldowns by 66%.
-//		- Melee attack is replaced with a short-ranged necrotic bolt, which has a very low cooldown and deals enormous damage.
-//		- Lasts for 30 seconds.
-//		- Entered permanently with mega-buffed stats when the mercenaries run out of time on any wave phase.
 //	- DO NOT FORGET:
 //		- Summoner's Stance, Soul Harvester, and Hell is Here all grant resistance while active.
 //		- When the last merc dies, he needs to play his victory sound and mock RED team in chat.
