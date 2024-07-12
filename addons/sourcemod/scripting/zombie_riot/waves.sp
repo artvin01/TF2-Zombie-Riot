@@ -664,6 +664,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
+	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -1009,6 +1010,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 				PrintHintTextToAll("Vote for the top %d options!", list.Length);
+				PrintChatTextToAll("Vote for the top %d options!", list.Length);
 			}
 			else
 			{
@@ -1073,6 +1075,9 @@ public Action Waves_EndVote(Handle timer, float time)
 						VoteEndTime = GetGameTime() + 30.0;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						PrintHintTextToAll("Vote for the wave modifier!");
+						PrintChatTextToAll("Vote for the wave modifier!");
 					}
 					else
 					{
@@ -1084,7 +1089,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				}
 				else
 				{
-					PrintToChatAll("%t: %s", "Set modifier set to", vote.Name);
+					PrintToChatAll("%t: %s", "Modifier set to", vote.Name);
 					
 					if(highest > 0)
 					{
