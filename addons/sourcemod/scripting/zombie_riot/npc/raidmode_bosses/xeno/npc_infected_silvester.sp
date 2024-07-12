@@ -871,14 +871,14 @@ static void Internal_ClotThink(int iNPC)
 				case 2:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me!!");
+						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
 					else
 						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
 				}
 				case 3:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{gold}Silvester{default}: Hang on!!!");
+						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
 					else
 						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
 				}

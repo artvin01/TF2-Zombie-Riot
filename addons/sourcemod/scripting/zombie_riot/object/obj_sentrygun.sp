@@ -41,7 +41,7 @@ methodmap ObjectSentrygun < ObjectGeneric
 		func_NPCThink[npc.index] = ObjectSentrygun_ClotThink;
 		SetRotateByDefaultReturn(npc.index, 180.0);
 		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPost);
-		SDKUnhook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
+		SDKHook(npc.index, SDKHook_ThinkPost, ObjBaseThinkPostSentry);
 
 		return npc;
 	}
