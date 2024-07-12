@@ -39,7 +39,7 @@ void Flametail_Enable(int client, int weapon)
 		{
 			case 0:
 			{
-				WeaponTimer[client] = CreateTimer(3.7, Flametail_Timer1, client, TIMER_REPEAT);
+				WeaponTimer[client] = CreateTimer(3.7 / ResourceRegenMulti, Flametail_Timer1, client, TIMER_REPEAT);
 			}
 			case 1:
 			{
@@ -144,6 +144,7 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 		
 		if(!Waves_InSetup())
 		{
+			cash = RoundFloat(cash * ResourceRegenMulti);
 			CashRecievedNonWave[client] += cash;
 			CashSpent[client] -= cash;
 		}
