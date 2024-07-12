@@ -2085,8 +2085,7 @@
 	}
 	"Preaching Sword Desc"
 	{
-		"en"	"A quick attacking cheap.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
-		"chi"	"灵活及便宜。\n对敌人造成致命伤害会赋予他们''临死''Debuff。\n杀死带有这个效果的敌人会降低1秒冷却。"
+		"en"	"A quick attacking sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
 	}
 	"Preaching Sword Pap 1"
 	{
@@ -3105,5 +3104,29 @@
 	"Chainsaw Pap 2"
 	{
 		"en"	"More damage, attacks faster, extend bleed duration."
+	}
+	"Pinus Knight Desc"
+	{
+		"en"	"Fast attacking melee with increased sell back value."
+	}
+	"Pinus Knight Pap 1"
+	{
+		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
+	}
+	"Pinus Knight Pap 2"
+	{
+		"en"	"Ability now also grants 4 seconds of a 40%% (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
+	}
+	"Pinus Knight Pap 3"
+	{
+		"en"	"Allied Kazimierz weapons gain a 11%% (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60%% (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
+	}
+	"Pinus Knight Pap 4"
+	{
+		"en"	"Ability instead grants 80%% (x0.5 vs Raids) chance to dodge any attack."
+	}
+	"Pinus Knight Pap 5"
+	{
+		"en"	"Decreased ability cooldown and increased ability damage bonus."
 	}
 }

@@ -187,7 +187,8 @@ enum
 	WEAPON_ION_BEAM_PULSE = 107,
 	WEAPON_ION_BEAM_NIGHT = 108,
 	WEAPON_ION_BEAM_FEED  = 109,
-	WEAPON_CHAINSAW  = 110
+	WEAPON_CHAINSAW  = 110,
+	WEAPON_FLAMETAIL = 111
 }
 
 enum
@@ -526,6 +527,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/kit_merchant.sp"
 #include "zombie_riot/custom/weapon_mg42.sp"
 #include "zombie_riot/custom/weapon_chainsaw.sp"
+#include "zombie_riot/custom/weapon_flametail.sp"
 
 void ZR_PluginLoad()
 {
