@@ -5574,6 +5574,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
+		Flametail_Enable(client, entity);
 	}
 
 	return entity;

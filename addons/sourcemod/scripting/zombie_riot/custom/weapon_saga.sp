@@ -154,7 +154,7 @@ public Action Saga_Timer1(Handle timer, int client)
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != INVALID_ENT_REFERENCE)
 		{
-			if(weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
+			if(!Waves_InSetup() && weapon == GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))
 			{
 				int amount = 1;
 				/*
@@ -262,8 +262,11 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		Rogue_OnAbilityUse(weapon);
 		MakePlayerGiveResponseVoice(client, 4); //haha!
 		WeaponCharge[client] -= cost + 1;
-		CashRecievedNonWave[client] += 4;
-		CashSpent[client] -= 4;
+		if(!Waves_InSetup())
+		{
+			CashRecievedNonWave[client] += 4;
+			CashSpent[client] -= 4;
+		}
 		
 		float damage = mastery ? 260.0 : 208.0;	// 400%, 320%
 		damage *= Attributes_Get(weapon, 2, 1.0);
@@ -288,7 +291,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		CreateTimer(0.2, Saga_DelayedExplode, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 
 		int rand = GetURandomInt() % 3;
-		EmitSoundToAll(rand == 0 ? SAGA_ABILITY_1 : (rand == 1 ? SAGA_ABILITY_2 : SAGA_ABILITY_3), client, SNDCHAN_AUTO, 75_,_,0.6);
+		EmitSoundToAll(rand == 0 ? SAGA_ABILITY_1 : (rand == 1 ? SAGA_ABILITY_2 : SAGA_ABILITY_3), client, SNDCHAN_AUTO, 75,_,0.6);
 
 		TriggerTimer(WeaponTimer[client], true);
 	}

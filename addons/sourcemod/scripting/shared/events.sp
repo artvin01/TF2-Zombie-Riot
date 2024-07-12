@@ -66,6 +66,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
+	Flametail_RoundStart();
 #endif
 
 #if defined RPG

@@ -626,6 +626,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_SelfTakeDamage(victim, damage, damagetype);
+		}
 	}
 	return damage;
 }
@@ -919,6 +923,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_RUSTY_RIFLE:
 		{
 			return Rusty_OnNPCDamaged(victim, attacker, damage);
+		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
 		}
 	}
 #endif
