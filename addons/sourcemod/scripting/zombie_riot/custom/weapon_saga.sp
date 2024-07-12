@@ -132,7 +132,7 @@ void Saga_Enable(int client, int weapon)
 		if(value == -1.0)
 		{
 			// Elite 0 Special 1
-			WeaponTimer[client] = CreateTimer(3.5, Saga_Timer1, client, TIMER_REPEAT);
+			WeaponTimer[client] = CreateTimer(3.5 / ResourceRegenMulti, Saga_Timer1, client, TIMER_REPEAT);
 		}
 		else if(value == 0.0)
 		{
@@ -264,8 +264,9 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		WeaponCharge[client] -= cost + 1;
 		if(!Waves_InSetup())
 		{
-			CashRecievedNonWave[client] += 4;
-			CashSpent[client] -= 4;
+			int cash = RoundFloat(4.0 * ResourceRegenMulti);
+			CashRecievedNonWave[client] += cash;
+			CashSpent[client] -= cash;
 		}
 		
 		float damage = mastery ? 260.0 : 208.0;	// 400%, 320%
