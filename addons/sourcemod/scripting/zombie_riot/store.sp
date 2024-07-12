@@ -5494,6 +5494,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
+		for(int i; i<1; i++)
+		{
+			b_WeaponSpecificClassBuff[entity][i] = false;
+		}
 
 		Rogue_GiveItem(client, entity);
 		Waves_GiveItem(entity);

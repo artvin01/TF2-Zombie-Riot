@@ -17,6 +17,11 @@ void Flametail_RoundStart()
 	KaziBuffed = false;
 }
 
+bool FlameTail_Global_Buff()
+{
+	return KaziBuffed;
+}
+
 void Flametail_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_FLAMETAIL)

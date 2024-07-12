@@ -1903,6 +1903,23 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		{
 			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
 		}
+		//0 is gladia
+		if(f_WeaponSpecificClassBuff[victim][0] > GetGameTime())
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "G%s", Debuff_Adder_right);
+		}
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(Victim_weapon))
+		{
+			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
+			}
+			if(FlameTail_Global_Buff() && i_WeaponArchetype[Victim_weapon] == 23)
+			{	
+				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+			}
+		}
 	}
 #endif
 

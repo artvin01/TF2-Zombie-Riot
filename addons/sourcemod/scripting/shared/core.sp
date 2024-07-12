@@ -477,6 +477,8 @@ bool b_npcspawnprotection[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
+float f_WeaponSpecificClassBuff[MAXENTITIES][1];
+bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
@@ -1652,6 +1654,8 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
+	Zero2(f_WeaponSpecificClassBuff);
+	Zero2(b_WeaponSpecificClassBuff);
 
 #if defined ZR || defined RPG
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
