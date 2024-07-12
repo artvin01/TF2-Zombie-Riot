@@ -182,7 +182,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 			DodgeNext[victim] = false;
 		}
 	}
-
+	
 	if(!dodged && KaziBuffed)
 	{
 		// Kazimierz Global Buff
