@@ -636,13 +636,21 @@ float Mortis_KB[4] = { 800.0, 1000.0, 1200.0, 1400.0 };				//Upward velocity app
 float Slayer_Duration[4] = { 10.0, 15.0, 20.0, 25.0 };			//Duration (ignored if triggered by mercs running out of time).
 float Slayer_SpeedMult[4] = { 1.1, 1.1, 1.15, 1.2 };			//Movement speed multiplier.
 float Slayer_DMGMult[4] = { 2.0, 2.0, 2.0, 2.0 };				//Damage multiplier.
-float Slayer_CDR[4]	= { 1.5, 2.0, 3.0, 4.0 };					//Amount to divide Spell Card cooldowns while active.
-float Slayer_YouAreAllGoingToDie[4] = { 3.0, 3.0, 3.0, 3.0 };	//Amount to multiply all Supreme Slayer stats if it was triggered by the mercs running out of time.
+float Slayer_CDR[4]	= { 1.5, 2.0, 2.5, 3.0 };					//Amount to divide Spell Card cooldowns while active.
+float Slayer_CDR_Warp[4] = { 1.0, 1.33, 1.66, 2.0 };			//Amount to divide Wizard Warp's cooldown while active.
+float Slayer_Threshold[4] = { -1.0, -1.0, -1.0, 0.2 };			//Health threshold at which to trigger Supreme Slayer when SSB takes damage. Obviously if this is <= 0.0, Supreme Slayer is not enabled on that specified wave phase.
+float Slayer_YouTookTooLong[4] = { 3.0, 3.0, 3.0, 3.0 };		//Amount to multiply all Supreme Slayer stats if it was triggered by the mercs running out of time.
+
+//SPECIAL MOBILITY - WIZARD WARP: SSB spins and teleports to a random player's location. This is essentially just Messenger's teleport but fancier.
+//Also, because it is delayed, this ability can telefrag, otherwise players might abuse it to get SSB stuck for easy damage.
+float Warp_MinCD[4] = { 10.0, 9.0, 8.0, 8.0 };				//Minimum cooldown.
+float Warp_MaxCD[4] = { 20.0, 18.0, 16.0, 14.0 };			//Maximum cooldown.
+float Warp_Range[4] = { 1000.0, 1200.0, 1400.0, 1600.0 };	//Max distance away the teleport location can be in order to activate this ability.
 
 //TO-DO:
 //	- The following abilities still need their base functionality coded:
-//		- Hell is Here
-//		- MEGA-MORTIS
+//		- Hell is Here (needs animations in order to be coded)
+//		- MEGA-MORTIS (ditto)
 //	- The following abilities need animations:
 //		- Hell is Here (Wind-Up, Intro Delay Loop, Active Loop)
 //		- MEGA-MORTIS (Wind-Up, Intro Delay Loop, Swing)
@@ -650,16 +658,17 @@ float Slayer_YouAreAllGoingToDie[4] = { 3.0, 3.0, 3.0, 3.0 };	//Amount to multip
 //		- Necrotic Bombardment, Ring of Tartarus (Finger Snap Gesture, activation beams should spawn from the hand)
 //		- Necrotic Cataclysm (Knockback Pose)
 //		- Spin 2 Win (Reworked Intro Sequence, Hammer Spawn VFX)
-//	- All specials and spells.
-//		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
-//		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
-//		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
 //	- Make Supreme Slayer stance:
 //		- Entered after reaching 33% HP on wave phase 3. Increases movement speed by 66%, triples damage output, and reduces cooldowns by 66%.
 //		- Spooky Specials are blocked during this, but he spams the hell out of Spell Cards (not including Cursed Cross, Death Magnetic, or Ring of Tartarus, which are also blocked).
 //		- Periodically summons clones which fire miniature Necrotic Cataclysm blasts at the nearest player.
 //		- Lasts for 30 seconds.
 //		- Entered permanently with mega-buffed stats when the mercenaries run out of time on any wave phase.
+//	- Make Wizard Warp.
+//	- Important details:
+//		- Master of the Damned will not be able to be finished until every other Bone Zone NPC is also finished.
+//		- Master of the Damned needs to have scaling on its summons. HP needs to scale with wave count and player count, and the number summoned needs to scale with player count.
+//		- Add an EntityMult variable to ALL damaging abilities, not just explosions.
 
 //NOTES (NOT TO-DO)
 //	- Note: intended Spooky Special unlock progression is as follows:
