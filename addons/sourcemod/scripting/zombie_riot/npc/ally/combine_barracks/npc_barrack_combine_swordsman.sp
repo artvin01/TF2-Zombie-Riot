@@ -207,11 +207,11 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 					if(!npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 1.5;
+						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
 						npc.m_fbRangedSpecialOn = true;
 						npc.PlayRangedAttackSecondarySound();
 					}
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
