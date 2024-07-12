@@ -170,6 +170,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 	
 	if(DodgeNext[victim])
 	{
+		// 100% Melee Dodge (One-Time)
 		if(damagetype & DMG_CLUB)
 		{
 			dodged = true;
@@ -179,9 +180,9 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 
 	if(!dodged && KaziBuffed)
 	{
+		// Kazimierz Global Buff
 		if(damagetype & DMG_CLUB)
 		{
-			// Kazimierz
 			int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 			if(weapon != -1 && i_WeaponArchetype[weapon] == 23)
 			{
@@ -200,6 +201,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 
 				if(found)
 				{
+					// Double Chance for Self
 					float chance = WeaponLevel[victim] > 2 ? 0.22 : 0.11;
 
 					// Chance cut in half during raids
@@ -215,6 +217,7 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype)
 
 	if(!dodged && DodgeFor[victim] && DodgeFor[victim] > GetGameTime())
 	{
+		// Ability Dodge Buff
 		if((damagetype & DMG_CLUB) || WeaponLevel[victim] > 2)
 		{
 			float chance = 0.8;
