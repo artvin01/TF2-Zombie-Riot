@@ -33,8 +33,8 @@ static float Vamp_HealRadius[4] = { 330.0, 350.0, 400.0, 420.0 };	//Max distance
 static float Vamp_HealMultIfHurt[4] = { 0.33, 0.33, 0.33, 0.33 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
-static float Vamp_MaxHeal_Normal[4] = { 4.0, 3.5, 3.0, 2.6 };	//Max heal per tick.
-static float Vamp_MinHeal_Normal[4] = { 1.5, 1.25, 1.1, 1.0 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_MaxHeal_Normal[4] = { 5.0, 4.5, 4.0, 3.25 };	//Max heal per tick.
+static float Vamp_MinHeal_Normal[4] = { 2.5, 2.25, 2.1, 2.0 };	//Minimum healing received per Bloodlust tick.
 static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 10.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
 static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
