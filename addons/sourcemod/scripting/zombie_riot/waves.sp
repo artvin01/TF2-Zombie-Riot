@@ -1009,7 +1009,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 				PrintHintTextToAll("Vote for the top %d options!", list.Length);
-				PrintChatTextToAll("Vote for the top %d options!", list.Length);
+				PrintToChatAll("Vote for the top %d options!", list.Length);
 			}
 			else
 			{
@@ -1076,7 +1076,7 @@ public Action Waves_EndVote(Handle timer, float time)
 						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
 						PrintHintTextToAll("Vote for the wave modifier!");
-						PrintChatTextToAll("Vote for the wave modifier!");
+						PrintToChatAll("Vote for the wave modifier!");
 					}
 					else
 					{
