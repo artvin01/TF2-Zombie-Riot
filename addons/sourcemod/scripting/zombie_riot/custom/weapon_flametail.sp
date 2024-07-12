@@ -150,7 +150,25 @@ public void Weapon_Flametail_M2(int client, int weapon, bool crit, int slot)
 
 		Ability_Apply_Cooldown(client, slot, cooldown);
 		ClientCommand(client, "playgamesound " ... FLAMETAIL_ABILITY);
+		MakeBladeBloddy(client, true, weapon);
+		DataPack pack;
+		CreateDataTimer(4.0, Timer_ExtinguishThings, pack);
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
+}
+
+public Action Timer_ExtinguishThings(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		return Plugin_Stop;
+	}
+	MakeBladeBloddy(client, false, weapon);
+	return Plugin_Stop;
 }
 
 void Flametail_NPCTakeDamage(int attacker, float &damage, int weapon, float damagePosition[3])

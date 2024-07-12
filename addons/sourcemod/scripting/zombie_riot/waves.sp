@@ -889,7 +889,6 @@ void Waves_RoundStart()
 	}
 	else
 	{
-		LogStackTrace("AAAAAAA");
 		delete VotingMods;
 		Waves_SetReadyStatus(1);
 	}

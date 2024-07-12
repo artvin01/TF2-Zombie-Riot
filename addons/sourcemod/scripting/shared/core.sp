@@ -2897,7 +2897,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 #else
 		TeamNumber[entity] = -1;
 #endif
-		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
