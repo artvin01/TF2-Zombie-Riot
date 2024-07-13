@@ -626,6 +626,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_SelfTakeDamage(victim, damage, damagetype);
+		}
 	}
 	return damage;
 }
@@ -656,7 +660,7 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 			}
 			else
 			{
-				if(BarbariansMindNotif[attacker] > GetGameTime())
+				if(BarbariansMindNotif[attacker] < GetGameTime())
 				{
 					SetGlobalTransTarget(attacker);
 					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
@@ -919,6 +923,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_RUSTY_RIFLE:
 		{
 			return Rusty_OnNPCDamaged(victim, attacker, damage);
+		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
 		}
 	}
 #endif
@@ -1894,6 +1902,23 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		if(VillageBuffs & VILLAGE_005) //This has priority.
 		{
 			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
+		}
+		//0 is gladia
+		if(f_WeaponSpecificClassBuff[victim][0] > GetGameTime())
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "G%s", Debuff_Adder_right);
+		}
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(Victim_weapon))
+		{
+			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
+			}
+			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
+			{	
+				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+			}
 		}
 	}
 #endif

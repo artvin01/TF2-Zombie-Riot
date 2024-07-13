@@ -270,7 +270,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_TrueStrength_RAGE");
+		npc.SetActivity("ACT_MUDROCK_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
 		npc.PlayIntroStartSound();
@@ -278,6 +278,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		func_NPCDeath[npc.index] = RaidbossBobTheFirst_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = RaidbossBobTheFirst_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBobTheFirst_ClotThink;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 		
 		if(StrContains(data, "final_item") != -1)
 		{
@@ -366,7 +367,15 @@ methodmap RaidbossBobTheFirst < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_iPullCount = 0;
-		
+
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		SetVariantString("1.0");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "Enable");
+		IgniteTargetEffect(npc.m_iWearable1);
+		npc.b_SwordIgnition = true;
+
 		if(!npc.m_bFakeClone)
 		{
 			strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), "You.");
@@ -387,28 +396,29 @@ methodmap RaidbossBobTheFirst < CClotBody
 			RaidModeScaling = 9999999.99;
 		}
 
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("1.0");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 2);
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		AcceptEntityInput(npc.m_iWearable1, "Disable");
-		npc.b_SwordIgnition = false;
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "?????????????");
 		if(SmittenNpc)
 		{
-			switch(GetRandomInt(0,2))
+			if(CurrentModifOn() == 1)
 			{
-				case 0:
+				CPrintToChatAll("{white}%s{default}: The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.", c_NpcName[npc.index]);
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
 				{
-					CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
-				}
-				case 1:
-				{
-					CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
-				}
-				case 3:
-				{
-					CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+					case 0:
+					{
+						CPrintToChatAll("{white}%s{default}: I'll Handle this one.", c_NpcName[npc.index]);
+					}
+					case 1:
+					{
+						CPrintToChatAll("{white}%s{default}: Schwert and Donner, you did enough, stand back.", c_NpcName[npc.index]);
+					}
+					case 3:
+					{
+						CPrintToChatAll("{white}%s{default}: I know enough about infections and its weaknesses to fend you off.", c_NpcName[npc.index]);
+					}
 				}
 			}
 		}
@@ -555,15 +565,13 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		else
 		{
 
-			CPrintToChatAll("{white}%s{default}: I guess you werent infected, i'm sorry.", c_NpcName[npc.index]);
+			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
 			
-			// Play funny animation intro
-			NPC_StopPathing(npc.index);
-			npc.m_flNextThinkTime = FAR_FUTURE;
-			GivePlayerItems(1);
-			ForcePlayerWin();
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") -1);
+			fl_Extra_Damage[npc.index] = 999.9;
+			fl_Extra_Speed[npc.index] = 5.0;
+			RaidModeTime = FAR_FUTURE;
 		}
-
 	}
 
 	if(npc.m_flNextDelayTime > gameTime)
@@ -819,6 +827,15 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 	if(!npc.m_bFakeClone)
 	{
+		if(healthPoints < 20)
+		{
+			if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+			{
+				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
+				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
+					CPrintToChatAll("{white}%s{default}: Nevermind then, you're one of the affected.", c_NpcName[npc.index]);
+			}
+		}
 		int summon;
 
 		switch(npc.g_TimesSummoned)
@@ -1598,6 +1615,15 @@ Action RaidbossBobTheFirst_OnTakeDamage(int victim, int &attacker, int &inflicto
 	{
 		damage = 0.0;
 		return Plugin_Handled;
+	}
+
+	if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
+	{
+		if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		{	
+			damage = 0.0;
+			return Plugin_Handled;
+		}
 	}
 
 	if(i_RaidGrantExtra[npc.index] == 1 && Waves_GetRound() > 55)

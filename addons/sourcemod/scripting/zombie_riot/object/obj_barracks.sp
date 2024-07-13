@@ -1185,7 +1185,7 @@ void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0
 
 float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false, bool visualise = false)
 {
-	float SupplyRateCalc = 1.0;
+	float SupplyRateCalc = 1.0 * ResourceRegenMulti;
 	if(!gold)
 	{
 		if(visualise)

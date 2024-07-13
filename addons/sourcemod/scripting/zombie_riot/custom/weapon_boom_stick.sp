@@ -88,7 +88,10 @@ public void Weapon_Boom_Stick(int client, int weapon, const char[] classname, bo
 
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
-	Client_Shake(client, 0, 35.0 * Ratio, 20.0 * Ratio, 0.8 * Ratio);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
 public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classname, bool &result)
@@ -133,7 +136,10 @@ public void Weapon_Boom_Stick_Louder(int client, int weapon, const char[] classn
 		SoundRatio = 1.0;
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
-	Client_Shake(client, 0, 45.0 * Ratio, 30.0 * Ratio, 0.8 * Ratio);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
 public void Weapon_Boom_Stick_Loudest(int client, int weapon, const char[] classname, bool &result)
@@ -178,7 +184,10 @@ public void Weapon_Boom_Stick_Loudest(int client, int weapon, const char[] class
 		SoundRatio = 1.0;
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
 	EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
-	Client_Shake(client, 0, 50.0 * Ratio, 35.0 * Ratio, 0.9 * Ratio);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 }
 
 public void Marksman_boom_rifle(int client, int weapon, const char[] classname, bool &result)
@@ -251,7 +260,10 @@ public void Weapon_Boom_Stick_Louder_Laser(int client, int weapon, const char[] 
 	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
 	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
 	EmitSoundToAll(LASER_BOOMSTICK, client, SNDCHAN_STATIC, 80, _, SoundRatio, 75);
-	Client_Shake(client, 0, 45.0 * Ratio, 30.0 * Ratio, 0.8 * Ratio);
+	float ShakeRatio = Ratio;
+	if(ShakeRatio > 1.3)
+		ShakeRatio = 1.3;
+	Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.8 * ShakeRatio);
 	
 	BEAM_Targets_Hit[client] = 0.0;
 	

@@ -664,6 +664,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
+	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -757,6 +758,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
+						if(wave.Count <= 0)
+						{
+							enemy.Does_Not_Scale = true;
+						}
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -889,7 +894,6 @@ void Waves_RoundStart()
 	}
 	else
 	{
-		LogStackTrace("AAAAAAA");
 		delete VotingMods;
 		Waves_SetReadyStatus(1);
 	}
@@ -1009,6 +1013,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 				PrintHintTextToAll("Vote for the top %d options!", list.Length);
+				PrintToChatAll("Vote for the top %d options!", list.Length);
 			}
 			else
 			{
@@ -1073,6 +1078,9 @@ public Action Waves_EndVote(Handle timer, float time)
 						VoteEndTime = GetGameTime() + 30.0;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						PrintHintTextToAll("Vote for the wave modifier!");
+						PrintToChatAll("Vote for the wave modifier!");
 					}
 					else
 					{
@@ -1084,7 +1092,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				}
 				else
 				{
-					PrintToChatAll("%t: %s", "Set modifier set to", vote.Name);
+					PrintToChatAll("%t: %s", "Modifier set to", vote.Name);
 					
 					if(highest > 0)
 					{
@@ -1169,7 +1177,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
-
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
@@ -1180,12 +1187,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
 			DoGlobalMultiScaling();
-			float playercount = float(CountPlayersOnRed());
-					
-			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-			{
-				playercount = 0.70;
-			}
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -1217,17 +1218,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int count = wave.Count;
 			
-			if(wave.EnemyData.Does_Not_Scale == 0)
+			if(wave.EnemyData.Does_Not_Scale == 0 && count > 0)
 			{
 				if(Is_a_boss == 0)
 				{
 					count = RoundToNearest(float(count) * MultiGlobalEnemy);
+					//the scaling on this cant be too high, otherwise rounds drag on forever.
 				}
 				else
 				{
-					float multiBoss = playercount * 0.25;
-					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count) * multiBoss);
+					//if its a boss, then it scales like old logic, beacuse bosses should spawn more as they have more of an impact
+					count = RoundToNearest(float(count) * MultiGlobalEnemyBoss);
 				}
 			}
 			
@@ -1262,13 +1263,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				*/
 				if(ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.34;
+					multiBoss = MultiGlobalHighHealthBoss;
 				}
-
 				if(!ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.2;
-					MultiGlobalAlaxios = multiBoss;
+					multiBoss = MultiGlobalHealthBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -2251,9 +2250,11 @@ void DoGlobalMultiScaling()
 			
 	float multi = Pow(1.08, playercount);
 
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
-	MultiGlobal = multi;
-	MultiGlobalAlaxios = playercount * 0.2;
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	
+	MultiGlobalHealthBoss = playercount * 0.2;
+	MultiGlobalHighHealthBoss = playercount * 0.34;
+	MultiGlobalEnemyBoss = playercount * 0.3;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2268,12 +2269,14 @@ void DoGlobalMultiScaling()
 		MultiGlobalEnemy = multi;
 	}
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
+	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
 	PlayerCountBuffScaling = 4.0 / playercount;
 	if(PlayerCountBuffScaling < 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
 	}
+
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
 	if(PlayerCountResBuffScaling < 0.75)
 	{
@@ -2359,10 +2362,6 @@ static void UpdateMvMStatsFrame()
 			
 			if(round.Waves)
 			{
-				float playercount = float(CountPlayersOnRed());
-				if(playercount == 1.0)
-					playercount = 0.70;
-
 				Wave wave;
 				int length = round.Waves.Length;
 				for(int a = length - 1; a >= 0; a--)
@@ -2380,7 +2379,7 @@ static void UpdateMvMStatsFrame()
 						}
 						else
 						{
-							num = RoundToNearest(float(num) * playercount * 0.25);
+							num = RoundToNearest(float(num) * MultiGlobalEnemyBoss);
 						}
 					}
 					
@@ -2388,9 +2387,9 @@ static void UpdateMvMStatsFrame()
 					{
 						num = 1;
 					}
-					else if(num > 150)
+					else if(num > 250)
 					{
-						num = 150;
+						num = 250;
 					}
 
 					totalcount += num;
@@ -2607,8 +2606,11 @@ static Action ReadyUpHack(Handle timer)
 		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
+
+			// Artvin Request: Start instantly at half players ready up
+			ready *= 2;
 			
-			if(ready == players)
+			if(ready >= players)
 			{
 				set = 12.0;
 			}
