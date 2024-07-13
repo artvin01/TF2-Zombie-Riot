@@ -410,6 +410,9 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 					fl_Quincy_Charge[client] += mana_cost;					
 					Current_Mana[client] -=mana_cost;
 				}
+
+				if(fl_Quincy_Charge[client] > fl_Quincy_Max_Battery[client])
+					fl_Quincy_Charge[client] = fl_Quincy_Max_Battery[client];
 			}
 		}
 		else if(charge_percent>10.0 && !b_lockout[client])
