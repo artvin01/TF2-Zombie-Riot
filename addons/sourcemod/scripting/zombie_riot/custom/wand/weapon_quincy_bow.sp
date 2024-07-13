@@ -199,7 +199,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			return;
 		}
 		int Mana_Cost = 400;
-		if(Current_Mana[client] < Mana_Cost && !CvarInfiniteCash.BoolValue)
+		if(Current_Mana[client] < Mana_Cost)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -207,10 +207,9 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana", Mana_Cost);
 			return;
 		}
-		else
-		{
-			Current_Mana[client] -=Mana_Cost;
-		}
+		Current_Mana[client] -=Mana_Cost;
+		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		Mana_Hud_Delay[client] = 0.0;
 		
 
 		fl_hyper_arrow_charge[client] = 0.0;
