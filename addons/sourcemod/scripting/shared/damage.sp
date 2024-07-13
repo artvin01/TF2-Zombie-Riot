@@ -660,7 +660,7 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 			}
 			else
 			{
-				if(BarbariansMindNotif[attacker] > GetGameTime())
+				if(BarbariansMindNotif[attacker] < GetGameTime())
 				{
 					SetGlobalTransTarget(attacker);
 					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
