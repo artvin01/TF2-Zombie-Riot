@@ -16,6 +16,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_CHARGE	1000.0
 #define QUINCY_BOW_ONHIT_GAIN	50.0
+#define QUINCY_BOW_ONHIT_MULTI_ARROW 10.0
 static float fl_hyper_arrow_charge[MAXTF2PLAYERS];
 
 float fl_trace_target_timeout[MAXTF2PLAYERS+1][MAXENTITIES];
@@ -52,7 +53,6 @@ static const char Zap_Sound[][] = {
 
 static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 
-static int g_rocket_particle;
 static int g_particleImpactTornado;
 
 static int i_combine_laser;
@@ -79,7 +79,6 @@ public void QuincyMapStart()
 	Zero(h_TimerQuincy_BowManagement);
 	Zero(fl_hud_timer);
 	
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 
 	
@@ -199,14 +198,21 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Your Hyper Arrow Is still cooling");
 			return;
 		}
-		if(Current_Mana[client] < 500.0)
+		int Mana_Cost = 400;
+		if(Current_Mana[client] < Mana_Cost && !CvarInfiniteCash.BoolValue)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana", 500.0);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%s", "Not Enough Mana", Mana_Cost);
 			return;
 		}
+		else
+		{
+			Current_Mana[client] -=Mana_Cost;
+		}
+		
+
 		fl_hyper_arrow_charge[client] = 0.0;
 
 		fl_quincy_hyper_arrow_timeout[client] = GetGameTime() + 15.0;
@@ -244,7 +250,9 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		float size = Radius*2.0;
 		TE_SetupBeamPoints(Origin, vecHit, i_combine_laser, i_halo_laser, 0, 66, 1.5, size, size, 1, 0.5, color, 3);
 		TE_SendToAll();
-		TE_SetupBeamPoints(Origin, vecHit, i_combine_laser, i_halo_laser, 0, 66, 2.6, size*0.75, size*0.75, 1, 2.5, color, 33);
+		TE_SetupBeamPoints(Origin, vecHit, i_combine_laser, i_halo_laser, 0, 66, 2.0, size*0.75, size*0.75, 1, 2.5, color, 33);
+		TE_SendToAll();
+		TE_SetupBeamPoints(Origin, vecHit, i_combine_laser, 0, 0, 66, 2.5, size*0.5, size*0.5, 1, 1.0, color, 33);
 		TE_SendToAll();
 
 
@@ -352,7 +360,7 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 		
 		if(fl_hud_timer[client]<GameTime)
 		{
-			fl_hud_timer[client] = GameTime + 0.5;
+			fl_hud_timer[client] = GameTime + 0.5;//0.5;
 			Quincy_Bow_Show_Hud(client, charge_percent, weapon);
 		}
 		if(!attack && !attack2 && b_lockout[client])
@@ -398,10 +406,18 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 				
 				mana_cost = RoundToCeil(mana_cost*fl_Quincy_Charge_Multi[client]);
 				
-				if(Current_Mana[client]>=mana_cost)
+				if(Current_Mana[client]>mana_cost)
 				{
 					fl_Quincy_Charge[client] += mana_cost;					
 					Current_Mana[client] -=mana_cost;
+				}
+				else
+				{
+					float Difference =fl_Quincy_Max_Battery[client] - fl_Quincy_Charge[client];
+
+					fl_Quincy_Charge[client] +=Difference;
+					Current_Mana[client] -=RoundToCeil(Difference/fl_Quincy_Charge_Multi[client]);
+
 				}
 			}
 		}
@@ -530,19 +546,24 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			float damage;
 			damage = 33.0*(charge_percent/100.0);
 			damage *= Attributes_Get(weapon, 410, 1.0);
-			Quincy_Rocket_Launch(client, weapon, endLoc, Vec_offset, fl_speed, damage, "raygun_projectile_blue");
+			float ang_Look[3];
+			MakeVectorFromPoints(UserLoc, endLoc, ang_Look);
+			GetVectorAngles(ang_Look, ang_Look);
+			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, Vec_offset);
 		}
 	}
 }
 
 static int i_quincy_penetration_amt[MAXENTITIES];
-static int i_quincy_penetrated[MAXENTITIES];
+static float fl_quincy_penetrated[MAXENTITIES];
 static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 {
-	
 	int pap = Get_Quincy_Pap(weapon);
 	
-	float speed = 6000.0*(charge_percent/100.0);
+	float speed = 3000.0*(charge_percent/100.0);
+
+	if(speed < 1500.0)
+		speed = 1500.0;
 
 	float damage=1.0;
 
@@ -562,75 +583,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		
 		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
-			float amt = charge_percent / (QUINCY_BOW_MULTI_SHOT_MINIMUM/2.0);
-
-			float Vec_offset[3]; 
-			Get_Fake_Forward_Vec(client, 100.0, Vec_offset);
-			Vec_offset[2] -= 32.5;
-			float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
-			
-			float ang_Look[3];
-			
-			MakeVectorFromPoints(Npc_Vec, Vec_offset, ang_Look);
-			GetVectorAngles(ang_Look, ang_Look);
-			
-			float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
-			
-			switch(pap)
-			{
-				case 2:
-				{
-					if(amt>=3.0)
-						amt=3.0;
-				}
-				case 3:
-				{
-					if(amt>=5.0)
-						amt=5.0;
-				}
-				case 4, 5:
-				{
-					if(amt>=7.0)
-						amt=7.0;
-				}
-				default:
-				{
-					amt=3.0;
-				}
-			}
-
-			ang_Look[1] -= wide_set;
-			float type = (wide_set*2) / RoundToFloor(amt);	//check why its so horribly offset
-			ang_Look[1] -= type/2;
-
-			
-			for(int i=1 ; i<= RoundToFloor(amt) ; i++)
-			{
-		
-				float tempAngles[3], endLoc[3], Direction[3];
-				
-				tempAngles[0] = ang_Look[0];
-				tempAngles[1] = ang_Look[1] + type * i;
-				tempAngles[2] = 0.0;
-									
-				GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-				ScaleVector(Direction, 100.0);
-				AddVectors(Npc_Vec, Direction, endLoc);
-				
-				float multi_arrow_speed = 500.0*(charge_percent/50.0);
-				
-				multi_arrow_speed *= Attributes_Get(weapon, 103, 1.0);
-					
-				multi_arrow_speed *= Attributes_Get(weapon, 104, 1.0);
-					
-				multi_arrow_speed *= Attributes_Get(weapon, 475, 1.0);
-				
-				if(multi_arrow_speed>1000.0)
-					multi_arrow_speed = 1000.0;
-				
-				Quincy_Rocket_Launch(client, weapon, Npc_Vec, endLoc, multi_arrow_speed, multi_arrow_damage, "raygun_projectile_blue");
-			}
-			fl_Quincy_Charge[client] = 0.0;
+			Quincy_Multi_Shot(client, weapon, charge_percent, multi_arrow_damage);
 		}
 	}
 	else
@@ -652,9 +605,17 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		
 	if(speed>3000.0)
 		speed = 3000.0;
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_QUINCY_BOW, weapon, "raygun_projectile_blue");
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
+	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
+
+	if(pap>=1)
+	{	
+		Quincy_Do_Homing(client, projectile, charge_percent);
+	}
+		
+
 	i_quincy_penetration_amt[projectile] = 1;
-	i_quincy_penetrated[projectile] = 0;
+	fl_quincy_penetrated[projectile] = 1.0;
 	if(charge_percent>=50.0)
 	{
 		int pen_amt = RoundToFloor((charge_percent-50.0)/10.0);
@@ -665,11 +626,122 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	
 	fl_Quincy_Charge[client] = 0.0;
 }
-static void Get_Fake_Forward_Vec(int client, float Range, float Vec_Target[3])
+static void Quincy_Do_Homing(int client, int projectile, float charge_percent)
 {
-	float vecAngles[3], Direction[3], Pos[3];
-	GetClientEyeAngles(client, vecAngles);
-	GetClientEyePosition(client, Pos);
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 75.0, false);
+	FinishLagCompensation_Base_boss();
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	delete swingTrace;
+
+	bool LockOnOnce = true;
+	if(IsValidEntity(target))
+		LockOnOnce = false;
+
+	float Homing_Power = 2.0*(charge_percent/100.0);
+
+	float Angles[3];
+	GetClientEyeAngles(client,Angles);
+	Initiate_HomingProjectile(projectile,
+	client,
+		75.0,			// float lockonAngleMax,
+		Homing_Power,				//float homingaSec,
+		LockOnOnce,				// bool LockOnlyOnce,
+		true,				// bool changeAngles,
+		Angles,
+		target);			// float AnglesInitiate[3]);
+}
+static void Quincy_Multi_Shot(int client, int weapon, float charge_percent, float dmg)
+{
+	float multi_arrow_speed = 500.0*(charge_percent/50.0);
+				
+	multi_arrow_speed *= Attributes_Get(weapon, 103, 1.0);
+		
+	multi_arrow_speed *= Attributes_Get(weapon, 104, 1.0);
+		
+	multi_arrow_speed *= Attributes_Get(weapon, 475, 1.0);
+
+	int amt;
+
+	int pap = Get_Quincy_Pap(weapon);
+	float spacing;
+
+	switch(pap)	//can't be a number that dividable by 2.
+	{
+		case 2:
+		{
+			amt = 3;
+			spacing = 19.0;
+		}
+		case 3:
+		{
+			amt = 5;
+			spacing = 14.0;
+		}
+		case 4, 5:
+		{
+			amt = 7;
+			spacing = 10.0;
+		}
+		default:
+		{
+			amt=3;
+			spacing = 19.0;
+		}
+	}
+
+	if(multi_arrow_speed>1000.0)
+		multi_arrow_speed = 1000.0;
+
+	float fAng[3];
+	GetClientEyeAngles(client, fAng);
+	float fPos[3];
+	GetClientEyePosition(client, fPos);
+
+	int type=3;
+	for(int i=0 ; i< amt ; i++)
+	{
+		float end_vec[3];
+		Do_Vector_Stuff(i, fPos, end_vec, fAng, amt, type, spacing);
+		Quincy_Rocket_Launch(client, multi_arrow_speed, dmg, weapon, fAng, end_vec);
+		if(type==3)
+			type=1;
+		else
+			type=3;
+	}
+}
+static void Do_Vector_Stuff(int cycle, float start_pos[3], float end_Pos[3], float angles[3], int loop_for, int type, float spacing)
+{	
+
+	float tempAngles[3], Direction[3], buffer_loc[3];
+		
+	tempAngles[0] = angles[0];
+	tempAngles[1] = angles[1];
+	tempAngles[2] = angles[2]+90.0*type;
+
+	if(type==1)
+		cycle+=1;
+							
+	GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+	ScaleVector(Direction, spacing*cycle);
+	AddVectors(start_pos, Direction, buffer_loc);
+
+	float dist = (spacing*loop_for) - GetVectorDistance(start_pos, buffer_loc);
+
+	Get_Fake_Forward_Vec(dist, angles, end_Pos, buffer_loc);
+}
+static void Quincy_Rocket_Launch(int client, float speed, float damage, int weapon, float fAng[3], float fPos[3])
+{
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, damage, 0, weapon, "raygun_projectile_blue", fAng, false , fPos);
+	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_MultiArroTouch);
+}
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
 	
 	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
 	ScaleVector(Direction, Range);
@@ -690,30 +762,29 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	{
 		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
-			float amt = charge_percent / (QUINCY_BOW_MULTI_SHOT_MINIMUM/2.0);
-			switch(pap)
+			
+			int amt;
+
+			switch(pap)	//can't be a number that dividable by 2.
 			{
 				case 2:
 				{
-					if(amt>=3.0)
-						amt=3.0;
+					amt = 3;
 				}
 				case 3:
 				{
-					if(amt>=5.0)
-						amt=5.0;
+					amt = 5;
 				}
 				case 4, 5:
 				{
-					if(amt>=7.0)
-						amt=7.0;
+					amt = 5;
 				}
 				default:
 				{
-					amt=3.0;
+					amt=3;
 				}
 			}
-			Format(HUDText, sizeof(HUDText), "%s\nExtra Shoots: [%i]", HUDText, RoundToFloor(amt));
+			Format(HUDText, sizeof(HUDText), "%s\nExtra Shoots: [%i]", HUDText, amt);
 		}
 	}
 	if(charge_percent>=50.0)
@@ -783,25 +854,22 @@ public void Quincy_Touch(int entity, int target)
 			fl_trace_target_timeout[owner][target] = GameTime+0.25;
 			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 			
-			
-			
-			float dmg_deal = f_WandDamage[entity];
-			if(i_quincy_penetrated[entity]>0)
-			{
-				float dmg_pen = LASER_AOE_DAMAGE_FALLOFF * i_quincy_penetrated[entity];
-				if(dmg_pen < 1.0)
-					dmg_pen = 1.0;
-				dmg_deal /=dmg_pen;
-			}
-			SDKHooks_TakeDamage(target, owner, owner, dmg_deal, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity]*fl_quincy_penetrated[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+
+			fl_quincy_penetrated[entity] *= 0.9;	//LASER_AOE_DAMAGE_FALLOFF;
 
 			fl_hyper_arrow_charge[owner] +=QUINCY_BOW_ONHIT_GAIN;
 			if(fl_hyper_arrow_charge[owner] > QUINCY_BOW_HYPER_CHARGE)
 				fl_hyper_arrow_charge[owner] = QUINCY_BOW_HYPER_CHARGE;
-			i_quincy_penetrated[entity]++;
+
 			i_quincy_penetration_amt[entity]--;
 			if(i_quincy_penetration_amt[entity]<=0)
 			{
+				float pos1[3];
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+				TE_ParticleInt(g_particleImpactTornado, pos1);
+				TE_SendToAll();
+
 				if(IsValidEntity(particle))
 				{
 					RemoveEntity(particle);
@@ -809,7 +877,7 @@ public void Quincy_Touch(int entity, int target)
 				RemoveEntity(entity);
 			}
 			
-			EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, _, _, 1.0);
+			EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
 		}
 	}
 	else if(target == 0)
@@ -818,81 +886,18 @@ public void Quincy_Touch(int entity, int target)
 		{
 			RemoveEntity(particle);
 		}
-		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, _, _, 1.0);
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
 		RemoveEntity(entity);
 	}
 }
-static float f_projectile_dmg[MAXENTITIES];
 
-static int i_Quincy_index[MAXENTITIES+1];
-static int i_Quincy_wep[MAXENTITIES+1];
-
-static void Quincy_Rocket_Launch(int client, int weapon, float startVec[3], float targetVec[3], float speed, float dmg, const char[] rocket_particle = "")
+static void Quincy_MultiArroTouch(int entity, int target)
 {
-
-	float Angles[3], vecForward[3];
-	
-	MakeVectorFromPoints(startVec, targetVec, Angles);
-	GetVectorAngles(Angles, Angles);
-
-	vecForward[0] = Cosine(DegToRad(Angles[0]))*Cosine(DegToRad(Angles[1]))*speed;
-	vecForward[1] = Cosine(DegToRad(Angles[0]))*Sine(DegToRad(Angles[1]))*speed;
-	vecForward[2] = Sine(DegToRad(Angles[0]))*-speed;
-
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
-	{
-		
-		f_projectile_dmg[entity] = dmg;
-		
-		i_Quincy_wep[entity]=weapon;
-		i_Quincy_index[entity]=client;
-		
-		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetTeam(entity, GetTeam(client));
-		TeleportEntity(entity, startVec, Angles, NULL_VECTOR);
-		DispatchSpawn(entity);
-		int particle = 0;
-	
-		if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
-		{
-			particle = ParticleEffectAt(startVec, rocket_particle, 0.0); //Inf duartion
-			i_rocket_particle[entity]= EntIndexToEntRef(particle);
-			TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
-			SetParent(entity, particle);	
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-			SetEntityRenderColor(entity, 255, 255, 255, 0);
-		}
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
-		
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-		}
-		SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-
-		DataPack pack;
-		CreateDataTimer(10.0, Timer_RemoveEntity_Quincy_Projectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(EntIndexToEntRef(particle));
-		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Quincy_RocketExplodePre); 
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Quincy_StartTouch);
-	}
-}
-public MRESReturn Quincy_RocketExplodePre(int entity)
-{
-	return MRES_Supercede;	//Do. Not.
-}
-public Action Quincy_StartTouch(int entity, int other)
-{
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -902,76 +907,44 @@ public Action Quincy_StartTouch(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
-		
-		int owner = EntRefToEntIndex(i_Quincy_index[entity]);
-		int weapon =EntRefToEntIndex(i_Quincy_wep[entity]);
+
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, PushforceDamage, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		if(IsValidEntity(particle))
+		{
+			RemoveEntity(particle);
+		}
 
 		float pos1[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+
+		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.5);
+		RemoveEntity(entity);
+
 		
-		
-		
-		switch(GetRandomInt(1,5)) 
-		{
-			case 1:EmitSoundToAll(SOUND_IMPACT_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_IMPACT_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_IMPACT_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_IMPACT_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 5:EmitSoundToAll(SOUND_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-	   	}
-	   	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+
+		fl_hyper_arrow_charge[owner] +=QUINCY_BOW_ONHIT_MULTI_ARROW;
+		if(fl_hyper_arrow_charge[owner] > QUINCY_BOW_HYPER_CHARGE)
+			fl_hyper_arrow_charge[owner] = QUINCY_BOW_HYPER_CHARGE;
+	}
+	else if(target == 0)
+	{
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
 		}
-		RemoveEntity(entity);
-	}
-	else if(target == 0)
-	{
+
 		float pos1[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
 		TE_ParticleInt(g_particleImpactTornado, pos1);
 		TE_SendToAll();
-		switch(GetRandomInt(1,4)) 
-		{
-			case 1:EmitSoundToAll(SOUND_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
+		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.5);
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
-}
-public Action Timer_RemoveEntity_Quincy_Projectile(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	int Particle = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(Projectile))
-	{
-		RemoveEntity(Projectile);
-	}
-	if(IsValidEntity(Particle))
-	{
-		RemoveEntity(Particle);
-	}
-	return Plugin_Stop; 
 }
