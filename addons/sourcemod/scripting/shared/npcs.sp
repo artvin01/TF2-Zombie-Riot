@@ -300,8 +300,22 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
 					}
 					
-					if(enemy.Credits && MultiGlobalEnemy)
-						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
+					if(enemy.Does_Not_Scale == 0)
+					{
+						if(enemy.Is_Boss == 0)
+						{
+							npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
+						}
+						else
+						{
+							npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemyBoss;
+						}
+					}
+					else
+					{
+						npcstats.m_fCreditsOnKill = enemy.Credits;
+					}
+					
 
 					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;

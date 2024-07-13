@@ -758,6 +758,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
+						if(wave.Count <= 0)
+						{
+							enemy.Does_Not_Scale = true;
+						}
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -1173,7 +1177,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
-
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
@@ -1215,9 +1218,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int count = wave.Count;
 			
-			if(wave.EnemyData.Does_Not_Scale == 0)
+			if(wave.EnemyData.Does_Not_Scale == 0 && count > 0)
 			{
-				count = RoundToNearest(float(count) * MultiGlobalEnemy);
+				if(Is_a_boss == 0)
+				{
+					count = RoundToNearest(float(count) * MultiGlobalEnemy);
+					//the scaling on this cant be too high, otherwise rounds drag on forever.
+				}
+				else
+				{
+					//if its a boss, then it scales like old logic, beacuse bosses should spawn more as they have more of an impact
+					count = RoundToNearest(float(count) * MultiGlobalEnemyBoss);
+				}
 			}
 			
 			if(count < 1) //So its always 1
@@ -1253,7 +1265,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				{
 					multiBoss = MultiGlobalHighHealthBoss;
 				}
-
 				if(!ScaleWithHpMore)
 				{
 					multiBoss = MultiGlobalHealthBoss;
@@ -2237,12 +2248,13 @@ void DoGlobalMultiScaling()
 		playercount = 0.70;
 	}
 			
-	float multi = Pow(1.105, playercount);
+	float multi = Pow(1.08, playercount);
 
-	multi -= 0.49090205063; //So if its 4 players, it defaults to 1.0
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
 	
 	MultiGlobalHealthBoss = playercount * 0.2;
 	MultiGlobalHighHealthBoss = playercount * 0.34;
+	MultiGlobalEnemyBoss = playercount * 0.3;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2257,12 +2269,14 @@ void DoGlobalMultiScaling()
 		MultiGlobalEnemy = multi;
 	}
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
+	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
 	PlayerCountBuffScaling = 4.0 / playercount;
 	if(PlayerCountBuffScaling < 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
 	}
+
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
 	if(PlayerCountResBuffScaling < 0.75)
 	{
@@ -2348,10 +2362,6 @@ static void UpdateMvMStatsFrame()
 			
 			if(round.Waves)
 			{
-				float playercount = float(CountPlayersOnRed());
-				if(playercount == 1.0)
-					playercount = 0.70;
-
 				Wave wave;
 				int length = round.Waves.Length;
 				for(int a = length - 1; a >= 0; a--)
@@ -2369,7 +2379,7 @@ static void UpdateMvMStatsFrame()
 						}
 						else
 						{
-							num = RoundToNearest(float(num) * playercount * 0.25);
+							num = RoundToNearest(float(num) * MultiGlobalEnemyBoss);
 						}
 					}
 					
@@ -2377,9 +2387,9 @@ static void UpdateMvMStatsFrame()
 					{
 						num = 1;
 					}
-					else if(num > 150)
+					else if(num > 250)
 					{
-						num = 150;
+						num = 250;
 					}
 
 					totalcount += num;

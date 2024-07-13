@@ -837,7 +837,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(3.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1, true);		
 			}
 			else
 			{
@@ -845,7 +845,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_spearmen",_, RoundToCeil(5.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_scout",_, RoundToCeil(5.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_man_at_arms",_, RoundToCeil(8.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
 			}
 		}
 	}
@@ -894,16 +894,16 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(5.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(1.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemy), true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemyBoss), true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_pikeman",_, RoundToCeil(15.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_crossbow_giant",_, RoundToCeil(2.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemy), true);				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(10000.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_construct", RoundToCeil(10000.0 * MultiGlobalHealthBoss), RoundToCeil(2.0 * MultiGlobalEnemyBoss), true);				
 			}
 		}
 	}
@@ -953,16 +953,16 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(1.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(5.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(5000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(75000.0 * MultiGlobalHighHealthBoss), 1);
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",_, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_obuch",_, RoundToCeil(8.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalHealthBoss), 1, true);					
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(2500.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(125000.0 * MultiGlobalHighHealthBoss), 1, true);					
 			}
 		}
 	}
@@ -998,7 +998,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_elite_skirmisher",50000, RoundToCeil(10.0 * MultiGlobalEnemy));
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_paladin",100000, RoundToCeil(10.0 * MultiGlobalEnemy));
 			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_swordsman_giant",250000, RoundToCeil(2.0 * MultiGlobalEnemy));
-			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHealthBoss), 1);
+			GodAlaxiosSpawnEnemy(npc.index,"npc_medival_achilles", RoundToCeil(300000.0 * MultiGlobalHighHealthBoss), 1);
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
@@ -1012,18 +1012,18 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 25.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(1.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(10.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(25000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(750000.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(150000.0 * MultiGlobalHighHealthBoss), 1, true);		
 			}
 			else
 			{
 				npc.m_flDoingSpecial = GetGameTime(npc.index) + 10.0;
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_hussar",100000, RoundToCeil(2.0 * MultiGlobalEnemy));
 				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_riddenarcher",75000, RoundToCeil(20.0 * MultiGlobalEnemy));
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHealthBoss), 1);
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalHealthBoss), 1, true);		
-				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHealthBoss), 1, true);				
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_monk",RoundToCeil(50000.0 * MultiGlobalHighHealthBoss), 1);
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_son_of_osiris", RoundToCeil(1500000.0 * MultiGlobalHighHealthBoss), 1, true);		
+				GodAlaxiosSpawnEnemy(npc.index,"npc_medival_villager", RoundToCeil(250000.0 * MultiGlobalHighHealthBoss), 1, true);				
 			}
 		}
 	}

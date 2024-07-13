@@ -51,7 +51,7 @@ public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.30));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.30));
 	fl_GibVulnerablity[iNpc] *= 1.30;
-	fl_Extra_Speed[iNpc] *= 1.05;
+	fl_Extra_Speed[iNpc] *= 1.03;
 }
 
 
@@ -62,7 +62,7 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.50));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.50));
 	fl_GibVulnerablity[iNpc] *= 1.50;
-	fl_Extra_Speed[iNpc] *= 1.07;
+	fl_Extra_Speed[iNpc] *= 1.04;
 }
 
 float ZRModifs_MaxSpawnsAlive()
@@ -103,11 +103,11 @@ float ZRModifs_MaxSpawnWaveModif()
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.35;
+			return 1.25;
 		}
 		case OLD_TIMES:
 		{
-			return 1.45;
+			return 1.3;
 		}
 	}
 	return 1.0;
