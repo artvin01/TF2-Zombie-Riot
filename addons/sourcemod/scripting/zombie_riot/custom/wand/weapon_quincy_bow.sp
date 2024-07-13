@@ -411,7 +411,7 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 					fl_Quincy_Charge[client] += mana_cost;					
 					Current_Mana[client] -=mana_cost;
 				}
-				else
+				else if (Current_Mana[client] > 0)
 				{
 					float Difference =fl_Quincy_Max_Battery[client] - fl_Quincy_Charge[client];
 
