@@ -55,8 +55,8 @@ void Barracks_Combine_Sword_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Swordsman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sword");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Collos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_collos");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -66,10 +66,10 @@ void Barracks_Combine_Sword_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Sword(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Collos(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Sword < BarrackBody
+methodmap Barrack_Combine_Collos < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -135,15 +135,15 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "150", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Sword_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Sword_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Combine_Collos_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Collos_ClotThink;
 		npc.m_flSpeed = 230.0;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -152,24 +152,37 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
+        i_NpcWeight[npc.index] = 2;
+
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
-		SetVariantString("0.7");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
+		
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
+		
+		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		
 		return npc;
 	}
 }
 
-public void Barrack_Combine_Sword_ClotThink(int iNPC)
+public void Barrack_Combine_Collos_ClotThink(int iNPC)
 {
-	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(iNPC);
+	Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -250,9 +263,9 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Combine_Sword_NPCDeath(int entity)
+void Barrack_Combine_Collos_NPCDeath(int entity)
 {
-	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(entity);
+	Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

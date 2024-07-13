@@ -56,7 +56,7 @@ void Barracks_Combine_Sword_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Swordsman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sword");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Combine_ddt");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -66,10 +66,10 @@ void Barracks_Combine_Sword_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Sword(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Ddt(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Sword < BarrackBody
+methodmap Barrack_Combine_Ddt < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -135,22 +135,20 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Sword(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Ddt(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(BarrackBody(client, vecPos, vecAng, "150", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(BarrackBody(client, vecPos, vecAng, "350", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Sword_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Sword_ClotThink;
-		npc.m_flSpeed = 230.0;
+		func_NPCDeath[npc.index] = Barrack_Combine_Ddt_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Ddt_ClotThink;
+		npc.m_flSpeed = 300.0;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -159,27 +157,23 @@ methodmap Barrack_Combine_Sword < BarrackBody
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/demo/jul13_trojan_helmet/jul13_trojan_helmet.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum21_roaming_roman/sum21_roaming_roman.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
 		return npc;
 	}
 }
 
-public void Barrack_Combine_Sword_ClotThink(int iNPC)
+public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 {
-	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(iNPC);
+	Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-	  	float TrueArmor = 1.0;
-		if(npc.m_fbRangedSpecialOn)
-		{
-			TrueArmor *= 0.15;
-		}
-		fl_TotalArmor[npc.index] = TrueArmor;
-
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
@@ -194,7 +188,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					if(!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
@@ -204,14 +198,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
-					if(!npc.m_fbRangedSpecialOn)
-					{
-						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
-						npc.m_fbRangedSpecialOn = true;
-						npc.PlayRangedAttackSecondarySound();
-					}
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -224,16 +211,12 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),525.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1200.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
-						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-						{
-							npc.m_fbRangedSpecialOn = false;
-						}
 					}
 					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
@@ -246,13 +229,13 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_IDLE", "ACT_RUN");
 	}
 }
 
-void Barrack_Combine_Sword_NPCDeath(int entity)
+void Barrack_Combine_Ddt_NPCDeath(int entity)
 {
-	Barrack_Combine_Sword npc = view_as<Barrack_Combine_Sword>(entity);
+	Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

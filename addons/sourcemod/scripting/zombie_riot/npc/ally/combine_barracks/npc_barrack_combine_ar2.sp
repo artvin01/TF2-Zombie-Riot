@@ -11,29 +11,28 @@ static const char g_DeathSounds[][] =
 
 static const char g_IdleSounds[][] =
 {
-	"npc/metropolice/vo/takecover.wav",
-	"npc/metropolice/vo/readytojudge.wav",
-	"npc/metropolice/vo/subject.wav",
-	"npc/metropolice/vo/subjectis505.wav"
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
+	"npc/combine_soldier/vo/contactconfirm.wav",
 };
 
 static const char g_RangedAttackSounds[][] =
 {
-	"weapons/pistol/pistol_fire2.wav"
+	"weapons/ar2/fire1.wav",
 };
 
 static const char g_RangedReloadSound[][] =
 {
-	"weapons/pistol/pistol_reload1.wav"
+	"weapons/ar2/npc_ar2_reload.wav",
 };
 
 static const char g_IdleAlert[][] =
 {
-	"npc/metropolice/vo/airwatchsubjectis505.wav",
-	"npc/metropolice/vo/allunitscloseonsuspect.wav",
-	"npc/metropolice/vo/allunitsmovein.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/destroythatcover.wav"
+	"npc/combine_soldier/vo/alert1.wav",
+	"npc/combine_soldier/vo/bouncerbouncer.wav",
+	"npc/combine_soldier/vo/boomer.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 void Barracks_Combine_Pistol_Precache()
@@ -44,8 +43,8 @@ void Barracks_Combine_Pistol_Precache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Metro Cop");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Combine_Pistol");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Soldier");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_ar2");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -55,10 +54,10 @@ void Barracks_Combine_Pistol_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Pistol(client, vecPos, vecAng, ally);
+	return Barrack_Combine_AR2(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Pistol < BarrackBody
+methodmap Barrack_Combine_AR2 < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -100,23 +99,23 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_AR2(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(BarrackBody(client, vecPos, vecAng, "235", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Combine_AR2_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_AR2_ClotThink;
 		npc.m_flSpeed = 220.0;
 
-		npc.m_iAttacksTillReload = 18;
+		npc.m_iAttacksTillReload = 31;
 		npc.m_flNextRangedAttack = 0.0;
 		
-		KillFeed_SetKillIcon(npc.index, "pistol");
+		KillFeed_SetKillIcon(npc.index, "smg");
 		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
@@ -124,9 +123,9 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 	}
 }
 
-public void Barrack_Combine_Pistol_ClotThink(int iNPC)
+public void Barrack_Combine_AR2_ClotThink(int iNPC)
 {
-	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(iNPC);
+	Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -149,14 +148,14 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD_PISTOL");
-						npc.m_flNextRangedAttack = GameTime + 1.35;
-						npc.m_iAttacksTillReload = 18;
+						npc.AddGesture("ACT_RELOAD");
+						npc.m_flNextRangedAttack = GameTime + 1.85;
+						npc.m_iAttacksTillReload = 31;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
-						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL", false);
+						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 300000.0);
@@ -171,17 +170,17 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (0.2 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							npc.m_flSpeed = 0.0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 25.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 275.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 220.0;
 					}
 				}
 			}
@@ -191,13 +190,13 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_PISTOL", "ACT_RUN_PISTOL", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_COVER", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
 	}
 }
 
-void Barrack_Combine_Pistol_NPCDeath(int entity)
+void Barrack_Combine_AR2_NPCDeath(int entity)
 {
-	Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(entity);
+	Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

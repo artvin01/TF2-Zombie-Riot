@@ -719,6 +719,10 @@
 	{
 		"en" 		"Combine Swordsman"
 	}
+	"Barracks Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
