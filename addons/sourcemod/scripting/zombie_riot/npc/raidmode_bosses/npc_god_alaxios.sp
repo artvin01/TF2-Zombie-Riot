@@ -4,27 +4,14 @@
 static bool BlockLoseSay;
 
 static const char g_DeathSounds[][] = {
-	"vo/npc/male01/no01.wav",
-	"vo/npc/male01/no02.wav",
+	"zombiesurvival/medieval_raid/arkantos_death.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/npc/male01/pain01.wav",
-	"vo/npc/male01/pain02.wav",
-	"vo/npc/male01/pain03.wav",
-	"vo/npc/male01/pain05.wav",
-	"vo/npc/male01/pain06.wav",
-	"vo/npc/male01/pain07.wav",
-	"vo/npc/male01/pain08.wav",
-	"vo/npc/male01/pain09.wav",
+	"zombiesurvival/medieval_raid/arkantos_hurt_1.mp3",
+	"zombiesurvival/medieval_raid/arkantos_hurt_2.mp3",
 };
 
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/npc/male01/ohno.wav",
-	"vo/npc/male01/overthere01.wav",
-	"vo/npc/male01/overthere02.wav",
-};
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -39,6 +26,7 @@ static const char g_MeleeAttackSounds[][] = {
 static char g_PullSounds[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav"
 };
+
 static const char g_MeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
@@ -46,9 +34,21 @@ static const char g_MeleeMissSounds[][] = {
 static char g_SlamSounds[][] = {
 	"ambient/rottenburg/barrier_smash.wav"
 };
+
 static char g_SummonSounds[][] = {
 	"weapons/buff_banner_horn_blue.wav",
 	"weapons/buff_banner_horn_red.wav",
+};
+
+static char g_LastStand[][] = {
+	"zombiesurvival/medieval_raid/arkantos_rage.mp3",
+};
+
+static char g_RandomGroupScream[][] = {
+	"zombiesurvival/medieval_raid/battlecry1.mp3",
+	"zombiesurvival/medieval_raid/battlecry2.mp3",
+	"zombiesurvival/medieval_raid/battlecry3.mp3",
+	"zombiesurvival/medieval_raid/battlecry4.mp3",
 };
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
@@ -73,16 +73,19 @@ public void GodAlaxios_OnMapStart()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
-	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));        i++) { PrecacheSound(g_IdleAlertedSounds[i]);        }
+	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSoundCustom(g_DeathSounds[i]);       }
+	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSoundCustom(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));        i++) { PrecacheSound(g_MeleeHitSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));        i++) { PrecacheSound(g_MeleeAttackSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));        i++) { PrecacheSound(g_MeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
 	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
+	PrecacheSoundCustom("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
+	
+	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
+	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -107,40 +110,41 @@ methodmap GodAlaxios < CClotBody
 		public get()							{ return fl_GrappleCooldown[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_GrappleCooldown[this.index] = TempValueForProperty; }
 	}
-	public void PlayIdleAlertSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-			
-		int sound = GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1);
-		
-		EmitSoundToAll(g_IdleAlertedSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
 	public void PlayHurtSound()
 	{
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
 
-		EmitSoundToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 	}
 	public void PlayDeathSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
-		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound() 
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayMeleeWarCry() 
+	{
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlaySummonSound() 
 	{
-		EmitSoundToAll(g_SummonSounds[GetRandomInt(0, sizeof(g_SummonSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_SummonSounds[GetRandomInt(0, sizeof(g_SummonSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		int r = 200;
 		int g = 200;
 		int b = 255;
@@ -155,7 +159,6 @@ methodmap GodAlaxios < CClotBody
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.4, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 75.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.3, 6.0, 6.1, 1);
 		spawnRing(this.index, 75.0 * 2.0, 0.0, 0.0, 85.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.2, 6.0, 6.1, 1);
-		f_AlaxiosCantDieLimit[this.index] = GetGameTime() + 0.5;
 	}
 	public void PlayMeleeMissSound() 
 	{
@@ -167,6 +170,12 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayRageSound() {
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 
 	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -422,6 +431,14 @@ public void GodAlaxios_ClotThink(int iNPC)
 		}
 		return;
 	}
+	if(f_AlaxiosCantDieLimit[npc.index] && f_AlaxiosCantDieLimit[npc.index] < GetGameTime())
+	{
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		f_AlaxiosCantDieLimit[npc.index] = 0.0;
+	}
 	//float point impresicion...
 	if(Alaxiosspeedint[npc.index] == 320)
 	{
@@ -546,6 +563,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 		{
 			if(!npc.Anger)
 			{
+				npc.PlayRageSound();
 				AlaxiosSayWordsAngry();
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
@@ -553,7 +571,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 			}
 		}
 	}
-	npc.PlayIdleAlertSound();
+
 	if(GetTeam(npc.index) == TFTeam_Red)
 	{
 		if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -1677,6 +1695,7 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 	if(npc.m_flAlaxiosBuffEffect < gameTime)
 	{
 		bool buffed_anyone;
+		bool buffedAlly = false;
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
@@ -1690,6 +1709,15 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 						f_GodAlaxiosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
 						//Buff this entity.
 						buffed_anyone = true;	
+						if(entitycount != npc.index)
+						{
+							buffedAlly = true;
+							float flPos[3]; // original
+							GodAlaxios npc1 = view_as<GodAlaxios>(entitycount);
+							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
+							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc1.index, "root", {0.0,0.0,0.0});
+							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
+						}
 					}
 				}
 			}
@@ -1699,6 +1727,9 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 
 		if(buffed_anyone)
 		{
+			if(buffedAlly)
+				f_AlaxiosCantDieLimit[npc.index] = GetGameTime() + 1.0;
+
 			npc.m_flAlaxiosBuffEffect = gameTime + 10.0;
 			if(!NpcStats_IsEnemySilenced(npc.index))
 			{
@@ -1733,8 +1764,7 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 			{
 				spawnRing(npc.index, ALAXIOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.8, 6.0, 6.1, 1);
 				spawnRing(npc.index, ALAXIOS_BUFF_MAXRANGE * 2.0, 0.0, 0.0, 35.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 0.7, 6.0, 6.1, 1);
-				MedivalHussar npc_sound = view_as<MedivalHussar>(npc.index);
-				npc_sound.PlayMeleeWarCry();
+				npc.PlayMeleeWarCry();
 			}
 		}
 		else
@@ -1775,19 +1805,19 @@ void AlaxiosSayWordsAngry()
 	{
 		case 0:
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR THE PEOPLE!!!!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE PEOPLE!!!!!!!!!!");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR ALL THAT IS FORSAKEN!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ALL THAT IS FORSAKEN!!!!!!!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR THE FUTURE!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR THE FUTURE!!!!!!!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}FOR ATLANTIS!!!!!!!!!");
+			CPrintToChatAll("{lightblue}God Alaxios{default}: {crimson}ISVOLI!!!! FOR ATLANTIS!!!!!!!!!");
 		}
 	}
 }
