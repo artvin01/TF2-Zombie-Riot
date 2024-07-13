@@ -856,7 +856,7 @@ public void Quincy_Touch(int entity, int target)
 			
 			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity]*fl_quincy_penetrated[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 
-			fl_quincy_penetrated[entity] *= 0.9;	//LASER_AOE_DAMAGE_FALLOFF;
+			fl_quincy_penetrated[entity] *= LASER_AOE_DAMAGE_FALLOFF;	//LASER_AOE_DAMAGE_FALLOFF;
 
 			fl_hyper_arrow_charge[owner] +=QUINCY_BOW_ONHIT_GAIN;
 			if(fl_hyper_arrow_charge[owner] > QUINCY_BOW_HYPER_CHARGE)
