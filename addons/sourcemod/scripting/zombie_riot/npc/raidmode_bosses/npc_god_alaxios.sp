@@ -112,20 +112,23 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayHurtSound()
 	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+
 		int sound = GetRandomInt(0, sizeof(g_HurtSounds) - 1);
 
-		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_HurtSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(1.6, 2.5);
 	}
 	public void PlayDeathSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
 		
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeSound() 
 	{
@@ -137,10 +140,10 @@ methodmap GodAlaxios < CClotBody
 	}
 	public void PlayMeleeWarCry() 
 	{
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
-		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
+		EmitCustomToAll("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3", this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME, 100);
 	}
 	public void PlaySummonSound() 
 	{
@@ -172,10 +175,10 @@ methodmap GodAlaxios < CClotBody
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayRageSound() {
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LastStand[GetRandomInt(0, sizeof(g_LastStand) - 1)], this.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 	}
 
 	public GodAlaxios(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -433,10 +436,10 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	if(f_AlaxiosCantDieLimit[npc.index] && f_AlaxiosCantDieLimit[npc.index] < GetGameTime())
 	{
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
-		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_AUTO, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], npc.index, SNDCHAN_STATIC, 120, _, BOSS_ZOMBIE_VOLUME);
 		f_AlaxiosCantDieLimit[npc.index] = 0.0;
 	}
 	//float point impresicion...
