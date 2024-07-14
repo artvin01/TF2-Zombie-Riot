@@ -28,14 +28,14 @@ public void Vampire_Knives_Precache()
 //that damage, up to a cap.
 static float Vamp_BleedDMGMax[4] = { 99999.0, 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
 static float Vamp_BleedRate[4] = { 0.33, 0.275, 0.25, 0.2 }; //The rate at which Bloodlust deals damage.
-static float Vamp_BleedHeal[4] = { 0.17, 0.085, 0.0475, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
-static float Vamp_HealRadius[4] = { 300.0, 330.0, 360.0, 390.0 };	//Max distance from the victim to heal the user in.
-static float Vamp_HealMultIfHurt[4] = { 0.25, 0.25, 0.25, 0.25 };	//Amount to multiply healing received by Bloodlust if recently harmed.
+static float Vamp_BleedHeal[4] = { 0.25, 0.125, 0.0655, 0.0655 };	//Portion of Bloodlust damage to heal the user for.
+static float Vamp_HealRadius[4] = { 330.0, 350.0, 400.0, 420.0 };	//Max distance from the victim to heal the user in.
+static float Vamp_HealMultIfHurt[4] = { 0.33, 0.33, 0.33, 0.33 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
-static float Vamp_MaxHeal_Normal[4] = { 3.0, 2.5, 2.0, 1.8 };	//Max heal per tick.
-static float Vamp_MinHeal_Normal[4] = { 1.5, 1.25, 1.1, 1.0 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_BleedDMG_Normal[4] = { 5.0, 6.5, 7.0, 8.5 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_MaxHeal_Normal[4] = { 5.0, 4.5, 4.0, 3.25 };	//Max heal per tick.
+static float Vamp_MinHeal_Normal[4] = { 2.5, 2.25, 2.1, 2.0 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 10.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
 static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
 static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.

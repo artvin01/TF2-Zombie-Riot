@@ -81,7 +81,7 @@ enum struct Round
 enum struct Vote
 {
 	char Name[64];
-	char Config[64];
+	char Config[256];
 	int Level;
 	char Desc[256];
 	char Append[64];
@@ -91,12 +91,18 @@ enum struct Vote
 static ArrayList Enemies;
 static ArrayList Rounds;
 static ArrayList Voting;
+static ArrayList VotingMods;
 static bool CanReVote;
 static ArrayList MiniBosses;
 static float Cooldown;
 static bool InSetup;
-//static bool InFreeplay;
 static int FakeMaxWaves;
+static int WaveLevel;
+
+static Function ModFuncRemove = INVALID_FUNCTION;
+static Function ModFuncAlly = INVALID_FUNCTION;
+static Function ModFuncEnemy = INVALID_FUNCTION;
+static Function ModFuncWeapon = INVALID_FUNCTION;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
@@ -195,7 +201,7 @@ public Action Waves_SetWaveCmd(int client, int args)
 
 bool Waves_InVote()
 {
-	return (Rogue_Mode() || Voting);
+	return (Rogue_Mode() || Voting || VotingMods);
 }
 
 public Action Waves_RevoteCmd(int client, int args)
@@ -209,6 +215,11 @@ public Action Waves_RevoteCmd(int client, int args)
 		VotedFor[client] = 0;
 		Waves_CallVote(client);
 	}
+	else if(VotingMods)
+	{
+		VotedFor[client] = 0;
+		Waves_CallVote(client);
+	}
 	return Plugin_Handled;
 }
 
@@ -217,26 +228,52 @@ bool Waves_CallVote(int client, int force = 0)
 	if(Rogue_Mode())
 		return Rogue_CallVote(client);
 	
-	if(Voting && (force || !VotedFor[client]))
+	if((Voting || VotingMods) && (force || !VotedFor[client]))
 	{
 		Menu menu = new Menu(Waves_CallVoteH);
 		
 		SetGlobalTransTarget(client);
 		
-		menu.SetTitle("%t:\n ","Vote for the difficulty");
+		menu.SetTitle("%t:\n ", Voting ? "Vote for the difficulty" : "Vote for the modifier");
 		
 		Vote vote;
 		Format(vote.Name, sizeof(vote.Name), "%t", "No Vote");
 		menu.AddItem(NULL_STRING, vote.Name);
-		
-		int length = Voting.Length;
-		for(int i; i<length; i++)
+
+		if(Voting)
 		{
-			Voting.GetArray(i, vote);
-			vote.Name[0] = CharToUpper(vote.Name[0]);
-			
-			Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
-			menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			int length = Voting.Length;
+			for(int i; i < length; i++)
+			{
+				Voting.GetArray(i, vote);
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, vote.Level);
+				menu.AddItem(vote.Config, vote.Name, (Level[client] < vote.Level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
+		}
+		else
+		{
+			Format(vote.Name, sizeof(vote.Name), "Standard (Lv %d)", WaveLevel);
+			menu.AddItem(NULL_STRING, vote.Name);
+
+			float multi = float(vote.Level) / 1000.0;
+
+			int length = VotingMods.Length;
+			for(int i = 1; i < length; i++)
+			{
+				VotingMods.GetArray(i, vote);
+				vote.Name[0] = CharToUpper(vote.Name[0]);
+				
+				int level = WaveLevel;
+				if(level < 10)
+					level = 10;
+				
+				level = WaveLevel + RoundFloat(level * multi);
+
+				Format(vote.Name, sizeof(vote.Name), "%s (Lv %d)", vote.Name, level);
+				menu.AddItem(vote.Config, vote.Name, (Level[client] < level && Database_IsCached(client)) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+			}
 		}
 		
 		menu.ExitButton = false;
@@ -256,7 +293,8 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 		}
 		case MenuAction_Select:
 		{
-			if(Voting)
+			ArrayList list = Voting ? Voting : VotingMods;
+			if(list)
 			{
 				if(!choice || VotedFor[client] != choice)
 				{
@@ -265,7 +303,7 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					{
 						VotedFor[client] = -1;
 					}
-					else if(VotedFor[client] > Voting.Length)
+					else if(VotedFor[client] > list.Length)
 					{
 						VotedFor[client] = 0;
 						Waves_CallVote(client, choice);
@@ -274,7 +312,7 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 					else
 					{
 						Vote vote;
-						Voting.GetArray(choice - 1, vote);
+						list.GetArray(choice - 1, vote);
 
 						if(vote.Desc[0] && TranslationPhraseExists(vote.Desc))
 						{
@@ -299,7 +337,7 @@ public int Waves_CallVoteH(Menu menu, MenuAction action, int client, int choice)
 
 public Action Waves_VoteDisplayTimer(Handle timer)
 {
-	if(!Voting)
+	if(!Voting && !VotingMods)
 		return Plugin_Stop;
 	
 	Waves_DisplayHintVote();
@@ -308,7 +346,8 @@ public Action Waves_VoteDisplayTimer(Handle timer)
 
 void Waves_DisplayHintVote()
 {
-	int length = Voting.Length;
+	ArrayList list = Voting ? Voting : VotingMods;
+	int length = list.Length;
 	if(length > 1)
 	{
 		int count, total;
@@ -356,7 +395,7 @@ void Waves_DisplayHintVote()
 		if(top[0] != -1)
 		{
 			Vote vote;
-			Voting.GetArray(top[0], vote);
+			list.GetArray(top[0], vote);
 			vote.Name[0] = CharToUpper(vote.Name[0]);
 
 			char buffer[256];
@@ -366,7 +405,7 @@ void Waves_DisplayHintVote()
 			{
 				if(top[i] != -1)
 				{
-					Voting.GetArray(top[i], vote);
+					list.GetArray(top[i], vote);
 					vote.Name[0] = CharToUpper(vote.Name[0]);
 
 					Format(buffer, sizeof(buffer), "%s\n%d. %s: (%d)", buffer, i + 1, vote.Name, votes[top[i]]);
@@ -382,15 +421,28 @@ void Waves_MapEnd()
 {
 	CurrentGame = -1;
 	delete Voting;
+	delete VotingMods;
 	Zero(VotedFor);
 	Waves_SetDifficultyName(NULL_STRING);
 	UpdateMvMStatsFrame();
+
+	if(ModFuncRemove != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, ModFuncRemove);
+		Call_Finish();
+	}
+
+	ModFuncRemove = INVALID_FUNCTION;
+	ModFuncAlly = INVALID_FUNCTION;
+	ModFuncEnemy = INVALID_FUNCTION;
+	ModFuncWeapon = INVALID_FUNCTION;
 }
 
 void Waves_SetupVote(KeyValues map)
 {
 	Cooldown = 0.0;
 	delete Voting;
+	delete VotingMods;
 	
 	KeyValues kv = map;
 	if(kv)
@@ -438,15 +490,57 @@ void Waves_SetupVote(KeyValues map)
 	Voting = new ArrayList(sizeof(Vote));
 	
 	Vote vote;
-	kv.GotoFirstSubKey();
-	do
+	if(kv.GotoFirstSubKey())
 	{
-		kv.GetSectionName(vote.Name, sizeof(vote.Name));
-		kv.GetString("file", vote.Config, sizeof(vote.Config));
-		kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
-		vote.Level = kv.GetNum("level");
-		Voting.PushArray(vote);
-	} while(kv.GotoNextKey());
+		do
+		{
+			kv.GetSectionName(vote.Name, sizeof(vote.Name));
+			kv.GetString("file", vote.Config, sizeof(vote.Config));
+			kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
+			vote.Level = kv.GetNum("level");
+			Voting.PushArray(vote);
+		} while(kv.GotoNextKey());
+
+		kv.GoBack();
+	}
+
+	kv.GoBack();
+
+	if(kv.JumpToKey("Modifiers"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			VotingMods = new ArrayList(sizeof(Vote));
+			strcopy(vote.Name, sizeof(vote.Name), "Standard");
+			strcopy(vote.Desc, sizeof(vote.Desc), "Standard Desc");
+			vote.Config[0] = 0;
+			vote.Level = 0;
+			VotingMods.PushArray(vote);
+			do
+			{
+				vote.Level = RoundFloat(kv.GetFloat("level", 1.0) * 1000.0);
+
+				kv.GetString("func_collect", vote.Config, sizeof(vote.Config));
+				kv.GetString("func_remove", vote.Name, sizeof(vote.Name));
+				Format(vote.Config, sizeof(vote.Config), "%s;%s", vote.Config, vote.Name);
+
+				kv.GetString("func_ally", vote.Name, sizeof(vote.Name));
+				Format(vote.Config, sizeof(vote.Config), "%s;%s", vote.Config, vote.Name);
+
+				kv.GetString("func_enemy", vote.Name, sizeof(vote.Name));
+				Format(vote.Config, sizeof(vote.Config), "%s;%s", vote.Config, vote.Name);
+
+				kv.GetString("func_weapon", vote.Name, sizeof(vote.Name));
+				Format(vote.Config, sizeof(vote.Config), "%s;%s", vote.Config, vote.Name);
+
+				kv.GetSectionName(vote.Name, sizeof(vote.Name));
+				kv.GetString("desc", vote.Desc, sizeof(vote.Desc));
+				VotingMods.PushArray(vote);
+			} while(kv.GotoNextKey());
+
+			kv.GoBack();
+		}
+	}
 
 	CanReVote = Voting.Length > 1;
 
@@ -570,6 +664,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
+	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -663,6 +758,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
+						if(wave.Count <= 0)
+						{
+							enemy.Does_Not_Scale = true;
+						}
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -762,10 +861,23 @@ void Waves_RoundStart()
 	else if(Voting)
 	{
 		float wait = zr_waitingtime.FloatValue;
-		if(wait < 60.0 || Voting.Length < 3)
+		if(VotingMods)
+		{
+			if(wait < 90.0 || Voting.Length < 3)
+				CanReVote = false;
+			
+			if(wait < 60.0)
+				delete VotingMods;
+		}
+		else if(wait < 60.0 || Voting.Length < 3)
+		{
 			CanReVote = false;
+		}
 		
 		float time = wait - (CanReVote ? 30.0 : 0.0);
+		if(VotingMods)
+			time -= 30.0;
+		
 		if(time < 20.0)
 			time = 20.0;
 		
@@ -782,6 +894,7 @@ void Waves_RoundStart()
 	}
 	else
 	{
+		delete VotingMods;
 		Waves_SetReadyStatus(1);
 	}
 
@@ -822,7 +935,7 @@ void Waves_RoundEnd()
 
 public Action Waves_RoundStartTimer(Handle timer)
 {
-	if(!Voting)
+	if(!Voting && !VotingMods)
 	{
 		bool any_player_on = false;
 		for(int client=1; client<=MaxClients; client++)
@@ -845,9 +958,10 @@ public Action Waves_RoundStartTimer(Handle timer)
 
 public Action Waves_EndVote(Handle timer, float time)
 {
-	if(Voting)
+	ArrayList list = Voting ? Voting : VotingMods;
+	if(list)
 	{
-		int length = Voting.Length;
+		int length = list.Length;
 		if(length)
 		{
 			Waves_DisplayHintVote();
@@ -889,7 +1003,7 @@ public Action Waves_EndVote(Handle timer, float time)
 					{
 						if(votes[i] < high1)
 						{
-							Voting.Erase(i);
+							list.Erase(i);
 						}
 					}
 				}
@@ -898,7 +1012,8 @@ public Action Waves_EndVote(Handle timer, float time)
 				CanReVote = false;
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
-				PrintHintTextToAll("Vote for the top %d options!", Voting.Length);
+				PrintHintTextToAll("Vote for the top %d options!", list.Length);
+				PrintToChatAll("Vote for the top %d options!", list.Length);
 			}
 			else
 			{
@@ -908,51 +1023,122 @@ public Action Waves_EndVote(Handle timer, float time)
 					if(votes[i] > votes[highest])
 						highest = i;
 				}
+
+				bool normal = Voting == list;
 				
 				Vote vote;
-				Voting.GetArray(highest, vote);
+				list.GetArray(highest, vote);
 				
-				delete Voting;
-				
-				PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
-
-				char buffer[PLATFORM_MAX_PATH];
-				if(votes[highest] > 3)
+				if(VotingMods == list)
 				{
-					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
-					KeyValues kv = new KeyValues("TrackedVotes");
-					kv.ImportFromFile(buffer);
-					kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
-					kv.ExportToFile(buffer);
-					delete kv;
+					delete VotingMods;
 				}
+				else
+				{
+					delete Voting;
+				}
+				
+				if(normal)
+				{
+					PrintToChatAll("%t: %s","Difficulty set to", vote.Name);
 
-				Queue_DifficultyVoteEnded();
-				Native_OnDifficultySet(highest);
-				
-				if(highest > 3)
-					highest = 3;
-				
-				vote.Name[0] = CharToUpper(vote.Name[0]);
-				Waves_SetDifficultyName(vote.Name);
-				
-				Format(vote.Name, sizeof(vote.Name), "FireUser%d", highest + 1);
-				ExcuteRelay("zr_waveselected", vote.Name);
-				
-				BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
-				KeyValues kv = new KeyValues("Waves");
-				kv.ImportFromFile(buffer);
-				Waves_SetupWaves(kv, false);
-				delete kv;
+					char buffer[PLATFORM_MAX_PATH];
+					if(votes[highest] > 3)
+					{
+						BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "vote_trackedvotes.cfg");
+						KeyValues kv = new KeyValues("TrackedVotes");
+						kv.ImportFromFile(buffer);
+						kv.SetNum(vote.Name, kv.GetNum(vote.Name) + 1);
+						kv.ExportToFile(buffer);
+						delete kv;
+					}
 
-				Waves_SetReadyStatus(1);
-				DoGlobalMultiScaling();
-				Waves_UpdateMvMStats();
+					Queue_DifficultyVoteEnded();
+					Native_OnDifficultySet(highest);
+					
+					if(highest > 3)
+						highest = 3;
+					
+					vote.Name[0] = CharToUpper(vote.Name[0]);
+					Waves_SetDifficultyName(vote.Name);
+					WaveLevel = vote.Level;
+					
+					Format(vote.Name, sizeof(vote.Name), "FireUser%d", highest + 1);
+					ExcuteRelay("zr_waveselected", vote.Name);
+					
+					BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, vote.Config);
+					KeyValues kv = new KeyValues("Waves");
+					kv.ImportFromFile(buffer);
+					Waves_SetupWaves(kv, false);
+					delete kv;
+
+					if(VotingMods)
+					{
+						Zero(VotedFor);
+						VoteEndTime = GetGameTime() + 30.0;
+						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						PrintHintTextToAll("Vote for the wave modifier!");
+						PrintToChatAll("Vote for the wave modifier!");
+					}
+					else
+					{
+						Waves_SetReadyStatus(1);
+					}
+
+					DoGlobalMultiScaling();
+					Waves_UpdateMvMStats();
+				}
+				else
+				{
+					PrintToChatAll("%t: %s", "Modifier set to", vote.Name);
+					
+					if(highest > 0)
+					{
+						float multi = float(vote.Level) / 1000.0;
+
+						int level = WaveLevel;
+						if(level < 10)
+							level = 10;
+						
+						WaveLevel += RoundFloat(level * multi);
+						
+						FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
+						Waves_SetDifficultyName(WhatDifficultySetting);
+
+						char funcs[5][64];
+						ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
+						
+						Function func = funcs[0][0] ? GetFunctionByName(null, funcs[0]) : INVALID_FUNCTION;
+						ModFuncRemove = funcs[1][0] ? GetFunctionByName(null, funcs[1]) : INVALID_FUNCTION;
+						ModFuncAlly = funcs[2][0] ? GetFunctionByName(null, funcs[2]) : INVALID_FUNCTION;
+						ModFuncEnemy = funcs[3][0] ? GetFunctionByName(null, funcs[3]) : INVALID_FUNCTION;
+						ModFuncWeapon = funcs[4][0] ? GetFunctionByName(null, funcs[4]) : INVALID_FUNCTION;
+
+						if(func != INVALID_FUNCTION)
+						{
+							Call_StartFunction(null, func);
+							Call_Finish();
+						}
+					}
+
+					Waves_SetReadyStatus(1);
+					DoGlobalMultiScaling();
+					Waves_UpdateMvMStats();
+				}
 			}
 		}
 		else
 		{
-			delete Voting;
+			if(VotingMods == list)
+			{
+				delete VotingMods;
+			}
+			else
+			{
+				delete Voting;
+			}
 		}
 	}
 	return Plugin_Continue;
@@ -991,7 +1177,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
-
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
@@ -1002,12 +1187,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
 			DoGlobalMultiScaling();
-			float playercount = float(CountPlayersOnRed());
-					
-			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-			{
-				playercount = 0.70;
-			}
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -1039,17 +1218,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int count = wave.Count;
 			
-			if(wave.EnemyData.Does_Not_Scale == 0)
+			if(wave.EnemyData.Does_Not_Scale == 0 && count > 0)
 			{
 				if(Is_a_boss == 0)
 				{
 					count = RoundToNearest(float(count) * MultiGlobalEnemy);
+					//the scaling on this cant be too high, otherwise rounds drag on forever.
 				}
 				else
 				{
-					float multiBoss = playercount * 0.25;
-					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count) * multiBoss);
+					//if its a boss, then it scales like old logic, beacuse bosses should spawn more as they have more of an impact
+					count = RoundToNearest(float(count) * MultiGlobalEnemyBoss);
 				}
 			}
 			
@@ -1057,8 +1236,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				count = 1;
 				
 			
-			if(count > 150) //So its always less then 150.
-				count = 150;
+			if(count > 250) //So its always less then 250.
+				count = 250;
 			
 			if(wave.EnemyData.Team != TFTeam_Red)
 			{
@@ -1084,13 +1263,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				*/
 				if(ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.34;
+					multiBoss = MultiGlobalHighHealthBoss;
 				}
-
 				if(!ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.2;
-					MultiGlobalAlaxios = multiBoss;
+					multiBoss = MultiGlobalHealthBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -1311,6 +1488,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			else if((CurrentRound > 11 && round.Setup <= 30.0 && !round.NoMiniboss))
 			{
 				bool chance = (panzer_chance == 10 ? false : !GetRandomInt(0, panzer_chance));
+				if(panzer_chance != 10)
+					Modifier_MiniBossSpawn(chance);
+				
 				panzer_spawn = chance;
 				panzer_sound = chance;
 				if(panzer_spawn)
@@ -2070,9 +2250,11 @@ void DoGlobalMultiScaling()
 			
 	float multi = Pow(1.08, playercount);
 
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
-	MultiGlobal = multi;
-	MultiGlobalAlaxios = playercount * 0.2;
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	
+	MultiGlobalHealthBoss = playercount * 0.2;
+	MultiGlobalHighHealthBoss = playercount * 0.34;
+	MultiGlobalEnemyBoss = playercount * 0.3;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2086,12 +2268,15 @@ void DoGlobalMultiScaling()
 		MultiGlobalHealth = 1.0;
 		MultiGlobalEnemy = multi;
 	}
+	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
+	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
 	PlayerCountBuffScaling = 4.0 / playercount;
 	if(PlayerCountBuffScaling < 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
 	}
+
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
 	if(PlayerCountResBuffScaling < 0.75)
 	{
@@ -2177,10 +2362,6 @@ static void UpdateMvMStatsFrame()
 			
 			if(round.Waves)
 			{
-				float playercount = float(CountPlayersOnRed());
-				if(playercount == 1.0)
-					playercount = 0.70;
-
 				Wave wave;
 				int length = round.Waves.Length;
 				for(int a = length - 1; a >= 0; a--)
@@ -2198,7 +2379,7 @@ static void UpdateMvMStatsFrame()
 						}
 						else
 						{
-							num = RoundToNearest(float(num) * playercount * 0.25);
+							num = RoundToNearest(float(num) * MultiGlobalEnemyBoss);
 						}
 					}
 					
@@ -2206,9 +2387,9 @@ static void UpdateMvMStatsFrame()
 					{
 						num = 1;
 					}
-					else if(num > 150)
+					else if(num > 250)
 					{
-						num = 150;
+						num = 250;
 					}
 
 					totalcount += num;
@@ -2425,8 +2606,11 @@ static Action ReadyUpHack(Handle timer)
 		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
+
+			// Artvin Request: Start instantly at half players ready up
+			ready *= 2;
 			
-			if(ready == players)
+			if(ready >= players)
 			{
 				set = 12.0;
 			}
@@ -2613,3 +2797,47 @@ void WavesUpdateDifficultyName()
 		SetEntDataAllocString(objective, offset, WhatDifficultySetting);
 	}	
 }
+
+void Waves_ApplyAttribs(int client, StringMap map)	// Store_ApplyAttribs()
+{
+	if(ModFuncAlly != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, ModFuncAlly);
+		Call_PushCell(client);
+		Call_PushCell(map);
+		Call_Finish();
+	}
+}
+
+void Waves_GiveItem(int entity)
+{
+	if(ModFuncWeapon != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, ModFuncWeapon);
+		Call_PushCell(entity);
+		Call_Finish();
+	}
+}
+
+void Waves_AllySpawned(int entity)
+{
+	if(ModFuncAlly != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, ModFuncAlly);
+		Call_PushCell(entity);
+		Call_PushCell(0);
+		Call_Finish();
+	}
+}
+
+void Waves_EnemySpawned(int entity)
+{
+	if(ModFuncEnemy != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, ModFuncEnemy);
+		Call_PushCell(entity);
+		Call_Finish();
+	}
+}
+
+#include "zombie_riot/modifiers.sp"

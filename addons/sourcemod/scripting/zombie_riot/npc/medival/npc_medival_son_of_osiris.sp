@@ -282,7 +282,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, GetTeam(npc.index) == TFTeam_Red);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 900.0, GetTeam(npc.index) == TFTeam_Red);
 					}
 				}
 			}
@@ -475,7 +475,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	}
 
 	b_EntityHitByLightning[target] = true;
-	float original_damage = damage;
+//	float original_damage = damage;
 
 	int PreviousTarget = target;
 	int TraceFromThis = entity;
@@ -485,6 +485,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(TraceFromThis, vecHit, alliednpc);
 		if(IsValidEntity(enemy) && PreviousTarget != enemy)
 		{
+			/*
 			if(IsValidClient(enemy))
 			{
 				if(IsInvuln(enemy))
@@ -492,7 +493,8 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 					original_damage *= 2.0;
 				}
 			}
-			damage = (original_damage * (0.15 * loop));
+			*/
+		//	damage = (original_damage * (0.15 * loop));
 
 			if(!first_target)
 			{

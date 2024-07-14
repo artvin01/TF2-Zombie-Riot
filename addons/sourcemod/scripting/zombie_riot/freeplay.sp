@@ -79,32 +79,32 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 2:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
 			case 3:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_silvester");
-				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(2500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
 			case 4:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_god_alaxios");
-				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(4500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
 			case 5:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
-				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
 			/*case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sea_donnerkrieg");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}*/
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
-				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobal);
+				enemy.Health = RoundToFloor(4000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
 		}
 
@@ -120,7 +120,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobal * HealthMulti * ((postWaves + 99) * 0.0090)));
+			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * ((postWaves + 99) * 0.0090)));
 		
 		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
 

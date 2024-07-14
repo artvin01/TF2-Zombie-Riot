@@ -154,7 +154,7 @@ public void Rogue_HandCaster_Weapon(int entity)
 
 public void Rogue_HandKazimierz_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 23 || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
+	if(IsWeaponKazimierz(entity) || i_WeaponArchetype[entity] == 16)	// Kazimierz and Lord
 	{
 		// +75% damage bonus while over half health
 		Attributes_SetMulti(entity, 225, 1.75);

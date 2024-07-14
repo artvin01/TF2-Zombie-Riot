@@ -131,9 +131,12 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 #else
 	bool allied = GetTeam(entity) == GetTeam(player);
 #endif
-
+	
 	if(b_LagCompNPC_OnlyAllies ^ allied)
-		return false;
+	{
+		if(!b_DoNotIgnoreDuringLagCompAlly[entity])
+			return false;
+	}
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);

@@ -90,6 +90,7 @@ static bool b_RageAnimated[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
+static int i_SadText;
 bool AlreadySaidWin;
 bool AlreadySaidLastmann;
 
@@ -341,6 +342,7 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		i_SadText = false;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -467,6 +469,7 @@ methodmap RaidbossSilvester < CClotBody
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		npc.m_flNextDelayTime = GetGameTime() + 0.2;
 		if(XenoExtraLogic())
 		{
 			switch(GetRandomInt(1,3))
@@ -854,6 +857,34 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(!i_SadText)
+		{
+			i_SadText = true;
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+				}
+				case 2:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
+				}
+				case 3:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
+				}
+			}
+		}
 		if(IsValidEntity(i_LaserEntityIndex[npc.index]))
 		{
 			RemoveEntity(i_LaserEntityIndex[npc.index]);

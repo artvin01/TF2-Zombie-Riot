@@ -66,6 +66,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
+	Flametail_RoundStart();
 #endif
 
 #if defined RPG
@@ -261,7 +262,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			//apply model correctly.
 
 
-	   		ViewChange_Switch(client, weapon_index);
+	   		ViewChange_Switch(client, weapon_index, "tf_weapon_sword");
 
 	   		TF2Attrib_RemoveAll(weapon_index);
 	   		

@@ -2386,4 +2386,8 @@
 	{
 		"en"	"The Merchant: Mastery 3"
 	}
+	"Pinus Knight"
+	{
+		"en"	"Pinus Knight"
+	}
 }

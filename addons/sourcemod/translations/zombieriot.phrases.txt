@@ -3108,7 +3108,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon\nCrouching removes attributes."
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{
@@ -3124,7 +3124,7 @@
 	}
 	"Blacksmith No Attribs"
 	{
-		"en"		"Crouching removes attributes, but you don't have any"
+		"en"		"You have no tinker stats."
 	}
 	"Removed Tinker Attributes"
 	{
@@ -3175,5 +3175,29 @@
 	"purnell_message"
 	{
 		"en"	"Relax, I'm not one of them."
+	}
+	"Modifier set to"
+	{
+		"en"	"Modifier set to"
+	}
+	"Vote for the modifier"
+	{
+		"en"	"Vote for the modifier"
+	}
+	"Anvil Menu Main"
+	{
+		"en"	"What do you wish to do with the Anvil?"
+	}
+	"Re-Roll Weapon Stats"
+	{
+		"en"	"Re-Roll Weapon Stats"
+	}
+	"Remove Weapon Stats"
+	{
+		"en"	"Remove Weapon Stats"
+	}
+	"Display Current Stats"
+	{
+		"en"	"Display Current Stats"
 	}
 }

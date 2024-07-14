@@ -6,7 +6,6 @@ static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
 static bool f_ChainsawPlaySound[MAXPLAYERS+1];
 float f_AttackDelayChainsaw[MAXTF2PLAYERS];
 bool BarneyItem[MAXTF2PLAYERS];
-int SaveAmmoBarney[MAXTF2PLAYERS];
 
 static const char g_MeleeAttack[][] = {
 	"npc/roller/blade_out.wav",
@@ -123,19 +122,14 @@ public void Chainsaw_SawAttack(int client, int weapon)
 	bool result;
 	//attack!
 	int new_ammo = GetAmmo(client, 9);
-	if(new_ammo < 2)
+	if(new_ammo < 3)
 	{
 		return;
 	}
-	int AmmoConsumption = 2;
+	int AmmoConsumption = 4;
 	if(BarneyItem[client])
 	{
-		SaveAmmoBarney[client]++;
-		if(SaveAmmoBarney[client] >= 3)
-		{
-			SaveAmmoBarney[client] = 0;
-			AmmoConsumption = 1;
-		}
+		AmmoConsumption = 3;
 	}
 	SetAmmo(client, 9, new_ammo - AmmoConsumption);
 	TF2_CalcIsAttackCritical(client, weapon, "", result);
@@ -188,7 +182,7 @@ void ChainSawHudShow(int client)
 	if(f_ChainsawLoopSound[client] < GetGameTime())
 	{
 		int new_ammo = GetAmmo(client, 9);
-		if(new_ammo < 2)
+		if(new_ammo < 3)
 		{
 			ChainsawCancelSound(client);
 			return;

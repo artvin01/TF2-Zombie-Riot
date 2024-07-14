@@ -477,6 +477,8 @@ bool b_npcspawnprotection[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
+float f_WeaponSpecificClassBuff[MAXENTITIES][1];
+bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
@@ -725,10 +727,10 @@ int i_IsAloneWeapon[MAXENTITIES];
 bool i_InternalMeleeTrace[MAXENTITIES]; 
 int i_StickyAccessoryLogicItem[MAXTF2PLAYERS]; //Item for stickies like "no bounce"
 char c_WeaponSoundOverrideString[MAXENTITIES][255];
-int WeaponRef_viewmodel[MAXTF2PLAYERS];
-int HandRef[MAXTF2PLAYERS];
-int i_Viewmodel_PlayerModel[MAXENTITIES];
-int i_Worldmodel_WeaponModel[MAXTF2PLAYERS];
+int WeaponRef_viewmodel[MAXTF2PLAYERS] = {-1, ...};
+int HandRef[MAXTF2PLAYERS] = {-1, ...};
+int i_Viewmodel_PlayerModel[MAXENTITIES] = {-1, ...};
+int i_Worldmodel_WeaponModel[MAXTF2PLAYERS] = {-1, ...};
 int i_OverrideWeaponSlot[MAXENTITIES]={-1, ...};
 int i_MeleeAttackFrameDelay[MAXENTITIES]={12, ...};
 bool b_MeleeCanHeadshot[MAXENTITIES]={false, ...};
@@ -799,6 +801,7 @@ int i_WeaponSoundIndexOverride[MAXENTITIES];
 int i_WeaponModelIndexOverride[MAXENTITIES];
 int i_WeaponVMTExtraSetting[MAXENTITIES];
 int i_WeaponBodygroup[MAXENTITIES];
+int i_WeaponFakeIndex[MAXENTITIES];
 float f_WeaponSizeOverride[MAXENTITIES];
 float f_WeaponSizeOverrideViewmodel[MAXENTITIES];
 float f_WeaponVolumeStiller[MAXENTITIES];
@@ -878,7 +881,7 @@ DynamicHook g_DHookRocketExplode; //from mikusch but edited
 Handle gH_BotAddCommand = INVALID_HANDLE;
 
 int CurrentGibCount = 0;
-bool b_LimitedGibGiveMoreHealth[MAXENTITIES];
+float f_GibHealingAmount[MAXENTITIES];
 //GLOBAL npc things
 
 float f_MinicritSoundDelay[MAXTF2PLAYERS];
@@ -1256,6 +1259,7 @@ float fl_Extra_MeleeArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_RangedArmor[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Speed[MAXENTITIES] = {1.0, ...};
 float fl_Extra_Damage[MAXENTITIES] = {1.0, ...};
+float fl_GibVulnerablity[MAXENTITIES] = {1.0, ...};
 
 bool b_ScalesWithWaves[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1650,6 +1654,8 @@ public void OnMapStart()
 	PrecacheSound("player/crit_hit_mini4.wav");
 	PrecacheSound("mvm/mvm_revive.wav");
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
+	Zero2(f_WeaponSpecificClassBuff);
+	Zero2(b_WeaponSpecificClassBuff);
 
 #if defined ZR || defined RPG
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -1713,7 +1719,7 @@ public void OnMapStart()
 	Zero(f_ClientInvul);
 	Zero(i_HasBeenBackstabbed);
 	Zero(i_HasBeenHeadShotted);
-	Zero(b_LimitedGibGiveMoreHealth);
+	Zero(f_GibHealingAmount);
 	Zero2(f_TargetWasBlitzedByRiotShield);
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
@@ -2767,6 +2773,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_WeaponModelIndexOverride[entity] = 0;
 		i_WeaponVMTExtraSetting[entity] = -1;
 		i_WeaponBodygroup[entity] = -1;
+		i_WeaponFakeIndex[entity] = -1;
 		f_PotionShrinkEffect[entity] = 0.0; //here because inflictor can have it (arrows)
 		f_EnfeebleEffect[entity] = 0.0;
 		f_LeeMinorEffect[entity] = 0.0;
@@ -2890,11 +2897,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 #else
 		TeamNumber[entity] = -1;
 #endif
-		
 		fl_Extra_MeleeArmor[entity] 		= 1.0;
 		fl_Extra_RangedArmor[entity] 		= 1.0;
 		fl_Extra_Speed[entity] 				= 1.0;
 		fl_Extra_Damage[entity] 			= 1.0;
+		fl_GibVulnerablity[entity] 			= 1.0;
 #if defined ZR
 		HasMechanic[entity] = false;
 		FinalBuilder[entity] = false;
@@ -3123,6 +3130,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 		}
 		else if(!StrContains(classname, "func_door"))
 		{
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
@@ -3495,42 +3504,52 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 
 public void TF2_OnConditionRemoved(int client, TFCond condition)
 {
-	if(IsValidClient(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
+	if(IsValidClient(client) && IsPlayerAlive(client)) //Need this, i think this has a chance to return -1 for some reason. probably disconnect.
 	{
-		if(condition == TFCond_Zoomed && thirdperson[client] && IsPlayerAlive(client))
+		switch(condition)
 		{
-			SetVariantInt(1);
-			AcceptEntityInput(client, "SetForcedTauntCam");
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if(condition == TFCond_Slowed && IsPlayerAlive(client))
-		{
-			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
-		}
-		else if (condition == TFCond_Taunting && IsPlayerAlive(client))
-		{
-			if(!b_TauntSpeedIncreace[client])
+			case TFCond_Zoomed:
 			{
-				int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-				if(weapon_holding != -1)
+				ViewChange_Update(client);
+
+				if(thirdperson[client])
 				{
-					static char classname[64];
-					GetEntityClassname(weapon_holding, classname, sizeof(classname));
-					if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
+					SetVariantInt(1);
+					AcceptEntityInput(client, "SetForcedTauntCam");
+					TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+				}
+			}
+			case TFCond_Slowed:
+			{
+				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
+			}
+			case TFCond_Taunting:
+			{
+				ViewChange_Update(client);
+
+				if(!b_TauntSpeedIncreace[client])
+				{
+					int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+					if(weapon_holding != -1)
 					{
-						float attack_speed;
-					
-						attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
-						
-						if(attack_speed > 5.0)
+						static char classname[64];
+						GetEntityClassname(weapon_holding, classname, sizeof(classname));
+						if(TF2_GetClassnameSlot(classname) == TFWeaponSlot_Melee)
 						{
-							attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							float attack_speed;
+						
+							attack_speed = 1.0 / Attributes_FindOnWeapon(client, weapon_holding, 6, true, 1.0);
+							
+							if(attack_speed > 5.0)
+							{
+								attack_speed *= 0.5; //Too fast! It makes animations barely play at all
+							}
+							Attributes_Set(client, 201, attack_speed);
 						}
-						Attributes_Set(client, 201, attack_speed);
-					}
-					else
-					{	
-						Attributes_Set(client, 201, 1.0);
+						else
+						{	
+							Attributes_Set(client, 201, 1.0);
+						}
 					}
 				}
 			}

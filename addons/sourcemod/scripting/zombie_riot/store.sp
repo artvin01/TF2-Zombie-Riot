@@ -101,6 +101,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -276,7 +277,10 @@ enum struct ItemInfo
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum(buffer, -1));
 
 		Format(buffer, sizeof(buffer), "%sweapon_bodygroup", prefix);
-		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum(buffer, -1));
+		this.Weapon_Bodygroup	= kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%sweapon_fakeindex", prefix);
+		this.Weapon_FakeIndex	= kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
@@ -4595,9 +4599,22 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
+
+	int entity = -1;
+	while(TF2_GetWearable(client, entity))
+	{
+		int ref = EntIndexToEntRef(entity);
+		if(ref == i_Viewmodel_PlayerModel[client] ||
+		   ref == WeaponRef_viewmodel[client] ||
+		   ref == i_Worldmodel_WeaponModel[client])
+			continue;
+		
+		Attributes_RemoveAll(entity);
+	}
 
 	StringMapSnapshot snapshot = map.Snapshot();
-	int entity = client;
+	entity = client;
 	int length = snapshot.Length;
 	int attribs = 0;
 	for(int i; i < length; i++)
@@ -4607,13 +4624,13 @@ void Store_ApplyAttribs(int client)
 			if(!TF2_GetWearable(client, entity))
 				break;
 
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			{
-				i--;
+			int ref = EntIndexToEntRef(entity);
+			if(ref == i_Viewmodel_PlayerModel[client] ||
+			   ref == WeaponRef_viewmodel[client] ||
+			   ref == i_Worldmodel_WeaponModel[client])
 				continue;
-			}
-
-			Attributes_RemoveAll(entity);
+			
+			//Attributes_RemoveAll(entity);
 			attribs++;
 		}
 
@@ -4659,14 +4676,6 @@ void Store_ApplyAttribs(int client)
 				attribs++;
 
 		}
-	}
-
-	while(TF2_GetWearable(client, entity))
-	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
-		
-		Attributes_RemoveAll(entity);
 	}
 
 	if(dieingstate[client] > 0)
@@ -5184,8 +5193,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
-
-					HidePlayerWeaponModel(client, entity);
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -5244,7 +5252,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 6 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 194, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
@@ -5255,9 +5263,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 
-			HidePlayerWeaponModel(client, entity);
-			//hide original model
-			
 			SetEntData(entity, offset - 8, 0);	// m_iItemID
 			SetEntData(entity, offset - 4, 0);	// m_iItemID
 			SetEntData(entity, offset, 0);		// m_iItemIDHigh
@@ -5282,6 +5287,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			Attributes_Set(entity, 263, 0.0);
 			Attributes_Set(entity, 264, 0.0);
+
 			EquipPlayerWeapon(client, entity);
 
 			if(use)
@@ -5488,8 +5494,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
+		for(int i; i<1; i++)
+		{
+			b_WeaponSpecificClassBuff[entity][i] = false;
+		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5567,7 +5578,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
+		Flametail_Enable(client, entity);
 	}
+
 	return entity;
 }
 
