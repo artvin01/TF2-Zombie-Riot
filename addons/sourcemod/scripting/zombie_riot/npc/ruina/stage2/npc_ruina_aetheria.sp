@@ -478,10 +478,6 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 
 		Laser.Deal_Damage(On_LaserHit);
 	}
-	else
-	{
-		npc.m_flSpeed = 200.0;
-	}
 
 	
 	if(flDistanceToTarget < (2250.0*2250.0))

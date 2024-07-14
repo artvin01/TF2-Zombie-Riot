@@ -948,7 +948,12 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-//RUINA_QUINCY_BOW_2		= 1
+#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_1.mdl"
+enum
+{
+	RUINA_QUINCY_BOW_2		= 1			//1
+}
+
 
 
 
@@ -1674,6 +1679,7 @@ public void OnMapStart()
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
+	PrecacheModel(RUINA_CUSTOM_MODELS_2);
 	
 #if defined ZR
 	Zero(i_CustomWeaponEquipLogic);

@@ -2421,8 +2421,6 @@ static void Ruina_Teleport_Entity(int entity, float loc[3])
 
 /*
 
-Add sound effects to mana sickness ION's
-
 Mana Sickness:
 Its a special effect for ruina.
 If a player gets more then 2x thier max mana, an ION cannon is fired onto their location, the stats scale on the current "stage"
@@ -2562,12 +2560,16 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.
-		Stage 3: sp exists.
+		Stage 3: Done.
 		Stage 4: Null
 
 		Aetheria
 		{
 			battery: gains the ability to shoot a laser projectile of D00M
+		}
+		Aetherium
+		{
+			Buffed variant
 		}
 	}
 	//created
@@ -2676,8 +2678,8 @@ Names per stage:
 
 	Stage 2 specials:
 
-	Lex. - Boss. W30.	- Change lifeloss sounds. Add a few unique medic lines for when using abilities.
-	Iana - Boss. W30.	- Ion cannon needs sound effects. Change lifeloss sounds. Add some of scouts unique lines.
+	Lex. - Boss. W30.
+	Iana - Boss. W30.
 
 	Stage 3 specials:
 

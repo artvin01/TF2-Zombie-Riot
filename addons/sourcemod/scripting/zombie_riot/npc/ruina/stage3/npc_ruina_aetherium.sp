@@ -166,11 +166,10 @@ methodmap Aetherium < CClotBody
 		
 		
 		/*
-			//Blighted beak 			"models/player/items/medic/medic_blighted_beak.mdl"
-			//Whiskey Bib				"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
-			//Intangible Ascot 			"models/player/items/spy/hwn_spy_misc2.mdl"
-			//Gentleman's Ushanka		"models/player/items/medic/medic_ushanka.mdl"
-			//power spike 				"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl"
+			//aztec aggressor			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl"
+			//golden garment			"models/workshop/player/items/sniper/xms2013_sniper_golden_garment/xms2013_sniper_golden_garment.mdl"
+			//mad mask					"models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl"
+			//tuxxy						"models/player/items/all_class/tuxxy_%s.mdl"
 			//Triggerman's tacticals	"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl"
 		
 		*/
@@ -185,19 +184,18 @@ methodmap Aetherium < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		fl_npc_basespeed = 200.0;
+		fl_npc_basespeed = 230.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/player/items/medic/medic_blighted_beak.mdl",
-			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl",
-			"models/player/items/spy/hwn_spy_misc2.mdl",
-			"models/player/items/medic/medic_ushanka.mdl",
-			"models/workshop/player/items/medic/hwn2023_power_spike/hwn2023_power_spike.mdl",
+			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl",
+			"models/workshop/player/items/sniper/xms2013_sniper_golden_garment/xms2013_sniper_golden_garment.mdl",
+			"models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl",
+			"models/player/items/all_class/tuxxy_sniper.mdl",
 			"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -208,11 +206,10 @@ methodmap Aetherium < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
-		SetVariantInt(RUINA_QUINCY_BOW_1);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+		SetVariantInt(RUINA_QUINCY_BOW_2);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 			
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -391,8 +388,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
 }
 
 static void On_LaserHit(int client, int target, int damagetype, float damage)
@@ -468,7 +463,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 		Laser.Start_Point = Npc_Vec;
 		Laser.End_Point = Proj_Vec;
 
-		float dmg = 25.0;
+		float dmg = 35.0;
 		float radius = 15.0;
 
 		Laser.Radius = radius;
@@ -478,68 +473,20 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 
 		Laser.Deal_Damage(On_LaserHit);
 	}
-	else
-	{
-		npc.m_flSpeed = 200.0;
-	}
 
 	
 	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
-			if(fl_ruina_battery[npc.index]>500.0)
+			if(fl_ruina_battery[npc.index]>700.0)
 			{
-				fl_ruina_battery[npc.index] = 0.0;
-				npc.PlayHyperArrowSound();
+				int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+				if(IsValidEntity(Laser_End))
+					return;
 
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
-				npc.PlayRangedReloadSound();
-
-				Ruina_Projectiles Projectile;
-				float Projectile_Time = 2.5;
-
-				float projectile_speed = 2250.0;	
-				float target_vec[3];
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, _,target_vec);
-
-				Projectile.iNPC = npc.index;
-				Projectile.Start_Loc = Npc_Vec;
-				float Ang[3];
-				MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
-				GetVectorAngles(Ang, Ang);
-				Projectile.Angles = Ang;
-				Projectile.speed = projectile_speed;
-				Projectile.radius = 0.0;
-				Projectile.damage = 750.0;
-				Projectile.bonus_dmg = 900.0;
-				Projectile.Time = Projectile_Time;
-				Projectile.visible = false;
-				int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
-
-				if(IsValidEntity(Proj))
-				{
-					npc.m_flAttackHappens = gameTime + Projectile_Time;
-
-					i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
-				
-
-					float 	f_start = 3.5,
-							f_end = 2.5,
-							amp = 0.25;
-					
-					int r = 1,
-						g = 1,
-						b = 255;
-					
-					//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
-							
-					int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
-					i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
-				}
+				Fire_Hyper_Arrow(npc, Npc_Vec, GetClosestEnemyToAttack, vecTarget);	
 			}
 			else
 			{
@@ -556,10 +503,10 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
-				float DamageDone = 50.0;
+				float DamageDone = 75.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.5;
 			}
 			
 		}
@@ -588,58 +535,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 						if(IsValidEntity(Laser_End))
 							return;
 
-						fl_ruina_battery[npc.index] = 0.0;
-						npc.PlayHyperArrowSound();
-
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
-
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
-						npc.PlayRangedReloadSound();
-
-						
-
-						Ruina_Projectiles Projectile;
-						float Projectile_Time = 2.5;
-
-						float projectile_speed = 2500.0;	
-						float target_vec[3];
-						PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
-
-						Projectile.iNPC = npc.index;
-						Projectile.Start_Loc = Npc_Vec;
-						float Ang[3];
-						MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
-						GetVectorAngles(Ang, Ang);
-						Projectile.Angles = Ang;
-						Projectile.speed = projectile_speed;
-						Projectile.radius = 0.0;
-						Projectile.damage = 750.0;
-						Projectile.bonus_dmg = 900.0;
-						Projectile.Time = Projectile_Time;
-						Projectile.visible = false;
-						int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
-
-						if(IsValidEntity(Proj))
-						{
-							npc.m_flAttackHappens = gameTime + Projectile_Time;
-
-							i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
-						
-
-							float 	f_start = 2.5,
-									f_end = 1.5,
-									amp = 0.25;
-							
-							int r = 1,
-								g = 1,
-								b = 255;
-
-							//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
-							
-							int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
-							i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
-						}
+						Fire_Hyper_Arrow(npc, Npc_Vec, target, vecTarget);	
 					}
 					else
 					{
@@ -655,10 +551,10 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 						{
 							WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 						}
-						float DamageDone = 50.0;
+						float DamageDone = 75.0;
 						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.5;
 						npc.PlayRangedReloadSound();
 					}
 					
@@ -667,4 +563,67 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 		}
 	}
 	npc.m_iTarget = GetClosestEnemyToAttack;
+}
+static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float vecTarget[3])
+{
+	fl_ruina_battery[npc.index] = 0.0;
+	npc.PlayHyperArrowSound();
+
+	npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+
+	npc.FaceTowards(vecTarget, 20000.0);
+	npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
+	npc.PlayRangedReloadSound();
+
+	
+
+	Ruina_Projectiles Projectile;
+	float Projectile_Time = 2.5;
+
+	float projectile_speed = 2500.0;	
+	float target_vec[3];
+	PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
+
+	Projectile.iNPC = npc.index;
+	Projectile.Start_Loc = Npc_Vec;
+	float Ang[3];
+	MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+	GetVectorAngles(Ang, Ang);
+	Projectile.Angles = Ang;
+	Projectile.speed = projectile_speed;
+	Projectile.radius = 0.0;
+	Projectile.damage = 750.0;
+	Projectile.bonus_dmg = 900.0;
+	Projectile.Time = Projectile_Time;
+	Projectile.visible = false;
+	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);
+
+	if(!IsValidEntity(Proj))
+		return;
+
+	float 	Homing_Power = 2.5,
+			Homing_Lockon = 25.0;
+
+	Initiate_HomingProjectile(Proj,
+	npc.index,
+	Homing_Lockon,			// float lockonAngleMax,
+	Homing_Power,			// float homingaSec,
+	true,					// bool LockOnlyOnce,
+	true,					// bool changeAngles,
+	Ang);
+
+	i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
+
+
+	float 	f_start = 3.5,
+			f_end = 2.5,
+			amp = 0.3;
+
+	int color[4];
+	Ruina_Color(color);
+	
+	//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
+			
+	int beam = ConnectWithBeamClient(npc.m_iWearable6, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
+	i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 }

@@ -34,8 +34,10 @@ static const char g_IdleAlertedSounds[][] = {
 	"medic_autocappedcontrolpoint03.mp3"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+static const char g_LaserWebInvokeSounds[][] = {
+	"vo/medic_mvm_loot_godlike01.mp3",
+	"vo/medic_mvm_loot_godlike02.mp3",
+	"vo/medic_mvm_loot_godlike03.mp3"
 };
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
@@ -80,7 +82,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_LaserWebInvokeSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
@@ -224,14 +226,14 @@ methodmap Lex < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
+		PrintToServer("CClot::PlayMeleeSound()");
 		#endif
 	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+	public void PlayLaserWebInvokeSound() {
+		EmitSoundToAll(g_LaserWebInvokeSounds[GetRandomInt(0, sizeof(g_LaserWebInvokeSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
+		PrintToServer("CClot::PlayLaserWebInvokeSound()");
 		#endif
 	}
 
@@ -442,6 +444,8 @@ methodmap Lex < CClotBody
 
 		if(!npc.m_bSolo)
 			RequestFrame(Do_OnSpawn, npc.index);
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
@@ -519,6 +523,7 @@ static void ClotThink(int iNPC)
 		if(fl_ruina_battery_timer[npc.index] > GameTime)
 		{
 			npc.m_iState = 0;
+			npc.m_fbGunout = false;
 			Delete_Beacons(npc.index);
 			npc.m_flNextMeleeAttack = GameTime + 9.0;
 
@@ -659,6 +664,11 @@ static void ClotThink(int iNPC)
 					{
 						if(npc.m_iState < RUINA_LEX_LASER_BEACON_AMT && fl_multi_attack_delay[npc.index] < GameTime)
 						{
+							if(!npc.m_fbGunout)
+							{
+								npc.PlayLaserWebInvokeSound();
+								npc.m_fbGunout = true;
+							}
 							fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
 							fl_multi_attack_delay[npc.index] = GameTime + 0.2;
@@ -740,6 +750,7 @@ static void ClotThink(int iNPC)
 					else
 					{
 						npc.m_iState = 0;
+						npc.m_fbGunout = false;
 						Delete_Beacons(npc.index);
 						npc.m_flNextMeleeAttack = GameTime + 9.0;
 					}
