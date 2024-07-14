@@ -639,7 +639,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 					}
 					else
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 						npc.PlayRangedSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge

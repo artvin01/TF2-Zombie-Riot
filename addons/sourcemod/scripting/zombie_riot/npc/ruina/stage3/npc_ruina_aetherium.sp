@@ -152,6 +152,39 @@ methodmap Aetherium < CClotBody
 		#endif
 	}
 	
+	public void Set_WalCycle()
+	{
+		bool Aimed = false;
+
+		float GameTime = GetGameTime(this.index);
+
+		if(this.m_flAttackHappens > GameTime)	//we are currently firing a hyper arrow.
+			Aimed = true;
+
+		if(this.m_flNextRangedAttack < (GameTime + 1.0))	//we are about to fire a arrow, aim.
+			Aimed = true;
+
+		if(Aimed)
+		{
+			if(!this.m_fbGunout)
+			{
+				CPrintToChatAll("ACT_MP_DEPLOYED_ITEM2");
+				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = true;
+			}
+		}
+		else
+		{
+			if(this.m_fbGunout)
+			{
+				CPrintToChatAll("ACT_MP_RUN_ITEM2");
+				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = false;
+			}
+		}
+	}
 	
 	public Aetherium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -161,8 +194,9 @@ methodmap Aetherium < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
 		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_fbGunout = false;
 		
 		
 		/*
@@ -268,7 +302,8 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
+		npc.Set_WalCycle();
+
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
@@ -392,7 +427,7 @@ static void NPC_Death(int entity)
 
 static void On_LaserHit(int client, int target, int damagetype, float damage)
 {
-	Ruina_Add_Mana_Sickness(client, target, 0.01, 1);
+	Ruina_Add_Mana_Sickness(client, target, 0.05, 3);
 }
 
 static void Func_On_Proj_Touch(int projectile, int other)
@@ -410,7 +445,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 
 	if(IsValidEnemy(owner, other))
 	{
-		Ruina_Add_Mana_Sickness(owner, other, 0.5, 50);
+		Ruina_Add_Mana_Sickness(owner, other, 0.5, 100);
 
 		float Dmg = fl_ruina_Projectile_dmg[projectile];
 		if(ShouldNpcDealBonusDamage(other))
@@ -474,12 +509,11 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 		Laser.Deal_Damage(On_LaserHit);
 	}
 
-	
 	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
-		if(gameTime > npc.m_flNextRangedAttack)
+		if(npc.m_flNextRangedAttack < gameTime)
 		{
-			if(fl_ruina_battery[npc.index]>700.0)
+			if(fl_ruina_battery[npc.index]>500.0)
 			{
 				int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
 
@@ -506,7 +540,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 				float DamageDone = 75.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.5;
+				npc.m_flNextRangedAttack = gameTime + 6.5;
 			}
 			
 		}
@@ -539,7 +573,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 					}
 					else
 					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
+						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
 						npc.PlayRangedSound();
 						//after we fire, we will have a short delay beteween the actual laser, and when it happens
 						//This will predict as its relatively easy to dodge
@@ -554,7 +588,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 						float DamageDone = 75.0;
 						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.5;
+						npc.m_flNextRangedAttack = gameTime + 6.5;
 						npc.PlayRangedReloadSound();
 					}
 					
@@ -574,8 +608,6 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 	npc.FaceTowards(vecTarget, 20000.0);
 	npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
 	npc.PlayRangedReloadSound();
-
-	
 
 	Ruina_Projectiles Projectile;
 	float Projectile_Time = 2.5;
@@ -600,6 +632,8 @@ static void Fire_Hyper_Arrow(Aetherium npc, float Npc_Vec[3], int target, float 
 
 	if(!IsValidEntity(Proj))
 		return;
+
+	npc.m_flAttackHappens = GetGameTime(npc.index) + Projectile_Time;
 
 	float 	Homing_Power = 2.5,
 			Homing_Lockon = 25.0;
