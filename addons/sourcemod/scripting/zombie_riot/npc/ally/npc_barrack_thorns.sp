@@ -445,9 +445,10 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 {
 	if(npc.m_flAttackHappens)
 	{
+		float SelfVecPos[3];
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			WorldSpaceCenter(EnemyToAttack, SelfVecPos);
 			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
@@ -478,18 +479,18 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
-					float vecTarget[3];
+				//	float vecTarget[3];
 					float speed = 2000.0;
-					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
+				//	PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
 					npc.m_flSpeed = 0.0;
-					int rocket;
-					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+				//	int rocket;
+					npc.FireParticleRocket(SelfVecPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 
-					DataPack pack;
-					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
+				//	DataPack pack;
+				//	CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				//	pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
+				//	pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
 				}
 			}
 		}
@@ -533,9 +534,10 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 {
 	if(npc.m_flAttackHappens)
 	{
+		float SelfVecPos[3];
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			WorldSpaceCenter(EnemyToAttack, SelfVecPos);
 			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
@@ -572,18 +574,17 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
-					float vecTarget[3];
+				//	float vecTarget[3];
 					float speed = 2000.0;
-					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
+				//	PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
 					npc.m_flSpeed = 0.0;
-					int rocket;
-					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+				//	int rocket;
+					npc.FireParticleRocket(SelfVecPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
-				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
-					DataPack pack;
-					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
+				//	DataPack pack;
+				//	CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+				//	pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
+				//	pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
 				
 				}
 			}

@@ -231,6 +231,7 @@ methodmap GodAlaxios < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

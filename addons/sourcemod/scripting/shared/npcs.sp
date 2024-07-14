@@ -1132,7 +1132,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		SlayNpc = false;
 	}
-	if(b_NpcIsInvulnerable[victim])
+	if(b_NpcIsInvulnerable[victim] || b_NpcUnableToDie[victim])
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 		{

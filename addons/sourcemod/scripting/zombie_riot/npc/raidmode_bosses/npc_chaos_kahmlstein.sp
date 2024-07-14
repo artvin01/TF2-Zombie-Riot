@@ -333,6 +333,7 @@ methodmap ChaosKahmlstein < CClotBody
 			f_khamlCutscene[npc.index] = GetGameTime() + 45.0;
 			i_khamlCutscene[npc.index] = 14;
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 
 		if(StrContains(data, "fake_2") != -1)

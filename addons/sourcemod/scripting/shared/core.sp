@@ -742,6 +742,7 @@ int i_WandOwner[MAXENTITIES]; //				//785
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
+bool b_NpcUnableToDie[MAXENTITIES];
 
 Function EntityFuncAttack[MAXENTITIES];
 Function EntityFuncAttackInstant[MAXENTITIES];
@@ -2880,6 +2881,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		b_DoNotUnStuck[entity] = false;
 		f_NpcImmuneToBleed[entity] = 0.0;
 		b_NpcIsInvulnerable[entity] = false;
+		b_NpcUnableToDie[entity] = false;
 		i_NpcInternalId[entity] = 0;
 		b_IsABow[entity] = false;
 		b_IsAMedigun[entity] = false;

@@ -316,6 +316,7 @@ methodmap TrueFusionWarrior < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		
 		b_thisNpcIsARaid[npc.index] = true;

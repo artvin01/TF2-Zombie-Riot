@@ -301,6 +301,7 @@ methodmap Sensal < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		bool cutscene = StrContains(data, "duo_cutscene") != -1;
 		if(cutscene)
