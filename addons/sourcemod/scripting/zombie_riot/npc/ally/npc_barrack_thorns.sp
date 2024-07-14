@@ -263,12 +263,12 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsAbilityActiveTimes[npc.index] > 1)
 				{
 					ThornsAbilityActive[npc.index] = FAR_FUTURE;
-					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
+					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "", {0.0,0.0,0.0});
 
 				}
 				else
 				{
-					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
+					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "", {0.0,0.0,0.0});
 					CreateTimer(30.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				}
 				switch(GetRandomInt(0,3))

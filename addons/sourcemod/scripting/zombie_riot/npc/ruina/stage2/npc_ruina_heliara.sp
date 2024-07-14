@@ -403,7 +403,7 @@ static void Heliara_Create_Crest(int client)
 {
 	float flPos[3];
 	float flAng[3];
-	GetAttachment(client, "root", flPos, flAng);
+	GetAttachment(client, "", flPos, flAng);
 	
 	
 	int r, g, b;
@@ -450,7 +450,7 @@ static void Heliara_Create_Crest(int client)
 
 	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
 	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "root",_);
+	SetParent(client, particle_0, "",_);
 
 	/* 
 		particle_2 particle_4 particle_5 particle_6 particle_2_1 particle_4_1 particle_5_1 particle_6_1

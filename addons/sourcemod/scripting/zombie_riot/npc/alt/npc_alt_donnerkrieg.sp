@@ -269,7 +269,7 @@ methodmap Donnerkrieg < CClotBody
 					
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		//SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
@@ -783,10 +783,10 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					float flPos[3]; // original
 					float flAng[3]; // original
 						
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0});
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0});
 						
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						

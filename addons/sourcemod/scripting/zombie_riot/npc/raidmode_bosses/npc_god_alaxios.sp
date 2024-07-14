@@ -311,7 +311,7 @@ methodmap GodAlaxios < CClotBody
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc.index, "root", {0.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc.index, "", {0.0,0.0,0.0});
 		npc.StartPathing();
 
 		DoGlobalMultiScaling();
@@ -1719,7 +1719,7 @@ void GodAlaxiosAOEBuff(GodAlaxios npc, float gameTime, bool mute = false)
 							float flPos[3]; // original
 							GodAlaxios npc1 = view_as<GodAlaxios>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
-							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc1.index, "root", {0.0,0.0,0.0});
+							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_wispy_parent_g", npc1.index, "", {0.0,0.0,0.0});
 							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
