@@ -488,7 +488,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 		float Proj_Vec[3];
 		GetEntPropVector(Laser_End, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
 
-		npc.FaceTowards(Proj_Vec, 20000.0);
+		npc.FaceTowards(Proj_Vec, 200000.0);
 			
 		Ruina_Laser_Logic Laser;
 
