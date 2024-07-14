@@ -104,12 +104,9 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_BALL_PARTICLE_BLUE "drg_manmelter_trail_blue"
 #define RUINA_BALL_PARTICLE_RED "drg_manmelter_trail_red"
 
-#define RUINA_ION_CANNON_SOUND_SPAWN "ambient/machines/thumper_startup1.wav"
-#define RUINA_ION_CANNON_SOUND_TOUCHDOWN "mvm/ambient_mp3/mvm_siren.mp3"
-#define RUINA_ION_CANNON_SOUND_ATTACK "ambient/machines/thumper_hit.wav"
-#define RUINA_ION_CANNON_SOUND_SHUTDOWN "ambient/machines/thumper_shutdown1.wav"
-#define RUINA_ION_CANNON_SOUND_PASSIVE "ambient/energy/weld1.wav"
-#define RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING "weapons/physcannon/physcannon_charge.wav"
+#define RUINA_ION_CANNON_SOUND_SPAWN 				"ambient/machines/thumper_startup1.wav"
+#define RUINA_ION_CANNON_SOUND_TOUCHDOWN 			"ambient/machines/thumper_hit.wav"
+#define RUINA_ION_CANNON_SOUND_ATTACK 				"ambient/machines/thumper_dust.wav"
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 
@@ -134,7 +131,7 @@ enum
 	RUINA_BATTERY_BUFF	 	= 7
 }
 
-static char gLaser1;
+//static char gLaser1;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
@@ -195,9 +192,6 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheSound(RUINA_ION_CANNON_SOUND_SPAWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
 	PrecacheSound(RUINA_ION_CANNON_SOUND_ATTACK);
-	PrecacheSound(RUINA_ION_CANNON_SOUND_SHUTDOWN);
-	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE);
-	PrecacheSound(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING);
 	
 	PrecacheSound(RUINA_SHIELD_ONTAKE_SOUND);
 
@@ -211,7 +205,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 	
-	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
@@ -1383,6 +1377,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	TE_SetupBeamRingPoint(end_point, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, time, Thickness, 0.1, color, 1, 0);
 	TE_SendToAll();
 
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 	DataPack pack;
 	CreateDataTimer(time, Ruina_Mana_Sickness_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(GetTeam(iNPC));
@@ -1437,6 +1432,8 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 	Radius = Radius*Radius;
 
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(view_as<CClotBody>(client).m_bThisEntityIgnored)
@@ -1456,6 +1453,8 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 		if(GetVectorDistance(Vic_Pos, end_point, true) > Radius)
 			continue;
+
+		EmitSoundToClient(client, RUINA_ION_CANNON_SOUND_ATTACK);
 
 		SDKHooks_TakeDamage(client, 0, 0, dmg, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
 
@@ -1532,25 +1531,10 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
-	/*
-	stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
-float spawnLoc[3] = {0.0,0.0,0.0},
-float explosionRadius = EXPLOSION_RADIUS,
-float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
-float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
-bool FromBlueNpc = false,
-int maxtargetshit = 10,
-bool ignite = false,
-float dmg_against_entity_multiplier = 3.0,
-Function FunctionToCallOnHit = INVALID_FUNCTION,
-Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = 0)
-	*/
 
-	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _, Radius, _, _, true, _, _, 2.0);
+	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _  , Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
+
+	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
 	if(Sickness_flat || Sickness_Multi)
 		Ruina_AOE_Add_Mana_Sickness(end_point, iNPC, Radius, Sickness_Multi, Sickness_flat,Override);
@@ -1570,6 +1554,11 @@ int inflictor = 0)
 	CreateTimer(1.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 	return Plugin_Stop;
+}
+static void Generic_ion_OnHit(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidClient(victim))
+		EmitSoundToClient(victim, RUINA_ION_CANNON_SOUND_ATTACK);
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
@@ -2050,302 +2039,6 @@ public Action Timer_Move_Particle(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-				 ///////////////////
-				/// Wave Events ///
-			   ///////////////////
-/*
-float speed = kv.GetFloat("ruina_ion_cannon_speed", 9.0);
-float damage = kv.GetFloat("ruina_ion_cannon_damage", 1000.0);
-float range = kv.GetFloat("ruina_ion_cannon_range", 250.0);
-float charge_time = kv.GetFloat("ruina_ion_cannon_charge_time", 5.0);
-int red = kv.GetNum("ruina_ion_cannon_red", 255);
-int green = kv.GetNum("ruina_ion_cannon_green", 255);
-int blue = kv.GetNum("ruina_ion_cannon_blue", 255);
-int ion_amt = kv.GetNum("ruina_ion_cannon_spawn_amt", 1);	//if set to -1 it will spawn as many ions as there are players on red	
-*/
-
-static float fl_ion_current_location[MAXTF2PLAYERS+1][3];
-static float fl_angle[MAXTF2PLAYERS + 1];
-static float fl_ion_sound_delay[MAXTF2PLAYERS + 1];
-static float fl_ion_attack_sound_delay[MAXTF2PLAYERS + 1];
-static bool b_touchdown;
-static bool b_kill;
-static bool b_ion_active;
-
-public Action Command_Spawn_Ruina_Cannon(int client, int args)
-{
-	if(b_ion_active)
-	{
-		CPrintToChat(client,"Ruina Ion cannon's area already active!");
-	}
-	else
-	{
-		CPrintToChat(client, "Ruina Ion Cannon's Summoned");
-		Ruina_Create_Ion_Cannon(-1, 100.0, 7.5, 100.0, 255, 255, 255, 5.0);
-	}
-	
-	
-	return Plugin_Handled;
-}
-public Action Command_Kill_Ruina_Cannon(int client, int args)
-{
-	
-	CPrintToChat(client, "Killed Ruina Ion Cannon's");
-	b_kill = true;
-	
-	return Plugin_Handled;
-}
-
-public void Ruina_Create_Ion_Cannon(int amt, float damage, float speed, float range, int r, int g, int b, float charge_time)
-{
-	
-		b_ion_active = true;
-		b_kill = false;
-		for(int ion=0 ; ion< MAXTF2PLAYERS ; ion++)
-		{
-			if(IsValidClient(ion))
-			{
-				fl_ion_sound_delay[ion] = 0.0;
-				fl_ion_attack_sound_delay[ion] = 0.0;
-				float loc[3]; GetEntPropVector(ion, Prop_Data, "m_vecAbsOrigin", loc);
-				loc[0] += GetRandomFloat(350.0, -350.0);
-				loc[1] += GetRandomFloat(350.0, -350.0);
-				fl_ion_current_location[ion] = loc;
-			}
-		}
-		b_touchdown = false;
-		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN);
-		DataPack pack;
-		CreateDataTimer(0.1, Ruina_Ion_Timer, pack, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
-		pack.WriteCell(amt);
-		pack.WriteCell(damage);
-		pack.WriteCell(speed);
-		pack.WriteCell(range);
-		pack.WriteCell(r);
-		pack.WriteCell(g);
-		pack.WriteCell(b);
-		pack.WriteCell(ZR_GetWaveCount()+1);
-		pack.WriteCell(charge_time+GetGameTime());
-		pack.WriteCell(charge_time);
-		
-		
-}
-
-//todo: DOESNT HAVE A PLUGIN_STOP;
-//note: just redo this entire thing, ive gone past the need for TE's to make ions. plus this thing sucks
-static Action Ruina_Ion_Timer(Handle time, DataPack pack)	
-{
-	int true_current_round = ZR_GetWaveCount() + 1;
-	
-	
-	pack.Reset();
-	int amt = pack.ReadCell();
-	float damage =pack.ReadCell();
-	float speed =pack.ReadCell();
-	float range =pack.ReadCell();
-	int r =pack.ReadCell();
-	int g =pack.ReadCell();
-	int b =pack.ReadCell();
-	int current_round = pack.ReadCell();
-	int a = 155;
-	float charge_time = pack.ReadCell();
-	float base_charge_time= pack.ReadCell();
-	
-	//int loop_for=amt;
-	if(amt==-1)
-	{
-		amt = CountPlayersOnRed();
-		//loop_for = MAXTF2PLAYERS;
-	}
-		
-		
-	if(charge_time>GetGameTime())
-	{
-		Ruina_Ion_Cannon_Charging(charge_time, range, r, g, b, a, base_charge_time, amt);
-		return Plugin_Continue;
-	}
-	else
-	{
-		if(!b_touchdown)
-		{
-			b_touchdown = true;
-			EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN);
-		}
-	}
-	if(true_current_round!=current_round || b_kill)
-	{
-		b_ion_active = false;
-		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SHUTDOWN);
-		return Plugin_Stop;	//kill ion if its not the same round anymore 
-	}
-	
-	
-	
-	float start_size = 15.0;
-	float end_size = 30.0;
-	int colour[4];
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
-	colour[3] = a;
-	
-	
-	int ions_active = 0;
-	for(int ion=1 ; ion<= MAXTF2PLAYERS ; ion++)
-	{
-		if(IsValidClient(ion) && IsClientInGame(ion) && GetClientTeam(ion) != 3 && IsEntityAlive(ion) && TeutonType[ion] == TEUTON_NONE && dieingstate[ion] == 0)
-		{
-			if(ions_active<amt)
-			{
-				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
-				float loc[3]; GetEntPropVector(ion, Prop_Data, "m_vecAbsOrigin", loc);
-				ions_active++;
-				float vecAngles[3], Direction[3];
-				
-				
-				MakeVectorFromPoints(cur_vec, loc, vecAngles);
-				GetVectorAngles(vecAngles, vecAngles);
-					
-				GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-				ScaleVector(Direction, speed);
-				AddVectors(cur_vec, Direction, cur_vec);
-				
-				fl_ion_current_location[ion] = cur_vec;
-				
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
-				float skyloc[3]; skyloc = cur_vec; skyloc[2] += 3000.0;
-				
-				int color[4];
-				color[0] = r;
-				color[1] = g;
-				color[2] = b;
-				color[3] = a;
-				float Thickness = 8.0;
-				TE_SetupBeamRingPoint(cur_vec, range*2.0, range*2.0+1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.1, color, 1, 0);
-				TE_SendToAll();
-				
-				fl_ion_sound_delay[ion]++;
-				if(fl_ion_sound_delay[ion]>1.0)
-				{
-					fl_ion_sound_delay[ion] = 0.0;
-					EmitSoundToAll(RUINA_ION_CANNON_SOUND_PASSIVE, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.25, SNDPITCH_NORMAL, -1, cur_vec);
-				}
-					
-				for(int client=1 ; client<= MAXTF2PLAYERS ; client++)
-				{
-					if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-					{
-						float loc2[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", loc2);
-						float dist = GetVectorDistance(loc2, cur_vec, true);
-						
-						if(dist < (range * range))
-						{
-							float Dmg = damage;
-
-							float falloffmax = 0.80;	//it will deal only 20% of the original dmg at max range!
-							float falloffstart = range*0.5;
-							if (dist > falloffstart)		//reduce damage if the target just grazed it.
-							{
-								float diff = dist - falloffstart;
-								float rad = range - falloffstart;
-								
-								Dmg *= 1.0 - ((diff/rad) * falloffmax);
-							}
-
-							fl_ion_attack_sound_delay[ion]++;
-							if(fl_ion_attack_sound_delay[ion]>1.0)
-							{
-								fl_ion_attack_sound_delay[ion] = 0.0;
-								EmitSoundToAll(RUINA_ION_CANNON_SOUND_ATTACK, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, cur_vec);
-							}
-
-							SDKHooks_TakeDamage(client, 0, 0, Dmg, DMG_CLUB, _, _, cur_vec);
-						}
-					}
-				}
-				cur_vec[2] -= 50.0;
-				TE_SetupBeamPoints(cur_vec, skyloc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
-				TE_SendToAll();
-			}
-		}
-	}
-	
-	
-	return Plugin_Continue;
-}
-static void Ruina_Ion_Cannon_Charging(float charge_time, float range, int r, int g, int b, int a, float base_charge_time, int amt)
-{
-	range *= 5.0;
-	int colour[4];
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
-	colour[3] = a;
-	int ions_active = 0;
-	float GameTime = GetGameTime();
-	float duration = charge_time - GameTime;
-	
-	range *= duration / base_charge_time;
-	
-	float start_size = 15.0;
-	float end_size = 30.0;
-	
-	for(int ion=1 ; ion<= MAXTF2PLAYERS ; ion++)
-	{
-		if(IsValidClient(ion) && IsClientInGame(ion) && GetClientTeam(ion) != 3 && IsEntityAlive(ion) && TeutonType[ion] == TEUTON_NONE && dieingstate[ion] == 0)
-		{
-			if(ions_active<amt)
-			{
-				ions_active++;
-				
-				float cur_vec[3]; cur_vec = fl_ion_current_location[ion];
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, cur_vec);
-				
-				float Thickness = 8.0;
-				TE_SetupBeamRingPoint(cur_vec, range/2.5, range/2.5+1.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.1, Thickness, 0.1, colour, 1, 0);
-				TE_SendToAll();
-				
-				fl_ion_sound_delay[ion]++;
-				if(fl_ion_sound_delay[ion]>2.0)
-				{
-					fl_ion_sound_delay[ion] = 0.0;
-					EmitSoundToAll(RUINA_ION_CANNON_SOUND_PASSIVE_CHARGING, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.25, SNDPITCH_NORMAL, -1, cur_vec);
-				}
-				
-				if(fl_angle[ion]>=360.0)
-				{
-					fl_angle[ion] = 0.0;
-				}
-				fl_angle[ion] += 2.5;
-				float EndLoc[3];
-				int amt2 = 5;
-				for (int j = 0; j < amt2; j++)
-				{
-					float tempAngles[3], Direction[3];
-					tempAngles[0] = 0.0;
-					tempAngles[1] = fl_angle[ion] + (float(j) * 360.0/amt2);
-					tempAngles[2] = 0.0;
-						
-					GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-					ScaleVector(Direction, range);
-					AddVectors(cur_vec, Direction, EndLoc);
-					
-					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc);
-					
-					float skyloc[3]; skyloc = EndLoc; skyloc[2] += 3000.0; EndLoc[2] -= 50.0;
-					TE_SetupBeamPoints(EndLoc, skyloc, g_Ruina_BEAM_Laser, 0, 0, 0, 0.1, start_size, end_size, 0, 0.25, colour, 0);
-					TE_SendToAll();
-					
-					EndLoc[2] += 50.0;
-					
-					cur_vec[2] = EndLoc[2];
-					TE_SetupBeamPoints(EndLoc, cur_vec, gLaser1, 0, 0, 0, 0.1, 5.0, 2.0, 0, 0.1, colour, 0);
-					TE_SendToAll();
-				}
-			}
-		}
-	}
-}
 public void Ruina_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
 {
 	float originalPostionTrace[3];

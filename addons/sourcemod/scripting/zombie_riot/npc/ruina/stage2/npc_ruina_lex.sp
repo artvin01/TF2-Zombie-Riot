@@ -29,9 +29,9 @@ static const char g_IdleSounds[][] = {
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",
 	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3",
+	"medic_autocappedcontrolpoint01.mp3",
+	"medic_autocappedcontrolpoint02.mp3",
+	"medic_autocappedcontrolpoint03.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -50,13 +50,10 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static char g_AngerSounds[][] = {	//todo: make it different!
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+static char g_AngerSounds[][] = {	
+	"vo/medic_mvm_get_upgrade01.mp3",
+	"vo/medic_mvm_get_upgrade02.mp3",
+	"vo/medic_mvm_get_upgrade03.mp3"
 };
 
 #define LEX_LASER_LOOP_SOUND	"player/taunt_rocket_hover_loop.wav"//"weapons/gauss/chargeloop.wav"

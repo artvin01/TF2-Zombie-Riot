@@ -8,14 +8,12 @@ static const char g_DeathSounds[][] = {
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/scout_beingshotinvincible01.mp3",
+	"vo/scout_beingshotinvincible02.mp3",
+	"vo/scout_beingshotinvincible03.mp3",
+	"vo/scout_beingshotinvincible04.mp3",
+	"vo/scout_beingshotinvincible21.mp3",
+	"vo/scout_beingshotinvincible05.mp3"
 };
 
 static const char g_IdleSounds[][] = {
@@ -23,15 +21,17 @@ static const char g_IdleSounds[][] = {
 	"vo/scout_standonthepoint02.mp3",
 	"vo/scout_standonthepoint03.mp3",
 	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
+	"vo/scout_standonthepoint05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/scout_cartgoingbackdefense01.mp3",
+	"vo/scout_cartgoingbackdefense02.mp3",
+	"vo/scout_cartgoingbackdefense03.mp3",
+	"vo/scout_cartgoingbackdefense04.mp3",
+	"vo/scout_cartgoingbackdefense05.mp3",
+	"vo/scout_cartgoingbackdefense06.mp3",
+	"vo/scout_generic01.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -50,13 +50,13 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static char g_AngerSounds[][] = {	//todo: make it different!
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+static char g_AngerSounds[][] = {
+	"vo/toughbreak/scout_quest_complete_easy_01.mp3",
+	"vo/scout_apexofjump03.mp3",
+	"vo/scout_autocappedintelligence02.mp3",
+	"vo/scout_autodejectedtie04.mp3",
+	"vo/scout_award05.mp3",				//LOOK AT ME!
+	"vo/scout_domination17.mp3"
 };
 
 void Iana_OnMapStart_NPC()
@@ -410,6 +410,7 @@ static void ClotThink(int iNPC)
 					TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 					TE_SendToAll();
 		
+					EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
 					DataPack pack;
 					CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 					pack.WriteCell(EntIndexToEntRef(npc.index));
@@ -417,9 +418,9 @@ static void ClotThink(int iNPC)
 					pack.WriteCellArray(color, sizeof(color));
 					pack.WriteFloat(Radius);
 					pack.WriteFloat(dmg);
-					pack.WriteFloat(0.1);
-					pack.WriteCell(100);
-					pack.WriteCell(false);
+					pack.WriteFloat(0.1);			//Sickness %
+					pack.WriteCell(100);			//Sickness flat
+					pack.WriteCell(false);			//Override sickness timeout
 
 					float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
 
