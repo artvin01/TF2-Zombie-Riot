@@ -227,7 +227,19 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-void Blacksmith_BuildingUsed(int entity, int client, int owner)
+int AnvilClickedOn[MAXTF2PLAYERS];
+int ClickedWithWeapon[MAXTF2PLAYERS];
+void Blacksmith_BuildingUsed(int entity, int client)
+{
+	AnvilClickedOn[client] = EntIndexToEntRef(entity);
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == -1)
+		return;
+	ClickedWithWeapon[client] = EntIndexToEntRef(weapon);
+
+	Anvil_Menu(client);
+}
+void Blacksmith_BuildingUsed_Internal(int entity, int client, int owner, bool reset)
 {
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
@@ -277,7 +289,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	Zero(tinker.Attrib);
 
 	tinker.Rarity = 0;
-	if(GetClientButtons(client) & IN_DUCK)
+	if(reset)
 	{
 		SetGlobalTransTarget(client);
 		
@@ -606,6 +618,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		}
 	}
 
+	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 
@@ -637,18 +650,6 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	if(!Rogue_Mode() && owner != client)
 	{
-		/*
-		if(i_Healing_station_money_limit[owner][client] < 20)
-		{
-			i_Healing_station_money_limit[owner][client]++;
-			Resupplies_Supplied[owner] += 2;
-			GiveCredits(owner, 20, true);
-			SetDefaultHudPosition(owner);
-			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
-		}
-		*/
-
 		switch(tinker.Rarity)
 		{
 			case 0:
@@ -1527,4 +1528,89 @@ static void TinkerSmallerSmarterBullets(int rarity, TinkerEnum tinker)
 			tinker.Value[2] = 0.6 + FasterReloadLuck;
 		}
 	}
+}
+
+
+public void Anvil_Menu(int client)
+{
+	if(dieingstate[client] == 0)
+	{	
+		CancelClientMenu(client);
+		SetStoreMenuLogic(client, false);
+		static char buffer[128];
+		Menu menu = new Menu(Anvil_MenuH);
+
+		SetGlobalTransTarget(client);
+		
+		menu.SetTitle("%t", "Anvil Menu Main");
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Re-Roll Weapon Stats");
+		menu.AddItem("-1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Remove Weapon Stats");
+		menu.AddItem("-2", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Display Current Stats");
+		menu.AddItem("-3", buffer);
+									
+		menu.ExitButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			int weapon;
+			int anvil;
+			int owner;
+			
+			if(IsValidClient(client))
+			{
+				weapon = EntRefToEntIndex(ClickedWithWeapon[client]);
+				anvil = EntRefToEntIndex(AnvilClickedOn[client]);
+			}
+			else
+				return 0;
+
+			if(!IsValidEntity(weapon) || !IsValidEntity(anvil))
+				return 0;
+			else
+			{
+				owner = GetEntPropEnt(anvil, Prop_Send, "m_hOwnerEntity");
+			}
+
+			switch(id)
+			{
+				case -1:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, client, owner, false);
+				}
+				case -2:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, client, owner, true);
+				}
+				case -3:
+				{
+					Blacksmith_ExtraDesc(client, StoreWeapon[weapon]);
+				}
+				default:
+				{
+					delete menu;
+				}
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+		}
+	}
+	return 0;
 }
