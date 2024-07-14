@@ -1129,8 +1129,8 @@ void GodAlaxiosSpawnEnemy(int alaxios, char[] plugin_name, int health = 0, int c
 				{
 					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
 				}
-				SetEntProp(summon, Prop_Data, "m_iHealth", health / 4);
-				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 4);
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 10);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 10);
 			}
 		}
 		return;
