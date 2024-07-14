@@ -168,7 +168,6 @@ methodmap Aetherium < CClotBody
 		{
 			if(!this.m_fbGunout)
 			{
-				CPrintToChatAll("ACT_MP_DEPLOYED_ITEM2");
 				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
 				if(iActivity > 0) this.StartActivity(iActivity);
 				this.m_fbGunout = true;
@@ -178,7 +177,6 @@ methodmap Aetherium < CClotBody
 		{
 			if(this.m_fbGunout)
 			{
-				CPrintToChatAll("ACT_MP_RUN_ITEM2");
 				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
 				if(iActivity > 0) this.StartActivity(iActivity);
 				this.m_fbGunout = false;
