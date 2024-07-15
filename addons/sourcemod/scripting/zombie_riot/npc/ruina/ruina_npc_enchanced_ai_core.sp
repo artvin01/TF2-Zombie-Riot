@@ -416,7 +416,7 @@ static void Ruina_Update_Shield(int client)
 static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from artvins vaus shield...
 {
 	CClotBody npc = view_as<CClotBody>(client);
-	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[client])
 		SetVariantString("1.35");
 	else

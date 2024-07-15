@@ -282,6 +282,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		
 		if(StrContains(data, "final_item") != -1)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_BobFirst_Win);
 			i_RaidGrantExtra[npc.index] = 1;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 10.0;

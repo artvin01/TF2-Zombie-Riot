@@ -156,7 +156,7 @@ methodmap NemanBoss < CClotBody
 
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_electric_mist_parent", npc.index, "root", {0.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_electric_mist_parent", npc.index, "", {0.0,0.0,0.0});
 
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);

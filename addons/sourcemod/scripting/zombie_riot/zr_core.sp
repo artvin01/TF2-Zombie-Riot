@@ -406,6 +406,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
+#include "zombie_riot/barney_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -595,6 +596,7 @@ void ZR_PluginStart()
 void ZR_MapStart()
 {
 	TeutonSoundOverrideMapStart();
+	BarneySoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
@@ -642,7 +644,6 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
-	Zero(i_PlayerModelOverrideIndexWearable);
 	Zero(b_HideCosmeticsPlayer);
 	KahmlFistMapStart();
 	M3_ClearAll();
@@ -884,7 +885,7 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
-	i_PlayerModelOverrideIndexWearable[client] = 0;
+	i_PlayerModelOverrideIndexWearable[client] = -1;
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 }

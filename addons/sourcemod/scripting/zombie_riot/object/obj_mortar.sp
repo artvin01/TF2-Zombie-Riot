@@ -245,7 +245,7 @@ public Action MortarFire(Handle timer, DataPack pack)
 			
 			float AOE_range = 350.0 * sentry_range;
 
-			Explode_Logic_Custom(damage, client, client, -1, ParticlePos, AOE_range, 1.45, _, false);
+			Explode_Logic_Custom(damage, client, client, -1, ParticlePos, AOE_range, 0.75, _, false);
 			
 			CreateEarthquake(ParticlePos, 0.5, 350.0, 16.0, 255.0);
 			EmitSoundToAll(MORTAR_BOOM, 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, ParticlePos);

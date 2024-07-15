@@ -80,8 +80,8 @@ public void Npc_OnTakeDamage_Chainsaw(int client, int damagetype)
 
 public void Weapon_ChainSawAttack(int client, int weapon, const char[] classname, bool &result)
 {
-	SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
-	SDKHook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+	SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
+	SDKHook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 }
 
 public void Chainsaw_ability_Prethink(int client)
@@ -95,12 +95,12 @@ public void Chainsaw_ability_Prethink(int client)
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_active < 0)
 		{
-			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+			SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		if(!IsChainSaw(i_CustomWeaponEquipLogic[weapon_active]))
 		{
-			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+			SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
@@ -112,7 +112,7 @@ public void Chainsaw_ability_Prethink(int client)
 	}
 	else
 	{
-		SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+		SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 		return;
 	}
 }

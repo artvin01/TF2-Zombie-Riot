@@ -239,20 +239,12 @@ void Blacksmith_BuildingUsed(int entity, int client)
 
 	Anvil_Menu(client);
 }
-void Blacksmith_BuildingUsed_Internal(int entity, int client, int owner, bool reset)
+void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int owner, bool reset)
 {
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
-		return;
-	}
-
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == -1)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ApplyBuildingCollectCooldown(entity, client, 1.0);
 		return;
 	}
 	
@@ -1591,11 +1583,11 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 			{
 				case -1:
 				{
-					Blacksmith_BuildingUsed_Internal(weapon, client, owner, false);
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, false);
 				}
 				case -2:
 				{
-					Blacksmith_BuildingUsed_Internal(weapon, client, owner, true);
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, true);
 				}
 				case -3:
 				{
