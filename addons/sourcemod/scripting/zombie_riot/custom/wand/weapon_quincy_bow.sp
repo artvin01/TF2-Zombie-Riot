@@ -551,16 +551,13 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 {
 	int pap = Get_Quincy_Pap(weapon);
 	
-	float speed = 1500.0*(charge_percent/100.0);
+	float speed = 3000.0*(charge_percent/100.0);
 
-	if(speed < 750.0)
-		speed = 750.0;
+	if(speed < 1500.0)
+		speed = 1500.0;
 
 	float damage=1.0;
 
-	if(speed>=1500)
-		speed=1500.0;
-	
 	if(pap>=2)	//removes half charge debuff
 	{
 		float charge_debuff = (charge_percent / 100.0);
@@ -568,11 +565,9 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 			charge_debuff = 0.5;
 		damage = 100.0*charge_debuff*1.5;
 		
-		speed = 2150.0*(charge_percent/100.0);
-		if(speed>=2150.0)
-			speed=2150.0;
+		speed = 3000.0*(charge_percent/25.0);
 		
-		float multi_arrow_damage = 0.75*damage * Attributes_Get(weapon, 410, 1.0);
+		float multi_arrow_damage = 0.5*damage * Attributes_Get(weapon, 410, 1.0);
 		
 		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
@@ -594,6 +589,9 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	
 	
 	float time = 10.0;
+
+	if(speed>=3000.0)
+		speed=3000.0;
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
