@@ -49,25 +49,29 @@ static const char RobotModels[][] =
 static const char PlayerModelsCustom[][] =
 {
 	"models/bots/headless_hatman.mdl",
-	"models/zombie_riot/player_model_add/model_player_1_1.mdl"
+	"models/zombie_riot/player_model_add/model_player_1_1.mdl",
+	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
 };
 
 static const bool PlayerModelsAnims[] =
 {
 	false,
+	true,
 	true
 };
 
 static const char PlayerCustomHands[][] =
 {
 	"",
-	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl"
+	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
+	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
 };
 
 enum
 {
 	HHH_SkeletonOverride = 0,
 	BARNEY = 1,
+	NIKO_2 = 2,
 }
 
 static int HandIndex[10];
@@ -75,7 +79,6 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
-//resizing is always 1.15 !!!!!
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -481,7 +484,6 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		int model = HandIndex[view_as<int>(class)];
 		if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(CustomHandIndex) && CustomHandIndex[i_PlayerModelOverrideIndexWearable[client]])
 		{
-			PrintToChatAll(PlayerCustomHands[i_PlayerModelOverrideIndexWearable[client]]);
 			model = CustomHandIndex[i_PlayerModelOverrideIndexWearable[client]];
 		}
 		

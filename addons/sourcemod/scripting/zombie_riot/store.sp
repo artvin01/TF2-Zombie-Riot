@@ -3674,6 +3674,10 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Barney");
 						menu2.AddItem("-47", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Niko Oneshot");
+						menu2.AddItem("-48", buffer);
+
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
 						
@@ -3687,6 +3691,13 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -47:
 					{
 						OverridePlayerModel(client, BARNEY, true);
+						FakeClientCommand(client, "joinclass 2");
+						MenuPage(client, -1);
+					}
+					case -48:
+					{
+						OverridePlayerModel(client, NIKO_2, true);
+						FakeClientCommand(client, "joinclass 2");
 						MenuPage(client, -1);
 					}
 					default:

@@ -3212,4 +3212,8 @@
 	{
 		"en"	"Barney"
 	}
+	"Niko Oneshot"
+	{
+		"en"	"Niko Oneshot"
+	}
 }
