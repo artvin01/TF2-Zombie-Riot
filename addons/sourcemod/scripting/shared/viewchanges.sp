@@ -57,11 +57,6 @@ static const bool PlayerModelsAnims[] =
 	false,
 	true
 };
-static const float PlayerModelSizeAdjust[] =
-{
-	1.0,
-	1.15
-};
 
 static const char PlayerCustomHands[][] =
 {
@@ -181,36 +176,6 @@ void ViewChange_PlayerModel(int client)
 
 					SetVariantString(PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
 					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-					float SizeAdjust = PlayerModelSizeAdjust[i_PlayerModelOverrideIndexWearable[client]];
-					
-					if(SizeAdjust != 1.0)
-					{
-						static float m_vecMaxAdjustFix[3];
-						static float m_vecMinsAdjustFix[3];
-						m_vecMaxAdjustFix = view_as<float>( { 24.0, 24.0, 82.0 } );
-						m_vecMinsAdjustFix = view_as<float>( { -24.0, -24.0, 0.0 } );	
-
-						for(int i; i<3; i++)
-						{
-							m_vecMaxAdjustFix[i] /= SizeAdjust;
-							m_vecMinsAdjustFix[i] /= SizeAdjust;
-						}
-
-	   					SetEntPropFloat(entity, Prop_Send, "m_flModelScale", SizeAdjust);
-	   					SetEntPropFloat(client, Prop_Send, "m_flModelScale", SizeAdjust);
-	   					SetEntPropFloat(entity, Prop_Data, "m_flModelScale", SizeAdjust);
-	   					SetEntPropFloat(client, Prop_Data, "m_flModelScale", SizeAdjust);
-
-						
-						SetEntPropVector(client, Prop_Send, "m_vecMins", m_vecMinsAdjustFix);
-						SetEntPropVector(client, Prop_Send, "m_vecMaxs", m_vecMaxAdjustFix);
-						
-						SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMins", m_vecMinsAdjustFix);
-						SetEntPropVector(client, Prop_Send, "m_vecSpecifiedSurroundingMaxs", m_vecMaxAdjustFix);
-						
-						SetEntPropVector(client, Prop_Data, "m_vecSurroundingMins", m_vecMinsAdjustFix);
-						SetEntPropVector(client, Prop_Data, "m_vecSurroundingMaxs", m_vecMaxAdjustFix);
-					}
 					
 					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
 				}
