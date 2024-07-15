@@ -386,7 +386,7 @@ float i_WeaponDamageFalloff[MAXENTITIES];
 int i_SemiAutoWeapon[MAXENTITIES];
 int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
-int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS];
+int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS] = {-1, ...};
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
 
 bool b_IsAloneOnServer = false;
@@ -460,6 +460,8 @@ bool b_IsAGib[MAXENTITIES];
 int i_NpcInternalId[MAXENTITIES];
 bool b_IsCamoNPC[MAXENTITIES];
 bool b_NoKillFeed[MAXENTITIES];
+
+int i_CustomModelOverrideIndex[MAXTF2PLAYERS];
 
 float f_TimeUntillNormalHeal[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZone[MAXENTITIES]={0.0, ...};
