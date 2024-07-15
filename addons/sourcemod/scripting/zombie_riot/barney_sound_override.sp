@@ -93,9 +93,19 @@ static const char g_GoodJob[][] =
 {
 	"vo/k_lab/ba_sarcastic01.wav",
 };
+static const char g_DispenserCat[][] =
+{
+	"vo/streetwar/sniper/ba_hearcat.wav",
+	"vo/k_lab/ba_itsworking04.wav",
+};
 
 bool BarneySoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, int &seed)
 {
+	if(StrContains(sample, "dispenser", false) != -1)
+	{
+		strcopy(sample, sizeof(sample), g_DispenserCat[GetRandomInt(0, sizeof(g_DispenserCat) - 1)]);
+		return true;
+	}
 	if(StrContains(sample, "thanks", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_Thanks[GetRandomInt(0, sizeof(g_Thanks) - 1)]);
@@ -201,4 +211,5 @@ void BarneySoundOverrideMapStart()
 	PrecacheSoundArray(g_Thanks);
 	PrecacheSoundArray(g_NiceShot);
 	PrecacheSoundArray(g_GoodJob);
+	PrecacheSoundArray(g_DispenserCat);
 }
