@@ -228,7 +228,10 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		
 		if(results[2].FetchRow())
 		{
-		//	bool InvalidNiko = view_as<bool>(results[2].FetchInt(1));
+			int value = results[2].FetchInt(1);
+			if(value == 2)
+				OverridePlayerModel(client, BARNEY, true);
+			
 			f_ArmorHudOffsetX[client] = results[2].FetchFloat(2);
 			f_ArmorHudOffsetY[client] = results[2].FetchFloat(3);
 			f_HurtHudOffsetX[client] = results[2].FetchFloat(4);
@@ -314,7 +317,7 @@ void DataBase_ClientDisconnect(int client)
 			... "tauntspeed = %d, "
 			... "battletimehud = %.3f "
 			... "WHERE steamid = %d;",
-			true/*b_IsPlayerNiko[client]*/,
+			i_PlayerModelOverrideIndexWearable[client] + 1,
 			f_ArmorHudOffsetX[client],
 			f_ArmorHudOffsetY[client],
 			f_HurtHudOffsetX[client],
