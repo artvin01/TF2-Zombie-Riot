@@ -229,9 +229,11 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		if(results[2].FetchRow())
 		{
 			int value = results[2].FetchInt(1);
-			if(value == 2)
-				OverridePlayerModel(client, BARNEY, true);
-			
+			if(value >= 2)
+			{
+				OverridePlayerModel(client, value - 1, true);
+				FakeClientCommand(client, "joinclass 2");
+			}
 			f_ArmorHudOffsetX[client] = results[2].FetchFloat(2);
 			f_ArmorHudOffsetY[client] = results[2].FetchFloat(3);
 			f_HurtHudOffsetX[client] = results[2].FetchFloat(4);
