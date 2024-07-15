@@ -1,0 +1,5 @@
+// envmaptint_fix
+"VertexLitGeneric"
+{
+	"$basetexture" "models/c_metrocop_hands/c_metrocop_sheet"
+}

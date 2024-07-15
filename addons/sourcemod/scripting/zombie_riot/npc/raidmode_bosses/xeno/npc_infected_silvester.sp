@@ -335,6 +335,7 @@ methodmap RaidbossSilvester < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -1755,6 +1756,10 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
+			if(i_RaidGrantExtra[spawn_index] == 1)
+			{
+				b_NpcUnableToDie[spawn_index] = true;
+			}
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);

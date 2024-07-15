@@ -114,7 +114,7 @@ void VausMagicaGiveShield(int entity, int amount)
 	}
 
 	CClotBody npc = view_as<CClotBody>(entity);
-	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
 		SetVariantString("1.35");
 	else

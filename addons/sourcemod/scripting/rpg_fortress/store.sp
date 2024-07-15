@@ -1170,7 +1170,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		return;
 	}
 
-	OverridePlayerModel(client, 0, false);
+	OverridePlayerModel(client);
 	TrueStrengthShieldUnequip(client);
 	TrueStrengthUnequip(client);
 	ChronoShiftUnequipOrDisconnect(client);

@@ -3436,6 +3436,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
+						menu2.AddItem("-45", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
 						
@@ -3659,6 +3662,43 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -30:
 					{
 						Store_CherrypickMenu(client);
+					}
+					case -45:
+					{
+						Menu menu2 = new Menu(Store_MenuPage);
+						menu2.SetTitle("%t", "Custom Models");
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "TF2 Class");
+						menu2.AddItem("-46", buffer);
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "Barney");
+						menu2.AddItem("-47", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Niko Oneshot");
+						menu2.AddItem("-48", buffer);
+
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Back");
+						menu2.AddItem("-1", buffer);
+						
+						menu2.Display(client, MENU_TIME_FOREVER);
+					}
+					case -46:
+					{
+						OverridePlayerModel(client);
+						MenuPage(client, -1);
+					}
+					case -47:
+					{
+						OverridePlayerModel(client, BARNEY, true);
+						FakeClientCommand(client, "joinclass 2");
+						MenuPage(client, -1);
+					}
+					case -48:
+					{
+						OverridePlayerModel(client, NIKO_2, true);
+						FakeClientCommand(client, "joinclass 2");
+						MenuPage(client, -1);
 					}
 					default:
 					{
@@ -4733,7 +4773,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
-	OverridePlayerModel(client, 0, false);
+	//OverridePlayerModel(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 

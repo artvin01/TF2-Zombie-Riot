@@ -17,8 +17,6 @@ static const char HandModels[][] =
 	"models/weapons/c_models/c_engineer_arms.mdl"
 };
 
-//	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
-
 static const char PlayerModels[][] =
 {
 	"models/player/scout.mdl",
@@ -32,6 +30,7 @@ static const char PlayerModels[][] =
 	"models/player/spy.mdl",
 	"models/player/engineer.mdl"
 };
+
 
 static const char RobotModels[][] =
 {
@@ -47,10 +46,39 @@ static const char RobotModels[][] =
 	"models/bots/engineer/bot_engineer.mdl"
 };
 
+static const char PlayerModelsCustom[][] =
+{
+	"models/bots/headless_hatman.mdl",
+	"models/zombie_riot/player_model_add/model_player_1_1.mdl",
+	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
+};
+
+static const bool PlayerModelsAnims[] =
+{
+	false,
+	true,
+	true
+};
+
+static const char PlayerCustomHands[][] =
+{
+	"",
+	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
+	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
+};
+
+enum
+{
+	HHH_SkeletonOverride = 0,
+	BARNEY = 1,
+	NIKO_2 = 2,
+}
 
 static int HandIndex[10];
 static int PlayerIndex[10];
 static int RobotIndex[10];
+static int CustomIndex[sizeof(PlayerModelsCustom)];
+static int CustomHandIndex[sizeof(PlayerCustomHands)];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -73,6 +101,16 @@ void ViewChange_MapStart()
 		RobotIndex[i] = PrecacheModel(RobotModels[i], true);
 	}
 
+	for(int i; i<sizeof(CustomIndex); i++)
+	{
+		CustomIndex[i] = PrecacheModel(PlayerModelsCustom[i], true);
+	}
+
+	for(int i; i<sizeof(CustomHandIndex); i++)
+	{
+		CustomHandIndex[i] = PlayerCustomHands[i][0] ? PrecacheModel(PlayerCustomHands[i], true) : 0;
+	}
+
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
@@ -85,11 +123,11 @@ void ViewChange_MapStart()
 	}
 }
 
-void OverridePlayerModel(int client, int ModelIndex, bool DontShowCosmetics)
+void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)
 {
 	b_HideCosmeticsPlayer[client] = DontShowCosmetics;
-	i_PlayerModelOverrideIndexWearable[client] = ModelIndex;
-	ViewChange_PlayerModel(client);
+	i_PlayerModelOverrideIndexWearable[client] = index;
+	ViewChange_Update(client, true);
 	int entity;
 	if(DontShowCosmetics)
 	{
@@ -129,24 +167,39 @@ void ViewChange_PlayerModel(int client)
 	if(entity != -1)	// playermodel
 	{
 #if defined ZR
+		i_CustomModelOverrideIndex[client] = -1;
+		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
 			if(i_HealthBeforeSuit[client] == 0)
 			{
-				if(i_PlayerModelOverrideIndexWearable[client] > 0)
+				if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(PlayerModelsCustom))
 				{
-					SetEntProp(entity, Prop_Send, "m_nModelIndex", i_PlayerModelOverrideIndexWearable[client]);
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", CustomIndex[i_PlayerModelOverrideIndexWearable[client]]);
+
+					SetVariantString(PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
+					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+					
+					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
 				}
 				else
+				{
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+
+					SetVariantString(NULL_STRING);
+					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				}
 			}
 			else
 			{
 				SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+
+				SetVariantString(NULL_STRING);
+				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 			}
+
 			UpdatePlayerFakeModel(client);
 			MedicAdjustModel(client);
-
 		}
 		else
 		{
@@ -428,9 +481,13 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	}
 	else
 	{
-		int hand_index = view_as<int>(class);
-
-		entity = CreateViewmodel(client, HandIndex[hand_index], HandIndex[hand_index], weapon);
+		int model = HandIndex[view_as<int>(class)];
+		if(i_PlayerModelOverrideIndexWearable[client] >= 0 && i_PlayerModelOverrideIndexWearable[client] < sizeof(CustomHandIndex) && CustomHandIndex[i_PlayerModelOverrideIndexWearable[client]])
+		{
+			model = CustomHandIndex[i_PlayerModelOverrideIndexWearable[client]];
+		}
+		
+		entity = CreateViewmodel(client, model, model, weapon);
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}

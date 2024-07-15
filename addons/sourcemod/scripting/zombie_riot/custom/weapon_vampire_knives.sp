@@ -35,7 +35,7 @@ static float Vamp_HealMultIfHurt[4] = { 0.33, 0.33, 0.33, 0.33 };	//Amount to mu
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
 static float Vamp_MaxHeal_Normal[4] = { 5.0, 4.5, 4.0, 3.25 };	//Max heal per tick.
 static float Vamp_MinHeal_Normal[4] = { 2.5, 2.25, 2.1, 2.0 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 10.5 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 9.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
 static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
 static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.
@@ -62,7 +62,7 @@ static int Vamp_ThrowWaves_Cleaver[4] = { 1, 2, 2, 2 }; //Same as pap route 1, b
 static float Vamp_ThrowRate_Cleaver[4] = { 0.0, 0.66, 0.4, 0.3 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowSpread_Cleaver[4] = { 0.0, 0.0, 20.0, 20.0 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowVelocity_Cleaver[4] = { 1800.0, 2200.0, 2600.0, 2600.0 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.66, 0.8, 0.8 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
+static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.4, 0.45, 0.5 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
 
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };

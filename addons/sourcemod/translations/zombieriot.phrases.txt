@@ -3200,4 +3200,20 @@
 	{
 		"en"	"Display Current Stats"
 	}
+	"Custom Models"
+	{
+		"en"	"Custom Models"
+	}
+	"TF2 Class"
+	{
+		"en"	"TF2 Class"
+	}
+	"Barney"
+	{
+		"en"	"Barney"
+	}
+	"Niko Oneshot"
+	{
+		"en"	"Niko Oneshot"
+	}
 }
