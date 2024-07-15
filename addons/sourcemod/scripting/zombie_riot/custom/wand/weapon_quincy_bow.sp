@@ -568,7 +568,9 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 			charge_debuff = 0.5;
 		damage = 100.0*charge_debuff*1.5;
 		
-		speed = 3000.0*(charge_percent/25.0);
+		speed = 2150.0*(charge_percent/100.0);
+		if(speed>=2150.0)
+			speed=2150.0;
 		
 		float multi_arrow_damage = 0.75*damage * Attributes_Get(weapon, 410, 1.0);
 		
