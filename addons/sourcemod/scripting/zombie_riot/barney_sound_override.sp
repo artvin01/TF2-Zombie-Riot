@@ -37,11 +37,16 @@ static const char g_Jeers[][] =
 	"vo/npc/barney/ba_wounded01.wav",
 	"vo/npc/barney/ba_wounded02.wav",
 	"vo/npc/barney/ba_wounded03.wav",
+	"vo/k_lab/ba_saidlasttime.wav",
+	"vo/k_lab/ba_thingaway02.wav"
 };
 static const char g_Cheers[][] =
 {
 	"vo/npc/barney/ba_losttouch.wav",
 	"vo/npc/barney/ba_ohyeah.wav",
+	"vo/trainyard/ba_thatbeer02.wav",
+	"vo/trainyard/ba_rememberme.wav",
+	"vo/trainyard/ba_sorryscare.wav"
 };
 
 static const char g_Spy[][] =
@@ -52,12 +57,13 @@ static const char g_Spy[][] =
 
 static const char g_Incoming[][] =
 {
-	"vo/npc/barney/ba_uhohheretheycome.wav"
+	"vo/npc/barney/ba_uhohheretheycome.wav",
 };
 static const char g_Battlecry[][] =
 {
 	"vo/npc/barney/ba_soldiers.wav",
 	"vo/npc/barney/ba_goingdown.wav",
+	"vo/trainyard/ba_crowbar02.wav",
 };
 
 static const char g_HurtSound[][] =
@@ -91,7 +97,7 @@ bool BarneySoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &e
 		strcopy(sample, sizeof(sample), g_Help[GetRandomInt(0, sizeof(g_Help) - 1)]);
 		return true;
 	}
-	if(StrContains(sample, "incomming", false) != -1)
+	if(StrContains(sample, "incoming", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_Incoming[GetRandomInt(0, sizeof(g_Incoming) - 1)]);
 		return true;

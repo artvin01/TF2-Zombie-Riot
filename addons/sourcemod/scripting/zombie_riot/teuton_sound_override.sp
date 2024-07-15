@@ -110,7 +110,7 @@ bool TeutonSoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &e
 		strcopy(sample, sizeof(sample), g_Help[GetRandomInt(0, sizeof(g_Help) - 1)]);
 		return true;
 	}
-	if(StrContains(sample, "demoman_incomming", false) != -1)
+	if(StrContains(sample, "demoman_incoming", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_Incoming[GetRandomInt(0, sizeof(g_Incoming) - 1)]);
 		return true;
