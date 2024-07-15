@@ -80,8 +80,27 @@ static const char g_HurtSound[][] =
 	"vo/npc/barney/ba_pain10.wav",
 };
 
+static const char g_Thanks[][] =
+{
+	"vo/k_lab2/ba_goodnews_c.wav",
+	"vo/k_lab/ba_geethanks.wav",
+};
+static const char g_NiceShot[][] =
+{
+	"vo/streetwar/rubble/ba_illbedamned.wav",
+};
+static const char g_GoodJob[][] =
+{
+	"vo/k_lab/ba_sarcastic01.wav",
+};
+
 bool BarneySoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, int &seed)
 {
+	if(StrContains(sample, "thanks", false) != -1)
+	{
+		strcopy(sample, sizeof(sample), g_Thanks[GetRandomInt(0, sizeof(g_Thanks) - 1)]);
+		return true;
+	}
 	if(StrContains(sample, "negative", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_Neagtive[GetRandomInt(0, sizeof(g_Neagtive) - 1)]);
@@ -137,6 +156,16 @@ bool BarneySoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &e
 		strcopy(sample, sizeof(sample), g_DeathSound[GetRandomInt(0, sizeof(g_DeathSound) - 1)]);
 		return true;
 	}
+	if(StrContains(sample, "niceshot", false) != -1)
+	{
+		strcopy(sample, sizeof(sample), g_NiceShot[GetRandomInt(0, sizeof(g_NiceShot) - 1)]);
+		return true;
+	}
+	if(StrContains(sample, "goodjob", false) != -1)
+	{
+		strcopy(sample, sizeof(sample), g_GoodJob[GetRandomInt(0, sizeof(g_GoodJob) - 1)]);
+		return true;
+	}
 	if(StrContains(sample, "go", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_GoGoGo[GetRandomInt(0, sizeof(g_GoGoGo) - 1)]);
@@ -169,4 +198,7 @@ void BarneySoundOverrideMapStart()
 	PrecacheSoundArray(g_No);
 	PrecacheSoundArray(g_DeathSound);
 	PrecacheSoundArray(g_HurtSound);
+	PrecacheSoundArray(g_Thanks);
+	PrecacheSoundArray(g_NiceShot);
+	PrecacheSoundArray(g_GoodJob);
 }
