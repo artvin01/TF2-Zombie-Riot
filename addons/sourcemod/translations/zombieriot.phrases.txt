@@ -1774,6 +1774,10 @@
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
 	}
+	"Victory Menu 2"
+	{		
+		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
+	}
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitely.\nThe further you go, the harder it gets.\n"
@@ -3041,6 +3045,14 @@
 	"Khaml Desc"
 	{
 		"en"	"The judges of your actions have arrived."
+	}
+	"CoF Normal Desc"
+	{
+		"en"	"Enter Simon's Book."
+	}
+	"CoF Nightmare Desc"
+	{
+		"en"	"Enter Simon's Mind."
 	}
 	"Wait for power"
 	{
