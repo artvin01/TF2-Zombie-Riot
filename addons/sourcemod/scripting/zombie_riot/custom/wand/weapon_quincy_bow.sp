@@ -14,7 +14,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
 
-#define QUINCY_BOW_HYPER_CHARGE	1000.0
+#define QUINCY_BOW_HYPER_CHARGE	1500.0
 #define QUINCY_BOW_ONHIT_GAIN	50.0
 #define QUINCY_BOW_ONHIT_MULTI_ARROW 10.0
 static float fl_hyper_arrow_charge[MAXTF2PLAYERS];
@@ -235,7 +235,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		
 		EmitSoundToAll(hyper_arrow_sounds[GetRandomInt(0, sizeof(hyper_arrow_sounds)-1)], client, SNDCHAN_STATIC, 100, _, 0.5, 100);	//very loud!
 
-		float damage = 350.0;
+		float damage = 425.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
 		Quincy_Damage_Trace(client, Origin, vecHit, Radius, damage);
@@ -253,9 +253,6 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		TE_SendToAll();
 		TE_SetupBeamPoints(Origin, vecHit, i_combine_laser, 0, 0, 66, 2.5, size*0.5, size*0.5, 1, 1.0, color, 33);
 		TE_SendToAll();
-
-
-
 		
 	}
 	else
@@ -290,7 +287,7 @@ static void Quincy_Damage_Trace(int client, float Vec_1[3], float Vec_2[3], floa
 	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 	
-	float Falloff = 0.9;	//minimal falloff due to how it works
+	float Falloff = 1.0;	//minimal falloff due to how it works
 	
 	float BEAM_Targets_Hit = 1.0;
 	for (int victim = 1; victim < QUINCY_MAX_TARGETS_HIT; victim++)
@@ -561,9 +558,6 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 
 	float damage=1.0;
 
-	if(speed>=3000)
-		speed=3000.0;
-	
 	if(pap>=2)	//removes half charge debuff
 	{
 		float charge_debuff = (charge_percent / 100.0);
@@ -573,7 +567,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 		
 		speed = 3000.0*(charge_percent/25.0);
 		
-		float multi_arrow_damage = 0.75*damage * Attributes_Get(weapon, 410, 1.0);
+		float multi_arrow_damage = 0.5*damage * Attributes_Get(weapon, 410, 1.0);
 		
 		if(charge_percent>QUINCY_BOW_MULTI_SHOT_MINIMUM)
 		{
@@ -596,9 +590,9 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 	
 	float time = 10.0;
 
-		
-	if(speed>3000.0)
-		speed = 3000.0;
+	if(speed>=3000.0)
+		speed=3000.0;
+
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 
@@ -622,32 +616,70 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 }
 static void Quincy_Do_Homing(int client, int projectile, float charge_percent)
 {
+	float Origin[3], Angles[3];
+	GetClientEyePosition(client,Origin);
+	GetClientEyeAngles(client,Angles);
+
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
-	Handle swingTrace;
-	float vecSwingForward[3];
-	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 75.0, false);
-	FinishLagCompensation_Base_boss();
-				
-	int target = TR_GetEntityIndex(swingTrace);	
-	delete swingTrace;
+	float vecHit[3];
+	Handle trace = TR_TraceRayFilterEx(Origin, Angles, 11, RayType_Infinite, TraceWalls);
+	if (TR_DidHit(trace))
+	{
+		TR_GetEndPosition(vecHit, trace);
+	}
+	delete trace;
+	static float hullMin[3];
+	static float hullMax[3];
 
-	bool LockOnOnce = true;
-	if(IsValidEntity(target))
-		LockOnOnce = false;
+	Zero(i_quincy_targethit);
+	
+	Set_HullTrace(50.0, hullMin, hullMax);
+	
+	Handle hull_trace = TR_TraceHullFilterEx(Origin, vecHit, hullMin, hullMax, 1073741824, BEAM_HitDetected, client);	// 1073741824 is CONTENTS_LADDER?
+	delete hull_trace;
+
+	FinishLagCompensation_Base_boss();
 
 	float Homing_Power = 2.0*(charge_percent/100.0);
 
-	float Angles[3];
-	GetClientEyeAngles(client,Angles);
+	float LockonAngle = 45.0;
+	if(IsValidEntity(i_quincy_targethit[0]))
+	{
+		LockonAngle = 90.0;
+		Homing_Power *=1.5;
+	}
+
 	Initiate_HomingProjectile(projectile,
 	client,
-		75.0,			// float lockonAngleMax,
+		LockonAngle,			// float lockonAngleMax,
 		Homing_Power,				//float homingaSec,
-		LockOnOnce,				// bool LockOnlyOnce,
+		false,				// bool LockOnlyOnce,
 		true,				// bool changeAngles,
 		Angles,
-		target);			// float AnglesInitiate[3]);
+		i_quincy_targethit[0]);			// float AnglesInitiate[3]);
+}
+void Set_HullTrace(float radius, float hullMin[3], float hullMax[3])
+{
+	hullMin[0] = -radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+}
+static bool BEAM_HitDetected(int entity, int contentsMask, int client)
+{
+	if (IsValidEntity(entity))
+	{
+		entity = Target_Hit_Wand_Detection(client, entity);
+		if(0 < entity)
+		{
+			if(!i_quincy_targethit[0])
+				i_quincy_targethit[0] = entity;
+		}
+	}
+	return false;
 }
 static void Quincy_Multi_Shot(int client, int weapon, float charge_percent, float dmg)
 {

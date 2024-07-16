@@ -1080,6 +1080,12 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 				g = 9;
 				b = 235;
 			}
+			else
+			{
+				r = 255;
+				g = 50;
+				b = 50;
+			}
 			spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 2.0, 12.0, 2.0, 1, 1.0);
 
 		}
@@ -1261,6 +1267,12 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 		color[1] = 9;
 		color[2] = 235;
 	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+	}
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
 
@@ -1328,6 +1340,12 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 		color[1] = 9;
 		color[2] = 235;
 	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+	}
 
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(entity);
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
@@ -1391,6 +1409,12 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 		color[0] = 51;
 		color[1] = 9;
 		color[2] = 235;
+	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
 	}
 
 	if(npc.Anger)
@@ -1942,7 +1966,7 @@ static void Internal_NPCDeath(int entity)
 	RaidModeTime +=50.0;
 
 	int wave = ZR_GetWaveCount()+1;
-	if(wave<60 && !b_donner_said_win_line)
+	if(wave!=60 && !b_donner_said_win_line)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{

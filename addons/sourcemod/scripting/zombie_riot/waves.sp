@@ -46,6 +46,7 @@ enum struct Wave
 
 	int Count;
 	Enemy EnemyData;
+	int DangerLevel;
 }
 
 enum struct Round
@@ -774,6 +775,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
+						wave.DangerLevel = kv.GetNum("danger_level");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
@@ -1681,6 +1683,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 							menu.AddItem("", "Yes");
 							menu.AddItem("", "No");
 							menu.ExitButton = false;
+							menu.DisplayVote(players, total, 30);
 						}
 						else
 						{
@@ -1689,9 +1692,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 							menu.AddItem("", "Yes");
 							menu.AddItem("", "No");
 							menu.ExitButton = false;
+							menu.DisplayVote(players, total, 30);
 						}
 						
-						menu.DisplayVote(players, total, 30);
 					}
 					else
 					{
@@ -1776,10 +1779,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	{
 		bool EarlyReturn = false;
 		//We are in freeplay, past normal waves.
-		if(b_WaveHasFreeplay == 2)
-			EarlyReturn = Waves_NextFreeplayCall(Rounds, panzer_spawn, panzer_sound, panzer_chance, GiveAmmoSupplies);
-		else if(b_WaveHasFreeplay == 1)
-			EarlyReturn = Waves_NextSpecialWave(Rounds, panzer_spawn, panzer_sound, panzer_chance, GiveAmmoSupplies);
+		if(i_WaveHasFreeplay == 2)
+			EarlyReturn = Waves_NextFreeplayCall(donotAdvanceRound);
+//		else if(i_WaveHasFreeplay == 1)
+//			//EarlyReturn = Waves_NextSpecialWave();
 		else
 			PrintToChatAll("epic fail");
 
@@ -2715,60 +2718,96 @@ void Waves_EnemySpawned(int entity)
 	}
 }
 
-bool Waves_NextFreeplayCall(rounds Rounds, bool panzer_spawn, bool panzer_sound, int panzer_chance, bool GiveAmmoSupplies)
+bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 {
+	int length = Rounds.Length - 1;
+	Round round;
 	Rounds.GetArray(length, round);
 	if(++CurrentWave < 8)
 	{
 		DoGlobalMultiScaling();
 
 		int postWaves = CurrentRound - length;
-		f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+		f_FreeplayDamageExtra = 1.0 + (postWaves / 45.0);
 
 		Rounds.GetArray(length, round);
 		length = round.Waves.Length;
+
+		Wave wave;
+		ArrayList common = new ArrayList(sizeof(Wave));
+		ArrayList boss = new ArrayList(sizeof(Wave));
 		
 		int Max_Enemy_Get = Freeplay_EnemyCount();
 		for(int i; i < length; i++)
 		{
-			if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+			round.Waves.GetArray(i, wave);
+			if(wave.EnemyData.Is_Boss)
 			{
-				round.Waves.GetArray(i, wave);
-				Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
-
-				if(wave.Count > 0)
-				{
-					for(int a; a < wave.Count; a++)
-					{
-						Waves_AddNextEnemy(wave.EnemyData);
-					}
-					
-					Zombies_Currently_Still_Ongoing += wave.Count;
-
-					if(!(--Max_Enemy_Get))
-						break;
-				}
+				boss.PushArray(wave);
+			}
+			else
+			{
+				common.PushArray(wave);
 			}
 		}
 
-		// Note: Artvin remove this, this is freeplay code
-		if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
+		common.Sort(Sort_Random, Sort_Integer);
+		boss.Sort(Sort_Random, Sort_Integer);
+
+		for(int i; i < Max_Enemy_Get; i++)
 		{
-			panzer_spawn = true;
-			NPC_SpawnNext(panzer_spawn, true);
+			int dangerlevel = Freeplay_GetDangerLevelCurrent();
+			bool isBoss = !(GetURandomInt() % 9);
+
+			if(isBoss)
+			{
+				int bossdanger = dangerlevel;
+				
+				if(bossdanger >= 5)
+					bossdanger = 4;
+
+				int index = boss.FindValue(bossdanger, Wave::DangerLevel);
+				if(index == -1)
+					continue;
+				
+				boss.GetArray(index, wave);
+				boss.Erase(index);
+			}
+			else
+			{
+				int index = common.FindValue(dangerlevel, Wave::DangerLevel);
+				if(index == -1)
+					continue;
+				
+				common.GetArray(index, wave);
+				common.Erase(index);
+			}
+			
+			Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
+
+			if(wave.Count > 0)
+			{
+				for(int a; a < wave.Count; a++)
+				{
+					Waves_AddNextEnemy(wave.EnemyData);
+				}
+				
+				Zombies_Currently_Still_Ongoing += wave.Count;
+			}
+		}
+
+		delete common;
+		delete boss;
+
+		if(Freeplay_ShouldMiniBoss())
+		{
+			NPC_SpawnNext(true, true);
 		}
 		else
 		{
-			panzer_spawn = false;
 			NPC_SpawnNext(false, false);
 		}
 		
-		if(!Enemies.Length)
-		{
-			CurrentWave++;
-			Waves_Progress();
-			return true;
-		}
 		CurrentWave = 9;
 	}
 	else if(donotAdvanceRound)
@@ -2786,6 +2825,20 @@ bool Waves_NextFreeplayCall(rounds Rounds, bool panzer_spawn, bool panzer_sound,
 		if(round.Cash)
 		{
 			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+		}
+		bool music_stop = false;
+		if(round.music_round_outro[0])
+		{
+			music_stop = true;
+			if(round.music_custom_outro)
+			{
+				EmitCustomToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
+			}
+			else
+			{
+				EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+				EmitSoundToAll(round.music_round_outro, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 0.73);
+			}
 		}
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -2830,22 +2883,6 @@ bool Waves_NextFreeplayCall(rounds Rounds, bool panzer_spawn, bool panzer_sound,
 			SpawnTimer(15.0);
 			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 			
-			Menu menu = new Menu(Waves_FreeplayVote);
-			menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
-			menu.AddItem("", "Yes");
-			menu.AddItem("", "No");
-			menu.ExitButton = false;
-			
-			int total = 0;
-			int[] players = new int[MaxClients];
-			for(int i=1; i<=MaxClients; i++)
-			{
-				if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i)==2)
-					players[total++] = i;
-			}
-			
-			menu.DisplayVote(players, total, 15);
-			
 			Citizen_SetupStart();
 		}
 		else
@@ -2855,6 +2892,8 @@ bool Waves_NextFreeplayCall(rounds Rounds, bool panzer_spawn, bool panzer_sound,
 	}
 	return false;
 }
+
+/*
 bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, int panzer_chance, bool GiveAmmoSupplies)
 {
 	Rounds.GetArray(length, round);
@@ -2995,6 +3034,6 @@ bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, 
 	}
 	return false;
 }
-
+*/
 
 #include "zombie_riot/modifiers.sp"

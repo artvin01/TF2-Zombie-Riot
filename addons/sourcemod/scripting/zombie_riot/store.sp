@@ -2280,6 +2280,10 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	
 	static Item item;
 	static ItemInfo info;
+	int GrigoriCashLogic = CurrentCash;
+	if(GrigoriCashLogic > 100000)
+		GrigoriCashLogic = 100000;
+
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
@@ -2318,7 +2322,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(!item.NPCSeller)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 4))
+					if(info.Cost > 999 && info.Cost_Unlock > (GrigoriCashLogic / 4))
 						indexes[amount++] = i;
 				}
 			}
@@ -2340,7 +2344,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (GrigoriCashLogic / 3 - 1000) && info.Cost_Unlock < GrigoriCashLogic)
 					indexes[amount++] = i;
 				
 				StoreItems.SetArray(i, item);
