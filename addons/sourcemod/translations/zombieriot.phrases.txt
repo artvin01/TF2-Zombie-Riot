@@ -3046,6 +3046,14 @@
 	{
 		"en"	"The judges of your actions have arrived."
 	}
+	"CoF Normal Desc"
+	{
+		"en"	"Enter Simon's Book."
+	}
+	"CoF Nightmare Desc"
+	{
+		"en"	"Enter Simon's Mind."
+	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
