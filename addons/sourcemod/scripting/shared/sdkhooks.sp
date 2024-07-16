@@ -168,6 +168,8 @@ stock void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
+	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 #endif
 }
 
@@ -1705,8 +1707,34 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
+
+#if !defined RTS
+	int ClientAttacker;
+	if(IsValidClient(inflictor))
+		ClientAttacker = inflictor;
+	else if(IsValidClient(attacker))
+		ClientAttacker = attacker;
+
+	if(ClientAttacker > 0)
+	{
+		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
+		if(IsValidEntity(weapon))
+		{
+			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
+			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+
+	return Plugin_Changed;
+}
+
 	
+public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
 #if defined ZR
+	float GameTime = GetGameTime();
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	//damage is more then their health, they will die.
 	if(RoundToCeil(damage) >= flHealth)
 	{
@@ -1873,27 +1901,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
+	return Plugin_Continue;
 #endif	// ZR
-
-#if !defined RTS
-	int ClientAttacker;
-	if(IsValidClient(inflictor))
-		ClientAttacker = inflictor;
-	else if(IsValidClient(attacker))
-		ClientAttacker = attacker;
-
-	if(ClientAttacker > 0)
-	{
-		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
-		if(IsValidEntity(weapon))
-		{
-			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
-			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
-		}
-	}
-#endif
-
-	return Plugin_Changed;
 }
 
 #if defined ZR || defined RPG

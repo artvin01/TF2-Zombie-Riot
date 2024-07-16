@@ -3690,18 +3690,19 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -46:
 					{
 						OverridePlayerModel(client);
+						ClientCommand(client, "joinclass medic");
 						MenuPage(client, -1);
 					}
 					case -47:
 					{
 						OverridePlayerModel(client, BARNEY, true);
-						FakeClientCommand(client, "joinclass 2");
+						ClientCommand(client, "joinclass medic");
 						MenuPage(client, -1);
 					}
 					case -48:
 					{
 						OverridePlayerModel(client, NIKO_2, true);
-						FakeClientCommand(client, "joinclass 2");
+						ClientCommand(client, "joinclass medic");
 						MenuPage(client, -1);
 					}
 					default:
@@ -4102,7 +4103,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								Store_Unequip(client, index);
 								
@@ -4126,7 +4127,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								int level = item.Owned[client] - 1;
 								if(item.ParentKit)

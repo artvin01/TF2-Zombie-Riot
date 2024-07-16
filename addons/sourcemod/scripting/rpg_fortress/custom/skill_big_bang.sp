@@ -129,12 +129,24 @@ public Action PlayerAnimationSettingFreezePost(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
+	PrintToChatAll("test1");
 	if(!b_HideCosmeticsPlayer[client])
 	{
+		PrintToChatAll("test2");
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		PrintToChatAll("test3");
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			if(Viewchanges_NotAWearable(client, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);

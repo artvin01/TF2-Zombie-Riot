@@ -494,6 +494,20 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 	return entity;
 }
 
+bool Viewchanges_NotAWearable(int client, int wearable)
+{
+	if(EntRefToEntIndex(HandRef[client]) == wearable)
+		return true;
+	if(EntRefToEntIndex(WeaponRef_viewmodel[client]) == wearable)
+		return true;
+	if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == wearable)
+		return true;
+	if(EntRefToEntIndex(i_Worldmodel_WeaponModel[client]) == wearable)
+		return true;
+
+	return false;
+}
+
 static int CreateViewmodel(int client, int modelAnims, int modelOverride, int weapon, bool copy = false)
 {
 	int wearable = CreateEntityByName("tf_wearable_vm");

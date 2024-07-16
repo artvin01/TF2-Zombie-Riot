@@ -43,8 +43,16 @@ methodmap AlliedKahmlAbility < CClotBody
 		char ModelPath[255];
 		int entity, i;
 			
-		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		if(i_CustomModelOverrideIndex[entity] < BARNEY)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 21, 71, 171, 125);
+		}
 
 		func_NPCDeath[npc.index] = Internal_Npc_NPCDeath;
 		func_NPCThink[npc.index] = Internal_Npc_ClotThink;
@@ -60,14 +68,17 @@ methodmap AlliedKahmlAbility < CClotBody
 			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 				
-			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
-			if(ModelIndex < 0)
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) != entity || i_CustomModelOverrideIndex[client] < BARNEY)
 			{
-				GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
-			}
-			else
-			{
-				ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
+				if(ModelIndex < 0)
+				{
+					GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
+				}
+				else
+				{
+					ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				}
 			}
 			if(!ModelPath[0])
 				continue;
