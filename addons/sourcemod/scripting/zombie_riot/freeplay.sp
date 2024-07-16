@@ -116,13 +116,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		enemy.Team = TFTeam_Red;
 		count /= 10;
 		FriendlyDay = false;
+
+		if(enemy.Health)
+			enemy.Health *= 0.1;
+
+		if(enemy.ExtraDamage)
+			enemy.ExtraDamage *= 10.0;
 	}
 	else
 	{
 		if(enemy.Health)
-			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * ((postWaves + 99) * 0.0090)));
+			enemy.Health = RoundToCeil(HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * ((postWaves + 99) * 0.01250)));
 		
-		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01));
+		count = CountBonus + RoundToFloor(count * CountMulti * ((postWaves + 99) * 0.01250));
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
 			enemy.Is_Boss = 1;
@@ -156,7 +162,7 @@ void Freeplay_SpawnEnemy(int entity)
 		f_HussarBuff[entity] = FAR_FUTURE;
 	
 	if(PernellBuff)
-		f_PernellBuff[entity] = FAR_FUTURE;
+		f_PernellBuff[entity] = GetGameTime() + 15.0;
 	
 	if(IceDebuff > 2)
 		f_HighIceDebuff[entity] = FAR_FUTURE;
@@ -200,7 +206,8 @@ void Freeplay_SpawnEnemy(int entity)
 	if(StalkerBuff > 0)
 	{
 		b_StaticNPC[entity] = true;
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 30);
+		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") * 50);
+		fl_Extra_Damage[entity] *= 10.0;
 		StalkerBuff--;
 	}
 
@@ -257,8 +264,8 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 	{
 		case 0:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +30000 health");
-			HealthBonus += 30000;
+			strcopy(message, sizeof(message), "{red}All enemies have +60000 health");
+			HealthBonus += 60000;
 		}
 		case 1:
 		{
@@ -267,8 +274,8 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 2:
 		{
-			strcopy(message, sizeof(message), "{red}All enemies have +10% health");
-			HealthMulti *= 1.1;
+			strcopy(message, sizeof(message), "{red}All enemies have +15% health");
+			HealthMulti *= 1.15;
 		}
 		case 3:
 		{
@@ -300,7 +307,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		case 8:
 		{
 			strcopy(message, sizeof(message), "{green}All enemies have -5% health");
-			HealthMulti /= 0.95;
+			HealthMulti *= 0.95;
 		}
 		case 9, 10:
 		{
@@ -316,7 +323,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		case 11:
 		{
 			strcopy(message, sizeof(message), "{green}All enemies have -10% health");
-			HealthMulti /= 0.9;
+			HealthMulti *= 0.9;
 		}
 		case 12:
 		{
@@ -426,7 +433,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 				return;
 			}
 
-			strcopy(message, sizeof(message), "{red}All enemies gain the Pernell buff");
+			strcopy(message, sizeof(message), "{red}All enemies gain the Pernell buff for 15 seconds");
 			PernellBuff = true;
 		}
 		case 23:
