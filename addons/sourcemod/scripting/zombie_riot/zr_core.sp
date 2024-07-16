@@ -390,6 +390,7 @@ float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
+int i_WaveHasFreeplay = 0;
 
 
 #include "zombie_riot/npc.sp"	// Global NPC List
