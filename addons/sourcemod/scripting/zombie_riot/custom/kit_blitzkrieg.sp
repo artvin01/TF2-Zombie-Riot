@@ -786,14 +786,22 @@ public void Blitzkrieg_Kit_Custom_Melee_Logic(int client, float &CustomMeleeRang
 	}
 }
 
-public void Blitzkrieg_Kit_OnHitEffect(int client, int weapon, float &damage)
+void Blitzkrieg_Kit_ModifyMeleeDmg(int client, float &damage)
 {
 	float GameTime = GetGameTime();
 
 	if(fl_primary_reloading[client]>GameTime)
 	{
 		damage *=1.25;
+	}
+}
 
+void Blitzkrieg_Kit_OnHitEffect(int client)
+{
+	float GameTime = GetGameTime();
+
+	if(fl_primary_reloading[client]>GameTime)
+	{
 		if(LastMann)
 		{
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;
@@ -804,7 +812,6 @@ public void Blitzkrieg_Kit_OnHitEffect(int client, int weapon, float &damage)
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
 			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!
 		}
-		
 	}
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
