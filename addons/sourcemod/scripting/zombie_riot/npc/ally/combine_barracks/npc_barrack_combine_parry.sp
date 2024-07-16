@@ -17,9 +17,6 @@ static const char g_IdleSounds[][] =
 	"npc/metropolice/vo/subjectis505.wav"
 };
 
-static const char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
-};
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
@@ -43,20 +40,24 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/metropolice/vo/breakhiscover.wav",
 	"npc/metropolice/vo/destroythatcover.wav"
 };
+static const char g_MeleeDeflectAttack[][] = {
+	"weapons/samurai/tf_katana_impact_object_02.wav",
+};
 
 void Barracks_Combine_Sword_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeDeflectAttack);
+	
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Collos");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_collos");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Deflector");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_parry");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -66,10 +67,10 @@ void Barracks_Combine_Sword_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Collos(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Parry(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Collos < BarrackBody
+methodmap Barrack_Combine_Parry < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -126,6 +127,12 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
+    public void PlayDeflectSound() 
+	{
+		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
@@ -135,64 +142,46 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Parry(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(BarrackBody(client, vecPos, vecAng, "900", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Collos_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Collos_ClotThink;
-		npc.m_flSpeed = 230.0;
+		func_NPCDeath[npc.index] = Barrack_Combine_Parry_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Parry_ClotThink;
+		func_NPCOnTakeDamage[npc.index] = Barrack_Combine_Parry_OnTakeDamage;
+		npc.m_flSpeed = 225.0;
 		
-		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
-        i_NpcWeight[npc.index] = 2;
-
+        m_flNextRangedAttack = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "model/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/clockwerk_hat.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
-		
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 2);
-		
-		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/soldier/soldier_spartan.mdl");
-		SetVariantString("1.25");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
 		
 		return npc;
 	}
 }
 
-public void Barrack_Combine_Collos_ClotThink(int iNPC)
+public void Barrack_Combine_Parry_ClotThink(int iNPC)
 {
-	Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(iNPC);
+	Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-	  	float TrueArmor = 1.0;
-		if(npc.m_fbRangedSpecialOn)
-		{
-			TrueArmor *= 0.15;
-		}
-		fl_TotalArmor[npc.index] = TrueArmor;
-
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
 		if(npc.m_iTarget > 0)
@@ -205,26 +194,24 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
-				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
+				if(m_fbRangedSpecialOn)
 				{
-					if(!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
+					npc.m_flNextMeleeAttack = GameTime + 0.2;
+					m_fbRangedSpecialOn = false
+				}
+				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn)
+				{
+					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (1.25 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
-					if(!npc.m_fbRangedSpecialOn)
-					{
-						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
-						npc.m_fbRangedSpecialOn = true;
-						npc.PlayRangedAttackSecondarySound();
-					}
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -237,16 +224,12 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),525.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),5900.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
-						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-						{
-							npc.m_fbRangedSpecialOn = false;
-						}
 					}
 					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
@@ -259,13 +242,48 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 225.0, "ACT_IDLE", "ACT_COLOSUS_WALK");
 	}
 }
 
-void Barrack_Combine_Collos_NPCDeath(int entity)
+public Action Barrack_Combine_Parry_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(entity);
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(victim);
+	
+    if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
+    {
+        if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+        {	
+            npc.m_fbRangedSpecialOn = true;
+            npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
+            damage *= 0.4;
+			npc.PlayDeflectSound();
+        }
+    }
+
+	
+	/*
+	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
+		return Plugin_Continue;
+	*/
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+	
+	
+	return Plugin_Changed;
+}
+
+void Barrack_Combine_Parry_NPCDeath(int entity)
+{
+	Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

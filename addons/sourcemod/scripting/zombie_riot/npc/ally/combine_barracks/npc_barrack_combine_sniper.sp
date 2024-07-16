@@ -24,9 +24,7 @@ static const char g_RangedAttackSounds[][] =
 
 static const char g_RangedReloadSound[][] =
 {
-	"weapons/shotgun/shotgun_reload1.wav",
-	"weapons/shotgun/shotgun_reload2.wav",
-	"weapons/shotgun/shotgun_reload3.wav",
+	"weapons/ar2/npc_ar2_reload.wav",
 };
 
 static const char g_IdleAlert[][] =
@@ -45,8 +43,8 @@ void Barracks_Combine_Pistol_Precache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Shotgunner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_shotgunner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Sniper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -56,10 +54,10 @@ void Barracks_Combine_Pistol_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Shotgun(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Sniper(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Shotgun < BarrackBody
+methodmap Barrack_Combine_Sniper < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -101,36 +99,51 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Combine_Shotgun(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Sniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "300", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
+
+        SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Shotgun_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Shotgun_ClotThink;
-		npc.m_flSpeed = 275.0;
+		func_NPCDeath[npc.index] = Barrack_Combine_Sniper_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Sniper_ClotThink;
+		npc.m_flSpeed = 175.0;
 
-
-		npc.m_iAttacksTillReload = 6;
+		npc.m_iAttacksTillReload = 1;
 		npc.m_flNextRangedAttack = 0.0;
 		
 		KillFeed_SetKillIcon(npc.index, "smg");
 
-        SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+        int skin = 1;
 		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+
+        npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+        npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum21_sightliner/sum21_sightliner.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
+        npc.m_iWearable4 = npc.EquipItem("head", "mmodels/combine_soldier.mdl");
+
+        SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+        SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
 }
 
-public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
+public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 {
-	Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(iNPC);
+	Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -144,7 +157,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 20000.0)
+			if(flDistanceToTarget < 300000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -154,16 +167,16 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1)
 					{
 						npc.AddGesture("ACT_RELOAD");
-						npc.m_flNextRangedAttack = GameTime + 2.2;
-						npc.m_iAttacksTillReload = 6;
+						npc.m_flNextRangedAttack = GameTime + 1.85;
+						npc.m_iAttacksTillReload = 31;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
-						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_SHOTGUN", false);
+						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 20000.0);
+						npc.FaceTowards(vecTarget, 300000.0);
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -175,16 +188,17 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
+							npc.m_flSpeed = 0.0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2200.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 275.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
 					else
 					{
-						npc.m_flSpeed = 275.0;
+						npc.m_flSpeed = 220.0;
 					}
 				}
 			}
@@ -194,13 +208,13 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 275.0, "ACT_COVER", "ACT_RUN_AIM_SHOTGUN", 19000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_COVER", "deployed_crouch_walk_PRIMARY", 275000.0,_, true);
 	}
 }
 
-void Barrack_Combine_Shotgun_NPCDeath(int entity)
+void Barrack_Combine_Sniper_NPCDeath(int entity)
 {
-	Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(entity);
+	Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }
