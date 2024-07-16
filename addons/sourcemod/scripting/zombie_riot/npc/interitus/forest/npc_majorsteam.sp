@@ -248,8 +248,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 		
-		npc.m_flMeleeArmor += 0.001 / MultiGlobal;
-		npc.m_flRangedArmor += 0.001 / MultiGlobal;
+		npc.m_flMeleeArmor += 0.001 / MultiGlobalEnemy;
+		npc.m_flRangedArmor += 0.001 / MultiGlobalEnemy;
 
 		if(npc.m_flMeleeArmor > 2.0)
 			npc.m_flMeleeArmor = 2.0;

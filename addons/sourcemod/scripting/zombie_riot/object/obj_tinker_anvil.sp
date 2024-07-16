@@ -86,10 +86,8 @@ static bool ClotInteract(int client, int weapon, ObjectTinkerAnvil npc)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
-	int owner;
-	owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
-	Blacksmith_BuildingUsed(npc.index, client, owner);
-	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
+	Blacksmith_BuildingUsed(npc.index, client);
+//	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	
 	return true;
 }

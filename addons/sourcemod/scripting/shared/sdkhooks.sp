@@ -369,11 +369,11 @@ public void OnPostThink(int client)
 
 	if(GetTeam(client) == 2)
 	{
-
 #if defined ZR
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 #endif
 		{
+			//they are a teuton, or dying, teleport them out of bad places.
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
 				EntityIsInHazard_Teleport(client);
@@ -384,17 +384,20 @@ public void OnPostThink(int client)
 		if(dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
 #endif
 		{
+			//they are alive, but somehow in a bad position, check and teleport them out of there.
 			if(f_EntityOutOfNav[client] < GetGameTime())
 			{
 				Spawns_CheckBadClient(client);
 				f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			}
 		}
+		//save the last safe position to teleport back to.
 		SaveLastValidPositionEntity(client);
 	
 	}
 	if(b_DisplayDamageHud[client])
 	{
+		//damage hud
 		if(Calculate_And_Display_HP_Hud(client))
 		{
 			b_DisplayDamageHud[client] = false;
@@ -402,6 +405,7 @@ public void OnPostThink(int client)
 	}
 	if(b_AntiSlopeCamp[client])
 	{	
+		//make them slide off stuff.
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
 		{
 			ReplicateClient_Svairaccelerate[client] = 2.0;
@@ -1863,6 +1867,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			{
 				damage = 99999.9;
 				i_AmountDowned[victim] = 0;
+				if(CurrentModifOn() == 2)
+					i_AmountDowned[victim] = 1;
 				return Plugin_Changed;
 			}
 		}
@@ -2014,10 +2020,33 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				{
 					return Plugin_Handled;
 				}
-				
+			}
+			else if(i_CustomModelOverrideIndex[entity] >= 0)
+			{
+				bool Changed;
+				switch(i_CustomModelOverrideIndex[entity])
+				{
+					case BARNEY:
+					{
+						Changed = BarneySoundOverride(numClients, sample, 
+						entity, channel, volume, level, pitch, flags,seed);
+					}
+					//nothing for niko. silent!
+					case NIKO_2:
+					{
+
+					}
+				}
+				if(Changed)
+				{
+					return Plugin_Changed;
+				}
+				else
+				{
+					return Plugin_Handled;
+				}
 			}
 #endif
-		
 		}
 	}
 	if(channel == SNDCHAN_WEAPON)
@@ -2097,15 +2126,8 @@ public void OnWeaponSwitchFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
-		if(weapon != -1)
-		{
-			char buffer[36];
-			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			ViewChange_Switch(client, weapon, buffer);
-			// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
-		}
+		ViewChange_Update(client, false);
+		// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
 	}
 }
 

@@ -660,10 +660,12 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	char buffer[128], plugin[64];
 
 	f_ExtraDropChanceRarity = kv.GetFloat("gift_drop_chance_multiplier", 0.5);
+	i_WaveHasFreeplay = kv.GetNum("do_freeplay", 0);
 	kv.GetString("complete_item", buffer, sizeof(buffer));
 	WaveGiftItem = buffer[0] ? Items_NameToId(buffer) : -1;
 	bool autoCash = view_as<bool>(kv.GetNum("auto_raid_cash"));
 	FakeMaxWaves = kv.GetNum("fakemaxwaves");
+	ResourceRegenMulti = kv.GetFloat("resourceregen", 1.0);
 
 	int objective = GetObjectiveResource();
 	if(objective != -1)
@@ -757,6 +759,10 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
+						if(wave.Count <= 0)
+						{
+							enemy.Does_Not_Scale = true;
+						}
 						enemy.Is_Outlined = kv.GetNum("is_outlined");
 						enemy.Is_Health_Scaled = kv.GetNum("is_health_scaling");
 						enemy.Is_Immune_To_Nuke = kv.GetNum("is_immune_to_nuke");
@@ -889,7 +895,6 @@ void Waves_RoundStart()
 	}
 	else
 	{
-		LogStackTrace("AAAAAAA");
 		delete VotingMods;
 		Waves_SetReadyStatus(1);
 	}
@@ -1009,6 +1014,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				VoteEndTime = GetGameTime() + 30.0;
 				CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 				PrintHintTextToAll("Vote for the top %d options!", list.Length);
+				PrintToChatAll("Vote for the top %d options!", list.Length);
 			}
 			else
 			{
@@ -1073,6 +1079,9 @@ public Action Waves_EndVote(Handle timer, float time)
 						VoteEndTime = GetGameTime() + 30.0;
 						CreateTimer(1.0, Waves_VoteDisplayTimer, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 						CreateTimer(30.0, Waves_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
+
+						PrintHintTextToAll("Vote for the wave modifier!");
+						PrintToChatAll("Vote for the wave modifier!");
 					}
 					else
 					{
@@ -1084,7 +1093,7 @@ public Action Waves_EndVote(Handle timer, float time)
 				}
 				else
 				{
-					PrintToChatAll("%t: %s", "Set modifier set to", vote.Name);
+					PrintToChatAll("%t: %s", "Modifier set to", vote.Name);
 					
 					if(highest > 0)
 					{
@@ -1169,7 +1178,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 	if(CurrentRound < length)
 	{
-
 		Rounds.GetArray(CurrentRound, round);
 		if(++CurrentWave < round.Waves.Length)
 		{
@@ -1180,12 +1188,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
 			DoGlobalMultiScaling();
-			float playercount = float(CountPlayersOnRed());
-					
-			if(playercount == 1.0) //If alone, spawn wayless, it makes it way too difficult otherwise.
-			{
-				playercount = 0.70;
-			}
 			
 			int Is_a_boss = wave.EnemyData.Is_Boss;
 			bool ScaleWithHpMore = wave.Count == 0;
@@ -1217,17 +1219,17 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			int count = wave.Count;
 			
-			if(wave.EnemyData.Does_Not_Scale == 0)
+			if(wave.EnemyData.Does_Not_Scale == 0 && count > 0)
 			{
 				if(Is_a_boss == 0)
 				{
 					count = RoundToNearest(float(count) * MultiGlobalEnemy);
+					//the scaling on this cant be too high, otherwise rounds drag on forever.
 				}
 				else
 				{
-					float multiBoss = playercount * 0.25;
-					//If its any boss, then make it scale like old.
-					count = RoundToNearest(float(count) * multiBoss);
+					//if its a boss, then it scales like old logic, beacuse bosses should spawn more as they have more of an impact
+					count = RoundToNearest(float(count) * MultiGlobalEnemyBoss);
 				}
 			}
 			
@@ -1262,13 +1264,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				*/
 				if(ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.34;
+					multiBoss = MultiGlobalHighHealthBoss;
 				}
-
 				if(!ScaleWithHpMore)
 				{
-					multiBoss = playercount * 0.2;
-					MultiGlobalAlaxios = multiBoss;
+					multiBoss = MultiGlobalHealthBoss;
 				}
 				
 				int Tempomary_Health = RoundToNearest(float(wave.EnemyData.Health) * multiBoss);
@@ -1313,26 +1313,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			Waves_ClearWaves();
-			/*
-			for(int client_Penalise=1; client_Penalise<=MaxClients; client_Penalise++)
-			{
-				if(IsClientInGame(client_Penalise))
-				{
-					if(GetClientTeam(client_Penalise)!=2)
-					{
-						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 90%% due to not being in-game");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.10);
-					}
-					else if (TeutonType[client_Penalise] == TEUTON_WAITING)
-					{
-						SetGlobalTransTarget(client_Penalise);
-						PrintToChat(client_Penalise, "%t", "You have only gained 95 %% due to being a non-player player, but still helping");
-						CashSpent[client_Penalise] += RoundToCeil(float(round.Cash) * 0.05);
-					}
-				}
-			}
-			*/
+
 			bool music_stop = false;
 			if(round.music_round_outro[0])
 			{
@@ -1691,13 +1672,24 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					
 
-					if(zr_allowfreeplay.BoolValue)
+					if(zr_allowfreeplay.BoolValue && i_WaveHasFreeplay >= 0)
 					{
-						Menu menu = new Menu(Waves_FreeplayVote);
-						menu.SetTitle("%t","Victory Menu");
-						menu.AddItem("", "Yes");
-						menu.AddItem("", "No");
-						menu.ExitButton = false;
+						if(i_WaveHasFreeplay == 1)
+						{
+							Menu menu = new Menu(Waves_FreeplayVote);
+							menu.SetTitle("%t","Victory Menu 2");
+							menu.AddItem("", "Yes");
+							menu.AddItem("", "No");
+							menu.ExitButton = false;
+						}
+						else
+						{
+							Menu menu = new Menu(Waves_FreeplayVote);
+							menu.SetTitle("%t","Victory Menu");
+							menu.AddItem("", "Yes");
+							menu.AddItem("", "No");
+							menu.ExitButton = false;
+						}
 						
 						menu.DisplayVote(players, total, 30);
 					}
@@ -1782,136 +1774,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 	}
 	else
 	{
-		Rounds.GetArray(length, round);
-		if(++CurrentWave < 8)
-		{
-//			float playercount = float(CountPlayersOnRed());
-			DoGlobalMultiScaling();
-
-			int postWaves = CurrentRound - length;
-			f_FreeplayDamageExtra = 1.0 + (postWaves / 45.0);
-
-			Rounds.GetArray(length, round);
-			length = round.Waves.Length;
-			
-			int Max_Enemy_Get = Freeplay_EnemyCount();
-			for(int i; i < length; i++)
-			{
-				if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
-				{
-					round.Waves.GetArray(i, wave);
-					Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
-
-					if(wave.Count > 0)
-					{
-						for(int a; a < wave.Count; a++)
-						{
-							Waves_AddNextEnemy(wave.EnemyData);
-						}
-						
-						Zombies_Currently_Still_Ongoing += wave.Count;
-
-						if(!(--Max_Enemy_Get))
-							break;
-					}
-				}
-			}
-
-			// Note: Artvin remove this, this is freeplay code
-			if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
-			{
-				panzer_spawn = true;
-				NPC_SpawnNext(panzer_spawn, false);
-			}
-			else
-			{
-				panzer_spawn = false;
-				NPC_SpawnNext(false, false);
-			}
-			
-			if(!Enemies.Length)
-			{
-				CurrentWave++;
-				Waves_Progress();
-				return;
-			}
-
-			CurrentWave = 9;
-		}
-		else if(donotAdvanceRound)
-		{
-			CurrentWave = 9;
-		}
+		bool EarlyReturn = false;
+		//We are in freeplay, past normal waves.
+		if(b_WaveHasFreeplay == 2)
+			EarlyReturn = Waves_NextFreeplayCall(Rounds, panzer_spawn, panzer_sound, panzer_chance, GiveAmmoSupplies);
+		else if(b_WaveHasFreeplay == 1)
+			EarlyReturn = Waves_NextSpecialWave(Rounds, panzer_spawn, panzer_sound, panzer_chance, GiveAmmoSupplies);
 		else
+			PrintToChatAll("epic fail");
+
+		if(EarlyReturn)
 		{
-			WaveEndLogicExtra();
-
-			int postWaves = CurrentRound - length;
-			Freeplay_OnEndWave(postWaves, round.Cash);
-			CurrentCash += round.Cash;
-
-			if(round.Cash)
-			{
-				CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
-			}
-			
-			RaidMusicSpecial1.Clear();
-			
-			ExcuteRelay("zr_wavedone");
-			CurrentRound++;
-			CurrentWave = -1;
-			//Rounds.GetArray(length, round);
-		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
-			{
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client))
-					{
-						DoOverlay(client, "", 2);
-						if(IsPlayerAlive(client) && GetClientTeam(client)==2)
-							GiveXP(client, round.Xp);
-					}
-				}
-				
-				ReviveAll();
-				
-				Music_EndLastmann();
-				CheckAlivePlayers();
-			}
-			if((CurrentRound % 5) == 4)
-			{
-				Freeplay_SetupStart(postWaves);
-
-				Cooldown = GetGameTime() + 30.0;
-				
-				InSetup = true;
-				ExcuteRelay("zr_setuptime");
-				
-				SpawnTimer(30.0);
-				CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-				
-				Menu menu = new Menu(Waves_FreeplayVote);
-				menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
-				menu.AddItem("", "Yes");
-				menu.AddItem("", "No");
-				menu.ExitButton = false;
-				
-				int total = 0;
-				int[] players = new int[MaxClients];
-				for(int i=1; i<=MaxClients; i++)
-				{
-					if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i)==2)
-						players[total++] = i;
-				}
-				
-				menu.DisplayVote(players, total, 30);
-				
-				Citizen_SetupStart();
-			}
-			else
-			{
-				return;
-			}
+			return;
 		}
 	}
 	if(CurrentRound == 0 && !Rogue_Mode())
@@ -2251,9 +2125,11 @@ void DoGlobalMultiScaling()
 			
 	float multi = Pow(1.08, playercount);
 
-	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0, and lower means abit less! meaning if alone you fight 70% instead of 50%	
-	MultiGlobal = multi;
-	MultiGlobalAlaxios = playercount * 0.2;
+	multi -= 0.31079601; //So if its 4 players, it defaults to 1.0
+	
+	MultiGlobalHealthBoss = playercount * 0.2;
+	MultiGlobalHighHealthBoss = playercount * 0.34;
+	MultiGlobalEnemyBoss = playercount * 0.3;
 
 	float cap = zr_enemymulticap.FloatValue;
 
@@ -2268,12 +2144,14 @@ void DoGlobalMultiScaling()
 		MultiGlobalEnemy = multi;
 	}
 	MultiGlobalEnemy *= ZRModifs_MaxSpawnWaveModif();
+	MultiGlobalEnemyBoss *= ZRModifs_MaxSpawnWaveModif();
 
 	PlayerCountBuffScaling = 4.0 / playercount;
 	if(PlayerCountBuffScaling < 1.2)
 	{
 		PlayerCountBuffScaling = 1.2;
 	}
+
 	PlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
 	if(PlayerCountResBuffScaling < 0.75)
 	{
@@ -2359,10 +2237,6 @@ static void UpdateMvMStatsFrame()
 			
 			if(round.Waves)
 			{
-				float playercount = float(CountPlayersOnRed());
-				if(playercount == 1.0)
-					playercount = 0.70;
-
 				Wave wave;
 				int length = round.Waves.Length;
 				for(int a = length - 1; a >= 0; a--)
@@ -2380,7 +2254,7 @@ static void UpdateMvMStatsFrame()
 						}
 						else
 						{
-							num = RoundToNearest(float(num) * playercount * 0.25);
+							num = RoundToNearest(float(num) * MultiGlobalEnemyBoss);
 						}
 					}
 					
@@ -2388,9 +2262,9 @@ static void UpdateMvMStatsFrame()
 					{
 						num = 1;
 					}
-					else if(num > 150)
+					else if(num > 250)
 					{
-						num = 150;
+						num = 250;
 					}
 
 					totalcount += num;
@@ -2607,8 +2481,11 @@ static Action ReadyUpHack(Handle timer)
 		if(time > 12.0 || time < 0.0)
 		{
 			float set = -1.0;
+
+			// Artvin Request: Start instantly at half players ready up
+			ready *= 2;
 			
-			if(ready == players)
+			if(ready >= players)
 			{
 				set = 12.0;
 			}
@@ -2837,5 +2714,287 @@ void Waves_EnemySpawned(int entity)
 		Call_Finish();
 	}
 }
+
+bool Waves_NextFreeplayCall(rounds Rounds, bool panzer_spawn, bool panzer_sound, int panzer_chance, bool GiveAmmoSupplies)
+{
+	Rounds.GetArray(length, round);
+	if(++CurrentWave < 8)
+	{
+		DoGlobalMultiScaling();
+
+		int postWaves = CurrentRound - length;
+		f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+
+		Rounds.GetArray(length, round);
+		length = round.Waves.Length;
+		
+		int Max_Enemy_Get = Freeplay_EnemyCount();
+		for(int i; i < length; i++)
+		{
+			if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+			{
+				round.Waves.GetArray(i, wave);
+				Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
+
+				if(wave.Count > 0)
+				{
+					for(int a; a < wave.Count; a++)
+					{
+						Waves_AddNextEnemy(wave.EnemyData);
+					}
+					
+					Zombies_Currently_Still_Ongoing += wave.Count;
+
+					if(!(--Max_Enemy_Get))
+						break;
+				}
+			}
+		}
+
+		// Note: Artvin remove this, this is freeplay code
+		if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
+		{
+			panzer_spawn = true;
+			NPC_SpawnNext(panzer_spawn, true);
+		}
+		else
+		{
+			panzer_spawn = false;
+			NPC_SpawnNext(false, false);
+		}
+		
+		if(!Enemies.Length)
+		{
+			CurrentWave++;
+			Waves_Progress();
+			return true;
+		}
+		CurrentWave = 9;
+	}
+	else if(donotAdvanceRound)
+	{
+		CurrentWave = 9;
+	}
+	else
+	{
+		WaveEndLogicExtra();
+
+		int postWaves = CurrentRound - length;
+		Freeplay_OnEndWave(postWaves, round.Cash);
+		CurrentCash += round.Cash;
+
+		if(round.Cash)
+		{
+			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+		}
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(music_stop)
+				{
+					Music_Stop_All(client);
+				}
+			}
+		}
+		
+		RaidMusicSpecial1.Clear();
+		
+		ExcuteRelay("zr_wavedone");
+		CurrentRound++;
+		CurrentWave = -1;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				DoOverlay(client, "", 2);
+				if(IsPlayerAlive(client) && GetClientTeam(client)==2)
+					GiveXP(client, round.Xp);
+			}
+		}
+		
+		ReviveAll();
+		
+		Music_EndLastmann();
+		CheckAlivePlayers();
+
+		if((CurrentRound % 5) == 4)
+		{
+			Freeplay_SetupStart(postWaves);
+
+			Cooldown = GetGameTime() + 15.0;
+			
+			InSetup = true;
+			ExcuteRelay("zr_setuptime");
+			
+			SpawnTimer(15.0);
+			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			
+			Menu menu = new Menu(Waves_FreeplayVote);
+			menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
+			menu.AddItem("", "Yes");
+			menu.AddItem("", "No");
+			menu.ExitButton = false;
+			
+			int total = 0;
+			int[] players = new int[MaxClients];
+			for(int i=1; i<=MaxClients; i++)
+			{
+				if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i)==2)
+					players[total++] = i;
+			}
+			
+			menu.DisplayVote(players, total, 15);
+			
+			Citizen_SetupStart();
+		}
+		else
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool Waves_NextSpecialWave(rounds Rounds, bool panzer_spawn, bool panzer_sound, int panzer_chance, bool GiveAmmoSupplies)
+{
+	Rounds.GetArray(length, round);
+	if(++CurrentWave < 8)
+	{
+		DoGlobalMultiScaling();
+
+		int postWaves = CurrentRound - length;
+		f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+
+		Rounds.GetArray(length, round);
+		length = round.Waves.Length;
+		
+		int Max_Enemy_Get = Freeplay_EnemyCount();
+		for(int i; i < length; i++)
+		{
+			if(Freeplay_ShouldAddEnemy()) //Do not allow more then 3 different enemy types at once, or else freeplay just takes way too long and the RNG will cuck it.
+			{
+				round.Waves.GetArray(i, wave);
+				Freeplay_AddEnemy(postWaves, wave.EnemyData, wave.Count);
+
+				if(wave.Count > 0)
+				{
+					for(int a; a < wave.Count; a++)
+					{
+						Waves_AddNextEnemy(wave.EnemyData);
+					}
+					
+					Zombies_Currently_Still_Ongoing += wave.Count;
+
+					if(!(--Max_Enemy_Get))
+						break;
+				}
+			}
+		}
+
+		// Note: Artvin remove this, this is freeplay code
+		if(Freeplay_ShouldMiniBoss() && !rogue) //no miniboss during roguelikes.
+		{
+			panzer_spawn = true;
+			NPC_SpawnNext(panzer_spawn, true);
+		}
+		else
+		{
+			panzer_spawn = false;
+			NPC_SpawnNext(false, false);
+		}
+		
+		if(!Enemies.Length)
+		{
+			CurrentWave++;
+			Waves_Progress();
+			return true;
+		}
+		CurrentWave = 9;
+	}
+	else if(donotAdvanceRound)
+	{
+		CurrentWave = 9;
+	}
+	else
+	{
+		WaveEndLogicExtra();
+
+		int postWaves = CurrentRound - length;
+		Freeplay_OnEndWave(postWaves, round.Cash);
+		CurrentCash += round.Cash;
+
+		if(round.Cash)
+		{
+			CPrintToChatAll("{green}%t{default}","Cash Gained This Wave", round.Cash);
+		}
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(music_stop)
+				{
+					Music_Stop_All(client);
+				}
+			}
+		}
+		
+		RaidMusicSpecial1.Clear();
+		
+		ExcuteRelay("zr_wavedone");
+		CurrentRound++;
+		CurrentWave = -1;
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				DoOverlay(client, "", 2);
+				if(IsPlayerAlive(client) && GetClientTeam(client)==2)
+					GiveXP(client, round.Xp);
+			}
+		}
+		
+		ReviveAll();
+		
+		Music_EndLastmann();
+		CheckAlivePlayers();
+
+		if((CurrentRound % 5) == 4)
+		{
+			Freeplay_SetupStart(postWaves);
+
+			Cooldown = GetGameTime() + 15.0;
+			
+			InSetup = true;
+			ExcuteRelay("zr_setuptime");
+			
+			SpawnTimer(15.0);
+			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			
+			Menu menu = new Menu(Waves_FreeplayVote);
+			menu.SetTitle("Continue Freeplay..?\nThis will be asked every 5 waves.\n ");
+			menu.AddItem("", "Yes");
+			menu.AddItem("", "No");
+			menu.ExitButton = false;
+			
+			int total = 0;
+			int[] players = new int[MaxClients];
+			for(int i=1; i<=MaxClients; i++)
+			{
+				if(IsClientInGame(i) && !IsFakeClient(i) && GetClientTeam(i)==2)
+					players[total++] = i;
+			}
+			
+			menu.DisplayVote(players, total, 15);
+			
+			Citizen_SetupStart();
+		}
+		else
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 #include "zombie_riot/modifiers.sp"

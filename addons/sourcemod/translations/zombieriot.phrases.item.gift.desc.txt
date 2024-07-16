@@ -1575,7 +1575,7 @@
 	}
 	"Chaos Intrusion Desc"
 	{
-		"en"	"You came too late, chaos took its full effect...\nWaves spawn 35%% more enemies, spawn 15%% faster, and 10%% more zombies are alive at once.\nEnemeis deal 12%% more damage, have 30%% more HP (Gib treshhold stays.) and are 5%% faster."
+		"en"	"You came too late, chaos took its full effect...\nWaves spawn 25%% more enemies, spawn 15%% faster, and 10%% more zombies are alive at once.\nEnemeis deal 12%% more damage, have 30%% more HP and are 3%% faster."
 	}
 	"Standard"
 	{
@@ -1584,5 +1584,13 @@
 	"Standard Desc"
 	{
 		"en"	"Play as intended!\nAny other Modifcation might go off the rails.\nBe warned!!!!"
+	}
+	"Old Times"
+	{
+		"en"	"Old Times"
+	}
+	"Old Times Desc"
+	{
+		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
 	}
 }

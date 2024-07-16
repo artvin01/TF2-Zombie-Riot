@@ -187,7 +187,8 @@ enum
 	WEAPON_ION_BEAM_PULSE = 107,
 	WEAPON_ION_BEAM_NIGHT = 108,
 	WEAPON_ION_BEAM_FEED  = 109,
-	WEAPON_CHAINSAW  = 110
+	WEAPON_CHAINSAW  = 110,
+	WEAPON_FLAMETAIL = 111
 }
 
 enum
@@ -284,7 +285,7 @@ int i_Reviving_This_Client[MAXTF2PLAYERS];
 float f_Reviving_This_Client[MAXTF2PLAYERS];
 float f_HudCooldownAntiSpamRaid[MAXTF2PLAYERS];
 int i_MaxArmorTableUsed[MAXTF2PLAYERS];
-
+float ResourceRegenMulti;
 
 #define SF2_PLAYER_VIEWBOB_TIMER 10.0
 #define SF2_PLAYER_VIEWBOB_SCALE_X 0.05
@@ -349,22 +350,29 @@ float fl_blitz_ioc_punish_timer[MAXENTITIES+1][MAXENTITIES+1];
 int i_ThisEntityHasAMachineThatBelongsToClient[MAXENTITIES];
 int i_ThisEntityHasAMachineThatBelongsToClientMoney[MAXENTITIES];
 
-float MultiGlobal = 0.25;
+
 float MultiGlobalEnemy = 0.25;
+float MultiGlobalEnemyBoss = 0.25;
+//This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increaced
+//isnt affected when selecting Modificators.
+//Bosses scale harder, as they are fewer of them, and we cant make them scale the same.
 float MultiGlobalHealth = 1.0;
-float MultiGlobalAlaxios = 0.25;
+//See above
+
+float MultiGlobalHealthBoss = 0.25;
+//This is normal boss scaling, this scales ontop of enemies spawning
+
+float MultiGlobalHighHealthBoss = 0.34;
+//This is Raidboss/Single boss scaling, this is used if the boss only spawns once.
+
 float f_WasRecentlyRevivedViaNonWave[MAXTF2PLAYERS];
 float f_WasRecentlyRevivedViaNonWaveClassChange[MAXTF2PLAYERS];
 
 float f_MedigunChargeSave[MAXTF2PLAYERS][4];
 float f_SaveBannerRageMeter[MAXTF2PLAYERS][2];
 
-//bool b_AllowBuildCommand[MAXPLAYERS + 1];
-
 int Building_Mounted[MAXENTITIES];
 
-//bool Doing_Handle_Mount[MAXPLAYERS + 1]={false, ...};
-//bool b_Doing_Buildingpickup_Handle[MAXPLAYERS + 1]={false, ...};
 
 float f_DisableDyingTimer[MAXPLAYERS + 1]={0.0, ...};
 int i_DyingParticleIndication[MAXPLAYERS + 1][2];
@@ -382,6 +390,7 @@ float Building_Collect_Cooldown[MAXENTITIES][MAXTF2PLAYERS];
 bool b_SpecialGrigoriStore = true;
 float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
+int i_WaveHasFreeplay = 0;
 
 
 #include "zombie_riot/npc.sp"	// Global NPC List
@@ -398,6 +407,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/spawns.sp"
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
+#include "zombie_riot/barney_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -521,6 +531,7 @@ bool applied_lastmann_buffs_once = false;
 #include "zombie_riot/custom/kit_merchant.sp"
 #include "zombie_riot/custom/weapon_mg42.sp"
 #include "zombie_riot/custom/weapon_chainsaw.sp"
+#include "zombie_riot/custom/weapon_flametail.sp"
 
 void ZR_PluginLoad()
 {
@@ -591,6 +602,7 @@ void ZR_PluginStart()
 void ZR_MapStart()
 {
 	TeutonSoundOverrideMapStart();
+	BarneySoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
@@ -638,7 +650,6 @@ void ZR_MapStart()
 	Zero2(Perk_Machine_money_limit);
 	Zero2(Pack_A_Punch_Machine_money_limit);
 	Zero2(fl_blitz_ioc_punish_timer);
-	Zero(i_PlayerModelOverrideIndexWearable);
 	Zero(b_HideCosmeticsPlayer);
 	KahmlFistMapStart();
 	M3_ClearAll();
@@ -825,6 +836,8 @@ void ZR_ClientPutInServer(int client)
 {
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
+	if(CurrentModifOn() == 2)
+		i_AmountDowned[client] = 1;
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
@@ -878,7 +891,7 @@ void ZR_ClientDisconnect(int client)
 	WoodAmount[client] = 0.0;
 	FoodAmount[client] = 0.0;
 	GoldAmount[client] = 0.0;
-	i_PlayerModelOverrideIndexWearable[client] = 0;
+	i_PlayerModelOverrideIndexWearable[client] = -1;
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 }
@@ -2027,6 +2040,9 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
+			if(CurrentModifOn() == 2)
+				i_AmountDowned[client] = 1;
+
 			DoOverlay(client, "", 2);
 			if(GetClientTeam(client)==2)
 			{

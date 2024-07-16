@@ -5,6 +5,7 @@ static bool MaxMiniBoss;
 static int CurrentModifActive = 0;
 
 #define CHAOS_INTRUSION 1
+#define OLD_TIMES 2
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -32,6 +33,16 @@ public void Modifier_Remove_ChaosIntrusion()
 	CurrentModifActive = 0;
 }
 
+public void Modifier_Collect_OldTimes()
+{
+	CurrentModifActive = OLD_TIMES;
+}
+
+public void Modifier_Remove_OldTimes()
+{
+	CurrentModifActive = 0;
+}
+
 
 public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 {
@@ -40,7 +51,18 @@ public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.30));
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.30));
 	fl_GibVulnerablity[iNpc] *= 1.30;
-	fl_Extra_Speed[iNpc] *= 1.05;
+	fl_Extra_Speed[iNpc] *= 1.03;
+}
+
+
+public void ZRModifs_OldTimesNPC(int iNpc)
+{
+	fl_Extra_Damage[iNpc] *= 1.15;
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.50));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.50));
+	fl_GibVulnerablity[iNpc] *= 1.50;
+	fl_Extra_Speed[iNpc] *= 1.04;
 }
 
 float ZRModifs_MaxSpawnsAlive()
@@ -50,6 +72,10 @@ float ZRModifs_MaxSpawnsAlive()
 		case CHAOS_INTRUSION:
 		{
 			return 1.10;
+		}
+		case OLD_TIMES:
+		{
+			return 1.20;
 		}
 	}
 	return 1.0;
@@ -63,6 +89,10 @@ float ZRModifs_SpawnSpeedModif()
 		{
 			return 0.85;
 		}
+		case OLD_TIMES:
+		{
+			return 0.75;
+		}
 	}
 	return 1.0;
 }
@@ -73,7 +103,11 @@ float ZRModifs_MaxSpawnWaveModif()
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 1.35;
+			return 1.25;
+		}
+		case OLD_TIMES:
+		{
+			return 1.3;
 		}
 	}
 	return 1.0;
@@ -87,5 +121,14 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		{
 			FormatEx(data, 6, "C");
 		}
+		case OLD_TIMES:
+		{
+			FormatEx(data, 6, "O");
+		}
 	}
+}
+
+int CurrentModifOn()
+{
+	return CurrentModifActive;
 }

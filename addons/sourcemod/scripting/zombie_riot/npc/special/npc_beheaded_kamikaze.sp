@@ -150,7 +150,7 @@ methodmap BeheadedKamiKaze < CClotBody
 				DoGlobalMultiScaling();
 				float SpawnRate = 0.25;
 				fl_KamikazeSpawnRateDelay = 0.0;
-				SpawnRate /= MultiGlobal;
+				SpawnRate /= MultiGlobalEnemy;
 				DataPack pack = new DataPack();
 				pack.WriteFloat(SpawnRate);
 				pack.WriteFloat(GetGameTime() + 10.0); //they took too long to kill that one. Spawn more regardless.
