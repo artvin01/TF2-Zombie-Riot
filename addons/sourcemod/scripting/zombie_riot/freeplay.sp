@@ -61,11 +61,30 @@ int Freeplay_EnemyCount()
 	return EnemyCount;
 }
 
-bool Freeplay_ShouldAddEnemy()
+int Freeplay_GetDangerLevelCurrent()
 {
-	return !(GetURandomInt() % EnemyChance);
-}
+	//0.5% chance for danger lvl 0 stuff.
+	if(GetRandomFloat(0.0, 1.0) <= 0.005)
+	{
+		return 0;
+	}
+	int DangerLevel = 1;
 
+	float DefaultChance = 0.025 * float(EnemyChance);
+	for(int LoopMax; LoopMax < 5 ; LoopMax++)
+	{
+		//theres a default 10% chance to roll higher enemies.
+		if(GetRandomFloat(0.0, 1.0) <= (DefaultChance))
+		{
+			DangerLevel++;
+		}
+		else
+		{
+			break;
+		}
+	}
+	return DangerLevel;
+}
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 {
 	if(RaidFight)
@@ -96,11 +115,41 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Index = NPC_GetByPlugin("npc_sensal");
 				enemy.Health = RoundToFloor(6500000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
 			}
-			/*case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
+			case 6:	//don't know how to edit the freeplay spawn thing without being 100% sure I didn't brick anything soo commented out for now.
 			{
 				enemy.Index = NPC_GetByPlugin("npc_sea_donnerkrieg");
+				enemy.Health = RoundToFloor(3000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
+			case 7:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_the_purge");
+				enemy.Health = RoundToFloor(9000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
+			case 8:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_the_messenger");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
-			}*/
+			}
+			case 9:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
+			case 10:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_chaos_kahmlstein");
+				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
+			case 11:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
+			case 12:	
+			{
+				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
+				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount()) * MultiGlobalHighHealthBoss);
+			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
@@ -108,6 +157,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 
+		enemy.Credits += 5000.0;
 		count = 1;
 		RaidFight = 0;
 	}
@@ -257,7 +307,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 48;
+		rand = GetURandomInt() % 55;
 	
 	char message[128];
 	switch(rand)
@@ -619,23 +669,58 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		}
 		case 45:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Blitzkrieg");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Blitzkrieg, killing awards 5k credits!");
 			RaidFight = 2;
 		}
 		case 46:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Goggles!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Silvester And Goggles, killing awards 5k credits!");
 			RaidFight = 3;
 		}
 		case 47:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be God Alaxios!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be God Alaxios, killing awards 5k credits!");
 			RaidFight = 4;
 		}
 		case 48:
 		{
-			strcopy(message, sizeof(message), "{red}The next enemy group will be Sensal!");
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Sensal, killing awards 5k credits!");
 			RaidFight = 5;
+		}
+		case 49:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Karlas and Stella!, killing awards 5k credits!");
+			RaidFight = 6;
+		}
+		case 50:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be The Purge!, killing awards 5k credits!");
+			RaidFight = 7;
+		}
+		case 51:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be The Messenger!, killing awards 5k credits!");
+			RaidFight = 8;
+		}
+		case 52:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be ??????, killing awards 5k credits!");
+			RaidFight = 9;
+		}
+		case 53:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Chaos Kahmlstein!, killing awards 5k credits!");
+			RaidFight = 10;
+		}
+		case 54:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Nemesis!, killing awards 5k credits!");
+			RaidFight = 11;
+		}
+		case 55:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Mr.X!, killing awards 5k credits!");
+			RaidFight = 12;
 		}
 		default:
 		{
