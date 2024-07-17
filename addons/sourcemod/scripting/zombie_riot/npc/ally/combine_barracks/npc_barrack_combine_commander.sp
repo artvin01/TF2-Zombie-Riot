@@ -41,7 +41,7 @@ static const char g_WarCry[][] = {
 };
 
 static float f_GlobalSoundCD;
-bool buffing = false;
+static bool buffing;
 
 void Barracks_Combine_Commander_Precache()
 {
