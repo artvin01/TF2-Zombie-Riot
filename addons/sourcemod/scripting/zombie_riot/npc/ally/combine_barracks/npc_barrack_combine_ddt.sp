@@ -44,7 +44,7 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/metropolice/vo/destroythatcover.wav"
 };
 
-void Barracks_Combine_Sword_Precache()
+void Barracks_Combine_Ddt_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);

@@ -37,7 +37,7 @@ static const char g_IdleAlert[][] =
 	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
-void Barracks_Combine_Pistol_Precache()
+void Barracks_Combine_Shotgun_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);

@@ -44,7 +44,7 @@ static const char g_MeleeDeflectAttack[][] = {
 	"weapons/samurai/tf_katana_impact_object_02.wav",
 };
 
-void Barracks_Combine_Sword_Precache()
+void Barracks_Combine_Parry_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
