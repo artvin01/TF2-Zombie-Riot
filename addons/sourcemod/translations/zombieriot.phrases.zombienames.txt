@@ -747,6 +747,14 @@
 	{
 		"en" 		"Combine Sniper"
 	}
+	"Barracks Combine Super"
+	{
+		"en" 		"Combine Warrior"
+	}
+	"Barracks Combine Commander"
+	{
+		"en" 		"Combine Commander"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"

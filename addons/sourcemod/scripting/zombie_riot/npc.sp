@@ -479,6 +479,7 @@ void NPC_ConfigSetup()
 	Barracks_Combine_Collos_Precache();
 	Barracks_Combine_Giant_DDT_Precache();
 	Barracks_Combine_Super_Precache();
+	Barracks_Combine_Commander_Precache();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();

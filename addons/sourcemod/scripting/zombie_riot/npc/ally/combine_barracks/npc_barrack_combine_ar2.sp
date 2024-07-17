@@ -41,6 +41,7 @@ void Barracks_Combine_Ar2_Precache()
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_IdleAlert);
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Soldier");

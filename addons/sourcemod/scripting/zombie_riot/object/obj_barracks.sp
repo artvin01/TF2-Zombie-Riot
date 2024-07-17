@@ -451,6 +451,7 @@ static const char SummonerCombineNPC[][] =
 	"npc_barrack_combine_giant_ddt",
 	
 	"npc_barrack_combine_super",
+	"npc_barrack_combine_commander",
 	"npc_barrack_villager"
 };
 
@@ -474,6 +475,7 @@ static int SummonerCombine[][] =
 	{ 0, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
+	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };

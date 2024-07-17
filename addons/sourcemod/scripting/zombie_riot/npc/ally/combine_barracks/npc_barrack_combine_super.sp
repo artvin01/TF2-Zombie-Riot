@@ -41,6 +41,10 @@ static const char g_IdleAlertedSounds[][] =
 	"npc/metropolice/vo/destroythatcover.wav"
 };
 
+static const char g_MeleeDeflectAttack[][] = {
+	"physics/metal/metal_box_impact_bullet1.wav",
+};
+
 void Barracks_Combine_Super_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -49,6 +53,7 @@ void Barracks_Combine_Super_Precache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeDeflectAttack);
 	
 	
 	NPCData data;
@@ -208,7 +213,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 
-							float damage = 3750.0;
+							float damage = 5000.0;
 							
 							if(target > 0) 
 							{
@@ -261,9 +266,6 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 	if(npc.m_bLostHalfHealth)
 	{
 		TrueArmor *= 0.9;
-		float chargerPos[3];
-		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
-		chargerPos[2] += 82.0;
 		switch(GetRandomInt(1, 4))
 		{
 			case 1,2,3:
@@ -272,9 +274,8 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 			}
 			case 4:
 			{
-				damage = 0.0;
-				TE_ParticleInt(g_particleMissText, chargerPos);
-				TE_SendToClient(attacker);
+				damage *= 0.4;
+				npc.PlayDeflectSound();
 			}
 		}
 		fl_TotalArmor[npc.index] = TrueArmor;
