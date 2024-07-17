@@ -107,7 +107,7 @@ float ZRModifs_MaxSpawnWaveModif()
 		}
 		case OLD_TIMES:
 		{
-			return 1.3;
+			return 1.35;
 		}
 	}
 	return 1.0;

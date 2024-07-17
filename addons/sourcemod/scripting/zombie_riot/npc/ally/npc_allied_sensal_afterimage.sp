@@ -52,7 +52,7 @@ methodmap AlliedSensalAbility < CClotBody
 		char ModelPath[255];
 		int entity, i;
 			
-		if(i_CustomModelOverrideIndex[entity] < BARNEY)
+		if(i_CustomModelOverrideIndex[client] < BARNEY)
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
