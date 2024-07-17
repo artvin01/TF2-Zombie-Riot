@@ -231,8 +231,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			int value = results[2].FetchInt(1);
 			if(value >= 2)
 			{
-				OverridePlayerModel(client, value - 1, true);
-				FakeClientCommand(client, "joinclass 2");
+				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
+				JoinClassInternal(client, CurrentClass[client]);
 			}
 			f_ArmorHudOffsetX[client] = results[2].FetchFloat(2);
 			f_ArmorHudOffsetY[client] = results[2].FetchFloat(3);

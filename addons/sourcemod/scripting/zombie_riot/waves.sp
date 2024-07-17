@@ -775,7 +775,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.ExtraSpeed = kv.GetFloat("extra_speed", 1.0);
 						enemy.ExtraDamage = kv.GetFloat("extra_damage", 1.0);
 						enemy.ExtraSize = kv.GetFloat("extra_size", 1.0);
-						wave.DangerLevel = kv.GetNum("danager_level");
+						wave.DangerLevel = kv.GetNum("danger_level");
 						
 						kv.GetString("data", enemy.Data, sizeof(enemy.Data));
 						kv.GetString("spawn", enemy.Spawn, sizeof(enemy.Spawn));
@@ -2728,7 +2728,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 		DoGlobalMultiScaling();
 
 		int postWaves = CurrentRound - length;
-		f_FreeplayDamageExtra = 1.0 + (postWaves / 30.0);
+		f_FreeplayDamageExtra = 1.0 + (postWaves / 45.0);
 
 		Rounds.GetArray(length, round);
 		length = round.Waves.Length;

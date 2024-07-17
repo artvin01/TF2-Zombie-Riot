@@ -3134,6 +3134,10 @@
 	{
 		"en"		"You can not tinker this weapon"
 	}
+	"The Blacksmith Failed!"
+	{
+		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
+	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
@@ -3227,5 +3231,9 @@
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
+	}
+	"Skeleboy"
+	{
+		"en"	"Skeleboy"
 	}
 }

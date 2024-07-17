@@ -2098,6 +2098,7 @@ void ReviveAll(bool raidspawned = false)
 					}
 				}
 			}
+			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
 	
