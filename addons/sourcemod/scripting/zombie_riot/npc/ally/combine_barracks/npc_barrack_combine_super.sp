@@ -139,7 +139,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-		npc.Anger = false;
+		npc.anger = false;
 
 		KillFeed_SetKillIcon(npc.index, "fists");
 		
@@ -257,7 +257,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 	}
 
 	float TrueArmor = 1.0;
-	
+
 	if(npc.m_bLostHalfHealth)
 	{
 		TrueArmor *= 0.9;
