@@ -889,7 +889,7 @@ public void OnPostThink(int client)
 
 			if(TF2_IsPlayerInCondition(client, TFCond_MarkedForDeathSilent))
 			{
-				percentage_Global *= 1.35;
+				percentage_Global *= 1.15;
 			}
 			if(TF2_IsPlayerInCondition(client, TFCond_Jarated))
 			{
@@ -1488,10 +1488,18 @@ public void OnPostThinkPost(int client)
 public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	int i_damage = RoundToCeil(damage);
+
 	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
 	{
-		i_PlayerDamaged[victim] += i_damage;
+		int i_damage = RoundToCeil(damage);
+		//dont credit for more then 4k damage at once.
+		if(i_damage >= 4000)
+			i_damage = 4000;
+
+		if(IsValidEnemy(victim, attacker, true, true))
+		{
+			i_PlayerDamaged[victim] += i_damage;
+		}
 	}
 	
 	if((damagetype & DMG_DROWN))
@@ -1924,7 +1932,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	{
 		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
-		damage *= 1.35;
+		damage *= 1.15;
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{
