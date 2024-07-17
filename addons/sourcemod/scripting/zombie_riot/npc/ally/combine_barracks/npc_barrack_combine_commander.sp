@@ -134,6 +134,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_commanderbufftime = 0.0;
+		buffing = false;
 
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
