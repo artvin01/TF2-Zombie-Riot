@@ -139,7 +139,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-		npc.anger = false;
+		npc.Anger = false;
 
 		KillFeed_SetKillIcon(npc.index, "fists");
 		
@@ -212,7 +212,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								if(npc.anger)
+								if(npc.Anger)
 								{
 									damage *= 1.5;
 								}
@@ -222,7 +222,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 								}
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
-								npc.anger = false;
+								npc.Anger = false;
 							} 
 						}
 						delete swingTrace;
