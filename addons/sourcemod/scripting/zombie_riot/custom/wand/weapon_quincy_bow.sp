@@ -48,7 +48,7 @@ static const char Zap_Sound[][] = {
 	"ambient/energy/zap8.wav",
 	"ambient/energy/zap9.wav",
 };
-#define QUINCY_BOW_BASELINE_BATTERY 400.0
+#define QUINCY_BOW_BASELINE_BATTERY 400.0	//this is kinda like the true mana cost of the weapon
 
 
 static float fl_Quincy_Barrage_Firerate[MAXTF2PLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
@@ -80,14 +80,12 @@ public void QuincyMapStart()
 	Zero(fl_hud_timer);
 	
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
-
 	
 	for(int client=1 ; client <= MAXTF2PLAYERS ; client++)
 	{
 		fl_Quincy_Charge_Multi[client] = 1.0;
 		fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
 	}
-	
 }
 static int Get_Quincy_Pap(int weapon)
 {
@@ -104,8 +102,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 			//Yes?
 			delete h_TimerQuincy_BowManagement[client];
 			h_TimerQuincy_BowManagement[client] = null;			
-			
-			
+				
 			int pap = Get_Quincy_Pap(weapon);
 
 			switch(pap)
@@ -113,7 +110,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 				case 0:
 				{
 					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
-					fl_Quincy_Charge_Multi[client] = 1.0;
+					fl_Quincy_Charge_Multi[client] = 1.0;	//how efficient it is: charge += mana_cost*this.
 				}
 				case 1:
 				{
@@ -130,10 +127,15 @@ public void Activate_Quincy_Bow(int client, int weapon)
 					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.75;
 					fl_Quincy_Charge_Multi[client] = 2.25;
 				}
-				case 4, 5:
+				case 4:	//hyper barrage
 				{
 					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*2.0;
 					fl_Quincy_Charge_Multi[client] = 2.5;
+				}
+				case 5:	//hyper arrow
+				{
+					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*5.0;
+					fl_Quincy_Charge_Multi[client] = 2.0;
 				}
 			}
 
@@ -170,10 +172,15 @@ public void Activate_Quincy_Bow(int client, int weapon)
 				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.75;
 				fl_Quincy_Charge_Multi[client] = 2.25;
 			}
-			case 4, 5:
+			case 4:	//hyper barrage
 			{
 				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*2.0;
 				fl_Quincy_Charge_Multi[client] = 2.5;
+			}
+			case 5:	//hyper arrow
+			{
+				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*5.0;
+				fl_Quincy_Charge_Multi[client] = 1.8;
 			}
 		}
 		
@@ -198,7 +205,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Your Hyper Arrow Is still cooling");
 			return;
 		}
-		int Mana_Cost = 400;
+		int Mana_Cost = 500;
 		if(Current_Mana[client] < Mana_Cost)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
@@ -211,7 +218,6 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 		Mana_Hud_Delay[client] = 0.0;
 		
-
 		fl_hyper_arrow_charge[client] = 0.0;
 
 		fl_quincy_hyper_arrow_timeout[client] = GetGameTime() + 15.0;
@@ -235,7 +241,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		
 		EmitSoundToAll(hyper_arrow_sounds[GetRandomInt(0, sizeof(hyper_arrow_sounds)-1)], client, SNDCHAN_STATIC, 100, _, 0.5, 100);	//very loud!
 
-		float damage = 425.0;
+		float damage = 625.0;
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
 		Quincy_Damage_Trace(client, Origin, vecHit, Radius, damage);
@@ -400,15 +406,13 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 				int mana_cost;
 				mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 				
-				mana_cost = RoundToCeil(mana_cost*fl_Quincy_Charge_Multi[client]);
-				
 				if(Current_Mana[client]>mana_cost)
 				{
-					fl_Quincy_Charge[client] += mana_cost;					
+					fl_Quincy_Charge[client] += mana_cost*fl_Quincy_Charge_Multi[client];					
 					Current_Mana[client] -=mana_cost;
 				}
 
-				if(fl_Quincy_Charge[client] > fl_Quincy_Max_Battery[client])
+				if(fl_Quincy_Charge[client] > fl_Quincy_Max_Battery[client] && pap !=4)
 					fl_Quincy_Charge[client] = fl_Quincy_Max_Battery[client];
 			}
 		}
@@ -538,9 +542,9 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			damage = 33.0*(charge_percent/100.0);
 			damage *= Attributes_Get(weapon, 410, 1.0);
 			float ang_Look[3];
-			MakeVectorFromPoints(UserLoc, endLoc, ang_Look);
+			MakeVectorFromPoints(endLoc, Vec_offset, ang_Look);
 			GetVectorAngles(ang_Look, ang_Look);
-			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, Vec_offset);
+			Quincy_Rocket_Launch(client, fl_speed, damage, weapon, ang_Look, endLoc);
 		}
 	}
 }
@@ -611,6 +615,9 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 			pen_amt=10;
 		i_quincy_penetration_amt[projectile] = pen_amt;
 	}
+
+	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	SetEntData(weapon, iAmmoTable, 1, 4, true);
 	
 	fl_Quincy_Charge[client] = 0.0;
 }
@@ -644,11 +651,17 @@ static void Quincy_Do_Homing(int client, int projectile, float charge_percent)
 	float Homing_Power = 2.0*(charge_percent/100.0);
 
 	float LockonAngle = 45.0;
+
+	if(Homing_Power > 7.5)
+		Homing_Power = 7.5;
+
 	if(IsValidEntity(i_quincy_targethit[0]))
 	{
 		LockonAngle = 90.0;
 		Homing_Power *=1.5;
 	}
+
+	
 
 	Initiate_HomingProjectile(projectile,
 	client,
