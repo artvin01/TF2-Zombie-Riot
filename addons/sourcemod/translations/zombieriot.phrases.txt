@@ -1774,6 +1774,10 @@
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
 	}
+	"Victory Menu 2"
+	{		
+		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
+	}
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitely.\nThe further you go, the harder it gets.\n"
@@ -3042,6 +3046,14 @@
 	{
 		"en"	"The judges of your actions have arrived."
 	}
+	"CoF Normal Desc"
+	{
+		"en"	"Enter Simon's Book."
+	}
+	"CoF Nightmare Desc"
+	{
+		"en"	"Enter Simon's Mind."
+	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
@@ -3121,6 +3133,10 @@
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
+	}
+	"The Blacksmith Failed!"
+	{
+		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
 	}
 	"Blacksmith No Attribs"
 	{
@@ -3215,5 +3231,9 @@
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
+	}
+	"Skeleboy"
+	{
+		"en"	"Skeleboy"
 	}
 }

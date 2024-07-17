@@ -129,9 +129,20 @@ public Action OnNavCommand(int client, const char[] command, int args)
 #if defined ZR
 public Action OnJoinClass(int client, const char[] command, int args)
 {
+	
+	char Bufferlol[32];
+	GetCmdArgString(Bufferlol,sizeof(Bufferlol));
+	TFClassType ClassChangeTo = TF2_GetClass(Bufferlol);
+
+	JoinClassInternal(client, ClassChangeTo);
+	return Plugin_Handled;
+}
+
+void JoinClassInternal(int client, TFClassType ClassChangeTo)
+{
 	bool FailedInstachange = false;
 	if(!client)
-		return Plugin_Continue;
+		return;
 
 	if(TeutonType[client] != TEUTON_NONE)
 		FailedInstachange = true;
@@ -147,22 +158,19 @@ public Action OnJoinClass(int client, const char[] command, int args)
 		
 	if(f_InBattleHudDisableDelay[client] > GetGameTime())
 		FailedInstachange = true;
-	
-	char Bufferlol[32];
-	GetCmdArgString(Bufferlol,sizeof(Bufferlol));
-	TFClassType ClassChangeTo = TF2_GetClass(Bufferlol);
+
 	
 	if(ClassChangeTo <= TFClass_Unknown)
 	{
-		return Plugin_Handled;
+		return;
 	}
-	
+
 	if(FailedInstachange)
 	{
 		CurrentClass[client] = ClassChangeTo;
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", ClassChangeTo);
 		PrintToChat(client, "You are unable to change classes instantly, itll be changed later when you respawn.");
-		return Plugin_Continue;
+		return;
 	}
 #if defined ZR
 	TransferDispenserBackToOtherEntity(client, true);
@@ -186,7 +194,6 @@ public Action OnJoinClass(int client, const char[] command, int args)
 	RemoveInvul(client);
 	RequestFrames(Removeinvul1frame, 10, EntIndexToEntRef(client));
 	PrintToChat(client, "You changed classes immedietly!");
-	return Plugin_Handled;
 }
 #endif
 

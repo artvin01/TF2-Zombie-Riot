@@ -510,8 +510,13 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		schwert_retreat = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+
+		int wave = ZR_GetWaveCount()+1;
 		
-		CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
+		if(wave <=45)
+			CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
+		else
+			CPrintToChatAll("{aqua}Stella{snow}: This ends now!");
 		
 		Donnerkrieg_Wings_Create(npc);
 
@@ -839,7 +844,6 @@ static void Internal_ClotThink(int iNPC)
 				bool sea = false;
 				if(donner_sea_created)
 				{
-					donner_sea_created=false;
 					sea=true;
 				}
 
@@ -850,6 +854,8 @@ static void Internal_ClotThink(int iNPC)
 				{
 					infection=2;
 				}
+				if(Current_Wave>60)
+					infection=3;
 				if(NpcStats_IsEnemySilenced(npc.index))
 				{
 					if(infection>0)
@@ -1238,9 +1244,9 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[1] = 9;
 			color[2] = 235;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
@@ -1657,6 +1663,21 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				color[2] = 199;
 			}
 		}
+		case 3:
+		{
+			if(creep)
+			{
+				color[0] = 0;
+				color[1] = 0;
+				color[2] = 255;
+			}
+			else
+			{
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 255;
+			}
+		}
 	}
 	
 	
@@ -1937,6 +1958,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 
 	if(creep)	//if creep, create the cancer thing.
 	{
+		donner_sea_created=false;
 		SeaFounder_SpawnNethersea(startPosition);
 	}
 
@@ -2155,7 +2177,7 @@ static void Internal_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	if(!b_donner_said_win_line)
 	{
-		if(wave<60)
+		if(wave!=60)
 		{
 			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
@@ -2429,9 +2451,9 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 			color[1] = 107;
 			color[2] = 250;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
@@ -2589,9 +2611,9 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		infection=2;
 	}
-	else
+	else if(wave > 60)
 	{
-		infection=2;
+		infection=3;
 	}
 
 	if(NpcStats_IsEnemySilenced(npc.index) && wave < 60)
@@ -2899,6 +2921,27 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 				}
 				case 2:
 				{
+					int damage = RoundToFloor(dps*0.05);
+					if(damage < 8)
+						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
+
+					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
+				}
+				case 3:
+				{
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+					float Dmg = dps;
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						Dmg *= 5.0;
+					}
+					Dmg /= TickrateModify;
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
+
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
 						damage = 8;
@@ -3338,6 +3381,19 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
 			else
 				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+		}
+		case 3:
+		{
+			int neural_damage = RoundToFloor(damage*0.1);
+			if(neural_damage < 8)
+				neural_damage = 8;
+
+			ion_damage[npc.index] = float(neural_damage);
+
+			if(shake)
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+			else
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
 	}
 }

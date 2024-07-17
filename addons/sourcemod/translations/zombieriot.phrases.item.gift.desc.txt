@@ -387,7 +387,10 @@
 	{
 		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
 	}
-
+	"Xeno Malfunctioning Robot Desc"
+	{
+		"en"		"A Xeno Robot that overheats after hitting enough targets. Figment of Simon's Mind"
+	}
 	"Nazi Panzer Desc"
 	{
 		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
@@ -532,13 +535,37 @@
 	{
 		"en" 		"Kill zombies before him, otherwise he will gain major power, in nightmare this doesnt matter, youre in for a fight."
 	}
-	"The Doctor Desc"
+	"Doctor Purnell Desc"
 	{
 		"en" 		"Shoots and melees you, if he melees he will reload 1 bullet, he will buff allied zombies one at a time forever."
 	}
 	"Book Simon Desc"
 	{
 		"en" 		"Do not let him escape, do not let him down you."
+	}
+	"Sewmo Desc"
+	{
+		"en" 		"Tanky, attacks with its tongue, therefore it has extra melee range."
+	}
+	"Faster Desc"
+	{
+		"en" 		"Dangerous when groupped with other Faster(s), its bleed stacks."
+	}
+	"Psycho Desc"
+	{
+		"en" 		"Fast and deadly if not taken care of fast enough."
+	}
+	"Suicider Desc"
+	{
+		"en" 		"Scarily accurate with its gun, if you come too close, it'll kill itself."
+	}
+	"Crazy Lady Desc"
+	{
+		"en" 		"Prevents you from running away, don't let it stab you."
+	}
+	"Corrupted Barney Desc"
+	{
+		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ ̴̧͔̫̻̏̊̈́f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶̘̒̏ ̵̪̱͎̤̋͊͝͝M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
 	}
 	"Kahmlstein Desc"
 	{

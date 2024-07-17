@@ -14,6 +14,8 @@ bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 int Armor_WearableModelIndex;
 #endif
 
+bool ClientPassAliveCheck[MAXTF2PLAYERS];
+
 void SDKHooks_ClearAll()
 {
 #if defined ZR
@@ -168,6 +170,8 @@ stock void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
+	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 #endif
 }
 
@@ -1555,6 +1559,7 @@ static stock void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 
 public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	ClientPassAliveCheck[victim] = false;
 #if defined ZR
 	i_WasInUber[victim] = 0.0;
 	i_WasInMarkedForDeath[victim] = 0.0;
@@ -1571,6 +1576,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 		else
 		{
+			ClientPassAliveCheck[victim] = true;
 			return Plugin_Continue;
 		}
 	}
@@ -1601,6 +1607,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		if(IsInvuln(victim))
 		{
 			f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
+			ClientPassAliveCheck[victim] = true;
 			return Plugin_Continue;	
 		}
 	}
@@ -1615,6 +1622,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				SDKHooks_TakeDamage(victim, victim, victim, 9999.0, DMG_DROWN, _, _, _, true);
 			}
 			damage = 9999.0;
+			ClientPassAliveCheck[victim] = true;
 			return Plugin_Continue;	
 		}
 		return Plugin_Handled;
@@ -1705,10 +1713,42 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
+
+#if !defined RTS
+	int ClientAttacker;
+	if(IsValidClient(inflictor))
+		ClientAttacker = inflictor;
+	else if(IsValidClient(attacker))
+		ClientAttacker = attacker;
+
+	if(ClientAttacker > 0)
+	{
+		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
+		if(IsValidEntity(weapon))
+		{
+			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
+			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+
+	return Plugin_Changed;
+}
+
 	
+public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//in on take damage, the client shouldnt be reciving this down phase, kill em.
+	if(ClientPassAliveCheck[victim])
+	{	
+		return Plugin_Continue;
+	}
 #if defined ZR
+	float GameTime = GetGameTime();
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	//damage is more then their health, they will die.
-	if(RoundToCeil(damage) >= flHealth)
+	//i fear that there is most likely some type of float health stuff, so we have to always pretend they deal +1 extra damage.
+	if(RoundToCeil(damage) + 1 >= flHealth)
 	{
 		//the client has a suit, save them !!
 		if(i_HealthBeforeSuit[victim] > 0)
@@ -1745,7 +1785,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
 			return Plugin_Handled;
 		}
-		//all checps passed, now go into here
+		//all checks passed, now go into here
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
 			//are they alone? is any player alive that isnt downed left?
@@ -1873,27 +1913,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
+	return Plugin_Continue;
 #endif	// ZR
-
-#if !defined RTS
-	int ClientAttacker;
-	if(IsValidClient(inflictor))
-		ClientAttacker = inflictor;
-	else if(IsValidClient(attacker))
-		ClientAttacker = attacker;
-
-	if(ClientAttacker > 0)
-	{
-		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
-		if(IsValidEntity(weapon))
-		{
-			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
-			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
-		}
-	}
-#endif
-
-	return Plugin_Changed;
 }
 
 #if defined ZR || defined RPG
@@ -2035,6 +2056,12 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					case NIKO_2:
 					{
 
+					}
+					//todo: add stuff!
+					case SKELEBOY:
+					{
+						pitch -= 20;
+						return Plugin_Changed;
 					}
 				}
 				if(Changed)

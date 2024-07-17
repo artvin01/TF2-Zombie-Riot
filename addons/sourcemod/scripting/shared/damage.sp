@@ -508,12 +508,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	float GameTime = GetGameTime();
 
-	//freeplay causes more damage taken for allies only.
-	if(GetTeam(victim) == TFTeam_Red && f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
-	{
-		damage *= f_FreeplayDamageExtra;
-	}
-
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
 	{
 		if(i_CurrentEquippedPerk[attacker] == 5)

@@ -2280,6 +2280,10 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	
 	static Item item;
 	static ItemInfo info;
+	int GrigoriCashLogic = CurrentCash;
+	if(GrigoriCashLogic > 100000)
+		GrigoriCashLogic = 100000;
+
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
@@ -2318,7 +2322,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(!item.NPCSeller)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 4))
+					if(info.Cost > 999 && info.Cost_Unlock > (GrigoriCashLogic / 4))
 						indexes[amount++] = i;
 				}
 			}
@@ -2340,7 +2344,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (GrigoriCashLogic / 3 - 1000) && info.Cost_Unlock < GrigoriCashLogic)
 					indexes[amount++] = i;
 				
 				StoreItems.SetArray(i, item);
@@ -3677,6 +3681,8 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Niko Oneshot");
 						menu2.AddItem("-48", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Skeleboy");
+						menu2.AddItem("-49", buffer);
 
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
@@ -3686,18 +3692,25 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -46:
 					{
 						OverridePlayerModel(client);
+						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
 					case -47:
 					{
 						OverridePlayerModel(client, BARNEY, true);
-						FakeClientCommand(client, "joinclass 2");
+						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
 					case -48:
 					{
 						OverridePlayerModel(client, NIKO_2, true);
-						FakeClientCommand(client, "joinclass 2");
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -49:
+					{
+						OverridePlayerModel(client, SKELEBOY, false);
+						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
 					default:
@@ -4098,7 +4111,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								Store_Unequip(client, index);
 								
@@ -4122,7 +4135,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								int level = item.Owned[client] - 1;
 								if(item.ParentKit)

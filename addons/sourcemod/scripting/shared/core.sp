@@ -741,6 +741,13 @@ float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_WandOwner[MAXENTITIES]; //				//785
 
 
+bool Viewchanges_PlayerModelsAnims[] =
+{
+	false,
+	true,
+	true,
+	false
+};
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
