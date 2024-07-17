@@ -55,6 +55,7 @@ void Barracks_Combine_Commander_Precache()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_commander");
 	data.IconCustom = false;
 	data.Flags = 0;
+	f_GlobalSoundCD = 0.0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -131,7 +132,6 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_commanderbufftime = 0.0;
 
-		bool buffing = false;
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
 		
@@ -174,6 +174,15 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+			bool buffing = false;
+			//Can we attack right now?
+			if(buffing)
+			{
+				buffing = false;
+				npc.AddGesture("ACT_SHOOTFLARE");
+				npc.m_flNextRangedAttack = GameTime + 1.00;
+				npc.m_flSpeed = 0.0;
+			}
 
 			if(flDistanceToTarget < 450000.0)
 			{
@@ -181,14 +190,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					//Can we attack right now?
-					if(buffing)
-					{
-						buffing = false;
-						npc.AddGesture("ACT_SHOOTFLARE");
-						npc.m_flNextRangedAttack = GameTime + 1.00;
-						npc.m_flSpeed = 0.0;
-					}
 					if(npc.m_iAttacksTillReload < 1 && !buffing)
 					{
 						npc.AddGesture("ACT_RELOAD_PISTOL");
@@ -258,6 +259,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 						//Buff this entity.
 						f_GodAlaxiosBuff[npc.index] = GetGameTime() + 15.0;
 						npc.m_commanderbufftime = GetGameTime() + 45.0;
+						buffing = true;
 						npc.PlayWarCry();
 						if(entitycount != npc.index)
 						{
