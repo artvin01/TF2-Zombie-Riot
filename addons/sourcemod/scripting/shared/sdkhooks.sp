@@ -2045,6 +2045,12 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					{
 
 					}
+					//todo: add stuff!
+					case SKELEBOY:
+					{
+						pitch -= 20;
+						return Plugin_Changed;
+					}
 				}
 				if(Changed)
 				{

@@ -43,7 +43,7 @@ methodmap AlliedKahmlAbility < CClotBody
 		char ModelPath[255];
 		int entity, i;
 			
-		if(i_CustomModelOverrideIndex[client] < BARNEY)
+		if((i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
@@ -68,7 +68,7 @@ methodmap AlliedKahmlAbility < CClotBody
 			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
 				continue;
 				
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) != entity || i_CustomModelOverrideIndex[client] < BARNEY)
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) != entity || (i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
 			{
 				ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
 				if(ModelIndex < 0)

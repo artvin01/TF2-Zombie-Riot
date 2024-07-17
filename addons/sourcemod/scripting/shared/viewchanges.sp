@@ -50,21 +50,17 @@ static const char PlayerModelsCustom[][] =
 {
 	"models/bots/headless_hatman.mdl",
 	"models/zombie_riot/player_model_add/model_player_1_1.mdl",
-	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl"
+	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
 };
 
-static const bool PlayerModelsAnims[] =
-{
-	false,
-	true,
-	true
-};
 
 static const char PlayerCustomHands[][] =
 {
 	"",
 	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
-	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl"
+	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
 };
 
 enum
@@ -72,6 +68,7 @@ enum
 	HHH_SkeletonOverride = 0,
 	BARNEY = 1,
 	NIKO_2 = 2,
+	SKELEBOY = 3,
 }
 
 static int HandIndex[10];
@@ -177,7 +174,7 @@ void ViewChange_PlayerModel(int client)
 				{
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", CustomIndex[i_PlayerModelOverrideIndexWearable[client]]);
 
-					SetVariantString(PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
+					SetVariantString(Viewchanges_PlayerModelsAnims[i_PlayerModelOverrideIndexWearable[client]] ? PlayerModelsCustom[i_PlayerModelOverrideIndexWearable[client]] : NULL_STRING);
 					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 					
 					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
