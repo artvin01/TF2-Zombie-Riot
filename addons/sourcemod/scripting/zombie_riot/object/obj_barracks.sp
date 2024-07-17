@@ -450,7 +450,7 @@ static const char SummonerCombineNPC[][] =
 	"npc_barrack_combine_sniper",
 	"npc_barrack_combine_giant_ddt",
 	
-	"npc_barrack_combine_sniper_super",
+	"npc_barrack_combine_super",
 	"npc_barrack_villager"
 };
 
