@@ -477,7 +477,8 @@ void NPC_ConfigSetup()
 	Barracks_Combine_Parry_Precache();
 	Barracks_Combine_Sniper_Precache();
 	Barracks_Combine_Collos_Precache();
-	Barracks_Combine_Sword_Precache();
+	Barracks_Combine_Giant_DDT_Precache();
+	Barracks_Combine_Super_Precache();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1117,6 +1118,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_elite.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_parry.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sniper.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_giant_ddt.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_super.sp"
 
 
 

@@ -35,7 +35,7 @@ static const char g_IdleAlert[][] =
 	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
-void Barracks_Combine_Ar2_Precache()
+void Barracks_Combine_Super_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -43,8 +43,8 @@ void Barracks_Combine_Ar2_Precache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Soldier");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_ar2");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Super");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_super");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
