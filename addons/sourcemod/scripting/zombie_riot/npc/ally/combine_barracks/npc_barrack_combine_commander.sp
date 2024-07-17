@@ -40,6 +40,8 @@ static const char g_WarCry[][] = {
 	"mvm/mvm_used_powerup.wav",
 };
 
+static float f_GlobalSoundCD;
+bool buffing = false;
 
 void Barracks_Combine_Commander_Precache()
 {
@@ -54,6 +56,7 @@ void Barracks_Combine_Commander_Precache()
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Commander");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_commander");
 	data.IconCustom = false;
+	
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;
 	data.Category = Type_Ally;
@@ -174,7 +177,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-			bool buffing = false;
+
 			//Can we attack right now?
 			if(buffing)
 			{
