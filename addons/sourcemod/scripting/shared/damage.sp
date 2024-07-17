@@ -508,12 +508,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	float GameTime = GetGameTime();
 
-	//freeplay causes more damage taken for allies only.
-	if(GetTeam(victim) == TFTeam_Red && f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[attacker])
-	{
-		damage *= f_FreeplayDamageExtra;
-	}
-
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH))) //if its not melee damage
 	{
 		if(i_CurrentEquippedPerk[attacker] == 5)
@@ -626,6 +620,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Merchant_SelfTakeDamage(victim, attacker, damage);
 		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_SelfTakeDamage(victim, damage, damagetype);
+		}
 	}
 	return damage;
 }
@@ -656,7 +654,7 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 			}
 			else
 			{
-				if(BarbariansMindNotif[attacker] > GetGameTime())
+				if(BarbariansMindNotif[attacker] < GetGameTime())
 				{
 					SetGlobalTransTarget(attacker);
 					PrintToChat(attacker,"%t", "Barbarians Mind Warning");
@@ -718,7 +716,10 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	}
 #if !defined RPG
 	if(b_npcspawnprotection[victim])
-		damage *= 0.25;
+		damage *= 0.05;
+
+	if(b_npcspawnprotection[attacker])
+		damage *= 1.5;
 #endif
 		
 #if defined ZR
@@ -916,6 +917,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_RUSTY_RIFLE:
 		{
 			return Rusty_OnNPCDamaged(victim, attacker, damage);
+		}
+		case WEAPON_FLAMETAIL:
+		{
+			Flametail_NPCTakeDamage(attacker, damage, weapon, damagePosition);
 		}
 	}
 #endif
@@ -1892,6 +1897,38 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		{
 			Format(Debuff_Adder_right, SizeOfChar, "i%s", Debuff_Adder_right);
 		}
+		//0 is gladia
+		if(f_WeaponSpecificClassBuff[victim][0] > GetGameTime())
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "G%s", Debuff_Adder_right);
+		}
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(Victim_weapon))
+		{
+			if(b_WeaponSpecificClassBuff[Victim_weapon][0])
+			{
+				Format(Debuff_Adder_right, SizeOfChar, "S%s", Debuff_Adder_right);
+			}
+			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
+			{	
+				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+			}
+		}
 	}
 #endif
+
+	//Display Modifiers here.
+	char BufferAdd[6];
+	ZRModifs_CharBuffToAdd(BufferAdd);
+	if(BufferAdd[0])
+	{
+		if(GetTeam(victim) != TFTeam_Red)
+		{
+			Format(Debuff_Adder_right, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_right);
+		}
+		else
+		{
+			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
+		}
+	}
 }

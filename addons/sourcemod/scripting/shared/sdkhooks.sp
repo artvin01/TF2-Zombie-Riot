@@ -168,6 +168,8 @@ stock void SDKHook_HookClient(int client)
 	SDKHook(client, SDKHook_OnTakeDamageAlivePost, Player_OnTakeDamageAlivePost);
 	SDKUnhook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
 	SDKHook(client, SDKHook_OnTakeDamage, Player_OnTakeDamage);
+	SDKUnhook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
+	SDKHook(client, SDKHook_OnTakeDamageAlive, Player_OnTakeDamageAlive_DeathCheck);
 #endif
 }
 
@@ -369,11 +371,11 @@ public void OnPostThink(int client)
 
 	if(GetTeam(client) == 2)
 	{
-
 #if defined ZR
 		if(dieingstate[client] != 0 || TeutonType[client] != TEUTON_NONE)
 #endif
 		{
+			//they are a teuton, or dying, teleport them out of bad places.
 			if(f_EntityHazardCheckDelay[client] < GetGameTime())
 			{
 				EntityIsInHazard_Teleport(client);
@@ -384,17 +386,20 @@ public void OnPostThink(int client)
 		if(dieingstate[client] == 0 && TeutonType[client] == TEUTON_NONE)
 #endif
 		{
+			//they are alive, but somehow in a bad position, check and teleport them out of there.
 			if(f_EntityOutOfNav[client] < GetGameTime())
 			{
 				Spawns_CheckBadClient(client);
 				f_EntityOutOfNav[client] = GetGameTime() + GetRandomFloat(0.9, 1.1);
 			}
 		}
+		//save the last safe position to teleport back to.
 		SaveLastValidPositionEntity(client);
 	
 	}
 	if(b_DisplayDamageHud[client])
 	{
+		//damage hud
 		if(Calculate_And_Display_HP_Hud(client))
 		{
 			b_DisplayDamageHud[client] = false;
@@ -402,6 +407,7 @@ public void OnPostThink(int client)
 	}
 	if(b_AntiSlopeCamp[client])
 	{	
+		//make them slide off stuff.
 		if(ReplicateClient_Svairaccelerate[client] != 2.0)
 		{
 			ReplicateClient_Svairaccelerate[client] = 2.0;
@@ -1701,8 +1707,34 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
+
+#if !defined RTS
+	int ClientAttacker;
+	if(IsValidClient(inflictor))
+		ClientAttacker = inflictor;
+	else if(IsValidClient(attacker))
+		ClientAttacker = attacker;
+
+	if(ClientAttacker > 0)
+	{
+		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
+		if(IsValidEntity(weapon))
+		{
+			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
+			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
+		}
+	}
+#endif
+
+	return Plugin_Changed;
+}
+
 	
+public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
 #if defined ZR
+	float GameTime = GetGameTime();
+	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	//damage is more then their health, they will die.
 	if(RoundToCeil(damage) >= flHealth)
 	{
@@ -1863,31 +1895,14 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			{
 				damage = 99999.9;
 				i_AmountDowned[victim] = 0;
+				if(CurrentModifOn() == 2)
+					i_AmountDowned[victim] = 1;
 				return Plugin_Changed;
 			}
 		}
 	}
+	return Plugin_Continue;
 #endif	// ZR
-
-#if !defined RTS
-	int ClientAttacker;
-	if(IsValidClient(inflictor))
-		ClientAttacker = inflictor;
-	else if(IsValidClient(attacker))
-		ClientAttacker = attacker;
-
-	if(ClientAttacker > 0)
-	{
-		Calculate_And_Display_hp(ClientAttacker, victim, damage, false);
-		if(IsValidEntity(weapon))
-		{
-			float KnockbackToGive = Attributes_Get(weapon, 4006, 0.0);
-			Custom_Knockback(ClientAttacker, victim, KnockbackToGive, true);
-		}
-	}
-#endif
-
-	return Plugin_Changed;
 }
 
 #if defined ZR || defined RPG
@@ -2014,10 +2029,39 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				{
 					return Plugin_Handled;
 				}
-				
+			}
+			else if(i_CustomModelOverrideIndex[entity] >= 0)
+			{
+				bool Changed;
+				switch(i_CustomModelOverrideIndex[entity])
+				{
+					case BARNEY:
+					{
+						Changed = BarneySoundOverride(numClients, sample, 
+						entity, channel, volume, level, pitch, flags,seed);
+					}
+					//nothing for niko. silent!
+					case NIKO_2:
+					{
+
+					}
+					//todo: add stuff!
+					case SKELEBOY:
+					{
+						pitch -= 20;
+						return Plugin_Changed;
+					}
+				}
+				if(Changed)
+				{
+					return Plugin_Changed;
+				}
+				else
+				{
+					return Plugin_Handled;
+				}
 			}
 #endif
-		
 		}
 	}
 	if(channel == SNDCHAN_WEAPON)
@@ -2097,15 +2141,8 @@ public void OnWeaponSwitchFrame(int userid)
 	int client = GetClientOfUserId(userid);
 	if(client)
 	{
-		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-
-		if(weapon != -1)
-		{
-			char buffer[36];
-			GetEntityClassname(weapon, buffer, sizeof(buffer));
-			ViewChange_Switch(client, weapon, buffer);
-			// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
-		}
+		ViewChange_Update(client, false);
+		// We delay ViewChange_Switch by a frame so it doesn't mess with the regenerate process
 	}
 }
 

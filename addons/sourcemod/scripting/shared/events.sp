@@ -66,6 +66,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundStart();
 	Blacksmith_RoundStart();
 	Merchant_RoundStart();
+	Flametail_RoundStart();
 #endif
 
 #if defined RPG
@@ -229,6 +230,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			return;
 		}
 		
@@ -245,6 +247,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				TF2_RemoveWearable(client, entity);
 			}
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
@@ -261,7 +264,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			//apply model correctly.
 
 
-	   		ViewChange_Switch(client, weapon_index);
+	   		ViewChange_Switch(client, weapon_index, "tf_weapon_sword");
 
 	   		TF2Attrib_RemoveAll(weapon_index);
 	   		
@@ -321,6 +324,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			Store_ApplyAttribs(client);
 			Pets_PlayerResupply(client);
 			
@@ -357,6 +361,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 		
 		ViewChange_PlayerModel(client);
+		ViewChange_Update(client);
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, 1);
 		

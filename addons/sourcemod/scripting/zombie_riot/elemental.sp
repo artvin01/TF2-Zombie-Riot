@@ -143,18 +143,25 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		Armor_DebuffType[victim] = 1;
 		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
 		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				Armor_Charge[victim] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
-				TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-				
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+					
+					bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+					b_ThisNpcIsSawrunner[attacker] = true;
+					SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+					b_ThisNpcIsSawrunner[attacker] = sawrunner;
+				}
 			}
 			
 			if(sound || !Armor_Charge[victim])
@@ -218,34 +225,41 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		Armor_DebuffType[victim] = 2;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
 		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				Armor_Charge[victim] = 0;
-				float ProjectileLoc[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-				ProjectileLoc[2] += 45.0;
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					float ProjectileLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+					ProjectileLoc[2] += 45.0;
 
-				//if server starts crashing out of nowhere, change how to change teamnum
-				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				b_NpcIsTeamkiller[victim] = true;
-				Explode_Logic_Custom(0.0,
-				attacker,
-				attacker,
-				-1,
-				ProjectileLoc,
-				250.0,
-				_,
-				_,
-				true,
-				99,
-				false,
-				_,
-				SakratanGroupDebuff);
-				b_NpcIsTeamkiller[victim] = false;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
-			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+					//if server starts crashing out of nowhere, change how to change teamnum
+					EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
+					b_NpcIsTeamkiller[victim] = true;
+					Explode_Logic_Custom(0.0,
+					attacker,
+					attacker,
+					-1,
+					ProjectileLoc,
+					250.0,
+					_,
+					_,
+					true,
+					99,
+					false,
+					_,
+					SakratanGroupDebuff);
+					b_NpcIsTeamkiller[victim] = false;
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
+				//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+				}
 			}
 			
 			if(sound || !Armor_Charge[victim])

@@ -422,7 +422,7 @@ static void Ruina_Update_Shield(int client)
 static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from artvins vaus shield...
 {
 	CClotBody npc = view_as<CClotBody>(client);
-	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[client])
 		SetVariantString("1.35");
 	else
@@ -1532,23 +1532,6 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
-	/*
-	stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
-float spawnLoc[3] = {0.0,0.0,0.0},
-float explosionRadius = EXPLOSION_RADIUS,
-float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
-float explosion_range_dmg_falloff = EXPLOSION_RANGE_FALLOFF,
-bool FromBlueNpc = false,
-int maxtargetshit = 10,
-bool ignite = false,
-float dmg_against_entity_multiplier = 3.0,
-Function FunctionToCallOnHit = INVALID_FUNCTION,
-Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = 0)
-	*/
 
 	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _, Radius, _, _, true, _, _, 2.0);
 
@@ -2988,8 +2971,7 @@ Names per stage:
 
 
 */
-
-stock void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
+void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {
 	int part1 = CreateEntityByName("info_particle_system");
 	if(IsValidEdict(part1))

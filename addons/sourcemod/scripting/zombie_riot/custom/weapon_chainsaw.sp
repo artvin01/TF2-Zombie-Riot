@@ -6,7 +6,6 @@ static float f_ChainsawLoopSound[MAXPLAYERS+1]={0.0, ...};
 static bool f_ChainsawPlaySound[MAXPLAYERS+1];
 float f_AttackDelayChainsaw[MAXTF2PLAYERS];
 bool BarneyItem[MAXTF2PLAYERS];
-int SaveAmmoBarney[MAXTF2PLAYERS];
 
 static const char g_MeleeAttack[][] = {
 	"npc/roller/blade_out.wav",
@@ -81,8 +80,8 @@ public void Npc_OnTakeDamage_Chainsaw(int client, int damagetype)
 
 public void Weapon_ChainSawAttack(int client, int weapon, const char[] classname, bool &result)
 {
-	SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
-	SDKHook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+	SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
+	SDKHook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 }
 
 public void Chainsaw_ability_Prethink(int client)
@@ -96,12 +95,12 @@ public void Chainsaw_ability_Prethink(int client)
 		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_active < 0)
 		{
-			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+			SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		if(!IsChainSaw(i_CustomWeaponEquipLogic[weapon_active]))
 		{
-			SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+			SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 			return;
 		}
 		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
@@ -113,7 +112,7 @@ public void Chainsaw_ability_Prethink(int client)
 	}
 	else
 	{
-		SDKUnhook(client, SDKHook_PreThink, Chainsaw_ability_Prethink);
+		SDKUnhook(client, SDKHook_PostThink, Chainsaw_ability_Prethink);
 		return;
 	}
 }
@@ -123,19 +122,14 @@ public void Chainsaw_SawAttack(int client, int weapon)
 	bool result;
 	//attack!
 	int new_ammo = GetAmmo(client, 9);
-	if(new_ammo < 2)
+	if(new_ammo < 3)
 	{
 		return;
 	}
-	int AmmoConsumption = 2;
+	int AmmoConsumption = 4;
 	if(BarneyItem[client])
 	{
-		SaveAmmoBarney[client]++;
-		if(SaveAmmoBarney[client] >= 3)
-		{
-			SaveAmmoBarney[client] = 0;
-			AmmoConsumption = 1;
-		}
+		AmmoConsumption = 3;
 	}
 	SetAmmo(client, 9, new_ammo - AmmoConsumption);
 	TF2_CalcIsAttackCritical(client, weapon, "", result);
@@ -188,7 +182,7 @@ void ChainSawHudShow(int client)
 	if(f_ChainsawLoopSound[client] < GetGameTime())
 	{
 		int new_ammo = GetAmmo(client, 9);
-		if(new_ammo < 2)
+		if(new_ammo < 3)
 		{
 			ChainsawCancelSound(client);
 			return;

@@ -170,6 +170,7 @@ public Action Command_TpOn(int client, int args)
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
 		thirdperson[client] = false;		
+		ViewChange_Update(client);
 	}
 
 #if defined RPG
@@ -186,18 +187,12 @@ public Action Command_TpOff(int client, int args)
 		return Plugin_Handled;
 	}
 #if defined ZR
-/*
-	if(IsValidEntity(Building_Mounted[client]))
-	{
-		PrintToChat(client,"You cannot change third person while mounting.");
-		return Plugin_Handled;
-	}
-*/
 #endif
 	if (IsPlayerAlive(client))
 	{
 		SetVariantInt(0);
 		AcceptEntityInput(client, "SetForcedTauntCam");
+		ViewChange_Update(client);
 	}
 
 	thirdperson[client] = false;
@@ -213,4 +208,25 @@ public Action Command_TpOff(int client, int args)
 public int Native_Get(Handle plugin, int numParams)
 {
 	return thirdperson[GetNativeCell(1)];
+}
+
+
+public Action Timer_ChangePersonModel(Handle timer, any userid)
+{
+	int client = GetClientOfUserId(userid);
+	if (client && IsClientInGame(client) && IsPlayerAlive(client))				// Perhaps their ent could take the input if they are dead.
+	{
+		if (thirdperson[client])													   // If they arn't alive, they won't have the cam set, it'll spam.
+		{
+			SetVariantInt(1);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+		}
+		else if( !thirdperson[client])
+		{
+			SetVariantInt(0);
+			AcceptEntityInput(client, "SetForcedTauntCam");
+			ViewChange_Update(client);
+		}
+	}
+	return Plugin_Stop;
 }

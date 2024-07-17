@@ -154,17 +154,17 @@ public void SeabornEngineer_ClotThink(int iNPC)
 
 				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
 				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
-/*
-				int repair = Building_GetBuildingRepair(npc.m_iTargetAlly);
+
+				int repair = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair");
 				if(repair < 1)
 				{
 					Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
 				}
 				else
 				{
-					Building_SetBuildingRepair(npc.m_iTargetAlly, repair - 150);
+					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 30);
 				}
-*/
+
 				npc.m_flNextThinkTime = gameTime + 0.4;
 				return;
 			}

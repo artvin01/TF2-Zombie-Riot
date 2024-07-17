@@ -78,6 +78,7 @@ static const char g_Battlecry[][] =
 	"npc/metropolice/vo/freenecrotics.wav",
 };
 
+
 bool TeutonSoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, int &seed)
 {
 	if(StrContains(sample, "demoman_negative", false) != -1)
@@ -110,7 +111,7 @@ bool TeutonSoundOverride(int &numClients, char sample[PLATFORM_MAX_PATH], int &e
 		strcopy(sample, sizeof(sample), g_Help[GetRandomInt(0, sizeof(g_Help) - 1)]);
 		return true;
 	}
-	if(StrContains(sample, "demoman_incomming", false) != -1)
+	if(StrContains(sample, "demoman_incoming", false) != -1)
 	{
 		strcopy(sample, sizeof(sample), g_Incoming[GetRandomInt(0, sizeof(g_Incoming) - 1)]);
 		return true;

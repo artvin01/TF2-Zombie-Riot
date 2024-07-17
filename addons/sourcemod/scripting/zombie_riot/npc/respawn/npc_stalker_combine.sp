@@ -698,13 +698,13 @@ void StalkerCombine_NPCDeath(int entity)
 /*
 	int gib = Place_Gib("models/zombie/zombie_soldier_legs.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
-		b_LimitedGibGiveMoreHealth[gib] = true;
+		f_GibHealingAmount[gib] = true;
 	
 	startPosition[2] += 34;
 	
 	gib = Place_Gib("models/zombie/zombie_soldier_torso.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
-		b_LimitedGibGiveMoreHealth[gib] = true;
+		f_GibHealingAmount[gib] = true;
 */	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -15,8 +15,9 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+		case 4007, 4008, 4009, 4010, 4011, 4012: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
 		// 4011: Explosive enemeis hit MAX
+		// 4012: redued healing from gibs
 		{
 			return true;
 		}
@@ -28,6 +29,18 @@ bool Attribute_ServerSide(int attribute)
 	}
 	return false;
 }
+
+bool Attribute_IntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		case 834, 866, 867:
+			return true;
+	}
+
+	return false;
+}
+
 /*
 	There are attributes that are used only for ZR that dont actually exist
 	there are described here:
@@ -90,6 +103,12 @@ bool Attributes_Set(int entity, int attrib, float value)
 
 	if(Attribute_ServerSide(attrib))
 		return false;
+	
+	if(Attribute_IntAttribute(attrib))
+	{
+		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
+		return true;
+	}
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;

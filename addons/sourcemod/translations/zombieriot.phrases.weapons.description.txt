@@ -266,9 +266,7 @@
 	}
 	"Deagle Pap 3"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n3 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	
 	"Flamethrower Pap 1"
@@ -1795,9 +1793,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration''"
-		"ru"	"M2 способность меняется.\nПоместите гигантский меч перед собой, нанося урон.\nОглушает всех врагов в радиусе действия.\nВы получаете крупные усиления.\nУдар по врагам фокусирующим мечом, даёт 2x урона.\nАрхетип меняется на «Аберрация»"
-		"chi"	"技能更改：\n在地面上插入一把巨剑，造成伤害。\n范围内所有敌人被眩晕，你获得大量buff。\n攻击巨剑的敌人受到二倍伤害。\n类型更为''另类''"
+		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration'' AND ''Kazimierz''.\nSilvester must have been there..."
 	}
 
 	
@@ -1861,6 +1857,10 @@
 		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
 		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
 		"chi" "什么比一个激光更好?\n当然是更多激光！\n多亏这些光束，我们成功复刻出了月球之力！\n警告:购买时保修失效。"
+	}
+	"Cosmic Terror Extra Desc"
+	{
+		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
 	}
 
 	"Alchemist Potion Desc"
@@ -2083,8 +2083,7 @@
 	}
 	"Preaching Sword Desc"
 	{
-		"en"	"A quick attacking cheap.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
-		"chi"	"灵活及便宜。\n对敌人造成致命伤害会赋予他们''临死''Debuff。\n杀死带有这个效果的敌人会降低1秒冷却。"
+		"en"	"A quick attacking sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
 	}
 	"Preaching Sword Pap 1"
 	{
@@ -2354,7 +2353,7 @@
 	}
 	"quincy pap arrow"
 	{
-		"en"	"Once you charge you weapon enough you gain the ability to shoow more arrows at once!"
+		"en"	"Once you charge you weapon enough you gain the ability to shoot more arrows at once!"
 		"chi"	"当你足够蓄力后发射大量箭矢。"
 	}
 	"quincy pap1"
@@ -3094,7 +3093,7 @@
 	}
 	"Chainsaw Pap 0"
 	{
-		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs."
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
 	}
 	"Chainsaw Pap 1"
 	{
@@ -3103,5 +3102,29 @@
 	"Chainsaw Pap 2"
 	{
 		"en"	"More damage, attacks faster, extend bleed duration."
+	}
+	"Pinus Knight Desc"
+	{
+		"en"	"Fast attacking melee with increased sell back value."
+	}
+	"Pinus Knight Pap 1"
+	{
+		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
+	}
+	"Pinus Knight Pap 2"
+	{
+		"en"	"Ability now also grants 4 seconds of a 40%% (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
+	}
+	"Pinus Knight Pap 3"
+	{
+		"en"	"Allied Kazimierz weapons gain a 11%% (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60%% (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
+	}
+	"Pinus Knight Pap 4"
+	{
+		"en"	"Ability instead grants 80%% (x0.5 vs Raids) chance to dodge any attack."
+	}
+	"Pinus Knight Pap 5"
+	{
+		"en"	"Decreased ability cooldown and increased ability damage bonus."
 	}
 }

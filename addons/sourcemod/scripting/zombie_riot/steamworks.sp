@@ -39,7 +39,7 @@ void SteamWorks_UpdateGameTitle()
 	if(SteamWorksCompiled)
 	{
 		char buffer[64];
-
+		
 		if(Rogue_Mode())
 		{
 			FormatEx(buffer, sizeof(buffer), "ZR Rogue (Floor %d-%d)", Rogue_GetFloor() + 1, Rogue_GetCount() + 1);

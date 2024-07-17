@@ -191,7 +191,7 @@ methodmap ChaosAfflictedMiner < CClotBody
 		}
 		float flPos[3]; // original
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_arcane_purple_sparkle", npc.index, "root", {0.0,0.0,0.0});
+		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_arcane_purple_sparkle", npc.index, "", {0.0,0.0,0.0});
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	

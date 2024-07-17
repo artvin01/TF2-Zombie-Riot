@@ -14,6 +14,7 @@ static bool already_ricocated[MAXENTITIES];
 static int Beam_Laser;
 static int Entity_Owner[MAXENTITIES];
 static float damage_multiplier[MAXENTITIES];
+static float f_Thrownrecently[MAXENTITIES];
 static float mf_extra_damage[MAXENTITIES];
 static int coins_flipped[MAXTF2PLAYERS];
 
@@ -207,6 +208,7 @@ public Action flip_extra(Handle timer, int client)
 			AddEntityToLagCompList(entity);
 			b_DoNotIgnoreDuringLagCompAlly[entity] = true;
 			Entity_Owner[entity] = client;
+			f_Thrownrecently[entity] = GetGameTime () + 0.35;
 
 			fPlayerPos[0] = fPlayerPos[0] + fLen * Cosine( DegToRad( fPlayerAngles[1] + 0.0) );
 			fPlayerPos[1] = fPlayerPos[1] + fLen * Sine( DegToRad( fPlayerAngles[1] + 0.0) );
@@ -228,7 +230,7 @@ public Action flip_extra(Handle timer, int client)
 			Coin_flip[client] = EntIndexToEntRef(entity);
 			mb_coin[entity] = true;
 			
-			SetTeam(entity, TFTeam_Red);
+			SetTeam(entity, TFTeam_Spectator);
 			
 			SDKHook(entity, SDKHook_OnTakeDamage, Coin_HookDamaged);
 			
@@ -347,8 +349,8 @@ public Action coin_got_rioceted(Handle timer, int client)
 
 public Action Coin_HookDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(GetTeam(victim) != GetTeam(attacker))
-		return Plugin_Continue;
+//	if(GetTeam(victim) != GetTeam(attacker))
+//		return Plugin_Continue;
 		
 	//Valid attackers only.
 	if(attacker < 0)
@@ -424,12 +426,17 @@ stock void Do_Coin_calc(int victim)
 	float targPos[3];
 	float chargerPos[3];
 		
+	SetTeam(victim, TFTeam_Red);
 	int Closest_entity = GetClosestTarget_Coin(victim);
-	
+	SetTeam(victim, TFTeam_Spectator);
 	if (IsValidEntity(Closest_entity))
 	{
 		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
+		if(f_Thrownrecently[victim] > GetGameTime())
+		{
+			damage_multiplier[victim] *= 0.25;
+		}
 		
 		static char classname[36];
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
@@ -673,9 +680,7 @@ stock int GetClosestTarget_Coin(int entity)
 	{
 		if (IsValidEntity(new_entity) && !b_NpcHasDied[new_entity])
 		{
-			static char classname[36];
-			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetTeam(new_entity) != GetTeam(entity)) && entity != new_entity)
+			if(IsValidEnemy(entity, new_entity))
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
