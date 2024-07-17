@@ -851,6 +851,10 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		damage *= 0.75;
 	}
+	
+	if(CurrentModifOn() == 2)
+		damage *= 1.25;
+
 	if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 	{
 		int scale = Rogue_GetRoundScale();

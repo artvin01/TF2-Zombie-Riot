@@ -648,7 +648,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_OnHitEffect(client, weapon, damage);
+				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
 		}
 #endif
@@ -690,6 +690,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						case WEAPON_ANGELIC_SHOTGUN:
 						{
 							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
+						}
+						case WEAPON_KIT_BLITZKRIEG_CORE:
+						{
+							Blitzkrieg_Kit_OnHitEffect(client);
 						}
 						default:
 						{

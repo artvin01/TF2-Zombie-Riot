@@ -933,6 +933,7 @@ methodmap Citizen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;	
+		b_NpcUnableToDie[npc.index] = true;
 		
 		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TFTeam_Red);
 		
@@ -1666,6 +1667,7 @@ bool Citizen_UpdateWeaponStats(int entity, int type, int sell, const ItemInfo in
 	npc.m_fGunDamage *= 1.0 + float(wave / 15);
 
 	Rogue_AllySpawned(npc.index);
+	Waves_AllySpawned(npc.index);
 	
 	npc.UpdateModel();
 	npc.PlaySound(Cit_NewWeapon);

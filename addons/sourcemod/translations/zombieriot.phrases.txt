@@ -1774,6 +1774,10 @@
 		"nl"		"De vijand heeft hun uitrusting naar level {1} gebracht!!!"
 		"chi"       "僵尸的装备已升级!!!{1}"
 	}
+	"Victory Menu 2"
+	{		
+		"en"		"The Zombies have been defeated!\nDo you wish to go and do 1 extra wave..?"
+	}
 	"Victory Menu"
 	{		
 		"en"		"The Zombies have been defeated!\nGo into Freeplay..?\nFreeplay will play infinitely.\nThe further you go, the harder it gets.\n"
@@ -3042,6 +3046,14 @@
 	{
 		"en"	"The judges of your actions have arrived."
 	}
+	"CoF Normal Desc"
+	{
+		"en"	"Enter Simon's Book."
+	}
+	"CoF Nightmare Desc"
+	{
+		"en"	"Enter Simon's Mind."
+	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
@@ -3108,7 +3120,7 @@
 	}
 	"Blacksmith Tooltip"
 	{
-		"en"		"Press RELOAD to apply a tinker effect to your active weapon\nCrouching removes attributes."
+		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
 	}
 	"Blacksmith Used"
 	{
@@ -3122,9 +3134,13 @@
 	{
 		"en"		"You can not tinker this weapon"
 	}
+	"The Blacksmith Failed!"
+	{
+		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
+	}
 	"Blacksmith No Attribs"
 	{
-		"en"		"Crouching removes attributes, but you don't have any"
+		"en"		"You have no tinker stats."
 	}
 	"Removed Tinker Attributes"
 	{
@@ -3175,5 +3191,49 @@
 	"purnell_message"
 	{
 		"en"	"Relax, I'm not one of them."
+	}
+	"Modifier set to"
+	{
+		"en"	"Modifier set to"
+	}
+	"Vote for the modifier"
+	{
+		"en"	"Vote for the modifier"
+	}
+	"Anvil Menu Main"
+	{
+		"en"	"What do you wish to do with the Anvil?"
+	}
+	"Re-Roll Weapon Stats"
+	{
+		"en"	"Re-Roll Weapon Stats"
+	}
+	"Remove Weapon Stats"
+	{
+		"en"	"Remove Weapon Stats"
+	}
+	"Display Current Stats"
+	{
+		"en"	"Display Current Stats"
+	}
+	"Custom Models"
+	{
+		"en"	"Custom Models"
+	}
+	"TF2 Class"
+	{
+		"en"	"TF2 Class"
+	}
+	"Barney"
+	{
+		"en"	"Barney"
+	}
+	"Niko Oneshot"
+	{
+		"en"	"Niko Oneshot"
+	}
+	"Skeleboy"
+	{
+		"en"	"Skeleboy"
 	}
 }

@@ -156,6 +156,7 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 bool b_donner_said_win_line;
+bool b_schwert_ded;
 
 //static bool b_spawn_bob;
 
@@ -313,6 +314,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_donner_said_win_line = false;
+		b_schwert_ded = false;
 
 		//fl_divine_intervention_retry = GetGameTime() + 10.0;
 
@@ -419,6 +421,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCFuncWin[npc.index] = Win_Line;
 			
 		
 		/*
@@ -478,7 +481,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 					
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		i_particle_effects[npc.index][0] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0}));
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		npc.StartPathing();
 		
@@ -507,8 +510,13 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		schwert_retreat = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+
+		int wave = ZR_GetWaveCount()+1;
 		
-		CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
+		if(wave <=45)
+			CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
+		else
+			CPrintToChatAll("{aqua}Stella{snow}: This ends now!");
 		
 		Donnerkrieg_Wings_Create(npc);
 
@@ -520,11 +528,56 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		//Reused silvester duo code here
 		
 		RequestFrame(Donnerkrieg_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
 	
 	
+}
+
+static void Win_Line(int entity)
+{	
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+
+	char text_lines[255];
+	int ally = EntRefToEntIndex(i_ally_index);
+	if(IsValidEntity(ally) && !b_schwert_ded)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: HAH, the {darkblue}sea{snow} isn't THAT hard to beat", name_color, text_color);
+			}
+			case 2:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh boy, their ragdoll's were {gold}amazing{snow}!", name_color, text_color);
+			}
+		}
+	}
+	else
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased{snow} your existance", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Well, atleast I still have {purple}Twirl{snow}...", name_color, text_color);
+			}
+		}	
+	}
+	b_donner_said_win_line = true;
+	CPrintToChatAll(text_lines);
 }
 
 void Donnerkrieg_SpawnAllyDuoRaid(int ref)
@@ -602,6 +655,39 @@ static void Internal_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
+	}
+
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
+
+			char text_lines[255];
+			int ally = EntRefToEntIndex(i_ally_index);
+			if(IsValidEntity(ally) && !b_schwert_ded)
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ahaha, its almost over now, just{crimson} one more left{snow}!", name_color, text_color);
+					}
+					case 1:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: We'd better not choke now...", name_color, text_color);
+					}
+				}
+			}
+			else
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: I'm about to turn into an unrecognisable mass of sea for {crimson}what you've DONE TO MY BELOVED", name_color, text_color);
+			}
+			CPrintToChatAll(text_lines);
+		}
 	}
 		
 	float GameTime = GetGameTime(npc.index);
@@ -758,7 +844,6 @@ static void Internal_ClotThink(int iNPC)
 				bool sea = false;
 				if(donner_sea_created)
 				{
-					donner_sea_created=false;
 					sea=true;
 				}
 
@@ -769,6 +854,8 @@ static void Internal_ClotThink(int iNPC)
 				{
 					infection=2;
 				}
+				if(Current_Wave>60)
+					infection=3;
 				if(NpcStats_IsEnemySilenced(npc.index))
 				{
 					if(infection>0)
@@ -896,12 +983,12 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		b_donner_said_win_line = true;
 		if(donner_alive)
 		{
-			char name_color[255]; name_color = "aqua";
-			char text_color[255]; text_color = "snow";
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
 
 			char text_lines[255];
 			int ally = EntRefToEntIndex(i_ally_index);
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You think thats how you fight us two?", name_color, text_color);
 			}
@@ -1157,9 +1244,9 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[1] = 9;
 			color[2] = 235;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
@@ -1403,10 +1490,10 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 					float flPos[3]; // original
 					float flAng[3]; // original
 						
-					npc.GetAttachment("root", flPos, flAng);
-					i_particle_effects[npc.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0}));
-					npc.GetAttachment("root", flPos, flAng);
-					i_particle_effects[npc.index][2] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0}));
+					npc.GetAttachment("", flPos, flAng);
+					i_particle_effects[npc.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0}));
+					npc.GetAttachment("", flPos, flAng);
+					i_particle_effects[npc.index][2] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0}));
 						
 					//npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
@@ -1574,6 +1661,21 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				color[0] = 147;
 				color[1] = 156;
 				color[2] = 199;
+			}
+		}
+		case 3:
+		{
+			if(creep)
+			{
+				color[0] = 0;
+				color[1] = 0;
+				color[2] = 255;
+			}
+			else
+			{
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 255;
 			}
 		}
 	}
@@ -1856,6 +1958,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 
 	if(creep)	//if creep, create the cancer thing.
 	{
+		donner_sea_created=false;
 		SeaFounder_SpawnNethersea(startPosition);
 	}
 
@@ -2074,9 +2177,9 @@ static void Internal_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	if(!b_donner_said_win_line)
 	{
-		if(wave<60)
+		if(wave!=60)
 		{
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				switch(GetRandomInt(1,2))	//warp
 				{
@@ -2348,9 +2451,9 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 			color[1] = 107;
 			color[2] = 250;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
@@ -2508,9 +2611,9 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		infection=2;
 	}
-	else
+	else if(wave > 60)
 	{
-		infection=2;
+		infection=3;
 	}
 
 	if(NpcStats_IsEnemySilenced(npc.index) && wave < 60)
@@ -2818,6 +2921,27 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 				}
 				case 2:
 				{
+					int damage = RoundToFloor(dps*0.05);
+					if(damage < 8)
+						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
+
+					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
+				}
+				case 3:
+				{
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+					float Dmg = dps;
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						Dmg *= 5.0;
+					}
+					Dmg /= TickrateModify;
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
+
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
 						damage = 8;
@@ -3258,6 +3382,19 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 			else
 				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
+		case 3:
+		{
+			int neural_damage = RoundToFloor(damage*0.1);
+			if(neural_damage < 8)
+				neural_damage = 8;
+
+			ion_damage[npc.index] = float(neural_damage);
+
+			if(shake)
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+			else
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+		}
 	}
 }
 public void Donner_Normal_Tweak(int entity, int victim, float damage, int weapon)
@@ -3309,9 +3446,9 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 
 static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 {
-	char name_color[255]; name_color = "aqua";
-	char text_color[255]; text_color = "snow";
-	char danger_color[255]; danger_color = "crimson";
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+	char danger_color[] = "crimson";
 
 	char text_lines[255];
 

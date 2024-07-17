@@ -1301,10 +1301,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			speed_for_return *= 1.25;
 		}
 #endif
-		if(b_npcspawnprotection[this.index])
-		{
-			speed_for_return *= 1.35;
-		}
 		if(!this.m_bThisNpcIsABoss)
 		{
 			if(!b_thisNpcIsARaid[this.index])
@@ -1506,11 +1502,15 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
+		if(b_npcspawnprotection[this.index])
+		{
+			return 400.0;
+		}
 		float speed_for_return;
 		
 		speed_for_return = this.m_flSpeed;
 		
-		speed_for_return *= this.GetDebuffPercentage();
+		speed_for_return *= this.GetDebuffPercentage();	
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[this.index] && GetTeam(this.index) != TFTeam_Red && XenoExtraLogic(true))
@@ -3287,6 +3287,11 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		KillFeed_Show(pThis, iInflictor, iAttacker, client, iWeapon, iDamagetype);
 #endif
 
+		float GibEnemyGive = 1.0;
+		if(IsValidEntity(iWeapon))
+		{
+			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
+		}
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 
@@ -3397,7 +3402,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 			else
 			{
-				Npc_DoGibLogic(pThis);
+				Npc_DoGibLogic(pThis, GibEnemyGive);
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -3418,7 +3423,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 }
 
 
-void Npc_DoGibLogic(int pThis)
+void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	float startPosition[3]; //This is what we use if we cannot find the correct name of said bone for this npc.
@@ -3436,7 +3441,7 @@ void Npc_DoGibLogic(int pThis)
 	}
 
 	static int Main_Gib;
-	
+	int GibAny;
 	switch(npc.m_iBleedType)
 	{
 		case BLEEDTYPE_NORMAL:
@@ -3447,26 +3452,29 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 15;
-					Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true);
 					startPosition[2] += 44;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}
@@ -3475,26 +3483,29 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 10;
-					Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce);
 					startPosition[2] += 34;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}	
@@ -3507,26 +3518,29 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
 				Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true); //dont gigantify this one.
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 15;
-					Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
+					GibAny = Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, true, true);
 					startPosition[2] += 44;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+						GibAny = Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, true, true);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);		
+						GibAny = Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, true, true);	
+						f_GibHealingAmount[GibAny] *= GibAmount;	
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}
@@ -3535,26 +3549,29 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
 				Main_Gib = Place_Gib("models/gibs/helicopter_brokenpiece_03.mdl", startPosition, _, damageForce, true, false, true, true, true);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 10;
-					Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
+					GibAny = Place_Gib("models/gibs/scanner_gib01.mdl", startPosition, _, damageForce, false, false, true);
 					startPosition[2] += 34;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+						GibAny = Place_Gib("models/gibs/metal_gib2.mdl", accurateposition, accurateAngle, damageForce, false, false, true);
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);		
+						GibAny = Place_Gib("models/gibs/metal_gib2.mdl", startPosition, _, damageForce, false, false, true);	
+						f_GibHealingAmount[GibAny] *= GibAmount;	
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}		
@@ -3567,26 +3584,29 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, 1);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 15;
-					Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);
 					startPosition[2] += 44;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, 1);	
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, 1);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);		
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, 1);		
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}
@@ -3595,26 +3615,30 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, 1);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 10;
-					Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 					startPosition[2] += 34;
 					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 					{
 						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-						Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, 1);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, 1);
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 					else
 					{
-						Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, 1);
+						f_GibHealingAmount[GibAny] *= GibAmount;
 					}
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}	
@@ -3626,36 +3650,44 @@ void Npc_DoGibLogic(int pThis)
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
-				Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] -= 15;
-				Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] += 44;
 				if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 				{
 					npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-					Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
+					GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, false, true);	
+					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
-					Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);		
+					GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, false, true, _, _, _, false, true);
+					f_GibHealingAmount[GibAny] *= GibAmount;		
 				}
 			}
 			else
 			{
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
-				Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
+				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl", startPosition, _, damageForce, true, _, _, _, _, false, true);
+				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] -= 10;
-				Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+				GibAny = Place_Gib("models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+				f_GibHealingAmount[GibAny] *= GibAmount;
 				startPosition[2] += 34;
 				if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
 				{
 					npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
-					Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
+					GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, false, true);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
-					Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+					GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, false, true);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 			}	
 		}
@@ -3667,18 +3699,21 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 64;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, true, _, _, _, 2);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 15;
-					Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
+					GibAny = Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 					startPosition[2] += 44;
-					Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
+					GibAny = Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, false, true, _, _, _, 2);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}
@@ -3687,18 +3722,21 @@ void Npc_DoGibLogic(int pThis)
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 				startPosition[2] += 42;
 				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_3.mdl", startPosition, _, damageForce, true, _, _, _, _, 2);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
 				if(!Limit_Gibs)
 				{
 					startPosition[2] -= 10;
-					Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
+					GibAny = Place_Gib("models/gibs/antlion_gib_medium_2.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 					startPosition[2] += 34;
-					Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
+					GibAny = Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
+					f_GibHealingAmount[GibAny] *= GibAmount;
 				}
 				else
 				{
 					if(IsValidEntity(Main_Gib))
 					{
-						b_LimitedGibGiveMoreHealth[Main_Gib] = true;
+						f_GibHealingAmount[Main_Gib] *= 3.0;
 					}
 				}
 			}	
@@ -6223,7 +6261,7 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 	Pow(vel[1], 0.5);
 	Pow(vel[2], 0.5);
 	*/
-	b_LimitedGibGiveMoreHealth[prop] = false; //Set it to false by default first.
+	f_GibHealingAmount[prop] = 1.0; //Set it to false by default first.
 	CurrentGibCount += 1;
 	if(big_gibs)
 	{
@@ -6338,6 +6376,7 @@ void GibCollidePlayerInteraction(int gib, int player)
 						float Heal_Amount = 0.0;
 						
 						Heal_Amount = Attributes_Get(weapon, 180, 1.0);
+						f_GibHealingAmount[gib] *= Heal_Amount;
 						
 						float Heal_Amount_calc;
 						
@@ -6347,16 +6386,14 @@ void GibCollidePlayerInteraction(int gib, int player)
 						if(Heal_Amount_calc > 0.0)
 						{
 							b_IsAGib[gib] = false; //we dont want the same gib to heal twice.
-							if(b_LimitedGibGiveMoreHealth[gib])
+							if(f_GibHealingAmount[gib])
 							{
 								Heal_Amount_calc *= 3.0;
 							}
 							HealEntityGlobal(player, player, Heal_Amount_calc, 1.0, 1.0, _);
 							int sound = GetRandomInt(0, sizeof(g_GibEating) - 1);
 							EmitSoundToAll(g_GibEating[sound], player, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-						//	RequestFrame(Delete_FrameLater, EntIndexToEntRef(gib));
 							RemoveEntity(gib);
-						//	b_ThisEntityIgnoredEntirelyFromAllCollisions[gib] = true;
 							CurrentGibCount -= 1;
 						}
 					}
@@ -10037,7 +10074,14 @@ void ExtinguishTarget(int target)
 
 void IsEntityInvincible_Shield(int entity)
 {
-	if(!b_NpcIsInvulnerable[entity] || b_ThisEntityIgnored[entity])
+	bool NpcInvulShieldDisplay;
+	if(b_npcspawnprotection[entity])
+		NpcInvulShieldDisplay = true;
+
+	if(b_NpcIsInvulnerable[entity])
+		NpcInvulShieldDisplay = true;
+	
+	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
 	{
 		IsEntityInvincible_ShieldRemove(entity);
 		return;
@@ -10045,13 +10089,19 @@ void IsEntityInvincible_Shield(int entity)
 	if(IsValidEntity(i_InvincibleParticle[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
-		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		if(b_NpcIsInvulnerable[entity])
+		{
+			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		}
+		else if(b_npcspawnprotection[entity])
+		{
+			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+		}
 		return;
 	}
 
 	CClotBody npc = view_as<CClotBody>(entity);
-	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
 		SetVariantString("1.38");
 	else
@@ -10060,7 +10110,14 @@ void IsEntityInvincible_Shield(int entity)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 0, 255, 0, 255);
+	if(b_NpcIsInvulnerable[entity])
+	{
+		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+	}
+	else if(b_npcspawnprotection[entity])
+	{
+		SetEntityRenderColor(Shield, 0, 50, 50, 35);
+	}
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 
 	i_InvincibleParticle[entity] = EntIndexToEntRef(Shield);

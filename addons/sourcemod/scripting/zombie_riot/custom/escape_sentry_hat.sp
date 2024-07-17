@@ -463,7 +463,7 @@ stock void EquipDispenser(int client, int target, int building_variant)
 		SetVariantString("!activator");
 		AcceptEntityInput(target, "SetParent", iLink); 
 		
-		SetVariantString("root"); 
+		SetVariantString(""); 
 		AcceptEntityInput(target, "SetParentAttachment", iLink); 
 		Building_Owner[iLink] = client;
 		SDKHook(iLink, SDKHook_SetTransmit, FirstPersonInvis);
@@ -645,7 +645,7 @@ stock int CreateLink(int iClient)
 	SetVariantString("!activator"); 
 	AcceptEntityInput(iLink, "SetParent", iClient); 
 	
-	SetVariantString("root"); 
+	SetVariantString(""); 
 	AcceptEntityInput(iLink, "SetParentAttachment", iClient);
 	
 	return iLink;

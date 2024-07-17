@@ -347,9 +347,9 @@ static void ClotThink(int iNPC)
 						Laser.client = npc.index;
 						Laser.Start_Point = Npc_Vec;
 						Laser.End_Point = vPredictedPos;
-						Laser.Radius = 7.5;
-						Laser.Damage = 100.0;
-						Laser.Bonus_Damage = 600.0;
+						Laser.Radius = 15.0;
+						Laser.Damage = 500.0;
+						Laser.Bonus_Damage = 1200.0;
 						Laser.damagetype = DMG_PLASMA;
 						Laser.Deal_Damage(On_LaserHit);
 							

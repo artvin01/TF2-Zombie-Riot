@@ -111,6 +111,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 				{
 					case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
 					{
+						f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
 						float amount = 0.0;
 						int elite = EliteLevel[GetHighestGladiiaClient()];
 						switch(elite)

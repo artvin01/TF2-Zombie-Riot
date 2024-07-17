@@ -333,6 +333,7 @@ methodmap ChaosKahmlstein < CClotBody
 			f_khamlCutscene[npc.index] = GetGameTime() + 45.0;
 			i_khamlCutscene[npc.index] = 14;
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 
 		if(StrContains(data, "fake_2") != -1)
@@ -488,11 +489,11 @@ methodmap ChaosKahmlstein < CClotBody
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);

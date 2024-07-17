@@ -657,12 +657,13 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 			if(GetTeam(entity) == 2)
 			{
 				Rogue_AllySpawned(entity);
+				Waves_AllySpawned(entity);
 			}
 			else
 			{
 				Rogue_EnemySpawned(entity);
+				Waves_EnemySpawned(entity);
 			}
-
 			Waves_UpdateMvMStats();
 		}
 	}

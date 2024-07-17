@@ -258,7 +258,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		{
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
 			{
-				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data);
+				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
 				{
 					if(GetTeam(entity_Spawner) != TFTeam_Red)
@@ -300,8 +300,22 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						npcstats.m_bThisNpcIsABoss = false; //Set to true!
 					}
 					
-					if(enemy.Credits && MultiGlobalEnemy)
-						npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
+					if(enemy.Does_Not_Scale == 0)
+					{
+						if(enemy.Is_Boss == 0)
+						{
+							npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemy;
+						}
+						else
+						{
+							npcstats.m_fCreditsOnKill = enemy.Credits / MultiGlobalEnemyBoss;
+						}
+					}
+					else
+					{
+						npcstats.m_fCreditsOnKill = enemy.Credits;
+					}
+					
 
 					fl_Extra_MeleeArmor[entity_Spawner] 	= enemy.ExtraMeleeRes;
 					fl_Extra_RangedArmor[entity_Spawner] 	= enemy.ExtraRangedRes;
@@ -340,6 +354,16 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						*/
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
+					}
+					if(GetTeam(entity_Spawner) == 2)
+					{
+						Rogue_AllySpawned(entity_Spawner);
+						Waves_AllySpawned(entity_Spawner);
+					}
+					else
+					{
+						Rogue_EnemySpawned(entity_Spawner);
+						Waves_EnemySpawned(entity_Spawner);
 					}
 
 					if(Waves_InFreeplay())
@@ -403,7 +427,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue);
+	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue,_,true);
 	if(entity != -1)
 	{
 		NpcAddedToZombiesLeftCurrently(entity, true);
@@ -427,6 +451,16 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
 
+		if(GetTeam(entity) == 2)
+		{
+			Rogue_AllySpawned(entity);
+			Waves_AllySpawned(entity);
+		}
+		else
+		{
+			Rogue_EnemySpawned(entity);
+			Waves_EnemySpawned(entity);
+		}
 		if(Waves_InFreeplay())
 			Freeplay_SpawnEnemy(entity);
 	}
@@ -1009,7 +1043,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if(damage > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -1098,7 +1132,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 	{
 		SlayNpc = false;
 	}
-	if(b_NpcIsInvulnerable[victim])
+	if(b_NpcIsInvulnerable[victim] || b_NpcUnableToDie[victim])
 	{
 		if(!(i_HexCustomDamageTypes[victim] & ZR_SLAY_DAMAGE))
 		{
@@ -2172,6 +2206,7 @@ int MaxEnemiesAllowedSpawnNext(int ExtraRules = 0)
 			maxenemies = RoundToCeil(float(maxenemies) * 1.25);
 		}
 	}
+	maxenemies = RoundToCeil(float(maxenemies) * ZRModifs_MaxSpawnsAlive());
 	return maxenemies;
 }
 #endif

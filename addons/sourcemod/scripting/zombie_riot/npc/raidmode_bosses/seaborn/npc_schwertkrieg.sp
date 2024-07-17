@@ -425,7 +425,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 				
 		npc.GetAttachment("eyeglow_L", flPos, flAng);
 		i_schwert_hand_particle[npc.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "eyeglow_L", {0.0,0.0,0.0}));
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 
 		fl_schwert_armour[npc.index][0] = 1.0;	//ranged
 		fl_schwert_armour[npc.index][1] = 1.5;	//melee
@@ -448,12 +448,22 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		{
 			i_dance_of_light_sword_id[npc.index][i] = INVALID_ENT_REFERENCE;
 		}
+
+		func_NPCFuncWin[npc.index] = Win_Line;
 		
 		
 		return npc;
 	}
 }
+static void Win_Line(int entity)
+{
+	if(b_raidboss_donnerkrieg_alive)
+		return;
+	
+	CPrintToChatAll("{crimson}Karlas{snow}: Oyaya?");
 
+	b_donner_said_win_line = true;
+}
 public void Schwertkrieg_Set_Ally_Index(int ref)
 {	
 	i_ally_index = EntIndexToEntRef(ref);
@@ -701,7 +711,7 @@ static void Internal_ClotThink(int iNPC)
 				
 				if(flDistanceToAlly < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, Ally))
 				{
-					CPrintToChatAll("{crimson}Schwertkrieg{snow}: ..!");
+					CPrintToChatAll("{crimson}Karlas{snow}: ..!");
 					HealEntityGlobal(npc.index, Ally, float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 					HealEntityGlobal(npc.index, npc.index, -float((AllyMaxHealth / 5)), 1.0, 0.0, HEAL_ABSOLUTE);
 
@@ -1070,6 +1080,12 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 				g = 9;
 				b = 235;
 			}
+			else
+			{
+				r = 255;
+				g = 50;
+				b = 50;
+			}
 			spawnRing_Vectors(npc_Loc, 250.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", r, g, b, a, 1, 2.0, 12.0, 2.0, 1, 1.0);
 
 		}
@@ -1251,6 +1267,12 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 		color[1] = 9;
 		color[2] = 235;
 	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+	}
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
 
@@ -1318,6 +1340,12 @@ static Action Schwert_Ring_Loops(Handle Loop, DataPack pack)
 		color[1] = 9;
 		color[2] = 235;
 	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
+	}
 
 	Raidboss_Schwertkrieg npc = view_as<Raidboss_Schwertkrieg>(entity);
 	float radius = SCHWERTKRIEG_TELEPORT_STRIKE_RADIUS;
@@ -1381,6 +1409,12 @@ static Action Schwert_Boom(Handle Smite_Logic, DataPack pack)
 		color[0] = 51;
 		color[1] = 9;
 		color[2] = 235;
+	}
+	else
+	{
+		color[0] = 255;
+		color[1] = 50;
+		color[2] = 50;
 	}
 
 	if(npc.Anger)
@@ -1921,6 +1955,7 @@ static void Internal_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	int ally = EntRefToEntIndex(i_ally_index);
+	b_schwert_ded = true;
 	if(IsValidEntity(ally))
 	{
 		Raidboss_Donnerkrieg donner = view_as<Raidboss_Donnerkrieg>(ally);
@@ -1931,11 +1966,11 @@ static void Internal_NPCDeath(int entity)
 	RaidModeTime +=50.0;
 
 	int wave = ZR_GetWaveCount()+1;
-	if(wave<60 && !b_donner_said_win_line)
+	if(wave!=60 && !b_donner_said_win_line)
 	{
 		if(b_raidboss_donnerkrieg_alive)
 		{
-			switch(GetRandomInt(1,2))	//warp
+			switch(GetRandomInt(1,3))	//warp
 			{
 				case 1:
 				{
@@ -1944,6 +1979,10 @@ static void Internal_NPCDeath(int entity)
 				case 2:
 				{
 					CPrintToChatAll("{aqua}Stella{snow}: Ohohoh, this ain't over yet,{crimson} not even close to over{snow}...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{aqua}Stella{snow}: {crimson}KARLAS{snow} NOO,{crimson} ALL OF YOU WILL PAY WITH YOUR LIVES");
 				}
 			}
 		}

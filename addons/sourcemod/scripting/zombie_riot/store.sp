@@ -101,6 +101,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -276,7 +277,10 @@ enum struct ItemInfo
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum(buffer, -1));
 
 		Format(buffer, sizeof(buffer), "%sweapon_bodygroup", prefix);
-		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum(buffer, -1));
+		this.Weapon_Bodygroup	= kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%sweapon_fakeindex", prefix);
+		this.Weapon_FakeIndex	= kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
@@ -2276,6 +2280,10 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	
 	static Item item;
 	static ItemInfo info;
+	int GrigoriCashLogic = CurrentCash;
+	if(GrigoriCashLogic > 100000)
+		GrigoriCashLogic = 100000;
+
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
@@ -2314,7 +2322,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				if(!item.NPCSeller)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 4))
+					if(info.Cost > 999 && info.Cost_Unlock > (GrigoriCashLogic / 4))
 						indexes[amount++] = i;
 				}
 			}
@@ -2336,7 +2344,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (GrigoriCashLogic / 3 - 1000) && info.Cost_Unlock < GrigoriCashLogic)
 					indexes[amount++] = i;
 				
 				StoreItems.SetArray(i, item);
@@ -3432,6 +3440,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
+						menu2.AddItem("-45", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
 						
@@ -3655,6 +3666,52 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -30:
 					{
 						Store_CherrypickMenu(client);
+					}
+					case -45:
+					{
+						Menu menu2 = new Menu(Store_MenuPage);
+						menu2.SetTitle("%t", "Custom Models");
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "TF2 Class");
+						menu2.AddItem("-46", buffer);
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "Barney");
+						menu2.AddItem("-47", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Niko Oneshot");
+						menu2.AddItem("-48", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Skeleboy");
+						menu2.AddItem("-49", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Back");
+						menu2.AddItem("-1", buffer);
+						
+						menu2.Display(client, MENU_TIME_FOREVER);
+					}
+					case -46:
+					{
+						OverridePlayerModel(client);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -47:
+					{
+						OverridePlayerModel(client, BARNEY, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -48:
+					{
+						OverridePlayerModel(client, NIKO_2, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -49:
+					{
+						OverridePlayerModel(client, SKELEBOY, false);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
 					}
 					default:
 					{
@@ -4054,7 +4111,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								Store_Unequip(client, index);
 								
@@ -4078,7 +4135,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								int level = item.Owned[client] - 1;
 								if(item.ParentKit)
@@ -4595,9 +4652,22 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
+
+	int entity = -1;
+	while(TF2_GetWearable(client, entity))
+	{
+		int ref = EntIndexToEntRef(entity);
+		if(ref == i_Viewmodel_PlayerModel[client] ||
+		   ref == WeaponRef_viewmodel[client] ||
+		   ref == i_Worldmodel_WeaponModel[client])
+			continue;
+		
+		Attributes_RemoveAll(entity);
+	}
 
 	StringMapSnapshot snapshot = map.Snapshot();
-	int entity = client;
+	entity = client;
 	int length = snapshot.Length;
 	int attribs = 0;
 	for(int i; i < length; i++)
@@ -4607,13 +4677,13 @@ void Store_ApplyAttribs(int client)
 			if(!TF2_GetWearable(client, entity))
 				break;
 
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			{
-				i--;
+			int ref = EntIndexToEntRef(entity);
+			if(ref == i_Viewmodel_PlayerModel[client] ||
+			   ref == WeaponRef_viewmodel[client] ||
+			   ref == i_Worldmodel_WeaponModel[client])
 				continue;
-			}
-
-			Attributes_RemoveAll(entity);
+			
+			//Attributes_RemoveAll(entity);
 			attribs++;
 		}
 
@@ -4659,14 +4729,6 @@ void Store_ApplyAttribs(int client)
 				attribs++;
 
 		}
-	}
-
-	while(TF2_GetWearable(client, entity))
-	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
-		
-		Attributes_RemoveAll(entity);
 	}
 
 	if(dieingstate[client] > 0)
@@ -4724,7 +4786,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
-	OverridePlayerModel(client, 0, false);
+	//OverridePlayerModel(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -5184,8 +5246,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
-
-					HidePlayerWeaponModel(client, entity);
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -5244,7 +5305,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 6 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 194, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
@@ -5255,9 +5316,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 
-			HidePlayerWeaponModel(client, entity);
-			//hide original model
-			
 			SetEntData(entity, offset - 8, 0);	// m_iItemID
 			SetEntData(entity, offset - 4, 0);	// m_iItemID
 			SetEntData(entity, offset, 0);		// m_iItemIDHigh
@@ -5282,6 +5340,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			Attributes_Set(entity, 263, 0.0);
 			Attributes_Set(entity, 264, 0.0);
+
 			EquipPlayerWeapon(client, entity);
 
 			if(use)
@@ -5488,8 +5547,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
+		for(int i; i<1; i++)
+		{
+			b_WeaponSpecificClassBuff[entity][i] = false;
+		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5567,7 +5631,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
+		Flametail_Enable(client, entity);
 	}
+
 	return entity;
 }
 
