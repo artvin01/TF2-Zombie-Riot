@@ -723,6 +723,30 @@
 	{
 		"en" 		"Metro Raider"
 	}
+	"Barracks Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Barracks Combine Soldier"
+	{
+		"en" 		"Combine Soldier"
+	}
+	"Barracks Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Barracks Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Barracks Combine Deflector"
+	{
+		"en" 		"Combine Deflector"
+	}
+	"Barracks Combine Sniper"
+	{
+		"en" 		"Combine Sniper"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
