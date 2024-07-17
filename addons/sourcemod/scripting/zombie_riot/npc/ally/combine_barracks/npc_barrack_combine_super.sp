@@ -273,11 +273,8 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 				TE_ParticleInt(g_particleMissText, chargerPos);
 				TE_SendToClient(attacker);
 			}
-			default: //This should not happen
-			{
-				ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
-			}
 		}
+		fl_TotalArmor[npc.index] = TrueArmor;
 	}
 
 	
