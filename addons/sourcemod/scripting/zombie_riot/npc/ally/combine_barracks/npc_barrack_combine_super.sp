@@ -11,36 +11,45 @@ static const char g_DeathSounds[][] =
 
 static const char g_IdleSounds[][] =
 {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/metropolice/vo/takecover.wav",
+	"npc/metropolice/vo/readytojudge.wav",
+	"npc/metropolice/vo/subject.wav",
+	"npc/metropolice/vo/subjectis505.wav"
 };
 
-static const char g_RangedAttackSounds[][] =
-{
-	"weapons/ar2/fire1.wav",
+
+static const char g_MeleeHitSounds[][] = {
+	"weapons/halloween_boss/knight_axe_hit.wav",
 };
 
-static const char g_RangedReloadSound[][] =
-{
-	"weapons/ar2/npc_ar2_reload.wav",
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/demo_sword_swing1.wav",
+	"weapons/demo_sword_swing2.wav",
+	"weapons/demo_sword_swing3.wav",
 };
 
-static const char g_IdleAlert[][] =
+static const char g_MeleeMissSounds[][] = {
+	"weapons/cbar_miss1.wav",
+};
+
+static const char g_IdleAlertedSounds[][] =
 {
-	"npc/combine_soldier/vo/alert1.wav",
-	"npc/combine_soldier/vo/bouncerbouncer.wav",
-	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfim.wav",
+	"npc/metropolice/vo/airwatchsubjectis505.wav",
+	"npc/metropolice/vo/allunitscloseonsuspect.wav",
+	"npc/metropolice/vo/allunitsmovein.wav",
+	"npc/metropolice/vo/breakhiscover.wav",
+	"npc/metropolice/vo/destroythatcover.wav"
 };
 
 void Barracks_Combine_Super_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundArray(g_RangedAttackSounds);
-	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Super");
@@ -59,65 +68,91 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Barrack_Combine_Super < BarrackBody
 {
-	public void PlayIdleSound()
-	{
+	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayIdleSound()");
+		#endif
 	}
-	public void PlayIdleAlertSound()
-	{
+	
+	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlert[GetRandomInt(0, sizeof(g_IdleAlert) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayIdleAlertSound()");
+		#endif
 	}
-	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+	
+	public void PlayNPCDeath() {
+	
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayDeathSound()");
+		#endif
+	}
+	
+	public void PlayMeleeSound() {
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public void PlayPistolReload()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
+
+	public void PlayMeleeHitSound() {
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
 	}
-	public void PlayNPCDeath()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
+
+	public void PlayMeleeMissSound() {
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
+		#if defined DEBUG_SOUND
+		PrintToServer("CGoreFast::PlayMeleeMissSound()");
+		#endif
 	}
 
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "235", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.8",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Super_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Super_ClotThink;
-		npc.m_flSpeed = 240.0;
+		func_NPCOnTakeDamage[npc.index] = Barrack_Combine_Super_OnTakeDamage;
+		npc.m_flSpeed = 250.0;
+		
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
+		npc.m_flAttackHappens_bullshit = 0.0;
+		npc.Anger = false;
 
-		npc.m_iAttacksTillReload = 20;
-		npc.m_flNextRangedAttack = 0.0;
+		KillFeed_SetKillIcon(npc.index, "fists");
 		
-		KillFeed_SetKillIcon(npc.index, "smg");
-		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_soldier.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
+		SetVariantString("0.8");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 180, 180, 180, 255);
 		
 		return npc;
 	}
@@ -130,57 +165,72 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		int PrimaryThreatIndex = npc.m_iTarget;
-		if(PrimaryThreatIndex > 0)
+
+		if(npc.m_iTarget > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 300000.0)
+			//Target close enough to hit
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				//Target close enough to hit
-				if(IsValidEnemy(npc.index, Enemy_I_See))
+				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					//Can we attack right now?
-					if(npc.m_iAttacksTillReload < 1)
+					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_RELOAD");
-						npc.m_flNextRangedAttack = GameTime + 1.85;
-						npc.m_iAttacksTillReload = 31;
-						npc.PlayPistolReload();
+						switch(GetRandomInt(0,1))
+						{
+							case 0:
+							{
+								npc.AddGesture("ACT_BRAWLER_ATTACK_LEFT");
+							}
+							case 1:
+							{
+								npc.AddGesture("ACT_BRAWLER_ATTACK_RIGHT");
+							}
+						}
+						npc.PlaySwordSound();
+						npc.m_flAttackHappens = GameTime + 0.3;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.11;
+						npc.m_flNextMeleeAttack = GameTime + (0.35 * npc.BonusFireRate);
+						npc.m_flAttackHappenswillhappen = true;
 					}
-					if(npc.m_flNextRangedAttack < GameTime)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
-						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2", false);
-						npc.m_iTarget = Enemy_I_See;
-						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 300000.0);
 						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
+						npc.FaceTowards(vecTarget, 20000.0);
+						if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 						{
 							int target = TR_GetEntityIndex(swingTrace);	
-								
+							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-							float origin[3], angles[3];
-							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
+
+							float damage = 3750.0;
 							
-							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
-							npc.m_iAttacksTillReload--;
-							npc.m_flSpeed = 0.0;
-							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 275.0, 1), DMG_CLUB, -1, _, vecHit);
-						} 		
-						delete swingTrace;				
+							if(target > 0) 
+							{
+								if(npc.anger)
+								{
+									damage *= 1.5;
+								}
+								else
+								{
+									damage *= 1.0;
+								}
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
+								npc.PlaySwordHitSound();
+								npc.anger = false;
+							} 
+						}
+						delete swingTrace;
+						npc.m_flAttackHappenswillhappen = false;
 					}
-					else
+					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flSpeed = 240.0;
+						npc.m_flAttackHappenswillhappen = false;
 					}
 				}
 			}
@@ -189,9 +239,61 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-
-		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_COVER", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 250.0, "ACT_BRAWLER_IDLE", "ACT_BRAWLER_RUN");
 	}
+}
+
+public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	//Valid attackers only.
+	if(attacker <= 0)
+		return Plugin_Continue;
+		
+	Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(victim);
+	
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
+	{
+		npc.m_bLostHalfHealth = true;
+	}
+	if(npc.m_bLostHalfHealth)
+	{
+		TrueArmor *= 0.9;
+		float chargerPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		chargerPos[2] += 82.0;
+		switch(GetRandomInt(1, 4))
+		{
+			case 1,2,3:
+			{
+
+			}
+			case 4:
+			{
+				damage = 0.0;
+				TE_ParticleInt(g_particleMissText, chargerPos);
+				TE_SendToClient(attacker);
+			}
+			default: //This should not happen
+			{
+				ShowSyncHudText(client,  SyncHud_Notifaction, "An error occured. Scream at devs");//none
+			}
+		}
+	}
+
+	
+	/*
+	if(attacker > MaxClients && !IsValidEnemy(npc.index, attacker))
+		return Plugin_Continue;
+	*/
+	
+	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+	
+	
+	return Plugin_Changed;
 }
 
 void Barrack_Combine_Super_NPCDeath(int entity)
