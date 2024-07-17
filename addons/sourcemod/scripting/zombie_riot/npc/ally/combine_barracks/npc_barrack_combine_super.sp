@@ -129,6 +129,12 @@ methodmap Barrack_Combine_Super < BarrackBody
 		#endif
 	}
 
+	public void PlayDeflectSound() 
+	{
+		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+	}
+
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.8",_,"models/pickups/pickup_powerup_knockout.mdl"));

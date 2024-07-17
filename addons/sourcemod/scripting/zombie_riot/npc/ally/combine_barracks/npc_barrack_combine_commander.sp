@@ -133,7 +133,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_commanderbufftime = 0.0;
+		npc.m_flRangedSpecialDelay = 0.0;
 		buffing = false;
 
 		
@@ -246,9 +246,8 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-	if(npc.m_commanderbufftime < gameTime)
+	if(npc.m_flRangedSpecialDelay < gameTime)
 	{
-		bool buffedAlly = false;
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
@@ -262,12 +261,11 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 						f_GodAlaxiosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
 						//Buff this entity.
 						f_GodAlaxiosBuff[npc.index] = GetGameTime() + 15.0;
-						npc.m_commanderbufftime = GetGameTime() + 45.0;
+						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();
 						if(entitycount != npc.index)
 						{
-							buffedAlly = true;
 							float flPos[3]; // original
 							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
