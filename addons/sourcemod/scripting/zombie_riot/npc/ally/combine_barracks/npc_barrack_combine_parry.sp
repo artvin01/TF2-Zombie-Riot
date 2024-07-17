@@ -112,14 +112,6 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		#endif
 	}
 
-	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
-	}
-	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
@@ -158,6 +150,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		m_flNextRangedAttack = 0.0;
+		m_fbRangedSpecialOn = true;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
@@ -197,7 +190,7 @@ public void Barrack_Combine_Parry_ClotThink(int iNPC)
 				if(m_fbRangedSpecialOn)
 				{
 					npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
-					npc.m_flNextMeleeAttack = GameTime + 0.2;
+					npc.m_flNextMeleeAttack = GameTime + 0.25;
 					m_fbRangedSpecialOn = false;
 				}
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn)

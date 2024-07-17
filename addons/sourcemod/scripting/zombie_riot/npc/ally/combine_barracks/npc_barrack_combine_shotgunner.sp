@@ -118,7 +118,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 		
 		KillFeed_SetKillIcon(npc.index, "smg");
 
-        SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+ 	   	SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
 		SetVariantString("1.15");
