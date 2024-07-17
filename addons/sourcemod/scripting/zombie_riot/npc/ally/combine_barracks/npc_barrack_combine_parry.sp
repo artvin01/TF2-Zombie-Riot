@@ -149,8 +149,8 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-		m_flNextRangedAttack = 0.0;
-		m_fbRangedSpecialOn = true;
+		npc.m_flNextRangedAttack = 0.0;
+		npc.m_fbRangedSpecialOn = true;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
@@ -187,11 +187,11 @@ public void Barrack_Combine_Parry_ClotThink(int iNPC)
 			//Target close enough to hit
 			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
-				if(m_fbRangedSpecialOn)
+				if(npc.m_fbRangedSpecialOn)
 				{
 					npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
 					npc.m_flNextMeleeAttack = GameTime + 0.25;
-					m_fbRangedSpecialOn = false;
+					npc.m_fbRangedSpecialOn = false;
 				}
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn)
 				{
