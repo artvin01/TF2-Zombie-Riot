@@ -137,7 +137,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 
 	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -151,7 +151,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
-        i_NpcWeight[npc.index] = 2;
+		i_NpcWeight[npc.index] = 2;
 
 
 		KillFeed_SetKillIcon(npc.index, "sword");
@@ -202,7 +202,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
@@ -258,7 +258,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_WALK");
 	}
 }
 

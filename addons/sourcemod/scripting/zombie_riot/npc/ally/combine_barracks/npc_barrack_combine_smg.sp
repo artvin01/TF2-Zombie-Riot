@@ -102,7 +102,7 @@ methodmap Barrack_Combine_SMG < BarrackBody
 
 	public Barrack_Combine_SMG(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "150", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "150", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -153,7 +153,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 						npc.AddGesture("ACT_RELOAD_SMG1");
 						npc.m_flNextRangedAttack = GameTime + 1.75;
 						npc.m_iAttacksTillReload = 45;
-                        npc.m_flSpeed = 0.0;
+						npc.m_flSpeed = 0.0;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
@@ -162,7 +162,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 250000.0);
-                        npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 210.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{

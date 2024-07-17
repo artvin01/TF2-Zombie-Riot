@@ -1106,6 +1106,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_collos.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_elite.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_parry.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sniper.sp"
 
 
 

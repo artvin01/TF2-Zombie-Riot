@@ -114,7 +114,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 
 	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "375", "models/combine_super_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "375", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -196,7 +196,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
-							npc.m_iAttacksTillReload-;
+							npc.m_iAttacksTillReload -= 1;
 							npc.m_flSpeed = 0.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 225.0, 1), DMG_CLUB, -1, _, vecHit);

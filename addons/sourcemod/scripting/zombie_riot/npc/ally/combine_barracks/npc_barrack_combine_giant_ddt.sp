@@ -66,10 +66,10 @@ void Barracks_Combine_Sword_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Ddt(client, vecPos, vecAng, ally);
+	return Barrack_Combine_Giant_Ddt(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Ddt < BarrackBody
+methodmap Barrack_Combine_Giant_Ddt < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -135,16 +135,16 @@ methodmap Barrack_Combine_Ddt < BarrackBody
 		#endif
 	}
 
-	public Barrack_Combine_Ddt(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Combine_Giant_Ddt(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(BarrackBody(client, vecPos, vecAng, "350", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Giant_Ddt npc = view_as<Barrack_Combine_Giant_Ddt>(BarrackBody(client, vecPos, vecAng, "2250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Ddt_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Ddt_ClotThink;
-		npc.m_flSpeed = 300.0;
+		func_NPCDeath[npc.index] = Barrack_Combine_Giant_Ddt_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Combine_Giant_Ddt_ClotThink;
+		npc.m_flSpeed = 270.0;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -152,25 +152,29 @@ methodmap Barrack_Combine_Ddt < BarrackBody
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
+
+    	SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 215, 0, 255);
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+        SetEntityRenderColor(npc.m_iWearable1, 255, 215, 0, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum21_roaming_roman/sum21_roaming_roman.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 255, 215, 0, 255);
 		
 		return npc;
 	}
 }
 
-public void Barrack_Combine_Ddt_ClotThink(int iNPC)
+public void Barrack_Combine_Giant_Ddt_ClotThink(int iNPC)
 {
-	Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(iNPC);
+	Barrack_Combine_Giant_Ddt npc = view_as<Barrack_Combine_Giant_Ddt>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -184,7 +188,7 @@ public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
@@ -195,7 +199,7 @@ public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -211,7 +215,7 @@ public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1200.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),16000.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -229,13 +233,13 @@ public void Barrack_Combine_Ddt_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_IDLE", "ACT_RUN");
+		BarrackBody_ThinkMove(npc.index, 270.0, "ACT_IDLE", "ACT_WALK");
 	}
 }
 
-void Barrack_Combine_Ddt_NPCDeath(int entity)
+void Barrack_Combine_Giant_Ddt_NPCDeath(int entity)
 {
-	Barrack_Combine_Ddt npc = view_as<Barrack_Combine_Ddt>(entity);
+	Barrack_Combine_Giant_Ddt npc = view_as<Barrack_Combine_Giant_Ddt>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

@@ -102,7 +102,7 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 
 	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		

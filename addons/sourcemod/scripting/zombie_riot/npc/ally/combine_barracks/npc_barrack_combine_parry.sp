@@ -127,7 +127,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-    public void PlayDeflectSound() 
+	public void PlayDeflectSound() 
 	{
 		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
@@ -144,7 +144,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 
 	public Barrack_Combine_Parry(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(BarrackBody(client, vecPos, vecAng, "900", COMBINE_CUSTOM_MODEL, STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(BarrackBody(client, vecPos, vecAng, "900", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -157,7 +157,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-        m_flNextRangedAttack = 0.0;
+		m_flNextRangedAttack = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
@@ -198,7 +198,7 @@ public void Barrack_Combine_Parry_ClotThink(int iNPC)
 				{
 					npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
 					npc.m_flNextMeleeAttack = GameTime + 0.2;
-					m_fbRangedSpecialOn = false
+					m_fbRangedSpecialOn = false;
 				}
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen && !npc.m_fbRangedSpecialOn)
 				{
@@ -254,16 +254,16 @@ public Action Barrack_Combine_Parry_OnTakeDamage(int victim, int &attacker, int 
 		
 	Barrack_Combine_Parry npc = view_as<Barrack_Combine_Parry>(victim);
 	
-    if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
-    {
-        if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
-        {	
-            npc.m_fbRangedSpecialOn = true;
-            npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
-            damage *= 0.4;
+	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
+	{
+		if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
+		{	
+			npc.m_fbRangedSpecialOn = true;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.0;
+			damage *= 0.4;
 			npc.PlayDeflectSound();
-        }
-    }
+		}
+	}
 
 	
 	/*
