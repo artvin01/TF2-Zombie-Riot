@@ -185,7 +185,6 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					float hitdamage = 4500.0;
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						switch(GetRandomInt(0,1))
@@ -219,7 +218,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),hitdamage, 0), 4500, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4500, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
