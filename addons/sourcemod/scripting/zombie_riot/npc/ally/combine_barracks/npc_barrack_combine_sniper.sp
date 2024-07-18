@@ -168,14 +168,14 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ReloadCrouch_PRIMARY_DEPLOYED");
+						npc.AddGesture("ACT_RELOAD");
 						npc.m_flNextRangedAttack = GameTime + 1.85;
 						npc.m_iAttacksTillReload = 1;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
-						npc.AddGesture("AttackCrouch_PRIMARY_DEPLOYED", false);
+						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 600000.0);
@@ -210,7 +210,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "crouch_deployed_PRIMARY", "deployed_crouch_walk_PRIMARY", 590000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 590000.0,_, true);
 	}
 }
 
