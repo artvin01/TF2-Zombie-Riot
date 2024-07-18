@@ -629,7 +629,8 @@ static const char CivName[][] =
 {		
 	"Standard Barracks",
 	"Iberia Barracks",
-	"Blitzkrieg's Army"
+	"Blitzkrieg's Army",
+	"Guln's Companions"
 };
 
 static void SetupNPCIndexes()
@@ -728,10 +729,11 @@ public void Building_Summoner(int client, int entity)
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
 	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
-	CivType[client] = Store_HasNamedItem(client, "Guln's Companions") ? Combine : Default;
 
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
+	if(CivType[client] == Default)
+		CivType[client] = Store_HasNamedItem(client, "Guln's Companions") ? Combine : Default;
 		
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;	
