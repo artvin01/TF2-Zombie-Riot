@@ -102,7 +102,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 
 	public Barrack_Combine_Sniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", "models/player/hwm/sniper.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
@@ -112,7 +112,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Sniper_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Sniper_ClotThink;
-		npc.m_flSpeed = 175.0;
+		npc.m_flSpeed = 150.0;
 
 		npc.m_iAttacksTillReload = 1;
 		npc.m_flNextRangedAttack = 0.0;
@@ -126,10 +126,10 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum21_sightliner/sum21_sightliner.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum21_sightliner/sum21_sightliner.mdl"); //find it properly
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
@@ -137,7 +137,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "mmodels/combine_soldier.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", COMBINE_CUSTOM_MODEL);
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -203,7 +203,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 175.0;
+						npc.m_flSpeed = 150.0;
 					}
 				}
 			}
@@ -213,7 +213,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 175.0, "crouch_deployed_PRIMARY", "deployed_crouch_walk_PRIMARY", 590000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "crouch_deployed_PRIMARY", "deployed_crouch_walk_PRIMARY", 590000.0,_, true);
 	}
 }
 

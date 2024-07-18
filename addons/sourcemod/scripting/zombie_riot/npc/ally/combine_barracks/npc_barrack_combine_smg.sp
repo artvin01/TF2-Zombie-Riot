@@ -46,7 +46,7 @@ void Barracks_Combine_Smg_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Metro Raider");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_vombine_sMG");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_smg");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;

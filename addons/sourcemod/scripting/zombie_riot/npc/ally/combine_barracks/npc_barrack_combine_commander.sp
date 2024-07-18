@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.8",_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -139,25 +139,38 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
 		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/c_models/c_ttg_sam_gun/c_ttg_sam_gun.mdl");
-		SetVariantString("1.25");
+		int skin = 1;
+		
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_357.mdl");
+		SetVariantString("1.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_helmet/tw_soldierbot_helmet.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 255);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/hwn2023_meancaptain/hwn2023_meancaptain_soldier.mdl");
-		SetVariantString("1.2");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl");
+		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 255);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
-		SetVariantString("1.15");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 175, 175, 175, 255);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
@@ -217,6 +230,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							float origin[3], angles[3];
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
+							npc.m_flSpeed = 0.0;
 							
 							npc.m_flNextRangedAttack = GameTime + (1.25 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1.0;
@@ -238,7 +252,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_1_WALK", 445000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
 	}
 }
 
@@ -258,9 +272,10 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (1000 * 1000))
 					{
-						f_GodAlaxiosBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
+						f_AncientBannerNpcBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
+						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
 						//Buff this entity.
-						f_GodAlaxiosBuff[npc.index] = GetGameTime() + 15.0;
+						f_AncientBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
 						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();
@@ -269,7 +284,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 							float flPos[3]; // original
 							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
-							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "utaunt_glitter_parent_silver", npc1.index, "", {0.0,0.0,0.0});
+							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "bot_recent_teleport_blue", npc1.index, "", {0.0,0.0,0.0});
 							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}

@@ -46,7 +46,7 @@ void Barracks_Combine_Pistol_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Metro Cop");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Combine_Pistol");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_pistol");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;

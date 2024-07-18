@@ -144,7 +144,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Combine_Parry_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Parry_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Barrack_Combine_Parry_OnTakeDamage;
-		npc.m_flSpeed = 225.0;
+		npc.m_flSpeed = 200.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -154,13 +154,17 @@ methodmap Barrack_Combine_Parry < BarrackBody
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "model/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 100, 100, 100, 255);
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/clockwerk_hat.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);
@@ -235,7 +239,7 @@ public void Barrack_Combine_Parry_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 225.0, "ACT_IDLE", "ACT_COLOSUS_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE", "ACT_COLOSUS_WALK");
 	}
 }
 

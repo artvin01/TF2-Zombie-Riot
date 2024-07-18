@@ -191,7 +191,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_COVER", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
 	}
 }
 

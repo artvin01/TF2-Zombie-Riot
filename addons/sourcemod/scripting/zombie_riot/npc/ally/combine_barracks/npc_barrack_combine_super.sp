@@ -132,12 +132,13 @@ methodmap Barrack_Combine_Super < BarrackBody
 	public void PlayDeflectSound() 
 	{
 		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeDeflectAttack[GetRandomInt(0, sizeof(g_MeleeDeflectAttack) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
 
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.8",_,"models/pickups/pickup_powerup_knockout.mdl"));
+		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -158,8 +159,8 @@ methodmap Barrack_Combine_Super < BarrackBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
-		SetVariantString("0.8");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl");
+		SetVariantString("0.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

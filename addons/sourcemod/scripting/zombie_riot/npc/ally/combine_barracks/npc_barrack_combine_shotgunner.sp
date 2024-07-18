@@ -111,7 +111,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Shotgun_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Shotgun_ClotThink;
-		npc.m_flSpeed = 275.0;
+		npc.m_flSpeed = 230.0;
 
 
 		npc.m_iAttacksTillReload = 6;
@@ -185,7 +185,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 275.0;
+						npc.m_flSpeed = 230.0;
 					}
 				}
 			}
@@ -195,7 +195,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 275.0, "ACT_COVER", "ACT_RUN_AIM_SHOTGUN", 19000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_RUN_AIM_SHOTGUN", 19000.0,_, true);
 	}
 }
 

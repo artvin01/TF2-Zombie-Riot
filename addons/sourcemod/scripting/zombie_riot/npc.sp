@@ -1110,7 +1110,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_pistol.sp"
-#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_swordsman.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sword.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_smg.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ar2.sp"
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ddt.sp"

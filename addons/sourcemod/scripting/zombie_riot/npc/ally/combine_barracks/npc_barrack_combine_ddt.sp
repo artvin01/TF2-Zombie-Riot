@@ -56,7 +56,7 @@ void Barracks_Combine_Ddt_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine DDT");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Combine_ddt");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_ddt");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
