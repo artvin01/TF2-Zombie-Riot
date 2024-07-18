@@ -56,7 +56,7 @@ void Barracks_Combine_Sword_Precache()
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Swordsman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sword");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_swordsman");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
