@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
+		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1750", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -189,7 +189,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			{
 				npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
 				npc.m_flNextRangedAttack = GameTime + 0.50;
-				npc.m_flSpeed = 0.0;
 				buffing = false;
 			}
 
@@ -205,7 +204,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = GameTime + 1.35;
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
-						npc.m_flSpeed = 0.0;
 					}
 					if((npc.m_iAttacksTillReload > 1 && npc.m_flNextRangedAttack < GameTime && !buffing))
 					{
