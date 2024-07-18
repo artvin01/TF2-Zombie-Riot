@@ -3016,14 +3016,14 @@ static void MenuPage(int client, int section)
 		}
 		else if(section == -2)
 		{
-			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
+			if((!item.Starter && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
 				continue;
 		}
 		else if(item.Section != section)
 		{
 			continue;
 		}
-		else if(starterPlayer)
+		else if(starterPlayer && !Rogue_UnlockStore())
 		{
 			if(!item.Starter)
 				continue;
