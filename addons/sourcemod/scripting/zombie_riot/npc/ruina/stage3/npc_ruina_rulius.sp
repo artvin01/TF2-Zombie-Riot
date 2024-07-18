@@ -165,11 +165,11 @@ methodmap Rulius < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		/*
-
-			Angel of Death - 	"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl"
+			heat of winter
+			herzensbrecher
+			lavish labwear
 			Low Grav Loafers -	"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl"
 			Byte'd beak			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl"
-			Demonic Dome - 		"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_medic.mdl"
 			El Jefe				"models/player/items/scout/rebel_cap.mdl"
 
 		*/
@@ -180,12 +180,13 @@ methodmap Rulius < CClotBody
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl",
+			"models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl",
+			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
+			"models/workshop/player/items/medic/hwn2022_lavish_labwear/hwn2022_lavish_labwear.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl",
-			"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_medic.mdl",
 			"models/player/items/scout/rebel_cap.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_2
 		};	
 		
 		int skin = 1;	//1=blue, 0=red
@@ -196,11 +197,11 @@ methodmap Rulius < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_BLADE_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
+		SetVariantInt(RUINA_BLADE_2);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -267,7 +268,6 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -280,8 +280,8 @@ static void ClotThink(int iNPC)
 			if(Difference < 65.0)	//make sure its more or less the same height as the npc
 			{
 				fl_ruina_battery_timeout[npc.index] = GameTime + 15.0;
-				if(IsValidEntity(npc.m_iWearable6))
-					RemoveEntity(npc.m_iWearable6);
+				if(IsValidEntity(npc.m_iWearable7))
+					RemoveEntity(npc.m_iWearable7);
 				
 				npc.m_flDoingAnimation = GameTime + 0.9;
 				npc.PlayFantasiaSound();
@@ -294,11 +294,11 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_flDoingAnimation < GameTime)
 		{
-			if(!IsValidEntity(npc.m_iWearable6))
+			if(!IsValidEntity(npc.m_iWearable7))
 			{
-				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
-				SetVariantInt(RUINA_BLADE_1);
-				AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+				npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
+				SetVariantInt(RUINA_BLADE_2);
+				AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 			}
 
 			Ruina_Self_Defense Melee;
@@ -307,10 +307,10 @@ static void ClotThink(int iNPC)
 			Melee.target = PrimaryThreatIndex;
 			Melee.fl_distance_to_target = flDistanceToTarget;
 			Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
-			Melee.damage = 55.0;
+			Melee.damage = 75.0;
 			Melee.bonus_dmg = 325.0;
 			Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-			Melee.swing_speed = 1.0;
+			Melee.swing_speed = 0.75;
 			Melee.swing_delay = 0.35;
 			Melee.turn_speed = 20000.0;
 			Melee.gameTime = GameTime;
@@ -486,7 +486,7 @@ static void Kill_Ability(int iNPC)
 }
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 50);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 100);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -552,4 +552,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

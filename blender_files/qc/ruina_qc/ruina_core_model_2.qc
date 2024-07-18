@@ -23,6 +23,16 @@ $bodygroup "eur_staff_v2"	//done
 	blank
 	studio "v2/eur_staff_v2.smd"
 }
+$bodygroup "ruina_blade_v2"	//done
+{
+	blank
+	studio "v2/ruina_blade_v2.smd"
+}
+$bodygroup "laser_cannon_v1"	//done
+{
+	blank
+	studio "v2/laser_cannon_v1.smd"
+}
 
 
 
@@ -39,6 +49,7 @@ $mostlyopaque
 $cdmaterials "models\custom_weaponry\"
 $cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
 $cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
+$cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

@@ -133,11 +133,10 @@ methodmap Lazines < CClotBody
 		
 		/*
 			Bozo's bouffant		"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl"
-			Mighty Mitre		"models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl"
-			Nostrum Napalmer	"models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
 			Whiskey bib			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
-			Berliner's bucket helm	"models/player/items/medic/berliners_bucket_helm.mdl"
-
+			Gaelic Garb
+			Slumber slacks
+			Sub zero suit
 		
 		*/
 		
@@ -155,11 +154,12 @@ methodmap Lazines < CClotBody
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl",
-			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl",		
 			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl",
-			"models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl",
-			"models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl"
+			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl",
+			"models/workshop/player/items/demo/dec23_slumber_slacks/dec23_slumber_slacks.mdl",
+			"models/workshop/player/items/all_class/xms2013_arctic_suit/xms2013_arctic_suit_demo.mdl",
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -170,8 +170,10 @@ methodmap Lazines < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		//npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[6]);
+
+		SetVariantInt(RUINA_LAZER_CANNON_1);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
@@ -392,7 +394,7 @@ static void ClotThink(int iNPC)
 
 						
 
-						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						int beam = ConnectWithBeamClient(npc.m_iWearable6, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}
@@ -536,4 +538,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

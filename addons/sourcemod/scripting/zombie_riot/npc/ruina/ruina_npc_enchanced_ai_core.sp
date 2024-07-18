@@ -2445,7 +2445,7 @@ Names per stage:
 		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
 		Stage 4: Null
 
-		Magnia:
+		Magnium:
 		{
 			Fire 2 projectils in a row, with a reload between them
 			ICBM: Gains the ability to launch a "homing" projectile rocket.
@@ -2492,14 +2492,9 @@ Names per stage:
 		Battery: Nearby npc's gain the ability to teleport once. cannot have multiple "charges" (since its a bool)
 
 		Stage 1: Done.
-		Stage 2: Done.
+		Stage 2: Done.	is simply stronger.
 		Stage 3: sp exists.
 		Stage 4: Null
-
-		Astriana
-		{
-			is simply stronger.
-		}
 	}
 
 	//created
@@ -2524,14 +2519,10 @@ Names per stage:
 		Battery: Provides shield to npc's within range.
 
 		Stage 1: Done.
-		Stage 2: Done. 
+		Stage 2: Done. 	Its just a buffed version.
 		Stage 3: sp exists.
 		Stage 4: Null
 
-		Draedon
-		{
-			Its just a buffed version.
-		}
 	}
 	//created
 	7: Aether -> Aetheria -> Aetherium -> Aetherianus
@@ -2543,18 +2534,9 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 
 		Stage 1: Done.
-		Stage 2: Done.
-		Stage 3: Done.
+		Stage 2: Done.	battery: gains the ability to shoot a laser projectile of D00M
+		Stage 3: Done.	Buffed variant
 		Stage 4: Null
-
-		Aetheria
-		{
-			battery: gains the ability to shoot a laser projectile of D00M
-		}
-		Aetherium
-		{
-			Buffed variant
-		}
 	}
 	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
@@ -2565,18 +2547,10 @@ Names per stage:
 		Battery: Gives a set amt of battery to nearby npc's
 
 		Stage 1: Done.
-		Stage 2: Done.	
+		Stage 2: Done.		Is a stronger variant, does an animation and stands still while casting the battery buff.
 		Stage 3: sp exists.
 		Stage 4: Null
 
-		Maliana
-		{
-			Is a stronger variant, does an animation and stands still while casting the battery buff.
-		}
-
-		Maliana:
-
-		Npc's within range have their passive battery gain boosted
 	}
 	//created
 	
@@ -2588,16 +2562,13 @@ Names per stage:
 		Passive: damage taken is healed to allies around.
 
 		Stage 1: Done.
-		Stage 2: Done.
-		Stage 3: sp exists.
-		Stage 4: Null
-
-		Ruianus
-		{
+		Stage 2: Done. is just a stronger variant.
+		Stage 3: Done.
 			Every 20 seconds fire a fantasmal wave.
 			This fantasmal wave can be dodged by simply jumping over it.
 			Additionally, a portion of the damage dealt by this wave is transfered over to the healing amount.
-		}
+		Stage 4: Null
+
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
 	{
@@ -2606,14 +2577,10 @@ Names per stage:
 		Ranged: Laser.
 
 		Stage 1: Done.	Laz
-		Stage 2: Done.	Lazius
+		Stage 2: Done.	battery: shoot a stronger variant of the laser, has better homing too
 		Stage 3: sp exists.	Lazines
 		Stage 4: Null	Lazurus
 
-		Lazius
-		{
-			battery: shoot a stronger variant of the laser, has better homing too
-		}
 	}
 	//created
 	11: Drone -> Dronian -> Dronis -> Dronianis
@@ -2624,14 +2591,9 @@ Names per stage:
 		it only exists as a minnion to be spammed. it has nothing special for now
 
 		Stage 1: Done.
-		Stage 2: Done.
+		Stage 2: Done.	is just a stronger variant
 		Stage 3: sp exists.
 		Stage 4: Null
-
-		Dronian
-		{
-			is just a stronger variant
-		}
 	}
 
 	Todo: Rewrite these. mostly the anchor and Valiant. as for the weaver, mostly how it attacks.

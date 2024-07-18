@@ -962,9 +962,11 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
-	RUINA_HAND_CREST_2		= 2,
-	RUINA_LAN_SWORD_2		= 4,
-	RUINA_EUR_STAFF_2		= 8
+	RUINA_HAND_CREST_2		= 2,			//2
+	RUINA_LAN_SWORD_2		= 4,			//3
+	RUINA_EUR_STAFF_2		= 8,			//4
+	RUINA_BLADE_2			= 16,			//5
+	RUINA_LAZER_CANNON_1	= 32			//6
 }
 
 

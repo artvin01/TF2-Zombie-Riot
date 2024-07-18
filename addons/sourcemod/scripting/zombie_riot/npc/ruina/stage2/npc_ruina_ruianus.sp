@@ -249,8 +249,6 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	Ruina_Add_Battery(npc.index, 15.0);
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -260,11 +258,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>3000.0)
-	{
-		fl_ruina_battery[npc.index] = 0.0;
-		b_ruina_battery_ability_active[npc.index] = true;
-	}
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 
@@ -273,24 +267,6 @@ static void ClotThink(int iNPC)
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
-
-		if(b_ruina_battery_ability_active[npc.index] && !npc.Anger && flDistanceToTarget < 250000 && fl_ruina_battery_timeout[npc.index] < GameTime)
-		{
-			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
-			if(Difference < 65.0)	//make sure its more or less the same height as the npc
-			{
-				fl_ruina_battery_timeout[npc.index] = GameTime + 15.0;
-				if(IsValidEntity(npc.m_iWearable6))
-					RemoveEntity(npc.m_iWearable6);
-				
-				npc.m_flDoingAnimation = GameTime + 0.9;
-				npc.PlayFantasiaSound();
-				npc.AddGesture("ACT_MP_THROW");
-				b_ruina_battery_ability_active[npc.index] = false;
-				npc.Anger = true;
-				Ruianus_Special(npc, PrimaryThreatIndex);
-			}	
-		}
 
 		if(npc.m_flDoingAnimation < GameTime)
 		{
@@ -338,151 +314,6 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-}
-
-#define RUINA_RUIANUS_LOOP_AMT 5
-static int i_projectile_ref[MAXENTITIES][RUINA_RUIANUS_LOOP_AMT];
-static float fl_ability_timer[MAXENTITIES];
-static void Ruianus_Special(CClotBody npc, int PrimaryThreatIndex)
-{
-	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
-	npc.FaceTowards(vecTarget, 20000.0);
-
-	float ang_Look[3];
-	MakeVectorFromPoints(Npc_Vec, vecTarget, ang_Look);
-	GetVectorAngles(ang_Look, ang_Look);
-	
-	float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
-	
-	ang_Look[1] -= wide_set;
-	float type = (wide_set*2) / RUINA_RUIANUS_LOOP_AMT;
-	ang_Look[1] -= type;
-	
-	float Timer = 2.5;
-	fl_ability_timer[npc.index] = Timer + GetGameTime();
-	int Last_Proj = -1;
-	for(int i=0 ; i<RUINA_RUIANUS_LOOP_AMT; i++)
-	{
-		float tempAngles[3], endLoc[3], Direction[3];
-		
-		tempAngles[0] = 0.0;
-		tempAngles[1] = ang_Look[1] + type * (i+1);
-		tempAngles[2] = 0.0;
-		
-		if(ang_Look[1]>360.0)
-		{
-			ang_Look[1] -= 360.0;
-		}
-
-		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, 100.0);
-		AddVectors(Npc_Vec, Direction, endLoc);
-
-		float Proj_Ang[3];
-		MakeVectorFromPoints(Npc_Vec, endLoc, Proj_Ang);
-		GetVectorAngles(Proj_Ang, Proj_Ang);
-
-		Ruina_Projectiles Projectile;
-
-		Projectile.iNPC = npc.index;
-		Projectile.Start_Loc = Npc_Vec;
-		Projectile.Angles = Proj_Ang;
-		Projectile.speed = 500.0;
-		Projectile.Time = Timer+0.1;
-
-		int Proj = Projectile.Launch_Projectile();
-		SDKUnhook(Proj, SDKHook_StartTouch, Ruina_Projectile_Touch);
-		SDKHook(Proj, SDKHook_ShouldCollide, Never_ShouldCollide);
-
-		int color[3] = {255, 150, 150};
-
-		if(Last_Proj!=-1)
-		{
-			int Laser = ConnectWithBeam(Proj, Last_Proj, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK);
-
-			CreateTimer(Timer-0.1, Timer_RemoveEntity, EntIndexToEntRef(Laser), TIMER_FLAG_NO_MAPCHANGE);
-		}
-		i_projectile_ref[npc.index][i] = EntIndexToEntRef(Proj);
-		Last_Proj = Proj;
-	}
-	npc.m_flNextTeleport = 0.0;
-	SDKHook(npc.index, SDKHook_Think, Ruianus_Ability_Think);
-}
-static Action Ruianus_Ability_Think(int iNPC)
-{
-	CClotBody npc = view_as<CClotBody>(iNPC);
-	float GameTime = GetGameTime();
-
-	if(fl_ability_timer[npc.index] < GameTime)
-	{
-		npc.Anger = false;
-		Kill_Ability(npc.index);
-		return Plugin_Stop;
-	}
-
-	if(npc.m_flNextTeleport > GameTime)
-		return Plugin_Continue;
-
-	npc.m_flNextTeleport = GameTime + 0.1;
-
-	int Previous_Proj = i_projectile_ref[npc.index][0];
-
-	for(int i=1 ; i<RUINA_RUIANUS_LOOP_AMT; i++)
-	{
-		int Proj = EntRefToEntIndex(i_projectile_ref[npc.index][i]);
-		if(!IsValidEntity(Proj))
-			continue;
-
-		if(!IsValidEntity(Previous_Proj))
-		{
-			Previous_Proj = Proj;
-			continue;
-		}
-
-		float Vec1[3], Vec2[3];
-		GetEntPropVector(Proj, Prop_Data, "m_vecAbsOrigin", Vec1);
-		GetEntPropVector(Previous_Proj, Prop_Data, "m_vecAbsOrigin", Vec2);
-
-		if(GetVectorDistance(Vec1, Vec2, true) > 90000.0)
-			TeleportEntity(Proj, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
-
-		Ruina_Laser_Logic Laser;
-
-		Laser.client = npc.index;
-		Laser.Start_Point = Vec1;
-		Laser.End_Point = Vec2;
-
-		Laser.Radius = 5.0;
-		Laser.Damage = 10.0;
-		Laser.Bonus_Damage = 60.0;
-		Laser.damagetype = DMG_PLASMA;
-
-		Laser.Deal_Damage(On_LaserHit);
-
-			
-		Previous_Proj = Proj;
-	}
-
-	return Plugin_Continue;
-}
-static void On_LaserHit(int client, int Target, int damagetype, float damage)
-{
-	i_damage_taken[client] += RoundToFloor(damage*0.5);
-	Ruina_Add_Mana_Sickness(client, Target, 0.0, 50);
-}
-static void Kill_Ability(int iNPC)
-{
-	SDKUnhook(iNPC, SDKHook_Think, Ruianus_Ability_Think);
-
-	for(int i=0 ; i< RUINA_RUIANUS_LOOP_AMT; i++)
-	{
-		int Proj = EntRefToEntIndex(i_projectile_ref[iNPC][i]);
-		if(IsValidEntity(Proj))
-			RemoveEntity(Proj);
-
-		i_projectile_ref[iNPC][i] = INVALID_ENT_REFERENCE;
-	}
 }
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
@@ -535,8 +366,6 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-
-	Kill_Ability(npc.index);
 
 	Ruina_NPCDeath_Override(entity);
 		
