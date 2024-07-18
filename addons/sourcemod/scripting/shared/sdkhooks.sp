@@ -1630,12 +1630,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		if(flHealth < 1)
 		{
-			if(!(damagetype & DMG_DROWN))
-			{
-				SDKHooks_TakeDamage(victim, victim, victim, 9999.0, DMG_DROWN, _, _, _, true);
-			}
+			//This kills the target.
+			MakePlayerGiveResponseVoice(victim, 2); //dead!
 			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
-			damage = 9999.0;
+			damage = 2.0;
 			ClientPassAliveCheck[victim] = true;
 			return Plugin_Changed;	
 		}
@@ -1759,13 +1757,17 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		ClientPassAliveCheck[victim] = false;
 		return Plugin_Continue;
 	}
+	if(ClientPassAliveCheck[victim])
+	{	
+		ClientPassAliveCheck[victim] = false;
+		return Plugin_Continue;
+	}
 #if defined ZR
 	float GameTime = GetGameTime();
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	//damage is more then their health, they will die.
-	//i fear that there is most likely some type of float health stuff, so we have to always pretend they deal +1 extra damage.
 	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 2, Health: %i, damage float %f damage int:%i ",flHealth, damage,RoundToCeil(damage));
-	if(RoundToCeil(damage) + 1 >= flHealth)
+	if(RoundToCeil(damage) >= flHealth)
 	{
 		PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
 		//the client has a suit, save them !!
