@@ -106,9 +106,6 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Sniper_NPCDeath;
