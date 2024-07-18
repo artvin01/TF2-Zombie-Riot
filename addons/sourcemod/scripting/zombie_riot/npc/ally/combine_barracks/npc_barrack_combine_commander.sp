@@ -209,6 +209,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 						NpcSpeechBubble(npc.index, "NEVER LET THEM ESCAPE!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 				}
+			}
 
 			if(flDistanceToTarget < 450000.0)
 			{
