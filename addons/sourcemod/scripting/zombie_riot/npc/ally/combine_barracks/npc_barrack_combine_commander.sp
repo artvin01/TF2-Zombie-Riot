@@ -190,6 +190,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 				npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
 				npc.m_flNextRangedAttack = GameTime + 0.50;
 				npc.m_flSpeed = 0.0;
+				buffing = false;
 			}
 
 			if(flDistanceToTarget < 450000.0)
