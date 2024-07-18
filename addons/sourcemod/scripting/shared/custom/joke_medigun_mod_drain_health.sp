@@ -220,6 +220,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
+				if (b_thisNpcIsARaid[healTarget])
+				{
+					flDrainRate *= 0.65;
+				}
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				
@@ -533,6 +537,10 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
+				if (b_thisNpcIsARaid[healTarget])
+				{
+					flDrainRate *= 0.65;
+				}
 				
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 						

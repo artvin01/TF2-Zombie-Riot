@@ -472,6 +472,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//
+	i_AmountDowned[client] = 0;
+	if(CurrentModifOn() == 2)
+		i_AmountDowned[client] = 1;
 
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
