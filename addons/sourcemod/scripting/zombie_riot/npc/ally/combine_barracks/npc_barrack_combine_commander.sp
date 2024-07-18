@@ -290,14 +290,6 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();
-						if(entitycount != npc.index)
-						{
-							float flPos[3]; // original
-							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
-							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
-							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "bot_recent_teleport_blue", npc1.index, "", {0.0,0.0,0.0});
-							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
-						}
 					}
 				}
 			}
