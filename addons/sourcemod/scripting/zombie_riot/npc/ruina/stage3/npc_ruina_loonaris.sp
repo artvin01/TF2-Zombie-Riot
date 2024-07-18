@@ -216,11 +216,11 @@ methodmap Loonaris < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_LAN_SWORD_2);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
@@ -438,4 +438,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
