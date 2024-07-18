@@ -3133,19 +3133,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
+		//not really a brush, but we'll treat it like one.
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
-			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			npc.bCantCollidie = true;
-			npc.bCantCollidieAlly = true;
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "func_door"))
 		{
-			b_ThisEntityIgnored[entity] = true;
-			b_ThisEntityIgnored_NoTeam[entity] = true;
-			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			npc.bCantCollidie = true;
-			npc.bCantCollidieAlly = true;
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{

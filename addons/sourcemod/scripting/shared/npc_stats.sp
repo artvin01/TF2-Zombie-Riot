@@ -8134,6 +8134,18 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 		if(ShouldNpcDealBonusDamage(target))
 			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
 
+		int DamageTypes;
+		DamageTypes |= DMG_PREVENT_PHYSICS_FORCE;
+
+		if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
+		{
+			DamageTypes |= DMG_CLUB;
+		}
+		else
+		{
+			DamageTypes |= DMG_BULLET;
+		}
+
 
 		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
 		{
@@ -8142,7 +8154,7 @@ public void Rocket_Particle_StartTouch(int entity, int target)
 		}
 		else
 		{
-			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
+			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DamageTypes, -1);	//acts like a kinetic rocket
 		}
 		
 		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
