@@ -194,7 +194,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_SMG", "ACT_RUN_AIM_RIFLE", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE", 225000.0,_, true);
 	}
 }
 
