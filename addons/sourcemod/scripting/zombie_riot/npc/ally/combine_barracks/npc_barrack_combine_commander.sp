@@ -206,7 +206,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 						npc.PlayPistolReload();
 						npc.m_flSpeed = 0.0;
 					}
-					if((npc.m_iAttacksTillReload > 1 && npc.m_flNextRangedAttack < GameTime && !buffing)
+					if((npc.m_iAttacksTillReload > 1 && npc.m_flNextRangedAttack < GameTime && !buffing))
 					{
 						npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", false);
 						npc.m_iTarget = Enemy_I_See;
