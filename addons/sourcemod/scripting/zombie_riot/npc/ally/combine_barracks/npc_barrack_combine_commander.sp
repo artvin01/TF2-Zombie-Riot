@@ -134,6 +134,8 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flAttackHappenswillhappen = false;
 		buffing = false;
 
 		
@@ -176,6 +178,17 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
+
+		if(npc.m_flAttackHappenswillhappen)
+		{
+			float flPos[3]; // original
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_sparkletree_gold_parent", npc.index, "", {0.0,0.0,15.0});
+		}
+		else if(!npc.m_flAttackHappenswillhappen)
+		{
+			RemoveEntity(npc.m_iWearable7);
+		}
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
@@ -198,14 +211,48 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					if(npc.m_iAttacksTillReload < 1 && !buffing)
+					if(npc.m_flNextMeleeAttack<GameTime)
+					{
+						npc.m_iAttacksTillReload = 30;
+						npc.m_flAttackHappenswillhappen = true;
+						npc.m_flNextMeleeAttack += GameTime + 30.00;
+					}
+					if(!buffing && npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", false);
+						
+						npc.m_iTarget = Enemy_I_See;
+						npc.PlayRangedSound();
+						npc.FaceTowards(vecTarget, 450000.0);
+						
+						Handle swingTrace;
+						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
+						{
+							int target = TR_GetEntityIndex(swingTrace);	
+								
+							float vecHit[3];
+							TR_GetEndPosition(vecHit, swingTrace);
+							float origin[3], angles[3];
+							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+							ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+							npc.m_flSpeed = 0.0;
+							
+							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
+							npc.m_iAttacksTillReload -= 1.0;
+							
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 10000.0, 1), DMG_CLUB, -1, _, vecHit);
+						} 
+						delete swingTrace;	
+					}
+					if(npc.m_iAttacksTillReload < 1 && !buffing && !npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_RELOAD_PISTOL");
 						npc.m_flNextRangedAttack = GameTime + 1.00;
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
+						npc.m_flAttackHappenswillhappen = false;
 					}
-					if(npc.m_flNextRangedAttack < GameTime && !buffing)
+					if(npc.m_flNextRangedAttack < GameTime && !buffing && !npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", false);
 						npc.m_iTarget = Enemy_I_See;
