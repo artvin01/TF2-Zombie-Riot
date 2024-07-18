@@ -188,9 +188,8 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			if(buffing)
 			{
 				npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
-				npc.m_flNextRangedAttack = GameTime + 1.00;
+				npc.m_flNextRangedAttack = GameTime + 0.50;
 				npc.m_flSpeed = 0.0;
-				CreateTimer(1.0, Boolchange);
 			}
 
 			if(flDistanceToTarget < 450000.0)
@@ -202,11 +201,12 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1 && !buffing)
 					{
 						npc.AddGesture("ACT_RELOAD_PISTOL");
-						npc.m_flNextRangedAttack = GameTime + 1.00;
+						npc.m_flNextRangedAttack = GameTime + 1.35;
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
+						npc.m_flSpeed = 0.0;
 					}
-					if(npc.m_flNextRangedAttack < GameTime && !buffing)
+					if((npc.m_iAttacksTillReload > 1 && npc.m_flNextRangedAttack < GameTime && !buffing)
 					{
 						npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", false);
 						npc.m_iTarget = Enemy_I_See;
@@ -224,7 +224,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							npc.m_flSpeed = 0.0;
 							
-							npc.m_flNextRangedAttack = GameTime + (1.25 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (2.00 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 10000.0, 1), DMG_CLUB, -1, _, vecHit);
