@@ -331,7 +331,7 @@ static void ClotThink(int iNPC)
 					float Reload_Time = 13.0;
 					float Projectile_Time = buffed ? Reload_Time : Laser_Time;
 
-					float projectile_speed = buffed ? 420.0 : 500.0;	//in this case, slower is better
+					float projectile_speed = buffed ? 320.0 : 500.0;	//in this case, slower is better
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
@@ -343,8 +343,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 250.0;
-					Projectile.bonus_dmg = 350.0;
+					Projectile.damage = 300.0;
+					Projectile.bonus_dmg = 450.0;
 					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -373,12 +373,12 @@ static void ClotThink(int iNPC)
 						if(buffed)
 						{
 
-							Homing_Power = 10.0;
-							Homing_Lockon = 110.0;
+							Homing_Power = 12.0;
+							Homing_Lockon = 120.0;
 
 							r = 255,
-							g = 100,
-							b = 100;
+							g = 50,
+							b = 50;
 
 							amp = 0.5;
 							
@@ -441,7 +441,7 @@ static void ClotThink(int iNPC)
 			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
-			float dmg = 15.0;
+			float dmg = 20.0;
 			float radius = 15.0;
 
 			Laser.Radius = radius;

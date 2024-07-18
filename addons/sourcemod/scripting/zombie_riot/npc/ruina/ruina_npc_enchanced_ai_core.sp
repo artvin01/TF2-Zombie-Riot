@@ -2578,7 +2578,7 @@ Names per stage:
 
 		Stage 1: Done.	Laz
 		Stage 2: Done.	battery: shoot a stronger variant of the laser, has better homing too
-		Stage 3: sp exists.	Lazines
+		Stage 3: Done.	Lazines
 		Stage 4: Null	Lazurus
 
 	}
