@@ -154,7 +154,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD");
+						npc.AddGesture("ACT_RELOAD_SHOTGUN1");
 						npc.m_flNextRangedAttack = GameTime + 2.2;
 						npc.m_iAttacksTillReload = 6;
 						npc.PlayPistolReload();
