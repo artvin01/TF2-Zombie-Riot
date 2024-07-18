@@ -251,7 +251,6 @@ enum
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 #define SUMMONER_MODEL_2	"models/props_manor/clocktower_01.mdl"
 #define SUMMONER_MODEL_3	"models/props_combine/combine_citadel001.mdl"
-#define SUMMONER_MODEL_3_SIZE "0.025"
 void ObjectBarracks_MapStart()
 {
 	PrecacheModel(SUMMONER_MODEL);
@@ -294,7 +293,7 @@ methodmap ObjectBarracks < ObjectGeneric
 				SetEntityModel(npc.index, SUMMONER_MODEL_3);
 				if(IsValidEntity(npc.m_iWearable2))
 				{
-					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * SUMMONER_MODEL_3_SIZE);
+					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.025);
 					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
 				}
 			}
