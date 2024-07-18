@@ -304,14 +304,15 @@ int ChaosKahmlsteinAllySelfDefense(AlliedKahmlAbility npc, int target, float dis
 				case 1:
 				{
 					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_blue_crit", false,
-					_,_,_,_,owner);
+					_,_,_,EP_DEALS_CLUB_DAMAGE,owner);
 				}
 				case 2:
 				{
 					projectile = npc.FireParticleRocket(vecTarget, Proj_Damage, 1200.0, 150.0, "raygun_projectile_red_crit", false,
-					_,_,_,_,owner);
+					_,_,_,EP_DEALS_CLUB_DAMAGE,owner);
 				}
 			}
+			
 			DataPack pack;
 			CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 			pack.WriteCell(EntIndexToEntRef(projectile)); //projectile

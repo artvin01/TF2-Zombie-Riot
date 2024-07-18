@@ -11,7 +11,6 @@ static Handle DuelState_timer[MAXPLAYERS+1];
 #define DUEL5					"ui/duel_challenge_accepted_with_restriction.wav"
 #define DUEL6					"ui/duel_challenge_rejected_with_restriction.wav"
 
-static int i_SpeedBuffCount[MAXPLAYERS+1]={0, ...};
 static int i_Current_Pap_Rapier[MAXTF2PLAYERS+1];
 static int i_CashLimit[MAXTF2PLAYERS+1];
 
@@ -22,7 +21,6 @@ static float fl_Rapier_hud_delay[MAXTF2PLAYERS];
 void Weapon_RapierMapChange()
 {
 	Zero(Timer_Rapier_Management);
-	Zero(i_SpeedBuffCount);
 	Zero(fl_Rapier_hud_delay);
 	Zero(DuelState_timer);
 	PrecacheSound(DUEL);
@@ -179,7 +177,6 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 	if(i_HasBeenHeadShotted[victim] == true)
 	{	
 		damage *= 1.1;
-		i_SpeedBuffCount[attacker]++;
 		//PrintToChatAll("speedbuff from headshot :D");
 		if(pap != 0)
 			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_SLASH);
@@ -188,25 +185,15 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 	{
 		case 0, 1:
 		{
-			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] > 1)
-			{
-				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.35);
-				ApplyTempAttrib(weapon, 107 , 1.3272, 0.4);
-				TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
-				i_SpeedBuffCount[attacker] *= 0;
-			}
+			//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.35);
+			ApplyTempAttrib(weapon, 107 , 1.3272, 0.4);
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
 		}
 		default:
 		{
-			i_SpeedBuffCount[attacker]++;
-			if(i_SpeedBuffCount[attacker] > 1)
-			{
-				//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.7);
-				ApplyTempAttrib(weapon, 107 , 1.3272, 0.8);
-				TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
-				i_SpeedBuffCount[attacker] *= 0;
-			}
+			//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.7);
+			ApplyTempAttrib(weapon, 107 , 1.3272, 0.8);
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
 		}
 	}
 	
@@ -369,7 +356,7 @@ public void Rapier_Cooldown_Logic(int client, int weapon)
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
 			i_Current_Pap_Rapier[client] = Rapier_Get_Pap(weapon);
-			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 20% more dmg that way is because this is flashier
+			TF2_AddCondition(client, TFCond_MarkedForDeathSilent, 0.65); //reason for not using on_playertakedamage and returining 15% more dmg that way is because this is flashier
 		}
 		else
 		{
