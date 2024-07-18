@@ -43,6 +43,7 @@ void Barracks_Combine_Sniper_Precache()
 	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_IdleAlert);
 	
+	PrecacheModel("models/player/hwm/sniper.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Sniper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_sniper");
