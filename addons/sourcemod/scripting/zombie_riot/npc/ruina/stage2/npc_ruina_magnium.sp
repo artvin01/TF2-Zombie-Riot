@@ -449,25 +449,7 @@ static void ClotThink(int iNPC)
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
 			
-						int Proj = npc.FireParticleRocket(target_vec, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
-
-						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
-						{
-							float 	Homing_Power = 7.0,
-									Homing_Lockon = 50.0;
-
-							float Ang[3];
-							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
-							GetVectorAngles(Ang, Ang);
-
-							Initiate_HomingProjectile(Proj,
-							npc.index,
-							Homing_Lockon,			// float lockonAngleMax,
-							Homing_Power,			// float homingaSec,
-							true,					// bool LockOnlyOnce,
-							true,					// bool changeAngles,
-							Ang);
-						}
+						npc.FireParticleRocket(target_vec, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 					}
 				}
 			}

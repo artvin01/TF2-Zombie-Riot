@@ -179,20 +179,18 @@ methodmap Magianas < CClotBody
 		
 		
 		/*
-			nunhood						//Xms2013_Medic_Hood
-			ramses regalia				//Hw2013_Ramses_Regalia
+			crone's dome 				"models/workshop/player/items/all_class/witchhat/witchhat_%s.mdl"
 			lo-grav loafers				//Hw2013_Moon_Boots
 			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
 			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
 		
 		*/
 		static const char Items[][] = {
-			"models/workshop/player/items/medic/xms2013_medic_hood/xms2013_medic_hood.mdl",
-			"models/workshop/player/items/medic/hw2013_ramses_regalia/hw2013_ramses_regalia.mdl",
+			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -202,12 +200,11 @@ methodmap Magianas < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_HAND_CREST_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
+		SetVariantInt(RUINA_HAND_CREST_2);
+		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -219,12 +216,11 @@ methodmap Magianas < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 310.0;
+		fl_npc_basespeed = 300.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 			
-
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 				
@@ -328,9 +324,9 @@ static void ClotThink(int iNPC)
 					GetVectorAngles(Ang, Ang);
 					Ang[0] = -45.0;
 					Projectile.Angles = Ang;
-					Projectile.speed = 600.0;
+					Projectile.speed = 750.0;
 					Projectile.radius = 300.0;
-					Projectile.damage = 450.0;
+					Projectile.damage = 500.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 
@@ -420,17 +416,17 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						if(npc.m_iState >= 1)
+						if(npc.m_iState >= 2)
 						{
 							npc.m_iState = 0;
-							npc.m_flNextMeleeAttack = GameTime + 4.0;
+							npc.m_flNextMeleeAttack = GameTime + 5.0;
 						}
 						else
 						{
 							npc.m_iState++;
 						}
 						
-						fl_multi_attack_delay[npc.index] = GameTime + 0.3;
+						fl_multi_attack_delay[npc.index] = GameTime + 0.2;
 
 						fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
@@ -449,7 +445,7 @@ static void ClotThink(int iNPC)
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
 			
-						int Proj = npc.FireParticleRocket(target_vec, 75.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						int Proj = npc.FireParticleRocket(target_vec, 80.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 
 						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
 						{
@@ -494,7 +490,7 @@ static void Func_On_Proj_Touch(int projectile, int other)
 		owner = 0;
 	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 500);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 800);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
@@ -543,7 +539,4 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
-	
 }

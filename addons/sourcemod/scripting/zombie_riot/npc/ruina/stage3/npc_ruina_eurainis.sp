@@ -140,11 +140,10 @@ methodmap Eurainis < CClotBody
 		
 		
 		/*
-			All Father	"models/workshop/player/items/all_class/xms_beard/xms_beard_%s.mdl"
-			Big chief - "models/player/items/heavy/heavy_big_chief.mdl"
 			mair mask		"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
 			pyromancer		Dec2014_Pyromancers_Raiments	"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl"
-			hypno-eyes
+			breakneck baggies
+			allbrero
 		
 		*/
 		
@@ -164,11 +163,11 @@ methodmap Eurainis < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/player/items/heavy/heavy_big_chief.mdl",
-			"models/workshop/player/items/all_class/xms_beard/xms_beard_medic.mdl",
+			"models/player/items/demo/demo_fiesta_sombrero.mdl",
+			"models/workshop/player/items/all_class/jogon/jogon_pyro.mdl",
 			"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl",
 			"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl",
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -182,7 +181,7 @@ methodmap Eurainis < CClotBody
 		//npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_EUR_STAFF_1);
+		SetVariantInt(RUINA_EUR_STAFF_2);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 
 		fl_ruina_battery[npc.index] = 0.0;
@@ -245,14 +244,14 @@ static void ClotThink(int iNPC)
 		{
 			fl_ruina_battery[npc.index] = 0.0;
 			Eurainis_Spawn_Self(npc);
-			Master_Apply_Speed_Buff(npc.index, 100.0, 10.0, 1.75);	//a strong buff.
+			Master_Apply_Speed_Buff(npc.index, 75.0, 10.0, 1.75);	//a strong buff.
 		}
 		
 	}
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+7.5;
+		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
 		{
 			Eurainis_Spawn_Minnions(npc);
@@ -383,11 +382,11 @@ static void Eurainis_Spawn_Minnions(Eurainis npc)
 			switch(GetRandomInt(0, 5))
 			{
 				case 0:
-					NpcName = "npc_ruina_magia";
+					NpcName = "npc_ruina_magnium";
 				case 3:
-					NpcName = "npc_ruina_lanius";
+					NpcName = "npc_ruina_laniun";
 				default: 
-					NpcName = "npc_ruina_dronian";
+					NpcName = "npc_ruina_dronis";
 			}
 			
 			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
@@ -462,7 +461,7 @@ static void Eurainis_SelfDefense(Eurainis npc, float gameTime, int Anchor_Id)	//
 			{
 				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
-			float DamageDone = 75.0;
+			float DamageDone = 80.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -499,7 +498,7 @@ static void Eurainis_SelfDefense(Eurainis npc, float gameTime, int Anchor_Id)	//
 					{
 						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
-					float DamageDone = 50.0;
+					float DamageDone = 80.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;

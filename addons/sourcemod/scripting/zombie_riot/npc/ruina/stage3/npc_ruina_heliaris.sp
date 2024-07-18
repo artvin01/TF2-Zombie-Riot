@@ -226,8 +226,6 @@ methodmap Heliaris < CClotBody
 
 		Ruina_Set_Healer(npc.index);
 		
-		Heliaris_Create_Crest(npc.index);
-		
 		return npc;
 	}
 	
@@ -395,120 +393,6 @@ static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
 	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 0);
 }
-
-static int i_particle[MAXENTITIES][11];
-static int i_laser[MAXENTITIES][9];
-
-static void Heliaris_Create_Crest(int client)
-{
-	float flPos[3];
-	float flAng[3];
-	GetAttachment(client, "root", flPos, flAng);
-	
-	
-	int r, g, b;
-	float f_start, f_end, amp;
-	r = 1;
-	g = 175;
-	b = 255;
-	f_start = 1.0;
-	f_end = 1.0;
-	amp = 0.1;
-	
-	int particle_0 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0);	//Root, from where all the stuff goes from
-	
-	
-	int particle_1 = InfoTargetParentAt({0.0,0.0,100.0}, "", 0.0);
-	
-	SetParent(particle_0, particle_1);
-	
-	
-	//X axis- Left, Right	//this one im almost fully sure of
-	//Y axis - Foward, Back
-	//Z axis - Up Down
-
-	int particle_2 = InfoTargetParentAt({112.5, 0.0, 50.0}, "", 0.0);
-	int particle_2_1 = InfoTargetParentAt({-112.5, 0.0, 50.0}, "", 0.0);
-	SetParent(particle_1, particle_2, "",_, true);
-	SetParent(particle_2, particle_2_1, "",_, true);
-	
-	int particle_4 = InfoTargetParentAt({75.0, -75.0, 50.0}, "", 0.0);
-	int particle_4_1 = InfoTargetParentAt({-75.0, 75.0, 50.0}, "", 0.0);
-	SetParent(particle_1, particle_4, "",_, true);
-	SetParent(particle_4, particle_4_1, "",_, true);
-	
-	int particle_5 = InfoTargetParentAt({0.0, 112.5, 50.0}, "", 0.0);
-	int particle_5_1 = InfoTargetParentAt({0.0, -112.5, 50.0}, "", 0.0);
-	SetParent(particle_1, particle_5, "",_, true);
-	SetParent(particle_5, particle_5_1, "",_, true);
-	
-	int particle_6 = InfoTargetParentAt({-75.0, -75.0, 50.0}, "", 0.0);
-	int particle_6_1 = InfoTargetParentAt({75.0, 75.0, 50.0}, "", 0.0);
-	SetParent(particle_1, particle_6, "",_, true);
-	SetParent(particle_6, particle_6_1, "",_, true);
-
-
-	Custom_SDKCall_SetLocalOrigin(particle_0, flPos);
-	SetEntPropVector(particle_0, Prop_Data, "m_angRotation", flAng); 
-	SetParent(client, particle_0, "root",_);
-
-	/* 
-		particle_2 particle_4 particle_5 particle_6 particle_2_1 particle_4_1 particle_5_1 particle_6_1
-
-	*/
-	
-	//i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	//i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	//i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	//i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	i_laser[client][0] = EntIndexToEntRef(ConnectWithBeamClient(particle_2, particle_4, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][1] = EntIndexToEntRef(ConnectWithBeamClient(particle_4_1, particle_5, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][2] = EntIndexToEntRef(ConnectWithBeamClient(particle_5, particle_6_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][3] = EntIndexToEntRef(ConnectWithBeamClient(particle_2_1, particle_4_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][4] = EntIndexToEntRef(ConnectWithBeamClient(particle_5_1, particle_6, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][5] = EntIndexToEntRef(ConnectWithBeamClient(particle_4, particle_5_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][6] = EntIndexToEntRef(ConnectWithBeamClient(particle_6_1, particle_2, r, g, b, f_start, f_end, amp, LASERBEAM));
-
-	i_laser[client][7] = EntIndexToEntRef(ConnectWithBeamClient(particle_6, particle_2_1, r, g, b, f_start, f_end, amp, LASERBEAM));
-	
-	
-	i_particle[client][0] = EntIndexToEntRef(particle_0);
-	i_particle[client][1] = EntIndexToEntRef(particle_1);
-	i_particle[client][2] = EntIndexToEntRef(particle_2);
-	i_particle[client][3] = EntIndexToEntRef(particle_4);
-	i_particle[client][4] = EntIndexToEntRef(particle_4_1);
-	i_particle[client][5] = EntIndexToEntRef(particle_5);
-	i_particle[client][6] = EntIndexToEntRef(particle_5_1);
-	i_particle[client][7] = EntIndexToEntRef(particle_6);
-	i_particle[client][8] = EntIndexToEntRef(particle_6_1);
-	
-}
-static void Delete_Hand_Crest(int client)
-{
-	for(int laser=0 ; laser<8 ; laser++)
-	{
-		int entity = EntRefToEntIndex(i_laser[client][laser]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-	for(int particle=0 ; particle < 9 ; particle++)
-	{
-		int entity = EntRefToEntIndex(i_particle[client][particle]);
-		if(IsValidEntity(entity))
-			RemoveEntity(entity);
-	}
-}
-
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Heliaris npc = view_as<Heliaris>(victim);
@@ -535,8 +419,6 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	Delete_Hand_Crest(entity);
 
 	Ruina_NPCDeath_Override(entity);
 	

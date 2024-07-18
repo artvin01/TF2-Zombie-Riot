@@ -8,6 +8,21 @@ $bodygroup "ruina_bow_2"	//done
 	blank
 	studio "v2/ruina_bow_2.smd"
 }
+$bodygroup "hand_crest_v2"	//done
+{
+	blank
+	studio "v2/hand_crest_v2.smd"
+}
+$bodygroup "lan_sword_v2"	//done
+{
+	blank
+	studio "v2/lan_sword_v2.smd"
+}
+$bodygroup "eur_staff_v2"	//done
+{
+	blank
+	studio "v2/eur_staff_v2.smd"
+}
 
 
 

@@ -2441,15 +2441,15 @@ Names per stage:
 		Battery: Buff's nearby Ranged npc's speed
 
 		Stage 1: Done.
-		Stage 2: Done
-		Stage 3: sp exists.
+		Stage 2: Done.
+		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
 		Stage 4: Null
 
 		Magnia:
 		{
 			Fire 2 projectils in a row, with a reload between them
 			ICBM: Gains the ability to launch a "homing" projectile rocket.
-			Additionally: while the battery boost is active fired projectiles have homing
+			
 		}
 	}
 	//created
@@ -2463,15 +2463,9 @@ Names per stage:
 		Battery: Buff's nearby Melee npc's speed
 
 		Stage 1: Done.
-		Stage 2: Done.
-		Stage 3: sp exists.
+		Stage 2: Done.	Is just stronger variant + Teleport deals damage to targets hit
+		Stage 3: Done.	Is just stronger variant
 		Stage 4: Null
-
-		Laniun:
-		{
-			Is just stronger variant + Teleport deals damage to targets hit
-		}
-
 
 	}
 	//created
@@ -2484,14 +2478,10 @@ Names per stage:
 		Battery: Massive AOE healing for 2.5 seconds
 
 		Stage 1: Done.
-		Stage 2: Done.
+		Stage 2: Done.	is just stronger variant
 		Stage 3: sp exists.
 		Stage 4: Null
 
-		Stellaria
-		{
-			is just stronger variant
-		}
 	}
 	//created
 	4: Astria -> Astriana -> Astrianis -> Astrianious
@@ -2521,15 +2511,9 @@ Names per stage:
 		Battery: Summons itself.
 
 		Stage 1: Done.
-		Stage 2: Done.
-		Stage 3: sp exists.	
+		Stage 2: Done. can summon now includes Magia and Lanius from the previous stage.
+		Stage 3: Done. stronger also it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
 		Stage 4: Null
-
-		Europis
-		{
-			Battery: Alongside summoning itself, it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
-			Also the summon now includes Magia and Lanius from the previous stage.
-		}
 	}
 	//created
 	6: Daedalus -> Draedon -> Draeonis -> Draconia

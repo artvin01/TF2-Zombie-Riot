@@ -245,14 +245,13 @@ static void ClotThink(int iNPC)
 		{
 			fl_ruina_battery[npc.index] = 0.0;
 			Europis_Spawn_Self(npc);
-			Master_Apply_Speed_Buff(npc.index, 100.0, 10.0, 1.75);	//a strong buff.
 		}
 		
 	}
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+7.5;
+		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
 		{
 			Europis_Spawn_Minnions(npc);
@@ -379,17 +378,7 @@ static void Europis_Spawn_Minnions(Europis npc)
 			int spawn_index;
 
 			char NpcName[50];
-
-			switch(GetRandomInt(0, 5))
-			{
-				case 0:
-					NpcName = "npc_ruina_magia";
-				case 3:
-					NpcName = "npc_ruina_lanius";
-				default: 
-					NpcName = "npc_ruina_dronian";
-			}
-			
+			NpcName = "npc_ruina_dronian";
 			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 

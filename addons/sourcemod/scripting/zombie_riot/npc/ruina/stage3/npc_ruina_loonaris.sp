@@ -178,8 +178,10 @@ methodmap Loonaris < CClotBody
 			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
 			tuxxy					"models/player/items/all_class/tuxxy_scout.mdl"
 			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
-			Breakneck Baggies		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
-			Arthropod's				"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl"
+			Orion's belt
+			Olympic Leapers
+			Last Laugh (jester)
+
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -197,12 +199,13 @@ methodmap Loonaris < CClotBody
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/all_class/jogon/jogon_scout.mdl",
-			"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl",
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/player/items/all_class/tuxxy_scout.mdl",
 			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
-			RUINA_CUSTOM_MODELS_1
+			"models/workshop/player/items/scout/hwn2018_olympic_leapers/hwn2018_olympic_leapers.mdl",
+			"models/workshop_partner/player/items/scout/tr_orions_belt/tr_orions_belt.mdl",
+			"models/workshop/player/items/scout/hwn2023_last_laugh/hwn2023_last_laugh.mdl",
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -216,7 +219,7 @@ methodmap Loonaris < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_LAN_SWORD_1);
+		SetVariantInt(RUINA_LAN_SWORD_2);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 				
@@ -272,7 +275,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>3000.0)
+	if(fl_ruina_battery[npc.index]>2500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
@@ -280,7 +283,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 130.0, 1.0, 1.3);
+		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.3);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -318,7 +321,7 @@ static void ClotThink(int iNPC)
 						Laser.Start_Point = Npc_Vec;
 						Laser.End_Point = vPredictedPos;
 						Laser.Radius = 7.5;
-						Laser.Damage = 100.0;
+						Laser.Damage = 200.0;
 						Laser.Bonus_Damage = 600.0;
 						Laser.damagetype = DMG_PLASMA;
 						Laser.Deal_Damage(On_LaserHit);
@@ -327,7 +330,7 @@ static void ClotThink(int iNPC)
 	
 						end_offset = vPredictedPos;
 
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 25.0 : 35.0);
+						npc.m_flNextTeleport = GameTime + (npc.Anger ? 22.5 : 30.0);
 
 						npc.Anger = false;
 										
@@ -353,10 +356,10 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 175.0;			//heavy, but slow
+		Melee.damage = 125.0;
 		Melee.bonus_dmg = 500.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-		Melee.swing_speed = 2.2;
+		Melee.swing_speed = 0.9;
 		Melee.swing_delay = 0.37;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
@@ -386,7 +389,7 @@ static void ClotThink(int iNPC)
 
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 25);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 30);
 }
 static void On_LaserHit(int client, int Target, int damagetype, float damage)
 {

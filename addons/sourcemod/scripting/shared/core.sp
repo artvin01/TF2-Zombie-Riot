@@ -961,7 +961,10 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 #define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_1.mdl"
 enum
 {
-	RUINA_QUINCY_BOW_2		= 1			//1
+	RUINA_QUINCY_BOW_2		= 1,			//1
+	RUINA_HAND_CREST_2		= 2,
+	RUINA_LAN_SWORD_2		= 4,
+	RUINA_EUR_STAFF_2		= 8
 }
 
 
