@@ -270,7 +270,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (1000 * 1000))
+					if(GetVectorDistance(pos1, pos2, true) < (400 * 400))
 					{
 						f_AncientBannerNpcBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
 						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
