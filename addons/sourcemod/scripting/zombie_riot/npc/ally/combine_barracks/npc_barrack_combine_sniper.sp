@@ -119,8 +119,8 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 
 		int skin = 1;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_csgo_awp/c_csgo_awp.mdl");
-		SetVariantString("1.15");
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
+		SetVariantString("1.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");

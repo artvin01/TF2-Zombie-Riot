@@ -151,7 +151,6 @@ methodmap Barrack_Combine_Super < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
-		npc.Anger = false;
 
 		KillFeed_SetKillIcon(npc.index, "fists");
 		
@@ -220,17 +219,8 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								if(npc.Anger)
-								{
-									hitdamage *= 1.5;
-								}
-								else
-								{
-									hitdamage *= 1.0;
-								}
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),hitdamage, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),hitdamage, 0), 4500, -1, _, vecHit);
 								npc.PlaySwordHitSound();
-								npc.Anger = false;
 							} 
 						}
 						delete swingTrace;
@@ -279,6 +269,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 			{
 				damage *= 0.4;
 				npc.PlayDeflectSound();
+				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
 		}
 		fl_TotalArmor[npc.index] = TrueArmor;

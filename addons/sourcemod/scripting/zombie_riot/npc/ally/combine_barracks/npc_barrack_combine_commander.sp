@@ -122,14 +122,14 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1750", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
+		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1750", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Commander_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Commander_ClotThink;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 200.0;
 
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
@@ -146,7 +146,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_helmet/tw_soldierbot_helmet.mdl");
-		SetVariantString("1.2");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
@@ -190,7 +190,25 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 				npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
 				npc.m_flNextRangedAttack = GameTime + 0.50;
 				buffing = false;
-			}
+				switch(GetRandomInt(0,3))
+				{
+					case 0:
+					{
+						NpcSpeechBubble(npc.index, "RUSH!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+					case 1:
+					{
+						NpcSpeechBubble(npc.index, "ATTACK!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+					case 2:
+					{
+						NpcSpeechBubble(npc.index, "FOR GULN!!", 5, {200,0,0,255}, {0.0,0.0,60.0}, "");
+					}
+					case 3:
+					{
+						NpcSpeechBubble(npc.index, "NEVER LET THEM ESCAPE!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+					}
+				}
 
 			if(flDistanceToTarget < 450000.0)
 			{
@@ -232,7 +250,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 200.0;
 					}
 				}
 			}
@@ -243,7 +261,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
 	}
 }
 
@@ -261,7 +279,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (400 * 400))
+					if(GetVectorDistance(pos1, pos2, true) < (600 * 600))
 					{
 						f_AncientBannerNpcBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
 						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
