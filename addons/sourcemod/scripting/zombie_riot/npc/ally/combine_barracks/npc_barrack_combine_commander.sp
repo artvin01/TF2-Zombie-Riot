@@ -134,8 +134,6 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappenswillhappen = false;
 		buffing = false;
 
 		
