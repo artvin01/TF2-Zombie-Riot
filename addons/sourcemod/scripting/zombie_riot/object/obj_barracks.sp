@@ -640,9 +640,9 @@ static void SetupNPCIndexes()
 		SummonerBase[i][NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
 	}
 
-	for(int i; i < sizeof(SummonerCombineNPC); i++)
+	for(int i; i < sizeof(SummonerCombine); i++)
 	{
-		SummonerCombineNPC[i][NPCIndex] = NPC_GetByPlugin(SummonerCombineNPC[i]);
+		SummonerCombine[i][NPCIndex] = NPC_GetByPlugin(SummonerCombineNPC[i]);
 	}
 
 	for(int i; i < sizeof(SummonerThorns); i++)
