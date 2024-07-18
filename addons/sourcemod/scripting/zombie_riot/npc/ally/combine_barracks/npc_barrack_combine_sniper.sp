@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 
 		int skin = 1;
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_irifle.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_csgo_awp/c_csgo_awp.mdl");
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -138,7 +138,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", COMBINE_CUSTOM_MODEL);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/police.mdl");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);

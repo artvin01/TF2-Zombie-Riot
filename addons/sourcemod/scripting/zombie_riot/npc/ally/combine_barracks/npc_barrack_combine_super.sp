@@ -159,10 +159,6 @@ methodmap Barrack_Combine_Super < BarrackBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl");
-		SetVariantString("0.75");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 180, 180, 180, 255);
 		

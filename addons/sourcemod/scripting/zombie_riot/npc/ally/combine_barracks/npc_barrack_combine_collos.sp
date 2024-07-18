@@ -137,7 +137,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 
 	public Barrack_Combine_Collos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.6",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Combine_Collos npc = view_as<Barrack_Combine_Collos>(BarrackBody(client, vecPos, vecAng, "700", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;

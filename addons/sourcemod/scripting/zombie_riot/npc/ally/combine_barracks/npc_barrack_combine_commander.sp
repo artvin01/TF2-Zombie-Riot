@@ -141,7 +141,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		
 		int skin = 1;
 		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_357.mdl");
+		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
 		SetVariantString("1.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -158,7 +158,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 255);
 
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/tw_heavybot_armor/tw_heavybot_armor.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
