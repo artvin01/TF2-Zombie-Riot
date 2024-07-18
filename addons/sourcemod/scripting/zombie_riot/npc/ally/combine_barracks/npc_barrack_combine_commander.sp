@@ -152,25 +152,16 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 175, 175, 175, 255);
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
-		SetVariantString("0.8");
+		
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 255);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 175, 175, 175, 255);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}

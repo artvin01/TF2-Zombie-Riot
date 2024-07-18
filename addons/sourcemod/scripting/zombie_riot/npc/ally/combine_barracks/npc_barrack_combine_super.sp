@@ -156,7 +156,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 		KillFeed_SetKillIcon(npc.index, "fists");
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_soldier.mdl");
-		SetVariantString("1.15");
+		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);

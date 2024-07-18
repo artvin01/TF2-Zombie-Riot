@@ -154,6 +154,8 @@ methodmap Barrack_Combine_Parry < BarrackBody
 
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
+		int skin = 1;
+
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -165,6 +167,7 @@ methodmap Barrack_Combine_Parry < BarrackBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
+		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 192, 192, 192, 255);

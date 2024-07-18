@@ -755,6 +755,10 @@
 	{
 		"en" 		"Combine Commander"
 	}
+	"Barracks Combine Giant ddt"
+	{
+		"en" 		"Combine Giant DDT"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"

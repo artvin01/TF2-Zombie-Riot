@@ -103,7 +103,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 
 	public Barrack_Combine_Sniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", "models/player/hwm/sniper.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
@@ -138,10 +138,9 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/police.mdl");
-
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
