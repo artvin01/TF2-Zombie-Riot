@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
+		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -187,7 +187,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			if(buffing)
 			{
 				buffing = false;
-				npc.AddGesture("ACT_SHOOTFLARE");
+				npc.AddGesture("ACT_METROPOLICE_DEPLOY_MANHACK");
 				npc.m_flNextRangedAttack = GameTime + 1.00;
 				npc.m_flSpeed = 0.0;
 			}
@@ -226,7 +226,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (1.25 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1.0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 17500.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 10000.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
@@ -267,6 +267,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
 						//Buff this entity.
 						f_AncientBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
+						f_BuffBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
 						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();

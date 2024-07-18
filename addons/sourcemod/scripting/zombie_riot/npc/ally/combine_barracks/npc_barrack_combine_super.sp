@@ -138,7 +138,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "1100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
+		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2000", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -186,6 +186,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
+					float damage = 4500.0;
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						switch(GetRandomInt(0,1))
@@ -216,7 +217,6 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 
-							float damage = 5000.0;
 							
 							if(target > 0) 
 							{
@@ -226,7 +226,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 								}
 								else
 								{
-									damage *= 1.0;
+									damage *= 1;
 								}
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();

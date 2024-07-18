@@ -143,7 +143,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Collos_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Collos_ClotThink;
-		npc.m_flSpeed = 230.0;
+		npc.m_flSpeed = 200.0;
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
@@ -236,7 +236,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),525.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2800.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -258,7 +258,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE", "ACT_WALK");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE", "ACT_WALK");
 	}
 }
 
