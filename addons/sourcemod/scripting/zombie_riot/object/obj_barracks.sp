@@ -250,10 +250,13 @@ enum
 
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 #define SUMMONER_MODEL_2	"models/props_manor/clocktower_01.mdl"
+#define SUMMONER_MODEL_3	"models/props_combine/combine_citadel001.mdl"
+#define SUMMONER_MODEL_3_SIZE "0.025"
 void ObjectBarracks_MapStart()
 {
 	PrecacheModel(SUMMONER_MODEL);
 	PrecacheModel(SUMMONER_MODEL_2);
+	PrecacheModel(SUMMONER_MODEL_3);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks");
@@ -286,11 +289,23 @@ methodmap ObjectBarracks < ObjectGeneric
 
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		{
-			SetEntityModel(npc.index, SUMMONER_MODEL_2);
-			if(IsValidEntity(npc.m_iWearable2))
+			if(CivType[client] == Combine)
 			{
-				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-				SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+				SetEntityModel(npc.index, SUMMONER_MODEL_3);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * SUMMONER_MODEL_3_SIZE);
+					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
+				}
+			}
+			else
+			{
+				SetEntityModel(npc.index, SUMMONER_MODEL_2);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+				}
 			}
 			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 			float minbounds[3] = {-18.0, -18.0, 0.0};
