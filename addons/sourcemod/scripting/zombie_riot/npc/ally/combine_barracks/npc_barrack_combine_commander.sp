@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
