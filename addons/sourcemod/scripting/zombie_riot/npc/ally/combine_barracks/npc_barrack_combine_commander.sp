@@ -183,11 +183,8 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 		{
 			float flPos[3]; // original
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
-			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_sparkletree_gold_parent", npc.index, "", {0.0,0.0,15.0});
-		}
-		else if(!npc.m_flAttackHappenswillhappen)
-		{
-			RemoveEntity(npc.m_iWearable7);
+			npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_sparkletree_gold_parent", npc.index, "", {0.0,0.0,20.0});
+			CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
 		}
 		if(PrimaryThreatIndex > 0)
 		{
