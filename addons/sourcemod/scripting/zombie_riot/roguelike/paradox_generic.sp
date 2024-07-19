@@ -675,4 +675,36 @@ public void Rogue_ShopSale_Remove()
 	ShopSale = false;
 }
 
+static Handle KahmlsteinTimer;
 
+public void Rogue_Kahmlstein_Collect()
+{
+	//TODO: Summon ally Kahmlstein
+
+	delete KahmlsteinTimer;
+	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
+}
+
+public void Rogue_Kahmlstein_Remove()
+{
+	delete KahmlsteinTimer;
+	Rogue_Refresh_Remove();
+}
+
+static Action Timer_KahmlsteinTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+					Saga_ChargeReduction(client, weapon, 1.0);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}

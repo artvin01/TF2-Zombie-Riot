@@ -464,7 +464,7 @@
 	}
 	"Missing Mountains Desc 3"
 	{
-		"en"	"{green}Gain 7 Australium Ingots"
+		"en"	"{green}Gain 14 Australium Ingots"
 	}
 	"Missing Mountains Lore 3a"
 	{
@@ -617,7 +617,7 @@
 	}
 	"Prophecy Desc 2c"
 	{
-		"en"	"{green}Gain 3000 credits {red}but gain 20 Chaos Infliction"
+		"en"	"{green}Gain 4000 credits {red}but gain 20 Chaos Infliction"
 	}
 	"Prophecy Lore 2c"
 	{
@@ -776,6 +776,10 @@
 	{
 		"en"	"Leave it alone"
 	}
+	"Downtime Recreation Option 2b"
+	{
+		"en"	"Stop gambling"
+	}
 	"Downtime Recreation Desc 2"
 	{
 		"en"	"{green}Gain 4000 Credits"
@@ -832,6 +836,10 @@
 	{
 		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
 	}
+	"Emergency Dispatch Option 1"
+	{
+		"en"	"Send"
+	}
 	"Emergency Dispatch Lore 1a"
 	{
 		"#format"	"{1:N}"
@@ -871,5 +879,22 @@
 	"Emergency Dispatch Return 3"
 	{
 		"en"	"Bob The Second returns with some money in hand."
+	}
+
+	"Waldch Assistance"
+	{
+		"en"	"Waldch's Assistance"
+	}
+	"Waldch Assistance Desc"
+	{
+		"en"	"Waldch joins you."
+	}
+	"Kahmlstein Guidance"
+	{
+		"en"	"Kahmlstein's Guidance"
+	}
+	"Kahmlstein Guidance Desc"
+	{
+		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
 	}
 }
