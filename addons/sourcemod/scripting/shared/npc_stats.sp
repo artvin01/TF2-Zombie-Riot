@@ -1332,6 +1332,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
+		if(f_VoidAfflictionStrength[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
+		}
 		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.50;
@@ -2277,12 +2281,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		DispatchKeyValue(item, "model", model);
 
-		if(model_size == 1.0)
+		if(model_size != 1.0)
 		{
-			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
-		}
-		else
-		{
+		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
 
@@ -3731,6 +3732,73 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 					startPosition[2] += 34;
 					GibAny = Place_Gib("models/gibs/antlion_gib_medium_1.mdl", startPosition, _, damageForce, _, _, _, _, _, 2);
 					f_GibHealingAmount[GibAny] *= GibAmount;
+				}
+				else
+				{
+					if(IsValidEntity(Main_Gib))
+					{
+						f_GibHealingAmount[Main_Gib] *= 3.0;
+					}
+				}
+			}	
+		}
+		case BLEEDTYPE_VOID:
+		{
+			npc.PlayGibSound();
+			if(npc.m_bIsGiant)
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+				startPosition[2] += 64;
+				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, 3);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
+				if(!Limit_Gibs)
+				{
+					startPosition[2] -= 15;
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, 3);
+					startPosition[2] += 44;
+					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+					{
+						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, 3);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+					else
+					{
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, 3);		
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+				}
+				else
+				{
+					if(IsValidEntity(Main_Gib))
+					{
+						f_GibHealingAmount[Main_Gib] *= 3.0;
+					}
+				}
+			}
+			else
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+				startPosition[2] += 42;
+				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, 3);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
+				if(!Limit_Gibs)
+				{
+					startPosition[2] -= 10;
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, 3);
+					f_GibHealingAmount[GibAny] *= GibAmount;
+					startPosition[2] += 34;
+					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+					{
+						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, 3);
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+					else
+					{
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, 3);
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
 				}
 				else
 				{
@@ -5545,33 +5613,24 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
+		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.004;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount /= 10;
+			HealingAmount *= 0.1;
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
-			HealingAmount /= 2;
-		}
-		if(HealingAmount < 1)
-		{
-			HealingAmount = 1;
+			HealingAmount *= 0.25;
 		}
 
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			}
-		}
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
+		
+		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.5, 0.0, HEAL_SELFHEAL);
 	}
 #endif
 #if defined RPG
@@ -6337,6 +6396,12 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 				int particle = ParticleEffectAt(pos, "flamethrower_rainbow_bubbles02", Random_time); //This is a permanent particle, gotta delete it manually...
 				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);				
+			}
+			if(BleedType == 3)
+			{
+				int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 200, 0, 200, 255);
 			}
 			else
 			{
@@ -7654,7 +7719,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	{
 		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i])  //The is a medic thing is really needed
 			{
 				if(ExtraValidityFunction != INVALID_FUNCTION)
 				{
@@ -7987,6 +8052,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	f_VoidAfflictionStrength[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -9052,6 +9118,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(VausMagicaShieldLeft(npc.index) > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
+	}
+	if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
+	{
+		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
 	}
 	/*
 	if(IgniteFor[npc.index] > 0)
