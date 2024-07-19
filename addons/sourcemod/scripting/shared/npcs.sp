@@ -1250,6 +1250,12 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
 					TE_SendToAll();
 				}
+				else if (npcBase.m_iBleedType == BLEEDTYPE_VOID)
+				{
+					//If you cant find any good blood effect, use this one and just recolour it.
+					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					TE_SendToAll();
+				}
 			}
 		}
 	}
@@ -1804,6 +1810,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
+		return true;
+	if(f_VoidAfflictionStrength[npc] > GameTime)
 		return true;
 	else if(f_LowTeslarDebuff[npc] > GameTime)
 		return true;

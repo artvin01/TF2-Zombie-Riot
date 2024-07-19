@@ -230,6 +230,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			return;
 		}
 		
@@ -246,6 +247,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 				TF2_RemoveWearable(client, entity);
 			}
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			
 			TF2Attrib_RemoveAll(client);
 			Attributes_Set(client, 68, -1.0);
@@ -322,6 +324,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 			}
 			
 			ViewChange_PlayerModel(client);
+			ViewChange_Update(client);
 			Store_ApplyAttribs(client);
 			Pets_PlayerResupply(client);
 			
@@ -358,6 +361,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		}
 		
 		ViewChange_PlayerModel(client);
+		ViewChange_Update(client);
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, 1);
 		
@@ -468,6 +472,9 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//
+	i_AmountDowned[client] = 0;
+	if(CurrentModifOn() == 2)
+		i_AmountDowned[client] = 1;
 
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);

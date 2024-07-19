@@ -482,6 +482,7 @@ float f_LowTeslarDebuff[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VoidAfflictionStrength[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
@@ -741,6 +742,13 @@ float Panic_Attack[MAXENTITIES]={0.0, ...};				//651
 int i_WandOwner[MAXENTITIES]; //				//785
 
 
+bool Viewchanges_PlayerModelsAnims[] =
+{
+	false,
+	true,
+	true,
+	false
+};
 
 float f_NpcImmuneToBleed[MAXENTITIES];
 bool b_NpcIsInvulnerable[MAXENTITIES];
@@ -922,11 +930,12 @@ enum
 	BLEEDTYPE_RUBBER = 3,
 	BLEEDTYPE_XENO = 4,
 	BLEEDTYPE_SKELETON = 5,
-	BLEEDTYPE_SEABORN = 6
+	BLEEDTYPE_SEABORN = 6,
+	BLEEDTYPE_VOID = 7
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
 /*
 	1 - sensal scythe
@@ -1679,6 +1688,7 @@ public void OnMapStart()
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	
 #if defined ZR
+	PrecacheSound("npc/scanner/cbot_discharge1.wav");
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
@@ -2693,7 +2703,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #endif	// ZR & RPG
 
 #if defined ZR
-public void SDKHook_TeamSpawn_SpawnPost(int entity)
+void SDKHook_TeamSpawn_SpawnPost(int entity)
+{
+	SDKHook_TeamSpawn_SpawnPostInternal(entity);
+}
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2710,7 +2724,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;
@@ -3126,19 +3140,14 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 		}
+		//not really a brush, but we'll treat it like one.
 		else if(!StrContains(classname, "func_door_rotating"))
 		{
-			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			npc.bCantCollidie = true;
-			npc.bCantCollidieAlly = true;
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "func_door"))
 		{
-			b_ThisEntityIgnored[entity] = true;
-			b_ThisEntityIgnored_NoTeam[entity] = true;
-			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			npc.bCantCollidie = true;
-			npc.bCantCollidieAlly = true;
+			b_is_a_brush[entity] = true;
 		}
 		else if(!StrContains(classname, "prop_physics"))
 		{

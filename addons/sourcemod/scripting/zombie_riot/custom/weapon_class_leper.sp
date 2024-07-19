@@ -276,6 +276,15 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			if(Viewchanges_NotAWearable(client, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	if (thirdperson[client])
 	{

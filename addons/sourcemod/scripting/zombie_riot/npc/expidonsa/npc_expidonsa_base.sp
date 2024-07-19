@@ -145,8 +145,9 @@ float f_Expidonsa_HealingOverheal[MAXENTITIES];
 bool b_Expidonsa_Selfheal[MAXENTITIES];
 Function func_Expidonsa_Heal_After[MAXENTITIES] = {INVALID_FUNCTION, ...};
 Function func_Expidonsa_Heal_Before[MAXENTITIES] = {INVALID_FUNCTION, ...};
+bool DontAllowAllyHeal[MAXENTITIES];
 stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
- float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION)
+ float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION, bool AnyHeal = false)
 {
 	b_Expidonsa_Selfheal[HealingNpc] = Selfheal;
 	i_Expidonsa_HealingCount[HealingNpc] = MaxAlliesHealed;
@@ -154,6 +155,7 @@ stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAllies
 	f_Expidonsa_HealingOverheal[HealingNpc] = Expidonsa_HealingOverheal;
 	func_Expidonsa_Heal_Before[HealingNpc] = Function_HealBefore;
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
+	DontAllowAllyHeal[HealingNpc] = AnyHeal;
 
 	b_NpcIsTeamkiller[HealingNpc] = true;
 	Explode_Logic_Custom(0.0,
@@ -196,7 +198,7 @@ static void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weap
 		return;
 	}
 	//cant heal enemies.
-	if(GetTeam(HealerNpc) != GetTeam(victim))
+	if(GetTeam(HealerNpc) != GetTeam(victim) && !DontAllowAllyHeal[HealerNpc])
 		return;
 
 	//team red, npc or 

@@ -207,7 +207,8 @@ enum
 	Type_Seaborn,
 	Type_Expidonsa,
 	Type_Interitus,
-	Type_BlueParadox
+	Type_BlueParadox,
+	Type_Void,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -1371,8 +1372,7 @@ public Action Timer_Dieing(Handle timer, int client)
 			dieingstate[client] -= 3;
 			f_DelayLookingAtHud[client] = GetGameTime() + 0.2;
 			PrintCenterText(client, "%t", "Reviving", dieingstate[client]);
-			
-
+	
 			if(dieingstate[client] <= 0)
 			{
 				if(dieingstate[client] != -5)
@@ -2098,6 +2098,7 @@ void ReviveAll(bool raidspawned = false)
 					}
 				}
 			}
+			CreateTimer(0.1, Timer_ChangePersonModel, GetClientUserId(client));
 		}
 	}
 	

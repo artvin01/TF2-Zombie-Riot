@@ -455,6 +455,14 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		{
 			damage += basedamage * 0.1;
 		}
+		if(f_VoidAfflictionStrength[attacker] > GameTime)
+			damage += basedamage * 0.2;
+	}
+	else
+	{
+		//silence weakens them.
+		if(f_VoidAfflictionStrength[attacker] > GameTime)
+			damage += basedamage * 0.1;
 	}
 	
 	if(f_PernellBuff[attacker] > GameTime)
@@ -1497,6 +1505,17 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		{
 			DamageRes *= 0.90;
 		}
+		if(f_VoidAfflictionStrength[victim] > GameTime)
+		{
+			DamageRes *= 0.85;
+		}
+	}
+	else
+	{
+		if(f_VoidAfflictionStrength[victim] > GameTime)
+		{
+			DamageRes *= 0.9;
+		}
 	}
 			
 #if defined RPG
@@ -1778,6 +1797,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 
 	//BUFFS GO HERE.
+	if(f_VoidAfflictionStrength[victim] > GameTime)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "⌵%s", Debuff_Adder_right);
+	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⌃%s", Debuff_Adder_right);
