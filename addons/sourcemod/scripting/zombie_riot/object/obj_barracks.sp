@@ -297,7 +297,7 @@ methodmap ObjectBarracks < ObjectGeneric
 					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
 				}
 			}
-			else
+			else if(CivType[client] != Combine)
 			{
 				SetEntityModel(npc.index, SUMMONER_MODEL_2);
 				if(IsValidEntity(npc.m_iWearable2))
