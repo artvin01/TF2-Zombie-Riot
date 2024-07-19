@@ -1362,11 +1362,11 @@
 	}
 	"Astriana Desc"
 	{
-		"en"	"Aya"
+		"en"	"Stronger variant"
 	}
 	"Europis Desc"
 	{
-		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nAdditionally, when it duplicates itself, any Ruina Npc nearby will have their speed heavily buffed\nIt also weilds a pizza cutter as its magic weapon!"
+		"en"	"A stronger Europa, can summon Laz and Magia alonside its drones randomly\nIt also weilds a pizza cutter as its magic weapon!"
 	}
 	"Draedon Desc"
 	{
@@ -1374,15 +1374,15 @@
 	}
 	"Aetheria Desc"
 	{
-		"en"	"A stronger Aether, its battery allows it to fire a powerfull laser.\nCaution is advised"
+		"en"	"Now wields a bow."
 	}
 	"Maliana Desc"
 	{
-		"en"	"Aya"
+		"en"	"While it is standing still it creates an aura that makes nearby Ruina npc's batteries charge faster\nAdvisable to take these out first..."
 	}
 	"Ruianus Desc"
 	{
-		"en"	"Alongside what the previou one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
+		"en"	"Stronger Variant"
 	}
 	"Lazius Desc"
 	{
@@ -1390,7 +1390,7 @@
 	}
 	"Dronian Desc"
 	{
-		"en"	"Aya"
+		"en"	"He will shank you with his dagger."
 	}
 	"Archosauria Desc"
 	{
@@ -1598,47 +1598,51 @@
 	}
 	"Magianas Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger Variant"
 	}
 	"Loonaris Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger Variant"
 	}
 	"Heliaris Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger Variant"
 	}
 	"Astrianis Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger Variant"
 	}
 	"Eurainis Desc"
 	{
-		"en"	"Aya?"
+		"en"	"Stronger variant, alongside that it creates a powerfull buff field after duplicating itself"
 	}
 	"Draeonis Desc"
 	{
-		"en"	"Aya?"
+		"en"	"Stronger variant"
 	}
 	"Aetherium Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger variant, its battery allows it to fire a powerfull laser.\nCaution is advised"
 	}
 	"Malianium Desc"
 	{
-		"en"	"Aya?"
+		"en"	"Stronger variant"
 	}
 	"Rulius Desc"
 	{
-		"en"	"Aya?"
+		"en"	"Alongside what the previou one was capable of but stronger\nThis variant can every 20 seconds fire a Fantasmal wave, its best to avoid it\nIts possible to jump across the wave if you time it right!"
 	}
 	"Lazines Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger variant"
 	}
 	"Dronis Desc"
 	{
-		"en"	"Aya?"
+		"en"	"A stronger variant"
+	}
+	"Ruliana Desc"
+	{
+		"en"	"Blitzkrieg was based off of her, so be careful~"
 	}
 	"Chaos Intrusion"
 	{

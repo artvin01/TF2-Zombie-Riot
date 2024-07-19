@@ -110,6 +110,8 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 
+int i_Ruina_Ovelord_Ref;
+
 int i_laz_entity[MAXENTITIES];
 float fl_multi_attack_delay[MAXENTITIES];
 float fl_ruina_throttle[MAXENTITIES];
@@ -204,6 +206,8 @@ public void Ruina_Ai_Core_Mapstart()
 	i_magia_anchors_active=0;
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
+
+	i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
 	
 	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
@@ -266,6 +270,20 @@ public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int
 	i_master_attracts[client] = type;
 
 	b_ruina_allow_teleport[client]=false;
+}
+void Ruina_Set_Overlord(int client, bool state)
+{
+	if(state)
+	{
+		i_Ruina_Ovelord_Ref = EntIndexToEntRef(client);
+	}
+	else
+	{
+		if(EntRefToEntIndex(i_Ruina_Ovelord_Ref)==client)
+		{
+			i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+		}
+	}
 }
 
 void Ruina_Reset_Starts_Npc(int client)
@@ -458,6 +476,9 @@ public int Ruina_Get_Target(int iNPC, float GameTime)
 static int i_previus_priority[MAXENTITIES];
 static int GetRandomMaster(int client)
 {
+	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
+
 	i_previus_priority[client] = -1;
 	int valid = -1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
@@ -493,6 +514,9 @@ static int GetClosestHealer(int client)
 }
 static int GetClosestAnchor(int client)
 {
+	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
+
 	int valid = -1;
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
@@ -542,8 +566,12 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	//npc's during "stage 3" get energy from taking dmg. going into its whole "sacrifice" theme.
 	else if(wave <= 45)	
 	{
+		float Health_Post = (Health-damage);
+		float Difference = Health_Post/Max_Health;
+		float Give = 1000.0*(Ratio-Difference);
 		//turn damage taken into energy
-		Ruina_Add_Battery(npc.index, damage);	
+		Ruina_Add_Battery(npc.index, Give);	
+		CPrintToChatAll("Gave %f battery",Give );
 	}
 	else if(wave <=60)
 	{
@@ -881,8 +909,13 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		return;
 	}
 }
-public void Ruina_Basic_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTime)	//this is here if I ever want to make "basic" npc's do anything special
+void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//this is here if I ever want to make "basic" npc's do anything special
 {
+	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+	{
+		Ruina_Ai_Override_Core(iNPC, PrimaryThreatIndex, GameTime);
+		return;
+	}
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -1106,14 +1139,15 @@ void Ruina_Projectile_Touch(int entity, int target)
 {
 	Function func = Func_Ruina_Proj_Touch[entity];
 
-	if(func==INVALID_FUNCTION)
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
 	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-			
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+
+	if(func==INVALID_FUNCTION)
+	{	
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 

@@ -364,6 +364,7 @@ void NPC_ConfigSetup()
 	Rulius_OnMapStart_NPC();
 	Lazines_OnMapStart_NPC();
 	Dronis_OnMapStart_NPC();
+	Ruliana_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -997,6 +998,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_rulius.sp"
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_lazines.sp"
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_dronis.sp"
+#include "zombie_riot/npc/ruina/stage3/npc_ruina_ruliana.sp"
 
 
 //Special Ruina
