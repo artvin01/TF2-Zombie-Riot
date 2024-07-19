@@ -4419,7 +4419,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	
 	if ( height < 35 )
 	{
-		additionalHeight = 50.0;
+		additionalHeight = 25.0;
 	}
 	
 	height += additionalHeight;

@@ -434,6 +434,7 @@ void NPC_ConfigSetup()
 	VulpoOnMapStart();
 
 //VoidCreatures and affected
+//1-15
 	VoidEaling_OnMapStart_NPC();
 	VoidFramingVoider_OnMapStart_NPC();
 	GrowingExat_OnMapStart_NPC();
@@ -442,11 +443,30 @@ void NPC_ConfigSetup()
 	VoidInfestor_OnMapStart_NPC();
 	VoidHardCrust_OnMapStart_NPC();
 	VoidCarrier_OnMapStart_NPC();
-
 	//boss
 	VoidIxufan_OnMapStart_NPC();
 
-	//void event
+//16-30
+	VoidEnFramedVoider_OnMapStart_NPC();
+	VoidBloodPollutor_OnMapStart_NPC();
+	VoidExpidonsanFortifier_OnMapStart_NPC();
+	VoidParticle_OnMapStart_NPC();
+	VoidHostingBlob_OnMapStart_NPC();
+	VoidBlobbingMonster_OnMapStart_NPC();
+	VoudSprayer_OnMapStart_NPC();
+
+	//boss
+	VoidEncasulator_OnMapStart_NPC();
+
+//31-45
+	VoudExpidonsanCleaner_OnMapStart_NPC();
+	VoidExpidonsanContainer_OnMapStart_NPC();
+	VoidSacraficer_OnMapStart_NPC();
+	VoidingBedrock_OnMapStart_NPC();
+	VoidHeavyPerisher_OnMapStart_NPC();
+
+	//void events
+	VoidedDiversionistico_OnMapStart_NPC();
 	VoidPortal_OnMapStart_NPC();
 
 	//Alt Barracks
@@ -1261,6 +1281,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 #include "zombie_riot/npc/void/npc_spawn_void_portal.sp"
 #include "zombie_riot/npc/void/npc_void_base.sp"
+#include "zombie_riot/npc/void/npc_voided_diversionistico.sp"
+//1-15
 #include "zombie_riot/npc/void/early/npc_ealing.sp"
 #include "zombie_riot/npc/void/early/npc_framing_voider.sp"
 #include "zombie_riot/npc/void/early/npc_growing_exat.sp"
@@ -1270,6 +1292,22 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/early/npc_void_crust.sp"
 #include "zombie_riot/npc/void/early/npc_void_carrier.sp"
 #include "zombie_riot/npc/void/early/npc_void_ixufan.sp"
+
+#include "zombie_riot/npc/void/earlymid/npc_enframed_voider.sp"
+#include "zombie_riot/npc/void/earlymid/npc_blood_pollutor.sp"
+#include "zombie_riot/npc/void/earlymid/npc_voided_expidonsan_fortifier.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_particle.sp"
+#include "zombie_riot/npc/void/earlymid/npc_hosting_blob.sp"
+#include "zombie_riot/npc/void/earlymid/npc_blobbing_monster.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_sprayer.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_encasulator.sp"
+
+
+#include "zombie_riot/npc/void/midlate/npc_void_expidonsan_container.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_expidonsan_cleaner.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_sacraficer.sp"
+#include "zombie_riot/npc/void/midlate/npc_voiding_bedrock.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_heavy_perisher.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
