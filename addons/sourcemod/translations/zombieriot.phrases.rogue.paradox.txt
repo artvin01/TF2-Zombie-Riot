@@ -464,7 +464,7 @@
 	}
 	"Missing Mountains Desc 3"
 	{
-		"en"	"{yellow}Gain 7 Australium Ingots"
+		"en"	"{green}Gain 7 Australium Ingots"
 	}
 	"Missing Mountains Lore 3a"
 	{
@@ -547,8 +547,80 @@
 	{
 		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
 	}
-	"Chaos Inflicted"
+	"Prophecy"
 	{
-		"en"	""
+		"en"	"Prophecy"
+	}
+	"Prophecy Lore 1"
+	{
+		"en"	"Chaos looms over, but you're not alone. Somebody approaches."
+	}
+	"Prophecy Option 1a"
+	{
+		"en"	"Better run"
+	}
+	"Prophecy Desc 1a"
+	{
+		"en"	"{green}Lose 15 Chaos Infliction"
+	}
+	"Prophecy Lore 1a"
+	{
+		"en"	"Don't take the chance, it can overwhelm."
+	}
+	"Prophecy Option 1b"
+	{
+		"en"	"It's Waldch"
+	}
+	"Prophecy Desc 1b"
+	{
+		"en"	"{yellow}Waldch will acompany you {blue}and the ending is changed."
+	}
+	"Prophecy Lore 1b"
+	{
+		"en"	"You seek what he seeks now."
+	}
+	"Prophecy Option 2a"
+	{
+		"en"	"Better ignore"
+	}
+	"Prophecy Desc 2a"
+	{
+		"en"	"{green}Lose 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2a"
+	{
+		"en"	"Ignore the thoughts given, it's insanity."
+	}
+	"Prophecy Option 2b"
+	{
+		"en"	"Knowledge of Weapons"
+	}
+	"Prophecy Desc 2b"
+	{
+		"en"	"{green}Recover 10 weapons {red}but gain 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2b"
+	{
+		"en"	"You know what to do. Retrieve what you need. Spread your damage."
+	}
+	"Prophecy Option 2c"
+	{
+		"en"	"Knowledge of Chaos"
+	}
+	"Prophecy Desc 2c"
+	{
+		"en"	"{green}Gain 3000 credits {red}but gain 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2c"
+	{
+		"en"	"Know your enemy. If it's even your enemy anymore."
+	}
+	"Prophecy Option 2d"
+	{
+		"en"	"It's Kahmlstein"
+	}
+	"Prophecy Desc 2d"
+	{
+		"en"	"{blue}Something happens..."
 	}
 }
