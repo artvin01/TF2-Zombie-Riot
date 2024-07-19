@@ -271,6 +271,8 @@ methodmap Ruliana < CClotBody
 		fl_multi_attack_delay[npc.index] = 0.0;
 
 		npc.Anger = false;
+
+		npc.m_flNextRangedBarrage_Spam = 0.0;	// GetGameTime(npc.index) + GetRandomFloat(7.5, 15.0);
 		
 		return npc;
 	}
@@ -310,8 +312,13 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 2.0);
 
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
+	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+	int PrimaryThreatIndex = npc.m_iTarget;
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
@@ -320,9 +327,9 @@ static void ClotThink(int iNPC)
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
 
-		npc.Anger = true;
+		npc.m_iState = 0;
+		npc.m_flNextMeleeAttack	= 0.0;
 
-		npc.m_flNextMeleeAttack = 0.0;		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
@@ -334,70 +341,6 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
-		if(npc.Anger && fl_ruina_battery_timeout[npc.index] < GameTime)
-		{
-			int Enemy_I_See;
-				
-			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-			{
-				if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*20)
-				{
-					fl_ruina_battery_timeout[npc.index] = GameTime + 10.0;
-
-					npc.Anger = false;
-
-					fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
-
-					npc.FaceTowards(vecTarget, 100000.0);
-					npc.AddGesture("ACT_MP_THROW");
-
-					Ruina_Projectiles Projectile;
-
-					Projectile.iNPC = npc.index;
-					Projectile.Start_Loc = Npc_Vec;
-					float Ang[3];
-					MakeVectorFromPoints(Npc_Vec, vecTarget, Ang);
-					GetVectorAngles(Ang, Ang);
-					Ang[0] = -45.0;
-					Projectile.Angles = Ang;
-					Projectile.speed = 750.0;
-					Projectile.radius = 300.0;
-					Projectile.damage = 500.0;
-					Projectile.bonus_dmg = 2.5;
-					Projectile.Time = 10.0;
-
-					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);	
-
-					if(IsValidEntity(Proj))
-					{
-						Projectile.Apply_Particle("raygun_projectile_blue");
-						Projectile.Size = 2.0;
-						int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
-						if(IsValidEntity(ModelApply))
-						{
-							float angles[3];
-							GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
-							angles[1]+=90.0;
-							TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
-							SetVariantInt(RUINA_ICBM);
-							AcceptEntityInput(ModelApply, "SetBodyGroup");
-						}
-
-						float 	Homing_Power = 15.0,
-								Homing_Lockon = 90.0;
-
-						Initiate_HomingProjectile(Proj,
-						npc.index,
-						Homing_Lockon,			// float lockonAngleMax,
-						Homing_Power,			// float homingaSec,
-						true,					// bool LockOnlyOnce,
-						true,					// bool changeAngles,
-						Ang);
-					}
-				}
-			}
-		}		
 		if(flDistanceToTarget < 100000)
 		{
 			int Enemy_I_See;
@@ -439,7 +382,12 @@ static void ClotThink(int iNPC)
 		}
 		else
 			npc.m_flSpeed = fl_npc_basespeed;
-			
+		
+		if(npc.m_flNextRangedBarrage_Spam < GameTime)
+		{
+			npc.m_flNextRangedBarrage_Spam = GameTime + 10.0;	//retry in 10 seconds if we failed
+			Ruliana_Barrage_Invoke(npc);
+		}
 
 		//Target close enough to hit
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
@@ -453,17 +401,18 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						if(npc.m_iState >= 10)
+						int Amt = (npc.Anger ? 15 : 10);
+						if(npc.m_iState >= Amt)
 						{
 							npc.m_iState = 0;
-							npc.m_flNextMeleeAttack = GameTime + 5.0;
+							npc.m_flNextMeleeAttack = GameTime + (npc.Anger ? 5.0 : 7.5);
 						}
 						else
 						{
 							npc.m_iState++;
 						}
 						
-						fl_multi_attack_delay[npc.index] = GameTime + 0.1;
+						fl_multi_attack_delay[npc.index] = GameTime + (npc.Anger ? 0.1 : 0.25);
 
 						fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
@@ -482,7 +431,7 @@ static void ClotThink(int iNPC)
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
 			
-						int Proj = npc.FireParticleRocket(target_vec, 120.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						int Proj = npc.FireParticleRocket(target_vec, (npc.Anger ? 125.0 : 50.0) , projectile_speed , (npc.Anger ? 150.0 : 75.0) , "raygun_projectile_blue", _, _, true, flPos);
 
 						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
 						{
@@ -519,15 +468,191 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
+#define RULIANA_MAX_BARRAGE_SIZE 15
+static void Ruliana_Barrage_Invoke(Ruliana npc)
+{
+	float GameTime = GetGameTime(npc.index);
+
+	int valid_targets[RULIANA_MAX_BARRAGE_SIZE];
+	int targets_aquired = 0;
+
+	int minimum_targets = 4;
+
+	int Team = GetTeam(npc.index);
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
+			break;
+		
+		if(view_as<CClotBody>(client).m_bThisEntityIgnored)
+			continue;
+		
+		if(!IsClientInGame(client))
+		 	continue;	
+
+		if(!IsEntityAlive(client))
+			continue;
+		
+		if(GetTeam(client) == Team)
+			continue;
+
+		if(IsLineOfSight(npc, client))
+		{
+			valid_targets[targets_aquired] = client;
+			targets_aquired++;
+			int color[4];
+			Ruina_Color(color);
+			int laser;
+			laser = ConnectWithBeam(npc.index, client, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
+			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+	for(int a; a < i_MaxcountNpcTotal; a++)
+	{
+		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
+			break;
+
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
+		{
+			if(GetTeam(entity) == Team)
+				continue;
+
+			if(IsLineOfSight(npc, entity))
+			{
+				valid_targets[targets_aquired] = entity;
+				targets_aquired++;
+				int color[4];
+				Ruina_Color(color);
+				int laser;
+				laser = ConnectWithBeam(npc.index, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
+				CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			}
+		}
+	}
+
+	for(int a; a < i_MaxcountBuilding; a++)
+	{
+		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
+			break;
+
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		if(entity != INVALID_ENT_REFERENCE)
+		{
+			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+			{
+				if(IsLineOfSight(npc, entity))
+				{
+					valid_targets[targets_aquired] = entity;
+					targets_aquired++;
+					int color[4];
+					Ruina_Color(color);
+					int laser;
+					laser = ConnectWithBeam(npc.index, entity, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
+					CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+				}
+			}
+		}
+	}
+
+	if(targets_aquired < minimum_targets)	//we didn't get enough targets, abort abort abort
+		return;
+
+	npc.m_flNextRangedBarrage_Spam = GameTime + 30.0*(targets_aquired/RULIANA_MAX_BARRAGE_SIZE);	//we got proper targets, set the cooldown.
+
+	float Npc_Vec[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Npc_Vec);
+
+	for(int i=0 ; i < targets_aquired ; i++)
+	{
+		int Target = valid_targets[i];
+
+		float vecTarget[3];
+		GetEntPropVector(Target, Prop_Data, "m_vecAbsOrigin", vecTarget);
+
+		Ruina_Projectiles Projectile;
+
+		Projectile.iNPC = npc.index;
+		Projectile.Start_Loc = Npc_Vec;
+		float Ang[3];
+		MakeVectorFromPoints(Npc_Vec, vecTarget, Ang);
+		GetVectorAngles(Ang, Ang);
+		Projectile.Angles = Ang;
+		Projectile.speed = 600.0;
+		Projectile.radius = 300.0;
+		Projectile.damage = 450.0;
+		Projectile.bonus_dmg = 2.5;
+		Projectile.Time = 10.0;
+
+		int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);	
+
+		if(IsValidEntity(Proj))
+		{
+			Projectile.Apply_Particle("raygun_projectile_blue");
+			Projectile.Size = 2.0;
+			int ModelApply = Projectile.Apply_Model(RUINA_CUSTOM_MODELS_1);
+			if(IsValidEntity(ModelApply))
+			{
+				float angles[3];
+				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+				angles[1]+=90.0;
+				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+				SetVariantInt(RUINA_ICBM);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
+			}
+
+			float 	Homing_Power = 15.0,
+					Homing_Lockon = 90.0;
+
+			Initiate_HomingProjectile(Proj,
+			npc.index,
+			Homing_Lockon,			// float lockonAngleMax,
+			Homing_Power,			// float homingaSec,
+			true,					// bool LockOnlyOnce,
+			true,					// bool changeAngles,
+			Ang,
+			Target);
+		}
+	}
+}
+
+static bool IsLineOfSight(Ruliana npc, int Target)
+{
+	// need position of either the inflictor or the attacker
+	float Vic_Pos[3];
+	GetEntPropVector(Target, Prop_Data, "m_vecOrigin", Vic_Pos);
+	float npc_pos[3];
+	float angle[3];
+	float eyeAngles[3];
+	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", npc_pos);
+	
+	GetVectorAnglesTwoPoints(npc_pos, Vic_Pos, angle);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", angle);
+
+
+	// need the yaw offset from the player's POV, and set it up to be between (-180.0..180.0]
+	float yawOffset = fixAngle(angle[1]) - fixAngle(eyeAngles[1]);
+	if (yawOffset <= -180.0)
+		yawOffset += 360.0;
+	else if (yawOffset > 180.0)
+		yawOffset -= 360.0;
+
+	float MaxYaw = 60.0;
+	float MinYaw = -60.0;
+		
+	// now it's a simple check
+	if ((yawOffset >= MinYaw && yawOffset <= MaxYaw))	//first check position before doing a trace checking line of sight.
+	{
+		return Can_I_See_Enemy_Only(npc.index, Target);
+	}
+	return false;
+}
 static void Func_On_Proj_Touch(int projectile, int other)
 {
 	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(owner))
-	{
-		owner = 0;
-	}
 
-	Ruina_Add_Mana_Sickness(owner, other, 0.0, 800);	//very heavy FLAT amount of mana sickness
+	Ruina_Add_Mana_Sickness(owner, other, 0.0, 100);	//very heavy FLAT amount of mana sickness
 		
 	float ProjectileLoc[3];
 	GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
