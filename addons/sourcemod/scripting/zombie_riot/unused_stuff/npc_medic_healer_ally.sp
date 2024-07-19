@@ -765,7 +765,7 @@ stock int GetClosestAlly(int entity)
 		int i = MaxClients + 1;
 		while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			if (GetTeam(entity)==GetTeam(i) && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth"))
+			if (GetTeam(entity)==GetTeam(i) && !Is_a_Medic[i] && GetEntProp(i, Prop_Data, "m_iHealth") < GetEntProp(i, Prop_Data, "m_iMaxHealth") && !b_NpcIsInvulnerable[i])
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 

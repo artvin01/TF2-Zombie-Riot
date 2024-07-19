@@ -482,6 +482,7 @@ float f_LowTeslarDebuff[MAXENTITIES];
 float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
 float f_HighTeslarDebuff[MAXENTITIES];
+float f_VoidAfflictionStrength[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
@@ -540,6 +541,7 @@ int IgniteRef[MAXENTITIES];
 float BurnDamage[MAXENTITIES];
 int i_NervousImpairmentArrowAmount[MAXENTITIES];
 int i_ChaosArrowAmount[MAXENTITIES];
+int i_VoidArrowAmount[MAXENTITIES];
 float f_KnockbackPullDuration[MAXENTITIES];
 float f_DoNotUnstuckDuration[MAXENTITIES];
 float f_UnstuckTimerCheck[MAXENTITIES][2];
@@ -929,11 +931,12 @@ enum
 	BLEEDTYPE_RUBBER = 3,
 	BLEEDTYPE_XENO = 4,
 	BLEEDTYPE_SKELETON = 5,
-	BLEEDTYPE_SEABORN = 6
+	BLEEDTYPE_SEABORN = 6,
+	BLEEDTYPE_VOID = 7
 }
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
-#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_219.mdl"
+#define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
 #define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
 /*
 	1 - sensal scythe
@@ -1686,6 +1689,7 @@ public void OnMapStart()
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	
 #if defined ZR
+	PrecacheSound("npc/scanner/cbot_discharge1.wav");
 	Zero(i_CustomWeaponEquipLogic);
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
@@ -2700,7 +2704,11 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 #endif	// ZR & RPG
 
 #if defined ZR
-public void SDKHook_TeamSpawn_SpawnPost(int entity)
+void SDKHook_TeamSpawn_SpawnPost(int entity)
+{
+	SDKHook_TeamSpawn_SpawnPostInternal(entity);
+}
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2717,7 +2725,7 @@ public void SDKHook_TeamSpawn_SpawnPost(int entity)
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;
@@ -2898,6 +2906,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_RaidGrantExtra[entity] = 0;
 		i_IsABuilding[entity] = false;
 		i_NervousImpairmentArrowAmount[entity] = 0;
+		i_VoidArrowAmount[entity] = 0;
 		i_ChaosArrowAmount[entity] = 0;
 		i_WeaponArchetype[entity] = 0;
 		i_WeaponForceClass[entity] = 0;

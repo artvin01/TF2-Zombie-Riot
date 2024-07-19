@@ -83,6 +83,11 @@ void FallenWarriorGetRandomSeedEachWave()
 		GetRandomSeedEachWave += 1;
 }
 
+int GetRandomSeedFallenWarrior()
+{
+	return GetRandomSeedEachWave;
+}
+
 
 void FallenWarrior_OnMapStart()
 {

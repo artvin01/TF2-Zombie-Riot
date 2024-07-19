@@ -14,6 +14,8 @@ enum struct SpawnerData
 	float Cooldown;
 	float Points;
 	bool Enabled;
+	int MaxSpawnsAllowed;
+	int CurrentSpawnsPerformed;
 }
 
 static ArrayList SpawnerList;
@@ -202,14 +204,20 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		spawn.Cooldown = gameTime + cooldownOverride;
 	}
-
+	//This spawns always atleast 1 thing.
 	Rogue_Paradox_SpawnCooldown(spawn.Cooldown);
 	
+	spawn.CurrentSpawnsPerformed++;
 	SpawnerList.SetArray(bestIndex, spawn);
+	if(spawn.CurrentSpawnsPerformed >= spawn.MaxSpawnsAllowed)
+	{
+		Spawns_RemoveFromArray(spawn.EntRef);
+		RemoveEntity(spawn.EntRef);
+	}
 	return true;
 }
 
-void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false)
+void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000)
 {
 	if(!SpawnerList)
 		SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -221,6 +229,9 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.EntRef = ref;
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
+		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
+		spawn.CurrentSpawnsPerformed = 0;
+
 		GetEntPropString(ref, Prop_Data, "m_iName", spawn.Name, sizeof(spawn.Name));
 
 		SpawnerList.PushArray(spawn);
@@ -286,7 +297,7 @@ void Spawners_Timer()
 					//max distance is 10,000 anymore and wtf u doin
 					if( distance < 100000000.0)
 					{
-						//For Zr_lila_panic.
+						//For Zr_lila_panic, this might be outdated code, look into it.
 						if(StrEqual(spawn.Name, "underground"))
 						{
 							if(!b_PlayerIsInAnotherPart[client])

@@ -2000,6 +2000,7 @@ void WaveEndLogicExtra()
 {
 	Building_WaveEnd();
 	SeaFounder_ClearnNethersea();
+	VoidArea_ClearnNethersea();
 	M3_AbilitiesWaveEnd();
 	Specter_AbilitiesWaveEnd();	
 	Rapier_CashWaveEnd();
