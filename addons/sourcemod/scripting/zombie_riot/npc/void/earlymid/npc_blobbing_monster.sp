@@ -2,52 +2,35 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/zombie/zombie_die1.wav",
-	"npc/zombie/zombie_die2.wav",
-	"npc/zombie/zombie_die3.wav",
+	"npc/zombie_poison/pz_die1.wav",
+	"npc/zombie_poison/pz_die2.wav",
 };
 
 static const char g_HurtSounds[][] = {
-	"npc/zombie/zombie_pain1.wav",
-	"npc/zombie/zombie_pain2.wav",
-	"npc/zombie/zombie_pain3.wav",
-	"npc/zombie/zombie_pain4.wav",
-	"npc/zombie/zombie_pain5.wav",
-	"npc/zombie/zombie_pain6.wav",
+	"npc/zombie_poison/pz_pain1.wav",
+	"npc/zombie_poison/pz_pain2.wav",
+	"npc/zombie_poison/pz_pain3.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"npc/zombie/zombie_voice_idle1.wav",
-	"npc/zombie/zombie_voice_idle2.wav",
-	"npc/zombie/zombie_voice_idle3.wav",
-	"npc/zombie/zombie_voice_idle4.wav",
-	"npc/zombie/zombie_voice_idle5.wav",
-	"npc/zombie/zombie_voice_idle6.wav",
-	"npc/zombie/zombie_voice_idle7.wav",
-	"npc/zombie/zombie_voice_idle8.wav",
-	"npc/zombie/zombie_voice_idle9.wav",
-	"npc/zombie/zombie_voice_idle10.wav",
-	"npc/zombie/zombie_voice_idle11.wav",
-	"npc/zombie/zombie_voice_idle12.wav",
-	"npc/zombie/zombie_voice_idle13.wav",
-	"npc/zombie/zombie_voice_idle14.wav",
+	"npc/zombie_poison/pz_idle2.wav",
+	"npc/zombie_poison/pz_idle3.wav",
+	"npc/zombie_poison/pz_idle4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/pickaxe_swing1.wav",
-	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo01.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo02.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo03.wav",
 };
 
-void GrowingExat_OnMapStart_NPC()
+void VoidBlobbingMonster_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -56,8 +39,8 @@ void GrowingExat_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Growing Exat");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_growing_exat");
+	strcopy(data.Name, sizeof(data.Name), "Blobbing Monster");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blobbing_monster");
 	strcopy(data.Icon, sizeof(data.Icon), "militia");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -69,9 +52,9 @@ void GrowingExat_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return GrowingExat(client, vecPos, vecAng, ally);
+	return VoidBlobbingMonster(client, vecPos, vecAng, ally);
 }
-methodmap GrowingExat < CClotBody
+methodmap VoidBlobbingMonster < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -110,9 +93,9 @@ methodmap GrowingExat < CClotBody
 	}
 	
 	
-	public GrowingExat(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidBlobbingMonster(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "3000", ally, false, true));
+		VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "10000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -128,9 +111,9 @@ methodmap GrowingExat < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(GrowingExat_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(GrowingExat_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(GrowingExat_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VoidBlobbingMonster_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VoidBlobbingMonster_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VoidBlobbingMonster_ClotThink);
 		
 		
 		//IDLE
@@ -144,10 +127,10 @@ methodmap GrowingExat < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/scout/hw2013_boston_bandy_mask/hw2013_boston_bandy_mask.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/heavy/yeti_arms.mdl");
 		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_sd_cleaver/c_sd_cleaver.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/scout/scout_zombie.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/cadavers_cranium.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/heavy/heavy_zombie.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
@@ -168,9 +151,9 @@ methodmap GrowingExat < CClotBody
 	}
 }
 
-public void GrowingExat_ClotThink(int iNPC)
+public void VoidBlobbingMonster_ClotThink(int iNPC)
 {
-	GrowingExat npc = view_as<GrowingExat>(iNPC);
+	VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -213,7 +196,7 @@ public void GrowingExat_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		GrowingExatSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VoidBlobbingMonsterSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -223,9 +206,9 @@ public void GrowingExat_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action GrowingExat_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VoidBlobbingMonster_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	GrowingExat npc = view_as<GrowingExat>(victim);
+	VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -247,9 +230,9 @@ public Action GrowingExat_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void GrowingExat_NPCDeath(int entity)
+public void VoidBlobbingMonster_NPCDeath(int entity)
 {
-	GrowingExat npc = view_as<GrowingExat>(entity);
+	VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -263,7 +246,7 @@ public void GrowingExat_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void GrowingExatSelfDefense(GrowingExat npc, float gameTime, int target, float distance)
+void VoidBlobbingMonsterSelfDefense(VoidBlobbingMonster npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -284,14 +267,15 @@ void GrowingExatSelfDefense(GrowingExat npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 75.0;
 					float ModelSize = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 					damageDealt *= ModelSize;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.0;
+						damageDealt *= 7.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
+					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.75), true, false);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 

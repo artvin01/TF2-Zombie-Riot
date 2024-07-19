@@ -303,15 +303,29 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+			CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
+			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
-				CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
-				if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+				NervousTouching[entity] = NervousTouching[0];
+			//	NervousLastTouch[entity] = NULL_AREA;
+				if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
 				{
 					VoidWave_ApplyBuff(entity, 1.0);
-					NervousTouching[entity] = NervousTouching[0];
-					NervousLastTouch[entity] = NULL_AREA;
 				}
+			}
+		}
+	}
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+		{
+			GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+
+			// Find entities touching infected tiles
+			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
+			if(nav != NULL_AREA)
+			{
+				NervousTouching[client] = NervousTouching[0];
 			}
 		}
 	}
