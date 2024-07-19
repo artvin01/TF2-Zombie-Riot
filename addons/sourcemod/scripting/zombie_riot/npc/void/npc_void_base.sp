@@ -327,7 +327,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 	if(ref != -1)
 	{
 		SetEntProp(ref, Prop_Data, "m_iTeamNum", 3);
-		SetEntPropVector(ref, Prop_Data, "m_vecAbsOrigin", SpawnPos);
+		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
 	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax);
@@ -363,9 +363,9 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 	}
 	int ParticleRef = pack.ReadCell();
 	int RandomSeed = pack.ReadCell();
+	int WaveDuration = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedFallenWarrior())
 	{
-		int WaveDuration = pack.ReadCell();
 		WaveDuration--;
 		if(WaveDuration <= -1)
 		{
@@ -381,7 +381,6 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 		pack.Position--;
 		//Set The current Random seed
 		pack.WriteCell(GetRandomSeedFallenWarrior(), false);
-		pack.Position++;
 	}
 	bool SpreadVoid = pack.ReadCell();
 	if(SpreadVoid)

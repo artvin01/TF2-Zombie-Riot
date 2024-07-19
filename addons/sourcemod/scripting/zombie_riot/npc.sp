@@ -446,6 +446,9 @@ void NPC_ConfigSetup()
 	//boss
 	VoidIxufan_OnMapStart_NPC();
 
+	//void event
+	VoidPortal_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1256,6 +1259,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
 
+#include "zombie_riot/npc/void/npc_spawn_void_portal.sp"
 #include "zombie_riot/npc/void/npc_void_base.sp"
 #include "zombie_riot/npc/void/early/npc_ealing.sp"
 #include "zombie_riot/npc/void/early/npc_framing_voider.sp"
