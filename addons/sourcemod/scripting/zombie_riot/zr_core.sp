@@ -207,7 +207,8 @@ enum
 	Type_Seaborn,
 	Type_Expidonsa,
 	Type_Interitus,
-	Type_BlueParadox
+	Type_BlueParadox,
+	Type_Void,
 }
 
 //int Bob_To_Player[MAXENTITIES];

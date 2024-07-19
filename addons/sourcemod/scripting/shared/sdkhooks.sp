@@ -1282,6 +1282,12 @@ public void OnPostThink(int client)
 					green = 255;
 					blue = 255;
 				}
+				case 3:
+				{
+					red = 200;
+					green = 0;
+					blue = 200;
+				}
 			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)

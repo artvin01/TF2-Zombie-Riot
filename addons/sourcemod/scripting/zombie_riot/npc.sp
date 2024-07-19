@@ -445,6 +445,22 @@ void NPC_ConfigSetup()
 	UrsusOnMapStart();
 	VulpoOnMapStart();
 
+//VoidCreatures and affected
+	VoidEaling_OnMapStart_NPC();
+	VoidFramingVoider_OnMapStart_NPC();
+	GrowingExat_OnMapStart_NPC();
+	VoidMutatingBlob_OnMapStart_NPC();
+	VoidSpreader_OnMapStart_NPC();
+	VoidInfestor_OnMapStart_NPC();
+	VoidHardCrust_OnMapStart_NPC();
+	VoidCarrier_OnMapStart_NPC();
+
+	//boss
+	VoidIxufan_OnMapStart_NPC();
+
+	//void event
+	VoidPortal_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -531,6 +547,7 @@ void NPC_ConfigSetup()
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
+	Vhxis_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1269,9 +1286,22 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
 
+#include "zombie_riot/npc/void/npc_spawn_void_portal.sp"
+#include "zombie_riot/npc/void/npc_void_base.sp"
+#include "zombie_riot/npc/void/early/npc_ealing.sp"
+#include "zombie_riot/npc/void/early/npc_framing_voider.sp"
+#include "zombie_riot/npc/void/early/npc_growing_exat.sp"
+#include "zombie_riot/npc/void/early/npc_mutating_blob.sp"
+#include "zombie_riot/npc/void/early/npc_void_spreader.sp"
+#include "zombie_riot/npc/void/early/npc_void_infestor.sp"
+#include "zombie_riot/npc/void/early/npc_void_crust.sp"
+#include "zombie_riot/npc/void/early/npc_void_carrier.sp"
+#include "zombie_riot/npc/void/early/npc_void_ixufan.sp"
+
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 {
