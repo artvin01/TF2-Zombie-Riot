@@ -3173,7 +3173,7 @@
 	}
 	"Barracks Combine Super Desc"
 	{
-		"en"	"A melee unit which will gain resistance and chance to evade when below half health. Deal extra damage when evaded last attack."
+		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
 	}
 	"Barracks Combine Commander Desc"
 	{

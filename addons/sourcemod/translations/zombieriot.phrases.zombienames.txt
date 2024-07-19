@@ -759,6 +759,10 @@
 	{
 		"en" 		"Combine Giant DDT"
 	}
+	"Barracks Combine Collos"
+	{
+		"en"		"Combine Collos"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"

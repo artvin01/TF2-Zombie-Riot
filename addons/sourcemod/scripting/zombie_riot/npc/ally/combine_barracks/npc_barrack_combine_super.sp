@@ -202,7 +202,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.1;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (0.35 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (0.2 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -218,7 +218,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),4500.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),3400.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}
@@ -266,7 +266,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 			}
 			case 2:
 			{
-				damage *= 0.4;
+				damage *= 0.6;
 				npc.PlayDeflectSound();
 				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}

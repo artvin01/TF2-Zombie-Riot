@@ -104,7 +104,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 
 	public Barrack_Combine_Shotgun(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "300", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "550", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -179,7 +179,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2000.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2250.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}

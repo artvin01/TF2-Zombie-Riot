@@ -123,21 +123,11 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		SetVariantString("1.4");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/headhunters_wrap/headhunters_wrap.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl");
 		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum21_sightliner/sum21_sightliner.mdl"); //find it properly
-		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum19_bare_necessities/sum19_bare_necessities.mdl");
-		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		
 		return npc;
 	}
