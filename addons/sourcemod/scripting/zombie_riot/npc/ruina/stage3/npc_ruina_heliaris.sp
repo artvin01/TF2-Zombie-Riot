@@ -189,13 +189,13 @@ methodmap Heliaris < CClotBody
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/workshop/player/items/pyro/hwn2023_dead_heat/hwn2023_dead_heat.mdl",
+			"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
-			"models/workshop/player/items/medic/dec15_bunnyhoppers_ballistics_vest/dec15_bunnyhoppers_ballistics_vest.mdl",
 			"models/workshop/player/items/medic/jul13_emergency_supplies/jul13_emergency_supplies.mdl",
 			"models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl",
 			RUINA_CUSTOM_MODELS_1,
-			RUINA_CUSTOM_MODELS_1
+			RUINA_CUSTOM_MODELS_2
 		};
 		
 		
@@ -212,7 +212,7 @@ methodmap Heliaris < CClotBody
 
 		SetVariantInt(RUINA_HALO_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-		SetVariantInt(RUINA_HEALING_STAFF_1);
+		SetVariantInt(RUINA_HEALING_STAFF_2);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 				
 		SetVariantInt(1);
@@ -273,23 +273,16 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>850.0)
+	if(fl_ruina_battery[npc.index]>1200.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
 		fl_ruina_helia_healing_timer[npc.index]=0.0;
-
-		fl_multi_attack_delay[npc.index] = 0.0;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
-	{	
-		if(fl_multi_attack_delay[npc.index] < GameTime)
-		{
-			fl_multi_attack_delay[npc.index] = GameTime + 0.25;
-					
-			Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0, {255, 255, 255, 255});
-		}
+	{			
+		Helia_Healing_Logic(npc.index, 1000, 500.0, GameTime, 1.0, {255, 255, 255, 255});
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -312,22 +305,18 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-						Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+					int color[4];
+					Ruina_Color(color);
+					Helia_Healing_Logic(npc.index, 300, 175.0, GameTime, 3.5, color);
 
-					}
 				}
 				else	
 				{
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-						Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
-					}
+
+					int color[4];
+					Ruina_Color(color);
+					Helia_Healing_Logic(npc.index, 450, 250.0, GameTime, 3.5, color);
+
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -337,14 +326,10 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				if(fl_multi_attack_delay[npc.index] < GameTime)
-				{
-					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 
-				}
-			
+				int color[4];
+				Ruina_Color(color);
+				Helia_Healing_Logic(npc.index, 300, 175.0, GameTime, 3.5, color);
 			}	
 		}
 		else
@@ -359,8 +344,8 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25;
-		Melee.damage = 25.0;
-		Melee.bonus_dmg = 125.0;
+		Melee.damage = 300.0;
+		Melee.bonus_dmg = 600.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
 		Melee.swing_speed = 0.54;
 		Melee.swing_delay = 0.4;

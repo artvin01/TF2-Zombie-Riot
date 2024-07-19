@@ -2483,7 +2483,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.	is just stronger variant
-		Stage 3: sp exists.
+		Stage 3: Done. is just stronger variant
 		Stage 4: Null
 
 	}

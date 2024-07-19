@@ -38,6 +38,11 @@ $bodygroup "dagger_v2"	//done
 	blank
 	studio "v2/dagger_v2.smd"
 }
+$bodygroup "healing_staff_2"	//done
+{
+	blank
+	studio "v2/healing_staff_2.smd"
+}
 
 
 

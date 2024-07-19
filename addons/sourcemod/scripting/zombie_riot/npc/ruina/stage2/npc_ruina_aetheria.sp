@@ -151,6 +151,35 @@ methodmap Aetheria < CClotBody
 		PrintToServer("CClot::PlayRangedReloadSound()");
 		#endif
 	}
+
+	public void Set_WalkCycle()
+	{
+		bool Aimed = false;
+
+		float GameTime = GetGameTime(this.index);
+
+		if(this.m_flNextRangedAttack < (GameTime + 1.0))	//we are about to fire a arrow, aim.
+			Aimed = true;
+
+		if(Aimed)
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	
 	public Aetheria(int client, float vecPos[3], float vecAng[3], int ally)
@@ -271,7 +300,8 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
+		npc.Set_WalkCycle();
+		
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 

@@ -270,6 +270,7 @@ static void ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		npc.SetPlaybackRate(0.7);
 
+		i_NpcWeight[npc.index] = 999;
 		npc.m_flSpeed = 0.0;
 
 		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
@@ -309,6 +310,7 @@ static void ClotThink(int iNPC)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 
+			i_NpcWeight[npc.index] = 1;
 			npc.m_flSpeed = 300.0;
 			npc.m_flRangedArmor = 1.0;
 			npc.m_flMeleeArmor = 1.0;

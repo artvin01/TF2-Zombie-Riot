@@ -152,7 +152,7 @@ methodmap Aetherium < CClotBody
 		#endif
 	}
 	
-	public void Set_WalCycle()
+	public void Set_WalkCycle()
 	{
 		bool Aimed = false;
 
@@ -166,20 +166,20 @@ methodmap Aetherium < CClotBody
 
 		if(Aimed)
 		{
-			if(!this.m_fbGunout)
+			if(this.m_iChanged_WalkCycle == 0)
 			{
 				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
 				if(iActivity > 0) this.StartActivity(iActivity);
-				this.m_fbGunout = true;
+				this.m_iChanged_WalkCycle = 1;
 			}
 		}
 		else
 		{
-			if(this.m_fbGunout)
+			if(this.m_iChanged_WalkCycle == 1)
 			{
 				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
 				if(iActivity > 0) this.StartActivity(iActivity);
-				this.m_fbGunout = false;
+				this.m_iChanged_WalkCycle = 0;
 			}
 		}
 	}
@@ -300,7 +300,7 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		npc.Set_WalCycle();
+		npc.Set_WalkCycle();
 
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
