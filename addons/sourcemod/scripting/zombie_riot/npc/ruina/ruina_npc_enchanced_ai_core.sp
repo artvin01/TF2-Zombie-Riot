@@ -11,7 +11,7 @@ static int i_master_attracts[MAXENTITIES];
 
 static bool b_npc_low_health[MAXENTITIES];
 static bool b_npc_no_retreat[MAXENTITIES];
-static bool b_npc_healer[MAXENTITIES];	//warp
+bool b_ruina_npc_healer[MAXENTITIES];	//warp
 static float fl_npc_healing_duration[MAXENTITIES];
 
 static bool b_npc_sniper_anchor_point[MAXENTITIES];
@@ -170,7 +170,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	Zero(b_npc_low_health);
 	Zero(b_npc_no_retreat);
-	Zero(b_npc_healer);
+	Zero(b_ruina_npc_healer);
 	Zero(fl_npc_healing_duration);
 	Zero(fl_ruina_helia_healing_timer);
 	Zero(fl_ruina_internal_healing_timer);
@@ -224,7 +224,7 @@ public void Ruina_Set_Heirarchy(int client, int type)
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
 	b_master_exists[client] = false;
-	b_npc_healer[client] = false;
+	b_ruina_npc_healer[client] = false;
 	b_npc_no_retreat[client] = false;
 	fl_npc_healing_duration[client] = 0.0;
 	b_npc_sniper_anchor_point[client]=false;
@@ -246,7 +246,7 @@ public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 }
 public void Ruina_Set_Healer(int client)
 {
-	b_npc_healer[client] = true;
+	b_ruina_npc_healer[client] = true;
 	b_npc_sniper_anchor_point[client]=true;
 }
 public void Ruina_Set_No_Retreat(int client)
@@ -476,7 +476,7 @@ public int Ruina_Get_Target(int iNPC, float GameTime)
 static int i_previus_priority[MAXENTITIES];
 static int GetRandomMaster(int client)
 {
-	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
 		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
 
 	i_previus_priority[client] = -1;
@@ -500,7 +500,7 @@ static int GetClosestHealer(int client)
 	{
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		float dist = 99999999.9;
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && b_ruina_npc_healer[baseboss_index] && GetTeam(client) == GetTeam(baseboss_index))
 		{
 			float target_vec[3]; GetAbsOrigin(baseboss_index, target_vec);
 			float Distance=GetVectorDistance(Npc_Vec, target_vec, true);
@@ -514,7 +514,7 @@ static int GetClosestHealer(int client)
 }
 static int GetClosestAnchor(int client)
 {
-	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
 		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
 
 	int valid = -1;
@@ -547,7 +547,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	//CPrintToChatAll("Ratio %f", Ratio);
 		
 	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
-	if(Ratio<=0.10 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	
+	if(Ratio<=0.10 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	
 	{
 		fl_npc_healing_duration[npc.index] = GameTime + 2.5;
 		//CPrintToChatAll("Healing Duration 1 %f", fl_npc_healing_duration[npc.index]);
@@ -571,7 +571,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 		float Give = 1000.0*(Ratio-Difference);
 		//turn damage taken into energy
 		Ruina_Add_Battery(npc.index, Give);	
-		CPrintToChatAll("Gave %f battery",Give );
+		//CPrintToChatAll("Gave %f battery",Give );
 	}
 	else if(wave <=60)
 	{
@@ -654,7 +654,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 
 		//CPrintToChatAll("Health %f", Health);
 		//CPrintToChatAll("Ratio %f", Ratio);
-		if(Ratio<0.5 && !b_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])
+		if(Ratio<0.5 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])
 		{
 			int Healer = GetClosestHealer(npc.index);
 			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
@@ -888,6 +888,15 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 	}
 	else	//if its a master buisness as usual
 	{
+		if(!IsValidEnemy(npc.index, PrimaryThreatIndex))
+		{
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+			return;
+		}
+
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -911,7 +920,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 }
 void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//this is here if I ever want to make "basic" npc's do anything special
 {
-	if(i_Ruina_Ovelord_Ref != INVALID_ENT_REFERENCE)
+	if(IsValidAlly(iNPC, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
 	{
 		Ruina_Ai_Override_Core(iNPC, PrimaryThreatIndex, GameTime);
 		return;
