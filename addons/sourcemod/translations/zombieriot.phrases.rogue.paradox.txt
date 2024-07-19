@@ -518,6 +518,10 @@
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
 	}
+	"Printer"
+	{
+		"en"	"The Printer"
+	}
 	"Printer Lore"
 	{
 		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
@@ -579,6 +583,10 @@
 	{
 		"en"	"You seek what he seeks now."
 	}
+	"Prophecy Lore 2"
+	{
+		"en"	"Chaos still looms over. You feel knowledge in your head."
+	}
 	"Prophecy Option 2a"
 	{
 		"en"	"Better ignore"
@@ -615,12 +623,253 @@
 	{
 		"en"	"Know your enemy. If it's even your enemy anymore."
 	}
-	"Prophecy Option 2d"
+	"Prophecy Lore 3"
 	{
-		"en"	"It's Kahmlstein"
+		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
 	}
-	"Prophecy Desc 2d"
+	"Prophecy Option 3a"
+	{
+		"en"	"Not the time"
+	}
+	"Prophecy Desc 3a"
+	{
+		"en"	"{green}Lose 20 Chaos Infliction"
+	}
+	"Prophecy Lore 3a"
+	{
+		"en"	"Now is not the time. After we're done here."
+	}
+	"Prophecy Option 3b"
+	{
+		"en"	"Assist him"
+	}
+	"Prophecy Desc 3b"
 	{
 		"en"	"{blue}Something happens..."
+	}
+	"Lost Villager"
+	{
+		"en"	"Lost Villager"
+	}
+	"Lost Villager Lore"
+	{
+		"en"	"A Medieval villager wonders, seeming lost. He carries a full backpack as he comes up to ask if you have any food."
+	}
+
+	"Lost Villager Option 1"
+	{
+		"en"	"Sure thing"
+	}
+	"Lost Villager Desc 1"
+	{
+		"en"	"{yellow}Receive something unknown"
+	}
+	"Lost Villager Lore 1"
+	{
+		"en"	"''Thank you, your very much kind, would you like something of mine?''"
+	}
+
+	"Lost Villager Option 1a"
+	{
+		"en"	"Some wood"
+	}
+	"Lost Villager Desc 1a"
+	{
+		"en"	"{green}Recover 4 weapons"
+	}
+	"Lost Villager Lore 1a"
+	{
+		"en"	"You take some wood, useful for some making some weapons."
+	}
+
+	"Lost Villager Option 1b"
+	{
+		"en"	"Some stone"
+	}
+	"Lost Villager Desc 1b"
+	{
+		"en"	"{green}Gain 15 Australium Ingots"
+	}
+	"Lost Villager Lore 1b"
+	{
+		"en"	"You take some stone, could be sold to the market."
+	}
+
+	"Lost Villager Option 1c"
+	{
+		"en"	"Nothing else"
+	}
+	"Lost Villager Desc 1c"
+	{
+		"en"	"{green}Lose 15 Chaos Infliction"
+	}
+	"Lost Villager Lore 1c"
+	{
+		"en"	"You ask for nothing. A peace of mind. He wanders off."
+	}
+	
+	"Lost Villager Option 2"
+	{
+		"en"	"Nothing to spare"
+	}
+	"Lost Villager Desc 2"
+	{
+		"en"	"{green}Gain 2000 credits"
+	}
+	"Lost Villager Lore 2"
+	{
+		"en"	"You tell him you don't have any to spare, he understands, hands you a piece of gold, and carries on."
+	}
+
+	"Lost Villager Option 3"
+	{
+		"en"	"Rob him"
+	}
+	"Lost Villager Desc 3"
+	{
+		"en"	"{green}Gain 2000 credits, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
+	}
+	"Lost Villager Lore 3"
+	{
+		"en"	"You beat him up with your fear of other Villager's buildings. You steal his supplies while at it."
+	}
+
+	"Downtime Recreation"
+	{
+		"en"	"Downtime Recreation"
+	}
+	"Downtime Recreation Lore"
+	{
+		"en"	"A slot machine out in the middle of the woods.\nUnguarded and covered in moss."
+	}
+
+	"Downtime Recreation Option 1"
+	{
+		"en"	"Insert a coin"
+	}
+	"Downtime Recreation Desc 1"
+	{
+		"en"	"{red}Lose 4 Australium Ingots"
+	}
+	"Downtime Recreation Lore 1a"
+	{
+		"en"	"It hits a random assortment of items."
+	}
+	"Downtime Recreation Lore 1b"
+	{
+		"en"	"It hits 3 Cherries and pays out."
+	}
+	"Downtime Recreation Lore 1c"
+	{
+		"en"	"It hits 3 Bars and spits something out."
+	}
+	"Downtime Recreation Lore 1d"
+	{
+		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
+	}
+	"Downtime Recreation Lore 1e"
+	{
+		"en"	"It hits 3 Lemons as you hear clanging as a weapon spits out."
+	}
+
+	"Downtime Recreation Option 2"
+	{
+		"en"	"Leave it alone"
+	}
+	"Downtime Recreation Desc 2"
+	{
+		"en"	"{green}Gain 4000 Credits"
+	}
+	"Downtime Recreation Lore 2"
+	{
+		"en"	"Don't bet on it."
+	}
+
+	"Downtime Recreation Option 3"
+	{
+		"en"	"Break it"
+	}
+	"Downtime Recreation Desc 3"
+	{
+		"en"	"{green}Gain 30 Australium Ingots {red}but gain 15 Chaos Infliction"
+	}
+	"Downtime Recreation Lore 3"
+	{
+		"en"	"You hit as it breaks, you retrieve what you can find."
+	}
+
+	"Fortituous Opportunity"
+	{
+		"en"	"Fortituous Opportunity"
+	}
+	"Fortituous Opportunity Lore"
+	{
+		"en"	"A wandering merchant appears, asking if you wish\nto sell anything in exchange for something else."
+	}
+	"Fortituous Opportunity Lore 1a"
+	{
+		"#format"	"{1:t}"
+		"en"		"You exchange your {yellow}{1}{default} and in return, he gives you something else."
+	}
+	"Fortituous Opportunity Option 2"
+	{
+		"en"	"Move along"
+	}
+	"Fortituous Opportunity Desc 2"
+	{
+		"en"	"{green}Gain 4000 credits and 4 australium ingots"
+	}
+	"Fortituous Opportunity Lore 2"
+	{
+		"en"	"There's nothing to give. He drops some ingots and moves along."
+	}
+
+	"Emergency Dispatch"
+	{
+		"en"	"Emergency Dispatch"
+	}
+	"Emergency Dispatch Lore"
+	{
+		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
+	}
+	"Emergency Dispatch Lore 1a"
+	{
+		"#format"	"{1:N}"
+		"en"		"You send {1} to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Lore 1b"
+	{
+		"#format"	"{1:N},{2:N}"
+		"en"		"You send {1} and {2} to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Lore 1c"
+	{
+		"en"	"You ask Bob The Second to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Option 2"
+	{
+		"en"	"We cannot spare"
+	}
+	"Emergency Dispatch Desc 2"
+	{
+		"en"	"{yellow}Receive something unknown"
+	}
+	"Emergency Dispatch Lore 2"
+	{
+		"en"	"You say you're going off to deal with chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
+	}
+	"Emergency Dispatch Return 1"
+	{
+		"#format"	"{1:N}"
+		"en"		"{1} have returned, and with some money."
+	}
+	"Emergency Dispatch Return 2"
+	{
+		"#format"	"{1:N},{2:N}"
+		"en"		"{1} and {2} have returned, and with some money."
+	}
+	"Emergency Dispatch Return 3"
+	{
+		"en"	"Bob The Second returns with some money in hand."
 	}
 }
