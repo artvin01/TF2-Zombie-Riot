@@ -33,6 +33,11 @@ $bodygroup "laser_cannon_v1"	//done
 	blank
 	studio "v2/laser_cannon_v1.smd"
 }
+$bodygroup "dagger_v2"	//done
+{
+	blank
+	studio "v2/dagger_v2.smd"
+}
 
 
 

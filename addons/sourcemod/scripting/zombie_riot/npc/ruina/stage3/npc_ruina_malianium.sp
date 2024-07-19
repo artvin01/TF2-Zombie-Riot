@@ -139,7 +139,7 @@ methodmap Malianium < CClotBody
 		#endif
 	}
 	public void PlayRangedReloadSound() {
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayRangedSound()");
@@ -161,18 +161,18 @@ methodmap Malianium < CClotBody
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 			Iron Lung			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl"
-			demonic dome		"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl"
+			Daring Dell			"models/workshop/player/items/engineer/sum24_daring_dell_style1/sum24_daring_dell_style1.mdl"
 			Bone Cone			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl"
-			Sleuth Suit			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl"
-			airtight arsonist	"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl"
+			Constructor's cover	"models/workshop/player/items/engineer/hwn2023_constructors_cover/hwn2023_constructors_cover.mdl"
+			The Birdman of Australiacatraz "models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl"
 		*/
 		static const char Items[][] = {
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl",
-			"models/workshop/player/items/all_class/hwn2023_demonic_dome/hwn2023_demonic_dome_engineer.mdl",
+			"models/workshop/player/items/engineer/sum24_daring_dell_style1/sum24_daring_dell_style1.mdl",
 			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl",
-			"models/workshop/player/items/engineer/dec23_sleuth_suit_style2/dec23_sleuth_suit_style2.mdl",
-			"models/workshop/player/items/pyro/spr17_airtight_arsonist/spr17_airtight_arsonist.mdl",
+			"models/workshop/player/items/engineer/hwn2023_constructors_cover/hwn2023_constructors_cover.mdl",
+			"models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -261,10 +261,10 @@ static void ClotThink(int iNPC)
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	
-	if(fl_ruina_battery[npc.index]>500.0)
+	if(fl_ruina_battery[npc.index]>1500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
+		fl_ruina_battery_timer[npc.index] = GameTime + 10.0;
 
 		npc.AddActivityViaSequence("taunt_drg_melee");
 		npc.SetCycle(0.01);
@@ -275,8 +275,8 @@ static void ClotThink(int iNPC)
 		TE_SetupBeamRingPoint(Npc_Vec, 250*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 5.0, 15.0, 0.5, {175, 25, 0, 255}, 1, 0);
 		TE_SendToAll();
 
-		npc.m_flRangedArmor = 0.5;
-		npc.m_flMeleeArmor 	= 0.5;
+		npc.m_flRangedArmor = 0.25;
+		npc.m_flMeleeArmor 	= 0.25;
 
 		npc.Anger = false;
 		
@@ -432,7 +432,7 @@ static void Malianium_Effects_Attack(Malianium npc, float Target_Vec[3], int Get
 		{
 			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 		}
-		float DamageDone = 25.0;
+		float DamageDone = 75.0;
 		npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_red_crit", false, true, true, endLoc,_,_, 10.0);
 	}
 }

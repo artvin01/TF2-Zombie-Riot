@@ -153,12 +153,11 @@ methodmap Draeonis < CClotBody
 		
 		/*
 			Fuel Injector (Runnin' On Fumes) 	"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl"
-			Forgotten King's Pauldrons 			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl"
+			Commonwealth Commando				"models/workshop/player/items/scout/sum24_commonwealth/sum24_commonwealth.mdl"
 			Blizzard Britches 					"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl"
-			Berliner's Bucket Helm 				"models/player/items/medic/berliners_bucket_helm.mdl"
 			battalions							models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl
-			Isotopic Insulator					"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl"
-			
+			Tanker's top						"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl"
+			flunkyware							"models/workshop_partner/player/items/scout/scout_henchboy/scout_henchboy_belt.mdl"
 		*/
 
 		
@@ -180,11 +179,11 @@ methodmap Draeonis < CClotBody
 
 		static const char Items[][] = {
 			"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl",
-			"models/workshop/player/items/demo/sf14_deadking_pauldrons/sf14_deadking_pauldrons.mdl",
+			"models/workshop/player/items/scout/sum24_commonwealth/sum24_commonwealth.mdl",
 			"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl",
-			"models/player/items/medic/berliners_bucket_helm.mdl",
+			"models/workshop_partner/player/items/scout/scout_henchboy/scout_henchboy_belt.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
-			"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl",
+			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -257,7 +256,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 300.0, 0.75);	//25% block shield
+		Master_Apply_Shield_Buff(npc.index, 300.0, 0.6);	//40% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
@@ -323,7 +322,7 @@ static void ClotThink(int iNPC)
 					npc.FaceTowards(vecTarget, 100000.0);
 					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 					npc.PlayMeleeSound();
-					npc.m_flNextMeleeAttack = GameTime+4.0;
+					npc.m_flNextMeleeAttack = GameTime+2.0;
 					npc.m_flAttackHappenswillhappen = true;
 					float flPos[3]; // original
 					float flAng[3]; // original
@@ -334,7 +333,7 @@ static void ClotThink(int iNPC)
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 50.0;
+					float dmg = 100.0;
 					float radius = 150.0;
 					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						

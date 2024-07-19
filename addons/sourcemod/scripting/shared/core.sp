@@ -969,7 +969,8 @@ enum
 	RUINA_LAN_SWORD_2		= 4,			//3
 	RUINA_EUR_STAFF_2		= 8,			//4
 	RUINA_BLADE_2			= 16,			//5
-	RUINA_LAZER_CANNON_1	= 32			//6
+	RUINA_LAZER_CANNON_1	= 32,			//6
+	RUINA_DAGGER_2			= 64
 }
 
 

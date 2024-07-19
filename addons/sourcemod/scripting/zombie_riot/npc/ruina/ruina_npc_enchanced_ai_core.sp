@@ -2431,6 +2431,10 @@ Names per stage:
 
 	Each subsequent stage the npc gains a new ability, most of the time it will be an expanded version of what they have, or something new. alongside just higher base stats.
 
+	Stage 1: Introduction.
+	Stage 2: ?
+	Stage 3: Battery gain via takedamage.								- make the battery ongain a % of health lost cause otherwise converting damage taken into battery would be op.
+	Stage 4: Use particle effects as cosmetic things, to show "power"
 	//created
 	1: Magia -> Magnium -> Magianas -> Magianius
 	{
@@ -2493,7 +2497,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.	is simply stronger.
-		Stage 3: sp exists.
+		Stage 3: Done.  is simply stronger.
 		Stage 4: Null
 	}
 
@@ -2507,7 +2511,7 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done. can summon now includes Magia and Lanius from the previous stage.
-		Stage 3: Done. stronger also it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
+		Stage 3: Done. stronger also when summoning itself, it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
 		Stage 4: Null
 	}
 	//created
@@ -2520,8 +2524,8 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done. 	Its just a buffed version.
-		Stage 3: sp exists.
-		Stage 4: Null
+		Stage 3: Done. 	Its just a buffed version.
+		Stage 4: Null.	Will be able to override the shield timeout
 
 	}
 	//created
@@ -2534,8 +2538,8 @@ Names per stage:
 		Attacks from a far with artilery spells. basically the railgunners of this wave.
 
 		Stage 1: Done.
-		Stage 2: Done.	battery: gains the ability to shoot a laser projectile of D00M
-		Stage 3: Done.	Buffed variant
+		Stage 2: Done.	is just buffed variant
+		Stage 3: Done.	battery: gains the ability to shoot a laser projectile of D00M
 		Stage 4: Null
 	}
 	//created
@@ -2548,8 +2552,8 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.		Is a stronger variant, does an animation and stands still while casting the battery buff.
-		Stage 3: sp exists.
-		Stage 4: Null
+		Stage 3: Done. Is stronger.
+		Stage 4: Null.		Once starting the animation, will fire an ion onto some random dude it can see.
 
 	}
 	//created
@@ -2578,7 +2582,7 @@ Names per stage:
 
 		Stage 1: Done.	Laz
 		Stage 2: Done.	battery: shoot a stronger variant of the laser, has better homing too
-		Stage 3: Done.	Lazines
+		Stage 3: Done.	Lazines. is a stronger variant
 		Stage 4: Null	Lazurus
 
 	}
@@ -2592,25 +2596,25 @@ Names per stage:
 
 		Stage 1: Done.
 		Stage 2: Done.	is just a stronger variant
-		Stage 3: sp exists.
+		Stage 3: Done.	stronger.		(the shanker 9000)
 		Stage 4: Null
 	}
 
-	Todo: Rewrite these. mostly the anchor and Valiant. as for the weaver, mostly how it attacks.
+	Todo: Rewrite these.
 	Valiant	//Gonna be set into special, like expi spies.
 	{
 		State: Independant
 		Class: Engie
 		Has the ability to build a special building that once built spawns drones and maintains an ION
 	}
-	Building: "Magia Anchor"
+	Building: "Magia Anchor"	these can summon a weaver when 4 exist, but even when only 1 of them is fully operational. fix that
 	{
 		spawns drones respective to the stage.
 		controls a special ION, 1 ion per stage.
 		A maximum of 4 of them can exist at a time.
 		once 4 exist, they have the abiltiy to summon a "Storm Weaver"
 	}
-	Special: "Storm Weaver":
+	Special: "Storm Weaver":	its body just kinda poof's out of existance, idk why, investigate.
 	{
 		A worm boss, it itself doesn't have a hitbox.
 	}
@@ -2624,8 +2628,8 @@ Names per stage:
 
 	Stage 2 specials:
 
-	Lex. - Boss. W30.
-	Iana - Boss. W30.
+	Lex. - Boss. W30.	Give the ability to connect the two wings if close to eachother.
+	Iana - Boss. W30.	Add wings
 
 	Stage 3 specials:
 

@@ -165,7 +165,8 @@ methodmap Dronis < CClotBody
 			Bunsen Brave		Robo_Heavy_Chief
 			Dark Helm -	
 			fancy dress uniform		"models/player/items/soldier/fdu.mdl"
-			assassin's attire		"models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl"
+			Tuxedo Royale			"models/workshop/player/items/spy/sum24_tuxedo_royale_style1/sum24_tuxedo_royale_style1.mdl"
+			breakneck baggies		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
 		
 		*/
 		
@@ -186,10 +187,11 @@ methodmap Dronis < CClotBody
 
 		static const char Items[][] = {
 			"models/player/items/soldier/fdu.mdl",
-			"models/workshop/player/items/spy/spr18_assassins_attire/spr18_assassins_attire.mdl",
+			"models/workshop/player/items/spy/sum24_tuxedo_royale_style1/sum24_tuxedo_royale_style1.mdl",
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl",
-			RUINA_CUSTOM_MODELS_1
+			"models/workshop/player/items/all_class/jogon/jogon_spy.mdl",
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -199,12 +201,12 @@ methodmap Dronis < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		//npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_DAGGER_1);
-		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+		SetVariantInt(RUINA_DAGGER_2);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
@@ -260,10 +262,10 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 75.0;
+		Melee.damage = 100.0;
 		Melee.bonus_dmg = 300.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
-		Melee.swing_speed = 1.2;
+		Melee.swing_speed = 0.5;
 		Melee.swing_delay = 0.4;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
@@ -292,7 +294,7 @@ static void ClotThink(int iNPC)
 }
 static void OnRuina_MeleeAttack(int iNPC, int Target)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.1, 50);
+	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 50);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -334,5 +336,7 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	
 }

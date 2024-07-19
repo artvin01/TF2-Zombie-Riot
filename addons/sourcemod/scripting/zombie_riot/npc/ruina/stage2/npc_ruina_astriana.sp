@@ -310,7 +310,7 @@ static void ClotThink(int iNPC)
 		int color[4];
 		Ruina_Color(color);
 
-		Astria_Teleport_Allies(npc.index, 350.0, {255, 150, 150, 255});
+		Astria_Teleport_Allies(npc.index, 350.0, color);
 
 		Ruina_Master_Release_Slaves(npc.index);
 	}

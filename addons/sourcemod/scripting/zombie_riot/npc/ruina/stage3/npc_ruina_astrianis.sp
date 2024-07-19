@@ -188,10 +188,10 @@ methodmap Astrianis < CClotBody
 		
 		/*
 			Arctic mole					"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl"
-			berliner's bucker helm		"models/player/items/medic/berliners_bucket_helm.mdl"
 			fancy						"models/player/items/soldier/fdu.mdl"
-			"models/workshop/player/items/engineer/dec22_cool_warm_sweater_style2/dec22_cool_warm_sweater_style2.mdl"
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
+			the big star				"models/workshop/player/items/engineer/sum24_big_star/sum24_big_star.mdl"
+										"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
+			botler 2000					"models/workshop/player/items/all_class/sum24_botler_2000_style1/sum24_botler_2000_style1_%s.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -210,11 +210,10 @@ methodmap Astrianis < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-
+			"models/workshop/player/items/all_class/sum24_botler_2000_style1/sum24_botler_2000_style1_engineer.mdl",
+			"models/workshop/player/items/engineer/sum24_big_star/sum24_big_star.mdl",
 			"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl",
-			"models/player/items/medic/berliners_bucket_helm.mdl",
 			"models/player/items/soldier/fdu.mdl",
-			"models/workshop/player/items/engineer/dec22_cool_warm_sweater_style2/dec22_cool_warm_sweater_style2.mdl",
 			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
@@ -240,7 +239,7 @@ methodmap Astrianis < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, false, 15, 10);	//Priority 10: Teleporting/Movement masters
 		
 		return npc;
@@ -278,7 +277,6 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	Ruina_Add_Battery(npc.index, 3.0);
-
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -310,7 +308,7 @@ static void ClotThink(int iNPC)
 		int color[4];
 		Ruina_Color(color);
 
-		Astria_Teleport_Allies(npc.index, 350.0, {255, 150, 150, 255});
+		Astria_Teleport_Allies(npc.index, 350.0, color);
 
 		Ruina_Master_Release_Slaves(npc.index);
 	}
@@ -358,7 +356,6 @@ static void NPC_Death(int entity)
 	}
 
 	Ruina_NPCDeath_Override(entity);
-
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -372,10 +369,9 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	
 }
 
-static void Astrianis_SelfDefense(Astrianis npc, float gameTime)	//ty artvin
+static void Astrianis_SelfDefense(Astrianis npc, float gameTime)
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
@@ -433,10 +429,10 @@ static void Astrianis_SelfDefense(Astrianis npc, float gameTime)	//ty artvin
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
-				float DamageDone = 45.0;
+				float DamageDone = 60.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 4.0;
+				npc.m_flNextRangedAttack = gameTime + 4.0;
 			}
 		}
 	}

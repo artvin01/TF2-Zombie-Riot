@@ -170,7 +170,7 @@ methodmap Lazines < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
 		SetVariantInt(RUINA_LAZER_CANNON_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
