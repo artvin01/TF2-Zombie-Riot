@@ -181,12 +181,13 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
 					if(!npc.m_flAttackHappenswillhappen)
 					{
+						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						switch(GetRandomInt(0,1))
 						{
 							case 0:
@@ -199,8 +200,8 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							}
 						}
 						npc.PlaySwordSound();
-						npc.m_flAttackHappens = GameTime + 0.3;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.11;
+						npc.m_flAttackHappens = GameTime + 0.1;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
 						npc.m_flNextMeleeAttack = GameTime + (0.35 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -214,7 +215,6 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 							
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
-
 							
 							if(target > 0) 
 							{
@@ -258,13 +258,13 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 	if(npc.m_bLostHalfHealth)
 	{
 		TrueArmor *= 0.9;
-		switch(GetRandomInt(1, 4))
+		switch(GetRandomInt(1, 2))
 		{
-			case 1,2,3:
+			case 1:
 			{
 
 			}
-			case 4:
+			case 2:
 			{
 				damage *= 0.4;
 				npc.PlayDeflectSound();
