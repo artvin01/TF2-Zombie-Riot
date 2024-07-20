@@ -130,6 +130,8 @@ static int i_currentwave[MAXENTITIES];
 
 static float fl_attack_timeout[MAXENTITIES];
 
+static bool b_buffed_blitz;
+
 //Blit'z item drop relate stuff
 
 float g_f_blitz_dialogue_timesincehasbeenhurt;
@@ -524,6 +526,76 @@ methodmap Blitzkrieg < CClotBody
 		fl_LifelossReload[npc.index] = 1.0;	//how fast blitz reloads when ammo is depleted, this number multiples a base 10 number. Basically: 10*fl_LifelossReload[npc.index]
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
+
+		b_buffed_blitz = StrContains(data, "hyper") != -1;
+
+		if(b_buffed_blitz)
+		{
+			
+			if(i_currentwave[npc.index] <=15)
+			{
+				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Hehehe..");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Shall we begin?");
+					}
+				}
+			}
+			else if(i_currentwave[npc.index] <=30)
+			{
+				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Hehehe, it seems I get another chance to destroy you");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You lived last time, but will you live again?");
+					}
+				}
+			}
+			else if(i_currentwave[npc.index] <=45)
+			{
+				RaidModeScaling *=1.5;
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: It appears im going to have to introduce you to someone I know... the Moon...");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Your quite the tenacious one aren't you");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: This ends here, {crimson}now, {default}there is nowhere else for you to go!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You've all become quite the annoying little merc's haven't you");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: My limiter's been turned off{cirmson}good luck{default}.");
+					}
+				}
+			}
+		}
 		
 		bool final = StrContains(data, "final_item") != -1;
 		fl_blitzscale[npc.index] = (RaidModeScaling*1.5)*zr_smallmapbalancemulti.FloatValue;	//Storage for current raidmode scaling to use for calculating blitz's health scaling.
@@ -533,8 +605,8 @@ methodmap Blitzkrieg < CClotBody
 		}
 		else if(i_currentwave[npc.index]>=60)
 		{
-			fl_blitzscale[npc.index] /= 3.0;	//blitz is quite scary on wave 60, so nerf him a bit
-			
+			if(!b_buffed_blitz)
+				fl_blitzscale[npc.index] /= 3.0;	//blitz is quite scary on wave 60, so nerf him a bit
 		}
 		if(i_currentwave[npc.index]>60 && !final)
 		{
@@ -605,27 +677,57 @@ static void ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,5))
+
+			if(b_buffed_blitz)
 			{
-				case 0:
+				switch(GetRandomInt(0,4))
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: You alone? How amusing.");
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You organic's require oxygen to live, we do not. We are not the same");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: How does it feel to be {crimson}alone?");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You are out gunned and out matched, {crimson}surrender.");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Death{crimson} Aproaches");
+					}
+					case 4:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next in line..");
+					}
 				}
-				case 1:
+			}
+			else
+			{
+				switch(GetRandomInt(0,4))
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: Machines win once more... You're the last...");
-				}
-				case 3:
-				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: You are hopeless.");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: Death is{crimson} Inevitable");
-				}
-				case 5:
-				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..");
+					case 0:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You alone? How amusing.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Machines win once more... You're the last...");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: You are hopeless.");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: Death is{crimson} Inevitable");
+					}
+					case 4:
+					{
+						CPrintToChatAll("{crimson}Blitzkrieg{default}: All your friends have already{crimson} joined{default} us.. {crimson} You're next..");
+					}
 				}
 			}
 		}
@@ -636,24 +738,41 @@ static void ClotThink(int iNPC)
 		b_timer_lose[npc.index] = true;
 
 		b_winline=true;
-		
-		switch(GetRandomInt(0,4))
+
+		if(b_buffed_blitz)
 		{
-			case 0:
+			switch(GetRandomInt(0,1))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}Annhilated{default}.");
+				case 0:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Now then, to deal with the rest of the {crimson}planet");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Breathing is optional, {crimson}but not for you");
+				}
 			}
-			case 1:
+		}
+		else
+		{
+			switch(GetRandomInt(0,3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Hopeless scrap");
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Such lackluster {crimson}weapons{default}.");
-			}
-			case 4:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Death is{crimson} Inevitable{default}.");
+				case 0:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}Annhilated{default}.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Hopeless scrap");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Such lackluster {crimson}weapons{default}.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Death is{crimson} Inevitable{default}.");
+				}
 			}
 		}
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -900,7 +1019,7 @@ static void ClotThink(int iNPC)
 					
 				npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 				
-				i_maxfirerockets[npc.index] = 100;
+				i_maxfirerockets[npc.index] = (b_buffed_blitz ? 200 : 100);
 				
 				fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 				
@@ -947,7 +1066,8 @@ static void ClotThink(int iNPC)
 			{
 				if(!b_BlitzLight[npc.index])	//this checks if the npc is in blitzlight, if it is use dash instead of teleport.
 				{
-					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
+					float Max_Dist = (b_buffed_blitz ? 1000.0 : 500.0);
+					if(npc.m_flNextTeleport < GetGameTime(npc.index) && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (Max_Dist * Max_Dist))
 					{
 						static float flVel[3];
 						GetEntPropVector(closest, Prop_Data, "m_vecVelocity", flVel);
@@ -956,7 +1076,7 @@ static void ClotThink(int iNPC)
 						{
 							npc.FaceTowards(vecTarget);
 							npc.FaceTowards(vecTarget);
-							npc.m_flNextTeleport = GetGameTime(npc.index) + 30.0;
+							npc.m_flNextTeleport = GetGameTime(npc.index) + (b_buffed_blitz ? 25.0 : 30.0);
 							float Tele_Check = GetVectorDistance(vPredictedPos, vecTarget);
 							
 							if(Tele_Check > 120.0)
@@ -986,7 +1106,7 @@ static void ClotThink(int iNPC)
 							//Target close enough to hit
 							if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 							{
-								npc.m_flCharge_delay = GetGameTime(npc.index) + 7.5;
+								npc.m_flCharge_delay = GetGameTime(npc.index) + (b_buffed_blitz ? 5.0 : 7.5);
 								npc.m_flCharge_Duration = GetGameTime(npc.index) + 1.0;
 								PluginBot_Jump(npc.index, vecTarget);
 							}
@@ -1024,7 +1144,21 @@ static void ClotThink(int iNPC)
 						if(i_NpcCurrentLives[npc.index]>=2)
 						{
 							EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav");
-							Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
+							if(b_buffed_blitz)
+							{
+								switch(GetRandomInt(1, 2))
+								{
+									case 1:
+									{
+										CPrintToChatAll("{crimson}Blitzkrieg{default}: I have a little gift for you {yellow}%N{default}!", Enemy_I_See);
+									}
+									case 2:
+									{
+										CPrintToChatAll("{crimson}Blitzkrieg{default}: Lookout above {yellow}%N{default}!", Enemy_I_See);
+									}
+								}
+							}
+							Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), Enemy_I_See);
 						}
 					}
 				}
@@ -1158,7 +1292,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			RaidModeScaling= fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.3);
 			i_HealthScale[npc.index]=fl_blitzscale[npc.index]*(1.0+(1-(Health/MaxHealth))*1.3);
 			fl_rocket_firerate[npc.index]=((Health/MaxHealth)-0.85)/zr_smallmapbalancemulti.FloatValue;
-			if(fl_rocket_firerate[npc.index]<=0.01)	//This limits the firerate of the npc. In this case its used to make sure it doesn't go negative or not to reach server crashing levels of firerate.
+			if(fl_rocket_firerate[npc.index]<=0.01)	//This limits the firerate of the npc. In this case its used to make sure it doesn't go negative
 			{
 				fl_rocket_firerate[npc.index]=0.01;
 			}
@@ -1181,7 +1315,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		i_maxfirerockets[npc.index] =25;	//Buff's the clipsize
+		
+		i_maxfirerockets[npc.index] = (b_buffed_blitz ? 50 : 25);	//Buff's the clipsize
 		
 		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
@@ -1242,7 +1377,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 		npc.m_flReloadIn = GetGameTime(npc.index);
 		
-		i_maxfirerockets[npc.index] =40;
+		i_maxfirerockets[npc.index] = (b_buffed_blitz ? 80 : 40);	//Buff's the clipsize
 		
 		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
@@ -1301,7 +1436,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 		npc.m_flReloadIn = GetGameTime(npc.index);
 		
-		i_maxfirerockets[npc.index] = 65;
+		i_maxfirerockets[npc.index] = (b_buffed_blitz ? 130 : 65);	//Buff's the clipsize
 		
 		fl_attack_timeout[npc.index] = GetGameTime(npc.index)+1.0;
 		
@@ -1358,44 +1493,73 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		switch(GetRandomInt(1, 3))
+		if(b_buffed_blitz)
 		{
-			case 1:
+			switch(GetRandomInt(1, 3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}I AM A GOD");	//Ego boost 9000%
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}Here's a fun fact, the atmosphere drastically lowers the potential of this attack... Guess what space lacks");	//Ego boost 9000%
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}MUHAHAHAHAHAH");	//Ego boost 9000%
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE {aqua}TRUE{default} POWER OF THE MOON, IN THE PALMS OF MY HANDS");	//Ego boost 9000%
+				}
 			}
-			case 2:
+		}
+		else
+		{
+			switch(GetRandomInt(1, 3))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THY PUNISHMENT IS DEATH");	//Ego boost 9000%
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE POWER OF THE MOON, IN THE PALMS OF MY HANDS");	//Ego boost 9000%
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}I AM A GOD");	//Ego boost 9000%
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THY PUNISHMENT IS DEATH");	//Ego boost 9000%
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: {crimson}THE POWER OF THE MOON, IN THE PALMS OF MY HANDS");	//Ego boost 9000%
+				}
 			}
 		}
 		
-		
-		b_Are_we_reloading[npc.index]=true;
-		
-		npc.m_flReloadIn = GetGameTime(npc.index);
-		
-		fl_attack_timeout[npc.index] =GetGameTime(npc.index)+ 1.0;
-		
 		float charge=6.0;	//Charge time of blitzlight MUST be set here
 		float timer=20.0;	//Duration of blitzlight MUST be set here
+
+		if(b_buffed_blitz)
+		{
+			charge = 7.0;
+			timer = 25.0;
+		}
 		fl_TheFinalCountdown2[npc.index] = GetGameTime(npc.index)+timer+charge+1.0;	//Duration of the whole thing. should be the same number as duration of blitzlight invoke
 		BlitzLight_Invoke(npc.index, timer, charge);	//timer is duration, charge is charge time. || Blitzlight invoke, thanks to spooks permission I ported the ability over for blitz
 		b_BlitzLight[npc.index]=true;						//Blitzlight logic, blocks scaling, blocks other things.
 		
-		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 10.0;	//This value gets change on reset.
 		
-		fl_LifelossReload[npc.index] = 1.0;				//Used to make sure npc is in melee.
-		
-		npc.m_flReloadIn = GetGameTime(npc.index) + (timer+charge+1.0);	//turns off melee logic when blitzlight ends.
-		
-		npc.m_flRangedArmor = 0.1;	//Sets ranged armour to 90%, however melee still does normal damage, so if somehow is mad enough as melee to duel blitz in this state, they are free to do so.
-		
+		if(!b_buffed_blitz)
+		{
+			fl_LifelossReload[npc.index] = 1.0;				//Used to make sure npc is in melee.
+
+			b_Are_we_reloading[npc.index]=true;
+			
+			fl_attack_timeout[npc.index] =GetGameTime(npc.index)+1.0;
+			
+			npc.m_flReloadIn = GetGameTime(npc.index) + (timer+charge+1.0);	//turns off melee logic when blitzlight ends.
+
+			npc.m_flRangedArmor = 0.1;	//Sets ranged armour to 90%, however melee still does normal damage, so if somehow is mad enough as melee to duel blitz in this state, they are free to do so.
+		}
+		else
+		{
+			npc.m_flRangedArmor = 0.25;
+		}
 		npc.m_iChanged_WalkCycle = -1;	//Sets current anim to a non value so when clot think is called the correct anim is set
 	}
 	if(i_currentwave[npc.index]>=45 && !b_allies[npc.index] && (b_life2[npc.index] || b_life3[npc.index]))
@@ -1491,23 +1655,48 @@ static void NPC_Death(int entity)
 		
 	if(IsValidClient(closest) && !b_timer_lose[npc.index])
 	{
-		switch(GetRandomInt(1, 4))
+		if(b_buffed_blitz)
 		{
-			case 1:
+			switch(GetRandomInt(1, 4))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Nooo, this cannot be {yellow}%N{default} you won, {red}this time", closest);
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: next time {yellow}%N{default} you wont be ths lucky, {red}next time", closest);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Will you be this lucky again {yellow}%N{default}, will{red} you?", closest);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Until next time {yellow}%N{red} until next time...", closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: hehe, {yellow}%N{default} I pitty you, {crimson}because next time{default} I'll be stronger.", closest);
+				}
 			}
-			case 2:
+		}
+		else
+		{
+			switch(GetRandomInt(1, 4))
 			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: It seems I have failed {yellow}%N{default} you survived {red}this time", closest);
-			}
-			case 3:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: Until next time {yellow}%N{red} until next time...", closest);
-			}
-			case 4:
-			{
-				CPrintToChatAll("{crimson}Blitzkrieg{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", closest);
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Nooo, this cannot be {yellow}%N{default} you won, {red}this time", closest);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: It seems I have failed {yellow}%N{default} you survived {red}this time", closest);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: Until next time {yellow}%N{red} until next time...", closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", closest);
+				}
 			}
 		}
 	}
@@ -1674,7 +1863,7 @@ public Action Blitzkrieg_DrawIon(Handle Timer, any data)
 	return (Plugin_Stop);
 }
 	
-public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
+static void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 {
 	float position[3];
 	position[0] = startPosition[0];
@@ -1688,7 +1877,7 @@ public void Blitzkrieg_DrawIonBeam(float startPosition[3], const int color[4])
 	TE_SendToAll();
 }
 
-	public void Blitzkrieg_IonAttack(Handle &data)
+	static void Blitzkrieg_IonAttack(Handle &data)
 	{
 		float startPosition[3];
 		float position[3];
@@ -1914,7 +2103,7 @@ public Action BlitzLight_TBB_Tick(int client)
 	return Plugin_Continue;
 
 }
-public void BlitzLight_Invoke(int ref, float timer, float charge)
+static void BlitzLight_Invoke(int ref, float timer, float charge)
 {
 	Blitzkrieg npc = view_as<Blitzkrieg>(ref);
 	int entity = EntRefToEntIndex(ref);
@@ -2169,13 +2358,17 @@ public void BlitzLight_DealDamage(int entity)
 	GetAbsOrigin(entity, beamLoc);
 	
 		
-	if(i_BlitzLight_dmg_throttle[npc.index] > 2)	//do damage 10 times a second.
+	if(i_BlitzLight_dmg_throttle[npc.index] > 2)
 	{
 		i_BlitzLight_dmg_throttle[npc.index] = 0;	//damage throttle
 		float dmg_pen = 1.0;
 		if(i_currentwave[npc.index]>=60)
 		{
 			dmg_pen = 1.75;	//A slight buff to damage on wave 60
+		}
+		if(b_buffed_blitz)
+		{
+			dmg_pen *= 1.75;
 		}
 		Explode_Logic_Custom((BlitzLight_DMG[npc.index]) * dmg_pen, entity, entity, -1, beamLoc, BlitzLight_DMG_Radius[npc.index]*1.25 , _ , _ , true, _, _, 10.0, Blitzlight_Shake_Client);
 		//CPrintToChatAll("dmg: %fl", BlitzLight_DMG[npc.index]);
@@ -2228,8 +2421,6 @@ static void FireBlitzRocket(int client, float vecTarget[3], float rocket_damage,
 										
 	MakeVectorFromPoints(vecSwingStart, vecTarget, vecAngles);
 	GetVectorAngles(vecAngles, vecAngles);
-										
-										
 	
 	vecForward[0] = Cosine(DegToRad(vecAngles[0]))*Cosine(DegToRad(vecAngles[1]))*rocket_speed;
 	vecForward[1] = Cosine(DegToRad(vecAngles[0]))*Sine(DegToRad(vecAngles[1]))*rocket_speed;
@@ -2312,6 +2503,11 @@ public void Rocket_Blitz_StartTouch(int entity, int target)
 		{			
 			if(time<1.0)
 				time=1.0;	//minimum dmg limiter
+			
+			if(b_buffed_blitz)
+				if(time<1.75)
+					time=1.75;
+
 			float ratio = time/2.0;
 			DamageDeal *=ratio;
 		}
