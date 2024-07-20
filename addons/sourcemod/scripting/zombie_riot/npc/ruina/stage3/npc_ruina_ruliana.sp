@@ -217,7 +217,7 @@ methodmap Ruliana < CClotBody
 		static const char Items[][] = {
 			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
-			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
+			RUINA_CUSTOM_MODELS_2,
 			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
 			RUINA_CUSTOM_MODELS_2
 		};
@@ -227,13 +227,15 @@ methodmap Ruliana < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, _, 1.0);
 		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+		SetVariantInt(RUINA_WINGS_1);
+		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

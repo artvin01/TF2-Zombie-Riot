@@ -48,6 +48,11 @@ $bodygroup "rei_launcher"		//todo: resize it, its a bit tooo big.
 	blank
 	studio "v2/rei_launcher.smd"
 }
+$bodygroup "wings"			//test
+{
+	blank
+	studio "v2/wings.smd"
+}
 
 
 
@@ -65,6 +70,7 @@ $cdmaterials "models\custom_weaponry\"
 $cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
 $cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
 $cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
+$cdmaterials "models\workshop\player\items\medic\sbxo2014_medic_wintergarb_coat\"
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0
