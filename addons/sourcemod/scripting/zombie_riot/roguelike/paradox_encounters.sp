@@ -570,3 +570,238 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 		}
 	}
 }
+
+public float Rogue_Encounter_FortituousOpportunity()
+{
+	GiveCash(4000);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_FortituousOpportunity, "Fortituous Opportunity Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Fortituous Opportunity Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Fortituous Opportunity Desc 2");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	ArrayList collection = Rogue_GetCurrentCollection();
+
+	if(collection)
+	{
+		collection = collection.Clone();
+		collection.Sort(Sort_Random, Sort_Integer);
+		
+		Artifact artifact;
+		int found;
+		int length = collection.Length;
+		for(int i; i < length; i++)
+		{
+			Rogue_GetCurrentArtifacts().GetArray(collection.Get(i), artifact);
+
+			if(artifact.FuncCollect == INVALID_FUNCTION &&
+			   artifact.FuncRemove != INVALID_FUNCTION)
+			{
+				strcopy(vote.Name, sizeof(vote.Name), artifact.Name);
+				strcopy(vote.Desc, sizeof(vote.Desc), "Artifact Info");
+				strcopy(vote.Config, sizeof(vote.Config), artifact.Name);
+				list.PushArray(vote);
+				
+				if(++found > 2)
+					break;
+			}
+		}
+
+		delete collection;
+	}
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+public void Rogue_Vote_FortituousOpportunity(const Vote vote, int index)
+{
+	if(vote.Config[0])
+	{
+		CPrintToChatAll("%t", "Fortituous Opportunity Lore 1", vote.Config);
+		Rogue_RemoveNamedArtifact(vote.Config);
+		
+		Artifact artifact;
+		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
+			Rogue_GiveNamedArtifact(artifact.Name);
+	}
+	else
+	{
+		PrintToChatAll("%t", "Fortituous Opportunity Lore 2");
+		Rogue_AddIngots(4);
+	}
+}
+
+static bool HasSent;
+static int SentUser1 = -1;
+static int SentUser2 = -1;
+public float Rogue_Encounter_EmergencyDispatch()
+{
+	GiveCash(4000);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EmergencyDispatch, "Emergency Dispatch Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 2");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 2");
+	list.PushArray(vote);
+
+	int count;
+	int[] players = new int[MaxClients];
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+		{
+			players[count++] = client;
+		}
+	}
+	
+	if(count < 5)
+	{
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
+		strcopy(vote.Append, sizeof(vote.Append), "Bob The Second");
+		vote.Config[0] = -1;
+		vote.Config[1] = -1;
+		list.PushArray(vote);
+	}
+	else
+	{
+		int pos;
+		SortIntegers(players, count, Sort_Random);
+
+		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
+		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1b");
+
+		for(int i; i < 3; i++)
+		{
+			int client1 = players[pos++];
+			int client2 = players[pos++];
+			
+			if(count > (6 + (i*3)))
+			{
+				Format(vote.Append, sizeof(vote.Append), " %N and %N", client1, client2);
+				vote.Config[0] = GetClientUserId(client1);
+				vote.Config[1] = GetClientUserId(client2);
+			}
+			else
+			{
+				Format(vote.Append, sizeof(vote.Append), " %N", client1);
+				vote.Config[0] = GetClientUserId(client1);
+				vote.Config[1] = -1;
+			}
+
+			list.PushArray(vote);
+		}
+	}
+
+	Rogue_StartGenericVote(20.0);
+
+	return 30.0;
+}
+public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
+{
+	if(index)
+	{
+		int client1 = GetClientOfUserId(vote.Config[0]);
+		int client2 = GetClientOfUserId(vote.Config[1]);
+
+		if(!client1 && client2)
+		{
+			client1 = client2;
+			client2 = 0;
+		}
+
+		if(client2)
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Lore 1b", client1, client2);
+			TF2_RespawnPlayer(client1);
+			TF2_RespawnPlayer(client2);
+		}
+		else if(client1)
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Lore 1a", client1);
+			TF2_RespawnPlayer(client1);
+		}
+		else
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Lore 1c");
+		}
+
+		SentUser1 = client1 ? GetClientUserId(client1) : -1;
+		SentUser2 = client2 ? GetClientUserId(client2) : -1;
+		HasSent = true;
+	}
+	else
+	{
+		PrintToChatAll("%t", "Emergency Dispatch Lore 2");
+		GiveCash((Rogue_GetFloor() + 1) * 1000);
+	}
+}
+public bool Rogue_BlueParadox_CanTeutonUpdate(int client)
+{
+	if(HasSent)
+	{
+		int userid = GetClientUserId(client);
+		if(SentUser1 == userid || SentUser2 == userid)
+		{
+			TeutonType[client] = TEUTON_DEAD;
+			return false;
+		}
+	}
+
+	return true;
+}
+public void Rogue_BlueParadox_NewFloor(int floor)
+{
+	if(HasSent)
+	{
+		int client1 = GetClientOfUserId(SentUser1);
+		int client2 = GetClientOfUserId(SentUser2);
+
+		if(!client1 && client2)
+		{
+			client1 = client2;
+			client2 = 0;
+		}
+
+		GiveCash(1000 * floor);
+
+		if(client2)
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Return 2", client1, client2);
+
+			TF2_RespawnPlayer(client1);
+			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", 2000 * floor);
+			CashRecievedNonWave[client1] += 2000 * floor;
+			CashSpent[client1] -= 2000 * floor;
+
+			TF2_RespawnPlayer(client2);
+			CPrintToChat(client2, "{green}%t", "Credits_Menu_New", 2000 * floor);
+			CashRecievedNonWave[client2] += 2000 * floor;
+			CashSpent[client2] -= 2000 * floor;
+		}
+		else if(client1)
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Return 1", client1);
+
+			TF2_RespawnPlayer(client1);
+			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", 2000 * floor);
+			CashRecievedNonWave[client1] += 2000 * floor;
+			CashSpent[client1] -= 2000 * floor;
+		}
+		else
+		{
+			CPrintToChatAll("%t", "Emergency Dispatch Return 3");
+
+			Rogue_GiveIngots(5);
+		}
+	}
+}
+public void Rogue_BlueParadox_Reset()
+{
+	HasSent = false;
+}

@@ -350,6 +350,7 @@ void Rogue_MapStart()
 	Zero(f_ProvokedAngerCD);
 	Rogue_Paradox_MapStart();
 	Rogue_ParadoxShop_Fail();
+	Rogue_BlueParadox_Reset();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -694,6 +695,7 @@ void Rogue_RoundEnd()
 	CurrentChaos = 0;
 	BonusLives = 0;
 	BattleChaos = 0.0;
+	Rogue_BlueParadox_Reset();
 
 	if(CurrentCollection)
 	{
@@ -1096,6 +1098,7 @@ void Rogue_NextProgress()
 				CurrentCount = -1;
 				ExtraStageCount = 0;
 				SteamWorks_UpdateGameTitle();
+				Rogue_BlueParadox_NewFloor(CurrentFloor);
 
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1221,7 +1224,7 @@ void Rogue_NextProgress()
 					TeleportToSpawn();
 					
 					SetFloorMusic(floor, true);
-					SetNextStage(id, true, stage, 30.0);
+					SetNextStage(id, true, stage, 20.0);
 				}
 			}
 			else	// Normal Stage

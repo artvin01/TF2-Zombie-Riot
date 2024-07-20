@@ -810,7 +810,7 @@
 	{
 		"en"	"A wandering merchant appears, asking if you wish\nto sell anything in exchange for something else."
 	}
-	"Fortituous Opportunity Lore 1a"
+	"Fortituous Opportunity Lore 1"
 	{
 		"#format"	"{1:t}"
 		"en"		"You exchange your {yellow}{1}{default} and in return, he gives you something else."
@@ -821,7 +821,7 @@
 	}
 	"Fortituous Opportunity Desc 2"
 	{
-		"en"	"{green}Gain 4000 credits and 4 australium ingots"
+		"en"	"{green}Gain 4 australium ingots"
 	}
 	"Fortituous Opportunity Lore 2"
 	{
@@ -840,15 +840,23 @@
 	{
 		"en"	"Send"
 	}
+	"Emergency Dispatch Desc 1a"
+	{
+		"en"	"{red}Send Bob The Second to help."
+	}
+	"Emergency Dispatch Desc 1b"
+	{
+		"en"	"{red}Send these players to help. {default}They will be forced away and will return upon reaching the next chapter."
+	}
 	"Emergency Dispatch Lore 1a"
 	{
 		"#format"	"{1:N}"
-		"en"		"You send {1} to go with him. They head off into the distance."
+		"en"		"You send {red}{1} {default}to go with him. They head off into the distance."
 	}
 	"Emergency Dispatch Lore 1b"
 	{
 		"#format"	"{1:N},{2:N}"
-		"en"		"You send {1} and {2} to go with him. They head off into the distance."
+		"en"		"You send {red}{1} {default}and {red}{2} {default}to go with him. They head off into the distance."
 	}
 	"Emergency Dispatch Lore 1c"
 	{
@@ -869,12 +877,12 @@
 	"Emergency Dispatch Return 1"
 	{
 		"#format"	"{1:N}"
-		"en"		"{1} have returned, and with some money."
+		"en"		"{red}{1} {default}have returned, and with some money."
 	}
 	"Emergency Dispatch Return 2"
 	{
 		"#format"	"{1:N},{2:N}"
-		"en"		"{1} and {2} have returned, and with some money."
+		"en"		"{red}{1} {default}and {red}{2}{default}have returned, and with some money."
 	}
 	"Emergency Dispatch Return 3"
 	{
