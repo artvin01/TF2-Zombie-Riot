@@ -2,75 +2,74 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/heavy_paincrticialdeath01.mp3",
-	"vo/heavy_paincrticialdeath02.mp3",
-	"vo/heavy_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/heavy_painsharp01.mp3",
-	"vo/heavy_painsharp02.mp3",
-	"vo/heavy_painsharp03.mp3",
-	"vo/heavy_painsharp04.mp3",
-	"vo/heavy_painsharp05.mp3",
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3",
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/heavy_taunts16.mp3",
-	"vo/taunts/heavy_taunts18.mp3",
-	"vo/taunts/heavy_taunts19.mp3",
+	"vo/engineer_helpme01.mp3",
+	"vo/engineer_helpme02.mp3",
+	"vo/engineer_helpme03.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"vo/heavy_meleeing01.mp3",
-	"vo/heavy_meleeing02.mp3",
-	"vo/heavy_meleeing03.mp3",
-	"vo/heavy_meleeing04.mp3",
-	"vo/heavy_meleeing05.mp3",
-	"vo/heavy_meleeing06.mp3",
-	"vo/heavy_meleeing07.mp3",
-	"vo/heavy_meleeing08.mp3",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cbar_hitbod1.wav",
-	"weapons/cbar_hitbod2.wav",
-	"weapons/cbar_hitbod3.wav",
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
 
-
-void DesertKhazaan_OnMapStart_NPC()
+void VoidKunul_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Khazaan");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_khazaan");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
-	data.IconCustom = false;
+	strcopy(data.Name, sizeof(data.Name), "Kunul");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_kunul");
+	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return DesertKhazaan(client, vecPos, vecAng, ally);
+	return VoidKunul(client, vecPos, vecAng, ally);
 }
-
-methodmap DesertKhazaan < CClotBody
+methodmap VoidKunul < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 120);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -82,18 +81,18 @@ methodmap DesertKhazaan < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 120);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 120);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -102,59 +101,65 @@ methodmap DesertKhazaan < CClotBody
 	}
 	
 	
-	public DesertKhazaan(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidKunul(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertKhazaan npc = view_as<DesertKhazaan>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "900", ally));
+		VoidKunul npc = view_as<VoidKunul>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "0.8", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
-		SetVariantInt(0);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
-		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(DesertKhazaan_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertKhazaan_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(DesertKhazaan_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VoidKunul_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VoidKunul_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VoidKunul_ClotThink);
+		f_HeadshotDamageMultiNpc[npc.index] = 0.0;
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 310.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/sd_tattoos/sd_tattoos_heavy.mdl");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/jul13_katyusha/jul13_katyusha.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/engineer/engy_earphones.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/medic/berliners_bucket_helm.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask/short2014_all_mercs_mask_heavy.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 		
 		return npc;
 	}
 }
 
-public void DesertKhazaan_ClotThink(int iNPC)
+public void VoidKunul_ClotThink(int iNPC)
 {
-	DesertKhazaan npc = view_as<DesertKhazaan>(iNPC);
+	VoidKunul npc = view_as<VoidKunul>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -181,12 +186,6 @@ public void DesertKhazaan_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] + 0.005;
-	if(fl_TotalArmor[npc.index] > 1.0)
-	{
-		fl_TotalArmor[npc.index] = 1.0;
-	}
-	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -203,7 +202,7 @@ public void DesertKhazaan_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		DesertKhazaanSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		VoidKunulSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -213,9 +212,9 @@ public void DesertKhazaan_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action DesertKhazaan_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action VoidKunul_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	DesertKhazaan npc = view_as<DesertKhazaan>(victim);
+	VoidKunul npc = view_as<VoidKunul>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -229,25 +228,23 @@ public Action DesertKhazaan_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void DesertKhazaan_NPCDeath(int entity)
+public void VoidKunul_NPCDeath(int entity)
 {
-	DesertKhazaan npc = view_as<DesertKhazaan>(entity);
+	VoidKunul npc = view_as<VoidKunul>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
 		
-	
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, float distance)
+void VoidKunulSelfDefense(VoidKunul npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -268,33 +265,27 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 25.0;
-					if(npc.m_iOverlordComboAttack >= 3)
+					float damageDealt = 50.0;
+
+					if(!NpcStats_IsEnemySilenced(npc.index))
 					{
-						damageDealt *= 2.0;
-						Custom_Knockback(npc.index, target, 550.0, true, true); 
-						if(GetTeam(npc.index) != TFTeam_Red)
+						if(target > MaxClients)
 						{
-							fl_TotalArmor[npc.index] = fl_TotalArmor[npc.index] * 0.5;
-							if(fl_TotalArmor[npc.index] < 0.25)
+							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
+						}
+						else
+						{
+							if (!IsInvuln(target))
 							{
-								fl_TotalArmor[npc.index] = 0.25;
+								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
 							}
 						}
 					}
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-
-
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
-			}
-			if(npc.m_iOverlordComboAttack >= 3)
-			{
-				npc.m_iOverlordComboAttack = 0;
 			}
 			delete swingTrace;
 		}
@@ -312,19 +303,11 @@ void DesertKhazaanSelfDefense(DesertKhazaan npc, float gameTime, int target, flo
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.m_iOverlordComboAttack++;
-				if(npc.m_iOverlordComboAttack >= 3)
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_SECONDARY");
-				}
-				else
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				}
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 0.40;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
 	}

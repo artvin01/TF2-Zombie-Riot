@@ -224,6 +224,14 @@
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
 	}
+	"Voided Diversionistico Spawn"
+	{
+		"en"	"Voided Diversionistico Spawn"
+	}
+	"A Void Gate Apeared..."
+	{
+		"en"	"A Void Gate Apeared..."
+	}
 	"Snipers Appear"
 	{
 		"en"	"Snipers Appear."

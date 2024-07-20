@@ -432,6 +432,10 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		vicloc[i] += GetRandomFloat(-45.0, 45.0);
 	}
 	
+	if (b_thisNpcIsARaid[victim])
+	{
+		DMG_Final *= 0.65;
+	}
 	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_CLUB, _, _, vicloc, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 	
 	if (dist <= Radius && dieingstate[attacker] == 0)

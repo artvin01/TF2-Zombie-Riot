@@ -433,6 +433,52 @@ void NPC_ConfigSetup()
 	UrsusOnMapStart();
 	VulpoOnMapStart();
 
+//VoidCreatures and affected
+//1-15
+	VoidEaling_OnMapStart_NPC();
+	VoidFramingVoider_OnMapStart_NPC();
+	GrowingExat_OnMapStart_NPC();
+	VoidMutatingBlob_OnMapStart_NPC();
+	VoidSpreader_OnMapStart_NPC();
+	VoidInfestor_OnMapStart_NPC();
+	VoidHardCrust_OnMapStart_NPC();
+	VoidCarrier_OnMapStart_NPC();
+	//boss
+	VoidIxufan_OnMapStart_NPC();
+
+//16-30
+	VoidEnFramedVoider_OnMapStart_NPC();
+	VoidBloodPollutor_OnMapStart_NPC();
+	VoidExpidonsanFortifier_OnMapStart_NPC();
+	VoidParticle_OnMapStart_NPC();
+	VoidHostingBlob_OnMapStart_NPC();
+	VoidBlobbingMonster_OnMapStart_NPC();
+	VoudSprayer_OnMapStart_NPC();
+
+	//boss
+	VoidEncasulator_OnMapStart_NPC();
+
+//31-45
+	VoudExpidonsanCleaner_OnMapStart_NPC();
+	VoidExpidonsanContainer_OnMapStart_NPC();
+	VoidSacraficer_OnMapStart_NPC();
+	VoidingBedrock_OnMapStart_NPC();
+	VoidHeavyPerisher_OnMapStart_NPC();
+	VoidMinigateKeeper_OnMapStart_NPC();
+
+//boss
+	VoidBroodingPetra_OnMapStart_NPC();
+
+//46-60
+	VoidKunul_OnMapStart_NPC();
+	VoidTotalGrowth_OnMapStart_NPC();
+	VoidsOffspring_OnMapStart_NPC();
+	VoidRejuvinator_OnMapStart_NPC();
+
+	//void events
+	VoidedDiversionistico_OnMapStart_NPC();
+	VoidPortal_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -519,6 +565,7 @@ void NPC_ConfigSetup()
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
+	Vhxis_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1242,9 +1289,48 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/interitus/forest/npc_vulpo.sp"
 #include "zombie_riot/npc/interitus/forest/npc_majorsteam.sp"
 
+#include "zombie_riot/npc/void/npc_spawn_void_portal.sp"
+#include "zombie_riot/npc/void/npc_void_base.sp"
+#include "zombie_riot/npc/void/npc_voided_diversionistico.sp"
+//1-15
+#include "zombie_riot/npc/void/early/npc_ealing.sp"
+#include "zombie_riot/npc/void/early/npc_framing_voider.sp"
+#include "zombie_riot/npc/void/early/npc_growing_exat.sp"
+#include "zombie_riot/npc/void/early/npc_mutating_blob.sp"
+#include "zombie_riot/npc/void/early/npc_void_spreader.sp"
+#include "zombie_riot/npc/void/early/npc_void_infestor.sp"
+#include "zombie_riot/npc/void/early/npc_void_crust.sp"
+#include "zombie_riot/npc/void/early/npc_void_carrier.sp"
+#include "zombie_riot/npc/void/early/npc_void_ixufan.sp"
+
+#include "zombie_riot/npc/void/earlymid/npc_enframed_voider.sp"
+#include "zombie_riot/npc/void/earlymid/npc_blood_pollutor.sp"
+#include "zombie_riot/npc/void/earlymid/npc_voided_expidonsan_fortifier.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_particle.sp"
+#include "zombie_riot/npc/void/earlymid/npc_hosting_blob.sp"
+#include "zombie_riot/npc/void/earlymid/npc_blobbing_monster.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_sprayer.sp"
+#include "zombie_riot/npc/void/earlymid/npc_void_encasulator.sp"
+
+
+#include "zombie_riot/npc/void/midlate/npc_void_expidonsan_container.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_expidonsan_cleaner.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_sacraficer.sp"
+#include "zombie_riot/npc/void/midlate/npc_voiding_bedrock.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_heavy_perisher.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_minigate_keeper.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_brooding_petra.sp"
+
+
+#include "zombie_riot/npc/void/late/npc_void_kunul.sp"
+#include "zombie_riot/npc/void/late/npc_void_total_growth.sp"
+#include "zombie_riot/npc/void/late/npc_voids_offspring.sp"
+#include "zombie_riot/npc/void/late/npc_void_rejuvinator.sp"
+
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 {
