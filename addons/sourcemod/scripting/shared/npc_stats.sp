@@ -6397,7 +6397,7 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);				
 			}
-			if(BleedType == 3)
+			else if(BleedType == 3)
 			{
 				int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
 				SetParent(prop, particle);
@@ -8144,6 +8144,10 @@ public void ArrowStartTouch(int arrow, int entity)
 		if(i_ChaosArrowAmount[arrow] > 0)
 		{
 			Elemental_AddChaosDamage(entity, owner, i_ChaosArrowAmount[arrow]);
+		}
+		if(i_VoidArrowAmount[arrow] > 0)
+		{
+			Elemental_AddVoidDamage(entity, owner, i_VoidArrowAmount[arrow]);
 		}
 #endif
 
