@@ -152,7 +152,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_GetMaxRound() == Waves_GetRound())
+		if(Waves_Started() && Waves_GetMaxRound() == Waves_GetRound())
 		{
 			npc.m_bStaticNPC = false;
 			Is_a_Medic[npc.index] = false;

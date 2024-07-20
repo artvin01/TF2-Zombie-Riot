@@ -675,11 +675,51 @@ public void Rogue_ShopSale_Remove()
 	ShopSale = false;
 }
 
+public void Rogue_BlueGoggles_Collect()
+{
+	int client = -1;
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			client = client_summon;
+			break;
+		}
+	}
+	float flPos[3];
+	GetClientAbsOrigin(client, flPos);
+	NPC_CreateByName("npc_goggles_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+}
+
+public void Rogue_BlueGoggles_Remove()
+{
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+}
+
 static Handle KahmlsteinTimer;
 
 public void Rogue_Kahmlstein_Collect()
 {
-	//TODO: Summon ally Kahmlstein
+	int client = -1;
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			client = client_summon;
+			break;
+		}
+	}
+	float flPos[3];
+	GetClientAbsOrigin(client, flPos);
+	NPC_CreateByName("npc_kahmlstein_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
 
 	delete KahmlsteinTimer;
 	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
@@ -687,6 +727,18 @@ public void Rogue_Kahmlstein_Collect()
 
 public void Rogue_Kahmlstein_Remove()
 {
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+
 	delete KahmlsteinTimer;
 	Rogue_Refresh_Remove();
 }
