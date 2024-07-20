@@ -443,20 +443,20 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				PrintToChatAll("%t", "Lost Villager Lore 1");
 				
 				ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_LostVillager, "Lost Villager Lore 1");
-				Vote vote;
-				vote.Config[0] = 1;
+				Vote vote2;
+				vote2.Config[0] = 1;
 
-				strcopy(vote.Name, sizeof(vote.Name), "Lost Villager Option 1a");
-				strcopy(vote.Desc, sizeof(vote.Desc), "Lost Villager Desc 1a");
-				list.PushArray(vote);
+				strcopy(vote2.Name, sizeof(vote2.Name), "Lost Villager Option 1a");
+				strcopy(vote2.Desc, sizeof(vote2.Desc), "Lost Villager Desc 1a");
+				list.PushArray(vote2);
 
-				strcopy(vote.Name, sizeof(vote.Name), "Lost Villager Option 1b");
-				strcopy(vote.Desc, sizeof(vote.Desc), "Lost Villager Desc 1b");
-				list.PushArray(vote);
+				strcopy(vote2.Name, sizeof(vote2.Name), "Lost Villager Option 1b");
+				strcopy(vote2.Desc, sizeof(vote2.Desc), "Lost Villager Desc 1b");
+				list.PushArray(vote2);
 
-				strcopy(vote.Name, sizeof(vote.Name), "Lost Villager Option 1c");
-				strcopy(vote.Desc, sizeof(vote.Desc), "Lost Villager Desc 1c");
-				list.PushArray(vote);
+				strcopy(vote2.Name, sizeof(vote2.Name), "Lost Villager Option 1c");
+				strcopy(vote2.Desc, sizeof(vote2.Desc), "Lost Villager Desc 1c");
+				list.PushArray(vote2);
 
 				Rogue_StartGenericVote(20.0);
 			}
@@ -532,13 +532,13 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				}
 				case 4, 5, 6:
 				{
-					Rogue_RemoveIngots(4);
+					Rogue_AddIngots(-4);
 					Store_RandomizeNPCStore(2, 1);
 					title = 'e';
 				}
 				case 7, 8:
 				{
-					Rogue_RemoveIngots(4);
+					Rogue_AddIngots(-4);
 
 					Artifact artifact;
 					if(Rogue_GetRandomArtfiact(artifact, true) != -1)
