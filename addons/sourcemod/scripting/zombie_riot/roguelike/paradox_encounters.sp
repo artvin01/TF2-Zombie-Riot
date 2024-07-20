@@ -264,7 +264,7 @@ public float Rogue_Encounter_Prophecy1()
 	bool found;
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(ROGUE2_ITEM1))
+		if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1))
 		{
 			found = true;
 			break;
@@ -305,7 +305,7 @@ public float Rogue_Encounter_Prophecy2()
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(ROGUE2_ITEM2))
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM2))
 			{
 				kalm = true;
 				break;
