@@ -1181,14 +1181,22 @@ static void ClotThink(int iNPC)
 			if(npc.m_flReloadIn <= GetGameTime(npc.index) && b_Are_we_reloading[npc.index])	//fast1
 			{
 				b_Are_we_reloading[npc.index] = false;
+				if(b_buffed_blitz)
+				{
+					npc.m_flNextRangedBarrage_Spam = 0.0;
+					npc.m_iAmountProjectiles = 0;
+				}
+					
 			}
 			if(flDistanceToTarget < 10000000 && npc.m_flReloadIn <= GetGameTime(npc.index) && !b_Are_we_reloading[npc.index] && fl_attack_timeout[npc.index] <= GetGameTime(npc.index))
 			{	//Blitz has infinite range and moves while firing rockets.
+			
 				int Enemy_I_See;		
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
+					npc.m_bAllowBackWalking = true;
 					//Look at target so we hit.
 					npc.FaceTowards(vecTarget, 1500.0);
 					//Can we attack right now?
@@ -1206,6 +1214,14 @@ static void ClotThink(int iNPC)
 						npc.m_flAttackHappens = 0.0;
 					}
 				}
+				else
+				{
+					npc.m_bAllowBackWalking = false;
+				}
+			}
+			else
+			{
+				npc.m_bAllowBackWalking = false;
 			}
 			if(b_Are_we_reloading[npc.index])	//Melee logic for when we are shoping for rockets. aka reloading.
 			{
@@ -1655,13 +1671,27 @@ static void NPC_Death(int entity)
 		
 	if(IsValidClient(closest) && !b_timer_lose[npc.index])
 	{
-		if(b_buffed_blitz)
+		if(g_b_item_allowed)
+		{
+			switch(GetRandomInt(1, 4))	//either he will say something, or nothing.
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: error");
+				}
+			}
+		}
+		else if(b_buffed_blitz)
 		{
 			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}Blitzkrieg{default}: next time {yellow}%N{default} you wont be ths lucky, {red}next time", closest);
+					CPrintToChatAll("{crimson}Blitzkrieg{default}: next time {yellow}%N{default} you wont be this lucky, {red}next time", closest);
 				}
 				case 2:
 				{
@@ -1721,11 +1751,12 @@ public void Blitzkrieg_Punishment_Invoke(int ref, int enemy, float dist)
 			fl_blitz_ioc_punish_timer[entity][enemy]=GetGameTime(npc.index)+1.0;	//Punishment be upon thee
 			Time = 0.75;
 		}
-		fl_blitz_punish_dmg=25.0*i_HealthScale[npc.index];
+		float base_dmg = (b_buffed_blitz ? 50.0 : 25.0);
+		fl_blitz_punish_dmg=base_dmg*i_HealthScale[npc.index];
 		
-		float Range = 200.0;
+		float Range = (b_buffed_blitz ? 300.0 : 200.0);
 		float vecTarget[3];
-		WorldSpaceCenter(enemy, vecTarget );
+		WorldSpaceCenter(enemy, vecTarget);
 		vecTarget[2] += 1.0;
 		
 		if(dist > 4000000 && !b_BlitzLight[entity])
@@ -2085,7 +2116,8 @@ public Action BlitzLight_TBB_Tick(int client)
 	
 	if(fl_BlitzLight_Throttle[npc.index] < GetGameTime(npc.index))
 	{
-		fl_BlitzLight_Throttle[npc.index]=GetGameTime(npc.index) + 0.04;
+		if(!b_buffed_blitz)
+			fl_BlitzLight_Throttle[npc.index]=GetGameTime(npc.index) + 0.04;
 		if(IsValidEntity(entity))
 		{
 			if (BlitzLight_Duration_notick[npc.index] > GetGameTime(npc.index))	//If current active time is more than charge, then its "charging"
@@ -2220,7 +2252,7 @@ void BlitzLight_Beams(int entity, bool charging = true)
 	}
 	else
 	{
-		BlitzLight_Angle[npc.index] += 1.25;
+		BlitzLight_Angle[npc.index] += (b_buffed_blitz ? 1.5 : 1.25);
 	}
 	
 	if (BlitzLight_Angle[npc.index] >= 360.0)
@@ -2381,7 +2413,7 @@ public void BlitzLight_DealDamage(int entity)
 public void Blitzlight_Shake_Client(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidClient(victim))
-		Client_Shake(victim, 0, 8.0, 8.0, 0.1);
+		Client_Shake(victim, 0, 10.0, 10.0, 0.2);
 }
 static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
 {
