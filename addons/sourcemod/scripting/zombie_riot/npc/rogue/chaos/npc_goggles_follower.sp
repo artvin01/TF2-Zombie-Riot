@@ -746,17 +746,17 @@ static void ClotThink(int iNPC)
 
 	if(ally > 0)
 	{
+		float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+
 		if(b_BobsCuringHand[ally] && b_BobsCuringHand_Revived[ally] >= 20 && TeutonType[ally] == TEUTON_NONE && dieingstate[ally] > 0 
 			&& GetEntPropEnt(ally, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[ally])
 		{
 			//walk to client.
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
-
 			if(flDistanceToTarget < 5000.0)
 			{
 				//slowly revive
-				ReviveClientFromOrToEntity(npc.m_iTargetWalkTo, npc.index, 1);
+				ReviveClientFromOrToEntity(ally, npc.index, 1);
 				
 				npc.SpeechRevive();
 				npc.StopPathing();
@@ -766,7 +766,7 @@ static void ClotThink(int iNPC)
 			{
 				// Run to ally target, ignore enemies
 				npc.SetActivity("ACT_MP_RUN_ITEM2");
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				NPC_SetGoalEntity(npc.index, ally);
 				npc.StartPathing();
 				target = -1;
 			}
@@ -779,7 +779,7 @@ static void ClotThink(int iNPC)
 		else
 		{
 			// Walk to ally target
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			NPC_SetGoalEntity(npc.index, ally);
 			npc.StartPathing();
 		}
 
