@@ -789,6 +789,10 @@
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
 	}
+	"Hyper Blitzkrieg"
+	{
+		"en"		"Hyper Blitzkrieg"
+	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"

@@ -511,6 +511,10 @@
 	{
 		"en" 		"A supreme being of rockets, capable of outputing extremely high damage, its also said he owns his own personal army. He posses's multiple lives, usually melee is a death sentance.\nTeleport (can be silenced)."
 	}
+	"Hyper Blitzkrieg Desc"
+	{
+		"en"		"Blitzkrieg but at full power."
+	}
 	"Pikeman Desc"
 	{
 		"en" 		"Stronger Spearman, deals 2x dmg to enemies that mounted a building"
