@@ -139,8 +139,27 @@ methodmap Malianium < CClotBody
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	
-	
+
+	//npc.AdjustWalkCycle();
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	public Malianium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Malianium npc = view_as<Malianium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
@@ -169,6 +188,8 @@ methodmap Malianium < CClotBody
 			"models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
+
+		npc.m_iChanged_WalkCycle = 1;
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -246,6 +267,8 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 1.25);
 

@@ -112,7 +112,25 @@ methodmap Lazines < CClotBody
 		#endif
 	}
 	
-	
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_SECONDARY");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_SECONDARY");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	public Lazines(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Lazines npc = view_as<Lazines>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
@@ -123,6 +141,8 @@ methodmap Lazines < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
@@ -216,6 +236,8 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 1.0);	//will take 30 seconds to charge special
 	

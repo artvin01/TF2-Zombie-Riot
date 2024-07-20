@@ -109,6 +109,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_ATTACK 				"ambient/machines/thumper_dust.wav"
 
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
+#define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
 
 int i_Ruina_Ovelord_Ref;
 

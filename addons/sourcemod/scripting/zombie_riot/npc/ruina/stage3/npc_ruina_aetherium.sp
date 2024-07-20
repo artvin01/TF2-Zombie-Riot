@@ -147,20 +147,20 @@ methodmap Aetherium < CClotBody
 
 		if(Aimed)
 		{
-			if(this.m_iChanged_WalkCycle == 0)
+			if(!this.m_fbGunout)
 			{
 				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
 				if(iActivity > 0) this.StartActivity(iActivity);
-				this.m_iChanged_WalkCycle = 1;
+				this.m_fbGunout = true;
 			}
 		}
 		else
 		{
-			if(this.m_iChanged_WalkCycle == 1)
+			if(this.m_fbGunout)
 			{
 				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
 				if(iActivity > 0) this.StartActivity(iActivity);
-				this.m_iChanged_WalkCycle = 0;
+				this.m_fbGunout = false;
 			}
 		}
 	}
@@ -176,6 +176,8 @@ methodmap Aetherium < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_fbGunout = false;
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*

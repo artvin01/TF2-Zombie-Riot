@@ -194,6 +194,26 @@ methodmap Ruliana < CClotBody
 		#endif
 	}
 	
+	//npc.AdjustWalkCycle();
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	public Ruliana(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -203,23 +223,25 @@ methodmap Ruliana < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		npc.m_iChanged_WalkCycle = 1;
 		
 		/*
 			crone's dome 				"models/workshop/player/items/all_class/witchhat/witchhat_%s.mdl"
 			lo-grav loafers				//Hw2013_Moon_Boots
-			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
-			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
+			berliners
+			hazardous					"models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl"
 		
 		*/
 		static const char Items[][] = {
 			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			RUINA_CUSTOM_MODELS_2,
-			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
-			RUINA_CUSTOM_MODELS_2
+			"models/workshop/player/items/medic/sum24_hazardous_vest/sum24_hazardous_vest.mdl",
+			RUINA_CUSTOM_MODELS_2,
+			"models/player/items/medic/berliners_bucket_helm.mdl"
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -229,8 +251,8 @@ methodmap Ruliana < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, _, 1.0);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, _, 0.5);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
@@ -247,7 +269,7 @@ methodmap Ruliana < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		fl_npc_basespeed = 300.0;
+		fl_npc_basespeed = 290.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -322,6 +344,8 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	npc.AdjustWalkCycle();
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
@@ -340,11 +364,12 @@ static void ClotThink(int iNPC)
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
 	float Battery_Cost = 3500.0;
+	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost)
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
 		if(fl_ruina_battery[npc.index] > Battery_Cost)
 			fl_ruina_battery[npc.index] = Battery_Cost;
-		RaidModeScaling = (fl_ruina_battery[npc.index]/Battery_Cost);
+		RaidModeScaling = battery_Ratio;
 	}
 
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
@@ -407,7 +432,6 @@ static void ClotThink(int iNPC)
 		
 		if(fl_ruina_battery[npc.index]>=Battery_Cost && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
-			fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 
 			fl_ruina_battery_timeout[npc.index] = GameTime + 5.0;
 
@@ -443,7 +467,7 @@ static void ClotThink(int iNPC)
 						fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
 						npc.FaceTowards(vecTarget, 100000.0);
-						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						npc.PlayPrimaryFireSound();
 
 						float 	flPos[3], // original
@@ -459,10 +483,10 @@ static void ClotThink(int iNPC)
 			
 						int Proj = npc.FireParticleRocket(target_vec, (npc.Anger ? 125.0 : 50.0) , projectile_speed , (npc.Anger ? 150.0 : 75.0) , "raygun_projectile_blue", _, _, true, flPos);
 
-						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
+						if(battery_Ratio > 0.5 && IsValidEntity(Proj))
 						{
-							float 	Homing_Power = 7.0,
-									Homing_Lockon = 50.0;
+							float Homing_Power = (npc.Anger ? 8.0 : 7.0);
+							float Homing_Lockon = (npc.Anger ? 75.0 : 50.0);
 
 							float Ang[3];
 							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
@@ -517,11 +541,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 			//CPrintToChatAll("1 valid target: %i", target);
 			valid_targets[targets_aquired] = target;
 			targets_aquired++;
-			int color[4];
-			Ruina_Color(color);
-			int laser;
-			laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
-			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+			
 		}
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
@@ -541,11 +561,6 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 			//CPrintToChatAll("2 valid target: %i", target);
 			valid_targets[targets_aquired] = target;
 			targets_aquired++;
-			int color[4];
-			Ruina_Color(color);
-			int laser;
-			laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
-			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
@@ -565,11 +580,6 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 			//CPrintToChatAll("3 valid target: %i", target);
 			valid_targets[targets_aquired] = target;
 			targets_aquired++;
-			int color[4];
-			Ruina_Color(color);
-			int laser;
-			laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLACK);
-			CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 
@@ -590,6 +600,12 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	for(int i=0 ; i < targets_aquired ; i++)
 	{
 		int Target = valid_targets[i];
+
+		int color[4];
+		Ruina_Color(color);
+		int laser;
+		laser = ConnectWithBeam(npc.index, Target, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLUE);
+		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 		float vecTarget[3];
 		WorldSpaceCenter(Target, vecTarget);
@@ -704,6 +720,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
+		fl_npc_basespeed = 330.0;
+		
 		if(npc.m_bThisNpcIsABoss)
 		{
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
@@ -754,6 +772,12 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	{
 		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + RoundToFloor(TrueHealing));
 		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+
+		int color[4];
+		Ruina_Color(color);
+		int laser;
+		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, BEAM_COMBINE_BLUE);
+		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 }

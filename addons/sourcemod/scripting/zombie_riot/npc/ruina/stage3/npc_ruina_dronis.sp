@@ -139,6 +139,26 @@ methodmap Dronis < CClotBody
 		
 		
 	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	
 	public Dronis(int client, float vecPos[3], float vecAng[3], int ally)
@@ -152,6 +172,8 @@ methodmap Dronis < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		/*
 			Bunsen Brave		Robo_Heavy_Chief
@@ -235,6 +257,8 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	npc.AdjustWalkCycle();
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	

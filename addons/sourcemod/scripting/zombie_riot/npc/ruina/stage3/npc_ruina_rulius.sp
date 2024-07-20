@@ -148,6 +148,8 @@ methodmap Rulius < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		npc.m_iChanged_WalkCycle = 1;
+
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -209,7 +211,26 @@ methodmap Rulius < CClotBody
 
 		return npc;
 	}
-	
+	//npc.AdjustWalkCycle();
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 }
 
@@ -243,6 +264,8 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	npc.AdjustWalkCycle();
+
 	Ruina_Add_Battery(npc.index, 15.0);
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -252,6 +275,7 @@ static void ClotThink(int iNPC)
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
+
 	
 	if(fl_ruina_battery[npc.index]>3000.0)
 	{
