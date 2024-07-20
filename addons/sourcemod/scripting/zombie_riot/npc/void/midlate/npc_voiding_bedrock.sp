@@ -95,7 +95,7 @@ methodmap VoidingBedrock < CClotBody
 	
 	public VoidingBedrock(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidingBedrock npc = view_as<VoidingBedrock>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
+		VoidingBedrock npc = view_as<VoidingBedrock>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "6500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -107,7 +107,7 @@ methodmap VoidingBedrock < CClotBody
 		}
 		else
 		{
-			npc.m_iOverlordComboAttack = 1000;
+			npc.m_iOverlordComboAttack = 700;
 		}
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

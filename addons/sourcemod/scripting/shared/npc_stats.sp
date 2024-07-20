@@ -5617,20 +5617,20 @@ public void NpcBaseThink(int iNPC)
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.004;
+		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.002;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount *= 0.1;
+			HealingAmount *= 0.01;
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
-			HealingAmount *= 0.25;
+			HealingAmount *= 0.125;
 		}
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 		
-		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.5, 0.0, HEAL_SELFHEAL);
+		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 	}
 #endif
 #if defined RPG

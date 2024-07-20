@@ -137,7 +137,7 @@ methodmap GrowingExat < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 240.0;
 		
 		
 		int skin = 1;
@@ -241,7 +241,7 @@ public Action GrowingExat_OnTakeDamage(int victim, int &attacker, int &inflictor
 	{
 		ModelSize = 3.0;
 	}
-	fl_TotalArmor[victim] = (3.0 / ModelSize) * 0.33;
+	fl_TotalArmor[victim] = ((3.0 / ModelSize) * 0.33) + 0.33;
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", ModelSize); // ZZZZ i sleep
 	
 	return Plugin_Changed;

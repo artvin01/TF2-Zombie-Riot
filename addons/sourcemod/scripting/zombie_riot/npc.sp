@@ -477,6 +477,16 @@ void NPC_ConfigSetup()
 	VoidSacraficer_OnMapStart_NPC();
 	VoidingBedrock_OnMapStart_NPC();
 	VoidHeavyPerisher_OnMapStart_NPC();
+	VoidMinigateKeeper_OnMapStart_NPC();
+
+//boss
+	VoidBroodingPetra_OnMapStart_NPC();
+
+//46-60
+	VoidKunul_OnMapStart_NPC();
+	VoidTotalGrowth_OnMapStart_NPC();
+	VoidsOffspring_OnMapStart_NPC();
+	VoidRejuvinator_OnMapStart_NPC();
 
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
@@ -1337,6 +1347,14 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/midlate/npc_void_sacraficer.sp"
 #include "zombie_riot/npc/void/midlate/npc_voiding_bedrock.sp"
 #include "zombie_riot/npc/void/midlate/npc_void_heavy_perisher.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_minigate_keeper.sp"
+#include "zombie_riot/npc/void/midlate/npc_void_brooding_petra.sp"
+
+
+#include "zombie_riot/npc/void/late/npc_void_kunul.sp"
+#include "zombie_riot/npc/void/late/npc_void_total_growth.sp"
+#include "zombie_riot/npc/void/late/npc_voids_offspring.sp"
+#include "zombie_riot/npc/void/late/npc_void_rejuvinator.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
