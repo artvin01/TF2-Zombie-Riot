@@ -120,7 +120,7 @@ methodmap VoidBlobbingMonster < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
@@ -224,7 +224,7 @@ public Action VoidBlobbingMonster_OnTakeDamage(int victim, int &attacker, int &i
 	{
 		ModelSize = 3.0;
 	}
-	fl_TotalArmor[victim] = (3.0 / ModelSize) * 0.33;
+	fl_TotalArmor[victim] = ((3.0 / ModelSize) * 0.33) + 0.33;
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", ModelSize); // ZZZZ i sleep
 	
 	return Plugin_Changed;
@@ -271,11 +271,11 @@ void VoidBlobbingMonsterSelfDefense(VoidBlobbingMonster npc, float gameTime, int
 					float ModelSize = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 					damageDealt *= ModelSize;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 7.0;
+						damageDealt *= 5.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.75), true, false);
+					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.4), true, false);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 

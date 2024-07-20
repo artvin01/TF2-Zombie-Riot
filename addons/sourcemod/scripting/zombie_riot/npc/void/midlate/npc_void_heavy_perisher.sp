@@ -102,14 +102,14 @@ methodmap VoidHeavyPerisher < CClotBody
 	
 	public VoidHeavyPerisher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidHeavyPerisher npc = view_as<VoidHeavyPerisher>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.25", "25000", ally, false, true));
+		VoidHeavyPerisher npc = view_as<VoidHeavyPerisher>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.25", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		SetVariantInt(2);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -127,7 +127,7 @@ methodmap VoidHeavyPerisher < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 280.0;
+		npc.m_flSpeed = 260.0;
 		
 		
 		int skin = 1;
@@ -232,7 +232,7 @@ public Action VoidHeavyPerisher_OnTakeDamage(int victim, int &attacker, int &inf
 	{
 		ModelSize = 3.0;
 	}
-	fl_TotalArmor[victim] = (3.0 / ModelSize) * 0.33;
+	fl_TotalArmor[victim] = ((3.0 / ModelSize) * 0.33) + 0.33;
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", ModelSize); // ZZZZ i sleep
 	
 	return Plugin_Changed;
@@ -275,15 +275,15 @@ void VoidHeavyPerisherSelfDefense(VoidHeavyPerisher npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 90.0;
+					float damageDealt = 80.0;
 					float ModelSize = GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 					damageDealt *= ModelSize;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 6.0;
+						damageDealt *= 5.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.75), true, false);
+					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.5), true, false);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
