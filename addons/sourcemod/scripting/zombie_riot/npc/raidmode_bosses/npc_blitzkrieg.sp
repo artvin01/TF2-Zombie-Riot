@@ -527,7 +527,10 @@ methodmap Blitzkrieg < CClotBody
 		i_maxfirerockets[npc.index] = 20;	//blitz's max ammo, this number changes on lifeloss.
 		i_final_nr[npc.index] = 0;	//used for logic in blitzlight, basicaly locks out stuff so it doesn't repeat the ability.
 
-		b_buffed_blitz = StrContains(data, "hyper") != -1;
+		b_buffed_blitz = StrContains(data, "hyper") != -1;	//mostly for testing. buuuut....
+
+		if(!b_buffed_blitz)
+			b_buffed_blitz = AlternativeExtraLogic();
 
 		if(b_buffed_blitz)
 		{
