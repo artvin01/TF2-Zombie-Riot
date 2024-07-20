@@ -519,6 +519,7 @@ void NPC_ConfigSetup()
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
+	FinalHunter_Setup();
 }
 
 int NPC_Add(NPCData data)

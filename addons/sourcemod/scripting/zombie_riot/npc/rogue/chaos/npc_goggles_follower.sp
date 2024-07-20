@@ -587,7 +587,7 @@ methodmap GogglesFollower < CClotBody
 		color[1] = 295 - (chaos * 40);
 		color[2] = 335 - (chaos * 80);
 
-		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,60.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,150.0}, endingtextscroll);
 	}
 	
 	public GogglesFollower(int client, float vecPos[3], float vecAng[3])
@@ -770,6 +770,11 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				target = -1;
 			}
+		}
+		else if(flDistanceToTarget < 25000.0)
+		{
+			// Close enough
+			npc.StopPathing();
 		}
 		else
 		{
