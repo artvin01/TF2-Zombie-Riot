@@ -289,7 +289,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 			if(!npc.m_bnew_target)
 			{
 				npc.StartHealing(PrimaryThreatIndex);
-				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 100, 100, 250, 3.0, 3.0, 1.35, LASERBEAM);
+				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 125, 0, 125, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
 				npc.m_bnew_target = true;
 			}
@@ -299,7 +299,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 				if(IsValidEntity(npc.m_iWearable4))
 				{
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 100, 100, 250, 255);
+					SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 				}
 				int MaxHealth = GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth");
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 10), 1.5);
@@ -309,8 +309,10 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 				if(IsValidEntity(npc.m_iWearable4))
 				{
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-					SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+					SetEntityRenderColor(npc.m_iWearable4, 200, 50, 200, 255);
 				}
+				int MaxHealth = GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth");
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.5);
 			}
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 			npc.FaceTowards(WorldSpaceVec, 2000.0);
@@ -335,6 +337,12 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 		npc.StartPathing();
 
 		npc.m_bnew_target = false;	
+	}
+	
+	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	{
+		npc.m_iTargetAlly = GetClosestAlly(npc.index,_,_,VoidRejuvinator_HealCheck);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	npc.PlayIdleAlertSound();
 }

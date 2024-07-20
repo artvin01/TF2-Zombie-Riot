@@ -37,7 +37,6 @@ static const char g_MeleeAttackBackstabSounds[][] = {
 	"player/spy_shield_break.wav",
 };
 
-static int NPCId;
 
 void VoidedDiversionistico_OnMapStart_NPC()
 {
@@ -58,12 +57,6 @@ void VoidedDiversionistico_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
-	NPCId = NPC_Add(data);
-}
-
-int VoidedDiversionisticoID()
-{
-	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
