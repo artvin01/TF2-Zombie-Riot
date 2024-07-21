@@ -13,7 +13,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 
 void Reset_Bomblance(int weapon) //This is on weapon remake. cannot set to 0 outright.
 {
-	Zero(i_NextAttackDoubleHit)
+	Zero(i_NextAttackDoubleHit);
 	Zero(i_HowManyAttack):
 	Bomblance_Map_Precache();
 }
