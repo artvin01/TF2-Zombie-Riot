@@ -102,11 +102,11 @@ public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int
 			attackspeed = (attackspeed * 0.2);
 			Attributes_Set(weapon, 6, attackspeed);
 		}
-		if(i_HowManyAttack[weapon] < 3)
+		if(i_HowManyAttack[weapon] > 2)
 		{
 			b_explode[client] = true;
 		} 
-		if(i_HowManyAttack[weapon] > 3)
+		if(i_HowManyAttack[weapon] > 2)
 		{
 			i_HowManyAttack[weapon] = 0;
 			attackspeed = (attackspeed / 0.2);
