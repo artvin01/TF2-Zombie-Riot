@@ -364,23 +364,24 @@ static void ClotThink(int iNPC)
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
 	float Battery_Cost = 3500.0;
-	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost)
+	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
 		if(fl_ruina_battery[npc.index] > Battery_Cost)
 			fl_ruina_battery[npc.index] = Battery_Cost;
 		RaidModeScaling = battery_Ratio;
-	}
 
-	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
+		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
 		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
 	
-	float Ratio = (float(Health)/float(MaxHealth));
+		float Ratio = (float(Health)/float(MaxHealth));
 
-	if(Ratio < 0.25)
-	{
-		SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+		if(Ratio < 0.25)
+		{
+			SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+		}
 	}
+
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
