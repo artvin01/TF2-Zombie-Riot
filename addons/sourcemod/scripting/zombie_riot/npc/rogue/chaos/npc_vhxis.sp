@@ -2,9 +2,7 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/combine_soldier/die1.wav",
-	"npc/combine_soldier/die2.wav",
-	"npc/combine_soldier/die3.wav",
+	"npc/strider/striderx_die1.wav",
 };
 
 static const char g_HurtSounds[][] = {
@@ -59,6 +57,16 @@ static const char g_VoidQuakeCast[][] = {
 	"weapons/physcannon/energy_sing_explosion2.wav",
 };
 
+
+static const char g_VoidMagicCharge[][] = {
+	"npc/scanner/scanner_blip1.wav",
+};
+
+static const char g_VoidMagicCast[][] = {
+	"npc/scanner/cbot_discharge1.wav",
+};
+
+
 void Vhxis_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -72,6 +80,8 @@ void Vhxis_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_VoidLaserPulseAttackInit)); i++) { PrecacheSound(g_VoidLaserPulseAttackInit[i]); }
 	for (int i = 0; i < (sizeof(g_VoidQuakeCharge)); i++) { PrecacheSound(g_VoidQuakeCharge[i]); }
 	for (int i = 0; i < (sizeof(g_VoidQuakeCast)); i++) { PrecacheSound(g_VoidQuakeCast[i]); }
+	for (int i = 0; i < (sizeof(g_VoidMagicCharge)); i++) { PrecacheSound(g_VoidMagicCharge[i]); }
+	for (int i = 0; i < (sizeof(g_VoidMagicCast)); i++) { PrecacheSound(g_VoidMagicCast[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vhxis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vhxis");
@@ -149,6 +159,14 @@ methodmap Vhxis < CClotBody
 	{
 		EmitSoundToAll(g_VoidQuakeCast[GetRandomInt(0, sizeof(g_VoidQuakeCast) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
 	}
+	public void PlayMagicChargeSound() 
+	{
+		EmitSoundToAll(g_VoidQuakeCharge[GetRandomInt(0, sizeof(g_VoidQuakeCharge) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayMagicCastSound() 
+	{
+		EmitSoundToAll(g_VoidQuakeCast[GetRandomInt(0, sizeof(g_VoidQuakeCast) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME, 80);
+	}
 
 	property float m_flVoidSummonCooldown
 	{
@@ -187,6 +205,24 @@ methodmap Vhxis < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
 	}
+
+	property float m_flVoidMagicCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+
+	property float m_flVoidMagicHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	
+	property float m_flDeathAnimation
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
 	
 	
 	
@@ -206,6 +242,7 @@ methodmap Vhxis < CClotBody
 		npc.m_flVoidSummonCooldown = GetGameTime() + 5.0;
 		npc.m_flVoidLaserPulseCooldown = GetGameTime() + 10.0;
 		npc.m_flVoidGroundShakeCooldown = GetGameTime() + 15.0;
+		npc.m_flVoidMagicCooldown = GetGameTime() + 20.0;
 		
 		
 		
@@ -224,8 +261,8 @@ methodmap Vhxis < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
-			b_NpcUnableToDie[npc.index] = true;
 		}
+		b_NpcUnableToDie[npc.index] = true;
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -237,6 +274,7 @@ methodmap Vhxis < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Vhxis arrived");
 			}
 		}
+		npc.m_flMeleeArmor = 1.25;
 		
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
@@ -276,7 +314,7 @@ methodmap Vhxis < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
@@ -293,6 +331,7 @@ methodmap Vhxis < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		CPrintToChatAll("{purple}Vhxis: {default}Youre nothing before the power of the void!");
 
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
@@ -334,6 +373,33 @@ public void Vhxis_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
+	if(npc.m_flDeathAnimation)
+	{
+		if(npc.m_iChanged_WalkCycle != 10)
+		{
+			CPrintToChatAll("{purple}Vhxis: {default}You fools!... You think i made the void?!");
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
+			}
+			float ProjectileLoc[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			TE_Particle("halloween_boss_summon", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 10;
+			npc.SetActivity("ACT_ROGUE2_VOID_DRAMATIC_DEATH");
+			NPC_StopPathing(npc.index);
+			npc.m_flSpeed = 0.0;
+		}
+		if(npc.m_flDeathAnimation < GetGameTime(npc.index))
+		{
+			npc.m_bDissapearOnDeath = true;
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			CPrintToChatAll("{purple}The void has been released...");
+		}
+		return;
+	}
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -370,12 +436,21 @@ public void Vhxis_ClotThink(int iNPC)
 		return;
 	}
 
+	if(VoidVhxis_VoidMagic(npc, GetGameTime(npc.index)))
+	{
+		return;
+	}
+
 	
 	//default fight animation, set whenever no ability is in use.
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Enable");
+			}
 			//This lasts 73 frames
 			//at frame 61 it explodes.
 			//divide by 24 to get the accurate time!
@@ -386,7 +461,6 @@ public void Vhxis_ClotThink(int iNPC)
 			npc.m_flSpeed = 310.0;
 		}
 	}
-
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -425,17 +499,22 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
+	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	{
+		npc.m_flDeathAnimation = GetGameTime(npc.index) + 4.1;
+		npc.PlayDeathSound();
+	}
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	{
+		npc.Anger = true;
+		CPrintToChatAll("{purple}Vhxis: {default}Die already! Im giving it all already!!");
+	}
 	return Plugin_Changed;
 }
 
 public void Vhxis_NPCDeath(int entity)
 {
 	Vhxis npc = view_as<Vhxis>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
-		
 	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -462,30 +541,56 @@ void VhxisSelfDefense(Vhxis npc, float gameTime, int target, float distance)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
+			int HowManyEnemeisAoeMelee = 64;
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
+			delete swingTrace;
+			bool PlaySound = false;
+			for (int counter = 1; counter <= HowManyEnemeisAoeMelee; counter++)
 			{
-							
-				target = TR_GetEntityIndex(swingTrace);	
-				
-				float vecHit[3];
-				TR_GetEndPosition(vecHit, swingTrace);
-				
-				if(IsValidEnemy(npc.index, target))
+				if (i_EntitiesHitAoeSwing_NpcSwing[counter] > 0)
 				{
-					float damageDealt = 30.0 * RaidModeScaling;
-					
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+					if(IsValidEntity(i_EntitiesHitAoeSwing_NpcSwing[counter]))
+					{
+						PlaySound = true;
+						target = i_EntitiesHitAoeSwing_NpcSwing[counter];
+						float vecHit[3];
+						WorldSpaceCenter(target, vecHit);
+									
+						float damageDealt = 30.0 * RaidModeScaling;
 
-
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-
-					// Hit sound
-					npc.PlayMeleeHitSound();
-				} 
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);	
+						Elemental_AddVoidDamage(target, npc.index, 350, true, true);							
+						
+						bool Knocked = false;
+						
+						if(IsValidClient(target))
+						{
+							if (IsInvuln(target))
+							{
+								Knocked = true;
+								Custom_Knockback(npc.index, target, 900.0, true);
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							}
+							else
+							{
+								TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+							}
+						}
+						SensalGiveShield(npc.index, 1);
+									
+						if(!Knocked)
+							Custom_Knockback(npc.index, target, 150.0, true); 
+					}
+				}
+			}
+			if(PlaySound)
+			{
+				npc.PlayMeleeHitSound();
 			}
 			delete swingTrace;
 		}
@@ -503,6 +608,8 @@ void VhxisSelfDefense(Vhxis npc, float gameTime, int target, float distance)
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
+				npc.AddGesture("ACT_ROGUE2_VOID_ATTACK1");
+				/*
 				switch(GetRandomInt(0,1))
 				{
 					case 0:
@@ -514,6 +621,8 @@ void VhxisSelfDefense(Vhxis npc, float gameTime, int target, float distance)
 						npc.AddGesture("ACT_ROGUE2_VOID_ATTACK2");
 					}
 				}
+				attack2 looks shit ngl
+				*/
 
 				npc.m_flAttackHappens = gameTime + 0.5;
 				npc.m_flDoingAnimation = gameTime + 0.5;
@@ -585,7 +694,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 					}
 					else
 					{
-						
+						f_LowTeslarDebuff[victim] = GetGameTime() + 5.0;
 						if(!b_ThisWasAnNpc[victim])
 						{
 							GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", victimPos); 
@@ -648,6 +757,28 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			RemoveEntity(npc.m_iWearable7);
 		if(IsValidEntity(npc.m_iWearable8))
 			RemoveEntity(npc.m_iWearable8);
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		pos[2] += 5.0;
+		float ang_Look[3];
+		float DelayPillars = 3.2;
+		float DelaybewteenPillars = 0.25;
+		int MaxCount = 6;
+		ResetTEStatusSilvester();
+		SetSilvesterPillarColour({125, 0, 125, 200});
+		for(int Repeat; Repeat <= 15; Repeat++)
+		{
+			Silvester_Damaging_Pillars_Ability(npc.index,
+			25.0 * RaidModeScaling,				 	//damage
+			MaxCount, 	//how many
+			DelayPillars,									//Delay untill hit
+			DelaybewteenPillars,									//Extra delay between each
+			ang_Look 								/*2 dimensional plane*/,
+			pos,
+			0.25,
+			1.25);									//volume
+			ang_Look[1] += 22.5;
+		}
 
 		npc.PlayVoidQuakeSound();
 
@@ -670,7 +801,6 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 //This summons the creep, and several enemies on his side!
 bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 {
-
 	if(npc.m_flVoidSummonHappening)
 	{
 		float ProjectileLoc[3];
@@ -710,7 +840,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 12.5;
+					fl_Extra_Damage[spawn_index] *= 10.5;
 					fl_Extra_Speed[spawn_index] *= 1.05;
 				}
 			}
@@ -725,6 +855,10 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 		//This ability is ready, lets cast it.
 		if(npc.m_iChanged_WalkCycle != 5)
 		{
+			if(IsValidEntity(npc.m_iWearable1))
+			{
+				AcceptEntityInput(npc.m_iWearable1, "Disable");
+			}
 			//This lasts 73 frames
 			//at frame 61 it explodes.
 			//divide by 24 to get the accurate time!
@@ -957,8 +1091,8 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 	Vhxis npc = view_as<Vhxis>(entity);
 	npc.PlayVoidLaserSoundInit();
 			
-	float CloseDamage = 25.0 * RaidModeScaling;
-	float FarDamage = 20.0 * RaidModeScaling;
+	float CloseDamage = 45.0 * RaidModeScaling;
+	float FarDamage = 40.0 * RaidModeScaling;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
@@ -978,6 +1112,7 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
 			SensalGiveShield(entity, CountPlayersOnRed(1));
+			IncreaceEntityDamageTakenBy(victim, 0.15, 10.0, true);
 		}
 	}
 	delete pack;
@@ -996,4 +1131,91 @@ public bool VoidVhxis_BEAM_TraceUsers(int entity, int contentsMask, int client)
 public bool VoidVhxis_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
+}
+
+
+
+//This summons the creep, and several enemies on his side!
+bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
+{
+	if(npc.m_flVoidMagicHappening)
+	{
+		if(npc.m_flVoidMagicHappening < gameTime)
+		{
+			if(IsValidEntity(npc.m_iWearable7))
+				RemoveEntity(npc.m_iWearable7);
+			if(IsValidEntity(npc.m_iWearable8))
+				RemoveEntity(npc.m_iWearable8);
+			float ProjectileLoc[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			maxhealth *= 0.1;
+			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
+			{
+				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
+				if(spawn_index > MaxClients)
+				{
+					CClotBody npc1 = view_as<CClotBody>(spawn_index);
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+					fl_Extra_Damage[spawn_index] *= 12.5;
+					fl_Extra_Speed[spawn_index] *= 0.35;
+					SetEntityRenderMode(npc1.index, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(npc1.index, 125, 0, 125, 255);
+					SetEntityRenderMode(npc1.m_iWearable1, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(npc1.m_iWearable1, 125, 0, 125, 255);
+					SetEntityRenderMode(npc1.m_iWearable2, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(npc1.m_iWearable2, 125, 0, 125, 255);
+					SetEntityRenderMode(npc1.m_iWearable3, RENDER_TRANSCOLOR);
+					SetEntityRenderColor(npc1.m_iWearable3, 125, 0, 125, 255);
+					FormatEx(c_NpcName[npc1.index], sizeof(c_NpcName[]), "Voided Vanguard");
+				}
+			}
+			npc.PlayMagicCastSound();
+			
+			TE_Particle("halloween_boss_summon", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+			npc.m_flVoidMagicHappening = 0.0;
+		}
+
+		return true;
+	}
+			
+	if(npc.m_flDoingAnimation < gameTime && npc.m_flVoidMagicCooldown < gameTime)
+	{
+		//This ability is ready, lets cast it.
+		if(npc.m_iChanged_WalkCycle != 6)
+		{
+			//This lasts 73 frames
+			//at frame 61 it explodes.
+			//divide by 24 to get the accurate time!
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 6;
+			npc.SetActivity("ACT_ROGUE2_VOID_MAGIC");
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_flSpeed = 0.0;
+		}
+		
+		if(IsValidEntity(npc.m_iWearable7))
+			RemoveEntity(npc.m_iWearable7);
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
+
+		npc.PlayMagicChargeSound();
+
+		float flPos[3], flAng[3];
+		npc.GetAttachment("LHand", flPos, flAng);
+		npc.m_iWearable7 = ParticleEffectAt_Parent(flPos, "unusual_genplasmos_b_glow1", npc.index, "LHand", {0.0,0.0,0.0});
+
+		npc.m_flVoidMagicHappening = gameTime + 1.5;
+		npc.m_flDoingAnimation = gameTime + 1.8;
+		npc.m_flVoidMagicCooldown = gameTime + 40.0;
+		return true;
+	}
+
+	return false;
 }

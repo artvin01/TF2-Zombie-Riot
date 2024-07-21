@@ -6727,7 +6727,7 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 
 //must include -1, or else it freaks out!!!!
 //	if(entindex != -1)
-		TE_WriteNum("entindex", entindex);
+	TE_WriteNum("entindex", entindex);
 
 	if(attachtype != -1)
 		TE_WriteNum("m_iAttachType", attachtype);
