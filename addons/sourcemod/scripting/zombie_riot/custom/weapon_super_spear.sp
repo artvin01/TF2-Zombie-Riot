@@ -2,7 +2,6 @@
 #pragma newdecls required
 
 static Handle h_TimerBomblancenLauncherManagement[MAXPLAYERS+1] = {null, ...};
-int i_NextAttackTripleHit[MAXENTITIES];
 int i_HowManyAttack[MAXENTITIES];
 bool b_abilityon[MAXENTITIES];
 bool b_explode[MAXENTITIES];
@@ -152,7 +151,7 @@ public Action Bomblance_ability_off(Handle timer, any userid)
 	return Plugin_Stop;
 }
 
-void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
+void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damage)
 {
 	if(b_explode[attacker])
 	{
@@ -203,7 +202,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 				{
 					f_LowIceDebuff[victim] = GetGameTime() + 1.1;
 				}
-			Elemental_AddCyroDamage(victim, attacker, damage/4.0, 1);
+			Elemental_AddCyroDamage(victim, attacker, 50, 1);
 		}
 	}
 
