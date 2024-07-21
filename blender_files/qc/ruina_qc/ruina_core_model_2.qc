@@ -43,12 +43,12 @@ $bodygroup "healing_staff_2"	//done
 	blank
 	studio "v2/healing_staff_2.smd"
 }
-$bodygroup "rei_launcher"		//todo: resize it, its a bit tooo big.
+$bodygroup "rei_launcher"		
 {
 	blank
 	studio "v2/rei_launcher.smd"
 }
-$bodygroup "wings"			//test
+$bodygroup "wings"			
 {
 	blank
 	studio "v2/wings.smd"
