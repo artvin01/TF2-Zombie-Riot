@@ -57,6 +57,7 @@ void VoidedDiversionistico_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -452,7 +453,7 @@ void VoidedDiversionisticoSelfDefense(VoidedDiversionistico npc, float gameTime,
 					}
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 1.2), true, false);
+					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.8), true, false);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();

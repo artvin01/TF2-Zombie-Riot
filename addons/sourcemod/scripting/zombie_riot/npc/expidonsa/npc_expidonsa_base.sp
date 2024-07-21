@@ -79,7 +79,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 	}
 }
 
-void VausMagicaGiveShield(int entity, int amount)
+void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
 	int MaxShieldCapacity = 5;
 	if(b_thisNpcIsABoss[entity])
@@ -90,7 +90,7 @@ void VausMagicaGiveShield(int entity, int amount)
 	{
 		MaxShieldCapacity = 250;
 	}
-	if(f_Expidonsa_ShieldBroke[entity] > GetGameTime() && MaxShieldCapacity < 250)
+	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < 250)
 	{
 		return; //do not give shield.
 	}

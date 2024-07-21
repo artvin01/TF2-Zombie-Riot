@@ -35,6 +35,10 @@
 		"en" 		"The Expidonsan Sensal reaps."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
+	"Vhxis arrived"
+	{
+		"en" 		"Vhxis the void keeper halts you."
+	}
 	"The Messanger Arrived"
 	{
 		"en" 		"The Messenger has accumulated chaos."
