@@ -105,7 +105,7 @@ public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int
 		}
 		if(i_HowManyAttack[weapon] < 3)
 		{
-			b_explode = true;
+			b_explode[client] = true;
 		} 
 		else
 		{
@@ -156,8 +156,6 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 {
 	if(b_explode[attacker])
 	{
-		int particle = EntRefToEntIndex(i_WandParticle[attacker]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[attacker]);
 		if(IsValidEntity(weapon))
 		{
 			//if(damagetype & DMG_CLUB)
@@ -186,11 +184,6 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 			ParticleEffectAt(position, "taunt_pyro_balloon_explosion", 1.0);
 
 			b_explode[attacker] = false;
-			
-			if(IsValidEntity(particle))
-			{
-				RemoveEntity(particle);
-			}
 		}
 	}
 	int pap = i_Current_Pap[attacker];
@@ -210,7 +203,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 				{
 					f_LowIceDebuff[victim] = GetGameTime() + 1.1;
 				}
-			Elemental_AddCyroDamage(victim, attacker, damage/4, 1);
+			Elemental_AddCyroDamage(victim, attacker, damage/4.0, 1);
 		}
 	}
 
