@@ -873,6 +873,10 @@
 	{
 		"en" 		"Corrupted Barney"
 	}
+	"Voided Vanguard"
+	{
+		"en" 		"Voided Vanguard"
+	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"

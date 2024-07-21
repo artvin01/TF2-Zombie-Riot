@@ -1003,6 +1003,66 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(float TempValueForProperty) 	{ fl_JumpStartTimeInternal[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flAbilityOrAttack0
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack1
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack2
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack3
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack4
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flAbilityOrAttack5
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack6
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack7
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack8
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack9
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+
+
 	property float m_flJumpStartTime
 	{
 		public get()							{ return fl_JumpStartTime[this.index]; }
@@ -1331,6 +1391,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(f_HussarBuff[this.index] > Gametime)
 		{
 			speed_for_return *= 1.20;
+		}
+		if(f_VoidAfflictionStrength[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
 		}
 		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
@@ -2277,12 +2341,9 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		DispatchKeyValue(item, "model", model);
 
-		if(model_size == 1.0)
+		if(model_size != 1.0)
 		{
-			DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
-		}
-		else
-		{
+		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
 
@@ -3741,6 +3802,73 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 				}
 			}	
 		}
+		case BLEEDTYPE_VOID:
+		{
+			npc.PlayGibSound();
+			if(npc.m_bIsGiant)
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+				startPosition[2] += 64;
+				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, true, _, _, _, 3);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
+				if(!Limit_Gibs)
+				{
+					startPosition[2] -= 15;
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, false, true, _, _, _, 3);
+					startPosition[2] += 44;
+					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+					{
+						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, false, true, _, _, _, 3);	
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+					else
+					{
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, false, true, _, _, _, 3);		
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+				}
+				else
+				{
+					if(IsValidEntity(Main_Gib))
+					{
+						f_GibHealingAmount[Main_Gib] *= 3.0;
+					}
+				}
+			}
+			else
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
+				startPosition[2] += 42;
+				Main_Gib = Place_Gib("models/gibs/antlion_gib_large_1.mdl", startPosition, _, damageForce, true, _, _, _, _, 3);
+				f_GibHealingAmount[Main_Gib] *= GibAmount;
+				if(!Limit_Gibs)
+				{
+					startPosition[2] -= 10;
+					GibAny = Place_Gib("models/Gibs/HGIBS_spine.mdl", startPosition, _, damageForce, _, _, _, _, _, 3);
+					f_GibHealingAmount[GibAny] *= GibAmount;
+					startPosition[2] += 34;
+					if(c_HeadPlaceAttachmentGibName[npc.index][0] != 0)
+					{
+						npc.GetAttachment(c_HeadPlaceAttachmentGibName[npc.index], accurateposition, accurateAngle);
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", accurateposition, accurateAngle, damageForce, _, _, _, _, _, 3);
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+					else
+					{
+						GibAny = Place_Gib("models/Gibs/HGIBS.mdl", startPosition, _, damageForce, _, _, _, _, _, 3);
+						f_GibHealingAmount[GibAny] *= GibAmount;
+					}
+				}
+				else
+				{
+					if(IsValidEntity(Main_Gib))
+					{
+						f_GibHealingAmount[Main_Gib] *= 3.0;
+					}
+				}
+			}	
+		}
 	}
 }
 public void SetNpcToDeadViaGib(int pThis)
@@ -4351,7 +4479,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	
 	if ( height < 35 )
 	{
-		additionalHeight = 50.0;
+		additionalHeight = 25.0;
 	}
 	
 	height += additionalHeight;
@@ -5545,33 +5673,24 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if(i_CurrentEquippedPerk[iNPC] == 1 && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		int HealingAmount = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 1000);
+		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.002;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount /= 10;
+			HealingAmount *= 0.01;
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
-			HealingAmount /= 2;
-		}
-		if(HealingAmount < 1)
-		{
-			HealingAmount = 1;
+			HealingAmount *= 0.125;
 		}
 
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
-			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			}
-		}
+		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
+		
+		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 	}
 #endif
 #if defined RPG
@@ -6338,6 +6457,12 @@ int Place_Gib(const char[] model, float pos[3],float ang[3] = {0.0,0.0,0.0}, flo
 				SetParent(prop, particle);
 				SetEntityRenderColor(prop, 65, 65, 255, 255);				
 			}
+			else if(BleedType == 3)
+			{
+				int particle = ParticleEffectAt(pos, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
+				SetParent(prop, particle);
+				SetEntityRenderColor(prop, 200, 0, 200, 255);
+			}
 			else
 			{
 				int particle = ParticleEffectAt(pos, "blood_impact_green_01", Random_time); //This is a permanent particle, gotta delete it manually...
@@ -6560,7 +6685,7 @@ public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 }
 
 
-stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype=-1, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
+stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype= 0, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
 {
 	// find string table
 	int tblidx = FindStringTable("ParticleEffectNames");
@@ -6600,8 +6725,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	TE_WriteVector("m_vecAngles", angles);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 
-	if(entindex != -1)
-		TE_WriteNum("entindex", entindex);
+//must include -1, or else it freaks out!!!!
+//	if(entindex != -1)
+	TE_WriteNum("entindex", entindex);
 
 	if(attachtype != -1)
 		TE_WriteNum("m_iAttachType", attachtype);
@@ -7654,7 +7780,7 @@ stock int GetClosestAlly(int entity, float limitsquared = 99999999.9, int ingore
 	{
 		if (IsValidEntity(i) && i != entity && i != ingore_thisAlly && (i <= MaxClients || !b_NpcHasDied[i]))
 		{
-			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i])  //The is a medic thing is really needed
+			if(GetTeam(entity) == GetTeam(i) && !Is_a_Medic[i] && IsEntityAlive(i, true) && !i_NpcIsABuilding[i] && !b_ThisEntityIgnoredByOtherNpcsAggro[i] && !b_NpcIsInvulnerable[i])  //The is a medic thing is really needed
 			{
 				if(ExtraValidityFunction != INVALID_FUNCTION)
 				{
@@ -7856,6 +7982,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 		f_BackstabBossDmgPenaltyNpcTime[entity][client] = 0.0;
 	}
 #endif
+	for(int repeat; repeat <= 9; repeat++)
+	{
+		fl_AbilityOrAttack[entity][repeat] = 0.0;
+	}
 
 	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
@@ -7987,6 +8117,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
+	f_VoidAfflictionStrength[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -8078,6 +8209,10 @@ public void ArrowStartTouch(int arrow, int entity)
 		if(i_ChaosArrowAmount[arrow] > 0)
 		{
 			Elemental_AddChaosDamage(entity, owner, i_ChaosArrowAmount[arrow]);
+		}
+		if(i_VoidArrowAmount[arrow] > 0)
+		{
+			Elemental_AddVoidDamage(entity, owner, i_VoidArrowAmount[arrow]);
 		}
 #endif
 
@@ -9052,6 +9187,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(VausMagicaShieldLeft(npc.index) > 0)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
+	}
+	if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
+	{
+		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
 	}
 	/*
 	if(IgniteFor[npc.index] > 0)

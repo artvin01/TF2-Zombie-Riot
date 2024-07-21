@@ -35,6 +35,10 @@
 		"en" 		"The Expidonsan Sensal reaps."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
+	"Vhxis arrived"
+	{
+		"en" 		"Vhxis the void keeper halts you."
+	}
 	"The Messanger Arrived"
 	{
 		"en" 		"The Messenger has accumulated chaos."
@@ -223,6 +227,14 @@
 		"en"	"Diversionistico Spawn"
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
+	}
+	"Voided Diversionistico Spawn"
+	{
+		"en"	"Voided Diversionistico Spawn"
+	}
+	"A Void Gate Apeared..."
+	{
+		"en"	"A Void Gate Apeared..."
 	}
 	"Snipers Appear"
 	{

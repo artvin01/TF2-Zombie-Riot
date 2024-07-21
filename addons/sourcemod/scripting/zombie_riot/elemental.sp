@@ -9,6 +9,7 @@ enum
 	Element_Chaos,
 	Element_Cyro,
 	Element_Necrosis,
+	Element_Void,
 
 	Element_MAX
 }
@@ -18,7 +19,8 @@ static const char ElementName[][] =
 	"AC",
 	"CH",
 	"CY",
-	"NE"
+	"NE",
+	"VO"
 };
 
 static float LastTime[MAXENTITIES];
@@ -290,7 +292,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			if(ElementDamage[victim][Element_Chaos] > trigger)
 			{
 				ElementDamage[victim][Element_Chaos] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
 				IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
@@ -309,6 +311,85 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.0001), 10.0, true);
 	}
 	*/
+}
+
+
+void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+{
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(victim <= MaxClients)
+	{
+		Armor_DebuffType[victim] = 3;
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					float ProjectileLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+					ProjectileLoc[2] += 5.0;
+					VoidArea_SpawnNethersea(ProjectileLoc);
+					FramingInfestorSpread(victim);
+					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+					//Do code for void spread
+				}
+			}
+			
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		{
+			int trigger;
+			if(Citizen_IsIt(victim))	// Rebels
+			{
+				if(!ignoreArmor)
+				{
+					// Has "armor" at 75% HP
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+						return;
+				}
+
+			}
+			
+			trigger = TriggerDamage(victim, Element_Void);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Void;
+			ElementDamage[victim][Element_Void] += damage;
+			if(ElementDamage[victim][Element_Void] > trigger)
+			{
+				ElementDamage[victim][Element_Void] = 0;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				float ProjectileLoc[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+				ProjectileLoc[2] += 5.0;
+				EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				VoidArea_SpawnNethersea(ProjectileLoc);
+				FramingInfestorSpread(victim);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= damage;
+		if(Repair <= 0)
+			Repair = 0;
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
+	}
 }
 
 static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)

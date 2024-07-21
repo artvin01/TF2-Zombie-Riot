@@ -1282,6 +1282,12 @@ public void OnPostThink(int client)
 					green = 255;
 					blue = 255;
 				}
+				case 3:
+				{
+					red = 200;
+					green = 0;
+					blue = 200;
+				}
 			}
 		}
 		else if(Armor_Charge[armorEnt] < Armor_Max)
@@ -1944,7 +1950,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 	}
 	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
-	return Plugin_Continue;
+	return Plugin_Changed;
 #endif	// ZR
 }
 
