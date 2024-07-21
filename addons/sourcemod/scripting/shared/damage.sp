@@ -932,7 +932,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_BOMBLANCE:
 		{
-			Flametail_NPCTakeDamage(attacker, victim, weapon, damage);
+			Bomblance_OnTakeDamageNpc(attacker, victim, weapon, damage);
 		}
 	}
 #endif
