@@ -3127,4 +3127,24 @@
 	{
 		"en"	"Decreased ability cooldown and increased ability damage bonus."
 	}
+	"Explosive Gunlance Desc"
+	{
+		"en"	"A big gunlance brought from Victorian Army. It has long range \n M2 use an ability to attack 3 times in a swing. \nLast swing during ability will always explode"
+	}
+	"Explosive Gunlance Desc Pap 1"
+	{
+		"en"	"Your attack will now engulf enemies in flames \n'The cannons on the walls of victoria fired day and night...'"
+	}
+	"Explosive Gunlance Desc Pap 2"
+	{
+		"en"	"Your attack will now apply cryo debuff to the enemies \n'Victorian Army was undefeatable...'"
+	}
+	"Explosive Gunlance Desc Pap 3"
+	{
+		"en"	"faster attack speed, more afterburn damage \n'Until chaos corrupted knowledge outsmarted their artileries ...'"
+	}
+	"Explosive Gunlance Desc Pap 4"
+	{
+		"en"	"more damage \n'Until soldiers fell one by one, turning into one of them...'"
+	}
 }
