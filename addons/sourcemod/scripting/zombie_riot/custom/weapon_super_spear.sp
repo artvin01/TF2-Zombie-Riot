@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static Handle h_TimerBomblancenLauncherManagement[MAXPLAYERS+1] = {null, ...};
 int i_NextAttackTripleHit[MAXENTITIES];
 int i_HowManyAttack[MAXENTITIES];
 bool b_abilityon[MAXENTITIES];
@@ -155,20 +156,20 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 {
 	if(b_explode[attacker])
 	{
-		int particle = EntRefToEntIndex(i_WandParticle[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+		int particle = EntRefToEntIndex(i_WandParticle[attacker]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[attacker]);
 		if(IsValidEntity(weapon))
 		{
 			//if(damagetype & DMG_CLUB)
 			//Code to do damage position and ragdolls
 			static float angles[3];
-			GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+			GetEntPropVector(attacker, Prop_Send, "m_angRotation", angles);
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			float position[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", position);
 
-			int owner = EntRefToEntIndex(i_WandOwner[entity]);
+			int owner = EntRefToEntIndex(i_WandOwner[attacker]);
 
 			float BaseDMG = 250.0;
 			BaseDMG *= Attributes_Get(weapon, 2, 1.0);
@@ -181,7 +182,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 
 			float spawnLoc[3];
 			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
-			EmitAmbientSound(SOUND_BOOM_SHOT, spawnLoc, entity, 70,_, 0.6);
+			EmitAmbientSound(SOUND_BOOM_SHOT, spawnLoc, attacker, 70,_, 0.6);
 			ParticleEffectAt(position, "taunt_pyro_balloon_explosion", 1.0);
 
 			b_explode[attacker] = false;
@@ -190,7 +191,6 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapo
 			{
 				RemoveEntity(particle);
 			}
-			RemoveEntity(entity);
 		}
 	}
 	int pap = i_Current_Pap[attacker];
@@ -224,7 +224,7 @@ void CreateBomblanceEffect(int client)
 	}
 	DestroyBomblanceEffect(client);
 	
-	int pap = i_Current_Pap[attacker];
+	int pap = i_Current_Pap[client];
 	float flPos[3];
 	float flAng[3];
 	GetAttachment (client, "effect_hand_r", flPos, flAng);
@@ -237,15 +237,18 @@ void CreateBomblanceEffect(int client)
 		case 1:
 		{
 			int particle = ParticleEffectAt(flPos, "unusual_frosty_flavours_red_smoke", 0.0);
+			AddEntityToThirdPersonTransitMode(client, particle);
+			SetParent(client, particle, "effect_hand_r");
+			i_BomblanceParticle[client][0] = EntIndexToEntRef(particle);
 		}
 		case 2:
 		{
 			int particle = ParticleEffectAt(flPos, "unusual_frosty_flavours_blu_smoke", 0.0);
+			AddEntityToThirdPersonTransitMode(client, particle);
+			SetParent(client, particle, "effect_hand_r");
+			i_BomblanceParticle[client][0] = EntIndexToEntRef(particle);
 		}
 	}
-	AddEntityToThirdPersonTransitMode(client, particle);
-	SetParent(client, particle, "effect_hand_r");
-	i_BomblanceParticle[client][0] = EntIndexToEntRef(particle);
 }
 void DestroyBomblanceEffect(int client)
 {
