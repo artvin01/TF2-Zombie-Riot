@@ -1231,7 +1231,7 @@ void Rogue_NextProgress()
 			{
 				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
 
-				int count = 2;
+				int count = RogueTheme == BobChaos ? 2 : 3;
 				if(!(GetURandomInt() % 6))
 					count++;
 				
