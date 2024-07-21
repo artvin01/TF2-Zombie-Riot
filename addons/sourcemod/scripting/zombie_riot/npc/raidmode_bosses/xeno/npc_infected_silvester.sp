@@ -1805,7 +1805,12 @@ float extra_pillar_size = 1.0)
 
 	float origin_altered[3];
 	origin_altered = origin;
-
+	bool DontClipOrMove = false;
+	if(count == 0)
+	{
+		DontClipOrMove = true;
+		count = 1;
+	}
 	for(int Repeats; Repeats < count; Repeats++)
 	{
 		float VecForward[3];
@@ -1820,6 +1825,8 @@ float extra_pillar_size = 1.0)
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+		if(DontClipOrMove)
+			origin_altered = origin;
 
 		//Clip to ground, its like stepping on stairs, but for these rocks.
 
@@ -1940,6 +1947,11 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	{
 		return Plugin_Continue;
 	}
+	bool DontClipOrMove = false;
+	if(countMax == 0)
+	{
+		DontClipOrMove = true;
+	}
 
 	count += 1;
 	pack.Position = countPos;
@@ -1956,6 +1968,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		if(DontClipOrMove)
+			vecSwingEnd = origin;
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
