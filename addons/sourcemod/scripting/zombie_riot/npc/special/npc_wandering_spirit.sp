@@ -359,6 +359,5 @@ void UTIL_ScreenFade(int client,int duration,int time,int flags,int r,int g,int 
 	BfWriteByte(bf, g);
 	BfWriteByte(bf, b);
 	BfWriteByte(bf, a);
-	delete bf;
 	EndMessage();
 }

@@ -10,6 +10,66 @@
 		"#format"	"{1:d}"
 		"en"		"{green}Losted {1} Chaos Instability!"
 	}
+	"Heavy Rain"
+	{
+		"en"	"Heavy Rain"
+	}
+	"Heavy Rain Desc"
+	{
+		"en"	"{yellow}All units move 20%% slower, Seaborn units instead move 10%% faster"
+	}
+	"Heavy Rain Lore"
+	{
+		"en"	"It begins to rain heavily, you can feel it's weight."
+	}
+	"Extreme Heat"
+	{
+		"en"	"Extreme Heat"
+	}
+	"Extreme Heat Desc"
+	{
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x2 slower and Al-Hallem units move 20%% faster"
+	}
+	"Extreme Heat Lore"
+	{
+		"en"	"You feel the dreaded heat as your skin burns a bit."
+	}
+	"Heavy Wind"
+	{
+		"en"	"Heavy Wind"
+	}
+	"Heavy Wind Desc"
+	{
+		"en"	"Heavy Wind"
+	}
+	"Heavy Wind Lore"
+	{
+		"en"	"{yellow}All projectiles move 33% slower, Expidonsan projectiles instead move 25%% faster"
+	}
+	"Dense Frost"
+	{
+		"en"	"Dense Frost"
+	}
+	"Dense Frost Desc"
+	{
+		"en"	"{yellow}All units lose health over time (can not be reduced below 1) {red}except for Ziberia units"
+	}
+	"Dense Frost Lore"
+	{
+		"en"	"The frost covers everything you have, including you."
+	}
+	"Red Moon"
+	{
+		"en"	"Red Moon"
+	}
+	"Red Moon Desc"
+	{
+		"en"	"{red}Wildingen units have their special traits enchanced"
+	}
+	"Red Moon Lore"
+	{
+		"en"	"Everything turns red as you see the bright red moon above."
+	}
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"

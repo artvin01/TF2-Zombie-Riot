@@ -445,7 +445,7 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 37:
 					{
-						this.Speech("I hate those Mediveal guys.");
+						this.Speech("I hate those Medieval guys.");
 					}
 					case 38:
 					{

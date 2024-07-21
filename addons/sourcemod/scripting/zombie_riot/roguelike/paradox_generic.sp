@@ -5,6 +5,24 @@ static ArrayList ShopListing;
 
 public float Rogue_Encounter_ParadoxShop()
 {
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
 

@@ -297,6 +297,11 @@ public void Rogue_Vote_Prophecy1(const Vote vote, int index)
 	}
 }
 
+public bool Rogue_Paradox_SpecialForceCurse(int floor)
+{
+	return (floor == 4) && Rogue_HasNamedArtifact("Waldch Assistance");
+}
+
 public float Rogue_Encounter_Prophecy2()
 {
 	bool waldch = Rogue_HasNamedArtifact("Waldch Assistance");
@@ -355,7 +360,6 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 {
 	if(vote.Config[0])
 	{
-		//Rogue_RemoveNamedArtifact("Waldch Assistance");
 		Rogue_GiveNamedArtifact("Kahmlstein Guidance");
 
 		Rogue_RemoveChaos(50);

@@ -351,6 +351,7 @@ void Rogue_MapStart()
 	Rogue_Paradox_MapStart();
 	Rogue_ParadoxShop_Fail();
 	Rogue_BlueParadox_Reset();
+	Rogue_Dome_Mapstart();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -840,6 +841,9 @@ void Rogue_BattleVictory()
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
 
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
+	
 	if(BattleIngots > 0)
 	{
 		switch(RogueTheme)
@@ -862,6 +866,13 @@ void Rogue_BattleVictory()
 				else if(BattleIngots > 1)
 				{
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+				}
+
+				if(!(GetURandomInt() % (BattleIngots > 4 ? 7 : 9)))
+				{
+					Artifact artifact;
+					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
 		}
@@ -1123,14 +1134,21 @@ void Rogue_NextProgress()
 					WavesUpdateDifficultyName();
 
 					bool cursed;
-					if(!(GetURandomInt() % 5))
+					if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
 					{
 						int length = Curses.Length;
 						if(length)
 						{
 							cursed = true;
 
-							CurseOne = GetURandomInt() % length;
+							if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+							{
+								CurseOne = length - 1;
+							}
+							else
+							{
+								CurseOne = GetURandomInt() % length;
+							}
 							
 							if(length > 1 && !(GetURandomInt() % 4))
 							{
@@ -1605,6 +1623,9 @@ static void StartStage(const Stage stage)
 		}
 	}
 
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveStart(pos);
+
 	if(b_LeaderSquad)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -1635,6 +1656,9 @@ static void StartStage(const Stage stage)
 
 static void TeleportToSpawn()
 {
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
+	
 	float pos[3], ang[3];
 
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
