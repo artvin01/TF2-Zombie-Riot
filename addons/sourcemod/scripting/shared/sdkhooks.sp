@@ -1950,7 +1950,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		}
 	}
 	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
-	return Plugin_Continue;
+	return Plugin_Changed;
 #endif	// ZR
 }
 

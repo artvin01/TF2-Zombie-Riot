@@ -18,7 +18,7 @@ static const char g_IdleSounds[][] = {
 	")npc/combine_soldier/vo/alert1.wav",
 	")npc/combine_soldier/vo/bouncerbouncer.wav",
 	")npc/combine_soldier/vo/boomer.wav",
-	")npc/combine_soldier/vo/contactconfirm.wav",
+	")npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {

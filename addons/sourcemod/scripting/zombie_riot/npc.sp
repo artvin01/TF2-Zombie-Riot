@@ -569,6 +569,11 @@ void NPC_ConfigSetup()
 	GogglesFollower_Setup();
 	TheHunter_Setup();
 	Vhxis_OnMapStart_NPC();
+	ChaosMage_OnMapStart_NPC();
+	ChaosSupporter_OnMapStart_NPC();
+	ChaosInsane_OnMapStart_NPC();
+	ChaosSickKnight_OnMapStart_NPC();
+	ChaosInjuredCultist_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1334,6 +1339,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_mage.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_supporter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_insane.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)

@@ -402,7 +402,7 @@ public void Vhxis_ClotThink(int iNPC)
 
 	if(npc.m_blPlayHurtAnimation)
 	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.AddGesture("ACT_GESTURE_FLINCH_STOMACH", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
@@ -499,7 +499,7 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		npc.m_blPlayHurtAnimation = true;
 	}
 	
-	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_flDeathAnimation)
 	{
 		npc.m_flDeathAnimation = GetGameTime(npc.index) + 4.1;
 		npc.PlayDeathSound();
@@ -788,7 +788,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 
 		npc.m_flVoidGroundShakeHappening = gameTime + 3.12;
 		npc.m_flDoingAnimation = gameTime + 5.0;
-		npc.m_flVoidGroundShakeCooldown = gameTime + 40.0;
+		npc.m_flVoidGroundShakeCooldown = gameTime + 30.0;
 		return true;
 	}
 
@@ -887,7 +887,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 
 		npc.m_flVoidSummonHappening = gameTime + 2.54;
 		npc.m_flDoingAnimation = gameTime + 3.04;
-		npc.m_flVoidSummonCooldown = gameTime + 40.0;
+		npc.m_flVoidSummonCooldown = gameTime + 30.0;
 		return true;
 	}
 
@@ -973,7 +973,7 @@ bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 
 		npc.m_flVoidLaserPulseHappening = gameTime + 2.54;
 		npc.m_flDoingAnimation = gameTime + 0.25;
-		npc.m_flVoidLaserPulseCooldown = gameTime + 15.0;
+		npc.m_flVoidLaserPulseCooldown = gameTime + 10.0;
 		return true;
 	}
 
@@ -1213,7 +1213,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 		npc.m_flVoidMagicHappening = gameTime + 1.5;
 		npc.m_flDoingAnimation = gameTime + 1.8;
-		npc.m_flVoidMagicCooldown = gameTime + 40.0;
+		npc.m_flVoidMagicCooldown = gameTime + 30.0;
 		return true;
 	}
 
