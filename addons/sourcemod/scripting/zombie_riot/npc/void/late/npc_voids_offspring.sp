@@ -247,6 +247,14 @@ public void VoidsOffspring_NPCDeath(int entity)
 	FramingInfestorSpread(entity);
 	//drops life grenade on death
 	npc.FireGrenade({0.0,0.0,0.0}, 0.0, 200.0, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -302,8 +310,8 @@ void VoidsOffspringSelfDefense(VoidsOffspring npc, float gameTime, int target, f
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}

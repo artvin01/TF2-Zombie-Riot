@@ -541,7 +541,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		EmitSoundToAll(SND_KNIFE_MISS, entity, SNDCHAN_STATIC, 80, _, 1.0);
-		ParticleEffectAt(position, "ExplosionCore_buildings", 1.0);
+		ParticleEffectAt(position, "ExplosionCore_MidAir", 1.0);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

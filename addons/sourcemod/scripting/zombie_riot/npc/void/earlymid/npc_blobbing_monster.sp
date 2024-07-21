@@ -237,7 +237,14 @@ public void VoidBlobbingMonster_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -275,7 +282,7 @@ void VoidBlobbingMonsterSelfDefense(VoidBlobbingMonster npc, float gameTime, int
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.4), true, false);
+					Elemental_AddVoidDamage(target, npc.index, 50, true, false);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
@@ -298,8 +305,8 @@ void VoidBlobbingMonsterSelfDefense(VoidBlobbingMonster npc, float gameTime, int
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

@@ -246,6 +246,14 @@ public void VoidHeavyPerisher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -283,7 +291,7 @@ void VoidHeavyPerisherSelfDefense(VoidHeavyPerisher npc, float gameTime, int tar
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					Elemental_AddVoidDamage(target, npc.index, RoundToCeil(damageDealt * 0.5), true, false);
+					Elemental_AddVoidDamage(target, npc.index, 60, true, false);
 					// Hit sound
 					npc.PlayMeleeHitSound();
 				} 
@@ -306,8 +314,8 @@ void VoidHeavyPerisherSelfDefense(VoidHeavyPerisher npc, float gameTime, int tar
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

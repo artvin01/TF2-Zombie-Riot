@@ -488,6 +488,9 @@ void NPC_ConfigSetup()
 	VoidsOffspring_OnMapStart_NPC();
 	VoidRejuvinator_OnMapStart_NPC();
 
+//boss
+	VoidSpeechless_OnMapStart_NPC();
+
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
 	VoidPortal_OnMapStart_NPC();
@@ -1355,6 +1358,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/late/npc_void_total_growth.sp"
 #include "zombie_riot/npc/void/late/npc_voids_offspring.sp"
 #include "zombie_riot/npc/void/late/npc_void_rejuvinator.sp"
+#include "zombie_riot/npc/void/late/npc_void_speechless.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"

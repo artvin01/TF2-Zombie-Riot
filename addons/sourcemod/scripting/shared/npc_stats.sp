@@ -1003,6 +1003,66 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(float TempValueForProperty) 	{ fl_JumpStartTimeInternal[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flAbilityOrAttack0
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack1
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack2
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack3
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack4
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flAbilityOrAttack5
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack6
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack7
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack8
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack9
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+
+
 	property float m_flJumpStartTime
 	{
 		public get()							{ return fl_JumpStartTime[this.index]; }
@@ -6625,7 +6685,7 @@ public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 }
 
 
-stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype=-1, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
+stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype= 0, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
 {
 	// find string table
 	int tblidx = FindStringTable("ParticleEffectNames");
@@ -6665,8 +6725,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	TE_WriteVector("m_vecAngles", angles);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 
-	if(entindex != -1)
-		TE_WriteNum("entindex", entindex);
+//must include -1, or else it freaks out!!!!
+//	if(entindex != -1)
+	TE_WriteNum("entindex", entindex);
 
 	if(attachtype != -1)
 		TE_WriteNum("m_iAttachType", attachtype);
@@ -7921,6 +7982,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 		f_BackstabBossDmgPenaltyNpcTime[entity][client] = 0.0;
 	}
 #endif
+	for(int repeat; repeat <= 9; repeat++)
+	{
+		fl_AbilityOrAttack[entity][repeat] = 0.0;
+	}
 
 	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
