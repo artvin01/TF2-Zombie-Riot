@@ -779,6 +779,7 @@ void ZR_MapStart()
 	Object_MapStart();
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
+	Reset_Bomblance();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

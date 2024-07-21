@@ -11,7 +11,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 #define SOUND_ABILITY_ACTIVATE "items/powerup_pickup_resistance.wav"
 #define SOUND_BOOM_SHOT 	"weapons/explode1.wav"
 
-void Reset_Bomblance(int weapon) //This is on weapon remake. cannot set to 0 outright.
+void Reset_Bomblance() //This is on weapon remake. cannot set to 0 outright.
 {
 	Zero(i_NextAttackDoubleHit);
 	Zero(i_HowManyAttack):
