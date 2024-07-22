@@ -546,6 +546,7 @@ static void ImportSkinAttribs(int wearable, int weapon)
 {
 	int index = i_WeaponFakeIndex[weapon] > 0 ? i_WeaponFakeIndex[weapon] : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
+	SetEntProp(wearable, Prop_Send, "m_bOnlyIterateItemViewAttributes", true);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
 	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
