@@ -153,7 +153,7 @@ methodmap KahmlsteinFollower < CClotBody
 	
 	public KahmlsteinFollower(int client, float vecPos[3], float vecAng[3])
 	{
-		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "50000", TFTeam_Red, true, false));
+		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "50000", TFTeam_Red, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -214,6 +214,8 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.GetAttachment("", flPos, flAng);
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
+
+		// Cutscene Here
 		npc.Speech("This is an urgent matter, so thanks for your assistance.");
 		npc.SpeechDelay(5.0, "You'll get your reward later, no time to lose now.");
 		Rogue_SetProgressTime(10.0, false);

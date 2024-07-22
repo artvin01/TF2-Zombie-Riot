@@ -569,6 +569,7 @@ void NPC_ConfigSetup()
 	GogglesFollower_Setup();
 	TheHunter_Setup();
 	FinalHunter_Setup();
+	KahmlsteinFollower_Setup();
 	Vhxis_OnMapStart_NPC();
 	ChaosMage_OnMapStart_NPC();
 	ChaosSupporter_OnMapStart_NPC();
@@ -1341,6 +1342,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_finalhunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_kahmlstein_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_mage.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_supporter.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_insane.sp"

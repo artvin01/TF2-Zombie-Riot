@@ -745,7 +745,6 @@ public void Rogue_Kahmlstein_Collect()
 
 public void Rogue_Kahmlstein_Remove()
 {
-	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
@@ -755,7 +754,6 @@ public void Rogue_Kahmlstein_Remove()
 			break;
 		}
 	}
-	*/
 
 	delete KahmlsteinTimer;
 	Rogue_Refresh_Remove();

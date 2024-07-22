@@ -965,4 +965,244 @@
 	{
 		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
 	}
+	"Bad Water"
+	{
+		"en"	"Bad Water"
+	}
+	"Bad Water!"
+	{
+		"en"	"Bad Water ⚠"
+	}
+	"Town Center"
+	{
+		"en"	"Town Center"
+	}
+	"Town Center!"
+	{
+		"en"	"Town Center ⚠"
+	}
+	"Demon Box"
+	{
+		"en"	"Demon Box"
+	}
+	"Demon Box!"
+	{
+		"en"	"Demon Box ⚠"
+	}
+	"Scout Rush"
+	{
+		"en"	"Scout Rush"
+	}
+	"Scout Rush!"
+	{
+		"en"	"Scout Rush ⚠"
+	}
+	"Jumping Jacks"
+	{
+		"en"	"Jumping Jacks"
+	}
+	"Jumping Jacks!"
+	{
+		"en"	"Jumping Jacks ⚠"
+	}
+	"Lost Empires"
+	{
+		"en"	"Lost Empires"
+	}
+	"Lost Empires!"
+	{
+		"en"	"Lost Empires ⚠"
+	}
+	"Supplies"
+	{
+		"en"	"Supplies"
+	}
+	"Supplies!"
+	{
+		"en"	"Supplies ⚠"
+	}
+	"No Swimming"
+	{
+		"en"	"No Swimming"
+	}
+	"No Swimming!"
+	{
+		"en"	"No Swimming ⚠"
+	}
+	"All Hallem"
+	{
+		"en"	"All Hallem"
+	}
+	"All Hallem!"
+	{
+		"en"	"All Hallem ⚠"
+	}
+	"Camel Riders"
+	{
+		"en"	"Camel Riders"
+	}
+	"Camel Riders!"
+	{
+		"en"	"Camel Riders ⚠"
+	}
+	"Secret Hunter"
+	{
+		"en"	"Secret Hunter"
+	}
+	"Secret Hunter!"
+	{
+		"en"	"Secret Hunter ⚠"
+	}
+	"Barricade"
+	{
+		"en"	"Barricade"
+	}
+	"Barricade!"
+	{
+		"en"	"Barricade ⚠"
+	}
+	"Into The Shed"
+	{
+		"en"	"Into The Shed"
+	}
+	"Into The Shed!"
+	{
+		"en"	"Into The Shed ⚠"
+	}
+	"The Abomination"
+	{
+		"en"	"The Abomination"
+	}
+	"The Abomination!"
+	{
+		"en"	"The Abomination ⚠"
+	}
+	"Up To The Roof"
+	{
+		"en"	"Up To The Roof"
+	}
+	"Up To The Roof!"
+	{
+		"en"	"Up To The Roof ⚠"
+	}
+	"Rock Collection"
+	{
+		"en"	"Rock Collection"
+	}
+	"Rock Collection!"
+	{
+		"en"	"Rock Collection ⚠"
+	}
+	"Hitman II"
+	{
+		"en"	"Hitman II"
+	}
+	"Hitman II!"
+	{
+		"en"	"Hitman II ⚠"
+	}
+	"Pre-Heated Oven"
+	{
+		"en"	"Pre-Heated Oven"
+	}
+	"Pre-Heated Oven!"
+	{
+		"en"	"Pre-Heated Oven ⚠"
+	}
+	"Yummer"
+	{
+		"en"	"Yummer"
+	}
+	"Yummer!"
+	{
+		"en"	"Yummer ⚠"
+	}
+	"Heavy Forest"
+	{
+		"en"	"Heavy Forest"
+	}
+	"Heavy Forest!"
+	{
+		"en"	"Heavy Forest ⚠"
+	}
+	"Frostbite"
+	{
+		"en"	"Frostbite"
+	}
+	"Frostbite!"
+	{
+		"en"	"Frostbite ⚠"
+	}
+	"Heavy Jacket"
+	{
+		"en"	"Heavy Jacket"
+	}
+	"Heavy Jacket!"
+	{
+		"en"	"Heavy Jacket ⚠"
+	}
+	"Freezer Water"
+	{
+		"en"	"Freezer Water"
+	}
+	"Freezer Water!"
+	{
+		"en"	"Freezer Water ⚠"
+	}
+	"Home of the North"
+	{
+		"en"	"Home of the North"
+	}
+	"Home of the North!"
+	{
+		"en"	"Home of the North ⚠"
+	}
+	"Das Concrete"
+	{
+		"en"	"Das Concrete"
+	}
+	"Das Concrete!"
+	{
+		"en"	"Das Concrete ⚠"
+	}
+	"Machine Works"
+	{
+		"en"	"Machine Works"
+	}
+	"Machine Works!"
+	{
+		"en"	"Machine Works ⚠"
+	}
+	"All In Chaos"
+	{
+		"en"	"All In Chaos"
+	}
+	"All In Chaos!"
+	{
+		"en"	"All In Chaos ⚠"
+	}
+	"Silk Cradle"
+	{
+		"en"	"Silk Cradle"
+	}
+	"Anchordeep"
+	{
+		"en"	"Anchordeep"
+	}
+	"Underground"
+	{
+		"en"	"Underground"
+	}
+	"Anura"
+	{
+		"en"	"Anura"
+	}
+	"Darkwood"
+	{
+		"en"	"Darkwood"
+	}
+	"Last of Internius"
+	{
+		"en"	"Last of Internius"
+	}
 }

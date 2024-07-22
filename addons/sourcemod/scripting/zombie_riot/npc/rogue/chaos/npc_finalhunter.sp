@@ -78,7 +78,7 @@ methodmap FinalHunter < CClotBody
 
 	public FinalHunter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		FinalHunter npc = view_as<FinalHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.1", "50000", ally));
+		FinalHunter npc = view_as<FinalHunter>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.175", "50000", ally));
 		
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -253,10 +253,10 @@ static void ClotThink(int iNPC)
 					if(health > maxhealth)
 						health = maxhealth;
 					
-					health -= maxhealth / 120;
+					health -= maxhealth / 60;
 					if(health < 1)
 					{
-						// 600 seconds to kill Goggles
+						// 300 seconds to kill Goggles
 						SmiteNpcToDeath(target);
 
 						RaidBossActive = EntIndexToEntRef(npc.index);

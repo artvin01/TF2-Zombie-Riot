@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define ROGUE2_ITEM1	"Rogue2 Item1"
-#define ROGUE2_ITEM2	"Rogue2 Item2"
-#define ROGUE2_ITEM3	"Rogue2 Item3"
+#define ROGUE2_ITEM1	"Major Steam's Rocket"
+#define ROGUE2_ITEM2	"Waldch's Expidonsan Sword"
+#define ROGUE2_ITEM3	"Opened Void Portal"
 
 static void GiveCash(int cash)
 {
@@ -254,6 +254,24 @@ public void Rogue_Vote_WishFulfilled(const Vote vote, int index)
 
 public float Rogue_Encounter_Prophecy1()
 {
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/bishopsoftheoldfaith.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Bishops of the Old Faith");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Prophecy1, "Prophecy Lore 1");
 	Vote vote;
 
@@ -261,19 +279,29 @@ public float Rogue_Encounter_Prophecy1()
 	strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 1a");
 	list.PushArray(vote);
 
+	bool easyMode = Rogue_HasNamedArtifact("Compass and Map");
 	bool found;
-	for(int client = 1; client <= MaxClients; client++)
+
+	if(!easyMode)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1))
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			found = true;
-			break;
+			if(IsClientInGame(client) && GetClientTeam(client) == 2 && Items_HasNamedItem(client, ROGUE2_ITEM1))
+			{
+				found = true;
+				break;
+			}
 		}
 	}
 
 	strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 1b");
 	strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 1b");
-	if(!found)
+	if(easyMode)
+	{
+		vote.Locked = true;
+		strcopy(vote.Append, sizeof(vote.Append), " (Compass and Map)");
+	}
+	else if(!found)
 	{
 		vote.Locked = true;
 		strcopy(vote.Append, sizeof(vote.Append), " (???)");
@@ -304,6 +332,24 @@ public bool Rogue_Paradox_SpecialForceCurse(int floor)
 
 public float Rogue_Encounter_Prophecy2()
 {
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/bishopsoftheoldfaith.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Bishops of the Old Faith");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+
 	bool waldch = Rogue_HasNamedArtifact("Waldch Assistance");
 	bool kalm;
 	if(waldch)
@@ -341,14 +387,18 @@ public float Rogue_Encounter_Prophecy2()
 		strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 2a");
 		list.PushArray(vote);
 
+		if(waldch)
+		{
+			vote.Locked = true;
+			strcopy(vote.Append, sizeof(vote.Append), " (Waldch)");
+		}
+
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2b");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 2b");
-		vote.Locked = waldch;
 		list.PushArray(vote);
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2c");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Prophecy Desc 2c");
-		vote.Locked = waldch;
 		list.PushArray(vote);
 	}
 
