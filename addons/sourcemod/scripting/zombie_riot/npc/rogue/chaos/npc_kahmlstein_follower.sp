@@ -15,7 +15,18 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/boxing_gloves_swing2.wav",
 	"weapons/boxing_gloves_swing4.wav",
 };
+static const char g_CoughRandom[][] = {
+	"ambient/voices/cough1.wav",
+	"ambient/voices/cough2.wav",
+	"ambient/voices/cough3.wav",
+	"ambient/voices/cough4.wav",
+};
 
+
+static const char g_BobSuperMeleeCharge_Hit[][] =
+{
+	"player/taunt_yeti_standee_break.wav",
+};
 static int NPCId;
 
 void KahmlsteinFollower_Setup()
@@ -24,6 +35,7 @@ void KahmlsteinFollower_Setup()
 	strcopy(data.Name, sizeof(data.Name), "Kahmlstein");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kahmlstein_follower");
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
+	for (int i = 0; i < (sizeof(g_CoughRandom)); i++) { PrecacheSound(g_CoughRandom[i]); }
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Hidden;
@@ -36,9 +48,9 @@ int KahmlsteinFollower_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return KahmlsteinFollower(client, vecPos, vecAng);
+	return KahmlsteinFollower(client, vecPos, vecAng, ally, data);
 }
 
 static Action KahmlsteinFollower_SpeechTimer(Handle timer, DataPack pack)
@@ -64,6 +76,20 @@ methodmap KahmlsteinFollower < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
+	public void PlayCoughSound() 
+	{
+		EmitSoundToAll(g_CoughRandom[GetRandomInt(0, sizeof(g_CoughRandom) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayDeathSound(int who) 
+	{
+		EmitSoundToAll("npc/strider/striderx_die1.wav", who, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
+	}
+	public void PlayBobMeleePostHit()
+	{
+		int pitch = GetRandomInt(70,80);
+		EmitSoundToAll(g_BobSuperMeleeCharge_Hit[GetRandomInt(0, sizeof(g_BobSuperMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
+		EmitSoundToAll(g_BobSuperMeleeCharge_Hit[GetRandomInt(0, sizeof(g_BobSuperMeleeCharge_Hit) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, 0.7, pitch);
 	}
 	public void SpeechTalk(int client)
 	{
@@ -150,8 +176,18 @@ methodmap KahmlsteinFollower < CClotBody
 	{
 		NpcSpeechBubble(this.index, speechtext, 5, {255, 255, 255, 255}, {0.0,0.0,120.0}, endingtextscroll);
 	}
+	property float m_flDeathAnimation
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flDeathAnimationCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	
-	public KahmlsteinFollower(int client, float vecPos[3], float vecAng[3])
+	public KahmlsteinFollower(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
 		KahmlsteinFollower npc = view_as<KahmlsteinFollower>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "50000", TFTeam_Red, true, true));
 		
@@ -165,6 +201,11 @@ methodmap KahmlsteinFollower < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
+		if(StrContains(data, "void_wave") != -1)
+		{
+			npc.m_bScalesWithWaves = true;
+		}
+
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
 		
@@ -173,6 +214,7 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
 		npc.Anger = false;
+		npc.m_flDeathAnimation = 0.0;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
@@ -229,6 +271,13 @@ static void ClotThink(int iNPC)
 {
 	KahmlsteinFollower npc = view_as<KahmlsteinFollower>(iNPC);
 	
+	if(npc.m_flDeathAnimation)
+	{
+		npc.Update();
+		KahmlDeath_DeathAnimationKahml(npc, GetGameTime());
+		return;
+	}
+
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
@@ -240,6 +289,25 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+
+	//Do stuff if the being is here
+	if(npc.m_bScalesWithWaves)
+	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other) && i_RaidGrantExtra[other] >= 6)
+			{
+				npc.m_flDeathAnimation = GetGameTime() + 45.0;
+				npc.m_iTarget = other;
+				i_RaidGrantExtra[npc.index] = 2;
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				break;
+			}
+		}
+	}
 
 	int target = npc.m_iTarget;
 	int ally = npc.m_iTargetWalkTo;
@@ -288,6 +356,10 @@ static void ClotThink(int iNPC)
 					if(target > 0)
 					{
 						float damage = 7500.0;
+						if(npc.m_bScalesWithWaves)
+						{
+							damage = 80.0;
+						}
 						if(ShouldNpcDealBonusDamage(target))
 							damage *= 5.0;
 						
@@ -363,4 +435,159 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+}
+
+
+
+
+void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
+{
+
+	if(npc.m_flDeathAnimationCD < gameTime)
+	{
+		if(IsValidEntity(npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			npc.FaceTowards(vecTarget, 15000.0);
+		}
+		npc.m_flDeathAnimationCD = gameTime + 3.0;
+
+		switch(i_RaidGrantExtra[npc.index])
+		{
+			case 2:
+			{
+				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 100; LoopTryAlotAlot++)
+				{
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+					static float hullcheckmaxs[3];
+					static float hullcheckmins[3];
+					hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+					hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+						
+					float PreviousPos[3];
+					WorldSpaceCenter(npc.index, PreviousPos);
+					//randomly around the target.
+					vecTarget[0] += GetRandomFloat(-30.0, 30.0);
+					vecTarget[1] += GetRandomFloat(-30.0, 30.0);
+					
+					bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, true);
+					if(Succeed)
+					{
+						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+					}
+				}
+				npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
+				npc.m_flAttackHappens = 0.0;
+				npc.SetCycle(0.01);
+				npc.SetPlaybackRate(0.50);
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
+				npc.PlayBobMeleePostHit();
+				npc.m_flDeathAnimationCD = gameTime + 1.0;
+				CPrintToChatAll("{purple}!?!?!?!?!?!?!?");
+				if(IsValidEntity(npc.m_iTarget))
+				{
+					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+					npc.FaceTowards(vecTarget, 15000.0);
+					npc.PlayDeathSound(npc.m_iTarget);
+					CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iTarget), TIMER_FLAG_NO_MAPCHANGE);
+					RequestFrames(KillNpc, 45, EntIndexToEntRef(npc.m_iTarget));
+				}
+			}
+			case 3:
+			{
+				npc.AddActivityViaSequence("taunt_heavy_workout_end");
+				npc.SetCycle(0.25);
+				npc.SetPlaybackRate(0.0);
+			}
+			case 4:
+			{
+				npc.m_flDeathAnimationCD = gameTime + 2.0;
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: ..I think I've finally met a match..");
+			}
+			case 5:
+			{
+				float flPos[3];
+				float flAng[3];
+				npc.m_flDeathAnimationCD = gameTime + 2.0;
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				npc.PlayCoughSound();
+				npc.GetAttachment("head", flPos, flAng);
+				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
+				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			case 6:
+			{
+				npc.m_flDeathAnimationCD = gameTime + 2.0;
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Oh.. that's blood.. lots of it.");
+				npc.PlayCoughSound();
+			}
+			case 7:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: But we did it, the Void's influence is fading away.");
+			}
+			case 8:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: And as long as another idiot doesn't try to mess with it, it won't come back");
+			}
+			case 9:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: But that means.. my immortality is fading as well. Maybe it's for the better.");
+			}
+			case 10:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+			}
+			case 11:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+			}
+			case 12:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+			}
+			case 13:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+			}
+			case 14:
+			{
+				float flPos[3];
+				float flAng[3];
+				npc.m_flDeathAnimationCD = gameTime + 2.0;
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
+				npc.PlayCoughSound();
+				npc.GetAttachment("head", flPos, flAng);
+				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
+				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			case 15:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+			}
+			case 16:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+			}
+			case 17:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: ... Make sure the void doesnt come back...");
+				if(IsValidEntity(npc.index))
+				{
+					CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+					RequestFrames(KillNpc, 45, EntIndexToEntRef(npc.index));
+				}
+				for (int client = 0; client < MaxClients; client++)
+				{
+					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+					{
+						Items_GiveNamedItem(client, "Kahmlsteins Last Will");
+						CPrintToChat(client,"{default}You get: {red}''Kahmlsteins Last Will''{default}.");
+					}
+				}
+			}
+		}
+		i_RaidGrantExtra[npc.index]++;
+	}
 }
