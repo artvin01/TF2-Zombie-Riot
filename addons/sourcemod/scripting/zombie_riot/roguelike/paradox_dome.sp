@@ -123,7 +123,7 @@ static void Dome_Frame_Shrink()
 				else
 					flAlpha = (flDistanceMultiplier - DOME_FADE_START_MULTIPLIER) * (1.0/(1.0-DOME_FADE_START_MULTIPLIER)) * DOME_FADE_ALPHA_MAX;
 				
-				UTIL_ScreenFade(iClient, _, 0, 0x0001, 255, 255, 255, RoundToNearest(flAlpha));
+				UTIL_ScreenFade(iClient, 2000, 0, 0x0001, 255, 255, 255, RoundToNearest(flAlpha));
 			}
 		}
 	}
