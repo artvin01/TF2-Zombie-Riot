@@ -50,8 +50,8 @@ void VoidSpreader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Spreader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_spreader");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
@@ -352,6 +352,14 @@ public void VoidSpreader_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))

@@ -975,6 +975,8 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 #define DEFAULT_HURTDELAY 0.35 //Make it 0 for now
 
 
+int FogEntity = INVALID_ENT_REFERENCE;
+
 #define RAD2DEG(%1) ((%1) * (180.0 / FLOAT_PI))
 #define DEG2RAD(%1) ((%1) * FLOAT_PI / 180.0)
 
@@ -1212,6 +1214,7 @@ bool b_Dead_Ringer_Invis_bool[MAXENTITIES];
 int i_AttacksTillMegahit[MAXENTITIES];
 int i_WeaponArchetype[MAXENTITIES];
 int i_WeaponForceClass[MAXENTITIES];
+float fl_AbilityOrAttack[MAXENTITIES][10];
 
 float fl_NextFlameSound[MAXENTITIES];
 float fl_FlamerActive[MAXENTITIES];

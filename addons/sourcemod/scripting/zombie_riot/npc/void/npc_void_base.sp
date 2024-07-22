@@ -71,8 +71,11 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 		SpreadTicks = 0;
 		return Plugin_Stop;
 	}
+	int SpreadTicksMax = 24;
+	if(RaidbossIgnoreBuildingsLogic(0))
+		SpreadTicksMax = 6;
 
-	if(++SpreadTicks > 24)
+	if(++SpreadTicks > SpreadTicksMax)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 

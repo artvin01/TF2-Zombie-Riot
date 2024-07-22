@@ -44,8 +44,8 @@ void VoidHostingBlob_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hosting Blob");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hosting_blob");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
@@ -237,6 +237,14 @@ public void VoidHostingBlob_NPCDeath(int entity)
 	//a spawnpoint that only lasts for 1 spawn
 	Void_PlaceZRSpawnpoint(VecSelfNpcabs, 0, 2, "utaunt_hands_purple_parent", 5, false);
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -292,8 +300,8 @@ void VoidHostingBlobSelfDefense(VoidHostingBlob npc, float gameTime, int target,
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

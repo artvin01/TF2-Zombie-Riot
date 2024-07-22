@@ -47,9 +47,9 @@ void VoidBroodingPetra_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brooding Petra");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_brooding_petra");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
-	data.Flags = 0;
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -269,6 +269,10 @@ public void VoidBroodingPetra_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable4))

@@ -30,10 +30,18 @@
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
 	}
+	"Run while you can."
+	{
+		"en" 		"Run while you can."
+	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
 		"pt"		"O Expidonsan Sensal colhe."
+	}
+	"Vhxis arrived"
+	{
+		"en" 		"Vhxis the void keeper halts you."
 	}
 	"The Messanger Arrived"
 	{

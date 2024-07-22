@@ -475,6 +475,11 @@ void NPC_ConfigSetup()
 	VoidsOffspring_OnMapStart_NPC();
 	VoidRejuvinator_OnMapStart_NPC();
 
+//boss
+	VoidSpeechless_OnMapStart_NPC();
+//Raids
+	VoidUnspeakable_OnMapStart_NPC();
+
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
 	VoidPortal_OnMapStart_NPC();
@@ -566,6 +571,11 @@ void NPC_ConfigSetup()
 	GogglesFollower_Setup();
 	TheHunter_Setup();
 	Vhxis_OnMapStart_NPC();
+	ChaosMage_OnMapStart_NPC();
+	ChaosSupporter_OnMapStart_NPC();
+	ChaosInsane_OnMapStart_NPC();
+	ChaosSickKnight_OnMapStart_NPC();
+	ChaosInjuredCultist_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1326,10 +1336,17 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/late/npc_void_total_growth.sp"
 #include "zombie_riot/npc/void/late/npc_voids_offspring.sp"
 #include "zombie_riot/npc/void/late/npc_void_rejuvinator.sp"
+#include "zombie_riot/npc/void/late/npc_void_speechless.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_void_unspeakable.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_mage.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_supporter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_insane.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)

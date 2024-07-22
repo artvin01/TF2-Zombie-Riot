@@ -49,8 +49,8 @@ void VoidExpidonsanContainer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Container");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_expidonsan_container");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
@@ -234,6 +234,14 @@ public void VoidExpidonsanContainer_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -303,8 +311,8 @@ void VoidExpidonsanContainerSelfDefense(VoidExpidonsanContainer npc, float gameT
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

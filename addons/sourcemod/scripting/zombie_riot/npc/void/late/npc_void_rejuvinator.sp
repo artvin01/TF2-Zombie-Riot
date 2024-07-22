@@ -49,9 +49,9 @@ void VoidRejuvinator_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Rejuvinator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_rejuvinator");
-	strcopy(data.Icon, sizeof(data.Icon), "medic");
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -372,20 +372,20 @@ public void VoidRejuvinator_NPCDeath(int entity)
 	}
 	
 	Is_a_Medic[npc.index] = false;
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
-	if(IsValidEntity(npc.m_iWearable4))
-		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable3))
+		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	npc.StopHealing();
 }
 

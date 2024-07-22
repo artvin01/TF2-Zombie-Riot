@@ -91,10 +91,21 @@ static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
 static int i_SadText;
+static int i_ColoursTEPillars[4];
 bool AlreadySaidWin;
 bool AlreadySaidLastmann;
 
 static int Silvester_TE_Used;
+
+void ResetTEStatusSilvester()
+{
+	Silvester_TE_Used = 0;
+}
+void SetSilvesterPillarColour(int colours[4])
+{
+	i_ColoursTEPillars = colours;
+}
+
 public void RaidbossSilvester_OnMapStart()
 {
 	NPCData data;
@@ -1194,6 +1205,7 @@ static void Internal_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
 				{
 					i_TimesSummoned[npc.index] = 0;
@@ -1295,6 +1307,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
@@ -1792,7 +1805,12 @@ float extra_pillar_size = 1.0)
 
 	float origin_altered[3];
 	origin_altered = origin;
-
+	bool DontClipOrMove = false;
+	if(count == 0)
+	{
+		DontClipOrMove = true;
+		count = 1;
+	}
 	for(int Repeats; Repeats < count; Repeats++)
 	{
 		float VecForward[3];
@@ -1807,6 +1825,8 @@ float extra_pillar_size = 1.0)
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+		if(DontClipOrMove)
+			origin_altered = origin;
 
 		//Clip to ground, its like stepping on stairs, but for these rocks.
 
@@ -1831,7 +1851,7 @@ float extra_pillar_size = 1.0)
 		}
 		else
 		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
 		/*
 		int laser;
@@ -1896,7 +1916,7 @@ public void Silvester_DelayTE(DataPack pack)
 	Origin[2] = pack.ReadCell();
 	float Range = pack.ReadCell();
 	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 5.0, 0.0, 1);	
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, Delay, 5.0, 0.0, 1);	
 		
 	delete pack;
 }
@@ -1927,6 +1947,11 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	{
 		return Plugin_Continue;
 	}
+	bool DontClipOrMove = false;
+	if(countMax == 0)
+	{
+		DontClipOrMove = true;
+	}
 
 	count += 1;
 	pack.Position = countPos;
@@ -1943,6 +1968,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		if(DontClipOrMove)
+			vecSwingEnd = origin;
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
@@ -1986,7 +2013,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, 215, 200, 0, 200);
+			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
@@ -2009,7 +2036,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			}
 		
 		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
-			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 3.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
 
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
