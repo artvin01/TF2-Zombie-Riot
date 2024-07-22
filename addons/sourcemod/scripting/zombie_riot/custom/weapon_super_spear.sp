@@ -80,7 +80,7 @@ public Action Timer_Management_Bomblance(Handle timer, DataPack pack)
 
 void Bomblance_Melee_Swing(float &CustomMeleeRange, float &CustomMeleeWide)
 {
-	CustomMeleeRange = 50.0;
+	CustomMeleeRange = 55.0;
 	CustomMeleeWide = 20.0;
 }
 
@@ -94,20 +94,24 @@ static int Bomblance_Get_Pap(int weapon) //deivid inspired pap detection system 
 public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int slot)
 {
 	float attackspeed = Attributes_FindOnWeapon(client, weapon, 6, true, 1.0);
+	PrintToChatAll("ATTACK");
 	if(b_abilityon[client])
 	{
+		PrintToChatAll("Ability on hit");
 		if(i_HowManyAttack[weapon] < 3) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 		{
+			PrintToChatAll("Charging attack");
 			i_HowManyAttack[weapon] += 1;
-			b_WeaponAttackSpeedModified[weapon] = true;
 			if(!b_speedbuffed[client])
 			{
+				b_speedbuffed[weapon] = true;
 				attackspeed = (attackspeed * 0.2);
 				Attributes_Set(weapon, 6, attackspeed);
 			}
 		}
 		else if(i_HowManyAttack[weapon] > 2)
 		{
+			PrintToChatAll("3rd hit!");
 			i_HowManyAttack[weapon] = 0;
 			b_speedbuffed[client] = false;
 			b_explode[client] = true;
@@ -150,6 +154,7 @@ public Action Bomblance_ability_off(Handle timer, any userid)
 {
 	int client = GetClientOfUserId(userid);
 	b_abilityon[client] = false;
+	PrintToChatAll("Ability off");
 	return Plugin_Stop;
 }
 
@@ -157,6 +162,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 {
 	if(b_explode[attacker])
 	{
+		PrintToChatAll("Explosive trigger");
 		if(IsValidEntity(weapon))
 		{
 			//if(damagetype & DMG_CLUB)
@@ -183,7 +189,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
 			EmitAmbientSound(SOUND_BOOM_SHOT, spawnLoc, attacker, 70,_, 0.6);
 			ParticleEffectAt(position, "taunt_pyro_balloon_explosion", 1.0);
-
+			PrintToChatAll("Explode complete");
 			b_explode[attacker] = false;
 		}
 	}
@@ -192,14 +198,16 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 	{
 		case 0:
 		{
-			return;
+			PrintToChatAll("Normal hit");
 		}
 		case 1:
 		{
+			PrintToChatAll("Fire hit");
 			NPC_Ignite(victim, attacker, 5.0, weapon);
 		}
 		case 2:
 		{
+			PrintToChatAll("ICE hit");
 			if((f_LowIceDebuff[victim] - 1.0) < GetGameTime())
 				{
 					f_LowIceDebuff[victim] = GetGameTime() + 1.1;
