@@ -88,7 +88,7 @@ void Vhxis_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "void_vhxis");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -230,7 +230,7 @@ methodmap Vhxis < CClotBody
 	{
 		Vhxis npc = view_as<Vhxis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "2.0", "30000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_ROGUE2_VOID_WALK");
@@ -243,6 +243,8 @@ methodmap Vhxis < CClotBody
 		npc.m_flVoidLaserPulseCooldown = GetGameTime() + 10.0;
 		npc.m_flVoidGroundShakeCooldown = GetGameTime() + 15.0;
 		npc.m_flVoidMagicCooldown = GetGameTime() + 20.0;
+		AlreadySaidWin = false;
+		AlreadySaidLastmann = false;
 		
 		
 		
@@ -255,13 +257,24 @@ methodmap Vhxis < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Vhxis_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Vhxis_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Vhxis_ClotThink);
+		func_NPCFuncWin[npc.index] = view_as<Function>(VoidVhxisWin);
 		
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/forest_rogue/vhxis_battle.mp3");
+		music.Time = 122;
+		music.Volume = 1.35;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Breach and Escape");
+		strcopy(music.Artist, sizeof(music.Artist), "Spencer Baggett");
+		Music_SetRaidMusic(music);
+	
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
+
 		b_NpcUnableToDie[npc.index] = true;
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
@@ -279,7 +292,7 @@ methodmap Vhxis < CClotBody
 		b_thisNpcIsARaid[npc.index] = true;
 		npc.m_bThisNpcIsABoss = true;
 		
-		RaidModeTime = GetGameTime(npc.index) + 500.0;
+		RaidModeTime = GetGameTime(npc.index) + 350.0;
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -397,6 +410,14 @@ public void Vhxis_ClotThink(int iNPC)
 			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 			CPrintToChatAll("{purple}The void has been released...");
 		}
+		return;
+	}
+	if(RaidModeTime < GetGameTime())
+	{
+		ForcePlayerLoss();
+		RaidBossActive = INVALID_ENT_REFERENCE;
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		CPrintToChatAll("{purple}Vhxis: {default}You almost released the void, i have to keep it in check, piss off!");
 		return;
 	}
 
@@ -1218,4 +1239,18 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 	}
 
 	return false;
+}
+
+
+
+public void VoidVhxisWin(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	func_NPCThink[entity] = INVALID_FUNCTION;
+	if(AlreadySaidWin)
+		return;
+
+	AlreadySaidWin = true;
+	//b_NpcHasDied[client]
+	CPrintToChatAll("{purple}Vhxis: {default}Back to the void gate i go.");
 }
