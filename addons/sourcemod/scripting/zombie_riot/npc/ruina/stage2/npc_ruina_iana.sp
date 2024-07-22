@@ -8,14 +8,12 @@ static const char g_DeathSounds[][] = {
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/scout_beingshotinvincible01.mp3",
+	"vo/scout_beingshotinvincible02.mp3",
+	"vo/scout_beingshotinvincible03.mp3",
+	"vo/scout_beingshotinvincible04.mp3",
+	"vo/scout_beingshotinvincible21.mp3",
+	"vo/scout_beingshotinvincible05.mp3"
 };
 
 static const char g_IdleSounds[][] = {
@@ -23,15 +21,17 @@ static const char g_IdleSounds[][] = {
 	"vo/scout_standonthepoint02.mp3",
 	"vo/scout_standonthepoint03.mp3",
 	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
+	"vo/scout_standonthepoint05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/scout_cartgoingbackdefense01.mp3",
+	"vo/scout_cartgoingbackdefense02.mp3",
+	"vo/scout_cartgoingbackdefense03.mp3",
+	"vo/scout_cartgoingbackdefense04.mp3",
+	"vo/scout_cartgoingbackdefense05.mp3",
+	"vo/scout_cartgoingbackdefense06.mp3",
+	"vo/scout_generic01.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -50,13 +50,13 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static char g_AngerSounds[][] = {	//todo: make it different!
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+static char g_AngerSounds[][] = {
+	"vo/toughbreak/scout_quest_complete_easy_01.mp3",
+	"vo/scout_apexofjump03.mp3",
+	"vo/scout_autocappedintelligence02.mp3",
+	"vo/scout_autodejectedtie04.mp3",
+	"vo/scout_award05.mp3",				//LOOK AT ME!
+	"vo/scout_domination17.mp3"
 };
 
 void Iana_OnMapStart_NPC()
@@ -104,7 +104,7 @@ methodmap Iana < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -113,7 +113,7 @@ methodmap Iana < CClotBody
 	}
 	
 	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
@@ -124,7 +124,7 @@ methodmap Iana < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		
@@ -136,7 +136,7 @@ methodmap Iana < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 		
@@ -144,20 +144,20 @@ methodmap Iana < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -165,11 +165,30 @@ methodmap Iana < CClotBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
 	
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	public Iana(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -181,14 +200,16 @@ methodmap Iana < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
 			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
-			tuxxy					"models/player/items/all_class/tuxxy_scout.mdl"
-			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
+			Dead of Night			"models/workshop/player/items/all_class/xms2013_jacket/xms2013_jacket_%s.mdl"
+			Dr. gogglestache		"models/player/items/medic/hwn_medic_misc1.mdl"
+			Hardium Helm			"models/workshop/player/items/soldier/hw2013_rocket_ranger/hw2013_rocket_ranger.mdl"
 			Breakneck Baggies		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
-			Arthropod's				"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl"
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -206,11 +227,11 @@ methodmap Iana < CClotBody
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/all_class/jogon/jogon_scout.mdl",
-			"models/workshop/player/items/pyro/hwn2015_firebug_mask/hwn2015_firebug_mask.mdl",
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
-			"models/player/items/all_class/tuxxy_scout.mdl",
-			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
+			"models/workshop/player/items/all_class/xms2013_jacket/xms2013_jacket_scout.mdl",
+			"models/player/items/medic/hwn_medic_misc1.mdl",
+			"models/workshop/player/items/soldier/hw2013_rocket_ranger/hw2013_rocket_ranger.mdl",
+			"models/workshop/player/items/all_class/jogon/jogon_scout.mdl",
 			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_1
 		};
@@ -281,6 +302,8 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	npc.AdjustWalkCycle();
+
 	Ruina_Add_Battery(npc.index, 5.0);
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -332,6 +355,8 @@ static void ClotThink(int iNPC)
 					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 					if(Succeed)
 					{
+
+						npc.m_flNextMeleeAttack = GameTime + 1.0;
 						npc.PlayTeleportSound();
 
 						Ruina_Laser_Logic Laser;
@@ -400,6 +425,7 @@ static void ClotThink(int iNPC)
 					TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
 					TE_SendToAll();
 		
+					EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
 					DataPack pack;
 					CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
 					pack.WriteCell(EntIndexToEntRef(npc.index));
@@ -407,9 +433,9 @@ static void ClotThink(int iNPC)
 					pack.WriteCellArray(color, sizeof(color));
 					pack.WriteFloat(Radius);
 					pack.WriteFloat(dmg);
-					pack.WriteFloat(0.1);
-					pack.WriteCell(100);
-					pack.WriteCell(false);
+					pack.WriteFloat(0.1);			//Sickness %
+					pack.WriteCell(100);			//Sickness flat
+					pack.WriteCell(false);			//Override sickness timeout
 
 					float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
 
@@ -432,10 +458,10 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 175.0;			//heavy, but slow
-		Melee.bonus_dmg = 500.0;
+		Melee.damage = (npc.Anger ? 250.0 : 200.0);			//heavy, but slow
+		Melee.bonus_dmg = (npc.Anger ? 750.0 : 500.0);
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
-		Melee.swing_speed = 2.2;
+		Melee.swing_speed = (npc.Anger ? 3.0 : 4.0);
 		Melee.swing_delay = 0.37;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
@@ -486,7 +512,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 
-	if(!npc.Anger && Ratio < 0.75) 
+	if(!npc.Anger && Ratio < 0.5) 
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

@@ -567,10 +567,12 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	{
 		damage *= 0.93;
 	}
-	
-	if(f_Ruina_Attack_Buff[attacker] > GameTime)
-		damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus
-#endif
+	#if defined RUINA_BASE
+		if(f_Ruina_Attack_Buff[attacker] > GameTime)
+			damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus			
+	#endif
+
+#endif	//zr
 	return false;
 }
 

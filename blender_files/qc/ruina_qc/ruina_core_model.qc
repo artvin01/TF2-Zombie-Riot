@@ -1,77 +1,77 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_1_1.mdl"
+$modelname "zombie_riot/weapons/ruina_models_1_1.mdl"	//current one on the server: "1_1"
 
 $bodygroup "ruina_icbm"	//done
 {
 	blank
-	studio "ruina_projectile.smd"
+	studio "v1/ruina_projectile.smd"
 }
 $bodygroup "halo_1"	//Create a spinning animation for the rings.
 {
 	blank
-	studio "halo_1"
+	studio "v1/halo_1"
 }
 $bodygroup "quincy_bow"		//done
 {
 	blank
-	studio "ruina_bow.smd"
+	studio "v1/ruina_bow.smd"
 }
 $bodygroup "ruina_blade"	//done
 {
 	blank
-	studio "ruina_blade.smd"
+	studio "v1/ruina_blade.smd"
 }
 $bodygroup "ruina_magi_gun"	//done
 {
 	blank
-	studio "ruina_magi_gun.smd"
+	studio "v1/ruina_magi_gun.smd"
 }
 $bodygroup "ruina_staff_1"	//done
 {							
 	blank
-	studio "ruina_staff_1.smd"
+	studio "v1/ruina_staff_1.smd"
 }
 $bodygroup "hand_crest_v1"	
 {							
 	blank
-	studio "hand_crest_v1.smd"
+	studio "v1/hand_crest_v1.smd"
 }
 $bodygroup "lan_sword_v1"	
 {							
 	blank
-	studio "lan_sword_v1.smd"
+	studio "v1/lan_sword_v1.smd"
 }
 $bodygroup "eur_staff_v1"	
 {							
 	blank
-	studio "eur_staff_v1.smd"
+	studio "v1/eur_staff_v1.smd"
 }
 $bodygroup "dagger_v1"	
 {							
 	blank
-	studio "dagger_v1.smd"
+	studio "v1/dagger_v1.smd"
 }
 $bodygroup "radar_gun_v1"	
 {							
 	blank
-	studio "radar_gun_v1.smd"
+	studio "v1/radar_gun_v1.smd"
 }
 $bodygroup "healing_staff_1"	
 {							
 	blank
-	studio "healing_staff_1.smd"
+	studio "v1/healing_staff_1.smd"
 }
 $bodygroup "w30_boss_crest"	
 {							
 	blank
-	studio "w30_boss_crest.smd"
+	studio "v1/w30_boss_crest.smd"
 }
 $bodygroup "iana_blade"	
 {							
 	blank
-	studio "iana_blade.smd"
+	studio "v1/iana_blade.smd"
 }
 
 

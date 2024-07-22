@@ -2348,7 +2348,7 @@
 	}
 	"quincy pap"
 	{
-		"en"	"More damage!"
+		"en"	"More damage!\nAlso if your arrows gain the ability to home onto targets, if you can see one\nHoming power is dependant on how raishi % charge"
 		"chi"	"提高伤害！"
 	}
 	"quincy pap arrow"

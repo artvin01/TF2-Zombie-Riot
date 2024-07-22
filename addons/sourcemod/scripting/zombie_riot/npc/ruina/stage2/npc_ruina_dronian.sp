@@ -139,6 +139,26 @@ methodmap Dronian < CClotBody
 		
 		
 	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	
 	public Dronian(int client, float vecPos[3], float vecAng[3], int ally)
@@ -151,6 +171,8 @@ methodmap Dronian < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
@@ -234,6 +256,8 @@ static void ClotThink(int iNPC)
 		return;
 	}
 	
+	npc.AdjustWalkCycle();
+
 	npc.m_flNextThinkTime = GameTime + 0.1;
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid
