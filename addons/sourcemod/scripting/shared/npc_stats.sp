@@ -3349,10 +3349,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 		float GibEnemyGive = 1.0;
+
+#if defined ZR || defined RPG
 		if(IsValidEntity(iWeapon))
 		{
 			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
 		}
+#endif
+
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 

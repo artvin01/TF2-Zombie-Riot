@@ -1551,11 +1551,13 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		char ExtraHudHurt[255];
 		
+#if defined ZR
 		if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
 			Health = RoundFloat(float(Health) * GetRandomFloat(0.5, 1.5));
 
 		if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
 			MaxHealth = RoundFloat(float(MaxHealth) * GetRandomFloat(0.5, 1.5));
+#endif
 
 		//add name and health
 		//add name and health

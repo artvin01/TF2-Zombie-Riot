@@ -5057,7 +5057,9 @@ stock void ForcePlayerCrouch(int client, bool enable)
 			{
 				SetVariantInt(0);
 				AcceptEntityInput(client, "SetForcedTauntCam");
+#if defined ZR || defined RPG
 				ViewChange_Update(client);
+#endif
 			}
 			SetForceButtonState(client, false, IN_DUCK);
 			b_NetworkedCrouch[client] = false;
