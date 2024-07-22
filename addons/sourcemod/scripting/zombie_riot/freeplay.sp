@@ -171,6 +171,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
+		//raids otherwise have too much damage.
+		enemy.ExtraDamage *= 0.65;
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 5000.0;

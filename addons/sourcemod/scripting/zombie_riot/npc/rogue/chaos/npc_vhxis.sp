@@ -85,9 +85,9 @@ void Vhxis_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vhxis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vhxis");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	strcopy(data.Icon, sizeof(data.Icon), "void_vhxis");
 	data.IconCustom = false;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Interitus;
 	data.Func = ClotSummon;
 	NPC_Add(data);

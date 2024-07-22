@@ -61,9 +61,9 @@ void ChaosSickKnight_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Knight?");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_sick_knight");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_knight");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);

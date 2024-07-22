@@ -3979,7 +3979,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		}
 		case STEPTYPE_TANK:
 		{
-			if(IsWalkEvent(event, 5))
+			if(IsWalkEvent(event, 5) || IsWalkEvent(event))
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{

@@ -477,6 +477,8 @@ void NPC_ConfigSetup()
 
 //boss
 	VoidSpeechless_OnMapStart_NPC();
+//Raids
+	VoidUnspeakable_OnMapStart_NPC();
 
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
@@ -1337,6 +1339,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/late/npc_voids_offspring.sp"
 #include "zombie_riot/npc/void/late/npc_void_rejuvinator.sp"
 #include "zombie_riot/npc/void/late/npc_void_speechless.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_void_unspeakable.sp"
 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"

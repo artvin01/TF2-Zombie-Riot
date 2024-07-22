@@ -49,10 +49,10 @@ void VoidSacraficer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sacraficer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_sacraficer");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
+	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

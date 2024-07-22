@@ -44,8 +44,8 @@ void VoidParticle_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Particle");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_particle");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;

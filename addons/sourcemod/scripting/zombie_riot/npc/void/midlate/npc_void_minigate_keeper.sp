@@ -44,8 +44,8 @@ void VoidMinigateKeeper_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Mini-Gatekeeper");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_minigate_keeper");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;

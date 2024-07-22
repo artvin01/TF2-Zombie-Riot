@@ -44,8 +44,8 @@ void VoidHostingBlob_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hosting Blob");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hosting_blob");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;

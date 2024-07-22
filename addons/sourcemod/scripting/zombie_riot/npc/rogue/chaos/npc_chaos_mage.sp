@@ -41,7 +41,7 @@ void ChaosMage_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Mage");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_mage");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_mage");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Void;
