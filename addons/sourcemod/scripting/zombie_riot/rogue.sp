@@ -471,7 +471,7 @@ void Rogue_SetupVote(KeyValues kv)
 			{
 				kv.GetSectionName(buffer, sizeof(buffer));
 				if(buffer[0])
-					PrecacheSoundCustom(buffer, _, 15);
+					PrecacheSoundCustom(buffer, _, kv.GetNum(NULL_STRING, 15));
 			}
 			while(kv.GotoNextKey(false));
 
@@ -1589,6 +1589,25 @@ static void StartStage(const Stage stage)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+			}
+		}
+	}
+
+	if(!pos[0])
+	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrEqual(buffer, stage.Spawn, false))
+				{
+					if(!pos[0] || (GetURandomInt() % 2))
+					{
+						GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+					}
+				}
 			}
 		}
 	}
