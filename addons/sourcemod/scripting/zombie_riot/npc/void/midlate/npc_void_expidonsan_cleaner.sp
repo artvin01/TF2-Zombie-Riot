@@ -43,7 +43,7 @@ void VoudExpidonsanCleaner_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Cleaner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_expidonsan_cleaner");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Void;

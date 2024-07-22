@@ -49,10 +49,10 @@ void VoidsOffspring_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void's Offspring");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_voids_offspring");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -245,8 +245,6 @@ public void VoidsOffspring_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	FramingInfestorSpread(entity);
-	//drops life grenade on death
-	npc.FireGrenade({0.0,0.0,0.0}, 0.0, 200.0, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))

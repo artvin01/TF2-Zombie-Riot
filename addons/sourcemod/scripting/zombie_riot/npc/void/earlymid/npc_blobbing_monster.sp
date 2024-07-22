@@ -41,9 +41,9 @@ void VoidBlobbingMonster_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Blobbing Monster");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_blobbing_monster");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
-	data.Flags = 0;
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);

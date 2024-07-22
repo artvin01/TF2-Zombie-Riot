@@ -53,8 +53,8 @@ void VoidHardCrust_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Hard Crust");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_crust");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
+	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;

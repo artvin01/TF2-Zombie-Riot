@@ -107,7 +107,6 @@ static Function ModFuncWeapon = INVALID_FUNCTION;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
-static int FogEntity = INVALID_ENT_REFERENCE;
 
 static StringMap g_AllocPooledStringCache;
 
