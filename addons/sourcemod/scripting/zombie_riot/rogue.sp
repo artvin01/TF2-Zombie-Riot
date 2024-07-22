@@ -830,7 +830,9 @@ public Action Rogue_RoundStartTimer(Handle timer)
 public Action Rogue_ProgressTimer(Handle timer)
 {
 	ProgressTimer = null;
-	Rogue_NextProgress();
+	if(Floors)
+		Rogue_NextProgress();
+	
 	return Plugin_Stop;
 }
 
