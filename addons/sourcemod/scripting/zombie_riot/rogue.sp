@@ -868,7 +868,7 @@ void Rogue_BattleVictory()
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
 				}
 
-				if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % (BattleIngots > 4 ? 3 : 4)))
+				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
 					Artifact artifact;
 					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
@@ -1022,7 +1022,7 @@ void Rogue_NextProgress()
 			}
 			else
 			{
-				SetNextStage(id, false, stage, 15.0);
+				SetNextStage(id, false, stage, 10.0);
 			}
 
 			SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
@@ -1295,7 +1295,7 @@ void Rogue_NextProgress()
 				{
 					SetFloorMusic(floor, true);
 
-					Rogue_StartGenericVote(10.0);
+					Rogue_StartGenericVote(15.0);
 					GameState = State_Vote;
 
 					TeleportToSpawn();
@@ -1370,7 +1370,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 	VoteEndTime = GetGameTime() + time;
 	CreateTimer(time, Rogue_EndVote, _, TIMER_FLAG_NO_MAPCHANGE);
 
-	Rogue_SetProgressTime(time + 10.0, false);
+	Rogue_SetProgressTime(time + 5.0, false);
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -1479,7 +1479,7 @@ public int Rogue_CallGenericVoteH(Menu menu, MenuAction action, int client, int 
 	return 0;
 }
 
-static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0)
+static void SetNextStage(int id, bool type, const Stage stage, float time = 5.0)
 {
 	CurrentCount++;
 	CurrentStage = id;
@@ -1488,7 +1488,7 @@ static void SetNextStage(int id, bool type, const Stage stage, float time = 10.0
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), stage.Name);
 	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), stage.Name);
 	WavesUpdateDifficultyName();
-	if(stage.WaveSet[0])	// If a battle, give map over view for 10 seconds
+	if(stage.WaveSet[0])	// If a battle, give map over view for 5 seconds
 	{
 		GameState = State_Trans;
 		SetAllCamera(stage.Camera, stage.Skyname);

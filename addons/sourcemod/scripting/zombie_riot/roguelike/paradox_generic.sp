@@ -64,14 +64,14 @@ public float Rogue_Encounter_ParadoxShop()
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
 			if(StrEqual(artifact.Name, "zr_store_prop", false))
-				AcceptEntityInput(entity, "Disable");
+				AcceptEntityInput(entity, "Enable");
 		}
 	}
 
-	StartShopVote();
+	StartShopVote(true);
 	return 35.0;
 }
-static void StartShopVote()
+static void StartShopVote(bool first)
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
 	Vote vote;
@@ -110,7 +110,7 @@ static void StartShopVote()
 	strcopy(vote.Config, sizeof(vote.Config), "-1");
 	list.PushArray(vote);
 
-	Rogue_StartGenericVote(length ? 30.0 : 3.0);
+	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
@@ -120,6 +120,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 	{
 		case -1:
 		{
+			Rogue_SetProgressTime(5.0, false);
+
 			delete ShopListing;
 
 			int entity = -1;
@@ -163,8 +165,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 			
 			Rogue_AddIngots(-cost, true);
 
-			StartShopVote();
-			Rogue_SetProgressTime(35.0, false);
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
 		}
 	}
 }

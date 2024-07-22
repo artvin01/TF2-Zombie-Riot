@@ -10,7 +10,7 @@
 
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
 
-#define DOME_RADIUS	5000.0
+#define DOME_RADIUS	3000.0
 
 static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
@@ -23,6 +23,7 @@ static Handle g_hDomeTimerBleed = null;
 void Rogue_Dome_Mapstart()
 {
 	PrecacheModel("models/kirillian/brsphere_huge.mdl");
+	PrecacheSound(DOME_NEARBY_SOUND);
 }
 
 void Rogue_Dome_WaveStart(const float pos[3])
@@ -66,8 +67,21 @@ void Rogue_Dome_WaveEnd()
 			RemoveEntity(iDome);
 	}
 
+	for (int iClient = 1; iClient <= MaxClients; iClient++)
+	{
+		if (IsClientInGame(iClient) && IsPlayerAlive(iClient))
+		{
+			if (g_bDomePlayerOutside[iClient])
+			{
+				//Client is not outside of dome, remove bleed
+				TF2_RemoveCondition(iClient, TFCond_Bleeding);
+				g_bDomePlayerOutside[iClient] = false;
+			}
+		}
+	}
+
+	g_flDomeStart = 0.0;
 	Zero(g_flDomePlayerTime);
-	Zero(g_bDomePlayerOutside);
 }
 
 static void Dome_Frame_Shrink()
@@ -100,7 +114,7 @@ static void Dome_Frame_Shrink()
 				
 				//give bleed if havent been given one
 				if (!TF2_IsPlayerInCondition(iClient, TFCond_Bleeding))
-					TF2_MakeBleed(iClient, iClient, 9999.0);	//Does no damage, ty sourcemod
+					TF2_MakeBleed(iClient, iClient, 99.0);	//Does no damage, ty sourcemod
 			}
 			else if (g_bDomePlayerOutside[iClient])
 			{
