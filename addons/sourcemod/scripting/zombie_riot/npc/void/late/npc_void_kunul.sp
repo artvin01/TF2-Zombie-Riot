@@ -279,13 +279,13 @@ void VoidKunulSelfDefense(VoidKunul npc, float gameTime, int target, float dista
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
 							}
 						}
 					}

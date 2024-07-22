@@ -276,13 +276,13 @@ void VoidBloodPollutorSelfDefense(VoidBloodPollutor npc, float gameTime, int tar
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 5.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 5.0, 5);
 							}
 						}
 					}

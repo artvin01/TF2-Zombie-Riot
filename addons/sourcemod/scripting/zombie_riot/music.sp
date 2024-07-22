@@ -53,6 +53,7 @@ static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
+static bool AltExtraLogic;
 
 #define RANGE_FIRST_MUSIC 6250000
 #define RANGE_SECOND_MUSIC 1000000
@@ -133,6 +134,7 @@ void Music_MapStart()
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
+	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
 
 	if(XenoMapExtra)
 	{
@@ -153,6 +155,20 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 	else
 	{
 		if(XenoMapExtra && (!StrContains(WhatDifficultySetting_Internal, "Xeno") || !StrContains(WhatDifficultySetting_Internal, "Silvester & Goggles")))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AlternativeExtraLogic(bool NpcBuffing = false)
+{
+	if(!NpcBuffing)
+		return AltExtraLogic;
+	else
+	{
+		if(AltExtraLogic && (!StrContains(WhatDifficultySetting_Internal, "Alternative") || !StrContains(WhatDifficultySetting_Internal, "Blitzkrieg")))
 		{
 			return true;
 		}
