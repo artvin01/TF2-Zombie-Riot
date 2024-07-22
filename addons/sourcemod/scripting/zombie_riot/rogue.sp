@@ -2032,9 +2032,9 @@ void Rogue_EnemySpawned(int entity)
 	
 	if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % 2))
 	{
-		float armor = npc.m_flMeleeArmor;
-		npc.m_flMeleeArmor = npc.m_flRangedArmor;
-		npc.m_flRangedArmor = armor;
+		float armor = fl_MeleeArmor[entity];
+		fl_MeleeArmor[entity] = fl_RangedArmor[entity];
+		fl_RangedArmor[entity] = armor;
 	}
 }
 

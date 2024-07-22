@@ -836,6 +836,98 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 			}
 		}
 	}
+	else
+	{
+		bool RoundHadCustomMusic = false;
+	
+		if(MusicString1.Path[0])
+			RoundHadCustomMusic = true;
+				
+		if(MusicString2.Path[0])
+			RoundHadCustomMusic = true;
+
+		if(RaidMusicSpecial1.Path[0])
+		{
+			RoundHadCustomMusic = true;
+		}
+
+		Rounds.GetArray(0, round);
+
+		if(RoundHadCustomMusic) //only do it when there was actually custom music previously
+		{	
+			bool ReplaceMusic = false;
+			if(!round.music_round_1.Path[0] && MusicString1.Path[0])
+			{
+				ReplaceMusic = true;
+			}
+			if(round.music_round_1.Path[0])
+			{
+				if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
+				{
+					ReplaceMusic = true;
+				}
+			}
+			//there was music the previous round, but there is none now.
+			if(!round.music_round_2.Path[0] && MusicString2.Path[0])
+			{
+				ReplaceMusic = true;
+			}
+			//they are different, cancel out.
+			if(round.music_round_1.Path[0])
+			{
+				if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
+				{
+					ReplaceMusic = true;
+				}
+			}
+
+			//if it had raid music, replace anyways.
+			if(RaidMusicSpecial1.Path[0])
+				ReplaceMusic = true;
+			
+			if(ReplaceMusic)
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 2); //This is here beacuse of raid music.
+						Music_Stop_All(client);
+					}
+				}	
+			}
+		}
+
+		//This should nullfy anyways if nothings in it
+		RemoveAllCustomMusic();
+
+		MusicString1 = round.music_round_1;
+		MusicString2 = round.music_round_2;
+		
+		if(round.Setup > 1.0)
+		{
+			if(round.Setup > 59.0)
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + 99999);
+					}
+				}
+			}
+			else if(MusicString1.Path[0] || MusicString2.Path[0])
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
+					}
+				}
+			}
+		}
+	}
 
 	Waves_UpdateMvMStats();
 	DoGlobalMultiScaling();
