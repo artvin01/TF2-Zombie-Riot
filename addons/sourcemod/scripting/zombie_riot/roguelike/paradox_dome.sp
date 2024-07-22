@@ -3,20 +3,17 @@
 
 // https://github.com/redsunservers/VSH-Rewrite/blob/master/addons/sourcemod/scripting/vsh/dome.sp
 
-#define DOME_PROP_RADIUS 10000.0
+#define DOME_PROP_RADIUS 10000.0 // Don't change
 
 #define DOME_FADE_START_MULTIPLIER 0.7
 #define DOME_FADE_ALPHA_MAX 64
 
-#define DOME_START_SOUND	"mvm/mvm_warning.wav"
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
-#define DOME_PERPARE_DURATION 4.5
 
-#define DOME_RADIUS	3000.0
+#define DOME_RADIUS	5000.0
 
 static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
-static float g_flDomeRadius = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
 static float g_vecDomeCP[3];
 static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
@@ -39,12 +36,10 @@ void Rogue_Dome_WaveStart(const float pos[3])
 	if (iDome == -1)
 		return;
 	
-	g_flDomeRadius = 3000.0;
-	
 	DispatchKeyValueVector(iDome, "origin", g_vecDomeCP);						//Set origin to CP
 	DispatchKeyValue(iDome, "model", "models/kirillian/brsphere_huge.mdl");	//Set model
 	DispatchKeyValue(iDome, "disableshadows", "1");							//Disable shadow
-	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(g_flDomeRadius / DOME_PROP_RADIUS));	//Calculate model scale
+	SetEntPropFloat(iDome, Prop_Send, "m_flModelScale", SquareRoot(DOME_RADIUS / DOME_PROP_RADIUS));	//Calculate model scale
 	
 	DispatchSpawn(iDome);
 	
@@ -93,7 +88,7 @@ static void Dome_Frame_Shrink()
 			//<1.0 = inside dome
 			// 1.0 = at border of dome
 			//>1.0 = outside of dome
-			float flDistanceMultiplier = Dome_GetDistance(iClient) / (g_flDomeRadius * g_flDomeRadius);
+			float flDistanceMultiplier = Dome_GetDistance(iClient) / (DOME_RADIUS * DOME_RADIUS);
 			
 			if (flDistanceMultiplier > 1.0)
 			{
@@ -149,9 +144,6 @@ static Action Dome_TimerBleed(Handle hTimer)
 			{
 				//Calculate damage, the longer the player is outside of the dome, the more damage it deals
 				float flDamage = Pow(2.0, g_flDomePlayerTime[iClient]);
-				
-				if (flDamage < 65.0)
-					flDamage = 65.0;
 				
 				//Deal damage
 				float health = float(GetClientHealth(iClient));
