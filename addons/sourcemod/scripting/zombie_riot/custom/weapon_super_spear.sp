@@ -167,12 +167,6 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 		{
 			//if(damagetype & DMG_CLUB)
 			//Code to do damage position and ragdolls
-			static float angles[3];
-			GetEntPropVector(attacker, Prop_Send, "m_angRotation", angles);
-			float vecForward[3];
-			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-			float position[3];
-			GetEntPropVector(attacker, Prop_Data, "effect_hand_r", position);
 
 			int owner = EntRefToEntIndex(i_WandOwner[attacker]);
 
@@ -184,11 +178,13 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 
 			float Falloff = Attributes_Get(weapon, 117, 1.0);
 			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-
+			
+			float flPos[3];
+			GetEntPropVector(owner, Prop_Data, "effect_hand_r", flPos);
 			float spawnLoc[3];
-			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, position, Radius, Falloff);
+			Explode_Logic_Custom(BaseDMG, owner, owner, weapon, "effect_hand_r", Radius, Falloff);
 			EmitAmbientSound(SOUND_BOOM_SHOT, spawnLoc, attacker, 70,_, 0.6);
-			ParticleEffectAt(position, "taunt_pyro_balloon_explosion", 1.0);
+			ParticleEffectAt("effect_hand_r", "taunt_pyro_balloon_explosion", 1.0);
 			PrintToChatAll("Explode complete");
 			b_explode[attacker] = false;
 		}
