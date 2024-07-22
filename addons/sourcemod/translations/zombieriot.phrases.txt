@@ -3046,6 +3046,14 @@
 	{
 		"en"	"The judges of your actions have arrived."
 	}
+	"Void Desc"
+	{
+		"en"	"Help Kahmlstein agains the void!"
+	}
+	"Unspeakable Desc"
+	{
+		"en"	"Directly after you release the void..."
+	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."
