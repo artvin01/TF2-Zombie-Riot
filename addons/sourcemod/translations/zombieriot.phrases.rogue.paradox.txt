@@ -1205,4 +1205,28 @@
 	{
 		"en"	"Last of Internius"
 	}
+	"Escapee 1"
+	{
+		"en"	"Escapee"
+	}
+	"Escapee 2"
+	{
+		"en"	"Escapee"
+	}
+	"Escapee Lore"
+	{
+		"en"	"There's something on the other side of this.\nWe just need to escape."
+	}
+	"Clashing Colors"
+	{
+		"en"	"Clashing Colors ⚠"
+	}
+	"Age Cheats"
+	{
+		"en"	"Age Cheats ⚠"
+	}
+	"The Old The New"
+	{
+		"en"	"The Old, The New ⚠"
+	}
 }

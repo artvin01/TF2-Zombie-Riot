@@ -1845,7 +1845,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
 			i_AmountDowned[victim] += 1;
-			Rogue_PlayerDowned();
+			Rogue_PlayerDowned(client);
 			
 			//there are players still left, down them.
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))

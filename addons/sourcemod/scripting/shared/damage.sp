@@ -276,6 +276,19 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 #if defined ZR
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
+		if(Rogue_GetChaosLevel() > 1)
+		{
+			damage *= GetRandomFloat(0.9, 1.1);
+		}
+
+		if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 49))
+		{
+			if(attacker <= MaxClients)
+				DisplayCritAboveNpc(victim, attacker, true, damagePosition);
+			
+			damage *= 2.0;
+		}
+
 		int scale = Rogue_GetRoundScale();
 		if(scale < 2)
 		{
@@ -1517,6 +1530,13 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 			DamageRes *= 0.9;
 		}
 	}
+
+#if defined ZR
+	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
+	{
+		DamageRes *= 0.95;
+	}
+#endif
 			
 #if defined RPG
 	switch(BubbleProcStatusLogicCheck(victim))
@@ -1867,6 +1887,12 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "➤%s", Debuff_Adder_right);
 	}
+#if defined ZR
+	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "C%s", Debuff_Adder_right);
+	}
+#endif
 #if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{

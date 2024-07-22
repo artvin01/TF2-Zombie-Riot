@@ -782,6 +782,13 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						if(!enemy.Credits)
 							nonBosses++;
 						
+						if(enemy.Team == 4 && Rogue_GetChaosLevel() > 3)
+						{
+							enemy.Team = TFTeam_Red;
+							enemy.Health /= 10;
+							enemy.ExtraDamage *= 5.0;
+						}
+						
 						wave.EnemyData = enemy;
 						round.Waves.PushArray(wave);
 					}
@@ -2370,7 +2377,7 @@ static void UpdateMvMStatsFrame()
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
-			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
+			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", Rogue_GetChaosLevel() > 2 ? (GetURandomInt() % 99999) : RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
 			if(FakeMaxWaves)
@@ -2407,14 +2414,18 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		int acquired = RoundFloat(totalCash - cashLeft);
-		SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+		if(Rogue_GetChaosLevel() < 3)
+		{
+			int acquired = RoundFloat(totalCash - cashLeft);
+		
+			SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
+			SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
+			SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+			SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+			SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+			SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+		}
 	}
 
 	//profiler.Stop();

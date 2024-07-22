@@ -859,3 +859,25 @@ public void Rogue_BlueParadox_Reset()
 {
 	HasSent = false;
 }
+
+public float Rogue_Encounter_EscapeBattle()
+{
+	Rogue_SetBattleIngots(8);
+
+	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_BattleEncounter, "Escapee Lore");
+	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "We can handle this");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Enter a special battle");
+	vote.Config[0] = 1;
+	list.PushArray(vote);
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better leave now");
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	vote.Config[0] = 0;
+	list.PushArray(vote);
+
+	Rogue_StartGenericVote(20.0);
+
+	return 25.0;
+}
