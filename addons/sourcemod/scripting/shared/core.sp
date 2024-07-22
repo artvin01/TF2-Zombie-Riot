@@ -2099,7 +2099,7 @@ public void OnClientPutInServer(int client)
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
-	Ruina_Reset_Starts_Npc(client);
+	Ruina_Reset_Stats_Npc(client);
 #endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
@@ -2828,7 +2828,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 #endif
 		f_HussarBuff[entity] = 0.0;
 #if defined RUINA_BASE
-		Ruina_Reset_Starts_Npc(entity);
+		Ruina_Reset_Stats_Npc(entity);
 #endif
 		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;

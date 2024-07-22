@@ -287,7 +287,7 @@ void Ruina_Set_Overlord(int client, bool state)
 	}
 }
 
-void Ruina_Reset_Starts_Npc(int client)
+void Ruina_Reset_Stats_Npc(int client)
 {
 	f_Ruina_Speed_Buff[client] = 0.0;
 	f_Ruina_Defense_Buff[client] = 0.0;
