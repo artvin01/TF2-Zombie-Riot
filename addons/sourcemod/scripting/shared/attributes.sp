@@ -106,10 +106,6 @@ bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = fa
 		if(Attribute_ServerSide(attrib))
 			return false;
 	}
-	else
-	{
-		PrintToChatAll("%i",attrib);
-	}
 	
 	if(Attribute_IntAttribute(attrib))
 	{

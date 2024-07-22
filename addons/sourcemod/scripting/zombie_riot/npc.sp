@@ -530,6 +530,20 @@ void NPC_ConfigSetup()
 	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
 
+	//Combine Barracks
+	Barracks_Combine_Pistol_Precache();
+	Barracks_Combine_Sword_Precache();
+	Barracks_Combine_Shotgun_Precache();
+	Barracks_Combine_Smg_Precache();
+	Barracks_Combine_Ar2_Precache();
+	Barracks_Combine_Ddt_Precache();
+	Barracks_Combine_Elite_Precache();
+	Barracks_Combine_Parry_Precache();
+	Barracks_Combine_Sniper_Precache();
+	Barracks_Combine_Collos_Precache();
+	Barracks_Combine_Giant_DDT_Precache();
+	Barracks_Combine_Super_Precache();
+	Barracks_Combine_Commander_Precache();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -583,6 +597,8 @@ void NPC_ConfigSetup()
 	RogueCondition_Setup();
 	GogglesFollower_Setup();
 	TheHunter_Setup();
+	FinalHunter_Setup();
+	KahmlsteinFollower_Setup();
 	Vhxis_OnMapStart_NPC();
 	ChaosMage_OnMapStart_NPC();
 	ChaosSupporter_OnMapStart_NPC();
@@ -707,6 +723,18 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 		if(!c_NpcName[entity][0])
 			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), npcdata.Name);
 		
+		if(Rogue_GetChaosLevel() > 0)
+		{
+			static char last[64];
+			b_NameNoTranslation[entity] = true;
+			
+			if(!(GetURandomInt() % 4))
+			{
+				strcopy(c_NpcName[entity], sizeof(c_NpcName[]), last);
+				strcopy(last, sizeof(last), npcdata.Name);
+			}
+		}
+
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
 		
@@ -1181,6 +1209,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
 
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_pistol.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_swordsman.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_smg.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ar2.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ddt.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_shotgunner.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_collos.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_elite.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_parry.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sniper.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_giant_ddt.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_super.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_commander.sp"
+
+
 
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 
@@ -1371,6 +1414,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/npc_rogue_condition.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_goggles_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_thehunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_finalhunter.sp"
+#include "zombie_riot/npc/rogue/chaos/npc_kahmlstein_follower.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_mage.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_supporter.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_insane.sp"

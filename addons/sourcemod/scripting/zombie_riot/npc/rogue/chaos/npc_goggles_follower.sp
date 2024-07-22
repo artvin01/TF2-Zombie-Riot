@@ -1,9 +1,22 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_MeleeAttackSounds[][] =
+static const char g_RangeAttackSounds[][] =
 {
 	"weapons/bow_shoot.wav"
+};
+
+static const char g_MeleeAttackSounds[][] =
+{
+	"weapons/machete_swing.wav"
+};
+
+static const char g_MeleeHitSounds[][] =
+{
+	"weapons/neon_sign_hit_01.wav",
+	"weapons/neon_sign_hit_02.wav",
+	"weapons/neon_sign_hit_03.wav",
+	"weapons/neon_sign_hit_04.wav"
 };
 
 static int NPCId;
@@ -19,6 +32,11 @@ void GogglesFollower_Setup()
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
+}
+
+int GogglesFollower_ID()
+{
+	return NPCId;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3])
@@ -42,9 +60,17 @@ static Action GogglesFollower_SpeechTimer(Handle timer, DataPack pack)
 
 methodmap GogglesFollower < CClotBody
 {
-	public void PlayMeleeSound()
+	public void PlayRangeSound()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+	}
+	public void PlayMeleeSound()
+	{
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayMeleeHitSound() 
+	{
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public int ChaosLevel()
 	{
@@ -419,7 +445,7 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 37:
 					{
-						this.Speech("I hate those Mediveal guys.");
+						this.Speech("I hate those Medieval guys.");
 					}
 					case 38:
 					{
@@ -561,12 +587,12 @@ methodmap GogglesFollower < CClotBody
 		color[1] = 295 - (chaos * 40);
 		color[2] = 335 - (chaos * 80);
 
-		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,60.0}, endingtextscroll);
+		NpcSpeechBubble(this.index, speechtext, 5, color, {0.0,0.0,120.0}, endingtextscroll);
 	}
 	
 	public GogglesFollower(int client, float vecPos[3], float vecAng[3])
 	{
-		GogglesFollower npc = view_as<GogglesFollower>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", TFTeam_Red, true, false));
+		GogglesFollower npc = view_as<GogglesFollower>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "50000", TFTeam_Red, true, false));
 		
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_MP_STAND_ITEM2");
@@ -585,6 +611,7 @@ methodmap GogglesFollower < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		npc.Anger = false;
 
 		SetEntPropString(npc.index, Prop_Data, "m_iName", "blue_goggles");
 		
@@ -663,6 +690,29 @@ static void ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			{
+				npc.Speech(chaos == 4 ? "..." : "This ends now!");
+				KillFeed_SetKillIcon(npc.index, "sword");
+				func_NPCThink[npc.index] = ClotFinalThink;
+				b_NpcIsTeamkiller[npc.index] = false;
+				
+				RaidBossActive = EntIndexToEntRef(npc.index);
+				RaidModeTime = GetGameTime() + 9000.0;
+				RaidModeScaling = 1.0;
+				RaidAllowsBuildings = true;
+
+				ExpidonsaSword(npc.index);
+				if(IsValidEntity(npc.m_iWearable3))
+					RemoveEntity(npc.m_iWearable3);
+				
+				break;
+			}
+		}
+
 		target = GetClosestTarget(npc.index, _, 2000.0, true, _, _, _, true, 150.0, true, true);
 		npc.m_iTarget = target;
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -696,17 +746,17 @@ static void ClotThink(int iNPC)
 
 	if(ally > 0)
 	{
+		float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
+
 		if(b_BobsCuringHand[ally] && b_BobsCuringHand_Revived[ally] >= 20 && TeutonType[ally] == TEUTON_NONE && dieingstate[ally] > 0 
 			&& GetEntPropEnt(ally, Prop_Data, "m_hVehicle") == -1 && !b_LeftForDead[ally])
 		{
 			//walk to client.
-			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
-
 			if(flDistanceToTarget < 5000.0)
 			{
 				//slowly revive
-				ReviveClientFromOrToEntity(npc.m_iTargetWalkTo, npc.index, 1);
+				ReviveClientFromOrToEntity(ally, npc.index, 1);
 				
 				npc.SpeechRevive();
 				npc.StopPathing();
@@ -716,15 +766,20 @@ static void ClotThink(int iNPC)
 			{
 				// Run to ally target, ignore enemies
 				npc.SetActivity("ACT_MP_RUN_ITEM2");
-				NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+				NPC_SetGoalEntity(npc.index, ally);
 				npc.StartPathing();
 				target = -1;
 			}
 		}
+		else if(flDistanceToTarget < 25000.0)
+		{
+			// Close enough
+			npc.StopPathing();
+		}
 		else
 		{
 			// Walk to ally target
-			NPC_SetGoalEntity(npc.index, npc.m_iTargetWalkTo);
+			NPC_SetGoalEntity(npc.index, ally);
 			npc.StartPathing();
 		}
 
@@ -770,7 +825,7 @@ static void ClotThink(int iNPC)
 					}
 				}
 				
-				npc.PlayMeleeSound();
+				npc.PlayRangeSound();
 				npc.FireArrow(vecTarget, damage, 1500.0);
 
 				vecTarget[2] += 40.0;
@@ -840,9 +895,134 @@ static void ClotThink(int iNPC)
 	}
 }
 
+static void ClotFinalThink(int iNPC)
+{
+	GogglesFollower npc = view_as<GogglesFollower>(iNPC);
+	
+	float gameTime = GetGameTime(npc.index);
+	if(npc.m_flNextDelayTime > gameTime)
+		return;
+	
+	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.Update();
+
+	if(npc.m_flNextThinkTime > gameTime)
+		return;
+	
+	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	int target = npc.m_iTarget;
+
+	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target, _, true))
+		i_Target[npc.index] = -1;
+	
+	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
+	{
+		target = -1;
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			{
+				target = other;
+				break;
+			}
+		}
+		
+		if(target == -1)
+			target = GetClosestTarget(npc.index, _, _, _, _, _, _, _, 99999.9);
+		
+		npc.m_iTarget = target;
+		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+	}
+
+	if(target > 0)
+	{
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+		
+		if(distance < npc.GetLeadRadius())
+		{
+			float vPredictedPos[3]; PredictSubjectPosition(npc, target,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
+		}
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, target);
+		}
+
+		npc.m_flSpeed = 340.0;
+		npc.m_bAllowBackWalking = false;
+		npc.StartPathing();
+		
+		if(npc.m_flAttackHappens)
+		{
+			if(npc.m_flAttackHappens < gameTime)
+			{
+				npc.m_flAttackHappens = 0.0;
+
+				Handle swingTrace;
+				npc.FaceTowards(vecTarget, 15000.0);
+				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
+				{
+					target = TR_GetEntityIndex(swingTrace);
+					if(target > 0)
+					{
+						float damage = 10000.0;
+						if(ShouldNpcDealBonusDamage(target))
+							damage *= 50.0;
+						
+						npc.PlayMeleeHitSound();
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+						
+						Custom_Knockback(npc.index, target, 500.0, true); 
+					}
+				}
+
+				delete swingTrace;
+			}
+		}
+		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
+		{
+			target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				npc.m_iTarget = target;
+				npc.m_flGetClosestTargetTime = gameTime + 1.0;
+
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.PlayMeleeSound();
+				
+				npc.m_flAttackHappens = gameTime + 0.15;
+				npc.m_flNextMeleeAttack = gameTime + 1.95;
+			}
+		}
+
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+	}
+	else if(npc.m_flNextMeleeAttack == 0.0)
+	{
+		npc.StopPathing();
+		npc.SetActivity("ACT_MP_STAND_MELEE");
+	}
+	else
+	{
+		npc.Speech("It's over.");
+		npc.SpeechDelay(4.0, "Chaos will not harm Wildingen anymore.");
+		npc.m_flNextMeleeAttack = 0.0;
+
+		npc.StopPathing();
+		npc.SetActivity("ACT_MP_STAND_MELEE");
+	}
+}
+
 static void ClotDeath(int entity)
 {
 	GogglesFollower npc = view_as<GogglesFollower>(entity);
+
+	ExpidonsaRemoveEffects(entity);
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -861,4 +1041,67 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+}
+
+static void ExpidonsaSword(int iNpc)
+{
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
+
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({5.0,50.0,0.0}, "", 0.0); //First offset we go by
+
+	
+	int particle_2_i = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_i = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5_i = InfoTargetParentAt({-5.0,50.0,0.0}, "", 0.0); //First offset we go by
+	
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+	
+	SetParent(particle_1, particle_2_i, "",_, true);
+	SetParent(particle_1, particle_3_i, "",_, true);
+	SetParent(particle_1, particle_4_i, "",_, true);
+	SetParent(particle_1, particle_5_i, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_1, "effect_hand_r",_); 
+
+
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
+	
+	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM);
+	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM);
+	int Laser_4_i = ConnectWithBeamClient(particle_5, particle_5_i, 15, 15, 125, 0.5, 0.5, 50.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(particle_4);
+	i_ExpidonsaEnergyEffect[iNpc][4] = EntIndexToEntRef(particle_5);
+	i_ExpidonsaEnergyEffect[iNpc][5] = EntIndexToEntRef(particle_2_i);
+	i_ExpidonsaEnergyEffect[iNpc][6] = EntIndexToEntRef(particle_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][7] = EntIndexToEntRef(particle_4_i);
+	i_ExpidonsaEnergyEffect[iNpc][8] = EntIndexToEntRef(particle_5_i);
+	i_ExpidonsaEnergyEffect[iNpc][9] = EntIndexToEntRef(Laser_1);
+	i_ExpidonsaEnergyEffect[iNpc][10] = EntIndexToEntRef(Laser_2);
+	i_ExpidonsaEnergyEffect[iNpc][11] = EntIndexToEntRef(Laser_3);
+	i_ExpidonsaEnergyEffect[iNpc][12] = EntIndexToEntRef(Laser_1_i);
+	i_ExpidonsaEnergyEffect[iNpc][13] = EntIndexToEntRef(Laser_2_i);
+	i_ExpidonsaEnergyEffect[iNpc][14] = EntIndexToEntRef(Laser_3_i);
+	i_ExpidonsaEnergyEffect[iNpc][15] = EntIndexToEntRef(Laser_4_i);
 }

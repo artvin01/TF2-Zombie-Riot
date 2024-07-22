@@ -263,7 +263,7 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 		{
 			int Enemy_I_See;
 								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+			Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{

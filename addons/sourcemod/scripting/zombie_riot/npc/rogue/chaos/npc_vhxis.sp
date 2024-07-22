@@ -852,7 +852,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.02;
+			maxhealth *= 0.0015;
 			for (int DoSpawns = 0; DoSpawns < CountPlayersOnRed(1); DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_void_ixufan", -1, ProjectileLoc, ang, GetTeam(npc.index));
@@ -1173,7 +1173,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.1;
+			maxhealth *= 0.025;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));

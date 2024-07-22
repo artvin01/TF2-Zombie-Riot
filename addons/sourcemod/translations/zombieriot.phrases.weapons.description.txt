@@ -3127,4 +3127,56 @@
 	{
 		"en"	"Decreased ability cooldown and increased ability damage bonus."
 	}
+	"Barracks Metro Cop Desc"
+	{
+		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
+	}
+	"Barracks Combine Shotgunner Desc"
+	{
+		"en"	"Ranged unit but it tends to get close to the target"
+	}
+	"Barracks Combine Swordsman Desc"
+	{
+		"en"	"Melee unit which will regularly gain an armor while attacking"
+	}
+	"Barracks Metro Raider Desc"
+	{
+		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
+	}
+	"Barracks Combine Soldier Desc"
+	{
+		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
+	}
+	"Barracks Combine DDT Desc"
+	{
+		"en"	"Fast and hard hitting robotic Combine Unit"
+	}
+	"Barracks Combine Elite Desc"
+	{
+		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
+	}
+	"Barracks Combine Deflector Desc"
+	{
+		"en"	"Armored Combine knight who will regularly parry melee attacks"
+	}
+	"Barracks Combine Sniper Desc"
+	{
+		"en"	"Super Ranged unit with high damage but slow attack speed"
+	}
+	"Barracks Combine Collos Desc"
+	{
+		"en"	"Giant Combine swordsman which has better armor and damage"
+	}
+	"Barracks Combine Giant ddt Desc"
+	{
+		"en"	"Giant robotic unit with fast speed, damage, and armor"
+	}
+	"Barracks Combine Super Desc"
+	{
+		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
+	}
+	"Barracks Combine Commander Desc"
+	{
+		"en"	"A ranged super unit which will buff allies around it regularly."
+	}
 }
