@@ -517,6 +517,20 @@ void NPC_ConfigSetup()
 	BarrackArbelastOnMapStart();
 	AlliedKahmlAbilityOnMapStart();
 
+	//Combine Barracks
+	Barracks_Combine_Pistol_Precache();
+	Barracks_Combine_Sword_Precache();
+	Barracks_Combine_Shotgun_Precache();
+	Barracks_Combine_Smg_Precache();
+	Barracks_Combine_Ar2_Precache();
+	Barracks_Combine_Ddt_Precache();
+	Barracks_Combine_Elite_Precache();
+	Barracks_Combine_Parry_Precache();
+	Barracks_Combine_Sniper_Precache();
+	Barracks_Combine_Collos_Precache();
+	Barracks_Combine_Giant_DDT_Precache();
+	Barracks_Combine_Super_Precache();
+	Barracks_Combine_Commander_Precache();
 
 	// Raid Low Prio
 	TrueFusionWarrior_OnMapStart();
@@ -1165,6 +1179,21 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_berserker.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_crossbowman.sp"
 #include "zombie_riot/npc/ally/alt_barracks/npc_alt_barracks_scientific_witchery.sp"
+
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_pistol.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_swordsman.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_smg.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ar2.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_ddt.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_shotgunner.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_collos.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_elite.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_parry.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_sniper.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_giant_ddt.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_super.sp"
+#include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_commander.sp"
+
 
 
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"

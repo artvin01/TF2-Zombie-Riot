@@ -250,10 +250,12 @@ enum
 
 #define SUMMONER_MODEL	"models/props_island/parts/guard_tower01.mdl"
 #define SUMMONER_MODEL_2	"models/props_manor/clocktower_01.mdl"
+#define SUMMONER_MODEL_3	"models/props_spytech/radio_tower001.mdl"
 void ObjectBarracks_MapStart()
 {
 	PrecacheModel(SUMMONER_MODEL);
 	PrecacheModel(SUMMONER_MODEL_2);
+	PrecacheModel(SUMMONER_MODEL_3);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks");
@@ -286,11 +288,23 @@ methodmap ObjectBarracks < ObjectGeneric
 
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_TOWER))
 		{
-			SetEntityModel(npc.index, SUMMONER_MODEL_2);
-			if(IsValidEntity(npc.m_iWearable2))
+			if(CivType[client] == Combine)
 			{
-				SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
-				SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+				SetEntityModel(npc.index, SUMMONER_MODEL_3);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_3);
+				}
+			}
+			else if(CivType[client] != Combine)
+			{
+				SetEntityModel(npc.index, SUMMONER_MODEL_2);
+				if(IsValidEntity(npc.m_iWearable2))
+				{
+					SetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.m_iWearable2, Prop_Send, "m_flModelScale") * 0.75);
+					SetEntityModel(npc.m_iWearable2, SUMMONER_MODEL_2);
+				}
 			}
 			SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale") * 0.75);
 			float minbounds[3] = {-18.0, -18.0, 0.0};
@@ -363,6 +377,7 @@ enum
 	Default = 0,
 	Thorns = 1,
 	Alternative = 2,
+	Combine = 3,
 	Civ_number_2
 }
 
@@ -428,6 +443,55 @@ static int SummonerBase[][] =
 	
 	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
+};
+
+static const char SummonerCombineNPC[][] =
+{
+	"npc_barrack_combine_pistol",
+	
+	"npc_barrack_combine_smg",
+	"npc_barrack_combine_swordsman",
+	
+	"npc_barrack_combine_ar2",
+	"npc_barrack_combine_ddt",
+	
+	"npc_barrack_combine_shotgun",
+	"npc_barrack_combine_collos",
+	
+	"npc_barrack_combine_elite",
+	"npc_barrack_combine_parry",
+	
+	"npc_barrack_combine_sniper",
+	"npc_barrack_combine_giant_ddt",
+	
+	"npc_barrack_combine_super",
+	"npc_barrack_combine_commander",
+	"npc_barrack_villager"
+};
+
+static int SummonerCombine[][] =
+{
+	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
+	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+
+	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+
+	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+
+	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+
+	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+
+	{ 0, 500, 150, 10, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 500, 10, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	
+	{ 0, 150, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 150, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
 static const char SummonerThornsNPC[][] =
@@ -579,7 +643,8 @@ static const char CivName[][] =
 {		
 	"Standard Barracks",
 	"Iberia Barracks",
-	"Blitzkrieg's Army"
+	"Blitzkrieg's Army",
+	"Guln's Companions"
 };
 
 static void SetupNPCIndexes()
@@ -587,6 +652,11 @@ static void SetupNPCIndexes()
 	for(int i; i < sizeof(SummonerBase); i++)
 	{
 		SummonerBase[i][NPCIndex] = NPC_GetByPlugin(SummonerBaseNPC[i]);
+	}
+
+	for(int i; i < sizeof(SummonerCombine); i++)
+	{
+		SummonerCombine[i][NPCIndex] = NPC_GetByPlugin(SummonerCombineNPC[i]);
 	}
 
 	for(int i; i < sizeof(SummonerThorns); i++)
@@ -606,6 +676,9 @@ static int GetUnitCount(int civ)
 	{
 		case Thorns:
 			return sizeof(SummonerThorns);
+		
+		case Combine:
+			return sizeof(SummonerCombine);
 			
 		case Alternative:
 			return sizeof(SummonerAlternative);
@@ -621,6 +694,9 @@ static int GetSData(int civ, int unit, int index)
 	{
 		case Thorns:
 			return SummonerThorns[unit][index];
+
+		case Combine:
+			return SummonerCombine[unit][index];
 			
 		case Alternative:
 			return SummonerAlternative[unit][index];
@@ -670,6 +746,8 @@ public void Building_Summoner(int client, int entity)
 
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
+	if(CivType[client] == Default)
+		CivType[client] = Store_HasNamedItem(client, "Guln's Companions") ? Combine : Default;
 		
 	i_PlayerToCustomBuilding[client] = EntIndexToEntRef(entity);
 	Building_Collect_Cooldown[entity][0] = 0.0;	
