@@ -2808,13 +2808,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_HussarBuff[entity] = 0.0;
 #if defined RUINA_BASE
 		Ruina_Reset_Starts_Npc(entity);
-#endif
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
 		f_Ruina_Attack_Buff[entity] = 0.0;
 		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
 		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
 		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
+#endif
 		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;

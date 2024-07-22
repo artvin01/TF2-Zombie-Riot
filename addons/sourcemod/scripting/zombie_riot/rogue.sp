@@ -350,6 +350,8 @@ void Rogue_MapStart()
 	Zero(f_ProvokedAngerCD);
 	Rogue_Paradox_MapStart();
 	Rogue_ParadoxShop_Fail();
+	Rogue_BlueParadox_Reset();
+	Rogue_Dome_Mapstart();
 }
 
 void Rogue_SetupVote(KeyValues kv)
@@ -694,6 +696,7 @@ void Rogue_RoundEnd()
 	CurrentChaos = 0;
 	BonusLives = 0;
 	BattleChaos = 0.0;
+	Rogue_BlueParadox_Reset();
 
 	if(CurrentCollection)
 	{
@@ -838,6 +841,9 @@ void Rogue_BattleVictory()
 	Store_RogueEndFightReset();
 	Rogue_ParadoxShop_Victory();
 
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
+	
 	if(BattleIngots > 0)
 	{
 		switch(RogueTheme)
@@ -860,6 +866,13 @@ void Rogue_BattleVictory()
 				else if(BattleIngots > 1)
 				{
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+				}
+
+				if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % (BattleIngots > 4 ? 3 : 4)))
+				{
+					Artifact artifact;
+					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
+						Rogue_GiveNamedArtifact(artifact.Name);
 				}
 			}
 		}
@@ -1096,6 +1109,7 @@ void Rogue_NextProgress()
 				CurrentCount = -1;
 				ExtraStageCount = 0;
 				SteamWorks_UpdateGameTitle();
+				Rogue_BlueParadox_NewFloor(CurrentFloor);
 
 				bool victory = CurrentFloor >= Floors.Length;
 				if(!victory)
@@ -1120,14 +1134,21 @@ void Rogue_NextProgress()
 					WavesUpdateDifficultyName();
 
 					bool cursed;
-					if(!(GetURandomInt() % 5))
+					if(!(GetURandomInt() % 5) || Rogue_Paradox_SpecialForceCurse(CurrentFloor))
 					{
 						int length = Curses.Length;
 						if(length)
 						{
 							cursed = true;
 
-							CurseOne = GetURandomInt() % length;
+							if(Rogue_Paradox_SpecialForceCurse(CurrentFloor))
+							{
+								CurseOne = length - 1;
+							}
+							else
+							{
+								CurseOne = GetURandomInt() % length;
+							}
 							
 							if(length > 1 && !(GetURandomInt() % 4))
 							{
@@ -1221,14 +1242,14 @@ void Rogue_NextProgress()
 					TeleportToSpawn();
 					
 					SetFloorMusic(floor, true);
-					SetNextStage(id, true, stage, 30.0);
+					SetNextStage(id, true, stage, 20.0);
 				}
 			}
 			else	// Normal Stage
 			{
 				Rogue_CreateGenericVote(Rogue_Vote_NextStage, "Vote for the next stage");
 
-				int count = 2;
+				int count = RogueTheme == BobChaos ? 2 : 3;
 				if(!(GetURandomInt() % 6))
 					count++;
 				
@@ -1602,6 +1623,9 @@ static void StartStage(const Stage stage)
 		}
 	}
 
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveStart(pos);
+
 	if(b_LeaderSquad)
 	{
 		for(int client = 1; client <= MaxClients; client++)
@@ -1632,6 +1656,9 @@ static void StartStage(const Stage stage)
 
 static void TeleportToSpawn()
 {
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
+	
 	float pos[3], ang[3];
 
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
@@ -2002,6 +2029,13 @@ void Rogue_EnemySpawned(int entity)
 			}
 		}
 	}
+	
+	if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % 2))
+	{
+		float armor = fl_MeleeArmor[entity];
+		fl_MeleeArmor[entity] = fl_RangedArmor[entity];
+		fl_RangedArmor[entity] = armor;
+	}
 }
 
 void Rogue_ReviveSpeed(int &amount)
@@ -2010,8 +2044,11 @@ void Rogue_ReviveSpeed(int &amount)
 	Rogue_Paradox_ReviveSpeed(amount);
 }
 
-void Rogue_PlayerDowned()
+void Rogue_PlayerDowned(int client)
 {
+	if(Rogue_GetChaosLevel() > 3)
+		i_AmountDowned[client]++;
+	
 	if(RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
@@ -2278,6 +2315,29 @@ stock void Rogue_AddChaos(int amount, bool silent = false)
 
 	if(!silent)
 		CPrintToChatAll("%t", "Gained Chaos", change);
+	
+	if(Rogue_GetChaosLevel() > 3)
+		CreateTimer(10.0, Rogue_ChaosChaos, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+static Action Rogue_ChaosChaos(Handle timer)
+{
+	if(Rogue_GetChaosLevel() < 4)
+	{
+		CreateTimer(0.5, SetTimeBack);
+		return Plugin_Stop;
+	}
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !IsFakeClient(client))
+			SendConVarValue(client, sv_cheats, "1");
+	}
+
+	ResetReplications();
+
+	cvarTimeScale.SetFloat(GetRandomFloat(0.7, 1.1));
+	return Plugin_Continue;
 }
 
 stock void Rogue_RemoveChaos(int amount)
@@ -2400,7 +2460,7 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 	int objective = FindEntityByClassname(-1, "tf_objective_resource");
 	if(objective != -1)
 	{
-		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", 0);
+		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", Rogue_GetChaosLevel() > 2 ? (GetURandomInt() % 99999) : 0);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", 0);
 
 		Floor floor;
@@ -2484,13 +2544,16 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 		}
 	}
 
-	SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
-	SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
-	SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+	if(Rogue_GetChaosLevel() < 3)
+	{
+		SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-	SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-	SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-	SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+	}
 	return true;
 }
 
@@ -2609,3 +2672,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_theme.sp"
 #include "roguelike/paradox_generic.sp"
 #include "roguelike/paradox_encounters.sp"
+#include "roguelike/paradox_dome.sp"

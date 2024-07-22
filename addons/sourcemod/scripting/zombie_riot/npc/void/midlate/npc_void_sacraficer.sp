@@ -103,7 +103,7 @@ methodmap VoidSacraficer < CClotBody
 	
 	public VoidSacraficer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidSacraficer npc = view_as<VoidSacraficer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
+		VoidSacraficer npc = view_as<VoidSacraficer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

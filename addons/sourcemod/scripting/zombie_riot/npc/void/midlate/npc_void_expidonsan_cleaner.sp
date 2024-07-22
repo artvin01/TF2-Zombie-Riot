@@ -91,13 +91,12 @@ methodmap VoudExpidonsanCleaner < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
 	
 	public VoudExpidonsanCleaner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoudExpidonsanCleaner npc = view_as<VoudExpidonsanCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
+		VoudExpidonsanCleaner npc = view_as<VoudExpidonsanCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

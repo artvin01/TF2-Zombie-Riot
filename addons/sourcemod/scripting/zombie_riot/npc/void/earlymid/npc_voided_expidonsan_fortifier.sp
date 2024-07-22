@@ -95,7 +95,7 @@ methodmap VoidExpidonsanFortifier < CClotBody
 	
 	public VoidExpidonsanFortifier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidExpidonsanFortifier npc = view_as<VoidExpidonsanFortifier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
+		VoidExpidonsanFortifier npc = view_as<VoidExpidonsanFortifier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

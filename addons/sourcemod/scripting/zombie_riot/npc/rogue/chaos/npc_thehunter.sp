@@ -136,6 +136,19 @@ public void TheHunter_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(Rogue_InSetup())
+	{
+		if(npc.m_iChanged_WalkCycle != 2)
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+			npc.StopPathing();
+			npc.m_flSpeed = 0.0;
+		}
+		return;
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTargetWalkTo = GetClosestTarget(npc.index);
@@ -217,6 +230,8 @@ public void TheHunter_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	SpawnMoney(entity);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

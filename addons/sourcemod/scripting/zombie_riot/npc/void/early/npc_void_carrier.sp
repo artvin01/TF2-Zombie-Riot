@@ -111,7 +111,7 @@ methodmap VoidCarrier < CClotBody
 	
 	public VoidCarrier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "700", ally));
+		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -276,6 +276,19 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 #if defined ZR
 	if(Rogue_Mode() && GetTeam(victim) != TFTeam_Red)
 	{
+		if(Rogue_GetChaosLevel() > 1)
+		{
+			damage *= GetRandomFloat(0.9, 1.1);
+		}
+
+		if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 49))
+		{
+			if(attacker <= MaxClients)
+				DisplayCritAboveNpc(victim, attacker, true, damagePosition);
+			
+			damage *= 2.0;
+		}
+
 		int scale = Rogue_GetRoundScale();
 		if(scale < 2)
 		{
@@ -427,7 +440,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	float GameTime = GetGameTime();
+
+#if defined ZR || defined RPG
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+#endif
 
 	if(!b_NpcIsTeamkiller[attacker])
 	{
@@ -635,7 +651,6 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 	}
 	return damage;
 }
-#endif	// ZR
 
 bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype)
 {
@@ -674,6 +689,8 @@ bool BarbariansMindLogic(int attacker, int weapon, float &damage, int damagetype
 	}
 	return false;
 }
+#endif	// ZR
+
 static bool NullfyDamageAndNegate(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int damagecustom)
 {
 #if defined ZR
@@ -1517,6 +1534,13 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 			DamageRes *= 0.9;
 		}
 	}
+
+#if defined ZR
+	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
+	{
+		DamageRes *= 0.95;
+	}
+#endif
 			
 #if defined RPG
 	switch(BubbleProcStatusLogicCheck(victim))
@@ -1532,12 +1556,14 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	}
 #endif
 	
+#if defined ZR
 	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red)
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
 		DamageRes = NewRes;
 	}
+#endif
 
 	damage *= DamageRes;	
 
@@ -1554,8 +1580,10 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= f_MultiDamageTaken_Flat[victim];
 	}
 
+#if defined ZR
 	if(i_CurrentEquippedPerk[victim] == 2)
 		damage *= 0.85;
+#endif
 }
 
 static stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float GameTime)
@@ -1867,6 +1895,12 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "➤%s", Debuff_Adder_right);
 	}
+#if defined ZR
+	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "C%s", Debuff_Adder_right);
+	}
+#endif
 #if defined RUINA_BASE
 	if(f_Ruina_Defense_Buff[victim] > GameTime)
 	{
@@ -1938,8 +1972,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			}
 		}
 	}
-#endif
-
+	
 	//Display Modifiers here.
 	char BufferAdd[6];
 	ZRModifs_CharBuffToAdd(BufferAdd);
@@ -1954,4 +1987,5 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
 		}
 	}
+#endif
 }
