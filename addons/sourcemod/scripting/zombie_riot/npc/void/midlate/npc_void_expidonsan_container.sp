@@ -277,13 +277,13 @@ void VoidExpidonsanContainerSelfDefense(VoidExpidonsanContainer npc, float gameT
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 6.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 6.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 6.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 6.0, 5);
 							}
 						}
 					}
