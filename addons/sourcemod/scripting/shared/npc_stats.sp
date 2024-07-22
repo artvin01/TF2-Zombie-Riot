@@ -1568,7 +1568,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
-			return 400.0;
+			if(!Rogue_Mode())
+				return 400.0;
+			else
+				return 800.0;
 		}
 		float speed_for_return;
 		
@@ -3481,10 +3484,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 	}
+	/*
 	else
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
+	*/
 }
 
 

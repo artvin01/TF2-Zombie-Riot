@@ -16,7 +16,7 @@ Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
 float Leper_HudDelay[MAXPLAYERS+1];
 int Leper_SolemnyUses[MAXPLAYERS+1];
 int Leper_SolemnyCharge[MAXPLAYERS+1];
-int Leper_SolemnyChargeCD[MAXPLAYERS+1];
+float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
 
 void OnMapStartLeper()

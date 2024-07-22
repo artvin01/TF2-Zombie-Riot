@@ -167,13 +167,13 @@ methodmap VoidUnspeakable < CClotBody
 	}
 	property float m_flDeathAnimation
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
 	property float m_flDeathAnimationCD
 	{
-		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 	
 	
@@ -621,7 +621,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 5);
@@ -1081,7 +1081,7 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 {
 	float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	flMaxhealth *= 0.01;
-	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 99999.9, 0.0, HEAL_SELFHEAL);
+	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 9.9, 0.0, HEAL_SELFHEAL);
 	//rapid self heal to indicate power!
 	RaidModeScaling += GetRandomFloat(0.8, 2.2);
 	if(npc.m_iChanged_WalkCycle != 8)
@@ -1100,7 +1100,7 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		float ProjLoc[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
 		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
-		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3), VOID_MATTER_ASBORBER_RANGE * 2.0;	
+		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
 		if(npc.m_flVoidMatterAbosorbInternalCDBoom > gameTime)
 		if(IsValidEntity(npc.m_iTarget))
 		{
