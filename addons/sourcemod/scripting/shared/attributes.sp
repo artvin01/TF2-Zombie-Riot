@@ -92,17 +92,24 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 	return defaul;
 }
 
-bool Attributes_Set(int entity, int attrib, float value)
+bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = false)
 {
-	if(!WeaponAttributes[entity])
-		WeaponAttributes[entity] = new StringMap();
-	
-	char buffer[6];
-	IntToString(attrib, buffer, sizeof(buffer));
-	WeaponAttributes[entity].SetValue(buffer, value);
+	if(!DoOnlyTf2Side)
+	{
+		if(!WeaponAttributes[entity])
+			WeaponAttributes[entity] = new StringMap();
+		
+		char buffer[6];
+		IntToString(attrib, buffer, sizeof(buffer));
+		WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(Attribute_ServerSide(attrib))
-		return false;
+		if(Attribute_ServerSide(attrib))
+			return false;
+	}
+	else
+	{
+		PrintToChatAll("%i",attrib);
+	}
 	
 	if(Attribute_IntAttribute(attrib))
 	{

@@ -48,9 +48,9 @@ void VoidHeavyPerisher_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Heavy Perisher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_perisher");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
-	data.Flags = 0;
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);

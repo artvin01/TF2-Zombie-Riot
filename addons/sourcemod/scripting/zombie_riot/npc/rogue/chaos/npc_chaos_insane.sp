@@ -29,7 +29,7 @@ void ChaosInsane_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Insane");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_insane");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_insane");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Void;

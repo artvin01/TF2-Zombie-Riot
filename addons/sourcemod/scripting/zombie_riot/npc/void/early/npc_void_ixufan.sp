@@ -63,9 +63,9 @@ void VoidIxufan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Ixufan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_ixufan");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_psychic");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
