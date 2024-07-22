@@ -283,9 +283,9 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 125.0;
+					float damageDealt = 210.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 10.0;
+						damageDealt *= 14.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
