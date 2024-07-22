@@ -98,7 +98,7 @@ public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int
 	if(b_abilityon[client])
 	{
 		PrintToChatAll("Ability on hit");
-		if(i_HowManyAttack[weapon] < 3) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
+		if(i_HowManyAttack[weapon] < 2) //The attackspeed is right now not modified, lets save it for later and then apply our faster attackspeed.
 		{
 			PrintToChatAll("Charging attack");
 			i_HowManyAttack[weapon] += 1;
@@ -109,7 +109,7 @@ public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int
 				Attributes_Set(weapon, 6, attackspeed);
 			}
 		}
-		else if(i_HowManyAttack[weapon] > 2)
+		else if(i_HowManyAttack[weapon] > 1)
 		{
 			PrintToChatAll("3rd hit!");
 			i_HowManyAttack[weapon] = 0;
@@ -172,7 +172,7 @@ void Bomblance_OnTakeDamageNpc(int attacker,int victim, int weapon, float &damag
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			float position[3];
-			GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", position);
+			GetEntPropVector(attacker, Prop_Data, "effect_hand_r", position);
 
 			int owner = EntRefToEntIndex(i_WandOwner[attacker]);
 
