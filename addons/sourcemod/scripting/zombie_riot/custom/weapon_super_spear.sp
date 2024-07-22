@@ -5,6 +5,7 @@ static Handle h_TimerBomblancenLauncherManagement[MAXPLAYERS+1] = {null, ...};
 int i_HowManyAttack[MAXENTITIES];
 bool b_abilityon[MAXENTITIES];
 bool b_explode[MAXENTITIES];
+bool b_speedbuffed[MAXENTITIES];
 static int i_BomblanceParticle[MAXTF2PLAYERS];
 static int i_Current_Pap[MAXTF2PLAYERS+1];
 
@@ -99,16 +100,17 @@ public void Weapon_Bomblance_TripleStrike(int client, int weapon, bool crit, int
 		{
 			i_HowManyAttack[weapon] += 1;
 			b_WeaponAttackSpeedModified[weapon] = true;
-			attackspeed = (attackspeed * 0.2);
-			Attributes_Set(weapon, 6, attackspeed);
+			if(!b_speedbuffed[client])
+			{
+				attackspeed = (attackspeed * 0.2);
+				Attributes_Set(weapon, 6, attackspeed);
+			}
 		}
-		if(i_HowManyAttack[weapon] > 2)
-		{
-			b_explode[client] = true;
-		} 
-		if(i_HowManyAttack[weapon] > 2)
+		else if(i_HowManyAttack[weapon] > 2)
 		{
 			i_HowManyAttack[weapon] = 0;
+			b_speedbuffed[client] = false;
+			b_explode[client] = true;
 			attackspeed = (attackspeed / 0.2);
 			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 		}
