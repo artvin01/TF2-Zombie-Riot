@@ -2287,7 +2287,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell))
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || !item.Hidden)))
 		{
 			if(item.GregOnlySell == 2)	// We always sell this if unbought
 			{

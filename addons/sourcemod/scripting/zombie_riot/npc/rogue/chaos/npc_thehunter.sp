@@ -81,7 +81,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 0;
 
-		npc.m_flNextMeleeAttack = GetGameTime() + 15.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -343,7 +343,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 3.05;
 		npc.m_flDoingAnimation = gameTime + 2.95;
-		npc.m_flNextMeleeAttack = gameTime + 15.0 - (Rogue_GetChaosLevel() * 3.0);
+		npc.m_flNextMeleeAttack = gameTime + 10.0 - (Rogue_GetChaosLevel() * 2.0);
 	}
 	return 1;
 }
