@@ -16,13 +16,13 @@ void RogueCondition_Setup()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
+	char buffers[3][64];
+	ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+
 	if(LastGameTime != GetGameTime())
 	{
 		LastGameTime = GetGameTime();
 		LastResult = true;
-		
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 
 		if(buffers[0][0] == '.' || IsCharNumeric(buffers[0][0]))
 		{

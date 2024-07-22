@@ -322,6 +322,7 @@ static void ClotThink(int iNPC)
 		if(ally > 0)
 		{
 			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+			float vecSelf[3]; WorldSpaceCenter(npc.index, vecSelf);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 
 			if(flDistanceToTarget > 25000.0)

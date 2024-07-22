@@ -18,8 +18,9 @@ static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
 static float g_flDomeRadius = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
-static float g_flDomePlayerTime[TF_MAXPLAYERS] ={0.0, ...};
-static bool g_bDomePlayerOutside[TF_MAXPLAYERS] = {false, ...};
+static float g_vecDomeCP[3];
+static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
+static bool g_bDomePlayerOutside[MAXTF2PLAYERS] = {false, ...};
 static Handle g_hDomeTimerBleed = null;
 
 void Rogue_Dome_Mapstart()
@@ -69,6 +70,9 @@ void Rogue_Dome_WaveEnd()
 		if(iDome>MaxClients)
 			RemoveEntity(iDome);
 	}
+
+	Zero(g_flDomePlayerTime);
+	Zero(g_bDomePlayerOutside);
 }
 
 static void Dome_Frame_Shrink()

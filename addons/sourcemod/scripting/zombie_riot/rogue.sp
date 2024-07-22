@@ -2636,3 +2636,4 @@ bool IS_MusicReleasingRadio()
 #include "roguelike/paradox_theme.sp"
 #include "roguelike/paradox_generic.sp"
 #include "roguelike/paradox_encounters.sp"
+#include "roguelike/paradox_dome.sp"

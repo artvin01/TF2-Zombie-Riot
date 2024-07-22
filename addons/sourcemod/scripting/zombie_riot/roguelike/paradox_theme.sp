@@ -195,7 +195,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 	{
 		bool seaborn;
 		int i, weapon;
-		while(TF2_GetItem(client, weapon, i))
+		while(TF2_GetItem(entity, weapon, i))
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{

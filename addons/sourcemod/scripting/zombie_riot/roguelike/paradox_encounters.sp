@@ -851,7 +851,7 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 		{
 			CPrintToChatAll("%t", "Emergency Dispatch Return 3");
 
-			Rogue_GiveIngots(5);
+			Rogue_AddIngots(5);
 		}
 	}
 }
