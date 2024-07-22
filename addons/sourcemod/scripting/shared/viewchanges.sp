@@ -554,7 +554,9 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	SetEntProp(wearable, Prop_Send, "m_bOnlyIterateItemViewAttributes", true);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
+#if defined ZR
 	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
+#endif
 	Attributes_Set(wearable, 867, float(index));//Attributes_Get(weapon, 867, 0.0));
 	Attributes_Set(wearable, 2013, Attributes_Get(weapon, 2013, 0.0));
 	Attributes_Set(wearable, 2014, Attributes_Get(weapon, 2014, 0.0));
