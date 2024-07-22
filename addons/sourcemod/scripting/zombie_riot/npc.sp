@@ -696,6 +696,18 @@ static int CreateNPC(NPCData npcdata, int id, int client, float vecPos[3], float
 		if(!c_NpcName[entity][0])
 			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), npcdata.Name);
 		
+		if(Rogue_GetChaosLevel() > 0)
+		{
+			static char last[64];
+			b_NameNoTranslation[entity] = true;
+			
+			if(!(GetURandomInt() % 4))
+			{
+				strcopy(c_NpcName[entity], sizeof(c_NpcName[]), last);
+				strcopy(last, sizeof(last), npcdata.Name);
+			}
+		}
+
 		if(!i_NpcInternalId[entity])
 			i_NpcInternalId[entity] = id;
 		

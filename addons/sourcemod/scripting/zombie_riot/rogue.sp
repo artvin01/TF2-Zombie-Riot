@@ -868,7 +868,7 @@ void Rogue_BattleVictory()
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
 				}
 
-				if(!(GetURandomInt() % (BattleIngots > 4 ? 7 : 9)))
+				if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % (BattleIngots > 4 ? 3 : 4)))
 				{
 					Artifact artifact;
 					if(Rogue_GetRandomArtfiact(artifact, true, -1) != -1)
@@ -2029,6 +2029,13 @@ void Rogue_EnemySpawned(int entity)
 			}
 		}
 	}
+	
+	if(Rogue_GetChaosLevel() > 1 && !(GetURandomInt() % 2))
+	{
+		float armor = npc.m_flMeleeArmor;
+		npc.m_flMeleeArmor = npc.m_flRangedArmor;
+		npc.m_flRangedArmor = armor;
+	}
 }
 
 void Rogue_ReviveSpeed(int &amount)
@@ -2037,8 +2044,11 @@ void Rogue_ReviveSpeed(int &amount)
 	Rogue_Paradox_ReviveSpeed(amount);
 }
 
-void Rogue_PlayerDowned()
+void Rogue_PlayerDowned(int client)
 {
+	if(Rogue_GetChaosLevel() > 3)
+		i_AmountDowned[client]++;
+	
 	if(RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
@@ -2305,6 +2315,29 @@ stock void Rogue_AddChaos(int amount, bool silent = false)
 
 	if(!silent)
 		CPrintToChatAll("%t", "Gained Chaos", change);
+	
+	if(Rogue_GetChaosLevel() > 3)
+		CreateTimer(10.0, Rogue_ChaosChaos, _, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+}
+
+static Action Rogue_ChaosChaos(Handle timer)
+{
+	if(Rogue_GetChaosLevel() < 4)
+	{
+		CreateTimer(0.5, SetTimeBack);
+		return Plugin_Stop;
+	}
+	
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && !IsFakeClient(client))
+			SendConVarValue(client, sv_cheats, "1");
+	}
+
+	ResetReplications();
+
+	cvarTimeScale.SetFloat(GetRandomFloat(0.7, 1.1));
+	return Plugin_Continue;
 }
 
 stock void Rogue_RemoveChaos(int amount)
@@ -2427,7 +2460,7 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 	int objective = FindEntityByClassname(-1, "tf_objective_resource");
 	if(objective != -1)
 	{
-		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", 0);
+		SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", Rogue_GetChaosLevel() > 2 ? (GetURandomInt() % 99999) : 0);
 		SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", 0);
 
 		Floor floor;
@@ -2511,13 +2544,16 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 		}
 	}
 
-	SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
-	SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
-	SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+	if(Rogue_GetChaosLevel() < 3)
+	{
+		SetEntData(mvm, m_currentWaveStats + 4, 0, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_currentWaveStats + 8, 0, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-	SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-	SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-	SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+	}
 	return true;
 }
 

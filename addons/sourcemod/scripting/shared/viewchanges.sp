@@ -159,6 +159,11 @@ void ViewChange_PlayerModel(int client)
 		TF2_RemoveWearable(client, ViewmodelPlayerModel);
 	}
 
+#if defined ZR
+	if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 9))
+		return;
+#endif
+
 	int team = GetClientTeam(client);
 	int entity = CreateEntityByName("tf_wearable");
 	if(entity != -1)	// playermodel
