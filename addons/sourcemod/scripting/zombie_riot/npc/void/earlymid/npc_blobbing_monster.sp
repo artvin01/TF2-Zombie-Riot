@@ -95,7 +95,7 @@ methodmap VoidBlobbingMonster < CClotBody
 	
 	public VoidBlobbingMonster(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "10000", ally, false, true));
+		VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

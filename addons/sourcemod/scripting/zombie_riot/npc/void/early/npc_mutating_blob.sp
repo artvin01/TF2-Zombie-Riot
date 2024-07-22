@@ -60,7 +60,7 @@ void VoidMutatingBlob_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mutating_blob");
 	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
 	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = 0;
 	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPC_Add(data);

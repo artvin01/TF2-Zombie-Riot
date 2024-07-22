@@ -100,7 +100,7 @@ methodmap VoidSpreader < CClotBody
 	
 	public VoidSpreader(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidSpreader npc = view_as<VoidSpreader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "700", ally));
+		VoidSpreader npc = view_as<VoidSpreader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -107,7 +107,7 @@ methodmap VoidHardCrust < CClotBody
 	
 	public VoidHardCrust(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidHardCrust npc = view_as<VoidHardCrust>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
+		VoidHardCrust npc = view_as<VoidHardCrust>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
