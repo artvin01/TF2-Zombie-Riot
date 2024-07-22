@@ -185,18 +185,33 @@ public void Rogue_Something_Collect()
 
 public void Rogue_HeavyWind_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 103, 0.67);
+	if(Attributes_Has(entity, 103))
+		Attributes_SetMulti(entity, 103, 0.67);
 }
 
 public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
+		bool seaborn;
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_SEABORNMELEE:
+				{
+					seaborn = true;
+					break;
+				}
+			}
+		}
+
 		float value;
 
 		// -20% move speed
 		map.GetValue("107", value);
-		map.SetValue("107", value * 0.8);
+		map.SetValue("107", value * (seaborn ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{

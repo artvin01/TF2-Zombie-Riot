@@ -112,7 +112,7 @@ methodmap VoidEaling < CClotBody
 	
 	public VoidEaling(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidEaling npc = view_as<VoidEaling>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.8", "700", ally));
+		VoidEaling npc = view_as<VoidEaling>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.8", "550", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

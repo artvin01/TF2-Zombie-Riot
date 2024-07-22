@@ -289,6 +289,16 @@ methodmap Bloonarius < CClotBody
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
 		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
+		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
 	}
@@ -561,7 +571,7 @@ public void Bloonarius_NPCDeath(int entity)
 		AcceptEntityInput(entitygame, "RoundWin");
 	}
 	
-	/*Spawns_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -570,7 +580,7 @@ public void Bloonarius_NPCDeath(int entity)
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
-	}*/
+	}
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

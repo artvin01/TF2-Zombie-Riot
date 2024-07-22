@@ -399,6 +399,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount_Self *= 0.33;
 						}
+#if defined ZR	
 						if(owner <= MaxClients && dieingstate[owner] > 0)
 						{
 							healing_Amount_Self = 0.0;
@@ -407,6 +408,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount = 0.0;
 						}
+#endif
 
 						float flMaxHealth;
 						//The healing is less then 1 ? Do own logic.

@@ -53,6 +53,13 @@ static const char g_TeleportSound[][] = {
 
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 
+static int NpcID;
+
+int VoidUnspeakableNpcID()
+{
+	return NpcID;
+}
+
 void VoidUnspeakable_OnMapStart_NPC()
 {
 	NPCData data;
@@ -64,7 +71,7 @@ void VoidUnspeakable_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NpcID = NPC_Add(data);
 }
 
 static void ClotPrecache()
@@ -158,6 +165,16 @@ methodmap VoidUnspeakable < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flDeathAnimation
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property float m_flDeathAnimationCD
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	
 	
 	public VoidUnspeakable(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -198,8 +215,9 @@ methodmap VoidUnspeakable < CClotBody
 		if(WaveSetting == 5)
 		{
 			b_NpcUnableToDie[npc.index] = true;
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 0;
 		}
+		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -489,6 +507,12 @@ methodmap VoidUnspeakable < CClotBody
 public void VoidUnspeakable_ClotThink(int iNPC)
 {
 	VoidUnspeakable npc = view_as<VoidUnspeakable>(iNPC);
+	if(npc.m_flDeathAnimation)
+	{
+		npc.Update();
+		VoidUnspeakable_DeathAnimationKahml(npc, GetGameTime());
+		return;
+	}
 	if(npc.m_flVoidUnspeakableQuake < GetGameTime())
 	{
 		npc.m_flVoidUnspeakableQuake = GetGameTime() + 1.0;
@@ -544,7 +568,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(VoidUnspeakable_TeleToAnyAffectedOnVoid(npc, GetGameTime(npc.index)))
+	if(VoidUnspeakable_TeleToAnyAffectedOnVoid(npc))
 	{
 		return;
 	}
@@ -603,6 +627,20 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 5);
 		CPrintToChatAll("{purple}It's Angered.");
 	}
+
+	if(b_NpcUnableToDie[npc.index] && RaidModeTime < FAR_FUTURE)
+	{
+		if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))
+		{
+			RaidModeTime = FAR_FUTURE;
+			//its in phase 2.
+			i_RaidGrantExtra[npc.index] = 1;
+			npc.m_flDeathAnimation = GetGameTime(npc.index) + 45.0;
+			//emergency slay if it bricks somehow.
+			RequestFrames(KillNpc,3000, EntIndexToEntRef(npc.index));
+			ReviveAll(true);
+		}
+	}
 	
 	return Plugin_Changed;
 }
@@ -613,7 +651,7 @@ float VoidUnspeakable_Absorber(int entity, int victim, float damage, int weapon)
 	Elemental_AddVoidDamage(victim, entity, RoundToNearest(damageDealt), true, true);	
 	return damage;
 }
-bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc, float gameTime)
+bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 {
 	if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 	{
@@ -1036,4 +1074,60 @@ public void VoidUnspeakableWin(int entity)
 	//b_NpcHasDied[client]
 	CPrintToChatAll("{purple}The void consumes and goes forth to destroy everything and everyone... {green}Xeno{purple} was nothing in comparison to this.");
 	CPrintToChatAll("{purple}Ruina.. Expidonsa... Ziberia... Wildingen... all countries have no chance.");
+}
+
+
+void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
+{
+	float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	flMaxhealth *= 0.01;
+	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 99999.9, 0.0, HEAL_SELFHEAL);
+	//rapid self heal to indicate power!
+	RaidModeScaling += GetRandomFloat(0.8, 2.2);
+	if(npc.m_iChanged_WalkCycle != 8)
+	{
+		npc.m_bisWalking = false;
+		npc.m_iChanged_WalkCycle = 8;
+		npc.AddActivityViaSequence("taunt_bubbles");
+		npc.SetCycle(0.62);
+		npc.SetPlaybackRate(0.0);	
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_flSpeed = 0.0;
+	}
+	if(npc.m_flDeathAnimationCD < gameTime)
+	{
+		float ProjLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3, VOID_MATTER_ASBORBER_RANGE * 2.0);	
+		spawnRing_Vectors(ProjLoc, 1.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 125, 50, 125, 200, 1, 2.0, 5.0, 8.0, 3), VOID_MATTER_ASBORBER_RANGE * 2.0;	
+		if(npc.m_flVoidMatterAbosorbInternalCDBoom > gameTime)
+		if(IsValidEntity(npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			npc.FaceTowards(vecTarget, 15000.0);
+		}
+		npc.m_flDeathAnimationCD = gameTime + 1.5;
+
+		switch(i_RaidGrantExtra[npc.index])
+		{
+			case 2:
+			{
+				CPrintToChatAll("{purple}FOOLISH MORTALS, YOU THINK YOU CAN STOP US");
+			}
+			case 3:
+			{
+				CPrintToChatAll("{purple}THERE'S NOTHING YOU CAN DO ANYMORE");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{purple}WITNESS THE END OF ALL TIMES, RIGHT HERE AND NOW");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{purple}BECOME ONE WITH THE VOID");
+			}
+		}
+		i_RaidGrantExtra[npc.index]++;
+	}
 }
