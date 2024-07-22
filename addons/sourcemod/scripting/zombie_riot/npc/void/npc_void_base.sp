@@ -374,11 +374,14 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int SpawnRef = pack.ReadCell();
+	int ParticleRef = pack.ReadCell();
 	if(!IsValidEntity(SpawnRef))
 	{
+		if(IsValidEntity(ParticleRef))
+			RemoveEntity(ParticleRef);
+
 		return Plugin_Stop;
 	}
-	int ParticleRef = pack.ReadCell();
 	int RandomSeed = pack.ReadCell();
 	int WaveDuration = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedFallenWarrior())
@@ -398,6 +401,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 		pack.Position--;
 		//Set The current Random seed
 		pack.WriteCell(GetRandomSeedFallenWarrior(), false);
+		pack.Position++;
 	}
 	bool SpreadVoid = pack.ReadCell();
 	if(SpreadVoid)

@@ -655,7 +655,7 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 {
 	if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 	{
-		for(int EnemyLoop; EnemyLoop <= MAXENTITIES; EnemyLoop ++)
+		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true) && VoidArea_TouchingNethersea(EnemyLoop))
 			{
@@ -731,7 +731,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float cpos[3];
 		float velocity[3];
-		for(int EnemyLoop; EnemyLoop <= MAXENTITIES; EnemyLoop ++)
+		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
 			{

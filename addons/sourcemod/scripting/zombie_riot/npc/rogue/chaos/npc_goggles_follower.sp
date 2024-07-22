@@ -606,6 +606,7 @@ methodmap GogglesFollower < CClotBody
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flSpeed = 320.0;
 		npc.m_flGetClosestTargetTime = 0.0;

@@ -37,6 +37,8 @@ void KahmlsteinFollower_Setup()
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	for (int i = 0; i < (sizeof(g_CoughRandom)); i++) { PrecacheSound(g_CoughRandom[i]); }
 	for (int i = 0; i < (sizeof(g_BobSuperMeleeCharge_Hit)); i++) { PrecacheSound(g_BobSuperMeleeCharge_Hit[i]); }
+
+	PrecacheSound("#music/hl2_song23_suitsong3.mp3");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Hidden;
@@ -100,7 +102,7 @@ methodmap KahmlsteinFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 1)
+		switch(GetURandomInt() % 10)
 		{
 			case 0:
 			{
@@ -210,6 +212,7 @@ methodmap KahmlsteinFollower < CClotBody
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flSpeed = 340.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -336,7 +339,7 @@ static void ClotThink(int iNPC)
 
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
+				if(npc.DoSwingTrace(swingTrace, target,_,_,_,2))
 				{
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
@@ -470,6 +473,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
 				CreateEarthquake(vecTarget2, 2.5, 350.0, 16.0, 255.0);
 				npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
+				TE_Particle("asplode_hoodoo", vecTarget2, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
@@ -482,7 +486,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 					if(IsClientInGame(client))
 					{
 						Music_Stop_All(client); //This is actually more expensive then i thought.
-						SetMusicTimer(client, GetTime() + 60);
+						SetMusicTimer(client, GetTime() + 4);
 					}
 				}
 				if(IsValidEntity(npc.m_iTarget))
@@ -495,6 +499,15 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			}
 			case 3:
 			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#music/hl2_song23_suitsong3.mp3");
+				music.Time = 150;
+				music.Volume = 1.0;
+				music.Custom = false;
+				strcopy(music.Name, sizeof(music.Name), "...");
+				strcopy(music.Artist, sizeof(music.Artist), "...");
+				Music_SetRaidMusic(music);
+
 				npc.AddActivityViaSequence("taunt_heavy_workout_end");
 				npc.SetCycle(0.25);
 				npc.SetPlaybackRate(0.0);
@@ -514,6 +527,7 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.GetAttachment("head", flPos, flAng);
 				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
 				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 6:
 			{
@@ -525,34 +539,50 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 7:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: But we did it, the Void's influence is fading away.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 8:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: And as long as another idiot doesn't try to mess with it, it won't come back");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 9:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: But that means.. my immortality is fading as well. Maybe it's for the better.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 10:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Now you should actually go back to that Chaos thing I took you away from.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 11:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 12:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 13:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 14:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 15:
 			{
@@ -569,13 +599,18 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 			case 16:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 17:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 18,19,20,21,22:
 			{
+		//		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: ... Make sure the void doesnt come back...");
 				if(IsValidEntity(npc.index))
 				{
