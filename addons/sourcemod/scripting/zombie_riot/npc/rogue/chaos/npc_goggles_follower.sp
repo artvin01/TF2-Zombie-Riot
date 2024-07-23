@@ -697,6 +697,7 @@ static void ClotThink(int iNPC)
 			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
+				CPrintToChatAll("{darkblue}Waldch{default}: %s", chaos == 4 ? "..." : "This ends now!");
 				KillFeed_SetKillIcon(npc.index, "sword");
 				func_NPCThink[npc.index] = ClotFinalThink;
 				b_NpcIsTeamkiller[npc.index] = false;
@@ -1012,6 +1013,8 @@ static void ClotFinalThink(int iNPC)
 	{
 		npc.Speech("It's over.");
 		npc.SpeechDelay(4.0, "Chaos will not harm Wildingen anymore.");
+		CPrintToChatAll("{darkblue}Waldch{default}: It's over.");
+		CPrintToChatAll("{darkblue}Waldch{default}: Chaos will not harm Wildingen anymore.");
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.StopPathing();
