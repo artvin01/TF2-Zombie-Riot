@@ -4522,6 +4522,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
+	map.SetValue("526", 1.0);//
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 

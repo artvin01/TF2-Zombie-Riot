@@ -809,7 +809,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 
 		npc.m_flVoidGroundShakeHappening = gameTime + 3.12;
 		npc.m_flDoingAnimation = gameTime + 5.0;
-		npc.m_flVoidGroundShakeCooldown = gameTime + 30.0;
+		npc.m_flVoidGroundShakeCooldown = gameTime + 60.0;
 		return true;
 	}
 
