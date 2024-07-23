@@ -600,6 +600,10 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 			npc.SetActivity("ACT_MP_RUN_MELEE");
 			npc.StartPathing();
 			npc.m_flSpeed = 310.0;
+			if(IsValidEntity(npc.m_iWearable4))
+			{
+				AcceptEntityInput(npc.m_iWearable4, "Enable");
+			}
 		}
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
@@ -903,6 +907,10 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			npc.m_flSpeed = 0.0;
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+			if(IsValidEntity(npc.m_iWearable4))
+			{
+				AcceptEntityInput(npc.m_iWearable4, "Disable");
+			}
 		}
 
 		npc.m_flVoidMatterAbosorb = gameTime + 3.8;
@@ -911,7 +919,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(ZR_GetWaveCount()+1 > 55)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
-			
+
 		return true;
 	}
 
