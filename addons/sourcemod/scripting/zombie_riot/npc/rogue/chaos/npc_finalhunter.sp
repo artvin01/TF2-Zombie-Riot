@@ -195,7 +195,7 @@ static void ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					target = other;
 					break;
