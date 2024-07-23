@@ -175,6 +175,11 @@ methodmap VoidUnspeakable < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
+	property float m_flResistanceBuffs
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
 	
 	
 	public VoidUnspeakable(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -219,6 +224,7 @@ methodmap VoidUnspeakable < CClotBody
 		}
 		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 5;
+		npc.g_TimesSummoned = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -314,6 +320,7 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
+
 		if(FogEntity != INVALID_ENT_REFERENCE)
 		{
 			int entity = EntRefToEntIndex(FogEntity);
@@ -507,6 +514,17 @@ methodmap VoidUnspeakable < CClotBody
 public void VoidUnspeakable_ClotThink(int iNPC)
 {
 	VoidUnspeakable npc = view_as<VoidUnspeakable>(iNPC);
+	float TotalArmor = 1.0;
+	if(npc.m_flResistanceBuffs > GetGameTime())
+	{
+		TotalArmor *= 0.25;
+	}
+
+	if(npc.Anger)
+		TotalArmor *= 0.95;
+
+	fl_TotalArmor[iNPC] = TotalArmor;
+
 	if(npc.m_flDeathAnimation)
 	{
 		npc.Update();
@@ -626,6 +644,32 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
 		CPrintToChatAll("{purple}It's Angered.");
+		RaidModeScaling *= 1.1;
+	}
+	if(npc.g_TimesSummoned < 3)
+	{
+		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
+
+
+		if((health / 10) < nextLoss)
+		{
+			npc.g_TimesSummoned++;
+			f_BattilonsNpcBuff[npc.index] = GetGameTime() + 5.0;
+			npc.m_flResistanceBuffs = GetGameTime() + 2.0;
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{purple}It recoils in pain.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{purple}It screams in agony.");
+				}
+			}
+		}
 	}
 
 	if(b_NpcUnableToDie[npc.index] && RaidModeTime < FAR_FUTURE)
@@ -655,15 +699,20 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 {
 	if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 	{
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
+		hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+		hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );
 		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true) && VoidArea_TouchingNethersea(EnemyLoop))
 			{
-				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );
-				static float hullcheckmaxs[3];
-				static float hullcheckmins[3];
-				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+				//try to not always teleport to the same guy.
+				if(GetRandomFloat(0.0,1.0) > 0.1)
+				{
+					continue;
+				}
+				float vecTarget[3]; WorldSpaceCenter(EnemyLoop, vecTarget );	
 					
 				float PreviousPos[3];
 				WorldSpaceCenter(npc.index, PreviousPos);
@@ -683,13 +732,31 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 					npc.FaceTowards(VecEnemy, 15000.0);
 					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 					npc.FaceTowards(vecTarget, 15000.0);
-					npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
+					npc.m_flJumpCooldown = GetGameTime(npc.index) + 20.0;
 					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+1.5;
 					static float flPos[3]; 
 					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 					flPos[2] += 5.0;
 					int particle = ParticleEffectAt(flPos, "utaunt_headless_glow", 1.5);
 					SetParent(npc.index, particle);
+					int red = 125;
+					int green = 0;
+					int blue = 125;
+					int Alpha = 200;
+					int colorLayer4[4];
+					float diameter = float(10 * 4);
+					SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+					//we set colours of the differnet laser effects to give it more of an effect
+					int colorLayer1[4];
+					SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+					int glowColor[4];
+					SetColorRGBA(glowColor, red, green, blue, Alpha);
+					TE_SetupBeamPoints(PreviousPos, WorldSpaceVec, Shared_BEAM_Laser, 0, 0, 0, 0.35, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.8), 0, 5.0, colorLayer1, 3);
+					TE_SendToAll(0.0);
+					TE_SetupBeamPoints(PreviousPos, WorldSpaceVec, Shared_BEAM_Laser, 0, 0, 0, 0.35, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 5.0, colorLayer1, 3);
+					TE_SendToAll(0.0);
+					TE_SetupBeamPoints(PreviousPos, WorldSpaceVec, Shared_BEAM_Laser, 0, 0, 0, 0.35, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
+					TE_SendToAll(0.0);
 				}
 				else
 				{
@@ -834,6 +901,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
 		}
 
 		npc.m_flVoidMatterAbosorb = gameTime + 3.8;
@@ -842,6 +911,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(ZR_GetWaveCount()+1 > 55)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
+			
 		return true;
 	}
 
@@ -1026,7 +1096,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 					PredictSubjectPositionForProjectiles(npcGetInfo, enemy[i], 290.0,_,ProjectileLoc);
 					
 					int colorLayer4[4];
-					float diameter = float(5 * 4);
+					float diameter = float(10 * 4);
 					SetColorRGBA(colorLayer4, red, green, blue, Alpha);
 					//we set colours of the differnet laser effects to give it more of an effect
 					int colorLayer1[4];
