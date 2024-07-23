@@ -2546,15 +2546,15 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 						{
 							case 1, 2:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							case 3, 4:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							default:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL, true);
 							}
 						}
 
