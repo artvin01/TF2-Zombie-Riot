@@ -903,19 +903,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 		MusicString1 = round.music_round_1;
 		MusicString2 = round.music_round_2;
-
-		PrintToChatAll("Wave 1 Music :3 '%s'", round.music_round_1.Path);
-		
-		if(MusicString1.Path[0] || MusicString2.Path[0])
-		{
-			for(int client=1; client<=MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					SetMusicTimer(client, GetTime() + 1);
-				}
-			}
-		}
 	}
 
 	Waves_UpdateMvMStats();

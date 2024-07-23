@@ -1526,6 +1526,8 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
+	RemoveAllCustomMusic();
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, stage.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -1543,8 +1545,6 @@ static void StartBattle(const Stage stage, float time = 3.0)
 			SetMusicTimer(client, GetTime() + 3);
 		}
 	}
-
-	RemoveAllCustomMusic();
 
 	Rogue_Curse_BattleStart();
 	WaveStart_SubWaveStart(GetGameTime());
