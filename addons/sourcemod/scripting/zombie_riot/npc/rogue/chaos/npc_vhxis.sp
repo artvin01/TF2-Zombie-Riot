@@ -322,6 +322,7 @@ methodmap Vhxis < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
 		RaidModeScaling *= 0.9;
+		RaidModeScaling *= 0.75;
 
 		//IDLE
 		npc.m_iState = 0;
@@ -602,7 +603,6 @@ void VhxisSelfDefense(Vhxis npc, float gameTime, int target, float distance)
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
-						SensalGiveShield(npc.index, 1);
 									
 						if(!Knocked)
 							Custom_Knockback(npc.index, target, 150.0, true); 
@@ -691,6 +691,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			
 			//This will only detect people, not damage them.
 			Zero(VoidGroundShake);
+			ProjectileLoc[2] += 60.0;
 			Explode_Logic_Custom(VOID_GROUNDQUAKE_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 20,_,_,_,VoidVhxis_GroundQuakeCheck);
 			
 			static float victimPos[3];
@@ -711,7 +712,6 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 						GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 						SDKHooks_TakeDamage(victim, npc.index, npc.index, VOID_GROUNDQUAKE_DAMAGE, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 						Elemental_AddVoidDamage(victim, npc.index, 200, true, true);
-						SensalGiveShield(npc.index, CountPlayersOnRed(1));
 					}
 					else
 					{
@@ -782,7 +782,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		pos[2] += 5.0;
 		float ang_Look[3];
-		float DelayPillars = 3.2;
+		float DelayPillars = 4.5;
 		float DelaybewteenPillars = 0.25;
 		int MaxCount = 6;
 		ResetTEStatusSilvester();
@@ -1132,7 +1132,6 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
-			SensalGiveShield(entity, CountPlayersOnRed(1));
 			IncreaceEntityDamageTakenBy(victim, 0.15, 10.0, true);
 		}
 	}
