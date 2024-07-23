@@ -55,9 +55,9 @@ bool Rogue_Paradox_Lastman()
 	return StartLastman;
 }
 
-void Rogue_Paradox_OnNewFloor()
+void Rogue_Paradox_OnNewFloor(int floor)
 {
-	if(StartCamping)
+	if(StartCamping && floor < 4)
 		Rogue_AddExtraStage(1);
 }
 

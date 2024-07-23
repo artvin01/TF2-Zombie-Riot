@@ -1372,9 +1372,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		{
 			WaveEndLogicExtra();
 			int CashGive = round.Cash;
-			if(RogueTheme == BlueParadox)
-				CashGive = RoundToCeil(float(CashGive) * 2.35);
-
 			CurrentCash += CashGive;
 
 			if(CashGive)

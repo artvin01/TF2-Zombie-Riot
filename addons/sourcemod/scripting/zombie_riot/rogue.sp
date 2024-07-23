@@ -860,17 +860,14 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
-				/*
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 5);
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 2 : 1);
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 4);
 				}
-				*/
-				Store_RandomizeNPCStore(2, 7);
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{
@@ -1199,7 +1196,7 @@ void Rogue_NextProgress()
 						}
 					}
 
-					Rogue_Paradox_OnNewFloor();
+					Rogue_Paradox_OnNewFloor(CurrentFloor);
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
