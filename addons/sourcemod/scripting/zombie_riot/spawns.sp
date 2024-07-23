@@ -216,9 +216,6 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		RemoveEntity(spawn.EntRef);
 	}
 	spawnerSetting = spawn.SpawnSetting;
-	//has a limit somehow
-	int MaxSpawnsAllowed;
-	int CurrentSpawnsPerformed;
 	return true;
 }
 

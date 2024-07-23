@@ -284,7 +284,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entityx])
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
 				continue;
