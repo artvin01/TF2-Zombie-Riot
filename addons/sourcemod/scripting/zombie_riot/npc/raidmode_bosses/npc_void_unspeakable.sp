@@ -1159,7 +1159,7 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 {
 	float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 	flMaxhealth *= 0.01;
-	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 9.9, 0.0, HEAL_SELFHEAL);
+	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
 	//rapid self heal to indicate power!
 	RaidModeScaling += GetRandomFloat(0.8, 2.2);
 	if(npc.m_iChanged_WalkCycle != 8)
@@ -1172,6 +1172,10 @@ void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
 		npc.m_flSpeed = 0.0;
+		if(IsValidEntity(npc.m_iWearable4))
+		{
+			AcceptEntityInput(npc.m_iWearable4, "Disable");
+		}
 	}
 	if(npc.m_flDeathAnimationCD < gameTime)
 	{
