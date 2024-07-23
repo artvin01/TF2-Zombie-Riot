@@ -1085,7 +1085,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 				
 				do
 				{
-					ConfigSetup(sec, kv, 2, item.NoKit, whitelist, item.RogueAlwaysSell, 0, blacklist, 0);
+					ConfigSetup(sec, kv, 2, item.NoKit, item.RogueAlwaysSell, whitelist, 0, blacklist, 0);
 				}
 				while(kv.GotoNextKey());
 				kv.GoBack();
