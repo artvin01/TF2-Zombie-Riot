@@ -436,32 +436,32 @@ public void Rogue_Health3_Ally(int entity, StringMap map)
 
 public void Rogue_MeleeVuln1_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.15;
+	fl_Extra_MeleeArmor[entity] *= 1.15;
 }
 
 public void Rogue_MeleeVuln2_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.25;
+	fl_Extra_MeleeArmor[entity] *= 1.25;
 }
 
 public void Rogue_MeleeVuln3_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.35;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
 }
 
 public void Rogue_RangedVuln1_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.15;
+	fl_Extra_RangedArmor[entity] *= 1.15;
 }
 
 public void Rogue_RangedVuln2_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.25;
+	fl_Extra_RangedArmor[entity] *= 1.25;
 }
 
 public void Rogue_RangedVuln3_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
 }
 
 public void Rogue_Healing1_Ally(int entity, StringMap map)
