@@ -860,6 +860,7 @@ void Rogue_BattleVictory()
 			}
 			case BlueParadox:
 			{
+				/*
 				if(BattleIngots > 4)
 				{
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
@@ -868,6 +869,8 @@ void Rogue_BattleVictory()
 				{
 					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 2 : 1);
 				}
+				*/
+				Store_RandomizeNPCStore(2, 7);
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
 				{

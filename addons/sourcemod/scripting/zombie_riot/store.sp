@@ -2283,8 +2283,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	static Item item;
 	static ItemInfo info;
 	int GrigoriCashLogic = CurrentCash;
-	if(GrigoriCashLogic > 100000)
-		GrigoriCashLogic = 100000;
+	if(GrigoriCashLogic > 60000)
+		GrigoriCashLogic = 600000;
 
 	for(int i; i < length; i++)
 	{
