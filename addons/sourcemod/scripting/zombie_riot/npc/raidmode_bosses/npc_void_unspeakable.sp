@@ -813,7 +813,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 					
 					MakeVectorFromPoints(pos, cpos, velocity);
 					NormalizeVector(velocity, velocity);
-					ScaleVector(velocity, -400.0);
+					ScaleVector(velocity, -300.0);
 					if(b_ThisWasAnNpc[EnemyLoop])
 					{
 						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
@@ -1133,7 +1133,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 					1.0,									//Extra delay between each
 					ang_Look 								/*2 dimensional plane*/,
 					ProjectileLoc,
-					1.0,									//volume
+					0.25,									//volume
 					QuakeSize);									//PillarStartingSize
 				}
 			}
