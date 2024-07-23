@@ -913,6 +913,9 @@ bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
 
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
+
 	if(BonusLives > 0 && !RequiredBattle)
 	{
 		if(BonusLives > 1)

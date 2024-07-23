@@ -716,7 +716,7 @@ public void Rogue_BlueGoggles_Remove()
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
@@ -750,7 +750,7 @@ public void Rogue_Kahmlstein_Remove()
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;

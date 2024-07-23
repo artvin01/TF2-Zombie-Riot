@@ -3175,7 +3175,7 @@ static void MenuPage(int client, int section)
 				{
 					continue;
 				}
-				else if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller)
+				else if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [NOT FOUND]", TranslateItemName(client, item.Name, info.Custom_Name));
 					style = ITEMDRAW_DISABLED;

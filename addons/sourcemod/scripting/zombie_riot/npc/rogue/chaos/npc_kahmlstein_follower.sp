@@ -286,7 +286,7 @@ static void ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other) && i_RaidGrantExtra[other] >= 6)
+			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other) && i_RaidGrantExtra[other] >= 6)
 			{
 				npc.m_flDeathAnimation = GetGameTime() + 45.0;
 				npc.m_iTarget = other;
