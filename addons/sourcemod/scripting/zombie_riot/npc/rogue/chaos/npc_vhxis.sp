@@ -861,7 +861,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 10.5;
+					fl_Extra_Damage[spawn_index] *= 6.5;
 					fl_Extra_Speed[spawn_index] *= 1.05;
 				}
 			}
@@ -1172,7 +1172,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.025;
+			maxhealth *= 0.015;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
@@ -1182,7 +1182,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 12.5;
+					fl_Extra_Damage[spawn_index] *= 8.5;
 					fl_Extra_Speed[spawn_index] *= 0.35;
 					SetEntityRenderMode(npc1.index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.index, 125, 0, 125, 255);

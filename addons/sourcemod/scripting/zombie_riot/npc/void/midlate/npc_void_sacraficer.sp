@@ -52,7 +52,7 @@ void VoidSacraficer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
