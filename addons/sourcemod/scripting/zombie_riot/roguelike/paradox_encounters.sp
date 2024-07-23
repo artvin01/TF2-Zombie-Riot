@@ -770,6 +770,10 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 			client2 = 0;
 		}
 
+		SentUser1 = client1 ? GetClientUserId(client1) : -1;
+		SentUser2 = client2 ? GetClientUserId(client2) : -1;
+		HasSent = true;
+
 		if(client2)
 		{
 			CPrintToChatAll("%t", "Emergency Dispatch Lore 1b", client1, client2);
@@ -785,10 +789,6 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Emergency Dispatch Lore 1c");
 		}
-
-		SentUser1 = client1 ? GetClientUserId(client1) : -1;
-		SentUser2 = client2 ? GetClientUserId(client2) : -1;
-		HasSent = true;
 	}
 	else
 	{
@@ -824,6 +824,8 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 		}
 
 		GiveCash(1000 * floor);
+
+		HasSent = false;
 
 		if(client2)
 		{
