@@ -8,7 +8,7 @@
 static void GiveCash(int cash)
 {
 	if(RogueTheme == BlueParadox)
-		cash = RoundToCeil(float(cash) * 2.5);
+		cash = RoundToCeil(float(cash) * 2.25);
 
 	CurrentCash += cash;
 	GlobalExtraCash += cash;

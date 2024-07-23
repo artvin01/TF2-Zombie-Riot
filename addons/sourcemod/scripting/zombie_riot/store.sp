@@ -2407,7 +2407,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 		CPrintToChatAll("{green}Recovered Items:");
 
 		SortIntegers(indexes, amount, Sort_Random);
-		int SellsMax = GrigoriMaxSells;
+		int SellsMax = addItem;
 		if(addItem != 0)
 			SellsMax = addItem;
 		
