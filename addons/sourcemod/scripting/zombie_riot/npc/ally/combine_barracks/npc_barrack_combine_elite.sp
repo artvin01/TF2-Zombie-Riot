@@ -197,7 +197,6 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 							
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1;
-							npc.m_flSpeed = 0.0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 225.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
