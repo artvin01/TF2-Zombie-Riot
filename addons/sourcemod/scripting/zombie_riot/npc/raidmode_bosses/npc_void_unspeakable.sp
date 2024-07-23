@@ -761,6 +761,7 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 					TE_SendToAll(0.0);
 					TE_SetupBeamPoints(PreviousPos, WorldSpaceVec, Shared_BEAM_Laser, 0, 0, 0, 0.35, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 					TE_SendToAll(0.0);
+					break;
 				}
 				else
 				{

@@ -55,6 +55,10 @@
 		"en" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 	}
+	"Voided Subjects"
+	{
+		"en" 		"Voided Subjects"
+	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
