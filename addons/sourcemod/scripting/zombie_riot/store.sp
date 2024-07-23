@@ -2408,8 +2408,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 
 		SortIntegers(indexes, amount, Sort_Random);
 		int SellsMax = addItem;
-		if(addItem != 0)
-			SellsMax = addItem;
+		if(SellsMax <= 0)
+			SellsMax = 7;
 		
 		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
