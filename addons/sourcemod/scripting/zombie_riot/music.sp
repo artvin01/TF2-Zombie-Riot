@@ -431,7 +431,6 @@ void Music_PostThink(int client)
 						}
 						else
 						{
-							PrintToChat(client, "Non-Custom1::%s", MusicString1.Path);
 							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
@@ -449,7 +448,6 @@ void Music_PostThink(int client)
 						}
 						else
 						{
-							PrintToChat(client, "Non-Custom2::%s", MusicString2.Path);
 							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
@@ -471,7 +469,6 @@ void Music_PostThink(int client)
 						}
 						else
 						{
-							PrintToChat(client, "Non-Custom2::%s", MusicString2.Path);
 							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 							EmitSoundToClient(client, MusicString2.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
@@ -489,7 +486,6 @@ void Music_PostThink(int client)
 						}
 						else
 						{
-							PrintToChat(client, "Non-Custom1::%s", MusicString1.Path);
 							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 							EmitSoundToClient(client, MusicString1.Path, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}

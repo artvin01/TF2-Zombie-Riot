@@ -485,7 +485,6 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 			if(count > 1)
 				volume2 /= float(count);
 			
-		//	PrintToChat(client, "Playing::%s: %d > %d", sound, SoundLevel[client], soundlevel);
 			for(int i; i < count; i++)
 			{
 				EmitSoundToClient(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
