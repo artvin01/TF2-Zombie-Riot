@@ -836,7 +836,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if((/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+		if(ActiveCurrentNpcsBarracksTotal() < 10 && (/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1569,6 +1569,10 @@ static void SummonerMenu(int client, int viewer)
 			{
 				subtractVillager = 1;
 			}
+			if(ActiveCurrentNpcsBarracksTotal() >= 10)
+			{
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
+			}
 			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
@@ -1995,4 +1999,30 @@ int ActiveCurrentNpcsBarracks(int client, bool ignore_barricades = false)
 	}
 
 	return personal;
+}
+
+
+int ActiveCurrentNpcsBarracksTotal()
+{
+	int CurrentAlive = 0;
+	int entity = MaxClients + 1;
+	char npc_classname[60];
+	while((entity = FindEntityByClassname(entity, "zr_base_npc")) != -1)
+	{
+		if(GetTeam(entity) == 2)
+		{
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			NPC_GetPluginById(i_NpcInternalId[npc.index], npc_classname, sizeof(npc_classname));
+			if(!StrContains(npc_classname, "npc_barrack"))
+			{
+				CurrentAlive++;
+				if(StrEqual(npc_classname, "npc_barrack_building"))
+					CurrentAlive--;
+					
+				if(StrEqual(npc_classname, "npc_barrack_villager"))
+					CurrentAlive--;
+			}
+		}
+	}
+	return CurrentAlive;
 }
