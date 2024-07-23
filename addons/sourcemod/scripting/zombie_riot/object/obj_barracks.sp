@@ -1571,6 +1571,7 @@ static void SummonerMenu(int client, int viewer)
 			}
 			if(ActiveCurrentNpcsBarracksTotal() >= 6)
 			{
+				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
 			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
