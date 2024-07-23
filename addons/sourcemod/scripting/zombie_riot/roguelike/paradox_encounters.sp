@@ -299,7 +299,7 @@ public float Rogue_Encounter_Prophecy1()
 	if(easyMode)
 	{
 		vote.Locked = true;
-		strcopy(vote.Append, sizeof(vote.Append), " (Compass and Map)");
+		strcopy(vote.Append, sizeof(vote.Append), " (No Compass and Map)");
 	}
 	else if(!found)
 	{
@@ -390,7 +390,7 @@ public float Rogue_Encounter_Prophecy2()
 		if(waldch)
 		{
 			vote.Locked = true;
-			strcopy(vote.Append, sizeof(vote.Append), " (Waldch)");
+			strcopy(vote.Append, sizeof(vote.Append), " (No Waldch)");
 		}
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2b");
