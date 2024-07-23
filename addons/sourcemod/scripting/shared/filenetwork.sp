@@ -443,7 +443,7 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		//LogError("Failed to delete file \"%s\"", file);
 }
 
-stock bool StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
+stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
 {
 	if(entity > 0 && entity <= MaxClients && channel == SNDCHAN_STATIC)
 	{
