@@ -668,8 +668,8 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 				float PreviousPos[3];
 				WorldSpaceCenter(npc.index, PreviousPos);
 				//randomly around the target.
-				vecTarget[0] += (GetRandomInt(0, 1)) ? -50.0 : 50.0;
-				vecTarget[1] += (GetRandomInt(0, 1)) ? -50.0 : 50.0;
+				vecTarget[0] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
+				vecTarget[1] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
 				
 				bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, true);
 				if(Succeed)
