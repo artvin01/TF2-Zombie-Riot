@@ -1528,6 +1528,15 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 3);
+		}
+	}
+
 	RemoveAllCustomMusic();
 
 	char buffer[PLATFORM_MAX_PATH];
@@ -1538,15 +1547,6 @@ static void StartBattle(const Stage stage, float time = 3.0)
 	delete kv;
 
 	CreateTimer(time, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			Music_Stop_All(client);
-			SetMusicTimer(client, GetTime() + 3);
-		}
-	}
 
 	Rogue_Curse_BattleStart();
 	WaveStart_SubWaveStart(GetGameTime());
