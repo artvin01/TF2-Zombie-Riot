@@ -141,7 +141,7 @@ static void Dome_Frame_Shrink()
 	}
 	for (int entityrand = 1; entityrand < MAXENTITIES; entityrand++)
 	{
-		if(b_ThisWasAnNpc[entityrand] && !b_NpcHasDied[entityrand])
+		if(b_ThisWasAnNpc[entityrand] && !b_NpcHasDied[entityrand] && !b_StaticNPC[entityrand])
 		{
 			float flDistanceMultiplier = Dome_GetDistance(entityrand) / (DOME_RADIUS * DOME_RADIUS);
 			
