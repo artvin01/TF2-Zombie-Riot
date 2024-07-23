@@ -107,6 +107,7 @@ static void StartShopVote(bool first)
 		vote.Append[0] = 0;
 		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
 		strcopy(vote.Config, sizeof(vote.Config), "-2");
+		vote.Locked = false;
 		list.PushArray(vote);
 	}
 
