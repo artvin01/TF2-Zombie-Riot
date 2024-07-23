@@ -59,6 +59,10 @@
 	{
 		"en" 		"Voided Subjects"
 	}
+	"Chaos Allience"
+	{
+		"en" 		"Chaos Allience"
+	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"
