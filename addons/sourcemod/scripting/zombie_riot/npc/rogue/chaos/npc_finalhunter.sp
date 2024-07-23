@@ -152,7 +152,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_bStaticNPC)
 	{
-		if(Waves_Started() && Waves_GetMaxRound() == Waves_GetRound())
+		if(Waves_Started() && (Waves_GetMaxRound() -1) == Waves_GetRound())
 		{
 			npc.m_bStaticNPC = false;
 			Is_a_Medic[npc.index] = false;
@@ -171,7 +171,7 @@ static void ClotThink(int iNPC)
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-				if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
 					break;
@@ -312,7 +312,7 @@ static void ClotThink(int iNPC)
 		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
+			if(IsValidEnemy(npc.index, target, _, true))
 			{
 				npc.m_iTarget = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
