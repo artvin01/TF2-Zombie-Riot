@@ -55,6 +55,8 @@ static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
 
+static float DelayStopSoundAll[MAXTF2PLAYERS];
+
 #define RANGE_FIRST_MUSIC 6250000
 #define RANGE_SECOND_MUSIC 1000000
 
@@ -268,6 +270,12 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
+	if(DelayStopSoundAll[client] > GetGameTime())
+	{
+		return;
+	}
+	//dont call so often! causes lag!
+	DelayStopSoundAll[client] = GetGameTime() + 0.1;
 	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
 	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
