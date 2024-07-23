@@ -2404,12 +2404,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	}
 	else if(unlock)
 	{
-		CPrintToChatAll("{green}Recovered Items:");
-
 		SortIntegers(indexes, amount, Sort_Random);
 		int SellsMax = addItem;
 		if(SellsMax <= 0)
 			SellsMax = 7;
+		
+		if(SellsMax > 0 && amount > 0)
+			CPrintToChatAll("{green}Recovered Items:");
 		
 		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
