@@ -252,6 +252,17 @@ methodmap KahmlsteinFollower < CClotBody
 		Rogue_SetProgressTime(10.0, false);
 		Rogue_RemoveNamedArtifact("Waldch Assistance");
 
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+			{
+				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
+
 		return npc;
 	}
 }
