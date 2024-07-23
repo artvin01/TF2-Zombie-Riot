@@ -326,7 +326,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 			// Find entities touching infected tiles
 			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
-			if(nav != NULL_AREA)
+			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
 				NervousTouching[client] = NervousTouching[0];
 			}

@@ -318,7 +318,7 @@ methodmap VoidUnspeakable < CClotBody
 		else if(ZR_GetWaveCount()+1 > 55)
 		{
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
-			RaidModeScaling *= 0.65;
+			RaidModeScaling *= 0.85;
 		}
 
 		if(FogEntity != INVALID_ENT_REFERENCE)
