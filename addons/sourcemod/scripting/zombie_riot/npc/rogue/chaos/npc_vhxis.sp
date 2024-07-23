@@ -321,7 +321,7 @@ methodmap Vhxis < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
-		RaidModeScaling *= 3.0;
+		RaidModeScaling *= 0.9;
 
 		//IDLE
 		npc.m_iState = 0;
