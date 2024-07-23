@@ -7,6 +7,9 @@
 
 static void GiveCash(int cash)
 {
+	if(RogueTheme == BlueParadox)
+		RoundToCeil(float(cash) * 1.5);
+		
 	CurrentCash += cash;
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);

@@ -1371,10 +1371,15 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			CurrentCash += round.Cash;
-			if(round.Cash)
+			int CashGive = round.Cash;
+			if(RogueTheme == BlueParadox)
+				CashGive = RoundToCeil(float(CashGive) * 1.75);
+
+			CurrentCash += CashGive;
+
+			if(CashGive)
 			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
+				CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
 			}
 
 			ExcuteRelay("zr_wavedone");
@@ -2899,6 +2904,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		int postWaves = CurrentRound - length;
 		Freeplay_OnEndWave(postWaves, round.Cash);
+		
 		CurrentCash += round.Cash;
 
 		if(round.Cash)
