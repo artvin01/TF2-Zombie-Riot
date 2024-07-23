@@ -136,7 +136,7 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		for(int i; i < length; i++)
 		{
 			SpawnerList.GetArray(i, spawn);
-			if(StrContains(name, spawn.Name) == -1)	// Invalid name, ignore
+			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
 				continue;
 			
 			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove

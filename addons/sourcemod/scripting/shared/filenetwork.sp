@@ -443,52 +443,21 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		//LogError("Failed to delete file \"%s\"", file);
 }
 
-static bool StopCustomSound(int client, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
+stock bool StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
 {
-#if !defined UseDownloadTable
-	if(client < 1 || client > MaxClients)
-#endif
+	if(entity > 0 && entity <= MaxClients && channel == SNDCHAN_STATIC)
 	{
-		int count = RoundToCeil(volume);
-		for(int i; i < count; i++)
-		{
-			StopSound(client, sound, entity, channel, level, flags, volume2, pitch, speakerentity, origin, dir, updatePos, soundtime);
-		}
-		return true;
+		// Assume it's music
+		EmitCustomToClient(entity, sound, entity, channel, _, SND_STOP, volume);
 	}
-	
-#if !defined UseDownloadTable
-	int soundlevel = SoundList.FindString(sound);
-	if(soundlevel != -1)
+	else
 	{
-		if(SoundLevel[client] > soundlevel)
+		for(int client = 1; client <= MaxClients; client++)
 		{
-			int count = RoundToCeil(volume);
-			PrintToChat(client, "StopPlaying::%s: %d > %d", sound, SoundLevel[client], soundlevel);
-			for(int i; i < count; i++)
-			{
-				StopSound(client, channel, sound);
-			}
-			return true;
+			if(IsClientInGame(client) && !IsFakeClient(client))
+				EmitCustomToClient(client, sound, entity, channel, _, SND_STOP, volume);
 		}
 	}
-	
-	static char buffer[PLATFORM_MAX_PATH];
-	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
-	{
-		if(soundlevel == -1)
-			LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
-
-		return false;
-	}
-	
-	int count = RoundToCeil(volume);
-	for(int i; i < count; i++)
-	{
-		StopSound(client, channel, sound);
-	}
-	return true;
-#endif
 }
 
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
