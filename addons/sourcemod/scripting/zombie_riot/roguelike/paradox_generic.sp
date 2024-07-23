@@ -468,7 +468,7 @@ public void Rogue_Healing1_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +20% healing bonus
 		map.GetValue("526", value);
@@ -480,7 +480,7 @@ public void Rogue_Healing2_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +30% healing bonus
 		map.GetValue("526", value);

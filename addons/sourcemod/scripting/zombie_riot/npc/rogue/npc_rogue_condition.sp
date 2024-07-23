@@ -10,6 +10,7 @@ void RogueCondition_Setup()
 	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rogue_condition");
 	data.IconCustom = true;
+	data.Flags = -1;
 	data.Category = Type_Hidden;
 	data.Func = ClotSummon;
 	NPC_Add(data);
