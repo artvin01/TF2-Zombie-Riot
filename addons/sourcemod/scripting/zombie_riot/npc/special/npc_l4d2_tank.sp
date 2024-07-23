@@ -63,9 +63,9 @@ public void L4D2_Tank_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return L4D2_Tank(client, vecPos, vecAng, ally);
+	return L4D2_Tank(client, vecPos, vecAng, ally, data);
 }
 
 static int i_TankAntiStuck[MAXENTITIES];
@@ -145,13 +145,16 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
+		if(i_RaidGrantExtra[npc.index] == 1)
+			return;
+			
 		EmitCustomToAll(g_IdleMusic, this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
 
 		this.m_iPlayMusicSound = GetTime() + 52;
 		
 	}
 	
-	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally)
+	public L4D2_Tank(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		L4D2_Tank npc = view_as<L4D2_Tank>(CClotBody(vecPos, vecAng, "models/infected/hulk_2.mdl", "1.45", GetTankHealth(), ally, false, true));
 		
@@ -204,6 +207,11 @@ methodmap L4D2_Tank < CClotBody
 		i_ThrowAlly[npc.index] = false;
 		i_IWantToThrowHim[npc.index] = -1;
 		fl_ThrowDelay[npc.index] = GetGameTime(npc.index) + 3.0;
+
+		if(StrContains(data, "no_music") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 
 		
 		float wave = float(ZR_GetWaveCount()+1);
@@ -281,17 +289,19 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-		
-		for(int client=1; client<=MaxClients; client++)
+		if(i_RaidGrantExtra[npc.index] != 1)
 		{
-			if(IsClientInGame(client))
+			for(int client=1; client<=MaxClients; client++)
 			{
-				if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+				if(IsClientInGame(client))
 				{
-					Music_Stop_All(client); //This is actually more expensive then i thought.
+					if(fl_AlreadyStrippedMusic[client] < GetEngineTime())
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+					}
+					SetMusicTimer(client, GetTime() + 6);
+					fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 				}
-				SetMusicTimer(client, GetTime() + 6);
-				fl_AlreadyStrippedMusic[client] = GetEngineTime() + 5.0;
 			}
 		}
 		//PluginBot_NormalJump(npc.index);
@@ -692,8 +702,8 @@ public void L4D2_Tank_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	Music_Stop_All_Tank(entity);
+	if(i_RaidGrantExtra[npc.index] != 1)
+		Music_Stop_All_Tank(entity);
 	int client = EntRefToEntIndex(i_GrabbedThis[npc.index]);
 	
 	if(IsValidClient(client))
