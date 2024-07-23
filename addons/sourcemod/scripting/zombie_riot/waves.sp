@@ -1830,7 +1830,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				Citizen_SetupStart();
 			}
-			else if(wasLastMann)
+			else if(wasLastMann && !Rogue_Mode())
 			{
 				Cooldown = GetGameTime() + 30.0;
 
