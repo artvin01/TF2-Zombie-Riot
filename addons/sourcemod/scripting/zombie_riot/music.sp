@@ -108,6 +108,7 @@ static const char g_LastMannAnnouncer[][] =
 
 void Music_MapStart()
 {
+	Zero(DelayStopSoundAll);
 	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
