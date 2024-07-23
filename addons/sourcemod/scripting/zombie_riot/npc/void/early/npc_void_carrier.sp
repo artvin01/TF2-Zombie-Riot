@@ -186,9 +186,9 @@ public void VoidCarrier_ClotThink(int iNPC)
 		float Injured[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Injured); 
 		Injured[2] += 30.0;
-		b_NoGravity[npc.index] = true;
-		b_DoNotUnStuck[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
+		b_NoGravity[npc.m_iTargetAlly] = true;
+		b_DoNotUnStuck[npc.m_iTargetAlly] = true;
+		b_CannotBeKnockedUp[npc.m_iTargetAlly] = true;
 		SDKCall_SetLocalOrigin(npc.m_iTargetAlly, Injured); //keep teleporting just incase.
 		LiberiBuff[npc.m_iTargetAlly] = GetGameTime() + 0.09;
 		FreezeNpcInTime(npc.m_iTargetAlly, 0.09);

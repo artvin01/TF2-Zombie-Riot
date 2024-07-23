@@ -180,6 +180,11 @@ methodmap VoidUnspeakable < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property float m_flSpreadDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
 	
 	
 	public VoidUnspeakable(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -537,6 +542,13 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		float ProjectileLoc[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		CreateEarthquake(ProjectileLoc, 1.0, 250.0, 5.0, 5.0);
+		if(npc.Anger)
+		{
+			//always leaves creep onto the floor if enraged
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			ProjectileLoc[2] += 5.0;
+			VoidArea_SpawnNethersea(ProjectileLoc);
+		}
 	}
 	if(LastMann && !AlreadySaidLastmann)
 	{
@@ -564,15 +576,6 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
-	}
-
-	if(npc.Anger)
-	{
-		//always leaves creep onto the floor if enraged
-		float ProjectileLoc[3];
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		ProjectileLoc[2] += 5.0;
-		VoidArea_SpawnNethersea(ProjectileLoc);
 	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
