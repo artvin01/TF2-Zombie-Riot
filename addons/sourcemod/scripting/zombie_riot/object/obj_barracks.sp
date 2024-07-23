@@ -836,7 +836,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if(ActiveCurrentNpcsBarracksTotal() < 10 && (/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+		if(ActiveCurrentNpcsBarracksTotal() < 6 && (/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1569,7 +1569,7 @@ static void SummonerMenu(int client, int viewer)
 			{
 				subtractVillager = 1;
 			}
-			if(ActiveCurrentNpcsBarracksTotal() >= 10)
+			if(ActiveCurrentNpcsBarracksTotal() >= 6)
 			{
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
