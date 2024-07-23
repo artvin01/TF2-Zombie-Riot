@@ -2489,9 +2489,9 @@ Names per stage:
 		Battery: Buff's nearby Ranged npc's speed
 
 		Stage 1: Done.
-		Stage 2: Done.
+		Stage 2: Done.  . Gains the ability to fire a ICBM
 		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
-		Stage 4: Null
+		Stage 4: Null	. if multiple of them group up they can fire a laser?
 
 		Magnium:
 		{
@@ -2513,7 +2513,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	Is just stronger variant + Teleport deals damage to targets hit
 		Stage 3: Done.	Is just stronger variant
-		Stage 4: Null
+		Stage 4: Null	Can heal other nearby lanius type npc's
 
 	}
 	//created
@@ -2672,14 +2672,16 @@ Names per stage:
 
 	Stage 2 specials:
 
-	Lex. - Boss. W30.	Give the ability to connect the two wings if close to eachother.
-	Iana - Boss. W30.	Add wings
+	Lex. - Boss. W30.
+	Iana - Boss. W30.	
 
 	Stage 3 specials:
 
 	Ruliana - Boss W45 
 
 	Stage 4 specials:
+
+	???? - W60 boss. Uses an impact lance, is pure melee. has extremely advanced ai, target priotisation, retreating. can work in a pact of itself?
 
 
 	Ruliana: - Blitzkrieg was based off of her. so has a similar-ish theme of rocket spam. but gonna need to do make it seems different so its not just a copy of blitz.

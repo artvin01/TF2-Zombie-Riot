@@ -2418,6 +2418,94 @@
 	{
 		"en"	"Ruliana"
 	}
+	"Aetherianus"
+	{
+		"en"	"Aetherianus"
+	}
+	"Aetherianus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Astrianious"
+	{
+		"en"	"Astrianious"
+	}
+	"Astrianious Desc"
+	{
+		"en"	"Aya"
+	}
+	"Draconia"
+	{
+		"en"	"Draconia"
+	}
+	"Draconia Desc"
+	{
+		"en"	"Aya"
+	}
+	"Dronianis"
+	{
+		"en"	"Dronianis"
+	}
+	"Dronianis Desc"
+	{
+		"en"	"Aya"
+	}
+	"Euranionis"
+	{
+		"en"	"Euranionis"
+	}
+	"Euranionis Desc"
+	{
+		"en"	"Aya"
+	}
+	"Heliarionus"
+	{
+		"en"	"Heliarionus"
+	}
+	"Heliarionus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Lazurus"
+	{
+		"en"	"Lazurus"
+	}
+	"Lazurus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Loonarionus"
+	{
+		"en"	"Loonarionus"
+	}
+	"Loonarionus Desc"
+	{
+		"en"	"Aya"
+	}
+	"Magianius"
+	{
+		"en"	"Magianius"
+	}
+	"Magianius Desc"
+	{
+		"en"	"Aya"
+	}
+	"Malianius"
+	{
+		"en"	"Malianius"
+	}
+	"Malianius Desc"
+	{
+		"en"	"Aya"
+	}
+	"Rulianius"
+	{
+		"en"	"Rulianius"
+	}
+	"Rulianius Desc"
+	{
+		"en"	"Aya"
+	}
 	"Ealing"
 	{
 		"en"	"Ealing"

@@ -365,6 +365,18 @@ void NPC_ConfigSetup()
 	Lazines_OnMapStart_NPC();
 	Dronis_OnMapStart_NPC();
 	Ruliana_OnMapStart_NPC();
+	//Stage 4.
+	Aetherianus_OnMapStart_NPC();
+	Astrianious_OnMapStart_NPC();
+	Draconia_OnMapStart_NPC();
+	Dronianis_OnMapStart_NPC();
+	Euranionis_OnMapStart_NPC();
+	Heliarionus_OnMapStart_NPC();
+	Lazurus_OnMapStart_NPC();
+	Loonarionus_OnMapStart_NPC();
+	Magianius_OnMapStart_NPC();
+	Malianius_OnMapStart_NPC();
+	Rulianius_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -1068,6 +1080,20 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_lazines.sp"
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_dronis.sp"
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_ruliana.sp"
+
+//stage 4
+
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_aetherianus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_astrianious.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_draconia.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_dronianis.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_euranionis.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_heliarionus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_lazurus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_loonarionus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_magianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_malianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_rulianius.sp"
 
 
 //Special Ruina
