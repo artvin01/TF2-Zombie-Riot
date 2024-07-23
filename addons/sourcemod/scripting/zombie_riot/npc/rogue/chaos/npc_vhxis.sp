@@ -224,11 +224,6 @@ methodmap Vhxis < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	
-	property float m_flSpreadDelay
-	{
-		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
-	}
 	
 	
 	
