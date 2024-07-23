@@ -500,13 +500,5 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 
 void Music_Stop_All_Sawrunner(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopCustomSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3", 9.0);
 }
