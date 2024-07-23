@@ -347,7 +347,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
-	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax);
+	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1);
 
 	if(WaveDuration >= 1 || ParticleToSpawn[0])
 	{
