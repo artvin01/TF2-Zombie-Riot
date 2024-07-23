@@ -299,7 +299,7 @@ public float Rogue_Encounter_Prophecy1()
 	if(easyMode)
 	{
 		vote.Locked = true;
-		strcopy(vote.Append, sizeof(vote.Append), " (Compass and Map)");
+		strcopy(vote.Append, sizeof(vote.Append), " (No Compass and Map)");
 	}
 	else if(!found)
 	{
@@ -390,7 +390,7 @@ public float Rogue_Encounter_Prophecy2()
 		if(waldch)
 		{
 			vote.Locked = true;
-			strcopy(vote.Append, sizeof(vote.Append), " (Waldch)");
+			strcopy(vote.Append, sizeof(vote.Append), " (No Waldch)");
 		}
 
 		strcopy(vote.Name, sizeof(vote.Name), "Prophecy Option 2b");
@@ -694,7 +694,6 @@ static int SentUser1 = -1;
 static int SentUser2 = -1;
 public float Rogue_Encounter_EmergencyDispatch()
 {
-
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EmergencyDispatch, "Emergency Dispatch Lore");
 	Vote vote;
 
@@ -716,7 +715,7 @@ public float Rogue_Encounter_EmergencyDispatch()
 	{
 		strcopy(vote.Name, sizeof(vote.Name), "Emergency Dispatch Option 1");
 		strcopy(vote.Desc, sizeof(vote.Desc), "Emergency Dispatch Desc 1a");
-		strcopy(vote.Append, sizeof(vote.Append), "Bob The Second");
+		strcopy(vote.Append, sizeof(vote.Append), " Bob The Second");
 		vote.Config[0] = -1;
 		vote.Config[1] = -1;
 		list.PushArray(vote);
@@ -751,9 +750,9 @@ public float Rogue_Encounter_EmergencyDispatch()
 		}
 	}
 
-	Rogue_StartGenericVote(20.0);
+	Rogue_StartGenericVote(30.0);
 
-	return 30.0;
+	return 35.0;
 }
 public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 {

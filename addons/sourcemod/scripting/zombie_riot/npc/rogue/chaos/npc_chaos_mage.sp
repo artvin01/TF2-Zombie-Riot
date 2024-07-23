@@ -44,7 +44,7 @@ void ChaosMage_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "chaos_mage");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Hidden; //Replace me with void!
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

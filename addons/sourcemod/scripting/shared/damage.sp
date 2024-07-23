@@ -1900,7 +1900,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 #if defined ZR
 	if(GetTeam(victim) == 2 && Rogue_GetChaosLevel() > 0)
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "C%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "⛡%s", Debuff_Adder_right);
 	}
 #endif
 #if defined RUINA_BASE

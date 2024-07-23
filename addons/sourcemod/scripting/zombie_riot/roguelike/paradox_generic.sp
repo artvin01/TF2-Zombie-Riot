@@ -76,6 +76,12 @@ static void StartShopVote(bool first)
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
 	Vote vote;
 
+	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+	vote.Append[0] = 0;
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	strcopy(vote.Config, sizeof(vote.Config), "-1");
+	list.PushArray(vote);
+
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
 	int length = ShopListing.Length;
@@ -103,12 +109,6 @@ static void StartShopVote(bool first)
 		strcopy(vote.Config, sizeof(vote.Config), "-2");
 		list.PushArray(vote);
 	}
-
-	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	vote.Append[0] = 0;
-	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	strcopy(vote.Config, sizeof(vote.Config), "-1");
-	list.PushArray(vote);
 
 	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
 }
@@ -713,15 +713,17 @@ public void Rogue_BlueGoggles_Collect()
 
 public void Rogue_BlueGoggles_Remove()
 {
+	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
 		}
 	}
+	*/
 }
 
 static Handle KahmlsteinTimer;
@@ -747,15 +749,17 @@ public void Rogue_Kahmlstein_Collect()
 
 public void Rogue_Kahmlstein_Remove()
 {
+	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
 		}
 	}
+	*/
 
 	delete KahmlsteinTimer;
 	Rogue_Refresh_Remove();

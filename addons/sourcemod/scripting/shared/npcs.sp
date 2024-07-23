@@ -256,7 +256,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		Enemy enemy;
 		if(Waves_GetNextEnemy(enemy))
 		{
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
+			int SpawnSettingsSee = 0;
+			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
 			{
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
@@ -340,7 +341,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0)
+					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1)
 					{
 				
 						b_npcspawnprotection[entity_Spawner] = true;
@@ -402,6 +403,15 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
+		if(RogueTheme == BlueParadox)
+		{
+			if(f_DomeInsideTest[index] > GetGameTime())
+			{
+				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
+				return Plugin_Stop;
+			}
+		}
+		
 		CClotBody npc = view_as<CClotBody>(index);
 			
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))

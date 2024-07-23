@@ -46,7 +46,7 @@ void KahmlsteinFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
-int KahmlsteinFollower_ID()
+stock int KahmlsteinFollower_ID()
 {
 	return NPCId;
 }
@@ -102,7 +102,7 @@ methodmap KahmlsteinFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 10)
+		switch(GetURandomInt() % 11)
 		{
 			case 0:
 			{
@@ -163,6 +163,11 @@ methodmap KahmlsteinFollower < CClotBody
 				this.Speech("If you feel uneasy, I can give you a hug. This atmosphere is kinda tense.");
 				this.SpeechDelay(5.0, "Just keep it a secret from my people, they'd think I got soft.");
 			}
+			case 10:
+			{
+				this.Speech("Why im wearing red? oh that", "...");
+				this.SpeechDelay(5.0, "You all wear red, don't want you to confuse me with the enemy.");
+			}
 		}
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(36.0, 48.0);
@@ -202,7 +207,7 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
 
 		if(StrContains(data, "void_wave") != -1)
 		{
@@ -214,7 +219,7 @@ methodmap KahmlsteinFollower < CClotBody
 		func_NPCThink[npc.index] = ClotThink;
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
-		npc.m_flSpeed = 340.0;
+		npc.m_flSpeed = 310.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -242,6 +247,7 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_camopants/sbox2014_heavy_camopants.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+
 		
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
@@ -251,6 +257,17 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.SpeechDelay(5.0, "You'll get your reward later, no time to lose now.");
 		Rogue_SetProgressTime(10.0, false);
 		Rogue_RemoveNamedArtifact("Waldch Assistance");
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+			{
+				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
 
 		return npc;
 	}
@@ -283,19 +300,33 @@ static void ClotThink(int iNPC)
 	//Do stuff if the being is here
 	if(npc.m_bScalesWithWaves)
 	{
+		bool stop_thinking;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other) && i_RaidGrantExtra[other] >= 6)
+			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other))
 			{
-				npc.m_flDeathAnimation = GetGameTime() + 45.0;
-				npc.m_iTarget = other;
-				i_RaidGrantExtra[npc.index] = 2;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				break;
+				if(i_RaidGrantExtra[other] >= 6)
+				{
+					npc.m_flDeathAnimation = GetGameTime() + 45.0;
+					npc.m_iTarget = other;
+					i_RaidGrantExtra[npc.index] = 2;
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					stop_thinking = true;
+					break;
+				}
+				else if(i_RaidGrantExtra[other] >= 2 && i_RaidGrantExtra[other] < 6)
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					stop_thinking = true;
+					break;
+				}
 			}
 		}
+		if(stop_thinking)
+			return;
 	}
 
 	int target = npc.m_iTarget;
@@ -448,26 +479,28 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 		{
 			case 2:
 			{
-				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 100; LoopTryAlotAlot++)
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 4; LoopTryAlotAlot++)
 				{
+					PrintToChatAll("what");
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-					static float hullcheckmaxs[3];
-					static float hullcheckmins[3];
-					hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-					hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 						
 					float PreviousPos[3];
 					WorldSpaceCenter(npc.index, PreviousPos);
 					//randomly around the target.
-					vecTarget[0] += GetRandomFloat(-80.0, 80.0);
-					vecTarget[1] += GetRandomFloat(-80.0, 80.0);
+					vecTarget[0] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
+					vecTarget[1] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false);
 					if(Succeed)
 					{
 						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						break;
 					}
 				}
 				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
@@ -502,12 +535,14 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				MusicEnum music;
 				strcopy(music.Path, sizeof(music.Path), "#music/hl2_song23_suitsong3.mp3");
 				music.Time = 150;
-				music.Volume = 1.0;
+				music.Volume = 0.6;
 				music.Custom = false;
 				strcopy(music.Name, sizeof(music.Name), "...");
 				strcopy(music.Artist, sizeof(music.Artist), "...");
 				Music_SetRaidMusic(music);
 
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
 				npc.AddActivityViaSequence("taunt_heavy_workout_end");
 				npc.SetCycle(0.25);
 				npc.SetPlaybackRate(0.0);

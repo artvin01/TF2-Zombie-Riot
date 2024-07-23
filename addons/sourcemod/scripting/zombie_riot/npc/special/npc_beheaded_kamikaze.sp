@@ -291,7 +291,7 @@ public void BeheadedKamiKaze_NPCDeath(int entity)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(entity);
 	
-	StopSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
+	StopCustomSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
 	Kamikaze_DeathExplosion(entity);
 }
 

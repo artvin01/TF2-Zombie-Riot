@@ -224,7 +224,6 @@ enum
 }
 
 static bool InRogueMode;
-static int RogueTheme;
 
 static ArrayList Voting;
 static float VoteEndTime;
@@ -471,7 +470,7 @@ void Rogue_SetupVote(KeyValues kv)
 			{
 				kv.GetSectionName(buffer, sizeof(buffer));
 				if(buffer[0])
-					PrecacheSoundCustom(buffer, _, 15);
+					PrecacheSoundCustom(buffer, _, kv.GetNum(NULL_STRING, 15));
 			}
 			while(kv.GotoNextKey(false));
 
@@ -863,11 +862,11 @@ void Rogue_BattleVictory()
 			{
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 3);
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 2);
+					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 2 : 1);
 				}
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
@@ -913,6 +912,9 @@ void Rogue_BattleVictory()
 bool Rogue_BattleLost()
 {
 	Rogue_ParadoxShop_Fail();
+
+	if(RogueTheme == BlueParadox)
+		Rogue_Dome_WaveEnd();
 
 	if(BonusLives > 0 && !RequiredBattle)
 	{
@@ -1526,6 +1528,8 @@ void Rogue_StartThisBattle(float time = 10.0)
 
 static void StartBattle(const Stage stage, float time = 3.0)
 {
+	RemoveAllCustomMusic();
+
 	char buffer[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, stage.WaveSet);
 	KeyValues kv = new KeyValues("Waves");
@@ -1543,8 +1547,6 @@ static void StartBattle(const Stage stage, float time = 3.0)
 			SetMusicTimer(client, GetTime() + 3);
 		}
 	}
-
-	RemoveAllCustomMusic();
 
 	Rogue_Curse_BattleStart();
 	WaveStart_SubWaveStart(GetGameTime());
@@ -1589,6 +1591,25 @@ static void StartStage(const Stage stage)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+			}
+		}
+	}
+
+	if(!pos[0])
+	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				GetEntPropString(i_ObjectsSpawners[i], Prop_Data, "m_iName", buffer, sizeof(buffer));
+				if(StrEqual(buffer, stage.Spawn, false))
+				{
+					if(!pos[0] || (GetURandomInt() % 2))
+					{
+						GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos);
+						GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_angRotation", ang);
+					}
+				}
 			}
 		}
 	}
@@ -2525,15 +2546,15 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 						{
 							case 1, 2:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							case 3, 4:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							default:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "robo_extremethreat", MVM_CLASS_FLAG_NORMAL, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL, true);
 							}
 						}
 

@@ -469,6 +469,7 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
+int RogueTheme;
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
@@ -476,6 +477,7 @@ bool b_IsAMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
@@ -2733,7 +2735,7 @@ void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
-void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2750,7 +2752,7 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;

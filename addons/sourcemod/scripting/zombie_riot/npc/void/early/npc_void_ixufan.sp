@@ -66,7 +66,7 @@ void VoidIxufan_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_psychic");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Hidden; //Replace me with void!
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }

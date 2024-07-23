@@ -555,7 +555,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 				for(int i; i < 9; i++)
 				{
-					StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+					StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
 				}
 			}
 		}
@@ -712,6 +712,6 @@ void StalkerCombine_NPCDeath(int entity)
 
 	for(gib = 0; gib < 9; gib++)
 	{
-		StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+		StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
 	}
 }
