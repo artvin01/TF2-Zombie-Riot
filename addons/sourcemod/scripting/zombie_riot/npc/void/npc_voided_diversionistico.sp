@@ -55,7 +55,7 @@ void VoidedDiversionistico_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "Diversionistico");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

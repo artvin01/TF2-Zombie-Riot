@@ -68,7 +68,7 @@ void VoidUnspeakable_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "raid_unspeakable");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NpcID = NPC_Add(data);
@@ -761,6 +761,7 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 					TE_SendToAll(0.0);
 					TE_SetupBeamPoints(PreviousPos, WorldSpaceVec, Shared_BEAM_Laser, 0, 0, 0, 0.35, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 5.0, colorLayer1, 3);
 					TE_SendToAll(0.0);
+					break;
 				}
 				else
 				{
@@ -812,7 +813,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 					
 					MakeVectorFromPoints(pos, cpos, velocity);
 					NormalizeVector(velocity, velocity);
-					ScaleVector(velocity, -400.0);
+					ScaleVector(velocity, -300.0);
 					if(b_ThisWasAnNpc[EnemyLoop])
 					{
 						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
@@ -1132,7 +1133,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 					1.0,									//Extra delay between each
 					ang_Look 								/*2 dimensional plane*/,
 					ProjectileLoc,
-					1.0,									//volume
+					0.25,									//volume
 					QuakeSize);									//PillarStartingSize
 				}
 			}

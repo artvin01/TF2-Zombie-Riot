@@ -29,6 +29,7 @@ static const char Categories[][] =
 	"Seaborn Infection",
 	"Expidonsa",
 	"Interitus Alliances",
+	"Voided Subjects",
 	//"Blue Paradox"
 };
 

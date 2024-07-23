@@ -61,7 +61,7 @@ void GrowingExat_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

@@ -64,7 +64,7 @@ void ChaosSickKnight_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "chaos_knight");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

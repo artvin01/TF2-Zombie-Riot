@@ -46,7 +46,7 @@ void VoudExpidonsanCleaner_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Hidden; //Replace me with void!
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
