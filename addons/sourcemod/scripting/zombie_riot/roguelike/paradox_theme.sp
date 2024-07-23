@@ -98,7 +98,7 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 			// Degen if no blessing or above 50% health
 			if(Jesus_Blessing[client] != 1 || (health > maxhealth / 2))
 			{
-				int damage = maxhealth / -100;
+				int damage = maxhealth / -400;
 				health += damage;
 				if(health < 1)
 				{
@@ -284,7 +284,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entityx])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
 				continue;
@@ -292,9 +292,9 @@ static Action Timer_ParadoxFrost(Handle timer)
 			int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 			if(health > 1)
 			{
-				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 400;
-				if(damage > 125)
-					damage = 125;
+				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 1600;
+				if(damage > 50)
+					damage = 50;
 				
 				health -= damage;
 				if(health < 1)

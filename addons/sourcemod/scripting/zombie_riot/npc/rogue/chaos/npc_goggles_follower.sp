@@ -988,7 +988,7 @@ static void ClotFinalThink(int iNPC)
 		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
+			if(IsValidEnemy(npc.index, target, _, true))
 			{
 				npc.m_iTarget = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
