@@ -694,7 +694,7 @@ static void ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
 				KillFeed_SetKillIcon(npc.index, "sword");
@@ -924,7 +924,7 @@ static void ClotFinalThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				target = other;
 				break;
