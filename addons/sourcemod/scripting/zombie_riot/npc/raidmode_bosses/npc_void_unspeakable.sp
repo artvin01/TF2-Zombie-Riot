@@ -68,7 +68,7 @@ void VoidUnspeakable_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "raid_unspeakable");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Raid;
+	data.Category = Type_Hidden; //Replace me with void!
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NpcID = NPC_Add(data);

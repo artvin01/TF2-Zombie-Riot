@@ -51,7 +51,7 @@ void VoidTotalGrowth_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier_conch");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Hidden; //Replace me with void!
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

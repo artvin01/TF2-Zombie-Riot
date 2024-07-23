@@ -3052,7 +3052,7 @@
 	}
 	"Unspeakable Desc"
 	{
-		"en"	"Directly after you release the void..."
+		"en"	"Directly after you release the void...\nAttacks rapidly if not attacked for 2 seconds.\nTeleports onto anyone in void terretory.\nSucks players in and heals over time.\nEnrages and spreads voids on low hp.\neach third hp lost, gains massive res.\nThrow void quakes at players."
 	}
 	"CoF Normal Desc"
 	{
