@@ -46,7 +46,7 @@ void KahmlsteinFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
-int KahmlsteinFollower_ID()
+stock int KahmlsteinFollower_ID()
 {
 	return NPCId;
 }
