@@ -17,7 +17,7 @@ static float g_flDomeStart = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
 static float g_vecDomeCP[3];
 static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
-static bool g_bDomePlayerOutside[MAXTF2PLAYERS] = {false, ...};
+static bool g_bDomePlayerOutside[MAXENTITIES] = {false, ...};
 static Handle g_hDomeTimerBleed = null;
 
 void Rogue_Dome_Mapstart()
@@ -139,6 +139,23 @@ static void Dome_Frame_Shrink()
 			}
 		}
 	}
+	for (int entityrand = 1; entityrand < MAXENTITIES; entityrand++)
+	{
+		if(b_ThisWasAnNpc[entityrand] && !b_NpcHasDied[entityrand])
+		{
+			float flDistanceMultiplier = Dome_GetDistance(entityrand) / (DOME_RADIUS * DOME_RADIUS);
+			
+			if (flDistanceMultiplier > 1.0)
+			{
+				f_DomeInsideTest[entityrand] = GetGameTime() + 0.1;
+				g_bDomePlayerOutside[entityrand] = true;
+			}
+			else
+			{
+				g_bDomePlayerOutside[entityrand] = false;
+			}
+		}
+	}
 
 	g_flDomePreviousGameTime = GetGameTime();
 
@@ -190,7 +207,7 @@ static float Dome_GetDistance(int iEntity)
 	
 	//Buildings
 	else if (IsValidEntity(iEntity))
-		GetEntPropVector(iEntity, Prop_Send, "m_vecOrigin", vecPos);
+		GetEntPropVector(iEntity, Prop_Data, "m_vecAbsOrigin", vecPos);
 	
 	else return -1.0;
 	

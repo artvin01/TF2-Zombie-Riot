@@ -402,6 +402,15 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
+		if(RogueTheme == BlueParadox)
+		{
+			if(f_DomeInsideTest[index] > GetGameTime())
+			{
+				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
+				return Plugin_Stop;
+			}
+		}
+		
 		CClotBody npc = view_as<CClotBody>(index);
 			
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))

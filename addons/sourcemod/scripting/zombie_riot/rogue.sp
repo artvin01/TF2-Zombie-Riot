@@ -224,7 +224,6 @@ enum
 }
 
 static bool InRogueMode;
-static int RogueTheme;
 
 static ArrayList Voting;
 static float VoteEndTime;
