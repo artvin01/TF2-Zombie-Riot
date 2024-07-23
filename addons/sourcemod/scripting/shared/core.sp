@@ -469,6 +469,7 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
+int RogueTheme;
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
@@ -476,6 +477,7 @@ bool b_IsAMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
