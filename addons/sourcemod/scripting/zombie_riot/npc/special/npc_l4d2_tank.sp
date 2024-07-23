@@ -145,7 +145,7 @@ methodmap L4D2_Tank < CClotBody
 		if(this.m_iPlayMusicSound > GetTime())
 			return;
 		
-		if(i_RaidGrantExtra[npc.index] == 1)
+		if(i_RaidGrantExtra[this.index] == 1)
 			return;
 			
 		EmitCustomToAll(g_IdleMusic, this.index, SNDCHAN_VOICE, SNDLEVEL_NONE, _, BOSS_ZOMBIE_VOLUME, 100);
