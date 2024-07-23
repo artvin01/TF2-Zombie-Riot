@@ -1196,7 +1196,7 @@ void Rogue_NextProgress()
 						}
 					}
 
-					Rogue_Paradox_OnNewFloor();
+					Rogue_Paradox_OnNewFloor(CurrentFloor);
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
