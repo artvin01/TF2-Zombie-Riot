@@ -16,6 +16,7 @@ enum struct SpawnerData
 	bool Enabled;
 	int MaxSpawnsAllowed;
 	int CurrentSpawnsPerformed;
+	int SpawnSetting;
 }
 
 static ArrayList SpawnerList;
@@ -84,7 +85,7 @@ bool Spawns_CanSpawnNext(bool rogue)
 	return false;
 }
 
-bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRING, float cooldownOverride = -1.0)
+bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRING, float cooldownOverride = -1.0, int &spawnerSetting = 0)
 {
 	SpawnerData spawn;
 	float gameTime = GetGameTime();
@@ -214,10 +215,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		Spawns_RemoveFromArray(spawn.EntRef);
 		RemoveEntity(spawn.EntRef);
 	}
+	spawnerSetting = spawn.SpawnSetting;
+	//has a limit somehow
+	int MaxSpawnsAllowed;
+	int CurrentSpawnsPerformed;
 	return true;
 }
 
-void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000)
+void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000, int i_SpawnSetting = 0)
 {
 	if(!SpawnerList)
 		SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -231,6 +236,7 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.AllySpawner = allyspawner;
 		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
 		spawn.CurrentSpawnsPerformed = 0;
+		spawn.SpawnSetting = i_SpawnSetting;
 
 		GetEntPropString(ref, Prop_Data, "m_iName", spawn.Name, sizeof(spawn.Name));
 
