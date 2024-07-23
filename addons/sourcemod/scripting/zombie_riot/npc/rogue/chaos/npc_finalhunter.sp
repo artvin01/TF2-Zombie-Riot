@@ -168,12 +168,15 @@ static void ClotThink(int iNPC)
 			RaidModeScaling = 1.0;
 			RaidAllowsBuildings = true;
 
+			CPrintToChatAll("{darkred}Wildingen Hitman{default}: {black}It's inside me");
+
 			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
 				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 				{
 					view_as<GogglesFollower>(other).Speech("What the fuck!");
+					CPrintToChatAll("{darkblue}Waldch{default}: What the fuck!");
 					break;
 				}
 			}
