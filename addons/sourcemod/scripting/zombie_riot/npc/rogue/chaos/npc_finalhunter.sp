@@ -314,8 +314,7 @@ static void ClotThink(int iNPC)
 		}
 		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
-			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target) || (IsEntityAlive(target) && i_NpcInternalId[target] == GogglesFollower_ID()))
+			if((IsEntityAlive(target) && i_NpcInternalId[target] == GogglesFollower_ID()))
 			{
 				npc.m_iTarget = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -323,8 +322,23 @@ static void ClotThink(int iNPC)
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.PlayMeleeSound();
 				
-				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 4.95;
+			}
+			else
+			{
+				target = Can_I_See_Enemy(npc.index, target);
+				if(IsValidEnemy(npc.index, target))
+				{
+					npc.m_iTarget = target;
+					npc.m_flGetClosestTargetTime = gameTime + 1.0;
+
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+					npc.PlayMeleeSound();
+					
+					npc.m_flAttackHappens = gameTime + 0.35;
+					npc.m_flNextMeleeAttack = gameTime + 2.95;
+				}
 			}
 		}
 	}
