@@ -548,7 +548,7 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 
-	if(ZR_GetWaveCount()+1 > 40 && npc.Anger)
+	if(npc.Anger)
 	{
 		//always leaves creep onto the floor if enraged
 		float ProjectileLoc[3];
@@ -624,7 +624,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
-		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 5);
+		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
 		CPrintToChatAll("{purple}It's Angered.");
 	}
 
@@ -668,8 +668,8 @@ bool VoidUnspeakable_TeleToAnyAffectedOnVoid(VoidUnspeakable npc)
 				float PreviousPos[3];
 				WorldSpaceCenter(npc.index, PreviousPos);
 				//randomly around the target.
-				vecTarget[0] += GetRandomFloat(-30.0, 30.0);
-				vecTarget[1] += GetRandomFloat(-30.0, 30.0);
+				vecTarget[0] += (GetRandomInt(0, 1)) ? -50.0 : 50.0;
+				vecTarget[1] += (GetRandomInt(0, 1)) ? -50.0 : 50.0;
 				
 				bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, true);
 				if(Succeed)
