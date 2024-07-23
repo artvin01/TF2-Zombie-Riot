@@ -1568,7 +1568,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
-			return 400.0;
+			if(!Rogue_Mode())
+				return 400.0;
+			else
+				return 1200.0;
 		}
 		float speed_for_return;
 		
@@ -3481,10 +3484,12 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 	}
+	/*
 	else
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
+	*/
 }
 
 
@@ -8107,6 +8112,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
+	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
 	f_UnstuckSuckMonitor[entity] = 0.0;

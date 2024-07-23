@@ -487,6 +487,7 @@ void NPC_ConfigSetup()
 	VoidTotalGrowth_OnMapStart_NPC();
 	VoidsOffspring_OnMapStart_NPC();
 	VoidRejuvinator_OnMapStart_NPC();
+	VoidedErasus_OnMapStart_NPC();
 
 //boss
 	VoidSpeechless_OnMapStart_NPC();
@@ -1404,6 +1405,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/void/midlate/npc_void_brooding_petra.sp"
 
 
+#include "zombie_riot/npc/void/late/npc_void_erasus.sp"
 #include "zombie_riot/npc/void/late/npc_void_kunul.sp"
 #include "zombie_riot/npc/void/late/npc_void_total_growth.sp"
 #include "zombie_riot/npc/void/late/npc_voids_offspring.sp"

@@ -903,30 +903,6 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 
 		MusicString1 = round.music_round_1;
 		MusicString2 = round.music_round_2;
-		
-		if(round.Setup > 1.0)
-		{
-			if(round.Setup > 59.0)
-			{
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client))
-					{
-						SetMusicTimer(client, GetTime() + 99999);
-					}
-				}
-			}
-			else if(MusicString1.Path[0] || MusicString2.Path[0])
-			{
-				for(int client=1; client<=MaxClients; client++)
-				{
-					if(IsClientInGame(client))
-					{
-						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup));
-					}
-				}
-			}
-		}
 	}
 
 	Waves_UpdateMvMStats();
@@ -1395,10 +1371,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			CurrentCash += round.Cash;
-			if(round.Cash)
+			int CashGive = round.Cash;
+			CurrentCash += CashGive;
+
+			if(CashGive)
 			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
+				CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
 			}
 
 			ExcuteRelay("zr_wavedone");
@@ -1841,7 +1819,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				Citizen_SetupStart();
 			}
-			else if(wasLastMann)
+			else if(wasLastMann && !Rogue_Mode())
 			{
 				Cooldown = GetGameTime() + 30.0;
 
@@ -2923,6 +2901,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		int postWaves = CurrentRound - length;
 		Freeplay_OnEndWave(postWaves, round.Cash);
+		
 		CurrentCash += round.Cash;
 
 		if(round.Cash)

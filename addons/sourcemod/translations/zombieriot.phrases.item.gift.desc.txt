@@ -55,6 +55,14 @@
 		"en" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 	}
+	"Voided Subjects"
+	{
+		"en" 		"Voided Subjects"
+	}
+	"Chaos Allience"
+	{
+		"en" 		"Chaos Allience"
+	}
 	"Expidonsa"
 	{
 		"en" 		"Expidonsa"

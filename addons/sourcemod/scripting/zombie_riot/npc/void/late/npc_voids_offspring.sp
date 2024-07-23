@@ -52,7 +52,7 @@ void VoidsOffspring_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

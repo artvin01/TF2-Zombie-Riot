@@ -49,7 +49,7 @@ void ChaosSupporter_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "chaos_supporter");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

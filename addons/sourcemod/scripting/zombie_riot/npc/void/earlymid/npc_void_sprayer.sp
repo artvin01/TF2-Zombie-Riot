@@ -45,7 +45,7 @@ void VoudSprayer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -132,12 +132,13 @@ methodmap VoudSprayer < CClotBody
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/hw2013_the_ghoulic_extension/hw2013_the_ghoulic_extension.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_manneater/hw2013_the_manneater_demo.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/player/items/demo/demo_zombie.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/demo/demo_zombie.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
 		skin = 5;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -152,6 +153,8 @@ methodmap VoudSprayer < CClotBody
 		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 		
 		return npc;
 	}

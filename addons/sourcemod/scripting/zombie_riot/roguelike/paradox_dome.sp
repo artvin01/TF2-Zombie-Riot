@@ -10,24 +10,28 @@
 
 #define DOME_NEARBY_SOUND	"ui/medic_alert.wav"
 
-#define DOME_RADIUS	5000.0
+#define DOME_RADIUS	3000.0
 
 static int g_iDomeEntRef = -1;
 static float g_flDomeStart = 0.0;
 static float g_flDomePreviousGameTime = 0.0;
 static float g_vecDomeCP[3];
 static float g_flDomePlayerTime[MAXTF2PLAYERS] ={0.0, ...};
-static bool g_bDomePlayerOutside[MAXTF2PLAYERS] = {false, ...};
+static bool g_bDomePlayerOutside[MAXENTITIES] = {false, ...};
 static Handle g_hDomeTimerBleed = null;
 
 void Rogue_Dome_Mapstart()
 {
 	PrecacheModel("models/kirillian/brsphere_huge.mdl");
+	PrecacheSound(DOME_NEARBY_SOUND);
 }
 
 void Rogue_Dome_WaveStart(const float pos[3])
 {
 	Rogue_Dome_WaveEnd();
+
+	if(Rogue_GetFloor() == 2)
+		return;
 	
 	g_vecDomeCP = pos;
 	
@@ -66,8 +70,21 @@ void Rogue_Dome_WaveEnd()
 			RemoveEntity(iDome);
 	}
 
+	for (int iClient = 1; iClient <= MaxClients; iClient++)
+	{
+		if (IsClientInGame(iClient) && IsPlayerAlive(iClient))
+		{
+			if (g_bDomePlayerOutside[iClient])
+			{
+				//Client is not outside of dome, remove bleed
+				TF2_RemoveCondition(iClient, TFCond_Bleeding);
+				g_bDomePlayerOutside[iClient] = false;
+			}
+		}
+	}
+
+	g_flDomeStart = 0.0;
 	Zero(g_flDomePlayerTime);
-	Zero(g_bDomePlayerOutside);
 }
 
 static void Dome_Frame_Shrink()
@@ -100,7 +117,7 @@ static void Dome_Frame_Shrink()
 				
 				//give bleed if havent been given one
 				if (!TF2_IsPlayerInCondition(iClient, TFCond_Bleeding))
-					TF2_MakeBleed(iClient, iClient, 9999.0);	//Does no damage, ty sourcemod
+					TF2_MakeBleed(iClient, iClient, 99.0);	//Does no damage, ty sourcemod
 			}
 			else if (g_bDomePlayerOutside[iClient])
 			{
@@ -119,6 +136,23 @@ static void Dome_Frame_Shrink()
 					flAlpha = (flDistanceMultiplier - DOME_FADE_START_MULTIPLIER) * (1.0/(1.0-DOME_FADE_START_MULTIPLIER)) * DOME_FADE_ALPHA_MAX;
 				
 				UTIL_ScreenFade(iClient, 2000, 0, 0x0001, 255, 255, 255, RoundToNearest(flAlpha));
+			}
+		}
+	}
+	for (int entityrand = 1; entityrand < MAXENTITIES; entityrand++)
+	{
+		if(b_ThisWasAnNpc[entityrand] && !b_NpcHasDied[entityrand] && !b_StaticNPC[entityrand])
+		{
+			float flDistanceMultiplier = Dome_GetDistance(entityrand) / (DOME_RADIUS * DOME_RADIUS);
+			
+			if (flDistanceMultiplier > 1.0)
+			{
+				f_DomeInsideTest[entityrand] = GetGameTime() + 0.1;
+				g_bDomePlayerOutside[entityrand] = true;
+			}
+			else
+			{
+				g_bDomePlayerOutside[entityrand] = false;
 			}
 		}
 	}
@@ -173,7 +207,7 @@ static float Dome_GetDistance(int iEntity)
 	
 	//Buildings
 	else if (IsValidEntity(iEntity))
-		GetEntPropVector(iEntity, Prop_Send, "m_vecOrigin", vecPos);
+		GetEntPropVector(iEntity, Prop_Data, "m_vecAbsOrigin", vecPos);
 	
 	else return -1.0;
 	

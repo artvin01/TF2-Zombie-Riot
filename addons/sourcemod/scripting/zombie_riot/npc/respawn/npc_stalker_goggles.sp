@@ -533,7 +533,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			
 			for(int i; i < 9; i++)
 			{
-				StopSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
+				StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
 			}
 
 			npc.m_bPlayingSniper = true;
@@ -551,7 +551,7 @@ public void StalkerGoggles_ClotThink(int iNPC)
 			
 			for(int i; i < 9; i++)
 			{
-				StopSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
+				StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
 			}
 
 			npc.m_bPlayingSniper = false;
@@ -619,8 +619,8 @@ public Action StalkerGoggles_OnTakeDamage(int victim, int &attacker, int &inflic
 
 		for(int i; i < 9; i++)
 		{
-			StopSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
-			StopSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
+			StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
+			StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
 		}
 
 		damage = 0.0;
@@ -640,8 +640,8 @@ void StalkerGoggles_NPCDeath(int entity)
 
 	for(int i; i < 9; i++)
 	{
-		StopSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
-		StopSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
+		StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluerange.wav");
+		StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/bluemelee.mp3");
 	}
 	
 	if(IsValidEntity(npc.m_iWearable1))

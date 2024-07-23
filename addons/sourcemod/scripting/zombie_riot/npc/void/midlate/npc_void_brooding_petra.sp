@@ -50,7 +50,7 @@ void VoidBroodingPetra_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

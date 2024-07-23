@@ -54,7 +54,7 @@ void VoidSpeechless_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "scout_armored_hyper");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -283,9 +283,9 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 125.0;
+					float damageDealt = 210.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 10.0;
+						damageDealt *= 14.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

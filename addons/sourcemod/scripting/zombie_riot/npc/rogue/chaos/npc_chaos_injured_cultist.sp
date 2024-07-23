@@ -69,7 +69,7 @@ void ChaosInjuredCultist_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "chaos_cultist");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

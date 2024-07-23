@@ -226,6 +226,7 @@ methodmap Vhxis < CClotBody
 	
 	
 	
+	
 	public Vhxis(int client, float vecPos[3], float vecAng[3], int ally,  const char[] data)
 	{
 		Vhxis npc = view_as<Vhxis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "2.0", "30000", ally, false, true));
@@ -321,7 +322,8 @@ methodmap Vhxis < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
-		RaidModeScaling *= 3.0;
+		RaidModeScaling *= 0.9;
+		RaidModeScaling *= 0.75;
 
 		//IDLE
 		npc.m_iState = 0;
@@ -602,7 +604,6 @@ void VhxisSelfDefense(Vhxis npc, float gameTime, int target, float distance)
 								TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 							}
 						}
-						SensalGiveShield(npc.index, 1);
 									
 						if(!Knocked)
 							Custom_Knockback(npc.index, target, 150.0, true); 
@@ -691,6 +692,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			
 			//This will only detect people, not damage them.
 			Zero(VoidGroundShake);
+			ProjectileLoc[2] += 60.0;
 			Explode_Logic_Custom(VOID_GROUNDQUAKE_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 20,_,_,_,VoidVhxis_GroundQuakeCheck);
 			
 			static float victimPos[3];
@@ -711,7 +713,6 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 						GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 						SDKHooks_TakeDamage(victim, npc.index, npc.index, VOID_GROUNDQUAKE_DAMAGE, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 						Elemental_AddVoidDamage(victim, npc.index, 200, true, true);
-						SensalGiveShield(npc.index, CountPlayersOnRed(1));
 					}
 					else
 					{
@@ -782,7 +783,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		pos[2] += 5.0;
 		float ang_Look[3];
-		float DelayPillars = 3.2;
+		float DelayPillars = 4.5;
 		float DelaybewteenPillars = 0.25;
 		int MaxCount = 6;
 		ResetTEStatusSilvester();
@@ -809,7 +810,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 
 		npc.m_flVoidGroundShakeHappening = gameTime + 3.12;
 		npc.m_flDoingAnimation = gameTime + 5.0;
-		npc.m_flVoidGroundShakeCooldown = gameTime + 30.0;
+		npc.m_flVoidGroundShakeCooldown = gameTime + 60.0;
 		return true;
 	}
 
@@ -861,7 +862,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 10.5;
+					fl_Extra_Damage[spawn_index] *= 6.5;
 					fl_Extra_Speed[spawn_index] *= 1.05;
 				}
 			}
@@ -1132,7 +1133,6 @@ void VoidVhxisInitiateLaserAttack_DamagePart(DataPack pack)
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_PLASMA, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			Elemental_AddVoidDamage(victim, entity, 200, true, true);
-			SensalGiveShield(entity, CountPlayersOnRed(1));
 			IncreaceEntityDamageTakenBy(victim, 0.15, 10.0, true);
 		}
 	}
@@ -1173,7 +1173,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.025;
+			maxhealth *= 0.015;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
@@ -1183,7 +1183,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 12.5;
+					fl_Extra_Damage[spawn_index] *= 8.5;
 					fl_Extra_Speed[spawn_index] *= 0.35;
 					SetEntityRenderMode(npc1.index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc1.index, 125, 0, 125, 255);

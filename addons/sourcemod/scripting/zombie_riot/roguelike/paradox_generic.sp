@@ -64,17 +64,23 @@ public float Rogue_Encounter_ParadoxShop()
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
 			if(StrEqual(artifact.Name, "zr_store_prop", false))
-				AcceptEntityInput(entity, "Disable");
+				AcceptEntityInput(entity, "Enable");
 		}
 	}
 
-	StartShopVote();
+	StartShopVote(true);
 	return 35.0;
 }
-static void StartShopVote()
+static void StartShopVote(bool first)
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
 	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+	vote.Append[0] = 0;
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	strcopy(vote.Config, sizeof(vote.Config), "-1");
+	list.PushArray(vote);
 
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
@@ -101,16 +107,11 @@ static void StartShopVote()
 		vote.Append[0] = 0;
 		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
 		strcopy(vote.Config, sizeof(vote.Config), "-2");
+		vote.Locked = false;
 		list.PushArray(vote);
 	}
 
-	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	vote.Append[0] = 0;
-	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	strcopy(vote.Config, sizeof(vote.Config), "-1");
-	list.PushArray(vote);
-
-	Rogue_StartGenericVote(length ? 30.0 : 3.0);
+	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
@@ -120,6 +121,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 	{
 		case -1:
 		{
+			Rogue_SetProgressTime(5.0, false);
+
 			delete ShopListing;
 
 			int entity = -1;
@@ -163,8 +166,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 			
 			Rogue_AddIngots(-cost, true);
 
-			StartShopVote();
-			Rogue_SetProgressTime(35.0, false);
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
 		}
 	}
 }
@@ -433,39 +436,39 @@ public void Rogue_Health3_Ally(int entity, StringMap map)
 
 public void Rogue_MeleeVuln1_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.15;
+	fl_Extra_MeleeArmor[entity] *= 1.15;
 }
 
 public void Rogue_MeleeVuln2_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.25;
+	fl_Extra_MeleeArmor[entity] *= 1.25;
 }
 
 public void Rogue_MeleeVuln3_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.35;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
 }
 
 public void Rogue_RangedVuln1_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.15;
+	fl_Extra_RangedArmor[entity] *= 1.15;
 }
 
 public void Rogue_RangedVuln2_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.25;
+	fl_Extra_RangedArmor[entity] *= 1.25;
 }
 
 public void Rogue_RangedVuln3_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
 }
 
 public void Rogue_Healing1_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +20% healing bonus
 		map.GetValue("526", value);
@@ -477,7 +480,7 @@ public void Rogue_Healing2_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +30% healing bonus
 		map.GetValue("526", value);
@@ -711,15 +714,17 @@ public void Rogue_BlueGoggles_Collect()
 
 public void Rogue_BlueGoggles_Remove()
 {
+	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
 		}
 	}
+	*/
 }
 
 static Handle KahmlsteinTimer;
@@ -745,15 +750,17 @@ public void Rogue_Kahmlstein_Collect()
 
 public void Rogue_Kahmlstein_Remove()
 {
+	/*
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
 		{
 			SmiteNpcToDeath(other);
 			break;
 		}
 	}
+	*/
 
 	delete KahmlsteinTimer;
 	Rogue_Refresh_Remove();

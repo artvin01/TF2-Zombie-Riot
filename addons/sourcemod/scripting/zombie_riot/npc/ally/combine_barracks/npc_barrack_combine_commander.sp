@@ -303,8 +303,8 @@ void Barrack_Combine_Commander_NPCDeath(int entity)
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }
-
+/*
 public Action Boolchange(Handle Timer)
 {
 	buffing = false;
-}
+}*/

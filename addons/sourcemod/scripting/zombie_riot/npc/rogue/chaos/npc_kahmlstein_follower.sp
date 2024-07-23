@@ -36,6 +36,9 @@ void KahmlsteinFollower_Setup()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kahmlstein_follower");
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	for (int i = 0; i < (sizeof(g_CoughRandom)); i++) { PrecacheSound(g_CoughRandom[i]); }
+	for (int i = 0; i < (sizeof(g_BobSuperMeleeCharge_Hit)); i++) { PrecacheSound(g_BobSuperMeleeCharge_Hit[i]); }
+
+	PrecacheSound("#music/hl2_song23_suitsong3.mp3");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Hidden;
@@ -43,7 +46,7 @@ void KahmlsteinFollower_Setup()
 	NPCId = NPC_Add(data);
 }
 
-int KahmlsteinFollower_ID()
+stock int KahmlsteinFollower_ID()
 {
 	return NPCId;
 }
@@ -99,7 +102,7 @@ methodmap KahmlsteinFollower < CClotBody
 		if(GetEntityFlags(client) & FL_FROZEN)
 			return;
 
-		switch(GetURandomInt() % 1)
+		switch(GetURandomInt() % 11)
 		{
 			case 0:
 			{
@@ -160,6 +163,11 @@ methodmap KahmlsteinFollower < CClotBody
 				this.Speech("If you feel uneasy, I can give you a hug. This atmosphere is kinda tense.");
 				this.SpeechDelay(5.0, "Just keep it a secret from my people, they'd think I got soft.");
 			}
+			case 10:
+			{
+				this.Speech("Why im wearing red? oh that", "...");
+				this.SpeechDelay(5.0, "You all wear red, don't want you to confuse me with the enemy.");
+			}
 		}
 		
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(36.0, 48.0);
@@ -199,17 +207,19 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
 
 		if(StrContains(data, "void_wave") != -1)
 		{
 			npc.m_bScalesWithWaves = true;
 		}
+		npc.m_bDissapearOnDeath = true;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
-		npc.m_flSpeed = 340.0;
+		npc.m_flSpeed = 310.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -230,30 +240,15 @@ methodmap KahmlsteinFollower < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
-		npc.m_iWearable6 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/heavy/dec22_heavy_heating_style1/dec22_heavy_heating_style1.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 21, 71, 171, 255);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_heavy_camopants/sbox2014_heavy_camopants.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
+
 		
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable5, 21, 71, 171, 255);
-		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 21, 71, 171, 255);
-		
-		float flPos[3]; // original
-		float flAng[3]; // original
-	
-		npc.GetAttachment("effect_hand_r", flPos, flAng);
-		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		npc.GetAttachment("", flPos, flAng);
-		
-		npc.GetAttachment("effect_hand_l", flPos, flAng);
-		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("", flPos, flAng);
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
@@ -262,6 +257,17 @@ methodmap KahmlsteinFollower < CClotBody
 		npc.SpeechDelay(5.0, "You'll get your reward later, no time to lose now.");
 		Rogue_SetProgressTime(10.0, false);
 		Rogue_RemoveNamedArtifact("Waldch Assistance");
+
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+			{
+				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
+				SmiteNpcToDeath(other);
+				break;
+			}
+		}
 
 		return npc;
 	}
@@ -294,19 +300,33 @@ static void ClotThink(int iNPC)
 	//Do stuff if the being is here
 	if(npc.m_bScalesWithWaves)
 	{
+		bool stop_thinking;
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other) && i_RaidGrantExtra[other] >= 6)
+			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other))
 			{
-				npc.m_flDeathAnimation = GetGameTime() + 45.0;
-				npc.m_iTarget = other;
-				i_RaidGrantExtra[npc.index] = 2;
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;
-				break;
+				if(i_RaidGrantExtra[other] >= 6)
+				{
+					npc.m_flDeathAnimation = GetGameTime() + 45.0;
+					npc.m_iTarget = other;
+					i_RaidGrantExtra[npc.index] = 2;
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					stop_thinking = true;
+					break;
+				}
+				else if(i_RaidGrantExtra[other] >= 2 && i_RaidGrantExtra[other] < 6)
+				{
+					NPC_StopPathing(npc.index);
+					npc.m_bPathing = false;
+					stop_thinking = true;
+					break;
+				}
 			}
 		}
+		if(stop_thinking)
+			return;
 	}
 
 	int target = npc.m_iTarget;
@@ -350,7 +370,7 @@ static void ClotThink(int iNPC)
 
 				Handle swingTrace;
 				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
+				if(npc.DoSwingTrace(swingTrace, target,_,_,_,2))
 				{
 					target = TR_GetEntityIndex(swingTrace);
 					if(target > 0)
@@ -435,6 +455,9 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
+	
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }
 
 
@@ -442,9 +465,9 @@ static void ClotDeath(int entity)
 
 void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 {
-
 	if(npc.m_flDeathAnimationCD < gameTime)
 	{
+		GiveProgressDelay(5.0);
 		if(IsValidEntity(npc.m_iTarget))
 		{
 			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -456,47 +479,70 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 		{
 			case 2:
 			{
-				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 100; LoopTryAlotAlot++)
+				static float hullcheckmaxs[3];
+				static float hullcheckmins[3];
+				hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
+				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
+				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 4; LoopTryAlotAlot++)
 				{
+					PrintToChatAll("what");
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-					static float hullcheckmaxs[3];
-					static float hullcheckmins[3];
-					hullcheckmaxs = view_as<float>( { 30.0, 30.0, 120.0 } );
-					hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 						
 					float PreviousPos[3];
 					WorldSpaceCenter(npc.index, PreviousPos);
 					//randomly around the target.
-					vecTarget[0] += GetRandomFloat(-30.0, 30.0);
-					vecTarget[1] += GetRandomFloat(-30.0, 30.0);
+					vecTarget[0] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
+					vecTarget[1] += (GetRandomInt(0, 1)) ? -60.0 : 60.0;
 					
-					bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, true);
+					bool Succeed = Npc_Teleport_Safe(npc.index, vecTarget, hullcheckmins, hullcheckmaxs, false);
 					if(Succeed)
 					{
 						ParticleEffectAt(PreviousPos, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
 						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 						ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5); //This is a permanent particle, gotta delete it manually...
+						break;
 					}
 				}
+				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
+				CreateEarthquake(vecTarget2, 2.5, 350.0, 16.0, 255.0);
 				npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
+				TE_Particle("asplode_hoodoo", vecTarget2, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 				npc.m_flAttackHappens = 0.0;
-				npc.SetCycle(0.01);
+				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
 				npc.PlayBobMeleePostHit();
-				npc.m_flDeathAnimationCD = gameTime + 1.0;
+				npc.m_flDeathAnimationCD = gameTime + 2.0;
 				CPrintToChatAll("{purple}!?!?!?!?!?!?!?");
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						Music_Stop_All(client); //This is actually more expensive then i thought.
+						SetMusicTimer(client, GetTime() + 4);
+					}
+				}
 				if(IsValidEntity(npc.m_iTarget))
 				{
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 					npc.FaceTowards(vecTarget, 15000.0);
 					npc.PlayDeathSound(npc.m_iTarget);
-					CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iTarget), TIMER_FLAG_NO_MAPCHANGE);
-					RequestFrames(KillNpc, 45, EntIndexToEntRef(npc.m_iTarget));
+					RequestFrames(KillNpc, 2, EntIndexToEntRef(npc.m_iTarget));
 				}
 			}
 			case 3:
 			{
+				MusicEnum music;
+				strcopy(music.Path, sizeof(music.Path), "#music/hl2_song23_suitsong3.mp3");
+				music.Time = 150;
+				music.Volume = 0.6;
+				music.Custom = false;
+				strcopy(music.Name, sizeof(music.Name), "...");
+				strcopy(music.Artist, sizeof(music.Artist), "...");
+				Music_SetRaidMusic(music);
+
+				if(IsValidEntity(npc.m_iWearable1))
+					RemoveEntity(npc.m_iWearable1);
 				npc.AddActivityViaSequence("taunt_heavy_workout_end");
 				npc.SetCycle(0.25);
 				npc.SetPlaybackRate(0.0);
@@ -516,66 +562,94 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.GetAttachment("head", flPos, flAng);
 				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
 				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 6:
 			{
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Oh.. that's blood.. lots of it.");
 				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 7:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: But we did it, the Void's influence is fading away.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 8:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: And as long as another idiot doesn't try to mess with it, it won't come back");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 9:
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: But that means.. my immortality is fading as well. Maybe it's for the better.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 10:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Now you should actually go back to that Chaos thing I took you away from.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 11:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: ...if it's not too late that is.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 12:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: As for me, my time's almost up. Honestly I deserve it.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 13:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I'm nothing but a scumbag, even before Chaos fiddled with me I was one.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 14:
+			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: I did many vile acts that cannot be forgiven..");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+			}
+			case 15:
 			{
 				float flPos[3];
 				float flAng[3];
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: *cough cough cough*");
 				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 				npc.GetAttachment("head", flPos, flAng);
 				int particle = ParticleEffectAt(flPos, "blood_trail_red_01_goop", 4.0); //This is a permanent particle, gotta delete it manually...
 				CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			}
-			case 15:
-			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
-			}
 			case 16:
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahh... is that a light? It's getting closer.. Ahh Ziberia is calling out to me.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 			}
 			case 17:
 			{
+				CPrintToChatAll("{darkblue}Kahmlstein{default}: And you all, thanks again. For sticking with me till the end.");
+				npc.PlayCoughSound();
+				npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+			}
+			case 18,19,20,21,22:
+			{
+		//		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: ... Make sure the void doesnt come back...");
 				if(IsValidEntity(npc.index))
 				{
-					CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+					HideAllNpcCosmetics(npc.index);
 					RequestFrames(KillNpc, 45, EntIndexToEntRef(npc.index));
 				}
 				for (int client = 0; client < MaxClients; client++)
@@ -590,4 +664,32 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 		}
 		i_RaidGrantExtra[npc.index]++;
 	}
+}
+
+void HideAllNpcCosmetics(int entity)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	
+	if(IsValidEntity(npc.m_iWearable1))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable2))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable3))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable4))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable5))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable5), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable6), TIMER_FLAG_NO_MAPCHANGE);
+	
+	if(IsValidEntity(npc.m_iWearable7))
+		CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(npc.m_iWearable7), TIMER_FLAG_NO_MAPCHANGE);
+	
+	CreateTimer(0.1, Prop_Gib_FadeSet, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 }

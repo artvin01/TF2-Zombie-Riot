@@ -606,6 +606,7 @@ methodmap GogglesFollower < CClotBody
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCThink[npc.index] = ClotThink;
+		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 		
 		npc.m_flSpeed = 320.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -693,9 +694,10 @@ static void ClotThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				npc.Speech(chaos == 4 ? "..." : "This ends now!");
+				CPrintToChatAll("{darkblue}Waldch{default}: %s", chaos == 4 ? "..." : "This ends now!");
 				KillFeed_SetKillIcon(npc.index, "sword");
 				func_NPCThink[npc.index] = ClotFinalThink;
 				b_NpcIsTeamkiller[npc.index] = false;
@@ -923,7 +925,7 @@ static void ClotFinalThink(int iNPC)
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
+			if(other != -1 && i_NpcInternalId[other] == FinalHunter_ID() && IsEntityAlive(other))
 			{
 				target = other;
 				break;
@@ -987,7 +989,7 @@ static void ClotFinalThink(int iNPC)
 		else if(distance < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flNextMeleeAttack < gameTime)
 		{
 			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
+			if(IsValidEnemy(npc.index, target, _, true))
 			{
 				npc.m_iTarget = target;
 				npc.m_flGetClosestTargetTime = gameTime + 1.0;
@@ -1011,6 +1013,8 @@ static void ClotFinalThink(int iNPC)
 	{
 		npc.Speech("It's over.");
 		npc.SpeechDelay(4.0, "Chaos will not harm Wildingen anymore.");
+		CPrintToChatAll("{darkblue}Waldch{default}: It's over.");
+		CPrintToChatAll("{darkblue}Waldch{default}: Chaos will not harm Wildingen anymore.");
 		npc.m_flNextMeleeAttack = 0.0;
 
 		npc.StopPathing();
