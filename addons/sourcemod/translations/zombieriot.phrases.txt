@@ -3000,7 +3000,7 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en"	"The machine that rapidly fires rockets and zaps players outside his range!"
+		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
 	}
 	"Xeno Desc"
 	{
