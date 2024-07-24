@@ -692,7 +692,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			//This will only detect people, not damage them.
 			Zero(VoidGroundShake);
 			ProjectileLoc[2] += 60.0;
-			Explode_Logic_Custom(VOID_GROUNDQUAKE_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 20,_,_,_,VoidVhxis_GroundQuakeCheck);
+			Explode_Logic_Custom(1.0, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 99,_,_,_,VoidVhxis_GroundQuakeCheck);
 			
 			static float victimPos[3];
 			static float partnerPos[3];
@@ -780,6 +780,21 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			RemoveEntity(npc.m_iWearable8);
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		Event event = CreateEvent("show_annotation");
+		if(event)
+		{
+			event.SetFloat("worldPosX", pos[0]);
+			event.SetFloat("worldPosY", pos[1]);
+			event.SetFloat("worldPosZ", pos[2]);
+		//	event.SetInt("follow_entindex", 0);
+			event.SetFloat("lifetime", 3.0);
+		//	event.SetInt("visibilityBitfield", (1<<client));
+			//event.SetBool("show_effect", effect);
+			event.SetString("text", "STAY IN ZONE!!");
+			event.SetString("play_sound", "vo/null.mp3");
+			event.SetInt("id", 999979); //What to enter inside? Need a way to identify annotations by entindex!
+			event.Fire();
+		}
 		pos[2] += 5.0;
 		float ang_Look[3];
 		float DelayPillars = 4.5;
@@ -854,7 +869,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.003;
+			maxhealth *= 0.0015;
 			for (int DoSpawns = 0; DoSpawns < CountPlayersOnRed(1); DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_void_ixufan", -1, ProjectileLoc, ang, GetTeam(npc.index));
@@ -863,7 +878,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 8.5;
+					fl_Extra_Damage[spawn_index] *= 4.5;
 					fl_Extra_Speed[spawn_index] *= 1.05;
 				}
 			}
@@ -1174,7 +1189,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.03;
+			maxhealth *= 0.02;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
