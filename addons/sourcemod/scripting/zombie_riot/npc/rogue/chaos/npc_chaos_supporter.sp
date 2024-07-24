@@ -46,7 +46,7 @@ void ChaosSupporter_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Chaos Supporter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chaos_supporter");
-	strcopy(data.Icon, sizeof(data.Icon), "chaos_supporter");
+	strcopy(data.Icon, sizeof(data.Icon), "chaos_supporter_1");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_BlueParadox; 

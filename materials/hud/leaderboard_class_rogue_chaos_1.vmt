@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "hud/leaderboard_rogue_chaos"
+	"$basetexture" "hud/leaderboard_class_rogue_chaos_1"
 	"$vertexcolor" 1
 	"$no_fullbright" 1
 	"$ignorez" 1

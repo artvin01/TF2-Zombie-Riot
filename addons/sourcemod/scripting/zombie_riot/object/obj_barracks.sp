@@ -746,6 +746,7 @@ public void Building_Summoner(int client, int entity)
 
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
+		
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Guln's Companions") ? Combine : Default;
 		
@@ -1326,6 +1327,9 @@ static void SummonerMenu(int client, int viewer)
 		CancelClientMenu(viewer);
 		return;
 	}
+	
+	if(client == -1)
+		return;
 
 	bool owner = client == viewer;
 	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);

@@ -847,7 +847,9 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			//remove particle, spawn creep, deal aoe damage
 			ProjectileLoc[2] += 5.0;
 			VoidArea_SpawnNethersea(ProjectileLoc);
+			ProjectileLoc[2] += 60.0;
 			Explode_Logic_Custom(VOID_SUMMON_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_SUMMON_RANGE_BOOM * 0.95, 1.0, _, true, 20);
+			ProjectileLoc[2] -= 60.0;
 			TE_Particle("asplode_hoodoo", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
