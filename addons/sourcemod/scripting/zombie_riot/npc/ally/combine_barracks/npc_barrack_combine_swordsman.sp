@@ -189,7 +189,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					if(!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
@@ -204,6 +204,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
 						npc.PlayRangedAttackSecondarySound();
+						npc.m_flAttackHappenswillhappen =  GetGameTime(npc.index) + 0.5;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
 					{
