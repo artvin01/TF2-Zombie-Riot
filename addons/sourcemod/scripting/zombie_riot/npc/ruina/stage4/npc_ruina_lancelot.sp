@@ -50,16 +50,24 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
+static char g_AngerSounds[][] = {
+	"vo/medic_cartgoingforwardoffense01.mp3",
+	"vo/medic_cartgoingforwardoffense02.mp3",
+	"vo/medic_cartgoingforwardoffense03.mp3",
+	"vo/medic_cartgoingforwardoffense06.mp3",
+	"vo/medic_cartgoingforwardoffense07.mp3",
+	"vo/medic_cartgoingforwardoffense08.mp3",
+};
 
-void Loonarionus_OnMapStart_NPC()
+void Lancelot_OnMapStart_NPC()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Loonarionus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_loonarionus");
+	strcopy(data.Name, sizeof(data.Name), "Lancelot");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_lancelot");
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -74,14 +82,15 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
-	PrecacheModel("models/player/scout.mdl");
+	PrecacheSoundArray(g_AngerSounds);
+	PrecacheModel("models/player/medic.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Loonarionus(client, vecPos, vecAng, ally);
+	return Lancelot(client, vecPos, vecAng, ally);
 }
 
-methodmap Loonarionus < CClotBody
+methodmap Lancelot < CClotBody
 {
 	
 	public void PlayIdleSound() {
@@ -152,6 +161,15 @@ methodmap Loonarionus < CClotBody
 		
 		
 	}
+	public void PlayAngerSound() {
+	
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::Playnpc.AngerSound()");
+		#endif
+	}
 	
 	public void AdjustWalkCycle()
 	{
@@ -159,7 +177,7 @@ methodmap Loonarionus < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 0)
 			{
-				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				this.SetActivity("ACT_MP_RUN_MELEE");
 				this.m_iChanged_WalkCycle = 1;
 			}
 		}
@@ -173,27 +191,22 @@ methodmap Loonarionus < CClotBody
 		}
 	}
 
-	public Loonarionus(int client, float vecPos[3], float vecAng[3], int ally)
+	public Lancelot(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Loonarionus npc = view_as<Loonarionus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
+		Lancelot npc = view_as<Lancelot>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
-			Bunsen Brave			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl"
-			Athenian Attire			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl"
-			Orion's belt
-			Olympic Leapers
-			Tanker's top
-			Hero's tail
+			
 
 		*/
 		
@@ -211,14 +224,14 @@ methodmap Loonarionus < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		static const char Items[][] = {
-			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
-			"models/workshop/player/items/scout/hwn2018_athenian_attire/hwn2018_athenian_attire.mdl",
-			"models/workshop/player/items/scout/hwn2018_olympic_leapers/hwn2018_olympic_leapers.mdl",
-			"models/workshop_partner/player/items/scout/tr_orions_belt/tr_orions_belt.mdl",
-			"models/player/items/scout/scout_hair.mdl",
-			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
-			RUINA_CUSTOM_MODELS_3
+		static const char Items[][] = {	//temp
+			"models/workshop/player/items/all_class/jogon/jogon_medic.mdl",
+			"models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl",
+			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
+			"models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl",
+			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
+			"models/player/items/medic/qc_glove.mdl",
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -232,7 +245,7 @@ methodmap Loonarionus < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_LAN_SWORD_3);
+		SetVariantInt(RUINA_IMPACT_LANCE_4);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 				
@@ -245,13 +258,14 @@ methodmap Loonarionus < CClotBody
 		npc.Anger = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
-		
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 3);
+
 		return npc;
 	}
 	
 	
 }
-static void Find_Lanius(Loonarionus npc)
+static void Find_Lancers(Lancelot npc)
 {
 	float radius = 250.0;
 
@@ -276,7 +290,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	bool valid = false;
 
 	static const char Compare[][] = {
-		"npc_ruina_loonarionus",
+		"npc_ruina_Lancelot",
 		"npc_ruina_loonaris",
 		"npc_ruina_laniun",
 		"npc_ruina_lanius"
@@ -284,7 +298,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	for(int i=0 ; i < 4 ; i ++)
 	{
-		if(StrEqual(npc_classname, Compare[i]))
+		if(StrEqual(npc_classname, ""))
 		{
 			valid = true;
 			break;
@@ -304,7 +318,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 //Rewrite
 static void ClotThink(int iNPC)
 {
-	Loonarionus npc = view_as<Loonarionus>(iNPC);
+	Lancelot npc = view_as<Lancelot>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > GameTime)
@@ -340,80 +354,17 @@ static void ClotThink(int iNPC)
 	
 	if(fl_ruina_battery[npc.index]>2500.0)
 	{
-		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
-		npc.Anger = true;
-		Find_Lanius(npc);
+
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Speed_Buff(npc.index, 140.0, 1.0, 1.3);
+
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
-			
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (750.0 * 750.0))
-		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
-			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-		
-			if (flVel[0] >= 190.0)
-			{
-				npc.FaceTowards(vPredictedPos);
-				npc.FaceTowards(vPredictedPos);
-				
-				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos);
-					
-					
-				float start_offset[3], end_offset[3];
-				start_offset = Npc_Vec;
-					
-				if(Tele_Check > 200.0)
-				{
-					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-					if(Succeed)
-					{
-						Find_Lanius(npc);
-						npc.PlayTeleportSound();
-
-						Ruina_Laser_Logic Laser;
-
-						Laser.client = npc.index;
-						Laser.Start_Point = Npc_Vec;
-						Laser.End_Point = vPredictedPos;
-						Laser.Radius = 7.5;
-						Laser.Damage = 400.0;
-						Laser.Bonus_Damage = 800.0;
-						Laser.damagetype = DMG_PLASMA;
-						Laser.Deal_Damage(On_LaserHit);
-							
-						float effect_duration = 0.25;
-	
-						end_offset = vPredictedPos;
-
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 22.5 : 30.0);
-
-						npc.Anger = false;
-										
-						for(int help=1 ; help<=8 ; help++)
-						{	
-							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-											
-							start_offset[2] += 12.5;
-							end_offset[2] += 12.5;
-						}
-					}
-					else
-					{
-						npc.m_flNextTeleport = GameTime + 1.0;
-					}
-				}
-			}
-		}		
+		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);	
 
 		Ruina_Self_Defense Melee;
 
@@ -423,7 +374,7 @@ static void ClotThink(int iNPC)
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
 		Melee.damage = 175.0;
 		Melee.bonus_dmg = 650.0;
-		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
+		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
 		Melee.swing_speed = 0.9;
 		Melee.swing_delay = 0.37;
 		Melee.turn_speed = 20000.0;
@@ -463,12 +414,23 @@ static void On_LaserHit(int client, int Target, int damagetype, float damage)
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 
-	Loonarionus npc = view_as<Loonarionus>(victim);
+	Lancelot npc = view_as<Lancelot>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	{
+		npc.Anger = true; //	>:(
+		npc.PlayAngerSound();
+
+		if(npc.m_bThisNpcIsABoss)
+		{
+			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+		}
+	}
 		
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
@@ -483,7 +445,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 static void NPC_Death(int entity)
 {
-	Loonarionus npc = view_as<Loonarionus>(entity);
+	Lancelot npc = view_as<Lancelot>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

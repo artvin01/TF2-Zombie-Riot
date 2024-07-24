@@ -377,6 +377,7 @@ void NPC_ConfigSetup()
 	Magianius_OnMapStart_NPC();
 	Malianius_OnMapStart_NPC();
 	Rulianius_OnMapStart_NPC();
+	Lancelot_OnMapStart_NPC();
 
 	//Special.
 	Magia_Anchor_OnMapStart_NPC();
@@ -1100,6 +1101,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage4/npc_ruina_magianius.sp"
 #include "zombie_riot/npc/ruina/stage4/npc_ruina_malianius.sp"
 #include "zombie_riot/npc/ruina/stage4/npc_ruina_rulianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_lancelot.sp"
 
 
 //Special Ruina

@@ -8,6 +8,11 @@ $bodygroup "sword_v4"
 	blank
 	studio "v3/sword_v4.smd"
 }
+$bodygroup "lan_sword_v3"		
+{
+	blank
+	studio "v3/lan_sword_v3.smd"
+}
 
 
 
@@ -22,14 +27,30 @@ $illumposition 0.096 -0.043 13.267
 $mostlyopaque
 
 $cdmaterials "models\custom_weaponry\"
-$cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
-$cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
+$cdmaterials "models\weapons\w_wrench\"				
+//it has gold!		w_wrench01_gold
+
+$cdmaterials "models\weapons\c_items\"					
+//c_saxxy					//gold
+//c_frying_pan_gold 		//gold
+//festive_lights_white		//gray metal?
+
 $cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
-$cdmaterials "models\props_skybox\"					//black							//legit just black
-$cdmaterials "models\props_doomsday\"				//australium_container_glass	//its like golden glass
-$cdmaterials "models\items\"						//crystal_ball_glass			//Emerald pulsating glass.
-$cdmaterials "passtime\neons\"						//neon_yellow_solid, neon_blue_solid
-$cdmaterials "models\player\items\heavy\"			//xms_colored_lights_white		//a gray like metalic finish
+$cdmaterials "models\props_skybox\"					
+//black							//legit just black
+
+$cdmaterials "models\props_doomsday\"				
+//australium_container_glass	//its like golden glass
+
+$cdmaterials "models\items\"						
+//crystal_ball_glass			//Emerald pulsating glass.
+
+$cdmaterials "passtime\neons\"						
+//neon_yellow_solid, neon_blue_solid
+
+$cdmaterials "models\player\items\heavy\"			
+//xms_colored_lights_white		//a gray like metalic finish
+
 $cdmaterials ""
 
 $cbox 0 0 0 0 0 0

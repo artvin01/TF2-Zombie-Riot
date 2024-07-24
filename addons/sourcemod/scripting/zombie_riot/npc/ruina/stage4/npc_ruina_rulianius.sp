@@ -179,7 +179,7 @@ methodmap Rulianius < CClotBody
 			"models/workshop/player/items/soldier/fall17_crit_cloak/fall17_crit_cloak.mdl",
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			"models/workshop/player/items/soldier/hw2013_shaolin_sash/hw2013_shaolin_sash.mdl",
-			RUINA_CUSTOM_MODELS_2
+			RUINA_CUSTOM_MODELS_3
 		};	
 		
 		int skin = 1;	//1=blue, 0=red
@@ -192,7 +192,7 @@ methodmap Rulianius < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
-		SetVariantInt(RUINA_BLADE_2);
+		SetVariantInt(RUINA_BLADE_3);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 
 		SetVariantInt(1);
@@ -423,8 +423,8 @@ static void ClotThink(int iNPC)
 		{
 			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
-				SetVariantInt(RUINA_BLADE_2);
+				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
+				SetVariantInt(RUINA_BLADE_3);
 				AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 			}
 

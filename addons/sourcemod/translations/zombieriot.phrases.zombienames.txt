@@ -2448,7 +2448,7 @@
 	}
 	"Dronianis Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant"
 	}
 	"Euranionis"
 	{
@@ -2480,7 +2480,7 @@
 	}
 	"Loonarionus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
 	}
 	"Magianius"
 	{
@@ -2488,7 +2488,7 @@
 	}
 	"Magianius Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant"
 	}
 	"Malianius"
 	{
@@ -2505,6 +2505,14 @@
 	"Rulianius Desc"
 	{
 		"en"	"Aya"
+	}
+	"Lancelot"
+	{
+		"en"	"Lancelot"
+	}
+	"Lancelot Desc"
+	{
+		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAya"
 	}
 	"Ealing"
 	{

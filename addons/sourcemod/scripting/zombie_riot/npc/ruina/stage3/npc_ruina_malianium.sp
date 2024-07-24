@@ -140,26 +140,6 @@ methodmap Malianium < CClotBody
 		#endif
 	}
 
-	//npc.AdjustWalkCycle();
-	public void AdjustWalkCycle()
-	{
-		if(this.IsOnGround())
-		{
-			if(this.m_iChanged_WalkCycle == 0)
-			{
-				this.SetActivity("ACT_MP_RUN_MELEE");
-				this.m_iChanged_WalkCycle = 1;
-			}
-		}
-		else
-		{
-			if(this.m_iChanged_WalkCycle == 1)
-			{
-				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
-				this.m_iChanged_WalkCycle = 0;
-			}
-		}
-	}
 	public Malianium(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Malianium npc = view_as<Malianium>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
@@ -189,7 +169,7 @@ methodmap Malianium < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
-		npc.m_iChanged_WalkCycle = 1;
+		npc.m_iChanged_WalkCycle = 0;
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -268,7 +248,6 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 1.25);
 
@@ -278,10 +257,10 @@ static void ClotThink(int iNPC)
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	
 	
-	if(fl_ruina_battery[npc.index]>1500.0)
+	if(fl_ruina_battery[npc.index]>500.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 10.0;
+		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 
 		npc.AddActivityViaSequence("taunt_drg_melee");
 		npc.SetCycle(0.01);
@@ -298,11 +277,13 @@ static void ClotThink(int iNPC)
 		npc.m_flMeleeArmor 	= 0.25;
 
 		npc.Anger = false;
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+		Master_Apply_Battery_Buff(npc.index, 250.0, 60.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
@@ -323,13 +304,14 @@ static void ClotThink(int iNPC)
 
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
-		if(npc.m_flSpeed != 300.0)
+		if(npc.m_iChanged_WalkCycle == 1)
 		{
+			npc.m_iChanged_WalkCycle = 0;
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 
 			i_NpcWeight[npc.index] = 1;
-			npc.m_flSpeed = 300.0;
+			npc.m_flSpeed = fl_npc_basespeed;
 			npc.m_flRangedArmor = 1.0;
 			npc.m_flMeleeArmor = 1.0;
 		}

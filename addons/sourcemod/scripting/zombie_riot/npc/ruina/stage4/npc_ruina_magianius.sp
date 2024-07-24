@@ -193,17 +193,23 @@ methodmap Magianius < CClotBody
 		
 		
 		/*
-			crone's dome 				"models/workshop/player/items/all_class/witchhat/witchhat_%s.mdl"
+			
 			lo-grav loafers				//Hw2013_Moon_Boots
 			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
-			medical monarch				"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl"
+			"The Breakneck Baggies"		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
+			"Scourge of the Sky" 		"models/workshop/player/items/medic/spr18_scourge_of_the_sky/spr18_scourge_of_the_sky.mdl"
+			"Victorian Villainy"		"models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl"
+			"The Virus Doctor"			"models/workshop/player/items/medic/robo_medic_grimm_hatte/robo_medic_grimm_hatte.mdl"
+			
 		
 		*/
 		static const char Items[][] = {
-			"models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl",
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
-			"models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem2/dec15_medic_winter_jacket2_emblem2.mdl",
+			"models/workshop/player/items/all_class/jogon/jogon_medic.mdl",
+			"models/workshop/player/items/medic/spr18_scourge_of_the_sky/spr18_scourge_of_the_sky.mdl",
+			"models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl",
+			"models/workshop/player/items/medic/robo_medic_grimm_hatte/robo_medic_grimm_hatte.mdl",
 			RUINA_CUSTOM_MODELS_2
 		};
 
@@ -214,11 +220,12 @@ methodmap Magianius < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_HAND_CREST_2);
-		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
+		SetVariantInt(RUINA_HAND_CREST_3);
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -297,7 +304,7 @@ static void ClotThink(int iNPC)
 	if(fl_ruina_battery[npc.index]>1250.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
-		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
+		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
 
 		npc.Anger = true;
 
@@ -342,7 +349,7 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = 750.0;
 					Projectile.radius = 300.0;
-					Projectile.damage = 500.0;
+					Projectile.damage = 600.0;
 					Projectile.bonus_dmg = 2.5;
 					Projectile.Time = 10.0;
 
@@ -432,7 +439,7 @@ static void ClotThink(int iNPC)
 				{
 					if(fl_multi_attack_delay[npc.index] < GameTime)
 					{
-						if(npc.m_iState >= 2)
+						if(npc.m_iState >= 4)
 						{
 							npc.m_iState = 0;
 							npc.m_flNextMeleeAttack = GameTime + 5.0;
@@ -461,7 +468,7 @@ static void ClotThink(int iNPC)
 						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
 			
-						int Proj = npc.FireParticleRocket(target_vec, 80.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						int Proj = npc.FireParticleRocket(target_vec, 160.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 
 						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
 						{
@@ -555,4 +562,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
 }

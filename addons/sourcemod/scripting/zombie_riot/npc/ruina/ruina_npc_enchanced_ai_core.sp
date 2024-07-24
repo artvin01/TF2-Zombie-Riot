@@ -1609,7 +1609,7 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(NpcStats_IsEnemySilenced(npc.index))
-		Amt*=0.75;
+		Amt*=0.5;
 
 	fl_ruina_battery[npc.index] += Amt;
 }
@@ -1659,13 +1659,11 @@ public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTi
 		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
 }
-static void Helia_Healing_Buff(int baseboss_index, float Power)
+void Helia_Healing_Buff(int baseboss_index, float Power)
 {
 	int Healing = RoundToFloor(Power);
 
 	CClotBody npc = view_as<CClotBody>(baseboss_index);
-
-	
 
 	int Current_Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
@@ -2491,7 +2489,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.  . Gains the ability to fire a ICBM
 		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
-		Stage 4: Null	
+		Stage 4: Done.  is stronger
 
 		Magnium:
 		{
@@ -2513,7 +2511,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	Is just stronger variant + Teleport deals damage to targets hit
 		Stage 3: Done.	Is just stronger variant
-		Stage 4: Null	Can heal other nearby lanius type npc's
+		Stage 4: Done. Stronger and	Can heal other nearby lanius type npc's
 
 	}
 	//created
@@ -2615,7 +2613,7 @@ Names per stage:
 			Every 20 seconds fire a fantasmal wave.
 			This fantasmal wave can be dodged by simply jumping over it.
 			Additionally, a portion of the damage dealt by this wave is transfered over to the healing amount.
-		Stage 4: Done(Ish, needs its own melee). Class becomes soldier. gains the ability to fire a laser every once in a while
+		Stage 4: Done. Class becomes soldier. gains the ability to fire a laser every once in a while
 
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
@@ -2681,7 +2679,7 @@ Names per stage:
 
 	Stage 4 specials:
 
-	???? - W60 boss. Uses an impact lance, is pure melee. has extremely advanced ai, target priotisation, retreating. can work in a pact of itself?
+	Lancelot - W60 boss. Uses an impact lance, is pure melee. has extremely advanced ai, target priotisation, retreating. can work in a pact of itself?
 
 
 	Ruliana: - Blitzkrieg was based off of her. so has a similar-ish theme of rocket spam. but gonna need to do make it seems different so its not just a copy of blitz.

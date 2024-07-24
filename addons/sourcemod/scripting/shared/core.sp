@@ -988,7 +988,8 @@ enum
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
 enum
 {
-	RUINA_BLADE_3			= 1				//1
+	RUINA_BLADE_3			= 1,				//1
+	RUINA_LAN_SWORD_3		= 2					//2
 }
 
 
