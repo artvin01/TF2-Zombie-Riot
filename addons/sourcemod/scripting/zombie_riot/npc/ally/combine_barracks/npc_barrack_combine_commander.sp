@@ -117,7 +117,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 			
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.5, 100);
 	}
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
