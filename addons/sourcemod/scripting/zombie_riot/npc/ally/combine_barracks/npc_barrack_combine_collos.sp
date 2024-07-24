@@ -17,10 +17,6 @@ static const char g_IdleSounds[][] =
 	"npc/metropolice/vo/subjectis505.wav"
 };
 
-static const char g_RangedAttackSoundsSecondary[][] = {
-	"weapons/physcannon/energy_sing_explosion2.wav",
-};
-
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
@@ -48,7 +44,6 @@ void Barracks_Combine_Collos_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
-	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
@@ -110,14 +105,6 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-
-	public void PlayRangedAttackSecondarySound() {
-		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedSound()");
-		#endif
-	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
@@ -145,11 +132,8 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Combine_Collos_ClotThink;
 		npc.m_flSpeed = 200.0;
 		
-		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		i_NpcWeight[npc.index] = 2;
 
@@ -185,12 +169,6 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-	  	float TrueArmor = 1.0;
-		if(npc.m_fbRangedSpecialOn)
-		{
-			TrueArmor *= 0.15;
-		}
-		fl_TotalArmor[npc.index] = TrueArmor;
 
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
@@ -206,9 +184,8 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					if(!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(!npc.m_flAttackHappenswillhappen)
 					{
-						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
@@ -216,14 +193,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 						npc.m_flNextMeleeAttack = GameTime + (1.2 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
-					if(!npc.m_fbRangedSpecialOn)
-					{
-						npc.AddGesture("ACT_PUSH_PLAYER");
-						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
-						npc.m_fbRangedSpecialOn = true;
-						npc.PlayRangedAttackSecondarySound();
-					}
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -242,10 +212,6 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 						}
 						delete swingTrace;
 						npc.m_flAttackHappenswillhappen = false;
-						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
-						{
-							npc.m_fbRangedSpecialOn = false;
-						}
 					}
 					else if(npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
