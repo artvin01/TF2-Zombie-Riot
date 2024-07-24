@@ -40,11 +40,11 @@
 	}
 	"Heavy Wind Desc"
 	{
-		"en"	"Heavy Wind"
+		"en"	"{yellow}All projectiles move 33%% slower, Expidonsan projectiles instead move 25%% faster"
 	}
 	"Heavy Wind Lore"
 	{
-		"en"	"{yellow}All projectiles move 33% slower, Expidonsan projectiles instead move 25%% faster"
+		"en"	"You can barely keep moving forward with this heavy draft."
 	}
 	"Dense Frost"
 	{
