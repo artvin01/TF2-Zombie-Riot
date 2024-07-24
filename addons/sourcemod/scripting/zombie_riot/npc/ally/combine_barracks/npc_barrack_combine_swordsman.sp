@@ -173,7 +173,7 @@ public void Barrack_Combine_Sword_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		fl_TotalArmor[npc.index] = TrueArmor;
+
 
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 

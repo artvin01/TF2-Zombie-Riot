@@ -289,7 +289,6 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 						npc.PlayWarCry();
 						if(entitycount != npc.index)
 						{
-							buffedAlly = true;
 							float flPos[3]; // original
 							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
