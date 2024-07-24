@@ -2491,7 +2491,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.  . Gains the ability to fire a ICBM
 		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
-		Stage 4: Null	. if multiple of them group up they can fire a laser?
+		Stage 4: Null	
 
 		Magnium:
 		{
