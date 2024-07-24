@@ -174,7 +174,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 275.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 250.0, 1), DMG_CLUB, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}

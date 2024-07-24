@@ -220,10 +220,9 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 					{
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
-						npc.m_fbRangedSpecialOn = true;
 						npc.PlayRangedAttackSecondarySound();
 					}
-					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -234,10 +233,18 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
+							float damage = 2800.0;
+
+							if(!npc.m_fbRangedSpecialOn)
+							{
+								damage *= 2.0;
+							}
+							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2800.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
+								npc.m_fbRangedSpecialOn = true;
 							} 
 						}
 						delete swingTrace;

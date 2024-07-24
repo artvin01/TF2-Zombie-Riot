@@ -117,7 +117,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 			
 		f_GlobalSoundCD = GetGameTime() + 5.0;
 
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.5, 100);
 	}
 
 	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
@@ -273,22 +273,28 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 	{
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
-			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
+			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
 				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (600 * 600))
+					if(GetVectorDistance(pos1, pos2, true) < (700 * 700))
 					{
-						f_AncientBannerNpcBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
-						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
+						f_CombineCommanderBuff[entitycount] = GetGameTime() + 10.0;
 						//Buff this entity.
-						f_AncientBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
-						f_BuffBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
+						f_CombineCommanderBuff[npc.index] = GetGameTime() + 15.0;
 						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();
+						if(entitycount != npc.index)
+						{
+							float flPos[3]; // original
+							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
+							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
+							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "coin_blue", npc1.index, "", {0.0,0.0,0.0});
+							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
+						}
 					}
 				}
 			}
