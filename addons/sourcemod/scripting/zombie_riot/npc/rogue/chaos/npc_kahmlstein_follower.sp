@@ -306,7 +306,7 @@ static void ClotThink(int iNPC)
 			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 			if(other != -1 && i_NpcInternalId[other] == VoidUnspeakableNpcID() && IsEntityAlive(other))
 			{
-				if(i_RaidGrantExtra[other] >= 6)
+				if(i_RaidGrantExtra[other] >= 6 && i_RaidGrantExtra[other] < 888)
 				{
 					npc.m_flDeathAnimation = GetGameTime() + 45.0;
 					npc.m_iTarget = other;
@@ -485,7 +485,6 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				hullcheckmins = view_as<float>( { -30.0, -30.0, 0.0 } );	
 				for(int LoopTryAlotAlot = 0; LoopTryAlotAlot <= 4; LoopTryAlotAlot++)
 				{
-					PrintToChatAll("what");
 					float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 						
 					float PreviousPos[3];

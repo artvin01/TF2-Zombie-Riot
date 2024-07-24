@@ -545,16 +545,22 @@ void NPC_ConfigSetup()
 
 	//Combine Barracks
 	Barracks_Combine_Pistol_Precache();
-	Barracks_Combine_Sword_Precache();
-	Barracks_Combine_Shotgun_Precache();
+
 	Barracks_Combine_Smg_Precache();
+	Barracks_Combine_Sword_Precache();
+
 	Barracks_Combine_Ar2_Precache();
 	Barracks_Combine_Ddt_Precache();
+	
+	Barracks_Combine_Shotgun_Precache();
+	Barracks_Combine_Collos_Precache();
+
 	Barracks_Combine_Elite_Precache();
 	Barracks_Combine_Parry_Precache();
+
 	Barracks_Combine_Sniper_Precache();
-	Barracks_Combine_Collos_Precache();
 	Barracks_Combine_Giant_DDT_Precache();
+	
 	Barracks_Combine_Super_Precache();
 	Barracks_Combine_Commander_Precache();
 

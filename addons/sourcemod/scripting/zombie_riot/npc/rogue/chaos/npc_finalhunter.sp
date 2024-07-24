@@ -38,7 +38,7 @@ void FinalHunter_Setup()
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_BlueParadox;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }

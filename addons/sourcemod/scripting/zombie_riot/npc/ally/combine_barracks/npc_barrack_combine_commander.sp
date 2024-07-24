@@ -240,7 +240,6 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							float origin[3], angles[3];
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
-							npc.m_flSpeed = 0.0;
 							
 							npc.m_flNextRangedAttack = GameTime + (2.00 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1.0;

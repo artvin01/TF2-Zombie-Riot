@@ -746,6 +746,7 @@ public void Building_Summoner(int client, int entity)
 
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Blitzkrieg's Army") ? Alternative : Default;
+		
 	if(CivType[client] == Default)
 		CivType[client] = Store_HasNamedItem(client, "Guln's Companions") ? Combine : Default;
 		
@@ -1326,6 +1327,9 @@ static void SummonerMenu(int client, int viewer)
 		CancelClientMenu(viewer);
 		return;
 	}
+	
+	if(client == -1)
+		return;
 
 	bool owner = client == viewer;
 	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
@@ -1571,6 +1575,7 @@ static void SummonerMenu(int client, int viewer)
 			}
 			if(ActiveCurrentNpcsBarracksTotal() >= 6)
 			{
+				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
 			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
