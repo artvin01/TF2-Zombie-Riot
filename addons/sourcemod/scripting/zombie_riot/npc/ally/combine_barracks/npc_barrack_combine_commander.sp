@@ -273,7 +273,7 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 	{
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
-			if(IsValidEntity(entitycount) && entitycount != npc.index && (entitycount <= MaxClients || !b_NpcHasDied[entitycount])) //Cannot buff self like this.
+			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
 				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
 				{

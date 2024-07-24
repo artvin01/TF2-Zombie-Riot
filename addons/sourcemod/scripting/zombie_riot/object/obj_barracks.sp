@@ -455,7 +455,7 @@ static const char SummonerCombineNPC[][] =
 	"npc_barrack_combine_ar2",
 	"npc_barrack_combine_ddt",
 	
-	"npc_barrack_combine_shotgun",
+	"npc_barrack_combine_shotgunner",
 	"npc_barrack_combine_collos",
 	
 	"npc_barrack_combine_elite",
