@@ -480,6 +480,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		if(f_VoidAfflictionStrength[attacker] > GameTime)
 			damage += basedamage * 0.1;
 	}
+
+	if(f_CombineCommanderBuff[attacker] > GameTime)
+		damage += basedamage * 0.25; //25% more damage!
 	
 	if(f_PernellBuff[attacker] > GameTime)
 		damage += basedamage * 0.5; //50% more damage!
@@ -1535,6 +1538,10 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		{
 			DamageRes *= 0.9;
 		}
+	}
+	if(f_CombineCommanderBuff[victim] > GameTime)
+	{
+		DamageRes *= 0.8;
 	}
 
 #if defined ZR

@@ -455,7 +455,7 @@ static const char SummonerCombineNPC[][] =
 	"npc_barrack_combine_ar2",
 	"npc_barrack_combine_ddt",
 	
-	"npc_barrack_combine_shotgun",
+	"npc_barrack_combine_shotgunner",
 	"npc_barrack_combine_collos",
 	
 	"npc_barrack_combine_elite",
@@ -837,7 +837,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if(ActiveCurrentNpcsBarracksTotal() < 6 && (/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+		if(ActiveCurrentNpcsBarracksTotal() < 6 && ((/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost)))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1578,7 +1578,7 @@ static void SummonerMenu(int client, int viewer)
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
-			if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+			else if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
