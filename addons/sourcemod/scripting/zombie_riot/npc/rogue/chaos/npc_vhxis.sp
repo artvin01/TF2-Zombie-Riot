@@ -323,7 +323,6 @@ methodmap Vhxis < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
 		RaidModeScaling *= 0.9;
-		RaidModeScaling *= 0.75;
 
 		//IDLE
 		npc.m_iState = 0;
@@ -853,7 +852,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.0015;
+			maxhealth *= 0.003;
 			for (int DoSpawns = 0; DoSpawns < CountPlayersOnRed(1); DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_void_ixufan", -1, ProjectileLoc, ang, GetTeam(npc.index));
@@ -862,7 +861,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
-					fl_Extra_Damage[spawn_index] *= 6.5;
+					fl_Extra_Damage[spawn_index] *= 8.5;
 					fl_Extra_Speed[spawn_index] *= 1.05;
 				}
 			}
@@ -1173,7 +1172,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-			maxhealth *= 0.015;
+			maxhealth *= 0.03;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
 				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
