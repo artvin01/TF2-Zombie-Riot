@@ -138,7 +138,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 
 	public Barrack_Combine_Super(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2000", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
+		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
