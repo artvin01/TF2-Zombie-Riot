@@ -963,7 +963,7 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_1.mdl"
+#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_2.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -981,7 +981,13 @@ enum
 	RUINA_IMPACT_LANCE_3	= 4096,			//13
 	RUINA_IMPACT_LANCE_4	= 8192,			//14
 	RUINA_HAND_CREST_3		= 16384,		//15
-	RUINA_ZANGETSU			= 32768			//16
+	RUINA_ZANGETSU			= 32768,		//16
+	RUINA_ZANGETSU_2		= 65536			//17
+}
+#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
+enum
+{
+	RUINA_BLADE_3			= 1				//1
 }
 
 
@@ -1714,6 +1720,7 @@ public void OnMapStart()
 
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	PrecacheModel(RUINA_CUSTOM_MODELS_2);
+	PrecacheModel(RUINA_CUSTOM_MODELS_3);
 	
 #if defined ZR
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");

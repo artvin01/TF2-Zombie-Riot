@@ -180,7 +180,7 @@ methodmap Rulius < CClotBody
 			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
 			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl",
 			"models/player/items/scout/rebel_cap.mdl",
-			RUINA_CUSTOM_MODELS_2
+			RUINA_CUSTOM_MODELS_3
 		};	
 		
 		int skin = 1;	//1=blue, 0=red
@@ -194,7 +194,7 @@ methodmap Rulius < CClotBody
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
-		SetVariantInt(RUINA_BLADE_2);
+		SetVariantInt(RUINA_BLADE_3);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
 
 		SetVariantInt(1);
