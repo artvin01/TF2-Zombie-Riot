@@ -9,6 +9,7 @@ void RogueCondition_Setup()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "nothing");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rogue_condition");
+	strcopy(data.Icon, sizeof(data.Icon), "rogue_chaos");
 	data.IconCustom = true;
 	data.Flags = -1;
 	data.Category = Type_Hidden;

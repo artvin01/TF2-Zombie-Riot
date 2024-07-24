@@ -107,4 +107,5 @@ public void VoidPortal_NPCDeath(int entity)
 			event.Fire();
 		}
 	}
+	SpawnedOneAlready = GetGameTime() + 5.0;
 }
