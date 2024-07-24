@@ -7,6 +7,10 @@ static float BIG_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed s
 static float BIG_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BIG_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
+static int BIG_BUFFED_MIN_SPAWNS = 20;	//Minimum number of skeletons to spawn when Buffed Big Bones dies.
+static int BIG_BUFFED_MAX_SPAWNS = 20;	//Maximum number of skeletons to spawn when Buffed Big Bones dies.
+static float BIG_BUFFED_SUMMON_BUFFCHANCE = 0.33;	//The chance for each individual skeleton summoned by Buffed Big Bones death to be buffed.
+
 #define BONES_BIG_HP		"3000"
 #define BONES_BIG_HP_BUFFED	"15000"
 
@@ -25,6 +29,10 @@ static float BONES_BIG_ATTACKINTERVAL_BUFFED = 2.2;
 #define BONES_BIG_SCALE_BUFFED	"2.6"
 #define BONES_BIG_SKIN		"3"
 #define BONES_BIG_SKIN_BUFFED	"3"
+
+#define PARTICLE_BIGBONES_BURST	"pumpkin_explode"
+#define SOUND_BIGBONES_BURST	"items/pumpkin_explode1.wav"
+#define SOUND_BIGBONES_ABOUT_TO_BURST	")vo/halloween_boss/knight_dying.mp3"
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",
@@ -84,6 +92,8 @@ public void BigBones_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+	PrecacheSound(SOUND_BIGBONES_ABOUT_TO_BURST);
+	PrecacheSound(SOUND_BIGBONES_BURST);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Big Bones");
@@ -115,6 +125,8 @@ static any Summon_Buffed(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return BigBones(client, vecPos, vecAng, ally, true);
 }
+
+bool BigBones_Bursting[2049] = { false, ... };
 
 methodmap BigBones < CClotBody
 {
@@ -318,6 +330,8 @@ public void BigBones_ClotThink(int iNPC)
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	npc.Update();
+	if (BigBones_Bursting[npc.index])
+		return;
 	
 	if(npc.m_bDoSpawnGesture)
 	{
@@ -461,8 +475,96 @@ public Action BigBones_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	if (damage >= float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) && b_BonesBuffed[npc.index])
+	{
+		b_NpcIsInvulnerable[npc.index] = true;
+		npc.StopPathing();
+		npc.m_bPathing = false;
+
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
+		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate("root", "models/zombie_riot/the_bone_zone/basic_bones.mdl", "big_bones_burst", StringToInt(BONES_BIG_SKIN_BUFFED), StringToFloat(BONES_BIG_SCALE_BUFFED));
+		
+		if (IsValidEntity(npc.m_iWearable1))	//The skin parameter of EquipItemSeperate doesn't seem to work, so I have to do this instead
+			DispatchKeyValue(npc.m_iWearable1, "skin", BONES_BIG_SKIN_BUFFED);
+
+		CreateTimer(1.1, BigBones_Burst, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+		EmitSoundToAll(SOUND_BIGBONES_ABOUT_TO_BURST, npc.index, _, 120);
+
+		//Remove buffed particle:
+		TE_Start("EffectDispatch");
+		TE_WriteNum("entindex", npc.index);
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(BONES_BIG_BUFFPARTICLE));
+		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
+		TE_SendToAll();
+
+		GiveNpcOutLineLastOrBoss(npc.index, false);
+		b_thisNpcHasAnOutline[npc.index] = true; //Makes it so they never have an outline
+
+		BigBones_Bursting[npc.index] = true;
+		damage = 0.0;
+	}
 //	
 	return Plugin_Changed;
+}
+
+public Action BigBones_Burst(Handle burst, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	BigBones npc = view_as<BigBones>(ent);
+
+	MakeObjectIntangeable(ent);
+	float pos[3];
+	WorldSpaceCenter(ent, pos);
+	ParticleEffectAt(pos, PARTICLE_BIGBONES_BURST, 2.0);
+	EmitSoundToAll(SOUND_BIGBONES_BURST, ent, _, 120);
+	EmitSoundToAll(SOUND_BIGBONES_BURST, ent, _, 120);
+	StopSound(ent, SNDCHAN_AUTO, SOUND_BIGBONES_ABOUT_TO_BURST);
+	npc.PlayDeathSound();
+	npc.PlayDeathSound();
+
+	for (int i = 0; i < GetRandomInt(BIG_BUFFED_MIN_SPAWNS, BIG_BUFFED_MAX_SPAWNS); i++)
+	{
+		float ang[3], vel[3], buffer[3];
+		ang[0] = GetRandomFloat(-20.0, -90.0);
+		ang[1] = GetRandomFloat(0.0, 360.0);
+		ang[2] = GetRandomFloat(0.0, 360.0);
+		
+		GetAngleVectors(ang, buffer, NULL_VECTOR, NULL_VECTOR);
+
+		float randVel = GetRandomFloat(300.0, 900.0);
+		for (int vec = 0; vec < 3; vec++)
+			vel[vec] = buffer[vec] * randVel;
+
+		ang[0] = 0.0;
+		ang[2] = 0.0;
+
+		int minion;
+		bool buffed = GetRandomFloat(0.0, 1.0) <= BIG_BUFFED_SUMMON_BUFFCHANCE;
+		switch (GetRandomInt(0, 2))
+		{
+			case 0:
+				minion = BasicBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+			case 1:
+				minion = BeefyBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+			default:
+				minion = BrittleBones(npc.index, pos, ang, GetTeam(npc.index), buffed).index;
+		}
+		
+		if (IsValidEntity(minion))
+		{
+			view_as<CClotBody>(minion).SetVelocity(vel);
+		}
+	}
+
+	RemoveEntity(ent);
+	BigBones_Bursting[ent] = false;
+
+	return Plugin_Continue;
 }
 
 public void BigBones_NPCDeath(int entity)
@@ -476,6 +578,7 @@ public void BigBones_NPCDeath(int entity)
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
+	BigBones_Bursting[npc.index] = false;
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
 
