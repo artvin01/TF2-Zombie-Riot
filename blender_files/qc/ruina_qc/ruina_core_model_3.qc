@@ -13,6 +13,11 @@ $bodygroup "lan_sword_v3"
 	blank
 	studio "v3/lan_sword_v3.smd"
 }
+$bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the normals being ass. likely due to my inexperience, but holy shit this was painfull
+{
+	blank
+	studio "v3/laser_cannon_v2.smd"
+}
 
 
 

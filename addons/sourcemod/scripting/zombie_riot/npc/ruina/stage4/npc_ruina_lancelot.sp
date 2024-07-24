@@ -35,17 +35,15 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/batsaber_hit_flesh1.wav",
+	"weapons/batsaber_hit_flesh2.wav",
+	"weapons/batsaber_hit_world1.wav",
+	"weapons/batsaber_hit_world2.wav",
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
-};
-
-static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
+	"weapons/batsaber_swing1.wav",
+	"weapons/batsaber_swing2.wav",
+	"weapons/batsaber_swing3.wav",
 };
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
@@ -58,6 +56,7 @@ static char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense07.mp3",
 	"vo/medic_cartgoingforwardoffense08.mp3",
 };
+static float fl_retreat_timer[MAXENTITIES];
 
 void Lancelot_OnMapStart_NPC()
 {
@@ -74,13 +73,13 @@ void Lancelot_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
+	Zero(fl_retreat_timer);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheModel("models/player/medic.mdl");
@@ -89,14 +88,14 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Lancelot(client, vecPos, vecAng, ally);
 }
-
+static float fl_npc_basespeed;
 methodmap Lancelot < CClotBody
 {
 	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -105,7 +104,7 @@ methodmap Lancelot < CClotBody
 	}
 	
 	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
@@ -116,7 +115,7 @@ methodmap Lancelot < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 		
@@ -128,7 +127,7 @@ methodmap Lancelot < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 		
@@ -136,30 +135,24 @@ methodmap Lancelot < CClotBody
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
-	}
-
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayAngerSound() {
 	
@@ -208,6 +201,14 @@ methodmap Lancelot < CClotBody
 		/*
 			
 
+
+			Behavioral List:
+			On melee swing, retreat while preparing for a another swing.	Done.
+			Share hp with other lancers and make it equal.
+			Designate a leader from all alive lancers, then follow the leaders target.
+			If a lancer gets extremely low hp, and other lancers have a lot, that lancer is teleported to the healthiest lancer.
+
+
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -220,7 +221,8 @@ methodmap Lancelot < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 330.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -269,50 +271,10 @@ static void Find_Lancers(Lancelot npc)
 {
 	float radius = 250.0;
 
-	b_NpcIsTeamkiller[npc.index] = true;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, radius, _, _, true, 99, false, _, FindAllies_Logic);
-	b_NpcIsTeamkiller[npc.index] = false;
+	//make it so nearby lancers all spread their hp evenly.
 	
 }
 
-static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
-{
-	if(entity==victim)
-		return;
-
-	if(GetTeam(entity) != GetTeam(victim))
-		return;
-
-	
-	char npc_classname[60];
-	NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
-
-	bool valid = false;
-
-	static const char Compare[][] = {
-		"npc_ruina_Lancelot",
-		"npc_ruina_loonaris",
-		"npc_ruina_laniun",
-		"npc_ruina_lanius"
-	};
-
-	for(int i=0 ; i < 4 ; i ++)
-	{
-		if(StrEqual(npc_classname, ""))
-		{
-			valid = true;
-			break;
-		}
-	}
-	if(!valid)
-		return;
-
-	int Max_Health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-
-	float healing = float(Max_Health)*0.25;
-	
-	Helia_Healing_Buff(entity, healing);
-}
 
 //TODO 
 //Rewrite
@@ -366,32 +328,17 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);	
 
-		Ruina_Self_Defense Melee;
-
-		Melee.iNPC = npc.index;
-		Melee.target = PrimaryThreatIndex;
-		Melee.fl_distance_to_target = flDistanceToTarget;
-		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 175.0;
-		Melee.bonus_dmg = 650.0;
-		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
-		Melee.swing_speed = 0.9;
-		Melee.swing_delay = 0.37;
-		Melee.turn_speed = 20000.0;
-		Melee.gameTime = GameTime;
-		Melee.status = 0;
-		Melee.Swing_Melee(OnRuina_MeleeAttack);
-
-		switch(Melee.status)
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
 		{
-			case 1:	//we swung
-				npc.PlayMeleeSound();
-			case 2:	//we hit something
-				npc.PlayMeleeHitSound();
-			case 3:	//we missed
-				npc.PlayMeleeMissSound();
-			//0 means nothing.
+			npc.m_bAllowBackWalking = true;
+			npc.FaceTowards(vecTarget, 500.0);
 		}
+		else
+		{
+			npc.m_bAllowBackWalking = false;
+		}
+
+		Lancelot_Melee(npc, flDistanceToTarget, PrimaryThreatIndex);
 	}
 	else
 	{
@@ -399,13 +346,112 @@ static void ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_bAllowBackWalking = false;
 	}
 	npc.PlayIdleAlertSound();
 }
 
-static void OnRuina_MeleeAttack(int iNPC, int Target)
+static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryThreatIndex)
 {
-	Ruina_Add_Mana_Sickness(iNPC, Target, 0.0, 75);
+	float GameTime = GetGameTime();
+	float Swing_Speed = (npc.Anger ? 1.0 : 2.0);
+	float Swing_Delay = 0.2;
+
+	if(npc.m_flAttackHappens)
+	{
+		if(npc.m_flAttackHappens < GameTime)
+		{
+			npc.m_flAttackHappens = 0.0;
+
+			fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
+
+			Handle swingTrace;
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+			{	
+				int target = TR_GetEntityIndex(swingTrace);	
+				
+				float vecHit[3];
+				TR_GetEndPosition(vecHit, swingTrace);
+
+				if(IsValidEnemy(npc.index, target))
+				{
+					SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 350.0), DMG_CLUB, -1, _, vecHit);
+
+					Ruina_Add_Battery(npc.index, 250.0);
+
+					Custom_Knockback(npc.index, target, 900.0, true);
+					TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+					TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+
+					Ruina_Add_Mana_Sickness(npc.index, target, 0.25, 125);
+				}
+				npc.PlayMeleeHitSound();
+				
+			}
+			delete swingTrace;
+		}
+	}
+	else
+	{
+		if(fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
+		{
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float vBackoffPos[3];
+			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
+			NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
+		}
+	}
+
+	if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.5))	//its a lance, so big range
+	{
+		int Enemy_I_See;
+								
+		Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			npc.m_iTarget = Enemy_I_See;
+			npc.PlayMeleeSound();
+			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+			npc.m_flAttackHappens = GameTime + Swing_Delay;
+			npc.m_flDoingAnimation = GameTime + Swing_Delay;
+			npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
+		}
+	}
+}
+
+static float Modify_Damage(Lancelot npc, int Target, float damage)
+{
+	if(ShouldNpcDealBonusDamage(Target))
+		damage*=10.0;
+
+	if(NpcStats_IsEnemySilenced(npc.index))
+		damage *=0.5;
+
+	if(npc.Anger)
+		damage *=1.5;
+
+	if(Target > MaxClients)
+		return damage;
+
+	int weapon = GetEntPropEnt(Target, Prop_Send, "m_hActiveWeapon");
+						
+	if(!IsValidEntity(weapon))
+		return damage;
+
+	char classname[32];
+	GetEntityClassname(weapon, classname, 32);
+
+	int weapon_slot = TF2_GetClassnameSlot(classname);
+
+	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
+		damage *= 2.0;
+
+	return damage;
 }
 static void On_LaserHit(int client, int Target, int damagetype, float damage)
 {
