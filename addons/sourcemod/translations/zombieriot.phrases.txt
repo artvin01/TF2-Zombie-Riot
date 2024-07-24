@@ -3002,6 +3002,10 @@
 	{
 		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
 	}
+	"Blitzkrieg Hard Desc"
+	{
+		"en"	"Do not dare fight him."
+	}
 	"Xeno Desc"
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
