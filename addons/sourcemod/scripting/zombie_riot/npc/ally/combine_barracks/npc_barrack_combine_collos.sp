@@ -221,7 +221,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
 						npc.PlayRangedAttackSecondarySound();
-						npc.m_flAttackHappenswillhappen =  GetGameTime(npc.index) + 0.5;
+						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
