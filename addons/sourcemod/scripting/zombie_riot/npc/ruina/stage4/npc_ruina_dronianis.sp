@@ -178,7 +178,7 @@ methodmap Dronianis < CClotBody
 		/*
 			Bunsen Brave		Robo_Heavy_Chief
 			Dark Helm -	
-			fancy dress uniform		"models/player/items/soldier/fdu.mdl"
+			"The Lady Killer"		"models/workshop/player/items/spy/sept2014_lady_killer/sept2014_lady_killer.mdl"
 			Tuxedo Royale			"models/workshop/player/items/spy/sum24_tuxedo_royale_style1/sum24_tuxedo_royale_style1.mdl"
 			breakneck baggies		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
 		
@@ -200,7 +200,7 @@ methodmap Dronianis < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/player/items/soldier/fdu.mdl",
+			"models/workshop/player/items/spy/sept2014_lady_killer/sept2014_lady_killer.mdl",
 			"models/workshop/player/items/spy/sum24_tuxedo_royale_style1/sum24_tuxedo_royale_style1.mdl",
 			"models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl",
 			"models/workshop/player/items/all_class/hw2013_the_dark_helm/hw2013_the_dark_helm_spy.mdl",
@@ -226,10 +226,7 @@ methodmap Dronianis < CClotBody
 		
 		return npc;
 	}
-	
-	
 }
-
 //TODO 
 //Rewrite
 static void ClotThink(int iNPC)
@@ -278,11 +275,11 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 100.0;
-		Melee.bonus_dmg = 300.0;
+		Melee.damage = 200.0;
+		Melee.bonus_dmg = 600.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
-		Melee.swing_speed = 0.5;
-		Melee.swing_delay = 0.4;
+		Melee.swing_speed = 0.25;
+		Melee.swing_delay = 0.1;
 		Melee.turn_speed = 20000.0;
 		Melee.gameTime = GameTime;
 		Melee.status = 0;

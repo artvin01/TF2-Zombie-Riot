@@ -174,18 +174,18 @@ methodmap Malianius < CClotBody
 		/*
 			Diplomat 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 			Iron Lung			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl"
-			Daring Dell			"models/workshop/player/items/engineer/sum24_daring_dell_style1/sum24_daring_dell_style1.mdl"
-			Bone Cone			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl"
 			Constructor's cover	"models/workshop/player/items/engineer/hwn2023_constructors_cover/hwn2023_constructors_cover.mdl"
 			The Birdman of Australiacatraz "models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl"
+			"Brain Interface" "models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl"
+			"The Brotherhood of Arms"	"models/workshop/player/items/all_class/brotherhood_2/brotherhood_2_%s.mdl"
 		*/
 		static const char Items[][] = {
 			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			"models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl",
-			"models/workshop/player/items/engineer/sum24_daring_dell_style1/sum24_daring_dell_style1.mdl",
-			"models/workshop/player/items/all_class/hwn2021_bone_cone_style2/hwn2021_bone_cone_style2_engineer.mdl",
 			"models/workshop/player/items/engineer/hwn2023_constructors_cover/hwn2023_constructors_cover.mdl",
 			"models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl",
+			"models/workshop/player/items/engineer/sum19_brain_interface/sum19_brain_interface.mdl",
+			"models/workshop/player/items/all_class/brotherhood_2/brotherhood_2_engineer.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -204,6 +204,9 @@ methodmap Malianius < CClotBody
 
 		SetVariantInt(RUINA_STAFF_1);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -270,7 +273,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 1.25);
+	Ruina_Add_Battery(npc.index, 2.5);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -297,12 +300,14 @@ static void ClotThink(int iNPC)
 		npc.m_flRangedArmor = 0.25;
 		npc.m_flMeleeArmor 	= 0.25;
 
+		Fire_Random_Ion(npc);
+
 		npc.Anger = false;
 		
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{
-		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);	//this stage 2 variant is FAR more powerfull since well it can't move during the charge phase
+		Master_Apply_Battery_Buff(npc.index, 250.0, 30.0);
 
 		if(fl_ruina_battery_timer[npc.index] < GameTime + 3.0 && !npc.Anger && fl_ruina_battery_timer[npc.index] > GameTime + 2.0)
 		{
@@ -406,6 +411,107 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
+static void Fire_Random_Ion(Malianius npc)
+{
+	int target = -1;
+
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsValidEnemy(npc.index, target))
+			break;
+		
+		if(!IsValidEnemy(npc.index, client))
+			continue;
+
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, client);
+
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			target = Enemy_I_See;
+		}
+	}
+	for(int a; a < i_MaxcountNpcTotal; a++)
+	{
+		if(IsValidEnemy(npc.index, target))
+			break;
+
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
+
+		if(!IsValidEnemy(npc.index, entity))
+			continue;
+
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			target = Enemy_I_See;
+		}
+	}
+
+	for(int a; a < i_MaxcountBuilding; a++)
+	{
+		if(IsValidEnemy(npc.index, target))
+			break;
+
+		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
+		if(!IsValidEnemy(npc.index, entity))
+			continue;
+
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+
+		if(IsValidEnemy(npc.index, Enemy_I_See))
+		{
+			target = Enemy_I_See;
+		}
+	}
+
+	if(IsValidEntity(target))
+	{
+		int color[4]; Ruina_Color(color);
+
+		float Predicted_Pos[3],
+		SubjectAbsVelocity[3],
+		vecTarget[3];
+		WorldSpaceCenter(target,vecTarget);
+
+		GetEntPropVector(target, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+		float Time = 1.0;
+
+		ScaleVector(SubjectAbsVelocity, Time);
+		AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
+
+		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+
+		float Radius = 250.0;
+
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
+		TE_SendToAll();
+
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+		DataPack pack;
+		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(npc.index));
+		pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
+		pack.WriteCellArray(color, sizeof(color));
+		pack.WriteFloat(Radius);		//radius
+		pack.WriteFloat(500.0);			//dmg
+		pack.WriteFloat(0.1);			//Sickness %
+		pack.WriteCell(200);			//Sickness flat
+		pack.WriteCell(true);			//Override sickness timeout
+
+		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+
+		int laser;
+		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	}
+
+}
 static void Malianius_Effects_Attack(Malianius npc, float Target_Vec[3], int GetClosestEnemyToAttack, float flDistanceToTarget)
 {
 	int amt = 2;

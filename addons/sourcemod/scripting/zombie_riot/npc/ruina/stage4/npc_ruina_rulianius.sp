@@ -1,24 +1,24 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+static char g_DeathSounds[][] = {
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3",
 };
 
-static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
+static char g_HurtSounds[][] = {
+	")vo/soldier_painsharp01.mp3",
+	")vo/soldier_painsharp02.mp3",
+	")vo/soldier_painsharp03.mp3",
+	")vo/soldier_painsharp04.mp3",
+	")vo/soldier_painsharp05.mp3",
 };
 
-static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
+static char g_IdleAlertedSounds[][] = {
+	")vo/taunts/soldier_taunts16.mp3",
+	")vo/taunts/soldier_taunts18.mp3",
+	")vo/taunts/soldier_taunts19.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -53,7 +53,7 @@ void Rulianius_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "soldier"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -68,12 +68,13 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_FantasiaSound);
 	Zero(i_damage_taken);
-	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel("models/player/soldier.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Rulianius(client, vecPos, vecAng, ally);
 }
+static float fl_npc_basespeed;
 methodmap Rulianius < CClotBody
 {
 	
@@ -139,7 +140,7 @@ methodmap Rulianius < CClotBody
 	
 	public Rulianius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Rulianius npc = view_as<Rulianius>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "25000", ally));
+		Rulianius npc = view_as<Rulianius>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		
@@ -159,27 +160,25 @@ methodmap Rulianius < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		/*
-			heat of winter
-			herzensbrecher
-			lavish labwear
-			Low Grav Loafers -	"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl"
-			Byte'd beak			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl"
-			El Jefe				"models/player/items/scout/rebel_cap.mdl"
-
+			"The Brawling Buccaneer"	"models/workshop/player/items/soldier/jul13_gangplank_garment/jul13_gangplank_garment.mdl"
+			"The Chaser"				"models/workshop/player/items/soldier/sum22_chaser_style2/sum22_chaser_style2.mdl"
+			"The Crit Cloak"			"models/workshop/player/items/soldier/fall17_crit_cloak/fall17_crit_cloak.mdl"
+			"The Diplomat"				"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl"
+			"The Shaolin Sash"			"models/workshop/player/items/soldier/hw2013_shaolin_sash/hw2013_shaolin_sash.mdl"
 		*/
 		
 		//IDLE
-		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 300.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl",
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
-			"models/workshop/player/items/medic/hwn2022_lavish_labwear/hwn2022_lavish_labwear.mdl",
-			"models/workshop/player/items/medic/hw2013_moon_boots/hw2013_moon_boots.mdl",
-			"models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl",
-			"models/player/items/scout/rebel_cap.mdl",
+			"models/workshop/player/items/soldier/jul13_gangplank_garment/jul13_gangplank_garment.mdl",
+			"models/workshop/player/items/soldier/sum22_chaser_style2/sum22_chaser_style2.mdl",
+			"models/workshop/player/items/soldier/fall17_crit_cloak/fall17_crit_cloak.mdl",
+			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
+			"models/workshop/player/items/soldier/hw2013_shaolin_sash/hw2013_shaolin_sash.mdl",
 			RUINA_CUSTOM_MODELS_2
 		};	
 		
@@ -191,11 +190,10 @@ methodmap Rulianius < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
 		SetVariantInt(RUINA_BLADE_2);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -205,6 +203,13 @@ methodmap Rulianius < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 
 		npc.Anger = false;
+
+		npc.m_flNextRangedBarrage_Singular = GetGameTime() + GetRandomFloat(5.0, 30.0);
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flNextRangedBarrage_Spam = 0.0;
+
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 10, 4);		//priority 4, just lower then the actual bosses
@@ -264,7 +269,8 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	npc.AdjustWalkCycle();
+	if(npc.m_flNextRangedBarrage_Spam < GameTime)
+		npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 15.0);
 	
@@ -290,14 +296,119 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
+		if(npc.m_flNextRangedBarrage_Singular < GameTime && fl_ruina_battery_timeout[npc.index] < GameTime)
+		{
+			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
+			if(Difference < 65.0)	//make sure its more or less the same height as the npc
+			{
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+						
+				if(IsValidEnemy(npc.index, Enemy_I_See))
+				{
+					if(IsValidEntity(npc.m_iWearable6))
+						RemoveEntity(npc.m_iWearable6);
+
+					npc.m_flNextRangedBarrage_Singular = GameTime + 30.0;
+
+					f_NpcTurnPenalty[npc.index] = 0.001;
+
+					npc.FaceTowards(vecTarget, 99999.0);
+
+					npc.AddActivityViaSequence("tauntcan_it");
+					npc.SetCycle(0.01);
+					npc.SetPlaybackRate(0.7);
+
+					npc.m_flNextRangedBarrage_Spam = GameTime + 3.0;
+
+					i_NpcWeight[npc.index] = 999;
+
+					npc.m_flSpeed = 0.0;
+
+					npc.m_iState = 0;
+
+					if(fl_ruina_battery_timeout[npc.index] < GameTime)
+						fl_ruina_battery_timeout[npc.index] = GameTime + 10.0;
+					else
+						fl_ruina_battery_timeout[npc.index] +=10.0;
+				}
+			}
+
+		}
+		if(npc.m_flNextRangedBarrage_Spam < (GameTime+1.25) && npc.m_iState == 0)
+		{
+			npc.SetPlaybackRate(0.0);
+			npc.SetCycle(0.235);	//scientifically calculated with math!!!!!!!!11111!!111!!111!!
+			//get the frame you want. divide it by max frames. there, you get your cycle
+			//CPrintToChatAll("Pew");
+			npc.m_iState = 1;
+
+			Ruina_Laser_Logic Laser;
+
+			Laser.client = npc.index;
+			Laser.DoForwardTrace_Basic(1500.0);
+			Laser.Radius = 15.0;
+			Laser.Damage = 500.0;
+			Laser.Bonus_Damage = 1200.0;
+			Laser.damagetype = DMG_PLASMA;
+			Laser.Deal_Damage(On_LaserHit_two);
+
+			int color[4]; Ruina_Color(color);
+
+			float Thickness = 6.0;
+			TE_SetupBeamRingPoint(Npc_Vec, 300.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.2, Thickness, 0.75, color, 1, 0);
+			TE_SendToAll();
+
+			float diameter = 75.0;
+			float Start[3], Offset_Start[3];
+			Offset_Start = Laser.End_Point;
+
+			float flAng[3];
+			GetAttachment(npc.index, "effect_hand_r", Start, flAng);
+
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+			int colorLayer3[4];
+			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+			int colorLayer2[4];
+			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+			int colorLayer1[4];
+			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
+
+			TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Combine_Blue, g_Ruina_HALO_Laser, 0, 0, 0.2, diameter, diameter, 0, 0.1, colorLayer1, 24);
+			TE_SendToAll();
+			TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, 0.3, diameter*0.8, diameter*0.8, 1, 0.1, colorLayer2, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, 0.5, diameter*0.6, diameter*0.6, 1, 0.1, colorLayer3, 3);
+			TE_SendToAll();
+			TE_SetupBeamPoints(Start, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, 0.6, diameter*0.4, diameter*0.4, 1, 0.1, colorLayer4, 3);
+			TE_SendToAll();
+		}
+		if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_iState == 1)
+		{
+			//CPrintToChatAll("Reset");
+			npc.m_iState = 3;
+			i_NpcWeight[npc.index] = 1;
+			npc.m_flSpeed = fl_npc_basespeed;
+
+			f_NpcTurnPenalty[npc.index] = 1.0;
+
+			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+			if(iActivity > 0) npc.StartActivity(iActivity);
+
+			npc.m_iChanged_WalkCycle = 1;
+		}
+
+		if(npc.m_flNextRangedBarrage_Spam > GameTime)
+			return;	
+
 		if(b_ruina_battery_ability_active[npc.index] && !npc.Anger && flDistanceToTarget < 250000 && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
 			if(Difference < 65.0)	//make sure its more or less the same height as the npc
 			{
 				fl_ruina_battery_timeout[npc.index] = GameTime + 15.0;
-				if(IsValidEntity(npc.m_iWearable7))
-					RemoveEntity(npc.m_iWearable7);
+				if(IsValidEntity(npc.m_iWearable6))
+					RemoveEntity(npc.m_iWearable6);
 				
 				npc.m_flDoingAnimation = GameTime + 0.9;
 				npc.PlayFantasiaSound();
@@ -310,11 +421,11 @@ static void ClotThink(int iNPC)
 
 		if(npc.m_flDoingAnimation < GameTime)
 		{
-			if(!IsValidEntity(npc.m_iWearable7))
+			if(!IsValidEntity(npc.m_iWearable6))
 			{
-				npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
+				npc.m_iWearable6 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
 				SetVariantInt(RUINA_BLADE_2);
-				AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+				AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 			}
 
 			Ruina_Self_Defense Melee;
@@ -354,6 +465,10 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static void On_LaserHit_two(int client, int Target, int damagetype, float damage)
+{
+	Ruina_Add_Mana_Sickness(client, Target, 0.1, 250);
 }
 
 #define RUINA_RULIANIUS_LOOP_AMT 5
@@ -568,6 +683,4 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
 }

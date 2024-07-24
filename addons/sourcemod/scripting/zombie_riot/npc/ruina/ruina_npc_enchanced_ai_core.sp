@@ -2528,7 +2528,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just stronger variant
 		Stage 3: Done. is just stronger variant
-		Stage 4: Null
+		Stage 4: Null. Class becomes sniper.
 
 	}
 	//created
@@ -2597,7 +2597,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.		Is a stronger variant, does an animation and stands still while casting the battery buff.
 		Stage 3: Done. Is stronger.
-		Stage 4: Null.		Once starting the animation, will fire an ion onto some random dude it can see.
+		Stage 4: Done.		Once starting the animation, will fire an ion onto some random dude it can see.
 
 	}
 	//created
@@ -2615,7 +2615,7 @@ Names per stage:
 			Every 20 seconds fire a fantasmal wave.
 			This fantasmal wave can be dodged by simply jumping over it.
 			Additionally, a portion of the damage dealt by this wave is transfered over to the healing amount.
-		Stage 4: Null
+		Stage 4: Done(Ish, needs its own melee). Class becomes soldier. gains the ability to fire a laser every once in a while
 
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
@@ -2641,7 +2641,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just a stronger variant
 		Stage 3: Done.	stronger.		(the shanker 9000)
-		Stage 4: Null
+		Stage 4: Done.	Stronger.		MORE SHANKING. EVEN DEADLIER
 	}
 
 	Todo: Rewrite these.

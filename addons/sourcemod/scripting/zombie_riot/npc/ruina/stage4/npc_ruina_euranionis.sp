@@ -399,11 +399,11 @@ static void Euranionis_Spawn_Minnions(Euranionis npc)
 			switch(GetRandomInt(0, 5))
 			{
 				case 0:
-					NpcName = "npc_ruina_magnium";
+					NpcName = "npc_ruina_magianas";
 				case 3:
-					NpcName = "npc_ruina_laniun";
+					NpcName = "npc_ruina_loonaris";
 				default: 
-					NpcName = "npc_ruina_dronis";
+					NpcName = "npc_ruina_dronianis";
 			}
 			
 			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
@@ -433,7 +433,7 @@ static void Euranionis_Spawn_Self(Euranionis npc)
 			
 	int spawn_index;
 			
-	spawn_index = NPC_CreateByName("npc_ruina_Euranionis", npc.index, pos, ang, GetTeam(npc.index));
+	spawn_index = NPC_CreateByName("npc_ruina_euranionis", npc.index, pos, ang, GetTeam(npc.index));
 	maxhealth = RoundToNearest(maxhealth * 0.8);
 
 	if(spawn_index > MaxClients)
