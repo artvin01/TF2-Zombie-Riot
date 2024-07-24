@@ -498,6 +498,7 @@ float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
+float f_CombineCommanderBuff[MAXENTITIES];
 #if defined RUINA_BASE
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
@@ -2099,6 +2100,7 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_HussarBuff[client] = 0.0;
+	f_CombineCommanderBuff[client] = 0.0;
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
@@ -2830,6 +2832,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 #endif
 		f_HussarBuff[entity] = 0.0;
+		f_CombineCommanderBuff[entity] = 0.0;
 #if defined RUINA_BASE
 		Ruina_Reset_Starts_Npc(entity);
 		f_Ruina_Speed_Buff[entity] = 0.0;

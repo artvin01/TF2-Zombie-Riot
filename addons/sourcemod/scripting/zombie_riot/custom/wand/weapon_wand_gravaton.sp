@@ -158,6 +158,8 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
+		damage *= 1.15;
+
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
 		float vecSwingForward[3];
@@ -207,40 +209,37 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		{
 			case 0:
 			{
-				loop_for = 3;
+				loop_for = 2;
 				Seperation = 7.5;
-				Time = 4.5;
+				Time = 0.85;
 			}
 			case 1:
 			{
 				loop_for = 4;
 				Seperation = 8.5;
-				Time = 4.25;
+				Time = 0.8;
 			}
 			case 2:
 			{
 				loop_for = 5;
 				Seperation = 9.0;
-				Time = 4.0;
+				Time = 0.75;
 			}
 			case 3:
 			{
 				loop_for = 6;
 				Seperation = 9.0;
-				Time = 3.5;
+				Time = 0.7;
 			}
 			case 4:
 			{
 				loop_for = 7;
 				Seperation = 11.0;
-				Time = 2.5;
+				Time = 0.65;
 			}
 		}
 
-		if(RaidbossIgnoreBuildingsLogic(1))
-			Time *= 0.5;
-
-		Time *= 0.75;
+	//	Time *= 0.75;
 
 		//effect_hand_l
 
@@ -333,7 +332,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 				
 	i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE;
 	
-	int EnemiesHitMax = (i_Current_Pap[client] + 1) * 2;
+	int EnemiesHitMax = (i_Current_Pap[client] + 1);
 	
 	b_gained_charge[client]=false;
 	Explode_Logic_Custom(damage, client, client, weapon, startPosition, Ionrange,_,_,_,EnemiesHitMax);
