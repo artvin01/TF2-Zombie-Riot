@@ -279,13 +279,11 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-					if(GetVectorDistance(pos1, pos2, true) < (600 * 600))
+					if(GetVectorDistance(pos1, pos2, true) < (700 * 700))
 					{
-						f_AncientBannerNpcBuff[entitycount] = GetGameTime() + 10.0; //allow buffing of players too if on red.
-						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 10.0;
+						f_CombineCommanderBuff[entitycount] = GetGameTime() + 10.0;
 						//Buff this entity.
-						f_AncientBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
-						f_BuffBannerNpcBuff[npc.index] = GetGameTime() + 15.0;
+						f_CombineCommanderBuff[npc.index] = GetGameTime() + 15.0;
 						npc.m_flRangedSpecialDelay = GetGameTime() + 45.0;
 						buffing = true;
 						npc.PlayWarCry();
