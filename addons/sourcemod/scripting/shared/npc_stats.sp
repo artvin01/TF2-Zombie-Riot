@@ -8096,7 +8096,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 	func_NPCAnimEvent[entity] = INVALID_FUNCTION;
 	func_NPCActorEmoted[entity] = INVALID_FUNCTION;
 	func_NPCInteract[entity] = INVALID_FUNCTION;
-	g_BoneZoneBuffFunction[pThis] = INVALID_FUNCTION;
+	g_BoneZoneBuffFunction[entity] = INVALID_FUNCTION;
 }
 public void SetDefaultValuesToZeroNPC(int entity)
 {
