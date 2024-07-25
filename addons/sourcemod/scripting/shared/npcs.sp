@@ -289,6 +289,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						AddNpcToAliveList(entity_Spawner, 1);
 					}
+					if(enemy.Team == TFTeam_Red)
+					{
+						TeleportNpcToRandomPlayer(entity_Spawner);
+					}
 					
 					if(enemy.Is_Boss > 0)
 					{

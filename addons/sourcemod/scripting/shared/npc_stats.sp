@@ -5833,40 +5833,44 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			}
 			if(OutOfBounds)
 			{
-			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-#if defined ZR
-				int target = 0;
-				for(int i=1; i<=MaxClients; i++)
-				{
-					if(IsClientInGame(i))
-					{
-						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-						{
-							target = i;
-							break;
-						}
-					}
-				}
-				
-				if(target)
-				{
-					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-					ang[2] = 0.0;
-					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-				}
-				else
-#endif
-				{
-					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-				}
+				TeleportNpcToRandomPlayer(iNPC);
 			}
 		}
 	}
 #endif	// Non-RTS
 }
 
+void TeleportNpcToRandomPlayer(int iNPC)
+{
+			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+#if defined ZR
+	int target = 0;
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+			{
+				target = i;
+				break;
+			}
+		}
+	}
+	
+	if(target)
+	{
+		float pos[3], ang[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+		GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+		ang[2] = 0.0;
+		TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+	}
+	else
+#endif
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+	}
+}
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
 	if (!b_DoNotUnStuck[iNPC])
