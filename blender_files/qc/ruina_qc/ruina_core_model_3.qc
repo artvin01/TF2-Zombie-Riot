@@ -33,6 +33,11 @@ $bodygroup "wings_3"
 	blank
 	studio "v3/wings_3.smd"
 }
+$bodygroup "tower_1"	
+{
+	blank
+	studio "v3/tower_1.smd"
+}
 
 
 
@@ -53,7 +58,6 @@ $cdmaterials "models\weapons\w_wrench\"
 $cdmaterials "models\weapons\c_items\"					
 //c_saxxy					//gold
 //c_frying_pan_gold 		//gold
-//festive_lights_white		//gray metal?
 
 $cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
 $cdmaterials "models\props_skybox\"					
@@ -70,6 +74,13 @@ $cdmaterials "passtime\neons\"
 
 $cdmaterials "models\player\items\heavy\"			
 //xms_colored_lights_white		//a gray like metalic finish
+
+$cdmaterials "models\props_moonbase\"
+//asteroid01			//can certainly work as a replacement for glow inner for large things.
+//moon_gravel_crystal
+
+$cdmaterials "models\props_halloween\"
+//unlit_black		//is black
 
 $cdmaterials ""
 

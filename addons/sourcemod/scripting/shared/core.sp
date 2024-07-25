@@ -994,7 +994,8 @@ enum
 	RUINA_LAZER_CANNON_2	= 4,			//3
 	RUINA_WINGS_2			= 8,			//4
 	RUINA_QUINCY_BOW_3		= 16,			//5
-	RUINA_WINGS_3			= 32			//6
+	RUINA_WINGS_3			= 32,			//6
+	RUINA_MAGIA_TOWER_1		= 64			//7
 }
 
 
