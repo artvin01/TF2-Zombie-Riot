@@ -2,36 +2,28 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/medic_painsharp01.mp3",
+	"vo/medic_painsharp02.mp3",
+	"vo/medic_painsharp03.mp3",
+	"vo/medic_painsharp04.mp3",
+	"vo/medic_painsharp05.mp3",
+	"vo/medic_painsharp06.mp3",
+	"vo/medic_painsharp07.mp3",
+	"vo/medic_painsharp08.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
-};
-
-static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/medic_standonthepoint01.mp3",
+	"vo/medic_standonthepoint02.mp3",
+	"vo/medic_standonthepoint03.mp3",
+	"vo/medic_standonthepoint04.mp3",
+	"vo/medic_standonthepoint05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -57,6 +49,8 @@ static char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense08.mp3",
 };
 static float fl_retreat_timer[MAXENTITIES];
+static bool b_leader[MAXENTITIES];
+static int i_follow_Id[MAXENTITIES];
 
 void Lancelot_OnMapStart_NPC()
 {
@@ -73,7 +67,9 @@ void Lancelot_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
+	Zero(b_leader);
 	Zero(fl_retreat_timer);
+	Zero(i_follow_Id);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -132,14 +128,12 @@ methodmap Lancelot < CClotBody
 		
 		
 	}
-	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
@@ -200,13 +194,18 @@ methodmap Lancelot < CClotBody
 		
 		/*
 			
+			baggies
+			"models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_%s.mdl"
+			puffed
+			"models/workshop/player/items/medic/sf14_vampire_makeover/sf14_vampire_makeover.mdl"
+			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl"
+
 
 
 			Behavioral List:
 			On melee swing, retreat while preparing for a another swing.	Done.
-			Share hp with other lancers and make it equal.
-			Designate a leader from all alive lancers, then follow the leaders target.
-			If a lancer gets extremely low hp, and other lancers have a lot, that lancer is teleported to the healthiest lancer.
+			Designate a leader from all alive lancers, then follow the leaders target.	Done.
+			If a lancer takes immense damage, they fly backwards.
 
 
 		*/
@@ -228,11 +227,11 @@ methodmap Lancelot < CClotBody
 		
 		static const char Items[][] = {	//temp
 			"models/workshop/player/items/all_class/jogon/jogon_medic.mdl",
-			"models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl",
+			"models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_medic.mdl",
 			"models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl",
-			"models/workshop/player/items/medic/hw2013_das_blutliebhaber/hw2013_das_blutliebhaber.mdl",
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
-			"models/player/items/medic/qc_glove.mdl",
+			"models/workshop/player/items/medic/sf14_vampire_makeover/sf14_vampire_makeover.mdl",
+			"models/workshop/player/items/medic/dec17_coldfront_carapace/dec17_coldfront_carapace.mdl",
+			RUINA_CUSTOM_MODELS_3,
 			RUINA_CUSTOM_MODELS_2
 		};
 
@@ -244,11 +243,17 @@ methodmap Lancelot < CClotBody
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
+		SetVariantInt(RUINA_WINGS_3);
+		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		SetVariantInt(RUINA_IMPACT_LANCE_4);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
+
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
@@ -260,19 +265,70 @@ methodmap Lancelot < CClotBody
 		npc.Anger = false;
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 3);
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, true, 15, 15);
+
+		Lancelot_Leader(npc);
 
 		return npc;
 	}
 	
 	
 }
-static void Find_Lancers(Lancelot npc)
+static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	float radius = 250.0;
 
-	//make it so nearby lancers all spread their hp evenly.
+	int valids[10];
+	int i=1;
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		if(i > 10)
+			break;	//somehow more then 10 lancelot's exist, abort.
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
+		{
+			if(baseboss_index == npc.index)
+				continue;
+
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[baseboss_index], npc_classname, sizeof(npc_classname));
+			if(StrEqual(npc_classname, "npc_ruina_lancelot"))
+			{
+				valids[i] = baseboss_index;
+				i++;
+			}
+		}
+	}
 	
+	if(i<2)
+		return;
+
+	damage /= i;
+
+	for(int y=0 ; y < i ; y++)
+	{
+		SDKHooks_TakeDamage(valids[y], attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
+	}
+	
+}
+static bool Lancelot_Leader(Lancelot npc)
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
+		{
+			if(b_leader[baseboss_index])
+			{
+				i_follow_Id[npc.index] = EntIndexToEntRef(baseboss_index);
+				return true;
+			}
+		}
+	}
+
+	b_leader[npc.index] = true;
+
+	return false;
+
 }
 
 
@@ -309,8 +365,50 @@ static void ClotThink(int iNPC)
 	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 5.0);
+
+
+	if(b_leader[npc.index])
+	{
+		if(npc.m_flGetClosestTargetTime < GameTime)
+		{
+			npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
+	}
+	else
+	{
+		int follow = EntRefToEntIndex(i_follow_Id[npc.index]);
+		if(IsValidEntity(follow))
+		{
+			if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, npc.m_iTarget))
+			{
+				Lancelot ally = view_as<Lancelot>(follow);
+				npc.m_iTarget = ally.m_iTarget;
+				npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+				if(!IsValidEnemy(npc.index, npc.m_iTarget))
+				{
+					npc.m_flGetClosestTargetTime = 0.0;
+					return;
+				}
+			}
+			
+		}
+		else
+		{
+			if(!Lancelot_Leader(npc))
+			{
+				npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+			else
+			{
+				return;
+			}
+		}
+		
+	}
 	
-	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
+	int PrimaryThreatIndex = npc.m_iTarget;
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
@@ -355,7 +453,7 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 {
 	float GameTime = GetGameTime();
 	float Swing_Speed = (npc.Anger ? 1.0 : 2.0);
-	float Swing_Delay = 0.2;
+	float Swing_Delay = (npc.Anger ? 0.1 : 0.2);
 
 	if(npc.m_flAttackHappens)
 	{
@@ -366,9 +464,9 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 			fl_retreat_timer[npc.index] = GameTime+(Swing_Speed*0.35);
 
 			Handle swingTrace;
-			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			float VecEnemy[3]; WorldSpaceCenter(PrimaryThreatIndex, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+			if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, {125.0, 100.0, 150.0}, {-125.0, -125.0, -150.0}))
 			{	
 				int target = TR_GetEntityIndex(swingTrace);	
 				
@@ -381,9 +479,14 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 
 					Ruina_Add_Battery(npc.index, 250.0);
 
-					Custom_Knockback(npc.index, target, 900.0, true);
-					TF2_AddCondition(target, TFCond_LostFooting, 0.5);
-					TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+					float Kb = (npc.Anger ? 900.0 : 450.0);
+
+					Custom_Knockback(npc.index, target, Kb, true);
+					if(target < MaxClients)
+					{
+						TF2_AddCondition(target, TFCond_LostFooting, 0.5);
+						TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
+					}
 
 					Ruina_Add_Mana_Sickness(npc.index, target, 0.25, 125);
 				}
@@ -406,11 +509,11 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 		}
 	}
 
-	if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.5))	//its a lance, so big range
+	if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25))	//its a lance so bigger range
 	{
 		int Enemy_I_See;
 								
-		Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
@@ -467,7 +570,14 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NPC_REFLECT))	//do not reflect a reflection!
+	{
+		Equalize_HP(npc, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		CPrintToChatAll("reflect");
+	}
+		
+
+	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -496,6 +606,8 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	b_leader[npc.index] = false;
 	
 	Ruina_NPCDeath_Override(entity);
 		

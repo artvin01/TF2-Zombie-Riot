@@ -155,10 +155,8 @@ methodmap Euranionis < CClotBody
 		
 		
 		/*
-			mair mask		"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl"
-			pyromancer		Dec2014_Pyromancers_Raiments	"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl"
+			brother in blues
 			breakneck baggies
-			allbrero
 		
 		*/
 		
@@ -172,16 +170,16 @@ methodmap Euranionis < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		fl_npc_basespeed = 200.0;
+		fl_npc_basespeed = 225.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/player/items/demo/demo_fiesta_sombrero.mdl",
+			"models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_pyro.mdl",
 			"models/workshop/player/items/all_class/jogon/jogon_pyro.mdl",
 			"models/workshop/player/items/pyro/hazeguard/hazeguard.mdl",
-			"models/workshop/player/items/pyro/dec2014_pyromancers_raiments/dec2014_pyromancers_raiments.mdl",
+			"models/workshop/player/items/pyro/dec22_firebrand/dec22_firebrand.mdl",
 			RUINA_CUSTOM_MODELS_2
 		};
 
@@ -244,7 +242,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 1.5);
+	Ruina_Add_Battery(npc.index, 3.0);
 
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -402,6 +400,8 @@ static void Euranionis_Spawn_Minnions(Euranionis npc)
 					NpcName = "npc_ruina_magianas";
 				case 3:
 					NpcName = "npc_ruina_loonaris";
+				case 1:
+					NpcName = "npc_ruina_aetherium";
 				default: 
 					NpcName = "npc_ruina_dronianis";
 			}
@@ -478,7 +478,7 @@ static void Euranionis_SelfDefense(Euranionis npc, float gameTime, int Anchor_Id
 			{
 				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
-			float DamageDone = 80.0;
+			float DamageDone = 120.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -515,7 +515,7 @@ static void Euranionis_SelfDefense(Euranionis npc, float gameTime, int Anchor_Id
 					{
 						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
-					float DamageDone = 80.0;
+					float DamageDone = 120.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;

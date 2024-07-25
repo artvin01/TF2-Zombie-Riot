@@ -28,6 +28,11 @@ $bodygroup "ruina_bow_3"
 	blank
 	studio "v3/ruina_bow_3.smd"
 }
+$bodygroup "wings_3"	
+{
+	blank
+	studio "v3/wings_3.smd"
+}
 
 
 

@@ -2540,7 +2540,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is simply stronger.
 		Stage 3: Done.  is simply stronger.
-		Stage 4: Null
+		Stage 4: Done. stronger
 	}
 
 	//created
@@ -2554,7 +2554,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done. can summon now includes Magia and Lanius from the previous stage.
 		Stage 3: Done. stronger also when summoning itself, it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
-		Stage 4: Null
+		Stage 4: Done. stronger
 	}
 	//created
 	6: Daedalus -> Draedon -> Draeonis -> Draconia
@@ -2679,7 +2679,9 @@ Names per stage:
 
 	Stage 4 specials:
 
-	Lancelot - W60 boss. Uses an impact lance, is pure melee. has extremely advanced ai, target priotisation, retreating. can work in a pact of itself?
+	Lancelot - W60 boss. 
+	- Add particle Accelerator attack.
+	- Add sound effects for the various things
 
 
 	Ruliana: - Blitzkrieg was based off of her. so has a similar-ish theme of rocket spam. but gonna need to do make it seems different so its not just a copy of blitz.

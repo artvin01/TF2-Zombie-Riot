@@ -200,11 +200,11 @@ methodmap Astrianious < CClotBody
 		
 		
 		/*
-			Arctic mole					"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl"
-			fancy						"models/player/items/soldier/fdu.mdl"
-			the big star				"models/workshop/player/items/engineer/sum24_big_star/sum24_big_star.mdl"
-										"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl"
-			botler 2000					"models/workshop/player/items/all_class/sum24_botler_2000_style1/sum24_botler_2000_style1_%s.mdl"
+			big star
+			baggies
+			buttler
+		clue hairdo
+		cranium cooler
 		*/
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -223,11 +223,11 @@ methodmap Astrianious < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/workshop/player/items/all_class/sum24_botler_2000_style1/sum24_botler_2000_style1_engineer.mdl",
+			"models/workshop/player/items/engineer/sum23_cranium_cooler/sum23_cranium_cooler.mdl",
 			"models/workshop/player/items/engineer/sum24_big_star/sum24_big_star.mdl",
-			"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl",
-			"models/player/items/soldier/fdu.mdl",
-			"models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl",
+			"models/workshop/player/items/all_class/bak_buttler/bak_buttler_engineer.mdl",
+			"models/workshop/player/items/engineer/sum23_cranium_cooler/sum23_cranium_cooler.mdl",
+			"models/workshop/player/items/engineer/dec23_clue_hairdo_style3/dec23_clue_hairdo_style3.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -247,6 +247,9 @@ methodmap Astrianious < CClotBody
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
+
+		SetVariantInt(0);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -291,7 +294,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 3.0);
+	Ruina_Add_Battery(npc.index, 4.0);
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -444,7 +447,7 @@ static void Astrianious_SelfDefense(Astrianious npc, float gameTime)
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
-				float DamageDone = 60.0;
+				float DamageDone = 120.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextRangedAttack = gameTime + 4.0;

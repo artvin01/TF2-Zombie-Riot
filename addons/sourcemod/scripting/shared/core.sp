@@ -603,6 +603,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 #define ZR_SLAY_DAMAGE							(1 << 8)
 #define ZR_STAIR_ANTI_ABUSE_DAMAGE				(1 << 9)
+#define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 
 #define HEAL_NO_RULES	            0     	 
 //Nothing special.
@@ -990,9 +991,10 @@ enum
 {
 	RUINA_BLADE_3			= 1,			//1
 	RUINA_LAN_SWORD_3		= 2,			//2
-	RUINA_LAZER_CANNON_2	= 4,				//3
+	RUINA_LAZER_CANNON_2	= 4,			//3
 	RUINA_WINGS_2			= 8,			//4
-	RUINA_QUINCY_BOW_3		= 16			//5
+	RUINA_QUINCY_BOW_3		= 16,			//5
+	RUINA_WINGS_3			= 32			//6
 }
 
 

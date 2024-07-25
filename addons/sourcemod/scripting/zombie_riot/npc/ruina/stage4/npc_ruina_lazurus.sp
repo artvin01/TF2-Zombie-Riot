@@ -168,7 +168,7 @@ methodmap Lazurus < CClotBody
 			"models/workshop/player/items/demo/demo_kilt/demo_kilt.mdl",
 			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl",
 			"models/workshop/player/items/demo/eotl_demopants/eotl_demopants.mdl",
-			"models/workshop.player/items/all_class/hiphunter_jacket/hiphunter_jacket_demo.mdl",
+			"models/workshop/player/items/all_class/hiphunter_jacket/hiphunter_jacket_demo.mdl",
 			RUINA_CUSTOM_MODELS_3
 		};
 
