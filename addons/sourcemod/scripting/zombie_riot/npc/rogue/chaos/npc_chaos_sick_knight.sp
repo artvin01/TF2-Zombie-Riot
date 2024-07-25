@@ -261,7 +261,7 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 	if(npc.m_flViolentCaughingCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flViolentCaughing = GetGameTime(npc.index) + 7.5;
-		npc.m_flViolentCaughingCooldown = FAR_FUTURE;
+		npc.m_flViolentCaughingCooldown = GetGameTime() + 45.0;
 	}
 	if(npc.m_flViolentCaughing)
 	{
@@ -290,7 +290,7 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 	{
 		fl_TotalArmor[npc.index] = 0.15;
 		float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-		maxhealth *= 0.01;
+		maxhealth *= 0.005;
 		HealEntityGlobal(npc.index, npc.index, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 		float ProjLoc[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjLoc);

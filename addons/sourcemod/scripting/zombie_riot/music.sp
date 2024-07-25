@@ -321,17 +321,48 @@ void Music_Stop_All(int client)
 	
 	if(MusicString1.Path[0])
 	{
-		StopCustomSound(client, SNDCHAN_STATIC, MusicString1.Path, 4.0);
+		if(MusicString1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, MusicString1.Path, 4.0);
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+		}
 	}
 		
 	if(MusicString2.Path[0])
 	{
-		StopCustomSound(client, SNDCHAN_STATIC, MusicString2.Path, 4.0);
+		if(MusicString1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, MusicString2.Path, 4.0);
+
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+		}
 	}
 
 	if(RaidMusicSpecial1.Path[0])
 	{
-		StopCustomSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path, 4.0);
+		if(RaidMusicSpecial1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path, 4.0);
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+		}
 	}
 
 	if(XenoExtraLogic())
@@ -341,7 +372,6 @@ void Music_Stop_All(int client)
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
 	}
-	
 }
 
 void Music_PostThink(int client)

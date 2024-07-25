@@ -1081,7 +1081,6 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			npc.AddGesture("ACT_MP_THROW");
 
 			npc.m_flVoidPillarAttack = gameTime + 4.5;
-			npc.m_flAttackHappens = gameTime + 0.35;
 			npc.m_flDoingAnimation = gameTime + 0.35;
 
 			UnderTides npcGetInfo = view_as<UnderTides>(npc.index);
