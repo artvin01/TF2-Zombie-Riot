@@ -252,20 +252,23 @@ methodmap KahmlsteinFollower < CClotBody
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
-		// Cutscene Here
-		npc.Speech("This is an urgent matter, so thanks for your assistance.");
-		npc.SpeechDelay(5.0, "You'll get your reward later, no time to lose now.");
-		Rogue_SetProgressTime(10.0, false);
-		Rogue_RemoveNamedArtifact("Waldch Assistance");
-
-		for(int i; i < i_MaxcountNpcTotal; i++)
+		if(Rogue_Mode())
 		{
-			int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-			if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+			// Cutscene Here
+			npc.Speech("This is an urgent matter, so thanks for your assistance.");
+			npc.SpeechDelay(5.0, "You'll get your reward later, no time to lose now.");
+			Rogue_SetProgressTime(10.0, false);
+			Rogue_RemoveNamedArtifact("Waldch Assistance");
+
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				view_as<CClotBody>(other).m_bDissapearOnDeath = true;
-				SmiteNpcToDeath(other);
-				break;
+				int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+				{
+					view_as<CClotBody>(other).m_bDissapearOnDeath = true;
+					SmiteNpcToDeath(other);
+					break;
+				}
 			}
 		}
 
