@@ -120,7 +120,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 		int skin = 1;
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_irifle.mdl");
-		SetVariantString("1.4");
+		SetVariantString("1.7");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/sum24_aimframe/sum24_aimframe.mdl");
@@ -159,7 +159,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 1)
 					{
 						npc.AddGesture("ACT_RELOAD_SHOTGUN1");
-						npc.m_flNextRangedAttack = GameTime + 1.5;
+						npc.m_flNextRangedAttack = GameTime + 3.0;
 						npc.m_iAttacksTillReload = 1;
 						npc.PlayPistolReload();
 					}
@@ -180,10 +180,10 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload = 0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 8000.0, 1), DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 8000.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}

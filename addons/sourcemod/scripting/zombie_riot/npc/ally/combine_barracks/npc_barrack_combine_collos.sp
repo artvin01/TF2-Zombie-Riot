@@ -207,7 +207,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
-					if(!npc.m_flAttackHappenswillhappen && npc.m_fbRangedSpecialOn)
+					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flNextRangedSpecialAttack = GameTime + 2.0;
 						npc.AddGesture("ACT_MELEE_ATTACK_SWING_GESTURE");
