@@ -73,6 +73,10 @@ static int i_shield_color[3] = {0, 0, 0};
 	1 1 1
 */
 
+float fl_ruina_buff_amt[MAXENTITIES];
+float fl_ruina_buff_time[MAXENTITIES];
+bool b_ruina_buff_override[MAXENTITIES];
+
 //these scales on wavecount
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	175.0
 #define RUINA_BOSS_NPC_MAX_SHIELD 		250.0
@@ -320,7 +324,7 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 void Ruina_Npc_Give_Shield(int client, float strenght)
 {
 	float GameTime = GetGameTime();
-	if(fl_ruina_shield_break_timeout[client] > GameTime)
+	if(fl_ruina_shield_break_timeout[client] > GameTime && !b_ruina_buff_override[client])
 		return;
 	
 	Ruina_Remove_Shield(client);
@@ -1818,9 +1822,9 @@ public void Master_Apply_Attack_Buff(int client, float range, float time, float 
 	Apply_Master_Buff(client, RUINA_ATTACK_BUFF, range, time, power);
 }
 
-public void Master_Apply_Shield_Buff(int client, float range, float power)
+void Master_Apply_Shield_Buff(int client, float range, float power, bool override = false)
 {
-	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power);
+	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power, override);
 }
 public void Master_Apply_Battery_Buff(int client, float range, float power)
 {
@@ -1835,10 +1839,6 @@ void Ruina_Special_Logic(int iNPC, int Target)
 	}
 }
 
-static float fl_buff_amt[MAXENTITIES];
-static float fl_buff_time[MAXENTITIES];
-static bool b_buff_override[MAXENTITIES];
-
 /*
 	Should work with non ruina npc's - NOT TESTED YET!
 */
@@ -1849,45 +1849,45 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 	if(NpcStats_IsEnemySilenced(npc.index))
 		return;
 	
-	b_buff_override[npc.index] = Override;
+	b_ruina_buff_override[npc.index] = Override;
 
 	switch(buff_type)
 	{
 		case RUINA_DEFENSE_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Defense_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_SPEED_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Speed_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_ATTACK_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Attack_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_SHIELD_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Shield_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_HEALING_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Healing_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
@@ -1899,7 +1899,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 		}
 		case RUINA_BATTERY_BUFF:
 		{
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			b_NpcIsTeamkiller[npc.index] = true;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Battery_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
@@ -1918,7 +1918,7 @@ public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
 	if(b_is_battery_buffed[victim])	
 		return;
 	
-	Ruina_Add_Battery(victim, fl_buff_amt[entity]);
+	Ruina_Add_Battery(victim, fl_ruina_buff_amt[entity]);
 }
 public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 {
@@ -1929,9 +1929,9 @@ public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float amt = fl_buff_amt[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		Ruina_Npc_Give_Shield(victim, amt);
 	}
 }
@@ -1944,7 +1944,7 @@ public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		b_ruina_allow_teleport[victim]=true;
 	}
@@ -1958,9 +1958,9 @@ public void Ruina_Healing_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float amt = fl_buff_amt[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		Helia_Healing_Buff(victim, amt);
 	}
 }
@@ -1978,10 +1978,10 @@ public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int w
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		float GameTime = GetGameTime();
 		if(f_Ruina_Defense_Buff[victim]>GameTime)
 		{
@@ -2009,10 +2009,10 @@ public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int wea
 	
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 
 		float GameTime = GetGameTime();
 		if(f_Ruina_Speed_Buff[victim]>GameTime)
@@ -2029,7 +2029,7 @@ public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int wea
 		f_Ruina_Speed_Buff[victim] = GameTime + time;
 	}
 }
-public void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
+void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2038,10 +2038,10 @@ public void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int we
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 
 		float GameTime = GetGameTime();
 		if(f_Ruina_Attack_Buff[victim]>GameTime)
@@ -2526,7 +2526,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just stronger variant
 		Stage 3: Done. is just stronger variant
-		Stage 4: Null. Class becomes sniper.
+		Stage 4: Done. Class becomes sniper. Nearby npc's gain a 50% dmg bonus
 
 	}
 	//created
@@ -2567,7 +2567,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done. 	Its just a buffed version.
 		Stage 3: Done. 	Its just a buffed version.
-		Stage 4: Null.	Will be able to override the shield timeout
+		Stage 4: Done.	Will be able to override the shield timeout
 
 	}
 	//created
@@ -2582,7 +2582,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just buffed variant
 		Stage 3: Done.	battery: gains the ability to shoot a laser projectile of D00M
-		Stage 4: Null
+		Stage 4: Done.		Buff other nearby Aether class npc's dmg
 	}
 	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
@@ -2625,7 +2625,7 @@ Names per stage:
 		Stage 1: Done.	Laz
 		Stage 2: Done.	battery: shoot a stronger variant of the laser, has better homing too
 		Stage 3: Done.	Lazines. is a stronger variant
-		Stage 4: Null	Lazurus
+		Stage 4: Done.	Lazurus is stronger.
 
 	}
 	//created
@@ -2639,7 +2639,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just a stronger variant
 		Stage 3: Done.	stronger.		(the shanker 9000)
-		Stage 4: Done.	Stronger.		MORE SHANKING. EVEN DEADLIER
+		Stage 4: Done.	Stronger.		MORE SHANKING. EVEN DEADLIER also gives a 25% dmg bonus to everyone around it. self not included
 	}
 
 	Todo: Rewrite these.

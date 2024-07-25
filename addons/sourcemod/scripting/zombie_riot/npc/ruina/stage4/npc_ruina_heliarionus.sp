@@ -2,36 +2,30 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/medic_paincrticialdeath01.mp3",
-	"vo/medic_paincrticialdeath02.mp3",
-	"vo/medic_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/medic_painsharp01.mp3",
-	"vo/medic_painsharp02.mp3",
-	"vo/medic_painsharp03.mp3",
-	"vo/medic_painsharp04.mp3",
-	"vo/medic_painsharp05.mp3",
-	"vo/medic_painsharp06.mp3",
-	"vo/medic_painsharp07.mp3",
-	"vo/medic_painsharp08.mp3",
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3",
 };
 
 static const char g_IdleSounds[][] = {
-	"vo/medic_standonthepoint01.mp3",
-	"vo/medic_standonthepoint02.mp3",
-	"vo/medic_standonthepoint03.mp3",
-	"vo/medic_standonthepoint04.mp3",
-	"vo/medic_standonthepoint05.mp3",
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/medic_battlecry01.mp3",
-	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3",
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -46,9 +40,6 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh1.wav",
 	"weapons/bat_draw_swoosh2.wav",
-};
-static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
 };
 
 void Heliarionus_OnMapStart_NPC()
@@ -73,8 +64,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheSoundArray(g_TeleportSounds);
-	PrecacheModel("models/player/medic.mdl");
+	PrecacheModel("models/player/sniper.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -93,14 +83,6 @@ methodmap Heliarionus < CClotBody
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayIdleSound()");
-		#endif
-	}
-	
-	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
 	}
 	
@@ -160,7 +142,7 @@ methodmap Heliarionus < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 0)
 			{
-				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 				this.m_iChanged_WalkCycle = 1;
 			}
 		}
@@ -176,13 +158,13 @@ methodmap Heliarionus < CClotBody
 
 	public Heliarionus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Heliarionus npc = view_as<Heliarionus>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
+		Heliarionus npc = view_as<Heliarionus>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
@@ -200,13 +182,23 @@ methodmap Heliarionus < CClotBody
 		npc.m_flSpeed = 230.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
+
+		/*
+			baggies
+			final frontiersman
+			guilden guardian
+			hunting cloak
+			wings
+			halo
+			weapon
+		*/
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/pyro/hwn2023_dead_heat/hwn2023_dead_heat.mdl",
-			"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl",
-			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl",
-			"models/workshop/player/items/medic/jul13_emergency_supplies/jul13_emergency_supplies.mdl",
-			"models/workshop/player/items/spy/short2014_deadhead/short2014_deadhead.mdl",
+			"models/workshop/player/items/all_class/jogon/jogon_sniper.mdl",
+			"models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl",
+			"models/workshop/player/items/sniper/spr17_guilden_guardian/spr17_guilden_guardian.mdl",
+			"models/workshop/player/items/sniper/hwn2022_hunting_cloak/hwn2022_hunting_cloak.mdl",
+			RUINA_CUSTOM_MODELS_3,
 			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_2
 		};
@@ -219,10 +211,12 @@ methodmap Heliarionus < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
 		npc.m_iWearable6 = npc.EquipItemSeperate("head", Items[5],_,_,2.0,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
 
+		SetVariantInt(RUINA_WINGS_2);
+		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 		SetVariantInt(RUINA_HALO_1);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		SetVariantInt(RUINA_HEALING_STAFF_2);
@@ -277,7 +271,7 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 1.0);
+	Ruina_Add_Battery(npc.index, 2.0);
 
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -288,7 +282,7 @@ static void ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
-	if(fl_ruina_battery[npc.index]>1200.0)
+	if(fl_ruina_battery[npc.index]>1000.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 2.5;
@@ -297,10 +291,16 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{			
-		Helia_Healing_Logic(npc.index, 1000, 500.0, GameTime, 1.0, {255, 255, 255, 255});
+		Helia_Healing_Logic(npc.index, 2000, 500.0, GameTime, 1.0, {255, 255, 255, 255});
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
+		if(fl_ruina_battery_timeout[npc.index] < GameTime) 
+		{
+			Master_Apply_Attack_Buff(npc.index, 300.0, 5.0, 0.5);	//50% dmg bonus
+			fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
+		}
+		
 			
 		//Predict their pos.
 		Ruina_Basic_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
@@ -322,7 +322,7 @@ static void ClotThink(int iNPC)
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 300, 175.0, GameTime, 3.5, color);
+					Helia_Healing_Logic(npc.index, 600, 175.0, GameTime, 3.5, color);
 
 				}
 				else	
@@ -330,7 +330,7 @@ static void ClotThink(int iNPC)
 
 					int color[4];
 					Ruina_Color(color);
-					Helia_Healing_Logic(npc.index, 450, 250.0, GameTime, 3.5, color);
+					Helia_Healing_Logic(npc.index, 900, 250.0, GameTime, 3.5, color);
 
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -344,7 +344,7 @@ static void ClotThink(int iNPC)
 
 				int color[4];
 				Ruina_Color(color);
-				Helia_Healing_Logic(npc.index, 300, 175.0, GameTime, 3.5, color);
+				Helia_Healing_Logic(npc.index, 600, 175.0, GameTime, 3.5, color);
 			}	
 		}
 		else

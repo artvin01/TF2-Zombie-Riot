@@ -222,6 +222,7 @@ methodmap Dronianis < CClotBody
 		SetVariantInt(RUINA_DAGGER_2);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 		
+		fl_ruina_battery_timeout[npc.index] = 0.0;
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		
 		return npc;
@@ -262,6 +263,12 @@ static void ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+
+	if(fl_ruina_battery_timeout[npc.index] < GameTime) 
+	{
+		Master_Apply_Attack_Buff(npc.index, 300.0, 10.0, 0.25);	//25% dmg bonus
+		fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
+	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{

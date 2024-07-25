@@ -146,11 +146,7 @@ methodmap Lazurus < CClotBody
 		
 		
 		/*
-			Bozo's bouffant		"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl"
-			Whiskey bib			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl"
-			Gaelic Garb
-			Slumber slacks
-			Sub zero suit
+			"models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_%s.mdl"
 		
 		*/
 		
@@ -162,18 +158,18 @@ methodmap Lazurus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
-		fl_npc_basespeed = 270.0;
+		fl_npc_basespeed = 280.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
 		static const char Items[][] = {
-			"models/workshop/player/items/pyro/hw2013_the_haha_hairdo/hw2013_the_haha_hairdo.mdl",		
-			"models/workshop/player/items/demo/jul13_gallant_gael/jul13_gallant_gael.mdl",
+			"models/workshop/player/items/all_class/sum23_brothers_blues/sum23_brothers_blues_demo.mdl",
+			"models/workshop/player/items/demo/demo_kilt/demo_kilt.mdl",
 			"models/workshop/player/items/demo/jul13_gaelic_garb/jul13_gaelic_garb.mdl",
-			"models/workshop/player/items/demo/dec23_slumber_slacks/dec23_slumber_slacks.mdl",
-			"models/workshop/player/items/all_class/xms2013_arctic_suit/xms2013_arctic_suit_demo.mdl",
-			RUINA_CUSTOM_MODELS_2
+			"models/workshop/player/items/demo/eotl_demopants/eotl_demopants.mdl",
+			"models/workshop.player/items/all_class/hiphunter_jacket/hiphunter_jacket_demo.mdl",
+			RUINA_CUSTOM_MODELS_3
 		};
 
 		int skin = 1;	//1=blue, 0=red
@@ -186,7 +182,7 @@ methodmap Lazurus < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
-		SetVariantInt(RUINA_LAZER_CANNON_1);
+		SetVariantInt(RUINA_LAZER_CANNON_2);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
@@ -201,8 +197,6 @@ methodmap Lazurus < CClotBody
 		
 		return npc;
 	}
-	
-	
 }
 
 //TODO 
@@ -216,9 +210,6 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
-	
-	
-	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
@@ -333,7 +324,7 @@ static void ClotThink(int iNPC)
 				if(!IsValidEntity(Laser_End))
 				{
 					bool buffed = false;
-					if(fl_ruina_battery[npc.index]>600.0)
+					if(fl_ruina_battery[npc.index]>500.0)
 					{
 						fl_ruina_battery[npc.index] = 0.0;
 
@@ -359,8 +350,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 300.0;
-					Projectile.bonus_dmg = 450.0;
+					Projectile.damage = 600.0;
+					Projectile.bonus_dmg = 750.0;
 					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -389,7 +380,7 @@ static void ClotThink(int iNPC)
 						if(buffed)
 						{
 
-							Homing_Power = 12.0;
+							Homing_Power = 15.0;
 							Homing_Lockon = 120.0;
 
 							r = 255,
@@ -457,7 +448,7 @@ static void ClotThink(int iNPC)
 			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
-			float dmg = 20.0;
+			float dmg = 30.0;
 			float radius = 15.0;
 
 			Laser.Radius = radius;

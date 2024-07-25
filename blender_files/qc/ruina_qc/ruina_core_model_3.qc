@@ -18,6 +18,16 @@ $bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the n
 	blank
 	studio "v3/laser_cannon_v2.smd"
 }
+$bodygroup "wings_2"	
+{
+	blank
+	studio "v3/wings_2.smd"
+}
+$bodygroup "ruina_bow_3"	
+{
+	blank
+	studio "v3/ruina_bow_3.smd"
+}
 
 
 

@@ -168,12 +168,12 @@ methodmap Draconia < CClotBody
 		
 		
 		/*
-			Fuel Injector (Runnin' On Fumes) 	"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl"
 			Commonwealth Commando				"models/workshop/player/items/scout/sum24_commonwealth/sum24_commonwealth.mdl"
 			Blizzard Britches 					"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl"
 			battalions							models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl
-			Tanker's top						"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl"
-			flunkyware							"models/workshop_partner/player/items/scout/scout_henchboy/scout_henchboy_belt.mdl"
+			diplomat
+			wipe out wraps
+			berliners							"models/player/items/medic/berliners_bucket_helm.mdl"
 		*/
 
 		
@@ -194,12 +194,12 @@ methodmap Draconia < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/workshop/player/items/scout/hwn2019_fuel_injector_style3/hwn2019_fuel_injector_style3.mdl",
+			"models/workshop/player/items/scout/spr18_wipe_out_wraps/spr18_wipe_out_wraps.mdl",
 			"models/workshop/player/items/scout/sum24_commonwealth/sum24_commonwealth.mdl",
 			"models/workshop/player/items/scout/spr18_blizzard_britches/spr18_blizzard_britches.mdl",
-			"models/workshop_partner/player/items/scout/scout_henchboy/scout_henchboy_belt.mdl",
+			"models/player/items/medic/berliners_bucket_helm.mdl",
 			"models/weapons/c_models/c_battalion_buffbanner/c_batt_buffbanner.mdl",
-			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
+			"models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl",
 			RUINA_CUSTOM_MODELS_1
 		};
 
@@ -226,8 +226,6 @@ methodmap Draconia < CClotBody
 		
 		return npc;
 	}
-	
-	
 }
 
 //TODO 
@@ -241,7 +239,6 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
-	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -263,18 +260,17 @@ static void ClotThink(int iNPC)
 
 	npc.AdjustWalkCycle();
 
-	Ruina_Add_Battery(npc.index, 1.0);
-
+	Ruina_Add_Battery(npc.index, 1.5);
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
-	if(fl_ruina_battery[npc.index]>250.0)
+	if(fl_ruina_battery[npc.index]>350.0)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 
-		Master_Apply_Shield_Buff(npc.index, 300.0, 0.6);	//40% block shield
+		Master_Apply_Shield_Buff(npc.index, 300.0, 0.3, true);	//70% block shield
 		
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
@@ -351,7 +347,7 @@ static void ClotThink(int iNPC)
 					float target_vec[3];
 					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 100.0;
+					float dmg = 200.0;
 					float radius = 150.0;
 					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						

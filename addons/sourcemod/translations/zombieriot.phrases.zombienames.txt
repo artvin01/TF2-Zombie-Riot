@@ -2440,7 +2440,7 @@
 	}
 	"Draconia Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
 	}
 	"Dronianis"
 	{
@@ -2448,7 +2448,7 @@
 	}
 	"Dronianis Desc"
 	{
-		"en"	"Is a stronger variant"
+		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
 	}
 	"Euranionis"
 	{
@@ -2464,7 +2464,7 @@
 	}
 	"Heliarionus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
 	}
 	"Lazurus"
 	{
@@ -2472,7 +2472,7 @@
 	}
 	"Lazurus Desc"
 	{
-		"en"	"Aya"
+		"en"	"Is a stronger variant"
 	}
 	"Loonarionus"
 	{

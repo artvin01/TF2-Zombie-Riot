@@ -947,7 +947,7 @@ enum
 */
 
 #define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
-enum	//can have a maximum of 16 (I think)	it appears if I try to make it go above 14 it starts glitching out
+enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
 	RUINA_HALO_1 			= 2,		//2
@@ -988,8 +988,11 @@ enum
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
 enum
 {
-	RUINA_BLADE_3			= 1,				//1
-	RUINA_LAN_SWORD_3		= 2					//2
+	RUINA_BLADE_3			= 1,			//1
+	RUINA_LAN_SWORD_3		= 2,			//2
+	RUINA_LAZER_CANNON_2	= 4,				//3
+	RUINA_WINGS_2			= 8,			//4
+	RUINA_QUINCY_BOW_3		= 16			//5
 }
 
 

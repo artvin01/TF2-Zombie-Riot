@@ -181,9 +181,9 @@ methodmap Aetherianus < CClotBody
 		
 		
 		/*
-			//aztec aggressor			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl"
-			//golden garment			"models/workshop/player/items/sniper/xms2013_sniper_golden_garment/xms2013_sniper_golden_garment.mdl"
-			//mad mask					"models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl"
+			//angel of death
+			//dread hiding hood
+			//golden garment
 			//tuxxy						"models/player/items/all_class/tuxxy_%s.mdl"
 			//Triggerman's tacticals	"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl"
 		
@@ -205,13 +205,16 @@ methodmap Aetherianus < CClotBody
 		npc.StartPathing();
 
 		static const char Items[][] = {
-			"models/workshop/player/items/heavy/fall17_aztec_aggressor/fall17_aztec_aggressor.mdl",
+			"models/workshop/player/items/medic/xms2013_medic_robe/xms2013_medic_robe.mdl",
 			"models/workshop/player/items/sniper/xms2013_sniper_golden_garment/xms2013_sniper_golden_garment.mdl",
-			"models/workshop/player/items/heavy/hwn2016_mad_mask/hwn2016_mad_mask.mdl",
+			"models/workshop_partner/player/items/sniper/thief_sniper_hood/thief_sniper_hood.mdl",
 			"models/player/items/all_class/tuxxy_sniper.mdl",
 			"models/workshop/player/items/sniper/short2014_sniper_cargo_pants/short2014_sniper_cargo_pants.mdl",
-			RUINA_CUSTOM_MODELS_2
+			RUINA_CUSTOM_MODELS_3
 		};
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -223,7 +226,7 @@ methodmap Aetherianus < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
 
-		SetVariantInt(RUINA_QUINCY_BOW_2);
+		SetVariantInt(RUINA_QUINCY_BOW_3);
 		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");	
 			
 		fl_ruina_battery[npc.index] = 0.0;
@@ -232,11 +235,62 @@ methodmap Aetherianus < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 
+		fl_ruina_battery_timeout[npc.index] = 0.0;
+
 		return npc;
 	}
 	
 	
 }
+
+static void Find_Aetherians(Aetherianus npc)
+{
+	float radius = 250.0;
+
+	b_NpcIsTeamkiller[npc.index] = true;
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, radius, _, _, true, 50, false, _, FindAllies_Logic);
+	b_NpcIsTeamkiller[npc.index] = false;
+	
+}
+
+static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
+{
+	if(entity==victim)
+		return;
+
+	if(GetTeam(entity) != GetTeam(victim))
+		return;
+
+	
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
+
+	bool valid = false;
+
+	static const char Compare[][] = {
+		"npc_ruina_aetherianus",
+		"npc_ruina_aetherium",
+		"npc_ruina_aetheria",
+		"npc_ruina_aether"
+	};
+
+	for(int i=0 ; i < 4 ; i ++)
+	{
+		if(StrEqual(npc_classname, Compare[i]))
+		{
+			valid = true;
+			break;
+		}
+	}
+	if(!valid)
+		return;
+
+	fl_ruina_buff_amt[entity] = 0.5;
+	fl_ruina_buff_time[entity] = 5.0;
+	b_ruina_buff_override[entity] = true;
+	Ruina_Apply_Attack_buff(entity, victim, 0.0, 0);
+}
+
 
 //TODO 
 //Rewrite
@@ -287,6 +341,12 @@ static void ClotThink(int iNPC)
 
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
+
+		if(fl_ruina_battery_timeout[npc.index] < GameTime)
+		{
+			Find_Aetherians(npc);
+			fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
+		}
 
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
@@ -479,7 +539,7 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 		Laser.Start_Point = Npc_Vec;
 		Laser.End_Point = Proj_Vec;
 
-		float dmg = 35.0;
+		float dmg = 40.0;
 		float radius = 15.0;
 
 		Laser.Radius = radius;
@@ -518,7 +578,7 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 				{
 					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 				}
-				float DamageDone = 75.0;
+				float DamageDone = 80.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextRangedAttack = gameTime + 6.5;
@@ -566,7 +626,7 @@ static void Aetherianus_SelfDefense(Aetherianus npc, float gameTime, int Anchor_
 						{
 							WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 						}
-						float DamageDone = 75.0;
+						float DamageDone = 80.0;
 						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.m_flNextRangedAttack = gameTime + 6.5;
