@@ -59,7 +59,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on thi
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
 int i_IceMaxTargets[3] = { 3, 4, 5 };
 
-float f_IceChance[3] = { 0.00, 0.025, 0.05 };
+float f_IceChance[3] = { 0.00, 0.025, 0.03 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
 float f_IceRadius[3] = { 300.0, 350.0, 400.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
@@ -103,7 +103,7 @@ int i_MondoMaxTargets[3] = { 999, 999, 999 };
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
 float f_MondoDMG[3] = { 100000.0, 100000.0, 100000.0 };
-float f_MondoRadius[3] = { 1000.0, 1500.0, 2000.0 };
+float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
 
@@ -806,7 +806,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	f_HealthBeforeHurt[victim] = 9999999999.0;		//A little hack to guarantee a freeze. Anything that doesn't have anywhere near 999 billion, 999 million, 999 thousand, 999 HP will always be frozen. 
+	Cryo_FreezeZombie(victim, 1);
 }
 
 public bool Trash_RollTrash(int client, int tier)
@@ -975,7 +975,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
 		return Plugin_Stop;
 	
-	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 1.0);
+	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 0.8);
 	
 	for (int i = 0; i < i_MissilesCount[tier]; i++)
 	{
@@ -1010,7 +1010,7 @@ public MRESReturn Missiles_Explode(int entity)
 	
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_EXPLOSION_GENERIC, 1.0);
-	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 0.8);
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
@@ -1057,7 +1057,7 @@ public Action Missiles_BeginHoming(Handle begin, int ref)
 		float ang[3];
 		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
 		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
-		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
 	return Plugin_Stop;

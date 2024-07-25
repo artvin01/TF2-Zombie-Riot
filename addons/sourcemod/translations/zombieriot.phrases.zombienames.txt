@@ -568,6 +568,10 @@
 		"pt"		"Xeno Spy Main do X10"
 		"nl"		"Xeno X10 Spion Main"
 	}
+	"Xeno Malfunctioning Robot"
+	{
+		"en" 		"Xeno Malfunctioning Robot"
+	}
 
 	"Nazi Panzer"
 	{
@@ -707,6 +711,58 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
+	"Barracks Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
+	"Barracks Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
+	"Barracks Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Barracks Combine Soldier"
+	{
+		"en" 		"Combine Soldier"
+	}
+	"Barracks Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Barracks Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Barracks Combine Deflector"
+	{
+		"en" 		"Combine Deflector"
+	}
+	"Barracks Combine Sniper"
+	{
+		"en" 		"Combine Sniper"
+	}
+	"Barracks Combine Super"
+	{
+		"en" 		"Combine Warrior"
+	}
+	"Barracks Combine Commander"
+	{
+		"en" 		"Combine Commander"
+	}
+	"Barracks Combine Giant ddt"
+	{
+		"en" 		"Combine Giant DDT"
+	}
+	"Barracks Combine Collos"
+	{
+		"en"		"Combine Collos"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
@@ -785,6 +841,10 @@
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
 	}
+	"Hyper Blitzkrieg"
+	{
+		"en"		"Hyper Blitzkrieg"
+	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"
@@ -827,12 +887,12 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 	}
-	"The Doctor"
+	"Doctor Purnell"
 	{
-		"en" 		"The Doctor"
-		"ru" 		"Доктор"
-		"pt"		"O Doutor"
-		"nl"		"De Dokter"
+		"en" 		"Doctor Purnell"
+		"ru" 		"Доктор Пурнелл"
+		"pt"		"Doutor Purnell"
+		"nl"		"Dokter Purnell"
 	}
 	"Book Simon"
 	{
@@ -840,6 +900,38 @@
 		"ru" 		"Книжный Саймон"
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
+	}
+	"Crazy Lady"
+	{
+		"en" 		"Crazy Lady"
+	}
+	"Faster"
+	{
+		"en" 		"Faster"
+	}
+	"Psycho"
+	{
+		"en" 		"Psycho"
+	}
+	"Sewmo"
+	{
+		"en" 		"Sewmo"
+	}
+	"Suicider"
+	{
+		"en" 		"Suicider"
+	}
+	"Cured Purnell"
+	{
+		"en" 		"Cured Purnell"
+	}
+	"Corrupted Barney"
+	{
+		"en" 		"Corrupted Barney"
+	}
+	"Voided Vanguard"
+	{
+		"en" 		"Voided Vanguard"
 	}
 	"Kahmlstein"
 	{
@@ -1281,11 +1373,9 @@
 		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Spawned Blue Goggles"
+	"Machina Waldch"
 	{
-		"en"		"Spawned Blue Goggles"
-		"pt"		"Blue Goggles Gerado"
-		"ru"		"Созданный Блу Гогглз"
+		"en"		"Machina Waldch"
 	}
 	"Silvester"
 	{
@@ -1293,11 +1383,10 @@
 		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Blue Goggles"
+	"Waldch"
 	{
-		"en"		"Blue Goggles"
-		"pt"		"Blue Goggles"
-		"ru"		"Блу Гогглз"
+		"en"		"Waldch"
+		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
@@ -1578,9 +1667,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Arkantos"
+	"God Alaxios"
 	{
-		"en"		"God Arkantos"
+		"en"		"God Alaxios"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -1941,6 +2030,18 @@
 	{
 		"en"	"Stella"
 	}
+	"Karlas"
+	{
+		"en"	"Karlas"
+	}
+	"Heliara"
+	{
+		"en"	"Heliara"
+	}
+	"Helia"
+	{
+		"en"	"Helia"
+	}
 	"Astria"
 	{
 		"en"	"Astria"
@@ -2225,9 +2326,409 @@
 	{
 		"en"	"Bob the Second"
 	}
-	"Forest Hitman"
+	"Wildingen Hitman"
 	{
-		"en"	"Forest Hitman"
+		"en"	"Wildingen Hitman"
+	}
+	"Mr.X"
+	{
+		"en"	"Mr.X"
+	}
+	"Xeno Acclaimed Swordsman"
+	{
+		"en"	"Xeno Acclaimed Swordsman"
+	}
+	"Xeno Early Infected"
+	{
+		"en"	"Xeno Early Infected"
+	}
+	"Xeno Patient Few"
+	{
+		"en"	"Xeno Patient Few"
+	}
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
+	}
+	"Fallen Warrior"
+	{
+		"en"	"Guln the Fallen One"
+	}
+	"Lex"
+	{
+		"en"	"Lex"
+	}
+	"Iana"
+	{
+		"en"	"Iana"
+	}
+	"Magianas"
+	{
+		"en"	"Magianas"
+	}
+	"Loonaris"
+	{
+		"en"	"Loonaris"
+	}
+	"Heliaris"
+	{
+		"en"	"Heliaris"
+	}
+	"Astrianis"
+	{
+		"en"	"Astrianis"
+	}
+	"Eurainis"
+	{
+		"en"	"Eurainis"
+	}
+	"Draeonis"
+	{
+		"en"	"Draeonis"
+	}
+	"Aetherium"
+	{
+		"en"	"Aetherium"
+	}
+	"Malianium"
+	{
+		"en"	"Malianium"
+	}
+	"Rulius"
+	{
+		"en"	"Rulius"
+	}
+	"Lazines"
+	{
+		"en"	"Lazines"
+	}
+	"Dronis"
+	{
+		"en"	"Dronis"
+	}
+	"Ruliana"
+	{
+		"en"	"Ruliana"
+	}
+	"Ealing"
+	{
+		"en"	"Ealing"
+	}
+	"Ealing Desc"
+	{
+		"en"	"Void Spawn.\nBleeds on hit."
+	}
+	"Framing Voider"
+	{
+		"en"	"Framing Voider"
+	}
+	"Framing Voider Desc"
+	{
+		"en"	"Void Spawn.\nBuffs enemies around itself on death."
+	}
+	"Growing Exat"
+	{
+		"en"	"Growing Exat"
+	}
+	"Growing Exat Desc"
+	{
+		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
+	}
+	"Mutating Blob"
+	{
+		"en"	"Mutating Blob"
+	}
+	"Mutating Blob Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
+	}
+	"Void Spreader"
+	{
+		"en"	"Void Spreader"
+	}
+	"Void Spreader Desc"
+	{
+		"en"	"Void Spawn.\nDeals immensive void damage."
+	}
+	"Void Infestor"
+	{
+		"en"	"Void Infestor"
+	}
+	"Void Infestor Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+	}
+	"Voided Hard Crust"
+	{
+		"en"	"Voided Hard Crust"
+	}
+	"Voided Hard Crust Desc"
+	{
+		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
+	}
+	"Void Carrier"
+	{
+		"en"	"Void Carrier"
+	}
+	"Void Carrier Desc"
+	{
+		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
+	}
+	"Void Ixufan"
+	{
+		"en"	"Void Ixufan"
+	}
+	"Void Ixufan Desc"
+	{
+		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
+	}
+	"Enframed Voider"
+	{
+		"en"	"Enframed Voider"
+	}
+	"Enframed Voider Desc"
+	{
+		"en"	"Their intelligence grows.\nBuffs enemies on death."
+	}
+	"Blood Pollutor"
+	{
+		"en"	"Blood Pollutor"
+	}
+	"Blood Pollutor Desc"
+	{
+		"en"	"Deals heavy bleed on hit."
+	}
+	"Voided Expidonsan Fortifier"
+	{
+		"en"	"Voided Expidonsan Fortifier"
+	}
+	"Voided Expidonsan Fortifier Desc"
+	{
+		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
+	}
+	"Void Particle"
+	{
+		"en"	"Void Particle"
+	}
+	"Void Particle Desc"
+	{
+		"en"	"Spreads void on death (can be silenced)"
+	}
+	"Hosting Blob"
+	{
+		"en"	"Hosting Blob"
+	}
+	"Hosting Blob Desc"
+	{
+		"en"	"On death, acts as 2 spawns."
+	}
+	"Blobbing Monster"
+	{
+		"en"	"Blobbing Monster"
+	}
+	"Blobbing Monster Desc"
+	{
+		"en"	"Each hit makes it stronger and have more resistance."
+	}
+	"Void Sprayer"
+	{
+		"en"	"Void Sprayer"
+	}
+	"Void Sprayer Desc"
+	{
+		"en"	"Jumps at you, and deals immensive void damage."
+	}
+	"Void Encasualtor"
+	{
+		"en"	"Void Encasualtor"
+	}
+	"Void Encasualtor Desc"
+	{
+		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
+	}
+	"Voided Expidonsan Cleaner"
+	{
+		"en"	"Voided Expidonsan Cleaner"
+	}
+	"Voided Expidonsan Cleaner Desc"
+	{
+		"en"	"Too many expidonsens fell to them.\nJumps at you, and deals immensive void damage."
+	}
+	"Voided Expidonsan Container"
+	{
+		"en"	"Voided Expidonsan Container"
+	}
+	"Voided Expidonsan Container Desc"
+	{
+		"en"	"Deals immensive bleed damage on hit."
+	}
+	"Sacraficer"
+	{
+		"en"	"Sacraficer"
+	}
+	"Sacraficer Desc"
+	{
+		"en"	"On death, buffs allies heavily."
+	}
+	"Voiding Bedrock"
+	{
+		"en"	"Voiding Bedrock"
+	}
+	"Voiding Bedrock Desc"
+	{
+		"en"	"Has heavy flat resistance."
+	}
+	"Heavy Perisher"
+	{
+		"en"	"Heavy Perisher"
+	}
+	"Heavy Perisher Desc"
+	{
+		"en"	"Grows with each hit recieved."
+	}
+	"Void Mini-Gatekeeper"
+	{
+		"en"	"Void Mini-Gatekeeper"
+	}
+	"Void Mini-Gatekeeper Desc"
+	{
+		"en"	"Acts as 2 spawnpoints on death."
+	}
+	"Brooding Petra"
+	{
+		"en"	"Brooding Petra"
+	}
+	"Brooding Petra Desc"
+	{
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime."
+	}
+	"Kunul"
+	{
+		"en"	"Kunul"
+	}
+	"Kunul Desc"
+	{
+		"en"	"Deals extreme bleed damage on hit."
+	}
+	"Total Growth"
+	{
+		"en"	"Total Growth"
+	}
+	"Total Growth Desc"
+	{
+		"en"	"Grows with each hit it recieves."
+	}
+	"Void's Offspring"
+	{
+		"en"	"Void's Offspring"
+	}
+	"Void's Offspring Desc"
+	{
+		"en"	"Buffs all void entities on death."
+	}
+	"Voided Expidonsan Rejuvinator"
+	{
+		"en"	"Voided Expidonsan Rejuvinator"
+	}
+	"Voided Expidonsan Rejuvinator Desc"
+	{
+		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
+	}
+	"Voided Expidonsan Explorer"
+	{
+		"en"	"Voided Expidonsan Explorer"
+	}
+	"Voided Expidonsan Explorer Desc"
+	{
+		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+	}
+	"Unspeakable"
+	{
+		"en"	"Unspeakable"
+	}
+	"Unspeakable Desc"
+	{
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks."
+	}
+	"Voided Diversionistico"
+	{
+		"en"	"Voided Diversionistico"
+	}
+	"Voided Diversionistico Desc"
+	{
+		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
+	}
+	"Void Portal"
+	{
+		"en"	"Void Portal"
+	}
+	"Void Portal Desc"
+	{
+		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
+	}
+	"Vhxis"
+	{
+		"en"	"Vhxis"
+	}
+	"Vhxis Desc"
+	{
+		"en"	"The void keeper, killing him is not a good idea..."
+	}
+	"Chaos Mage"
+	{
+		"en"	"Chaos Mage"
+	}
+	"Chaos Mage Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, revives once."
+	}
+	"Chaos Supporter"
+	{
+		"en"	"Chaos Supporter"
+	}
+	"Chaos Supporter Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, Heals all allies around itself."
+	}
+	"Chaos Insane"
+	{
+		"en"	"Chaos Insane"
+	}
+	"Chaos Insane Desc"
+	{
+		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+	}
+	"Chaos Knight?"
+	{
+		"en"	"Chaos Knight?"
+	}
+	"Chaos Knight? Desc"
+	{
+		"en"	"a very sick knight, who knows what he could do if not for his sickness.\nDeals heavy chaos damage, Very slow but strong attacks.\nCan go into a defensive state and heal up abit.\nAfter some time, recives a coughting fit, attack it during it, or heal up."
+	}
+	"Chaos Injured Cultist"
+	{
+		"en"	"Chaos Injured Cultist"
+	}
+	"Chaos Injured Cultist Desc"
+	{
+		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+	}
+	"Voided Erasus"
+	{
+		"en"	"Voided Erasus"
+	}
+	"Voided Erasus Desc"
+	{
+		"en"	"Fallen. to the void."
 	}
 	"Basic Bones"
 	{

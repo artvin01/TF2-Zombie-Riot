@@ -13,9 +13,38 @@ static int ExtraLevel[MAXTF2PLAYERS];
 
 void FileNetwork_PluginStart()
 {
+	RegServerCmd("zr_showfilenetlist", DebugCommand);
+
 	SoundList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
 	SoundAlts = new StringMap();
 	ExtraList = new ArrayList(ByteCountToCells(PLATFORM_MAX_PATH));
+}
+
+static Action DebugCommand(int args)
+{
+	char buffer[PLATFORM_MAX_PATH];
+
+	if(SoundList)
+	{
+		int length = SoundList.Length;
+		for(int i; i < length; i++)
+		{
+			SoundList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	if(ExtraList)
+	{
+		int length = ExtraList.Length;
+		for(int i; i < length; i++)
+		{
+			ExtraList.GetString(i, buffer, sizeof(buffer));
+			PrintToServer("\"%s\"", buffer);
+		}
+	}
+
+	return Plugin_Handled;
 }
 
 void FileNetwork_MapEnd()
@@ -414,6 +443,23 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		//LogError("Failed to delete file \"%s\"", file);
 }
 
+stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
+{
+	if(entity > 0 && entity <= MaxClients && channel == SNDCHAN_STATIC)
+	{
+		// Assume it's music
+		EmitCustomToClient(entity, sound, entity, channel, _, SND_STOP, volume);
+	}
+	else
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client))
+				EmitCustomToClient(client, sound, entity, channel, _, SND_STOP, volume);
+		}
+	}
+}
+
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
 #if defined UseDownloadTable
@@ -451,7 +497,7 @@ stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND
 	if(!SoundAlts.GetString(sound, buffer, sizeof(buffer)))
 	{
 		if(soundlevel == -1)
-			ThrowError("\"%s\" is not precached with PrecacheSoundCustom", sound);
+			LogError("\"%s\" is not precached with PrecacheSoundCustom", sound);
 
 		return false;
 	}

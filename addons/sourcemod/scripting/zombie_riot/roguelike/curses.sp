@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int ObsessedIngots = -1;
 static bool Solitary;
 static bool Blind;

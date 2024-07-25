@@ -15,7 +15,7 @@ enum struct TinkerEnum
 }
 
 static const int SupportBuildings[] = { 2, 5, 9, 14, 14, 15 };
-static const int MetalGain[] = { 10, 25, 50, 100, 200, 300 };
+static const int MetalGain[] = { 5, 8, 11, 15, 20, 35 };
 static const float Cooldowns[] = { 180.0, 150.0, 120.0, 90.0, 60.0, 30.0 };
 static int SmithLevel[MAXTF2PLAYERS] = {-1, ...};
 static int i_AdditionalSupportBuildings[MAXTF2PLAYERS] = {0, ...};
@@ -88,6 +88,11 @@ void Blacksmith_ExtraDesc(int client, int index)
 	}
 }
 
+bool Blacksmith_IsASmith(int client)
+{
+	return view_as<bool>(EffectTimer[client]);
+}
+
 void Blacksmith_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_BLACKSMITH)
@@ -132,7 +137,7 @@ void Blacksmith_Enable(int client, int weapon)
 
 public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
-	if(IsClientInGame(client))
+	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
 		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
 		{
@@ -144,6 +149,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					if(!Waves_InSetup() && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 					{
 						SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalGain[SmithLevel[client]]);
+						CurrentAmmo[client][3] = GetAmmo(client, 3);
 					}
 
 					i_AdditionalSupportBuildings[client] = SupportBuildings[SmithLevel[client]];
@@ -153,7 +159,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 						float pos[3]; GetClientAbsOrigin(client, pos);
 						pos[2] += 1.0;
 
-						int entity = ParticleEffectAt(pos, "utaunt_hellpit_firering", -1.0);
+						int entity = ParticleEffectAt(pos, "utaunt_hellpit_middlebase", -1.0);
 						if(entity > MaxClients)
 						{
 							SetParent(client, entity);
@@ -164,23 +170,23 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 					return Plugin_Continue;
 				}
 			}
-			i_AdditionalSupportBuildings[client] = 0;
-			SmithLevel[client] = -1;
 		}
-		
-		if(ParticleRef[client] != -1)
+		else
 		{
-			int entity = EntRefToEntIndex(ParticleRef[client]);
-			if(entity > MaxClients)
+			if(ParticleRef[client] != -1)
 			{
-				TeleportEntity(entity, OFF_THE_MAP);
-				RemoveEntity(entity);
+				int entity = EntRefToEntIndex(ParticleRef[client]);
+				if(entity > MaxClients)
+				{
+					TeleportEntity(entity, OFF_THE_MAP);
+					RemoveEntity(entity);
+				}
+
+				ParticleRef[client] = -1;
 			}
 
-			ParticleRef[client] = -1;
+			return Plugin_Continue;
 		}
-
-		return Plugin_Continue;
 	}
 
 	SmithLevel[client] = -1;
@@ -221,56 +227,26 @@ public void Weapon_BlacksmithMelee_M2(int client, int weapon, bool crit, int slo
 	ApplyTempAttrib(weapon, 6, 0.25, 2.0);
 }
 
-public Action Blacksmith_BuildingTimer(Handle timer, int ref)
+int AnvilClickedOn[MAXTF2PLAYERS];
+int ClickedWithWeapon[MAXTF2PLAYERS];
+void Blacksmith_BuildingUsed(int entity, int client)
 {
-	int entity = EntRefToEntIndex(ref);
-	if(entity == -1)
-		return Plugin_Stop;
-	
-	int maxRepair = Building_Max_Health[entity] * 2;
+	AnvilClickedOn[client] = EntIndexToEntRef(entity);
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon == -1)
+		return;
+	ClickedWithWeapon[client] = EntIndexToEntRef(weapon);
 
-	if(Building_cannot_be_repaired[entity])
-	{
-		int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth") + (maxRepair / 1500);
-		if(maxhealth >= Building_Max_Health[entity])
-		{
-			Building_Repair_Health[entity] += Building_Max_Health[entity] - maxhealth;
-			if(Building_Repair_Health[entity] >= maxRepair)
-				Building_Repair_Health[entity] = maxRepair - 1;
-			
-			maxhealth = Building_Max_Health[entity];
-			Building_cannot_be_repaired[entity] = false;
-		}
-
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
-	}
-	else if(Building_Repair_Health[entity] < maxRepair)
-	{
-		Building_Repair_Health[entity] += (maxRepair / 1500);
-		if(Building_Repair_Health[entity] > maxRepair)
-			Building_Repair_Health[entity] = maxRepair;
-		
-		int progress = (Building_Repair_Health[entity] - 1) * 100 / Building_Max_Health[entity];
-		SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", progress + 1);
-	}
-
-	return Plugin_Continue;
+	Anvil_Menu(client);
 }
-
-void Blacksmith_BuildingUsed(int entity, int client, int owner)
+void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int owner, bool reset)
 {
 	if(owner == -1 || SmithLevel[owner] < 0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "The Blacksmith Failed!");
 		ApplyBuildingCollectCooldown(entity, client, FAR_FUTURE);
-		return;
-	}
-
-	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon == -1)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		ApplyBuildingCollectCooldown(entity, client, 1.0);
 		return;
 	}
 	
@@ -307,7 +283,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 	Zero(tinker.Attrib);
 
 	tinker.Rarity = 0;
-	if(GetClientButtons(client) & IN_DUCK)
+	if(reset)
 	{
 		SetGlobalTransTarget(client);
 		
@@ -383,6 +359,11 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		char classname[64];
 		GetEntityClassname(weapon, classname, sizeof(classname));
 		int slot = TF2_GetClassnameSlot(classname);
+
+		if(i_OverrideWeaponSlot[weapon] != -1)
+		{
+			slot = i_OverrideWeaponSlot[weapon];
+		}
 		if(i_IsWandWeapon[weapon])
 		{
 			// Mage Weapon
@@ -631,6 +612,7 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 		}
 	}
 
+	Building_GiveRewardsUse(client, owner, 25, true, 0.6, true);
 	Store_ApplyAttribs(client);
 	Store_GiveAll(client, GetClientHealth(client));	
 
@@ -662,16 +644,6 @@ void Blacksmith_BuildingUsed(int entity, int client, int owner)
 
 	if(!Rogue_Mode() && owner != client)
 	{
-		if(i_Healing_station_money_limit[owner][client] < 20)
-		{
-			i_Healing_station_money_limit[owner][client]++;
-			Resupplies_Supplied[owner] += 2;
-			GiveCredits(owner, 20, true);
-			SetDefaultHudPosition(owner);
-			SetGlobalTransTarget(owner);
-			ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Blacksmith Used");
-		}
-
 		switch(tinker.Rarity)
 		{
 			case 0:
@@ -1460,26 +1432,31 @@ static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 	strcopy(tinker.Name, sizeof(tinker.Name), "Heavy Trigger");
 	tinker.Attrib[0] = 2; //Damage
 	tinker.Attrib[1] = 6; //attackspeed
+	tinker.Attrib[2] = 97; //Reload speed
 	
 	float ExtraDamage = (0.1 * (tinker.Luck[0]));
 	float attackspeedSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float reloadSpeedLuck = (0.1 * (1.0 + (-1.0*(tinker.Luck[2]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
 			tinker.Value[0] = 1.2 + ExtraDamage;
-			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.1 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.1 + reloadSpeedLuck;
 		}
 		case 1:
 		{
 			tinker.Value[0] = 1.3 + ExtraDamage;
-			tinker.Value[1] = 1.3 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.15 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.15 + reloadSpeedLuck;
 		}
 		case 2:
 		{
 			tinker.Value[0] = 1.35 + ExtraDamage;
-			tinker.Value[1] = 1.35 + attackspeedSpeedLuck;
+			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
+			tinker.Value[2] = 1.2 + reloadSpeedLuck;
 		}
 	}
 }
@@ -1488,27 +1465,27 @@ static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 {
 	strcopy(tinker.Name, sizeof(tinker.Name), "Spray and Pray");
 	tinker.Attrib[0] = 45; //BulletsPetShot
-	tinker.Attrib[2] = 106; //Accuracy
+	tinker.Attrib[1] = 2; //damage
 	
 	float BulletPetShotBonus = (0.1 * (tinker.Luck[0]));
-	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[2]))));
+	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[1]))));
 
 	switch(rarity)
 	{
 		case 0:
 		{
-			tinker.Value[0] = 1.25 + BulletPetShotBonus;
-			tinker.Value[1] = 1.35 + AccuracySuffering;
+			tinker.Value[0] = 1.35 + BulletPetShotBonus;
+			tinker.Value[1] = 0.85 - AccuracySuffering;
 		}
 		case 1:
 		{
-			tinker.Value[0] = 1.3 + BulletPetShotBonus;
-			tinker.Value[1] = 1.40 + AccuracySuffering;
+			tinker.Value[0] = 1.4 + BulletPetShotBonus;
+			tinker.Value[1] = 0.83 - AccuracySuffering;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 1.35 + BulletPetShotBonus;
-			tinker.Value[1] = 1.45 + AccuracySuffering;
+			tinker.Value[0] = 1.45 + BulletPetShotBonus;
+			tinker.Value[1] = 0.8 - AccuracySuffering;
 		}
 	}
 }
@@ -1545,4 +1522,89 @@ static void TinkerSmallerSmarterBullets(int rarity, TinkerEnum tinker)
 			tinker.Value[2] = 0.6 + FasterReloadLuck;
 		}
 	}
+}
+
+
+public void Anvil_Menu(int client)
+{
+	if(dieingstate[client] == 0)
+	{	
+		CancelClientMenu(client);
+		SetStoreMenuLogic(client, false);
+		static char buffer[128];
+		Menu menu = new Menu(Anvil_MenuH);
+
+		SetGlobalTransTarget(client);
+		
+		menu.SetTitle("%t", "Anvil Menu Main");
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Re-Roll Weapon Stats");
+		menu.AddItem("-1", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Remove Weapon Stats");
+		menu.AddItem("-2", buffer);
+
+		FormatEx(buffer, sizeof(buffer), "%t", "Display Current Stats");
+		menu.AddItem("-3", buffer);
+									
+		menu.ExitButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
+}
+
+public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			ResetStoreMenuLogic(client);
+			char buffer[24];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			int weapon;
+			int anvil;
+			int owner;
+			
+			if(IsValidClient(client))
+			{
+				weapon = EntRefToEntIndex(ClickedWithWeapon[client]);
+				anvil = EntRefToEntIndex(AnvilClickedOn[client]);
+			}
+			else
+				return 0;
+
+			if(!IsValidEntity(weapon) || !IsValidEntity(anvil))
+				return 0;
+			else
+			{
+				owner = GetEntPropEnt(anvil, Prop_Send, "m_hOwnerEntity");
+			}
+
+			switch(id)
+			{
+				case -1:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, false);
+				}
+				case -2:
+				{
+					Blacksmith_BuildingUsed_Internal(weapon, anvil, client, owner, true);
+				}
+				case -3:
+				{
+					Blacksmith_ExtraDesc(client, StoreWeapon[weapon]);
+				}
+				default:
+				{
+					delete menu;
+				}
+			}
+		}
+		case MenuAction_Cancel:
+		{
+			ResetStoreMenuLogic(client);
+		}
+	}
+	return 0;
 }

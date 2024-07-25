@@ -9,16 +9,18 @@ enum
 	Element_Chaos,
 	Element_Cyro,
 	Element_Necrosis,
+	Element_Void,
 
 	Element_MAX
 }
 
 static const char ElementName[][] =
 {
-	"Corrode",
-	"Chaos",
-	"Cyro",
-	"Necrosis"
+	"AC",
+	"CH",
+	"CY",
+	"NE",
+	"VO"
 };
 
 static float LastTime[MAXENTITIES];
@@ -62,6 +64,9 @@ stock void Elemental_RemoveDamage(int entity, int amount)
 
 static int TriggerDamage(int entity, int type)
 {
+	if(entity <= MaxClients)
+		return MaxArmorCalculation(Armor_Level[entity], entity, 1.0);
+	
 	switch(type)
 	{
 		case Element_Necrosis:
@@ -98,13 +103,16 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 	float gameTime = GetGameTime();
 	if(f_ArmorCurrosionImmunity[entity] > gameTime)
 	{
-		Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %ds]", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
+		// An elemental effect is in cooldown
+		Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %ds>", ElementName[LastElement[entity]], RoundToCeil(f_ArmorCurrosionImmunity[entity] - gameTime));
 		return true;
 	}
 	
+	// Don't display anything after 5 seconds of nothing
 	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
 		return false;
 	
+	// Find the element that's closest to trigger
 	int low = -1;
 	int lowHealth = 1000000;
 	for(int i; i < Element_MAX; i++)
@@ -120,33 +128,42 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
 		}
 	}
 
+	// Nothing found
 	if(low == -1)
 		return false;
 	
-	Format(Debuff_Adder, sizeof(Debuff_Adder), "[%t %d]", ElementName[low], lowHealth);
+	// <CY 50%>
+	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d%%>", ElementName[low], ElementDamage[entity][low] * 100 /TriggerDamage(entity, low));
 	return true;
 }
 
 void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
 {
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
+	if(victim <= MaxClients && victim > 0)
 	{
 		Armor_DebuffType[victim] = 1;
 		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
 		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				Armor_Charge[victim] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
-				TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-				
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
+					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
+					
+					bool sawrunner = b_ThisNpcIsSawrunner[attacker];
+					b_ThisNpcIsSawrunner[attacker] = true;
+					SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+					b_ThisNpcIsSawrunner[attacker] = sawrunner;
+				}
 			}
 			
 			if(sound || !Armor_Charge[victim])
@@ -194,8 +211,8 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health < 1)
+		int health = Object_GetRepairHealth(victim);
+		if(health < 1 || ignoreArmor)
 		{
 			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 		}
@@ -210,34 +227,41 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		Armor_DebuffType[victim] = 2;
 		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
 		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				Armor_Charge[victim] = 0;
-				float ProjectileLoc[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-				ProjectileLoc[2] += 45.0;
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					float ProjectileLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+					ProjectileLoc[2] += 45.0;
 
-				//if server starts crashing out of nowhere, change how to change teamnum
-				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				b_NpcIsTeamkiller[victim] = true;
-				Explode_Logic_Custom(0.0,
-				attacker,
-				attacker,
-				-1,
-				ProjectileLoc,
-				250.0,
-				_,
-				_,
-				true,
-				99,
-				false,
-				_,
-				SakratanGroupDebuff);
-				b_NpcIsTeamkiller[victim] = false;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
-			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+					//if server starts crashing out of nowhere, change how to change teamnum
+					EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
+					b_NpcIsTeamkiller[victim] = true;
+					Explode_Logic_Custom(0.0,
+					attacker,
+					attacker,
+					-1,
+					ProjectileLoc,
+					250.0,
+					_,
+					_,
+					true,
+					99,
+					false,
+					_,
+					SakratanGroupDebuff);
+					b_NpcIsTeamkiller[victim] = false;
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
+				//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
+				}
 			}
 			
 			if(sound || !Armor_Charge[victim])
@@ -268,7 +292,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			if(ElementDamage[victim][Element_Chaos] > trigger)
 			{
 				ElementDamage[victim][Element_Chaos] = 0;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 10.0;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
 				IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
@@ -279,9 +303,92 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 		}
 	}
+	/*
+	Too strong.
+	Remove.
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, 1.025, 1.0);			
+		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.0001), 10.0, true);
+	}
+	*/
+}
+
+
+void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
+{
+	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(victim <= MaxClients)
+	{
+		Armor_DebuffType[victim] = 3;
+		if((b_thisNpcIsARaid[attacker] || f_ArmorCurrosionImmunity[victim] < GetGameTime()) && (ignoreArmor || Armor_Charge[victim] < 1) && f_BattilonsNpcBuff[victim] < GetGameTime())
+		{
+			if(i_HealthBeforeSuit[victim] > 0)
+			{
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 4.0, DMG_SLASH|DMG_PREVENT_PHYSICS_FORCE);
+			}
+			else
+			{
+				Armor_Charge[victim] -= damage;
+				if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
+				{
+					Armor_Charge[victim] = 0;
+					float ProjectileLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+					ProjectileLoc[2] += 5.0;
+					VoidArea_SpawnNethersea(ProjectileLoc);
+					FramingInfestorSpread(victim);
+					EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+					//Do code for void spread
+				}
+			}
+			
+			if(sound || !Armor_Charge[victim])
+				ClientCommand(victim, "playgamesound npc/scanner/cbot_servoscared.wav ; playgamesound npc/scanner/cbot_servoscared.wav");
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
+	{
+		if(f_ArmorCurrosionImmunity[victim] < GetGameTime())
+		{
+			int trigger;
+			if(Citizen_IsIt(victim))	// Rebels
+			{
+				if(!ignoreArmor)
+				{
+					// Has "armor" at 75% HP
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+						return;
+				}
+
+			}
+			
+			trigger = TriggerDamage(victim, Element_Void);
+
+			LastTime[victim] = GetGameTime();
+			LastElement[victim] = Element_Void;
+			ElementDamage[victim][Element_Void] += damage;
+			if(ElementDamage[victim][Element_Void] > trigger)
+			{
+				ElementDamage[victim][Element_Void] = 0;
+				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
+				float ProjectileLoc[3];
+				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+				ProjectileLoc[2] += 5.0;
+				EmitSoundToAll("npc/scanner/cbot_discharge1.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				VoidArea_SpawnNethersea(ProjectileLoc);
+				FramingInfestorSpread(victim);
+			}
+		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		//removes repair of buildings.
+		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
+		Repair -= damage;
+		if(Repair <= 0)
+			Repair = 0;
+		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }
 
@@ -306,7 +413,14 @@ static void SakratanGroupDebuffInternal(int victim, int attacker)
 		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 
 	b_ThisNpcIsSawrunner[attacker] = sawrunner;
-	IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+	if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
+	}
+	else
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
+	}
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
@@ -334,6 +448,10 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 				Cryo_FreezeZombie(victim, type);
 			}
 		}
+	}
+	else if(i_IsABuilding[victim])	// Buildings
+	{
+		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.001), 10.0);
 	}
 }
 
@@ -364,8 +482,8 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 				if(b_thisNpcIsARaid[victim])
 					time = 3.0;
 				
-				if(f_PotionShrinkEffect[victim] < (GetGameTime() + time))
-					f_PotionShrinkEffect[victim] =  (GetGameTime() + time);
+				if(f_EnfeebleEffect[victim] < (GetGameTime() + time))
+					f_EnfeebleEffect[victim] =  (GetGameTime() + time);
 			}
 		}
 	}

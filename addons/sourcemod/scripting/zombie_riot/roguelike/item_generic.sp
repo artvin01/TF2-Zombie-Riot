@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_None_Remove()
 {
 	// Nothing happens when removed
@@ -367,12 +370,10 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 

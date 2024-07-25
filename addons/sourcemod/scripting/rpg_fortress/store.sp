@@ -1,27 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SELL_AMOUNT 0.7
+#define SELL_AMOUNT	0.7
 
 static const int SlotLimits[] =
 {
-	1,	// 0	Head
-	1,	// 1	Chest
-	1,	// 2	Leggings
-	1,	// 3	Shoes
-	1,	// 4	Monkey Knowledge
-	1,	// 5
-	1,	// 6	Extra Gear
-	1,	// 7	Grenade/Potion
-	1,	// 8	Buildings
-	1,	// 9
-	1,	// 10
-	1,	// 11
-	1,	// 12
-	1,	// 13
-	1,	// 14
-	1,	// 15
-	1	// 16
+	1,	// 0	Primary
+	1,	// 1	Secondary
+	1,	// 2	Melee
+	1,	// 3	Pickaxe
+	1	// 4	Fishing Gear
 };
 
 enum struct ItemInfo
@@ -93,6 +81,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -174,6 +163,7 @@ enum struct ItemInfo
 		
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum("weapon_vmt_setting", -1));
 		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum("weapon_bodygroup", -1));
+		this.Weapon_FakeIndex	= view_as<int>(kv.GetNum("weapon_fakeindex", -1));
 		this.WeaponSizeOverride			= kv.GetFloat("weapon_custom_size", 1.0);
 		this.ThirdpersonAnimModif			= kv.GetFloat("modif_attackspeed_anim", 1.0);
 		this.WeaponSizeOverrideViewmodel			= kv.GetFloat("weapon_custom_size_viewmodel", 1.0);
@@ -265,7 +255,19 @@ enum struct ItemInfo
 		kv.GetString("func_onbuy", buffer, sizeof(buffer));
 		this.FuncOnBuy = GetFunctionByName(null, buffer);
 
-		this.Slot = kv.GetNum("slot", -1);
+		this.Slot = kv.GetNum("slot", -2);
+		if(this.Slot == -2)
+		{
+			if(this.Classname[0])
+			{
+				this.Slot = TF2_GetClassnameSlot(this.Classname);
+			}
+			else
+			{
+				this.Slot = -1;
+			}
+		}
+
 		strcopy(this.Custom_Name, sizeof(this.Custom_Name), name);
 		
 		this.EntRef = INVALID_ENT_REFERENCE;
@@ -314,7 +316,7 @@ bool Store_EquipItem(int client, KeyValues kv, int index, const char[] name)
 	{
 		EquippedItems.GetArray(i, info);
 		if(info.Owner == client && info.Store == index)
-			return false;
+			return true;
 	}
 
 	info.SetupKV(kv, name);
@@ -454,9 +456,13 @@ static void ReShowSettingsHud(int client)
 	SetGlobalTransTarget(client);
 	Menu menu2 = new Menu(Settings_MenuPage);
 	menu2.SetTitle("%t", "Settings Page");
-
+#if defined ZR
 	FormatEx(buffer, sizeof(buffer), "%t", "Armor Hud Setting");
 	menu2.AddItem("-2", buffer);
+#else
+	FormatEx(buffer, sizeof(buffer), "%s", "Stamina Hud Setting");
+	menu2.AddItem("-2", buffer);
+#endif
 
 	FormatEx(buffer, sizeof(buffer), "%t", "Hurt Hud Setting");
 	menu2.AddItem("-8", buffer);
@@ -529,8 +535,11 @@ public void ReShowArmorHud(int client)
 	SetGlobalTransTarget(client);
 
 	Menu menu2 = new Menu(Settings_MenuPage);
+#if defined ZR
 	menu2.SetTitle("%t", "Armor Hud Setting Inside",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
-
+#else
+	menu2.SetTitle("%s\nX:%.3f\nY:%.3f", "Stamina Hud Offset",f_ArmorHudOffsetX[client],f_ArmorHudOffsetY[client]);
+#endif
 	FormatEx(buffer, sizeof(buffer), "%t", "Move Hud Up");
 	menu2.AddItem("-3", buffer);
 
@@ -988,7 +997,9 @@ void Store_ApplyAttribs(int client)
 	if(!EquippedItems)
 		return;
 
+	float SpeedAttribBefore = Attributes_Get(client, 442, 1.0);
 	Attributes_RemoveAll(client);
+	Stats_ApplyAttribsPre(client);
 	
 	TFClassType ClassForStats = WeaponClass[client];
 	
@@ -998,9 +1009,9 @@ void Store_ApplyAttribs(int client)
 	Races_GetRaceByIndex(RaceIndex[client], race);
 	Format(c_TagName[client],sizeof(c_TagName[]),race.Name);
 	i_TagColor[client] =	{255,255,255,255};
-	Stats_SetBodyStats(client, ClassForStats, map);
 
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
+	GetClientName(client, c_NpcName[client], sizeof(c_NpcName[]));
 
 	map.SetValue("353", 1.0);	// No manual building pickup.
 	map.SetValue("465", 999.0);	// instant build
@@ -1109,7 +1120,7 @@ void Store_ApplyAttribs(int client)
 			int index = StringToInt(buffer1);
 			if(index < 0)
 			{
-				Stats_GetCustomStats(client, index, value);
+				Stats_SetCustomStats(client, index, value);
 			}
 			else if(Attributes_Set(entity, index, value))
 			{
@@ -1117,6 +1128,8 @@ void Store_ApplyAttribs(int client)
 			}
 		}
 	}
+
+	Stats_ApplyAttribsPost(client, ClassForStats, SpeedAttribBefore);
 
 	while(TF2_GetWearable(client, entity))
 	{
@@ -1157,7 +1170,12 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		return;
 	}
 
-	OverridePlayerModel(client, 0, false);
+	OverridePlayerModel(client);
+	TrueStrengthShieldUnequip(client);
+	TrueStrengthUnequip(client);
+	ChronoShiftUnequipOrDisconnect(client);
+	GoldenAgilityUnequip(client);
+	FishingEmblemDoubleJumpUnequip(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -1198,8 +1216,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
-		int count;
-		bool hasPDA = false;
 		bool found = false;
 		bool use = true;
 
@@ -1210,24 +1226,24 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			EquippedItems.GetArray(i, info);
 			if(info.Owner == client)
 			{
-				if(info.Classname[0])
+				if(info.Classname[0] && info.Slot < 3)
 				{
-					if(!StrContains(info.Classname, "tf_weapon_pda_engineer_build"))
-					{
-						if(hasPDA)
-							continue;
-						
-						hasPDA = true;
-					}
-
 					Store_GiveItem(client, i, use, found);
-					if(++count > 6)
-					{
-						SetGlobalTransTarget(client);
-						PrintToChat(client, "%t", "At Weapon Limit");
-						break;
-					}
+					length = EquippedItems.Length;
+				}
+			}
+		}
 
+		length = EquippedItems.Length;
+		for(int i; i < length; i++)
+		{
+			static ItemInfo info;
+			EquippedItems.GetArray(i, info);
+			if(info.Owner == client)
+			{
+				if(info.Classname[0] && info.Slot > 2)
+				{
+					Store_GiveItem(client, i, use, found);
 					length = EquippedItems.Length;
 				}
 			}
@@ -1241,6 +1257,8 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	Manual_Impulse_101(client, health);
 	ReApplyTransformation(client);
+	RPGCore_StaminaAddition(client, 999999999);
+	RPGCore_ResourceAddition(client, 999999999);
 }
 
 void Delete_Clip(int ref)
@@ -1375,7 +1393,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								{
 									if(!info.HasNoClip)
 									{
-									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
 									}
@@ -1465,8 +1482,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
-
-					HidePlayerWeaponModel(client, entity);
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -1514,7 +1530,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 					if(use)
 					{
-						TF2Util_SetPlayerActiveWeapon(client, entity);
+						SetPlayerActiveWeapon(client, entity);
 						use = false;
 					}
 				}
@@ -1540,9 +1556,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_iEntityQuality", 0);
 			SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 
-			HidePlayerWeaponModel(client, entity);
-			//hide original model
-			
 			static int offset;
 			if(!offset)
 			{
@@ -1571,7 +1584,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 
 			if(use)
 			{
-				TF2Util_SetPlayerActiveWeapon(client, entity);
+				SetPlayerActiveWeapon(client, entity);
 				use = false;
 			}
 		}
@@ -1610,7 +1623,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							if(info.Attrib[a] < 0)
 							{
-								Stats_GetCustomStats(entity, info.Attrib[a], info.Value[a]);
+								Stats_SetCustomStats(entity, info.Attrib[a], info.Value[a]);
 								continue;
 							}
 
@@ -1645,7 +1658,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						{
 							if(info.Attrib2[a] < 0)
 							{
-								Stats_GetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
+								Stats_SetCustomStats(entity, info.Attrib2[a], info.Value2[a]);
 								continue;
 							}
 
@@ -1844,81 +1857,205 @@ void RPGStore_SetWeaponDamageToDefault(int weapon, int client, const char[] clas
 		}
 	}
 	
-	static float PreviousValue[MAXENTITIES];
+	static float PreviousValue[MAXENTITIES][5];
+	//5 stats at once
 	float value = RPGStats_FlatDamageSetStats(client, damageType) / damageBase;
 
 	// Set a new value if we changed
-	if(first || value != PreviousValue[weapon])
+
+	/* 
+		// 4004 is stamina cost
+		// 4003 is capacity cost
+		// 97 Reload speed
+		// 6 Attack speed
+
+
+		// 2 normal damage
+		// 410, mage damage
+	*/
+
+	// Damage Bonus
+	if(first || value != PreviousValue[weapon][0])
 	{
 		if(first)
 		{
-			Attributes_SetMulti(weapon, 2, value);
+			if(i_IsWandWeapon[weapon])
+				Attributes_SetMulti(weapon, 410, value);
+			else
+				Attributes_SetMulti(weapon, 2, value);
 		}
 		else
 		{
 			// Second time we modified, remove what we previously had
-			Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon]);
+			if(i_IsWandWeapon[weapon])
+				Attributes_SetMulti(weapon, 410, value / PreviousValue[weapon][0]);
+			else
+				Attributes_SetMulti(weapon, 2, value / PreviousValue[weapon][0]);
 		}
 
-		PreviousValue[weapon] = value;
+		PreviousValue[weapon][0] = value;
 	}
 
-	/*OLD CODE
-	float DecimalForDamage = 1.0 / damageBase;
-	Attributes_Set(weapon, 1000, DecimalForDamage);
-	//weapon starts out with excatly 1 damage.
-	int StattDifference;
-
-
-	int check = 10;	// Any
-	switch(damageType)
+	float AgilityScaling;
+	//200 is the max, any higher and you break limits.
+	AgilityScaling = AgilityMulti(Stats_Agility(client));
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][1])
 	{
-		case 1:
+		if(Attributes_Has(weapon, 6))
 		{
-			StattDifference = Stats_Strength(client) - Strength2[weapon];
-			check = 2;	// Melee
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 6, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 6, value / PreviousValue[weapon][1]);
+			}
 		}
-		case 2:
-		{
-			StattDifference = Stats_Precision(client) - Precision2[weapon];
-			check = 7;	// Primary / Secondary
-		}
-		case 3:
-		{
-			StattDifference = Stats_Artifice(client) - Artifice2[weapon];
-			check = 8;	// Mage
-		}
+
+		PreviousValue[weapon][1] = value;
 	}
 
-	PrintToChatAll("StattDifference %i",StattDifference);
-	if(StattDifference == 0)
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][2])
 	{
-		return;
-	}
-
-
-	char classname[36];
-	GetEntityClassname(weapon, classname, sizeof(classname));
-	if(CheckEntitySlotIndex(check, TF2_GetClassnameSlot(classname), weapon))
-	{
-
-		float AttributeDifferenceToApply;
-		AttributeDifferenceToApply = RPGStats_FlatDamageSetStats(client, damageType, StattDifference);
-		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
-		if(f_DamageMultiWeaponApplied[weapon] != 0.0)
+		if(Attributes_Has(weapon, 97))
 		{
-
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 97, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 97, value / PreviousValue[weapon][2]);
+			}
 		}
-		f_DamageMultiWeaponApplied[weapon] = AttributeDifferenceToApply;
-		PrintToChatAll("AttributeDifferenceToApply %f",AttributeDifferenceToApply);
-		Attributes_SetMulti(weapon, 2, AttributeDifferenceToApply);
-		
-		//this sets all weapons idealy to the damage shown in the stats screen. Then just give extra damage and other shit to balance it out!
+
+		PreviousValue[weapon][2] = value;
 	}
 
-	Strength2[weapon] = Stats_Strength(client);
-	Precision2[weapon] = Stats_Precision(client);
-	Artifice2[weapon] = Stats_Artifice(client);
-	Agility2[weapon] = Stats_Agility(client);
-*/
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][3])
+	{
+		if(Attributes_Has(weapon, 4004))
+		{
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 4004, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 4004, value / PreviousValue[weapon][3]);
+			}
+		}
+
+		PreviousValue[weapon][3] = value;
+	}
+
+	value = AgilityScaling;
+	if(first || value != PreviousValue[weapon][4])
+	{
+		if(Attributes_Has(weapon, 4003))
+		{
+			if(first)
+			{
+				Attributes_SetMulti(weapon, 4003, value);
+			}
+			else
+			{
+				// Second time we modified, remove what we previously had
+				Attributes_SetMulti(weapon, 4003, value / PreviousValue[weapon][4]);
+			}
+		}
+
+		PreviousValue[weapon][4] = value;
+	}
+}
+
+bool Store_SwitchToWeaponSlot(int client, int slot)
+{
+	int length = EquippedItems.Length;
+	for(int i; i < length; i++)
+	{
+		static ItemInfo info;
+		EquippedItems.GetArray(i, info);
+		if(info.Owner == client)
+		{
+			if(info.Classname[0] && info.Slot == slot)
+			{
+				int entity = EntRefToEntIndex(info.EntRef);
+				if(entity != -1)
+				{
+					SetPlayerActiveWeapon(client, entity);
+					return true;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+
+public float Ammo_HealingSpell(int client, int index, char name[48])
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		HealEntityGlobal(client, client, kv.GetFloat("totalheal"), kv.GetFloat("overheal"), kv.GetFloat("healoverduration"), HEAL_SELFHEAL);
+
+		if(kv.GetNum("staminaregenlevel") > 0)
+			RPGCore_StaminaAddition(client, RPGStats_RetrieveMaxStamina(kv.GetNum("staminaregenlevel")));
+
+		if(kv.GetNum("energyregenlevel") > 0)
+			RPGCore_ResourceAddition(client, RoundToNearest(RPGStats_RetrieveMaxEnergy(kv.GetNum("energyregenlevel"))));
+
+		int consume_Arg = kv.GetNum("consume", 1);
+		if(consume_Arg == 1)
+		{
+			int amount;
+			TextStore_GetInv(client, index, amount);
+			TextStore_SetInv(client, index, amount - 1, amount < 2 ? 0 : -1);
+			if(amount < 2)
+				name[0] = 0;
+
+			kv.GetString("return", name, sizeof(name));
+			if(name[0])
+				TextStore_AddItemCount(client, name, 1);
+		}
+		else if(consume_Arg == 0)
+		{
+			kv.GetString("return", name, sizeof(name));
+		}
+
+		static char buffer[PLATFORM_MAX_PATH];
+		kv.GetString("sound", buffer, sizeof(buffer));
+		if(buffer[0])
+			ClientCommand(client, "playgamesound %s", buffer);
+
+		if(consume_Arg > 1)
+		{
+			return GetGameTime() + float(consume_Arg);
+		}
+	}
+	return FAR_FUTURE;
+}
+
+
+public void Ammo_TagDeploy(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		kv.GetString("tagsforplayer", c_TagName[client],sizeof(c_TagName[]), "Newbie");
+		kv.GetColor4("tagsforplayercolor", i_TagColor[client]);
+		if(i_TagColor[client][3] == 0)
+		{
+			i_TagColor[client] =	{255,255,255,255};
+		}
+	}
 }

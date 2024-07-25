@@ -1,10 +1,33 @@
 static bool HeavyWind;
+#pragma semicolon 1
+#pragma newdecls required
+
 static bool ExtremeHeat;
 static bool RedMoon;
+static bool StartEasyMode;
 static bool StartLastman;
 static bool StartCamping;
+static bool ForceNextHunter;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
+
+public float Rogue_Encounter_ForcedHunterBattle()
+{
+	ForceNextHunter = true;
+	Rogue_SetBattleIngots(4 + (Rogue_GetRound() / 2));
+	return 0.0;
+}
+
+bool Rogue_Paradox_IgnoreOdds()
+{
+	if(ForceNextHunter)
+	{
+		ForceNextHunter = false;
+		return true;
+	}
+
+	return false;
+}
 
 bool Rogue_Paradox_ExtremeHeat()
 {
@@ -21,14 +44,20 @@ void Rogue_Paradox_MapStart()
 	delete WinterTheme;
 }
 
+void Rogue_Paradox_AddChaos(int &change)
+{
+	if(StartEasyMode)
+		change /= 4;
+}
+
 bool Rogue_Paradox_Lastman()
 {
 	return StartLastman;
 }
 
-void Rogue_Paradox_OnNewFloor()
+void Rogue_Paradox_OnNewFloor(int floor)
 {
-	if(StartCamping)
+	if(StartCamping && floor < 4)
 		Rogue_AddExtraStage(1);
 }
 
@@ -69,7 +98,7 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 			// Degen if no blessing or above 50% health
 			if(Jesus_Blessing[client] != 1 || (health > maxhealth / 2))
 			{
-				int damage = maxhealth / -100;
+				int damage = maxhealth / -400;
 				health += damage;
 				if(health < 1)
 				{
@@ -98,12 +127,22 @@ void Rogue_Paradox_ProjectileSpeed(int owner, float &speed)
 	}
 }
 
+public void Rogue_CompassMap_Collect()
+{
+	StartEasyMode = true;
+}
+
 public void Rogue_CompassMap_Enemy(int entity)
 {
-	fl_Extra_Speed[entity] *= 0.9;
-	fl_Extra_MeleeArmor[entity] *= 1.25;
-	fl_Extra_RangedArmor[entity] *= 1.25;
-	fl_Extra_Damage[entity] *= 0.75;
+	fl_Extra_Speed[entity] *= 0.8;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
+	fl_Extra_Damage[entity] *= 0.65;
+}
+
+public void Rogue_CompassMap_Remove()
+{
+	StartEasyMode = false;
 }
 
 public void Rogue_Lastman_Collect()
@@ -126,20 +165,53 @@ public void Rogue_Camping_Remove()
 	StartCamping = false;
 }
 
+public void Rogue_Trading_Collect()
+{
+	Rogue_AddIngots(20, true);
+}
+
+public void Rogue_Weapon_Collect()
+{
+	GlobalExtraCash += 250;
+	CurrentCash += 250;
+
+	Ammo_Count_Ready += 30;
+}
+
+public void Rogue_Something_Collect()
+{
+	Rogue_AddChaos(30, true);
+}
+
 public void Rogue_HeavyWind_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 103, 0.67);
+	if(Attributes_Has(entity, 103))
+		Attributes_SetMulti(entity, 103, 0.67);
 }
 
 public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
+		bool seaborn;
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_SEABORNMELEE:
+				{
+					seaborn = true;
+					break;
+				}
+			}
+		}
+
 		float value;
 
 		// -20% move speed
 		map.GetValue("107", value);
-		map.SetValue("107", value * 0.8);
+		map.SetValue("107", value * (seaborn ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -212,7 +284,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
 				continue;
@@ -220,9 +292,9 @@ static Action Timer_ParadoxFrost(Handle timer)
 			int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 			if(health > 1)
 			{
-				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 400;
-				if(damage > 125)
-					damage = 125;
+				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 1600;
+				if(damage > 50)
+					damage = 50;
 				
 				health -= damage;
 				if(health < 1)

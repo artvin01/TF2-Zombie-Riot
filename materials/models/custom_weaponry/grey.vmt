@@ -1,0 +1,26 @@
+"UnlitGeneric"
+{
+	"$basetexture" "models/custom_weaponry/grey"
+
+	"$basemapalphaphongmask" "1" 
+	"$selfillum" "1"
+	"$phong"	"0"
+	"$phongboost"	"1"
+	"$phongexponent"	"1"
+	"$phongfresnelranges"	"[.5 1 2]"
+
+	"$glowcolor" "0"
+
+    "$nocull" "1"
+
+ 	"$blendtintbybasealpha" "0" 
+ 	"$blendtintcoloroverbase" "1"  
+
+	"$additive" "1"
+	"$yellow" "0"
+
+	// Cloaking
+
+
+
+}

@@ -18,7 +18,7 @@ static const char g_IdleSounds[][] = {
 	")npc/combine_soldier/vo/alert1.wav",
 	")npc/combine_soldier/vo/bouncerbouncer.wav",
 	")npc/combine_soldier/vo/boomer.wav",
-	")npc/combine_soldier/vo/contactconfirm.wav",
+	")npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -81,7 +81,7 @@ void OverlordRogue_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -111,9 +111,7 @@ methodmap OverlordRogue < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -125,18 +123,14 @@ methodmap OverlordRogue < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)]);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -187,9 +181,7 @@ methodmap OverlordRogue < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public OverlordRogue(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -199,7 +191,7 @@ methodmap OverlordRogue < CClotBody
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		i_NpcWeight[npc.index] = 99;
-		//KillFeed_SetKillIcon(npc.index, "firedeath");
+		KillFeed_SetKillIcon(npc.index, "firedeath");
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -449,14 +441,14 @@ public void OverlordRogue_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									//KillFeed_SetKillIcon(npc.index, "sword");
+									KillFeed_SetKillIcon(npc.index, "sword");
 
 									if(!ShouldNpcDealBonusDamage(target))
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 200.0, DMG_CLUB, -1, _, vecHit);
 									else
 										SDKHooks_TakeDamage(target, npc.index, npc.index, 5000.0, DMG_CLUB, -1, _, vecHit);
 									
-									//KillFeed_SetKillIcon(npc.index, "firedeath");
+									KillFeed_SetKillIcon(npc.index, "firedeath");
 
 									if(target > MaxClients)
 									{

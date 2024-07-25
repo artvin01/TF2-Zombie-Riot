@@ -123,9 +123,7 @@ methodmap MedivalSonOfOsiris < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -137,18 +135,14 @@ methodmap MedivalSonOfOsiris < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -282,7 +276,7 @@ public void MedivalSonOfOsiris_ClotThink(int iNPC)
 						
 					if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.5)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 					{
-						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 550.0, GetTeam(npc.index) == TFTeam_Red);
+						SonOfOsiris_Lightning_Strike(npc.index, npc.m_iTarget, 900.0, GetTeam(npc.index) == TFTeam_Red);
 					}
 				}
 			}
@@ -475,7 +469,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 	}
 
 	b_EntityHitByLightning[target] = true;
-	float original_damage = damage;
+//	float original_damage = damage;
 
 	int PreviousTarget = target;
 	int TraceFromThis = entity;
@@ -485,6 +479,7 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 		int enemy = SonOfOsiris_GetClosestTargetNotAffectedByLightning(TraceFromThis, vecHit, alliednpc);
 		if(IsValidEntity(enemy) && PreviousTarget != enemy)
 		{
+			/*
 			if(IsValidClient(enemy))
 			{
 				if(IsInvuln(enemy))
@@ -492,7 +487,8 @@ static void SonOfOsiris_Lightning_Strike(int entity, int target, float damage, b
 					original_damage *= 2.0;
 				}
 			}
-			damage = (original_damage * (0.15 * loop));
+			*/
+		//	damage = (original_damage * (0.15 * loop));
 
 			if(!first_target)
 			{

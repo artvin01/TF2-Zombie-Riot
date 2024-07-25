@@ -213,7 +213,9 @@ methodmap Sensal < CClotBody
 	{
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MissAbilitySound[GetRandomInt(0, sizeof(g_MissAbilitySound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -299,13 +301,18 @@ methodmap Sensal < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		bool cutscene = StrContains(data, "duo_cutscene") != -1;
 		if(cutscene)
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		
+		bool tripple = StrContains(data, "triple_enemies") != -1;
+		if(tripple)
+		{
+			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -550,6 +557,11 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
+
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -632,7 +644,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Blue Goggles, what is the meaning of this?");
+			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -828,6 +840,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
+			npc.m_flReloadIn = gameTime + 3.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
@@ -837,9 +850,12 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flAngerDelay = gameTime + 60.0;
 
 			if(ZR_GetWaveCount()+1 >= 60)
+			{
+				npc.m_flReloadIn = gameTime + 1.5;
+				npc.SetPlaybackRate(2.0);
 				npc.m_flAngerDelay = gameTime + 30.0;
+			}
 
-			npc.m_flReloadIn = gameTime + 3.0;
 		}
 		else
 		{
@@ -883,15 +899,20 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				RemoveEntity(npc.m_iWearable7);
 			}
 			npc.m_flRangedSpecialDelay = gameTime + 15.5;
-			npc.m_flAttackHappens_2 = gameTime + 1.4;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 99.0;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			npc.m_flAttackHappens = 0.0;
+			npc.m_flAttackHappens_2 = gameTime + 1.4;
 			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
+			if(ZR_GetWaveCount()+1 >= 60)
+			{
+				npc.m_flAttackHappens_2 = gameTime + 1.275;
+				npc.SetPlaybackRate(1.25);
+			}
 			float flPos[3];
 			float flAng[3];
 			npc.m_iChanged_WalkCycle = 0;
@@ -1651,9 +1672,13 @@ bool SensalMassLaserAttack(Sensal npc)
 			}
 			if(foundEnemy)
 			{
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
-				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME);
+				int Pitch = 100;
+				if(ZR_GetWaveCount()+1 >= 60)
+					Pitch = 125;
+
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
+				EmitSoundToAll(g_LaserGlobalAttackSound[GetRandomInt(0, sizeof(g_LaserGlobalAttackSound) - 1)], npc.index, SNDCHAN_AUTO, 150, _, BOSS_ZOMBIE_VOLUME, Pitch);
 			}
 			else
 			{

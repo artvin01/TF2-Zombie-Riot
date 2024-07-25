@@ -347,7 +347,7 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				
 				healing = healing / 5 * 5;
 
-				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
@@ -355,6 +355,9 @@ public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
 				float cooldown = float(healing) / 5.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
+					
+				if(cooldown > 15.0)
+					cooldown = 15.0;
 				
 				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
 
@@ -404,7 +407,7 @@ public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
 		if(healing > ammo)
 			healing = ammo;
 		
-		HealEntityGlobal(client, client, float(healing), 1.0, 0.0, _);
+		healing = HealEntityGlobal(client, client, float(healing), 1.0, 0.0, _);
 		
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
@@ -453,7 +456,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				
 				healing = healing / 5 * 5;
 
-				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 

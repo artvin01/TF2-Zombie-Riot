@@ -144,7 +144,7 @@ methodmap KazimierzKnightArcher < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
 
-		npc.m_iWearable3 = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+		npc.m_iWearable3 = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 /*

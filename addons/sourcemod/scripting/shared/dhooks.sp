@@ -21,7 +21,6 @@ static DynamicHook g_DHookScoutSecondaryFire;
 
 #if defined ZR
 static bool IsRespawning;
-static Address CTeamplayRoundBasedRules = Address_Null;
 #endif
 //static DynamicDetour gH_MaintainBotQuota = null;
 static DynamicHook g_DHookGrenadeExplode; //from mikusch but edited
@@ -99,10 +98,7 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata, "CTFPlayer::GetChargeEffectBeingProvided", DHook_GetChargeEffectBeingProvidedPre, DHook_GetChargeEffectBeingProvidedPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::ManageRegularWeapons()", DHook_ManageRegularWeaponsPre, DHook_ManageRegularWeaponsPost);
 	DHook_CreateDetour(gamedata, "CTFPlayer::RegenThink", DHook_RegenThinkPre, DHook_RegenThinkPost);
-	DHook_CreateDetour(gamedata, "CBaseObject::ShouldQuickBuild", DHookCallback_CBaseObject_ShouldQuickBuild_Pre, _);
 #endif
-	DHook_CreateDetour(gamedata, "CObjectSentrygun::FindTarget", DHook_SentryFind_Target, _);
-	DHook_CreateDetour(gamedata, "CObjectSentrygun::Fire", DHook_SentryFire_Pre, DHook_SentryFire_Post);
 
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
@@ -111,7 +107,6 @@ void DHook_Setup()
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-	DHook_CreateDetour(gamedata, "CBaseObject::FinishedBuilding", Dhook_FinishedBuilding_Pre, Dhook_FinishedBuilding_Post);
 	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 //	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
 //	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
@@ -868,19 +863,39 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 {
 	if(b_IsInUpdateGroundConstraintLogic)
 	{
-		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1]/* || (ent1 > 0 && ent1 <= MaxClients) || i_IsABuilding[ent1]*/)
+		if(b_ThisEntityIsAProjectileForUpdateContraints[ent1])
 		{
 			return false;
 		}
-		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2]/* || (ent2 > 0 && ent2 <= MaxClients) || i_IsABuilding[ent2]*/)
+		else if(b_ThisEntityIsAProjectileForUpdateContraints[ent2])
 		{
 			return false;
 		}
 		//We do not want this entity to step on anything aside from the actual world or entities that are treated as the world
 	}
+	//npc has died, ignore all collissions no matter what
+	if(b_ThisWasAnNpc[ent1])
+	{
+		if(b_NpcHasDied[ent1])
+			return false;
+	}
+	if(b_ThisWasAnNpc[ent2])
+	{
+		if(b_NpcHasDied[ent2])
+			return false;
+	}
 	if(b_ThisEntityIgnoredEntirelyFromAllCollisions[ent1] || b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2])
 	{
+#if defined RPG
+		if(ent1 < MaxClients && ent2 < MaxClients)
+		{
+			if(RPGCore_PlayerCanPVP(ent1, ent2))
+				return true;
+		}
 		return false;
+#else
+		return false;
+#endif
 	}	
 	
 	for( int ent = 1; ent <= 2; ent++ ) 
@@ -897,7 +912,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			entity1 = ent2;
 			entity2 = ent1;			
 		}
-
 #if !defined RTS
 		if(b_ProjectileCollideIgnoreWorld[entity1])
 		{
@@ -907,15 +921,6 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 
 #if defined ZR
-		if(i_WhatBuilding[entity1] == BuildingSentrygun)
-		{
-			//buildings cannot touch eachother
-			if(i_WhatBuilding[entity2] != 0 || (GetTeam(entity2) == TFTeam_Red && entity2 > MaxClients)) //dont ignore players
-			{
-				return false;
-			}
-		}
-		
 		if(b_IsAGib[entity1]) //This is a gib that just collided with a player, do stuff! and also make it not collide.
 		{
 			if(entity2 <= MaxClients && entity2 > 0)
@@ -928,6 +933,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif
 		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
 		{
+			if(b_IsATrigger[entity2])
+			{
+				return false;
+			}
 			if(b_ThisEntityIgnored[entity2])
 			{
 				return false;
@@ -984,6 +993,10 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				}
 				return false;
 			}
+			if(b_IsATrigger[entity2])
+			{
+				return false;
+			}
 			else if(b_IgnoredByPlayerProjectiles[entity2])
 			{
 				return false;
@@ -999,24 +1012,32 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			//dont colldide with wsame team if its
 			else if(GetTeam(entity2) == GetTeam(entity1) && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
-			}
-#if defined ZR
-			else if (i_WandIdNumber[entity1] == 19 && !i_IsABuilding[entity2] && !b_IsAProjectile[entity2]) //Health Hose projectiles
-			{
-				Hose_Touch(entity1, entity2);
-				return false;
-			}
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
 #endif	
+			}
 			//ally projectiles do not collide with players unless they only go for players
 			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
+#endif	
 			}
 			//ignores everything else if it only collides with players
 			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
 			{
-				return false;
+#if defined RPG
+				if(!RPGCore_PlayerCanPVP(entity1, entity2))
+					return false;
+#else
+					return false;
+#endif	
 			}
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
@@ -1027,13 +1048,21 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			}
 		}
 #endif	// Non-RTS
-
+//enemy NPC
 #if defined RTS
-		else if(!b_NpcHasDied[entity1])
+		if(!b_NpcHasDied[entity1])
 #else	
-		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
+		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
 #endif
 		{
+			//ignore buildings, neccecary during some situations
+			if(i_IsABuilding[entity2])
+			{
+				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[entity1])
+				{
+					return false;
+				}
+			}
 			if(b_ThisEntityIgnored[entity2] && !DoingLagCompensation) //Only Ignore when not shooting/compensating, which is shooting only.
 			{
 				return false;
@@ -1057,27 +1086,37 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			else if((entity2 <= MaxClients && entity2 > 0) && f_AntiStuckPhaseThrough[entity2] > GetGameTime())
+#if defined RPG
+			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime() || OnTakeDamageRpgPartyLogic(entity1, entity2, GetGameTime())))
+#else
+			else if((entity2 <= MaxClients && entity2 > 0) && (f_AntiStuckPhaseThrough[entity2] > GetGameTime()))
+#endif
 			{
 				//if a player needs to get unstuck.
 				return false;
 			}
 		}
-
+//allied NPC
 #if !defined RTS
 		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
 		{
+			//dont be solid to buildings
+			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
+				return false;
+			
+			///????? i dont know
 			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
 			{	
-				return false;
+				if(!i_IsABuilding[entity2] && !i_IsABuilding[entity1])
+					return false;
 			}
+			//lag comp stuff, shooting in specific
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
 				return false;
 			}
 		}
 #endif
-
 	}
 	return result;	
 }
@@ -1252,13 +1291,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	}
 	if(!Dont_Move_Building)
 	{
-		for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "obj_*")) != -1)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-			if (IsValidEntity(entity))
-			{
-				b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
-			}
+			b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = true;
 		}
 	}
 
@@ -1325,119 +1361,6 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	return MRES_Ignored;
 //	return MRES_Supercede;
 }
-/*
-public MRESReturn DHook_BlockThink(int Base_Boss)
-{
-	PrintToChatAll("thinking");
-	return MRES_Supercede;
-}
-*/
-public MRESReturn DHook_SentryFind_Target(int sentry, Handle hReturn, Handle hParams)
-{
-#if defined ZR
-	if(b_SentryIsCustom[sentry])
-	{
-		DHookSetReturn(hReturn, false); 
-		return MRES_Supercede;		
-	}
-#endif
-	
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	if(owner > 0)
-	{
-		if(IsPlayerAlive(owner))
-		{
-			int i, entity;
-			while(TF2_GetItem(owner, entity, i))
-			{
-				int weaponindex = GetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex");
-				if(weaponindex == 140)
-					return MRES_Ignored;
-			}
-		}
-	}
-	int Looking_At_This; 
-	Looking_At_This = GetEntPropEnt(sentry, Prop_Send, "m_hEnemy");
-	if(IsValidEntity(Looking_At_This) && IsValidEnemy(sentry, Looking_At_This))
-	{
-		Handle trace; 
-		float pos_sentry[3]; GetEntPropVector(sentry, Prop_Data, "m_vecAbsOrigin", pos_sentry);
-		float pos_enemy[3]; GetEntPropVector(Looking_At_This, Prop_Data, "m_vecAbsOrigin", pos_enemy);
-		pos_sentry[2] += 25.0;
-		pos_enemy[2] += 45.0;
-		
-		trace = TR_TraceRayFilterEx(pos_sentry, pos_enemy, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, Base_Boss_Hit, sentry);
-		int Traced_Target;
-		
-//		int g_iPathLaserModelIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
-//		TE_SetupBeamPoints(pos_sentry, pos_enemy, g_iPathLaserModelIndex, g_iPathLaserModelIndex, 0, 30, 1.0, 1.0, 0.1, 5, 0.0, view_as<int>({255, 0, 255, 255}), 30);
-//		TE_SendToAll();
-		
-		Traced_Target = TR_GetEntityIndex(trace);
-		delete trace;
-		
-		if(IsValidEntity(Traced_Target) && b_ThisEntityIgnoredByOtherNpcsAggro[Traced_Target])
-		{
-			DHookSetReturn(hReturn, false); 
-			return MRES_Supercede;	
-		}
-		if(IsValidEntity(Traced_Target) && IsValidEnemy(sentry, Traced_Target))
-		{
-			DHookSetReturn(hReturn, true); 
-			return MRES_Supercede;		
-		}
-	} 
-	return MRES_Ignored;
-}
-
-
-public MRESReturn DHook_SentryFire_Pre(int sentry, Handle hReturn, Handle hParams)
-{
-#if !defined RTS
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-		}
-	}
-#else
-	
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && owner != client)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = true;
-		}	
-	}
-#endif
-	return MRES_Ignored;
-}
-
-public MRESReturn DHook_SentryFire_Post(int sentry, Handle hReturn, Handle hParams)
-{
-#if !defined RTS
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-		}
-	//	EmitGameSoundToAll("Building_MiniSentrygun.Fire", sentry);
-	}
-#else
-	int owner = GetEntPropEnt(sentry, Prop_Send, "m_hBuilder");
-	for(int client=1; client<=MaxClients; client++)
-	{
-		if(IsClientInGame(client) && owner != client)
-		{
-			b_ThisEntityIgnoredEntirelyFromAllCollisions[client] = false;
-		}
-	}
-#endif
-	return MRES_Ignored;
-}
 
 void DHook_HookClient(int client)
 {
@@ -1473,18 +1396,15 @@ void DHook_ClientDisconnectPost()
 }
 */
 
+#if defined ZR
 void DHook_RespawnPlayer(int client)
 {
-#if defined ZR
 	IsRespawning = true;
 	TF2_RespawnPlayer(client);
 	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
 	IsRespawning = false;
-#elseif !defined RTS
-	TF2_RespawnPlayer(client);
-	SetEntPropFloat(client, Prop_Send, "m_flCloakMeter", 0.0); //No cloak regen at all. Very important to set here!
-#endif
 }
+#endif
 
 public MRESReturn DHook_CanAirDashPre(int client, DHookReturn ret)
 {
@@ -1518,13 +1438,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 {
 	if(IsFakeClient(client))
 	{
-		/*
 #if !defined RTS
 		int team = KillFeed_GetBotTeam(client);
 		if(GetClientTeam(client) != team)
 			ChangeClientTeam(client, team);
 #endif
-		*/
 		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
 		return MRES_Supercede;
 	}
@@ -1547,7 +1465,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
+	if(Rogue_BlueParadox_CanTeutonUpdate(client))
+		TeutonType[client] = (!IsRespawning && !Waves_InSetup()) ? TEUTON_DEAD : TEUTON_NONE;
 #endif
 
 #if !defined RTS
@@ -1567,11 +1486,12 @@ public MRESReturn DHook_ForceRespawn(int client)
 	if(!WaitingInQueue[client] && !GameRules_GetProp("m_bInWaitingForPlayers"))
 		Queue_AddPoint(client);
 	
-	SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 	
+	if(f_WasRecentlyRevivedViaNonWaveClassChange[client] > GetGameTime())
+	{	
+		return MRES_Ignored;
+	}
 	GiveCompleteInvul(client, 2.0);
-	
 	if(Waves_Started() && TeutonType[client] == TEUTON_NONE)
 	{
 		SetEntityHealth(client, 50);
@@ -1584,90 +1504,6 @@ public MRESReturn DHook_ForceRespawn(int client)
 	CreateTimer(0.1, DHook_TeleportToAlly, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 	return MRES_Ignored;
 }
-		
-#if !defined RTS
-//Ty miku for showing me this cvar.
-public void PhaseThroughOwnBuildings(int client)
-{
-	if(b_PhaseThroughBuildingsPerma[client] == 2) //They already ignore everything 24/7, dont bother.
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		return;
-	}
-	
-	float PlayerLoc[3];
-	float otherLoc[3];
-	bool Collides_with_atleast_one_building = false;
-	GetClientAbsOrigin(client, PlayerLoc);
-	
-	for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity) && entity != 0)
-		{
-			if(GetEntPropEnt(entity, Prop_Send, "m_hBuilder") == client)
-			{
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", otherLoc);
-				if (GetVectorDistance(PlayerLoc, otherLoc, true) <= 11000.0)// 110.0 distance
-				{	 
-					Collides_with_atleast_one_building = true;
-				}
-			}
-		}
-	}
-	
-	if(CvarMpSolidObjects)
-		CvarMpSolidObjects.ReplicateToClient(client, Collides_with_atleast_one_building ? "0" : "1");
-		
-	b_PhasesThroughBuildingsCurrently[client] = Collides_with_atleast_one_building;
-	
-	if(!Collides_with_atleast_one_building)
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	}
-}
-#endif
-
-/*
-public void DHook_TeleportToObserver(DataPack pack)
-{
-	pack.Reset();
-	int client = GetClientOfUserId(pack.ReadCell());
-	if(client)
-	{
-		GiveCompleteInvul(client, 2.0);
-		int target = pack.ReadCell();
-		if(target == client || target < 1 || target > MaxClients || !IsClientInGame(target) || !IsPlayerAlive(target) || TeutonType[target] != TEUTON_NONE)
-		{
-			target = 0;
-			for(int i=1; i<=MaxClients; i++)
-			{
-				if(i != client && IsClientInGame(i))
-				{
-					if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-					{
-						target = i;
-						break;
-					}
-				}
-			}
-		}
-					
-		if(target)
-		{
-			float pos[3], ang[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-			ang[2] = 0.0;
-			SetEntProp(client, Prop_Send, "m_bDucked", true);
-			SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
-			TeleportEntity(client, pos, ang, NULL_VECTOR);
-			SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-			SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		}
-	}
-	delete pack;
-}*/
 
 public Action DHook_TeleportToAlly(Handle timer, int userid)
 {
@@ -1701,8 +1537,6 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 					SetEntProp(client, Prop_Send, "m_bDucked", true);
 					SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
 					TeleportEntity(client, pos, ang, NULL_VECTOR);
-					SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-					SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
 				}
 			}
 		}
@@ -1714,27 +1548,9 @@ public Action DHook_TeleportToAlly(Handle timer, int userid)
 			TeleportEntity(client, f3_SpawnPosition[client], NULL_VECTOR, NULL_VECTOR);
 			f3_SpawnPosition[client][0] = 0.0;
 		}
-		else
+		else if(f3_PositionArrival[client][0])
 		{
-			int level = 0;
-			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "info_player_teamspawn")) != -1)
-			{
-				static char buffer[32];
-				GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-				if(!StrContains(buffer, "rpg_respawn_", false))
-				{
-					int lv = StringToInt(buffer[12]);
-					if(level == lv)
-					{
-						float pos[3], ang[3];
-						GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
-						GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-						TeleportEntity(client, pos, ang, NULL_VECTOR);
-						break;
-					}
-				}
-			}
+			TeleportEntity(client, f3_PositionArrival[client], NULL_VECTOR, NULL_VECTOR);
 		}
 #endif
 	}
@@ -1760,7 +1576,8 @@ public MRESReturn DHook_GetChargeEffectBeingProvidedPost(int client, DHookReturn
 		{
 			return MRES_Ignored;
 		}
-		TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
+		if(WeaponClass[GetChargeEffectBeingProvided] > view_as<TFClassType>(0))
+			TF2_SetPlayerClass_ZR(GetChargeEffectBeingProvided, WeaponClass[GetChargeEffectBeingProvided], false, false);
 		GetChargeEffectBeingProvided = 0;
 	}
 	return MRES_Ignored;
@@ -1797,6 +1614,7 @@ public MRESReturn DHook_RegenThinkPost(int client, DHookParam param)
 static int LastTeam;
 public MRESReturn DHook_RemoveAllOwnedEntitiesFromWorldPre(int client, DHookParam param)
 {
+	// Prevent buildings form disappearing
 //	if(!Disconnecting)
 	{
 		LastTeam = GetTeam(client);
@@ -1874,9 +1692,9 @@ public MRESReturn DHook_TauntPost(int client, DHookParam param)
 	//Set class back to what it was
 	TF2_SetPlayerClass_ZR(client, WeaponClass[client], false, false);
 	return MRES_Ignored;
-}
+}*/
 #endif
-
+/*
 // g_bWarnedAboutMaxplayersInMVM
 public MRESReturn PreClientUpdatePre(Handle hParams)
 {
@@ -1892,7 +1710,6 @@ public MRESReturn PreClientUpdatePost(Handle hParams)
 	return MRES_Ignored;
 }
 */
-
 #if defined ZR
 public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams) {
 	int originalLauncher = GetEntPropEnt(healingBolt, Prop_Send, "m_hOriginalLauncher");
@@ -1918,7 +1735,7 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 	{
 		float HealAmmount = 20.0;
 
-		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, true);
+		HealAmmount *= Attributes_GetOnPlayer(owner, 8, true, !Merchant_IsAMerchant(owner));
 		
 
 		
@@ -2026,60 +1843,7 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 {
 	g_DHookScoutSecondaryFire.HookEntity(Hook_Pre, entity, DHook_ScoutSecondaryFire);
 }
-#endif	// ZR
-
-void Hook_DHook_UpdateTransmitState(int entity)
-{
-	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
-}
-
-public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
-{
-	if(b_IsEntityNeverTranmitted[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
-	}
-	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#if !defined RTS
-	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
-#if defined ZR
-	else if(b_thisNpcHasAnOutline[entity])
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
-	}
-#endif
-	else
-	{
-		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
-	}
-	return MRES_Supercede;
-}
-
-int SetEntityTransmitState(int entity, int newFlags)
-{
-	if (!IsValidEdict(entity))
-	{
-		return 0;
-	}
-
-	int flags = GetEdictFlags(entity);
-	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
-	flags |= newFlags;
-	SetEdictFlags(entity, flags);
-
-	return flags;
-}
+#endif	// Non-RTS
 
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
@@ -2141,18 +1905,6 @@ public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 	return MRES_Supercede;
 }
 
-Address DHook_CTeamplayRoundBasedRules()
-{
-	return CTeamplayRoundBasedRules;
-}
-/*
-static MRESReturn DHook_ResetPlayerAndTeamReadyStatePre(Address address)
-{
-	GetTimerAndNullifyMusicMVM();
-	CTeamplayRoundBasedRules = address;
-	return MRES_Ignored;
-}
-*/
 public MRESReturn Dhook_RaiseFlag_Pre(int entity)
 {
 	/*
@@ -2192,7 +1944,7 @@ stock void DelayEffectOnHorn(int ref)
 
 	ExtendDuration *= Attributes_GetOnPlayer(client, 319, true, false);
 
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		int r = 200;
 		int g = 200;
@@ -2373,11 +2125,55 @@ stock bool ShieldDeleteProjectileCheck(int owner, int enemy)
 	return false;
 }
 
-#if !defined RTS
-//Thank you mikusch!
-static MRESReturn DHookCallback_CBaseObject_ShouldQuickBuild_Pre(int obj, DHookReturn returnHook)
+void Hook_DHook_UpdateTransmitState(int entity)
 {
-	returnHook.Value = false;
+	g_DhookUpdateTransmitState.HookEntity(Hook_Pre, entity, DHook_UpdateTransmitState);
+}
+
+public MRESReturn DHook_UpdateTransmitState(int entity, DHookReturn returnHook) //BLOCK!!
+{
+	if(b_IsEntityNeverTranmitted[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_DONTSEND);
+	}
+	else if(b_IsEntityAlwaysTranmitted[entity] || b_thisNpcIsABoss[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#if !defined RTS
+	else if(!b_ThisEntityIgnored_NoTeam[entity] && GetTeam(entity) == TFTeam_Red)
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
+#if defined ZR
+	else if(b_thisNpcHasAnOutline[entity])
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+	else if (!b_NpcHasDied[entity] && Zombies_Currently_Still_Ongoing <= 3 && Zombies_Currently_Still_Ongoing > 0)
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_ALWAYS);
+	}
+#endif
+	else
+	{
+		returnHook.Value = SetEntityTransmitState(entity, FL_EDICT_PVSCHECK);
+	}
 	return MRES_Supercede;
 }
-#endif
+
+int SetEntityTransmitState(int entity, int newFlags)
+{
+	if (!IsValidEdict(entity))
+	{
+		return 0;
+	}
+
+	int flags = GetEdictFlags(entity);
+	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
+	flags |= newFlags;
+	SetEdictFlags(entity, flags);
+
+	return flags;
+}

@@ -7,14 +7,21 @@ bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
 	{
-		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319: //gibs on hit
+		case 733, 309, 777, 701, 805, 180, 830, 785, 405, 527, 319, 286,287 , 95 , 93: //gibs on hit
 		{
 			return true;
 		}
-		case 4003, 4004, 4005://rpg specific
+		case 4003, 4004, 4005, 4006://rpg specific
 		{
 			return true;
 		}
+		case 4007, 4008, 4009, 4010, 4011, 4012: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+		// 4011: Explosive enemeis hit MAX
+		// 4012: redued healing from gibs
+		{
+			return true;
+		}
+
 		case 57, 190, 191, 218, 366, 651,33,731,719,544,410,786,3002,3000,149,208,638,17,71,868,122,225, 224,205,206, 412, 4001, 4002:
 		{
 			return true;
@@ -22,6 +29,33 @@ bool Attribute_ServerSide(int attribute)
 	}
 	return false;
 }
+
+bool Attribute_IntAttribute(int attribute)
+{
+	switch(attribute)
+	{
+		case 834, 866, 867:
+			return true;
+	}
+
+	return false;
+}
+
+/*
+	There are attributes that are used only for ZR that dont actually exist
+	there are described here:
+	4001: Extra melee range
+	4002: Medigun overheal
+	4007: Melee resisance while equipped in hand
+	4008: Ranged resistance while equipped in hand
+	4009: total damage reduced while in hand
+	4010: RPG ONLY!!! Stats to use while in hand only such as STR or END or DEX
+	4011: Explosive weapon limit on hit if its not on default, default is 10 (hits only 10 enemies.), you can reduce it to 2 for example, if your explosive weapon has tiny AOE
+	733: Magic shot cost
+	410: Magic damage % 
+
+	most of these are via %, 1.0 means just 100% normal, 0.5 means half, 1.5 means 50% more
+*/
 void Attributes_EntityDestroyed(int entity)
 {
 	delete WeaponAttributes[entity];
@@ -58,17 +92,26 @@ float Attributes_Get(int entity, int attrib, float defaul = 1.0)
 	return defaul;
 }
 
-bool Attributes_Set(int entity, int attrib, float value)
+bool Attributes_Set(int entity, int attrib, float value, bool DoOnlyTf2Side = false)
 {
-	if(!WeaponAttributes[entity])
-		WeaponAttributes[entity] = new StringMap();
-	
-	char buffer[6];
-	IntToString(attrib, buffer, sizeof(buffer));
-	WeaponAttributes[entity].SetValue(buffer, value);
+	if(!DoOnlyTf2Side)
+	{
+		if(!WeaponAttributes[entity])
+			WeaponAttributes[entity] = new StringMap();
+		
+		char buffer[6];
+		IntToString(attrib, buffer, sizeof(buffer));
+		WeaponAttributes[entity].SetValue(buffer, value);
 
-	if(Attribute_ServerSide(attrib))
-		return false;
+		if(Attribute_ServerSide(attrib))
+			return false;
+	}
+	
+	if(Attribute_IntAttribute(attrib))
+	{
+		TF2Attrib_SetByDefIndex(entity, attrib, view_as<float>(RoundFloat(value)));
+		return true;
+	}
 	
 	TF2Attrib_SetByDefIndex(entity, attrib, value);
 	return true;
@@ -169,7 +212,7 @@ int Attributes_Airdashes(int client)
 }
 #endif
 
-void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype, bool &guraneedGib)
+void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& damagetype)
 {
 	{
 		if(weapon < 1)
@@ -287,9 +330,8 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
-			guraneedGib = true;
-
-			
+			view_as<CClotBody>(victim).m_bGib = true;
+		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)
 		{
@@ -317,7 +359,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 			{
-				value /= 2.0;
+				value *= 0.5;
 			}
 
 			if(b_thisNpcIsARaid[victim])

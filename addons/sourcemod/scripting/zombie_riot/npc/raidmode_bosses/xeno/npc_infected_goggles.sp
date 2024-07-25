@@ -85,12 +85,12 @@ static int i_GogglesHurtTalkMessage[MAXENTITIES];
 void RaidbossBlueGoggles_OnMapStart()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Blue Goggles");
+	strcopy(data.Name, sizeof(data.Name), "Waldch");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
 	strcopy(data.Icon, sizeof(data.Icon), "goggles");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -227,6 +227,7 @@ methodmap RaidbossBlueGoggles < CClotBody
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		/*
@@ -317,11 +318,11 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			if(!XenoExtraLogic())
 			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Here or not, infections are no joke.");
+				CPrintToChatAll("{darkblue}Waldch{default}: Here or not, infections are no joke.");
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Blue Goggles{default}: Giving up saves your life.");		
+				CPrintToChatAll("{darkblue}Waldch{default}: Giving up saves your life.");		
 			}
 		}
 	}
@@ -372,15 +373,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Blue Goggles{default}!!");
+							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Waldch{default}!!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get back to me now!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me now!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get here or ill teleport you here!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get here or ill teleport you here!");
 						}
 					}
 				}
@@ -395,15 +396,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Blue Goggles{default}!");
+							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Waldch{default}!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default}... NOW!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}... NOW!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} here, now STAY NEAR ME!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} here, now STAY NEAR ME!");
 						}
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
@@ -522,15 +523,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Not here, not with him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Not here, not with him!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You fight like you want to kill him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You fight like you want to kill him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me!");
 				}
 			}
 		}
@@ -540,19 +541,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You really shouldn't have done that!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You really shouldn't have done that!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You'll pay for picking on him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for picking on him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Quit this right now!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Quit this right now!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You little ****!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You little ****!");
 				}
 			}
 		}
@@ -790,7 +791,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										float vecHit[3];
 										WorldSpaceCenter(target, vecHit);
 
-										//KillFeed_SetKillIcon(npc.index, "club");
+										KillFeed_SetKillIcon(npc.index, "club");
 
 										if(npc.Anger)
 										{
@@ -882,7 +883,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 						{
-							//KillFeed_SetKillIcon(npc.index, "huntsman");
+							KillFeed_SetKillIcon(npc.index, "huntsman");
 							
 							npc.m_flAttackHappens = gameTime + 0.001;
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
@@ -916,7 +917,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					// Happens pretty much every think update (0.1 sec)
 					if(Can_I_See_Enemy(npc.index, npc.m_iTarget) == npc.m_iTarget)
 					{
-						//KillFeed_SetKillIcon(npc.index, "pro_smg");
+						KillFeed_SetKillIcon(npc.index, "pro_smg");
 						
 						npc.FaceTowards(vecTarget, 400.0);
 
@@ -968,7 +969,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					}
 					else if(npc.m_flAttackHappens && npc.m_flAttackHappens < gameTime)
 					{
-						//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+						KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 						
 						vecMe[2] += 45;
 						
@@ -1074,7 +1075,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, I won't stop you no more...");
+			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no more...");
 			return Plugin_Handled;
 		}
 

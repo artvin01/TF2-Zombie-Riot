@@ -760,101 +760,53 @@
 		"nl"		"Gebouwen"
 		"chi"       	"建筑物"
 	}
-	"Buildable Elevation"
+	"Decorative Object"
 	{
-		"en"		"Buildable Elevation"
-		"ru"		"Поднятие постройки"
-		"de"		"Baubare Erhebung"
-		"pt"		"Elevação Construível"
-		"nl"		"Bouwbare verhoging"
-		"chi"       	"布哨平台"
+		"en"		"Decorative Object"
 	}
-	"Buildable Barricade"
+	"Barricade"
 	{
-		"en"		"Buildable Barricade"
-		"ru"		"Возведение баррикады"
-		"de"		"Baubare Barrikade"
-		"pt"		"Barricada Construível"
-		"nl"		"Bouwbare Versperring"
-		"chi"       	"路障"
+		"en"		"Barricade"
 	}
-	"Buildable Armortable"
+	"Armor Table"
 	{
-		"en"		"Buildable Armortable"
-		"ru"		"Возвед. верстака брони"
-		"de"		"Baubare Rüstungstisch"
-		"pt"		"Mesa de Armadura Construível"
-		"nl"		"Bouwbare Schildtafel"
-		"chi"       	"护甲柜"
+		"en"		"Armor Table"
 	}
-	"Buildable AmmoBox"
+	"Ammo Box"
 	{
-		"en"		"Buildable AmmoBox"
-		"ru"		"Возвед. ящика с боепр."
-		"de"		"Baubare Munitionsbox"
-		"pt"		"Caixa de Munição Construível"
-		"nl"		"Bouwbare Ammunitiekist"
-		"chi"       	"子弹箱"
+		"en"		"Ammo Box"
 	}
-	"Buildable Perk Machine"
+	"Perk Machine"
 	{
-		"en"		"Buildable Perk Machine"
-		"ru"		"Возвед. перк-машины"
-		"de"		"Baubare Perk Maschine"
-		"pt"		"Maquina de Habilidades Construível"
-		"nl"		"Bouwbare Perk Machine"
-		"chi"       	"功能性饮料机"
+		"en"		"Perk Machine"
 	}
-	"Buildable Pack-a-Punch"
+	"Pack-a-Punch"
 	{
-		"en"		"Buildable Pack-a-Punch"
-		"ru"		"Возвед. улучшайзера"
-		"de"		"Baubare Pack-a-Punch"
-		"pt"		"Pack-a-Punch Construível"
-		"nl"		"Bouwbare Pack-A-Punch"
-		"chi"       	"武器工作台"
+		"en"		"Pack-a-Punch"
 	}
-	"Buildable Sentry"
+	"Sentrygun"
 	{
-		"en"		"Buildable Sentry"
-		"ru"		"Возвед. турели"
-		"de"		"Baubare Sentry"
-		"pt"		"Sentinela Construível"
-		"nl"		"Bouwbare schildwacht"
-		"chi"       	"布哨"
+		"en"		"Sentrygun"
 	}
-	"Buildable Mortar"
+	"Mortar"
 	{
-		"en"		"Buildable Mortar"
-		"ru"		"Возвед. миномёта"
-		"de"		"Baubare Sentry"
-		"pt"		"Morteiro Construível"
-		"nl"		"Bouwbare Mortier"
-		"chi"       	"迫击炮"
+		"en"		"Mortar"
 	}
-	"Buildable Railgun"
+	"Railgun"
 	{
-		"en"		"Buildable Railgun"
-		"ru"		"Возвед. рельсотрона"
-		"de"		"Baubare Railgun"
-		"pt"		"Canhão Laser Construível"
-		"nl"		"Bouwbare Railgun"
-		"chi"       	"磁轨炮"
+		"en"		"Railgun"
 	}
-	"Buildable Healing Station"
+	"Food Fridge"
 	{
-		"en"		"Buildable Healing Station"
-		"ru"		"Возвед. лечеб. ст-ции"
-		"de"		"Baubare Heilstation"
-		"pt"		"Estação de Cura Construível"
-		"nl"		"Bouwbare genezingsstation"
-		"chi"       	"治疗站"
+		"en"		"Food Fridge"
 	}
-	"Buildable Village"
+	"Village"
 	{
-		"en"        "Buildable Village"
-		"ru"        "Возведение деревни"
-		"chi"       "村庄"
+		"en"        "Village"
+	}
+	"Metal"
+	{
+		"en"		"Metal"
 	}
 	"Chooseable Buildings (Only one)"
 	{
@@ -2115,17 +2067,19 @@
 		"ru"	"Зелье алхимика"
 		"chi"   "炼金术士药水"
 	}
+	"Deleting buildings refunds text"
+	{
+		"en"	"Deleting buildings returns spend metal dependant on remaining HP and repair HP"
+	}
 	"Press your action slot (h) to access an extra menu!"
 	{
 		"en"	"Press your action slot (h) to access an extra menu!"
 		"ru"	"Нажмите на ячейку действия (h) для открытия доп. меню!"
 		"chi"	"按下动作/魔法键打开功能面板！[默认h]"
 	}
-	"Buildable Barracks"
+	"Barracks"
 	{
-		"en"	"Buildable Barracks"
-		"ru"	"Возведение казармы"
-		"chi"   "兵营"
+		"en"	"Barracks"
 	}
 	"Nearl Silvester Spear"
 	{
@@ -2386,10 +2340,9 @@
 		"en"	"Tinker's Texan Mounter"
 		"chi"	"多功能扳手"
 	}
-	"Buildable Tinker Workshop"
+	"Tinker Workshop"
 	{
-		"en"	"Buildable Tinker Workshop"
-		"chi"	"匠工工作台"
+		"en"	"Tinker Workshop"
 	}
 	"Tinker Research"
 	{
@@ -2400,5 +2353,41 @@
 	{
 		"en"	"Tinker Ranger"
 		"chi"	"匠工射手"
+	}
+	"The Merchant"
+	{
+		"en"	"The Merchant"
+	}
+	"Merchant's Wrench"
+	{
+		"en"	"Merchant's Wrench"
+	}
+	"Merchant Emergency Button"
+	{
+		"en"	"Merchant Emergency Button"
+	}
+	"The Merchant Skilled"
+	{
+		"en"	"The Merchant: Skilled"
+	}
+	"The Merchant Elite"
+	{
+		"en"	"The Merchant: Elite"
+	}
+	"The Merchant Mastery 1"
+	{
+		"en"	"The Merchant: Mastery 1"
+	}
+	"The Merchant Mastery 2"
+	{
+		"en"	"The Merchant: Mastery 2"
+	}
+	"The Merchant Mastery 3"
+	{
+		"en"	"The Merchant: Mastery 3"
+	}
+	"Pinus Knight"
+	{
+		"en"	"Pinus Knight"
 	}
 }

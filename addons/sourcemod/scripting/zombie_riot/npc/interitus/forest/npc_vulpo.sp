@@ -80,7 +80,7 @@ methodmap Vulpo < CClotBody
 		
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_MP_STUN_MIDDLE");
-		//KillFeed_SetKillIcon(npc.index, "short_circuit");
+		KillFeed_SetKillIcon(npc.index, "short_circuit");
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
@@ -182,7 +182,7 @@ static void ClotThink(int iNPC)
 				ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecTarget, false);
 
 				float damage = Rogue_Paradox_RedMoon() ? 100.0 : 50.0;
-				if(ShouldNpcDealBonusDamage(target))
+				if(target > MaxClients)
 					damage *= Rogue_Paradox_RedMoon() ? 250.0 : 50.0;
 				
 				npc.PlayMeleeHitSound();

@@ -34,7 +34,7 @@ void ThePurge_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "the_purge");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -319,6 +319,11 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
+	if(npc.m_iGunType == 0)
+	{
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ RaidModeScaling * 0.1);
+	}
+
 	if(target > 0)
 	{
 		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
@@ -412,6 +417,8 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.0;
 					npc.m_flMeleeArmor = 1.5;
+					EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Quad Burst Launcher online.");
 				}
 				case 9:	// Grenade -> Fists
 				{
@@ -425,6 +432,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flRangedArmor = 1.5;
 					npc.m_flMeleeArmor = 2.25;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Weapons Error. Run over targets.");
 				}
 				case 10:	// Healing -> Fists
 				{
@@ -433,6 +441,7 @@ static void ClotThink(int iNPC)
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 400.0;
 					cooldown = 5.0;
+					CPrintToChatAll("{crimson}The Purge{default}: {crimson}Re-Oiling Complete. Run over targets.");
 				}
 			}
 
@@ -457,7 +466,7 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						//KillFeed_SetKillIcon(npc.index, "family_business");
+						KillFeed_SetKillIcon(npc.index, "family_business");
 						
 						npc.FaceTowards(vecTarget, 400.0);
 						if(target > MaxClients)
@@ -496,7 +505,7 @@ static void ClotThink(int iNPC)
 
 						npc.m_flNextMeleeAttack = gameTime + 0.4;
 
-						//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 			}
@@ -508,7 +517,7 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						//KillFeed_SetKillIcon(npc.index, "panic_attack");
+						KillFeed_SetKillIcon(npc.index, "panic_attack");
 						
 						npc.PlaySMGSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
@@ -545,7 +554,7 @@ static void ClotThink(int iNPC)
 
 						npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-						//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+						KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 					}
 				}
 			}
@@ -555,7 +564,7 @@ static void ClotThink(int iNPC)
 
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					//KillFeed_SetKillIcon(npc.index, "minigun");
+					KillFeed_SetKillIcon(npc.index, "minigun");
 					
 					npc.FaceTowards(vecTarget, 4000.0);
 					if(target > MaxClients)
@@ -577,7 +586,7 @@ static void ClotThink(int iNPC)
 					
 					float vecDir[3];
 
-					float damage = RaidModeScaling * 0.05;
+					float damage = RaidModeScaling * 0.15;
 					
 					npc.m_flSpeed -= 1.0;
 					if(npc.m_flSpeed < 0.0)
@@ -601,7 +610,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 			case 6:	// Rocket
@@ -639,13 +648,21 @@ static void ClotThink(int iNPC)
 				{
 					if(Can_I_See_Enemy_Only(npc.index, target))
 					{
-						//KillFeed_SetKillIcon(npc.index, "iron_bomber");
+						KillFeed_SetKillIcon(npc.index, "iron_bomber");
 						
 						npc.PlayGrenadeSound();
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
 
 						PredictSubjectPositionForProjectiles(npc, target, 1000.0, _,vecTarget);
-						npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
+						npc.FireRocket(vecTarget, RaidModeScaling, 1000.0);
+						PredictSubjectPositionForProjectiles(npc, target, 800.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 800.0);
+						PredictSubjectPositionForProjectiles(npc, target, 600.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 600.0);
+						PredictSubjectPositionForProjectiles(npc, target, 350.0, _,vecTarget);
+						npc.FireRocket(vecTarget, RaidModeScaling, 350.0);
+
+					//	npc.FireGrenade(vecTarget, 1000.0, RaidModeScaling, "models/workshop/weapons/c_models/c_quadball/w_quadball_grenade.mdl");
 
 						npc.m_flNextMeleeAttack = gameTime + 0.45;
 					}
@@ -655,12 +672,13 @@ static void ClotThink(int iNPC)
 			{
 				npc.StopPathing();
 				npc.SetActivity("taunt_cheers_heavy", true);
+				npc.SetWeaponModel("models/workshop/weapons/c_models/c_scotland_shard/c_scotland_shard.mdl");
 			}
 			case 11:	// Minigun
 			{
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
-					//KillFeed_SetKillIcon(npc.index, "minigun");
+					KillFeed_SetKillIcon(npc.index, "minigun");
 					float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
 
 					npc.FaceTowards(WorldSpaceVec, 8000.0);
@@ -700,7 +718,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_flNextMeleeAttack = gameTime + 0.05;
 
-					//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+					KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 				}
 			}
 		}

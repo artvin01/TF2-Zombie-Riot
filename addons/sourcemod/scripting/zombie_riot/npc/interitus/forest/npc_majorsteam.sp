@@ -49,7 +49,7 @@ methodmap MajorSteam < CClotBody
 		
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
-		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -248,8 +248,8 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 		
-		npc.m_flMeleeArmor += 0.001 / MultiGlobal;
-		npc.m_flRangedArmor += 0.001 / MultiGlobal;
+		npc.m_flMeleeArmor += 0.001 / MultiGlobalEnemy;
+		npc.m_flRangedArmor += 0.001 / MultiGlobalEnemy;
 
 		if(npc.m_flMeleeArmor > 2.0)
 			npc.m_flMeleeArmor = 2.0;
@@ -269,7 +269,7 @@ static void ClotDeath(int entity)
 
 	npc.PlayDeathSound();
 	
-	//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+	KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 	TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	int team = GetTeam(npc.index);
 

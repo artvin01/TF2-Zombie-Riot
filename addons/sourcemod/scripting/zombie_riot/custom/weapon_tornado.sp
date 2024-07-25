@@ -168,7 +168,7 @@ void Weapon_Tornado_Launcher_Spam_Fire_Rocket(int client, int weapon)
 		{
 			for(int i=1; i<=i_tornado_pap[client] ;i++)
 			{
-				BlitzRocket(client, speedMult, damage, weapon);
+				BlitzRocket(client, speedMult, damage*0.75, weapon);
 			}
 			for(int j=1; j<=i_tornado_pap[client]-1 ;j++)
 			{

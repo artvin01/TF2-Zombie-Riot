@@ -8,12 +8,9 @@
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
 		"chi"       "真正的融合战士已经到来。"
 	}
-	"Silvester And Blue Goggles Arrived."
+	"Silvester And Waldch Arrived."
 	{
-		"en" 		"Silvester And Blue Goggles Arrived."
-		"ru" 		"Сильвестр и Блу Гогглз прибыли."
-		"pt"		"Silvester e Blue Goggles chegou."
-		"chi" 		"西尔维斯特与Blue Goggles已来。" 
+		"en" 		"Silvester And Waldch Arrived."
 	}
 	"Nemesis Arrived."
 	{
@@ -22,17 +19,29 @@
 		"pt"		"Nemesis, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
 	}
-	"Arkantos Arrived"
+	"Mrx Arrived."
 	{
-		"en" 		"The Atlantean and great leader Arkantos arrived."
+		"en" 		"Mrx... Is here."
+	}
+	"Alaxios Arrived"
+	{
+		"en" 		"The Atlantean and great leader Alaxios arrived."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
-		"pt"		"The Atlantean and great leader Arkantos chegou."
+		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
+	}
+	"Run while you can."
+	{
+		"en" 		"Run while you can."
 	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
 		"pt"		"O Expidonsan Sensal colhe."
+	}
+	"Vhxis arrived"
+	{
+		"en" 		"Vhxis the void keeper halts you."
 	}
 	"The Messanger Arrived"
 	{
@@ -217,15 +226,23 @@
 	}
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
-		"en"	"Donnerkrieg And Schwertkrieg Have Returned"	//no clue if this is gonna be the actuall line, mostly just here for translations to work within the plugin
-		"pt"	"Donnerkrieg e Schwertkrieg retornaram."
-		"chi"	"Donnerkrieg和Schwertkrieg回来了。"
+		"en"	"Stella And Karlas Have Returned"
+		"pt"	"Stella e Karlas retornaram."
+		"chi"	"Stella和Karlas回来了。"
 	}
 	"Diversionistico Spawn"
 	{
 		"en"	"Diversionistico Spawn"
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
+	}
+	"Voided Diversionistico Spawn"
+	{
+		"en"	"Voided Diversionistico Spawn"
+	}
+	"A Void Gate Apeared..."
+	{
+		"en"	"A Void Gate Apeared..."
 	}
 	"Snipers Appear"
 	{
@@ -246,5 +263,41 @@
 	{
 		"en" 		"His motivating speech enables enemies."
 		"chi"		"他的发言鼓励着尸群。"
+	}
+	"Spirit Spawns 1"
+	{
+		"en" 		"A spitit appeared... release it before its too late!"
+	}
+	"Spirit Spawns 2"
+	{
+		"en" 		"Dont let it touch you!"
+	}
+	"Spirit Spawns 3"
+	{
+		"en" 		"Dont be alone!"
+	}
+	"Fallen Warrior 1"
+	{
+		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
+	}
+	"Fallen Warrior 2"
+	{
+		"en" 		"Spread the Chaos, corrupt them all."
+	}
+	"Fallen Warrior 3"
+	{
+		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
+	}
+	"Machina Waldch 1"
+	{
+		"en" 		"A machine trying to immitate Waldch."
+	}
+	"Machina Waldch 2"
+	{
+		"en" 		"Its on no ones side."
+	}
+	"Machina Waldch 3"
+	{
+		"en" 		"Long enough, and it might go away on its own."
 	}
 }

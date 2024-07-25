@@ -106,7 +106,7 @@ methodmap HeavyBearMinion < CClotBody
 		HeavyBearMinion npc = view_as<HeavyBearMinion>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "0.75", "300", ally, false,_,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 		int iActivity = npc.LookupActivity("ACT_MP_STAND_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -190,7 +190,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
 	Npc_Base_Thinking(iNPC, 500.0, "ACT_MP_RUN_MELEE", "ACT_MP_STAND_MELEE", 250.0, gameTime); //Big range but not infinite.
 	
 	if(npc.m_flAttackHappens)
@@ -211,7 +211,7 @@ public void HeavyBearMinion_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 100.0;
+					float damage = 150.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 

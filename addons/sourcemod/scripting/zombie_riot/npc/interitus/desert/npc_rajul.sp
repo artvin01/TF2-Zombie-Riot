@@ -281,7 +281,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 				{
 					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

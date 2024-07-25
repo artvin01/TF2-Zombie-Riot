@@ -444,7 +444,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									{
 										int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-										if(weaponindex == 211)
+										if(weaponindex == 211 || weaponindex == 998)
 										{
 											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
@@ -456,9 +456,9 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
 										}
-										else if(weaponindex == 998)
+										else if (i_WeaponAmmoAdjustable[weapon])
 										{
-											AddAmmoClient(client_Hud, 3 ,_,4.0);
+											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
@@ -496,6 +496,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Ammo Activated");
+							Barracks_TryRegenIfBuilding(client_Hud, 4.0);
 						}
 					}
 					AcceptEntityInput(entity, "KillHierarchy"); 

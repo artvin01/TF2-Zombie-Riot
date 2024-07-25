@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int SupplyBonus;
 static float FlatArmor;
 

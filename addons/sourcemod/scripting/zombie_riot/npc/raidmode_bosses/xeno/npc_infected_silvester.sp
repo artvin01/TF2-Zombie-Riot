@@ -90,10 +90,22 @@ static bool b_RageAnimated[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
+static int i_SadText;
+static int i_ColoursTEPillars[4];
 bool AlreadySaidWin;
 bool AlreadySaidLastmann;
 
 static int Silvester_TE_Used;
+
+void ResetTEStatusSilvester()
+{
+	Silvester_TE_Used = 0;
+}
+void SetSilvesterPillarColour(int colours[4])
+{
+	i_ColoursTEPillars = colours;
+}
+
 public void RaidbossSilvester_OnMapStart()
 {
 	NPCData data;
@@ -225,9 +237,7 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -284,17 +294,13 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -327,13 +333,14 @@ methodmap RaidbossSilvester < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -341,6 +348,7 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		i_SadText = false;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -467,6 +475,7 @@ methodmap RaidbossSilvester < CClotBody
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		npc.m_flNextDelayTime = GetGameTime() + 0.2;
 		if(XenoExtraLogic())
 		{
 			switch(GetRandomInt(1,3))
@@ -854,6 +863,34 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(!i_SadText)
+		{
+			i_SadText = true;
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+				}
+				case 2:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
+				}
+				case 3:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
+				}
+			}
+		}
 		if(IsValidEntity(i_LaserEntityIndex[npc.index]))
 		{
 			RemoveEntity(i_LaserEntityIndex[npc.index]);
@@ -1168,6 +1205,7 @@ static void Internal_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
 				{
 					i_TimesSummoned[npc.index] = 0;
@@ -1269,6 +1307,7 @@ static void Internal_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
@@ -1724,6 +1763,10 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
+			if(i_RaidGrantExtra[spawn_index] == 1)
+			{
+				b_NpcUnableToDie[spawn_index] = true;
+			}
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1762,7 +1805,12 @@ float extra_pillar_size = 1.0)
 
 	float origin_altered[3];
 	origin_altered = origin;
-
+	bool DontClipOrMove = false;
+	if(count == 0)
+	{
+		DontClipOrMove = true;
+		count = 1;
+	}
 	for(int Repeats; Repeats < count; Repeats++)
 	{
 		float VecForward[3];
@@ -1777,6 +1825,8 @@ float extra_pillar_size = 1.0)
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+		if(DontClipOrMove)
+			origin_altered = origin;
 
 		//Clip to ground, its like stepping on stairs, but for these rocks.
 
@@ -1801,7 +1851,7 @@ float extra_pillar_size = 1.0)
 		}
 		else
 		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
 		/*
 		int laser;
@@ -1866,7 +1916,7 @@ public void Silvester_DelayTE(DataPack pack)
 	Origin[2] = pack.ReadCell();
 	float Range = pack.ReadCell();
 	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 5.0, 0.0, 1);	
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, Delay, 5.0, 0.0, 1);	
 		
 	delete pack;
 }
@@ -1897,6 +1947,11 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	{
 		return Plugin_Continue;
 	}
+	bool DontClipOrMove = false;
+	if(countMax == 0)
+	{
+		DontClipOrMove = true;
+	}
 
 	count += 1;
 	pack.Position = countPos;
@@ -1913,6 +1968,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		if(DontClipOrMove)
+			vecSwingEnd = origin;
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
@@ -1956,7 +2013,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, 215, 200, 0, 200);
+			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
@@ -1979,7 +2036,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			}
 		
 		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
-			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 3.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
 
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -2024,7 +2081,7 @@ void Silvester_TBB_Ability(int client)
 	Silvester_BEAM_MaxDistance[client] = 2000;
 	Silvester_BEAM_BeamRadius[client] = 45;
 	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = 200;
+	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
 	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
 	Silvester_BEAM_Duration[client] = 6.0;
@@ -2219,6 +2276,7 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
 					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
 					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}
@@ -2290,16 +2348,16 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy then us, we can't beat him.");
 					else
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: It appears like you already know what you get yourself into.");
+						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
@@ -2774,11 +2832,11 @@ public void Raidmode_Shared_Xeno_Duo(int entity)
 	{
 		if(XenoExtraLogic())
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Too far.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Too far.");
 		}
 		else
 		{
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: Way better then to die to {green}Him.");
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better then to die to {green}Him.");
 		}
 	}
 }

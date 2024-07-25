@@ -16,6 +16,7 @@ Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
 float Leper_HudDelay[MAXPLAYERS+1];
 int Leper_SolemnyUses[MAXPLAYERS+1];
 int Leper_SolemnyCharge[MAXPLAYERS+1];
+float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
 
 void OnMapStartLeper()
@@ -26,6 +27,7 @@ void OnMapStartLeper()
 	Zero(LeperSwingEffect);
 	Zero(LeperSwingType);
 	Zero(Timer_Leper_Management);
+	Zero(Leper_SolemnyChargeCD);
 	Zero(Leper_HudDelay);
 	Zero(Leper_InAnimation);
 }
@@ -274,6 +276,15 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 		while(TF2U_GetWearable(client, entity, i))
 		{
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			if(Viewchanges_NotAWearable(client, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
@@ -549,10 +560,14 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		Leper_SolemnyCharge[client]--;
-		if(Leper_SolemnyCharge[client] <= 0)
-			Leper_SolemnyCharge[client] = 0;
-			
+		if(Leper_SolemnyChargeCD[client] < GetGameTime())
+		{
+			Leper_SolemnyCharge[client] --;
+			if(Leper_SolemnyCharge[client] <= 0)
+				Leper_SolemnyCharge[client] = 0;
+
+			Leper_SolemnyChargeCD[client] = GetGameTime() + 3.5;
+		}
 		Leper_HudDelay[client] = GetGameTime() + 0.5;
 
 		return;
@@ -627,5 +642,6 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 
 void LeperResetUses()
 {
+
 	Zero(Leper_SolemnyUses);
 }

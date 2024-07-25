@@ -16,12 +16,13 @@ void Simon_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Book Simon");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_simon");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_libertylauncher");
+	strcopy(data.Icon, sizeof(data.Icon), "simon");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_COF;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 	NPC_Add(data);
 }
 
@@ -34,7 +35,6 @@ static void ClotPrecache()
 	PrecacheSoundCustom("cof/simon/intro.mp3");
 	PrecacheSoundCustom("cof/simon/reload.mp3");
 	PrecacheSoundCustom("cof/simon/shoot.mp3");
-	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

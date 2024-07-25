@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define SELL_AMOUNT 0.7
+#define SELL_AMOUNT 0.9
 
 static const int SlotLimits[] =
 {
@@ -71,6 +71,7 @@ enum struct ItemInfo
 	int Attribs2;
 
 	int Ammo;
+	int AmmoBuyMenuOnly;
 	
 	int Reload_ModeForce;
 
@@ -100,6 +101,7 @@ enum struct ItemInfo
 	float ThirdpersonAnimModif;
 	int WeaponVMTExtraSetting;
 	int Weapon_Bodygroup;
+	int Weapon_FakeIndex;
 	float WeaponVolumeStiller;
 	float WeaponVolumeRange;
 	
@@ -120,9 +122,6 @@ enum struct ItemInfo
 	int Melee_AttackDelayFrame;
 	bool Melee_Allows_Headshots;
 	
-	int RougeBuildMax;
-	int RougeBuildSupportNeeded;
-	int BuildSupportNeeded;
 	int ScrapCost;
 	int UnboxRarity;
 	bool CannotBeSavedByCookies;
@@ -170,6 +169,9 @@ enum struct ItemInfo
 		
 		Format(buffer, sizeof(buffer), "%sammo", prefix);
 		this.Ammo = kv.GetNum(buffer);
+
+		Format(buffer, sizeof(buffer), "%sammoBuyOnly", prefix);
+		this.AmmoBuyMenuOnly = kv.GetNum(buffer);
 		
 		Format(buffer, sizeof(buffer), "%sreload_mode", prefix);
 		this.Reload_ModeForce = kv.GetNum(buffer);
@@ -275,7 +277,10 @@ enum struct ItemInfo
 		this.WeaponVMTExtraSetting	= view_as<bool>(kv.GetNum(buffer, -1));
 
 		Format(buffer, sizeof(buffer), "%sweapon_bodygroup", prefix);
-		this.Weapon_Bodygroup	= view_as<int>(kv.GetNum(buffer, -1));
+		this.Weapon_Bodygroup	= kv.GetNum(buffer, -1);
+
+		Format(buffer, sizeof(buffer), "%sweapon_fakeindex", prefix);
+		this.Weapon_FakeIndex	= kv.GetNum(buffer, -1);
 
 		Format(buffer, sizeof(buffer), "%sweapon_custom_size", prefix);
 		this.WeaponSizeOverride			= kv.GetFloat(buffer, 1.0);
@@ -429,15 +434,6 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sscrap_cost", prefix);
 		this.ScrapCost = kv.GetNum(buffer, -1);
 
-		Format(buffer, sizeof(buffer), "%srogue_build_max", prefix);
-		this.RougeBuildMax = kv.GetNum(buffer, -1);
-
-		Format(buffer, sizeof(buffer), "%srogue_build_support_minimum", prefix);
-		this.RougeBuildSupportNeeded = kv.GetNum(buffer, -1);
-
-		Format(buffer, sizeof(buffer), "%sbuild_support_minimum", prefix);
-		this.BuildSupportNeeded = kv.GetNum(buffer, -1);
-
 		Format(buffer, sizeof(buffer), "%sunbox_rarity", prefix);
 		this.UnboxRarity = kv.GetNum(buffer, -1);
 		
@@ -475,8 +471,6 @@ enum struct Item
 	bool Hidden;
 	bool NoPrivatePlugin;
 	bool WhiteOut;
-	char BuildingExistName[64];
-	bool ShouldThisCountSupportBuildings;
 	bool IgnoreSlots;
 	char Tags[256];
 	char Author[128];
@@ -505,6 +499,7 @@ enum struct Item
 	int GiftId;
 	bool GregBlockSell;
 	int GregOnlySell;
+	bool RogueAlwaysSell;
 	
 	bool GetItemInfo(int index, ItemInfo info)
 	{
@@ -759,7 +754,7 @@ void Store_OpenItemPage(int client)
 	}
 }
 
-void Store_OpenItemThis(int client, int index)
+stock void Store_OpenItemThis(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -803,7 +798,7 @@ void Store_SwapToItem(int client, int swap)
 		}
 	}
 
-	ManualTF2Util_SetPlayerActiveWeapon(client, swap);
+	SetPlayerActiveWeapon(client, swap);
 }
 
 void Store_SwapItems(int client)
@@ -885,7 +880,7 @@ void Store_SwapItems(int client)
 					
 					//GetEntityClassname(nextE, buffer, sizeof(buffer));
 					//FakeClientCommand(client, "use %s", buffer);
-					ManualTF2Util_SetPlayerActiveWeapon(client, nextE);
+					SetPlayerActiveWeapon(client, nextE);
 					//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);
 					//SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + );
 					
@@ -900,7 +895,7 @@ void Store_SwapItems(int client)
 				GetEntityClassname(weapon, buffer, sizeof(buffer));
 				if(TF2_GetClassnameSlot(buffer) == slot)
 				{
-					ManualTF2Util_SetPlayerActiveWeapon(client, weapon);
+					SetPlayerActiveWeapon(client, weapon);
 					break;
 				}
 			}
@@ -970,7 +965,7 @@ void Store_ConfigSetup()
 	kv.GotoFirstSubKey();
 	do
 	{
-		ConfigSetup(-1, kv, 0, false, whitelist, whitecount, blacklist, blackcount);
+		ConfigSetup(-1, kv, 0, false, false, whitelist, whitecount, blacklist, blackcount);
 	} while(kv.GotoNextKey());
 
 	BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "weapons_usagelog");
@@ -978,7 +973,7 @@ void Store_ConfigSetup()
 	StoreBalanceLog.ImportFromFile(buffer);
 }
 
-static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
+static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, bool rogueSell, const char[][] whitelist, int whitecount, const char[][] blacklist, int blackcount)
 {
 	int cost = hiddenType == 2 ? 0 : kv.GetNum("cost", -1);
 	bool isItem = cost >= 0;
@@ -1038,14 +1033,13 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
 	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
-	item.ShouldThisCountSupportBuildings = view_as<bool>(kv.GetNum("count_support_buildings"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
+	item.RogueAlwaysSell = view_as<bool>(kv.GetNum("rogue_always_sell", rogueSell ? 1 : 0));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
 	kv.GetString("textstore", item.Name, sizeof(item.Name));
 	item.GiftId = item.Name[0] ? Items_NameToId(item.Name) : -1;
 	kv.GetSectionName(item.Name, sizeof(item.Name));
 	CharToUpper(item.Name[0]);
-	kv.GetString("buildingexistname", item.BuildingExistName, sizeof(item.BuildingExistName));
 	
 	if(isItem)
 	{
@@ -1091,7 +1085,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 				
 				do
 				{
-					ConfigSetup(sec, kv, 2, item.NoKit, whitelist, 0, blacklist, 0);
+					ConfigSetup(sec, kv, 2, item.NoKit, item.RogueAlwaysSell, whitelist, 0, blacklist, 0);
 				}
 				while(kv.GotoNextKey());
 				kv.GoBack();
@@ -1118,7 +1112,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 		
 		do
 		{
-			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, whitelist, whitecount, blacklist, blackcount);
+			ConfigSetup(sec, kv, item.Hidden ? 1 : 0, item.NoKit, item.RogueAlwaysSell, whitelist, whitecount, blacklist, blackcount);
 		}
 		while(kv.GotoNextKey());
 		kv.GoBack();
@@ -1148,6 +1142,9 @@ bool Store_CanPapItem(int client, int index)
 
 void Store_PackMenu(int client, int index, int entity, int owner)
 {
+	if(!IsValidClient(owner))
+		return;
+		
 	if(index > 0)
 	{
 		static Item item;
@@ -1267,6 +1264,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 
 							other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
 							other.BuyWave[client] = -1;
+							other.Owned[client] = values[1] + 1;
 
 							StoreItems.SetArray(item.Section, other);
 
@@ -1306,73 +1304,8 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_ApplyAttribs(client);
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
-						if(owner && !Rogue_Mode())
-						{
-							int HigherTechAdvancedClient;
-							int HigherTechAdvancedCount;
-							HigherTechAdvancedClient = owner;
-							HigherTechAdvancedCount = MaxSupportBuildingsAllowed(owner, false);
-							char buffer_pap[36];
-							for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-							{
-								int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-								if(IsValidEntity(entity))
-								{
-									GetEntPropString(entity, Prop_Data, "m_iName", buffer_pap, sizeof(buffer_pap));
-									if(!StrContains(buffer_pap, "zr_packapunch", false))
-									{
-										int ownerTech = GetEntPropEnt(entity, Prop_Send, "m_hBuilder");
-										if(IsValidClient(ownerTech) && ownerTech != owner)
-										{
-											int TechCount;
-											TechCount = MaxSupportBuildingsAllowed(ownerTech, false);
-											if(HigherTechAdvancedCount < TechCount)
-											{
-												HigherTechAdvancedClient = ownerTech;
-												HigherTechAdvancedCount = TechCount;
-											}
-										}
-									}
-								}
-							}
-							if(owner == HigherTechAdvancedClient || HigherTechAdvancedClient == client)
-							{
-								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[owner][client] += 10;
-									GiveCredits(owner, 400, true);
-									Resupplies_Supplied[owner] += 40;
-									SetDefaultHudPosition(owner, _, _, _, 5.0);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used");
-								}
-							}
-							else
-							{
-								if(Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[HigherTechAdvancedClient][client] += 7;
-									GiveCredits(HigherTechAdvancedClient, 300, true);
-									Resupplies_Supplied[HigherTechAdvancedClient] += 30;
-									SetDefaultHudPosition(HigherTechAdvancedClient, _, _, _, 5.0);
-									SetGlobalTransTarget(HigherTechAdvancedClient);
-									ShowSyncHudText(HigherTechAdvancedClient, SyncHud_Notifaction, "%t", "Pap Machine Used Me");
-								}
-								if(Pack_A_Punch_Machine_money_limit[owner][client] < 50)
-								{
-									Pack_A_Punch_Machine_money_limit[owner][client] += 3;
-									GiveCredits(owner, 100, true);
-									Resupplies_Supplied[owner] += 10;
-									SetDefaultHudPosition(owner, _, _, _, 5.0);
-									SetGlobalTransTarget(owner);
-									ShowSyncHudText(owner, SyncHud_Notifaction, "%t", "Pap Machine Used But Another");
-								}							
-							}
-						}
-						else
-						{
-							owner = -1;
-						}
+						if(IsValidClient(owner))
+							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
 					}
 				}
 				
@@ -1432,15 +1365,6 @@ void Store_RogueEndFightReset()
 		}
 		StoreItems.SetArray(i, item);
 	}
-	ResetSentryCD();
-	/*for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-		if(IsValidEntity(entity) && !i_BeingCarried[entity]) //delete all buildings that arent mounted
-		{
-			RemoveEntity(entity);
-		}
-	}*/
 	Ammo_Count_Ready += 5;
 }
 
@@ -1451,7 +1375,6 @@ void Store_Reset()
 		CashSpent[c] = 0;
 		CashSpentTotal[c] = 0;
 	}
-	
 	static Item item;
 	int length = StoreItems.Length;
 	for(int i; i<length; i++)
@@ -1470,6 +1393,11 @@ void Store_Reset()
 			item.CurrentClipSaved[c] = 0;
 		}
 		StoreItems.SetArray(i, item);
+	}
+	for(int c; c<MAXTF2PLAYERS; c++)
+	{
+		CashSpentGivePostSetup[c] = 0;
+		CashSpentGivePostSetupWarning[c] = false;
 	}
 	if(StoreBalanceLog)
 	{
@@ -1617,36 +1545,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				}
 				if((base < 1001 || CurrentCash >= base) && (CurrentCash - CashSpent[client]) >= info.Cost)
 				{
-					if(Rogue_Mode())
-					{
-						if(info.RougeBuildMax == -999)
-						{
-							break;
-						}
-						else if(info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-						{
-							break;
-						}
-						else if(info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
-						{
-							break;
-						}
-					}
-					else
-					{
-						if(info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-						{
-							break;
-						}
-					}
 					bool MoneyTake = true;
-					if(Rogue_Mode())
-					{
-						if(info.RougeBuildMax > -1)
-						{
-							MoneyTake = false;
-						}
-					}
 					Store_BuyClientItem(client, a, item, info);
 					
 					if(MoneyTake)
@@ -2374,7 +2273,7 @@ bool Store_GetNextItem(int client, int &i, int &owned, int &scale, int &equipped
 	return false;
 }
 
-void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave = 0)
+void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave = false)
 {
 	int amount;
 	int length = StoreItems.Length;
@@ -2383,12 +2282,16 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 	
 	static Item item;
 	static ItemInfo info;
+	int GrigoriCashLogic = CurrentCash;
+	if(GrigoriCashLogic > 60000)
+		GrigoriCashLogic = 600000;
+
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell))
+		if(item.GregOnlySell || (item.ItemInfos && item.GiftId == -1 && !item.NPCWeaponAlways && !item.GregBlockSell && (!unlock || !item.Hidden) && (!unlock || !item.RogueAlwaysSell)))
 		{
-			if(item.GregOnlySell == 2)
+			if(item.GregOnlySell == 2)	// We always sell this if unbought
 			{
 				item.NPCSeller_First = true;
 				item.NPCSeller = true;
@@ -2405,14 +2308,14 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 				
 				StoreItems.SetArray(i, item);
 			}
-			else if(unlock && !ResetStore)
+			else if(unlock && !ResetStore)	// Don't reset items, add random ones (rogue)
 			{
-				if(addItem == 0 && item.NPCSeller_First)
+				if(addItem == 0 && !subtract_wave && item.NPCSeller_First)
 				{
 					item.NPCSeller = false;
 					item.NPCSeller_First = false;
 				}
-				else if(addItem == 99 && item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
+				else if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
 					item.NPCSeller_WaveStart--;
 					StoreItems.SetArray(i, item);
@@ -2421,13 +2324,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 				if(!item.NPCSeller)
 				{
 					item.GetItemInfo(0, info);
-					if(info.Cost > 999 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+					if(info.Cost > 1000 && info.Cost_Unlock < (GrigoriCashLogic / 4))
 						indexes[amount++] = i;
 				}
 			}
-			else if(ResetStore != 2)
+			else if(ResetStore != 2)	// Reset items, add random ones (normal)
 			{
-				if(addItem == 0)
+				if(addItem == 0 && !subtract_wave)
 				{
 					item.NPCSeller_First = false;
 					item.NPCSeller = false;
@@ -2437,23 +2340,20 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 					}
 				}
 
-				if(addItem == 99)
+				if(item.NPCSeller_WaveStart > 0 && subtract_wave)
 				{
-					if(item.NPCSeller_WaveStart > 0 && subtract_wave > 0)
-					{
-						item.NPCSeller_WaveStart -= 1;
-					}
+					item.NPCSeller_WaveStart -= 1;
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (CurrentCash / 3 - 1000) && info.Cost_Unlock < CurrentCash)
+				if(info.Cost > 0 && info.Cost_Unlock > (GrigoriCashLogic / 3 - 1000) && info.Cost_Unlock < GrigoriCashLogic)
 					indexes[amount++] = i;
 				
 				StoreItems.SetArray(i, item);
 			}
 		}
 	}
-	if(subtract_wave != 0 || ResetStore)
+	if(subtract_wave || ResetStore)
 		return;
 	
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -2504,12 +2404,13 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, int subtract_wave 
 	}
 	else if(unlock)
 	{
-		CPrintToChatAll("{green}Recovered Items:");
-
 		SortIntegers(indexes, amount, Sort_Random);
-		int SellsMax = GrigoriMaxSells;
-		if(addItem != 0)
-			SellsMax = addItem;
+		int SellsMax = addItem;
+		if(SellsMax <= 0)
+			SellsMax = 7;
+		
+		if(SellsMax > 0 && amount > 0)
+			CPrintToChatAll("{green}Recovered Items:");
 		
 		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
@@ -2735,7 +2636,7 @@ static void MenuPage(int client, int section)
 		LastMenuPage[client] = 0;
 	}
 
-	BarracksCheckItems(client);
+//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -2766,7 +2667,7 @@ static void MenuPage(int client, int section)
 			char buffer[512];
 			
 			int level = item.Owned[client] - 1;
-			if(level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
+			if(item.ParentKit || level < 0 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 				level = 0;
 			
 			item.GetItemInfo(level, info);
@@ -2848,8 +2749,15 @@ static void MenuPage(int client, int section)
 					int Repeat_Filler = 0;
 					if(item.Equipped[client])
 					{
-						if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
-						{
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+						{	
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0];
+							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1], cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+						}
+						else if(info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+						{	
 							int cost = AmmoData[info.Ammo][0];
 							FormatEx(buffer, sizeof(buffer), "%t [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1], cost);
 							if(cost > cash)
@@ -2873,7 +2781,7 @@ static void MenuPage(int client, int section)
 					{
 						ItemCost(client, item, info.Cost);
 						
-						bool Maxed_Building = false;
+/*						bool Maxed_Building = false;
 						if(item.MaxBarricadesBuild)
 						{
 							if(BarricadeMaxSupply(client) >= MaxBarricadesAllowed(client))
@@ -2887,7 +2795,7 @@ static void MenuPage(int client, int section)
 						{
 							FormatEx(buffer, sizeof(buffer), "%t ($%d) [%t] [%i/%i]", "Buy", info.Cost,"MAX BARRICADES OUT CURRENTLY", i_BarricadesBuild[client], MaxBarricadesAllowed(client));
 						}
-						else
+						else*/
 						{
 							FormatEx(buffer, sizeof(buffer), "%t ($%d)", "Buy", info.Cost);
 						}
@@ -2907,14 +2815,26 @@ static void MenuPage(int client, int section)
 					{
 						canSell = false;
 					}
-					if(item.Equipped[client] && info.Ammo && info.Ammo < Ammo_MAX)	// Weapon with Ammo
+					if(item.Equipped[client] && (info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX) || (info.Ammo && info.Ammo < Ammo_MAX))	// Weapon with Ammo
 					{
-						int cost = AmmoData[info.Ammo][0] * 10;
-						FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
-						if(cost > cash)
-							style = ITEMDRAW_DISABLED;
-						Repeat_Filler ++;
-						menu.AddItem(buffer2, buffer, style);	// 1
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+						{
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
+							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.AmmoBuyMenuOnly], AmmoData[info.AmmoBuyMenuOnly][1] * 10, cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+							Repeat_Filler ++;
+							menu.AddItem(buffer2, buffer, style);	// 1
+						}
+						else
+						{
+							int cost = AmmoData[info.Ammo][0] * 10;
+							FormatEx(buffer, sizeof(buffer), "%t x10 [%d] ($%d)", AmmoNames[info.Ammo], AmmoData[info.Ammo][1] * 10, cost);
+							if(cost > cash)
+								style = ITEMDRAW_DISABLED;
+							Repeat_Filler ++;
+							menu.AddItem(buffer2, buffer, style);	// 1
+						}
 					}
 					else if(item.Equipped[client] || canSell)
 					{
@@ -3099,14 +3019,14 @@ static void MenuPage(int client, int section)
 		}
 		else if(section == -2)
 		{
-			if((!starterPlayer && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
+			if((!item.Starter && item.Hidden) || (!item.Owned[client] && !item.Scaled[client]) || item.Level || item.GiftId != -1)
 				continue;
 		}
 		else if(item.Section != section)
 		{
 			continue;
 		}
-		else if(starterPlayer)
+		else if(starterPlayer && !Rogue_UnlockStore())
 		{
 			if(!item.Starter)
 				continue;
@@ -3216,7 +3136,6 @@ static void MenuPage(int client, int section)
 		}
 		else if(!item.ItemInfos)
 		{
-			item.GetItemInfo(0, info);
 			Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 			IntToString(i, info.Classname, sizeof(info.Classname));
 			//do not have custom name here, its in the menu and thus the custom names never apear. this isnt even for weapons.
@@ -3231,30 +3150,6 @@ static void MenuPage(int client, int section)
 				int style = ITEMDRAW_DEFAULT;
 				IntToString(i, info.Classname, sizeof(info.Classname));
 				
-				char BuildingExtraCounter[8];
-				if(item.BuildingExistName[0])
-				{
-					char BuildingGetName[24];
-					char BuildingGetName_2[24];
-					
-					int How_Many_Buildings_Exist = 0;
-					
-					strcopy(BuildingGetName, sizeof(BuildingGetName), item.BuildingExistName);
-					
-					for(int entitycount; entitycount<i_MaxcountBuilding; entitycount++)
-					{
-						int entity = EntRefToEntIndex(i_ObjectsBuilding[entitycount]);
-						if(IsValidEntity(entity))
-						{
-							GetEntPropString(entity, Prop_Data, "m_iName", BuildingGetName_2, sizeof(BuildingGetName_2));
-							if(StrEqual(BuildingGetName_2, BuildingGetName, true))
-							{
-								How_Many_Buildings_Exist += 1;
-							}
-						}
-					}
-					Format(BuildingExtraCounter, sizeof(BuildingExtraCounter), " {%i}", How_Many_Buildings_Exist);
-				}
 				if(info.ScrapCost > 0)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s ($%d) [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.ScrapCost, Scrap[client]);
@@ -3263,25 +3158,25 @@ static void MenuPage(int client, int section)
 				}
 				else if(item.Equipped[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Equipped");
 				}
 				else if(item.Owned[client] > 1)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Packed", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Packed");
 				}
 				else if(item.Owned[client])
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [%t]%s", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased", BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [%t]", TranslateItemName(client, item.Name, info.Custom_Name), "Purchased");
 				}
 				else if(!info.Cost && item.Level)
 				{
-					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]%s", TranslateItemName(client, item.Name, info.Custom_Name), item.Level, BuildingExtraCounter);
+					FormatEx(buffer, sizeof(buffer), "%s [Lv %d]", TranslateItemName(client, item.Name, info.Custom_Name), item.Level);
 				}
 				else if(info.Cost >= 999999 && !CvarInfiniteCash.BoolValue)
 				{
 					continue;
 				}
-				else if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller)
+				else if(info.Cost > 1000 && Rogue_UnlockStore() && !item.NPCSeller && !item.RogueAlwaysSell)
 				{
 					FormatEx(buffer, sizeof(buffer), "%s [NOT FOUND]", TranslateItemName(client, item.Name, info.Custom_Name));
 					style = ITEMDRAW_DISABLED;
@@ -3294,56 +3189,29 @@ static void MenuPage(int client, int section)
 				else
 				{
 					ItemCost(client, item, info.Cost);
-					if(Rogue_Mode() && info.RougeBuildMax == -999)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s [UNAVAIABLE]", TranslateItemName(client, item.Name, info.Custom_Name));
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(hasKit && item.NoKit)
+					if(hasKit && item.NoKit)
 					{
 						FormatEx(buffer, sizeof(buffer), "%s [WEAPON KIT EQUIPPED]", TranslateItemName(client, item.Name, info.Custom_Name));
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(Rogue_Mode() && info.RougeBuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(!Rogue_Mode() && info.BuildSupportNeeded > MaxSupportBuildingsAllowed(client, false))
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [NOT ENOUGH UPGRADES]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
-						style = ITEMDRAW_DISABLED;
-					}
-					else if(Rogue_Mode() && info.RougeBuildMax > -1 && info.RougeBuildMax <= item.RogueBoughtRecently[client])
-					{
-						FormatEx(buffer, sizeof(buffer), "%s%s [MAX BOUGHT THIS BATTLE]", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
 						style = ITEMDRAW_DISABLED;
 					}
 					else
 					{
 						if(item.WhiteOut)
 						{
-							if(item.ShouldThisCountSupportBuildings)
-							{
-								FormatEx(buffer, sizeof(buffer), "%s[%d/%d]", TranslateItemName(client, item.Name, info.Custom_Name), i_SupportBuildingsBuild[client], MaxSupportBuildingsAllowed(client, false));
-							}
-							else
-							{
-								FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
-							}
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 							style = ITEMDRAW_DISABLED;
 						}
 						else if(!info.Cost)
 						{
-							FormatEx(buffer, sizeof(buffer), "%s%s", TranslateItemName(client, item.Name, info.Custom_Name), BuildingExtraCounter);
+							FormatEx(buffer, sizeof(buffer), "%s", TranslateItemName(client, item.Name, info.Custom_Name));
 						}
 						else
 						{
-							FormatEx(buffer, sizeof(buffer), "%s [$%d]%s", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost, BuildingExtraCounter);
+							FormatEx(buffer, sizeof(buffer), "%s [$%d]", TranslateItemName(client, item.Name, info.Custom_Name), info.Cost);
 						}
 					}
 				}
-				//if(!item.BuildingExistName[0] && !item.ShouldThisCountSupportBuildings)
+				
 				Store_EquipSlotSuffix(client, item.Slot, buffer, sizeof(buffer));
 
 				if(Rogue_UnlockStore())
@@ -3575,6 +3443,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Gamemode Credits"); //credits is whatever, put in back.
 						menu2.AddItem("-21", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Custom Models");
+						menu2.AddItem("-45", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Buff/Debuff List");
 						menu2.AddItem("-12", buffer);
 						
@@ -3799,6 +3670,52 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					{
 						Store_CherrypickMenu(client);
 					}
+					case -45:
+					{
+						Menu menu2 = new Menu(Store_MenuPage);
+						menu2.SetTitle("%t", "Custom Models");
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "TF2 Class");
+						menu2.AddItem("-46", buffer);
+						
+						FormatEx(buffer, sizeof(buffer), "%t", "Barney");
+						menu2.AddItem("-47", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Niko Oneshot");
+						menu2.AddItem("-48", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Skeleboy");
+						menu2.AddItem("-49", buffer);
+
+						FormatEx(buffer, sizeof(buffer), "%t", "Back");
+						menu2.AddItem("-1", buffer);
+						
+						menu2.Display(client, MENU_TIME_FOREVER);
+					}
+					case -46:
+					{
+						OverridePlayerModel(client);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -47:
+					{
+						OverridePlayerModel(client, BARNEY, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -48:
+					{
+						OverridePlayerModel(client, NIKO_2, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -49:
+					{
+						OverridePlayerModel(client, SKELEBOY, false);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
 					default:
 					{
 						MenuPage(client, CurrentMenuItem[client]);
@@ -3920,7 +3837,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					else
 					{
 						int level = item.Owned[client]-1;
-						if(level < 0)
+						if(item.ParentKit || level < 0)
 							level = 0;
 
 						item.GetItemInfo(level, info);
@@ -3949,7 +3866,17 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						
 						if(item.Equipped[client])	// Buy Ammo
 						{
-							if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
+							if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+							{
+								CashSpent[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+								CashSpentTotal[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								
+								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1];
+								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
+								CurrentAmmo[client][info.AmmoBuyMenuOnly] = ammo;
+							}
+							else if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
 							{
 								CashSpent[client] += AmmoData[info.Ammo][0];
 								CashSpentTotal[client] += AmmoData[info.Ammo][0];
@@ -4145,11 +4072,24 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 					{
 						int cash = CurrentCash - CashSpent[client];
 						int level = item.Owned[client] - 1;
-						if(level < 0)
+						if(item.ParentKit || level < 0)
 							level = 0;
 						
 						item.GetItemInfo(level, info);
-						if(info.Ammo && info.Ammo < Ammo_MAX)
+						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
+						{
+							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
+							if(cost <= cash)
+							{
+								CashSpent[client] += cost;
+								CashSpentTotal[client] += cost;
+								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1]*10;
+								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
+								CurrentAmmo[client][info.AmmoBuyMenuOnly] = ammo;
+							}
+						}
+						else if(info.Ammo && info.Ammo < Ammo_MAX)
 						{
 							int cost = AmmoData[info.Ammo][0] * 10;
 							if(cost <= cash)
@@ -4174,7 +4114,7 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
 								Store_Unequip(client, index);
 								
@@ -4198,10 +4138,13 @@ public int Store_MenuItem(Menu menu, MenuAction action, int client, int choice)
 						{
 							char buffer[64];
 							GetEntityClassname(active_weapon, buffer, sizeof(buffer));
-							if(GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
+							if((GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") < GetGameTime() || GetEntPropFloat(active_weapon, Prop_Send, "m_flNextPrimaryAttack") >= FAR_FUTURE) && TF2_GetClassnameSlot(buffer) != TFWeaponSlot_PDA)
 							{
-									
-								item.GetItemInfo(item.Owned[client]-1, info);
+								int level = item.Owned[client] - 1;
+								if(item.ParentKit)
+									level = 0;
+								
+								item.GetItemInfo(level, info);
 
 								int sell = item.Sell[client];
 								if(item.BuyWave[client] == Rogue_GetRoundScale())
@@ -4576,25 +4519,17 @@ void Store_ApplyAttribs(int client)
 		MovementSpeed = 419.0;
 		map.SetValue("443", 1.25);
 	}
-
+	
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
-
+	map.SetValue("343", 1.0); //sentry attackspeed fix
+	map.SetValue("526", 1.0);//
 	if(LastMann)
-		Attributes_Set(client, 442, 0.7674418604651163);
+		map.SetValue("442", 0.7674418604651163);		// Move Speed
 
-	map.SetValue("353", 1.0);	// No manual building pickup.
-	map.SetValue("465", 999.0);	// instant build
-	map.SetValue("464", 999.0);	// instant build
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
-//	map.SetValue("397", 50.0);	// Ignore ally with shooting
-	map.SetValue("169", 0.0);	// Complete sentrygun Immunity
-//	map.SetValue("49", 0.0);	// Completly disable double jump as we dont even use this, client prediction babyyyy!!!
-					//... doesnt work on player, must be on weapon...
-//	map.SetValue("124", 1.0);	// Make sentries minisentries (only works on melee's that are wrenches...)
-//	map.SetValue("345", 0.0);	// No dispenser range
-//	map.SetValue("732", 0.0);	// No dispenser metal gain
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
+	map.SetValue("8", 1.5);	//give 50% more healing at the start.
 
 	float KnockbackResistance;
 	KnockbackResistance = float(CurrentCash) * 150000.0; //at wave 60, this will equal to 60* dmg
@@ -4619,13 +4554,13 @@ void Store_ApplyAttribs(int client)
 	}
 
 	map.SetValue("252", KnockbackResistance);
-	if(Items_HasNamedItem(client, "Arkantos's Godly assistance"))
+	if(Items_HasNamedItem(client, "Alaxios's Godly assistance"))
 	{
-		b_ArkantosBuffItem[client] = true;
+		b_AlaxiosBuffItem[client] = true;
 	}
 	else
 	{
-		b_ArkantosBuffItem[client] = false;
+		b_AlaxiosBuffItem[client] = false;
 	}
 
 	if(i_CurrentEquippedPerk[client] == 4)
@@ -4655,7 +4590,7 @@ void Store_ApplyAttribs(int client)
 		for(int i; i < length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
@@ -4721,9 +4656,22 @@ void Store_ApplyAttribs(int client)
 	i_BadHealthRegen[client] = 0;
 
 	Rogue_ApplyAttribs(client, map);
+	Waves_ApplyAttribs(client, map);
+
+	int entity = -1;
+	while(TF2_GetWearable(client, entity))
+	{
+		int ref = EntIndexToEntRef(entity);
+		if(ref == i_Viewmodel_PlayerModel[client] ||
+		   ref == WeaponRef_viewmodel[client] ||
+		   ref == i_Worldmodel_WeaponModel[client])
+			continue;
+		
+		Attributes_RemoveAll(entity);
+	}
 
 	StringMapSnapshot snapshot = map.Snapshot();
-	int entity = client;
+	entity = client;
 	int length = snapshot.Length;
 	int attribs = 0;
 	for(int i; i < length; i++)
@@ -4733,13 +4681,13 @@ void Store_ApplyAttribs(int client)
 			if(!TF2_GetWearable(client, entity))
 				break;
 
-			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			{
-				i--;
+			int ref = EntIndexToEntRef(entity);
+			if(ref == i_Viewmodel_PlayerModel[client] ||
+			   ref == WeaponRef_viewmodel[client] ||
+			   ref == i_Worldmodel_WeaponModel[client])
 				continue;
-			}
-
-			Attributes_RemoveAll(entity);
+			
+			//Attributes_RemoveAll(entity);
 			attribs++;
 		}
 
@@ -4787,18 +4735,13 @@ void Store_ApplyAttribs(int client)
 		}
 	}
 
-	while(TF2_GetWearable(client, entity))
-	{
-		if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) == entity)
-			continue;
-		
-		Attributes_RemoveAll(entity);
-	}
-
 	if(dieingstate[client] > 0)
 	{
 		ForcePlayerCrouch(client, true);
-		Attributes_Set(client, 489, 0.65);
+		if(b_XenoVial[client])
+			Attributes_Set(client, 489, 0.85);
+		else
+			Attributes_Set(client, 489, 0.65);
 	}
 	
 	Mana_Regen_Level[client] = Attributes_GetOnPlayer(client, 405);
@@ -4847,7 +4790,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 		Store_RemoveSpecificItem(client, "Teutonic Longsword");
 	}
 	b_HasBeenHereSinceStartOfWave[client] = true; //If they arent a teuton!
-	OverridePlayerModel(client, 0, false);
+	//OverridePlayerModel(client);
 
 	//stickies can stay, we delete any non spike stickies.
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -4908,15 +4851,14 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	
 	//RESET ALL CUSTOM VALUES! I DONT WANT TO KEEP USING ATTRIBS.
 	SetAbilitySlotCount(client, 0);
-	
+	/*
 	bool Was_phasing = false;
 	
 	if(b_PhaseThroughBuildingsPerma[client] == 2)
 	{
 		Was_phasing = true;
 	}
-	
-	b_PhaseThroughBuildingsPerma[client] = 1;
+	*/
 	b_FaceStabber[client] = false;
 	b_IsCannibal[client] = false;
 	b_HasGlassBuilder[client] = false;
@@ -4931,12 +4873,6 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	i_MaxSupportBuildingsLimit[client] = 0;
 	b_PlayerWasAirbornKnockbackReduction[client] = false;
 	BannerOnEntityCreated(client);
-	
-	if(!IsFakeClient(client) && Was_phasing)
-	{
-		SDKUnhook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-		SDKHook(client, SDKHook_PostThink, PhaseThroughOwnBuildings);
-	}
 
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
@@ -4951,7 +4887,7 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 			static ItemInfo info;
 			static Item item;
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 
@@ -4991,13 +4927,21 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	}
 	*/
 
-	if(Items_HasNamedItem(client, "Nemesis's Heart Piece"))
+	if(Items_HasNamedItem(client, "Calmaticus' Heart Piece"))
 	{
 		b_NemesisHeart[client] = true;
 	}
 	else
 	{
 		b_NemesisHeart[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Xeno Virus Vial"))
+	{
+		b_XenoVial[client] = true;
+	}
+	else
+	{
+		b_XenoVial[client] = false;
 	}
 	if(Items_HasNamedItem(client, "Overlords Final Wish"))
 	{
@@ -5113,7 +5057,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	if(index > 0 && index < length)
 	{
 		StoreItems.GetArray(index, item);
-		if(item.Owned[client] > 0)	
+		if(item.Owned[client] > 0 && !item.ParentKit)	
 		{
 			item.GetItemInfo(item.Owned[client]-1, info);
 			if(info.Classname[0])
@@ -5180,6 +5124,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
+				i_WeaponAmmoAdjustable[entity] = 0;
 				
 				if(entity > MaxClients)
 				{
@@ -5191,6 +5136,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					i_MeleeAttackFrameDelay[entity] = info.Melee_AttackDelayFrame;
 					b_MeleeCanHeadshot[entity] = info.Melee_Allows_Headshots;
 					
+					if(info.AmmoBuyMenuOnly)
+					{
+						i_WeaponAmmoAdjustable[entity] = info.AmmoBuyMenuOnly;
+					}
 					if(info.Ammo > 0 && !CvarRPGInfiniteLevelAndAmmo.BoolValue)
 					{
 						if(!StrEqual(info.Classname[0], "tf_weapon_medigun"))
@@ -5203,11 +5152,15 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 								}
 								else
 								{
+									b_WeaponHasNoClip[entity] = false;
 									if(!info.HasNoClip)
 									{
-									//	PrintToChatAll("test");
 										RequestFrame(Delete_Clip, EntIndexToEntRef(entity));
 										Delete_Clip(EntIndexToEntRef(entity));
+									}
+									else
+									{
+										b_WeaponHasNoClip[entity] = true;
 									}
 									if(info.NoHeadshot)
 									{
@@ -5235,14 +5188,16 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 						//CANT USE AMMO 1 or 2 or something,
 						//Allows you to switch to the weapon even though it has no ammo, there is PROOOOOOOOOOOOOOOOOOOBAABLY no weapon in the game that actually uses this
 						//IF IT DOES!!! then make an exception, but as far as i know, no need.	
-						
-						if(info.Ammo/* != Ammo_Hand_Grenade && info.Ammo != Ammo_Potion_Supply*/) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
+						/*
+						if(info.Ammo) //Excluding Grenades and other chargeable stuff so you cant switch to them if they arent even ready. cus it makes no sense to have it in your hand
 						{
 							//It varies between 29 and 30, its better to just test it after each update
 							//my guess is that the compiler optimiser from valve changes it, since its client and serverside varies
-							SetAmmo(client, 29, 99999);
-							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 29);
+							//This allows perma switching to all weapons, even if you have 0 ammo.
+							SetAmmo(client, 30, 99999);
+							SetEntProp(entity, Prop_Send, "m_iSecondaryAmmoType", 30);
 						}
+						*/
 					}
 					
 					if(info.IsWand > 0)
@@ -5295,8 +5250,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					
 					i_WeaponVMTExtraSetting[entity] 			= info.WeaponVMTExtraSetting;
 					i_WeaponBodygroup[entity] 				= info.Weapon_Bodygroup;
-
-					HidePlayerWeaponModel(client, entity);
+					i_WeaponFakeIndex[entity] 				= info.Weapon_FakeIndex;
 
 					EntityFuncAttack[entity] = info.FuncAttack;
 					EntityFuncAttackInstant[entity] = info.FuncAttackInstant;
@@ -5349,13 +5303,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	else
 	{
 		static char Classnames[][32] = {"tf_weapon_shovel", "tf_weapon_bat", "tf_weapon_club", "tf_weapon_shovel",
-		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_wrench"};
+		"tf_weapon_bottle", "tf_weapon_bonesaw", "tf_weapon_fists", "tf_weapon_fireaxe", "tf_weapon_knife", "tf_weapon_fireaxe" };
 		
 		entity = CreateEntityByName(Classnames[CurrentClass[client]]);
 
 		if(entity > MaxClients)
 		{
-			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 4, 7 };
+			static const int Indexes[] = { 6, 0, 3, 6, 1, 8, 5, 2, 194, 6 };
 			SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", Indexes[CurrentClass[client]]);
 
 			SetEntProp(entity, Prop_Send, "m_bInitialized", 1);
@@ -5366,9 +5320,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			GetEntityNetClass(entity, Classnames[0], sizeof(Classnames[]));
 			int offset = FindSendPropInfo(Classnames[0], "m_iItemIDHigh");
 
-			HidePlayerWeaponModel(client, entity);
-			//hide original model
-			
 			SetEntData(entity, offset - 8, 0);	// m_iItemID
 			SetEntData(entity, offset - 4, 0);	// m_iItemID
 			SetEntData(entity, offset, 0);		// m_iItemIDHigh
@@ -5389,11 +5340,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			{
 				Attributes_Set(entity, 93, 0.0);
 				Attributes_Set(entity, 95, 0.0);
-				Attributes_Set(entity, 2043, 0.0);
 			}
 
 			Attributes_Set(entity, 263, 0.0);
 			Attributes_Set(entity, 264, 0.0);
+
 			EquipPlayerWeapon(client, entity);
 
 			if(use)
@@ -5426,7 +5377,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		for(int i; i<length; i++)
 		{
 			StoreItems.GetArray(i, item);
-			if(item.Owned[client] && item.Equipped[client])
+			if(item.Owned[client] && item.Equipped[client] && !item.ParentKit)
 			{
 				item.GetItemInfo(item.Owned[client]-1, info);
 				if(!info.Classname[0])
@@ -5434,10 +5385,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.Attack3AbilitySlot != 0)
 					{
 						SetAbilitySlotCount(client, info.Attack3AbilitySlot);
-					}
-					if(info.SpecialAdditionViaNonAttribute == 1)
-					{
-						b_PhaseThroughBuildingsPerma[client] = 2; //Set to true if its 1, other attribs will use other things!
 					}
 					if(info.SpecialAdditionViaNonAttribute == 2) //stabbb
 					{
@@ -5560,7 +5507,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 97))
-				Attributes_SetMulti(entity, 97, 0.65);
+				Attributes_SetMulti(entity, 97, 0.7);
 		}
 
 		//DOUBLE TAP!
@@ -5578,7 +5525,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				Attributes_SetMulti(entity, 103, 1.2);
 				
 			if(Attributes_Has(entity, 106))
-				Attributes_SetMulti(entity, 106, 1.2);
+				Attributes_SetMulti(entity, 106, 0.8);
 		}
 
 		//QUICK REVIVE!
@@ -5587,12 +5534,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			//do not set it, if the weapon does not have this attribute, otherwise it doesnt do anything.
 			if(Attributes_Has(entity, 8))
 			{
-				Attributes_SetMulti(entity, 8, 1.5);
+				Attributes_SetMulti(entity, 8, 1.15);
 			}
 			
 			if(Attributes_Has(client, 8)) //set it for client too if existant.
 			{
-				Attributes_SetMulti(client, 8, 1.5);
+				Attributes_SetMulti(client, 8, 1.15);
 			}
 
 			// Note: This can stack with multi weapons :|
@@ -5604,8 +5551,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
+		for(int i; i<1; i++)
+		{
+			b_WeaponSpecificClassBuff[entity][i] = false;
+		}
 
 		Rogue_GiveItem(client, entity);
+		Waves_GiveItem(entity);
 
 		/*
 			Attributes to Arrays Here
@@ -5631,7 +5583,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
+		Enable_MG42(client, entity);
 		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
@@ -5643,11 +5597,12 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_SpecterAlter(client, entity);
 		Enable_WeaponArk(client, entity);
 		Saga_Enable(client, entity);
-		Enable_WeaponBoard(client, entity);
+//		Enable_WeaponBoard(client, entity);
 		Enable_Casino(client, entity);
 		Enable_Ludo(client, entity);
 		Enable_Rapier(client, entity);
 		Enable_Mlynar(client, entity);
+		Enable_Obuch(client, entity);
 		Enable_Judge(client, entity);
 		Enable_SpikeLayer(client, entity);
 		Enable_SensalWeapon(client, entity);
@@ -5661,6 +5616,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Flagellant_Enable(client, entity);
 		Enable_Impact_Lance(client, entity);
 		Enable_Trash_Cannon(client, entity);
+		Enable_Rusty_Rifle(client, entity);
 		Enable_Blitzkrieg_Kit(client, entity);
 		Enable_Quibai(client, entity);
 		AngelicShotgun_Enable(client, entity);
@@ -5675,8 +5631,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
+		Enable_Victorian_Launcher(client, entity);
+		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
+		Merchant_Enable(client, entity);
+		Flametail_Enable(client, entity);
 	}
+
 	return entity;
 }
 
@@ -5735,7 +5696,8 @@ void Store_RemoveSpecificItem(int client, const char[] name)
 		}
 	}
 }
-void Store_ConsumeItem(int client, int index)
+
+stock void Store_ConsumeItem(int client, int index)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -5987,24 +5949,6 @@ static void ItemCost(int client, Item item, int &cost)
 	if(Rogue_Mode())
 	{
 		Rogue_Curse_StorePriceMulti(cost, (item.NPCSeller_WaveStart > 0 || item.NPCSeller_First || item.NPCSeller));
-
-		ItemInfo info;
-		if(item.GetItemInfo(0, info))
-		{
-			if(info.RougeBuildMax > 0)
-			{
-				cost = 0;			
-				if(info.RougeBuildMax <= item.RogueBoughtRecently[client])
-				{
-					cost = 999999;
-				}
-				//building under this category during rogue modes will be marked as free unless otherwise.
-			}
-			else if(info.RougeBuildMax == -999)
-			{
-				cost = 999999;
-			}
-		}
 	}
 }
 
@@ -6063,7 +6007,6 @@ bool Store_Girogi_Interact(int client, int entity, const char[] classname, bool 
 
 void GiveCredits(int client, int credits, bool building)
 {
-	
 	if(building && GameRules_GetRoundState() == RoundState_BetweenRounds && StartCash < 750)
 	{
 		if(!CashSpentGivePostSetupWarning[client])
@@ -6075,15 +6018,18 @@ void GiveCredits(int client, int credits, bool building)
 		int CreditsGive = credits / 2;
 		CashSpentGivePostSetup[client] += CreditsGive;
 		CashSpent[client] -= CreditsGive;
+		CashRecievedNonWave[client] += CreditsGive;
 	}
 	else
 	{
 		CashSpent[client] -= credits;
+		CashRecievedNonWave[client] += credits;
 	}
 }
 
 void GrantCreditsBack(int client)
 {
+	CashRecievedNonWave[client] += CashSpentGivePostSetup[client];
 	CashSpent[client] -= CashSpentGivePostSetup[client];
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;
@@ -6279,6 +6225,14 @@ bool DisplayMenuAtCustom(Menu menu, int client, int item)
 	menu.ExitBackButton = false;
 	return menu.Display(client, MENU_TIME_FOREVER);
 	//return menu.DisplayAt(client, base, MENU_TIME_FOREVER);
+}
+
+bool Store_CheckEntitySlotIndex(int index, int entity)
+{
+	char classname[64];
+	GetEntityClassname(entity, classname, sizeof(classname));
+	int slot = TF2_GetClassnameSlot(classname);
+	return CheckEntitySlotIndex(index, slot, entity);
 }
 
 static bool CheckEntitySlotIndex(int index, int slot, int entity)

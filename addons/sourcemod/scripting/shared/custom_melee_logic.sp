@@ -174,6 +174,9 @@ public void SepcialBackstabLaughSpy(int attacker)
 {
 	EmitSoundToAll(g_WeebKnifeLaughBackstab[GetRandomInt(0, sizeof(g_WeebKnifeLaughBackstab) - 1)], attacker, SNDCHAN_VOICE, 70, _, 1.0);
 }
+#if defined RPG
+#define WEAPON_BOOM_HAMMER 10000
+#endif
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
@@ -220,6 +223,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
+			}
+			case WEAPON_VICTORIAN_LAUNCHER:
+			{
+				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
 			}
 		}	
 	}
@@ -537,12 +544,25 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
+		bool DontPlaySound = false;
 #if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
 		if(target < 1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
+				case WEAPON_CHAINSAW:
+				{
+					DontPlaySound = true;
+					if(target == 0)
+					{
+						EmitSoundChainsaw(client, 0);
+					}
+					else
+					{
+						EmitSoundChainsaw(client, 1);
+					}
+				}
 				case WEAPON_LAPPLAND: //yes, if we miss, then we do other stuff.
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
@@ -572,7 +592,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 #endif
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
-		if(soundIndex > 0)
+		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
 			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
@@ -603,6 +623,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
+		
 		if(Item_Index != 155)
 		{
 			damage *= WeaponDamageAttributeMultipliers(weapon);
@@ -627,7 +648,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_OnHitEffect(client, weapon, damage);
+				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
 		}
 #endif
@@ -670,6 +691,10 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
 						}
+						case WEAPON_KIT_BLITZKRIEG_CORE:
+						{
+							Blitzkrieg_Kit_OnHitEffect(client);
+						}
 						default:
 						{
 							
@@ -704,7 +729,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
+		if(target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
@@ -713,7 +738,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
 			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
-		else if(target > -1 && Item_Index == 214)
+		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{
 			i_ExplosiveProjectileHexArray[weapon] = 0;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;

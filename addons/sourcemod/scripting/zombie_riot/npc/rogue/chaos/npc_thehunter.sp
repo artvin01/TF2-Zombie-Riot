@@ -27,8 +27,8 @@ void TheHunter_Setup()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Forest Hitman");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_TheHunter");
+	strcopy(data.Name, sizeof(data.Name), "Wildingen Hitman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_thehunter");
 	strcopy(data.Icon, sizeof(data.Icon), "sniper_headshot");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
@@ -70,7 +70,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 
-//		//KillFeed_SetKillIcon(npc.index, "machina");
+		KillFeed_SetKillIcon(npc.index, "headshot");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -81,7 +81,7 @@ methodmap TheHunter < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 0;
 
-		npc.m_flNextMeleeAttack = GetGameTime() + 20.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -90,6 +90,7 @@ methodmap TheHunter < CClotBody
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.m_bStaticNPC = true;
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
@@ -134,6 +135,19 @@ public void TheHunter_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	if(Rogue_InSetup())
+	{
+		if(npc.m_iChanged_WalkCycle != 2)
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+			npc.StopPathing();
+			npc.m_flSpeed = 0.0;
+		}
+		return;
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -216,6 +230,8 @@ public void TheHunter_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	SpawnMoney(entity);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
@@ -307,15 +323,16 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				if(Rogue_Paradox_RedMoon() || TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
+				if(target > MaxClients || Rogue_Paradox_RedMoon() || TF2_IsPlayerInCondition(target, TFCond_MarkedForDeath))
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 100000.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					TF2_RemoveCondition(target, TFCond_MarkedForDeath);
+					if(target <= MaxClients)
+						TF2_RemoveCondition(target, TFCond_MarkedForDeath);
 				}
 				else
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, CountPlayersOnServer() * 50.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
-					if(IsPlayerAlive(target))
+					if(!dieingstate[target] && IsPlayerAlive(target))
 						TF2_AddCondition(target, TFCond_MarkedForDeath, 120.0);
 				}
 			} 
@@ -326,7 +343,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 3.05;
 		npc.m_flDoingAnimation = gameTime + 2.95;
-		npc.m_flNextMeleeAttack = gameTime + 20.0 - (Rogue_GetChaosLevel() * 4.0);
+		npc.m_flNextMeleeAttack = gameTime + 10.0 - (Rogue_GetChaosLevel() * 2.0);
 	}
 	return 1;
 }

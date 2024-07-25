@@ -29,6 +29,8 @@ static const char Categories[][] =
 	"Seaborn Infection",
 	"Expidonsa",
 	"Interitus Alliances",
+	"Chaos Allience",
+	"Voided Subjects",
 	//"Blue Paradox"
 };
 
@@ -813,4 +815,9 @@ bool Item_ClientHasAllRarity(int client, int rarity)
 		return true;
 	}
 	return false;
+}
+
+public void MapChooser_OnClientItem(int client, const char[] item, int amount, bool &result)
+{
+	result = Items_HasNamedItem(client, item);
 }

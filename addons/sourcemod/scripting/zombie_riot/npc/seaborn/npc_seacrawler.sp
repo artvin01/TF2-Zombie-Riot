@@ -35,7 +35,7 @@ void SeaCrawler_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seacrawler");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_crawler");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -81,7 +81,7 @@ methodmap SeaCrawler < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_WALK");
-		//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

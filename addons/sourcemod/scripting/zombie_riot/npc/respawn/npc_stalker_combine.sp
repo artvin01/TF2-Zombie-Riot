@@ -11,7 +11,12 @@ methodmap StalkerShared < CClotBody
 		if(this.m_iTarget < 1)
 			return false;
 		
-		if(Can_I_See_Enemy(this.index, this.m_iTarget) == this.m_iTarget)
+		int EnemySee = Can_I_See_Enemy(this.index, this.m_iTarget);
+		if(IsValidEnemy(this.index, EnemySee))
+		{
+			this.m_iTarget = EnemySee;
+		}
+		if(IsValidEnemy(this.index, this.m_iTarget))
 		{
 			if(this.m_iChaseVisable < 6)
 				this.m_iChaseVisable++;
@@ -35,11 +40,16 @@ methodmap StalkerShared < CClotBody
 			}
 		}
 
-		for(int i; i < 6; i++)
+		for(int i; i < 50; i++)
 		{
 			CNavArea RandomArea = PickRandomArea();
 			if(RandomArea != NULL_AREA)
 			{
+				int NavAttribs = RandomArea.GetAttributes();
+				if(NavAttribs & NAV_MESH_AVOID)
+				{
+					continue;
+				}
 				RandomArea.GetCenter(pos);
 				if(GetVectorDistance(pos, pos2, true) < 2000000.0)
 					break;
@@ -54,8 +64,8 @@ methodmap StalkerShared < CClotBody
 	}
 	property bool m_bChaseAnger	// If currently chasing a target down
 	{
-		public get()		{ return !b_ThisEntityIgnoredByOtherNpcsAggro[this.index]; }
-		public set(bool value) 	{ b_ThisEntityIgnoredByOtherNpcsAggro[this.index] = !value; }
+		public get()		{ return !b_DuringHook[this.index]; }
+		public set(bool value) 	{ b_DuringHook[this.index] = !value; }
 	}
 	property int m_iChaseVisable	// Time before we considered "lost them"
 	{
@@ -224,7 +234,7 @@ methodmap StalkerCombine < StalkerShared
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 		
 		npc.m_iBleedType = BLEEDTYPE_XENO;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -498,7 +508,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 							TE_Particle("asplode_hoodoo", vecMe, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 
-							//KillFeed_SetKillIcon(npc.index, "taunt_soldier");
+							KillFeed_SetKillIcon(npc.index, "taunt_soldier");
 							SmiteNpcToDeath(npc.index);
 							SmiteNpcToDeath(npc.m_iTarget);
 						}
@@ -545,7 +555,7 @@ public void StalkerCombine_ClotThink(int iNPC)
 
 				for(int i; i < 9; i++)
 				{
-					StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+					StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
 				}
 			}
 		}
@@ -688,13 +698,13 @@ void StalkerCombine_NPCDeath(int entity)
 /*
 	int gib = Place_Gib("models/zombie/zombie_soldier_legs.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
-		b_LimitedGibGiveMoreHealth[gib] = true;
+		f_GibHealingAmount[gib] = true;
 	
 	startPosition[2] += 34;
 	
 	gib = Place_Gib("models/zombie/zombie_soldier_torso.mdl", startPosition, _, NULL_VECTOR, _, false, false, _, false, true, true);
 	if(gib != -1)
-		b_LimitedGibGiveMoreHealth[gib] = true;
+		f_GibHealingAmount[gib] = true;
 */	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -702,6 +712,6 @@ void StalkerCombine_NPCDeath(int entity)
 
 	for(gib = 0; gib < 9; gib++)
 	{
-		StopSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
+		StopCustomSound(npc.index, SNDCHAN_STATIC, "#music/vlvx_song11.mp3");
 	}
 }

@@ -17,7 +17,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -76,8 +76,8 @@ void PhantomKnight_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Phantom Knight");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phantom_knight");
-	strcopy(data.Icon, sizeof(data.Icon), "");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "phantom");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Special;
 	data.Func = ClotSummon;
@@ -333,7 +333,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						//KillFeed_SetKillIcon(npc.index, "claidheamohmor");
+						KillFeed_SetKillIcon(npc.index, "claidheamohmor");
 						if(!ShouldNpcDealBonusDamage(target))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, damage * npc.m_flWaveScale, DMG_CLUB);
@@ -353,7 +353,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		if(f_AttackHappensAoe[npc.index] < gameTime)
 		{
-			//KillFeed_SetKillIcon(npc.index, "tf_generic_bomb");
+			KillFeed_SetKillIcon(npc.index, "tf_generic_bomb");
 				
 			float damage = 200.0;
 			if(b_IsPhantomFake[npc.index]) //Make sure that he wont do damage if its a fake 

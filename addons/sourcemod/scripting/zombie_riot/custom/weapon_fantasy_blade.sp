@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define H_SLICER_AMOUNT 6
 
 /*
 	Shards:
@@ -53,7 +54,7 @@ static int Fantasy_Blade_BEAM_BuildingHit[MAXENTITIES];
 
 #define FANTASY_BLADE_MAX_SHARDS 9.0
 #define FANTASY_BLADE_MAX_PENETRATION 15	//how many targets the blade will penetrate before killing itself
-#define FANTASY_BLADE_PENETRATION_FALLOFF 1.2	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
+#define FANTASY_BLADE_PENETRATION_FALLOFF 0.8	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
 
 #define FANTASY_BLADE_SHARDS_GAIN_PER_HIT 0.3
 
@@ -401,7 +402,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 
 			float ExplodePos[3]; CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0, ExplodePos);
 
-			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
+			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 * damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD--;
 			times_hurt++;
@@ -749,7 +750,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Horizontal_Slicer_Tick);
 }
@@ -862,7 +863,7 @@ static void Vertical_Slicer(int client, float vecTarget[3], float time, float da
 	
 	i_Slicer_Throttle[client] = 0;
 	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Vertical_Slicer_Tick);
 }
@@ -944,7 +945,7 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 			if(b_thisNpcIsARaid[victim])
 				damage_xd*= 1.25;
 				
-			SDKHooks_TakeDamage(victim, client, client, damage_xd/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, client, client, damage_xd*BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
 		}
 	}

@@ -627,7 +627,7 @@ public Action Timer_Electric_Think_PAP(Handle timer, int ref)
 						//Code to do damage position and ragdolls
 						
 						float damage_1 = Damage_Tornado[iCarrier];
-						damage_1 /= Damage_Reduction[iCarrier];
+						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos);
 						
@@ -815,7 +815,7 @@ public Action Timer_Electric_Think(Handle timer, int ref)
 						//Code to do damage position and ragdolls
 						
 						float damage_1 = Damage_Tornado[iCarrier];		
-						damage_1 /= Damage_Reduction[iCarrier];
+						damage_1 *= Damage_Reduction[iCarrier];
 						float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 						SDKHooks_TakeDamage(baseboss_index, client, client, damage_1, DMG_PLASMA, -1, Dmg_Force, targPos, _ , ZR_DAMAGE_LASER_NO_BLAST);
 						

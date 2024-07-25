@@ -901,7 +901,9 @@ public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(other, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
-	
+
+		Damage_Projectile[entity] *= 0.5;
+		
 		if (Healing_Projectile[entity] > 0.0) {
 			int client = Projectile_To_Client[entity];
 			int flMaxHealth = SDKCall_GetMaxHealth(client);

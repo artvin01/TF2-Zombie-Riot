@@ -192,7 +192,9 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		SetEntityCollisionGroup(projectile, 27); //Do not collide.
 		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
-		SetEntityGravity(projectile, 0.5);
+		SetEntityGravity(projectile, 0.2);
+		//allow self hitting,
+		b_NpcIsTeamkiller[projectile] = true;
 	}
 	
 	if (Hose_ShotgunCharge[client])
@@ -223,11 +225,11 @@ public void Hose_Touch(int entity, int other)
 	
 	if (!IsValidClient(owner))
 		return;
-		
+
 	if (other == owner) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
 		return;
 
-		
+
 	if (Hose_AlreadyHealed[entity][other])
 		return;
 		
@@ -235,7 +237,7 @@ public void Hose_Touch(int entity, int other)
 	{	
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 100.0;
+		ProjLoc[2] += 25.0;
 		TE_Particle(Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		Hose_Heal(owner, other, Hose_Healing[entity]);
@@ -462,7 +464,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
 			{
-				HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+				HealAmmount *= 0.25; //make sure they dont get the full benifit if hurt recently.
 			}
 			
 			if(ammo_amount_left > RoundToCeil(HealAmmount))

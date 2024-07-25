@@ -156,6 +156,7 @@ static bool b_angered_twice[MAXENTITIES];
 #define DONNERKRIEG_NIGHTMARE_CANNON_DURATION 15.0
 
 bool b_donner_said_win_line;
+bool b_schwert_ded;
 
 //static bool b_spawn_bob;
 
@@ -167,7 +168,7 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 	donner_sea_created=false;
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Name, sizeof(data.Name), "Stella");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_donnerkrieg");
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
@@ -258,9 +259,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound= GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -272,26 +271,20 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public Raidboss_Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -313,6 +306,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_donner_said_win_line = false;
+		b_schwert_ded = false;
 
 		//fl_divine_intervention_retry = GetGameTime() + 10.0;
 
@@ -419,6 +413,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		func_NPCFuncWin[npc.index] = Win_Line;
 			
 		
 		/*
@@ -478,7 +473,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 					
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		i_particle_effects[npc.index][0] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0}));
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		npc.StartPathing();
 		
@@ -507,8 +502,13 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		schwert_retreat = false;
 		
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav");
+
+		int wave = ZR_GetWaveCount()+1;
 		
-		CPrintToChatAll("{aqua}Donnerkrieg{snow}: We have arrived to render judgement");
+		if(wave <=45)
+			CPrintToChatAll("{aqua}Stella{snow}: We have arrived to render judgement");
+		else
+			CPrintToChatAll("{aqua}Stella{snow}: This ends now!");
 		
 		Donnerkrieg_Wings_Create(npc);
 
@@ -520,11 +520,56 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		//Reused silvester duo code here
 		
 		RequestFrame(Donnerkrieg_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
 	
 	
+}
+
+static void Win_Line(int entity)
+{	
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+
+	char text_lines[255];
+	int ally = EntRefToEntIndex(i_ally_index);
+	if(IsValidEntity(ally) && !b_schwert_ded)
+	{
+		switch(GetRandomInt(0, 2))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Huh, they're all dead, guess they were easier to stop then I expected...", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: HAH, the {darkblue}sea{snow} isn't THAT hard to beat", name_color, text_color);
+			}
+			case 2:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh boy, their ragdoll's were {gold}amazing{snow}!", name_color, text_color);
+			}
+		}
+	}
+	else
+	{
+		switch(GetRandomInt(0, 1))
+		{
+			case 0:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You killed my beloved, and I {crimson}erased{snow} your existance", name_color, text_color);
+			}
+			case 1:
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Well, atleast I still have {purple}Twirl{snow}...", name_color, text_color);
+			}
+		}	
+	}
+	b_donner_said_win_line = true;
+	CPrintToChatAll(text_lines);
 }
 
 void Donnerkrieg_SpawnAllyDuoRaid(int ref)
@@ -602,6 +647,39 @@ static void Internal_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index]=INVALID_FUNCTION;
 		return;
+	}
+
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
+
+			char text_lines[255];
+			int ally = EntRefToEntIndex(i_ally_index);
+			if(IsValidEntity(ally) && !b_schwert_ded)
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ahaha, its almost over now, just{crimson} one more left{snow}!", name_color, text_color);
+					}
+					case 1:
+					{
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: We'd better not choke now...", name_color, text_color);
+					}
+				}
+			}
+			else
+			{
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: I'm about to turn into an unrecognisable mass of sea for {crimson}what you've DONE TO MY BELOVED", name_color, text_color);
+			}
+			CPrintToChatAll(text_lines);
+		}
 	}
 		
 	float GameTime = GetGameTime(npc.index);
@@ -758,7 +836,6 @@ static void Internal_ClotThink(int iNPC)
 				bool sea = false;
 				if(donner_sea_created)
 				{
-					donner_sea_created=false;
 					sea=true;
 				}
 
@@ -769,6 +846,8 @@ static void Internal_ClotThink(int iNPC)
 				{
 					infection=2;
 				}
+				if(Current_Wave>60)
+					infection=3;
 				if(NpcStats_IsEnemySilenced(npc.index))
 				{
 					if(infection>0)
@@ -896,24 +975,24 @@ public void Raid_Donnerkrieg_Schwertkrieg_Raidmode_Logic(bool donner_alive)
 		b_donner_said_win_line = true;
 		if(donner_alive)
 		{
-			char name_color[255]; name_color = "aqua";
-			char text_color[255]; text_color = "snow";
+			char name_color[] = "aqua";
+			char text_color[] = "snow";
 
 			char text_lines[255];
 			int ally = EntRefToEntIndex(i_ally_index);
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: You think thats how you fight us two?", name_color, text_color);
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: You think thats how you fight us two?", name_color, text_color);
 			}
 			else
 			{
-				Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh my, how annoying this has become...", name_color, text_color);
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh my, how annoying this has become...", name_color, text_color);
 			}
 			CPrintToChatAll(text_lines);
 		}
 		else
 		{
-			CPrintToChatAll("{crimson}Schwertkrieg{snow}: Ayaya?");
+			CPrintToChatAll("{crimson}Karlas{snow}: Ayaya?");
 		}
 		
 	}
@@ -1123,10 +1202,10 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 		GetVectorAngles(vecAngles, vecAngles);
 						
 		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, fl_heavens_speed);
+		ScaleVector(Direction, fl_heavens_speed/TickrateModify);
 		AddVectors(loc, Direction, loc);
 		
-		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
+		Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
 
 		int wave = ZR_GetWaveCount()+1;
 
@@ -1157,20 +1236,57 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[1] = 9;
 			color[2] = 235;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
 		}
 
-		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage, fl_heavens_radius, infection, false);
+		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage/TickrateModify, fl_heavens_radius, infection, false);
 		
 		fl_Heavens_Loc[i] = loc;
 
 		Heavens_SpawnBeam(loc, color, 7.5, true);
 	}
+}
+static void Donnerkrieg_Proper_To_Groud_Clip(float vecHull[3], float StepHeight, float vecorigin[3])
+{
+	float originalPostionTrace[3];
+	float startPostionTrace[3];
+	float endPostionTrace[3];
+	endPostionTrace = vecorigin;
+	startPostionTrace = vecorigin;
+	originalPostionTrace = vecorigin;
+	startPostionTrace[2] += StepHeight;
+	endPostionTrace[2] -= 5000.0;
+
+	float vecHullMins[3];
+	vecHullMins = vecHull;
+
+	vecHullMins[0] *= -1.0;
+	vecHullMins[1] *= -1.0;
+	vecHullMins[2] *= -1.0;
+
+	Handle trace;
+	trace = TR_TraceHullFilterEx( startPostionTrace, endPostionTrace, vecHullMins, vecHull, MASK_NPCSOLID,HitOnlyWorld, 0);
+	if ( TR_GetFraction(trace) < 1.0)
+	{
+		// This is the point on the actual surface (the hull could have hit space)
+		TR_GetEndPosition(vecorigin, trace);	
+	}
+	vecorigin[0] = originalPostionTrace[0];
+	vecorigin[1] = originalPostionTrace[1];
+
+	float VecCalc = (vecorigin[2] - startPostionTrace[2]);
+	if(VecCalc > (StepHeight - (vecHull[2] + 2.0)) || VecCalc > (StepHeight - (vecHull[2] + 2.0)) ) //This means it was inside something, in this case, we take the normal non traced position.
+	{
+		vecorigin[2] = originalPostionTrace[2];
+	}
+
+	delete trace;
+	//if it doesnt hit anything, then it just does buisness as usual
 }
 static void Heavens_Light_Charging(int ref, float ratio)
 {
@@ -1187,7 +1303,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 	UserAng[1] = fl_Heavens_Angle;
 	UserAng[2] = 0.0;
 	
-	fl_Heavens_Angle += 1.5*ratio;	//make it so the spining starts to slowdown the more "charged" up the ability becomes until it just stops spinning
+	fl_Heavens_Angle +=(1.5*ratio)/TickrateModify;	//make it so the spining starts to slowdown the more "charged" up the ability becomes until it just stops spinning
 	
 	if(fl_Heavens_Angle>=360.0)
 	{
@@ -1228,7 +1344,7 @@ static void Heavens_Light_Charging(int ref, float ratio)
 			ScaleVector(Direction, distance);
 			AddVectors(UserLoc, Direction, endLoc);
 			
-			Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
+			Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 			
 			
 
@@ -1366,10 +1482,10 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 					float flPos[3]; // original
 					float flAng[3]; // original
 						
-					npc.GetAttachment("root", flPos, flAng);
-					i_particle_effects[npc.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0}));
-					npc.GetAttachment("root", flPos, flAng);
-					i_particle_effects[npc.index][2] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0}));
+					npc.GetAttachment("", flPos, flAng);
+					i_particle_effects[npc.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0}));
+					npc.GetAttachment("", flPos, flAng);
+					i_particle_effects[npc.index][2] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0}));
 						
 					//npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
@@ -1539,6 +1655,21 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				color[2] = 199;
 			}
 		}
+		case 3:
+		{
+			if(creep)
+			{
+				color[0] = 0;
+				color[1] = 0;
+				color[2] = 255;
+			}
+			else
+			{
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 255;
+			}
+		}
 	}
 	
 	
@@ -1616,7 +1747,7 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 				if(dist_check3<Dist3*0.75)
 					continue;
 
-				Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
+				Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, EndLoc3);	//Make it so the ions appear properly on the ground so its nice
 
 				float Time = GetRandomFloat(DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[0], DONNERKRIEG_HEAVENS_FALL_DETONATION_TIMER[1]);	//make it a bit random so it doesn't all explode at the same time
 
@@ -1819,6 +1950,7 @@ public Action Smite_Timer_Donner(Handle Smite_Logic, DataPack data)
 
 	if(creep)	//if creep, create the cancer thing.
 	{
+		donner_sea_created=false;
 		SeaFounder_SpawnNethersea(startPosition);
 	}
 
@@ -2037,19 +2169,19 @@ static void Internal_NPCDeath(int entity)
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	if(!b_donner_said_win_line)
 	{
-		if(wave<60)
+		if(wave!=60)
 		{
-			if(IsValidEntity(ally))
+			if(IsValidEntity(ally) && !b_schwert_ded)
 			{
 				switch(GetRandomInt(1,2))	//warp
 				{
 					case 1:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let {crimson}Schwertkrieg{snow} handle this");
+						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let {crimson}Karlas{snow} handle this");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: You still have {crimson}Schwertkrieg{snow} to deal with... heh");
+						CPrintToChatAll("{aqua}Stella{snow}: You still have {crimson}Karlas{snow} to deal with... heh");
 					}
 				}
 			}
@@ -2059,11 +2191,11 @@ static void Internal_NPCDeath(int entity)
 				{
 					case 1:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Hmph, I'll let this slide,{crimson} for now.");
+						CPrintToChatAll("{aqua}Stella{snow}: Hmph, I'll let this slide,{crimson} for now.");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{aqua}Donnerkrieg{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
+						CPrintToChatAll("{aqua}Stella{snow}: Fine, we're leaving.{crimson} Until next time that is{snow} heh");
 					}
 				}
 			}
@@ -2074,15 +2206,15 @@ static void Internal_NPCDeath(int entity)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Huh, I guess our turn's over");
+					CPrintToChatAll("{aqua}Stella{snow}: Huh, I guess our turn's over");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: Oh boy, this is gonna be fun to watch");
+					CPrintToChatAll("{aqua}Stella{snow}: Oh boy, this is gonna be fun to watch");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{aqua}Donnerkrieg{snow}: I wanted to play with them more, allas");
+					CPrintToChatAll("{aqua}Stella{snow}: I wanted to play with them more, allas");
 				}
 			}
 			
@@ -2311,9 +2443,9 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 			color[1] = 107;
 			color[2] = 250;
 		}
-		else
+		else if(wave > 60)
 		{
-			infection=2;
+			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
@@ -2471,9 +2603,9 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		infection=2;
 	}
-	else
+	else if(wave > 60)
 	{
-		infection=2;
+		infection=3;
 	}
 
 	if(NpcStats_IsEnemySilenced(npc.index) && wave < 60)
@@ -2484,22 +2616,22 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 	float speed = 750.0;
 	bool hover=  false;
-	float crystal_turn_speed = 3.5;
+	float crystal_turn_speed = 3.5/TickrateModify;
 	if(npc.Anger)
 	{
 		speed=250.0;
 		hover=true;
-		crystal_turn_speed = 4.5;
+		crystal_turn_speed = 4.5/TickrateModify;
 	}	
 
 	if(wave>=60)
 	{
 		speed=250.0;
 		hover=true;
-		crystal_turn_speed = 4.5;
+		crystal_turn_speed = 4.5/TickrateModify;
 	}
 
-	fl_spinning_angle[npc.index]+=2.0;
+	fl_spinning_angle[npc.index]+=2.0/TickrateModify;
 		
 	if(fl_spinning_angle[npc.index]>=360.0)
 		fl_spinning_angle[npc.index] = 0.0;
@@ -2754,6 +2886,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					{
 						Dmg *= 5.0;
 					}
+					Dmg /= TickrateModify;
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 				}
@@ -2767,11 +2900,14 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 						Dmg *= 5.0;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					Dmg /= TickrateModify;
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/12), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
 					int damage = RoundToFloor(dps*0.01);
 					if(damage < 4)
 						damage = 4;
+						
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -2780,6 +2916,28 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					int damage = RoundToFloor(dps*0.05);
 					if(damage < 8)
 						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
+
+					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
+				}
+				case 3:
+				{
+					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
+
+					float Dmg = dps;
+
+					if(ShouldNpcDealBonusDamage(victim))
+					{
+						Dmg *= 5.0;
+					}
+					Dmg /= TickrateModify;
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
+
+					int damage = RoundToFloor(dps*0.05);
+					if(damage < 8)
+						damage = 8;
+					damage = RoundToNearest(float(damage) / TickrateModify);
 
 					Elemental_AddNervousDamage(victim, npc.index, damage, false, true);
 				}
@@ -3212,9 +3370,22 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 			ion_damage[npc.index] = float(neural_damage);
 
 			if(shake)
-				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
 			else
-				Explode_Logic_Custom(1.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+				Explode_Logic_Custom(5.0, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
+		}
+		case 3:
+		{
+			int neural_damage = RoundToFloor(damage*0.1);
+			if(neural_damage < 8)
+				neural_damage = 8;
+
+			ion_damage[npc.index] = float(neural_damage);
+
+			if(shake)
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak_shake);
+			else
+				Explode_Logic_Custom(damage, npc.index, npc.index, -1, loc, Range , _ , _ , true, _, _, 1.0, Donner_Neural_Tweak);
 		}
 	}
 }
@@ -3267,9 +3438,9 @@ static int Check_Line_Of_Sight(float pos_npc[3], int attacker, int enemy)
 
 static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 {
-	char name_color[255]; name_color = "aqua";
-	char text_color[255]; text_color = "snow";
-	char danger_color[255]; danger_color = "crimson";
+	char name_color[] = "aqua";
+	char text_color[] = "snow";
+	char danger_color[] = "crimson";
 
 	char text_lines[255];
 
@@ -3284,18 +3455,18 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 			{
 				case 1:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}Thats it {%s}i'm going to kill you", name_color, text_color, name_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}Thats it {%s}i'm going to kill you{%s}.", name_color, text_color, name_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you", name_color, text_color, name_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Thats it {%s}i'm going to kill you{%s}.", name_color, text_color, name_color, danger_color, text_color);	
 				}
 				case 2:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}hm, {%s}Wonder how this will end...", name_color, text_color, danger_color, text_color);	
 				}
 				case 3:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near", name_color, text_color, danger_color, name_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near{%s}.", name_color, text_color, danger_color, name_color, text_color, danger_color, text_color);		
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near", name_color, text_color, danger_color, name_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PREPARE {%s}Thyself, {%s}Judgement {%s}Is near{%s}.", name_color, text_color, danger_color, name_color, text_color, danger_color, text_color);		
 				}
 				case 4:
 				{
@@ -3303,36 +3474,36 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 					{
 						case 5:
 						{
-							//CPrintToChatAll("{%s}Donnerkrieg{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
+							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now train's gone and {%s}Left{%s}.", name_color, text_color, danger_color, text_color);	
 							b_train_line_used[npc.index] = true;
 						}				
 						default:
 						{
-							//CPrintToChatAll("{%s}Donnerkrieg{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
+							//CPrintToChatAll("{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh not again now cannon's gone and {%s}recharged{%s}.", name_color, text_color, danger_color, text_color);	
 						}
 					}
 				}
 				case 5: 
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);
+					//CPrintToChatAll("{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aiming this thing is actually quite {%s}complex {%s}ya know.", name_color, text_color, danger_color, text_color);
 					b_fuck_you_line_used[npc.index] = true;
 				}
 				case 6:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this{%s}.", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this{%s}.", name_color, text_color, danger_color, text_color);	
 				}
 				case 7:
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Oh how {%s}Tiny{%s} you all look from up here.", name_color, text_color, danger_color, text_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: Ya know, im getting quite bored of {%s}this", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Oh how {%s}Tiny{%s} you all look from up here.", name_color, text_color, danger_color, text_color);	
 				}
 				case 8:
 				{
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: heh {%s}This is{%s} gonna be funny.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: heh {%s}This is{%s} gonna be funny.", name_color, text_color, danger_color, text_color);	
 				}
 				case 9:
 				{
@@ -3340,11 +3511,11 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 					{
 						case 5:
 						{
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}Oya{%s}?", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}Oya{%s}?", name_color, text_color, danger_color, text_color);	
 						}				
 						default:
 						{
-							Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
+							Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: Aya, how troublesome {%s}this is{%s}.", name_color, text_color, danger_color, text_color);	
 						}
 					}
 				}
@@ -3358,29 +3529,29 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 				{
 					case 1:
 					{
-						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}NIGHTMARE, CANNON!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}NIGHTMARE, CANNON{%s}!", name_color, text_color, danger_color, text_color);
+						//CPrintToChatAll("{%s}Stella{%s}: {%s}NIGHTMARE, CANNON!", name_color, text_color, danger_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}NIGHTMARE, CANNON{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 2:
 					{
-						//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}JUDGEMENT BE UPON THEE{%s}!", name_color, text_color, danger_color, text_color);
+						//CPrintToChatAll("{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE!", name_color, text_color, danger_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}JUDGEMENT BE UPON THEE{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 3:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}COSMIC ANNIHILATION{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}COSMIC ANNIHILATION{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 4:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}DIVINE RETRIBUTION{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}DIVINE RETRIBUTION{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 5:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}CALL OF THE BEYOND{%s}!", name_color, text_color, danger_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}CALL OF THE BEYOND{%s}!", name_color, text_color, danger_color, text_color);
 					}
 					case 6:
 					{
-						Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}PUNISHMENT OF HER {%s}GRACE{%s}!", name_color, text_color, danger_color, name_color, text_color);
+						Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}PUNISHMENT OF HER {%s}GRACE{%s}!", name_color, text_color, danger_color, name_color, text_color);
 					}
 				}
 			}
@@ -3388,17 +3559,17 @@ static void Donnerkrieg_Say_Lines(Raidboss_Donnerkrieg npc, int line_type)
 			{
 				if(b_train_line_used[npc.index])
 				{
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: {%s}And the city's to far to walk to the end while I...", name_color, text_color, danger_color);	
 					b_train_line_used[npc.index] = false;
 					extra_lines = "...";
 				}
 				else if(b_fuck_you_line_used[npc.index])
 				{
 					b_fuck_you_line_used[npc.index] = false;
-					//CPrintToChatAll("{%s}Donnerkrieg{%s}: However its still{%s} worth the effort", name_color, text_color, danger_color);	
+					//CPrintToChatAll("{%s}Stella{%s}: However its still{%s} worth the effort", name_color, text_color, danger_color);	
 
-					Format(text_lines, sizeof(text_lines), "{%s}Donnerkrieg{%s}: However its still{%s} worth the effort{%s}.", name_color, text_color, danger_color, text_color);	
+					Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: However its still{%s} worth the effort{%s}.", name_color, text_color, danger_color, text_color);	
 					extra_lines = "";
 				}
 				
@@ -3480,7 +3651,7 @@ static void Invoke_Divine_Intervention(Raidboss_Donnerkrieg npc, float GameTime)
 
 	fl_anchor_location = GetAbsOrigin(npc.index);
 
-	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, fl_anchor_location);
+	Donnerkrieg_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, fl_anchor_location);
 
 	SDKUnhook(npc.index, SDKHook_Think, Divine_Intervention_Hook);
 	SDKHook(npc.index, SDKHook_Think, Divine_Intervention_Hook);

@@ -62,6 +62,16 @@ public void HeadcrabZombie_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));	i++) { PrecacheSound(g_IdleAlertedSounds[i]);	}
 
 	PrecacheModel("models/zombie/classic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab_zombie");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return HeadcrabZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap HeadcrabZombie < CClotBody
@@ -105,10 +115,9 @@ methodmap HeadcrabZombie < CClotBody
 	{
 		HeadcrabZombie npc = view_as<HeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = HEADCRAB_ZOMBIE;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 
 	//	npc.SetActivity("ACT_WALK");
 
@@ -116,6 +125,9 @@ methodmap HeadcrabZombie < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
+		func_NPCDeath[npc.index] = HeadcrabZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = HeadcrabZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = HeadcrabZombie_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -125,9 +137,7 @@ methodmap HeadcrabZombie < CClotBody
 		f3_SpawnPosition[npc.index][0] = vecPos[0];
 		f3_SpawnPosition[npc.index][1] = vecPos[1];
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
-		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, HeadcrabZombie_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, HeadcrabZombie_ClotThink);
+		npc.m_flRangedArmor = 0.75;
 		
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -170,8 +180,8 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 240.0, gameTime);
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
+	Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -182,14 +192,16 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 25.0;
+					float damage = 8500.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
@@ -211,13 +223,18 @@ public void HeadcrabZombie_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -312,8 +329,6 @@ public void HeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, HeadcrabZombie_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, HeadcrabZombie_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -140,6 +140,14 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 {
 	if(IsValidEntity(client))
 	{
+		if(Ability_Check_Cooldown(client, slot) < 0.0 && !(GetClientButtons(client) & IN_DUCK))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Crouch for ability");	
+			return;
+		}
 		if (Ability_Check_Cooldown(client, slot) < 0.0)
 		{
 			Rogue_OnAbilityUse(weapon);
@@ -168,7 +176,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 
 
 			TF2_AddCondition(client, TFCond_HalloweenCritCandy, 2.0, client);
-			f_West_Aim_Duration[client] = GetGameTime() + 2.0;
+			f_West_Aim_Duration[client] = GetGameTime() + 2.0;	
 		}
 		else
 		{

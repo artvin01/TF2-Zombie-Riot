@@ -65,6 +65,16 @@ public void ExplosiveHeadcrabZombie_OnMapStart_NPC()
 
 	PrecacheModel("models/zombie/classic.mdl");
 	PrecacheSound("ambient/explosions/explode_3.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Explosive Zombie");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_headcrab_zombie_explosive");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return ExplosiveHeadcrabZombie(client, vecPos, vecAng, ally);
 }
 
 methodmap ExplosiveHeadcrabZombie < CClotBody
@@ -108,15 +118,16 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 	{
 		ExplosiveHeadcrabZombie npc = view_as<ExplosiveHeadcrabZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "300", ally, false,_,_,_,_));
 		
-		i_NpcInternalId[npc.index] = EXPLOSIVE_ZOMBIE;
-		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+		KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 		npc.m_bisWalking = false;
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = false;
+		func_NPCDeath[npc.index] = ExplosiveHeadcrabZombie_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = ExplosiveHeadcrabZombie_OnTakeDamage;
+		func_NPCThink[npc.index] = ExplosiveHeadcrabZombie_ClotThink;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -129,9 +140,7 @@ methodmap ExplosiveHeadcrabZombie < CClotBody
 
 		npc.g_TimesSummoned = 0;
 		
-		SDKHook(npc.index, SDKHook_OnTakeDamage, ExplosiveHeadcrabZombie_OnTakeDamage);
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, ExplosiveHeadcrabZombie_OnTakeDamagePost);
-		SDKHook(npc.index, SDKHook_Think, ExplosiveHeadcrabZombie_ClotThink);
 
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;	
@@ -177,8 +186,11 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	// npc.m_iTarget comes from here.
-	Npc_Base_Thinking(iNPC, 500.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 240.0, gameTime);
+	// npc.m_iTarget comes from here, This only handles out of battle instancnes, for inbattle, code it yourself. It also makes NPCS jump if youre too high up.
+	if(npc.m_flNextRangedAttackHappening)
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 120.0, gameTime);
+	else
+		Npc_Base_Thinking(iNPC, 250.0, "ACT_WALK", "ACT_ZOMBIE_TANTRUM", 300.0, gameTime);
 	
 	if(npc.m_flAttackHappens)
 	{
@@ -189,21 +201,23 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float WorldSpaceCenterVec[3]; 
+				WorldSpaceCenter(npc.m_iTarget, WorldSpaceCenterVec);
+				npc.FaceTowards(WorldSpaceCenterVec, 15000.0); //Snap to the enemy. make backstabbing hard to do.
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 50.0;
+					float damage = 22000.0;
 
 					npc.PlayMeleeHitSound();
 					if(target > 0) 
 					{
-						//KillFeed_SetKillIcon(npc.index, "warrior_spirit");
+						KillFeed_SetKillIcon(npc.index, "warrior_spirit");
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB);
-						//KillFeed_SetKillIcon(npc.index, "pumpkindeath");
+						KillFeed_SetKillIcon(npc.index, "pumpkindeath");
 
 						int Health = GetEntProp(target, Prop_Data, "m_iHealth");
 						
@@ -220,7 +234,6 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 
 	if(npc.m_flNextRangedAttackHappening)
 	{
-		npc.m_bisWalking = false;
 		if(npc.m_iChanged_WalkCycle != 6) 	
 		{
 			npc.m_iChanged_WalkCycle = 6;
@@ -228,28 +241,46 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 100, 100, 255);
 		}
+		float vecabsorigin[3];
+		GetAbsOrigin(npc.index, vecabsorigin);
+		spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.2, 6.0, 0.1, 1, 1.0);
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		npc.FaceTowards(vecTarget, 30000.0);
+		float vecTarget[3];
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			npc.FaceTowards(vecTarget, 30000.0);
+		}
 		if(npc.m_flNextRangedAttackHappening < gameTime)
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
 
 			npc.m_flNextRangedAttackHappening = 0.0;
-			makeexplosion(npc.index, npc.index, WorldSpaceCenterOld(npc.index), "", 250, 200);
+			float vecTarget2[3];
+			WorldSpaceCenter(npc.index, vecTarget2);
+			makeexplosion(npc.index, npc.index, vecTarget2, "", 35000, 200);
+			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			maxhealth /= 5;
+			HealEntityGlobal(npc.index, npc.index, -float(maxhealth), 1.0, 0.0, _);
+			RPGNpc_UpdateHpHud(npc.index);
 		}
 	}
 		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3];
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		float vecSelf[3];
+		WorldSpaceCenter(npc.index, vecSelf);
+
+		float flDistanceToTarget = GetVectorDistance(vecTarget, vecSelf, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; 
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -354,19 +385,13 @@ public void ExplosiveHeadcrabZombie_OnTakeDamagePost(int victim, int attacker, i
 		if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 		{
 			float vecabsorigin[3];
-			vecabsorigin = GetAbsOriginOld(npc.index);
-
-			if(npc.m_bPathing) //Halt!
-			{
-				NPC_StopPathing(npc.index);
-				npc.m_bPathing = false;	
-			}
+			GetAbsOrigin(npc.index, vecabsorigin);
 
 			npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 2.5; //This is the explosive cooldown
 			npc.m_flNextRangedAttackHappening = GetGameTime(npc.index) + 1.5; //This is the explosive cooldown
 			npc.PlayKilledEnemySound();
-			spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 1.5, 6.0, 0.1, 1, 1.0);
+			spawnRing_Vectors(vecabsorigin, /*RANGE*/ 250 * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 50, 50, 200, 1, /*DURATION*/ 0.2, 6.0, 0.1, 1, 1.0);
 		}
 	}
 }
@@ -378,8 +403,6 @@ public void ExplosiveHeadcrabZombie_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_OnTakeDamage, ExplosiveHeadcrabZombie_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, ExplosiveHeadcrabZombie_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

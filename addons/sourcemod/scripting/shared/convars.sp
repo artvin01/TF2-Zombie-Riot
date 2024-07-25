@@ -25,7 +25,6 @@ void ConVar_PluginStart()
 	ConVar_Add("tf_bot_reevaluate_class_in_spawnroom", "1.0");
 	ConVar_Add("tf_bot_keep_class_after_death", "1.0");
 	ConVar_Add("mp_humans_must_join_team", "red");
-	ConVar_Add("mp_tournament", "1");
 	ConVar_Add("mp_teams_unbalance_limit", "0.0");
 	ConVar_Add("mp_scrambleteams_auto", "0.0");
 	ConVar_Add("tf_dropped_weapon_lifetime", "0.0");
@@ -58,13 +57,14 @@ void ConVar_PluginStart()
 	ConVar_Add("nb_update_frequency", "0.1"); // default:0
 	ConVar_Add("nb_last_area_update_tolerance", "2.0"); // default:4
 	ConVar_Add("sv_rollspeed", "2400.0"); // default: idk
-	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
-	
 #if defined ZR
+	ConVar_Add("mp_tournament", "1");
+	ConVar_Add("tf_clamp_back_speed", "0.7"); // default: 0.9 Ty to miku for showing me
 	ConVar_Add("mp_disable_respawn_times", "1.0");
 //	ConVar_Add("tf_mvm_defenders_team_size", "16");
 	ConVar_Add("tf_mvm_max_connected_players", "99");
 	ConVar_Add("tf_obj_upgrade_per_hit", "0");
+	ConVar_Add("tf_playergib", "0");
 
 	CvarMaxPlayerAlive = CreateConVar("zr_maxplayersplaying", "16", "How many players can play at once?", FCVAR_DONTRECORD);
 	CvarNoRoundStart = CreateConVar("zr_noroundstart", "0", "Makes it so waves refuse to start or continune", FCVAR_DONTRECORD);
@@ -78,9 +78,9 @@ void ConVar_PluginStart()
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
 	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
-	zr_waitingtime = CreateConVar("zr_waitingtime", "90.0", "Waiting for players time.");
+	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
 	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");
-	zr_enemymulticap = CreateConVar("zr_enemymulticap", "4.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
+	zr_enemymulticap = CreateConVar("zr_enemymulticap", "5.0", "Max enemy count multipler, will scale by health onwards", _, true, 0.5);
 	// MapSpawnersActive = CreateConVar("zr_spawnersactive", "4", "How many spawners are active by default,", _, true, 0.0, true, 32.0);
 	//CHECK npcs.sp FOR THIS ONE!
 	zr_downloadconfig = CreateConVar("zr_downloadconfig", "", "Downloads override config zr/ .cfg already included");
@@ -104,6 +104,10 @@ void ConVar_PluginStart()
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
 #endif
 
+#if defined RPG
+	ConVar_Add("tf_clamp_back_speed", "0.9"); // default: 0.9 Ty to miku for showing me
+	ConVar_Add("mp_friendlyfire", "1.0"); // default: 0.9 Ty to miku for showing me
+#endif
 	mp_bonusroundtime = FindConVar("mp_bonusroundtime");
 	mp_bonusroundtime.SetBounds(ConVarBound_Upper, false);
 

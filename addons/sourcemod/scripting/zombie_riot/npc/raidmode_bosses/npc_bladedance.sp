@@ -47,7 +47,7 @@ void RaidbossBladedance_MapStart()
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -123,7 +123,7 @@ methodmap RaidbossBladedance < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-		//KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 
 		npc.SetActivity("ACT_CUSTOM_WALK_BOW");
 
@@ -288,7 +288,7 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 			{
 				if(!b_NpcHasDied[entity] && GetTeam(entity) == team)
 				{
-					f_GodArkantosBuff[entity] = GetGameTime() + 16.0;
+					f_GodAlaxiosBuff[entity] = GetGameTime() + 16.0;
 					ParticleEffectAt(pos, "utaunt_bubbles_glow_orange_parent", 0.5);
 				}
 			}

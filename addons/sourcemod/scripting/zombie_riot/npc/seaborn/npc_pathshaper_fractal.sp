@@ -90,7 +90,7 @@ methodmap PathshaperFractal < CClotBody
 
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
-		//KillFeed_SetKillIcon(npc.index, "bread_bite");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;

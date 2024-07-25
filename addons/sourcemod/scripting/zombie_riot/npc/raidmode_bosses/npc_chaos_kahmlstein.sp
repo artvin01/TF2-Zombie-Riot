@@ -117,7 +117,7 @@ void ChaosKahmlstein_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "kahmlstein");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
@@ -333,6 +333,7 @@ methodmap ChaosKahmlstein < CClotBody
 			f_khamlCutscene[npc.index] = GetGameTime() + 45.0;
 			i_khamlCutscene[npc.index] = 14;
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 
 		if(StrContains(data, "fake_2") != -1)
@@ -488,11 +489,11 @@ methodmap ChaosKahmlstein < CClotBody
 	
 		npc.GetAttachment("effect_hand_r", flPos, flAng);
 		npc.m_iWearable2 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable3 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
@@ -1632,6 +1633,7 @@ void CreateCloneTempKahmlsteinFakeout(int entity, int TypeOfFake, float SelfPos[
 	{
 		MakeObjectIntangeable(KamlcloneSpawn);
 		b_DoNotUnStuck[KamlcloneSpawn] = true;
+		b_NpcIsInvulnerable[KamlcloneSpawn] = true;
 		b_ThisNpcIsImmuneToNuke[KamlcloneSpawn] = true;
 		b_NoKnockbackFromSources[KamlcloneSpawn] = true;
 		b_ThisEntityIgnored[KamlcloneSpawn] = true;
@@ -1655,7 +1657,7 @@ void KahmlsteinInitiatePunch(int entity, float VectorTarget[3], float VectorStar
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(entity);
 	npc.PlayBobMeleePreHit();
 	npc.FaceTowards(VectorTarget, 20000.0);
-	int FramesUntillHit = RoundToNearest(TimeUntillHit * 66.0);
+	int FramesUntillHit = RoundToNearest(TimeUntillHit * float(TickrateModifyInt));
 
 	float vecForward[3], Angles[3];
 
@@ -1798,7 +1800,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers_3, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	//KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
+	KillFeed_SetKillIcon(entity, kick ? "mantreads" : "fists");
 
 	if(NpcStats_IsEnemySilenced(entity))
 		kick = false;
@@ -1812,7 +1814,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 			float damage = damagedata;
 
 			if(victim > MaxClients) //make sure barracks units arent bad
-				damage *= 0.5;
+				damage *= 0.35;
 
 			SDKHooks_TakeDamage(victim, entity, entity, damage, DMG_CLUB, -1, NULL_VECTOR, playerPos);	// 2048 is DMG_NOGIB?
 			
@@ -1838,7 +1840,7 @@ void KahmlsteinInitiatePunch_DamagePart(DataPack pack)
 	}
 	delete pack;
 
-	//KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
+	KillFeed_SetKillIcon(entity, "tf_projectile_rocket");
 }
 
 

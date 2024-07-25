@@ -8,6 +8,7 @@ float Trip_DMG[MAXPLAYERS+1] = {0.0, ...};
 float Trip_BlastDMG[MAXPLAYERS+1] = {0.0, ...};
 Handle Timer_Trip_Management[MAXPLAYERS+1] = {null, ...};
 static float f_DeleteAllSpikesDelay[MAXTF2PLAYERS];
+float TimeItWasArmed[MAXENTITIES];
 
 float f_TerroriserAntiSpamCd[MAXPLAYERS+1] = {0.0, ...};
 
@@ -396,6 +397,7 @@ public Action Trip_ArmMine(Handle Trip_ArmMine_Handle, any pack)
 	
 	if (IsValidMulti(client) && IsValidEntity(mine))
 	{
+		TimeItWasArmed[mine] = GetGameTime() + 1.0;
 		Trip_Owner[mine] = client;
 		EmitSoundToAll(TRIP_ARMED, mine, SNDCHAN_WEAPON);
 		
@@ -426,6 +428,25 @@ public void Trip_TrackPlanted(int client)
 			{
 				float EntLoc[3];
 				GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", EntLoc);
+				float Ratio1 = 1.0;
+				if(TimeItWasArmed[ent] > GetGameTime())
+				{
+					Ratio1 = TimeItWasArmed[ent] - GetGameTime();
+					if(Ratio1 < 0.0)
+					{
+						Ratio1 = 0.01;
+					}
+					Ratio1 *= -1.0;
+					Ratio1 += 1.0;
+					if(Ratio1 < 0.25)
+					{
+						Ratio1 = 0.25;
+					}
+					if(Ratio1 > 0.75)
+					{
+						Ratio1 = 0.75;
+					}
+				}
 				
 				for(int entitycount_1; entitycount_1<i_MaxcountTraps; entitycount_1++)
 				{
@@ -434,6 +455,25 @@ public void Trip_TrackPlanted(int client)
 					{
 						if (Trip_Owner[ent2] == client)
 						{
+							float Ratio2 = 1.0;
+							if(TimeItWasArmed[ent2] > GetGameTime())
+							{
+								Ratio2 = TimeItWasArmed[ent2] - GetGameTime();
+								if(Ratio2 < 0.0)
+								{
+									Ratio2 = 0.01;
+								}
+								Ratio2 *= -1.0;
+								Ratio2 += 1.0;
+								if(Ratio2 < 0.25)
+								{
+									Ratio2 = 0.25;
+								}
+								if(Ratio2 > 0.75)
+								{
+									Ratio2 = 0.75;
+								}
+							}
 							float EntLoc2[3];
 							GetEntPropVector(ent2, Prop_Data, "m_vecAbsOrigin", EntLoc2);
 							//EntLoc2[2] += 20.0;
@@ -451,7 +491,7 @@ public void Trip_TrackPlanted(int client)
 									GetEntityClassname(targ, other_classname, sizeof(other_classname));
 									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetTeam(client) != GetTeam(targ)))
 									{
-										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client], DMG_BLAST, -1);
+										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client] * (Ratio2 * Ratio1), DMG_BLAST, -1);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);
 										TriggerExplosion = true;
 									}
@@ -486,8 +526,8 @@ public void Trip_TrackPlanted(int client)
 									if(b_ExpertTrapper[client] && b_ExpertTrapper[ent2] && b_ExpertTrapper[ent])
 										Damagetrap *= 12.0;
 										
-									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
-									Explode_Logic_Custom(Damagetrap, client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);
+									Explode_Logic_Custom(Damagetrap * (Ratio2 * Ratio1), client, client, -1, EntLoc2,Trip_BlastRadius,_,_,false);
+									Explode_Logic_Custom(Damagetrap * (Ratio2 * Ratio1), client, client, -1, EntLoc,Trip_BlastRadius,_,_,false);
 									
 									RemoveEntity(ent);
 									RemoveEntity(ent2);
@@ -599,7 +639,23 @@ public void Weapon_Arsenal_Terroriser_M2(int client, int weapon, const char[] cl
 					damage *= Attributes_Get(weapon, 2, 1.0);
 
 					int BomsToBoom = i_HowManyBombsOnThisEntity[npc][client];
-					damage *= i_HowManyBombsOnThisEntity[npc][client];
+					int BomsToBoomCalc = BomsToBoom;
+					
+					if(BomsToBoomCalc > 250)
+					{
+						int BomsToBoomCalcPost = 250;
+						BomsToBoomCalc -= 250;
+						BomsToBoomCalc /= 4;
+						BomsToBoomCalc += BomsToBoomCalcPost;
+					}
+					else if(BomsToBoomCalc > 150)
+					{
+						int BomsToBoomCalcPost = 150;
+						BomsToBoomCalc -= 150;
+						BomsToBoomCalc /= 2;
+						BomsToBoomCalc += BomsToBoomCalcPost;
+					}
+					damage *= BomsToBoomCalc;
 
 					float EntLoc2[3];
 					

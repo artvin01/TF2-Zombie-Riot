@@ -141,9 +141,7 @@ methodmap Donnerkrieg < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -155,18 +153,14 @@ methodmap Donnerkrieg < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -187,9 +181,7 @@ methodmap Donnerkrieg < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -269,7 +261,7 @@ methodmap Donnerkrieg < CClotBody
 					
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		//SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
@@ -396,7 +388,9 @@ static void Internal_ClotThink(int iNPC)
 			{
 				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
 				npc.m_bDissapearOnDeath = true;
-						
+
+				CPrintToChatAll("{aqua}Stella{snow}: Oh also our true names are, {aqua}Stella{snow}, thats me");
+				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 0; client < MaxClients; client++)
@@ -781,10 +775,10 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					float flPos[3]; // original
 					float flAng[3]; // original
 						
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0});
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0});
 						
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
@@ -996,7 +990,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 1000;
 	NightmareCannon_BEAM_BeamRadius[client] = 10;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 12;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 0.25;
@@ -1065,7 +1059,7 @@ void NightmareCannon_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 10000;
 	NightmareCannon_BEAM_BeamRadius[client] = 150;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 150;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(150 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 15.0;

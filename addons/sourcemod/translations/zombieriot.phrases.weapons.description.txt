@@ -266,9 +266,7 @@
 	}
 	"Deagle Pap 3"
 	{
-		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n3 bullets per shot consumed."
-		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n3 пули за выстрел."
-		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗3颗子弹"
+		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
 	}
 	
 	"Flamethrower Pap 1"
@@ -434,8 +432,7 @@
 	
 	"Boomstick Desc"
 	{
-		"en"		"Load 4 bullets and shoot all at once\nDeals 40%% dmg against raids."
-		"chi"		"弹夹可装4发弹药，同时发射。对boss造成40%%伤害"
+		"en"		"Load 4 bullets and shoot all at once\nDeals 10%% dmg against raids."
 	}
 	
 	"Boomstick Pap 1"
@@ -446,9 +443,7 @@
 	}
 	"Boomstick Pap 3"
 	{
-		"en"		"Increased damage and attackspeed."
-		"ru"		"Увеличенный урон и скорость атаки."
-		"chi"       "增加伤害和攻击速度."
+		"en"		"Increased damage and attackspeed, Louder and loads more clips!"
 	}
 	"Boomstick Pap 2"
 	{
@@ -504,9 +499,7 @@
 	}
 	"Elite Sniper Pap 1"
 	{
-		"en"		"Deals more damage and causes targets to slow and take more damage."
-		"ru"		"Наносит больше урона и заставляет цели замедляться и получать больше урона."
-		"chi"       "造成更多伤害，并使目标减速和受到更多伤害。"
+		"en"		"Deals more damage and causes targets to slow and take more damage.\nto apply debuff, half charge within scope at minimum."
 	}
 	"Elite Sniper Pap 2"
 	{
@@ -657,13 +650,16 @@
 	}
 	"SMG Pap 4"
 	{
-		"en"	"Increased damage and attackspeed, Removes clip, infinite clip size.\nArchetype changes to ''Infinite Fire''"
+		"en"	"+DMG, infinite clip.\nArchetype changes to ''Infinite Fire''"
 	    "ru"	"Увеличенный урон и скорость атаки, нет обоймы, бесконечный размер обоймы.\nАрхетип меняется на «Бесконечный огонь»"
 	}
 	"SMG Pap 5"
 	{
-		"en"	"Massively increased damage and attackspeed and clip size and way longer reload time."
-		"chi"   "大量增加伤害，攻击速度，弹夹大小和更长的装填时间。"
+		"en"	"+DMG, +firereate, +clip, -reload."
+	}
+	"SMG Pap 6"
+	{
+		"en"	"All stats up Immensively.\nBad accuracy unless standing still, crouching while not moving gives reloadspeed."
 	}
 	
 	"People Popper Desc"
@@ -687,9 +683,7 @@
 	
 	"Medigun Desc"
 	{
-		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal."
-		"ru"	"Сверхлечение постоянное, лечит союзн. и может исп. убер-заряд на них. Лечение союзн. лечит и вас. Даёт и вам, и пациенту 25%% доп. урона и 10%% сопр. во время лечен."
-		"chi"   "可以过度治疗，治疗队友可以让他们血量超过额定值。治疗队友的同时也会治疗你。在治疗过程中增加你和治疗目标25%%的伤害和抗性。"
+		"en"	"Overheal is permanent, Heals allies and can uber them. Healing allies heals you too. Gives both you and the healing target 25%% dmg and 10%% resistance during heal.\nMedigun allows you to revive people from afar but at half the speed."
 	}
 	
 	"Battle Medigun Desc"
@@ -827,9 +821,13 @@
 	}
 	"Hammer Pap 3"
 	{
-		"en"	"Increased damage"
+		"en"	"Massivly Increased damage"
 		"ru"	"Увеличенный урон."
 		"chi"	"增加伤害"
+	}
+	"Hammer Pap 4"
+	{
+		"en"	"Slightly faster swinging speed and increased damage. Your damage, swing speed, and melee resistance will go up the more you hit the enemies"
 	}
 	
 	"Fire Axe Desc"
@@ -1146,9 +1144,11 @@
 	
 	"Homing Staff Desc"
 	{
-		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies."
-		"ru"	"Расходует ману с каждым выстрелом. M2 - вызывает выстреливающий дробовик. Он стреляет снарядами в врагов."
-		"chi"   "每次射击消耗法力值。右键召唤散弹枪射击。这些射击击中敌人。"
+		"en"	"Consumes mana with each shot. M2 Summons a shotgun of shots. These shots home onto enemies if you look at them while shooting."
+	}
+	"Homing Staff Desc 2"
+	{
+		"en"	"Attacks faster, does more damage, m2 costs more mana and can be spammed at an extreme rate."
 	}
 	
 	"Wind Staff Desc"
@@ -1200,8 +1200,7 @@
 	
 	"Aresenal's Tripmine Layer Desc"
 	{
-		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this.\nPress m2 while looking up twice to pick up all your spikes at once." 
-		"chi"	"与布哨伤害同步升级，不受武器升级影响。\n向上看时双击M2回收所有炸弹。"
+		"en"	"The more senty damage you have, the more damage this weapon does.\nWeapon upgrades such as damage will not affect this.\nPress m2 while looking up twice to pick up all your spikes at once.´nArms after 0.5 seconds, and warms up to full dmg after 1 second." 
 	}
 	
 	"Heavy Charge Builder Laser Desc"
@@ -1258,90 +1257,55 @@
 	//	"ru"	"Гаечный ключ ближнего боя, у которого увеличивается урон с уроном строителя.\nM2 для броска и следующей атаки, наносящей в два раза больше урона.\nВам нужно иметь достаточно улучшений, чтобы это сработало."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 	}
-	
-	"Buildable Elevation Desc"
-	{
-		"en"	"This is primarily there to lift up your sentry to it can attack better, use with caution.\nHas VERY low health."
-		"ru"	"В основном для того, чтобы поднять вашу турель, чтобы она могла лучше атаковать, используйте с осторожностью.\nОЧЕНЬ мало здоровья."
-	    "chi"   "这主要是为了提升你的哨兵，让它可以更好地攻击，慎用。这个路障的生命值极低。"
-	}
-	
-	"Buildable Barricade Desc"
-	{
-		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
-		"ru"	"Каждая волна увеличивает её стоимость, одновременно можно построить только 4 баррикады."
-		"chi"   "每一波都会增加它的价格，你最多只能建造4个路障。"
-	}
 	"There Can Be Only One Desc"
 	{
 		"en"	"Buy grigori some ammo and ontop of that, refesh the store!"
 		"chi"	"给神父买点弹药！（同时刷新商店）"
 	}
 	
-	"Buildable Barricade Desc Rogue"
+	"Decorative Object Desc"
 	{
-		"en"	"You get 2 free barricades each fight, you can only place 2 at once due to this."
-		"ru"	"Вы получаете 2 бесплатные баррикады в каждом бою, но из-за этого вы можете поставить только 2 баррикады одновременно."
-		"chi"	"每局获得两个免费路障，上限两个。"
+		"en"	"Good for stacking buildings, low hp."
 	}
-	
-	"Buildable Armortable Desc"
+	"Barricade Desc"
 	{
-		"en"	"usage of this machine will give you Armour.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам броню.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器会给你护甲。\n第一次购买时价格双倍"
+		"en"	"Each wave increases its cost, you may only have 4 barricades built at once."
 	}
-	
-	"Buildable Ammobox Desc"
+	"Armor Table Desc"
 	{
-		"en"	"usage of this machine will give you Ammo for your current holding weapon.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам патроны для вашего текущего оружия.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器会给你目前所持的武器补充弹药。\n第一次购买时价格双倍"
+		"en"	"using gives you Armour."
 	}
-	
-	"Buildable Perk Machine Desc"
+	"Ammo Box Desc"
 	{
-		"en"	"usage of this machine will give you an extra perk that vanishes on death/downed.\nFirst buy is double the price."
-		"ru"	"Использование этой машины даст вам доп. перк, который исчезает при смерти/выведении из строя.\nПервая покупка стоит вдвое дороже."
-		"chi"   "使用这台机器可以选择一个Buff,但这会在你死亡后失效。\n第一次购买时价格双倍"
+		"en"	"using gives you ammo for your holding weapon."
 	}
-	
-	"Buildable Pack-a-Punch Desc"
+	"Perk Machine Desc"
 	{
-		"en"	"usage of this machine will give you a boost to your holding weapon with a credit requirement.\nFirst buy is double the price.\nIf any other player with more upgrades then you exists that also has a pap, then they will get the majority of the cash."
-		"ru"	"Использование этой машины даст вам усиление вашему оружию за кредиты.\nПервая покупка стоит вдвое дороже.\nЕсли у любого другого игрока, у которого больше улучшений, чем у вас, также есть улучшайзер, то он получит большую часть денег."
-		"chi"	"使用机器可花钱升级武器。\n如果有另一个玩家也有升级机器，并且建筑升级比你高，他们则会获得你一部分建筑收入。"
+		"en"	"using will give you a perk that vanishes on death/downed."
 	}
-	
-	"Buildable Sentry Desc"
+	"Pack-a-Punch Desc"
 	{
-		"en"	"Infinite uses with cooldown.\nGood against everything."
-		"chi"	"无限使用次数，低冷却。\n稳定输出。"
+		"en"	"gives weapnos upgrades, person with the most upgrades gets the most cash instead."
 	}
-	
-	"Buildable Mortar Desc"
+	"Sentrygun Desc"
 	{
-		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto. Infinite uses with cooldown.\nDeals massive group damage, good against massses."
-		"ru"	"Нажмите «МЕДИК!», чтобы выбрать место, на которое мортира выпустит снаряд. Используется бесконечно с перезарядкой."
-		"chi"   "按E选择迫击炮发射炮弹的地点。无限次使用。"
+		"en"	"Good against everything."
 	}
-	
-	"Buildable Railgun Desc"
+	"Mortar Desc"
 	{
-		"en"	"Use it with MEDIC to make it shoot a giant laser. Infinite uses with cooldown.\nDeals huge damage to the first enemy hit, good against single bosses."
-		"chi"	"呼叫医生发射高伤害激光。\n可穿通敌人，击中的第一个敌人受到极高伤害。\n对boss很有效。"
+		"en"	"Press MEDIC to select a place for the mortar to unleash a shell onto.\nDeals massive group damage, good against massses."
 	}
-	
-	"Buildable Healing Station Desc"
+	"Railgun Desc"
+	{
+		"en"	"Use it with MEDIC to make it shoot a giant laser.\nDeals huge damage to the first enemy hit, good against single bosses."
+	}
+	"Food Fridge Desc"
 	{
 		"en"	"Heals for 30 Health, scales with medigun upgrades."
-		"ru"	"Лечит на 30 ед. здоровья, увеличивается с улучшением лечеб. пушки."
-		"chi"   "治疗30点生命值，随着医疗升级而增加。"
 	}
-	
-	"Buildable Village Desc"
+	"Village Desc"
 	{
-		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuild."
+		"en"	"Provides various buffs to teammates and can be upgraded for more buffs.\nBuffs bought stay regardless if broken and rebuilt."
 		"ru"	"Даёт различные усиления союзникам и может быть улучшена для получения дополнительных усилений.\nКупленные усиления сохраняются, если её сломать и восстановить."
 		"chi"   "为队友提供各种Buff，可以升级获得更多的buff\n建筑坏了后Buff将消失"
 	}
@@ -1468,9 +1432,9 @@
 	
 	"Accurate Marksman Desc"
 	{
-		"en"	"20%% more accuracy and 20%% faster projectile speed"
-		"ru"	"На 20%% выше точность и на 20%% выше скорость снаряда."
-		"chi"   "射击精度提高20%%、射速提高20%%"
+		"en"	"10%% more accuracy and 20%% faster projectile speed"
+		"ru"	"На 10%% выше точность и на 20%% выше скорость снаряда."
+		"chi"   "射击精度提高10%%、射速提高20%%"
 	}
 	
 	"Ammo Coat Desc"
@@ -1606,30 +1570,30 @@
 	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.65x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,65-кратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.65倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
+		"ru"	"1,5-кратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
+		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Death Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.65倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
+		"ru"	"1,4-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
+		"chi"   "+1.4倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
+		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
+		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
+		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
+		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
@@ -1711,9 +1675,7 @@
 	
 	"Army Belt Desc"
 	{
-		"en"	"15%% Faster reload but have a 2x longer weapon switch"
-		"ru"	"На 15%% быстрая перезарядка, но в два раза более длительная смена оружия"
-		"chi"   "增加15%%的装填速度，但武器切换时间延长了2倍"
+		"en"	"5%% Faster reload but have a 2x longer weapon switch"
 	}
 	
 	"Headshot Affinity Desc"
@@ -1831,9 +1793,7 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"M2 ability changes.\nPlace a giant sword infront of you, doing damage.\nStun all enemies in range.\nYou get Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration''"
-		"ru"	"M2 способность меняется.\nПоместите гигантский меч перед собой, нанося урон.\nОглушает всех врагов в радиусе действия.\nВы получаете крупные усиления.\nУдар по врагам фокусирующим мечом, даёт 2x урона.\nАрхетип меняется на «Аберрация»"
-		"chi"	"技能更改：\n在地面上插入一把巨剑，造成伤害。\n范围内所有敌人被眩晕，你获得大量buff。\n攻击巨剑的敌人受到二倍伤害。\n类型更为''另类''"
+		"en"	"M2 ability changes.\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\nHurting enemies focusing the sword gives you 2x dmg.\nArchetype changes to ''Aberration'' AND ''Kazimierz''.\nSilvester must have been there..."
 	}
 
 	
@@ -1897,6 +1857,10 @@
 		"en" "Whats better than 1 death beam?\n4 more death beams of course\nThanks to these extra beams we have recreated the power of the moon!\nWarning: Warranty annihilated on purchase."
 		"ru" "Что может быть лучше одного луча смерти?\nЧетыре луча смерти, конечно\nБлагодаря этим дополнительным лучам мы воссоздали силу луны!\nПредупреждение: Гарантия аннигилируется при покупке."
 		"chi" "什么比一个激光更好?\n当然是更多激光！\n多亏这些光束，我们成功复刻出了月球之力！\n警告:购买时保修失效。"
+	}
+	"Cosmic Terror Extra Desc"
+	{
+		"en"	"Firerate bonuses affect the speed of the beam\nReload rate bonuses affect how fast you gain heat."
 	}
 
 	"Alchemist Potion Desc"
@@ -1972,12 +1936,12 @@
 		"chi"	"子弹替换箭头，并且可以充能。\n现在可以造成超量（上限15%%）\nM2技能可以放置医疗包，需要蓄力2秒放置。\n医疗包也可以提供buff，战斗时稍微降低效率。"
 	}
 
-	"Buildable Barracks Desc"
+	"Barracks Desc"
 	{
 		"en"	"Allows training allies to fight for you.\nRepair upgrades provides more resources.\nBuilding upgrades provides stronger allies.\nPress R on your troops to give more commands."
 		"chi"	"兵营内可以训练出你的私人军队！\n建筑升级加强兵营NPC，修复升级提供更多资源。\n对NPC按装弹键命令他们。"
 	}
-	"Buildable Barracks Desc Extra"
+	"Barracks Desc Extra"
 	{
 		"en"	"Quick revive: auto regen\nWidows Wine: debuff on attacking enemy\nDeadshot: 1.25x more ranged dmg\nDouble Tap: 1.15x attackspeed\nSpeed cola: 1.25x movement speed\nRecycle Porier: 1.25x resource gain\nJuggernog: 1.3x more health and 1.15x resistance"
 		"chi"	"快速起身：自动回复资源\n身体强化：*1.3血量，*1.15伤害抗性\n精神强化：*1.15攻击速度\n极速可乐：*1.25移动速度\n死亡宣告：*1.2远程伤害\n恶魔领域：攻击会赋予debuff"
@@ -2119,8 +2083,7 @@
 	}
 	"Preaching Sword Desc"
 	{
-		"en"	"A quick attacking cheap.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
-		"chi"	"灵活及便宜。\n对敌人造成致命伤害会赋予他们''临死''Debuff。\n杀死带有这个效果的敌人会降低1秒冷却。"
+		"en"	"A quick attacking sword with increased sell back value.\nDealing lethal damage will inflict Critically Wounded on the enemy.\nKilled Critically Wounded enemies provide one second cooldown recharge."
 	}
 	"Preaching Sword Pap 1"
 	{
@@ -2385,12 +2348,12 @@
 	}
 	"quincy pap"
 	{
-		"en"	"More damage!"
+		"en"	"More damage!\nAlso if your arrows gain the ability to home onto targets, if you can see one\nHoming power is dependant on how raishi % charge"
 		"chi"	"提高伤害！"
 	}
 	"quincy pap arrow"
 	{
-		"en"	"Once you charge you weapon enough you gain the ability to shoow more arrows at once!"
+		"en"	"Once you charge you weapon enough you gain the ability to shoot more arrows at once!"
 		"chi"	"当你足够蓄力后发射大量箭矢。"
 	}
 	"quincy pap1"
@@ -2402,6 +2365,11 @@
 	{
 		"en"	"You can now fire a constant stream of magic arrows!\nAlso more damage and arrows fired per multi shot."
 		"chi"	"你的弓箭现在可以连发魔法箭矢！\n提高伤害和多发数量。"
+	}
+	"quincy pap arrow hyper"
+	{
+		"en"	"After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
+
 	}
 	"Taurus Judge Desc 1"
 	{
@@ -2563,7 +2531,7 @@
 	}
 	"Neuv pap5"
 	{
-		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all he knows..."
+		"en"	"And thus you finally the see the image of the Witch who create this spell\nBut you also see that she is the one who taught ''Donnerkrieg'' all that she knows..."
 		"chi"	"终于，你看到了女巫的样貌。\n貌似，''Donnerkrieg''的技巧也是从她这学的..."
 	}
 	"Skill Point Info"
@@ -2762,7 +2730,7 @@
 	}
 	"Angelic Shotgonnus Desc"
 	{
-		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 85%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
+		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
 		"chi"	"外界的霰弹枪\n大部分治疗-85%%。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 	}
 	"Angelic Shotgonnus Desc Pap 1"
@@ -2812,7 +2780,7 @@
 	}
 	"Gravton Wand desc0"
 	{
-		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed."
+		"en"	"A powerfull AOE Spell, M1 summons a timed explosion.\nSlow casting speed.\nCasting a spell too close to the same position heavily weakens the spell."
 		"chi"	"强力的AOE魔法，M1召唤出一个带有缓慢延迟的引力爆炸。"
 	}
 	"Gravton Wand desc1"
@@ -2882,8 +2850,7 @@
 	}
 	"Medigun Desc Pap 1"
 	{
-		"en"	"Medigun gives more overheal.\nFrom 25%% to 45%% for players and from 50%% to 75%% for npcs."
-		"chi"	"增加超量上限。\n25%% → 45%%（玩家）\n50%% → 75%%（NPC）"
+		"en"	"You have different medigun modes! use them for certain situations to boost melee, ranged, or both resitances."
 	}
 	"Medigun Desc Pap 2"
 	{
@@ -3019,7 +2986,6 @@
 	"Tinker Workshop Desc"
 	{
 		"en"	"A building that has a high health pool, can always be repaired, and allows players to tinker their weapons.\nTinkers apply a random number of attributes to the weapon. Reusing rerolls these attributes."
-		"chi"	"高血量建筑，一直可以被修复。\n可以为武器附加随机属性。"
 	}
 	"Tinker Research Desc"
 	{
@@ -3072,5 +3038,145 @@
 	"West Pap 3 Desc"
 	{
 		"en"	"Increased damage, reload speed, and firerate"
+	}
+	"Railgun"
+	{
+		"en"	"Railgun"
+	}
+	"Railgun Desc"
+	{
+		"en"	"Fires a strong laser, weakened when mounted."
+	}
+	"Barracks"
+	{
+		"en"	"Barracks"
+	}
+	"Barracks Desc"
+	{
+		"en"	"Train your own army and upgrade them."
+	}
+	"Victorian 1 Desc"
+	{
+		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
+	}
+	"Victorian 2 Desc"
+	{
+		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
+	}
+	"Victorian 3 Desc"
+	{
+		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
+	}
+	"The Merchant Desc"
+	{
+		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
+	}
+	"Merchant Pap 1 Desc"
+	{
+		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
+	}
+	"Merchant Pap 2 Desc"
+	{
+		"en"	"Fish Market can replace Silence with Heal-on-Hit\nMartial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
+	}
+	"Merchant Pap 3 Desc"
+	{
+		"en"	"Fish Market drains less metal\nThe Investigator pushes other enemies back when attacking and can repel stuns back to the attacker\nWine Merchant is unlocked, provides 3 ranged weapons with ammo over time, self-revives at the cost of metal"
+	}
+	"Merchant Pap 4 Desc"
+	{
+		"en"	"Base stats improved\nMartial Artist drains less metal"
+	}
+	"Merchant Pap 5 Desc"
+	{
+		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
+	}
+	"Chainsaw Pap 0"
+	{
+		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
+	}
+	"Chainsaw Pap 1"
+	{
+		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
+	}
+	"Chainsaw Pap 2"
+	{
+		"en"	"More damage, attacks faster, extend bleed duration."
+	}
+	"Pinus Knight Desc"
+	{
+		"en"	"Fast attacking melee with increased sell back value."
+	}
+	"Pinus Knight Pap 1"
+	{
+		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
+	}
+	"Pinus Knight Pap 2"
+	{
+		"en"	"Ability now also grants 4 seconds of a 40%% (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
+	}
+	"Pinus Knight Pap 3"
+	{
+		"en"	"Allied Kazimierz weapons gain a 11%% (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60%% (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
+	}
+	"Pinus Knight Pap 4"
+	{
+		"en"	"Ability instead grants 80%% (x0.5 vs Raids) chance to dodge any attack."
+	}
+	"Pinus Knight Pap 5"
+	{
+		"en"	"Decreased ability cooldown and increased ability damage bonus."
+	}
+	"Barracks Metro Cop Desc"
+	{
+		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
+	}
+	"Barracks Combine Shotgunner Desc"
+	{
+		"en"	"Ranged unit but it tends to get close to the target"
+	}
+	"Barracks Combine Swordsman Desc"
+	{
+		"en"	"Melee unit which will regularly gain an armor while attacking"
+	}
+	"Barracks Metro Raider Desc"
+	{
+		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
+	}
+	"Barracks Combine Soldier Desc"
+	{
+		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
+	}
+	"Barracks Combine DDT Desc"
+	{
+		"en"	"Fast and hard hitting robotic Combine Unit"
+	}
+	"Barracks Combine Elite Desc"
+	{
+		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
+	}
+	"Barracks Combine Deflector Desc"
+	{
+		"en"	"Armored Combine knight who will regularly parry melee attacks"
+	}
+	"Barracks Combine Sniper Desc"
+	{
+		"en"	"Super Ranged unit with high damage but slow attack speed"
+	}
+	"Barracks Combine Collos Desc"
+	{
+		"en"	"Giant Combine swordsman which has better armor and damage"
+	}
+	"Barracks Combine Giant ddt Desc"
+	{
+		"en"	"Giant robotic unit with fast speed, damage, and armor"
+	}
+	"Barracks Combine Super Desc"
+	{
+		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
+	}
+	"Barracks Combine Commander Desc"
+	{
+		"en"	"A ranged super unit which will buff allies around it regularly."
 	}
 }

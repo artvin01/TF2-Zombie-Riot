@@ -106,7 +106,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		//KillFeed_SetKillIcon(npc.index, "bomb");
+		KillFeed_SetKillIcon(npc.index, "bomb");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -140,7 +140,7 @@ methodmap BeheadedKamiKaze < CClotBody
 
 		npc.m_flWaveScale = wave;
 
-		if(ally != TFTeam_Red)
+		if(ally == TFTeam_Blue)
 		{
 			if(fl_KamikazeInitiate < GetGameTime())
 			{
@@ -150,7 +150,7 @@ methodmap BeheadedKamiKaze < CClotBody
 				DoGlobalMultiScaling();
 				float SpawnRate = 0.25;
 				fl_KamikazeSpawnRateDelay = 0.0;
-				SpawnRate /= MultiGlobal;
+				SpawnRate /= MultiGlobalEnemy;
 				DataPack pack = new DataPack();
 				pack.WriteFloat(SpawnRate);
 				pack.WriteFloat(GetGameTime() + 10.0); //they took too long to kill that one. Spawn more regardless.
@@ -291,7 +291,7 @@ public void BeheadedKamiKaze_NPCDeath(int entity)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(entity);
 	
-	StopSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
+	StopCustomSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
 	Kamikaze_DeathExplosion(entity);
 }
 

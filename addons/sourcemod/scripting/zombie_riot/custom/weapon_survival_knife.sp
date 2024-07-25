@@ -230,7 +230,7 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot
 	if (CD_Throw[client]>GetGameTime())
 		return;
 
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 
 	if(Knife_Count[client]>0)
 	{
@@ -260,22 +260,21 @@ public void Survival_Knife_Tier2_Reload(int client, int weapon, bool crit)
 		return;
 	
 	Knife_Triple_Mode[client] = (!Knife_Triple_Mode[client]);
-	CD_Mode[client] = GetGameTime() + 0.3;
+	CD_Mode[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0));
 }
 
 public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot)
 {
-
 	if (CD_Throw[client]>GetGameTime())
 		return;
 		
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 	if (!Knife_Triple_Mode[client])
 	{
 		if(Knife_Count[client]>0)
 		{
 			Knife_Count[client] -= 1;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 			
 			SetDefaultHudPosition(client);
@@ -299,7 +298,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 		if(Knife_Count[client]>=3)
 		{
 			Knife_Count[client] -= 3;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 
 			DataPack pack = new DataPack();
@@ -422,13 +421,13 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 
 	if (CD_Throw[client]>GetGameTime())
 		return;
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 	if (!InMadness[client])
 	{
 		if(Knife_Count[client]>0)
 		{
 			Knife_Count[client] -= 1;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 			if(Knife_Count[client] <= 0)
 			{
@@ -445,8 +444,8 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 	}
 	else
 	{
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
+		CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
+		Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 	}
 }
 public Action Timer_Throw_Extra_Knife(Handle timer, DataPack pack)

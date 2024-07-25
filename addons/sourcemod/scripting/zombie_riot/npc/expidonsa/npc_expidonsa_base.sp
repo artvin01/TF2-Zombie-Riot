@@ -42,12 +42,12 @@ stock int VausMagicaShieldLeft(int victim)
 {
 	return i_ExpidonsaShieldCapacity[victim];
 }
-void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int damagetype, int ZrDamageType)
+void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damage, int damagetype, int ZrDamageType, int weapon)
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0 && (!(ZrDamageType & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)))
 	{
 #if defined ZR
-		if(attacker <=MaxClients && TeutonType[attacker] != TEUTON_NONE)
+		if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE || (weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] == WEAPON_MG42))
 #else
 		if(attacker <=MaxClients)
 #endif
@@ -79,7 +79,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 	}
 }
 
-void VausMagicaGiveShield(int entity, int amount)
+void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
 	int MaxShieldCapacity = 5;
 	if(b_thisNpcIsABoss[entity])
@@ -90,7 +90,7 @@ void VausMagicaGiveShield(int entity, int amount)
 	{
 		MaxShieldCapacity = 250;
 	}
-	if(f_Expidonsa_ShieldBroke[entity] > GetGameTime() && MaxShieldCapacity < 250)
+	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < 250)
 	{
 		return; //do not give shield.
 	}
@@ -114,7 +114,7 @@ void VausMagicaGiveShield(int entity, int amount)
 	}
 
 	CClotBody npc = view_as<CClotBody>(entity);
-	int Shield = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
 		SetVariantString("1.35");
 	else
@@ -145,8 +145,9 @@ float f_Expidonsa_HealingOverheal[MAXENTITIES];
 bool b_Expidonsa_Selfheal[MAXENTITIES];
 Function func_Expidonsa_Heal_After[MAXENTITIES] = {INVALID_FUNCTION, ...};
 Function func_Expidonsa_Heal_Before[MAXENTITIES] = {INVALID_FUNCTION, ...};
+bool DontAllowAllyHeal[MAXENTITIES];
 stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAlliesHealed, float HealingAmmount,
- float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION)
+ float Expidonsa_HealingOverheal, bool Selfheal, Function Function_HealBefore = INVALID_FUNCTION , Function Function_HealAfter = INVALID_FUNCTION, bool AnyHeal = false)
 {
 	b_Expidonsa_Selfheal[HealingNpc] = Selfheal;
 	i_Expidonsa_HealingCount[HealingNpc] = MaxAlliesHealed;
@@ -154,6 +155,7 @@ stock void ExpidonsaGroupHeal(int HealingNpc, float RangeDistance, int MaxAllies
 	f_Expidonsa_HealingOverheal[HealingNpc] = Expidonsa_HealingOverheal;
 	func_Expidonsa_Heal_Before[HealingNpc] = Function_HealBefore;
 	func_Expidonsa_Heal_After[HealingNpc] = Function_HealAfter;
+	DontAllowAllyHeal[HealingNpc] = AnyHeal;
 
 	b_NpcIsTeamkiller[HealingNpc] = true;
 	Explode_Logic_Custom(0.0,
@@ -196,7 +198,7 @@ static void Expidonsa_AllyHeal(int HealerNpc, int victim, float damage, int weap
 		return;
 	}
 	//cant heal enemies.
-	if(GetTeam(HealerNpc) != GetTeam(victim))
+	if(GetTeam(HealerNpc) != GetTeam(victim) && !DontAllowAllyHeal[HealerNpc])
 		return;
 
 	//team red, npc or 

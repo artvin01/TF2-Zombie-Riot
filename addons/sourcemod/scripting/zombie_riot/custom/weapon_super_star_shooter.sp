@@ -205,7 +205,7 @@ public void SuperStarShooterOnHit(int entity, int target)
 
 		EmitSoundToAll(SOUND_ZAP_STAR, target, SNDCHAN_STATIC, 70, _, 0.6);
 		
-		f_WandDamage[entity] /= LASER_AOE_DAMAGE_FALLOFF;
+		f_WandDamage[entity] *= LASER_AOE_DAMAGE_FALLOFF;
 	}
 	else if(target == 0)
 	{

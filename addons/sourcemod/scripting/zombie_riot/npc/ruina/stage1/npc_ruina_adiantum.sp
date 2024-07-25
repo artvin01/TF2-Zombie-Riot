@@ -50,6 +50,20 @@ static char gExplosive1;
 
 public void Adiantum_OnMapStart_NPC()
 {
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Adiantum");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_adiantum");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "spy"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -61,12 +75,6 @@ public void Adiantum_OnMapStart_NPC()
 	gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt");
 	
 	PrecacheSound("misc/halloween/gotohell.wav");
-	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Adiantum");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_adiantum");
-	data.Category = -1;
-	data.Func = ClotSummon;
-	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -93,9 +101,7 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -116,9 +122,7 @@ methodmap Adiantum < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void PlayDeathSound() {
 		
@@ -136,9 +140,7 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -217,7 +219,7 @@ methodmap Adiantum < CClotBody
 		
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 225.0;
 		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
@@ -290,7 +292,7 @@ static void ClotThink(int iNPC)
 			Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);
 				
 			Adiantum_Summon_Ion_Barrage(npc.index, vecTarget);
-			npc.m_flNextRangedBarrage_Spam = GameTime + 15.0;
+			npc.m_flNextRangedBarrage_Spam = GameTime + 20.0;
 		}
 
 		Ruina_Self_Defense Melee;

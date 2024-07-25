@@ -26,8 +26,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 
-#define MAX_TARGETS_HIT 10
-
 static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
 static int Ikunagae_BEAM_Laser;
@@ -380,7 +378,7 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 
 	tickCountClient[client] = 0;
 
@@ -403,7 +401,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");
-	Ikunagae_BEAM_ChargeUpTime[client] = 50;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(50 * TickrateModify);
 	Ikunagae_BEAM_Duration[client] = 10.0;
 
 	Ikunagae_BEAM_IsUsing[client] = true;
@@ -555,7 +553,7 @@ static Action Ikunagae_TBB_Tick(int client)
 						inflictor=client;
 					}
 					float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, EnemyVecPos);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6) * BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, EnemyVecPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}
@@ -684,7 +682,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 						inflictor=npc.index;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)*BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[npc.index] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}

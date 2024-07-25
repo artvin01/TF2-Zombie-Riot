@@ -484,6 +484,12 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?
 
+		int NavAttribs = RandomArea.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
+
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
 		bool DoNotTeleport = false;
 		int WasTooFarAway = 0;

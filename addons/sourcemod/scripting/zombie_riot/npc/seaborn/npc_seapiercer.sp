@@ -46,7 +46,7 @@ void SeaPiercer_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seapiercer");
 	strcopy(data.Icon, sizeof(data.Icon), "sea_piercer");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Seaborn;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -93,7 +93,7 @@ methodmap SeaPiercer < CSeaBody
 		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_RUN");
-		//KillFeed_SetKillIcon(npc.index, "bread_bite");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;

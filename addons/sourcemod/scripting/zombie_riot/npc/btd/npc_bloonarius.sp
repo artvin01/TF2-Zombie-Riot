@@ -232,7 +232,7 @@ methodmap Bloonarius < CClotBody
 		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
 		i_NpcWeight[npc.index] = 5;
-		//KillFeed_SetKillIcon(npc.index, "bread_bite");
+		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
 		int activity = npc.LookupActivity("ACT_BLOONARIUS_FLOAT");
 		if(activity > 0)
@@ -283,11 +283,21 @@ methodmap Bloonarius < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
 		Music_SetRaidMusic(music);
 		
-		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
+		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
+		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
 		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -561,7 +571,7 @@ public void Bloonarius_NPCDeath(int entity)
 		AcceptEntityInput(entitygame, "RoundWin");
 	}
 	
-	/*Spawns_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -570,7 +580,7 @@ public void Bloonarius_NPCDeath(int entity)
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
-	}*/
+	}
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

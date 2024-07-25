@@ -3,15 +3,15 @@
 
 Handle Timer_Banner_Management[MAXPLAYERS+1] = {null, ...};
 int i_SetBannerType[MAXPLAYERS+1];
-bool b_ClientHasAncientBanner[MAXENTITIES];
-bool b_EntityRecievedBuff[MAXENTITIES];
+static bool b_ClientHasAncientBanner[MAXENTITIES];
+static bool b_EntityRecievedBuff[MAXENTITIES];
 Handle Timer_AncientBanner = null;
 Handle Timer_Banner_Management_2[MAXPLAYERS+1] = {null, ...};
 Handle Timer_Banner_Management_1[MAXPLAYERS+1] = {null, ...};
 
 float BannerDefaultRange(int client)
 {
-	if(b_ArkantosBuffItem[client])
+	if(b_AlaxiosBuffItem[client])
 	{
 		return 511225.0; //1.1x range
 	}
@@ -341,7 +341,6 @@ public Action Timer_AncientBannerGlobal(Handle timer)
 				if(f_AncientBannerNpcBuff[ally] > GetGameTime())
 				{
 					ModifyEntityAncientBuff(ally, 1, 0.8, true, 1.2);
-
 				}
 				else
 				{
@@ -418,7 +417,7 @@ void BuffBattilonsActivate(int client, int weapon)
 	1: client
 	2: entity
 */
-void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
+static void ModifyEntityAncientBuff(int entity, int type, float buffammount, bool GrantBuff = true, float buffammount2)
 {
 	if(type == 1)
 	{
