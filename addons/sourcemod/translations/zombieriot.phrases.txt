@@ -3026,6 +3026,14 @@
 	{
 		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
 	}
+	"Bone Zone Desc"
+	{
+		"en"	"The armies of Necropolis are attacking, send them back to the underworld before they buff themselves!"
+	}
+	"SSB Desc"
+	{
+		"en"	"The God of the Dead has finally lost it, and now he wants to eradicate all life on Earth so that he never has to work again - stop him!"
+	}
 	"Expidonsa Desc"
 	{
 		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"

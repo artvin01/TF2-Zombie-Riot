@@ -1,8 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_BASIC_HP			"500"
-#define BONES_BASIC_HP_BUFFED	"1500"
+#define BONES_BASIC_HP			"300"
+#define BONES_BASIC_HP_BUFFED	"600"
 
 #define BONES_BASIC_SKIN		"2"
 #define BONES_BASIC_SKIN_BUFFED	"2"
@@ -12,14 +12,14 @@
 
 #define BONES_BASIC_BUFFPARTICLE	"utaunt_wispy_parent_g"
 
-static float BONES_BASIC_SPEED = 300.0;
-static float BONES_BASIC_SPEED_BUFFED = 360.0;
-static float BASIC_NATURAL_BUFF_CHANCE = 0.15;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BONES_BASIC_SPEED = 200.0;
+static float BONES_BASIC_SPEED_BUFFED = 240.0;
+static float BASIC_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float BASIC_NATURAL_BUFF_LEVEL_MODIFIER = 0.2;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BASIC_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-static float BONES_BASIC_PLAYERDAMAGE = 50.0;
-static float BONES_BASIC_PLAYERDAMAGE_BUFFED = 90.0;
+static float BONES_BASIC_PLAYERDAMAGE = 30.0;
+static float BONES_BASIC_PLAYERDAMAGE_BUFFED = 60.0;
 
 static float BONES_BASIC_BUILDINGDAMAGE = 60.0;
 static float BONES_BASIC_BUILDINGDAMAGE_BUFFED = 100.0;

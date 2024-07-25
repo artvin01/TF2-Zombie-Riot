@@ -1,9 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float BONES_BIG_SPEED = 220.0;
-static float BONES_BIG_SPEED_BUFFED = 260.0;
-static float BIG_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
+static float BONES_BIG_SPEED = 160.0;
+static float BONES_BIG_SPEED_BUFFED = 200.0;
+static float BIG_NATURAL_BUFF_CHANCE = 0.0;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float BIG_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BIG_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
@@ -12,7 +12,7 @@ static int BIG_BUFFED_MAX_SPAWNS = 20;	//Maximum number of skeletons to spawn wh
 static float BIG_BUFFED_SUMMON_BUFFCHANCE = 0.33;	//The chance for each individual skeleton summoned by Buffed Big Bones death to be buffed.
 
 #define BONES_BIG_HP		"3000"
-#define BONES_BIG_HP_BUFFED	"15000"
+#define BONES_BIG_HP_BUFFED	"12000"
 
 static float BONES_BIG_PLAYERDAMAGE = 120.0;
 static float BONES_BIG_PLAYERDAMAGE_BUFFED = 180.0;
