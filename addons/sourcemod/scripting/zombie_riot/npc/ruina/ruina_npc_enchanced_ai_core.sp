@@ -2680,7 +2680,6 @@ Names per stage:
 	Stage 4 specials:
 
 	Lancelot - W60 boss. 
-	- Add particle Accelerator attack.
 	- Add sound effects for the various things
 
 
@@ -2700,7 +2699,7 @@ Names per stage:
 	If fighting a melee player, uses a melee weapon.
 	If fighting a ranged player, uses a ranged weapon.
 
-	Every 10th? ranged hit, fire a laser.	Hand throw anim, 0.5s. 0.0 turnrate.
+	Every 10th? ranged hit, fire a laser.	Hand throw anim, 0.5s duration. 0.0 turnrate.
 	Every 10th? melee hit, fie an ION.		on target. 1.25 det time. 
 
 	Stage 1:
@@ -2717,7 +2716,7 @@ Names per stage:
 
 	Stage 4:
 	Retreat: The same + upon retreating, fires a 2 second laser towards where she was. use z anim.
-	Laser Punch: the same + wherever the prjectile hits a ION strike happens a second later
+	Laser Punch: the same + wherever the projectile hits a ION strike happens a second later
 	Cosmic Gaze: the same
 	Lunar Radiance: shoots ions on every player that also predict's thier pos.
 
