@@ -2690,6 +2690,45 @@ Names per stage:
 	Medic class.
 
 
+	RAIDBOSS: Twirl.
+
+	Core:
+
+	High damage, low hp. like blitzkrieg
+
+	Dual mode:
+	If fighting a melee player, uses a melee weapon.
+	If fighting a ranged player, uses a ranged weapon.
+
+	Every 10th? ranged hit, fire a laser.	Hand throw anim, 0.5s. 0.0 turnrate.
+	Every 10th? melee hit, fie an ION.		on target. 1.25 det time. 
+
+	Stage 1:
+	Retreat: Teleports in a random set direction, leaving behind a ION cannon.
+
+	Stage 2:
+	Retreat: Fires a ion on every player who is near the position she was at before teleporting.
+	Laser Punch: Fires several lazius lasers, they all go towards the same target, no homing, no prediction. stagger fire.
+
+	Stage 3:
+	Retreat: the same.
+	Laser Punch: the same
+	Cosmic Gaze: MOOOOOOOOOOOOOOOOOOORTIS. punches and an explosion happens a second later where she was looking.
+
+	Stage 4:
+	Retreat: The same + upon retreating, fires a 2 second laser towards where she was. use z anim.
+	Laser Punch: the same + wherever the prjectile hits a ION strike happens a second later
+	Cosmic Gaze: the same
+	Lunar Radiance: shoots ions on every player that also predict's thier pos.
+
+	gains a phase 2:
+	upon reaching 25% hp, she will summon 4 magia anchors. these anchors will begin summoning ruina npc's. all of these npc's will rush towards her to be turned into healing for the raid. One time.
+	 
+
+	
+
+
+
 */
 void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])
 {

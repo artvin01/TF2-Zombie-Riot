@@ -37,10 +37,16 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/batsaber_swing2.wav",
 	"weapons/batsaber_swing3.wav",
 };
-static char g_TeleportSounds[][] = {
+static const char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static char g_AngerSounds[][] = {
+static const char g_IdleAlertedSounds[][] = {
+	")vo/medic_battlecry01.mp3",
+	")vo/medic_battlecry02.mp3",
+	")vo/medic_battlecry03.mp3",
+	")vo/medic_battlecry04.mp3",
+};
+static const char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense01.mp3",
 	"vo/medic_cartgoingforwardoffense02.mp3",
 	"vo/medic_cartgoingforwardoffense03.mp3",
@@ -51,6 +57,11 @@ static char g_AngerSounds[][] = {
 static float fl_retreat_timer[MAXENTITIES];
 static bool b_leader[MAXENTITIES];
 static int i_follow_Id[MAXENTITIES];
+
+#define NPC_PARTICLE_LANCE_BOOM "ambient_mp3/halloween/thunder_04.mp3"
+#define NPC_PARTICLE_LANCE_BOOM1 "weapons/air_burster_explode1.wav"
+#define NPC_PARTICLE_LANCE_BOOM2 "weapons/air_burster_explode2.wav"
+#define NPC_PARTICLE_LANCE_BOOM3 "weapons/air_burster_explode3.wav"
 
 void Lancelot_OnMapStart_NPC()
 {
@@ -79,6 +90,11 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(g_AngerSounds);
 	PrecacheModel("models/player/medic.mdl");
+
+	PrecacheSound(NPC_PARTICLE_LANCE_BOOM);
+	PrecacheSound(NPC_PARTICLE_LANCE_BOOM1);
+	PrecacheSound(NPC_PARTICLE_LANCE_BOOM2);
+	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -330,8 +346,6 @@ static bool Lancelot_Leader(Lancelot npc)
 	return false;
 
 }
-
-
 //TODO 
 //Rewrite
 static void ClotThink(int iNPC)
@@ -414,11 +428,20 @@ static void ClotThink(int iNPC)
 	
 	if(fl_ruina_battery[npc.index]>2500.0)
 	{
-
+		if(fl_ruina_battery_timeout[npc.index] < GameTime)
+		{
+			if(!IsValidEntity(npc.m_iWearable8))
+			{
+				float flPos[3], flAng[3];
+				npc.GetAttachment("effect_hand_r", flPos, flAng);
+				npc.m_iWearable8 = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0}));
+			}
+		}
 	}
-	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
+	else
 	{
-
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
@@ -426,10 +449,28 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);	
 
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+		if(iPitch < 0)
+			return;		
+
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(Npc_Vec, vecTarget, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+								
+		float flPitch = npc.GetPoseParameter(iPitch);
+								
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+
+		if(fl_ruina_battery[npc.index]>2500.0 && fl_ruina_battery_timeout[npc.index] < GameTime)
+			Lancelot_Particle_Accelerator(npc,flDistanceToTarget);
+		
+
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
 		{
 			npc.m_bAllowBackWalking = true;
-			npc.FaceTowards(vecTarget, 500.0);
+			npc.FaceTowards(vecTarget, 1500.0);
 		}
 		else
 		{
@@ -527,6 +568,75 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 	}
 }
 
+static void Lancelot_Particle_Accelerator(Lancelot npc, float Dist)
+{
+	float GameTime = GetGameTime();
+	if(Dist < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*5.0)
+	{
+		float Radius = 250.0;
+		float Boom_Loc[3];
+		if(Particle_Accelerator_Check(npc, Radius, Boom_Loc))
+		{
+			fl_ruina_battery[npc.index] = 0.0;
+			fl_ruina_battery_timeout[npc.index] = GameTime + 10.0;
+
+			int color[4];
+			Ruina_Color(color);
+			int laser;
+			laser = ConnectWithBeam(npc.m_iWearable7, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, _, Boom_Loc);
+			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+
+			Explode_Logic_Custom(1000.0, npc.index, npc.index, -1, Boom_Loc, Radius, _, _, true, _, _, _, Shake_dat_client);
+
+			EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM, npc.index, SNDCHAN_STATIC, 90, _, 0.6);
+			EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM, npc.index, SNDCHAN_STATIC, 90, _, 0.6);
+
+			TE_Particle("asplode_hoodoo", Boom_Loc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+					EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM1, npc.index, SNDCHAN_STATIC, 90, _, 1.0);
+				case 2:
+					EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM2, npc.index, SNDCHAN_STATIC, 90, _, 1.0);
+				case 3:
+					EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM3, npc.index, SNDCHAN_STATIC, 90, _, 1.0);
+			}
+		}
+		else
+		{
+			fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
+		}
+	}
+}
+static void Shake_dat_client(int entity, int victim, float damage, int weapon)
+{
+	if(victim < MaxClients)
+		Client_Shake(victim, 0, 50.0, 30.0, 1.25);
+}
+static int i_targets_inrange;
+static bool Particle_Accelerator_Check(Lancelot npc, float range, float EndLoc[3])
+{
+	Ruina_Laser_Logic Laser;
+
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Basic(NORMAL_ENEMY_MELEE_RANGE_FLOAT);
+	i_targets_inrange = 0;
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, Laser.End_Point, range, _, _, true, 15, false, _, CountTargets);
+
+	EndLoc = Laser.End_Point;
+	//CPrintToChatAll("Targets: %i", i_targets_inrange);
+	if(i_targets_inrange > 4 || LastMann)
+	{
+		return true;
+	}
+	return false;
+}
+static void CountTargets(int entity, int victim, float damage, int weapon)
+{
+	i_targets_inrange++;
+}
+
 static float Modify_Damage(Lancelot npc, int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
@@ -555,10 +665,6 @@ static float Modify_Damage(Lancelot npc, int Target, float damage)
 		damage *= 2.0;
 
 	return damage;
-}
-static void On_LaserHit(int client, int Target, int damagetype, float damage)
-{
-	Ruina_Add_Mana_Sickness(client, Target, 0.5, 100);
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -625,4 +731,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable6);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }
