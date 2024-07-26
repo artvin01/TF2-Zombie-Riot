@@ -112,12 +112,37 @@ void ViewChange_MapStart()
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
 
-	// TODO: Move this to PluginEnd
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "tf_wearable_vm")) != -1)
 	{
 		RemoveEntity(entity);
 	}
+}
+
+void ViewChange_ClientDisconnect(int client)
+{
+	int entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Viewmodel_PlayerModel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(entity != -1)
+	{
+		RemoveEntity(entity);
+		WeaponRef_viewmodel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Worldmodel_WeaponModel[client] = -1;
+	}
+
+	ViewChange_DeleteHands(client);
 }
 
 void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)

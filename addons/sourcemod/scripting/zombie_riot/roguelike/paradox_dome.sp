@@ -24,6 +24,8 @@ void Rogue_Dome_Mapstart()
 {
 	PrecacheModel("models/kirillian/brsphere_huge.mdl");
 	PrecacheSound(DOME_NEARBY_SOUND);
+	if(g_hDomeTimerBleed != null)
+		delete g_hDomeTimerBleed;
 }
 
 void Rogue_Dome_WaveStart(const float pos[3])
@@ -165,7 +167,10 @@ static void Dome_Frame_Shrink()
 static Action Dome_TimerBleed(Handle hTimer)
 {
 	if (g_hDomeTimerBleed != hTimer)
+	{
+		g_hDomeTimerBleed = null;
 		return Plugin_Stop;
+	}
 
 	for (int iClient = 1; iClient <= MaxClients; iClient++)
 	{

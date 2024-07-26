@@ -862,11 +862,11 @@ void Rogue_BattleVictory()
 			{
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 5);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 4);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
 				}
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
@@ -2546,15 +2546,15 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 						{
 							case 1, 2:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							case 3, 4:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							default:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
 							}
 						}
 

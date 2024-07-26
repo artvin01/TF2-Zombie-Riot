@@ -149,6 +149,7 @@ methodmap Barrack_Combine_Collos < BarrackBody
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
+		npc.Anger = false;
 		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_flAttackHappens_bullshit = 0.0;
 		i_NpcWeight[npc.index] = 2;
@@ -185,12 +186,6 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-	  	float TrueArmor = 1.0;
-		if(npc.m_fbRangedSpecialOn)
-		{
-			TrueArmor *= 0.15;
-		}
-		fl_TotalArmor[npc.index] = TrueArmor;
 
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
@@ -221,7 +216,8 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 						npc.AddGesture("ACT_PUSH_PLAYER");
 						npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 5.0;
 						npc.PlayRangedAttackSecondarySound();
-						npc.m_flAttackHappenswillhappen = true;
+						npc.m_fbRangedSpecialOn = true;
+						npc.Anger = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
@@ -236,7 +232,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							
 							float damage = 2800.0;
 
-							if(!npc.m_fbRangedSpecialOn)
+							if(npc.Anger)
 							{
 								damage *= 2.0;
 							}
@@ -245,7 +241,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
-								npc.m_fbRangedSpecialOn = true;
+								npc.Anger = false;
 							} 
 						}
 						delete swingTrace;
