@@ -200,15 +200,18 @@ methodmap Magia_Anchor < CClotBody
 		}
 		else if(wave <=30)	
 		{
-			
+			SetVariantInt(RUINA_MAGIA_TOWER_2);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		}
 		else if(wave <= 45)	
 		{
-
+			SetVariantInt(RUINA_MAGIA_TOWER_3);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		}
 		else
 		{
-			
+			SetVariantInt(RUINA_MAGIA_TOWER_4);						//tier 4 gregification beacon
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 		}
 
 		fl_ruina_battery[npc.index] = 0.0;

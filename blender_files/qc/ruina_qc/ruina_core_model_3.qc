@@ -38,6 +38,21 @@ $bodygroup "tower_1"
 	blank
 	studio "v3/tower_1.smd"
 }
+$bodygroup "tower_2"	
+{
+	blank
+	studio "v3/tower_2.smd"
+}
+$bodygroup "tower_3"	
+{
+	blank
+	studio "v3/tower_3.smd"
+}
+$bodygroup "tower_4"	
+{
+	blank
+	studio "v3/tower_4.smd"
+}
 
 
 
