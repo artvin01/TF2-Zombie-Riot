@@ -862,11 +862,11 @@ void Rogue_BattleVictory()
 			{
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 5);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 4);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
 				}
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))

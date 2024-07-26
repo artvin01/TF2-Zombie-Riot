@@ -1840,7 +1840,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			if(refreshNPCStore)
 				Store_RandomizeNPCStore(0);
-
 			
 			Store_RandomizeNPCStore(0, _, true);
 		}

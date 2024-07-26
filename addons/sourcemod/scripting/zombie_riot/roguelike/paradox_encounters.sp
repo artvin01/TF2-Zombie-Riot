@@ -427,7 +427,7 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Prophecy Lore 2b");
 				Rogue_AddChaos(20);
-				Store_RandomizeNPCStore(2, 10);
+				Store_RandomizeNPCStore(0, 10);
 			}
 			case 2:
 			{
@@ -469,7 +469,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 0:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
-				Store_RandomizeNPCStore(2, 4);
+				Store_RandomizeNPCStore(0, 4);
 			}
 			case 1:
 			{
@@ -520,7 +520,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddChaos(15);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
-				Store_RandomizeNPCStore(2, 4);
+				Store_RandomizeNPCStore(0, 4);
 			}
 		}
 	}
@@ -587,7 +587,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				case 4, 5, 6:
 				{
 					Rogue_AddIngots(-4);
-					Store_RandomizeNPCStore(2, 1);
+					Store_RandomizeNPCStore(0, 1);
 					title = 'e';
 				}
 				case 7, 8:
