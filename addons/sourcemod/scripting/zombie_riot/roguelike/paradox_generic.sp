@@ -263,17 +263,17 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 
 public void Rogue_Store1_Collect()
 {
-	Store_RandomizeNPCStore(2, 1);
+	Store_RandomizeNPCStore(0, 1);
 }
 
 public void Rogue_Store2_Collect()
 {
-	Store_RandomizeNPCStore(2, 2);
+	Store_RandomizeNPCStore(0, 2);
 }
 
 public void Rogue_Store3_Collect()
 {
-	Store_RandomizeNPCStore(2, 3);
+	Store_RandomizeNPCStore(0, 3);
 }
 
 public void Rogue_Shield1_Collect()

@@ -2353,6 +2353,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 			}
 		}
 	}
+
 	if(subtract_wave || ResetStore)
 		return;
 	
@@ -2406,20 +2407,24 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	{
 		SortIntegers(indexes, amount, Sort_Random);
 		int SellsMax = addItem;
-		if(SellsMax <= 0)
-			SellsMax = 7;
-		
 		if(SellsMax > 0 && amount > 0)
-			CPrintToChatAll("{green}Recovered Items:");
-		
-		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
-			StoreItems.GetArray(indexes[i], item);
+			char buffer[256];
+			strcopy(buffer, sizeof(buffer), "{green}Recovered Items:{palegreen}");
 
-			CPrintToChatAll("{palegreen}%s",item.Name);
+			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
+			{
+				StoreItems.GetArray(indexes[i], item);
 
-			item.NPCSeller = true;
-			StoreItems.SetArray(indexes[i], item);
+				// Blah: Item
+				// Blash, Item
+				Format(buffer, sizeof(buffer), "%s%s %s", i ? "," : "", buffer, item.Name);
+
+				item.NPCSeller = true;
+				StoreItems.SetArray(indexes[i], item);
+			}
+
+			CPrintToChatAll(buffer);
 		}
 	}
 }
