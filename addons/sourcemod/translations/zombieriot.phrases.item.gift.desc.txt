@@ -523,10 +523,6 @@
 	{
 		"en"		"Blitzkrieg but at full power."
 	}
-	"Hyper Blitzkrieg Desc"
-	{
-		"en"		"Blitzkrieg but at full power."
-	}
 	"Pikeman Desc"
 	{
 		"en" 		"Stronger Spearman, deals 2x dmg to enemies that mounted a building"
