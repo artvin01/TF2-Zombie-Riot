@@ -33,8 +33,7 @@ float fl_ruina_battery_timeout[MAXENTITIES];
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
-#define RUINA_ANCHOR_HARD_LIMIT 10
-int i_magia_anchors_active;
+
 
 static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
 
@@ -207,8 +206,6 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheModel(RUINA_POINT_MODEL);
 
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
-
-	i_magia_anchors_active=0;
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 

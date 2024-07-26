@@ -21,8 +21,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/dragons_fury_shoot.wav",
 };
 
-static int i_following_id[MAXENTITIES];
-
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
 	NPCData data;
@@ -85,7 +83,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		
-		i_following_id[npc.index] = EntIndexToEntRef(RoundToFloor(in_line_id));
+		npc.m_iState = EntIndexToEntRef(RoundToFloor(in_line_id));
 
 
 		if(ally != TFTeam_Red)
@@ -164,7 +162,7 @@ static void ClotThink(int iNPC)
 
 	int PrimaryThreatIndex = npc.m_iTarget;
 
-	int follow_id = EntRefToEntIndex(i_following_id[npc.index]);
+	int follow_id = EntRefToEntIndex(npc.m_iState);
 
 	if(IsValidEntity(follow_id))
 	{
@@ -181,6 +179,15 @@ static void ClotThink(int iNPC)
 			Storm_Weaver_Middle_Movement(npc, Follow_Loc, true);	//we can't see the thing we are following, noclip
 		}
 		
+	}
+	else
+	{
+		npc.m_bDissapearOnDeath = true;	
+		//CPrintToChatAll("death cause no hp.");
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+
+		return;
 	}
 
 
@@ -223,16 +230,16 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	if(!b_storm_weaver_solo)
 	{
-		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Storm_Weaver_Share_With_Anchor_Damage(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(npc));
 	}
 	else if(b_stellar_weaver_true_solo)
 	{
-		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Stellar_Weaver_Share_Damage_With_All(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(npc));
 	}
 
 	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
@@ -253,6 +260,8 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	npc.m_iState = -1;
 	
 	Ruina_NPCDeath_Override(entity);
 

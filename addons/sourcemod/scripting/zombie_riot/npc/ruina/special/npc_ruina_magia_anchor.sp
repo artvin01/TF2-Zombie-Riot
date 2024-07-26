@@ -79,7 +79,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/draw_sword.wav",
 };
 
-bool b_is_magia_tower[MAXENTITIES];
+static bool b_is_magia_tower[MAXENTITIES];
 static bool b_allow_weaver[MAXENTITIES];
 static float fl_weaver_charge[MAXENTITIES];
 static int i_weaver_index[MAXENTITIES];
@@ -183,7 +183,7 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3, _, _, _, 15.0);
+		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -210,7 +210,7 @@ methodmap Magia_Anchor < CClotBody
 			b_allow_weaver[npc.index] = true;
 		
 		if(StrContains(data, "raid") != -1)
-			i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
 		
 		//whats a "switch" statement??
 		if(wave<=15)	
@@ -236,6 +236,8 @@ methodmap Magia_Anchor < CClotBody
 
 		if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 		{
+			RaidModeTime = 999999999.0;
+
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 
@@ -286,7 +288,7 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
 		
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
 
 		NPC_StopPathing(npc.index);
@@ -321,18 +323,24 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	Charging(npc);
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
+	if(!Charging(npc))
+		return;
 
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(i_RaidGrantExtra[entity] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
 
 	}
 
 	if(b_allow_weaver[npc.index])
 	{
-
+		Weaver_Logic(npc);
 	}
 	
 	
@@ -368,12 +376,35 @@ static void NPC_Death(int entity)
 
 	b_is_magia_tower[npc.index]=false;
 
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+
 	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+}
+
+static int i_find_weaver(Magia_Anchor npc)
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
+		{
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[baseboss_index], npc_classname, sizeof(npc_classname));
+			if(StrEqual(npc_classname, "npc_ruina_stellar_weaver"))
+			{
+				Storm_Weaver worm = view_as<Storm_Weaver>(baseboss_index);
+				if(EntRefToEntIndex(worm.m_iState) == npc.index)
+					return baseboss_index;
+			}
+		}
+	}
+	return -1;
 }
 
 static void Weaver_Logic(Magia_Anchor npc)
@@ -383,13 +414,20 @@ static void Weaver_Logic(Magia_Anchor npc)
 		RaidModeScaling = fl_weaver_charge[npc.index];
 	}
 
+	int test = i_find_weaver(npc);
+	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
+		i_weaver_index[npc.index] = test;
+
 	fl_weaver_charge[npc.index]+=0.005;
+
+	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
+		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
 
 	if(fl_weaver_charge[npc.index]>=1.0)
 	{
-		if(i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
+		if(i_weaver_index[npc.index] == INVALID_ENT_REFERENCE)
 		{
-			i_weaver_index[npc.index] = EntIndexToEntRef();
+			i_weaver_index[npc.index] = EntIndexToEntRef(i_summon_weaver(npc));
 		}
 		else
 		{
@@ -397,12 +435,48 @@ static void Weaver_Logic(Magia_Anchor npc)
 		}
 	}
 }
+int i_GetMagiaAnchor(CClotBody npc)
+{
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
+		{
+			if(b_is_magia_tower[baseboss_index])
+				return baseboss_index;
+		}
+	}
+	return -1;
+}
 static int i_summon_weaver(Magia_Anchor npc)
 {
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	int maxhealth;
+
+	maxhealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+		RaidBossActive = INVALID_ENT_REFERENCE;
 	
+	maxhealth = RoundToFloor(maxhealth*1.5);
+	float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
+	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index), "anchor");
+	if(spawn_index > MaxClients)
+	{
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		Storm_Weaver worm = view_as<Storm_Weaver>(spawn_index);
+		worm.m_iState = EntIndexToEntRef(npc.index);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+	}
+	return spawn_index;
 }
 
-static void Charging(Magia_Anchor npc)
+static bool Charging(Magia_Anchor npc)
 {
 	if(fl_ruina_battery[npc.index]<=255)	//charging phase
 	{
@@ -418,6 +492,8 @@ static void Charging(Magia_Anchor npc)
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
+		return false;
 		
 	}
 	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
@@ -428,4 +504,6 @@ static void Charging(Magia_Anchor npc)
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 	}
+
+	return true;
 }

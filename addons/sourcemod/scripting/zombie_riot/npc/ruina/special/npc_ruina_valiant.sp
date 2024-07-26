@@ -361,7 +361,7 @@ static void ClotThink(int iNPC)
 		}
 		
 	}
-	else if(fl_ruina_battery_timer[npc.index] < GameTime && i_magia_anchors_active < 5)
+	else if(fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		Venium_Build_Anchor(npc);	//build anchor.
 	}
