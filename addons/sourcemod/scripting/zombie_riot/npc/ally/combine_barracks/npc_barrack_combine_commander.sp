@@ -292,6 +292,9 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 							float flPos[3]; // original
 							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
+							if(IsValidEntity(npc1.m_iWearable8))
+								RemoveEntity(npc1.m_iWearable8);
+								
 							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "coin_blue", npc1.index, "", {0.0,0.0,0.0});
 							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}

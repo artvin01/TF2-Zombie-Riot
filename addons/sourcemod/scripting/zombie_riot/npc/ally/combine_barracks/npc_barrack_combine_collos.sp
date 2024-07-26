@@ -186,12 +186,6 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-	  	float TrueArmor = 1.0;
-		if(npc.m_fbRangedSpecialOn)
-		{
-			TrueArmor *= 0.15;
-		}
-		fl_TotalArmor[npc.index] = TrueArmor;
 
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 
