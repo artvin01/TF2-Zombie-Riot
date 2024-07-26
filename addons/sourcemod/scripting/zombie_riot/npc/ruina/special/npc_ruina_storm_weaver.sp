@@ -85,8 +85,6 @@ static void ClotPrecache()
 
 	PrecacheModel(RUINA_STORM_WEAVER_HEAD_MODEL);
 	Zero(i_storm_weaver_damage_instance);
-
-	b_stellar_weaver_summoned=false;
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
@@ -129,8 +127,6 @@ methodmap Storm_Weaver < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
-
-		b_stellar_weaver_summoned=true;
 
 		if(ally != TFTeam_Red)
 		{
@@ -1116,7 +1112,6 @@ static void NPC_Death(int entity)
 	}
 
 	b_ignore_npc[npc.index]=false;
-	b_stellar_weaver_summoned=false;
 
 	Ruina_NPCDeath_Override(entity);
 	

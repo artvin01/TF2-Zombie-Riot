@@ -80,11 +80,12 @@ static const char g_MeleeMissSounds[][] = {
 };
 
 bool b_is_magia_tower[MAXENTITIES];
+static bool b_allow_weaver[MAXENTITIES];
+static float fl_weaver_charge[MAXENTITIES];
+static int i_weaver_index[MAXENTITIES];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
-
-bool b_stellar_weaver_summoned;
 
 void Magia_Anchor_OnMapStart_NPC()
 {
@@ -101,7 +102,6 @@ void Magia_Anchor_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
-	b_stellar_weaver_summoned = false;
 	Zero(b_is_magia_tower);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -189,9 +189,29 @@ methodmap Magia_Anchor < CClotBody
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
-		
 
 		int wave = ZR_GetWaveCount()+1;
+
+		if(StrContains(data, "force15") != -1)
+			wave = 15;
+		if(StrContains(data, "force30") != -1)
+			wave = 30;
+		if(StrContains(data, "force45") != -1)
+			wave = 45;
+		if(StrContains(data, "force60") != -1)
+			wave = 60;
+
+		fl_weaver_charge[npc.index] = 0.0;
+		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
+
+		if(StrContains(data, "noweaver") != -1)
+			b_allow_weaver[npc.index] = false;
+		else
+			b_allow_weaver[npc.index] = true;
+		
+		if(StrContains(data, "raid") != -1)
+			i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+		
 		//whats a "switch" statement??
 		if(wave<=15)	
 		{
@@ -212,6 +232,15 @@ methodmap Magia_Anchor < CClotBody
 		{
 			SetVariantInt(RUINA_MAGIA_TOWER_4);						//tier 4 gregification beacon
 			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+
+		if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
+		{
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = false;
+
+			RaidModeScaling = 0.0;
+		
 		}
 
 		fl_ruina_battery[npc.index] = 0.0;
@@ -292,32 +321,21 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
+	Charging(npc);
+
 	npc.m_flNextThinkTime = GameTime + 0.1;
-	
-	if(fl_ruina_battery[npc.index]<=255)	//charging phase
+
+	if(i_RaidGrantExtra[entity] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
-	
-		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
-		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
-		if(alpha > 255)
-		{
-			alpha = 255;
-		}
-		//PrintToChatAll("Alpha: %i", alpha);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
-		
+
 	}
-	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
+
+	if(b_allow_weaver[npc.index])
 	{
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-		fl_ruina_battery[npc.index]=333.0;
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
 	}
+	
+	
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -356,4 +374,58 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
+}
+
+static void Weaver_Logic(Magia_Anchor npc)
+{
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidModeScaling = fl_weaver_charge[npc.index];
+	}
+
+	fl_weaver_charge[npc.index]+=0.005;
+
+	if(fl_weaver_charge[npc.index]>=1.0)
+	{
+		if(i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
+		{
+			i_weaver_index[npc.index] = EntIndexToEntRef();
+		}
+		else
+		{
+			fl_weaver_charge[npc.index] = 0.0;
+		}
+	}
+}
+static int i_summon_weaver(Magia_Anchor npc)
+{
+	
+}
+
+static void Charging(Magia_Anchor npc)
+{
+	if(fl_ruina_battery[npc.index]<=255)	//charging phase
+	{
+	
+		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
+		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
+		if(alpha > 255)
+		{
+			alpha = 255;
+		}
+		//PrintToChatAll("Alpha: %i", alpha);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+		
+	}
+	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
+	{
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+		fl_ruina_battery[npc.index]=333.0;
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+	}
 }
