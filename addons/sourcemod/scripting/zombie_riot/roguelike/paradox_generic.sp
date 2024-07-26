@@ -5,6 +5,24 @@ static ArrayList ShopListing;
 
 public float Rogue_Encounter_ParadoxShop()
 {
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client);
+			SetMusicTimer(client, GetTime() + 1);
+		}
+	}
+
+	RemoveAllCustomMusic();
+
+	strcopy(MusicString1.Path, sizeof(MusicString1.Path), "#zombiesurvival/forest_rogue/knucklebones.mp3");
+	MusicString1.Time = 999;
+	MusicString1.Volume = 1.0;
+	MusicString1.Custom = true;
+	strcopy(MusicString1.Name, sizeof(MusicString1.Name), "Knucklebones");
+	strcopy(MusicString1.Artist, sizeof(MusicString1.Artist), "River Boy");
+
 	delete ShopListing;
 	ShopListing = new ArrayList(sizeof(Artifact));
 
@@ -46,17 +64,23 @@ public float Rogue_Encounter_ParadoxShop()
 		{
 			GetEntPropString(entity, Prop_Data, "m_iName", artifact.Name, sizeof(artifact.Name));
 			if(StrEqual(artifact.Name, "zr_store_prop", false))
-				AcceptEntityInput(entity, "Disable");
+				AcceptEntityInput(entity, "Enable");
 		}
 	}
 
-	StartShopVote();
+	StartShopVote(true);
 	return 35.0;
 }
-static void StartShopVote()
+static void StartShopVote(bool first)
 {
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_Shop2Encounter, "Shop Encounter Title");
 	Vote vote;
+
+	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
+	vote.Append[0] = 0;
+	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
+	strcopy(vote.Config, sizeof(vote.Config), "-1");
+	list.PushArray(vote);
 
 	Artifact artifact;
 	int ingots = Rogue_GetIngots();
@@ -83,16 +107,11 @@ static void StartShopVote()
 		vote.Append[0] = 0;
 		strcopy(vote.Desc, sizeof(vote.Desc), "Steal Grigori Desc");
 		strcopy(vote.Config, sizeof(vote.Config), "-2");
+		vote.Locked = false;
 		list.PushArray(vote);
 	}
 
-	strcopy(vote.Name, sizeof(vote.Name), "Better save up now");
-	vote.Append[0] = 0;
-	strcopy(vote.Desc, sizeof(vote.Desc), "Leave this encounter");
-	strcopy(vote.Config, sizeof(vote.Config), "-1");
-	list.PushArray(vote);
-
-	Rogue_StartGenericVote(length ? 30.0 : 3.0);
+	Rogue_StartGenericVote(length ? (first ? 30.0 : 15.0) : 3.0);
 }
 public void Rogue_Vote_Shop2Encounter(const Vote vote)
 {
@@ -102,6 +121,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 	{
 		case -1:
 		{
+			Rogue_SetProgressTime(5.0, false);
+
 			delete ShopListing;
 
 			int entity = -1;
@@ -145,8 +166,8 @@ public void Rogue_Vote_Shop2Encounter(const Vote vote)
 			
 			Rogue_AddIngots(-cost, true);
 
-			StartShopVote();
-			Rogue_SetProgressTime(35.0, false);
+			StartShopVote(false);
+			Rogue_SetProgressTime(20.0, false);
 		}
 	}
 }
@@ -242,17 +263,17 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 
 public void Rogue_Store1_Collect()
 {
-	Store_RandomizeNPCStore(2, 1);
+	Store_RandomizeNPCStore(0, 1);
 }
 
 public void Rogue_Store2_Collect()
 {
-	Store_RandomizeNPCStore(2, 2);
+	Store_RandomizeNPCStore(0, 2);
 }
 
 public void Rogue_Store3_Collect()
 {
-	Store_RandomizeNPCStore(2, 3);
+	Store_RandomizeNPCStore(0, 3);
 }
 
 public void Rogue_Shield1_Collect()
@@ -415,39 +436,39 @@ public void Rogue_Health3_Ally(int entity, StringMap map)
 
 public void Rogue_MeleeVuln1_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.15;
+	fl_Extra_MeleeArmor[entity] *= 1.15;
 }
 
 public void Rogue_MeleeVuln2_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.25;
+	fl_Extra_MeleeArmor[entity] *= 1.25;
 }
 
 public void Rogue_MeleeVuln3_Enemy(int entity)
 {
-	fl_Extra_MeleeArmor[entity] /= 1.35;
+	fl_Extra_MeleeArmor[entity] *= 1.35;
 }
 
 public void Rogue_RangedVuln1_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.15;
+	fl_Extra_RangedArmor[entity] *= 1.15;
 }
 
 public void Rogue_RangedVuln2_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.25;
+	fl_Extra_RangedArmor[entity] *= 1.25;
 }
 
 public void Rogue_RangedVuln3_Enemy(int entity)
 {
-	fl_Extra_RangedArmor[entity] /= 1.35;
+	fl_Extra_RangedArmor[entity] *= 1.35;
 }
 
 public void Rogue_Healing1_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +20% healing bonus
 		map.GetValue("526", value);
@@ -459,7 +480,7 @@ public void Rogue_Healing2_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		float value;
+		float value = 1.0;
 
 		// +30% healing bonus
 		map.GetValue("526", value);
@@ -675,4 +696,90 @@ public void Rogue_ShopSale_Remove()
 	ShopSale = false;
 }
 
+public void Rogue_BlueGoggles_Collect()
+{
+	int client = -1;
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			client = client_summon;
+			break;
+		}
+	}
+	float flPos[3];
+	GetClientAbsOrigin(client, flPos);
+	NPC_CreateByName("npc_goggles_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+}
 
+public void Rogue_BlueGoggles_Remove()
+{
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == GogglesFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+}
+
+static Handle KahmlsteinTimer;
+
+public void Rogue_Kahmlstein_Collect()
+{
+	int client = -1;
+	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
+	{
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		{
+			client = client_summon;
+			break;
+		}
+	}
+	float flPos[3];
+	GetClientAbsOrigin(client, flPos);
+	NPC_CreateByName("npc_kahmlstein_follower", client, flPos, {0.0, 0.0, 0.0}, TFTeam_Red);
+
+	delete KahmlsteinTimer;
+	KahmlsteinTimer = CreateTimer(1.5, Timer_KahmlsteinTimer, _, TIMER_REPEAT);
+}
+
+public void Rogue_Kahmlstein_Remove()
+{
+	/*
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int other = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(other != -1 && i_NpcInternalId[other] == KahmlsteinFollower_ID() && IsEntityAlive(other))
+		{
+			SmiteNpcToDeath(other);
+			break;
+		}
+	}
+	*/
+
+	delete KahmlsteinTimer;
+	Rogue_Refresh_Remove();
+}
+
+static Action Timer_KahmlsteinTimer(Handle timer)
+{
+	if(Rogue_CanRegen())
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+					Saga_ChargeReduction(client, weapon, 1.0);
+			}
+		}
+	}
+
+	return Plugin_Continue;
+}

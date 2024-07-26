@@ -52,7 +52,7 @@ void VoidExpidonsanContainer_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -277,13 +277,13 @@ void VoidExpidonsanContainerSelfDefense(VoidExpidonsanContainer npc, float gameT
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 6.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 6.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 6.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 6.0, 5);
 							}
 						}
 					}

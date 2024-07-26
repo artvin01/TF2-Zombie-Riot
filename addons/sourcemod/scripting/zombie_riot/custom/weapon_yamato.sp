@@ -1,45 +1,24 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-//Wonder if mr french will try to learn SP just to recreate the funny sword effects xd
-
-static Handle Revert_Weapon_Back_Timer[MAXPLAYERS+1];
-static bool Handle_on[MAXPLAYERS+1]={false, ...};
-
 Handle TimerYamatoManagement[MAXPLAYERS+1] = {null, ...};
 static float f_Yamatohuddelay[MAXTF2PLAYERS+1];
 
 static int i_Yamato_Rainsword_Count[MAXTF2PLAYERS+1];
 static int g_particleImpactTornado;
 
-static bool b_ATTACK[MAXTF2PLAYERS+1];
-static bool b_can_Attack[MAXTF2PLAYERS+1];
+static bool b_mouse2_held[MAXTF2PLAYERS+1];
 
-static float fl_trace_delay[MAXTF2PLAYERS+1];
-static float fl_last_known_loc[MAXTF2PLAYERS+1][3];
-
-static int i_Yamato_Combo[MAXTF2PLAYERS+1];
+static int b_Yamato_State[MAXTF2PLAYERS+1];
 
 static float fl_Yamato_Motivation[MAXTF2PLAYERS+1];
 
 static float fl_yamato_stats_timer[MAXTF2PLAYERS+1];
 
-
-
-
-static int g_rocket_particle;
-
-static char gLaser2;
-
-#define YAMATO_MAX_ABILITY_COUNT 2	//how many abilites yamato has
-
-//NOTE: Only increase the ability count IF you added a new ability to EACH one. or you might end up with the 1st main have only 2 sub's but it cycles to a "3rd" which simply doesn't exist and makes the weapon do nothing
-
-
 #define YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN	1.0	//Self explanitory
 #define YAMATO_MAX_RAINSWORD_COUNT 10	//How many maximum swords can exist, blocks the hp scaling from going higher than this
 
-//NOTE: Most of these stats have scaling at "static void Yamato_Update_Stats(int client, int weapon)" Treat these as like "base" stats. gets updated every 2.5 seconds
+//NOTE: Most of these stats have scaling at "static void Yamato_Update_Stats(int client, int weapon)" Treat these as like "base" stats.
 
 #define	YAMATO_RAINSWORD_COST_SPAWN	5.0			//how much "motivation" *better name pending* does the player need to have for a rainsword to exist. not consumed
 #define YAMATO_BASE_RAINSOWRD_COUNT 2			//base rainsword count, scales on HP, eg: 2+RoundToFloor(MaxHp/200)
@@ -48,11 +27,13 @@ static char gLaser2;
 #define YAMATO_RAINSWORD_COST	1.0				//cost of firing one
 #define YAMATO_RAINSWORD_GAIN	1.25			//How much motivation the player gains back when they deal damage with the ability
 
-#define YAMATO_SUB_RAINSWORD_DMG 4.6			//damage happens roughly 4 times a second.. THIS IS PER INDIVIDUAL SWORD!!!!
-#define YAMATO_SUB_RAINSWORD_PASSIVE_DRAIN	0.1	//How fast the player loses motivation with this ability active. its a passive drain thats constant even while doing dmg. THIS IS PER INDIVIDUAL SWORD!!!!
-#define YAMATO_SUB_RAINSWORD_GAIN	0.125		//How much motivation the player gains back when they deal damage while in rainsword second mode. THIS IS PER INDIVIDUAL SWORD!!!!
+#define YAMATO_SUB_RAINSWORD_DMG 6.0			//damage happens roughly 4 times a second.. THIS IS PER INDIVIDUAL SWORD!!!!
+#define YAMATO_SUB_RAINSWORD_PASSIVE_DRAIN	0.3	//How fast the player loses motivation with this ability active. its a passive drain thats constant even while doing dmg. THIS IS PER INDIVIDUAL SWORD!!!!
+#define YAMATO_SUB_RAINSWORD_GAIN	0.3125			//How much motivation the player gains back when they deal damage while in rainsword second mode. THIS IS PER INDIVIDUAL SWORD!!!!
 
 #define YAMATO_MOUSE2_ATTACK_DELAY 0.1			//A attack delay to the rainsword firing
+
+#define YAMATO_MAX_MOTIVATION	60.0
 
 #define YAMATO_RAINSWORD_SOUND "weapons/shooting_star_shoot.wav"
 
@@ -67,8 +48,145 @@ static float f_Yamato_Sub_Rainsword_Dmg[MAXTF2PLAYERS+1];
 static float f_Yamato_Sub_Rainsword_Passive_Drain[MAXTF2PLAYERS+1];
 
 static float f_Yamato_Rainsword_Reload_Timer[MAXTF2PLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
-static float f_Spin_To_Win_Throttle[MAXTF2PLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
+static float fl_Sprial_Trace_Throttle[MAXTF2PLAYERS+1][YAMATO_MAX_RAINSWORD_COUNT+1];
 
+enum struct Yamato_Blades
+{
+	int index;
+
+	float Offset_Times;
+
+	void Create(float Loc[3], float Angles[3], int client)
+	{
+
+		int prop = CreateEntityByName("prop_physics_override");
+	
+		if (IsValidEntity(prop))
+		{
+			this.Offset_Times = GetGameTime()+0.25;
+			DispatchKeyValue(prop, "model", RUINA_POINT_MODEL);
+			
+			DispatchKeyValue(prop, "modelscale", "0.01");
+			
+
+			int ModelApply = ApplyCustomModelToWandProjectile(prop, RUINA_CUSTOM_MODELS_2, 1.5, "");
+			if(IsValidEntity(ModelApply))
+			{
+				SetEntPropEnt(ModelApply, Prop_Send, "m_hOwnerEntity", client);
+				float angles[3];
+				GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+				angles[1]+=180.0;
+				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+				SetVariantInt(RUINA_ZANGETSU);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
+				SDKHook(ModelApply, SDKHook_SetTransmit, SetTransmitBlades);
+			}
+			
+			DispatchKeyValue(prop, "solid", "0"); 
+			
+			DispatchSpawn(prop);
+			
+			ActivateEntity(prop);
+			
+			//SetEntProp(prop, Prop_Send, "m_fEffects", 32); //EF_NODRAW
+			
+			MakeObjectIntangeable(prop);
+
+			TeleportEntity(prop, Loc, NULL_VECTOR, NULL_VECTOR);
+
+			//CPrintToChatAll("Sword created: %i", prop);
+			this.index = EntIndexToEntRef(prop);
+			
+		}
+
+	}
+	void Check()
+	{
+		if(this.Offset_Times < GetGameTime())
+		{
+			int entity = EntRefToEntIndex(this.index);
+			if(IsValidEntity(entity))
+				this.Delete();
+		}
+	}
+	void Move(int client, float loc[3], float Look_Vec[3], int ID)
+	{
+		float GameTime = GetGameTime();
+
+		int entity = EntRefToEntIndex(this.index);
+		
+		float Ang[3];
+		MakeVectorFromPoints(loc, Look_Vec, Ang);
+		GetVectorAngles(Ang, Ang);
+		if(f_Yamato_Rainsword_Reload_Timer[client][ID] > GameTime)
+		{
+			if(IsValidEntity(entity))
+				this.Delete();
+			
+			return;
+		}
+		else
+		{
+			if(!IsValidEntity(entity))
+			{
+				this.Create(loc, Ang, client);
+				return;
+			}
+				
+		}
+		
+
+		this.Offset_Times = GameTime + 0.25;
+
+	
+
+		float vecView[3], vecFwd[3], Entity_Loc[3], vecVel[3];
+		
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", Entity_Loc);
+		
+		MakeVectorFromPoints(Entity_Loc, loc, vecView);
+		GetVectorAngles(vecView, vecView);
+		
+		float dist = GetVectorDistance(Entity_Loc, loc);
+
+		GetAngleVectors(vecView, vecFwd, NULL_VECTOR, NULL_VECTOR);
+	
+		Entity_Loc[0]+=vecFwd[0] * dist;
+		Entity_Loc[1]+=vecFwd[1] * dist;
+		Entity_Loc[2]+=vecFwd[2] * dist;
+		
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vecFwd);
+		
+		SubtractVectors(Entity_Loc, vecFwd, vecVel);
+		ScaleVector(vecVel, 10.0);
+
+		if(!b_Yamato_State[client])
+			Ang[2]=90.0;
+		else
+			Ang[2]=0.0;
+
+		TeleportEntity(entity, NULL_VECTOR, Ang, vecVel);
+	}
+	void Delete()
+	{
+		int sword = EntRefToEntIndex(this.index);
+		if(IsValidEntity(sword))
+			RemoveEntity(sword);
+		
+		this.index = INVALID_ENT_REFERENCE;
+
+	}
+}
+
+static Action SetTransmitBlades(int entity, int target)
+{
+	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == target)
+		return Plugin_Continue;
+
+	return Plugin_Handled;
+}
+
+static Yamato_Blades struct_Yamato_Blades[MAXTF2PLAYERS][YAMATO_MAX_RAINSWORD_COUNT+1];
 
 public void Npc_OnTakeDamage_Yamato(int client, int damagetype)
 {
@@ -82,22 +200,17 @@ public void Npc_OnTakeDamage_Yamato(int client, int damagetype)
 
 void Reset_stats_Yamato_Global()	//happens on mapchange!
 {
-	Zero(fl_trace_delay);
 	Zero(TimerYamatoManagement);
 	Zero(f_Yamatohuddelay); //Only needs to get reset on map change, not disconnect.
 	Zero(i_Yamato_Rainsword_Count);
-	Zero(b_ATTACK);
-	Zero(b_can_Attack);
-	Zero(i_Yamato_Combo);
+	Zero(b_mouse2_held);
+	Zero(b_Yamato_State);
 	Zero2(f_Yamato_Rainsword_Reload_Timer);
 	Zero(fl_Yamato_Motivation);
 	Zero(fl_yamato_stats_timer);
-	Zero2(f_Spin_To_Win_Throttle);
-	Zero(Handle_on);
+	Zero2(fl_Sprial_Trace_Throttle);
 	Zero(f_Yamato_Mouse2_attack_delay);
-	gLaser2= PrecacheModel("materials/sprites/laserbeam.vmt");
 	PrecacheSound(YAMATO_RAINSWORD_SOUND);
-	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
 	
 
@@ -105,48 +218,39 @@ void Reset_stats_Yamato_Global()	//happens on mapchange!
 
 public void Yamato_Combo_Switch_R(int client, int weapon, bool crit, int slot)
 {
-	i_Yamato_Combo[client]++;
-	if(i_Yamato_Combo[client]>YAMATO_MAX_ABILITY_COUNT)	
-	{
-		i_Yamato_Combo[client] = 1;
-	}
+	Yamato_Update_Stats(client, weapon);
+
+	b_Yamato_State[client] = !b_Yamato_State[client];
+
+	//for(int i=0 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i ++)
+	//{
+	//	struct_Yamato_Blades[client][i].Delete();
+	//}
 }
 
-/*
-public void Yamato_m1(int client, int weapon, bool crit, int slot)
-{
-	fl_Yamato_Motivation[client] += 5.0;
-	CPrintToChatAll("ADDED 5, total: %f",fl_Yamato_Motivation[client]);
-}*/
 
-static void Yamato_Mouse2(int client)
+public void Yamato_Start_M2(int client, int weapon, bool crit, int slot)
 {
-	switch(i_Yamato_Combo[client])
-	{
-		case 1:
-		{
-			if(i_Yamato_Rainsword_Count[client]>1 && b_can_Attack[client])
-			{
-				b_ATTACK[client] = true;
-			}
-		}
-	}
+	if(!b_Yamato_State[client])
+		return;
+
+	if(i_Yamato_Rainsword_Count[client] < 1)
+		return;
+	
+	Yamato_Update_Stats(client, weapon);
+
+	b_mouse2_held[client] = true;
+
+	float GameTime = GetGameTime();
+
+	if(f_Yamato_Mouse2_attack_delay[client] > GameTime)
+		return;
+
+	Yamato_Rainsword_Skill_1_Loop(client);	//to make sure the weapon doesn't feel "slugish" do an update when the user can fire a sword and fires it.
+
 }
 
-/*
-static void Yamato_Primary_M1_Core(int client, int weapon)
-{
-	
-}
-
-static void Yamato_Primary_M2_Core(int client, int weapon, float dmg, float reload, float cost, int amount)	for whenever I make a pap for this wep and wish to make the M1 do something special
-{
-	
-	
-}*/
-
-static float fl_Spin_to_win_Angle[MAXTF2PLAYERS+1];
-static int i_spin_to_win_throttle[MAXTF2PLAYERS+1];
+static float fl_spiral_angle[MAXTF2PLAYERS+1];
 
 static void Yamato_Rainsword_Skill_2_Loop(int client)
 {
@@ -157,147 +261,117 @@ static void Yamato_Rainsword_Skill_2_Loop(int client)
 	float UserAng[3];
 	
 	UserAng[0] = 0.0;
-	UserAng[1] = fl_Spin_to_win_Angle[client];
+	UserAng[1] = fl_spiral_angle[client];
 	UserAng[2] = 0.0;
 	
 	float CustomAng = 1.0;
 	float distance = 100.0;
 	
-	fl_Spin_to_win_Angle[client] += 0.75;
+	fl_spiral_angle[client] += 5.0;
 	
-	if (fl_Spin_to_win_Angle[client] >= 360.0)
+	if (fl_spiral_angle[client] >= 360.0)
 	{
-		fl_Spin_to_win_Angle[client] = 0.0;
+		fl_spiral_angle[client] = 0.0;
 	}
+
 	int testing = i_Yamato_Rainsword_Count[client];
 	fl_Yamato_Motivation[client] -= f_Yamato_Sub_Rainsword_Passive_Drain[client];
-	if(i_spin_to_win_throttle[client]>2)//Very fast
+
+	for(int m=1 ; m <= testing ; m++)
 	{
-		i_spin_to_win_throttle[client] = 0;
-		for(int m=1 ; m <= testing ; m++)
-		{
-			float tempAngles[3], endLoc[3], Direction[3], Direction_2[3], endLoc_2[3];
-			tempAngles[0] = 0.0;
-			tempAngles[1] = CustomAng*(UserAng[1]+(360/testing/2)*float(m*2));
-			tempAngles[2] = 0.0;
-			
-			GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-			ScaleVector(Direction, distance);
-			AddVectors(UserLoc, Direction, endLoc);
-			
-			GetAngleVectors(tempAngles, Direction_2, NULL_VECTOR, NULL_VECTOR);
-			ScaleVector(Direction_2, distance*2);
-			AddVectors(UserLoc, Direction_2, endLoc_2);
-			
-			Spin_To_Win_attack(client, endLoc, endLoc_2, m);
-		}
+		float tempAngles[3], endLoc[3], Direction[3], Direction_2[3], endLoc_2[3];
+		tempAngles[0] = 0.0;
+		tempAngles[1] = CustomAng*(UserAng[1]+(360/testing/2)*float(m*2));
+		tempAngles[2] = 0.0;
+		
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction, distance);
+		AddVectors(UserLoc, Direction, endLoc);
+		
+		GetAngleVectors(tempAngles, Direction_2, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(Direction_2, distance*2);
+		AddVectors(UserLoc, Direction_2, endLoc_2);
+		
+		Spin_To_Win_attack(client, endLoc, endLoc_2, m);
 	}
-	i_spin_to_win_throttle[client]++;
+
+	for(int i= 1 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i++)
+	{
+		struct_Yamato_Blades[client][i].Check();
+	}
+
 	return;
 }
-
-static float BEAM_Targets_Hit[MAXTF2PLAYERS+1];
 static int BEAM_BuildingHit[MAX_TARGETS_HIT];
-static bool BEAM_HitDetected[MAXTF2PLAYERS+1];
 
 static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], int ID)
 {
 	float vecAngles[3];
-	
+	/*
 	int colour[4];
-	colour[0]=41;
-	colour[1]=146;
-	colour[2]=158;
-	colour[3]=175;
+	colour[0]=255;
+	colour[1]=0;
+	colour[2]=0;
+	colour[3]=255;
 	TE_SetupBeamPoints(endVec, endVec_2, gLaser2, 0, 0, 0, 0.051, 5.0, 0.75, 0, 0.1, colour, 1);
-	TE_SendToClient(client);
-	
-	if(f_Spin_To_Win_Throttle[client][ID]<GetGameTime())
-	{
-		
-		f_Spin_To_Win_Throttle[client][ID] = GetGameTime() + 0.25;
-		static float hullMin[3];
-		static float hullMax[3];
-		static float playerPos[3];
+	TE_SendToClient(client);*/
 
-		for (int i = 1; i < MAXTF2PLAYERS; i++)
-		{
-			BEAM_HitDetected[i] = false;
-		}
+	struct_Yamato_Blades[client][ID].Move(client, endVec, endVec_2, ID);
+
+	float GameTime = GetGameTime();
+
+	if(f_Yamato_Rainsword_Reload_Timer[client][ID] > GameTime)
+		return;
+	if(fl_Sprial_Trace_Throttle[client][ID] > GameTime)
+		return;
+
 		
+	fl_Sprial_Trace_Throttle[client][ID] = GetGameTime() + 0.25;
+	static float hullMin[3];
+	static float hullMax[3];
+
+	Zero(BEAM_BuildingHit);
+	
+	float damage = f_Yamato_Sub_Rainsword_Dmg[client];
+	
+	Set_HullTrace(25.0, hullMin, hullMax);
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+	Handle trace;
+	trace = TR_TraceHullFilterEx(endVec, endVec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+	FinishLagCompensation_Base_boss();
+	
+	float vecForward[3];
+	GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon_active))
+		weapon_active = 0;
+
+	float BEAM_Targets_Hit = 1.0;
+	for (int target = 0; target < MAX_TARGETS_HIT; target++)
+	{
+		int Victim = BEAM_BuildingHit[target];
+		if(!Victim)
+			continue;
+
+		if(!IsValidEntity(Victim))
+			continue;
 		
-		for (int building = 0; building < MAX_TARGETS_HIT; building++)
-		{
-			BEAM_BuildingHit[building] = false;
-		}
+		float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+		SDKHooks_TakeDamage(Victim, client, client, damage*BEAM_Targets_Hit, DMG_CLUB, weapon_active, damage_force);
+
 		
+		fl_Yamato_Motivation[client] -= YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN;	//blocks gain on hit.
+		fl_Yamato_Motivation[client] += YAMATO_SUB_RAINSWORD_GAIN;
 		
-		float damage = f_Yamato_Sub_Rainsword_Dmg[client];
-		
-		
-		
-		hullMin[0] = -25.0;
-		hullMin[1] = hullMin[0];
-		hullMin[2] = hullMin[0];
-		hullMax[0] = -hullMin[0];
-		hullMax[1] = -hullMin[1];
-		hullMax[2] = -hullMin[2];
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client);
-		Handle trace;
-		trace = TR_TraceHullFilterEx(endVec, endVec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		delete trace;
-		FinishLagCompensation_Base_boss();
-		
-		float vecForward[3];
-		GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		BEAM_Targets_Hit[client] = 1.0;
-		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		for (int building = 0; building < MAX_TARGETS_HIT; building++)
-		{
-			if (BEAM_BuildingHit[building])
-			{
-				if(IsValidEntity(BEAM_BuildingHit[building]))
-				{
-					
-					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
-					
-					
-					float damage_force[3];
-					CalculateDamageForce(vecForward, 10000.0, damage_force);
-					DataPack pack = new DataPack();
-					pack.WriteCell(EntIndexToEntRef(BEAM_BuildingHit[building]));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage*BEAM_Targets_Hit[client]);
-					pack.WriteCell(DMG_CLUB);	//dmg is club so it works with barbarains
-					pack.WriteCell(EntIndexToEntRef(weapon_active));
-					pack.WriteFloat(damage_force[0]);
-					pack.WriteFloat(damage_force[1]);
-					pack.WriteFloat(damage_force[2]);
-					pack.WriteFloat(playerPos[0]);
-					pack.WriteFloat(playerPos[1]);
-					pack.WriteFloat(playerPos[2]);
-					pack.WriteCell(0);
-					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-					
-					fl_Yamato_Motivation[client] -= YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN;	//blocks gain on hit.
-					fl_Yamato_Motivation[client] += YAMATO_SUB_RAINSWORD_GAIN;
-					
-					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
-				}
-				else
-					BEAM_BuildingHit[building] = false;
-			}
-		}
+		BEAM_Targets_Hit *= LASER_AOE_DAMAGE_FALLOFF;
 	}
 }
 
-static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
+static void Yamato_Rainsword_Skill_1_Loop(int client)
 {
-	
-	
-	//CPrintToChatAll("Oya?: %i",i_Yamato_Rainsword_Count[client]);
 
 	float angles[3];
 	float UserLoc[3];
@@ -305,23 +379,18 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 	
 	GetClientEyePosition(client, UserLoc);
 	GetClientEyeAngles(client, angles);
+
+	float GameTime = GetGameTime();
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
 	
-	if(fl_trace_delay[client]<=GetGameTime())
-	{
-		float test_vec[3];
-		fl_trace_delay[client] = GetGameTime() + 0.1;
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(client);
-		
-		Handle test = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-		TR_GetEndPosition(test_vec, test);
-		delete test;
-		
-		fl_last_known_loc[client]= test_vec;
-		
-		FinishLagCompensation_Base_boss();
-	}
-	LookatVec = fl_last_known_loc[client];
+	Handle look_trace = TR_TraceRayFilterEx(UserLoc, angles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
+	TR_GetEndPosition(LookatVec, look_trace);
+	int i_entity_hit = TR_GetEntityIndex(look_trace);
+	delete look_trace;
+	
+	FinishLagCompensation_Base_boss();
+
 	float distance = 120.0;
 	
 	float tempAngles[3], endLoc[3], Direction[3];
@@ -335,7 +404,7 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 	for(int i=1 ; i<=i_Yamato_Rainsword_Count[client] ; i++)
 	{
 		
-		if(f_Yamato_Rainsword_Reload_Timer[client][i] < GetGameTime())
+		if(f_Yamato_Rainsword_Reload_Timer[client][i] < GameTime)
 		{	
 			tempAngles[0] =	tmp*float(i)+180-(base/2);	//180 = Directly upwards, minus half the "gap" angle
 			tempAngles[1] = angles[1]-90.0;
@@ -355,13 +424,17 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)	//this happens every tick!
 			MakeVectorFromPoints(UserLoc, endLoc, vecAngles);
 			GetVectorAngles(vecAngles, vecAngles);
 			
-			Yamato_Rainsword_Spawn(client, endLoc, i, LookatVec);
+			Yamato_Rainsword_Spawn(client, endLoc, i, LookatVec, i_entity_hit);
 		}
+	}
+	for(int i= 1 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i++)
+	{
+		struct_Yamato_Blades[client][i].Check();
 	}
 		
 }
 
-static void Yamato_Rainsword_Spawn(int client, float SpawnVec[3], int num, float TargetVec[3])
+static void Yamato_Rainsword_Spawn(int client, float SpawnVec[3], int num, float TargetVec[3], int i_entity_hit)
 {	
 	float Range = 115.0;
 	
@@ -377,99 +450,84 @@ static void Yamato_Rainsword_Spawn(int client, float SpawnVec[3], int num, float
 	AddVectors(SpawnVec, Direction, endLoc);
 		
 
-	b_can_Attack[client] = true;
-	int ID=GetRandomInt(1, i_Yamato_Rainsword_Count[client]);
-	if(b_ATTACK[client] && ID==num)
+	float GameTime = GetGameTime();
+	if(b_mouse2_held[client] && f_Yamato_Mouse2_attack_delay[client] < GameTime)
 	{
+		f_Yamato_Mouse2_attack_delay[client] = GameTime + 0.2;
 		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-		b_ATTACK[client] = false;
-		b_can_Attack[client] = false;
-		Yamato_Rocket_Launch(client, weapon, SpawnVec, endLoc, 1400.0, f_Yamato_Rainsword_Damage[client], "raygun_projectile_blue");
-		f_Yamato_Rainsword_Reload_Timer[client][ID] = GetGameTime() + f_Yamato_Rainsword_Reload_Time[client];
-		fl_Yamato_Motivation[client] -= f_Yamato_Rainsword_Cost[client];
-		EmitSoundToClient(client, YAMATO_RAINSWORD_SOUND, _, _, _, _, 0.35);
+		Fire_Blade(client, weapon, num, SpawnVec, endLoc, i_entity_hit);
 	}
+
+	struct_Yamato_Blades[client][num].Move(client, SpawnVec, endLoc, num);
+
+	/*
 	int colour[4];
-	colour[0]=41;
-	colour[1]=146;
-	colour[2]=158;
-	colour[3]=75;
+	colour[0]=255;
+	colour[1]=0;
+	colour[2]=0;
+	colour[3]=2555;
 	TE_SetupBeamPoints(endLoc, SpawnVec, gLaser2, 0, 0, 0, 0.051, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll();
+	*/
+}
+static bool Fire_Blade(int client, int weapon, int Num, float SpawnVec[3], float endLoc[3], int i_entity_hit)
+{
+	float GameTime = GetGameTime();
+	if(f_Yamato_Rainsword_Reload_Timer[client][Num] > GameTime)
+		return false;
+
+	Yamato_Rocket_Launch(client, weapon, SpawnVec, endLoc, 1400.0, f_Yamato_Rainsword_Damage[client], "raygun_projectile_blue", i_entity_hit);
+	f_Yamato_Rainsword_Reload_Timer[client][Num] = GameTime + f_Yamato_Rainsword_Reload_Time[client];
+	fl_Yamato_Motivation[client] -= f_Yamato_Rainsword_Cost[client];
+	EmitSoundToClient(client, YAMATO_RAINSWORD_SOUND, _, _, _, _, 0.35);
+
+	
+
+	return true;
 }
 
-static float f_projectile_dmg[MAXENTITIES];
-
-static int i_yamato_index[MAXENTITIES+1];
-static int i_yamato_wep[MAXENTITIES+1];
-
-static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], float targetVec[3], float speed, float dmg, const char[] rocket_particle = "")
+static void Yamato_Rocket_Launch(int client, int weapon, float startVec[3], float targetVec[3], float speed, float dmg, const char[] rocket_particle = "", int i_entity_hit)
 {
 
-	float Angles[3], vecForward[3];
-	
+	float Angles[3];
 	MakeVectorFromPoints(startVec, targetVec, Angles);
 	GetVectorAngles(Angles, Angles);
 
-	vecForward[0] = Cosine(DegToRad(Angles[0]))*Cosine(DegToRad(Angles[1]))*speed;
-	vecForward[1] = Cosine(DegToRad(Angles[0]))*Sine(DegToRad(Angles[1]))*speed;
-	vecForward[2] = Sine(DegToRad(Angles[0]))*-speed;
-
-	int entity = CreateEntityByName("zr_projectile_base");
-	if(IsValidEntity(entity))
+	int projectile = Wand_Projectile_Spawn(client, speed, 30.0, dmg, 0, weapon, rocket_particle, Angles, false , startVec);
+	WandProjectile_ApplyFunctionToEntity(projectile, Yamato_Projectile_Touch);
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_2, 1.5, "");
+	if(IsValidEntity(ModelApply))
 	{
-		
-		f_projectile_dmg[entity] = dmg;
-		
-		i_yamato_wep[entity]=weapon;
-		i_yamato_index[entity]=client;
-		
-		b_EntityIsArrow[entity] = true;
-		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
-		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetTeam(entity, GetTeam(client));
-		TeleportEntity(entity, startVec, Angles, NULL_VECTOR);
-		DispatchSpawn(entity);
-		int particle = 0;
-	
-		if(rocket_particle[0]) //If it has something, put it in. usually it has one. but if it doesn't base model it remains.
-		{
-			particle = ParticleEffectAt(startVec, rocket_particle, 0.0); //Inf duartion
-			i_rocket_particle[entity]= EntIndexToEntRef(particle);
-			TeleportEntity(particle, NULL_VECTOR, Angles, NULL_VECTOR);
-			SetParent(entity, particle);	
-			SetEntityRenderMode(entity, RENDER_TRANSCOLOR); //Make it entirely invis.
-			SetEntityRenderColor(entity, 255, 255, 255, 0);
-		}
-		TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
-		
-		for(int i; i<4; i++) //This will make it so it doesnt override its collision box.
-		{
-				SetEntProp(entity, Prop_Send, "m_nModelIndexOverrides", g_rocket_particle, _, i);
-		}
-		SetEntityModel(entity, PARTICLE_ROCKET_MODEL);
-	
-		//Make it entirely invis. Shouldnt even render these 8 polygons.
-		SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
-
-		DataPack pack;
-		CreateDataTimer(10.0, Timer_RemoveEntity_Yamato_Projectile, pack, TIMER_FLAG_NO_MAPCHANGE);
-		pack.WriteCell(EntIndexToEntRef(entity));
-		pack.WriteCell(EntIndexToEntRef(particle));
-		
-		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Yamato_RocketExplodePre); 
-		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
-		SDKHook(entity, SDKHook_StartTouch, Yamato_StartTouch);
+		float angles[3];
+		GetEntPropVector(ModelApply, Prop_Data, "m_angRotation", angles);
+		angles[1]+=180.0;
+		TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
+		SetVariantInt(RUINA_ZANGETSU);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
 	}
-	return;
+	float Homing_Power = 3.0;
+	float Homing_Angle = 45.0;
+	if(!IsValidEntity(i_entity_hit))
+	{
+		Homing_Power = 1.5;
+		Homing_Angle = 20.0;
+	}
+		
+
+	Initiate_HomingProjectile(projectile,
+	client,
+	Homing_Angle,			// float lockonAngleMax,
+	Homing_Power,				//float homingaSec,
+	true,				// bool LockOnlyOnce,
+	true,				// bool changeAngles,
+	Angles
+	);			// float AnglesInitiate[3]);
 }
-public MRESReturn Yamato_RocketExplodePre(int entity)
+
+
+static void Yamato_Projectile_Touch(int entity, int target)
 {
-	return MRES_Supercede;	//Do. Not.
-}
-public Action Yamato_StartTouch(int entity, int other)
-{
-	int target = Target_Hit_Wand_Detection(entity, other);
+	int particle = EntRefToEntIndex(i_WandParticle[entity]);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls
@@ -479,18 +537,14 @@ public Action Yamato_StartTouch(int entity, int other)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
-		
-		int owner = EntRefToEntIndex(i_yamato_index[entity]);
-		int weapon =EntRefToEntIndex(i_yamato_wep[entity]);
 
-		float pos1[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-		TE_ParticleInt(g_particleImpactTornado, pos1);
-		TE_SendToAll();
+		int owner = EntRefToEntIndex(i_WandOwner[entity]);
+		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_projectile_dmg[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
-		
+		float PushforceDamage[3];
+		CalculateDamageForce(vecForward, 10000.0, PushforceDamage);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, PushforceDamage, Entity_Position);	// 2048 is DMG_NOGIB?
+
 		fl_Yamato_Motivation[owner] += YAMATO_RAINSWORD_GAIN;
 		
 		fl_Yamato_Motivation[owner] -= YAMATO_ON_MELEE_HIT_MOTIVATION_GAIN;	//blocks gain on hit.
@@ -509,7 +563,12 @@ public Action Yamato_StartTouch(int entity, int other)
 			case 5:EmitSoundToAll(SOUND_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
 				
 	   	}
-	   	int particle = EntRefToEntIndex(i_rocket_particle[entity]);
+
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+		
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -518,46 +577,30 @@ public Action Yamato_StartTouch(int entity, int other)
 	}
 	else if(target == 0)
 	{
-		float pos1[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-		TE_ParticleInt(g_particleImpactTornado, pos1);
-		TE_SendToAll();
-		switch(GetRandomInt(1,4)) 
-		{
-			case 1:EmitSoundToAll(SOUND_IMPACT_CONCRETE_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 2:EmitSoundToAll(SOUND_IMPACT_CONCRETE_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
-				
-			case 3:EmitSoundToAll(SOUND_IMPACT_CONCRETE_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
-			
-			case 4:EmitSoundToAll(SOUND_IMPACT_CONCRETE_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
-		}
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
 		}
+		switch(GetRandomInt(1,5)) 
+		{
+			case 1:EmitSoundToAll(SOUND_IMPACT_1, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 2:EmitSoundToAll(SOUND_IMPACT_2, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+			case 3:EmitSoundToAll(SOUND_IMPACT_3, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 4:EmitSoundToAll(SOUND_IMPACT_4, entity, SNDCHAN_STATIC, 80, _, 0.9);
+			
+			case 5:EmitSoundToAll(SOUND_IMPACT_5, entity, SNDCHAN_STATIC, 80, _, 0.9);
+				
+	   	}
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
 		RemoveEntity(entity);
 	}
-	return Plugin_Handled;
 }
-public Action Timer_RemoveEntity_Yamato_Projectile(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	int Particle = EntRefToEntIndex(pack.ReadCell());
-	if(IsValidEntity(Projectile))
-	{
-		RemoveEntity(Projectile);
-	}
-	if(IsValidEntity(Particle))
-	{
-		RemoveEntity(Particle);
-	}
-	return Plugin_Stop; 
-}
-
-//Managment code that I tottaly didn't steal from irene...
 
 public void Activate_Yamato(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -568,14 +611,18 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 		{
 			//Is the weapon it again?
 			//Yes?
+			for(int i=0 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i ++)
+			{
+				struct_Yamato_Blades[client][i].Delete();
+			}
+			b_Yamato_State[client] = true;
 			delete TimerYamatoManagement[client];
 			TimerYamatoManagement[client] = null;
 			DataPack pack;
 			TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
-			pack.WriteCell(EntIndexToEntRef(weapon));
-			
-			
+			pack.WriteCell(EntIndexToEntRef(weapon));	
+			Yamato_Update_Stats(client, weapon);
 			
 		}
 		return;
@@ -583,10 +630,16 @@ public void Activate_Yamato(int client, int weapon) // Enable management, handle
 		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_YAMATO)
 	{
+		for(int i=0 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i ++)
+		{
+		struct_Yamato_Blades[client][i].Delete();
+		}
 		DataPack pack;
+		b_Yamato_State[client] = true;
 		TimerYamatoManagement[client] = CreateDataTimer(0.1, Timer_Management_Yamato, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
+		Yamato_Update_Stats(client, weapon);
 	}
 }
 
@@ -597,7 +650,10 @@ public Action Timer_Management_Yamato(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		SDKUnhook(client, SDKHook_PreThink, Yamato_Activate_Tick);
+		for(int i=0 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i ++)
+		{
+			struct_Yamato_Blades[client][i].Delete();
+		}
 		TimerYamatoManagement[client] = null;
 		return Plugin_Stop;
 	}	
@@ -640,99 +696,71 @@ static void Yamato_Update_Stats(int client, int weapon)
 public void Yamato_Loop_Logic(int client, int weapon)
 {
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(f_Yamatohuddelay[client] < GetGameTime())
-	{
-		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
-		{	
-			switch(i_Yamato_Combo[client])
-			{	
-				case 1:
-				{
-					PrintHintText(client,"Skill: Summoned Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));	
-				}
-				case 2:
-				{
-					PrintHintText(client,"Skill: Spiral Swords | Motivation: [%i]",RoundToFloor(fl_Yamato_Motivation[client]));
-				}
-			}
-			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
-		}			
-		f_Yamatohuddelay[client] = GetGameTime() + 0.5;
-	}
-	
+		
 	if(weapon_holding == weapon)
 	{
-		if(Handle_on[client])
+		float GameTime = GetGameTime();
+		if(fl_Yamato_Motivation[client] > YAMATO_MAX_MOTIVATION)
+			fl_Yamato_Motivation[client] = YAMATO_MAX_MOTIVATION;
+		if(f_Yamatohuddelay[client] < GameTime)
 		{
-			delete Revert_Weapon_Back_Timer[client];
+			char HUDText[255] = "Skill:";
+			if(b_Yamato_State[client])
+			{
+				Format(HUDText, sizeof(HUDText), "%s Summoned Swords |", HUDText);
+			}
+			else
+			{
+				Format(HUDText, sizeof(HUDText), "%s Spiral Swords |", HUDText);
+			}
+			Format(HUDText, sizeof(HUDText), "%s Motivation: [%i/%i]", HUDText, RoundToFloor(fl_Yamato_Motivation[client]), RoundToFloor(YAMATO_MAX_MOTIVATION));
+			PrintHintText(client, HUDText);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_Yamatohuddelay[client] = GameTime + 0.5;
 		}
-		else
-		{
-			SDKHook(client, SDKHook_PreThink, Yamato_Activate_Tick);
-			
-			//CPrintToChatAll("HOOKED");
-			i_Yamato_Rainsword_Count[client] = 0;
-			i_Yamato_Combo[client] = 1;
-			
-		}
-		Revert_Weapon_Back_Timer[client] = CreateTimer(0.2, Yamato_Reset_Wep, client, TIMER_FLAG_NO_MAPCHANGE);
-		Handle_on[client] = true;
-		if(fl_yamato_stats_timer[client]<=GetGameTime())
-		{
-			fl_yamato_stats_timer[client] = GetGameTime() + 2.5;
-			Yamato_Update_Stats(client, weapon);
-		}	
-	}
-	
-	if(fl_Yamato_Motivation[client]>YAMATO_RAINSWORD_COST_SPAWN)
-	{
-		float test = fl_Yamato_Motivation[client] / YAMATO_RAINSWORD_COST_SPAWN;
-		int what = RoundToFloor(test);
+
+		bool M2Down = (GetClientButtons(client) & IN_ATTACK2) != 0;
 		
-		i_Yamato_Rainsword_Count[client] = what;
-		if(i_Yamato_Rainsword_Count[client]>i_Yamato_Max_Rainsword_Count[client])
+		if(!M2Down && b_mouse2_held[client])
 		{
-			i_Yamato_Rainsword_Count[client] = i_Yamato_Max_Rainsword_Count[client];
+			b_mouse2_held[client] = false;
 		}
-	}
-}
 
-public Action Yamato_Reset_Wep(Handle cut_timer, int client)
-{
-
-	Handle_on[client] = false;
-
-	//CPrintToChatAll("UNHOOKED");
-	SDKUnhook(client, SDKHook_PreThink, Yamato_Activate_Tick);
-	return Plugin_Handled;
-}
-
-public Action Yamato_Activate_Tick(int client)
-{	
-	if(i_Yamato_Rainsword_Count[client]>1)	//don't allow these abilities to trigger when you only have 1 rainsword
-	{
-		switch(i_Yamato_Combo[client])
+		if(i_Yamato_Rainsword_Count[client]>1)	//don't allow these abilities to trigger when you only have 1 rainsword
 		{
-			case 1:
+			if(b_Yamato_State[client])
 			{
 				Yamato_Rainsword_Skill_1_Loop(client);
 			}
-			case 2:
+			else
 			{
 				Yamato_Rainsword_Skill_2_Loop(client);
 			}
 		}
+		else
+		{
+			Yamato_Update_Stats(client, weapon);
+		}
+
+		if(fl_Yamato_Motivation[client]>YAMATO_RAINSWORD_COST_SPAWN)
+		{
+			float test = fl_Yamato_Motivation[client] / YAMATO_RAINSWORD_COST_SPAWN;
+			int what = RoundToFloor(test);
+			
+			i_Yamato_Rainsword_Count[client] = what;
+			if(i_Yamato_Rainsword_Count[client]>i_Yamato_Max_Rainsword_Count[client])
+			{
+				i_Yamato_Rainsword_Count[client] = i_Yamato_Max_Rainsword_Count[client];
+			}
+		}
 	}
-	
-	bool M2Down = (GetClientButtons(client) & IN_ATTACK2) != 0;
-	
-	if(M2Down && f_Yamato_Mouse2_attack_delay[client] < GetGameTime())
+	else
 	{
-		f_Yamato_Mouse2_attack_delay[client] = GetGameTime() + YAMATO_MOUSE2_ATTACK_DELAY;
-		Yamato_Mouse2(client);
+		for(int i=0 ; i <= YAMATO_MAX_RAINSWORD_COUNT ; i ++)
+		{
+			struct_Yamato_Blades[client][i].Delete();
+		}
 	}
-	
-	return Plugin_Continue;
 }
 
 static bool BEAM_TraceUsers(int entity, int contentsMask, int client)

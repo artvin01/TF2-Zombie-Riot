@@ -46,7 +46,7 @@ void VoidBloodPollutor_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "militia");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -276,13 +276,13 @@ void VoidBloodPollutorSelfDefense(VoidBloodPollutor npc, float gameTime, int tar
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 5.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 5.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 5.0, 5);
 							}
 						}
 					}

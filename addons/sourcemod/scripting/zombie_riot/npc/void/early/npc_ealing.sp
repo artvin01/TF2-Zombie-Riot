@@ -61,7 +61,7 @@ void VoidEaling_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -112,7 +112,7 @@ methodmap VoidEaling < CClotBody
 	
 	public VoidEaling(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidEaling npc = view_as<VoidEaling>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.8", "700", ally));
+		VoidEaling npc = view_as<VoidEaling>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.8", "550", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

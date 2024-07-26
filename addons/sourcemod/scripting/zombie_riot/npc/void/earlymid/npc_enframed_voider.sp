@@ -46,7 +46,7 @@ void VoidEnFramedVoider_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "soldier");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -97,7 +97,7 @@ methodmap VoidEnFramedVoider < CClotBody
 	
 	public VoidEnFramedVoider(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidEnFramedVoider npc = view_as<VoidEnFramedVoider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
+		VoidEnFramedVoider npc = view_as<VoidEnFramedVoider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -112,12 +112,37 @@ void ViewChange_MapStart()
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
 
-	// TODO: Move this to PluginEnd
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "tf_wearable_vm")) != -1)
 	{
 		RemoveEntity(entity);
 	}
+}
+
+void ViewChange_ClientDisconnect(int client)
+{
+	int entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Viewmodel_PlayerModel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(entity != -1)
+	{
+		RemoveEntity(entity);
+		WeaponRef_viewmodel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Worldmodel_WeaponModel[client] = -1;
+	}
+
+	ViewChange_DeleteHands(client);
 }
 
 void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)
@@ -158,6 +183,11 @@ void ViewChange_PlayerModel(int client)
 #endif
 		TF2_RemoveWearable(client, ViewmodelPlayerModel);
 	}
+
+#if defined ZR
+	if(Rogue_GetChaosLevel() > 2 && !(GetURandomInt() % 9))
+		return;
+#endif
 
 	int team = GetClientTeam(client);
 	int entity = CreateEntityByName("tf_wearable");
@@ -546,9 +576,12 @@ static void ImportSkinAttribs(int wearable, int weapon)
 {
 	int index = i_WeaponFakeIndex[weapon] > 0 ? i_WeaponFakeIndex[weapon] : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);
+	SetEntProp(wearable, Prop_Send, "m_bOnlyIterateItemViewAttributes", true);
 	Attributes_Set(wearable, 834, Attributes_Get(weapon, 834, 0.0));
 	Attributes_Set(wearable, 725, Attributes_Get(weapon, 725, 0.0));
+#if defined ZR
 	Attributes_Set(wearable, 866, float(CurrentGame));//Attributes_Get(weapon, 866, 0.0));
+#endif
 	Attributes_Set(wearable, 867, float(index));//Attributes_Get(weapon, 867, 0.0));
 	Attributes_Set(wearable, 2013, Attributes_Get(weapon, 2013, 0.0));
 	Attributes_Set(wearable, 2014, Attributes_Get(weapon, 2014, 0.0));

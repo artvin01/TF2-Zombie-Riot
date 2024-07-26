@@ -47,7 +47,7 @@ void VoidHostingBlob_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -98,7 +98,7 @@ methodmap VoidHostingBlob < CClotBody
 	
 	public VoidHostingBlob(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidHostingBlob npc = view_as<VoidHostingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
+		VoidHostingBlob npc = view_as<VoidHostingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "2200", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

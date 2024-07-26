@@ -2348,7 +2348,7 @@
 	}
 	"quincy pap"
 	{
-		"en"	"More damage!"
+		"en"	"More damage!\nAlso if your arrows gain the ability to home onto targets, if you can see one\nHoming power is dependant on how raishi % charge"
 		"chi"	"提高伤害！"
 	}
 	"quincy pap arrow"
@@ -2730,7 +2730,7 @@
 	}
 	"Angelic Shotgonnus Desc"
 	{
-		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 85%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
+		"en"	"A shotgun from Expidonsa.\nMost healing you recieve is cut by 75%%.\nYou hit multiple enemies and heal on hit.\nEvery 4th attack is a double attack.\nHeal on hit allows overheal.\nAbility allows double hits and more dmg."
 		"chi"	"外界的霰弹枪\n大部分治疗-85%%。\n可击中多名敌人，带穿透。\n每4发司是双击。\n自疗可以超量。\n技能保证双击，增加伤害。\n有随机暴击。"
 	}
 	"Angelic Shotgonnus Desc Pap 1"
@@ -3126,5 +3126,57 @@
 	"Pinus Knight Pap 5"
 	{
 		"en"	"Decreased ability cooldown and increased ability damage bonus."
+	}
+	"Barracks Metro Cop Desc"
+	{
+		"en"	"Ranged Basic combine unit. It reloads when his clip is empty"
+	}
+	"Barracks Combine Shotgunner Desc"
+	{
+		"en"	"Ranged unit but it tends to get close to the target"
+	}
+	"Barracks Combine Swordsman Desc"
+	{
+		"en"	"Melee unit which will regularly gain an armor while attacking"
+	}
+	"Barracks Metro Raider Desc"
+	{
+		"en"	"Upgraded unit of Metro Cop. Has better clip and damage"
+	}
+	"Barracks Combine Soldier Desc"
+	{
+		"en"	"Upgraded unit of Metro Raider. Has better clip, damage, and armor"
+	}
+	"Barracks Combine DDT Desc"
+	{
+		"en"	"Fast and hard hitting robotic Combine Unit"
+	}
+	"Barracks Combine Elite Desc"
+	{
+		"en"	"Ranged Combine unit which will often fire explosive combine energy ball"
+	}
+	"Barracks Combine Deflector Desc"
+	{
+		"en"	"Armored Combine knight who will regularly parry melee attacks"
+	}
+	"Barracks Combine Sniper Desc"
+	{
+		"en"	"Super Ranged unit with high damage but slow attack speed"
+	}
+	"Barracks Combine Collos Desc"
+	{
+		"en"	"Giant Combine swordsman which has better armor and damage"
+	}
+	"Barracks Combine Giant ddt Desc"
+	{
+		"en"	"Giant robotic unit with fast speed, damage, and armor"
+	}
+	"Barracks Combine Super Desc"
+	{
+		"en"	"A melee unit which will gain resistance and chance to evade when below half health."
+	}
+	"Barracks Combine Commander Desc"
+	{
+		"en"	"A ranged super unit which will buff allies around it regularly."
 	}
 }

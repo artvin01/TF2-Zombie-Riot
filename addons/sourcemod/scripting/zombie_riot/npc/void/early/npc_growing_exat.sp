@@ -60,8 +60,8 @@ void GrowingExat_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_growing_exat");
 	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
 	data.IconCustom = false;
-	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -112,7 +112,7 @@ methodmap GrowingExat < CClotBody
 	
 	public GrowingExat(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "3000", ally, false, true));
+		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "2000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

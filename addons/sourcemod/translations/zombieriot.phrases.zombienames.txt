@@ -711,6 +711,58 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
+	"Barracks Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
+	"Barracks Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
+	"Barracks Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Barracks Combine Soldier"
+	{
+		"en" 		"Combine Soldier"
+	}
+	"Barracks Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Barracks Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Barracks Combine Deflector"
+	{
+		"en" 		"Combine Deflector"
+	}
+	"Barracks Combine Sniper"
+	{
+		"en" 		"Combine Sniper"
+	}
+	"Barracks Combine Super"
+	{
+		"en" 		"Combine Warrior"
+	}
+	"Barracks Combine Commander"
+	{
+		"en" 		"Combine Commander"
+	}
+	"Barracks Combine Giant ddt"
+	{
+		"en" 		"Combine Giant DDT"
+	}
+	"Barracks Combine Collos"
+	{
+		"en"		"Combine Collos"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
@@ -2318,6 +2370,54 @@
 	{
 		"en"	"Iana"
 	}
+	"Magianas"
+	{
+		"en"	"Magianas"
+	}
+	"Loonaris"
+	{
+		"en"	"Loonaris"
+	}
+	"Heliaris"
+	{
+		"en"	"Heliaris"
+	}
+	"Astrianis"
+	{
+		"en"	"Astrianis"
+	}
+	"Eurainis"
+	{
+		"en"	"Eurainis"
+	}
+	"Draeonis"
+	{
+		"en"	"Draeonis"
+	}
+	"Aetherium"
+	{
+		"en"	"Aetherium"
+	}
+	"Malianium"
+	{
+		"en"	"Malianium"
+	}
+	"Rulius"
+	{
+		"en"	"Rulius"
+	}
+	"Lazines"
+	{
+		"en"	"Lazines"
+	}
+	"Dronis"
+	{
+		"en"	"Dronis"
+	}
+	"Ruliana"
+	{
+		"en"	"Ruliana"
+	}
 	"Ealing"
 	{
 		"en"	"Ealing"
@@ -2621,5 +2721,13 @@
 	"Chaos Injured Cultist Desc"
 	{
 		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+	}
+	"Voided Erasus"
+	{
+		"en"	"Voided Erasus"
+	}
+	"Voided Erasus Desc"
+	{
+		"en"	"Fallen. to the void."
 	}
 }

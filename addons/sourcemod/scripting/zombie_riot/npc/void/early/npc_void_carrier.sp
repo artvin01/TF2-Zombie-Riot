@@ -61,7 +61,7 @@ void VoidCarrier_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_gru");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -111,7 +111,7 @@ methodmap VoidCarrier < CClotBody
 	
 	public VoidCarrier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "700", ally));
+		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,9 +186,9 @@ public void VoidCarrier_ClotThink(int iNPC)
 		float Injured[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Injured); 
 		Injured[2] += 30.0;
-		b_NoGravity[npc.index] = true;
-		b_DoNotUnStuck[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
+		b_NoGravity[npc.m_iTargetAlly] = true;
+		b_DoNotUnStuck[npc.m_iTargetAlly] = true;
+		b_CannotBeKnockedUp[npc.m_iTargetAlly] = true;
 		SDKCall_SetLocalOrigin(npc.m_iTargetAlly, Injured); //keep teleporting just incase.
 		LiberiBuff[npc.m_iTargetAlly] = GetGameTime() + 0.09;
 		FreezeNpcInTime(npc.m_iTargetAlly, 0.09);

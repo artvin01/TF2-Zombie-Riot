@@ -1568,7 +1568,10 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
-			return 400.0;
+			if(!Rogue_Mode())
+				return 400.0;
+			else
+				return 1200.0;
 		}
 		float speed_for_return;
 		
@@ -3349,10 +3352,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 		float GibEnemyGive = 1.0;
+
+#if defined ZR || defined RPG
 		if(IsValidEntity(iWeapon))
 		{
 			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
 		}
+#endif
+
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 
@@ -3471,16 +3478,16 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{	
 			SetNpcToDeadViaGib(pThis);
 		}
-
 #if defined ZR
 		Waves_UpdateMvMStats();
 #endif
-
 	}
+	/*
 	else
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
+	*/
 }
 
 
@@ -5826,40 +5833,44 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			}
 			if(OutOfBounds)
 			{
-			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-#if defined ZR
-				int target = 0;
-				for(int i=1; i<=MaxClients; i++)
-				{
-					if(IsClientInGame(i))
-					{
-						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-						{
-							target = i;
-							break;
-						}
-					}
-				}
-				
-				if(target)
-				{
-					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-					ang[2] = 0.0;
-					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-				}
-				else
-#endif
-				{
-					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-				}
+				TeleportNpcToRandomPlayer(iNPC);
 			}
 		}
 	}
 #endif	// Non-RTS
 }
 
+void TeleportNpcToRandomPlayer(int iNPC)
+{
+			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+#if defined ZR
+	int target = 0;
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+			{
+				target = i;
+				break;
+			}
+		}
+	}
+	
+	if(target)
+	{
+		float pos[3], ang[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+		GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+		ang[2] = 0.0;
+		TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+	}
+	else
+#endif
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+	}
+}
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
 	if (!b_DoNotUnStuck[iNPC])
@@ -8103,6 +8114,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
+	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
 	f_UnstuckSuckMonitor[entity] = 0.0;
@@ -9427,7 +9439,7 @@ public void MakeEntityRagdollNpc(int pThis)
 	float Push[3];
 	npc.m_vecpunchforce(Push, false);
 	ScaleVector(Push, 2.0);
-	if(Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
+	if(Push[0] > 100000.0 || Push[1] > 100000.0 || Push[2] > 100000.0 || Push[0] < -100000.0 || Push[1] < -100000.0 || Push[2] < -100000.0) //knockback is way too huge. set to 0.
 	{
 		Push[0] = 1.0;
 		Push[1] = 1.0;
@@ -9447,27 +9459,6 @@ public void MakeEntityRagdollNpc(int pThis)
 #endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
-}
-
-
-public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)  
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	float Push[3];
-	npc.m_vecpunchforce(Push, false);
-	ScaleVector(Push, 2.0);
-	if(Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
-	{
-		Push[0] = 1.0;
-		Push[1] = 1.0;
-		Push[2] = 1.0;
-	}
-	DHookSetParamVector(hParams, 2, view_as<float>(Push));
-//	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
-	//Play Ragdolls correctly.
-		
-	DHookSetReturn(hReturn, true);
-	return MRES_ChangedOverride;
 }
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)

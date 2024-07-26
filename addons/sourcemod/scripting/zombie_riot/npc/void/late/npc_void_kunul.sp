@@ -52,7 +52,7 @@ void VoidKunul_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -279,13 +279,13 @@ void VoidKunulSelfDefense(VoidKunul npc, float gameTime, int target, float dista
 					{
 						if(target > MaxClients)
 						{
-							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
+							StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
 						}
 						else
 						{
 							if (!IsInvuln(target))
 							{
-								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 10);
+								StartBleedingTimer_Against_Client(target, npc.index, 7.0, 5);
 							}
 						}
 					}

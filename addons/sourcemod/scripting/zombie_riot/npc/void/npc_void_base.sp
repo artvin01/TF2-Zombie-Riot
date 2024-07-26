@@ -326,7 +326,7 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 
 			// Find entities touching infected tiles
 			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
-			if(nav != NULL_AREA)
+			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
 				NervousTouching[client] = NervousTouching[0];
 			}
@@ -347,7 +347,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
-	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax);
+	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1);
 
 	if(WaveDuration >= 1 || ParticleToSpawn[0])
 	{
@@ -374,11 +374,14 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int SpawnRef = pack.ReadCell();
+	int ParticleRef = pack.ReadCell();
 	if(!IsValidEntity(SpawnRef))
 	{
+		if(IsValidEntity(ParticleRef))
+			RemoveEntity(ParticleRef);
+
 		return Plugin_Stop;
 	}
-	int ParticleRef = pack.ReadCell();
 	int RandomSeed = pack.ReadCell();
 	int WaveDuration = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedFallenWarrior())
@@ -398,6 +401,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 		pack.Position--;
 		//Set The current Random seed
 		pack.WriteCell(GetRandomSeedFallenWarrior(), false);
+		pack.Position++;
 	}
 	bool SpreadVoid = pack.ReadCell();
 	if(SpreadVoid)

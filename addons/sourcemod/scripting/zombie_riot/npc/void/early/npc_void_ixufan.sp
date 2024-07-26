@@ -66,7 +66,7 @@ void VoidIxufan_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_psychic");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
@@ -117,7 +117,7 @@ methodmap VoidIxufan < CClotBody
 	
 	public VoidIxufan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "3000", ally, false, true));
+		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

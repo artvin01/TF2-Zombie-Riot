@@ -544,9 +544,9 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
+		bool DontPlaySound = false;
 #if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
-		bool DontPlaySound = false;
 		if(target < 1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])

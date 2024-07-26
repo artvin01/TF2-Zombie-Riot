@@ -40,11 +40,11 @@ void VoidExpidonsanFortifier_OnMapStart_NPC()
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Fortifier");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_voided_expidonsan_fortfier");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_voided_expidonsan_fortifier");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
 	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -95,7 +95,7 @@ methodmap VoidExpidonsanFortifier < CClotBody
 	
 	public VoidExpidonsanFortifier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidExpidonsanFortifier npc = view_as<VoidExpidonsanFortifier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "700", ally));
+		VoidExpidonsanFortifier npc = view_as<VoidExpidonsanFortifier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

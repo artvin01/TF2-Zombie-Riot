@@ -469,6 +469,7 @@ float f_ClientWasTooLongInsideHurtZoneDamage[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneStairs[MAXENTITIES]={0.0, ...};
 float f_ClientWasTooLongInsideHurtZoneDamageStairs[MAXENTITIES]={0.0, ...};
 
+int RogueTheme;
 //Needs to be global.
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
@@ -476,6 +477,7 @@ bool b_IsAMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
+float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];
 float f_LowTeslarDebuff[MAXENTITIES];
@@ -496,6 +498,7 @@ float f_StunExtraGametimeDuration[MAXENTITIES];
 float f_RaidStunResistance[MAXENTITIES];
 float f_PernellBuff[MAXENTITIES];
 float f_HussarBuff[MAXENTITIES];
+float f_CombineCommanderBuff[MAXENTITIES];
 #if defined RUINA_BASE
 float f_Ruina_Speed_Buff[MAXENTITIES];
 float f_Ruina_Speed_Buff_Amt[MAXENTITIES];
@@ -961,7 +964,27 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-//RUINA_QUINCY_BOW_2		= 1
+#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_1.mdl"
+enum
+{
+	RUINA_QUINCY_BOW_2		= 1,			//1
+	RUINA_HAND_CREST_2		= 2,			//2
+	RUINA_LAN_SWORD_2		= 4,			//3
+	RUINA_EUR_STAFF_2		= 8,			//4
+	RUINA_BLADE_2			= 16,			//5
+	RUINA_LAZER_CANNON_1	= 32,			//6
+	RUINA_DAGGER_2			= 64,			//7
+	RUINA_HEALING_STAFF_2	= 128,			//8
+	RUINA_REI_LAUNCHER		= 256,			//9
+	RUINA_WINGS_1			= 512,			//10
+	RUINA_IMPACT_LANCE_1	= 1024,			//11
+	RUINA_IMPACT_LANCE_2	= 2048,			//12
+	RUINA_IMPACT_LANCE_3	= 4096,			//13
+	RUINA_IMPACT_LANCE_4	= 8192,			//14
+	RUINA_HAND_CREST_3		= 16384,		//15
+	RUINA_ZANGETSU			= 32768			//16
+}
+
 
 
 
@@ -1655,6 +1678,7 @@ public void OnMapStart()
 	PrecacheSound("items/powerup_pickup_knockout_melee_hit.wav");
 	PrecacheSound("weapons/capper_shoot.wav");
 	PrecacheSound("ambient/explosions/explode_3.wav");
+	PrecacheSound("ui/medic_alert.wav");
 
 	PrecacheSound("misc/halloween/clock_tick.wav");
 	PrecacheSound("mvm/mvm_bomb_warning.wav");
@@ -1690,6 +1714,7 @@ public void OnMapStart()
 	PrecacheModel(WEAPON_CUSTOM_WEAPONRY_1);
 
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
+	PrecacheModel(RUINA_CUSTOM_MODELS_2);
 	
 #if defined ZR
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");
@@ -2075,6 +2100,7 @@ public void OnClientPutInServer(int client)
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_bThisEntityIgnored = false;
 	f_HussarBuff[client] = 0.0;
+	f_CombineCommanderBuff[client] = 0.0;
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
@@ -2711,7 +2737,7 @@ void SDKHook_TeamSpawn_SpawnPost(int entity)
 {
 	SDKHook_TeamSpawn_SpawnPostInternal(entity);
 }
-void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
+void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000, int i_SpawnSetting = 0)
 {
 	for (int i = 0; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -2728,7 +2754,7 @@ void SDKHook_TeamSpawn_SpawnPostInternal(int entity, int SpawnsMax = 2000000000)
 			if(GetTeam(entity) == TFTeam_Red)
 				Allyspawn = true;
 
-			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax);
+			Spawns_AddToArray(entity,_, Allyspawn, SpawnsMax, i_SpawnSetting);
 			
 			i_ObjectsSpawners[i] = entity;
 			return;
@@ -2806,15 +2832,16 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 #endif
 		f_HussarBuff[entity] = 0.0;
+		f_CombineCommanderBuff[entity] = 0.0;
 #if defined RUINA_BASE
 		Ruina_Reset_Starts_Npc(entity);
-#endif
 		f_Ruina_Speed_Buff[entity] = 0.0;
 		f_Ruina_Defense_Buff[entity] = 0.0;
 		f_Ruina_Attack_Buff[entity] = 0.0;
 		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
 		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
 		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
+#endif
 		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;
 		f_Ocean_Buff_Stronk_Buff[entity] = 0.0;

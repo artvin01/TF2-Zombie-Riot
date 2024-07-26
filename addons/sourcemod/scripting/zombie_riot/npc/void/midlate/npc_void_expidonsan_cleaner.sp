@@ -43,10 +43,10 @@ void VoudExpidonsanCleaner_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Voided Expidonsan Cleaner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_expidonsan_cleaner");
-	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze");
+	strcopy(data.Icon, sizeof(data.Icon), "pyro_freeze_1");
 	data.IconCustom = true;
 	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -91,13 +91,12 @@ methodmap VoudExpidonsanCleaner < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
 	}
 	
 	
 	public VoudExpidonsanCleaner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoudExpidonsanCleaner npc = view_as<VoudExpidonsanCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
+		VoudExpidonsanCleaner npc = view_as<VoudExpidonsanCleaner>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "6000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

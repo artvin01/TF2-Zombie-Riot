@@ -256,7 +256,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		Enemy enemy;
 		if(Waves_GetNextEnemy(enemy))
 		{
-			if(Spawns_GetNextPos(pos, ang, enemy.Spawn))
+			int SpawnSettingsSee = 0;
+			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
 			{
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
@@ -287,6 +288,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					if(enemy.Is_Static && enemy.Team != TFTeam_Red)
 					{
 						AddNpcToAliveList(entity_Spawner, 1);
+					}
+					if(enemy.Team == TFTeam_Red)
+					{
+						TeleportNpcToRandomPlayer(entity_Spawner);
 					}
 					
 					if(enemy.Is_Boss > 0)
@@ -340,7 +345,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0)
+					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1)
 					{
 				
 						b_npcspawnprotection[entity_Spawner] = true;
@@ -402,6 +407,15 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
+		if(RogueTheme == BlueParadox)
+		{
+			if(f_DomeInsideTest[index] > GetGameTime())
+			{
+				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
+				return Plugin_Stop;
+			}
+		}
+		
 		CClotBody npc = view_as<CClotBody>(index);
 			
 		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
@@ -1426,6 +1440,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			}
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
+			
+			if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
+				percentage *= GetRandomFloat(0.5, 1.5);
 #endif
 		
 			
@@ -1467,7 +1484,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
-
+			
+			if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
+				percentage *= GetRandomFloat(0.5, 1.5);
 #endif
 			if(ResAdded)
 			{
@@ -1545,6 +1564,14 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		SetHudTextParams(HudY, HudOffset, 1.0, red, green, blue, 255, 0, 0.01, 0.01);
 		char ExtraHudHurt[255];
+		
+#if defined ZR
+		if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
+			Health = RoundFloat(float(Health) * GetRandomFloat(0.5, 1.5));
+
+		if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
+			MaxHealth = RoundFloat(float(MaxHealth) * GetRandomFloat(0.5, 1.5));
+#endif
 
 		//add name and health
 		//add name and health

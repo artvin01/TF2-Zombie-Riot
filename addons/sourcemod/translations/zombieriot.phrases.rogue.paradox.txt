@@ -10,6 +10,66 @@
 		"#format"	"{1:d}"
 		"en"		"{green}Losted {1} Chaos Instability!"
 	}
+	"Heavy Rain"
+	{
+		"en"	"Heavy Rain"
+	}
+	"Heavy Rain Desc"
+	{
+		"en"	"{yellow}All units move 20%% slower, Seaborn units instead move 10%% faster"
+	}
+	"Heavy Rain Lore"
+	{
+		"en"	"It begins to rain heavily, you can feel it's weight."
+	}
+	"Extreme Heat"
+	{
+		"en"	"Extreme Heat"
+	}
+	"Extreme Heat Desc"
+	{
+		"en"	"{green}Enemies spawn x3 slower {red}but ally revive speed is x2 slower and Al-Hallem units move 20%% faster"
+	}
+	"Extreme Heat Lore"
+	{
+		"en"	"You feel the dreaded heat as your skin burns a bit."
+	}
+	"Heavy Wind"
+	{
+		"en"	"Heavy Wind"
+	}
+	"Heavy Wind Desc"
+	{
+		"en"	"{yellow}All projectiles move 33%% slower, Expidonsan projectiles instead move 25%% faster"
+	}
+	"Heavy Wind Lore"
+	{
+		"en"	"You can barely keep moving forward with this heavy draft."
+	}
+	"Dense Frost"
+	{
+		"en"	"Dense Frost"
+	}
+	"Dense Frost Desc"
+	{
+		"en"	"{yellow}All units lose health over time (can not be reduced below 1) {red}except for Ziberia units"
+	}
+	"Dense Frost Lore"
+	{
+		"en"	"The frost covers everything you have, including you."
+	}
+	"Red Moon"
+	{
+		"en"	"Red Moon"
+	}
+	"Red Moon Desc"
+	{
+		"en"	"{red}Wildingen units have their special traits enchanced"
+	}
+	"Red Moon Lore"
+	{
+		"en"	"Everything turns red as you see the bright red moon above."
+	}
 	"Compass and Map"
 	{
 		"en"	"Compass and Map"
@@ -464,7 +524,7 @@
 	}
 	"Missing Mountains Desc 3"
 	{
-		"en"	"{yellow}Gain 7 Australium Ingots"
+		"en"	"{green}Gain 14 Australium Ingots"
 	}
 	"Missing Mountains Lore 3a"
 	{
@@ -518,6 +578,10 @@
 	{
 		"en"	"The Wildingens do not answer, but one whispers a warning as they pass: ''Wildingen is gone. There's nothing left here vulpo.''"
 	}
+	"Printer"
+	{
+		"en"	"The Printer"
+	}
 	"Printer Lore"
 	{
 		"en"	"You find a unusual office-like printer, it has hazard labels all over it.\nUp close the text reads that the printer can duplicate physical items.\nLooks in bad shape, should we try it with one of ours?"
@@ -547,8 +611,622 @@
 	{
 		"en"	"You find a pile of boxes, a single guard stands there.\n''Pick one, no more.''"
 	}
-	"Chaos Inflicted"
+	"Prophecy"
 	{
-		"en"	""
+		"en"	"Prophecy"
+	}
+	"Prophecy Lore 1"
+	{
+		"en"	"Chaos looms over, but you're not alone. Somebody approaches."
+	}
+	"Prophecy Option 1a"
+	{
+		"en"	"Better run"
+	}
+	"Prophecy Desc 1a"
+	{
+		"en"	"{green}Lose 15 Chaos Infliction"
+	}
+	"Prophecy Lore 1a"
+	{
+		"en"	"Don't take the chance, it can overwhelm."
+	}
+	"Prophecy Option 1b"
+	{
+		"en"	"It's Waldch"
+	}
+	"Prophecy Desc 1b"
+	{
+		"en"	"{yellow}Waldch will acompany you {blue}and the ending is changed."
+	}
+	"Prophecy Lore 1b"
+	{
+		"en"	"You seek what he seeks now."
+	}
+	"Prophecy Lore 2"
+	{
+		"en"	"Chaos still looms over. You feel knowledge in your head."
+	}
+	"Prophecy Option 2a"
+	{
+		"en"	"Better ignore"
+	}
+	"Prophecy Desc 2a"
+	{
+		"en"	"{green}Lose 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2a"
+	{
+		"en"	"Ignore the thoughts given, it's insanity."
+	}
+	"Prophecy Option 2b"
+	{
+		"en"	"Knowledge of Weapons"
+	}
+	"Prophecy Desc 2b"
+	{
+		"en"	"{green}Recover 10 weapons {red}but gain 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2b"
+	{
+		"en"	"You know what to do. Retrieve what you need. Spread your damage."
+	}
+	"Prophecy Option 2c"
+	{
+		"en"	"Knowledge of Chaos"
+	}
+	"Prophecy Desc 2c"
+	{
+		"en"	"{green}Gain 4000 credits {red}but gain 20 Chaos Infliction"
+	}
+	"Prophecy Lore 2c"
+	{
+		"en"	"Know your enemy. If it's even your enemy anymore."
+	}
+	"Prophecy Lore 3"
+	{
+		"en"	"Kahmlstein appears, he asks you to assist him. Not chaos, something worse."
+	}
+	"Prophecy Option 3a"
+	{
+		"en"	"Not the time"
+	}
+	"Prophecy Desc 3a"
+	{
+		"en"	"{green}Lose 20 Chaos Infliction"
+	}
+	"Prophecy Lore 3a"
+	{
+		"en"	"Now is not the time. After we're done here."
+	}
+	"Prophecy Option 3b"
+	{
+		"en"	"Assist him"
+	}
+	"Prophecy Desc 3b"
+	{
+		"en"	"{blue}Something happens..."
+	}
+	"Lost Villager"
+	{
+		"en"	"Lost Villager"
+	}
+	"Lost Villager Lore"
+	{
+		"en"	"A Medieval villager wonders, seeming lost. He carries a full backpack as he comes up to ask if you have any food."
+	}
+
+	"Lost Villager Option 1"
+	{
+		"en"	"Sure thing"
+	}
+	"Lost Villager Desc 1"
+	{
+		"en"	"{yellow}Receive something unknown"
+	}
+	"Lost Villager Lore 1"
+	{
+		"en"	"''Thank you, your very much kind, would you like something of mine?''"
+	}
+
+	"Lost Villager Option 1a"
+	{
+		"en"	"Some wood"
+	}
+	"Lost Villager Desc 1a"
+	{
+		"en"	"{green}Recover 4 weapons"
+	}
+	"Lost Villager Lore 1a"
+	{
+		"en"	"You take some wood, useful for some making some weapons."
+	}
+
+	"Lost Villager Option 1b"
+	{
+		"en"	"Some stone"
+	}
+	"Lost Villager Desc 1b"
+	{
+		"en"	"{green}Gain 15 Australium Ingots"
+	}
+	"Lost Villager Lore 1b"
+	{
+		"en"	"You take some stone, could be sold to the market."
+	}
+
+	"Lost Villager Option 1c"
+	{
+		"en"	"Nothing else"
+	}
+	"Lost Villager Desc 1c"
+	{
+		"en"	"{green}Lose 15 Chaos Infliction"
+	}
+	"Lost Villager Lore 1c"
+	{
+		"en"	"You ask for nothing. A peace of mind. He wanders off."
+	}
+	
+	"Lost Villager Option 2"
+	{
+		"en"	"Nothing to spare"
+	}
+	"Lost Villager Desc 2"
+	{
+		"en"	"{green}Gain 2000 credits"
+	}
+	"Lost Villager Lore 2"
+	{
+		"en"	"You tell him you don't have any to spare, he understands, hands you a piece of gold, and carries on."
+	}
+
+	"Lost Villager Option 3"
+	{
+		"en"	"Rob him"
+	}
+	"Lost Villager Desc 3"
+	{
+		"en"	"{green}Gain 2000 credits, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
+	}
+	"Lost Villager Lore 3"
+	{
+		"en"	"You beat him up with your fear of other Villager's buildings. You steal his supplies while at it."
+	}
+
+	"Downtime Recreation"
+	{
+		"en"	"Downtime Recreation"
+	}
+	"Downtime Recreation Lore"
+	{
+		"en"	"A slot machine out in the middle of the woods.\nUnguarded and covered in moss."
+	}
+
+	"Downtime Recreation Option 1"
+	{
+		"en"	"Insert a coin"
+	}
+	"Downtime Recreation Desc 1"
+	{
+		"en"	"{red}Lose 4 Australium Ingots"
+	}
+	"Downtime Recreation Lore 1a"
+	{
+		"en"	"It hits a random assortment of items."
+	}
+	"Downtime Recreation Lore 1b"
+	{
+		"en"	"It hits 3 Cherries and pays out."
+	}
+	"Downtime Recreation Lore 1c"
+	{
+		"en"	"It hits 3 Bars and spits something out."
+	}
+	"Downtime Recreation Lore 1d"
+	{
+		"en"	"It hits 3 7s as you hear something break as it pays out, it refuses to work anymore."
+	}
+	"Downtime Recreation Lore 1e"
+	{
+		"en"	"It hits 3 Lemons as you hear clanging as a weapon spits out."
+	}
+
+	"Downtime Recreation Option 2"
+	{
+		"en"	"Leave it alone"
+	}
+	"Downtime Recreation Option 2b"
+	{
+		"en"	"Stop gambling"
+	}
+	"Downtime Recreation Desc 2"
+	{
+		"en"	"{green}Gain 4000 Credits"
+	}
+	"Downtime Recreation Lore 2"
+	{
+		"en"	"Don't bet on it."
+	}
+
+	"Downtime Recreation Option 3"
+	{
+		"en"	"Break it"
+	}
+	"Downtime Recreation Desc 3"
+	{
+		"en"	"{green}Gain 30 Australium Ingots {red}but gain 15 Chaos Infliction"
+	}
+	"Downtime Recreation Lore 3"
+	{
+		"en"	"You hit as it breaks, you retrieve what you can find."
+	}
+
+	"Fortituous Opportunity"
+	{
+		"en"	"Fortituous Opportunity"
+	}
+	"Fortituous Opportunity Lore"
+	{
+		"en"	"A wandering merchant appears, asking if you wish\nto sell anything in exchange for something else."
+	}
+	"Fortituous Opportunity Lore 1"
+	{
+		"#format"	"{1:t}"
+		"en"		"You exchange your {yellow}{1}{default} and in return, he gives you something else."
+	}
+	"Fortituous Opportunity Option 2"
+	{
+		"en"	"Move along"
+	}
+	"Fortituous Opportunity Desc 2"
+	{
+		"en"	"{green}Gain 4 australium ingots"
+	}
+	"Fortituous Opportunity Lore 2"
+	{
+		"en"	"There's nothing to give. He drops some ingots and moves along."
+	}
+
+	"Emergency Dispatch"
+	{
+		"en"	"Emergency Dispatch"
+	}
+	"Emergency Dispatch Lore"
+	{
+		"en"	"You find a Wildingen, seemingly in worry.\nHe asks you if you can spare someone to help his family.\nTheir village is under attack."
+	}
+	"Emergency Dispatch Option 1"
+	{
+		"en"	"Send"
+	}
+	"Emergency Dispatch Desc 1a"
+	{
+		"en"	"{red}Send Bob The Second to help."
+	}
+	"Emergency Dispatch Desc 1b"
+	{
+		"en"	"{red}Send these players to help. {default}They will be forced away and will return upon reaching the next chapter."
+	}
+	"Emergency Dispatch Lore 1a"
+	{
+		"#format"	"{1:N}"
+		"en"		"You send {red}{1} {default}to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Lore 1b"
+	{
+		"#format"	"{1:N},{2:N}"
+		"en"		"You send {red}{1} {default}and {red}{2} {default}to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Lore 1c"
+	{
+		"en"	"You ask Bob The Second to go with him. They head off into the distance."
+	}
+	"Emergency Dispatch Option 2"
+	{
+		"en"	"We cannot spare"
+	}
+	"Emergency Dispatch Desc 2"
+	{
+		"en"	"{yellow}Receive something unknown"
+	}
+	"Emergency Dispatch Lore 2"
+	{
+		"en"	"You say you're going off to deal with chaos itself. He at least thanks you for solving the future. He hands you some money and runs off."
+	}
+	"Emergency Dispatch Return 1"
+	{
+		"#format"	"{1:N}"
+		"en"		"{red}{1} {default}have returned, and with some money."
+	}
+	"Emergency Dispatch Return 2"
+	{
+		"#format"	"{1:N},{2:N}"
+		"en"		"{red}{1} {default}and {red}{2}{default}have returned, and with some money."
+	}
+	"Emergency Dispatch Return 3"
+	{
+		"en"	"Bob The Second returns with some money in hand."
+	}
+
+	"Waldch Assistance"
+	{
+		"en"	"Waldch's Assistance"
+	}
+	"Waldch Assistance Desc"
+	{
+		"en"	"Waldch joins you."
+	}
+	"Kahmlstein Guidance"
+	{
+		"en"	"Kahmlstein's Guidance"
+	}
+	"Kahmlstein Guidance Desc"
+	{
+		"en"	"You join Kahmlstein.\n{green}Player's held weapon cooldowns are reduced by 1 second every 1.5 seconds"
+	}
+	"Bad Water"
+	{
+		"en"	"Bad Water"
+	}
+	"Bad Water!"
+	{
+		"en"	"Bad Water ⚠"
+	}
+	"Town Center"
+	{
+		"en"	"Town Center"
+	}
+	"Town Center!"
+	{
+		"en"	"Town Center ⚠"
+	}
+	"Demon Box"
+	{
+		"en"	"Demon Box"
+	}
+	"Demon Box!"
+	{
+		"en"	"Demon Box ⚠"
+	}
+	"Scout Rush"
+	{
+		"en"	"Scout Rush"
+	}
+	"Scout Rush!"
+	{
+		"en"	"Scout Rush ⚠"
+	}
+	"Jumping Jacks"
+	{
+		"en"	"Jumping Jacks"
+	}
+	"Jumping Jacks!"
+	{
+		"en"	"Jumping Jacks ⚠"
+	}
+	"Lost Empires"
+	{
+		"en"	"Lost Empires"
+	}
+	"Lost Empires!"
+	{
+		"en"	"Lost Empires ⚠"
+	}
+	"Supplies"
+	{
+		"en"	"Supplies"
+	}
+	"Supplies!"
+	{
+		"en"	"Supplies ⚠"
+	}
+	"No Swimming"
+	{
+		"en"	"No Swimming"
+	}
+	"No Swimming!"
+	{
+		"en"	"No Swimming ⚠"
+	}
+	"All Hallem"
+	{
+		"en"	"All Hallem"
+	}
+	"All Hallem!"
+	{
+		"en"	"All Hallem ⚠"
+	}
+	"Camel Riders"
+	{
+		"en"	"Camel Riders"
+	}
+	"Camel Riders!"
+	{
+		"en"	"Camel Riders ⚠"
+	}
+	"Secret Hunter"
+	{
+		"en"	"Secret Hunter"
+	}
+	"Secret Hunter!"
+	{
+		"en"	"Secret Hunter ⚠"
+	}
+	"Barricade"
+	{
+		"en"	"Barricade"
+	}
+	"Barricade!"
+	{
+		"en"	"Barricade ⚠"
+	}
+	"Into The Shed"
+	{
+		"en"	"Into The Shed"
+	}
+	"Into The Shed!"
+	{
+		"en"	"Into The Shed ⚠"
+	}
+	"The Abomination"
+	{
+		"en"	"The Abomination"
+	}
+	"The Abomination!"
+	{
+		"en"	"The Abomination ⚠"
+	}
+	"Up To The Roof"
+	{
+		"en"	"Up To The Roof"
+	}
+	"Up To The Roof!"
+	{
+		"en"	"Up To The Roof ⚠"
+	}
+	"Rock Collection"
+	{
+		"en"	"Rock Collection"
+	}
+	"Rock Collection!"
+	{
+		"en"	"Rock Collection ⚠"
+	}
+	"Hitman II"
+	{
+		"en"	"Hitman II"
+	}
+	"Hitman II!"
+	{
+		"en"	"Hitman II ⚠"
+	}
+	"Pre-Heated Oven"
+	{
+		"en"	"Pre-Heated Oven"
+	}
+	"Pre-Heated Oven!"
+	{
+		"en"	"Pre-Heated Oven ⚠"
+	}
+	"Yummer"
+	{
+		"en"	"Yummer"
+	}
+	"Yummer!"
+	{
+		"en"	"Yummer ⚠"
+	}
+	"Heavy Forest"
+	{
+		"en"	"Heavy Forest"
+	}
+	"Heavy Forest!"
+	{
+		"en"	"Heavy Forest ⚠"
+	}
+	"Frostbite"
+	{
+		"en"	"Frostbite"
+	}
+	"Frostbite!"
+	{
+		"en"	"Frostbite ⚠"
+	}
+	"Heavy Jacket"
+	{
+		"en"	"Heavy Jacket"
+	}
+	"Heavy Jacket!"
+	{
+		"en"	"Heavy Jacket ⚠"
+	}
+	"Freezer Water"
+	{
+		"en"	"Freezer Water"
+	}
+	"Freezer Water!"
+	{
+		"en"	"Freezer Water ⚠"
+	}
+	"Home of the North"
+	{
+		"en"	"Home of the North"
+	}
+	"Home of the North!"
+	{
+		"en"	"Home of the North ⚠"
+	}
+	"Das Concrete"
+	{
+		"en"	"Das Concrete"
+	}
+	"Das Concrete!"
+	{
+		"en"	"Das Concrete ⚠"
+	}
+	"Machine Works"
+	{
+		"en"	"Machine Works"
+	}
+	"Machine Works!"
+	{
+		"en"	"Machine Works ⚠"
+	}
+	"All In Chaos"
+	{
+		"en"	"All In Chaos"
+	}
+	"All In Chaos!"
+	{
+		"en"	"All In Chaos ⚠"
+	}
+	"Silk Cradle"
+	{
+		"en"	"Silk Cradle"
+	}
+	"Anchordeep"
+	{
+		"en"	"Anchordeep"
+	}
+	"Underground"
+	{
+		"en"	"Underground"
+	}
+	"Anura"
+	{
+		"en"	"Anura"
+	}
+	"Darkwood"
+	{
+		"en"	"Darkwood"
+	}
+	"Last of Internius"
+	{
+		"en"	"Last of Internius"
+	}
+	"Escapee 1"
+	{
+		"en"	"Escapee"
+	}
+	"Escapee 2"
+	{
+		"en"	"Escapee"
+	}
+	"Escapee Lore"
+	{
+		"en"	"There's something on the other side of this.\nWe just need to escape."
+	}
+	"Clashing Colors"
+	{
+		"en"	"Clashing Colors ⚠"
+	}
+	"Age Cheats"
+	{
+		"en"	"Age Cheats ⚠"
+	}
+	"The Old The New"
+	{
+		"en"	"The Old, The New ⚠"
 	}
 }
