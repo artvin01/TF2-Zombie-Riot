@@ -111,6 +111,12 @@ void ViewChange_MapStart()
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
+
+	int entity = -1;
+	while((entity=FindEntityByClassname(entity, "tf_wearable_vm")) != -1)
+	{
+		RemoveEntity(entity);
+	}
 }
 
 void ViewChange_ClientDisconnect(int client)
