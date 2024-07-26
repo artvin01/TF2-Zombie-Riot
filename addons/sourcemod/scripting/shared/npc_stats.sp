@@ -1568,10 +1568,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
+#if defined ZR
 			if(!Rogue_Mode())
 				return 400.0;
 			else
 				return 1200.0;
+#else
+			return 400.0;
+#endif
 		}
 		float speed_for_return;
 		
