@@ -2418,7 +2418,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 
 				// Blah: Item
 				// Blash, Item
-				Format(buffer, sizeof(buffer), "%s%s %s", i ? "," : "", buffer, item.Name);
+				Format(buffer, sizeof(buffer), "%s%s %s", buffer, i ? "," : "", item.Name);
 
 				item.NPCSeller = true;
 				StoreItems.SetArray(indexes[i], item);
