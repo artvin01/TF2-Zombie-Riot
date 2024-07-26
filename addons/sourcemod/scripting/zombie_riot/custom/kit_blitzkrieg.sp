@@ -5,7 +5,8 @@ static Handle h_TimerKitBlitzkriegManagement[MAXPLAYERS+1] = {null, ...};
 static float fl_hud_timer[MAXPLAYERS+1];
 static float fl_primary_reloading[MAXPLAYERS+1];
 static bool b_primary_lock[MAXPLAYERS+1];
-static int i_ion_charge[MAXPLAYERS+1];
+static float fl_ion_charge[MAXPLAYERS+1];
+static float fl_ion_gain_multi[MAXPLAYERS+1];
 static int i_patten_type[MAXPLAYERS+1];
 static float fl_ammo_efficiency[MAXPLAYERS+1];
 static int i_ion_effects[MAXPLAYERS+1];
@@ -18,8 +19,8 @@ static int g_particleImpactTornado;
 static char gExplosive1;
 static char gLaser1;
 
-#define BLITZKRIEG_KIT_MAX_ION_CHARGES 256
-#define BLITZKREIG_KIT_ION_COST_CHARGE 128
+#define BLITZKRIEG_KIT_MAX_ION_CHARGES 128.0
+#define BLITZKREIG_KIT_ION_COST_CHARGE 64.0
 #define BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION 1.0
 
 #define BLITZKRIEG_KIT_ION_CHARGE_TIME 3.5
@@ -38,7 +39,7 @@ public void Kit_Blitzkrieg_Precache()
 {
 	Zero(fl_primary_reloading);
 	Zero(fl_hud_timer);
-	Zero(i_ion_charge);
+	Zero(fl_ion_charge);
 	Zero(fl_ammo_efficiency);
 	Zero(fl_ion_timer_recharge);
 	Zero(b_was_lastman);
@@ -190,7 +191,7 @@ static void BlitzHud(int client, float GameTime, int wep)
 
 	char HUDText[255] = "";
 
-	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%i/%i]", HUDText, i_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
+	Format(HUDText, sizeof(HUDText), "%sIon Charge: [%.0f/%.0f]", HUDText, fl_ion_charge[client], BLITZKRIEG_KIT_MAX_ION_CHARGES);
 	
 	if(wep==1)
 	{
@@ -306,37 +307,37 @@ public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] clas
 }
 public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 3, 19.0, 1.2);
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 3, 19.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 3, 19.0, 1.2);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.40, 5, 14.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 5, 14.0, 0.6);
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.55, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 7, 10.0, 0.45);
 }
 public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.65, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 7, 10.0, 0.44);
 }
 public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.7, 7, 10.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 7, 10.0, 0.428);
 }
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.75, 9, 7.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 9, 7.0, 0.33);
 }
 
 
 
 
-static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing)
+static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int spread, float spacing, float ion_multi)
 {
 	
 	float speedMult = 1000.0;
@@ -383,6 +384,8 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 	fPos[0] += actualBeamOffset[0];
 	fPos[1] += actualBeamOffset[1];
 	fPos[2] += actualBeamOffset[2];
+
+	fl_ion_gain_multi[client] = ion_multi;
 
 	switch(i_patten_type[client])
 	{
@@ -511,11 +514,11 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 
 		if(IsValidClient(owner))
 		{
-			i_ion_charge[owner]++;
+			fl_ion_charge[owner]+=fl_ion_gain_multi[owner];
 
-			if(BLITZKRIEG_KIT_MAX_ION_CHARGES <= i_ion_charge[owner])
+			if(BLITZKRIEG_KIT_MAX_ION_CHARGES <= fl_ion_charge[owner])
 			{
-				i_ion_charge[owner] = BLITZKRIEG_KIT_MAX_ION_CHARGES;
+				fl_ion_charge[owner] = BLITZKRIEG_KIT_MAX_ION_CHARGES;
 			}
 		}	
 		
@@ -590,12 +593,12 @@ public void Blitzkrieg_Kit_Seconadry_Ion_8(int client, int weapon, bool &result,
 static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 {
 
-	if(i_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
+	if(fl_ion_charge[client]<BLITZKREIG_KIT_ION_COST_CHARGE)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", i_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", fl_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
 		return;
 	}
 	float GameTime = GetGameTime();
@@ -663,7 +666,7 @@ public void Blitzkrieg_Kit_IOC_Invoke(int client, float vecTarget[3], float ion_
 
 	float GameTime = GetGameTime();
 
-	i_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
+	fl_ion_charge[client] -=BLITZKREIG_KIT_ION_COST_CHARGE;
 
 	fl_ion_timer_recharge[client] = GameTime +BLITZKRIEG_KIT_ION_COOLDOWN;
 
