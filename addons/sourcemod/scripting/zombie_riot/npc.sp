@@ -446,6 +446,7 @@ void NPC_ConfigSetup()
 	UrsusOnMapStart();
 	VulpoOnMapStart();
 
+	VoidPortal_OnMapStart_NPC();
 //VoidCreatures and affected
 //1-15
 	VoidEaling_OnMapStart_NPC();
@@ -496,7 +497,6 @@ void NPC_ConfigSetup()
 
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
-	VoidPortal_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();

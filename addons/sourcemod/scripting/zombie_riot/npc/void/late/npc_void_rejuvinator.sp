@@ -301,8 +301,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 				}
-				int MaxHealth = GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth");
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 10), 1.5);
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
 			}
 			else
 			{

@@ -7858,7 +7858,7 @@ stock bool IsValidAlly(int index, int ally)
 public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
 	int value;
-	Function func = func_NPCAnimEvent[actor.index];
+	Function func = func_NPCActorEmoted[actor.index];
 	if(func && func != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, func);
