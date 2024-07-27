@@ -198,7 +198,7 @@ methodmap Heliarionus < CClotBody
 			"models/workshop/player/items/sniper/invasion_final_frontiersman/invasion_final_frontiersman.mdl",
 			"models/workshop/player/items/sniper/spr17_guilden_guardian/spr17_guilden_guardian.mdl",
 			"models/workshop/player/items/sniper/hwn2022_hunting_cloak/hwn2022_hunting_cloak.mdl",
-			RUINA_CUSTOM_MODELS_3,
+			RUINA_CUSTOM_MODELS_2,
 			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_2
 		};

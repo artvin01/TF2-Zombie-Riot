@@ -3,26 +3,6 @@
 
 $modelname "zombie_riot/weapons/ruina_models_3_1.mdl"	//current one on the server: null
 
-$bodygroup "sword_v4"		
-{
-	blank
-	studio "v3/sword_v4.smd"
-}
-$bodygroup "lan_sword_v3"		
-{
-	blank
-	studio "v3/lan_sword_v3.smd"
-}
-$bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the normals being ass. likely due to my inexperience, but holy shit this was painfull
-{
-	blank
-	studio "v3/laser_cannon_v2.smd"
-}
-$bodygroup "wings_2"	
-{
-	blank
-	studio "v3/wings_2.smd"
-}
 $bodygroup "ruina_bow_3"	
 {
 	blank
@@ -53,7 +33,46 @@ $bodygroup "tower_4"
 	blank
 	studio "v3/tower_4.smd"
 }
-
+$bodygroup "twirl_melee_1"	
+{
+	blank
+	studio "v3/twirl_melee_1.smd"
+}
+$bodygroup "twirl_crest_1"	
+{
+	blank
+	studio "v3/twirl_crest_1.smd"
+}
+$bodygroup "twirl_melee_2"	
+{
+	blank
+	studio "v3/twirl_melee_2.smd"
+}
+$bodygroup "twirl_crest_2"	
+{
+	blank
+	studio "v3/twirl_crest_2.smd"
+}
+$bodygroup "twirl_crest_3"	
+{
+	blank
+	studio "v3/twirl_crest_3.smd"
+}
+$bodygroup "twirl_melee_3"	
+{
+	blank
+	studio "v3/twirl_melee_3.smd"
+}
+$bodygroup "twirl_melee_4"	
+{
+	blank
+	studio "v3/twirl_melee_4.smd"
+}
+$bodygroup "twirl_crest_4"	
+{
+	blank
+	studio "v3/twirl_crest_4.smd"
+}
 
 
 

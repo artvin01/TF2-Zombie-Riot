@@ -217,9 +217,9 @@ methodmap Twirl < CClotBody
 			{
 				if(this.m_fbGunout)
 				{
+					this.m_fbGunout = false;
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
-					this.m_fbGunout = false;
 					CPrintToChatAll("Melee enemy");
 				}
 				
@@ -228,10 +228,10 @@ methodmap Twirl < CClotBody
 			{
 				if(!this.m_fbGunout)
 				{
+					this.m_fbGunout = true;
 					CPrintToChatAll("Ranged enemy");
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
-					this.m_fbGunout = true;
 				}
 				
 			}
@@ -246,38 +246,38 @@ methodmap Twirl < CClotBody
 		{
 			if(wave<=15)	
 			{
-				return 1;
+				return RUINA_TWIRL_CREST_1;
 			}
 			else if(wave <=30)	
 			{
-				return 1;
+				return RUINA_TWIRL_CREST_2;
 			}
 			else if(wave <= 45)	
 			{
-				return 1;
+				return RUINA_TWIRL_CREST_3;
 			}
 			else
 			{
-				return 1;
+				return RUINA_TWIRL_CREST_4;
 			}
 		}
 		else				//melee
 		{
 			if(wave<=15)	
 			{
-				return 4;
+				return RUINA_TWIRL_MELEE_1;
 			}
 			else if(wave <=30)	
 			{
-				return 4;
+				return RUINA_TWIRL_MELEE_2;
 			}
 			else if(wave <= 45)	
 			{
-				return 4;
+				return RUINA_TWIRL_MELEE_3;
 			}
 			else
 			{
-				return 4;
+				return RUINA_TWIRL_MELEE_4;
 			}
 		}
 	}
@@ -360,14 +360,14 @@ methodmap Twirl < CClotBody
 		if(StrContains(data, "force60") != -1)
 			wave = 60;
 
-		npc.m_fbGunout = false;
+		npc.m_fbGunout = true;
 		i_current_wave[npc.index] = wave;
 
 		i_NpcWeight[npc.index] = 15;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -609,7 +609,7 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex)
+static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex)	//temp
 {
 	float GameTime = GetGameTime(npc.index);
 	if(npc.m_fbGunout)
@@ -632,6 +632,8 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		float flAng[3]; // original
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+
+		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 
 		npc.PlayRangeAttackSound();
 

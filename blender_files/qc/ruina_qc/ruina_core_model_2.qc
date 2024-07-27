@@ -88,6 +88,26 @@ $bodygroup "sword_v3_1"
 	blank
 	studio "v2/sword_v3_1.smd"
 }
+$bodygroup "sword_v4"		
+{
+	blank
+	studio "v3/sword_v4.smd"
+}
+$bodygroup "lan_sword_v3"		
+{
+	blank
+	studio "v3/lan_sword_v3.smd"
+}
+$bodygroup "laser_cannon_v2"		//this was extremely painfull to make due to the normals being ass. likely due to my inexperience, but holy shit this was painfull
+{
+	blank
+	studio "v3/laser_cannon_v2.smd"
+}
+$bodygroup "wings_2"	
+{
+	blank
+	studio "v3/wings_2.smd"
+}
 
 
 

@@ -218,7 +218,7 @@ methodmap Loonarionus < CClotBody
 			"models/workshop_partner/player/items/scout/tr_orions_belt/tr_orions_belt.mdl",
 			"models/player/items/scout/scout_hair.mdl",
 			"models/workshop/player/items/scout/sum24_tankers_top/sum24_tankers_top.mdl",
-			RUINA_CUSTOM_MODELS_3
+			RUINA_CUSTOM_MODELS_2
 		};
 
 		int skin = 1;	//1=blue, 0=red

@@ -434,7 +434,7 @@ static void ClotThink(int iNPC)
 			{
 				float flPos[3], flAng[3];
 				npc.GetAttachment("effect_hand_r", flPos, flAng);
-				npc.m_iWearable8 = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0}));
+				npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 			}
 		}
 	}
@@ -679,7 +679,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NPC_REFLECT))	//do not reflect a reflection!
 	{
 		Equalize_HP(npc, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
-		CPrintToChatAll("reflect");
+		//CPrintToChatAll("reflect");
 	}
 		
 
