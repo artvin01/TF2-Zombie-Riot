@@ -140,7 +140,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	{
 		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Super_NPCDeath;
