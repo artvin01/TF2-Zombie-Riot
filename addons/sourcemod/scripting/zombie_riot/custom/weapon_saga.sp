@@ -283,7 +283,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		spawnRing_Vectors(UserLoc, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 0.25, 12.0, 6.1, 1, 0.0);	
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);				
-		Explode_Logic_Custom(damage, client, client, weapon, _, Range, 1.0, _, false, 6,_,_,SagaCutFirst);
+		Explode_Logic_Custom(damage, client, client, weapon, _, Range, _, _, false, 6,_,_,SagaCutFirst);
 		FinishLagCompensation_Base_boss();
 		
 		i_ExplosiveProjectileHexArray[client] = value;
@@ -314,7 +314,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);						
-			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, 1.0, _, false, 99,_,_,SagaCutLast);
+			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, _, _, false, 99,_,_,SagaCutLast);
 			FinishLagCompensation_Base_boss();			
 			i_ExplosiveProjectileHexArray[client] = value;
 		}
