@@ -1568,10 +1568,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
+#if defined ZR
 			if(!Rogue_Mode())
 				return 400.0;
 			else
 				return 1200.0;
+#else
+			return 400.0;
+#endif
 		}
 		float speed_for_return;
 		
@@ -7858,7 +7862,7 @@ stock bool IsValidAlly(int index, int ally)
 public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
 	int value;
-	Function func = func_NPCAnimEvent[actor.index];
+	Function func = func_NPCActorEmoted[actor.index];
 	if(func && func != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, func);

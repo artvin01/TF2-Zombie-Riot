@@ -231,9 +231,9 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 		{
 			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			MaxHealth /= 20;
-			VoidBrooding_SpawnFractal(npc, MaxHealth, 5);
-			npc.m_flJumpCooldown = GetGameTime(npc.index) + 15.0;
+			MaxHealth /= 15;
+			VoidBrooding_SpawnFractal(npc, MaxHealth, 10);
+			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		}
 		VoidBroodingPetraSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}

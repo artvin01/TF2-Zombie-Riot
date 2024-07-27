@@ -942,7 +942,7 @@
 	"Emergency Dispatch Return 2"
 	{
 		"#format"	"{1:N},{2:N}"
-		"en"		"{red}{1} {default}and {red}{2}{default}have returned, and with some money."
+		"en"		"{red}{1} {default}and {red}{2} {default}have returned, and with some money."
 	}
 	"Emergency Dispatch Return 3"
 	{

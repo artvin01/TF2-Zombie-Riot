@@ -137,6 +137,7 @@ methodmap ChaosSupporter < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 175.0;
 		npc.m_flChaosSupporterHeal = 0.0;
+		fl_TotalArmor[npc.index] = 0.25;
 		
 		
 		int skin = 1;
@@ -275,7 +276,7 @@ void ChaosSupporterSelfDefense(ChaosSupporter npc, float gameTime, int target, f
 	{
 		float projectile_speed = 350.0;
 		float vecTarget[3];
-		float DamageProject = 35.0;
+		float DamageProject = 100.0;
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed,_,vecTarget);
 		npc.FaceTowards(vecTarget, 15000.0);

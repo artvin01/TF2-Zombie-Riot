@@ -407,7 +407,9 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
+#if defined ZR
 		if(RogueTheme == BlueParadox)
+#endif	// ZR
 		{
 			if(f_DomeInsideTest[index] > GetGameTime())
 			{

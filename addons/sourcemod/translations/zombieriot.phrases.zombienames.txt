@@ -2770,6 +2770,22 @@
 	{
 		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
 	}
+	"Void Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Void Creep Desc"
+	{
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance, regen, damage and speed.\n"
+	}
+	"Void Elemntal Damage"
+	{
+		"en"	"Void Elemntal Damage"
+	}
+	"Void Elemntal Damage Desc"
+	{
+		"en"	"Once full, buffs all void npcs around you and places void creep below you.\nCan be healed with armor."
+	}
 	"Vhxis"
 	{
 		"en"	"Vhxis"

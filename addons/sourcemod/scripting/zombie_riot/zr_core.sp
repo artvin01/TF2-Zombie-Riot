@@ -1504,7 +1504,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = NPC_CreateByName("noc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateByName("npc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 }

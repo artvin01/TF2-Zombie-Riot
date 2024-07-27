@@ -49,7 +49,7 @@
 #define ZR_MAX_LAG_COMP		128 
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
-#define ZR_MAX_SPAWNERS		128
+#define ZR_MAX_SPAWNERS		256
 #else
 #define ZR_MAX_NPCS		256
 #define ZR_MAX_LAG_COMP		256 

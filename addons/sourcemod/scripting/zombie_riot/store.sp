@@ -2283,8 +2283,8 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	static Item item;
 	static ItemInfo info;
 	int GrigoriCashLogic = CurrentCash;
-	if(GrigoriCashLogic > 60000)
-		GrigoriCashLogic = 600000;
+	if(GrigoriCashLogic > 70000)
+		GrigoriCashLogic = 70000;
 
 	for(int i; i < length; i++)
 	{
@@ -2418,7 +2418,7 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 
 				// Blah: Item
 				// Blash, Item
-				Format(buffer, sizeof(buffer), "%s%s %s", i ? "," : "", buffer, item.Name);
+				Format(buffer, sizeof(buffer), "%s%s %s", buffer, i ? "," : "", item.Name);
 
 				item.NPCSeller = true;
 				StoreItems.SetArray(indexes[i], item);
