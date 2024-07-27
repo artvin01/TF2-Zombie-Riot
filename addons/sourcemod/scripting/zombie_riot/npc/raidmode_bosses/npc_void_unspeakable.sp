@@ -909,17 +909,17 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
-			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
 			if(IsValidEntity(npc.m_iWearable4))
 			{
 				AcceptEntityInput(npc.m_iWearable4, "Disable");
 			}
 		}
 
-		npc.m_flVoidMatterAbosorb = gameTime + 3.8;
-		npc.m_flDoingAnimation = gameTime + 4.3;
-		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 1.3;
+		npc.m_flVoidMatterAbosorb = gameTime + 4.8;
+		npc.m_flDoingAnimation = gameTime + 5.3;
+		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 2.3;
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(ZR_GetWaveCount()+1 > 55)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
