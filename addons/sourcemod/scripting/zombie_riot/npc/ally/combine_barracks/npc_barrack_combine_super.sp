@@ -256,7 +256,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 
 	if(npc.m_bLostHalfHealth)
 	{
-		TrueArmor *= 0.9;
+		TrueArmor *= 0.85;
 		switch(GetRandomInt(1, 4))
 		{
 			case 1,2,3:
