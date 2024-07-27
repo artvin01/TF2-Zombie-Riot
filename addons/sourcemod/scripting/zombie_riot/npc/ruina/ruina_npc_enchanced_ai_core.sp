@@ -2644,18 +2644,20 @@ Names per stage:
 	{
 		State: Independant
 		Class: Engie
-		Has the ability to build a special building that once built spawns drones and maintains an ION
+		Has the ability to build a special building that once built spawns drones
 	}
-	Building: "Magia Anchor"	these can summon a weaver when 4 exist, but even when only 1 of them is fully operational. fix that
+	Building: "Magia Anchor"
 	{
 		spawns drones respective to the stage.
-		controls a special ION, 1 ion per stage.
-		A maximum of 4 of them can exist at a time.
-		once 4 exist, they have the abiltiy to summon a "Storm Weaver"
+	
+		they have the abiltiy to summon a "Stellar Weaver" once "power" hits 100%
 	}
-	Special: "Storm Weaver":	its body just kinda poof's out of existance, idk why, investigate.
+	Special: "Stellar Weaver":
 	{
 		A worm boss, it itself doesn't have a hitbox.
+
+		Seems to be functional, it can handle situtations where the anchor doesn't exist, when one appears.
+		its damage scales on wave count too.
 	}
 
 

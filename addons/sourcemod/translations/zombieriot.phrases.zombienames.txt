@@ -2504,7 +2504,7 @@
 	}
 	"Rulianius Desc"
 	{
-		"en"	"Aya"
+		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
 	}
 	"Lancelot"
 	{
@@ -2512,7 +2512,7 @@
 	}
 	"Lancelot Desc"
 	{
-		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAya"
+		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
 	}
 	"Ealing"
 	{

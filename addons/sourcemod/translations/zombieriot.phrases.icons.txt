@@ -296,4 +296,8 @@
 	{
 		"en" 		"Long enough, and it might go away on its own."
 	}
+	"Venium Spawn"
+	{
+		"en"		"A Ruanian Anchor builder has arrived."
+	}
 }

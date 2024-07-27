@@ -54,6 +54,8 @@ static int i_failsafe[MAXENTITIES];
 
 #define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
+#define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
+
 void Venium_OnMapStart_NPC()
 {
 
@@ -80,6 +82,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
+	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -247,6 +250,22 @@ methodmap Valiant < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
+
+		if(ally != TFTeam_Red)
+		{
+			
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
+				}
+			}
+			TeleportDiversioToRandLocation(npc.index);
+		}
 		
 		return npc;
 	}
@@ -312,7 +331,7 @@ static void ClotThink(int iNPC)
 			{
 				if(dist <= (145.0*145.0))
 				{
-					Ruina_Add_Battery(Anchor, 1.0);
+					Ruina_Add_Battery(Anchor, 0.2);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(Anchor_Loc, 15000.0);
@@ -539,9 +558,6 @@ static void Venium_Build_Anchor(Valiant npc)
 		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
-
-		SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
-		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 	}
 }
 static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float GameTime)

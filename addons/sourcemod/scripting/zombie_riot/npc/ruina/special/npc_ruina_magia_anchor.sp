@@ -76,13 +76,50 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/draw_sword.wav",
+	"ui/hitsound_vortex1.wav",
+	"ui/hitsound_vortex2.wav",
+	"ui/hitsound_vortex3.wav",
+	"ui/hitsound_vortex4.wav",
+	"ui/hitsound_vortex5.wav"
 };
+
+static char[] GetBuildingHealth()
+{
+	int health = 110;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(ZR_GetWaveCount()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+	}
+	else if(ZR_GetWaveCount()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.2);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
 
 static bool b_is_magia_tower[MAXENTITIES];
 static bool b_allow_weaver[MAXENTITIES];
 static float fl_weaver_charge[MAXENTITIES];
 static int i_weaver_index[MAXENTITIES];
+static int i_wave[MAXENTITIES];
+static bool b_allow_spawns[MAXENTITIES];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
@@ -175,7 +212,7 @@ methodmap Magia_Anchor < CClotBody
 	
 	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -201,6 +238,8 @@ methodmap Magia_Anchor < CClotBody
 		if(StrContains(data, "force60") != -1)
 			wave = 60;
 
+		i_wave[npc.index] = wave;
+
 		fl_weaver_charge[npc.index] = 0.0;
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
 
@@ -208,6 +247,12 @@ methodmap Magia_Anchor < CClotBody
 			b_allow_weaver[npc.index] = false;
 		else
 			b_allow_weaver[npc.index] = true;
+
+		if(StrContains(data, "nospawns") != -1)
+			b_allow_spawns[npc.index] = false;
+		else
+			b_allow_spawns[npc.index] = true;
+		
 		
 		if(StrContains(data, "raid") != -1)
 			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
@@ -236,7 +281,7 @@ methodmap Magia_Anchor < CClotBody
 
 		if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 		{
-			RaidModeTime = 999999999.0;
+			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
@@ -293,6 +338,22 @@ methodmap Magia_Anchor < CClotBody
 
 		NPC_StopPathing(npc.index);
 
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
+
+		/*int test;
+		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
+		CPrintToChatAll("m_usSolidFlags %i", test);
+		test = GetEntProp(npc.index, Prop_Data, "m_nSolidType");
+		CPrintToChatAll("m_nSolidType %i", test);
+		*/
 		return npc;
 	}
 }
@@ -323,7 +384,7 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	if(!IsValidEntity(RaidBossActive))
+	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -337,6 +398,9 @@ static void ClotThink(int iNPC)
 	{
 
 	}
+	if(b_allow_spawns[npc.index])
+		Spawning_Logic(npc);
+
 
 	if(b_allow_weaver[npc.index])
 	{
@@ -344,6 +408,131 @@ static void ClotThink(int iNPC)
 	}
 	
 	
+}
+static void Spawning_Logic(Magia_Anchor npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
+	int npc_current_count;
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+		{
+			npc_current_count += 1;
+		}
+	}
+
+	if(npc_current_count > LimitNpcs)
+		return;
+
+	int wave = i_wave[npc.index];
+	float Ratio =(1.0-(wave/60.0));
+	if(Ratio < -0.5)
+		Ratio=-0.5;
+	float Time = 1.0 + Ratio;
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+	//whats a "switch" statement??
+	if(wave<=15)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_drone", 750, 1, true);
+	}
+	else if(wave <=30)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronian", 4000, 2, true);
+	}
+	else if(wave <= 45)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronis", 7500, 2, true);
+	}
+	else if(wave <=60)
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 15000, 3, true);
+	}
+	else	//freeplay
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 35000, 3, true);
+	}
+}
+static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int count, bool self = false)
+{
+	Magia_Anchor npc = view_as<Magia_Anchor>(iNPC);
+
+	if(self)
+	{
+		float AproxRandomSpaceToWalkTo[3];
+		WorldSpaceCenter(iNPC, AproxRandomSpaceToWalkTo);
+		for(int i=0 ; i < count ; i ++)
+		{
+			int spawn_index = NPC_CreateByName(plugin_name, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(iNPC));
+			if(spawn_index > MaxClients)
+			{
+				npc.PlayMeleeMissSound();
+				npc.PlayMeleeMissSound();
+				if(!health)
+				{
+					health = GetEntProp(spawn_index, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+
+				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+			}	
+		}
+		return;
+	}
+	if(GetTeam(iNPC) == TFTeam_Red)
+	{
+		count /= 2;
+		if(count < 1)
+		{
+			count = 1;
+		}
+		for(int Spawns; Spawns <= count; Spawns++)
+		{
+			float pos[3]; GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(iNPC, Prop_Data, "m_angRotation", ang);
+			
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(iNPC));
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = 10.0;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 4);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 4);
+			}
+		}
+		return;
+	}
+		
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(plugin_name);
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Outlined = false;
+	enemy.Is_Immune_To_Nuke = false;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	enemy.ExtraSpeed = 1.0;
+	enemy.ExtraDamage = 1.0;
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(iNPC);
+	for(int i; i<count; i++)
+	{
+		Waves_AddNextEnemy(enemy);
+	}
+	Zombies_Currently_Still_Ongoing += count;	// FIXME
 }
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -378,6 +567,15 @@ static void NPC_Death(int entity)
 
 	if(EntRefToEntIndex(RaidBossActive)==npc.index)
 		RaidBossActive = INVALID_ENT_REFERENCE;
+
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
 
 	Ruina_NPCDeath_Override(entity);
 		
@@ -418,7 +616,7 @@ static void Weaver_Logic(Magia_Anchor npc)
 	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
 		i_weaver_index[npc.index] = test;
 
-	fl_weaver_charge[npc.index]+=0.005;
+	fl_weaver_charge[npc.index]+=0.001;
 
 	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;

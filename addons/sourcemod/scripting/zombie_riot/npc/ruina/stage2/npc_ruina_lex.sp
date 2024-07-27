@@ -283,11 +283,14 @@ methodmap Lex < CClotBody
 		if(!this.IsAlive())
 			return;
 		
+		if(i_HexCustomDamageTypes[this.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
+			return;
+
 		if(this.IsClose())
 		{	
 			int Ally = EntRefToEntIndex(this.m_ially);
 			damage *= 0.5;
-			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 		}
 	}
 	public void Spawn_Ally()

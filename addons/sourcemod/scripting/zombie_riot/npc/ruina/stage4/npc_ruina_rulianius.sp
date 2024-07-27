@@ -299,7 +299,7 @@ static void ClotThink(int iNPC)
 		if(npc.m_flNextRangedBarrage_Singular < GameTime && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);
-			if(Difference < 65.0)	//make sure its more or less the same height as the npc
+			if(Difference < 65.0 && flDistanceToTarget < (800.0*800.0))	//make sure its more or less the same height as the npc
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 						
@@ -345,7 +345,7 @@ static void ClotThink(int iNPC)
 			Ruina_Laser_Logic Laser;
 
 			Laser.client = npc.index;
-			Laser.DoForwardTrace_Basic(1500.0);
+			Laser.DoForwardTrace_Basic(750.0);
 			Laser.Radius = 15.0;
 			Laser.Damage = 500.0;
 			Laser.Bonus_Damage = 1200.0;

@@ -365,10 +365,13 @@ static void ClotThink(int iNPC)
 
 	float Battery_Cost = 3500.0;
 	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
+
+	if(fl_ruina_battery[npc.index] > Battery_Cost)
+		fl_ruina_battery[npc.index] = Battery_Cost;
+		
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
-		if(fl_ruina_battery[npc.index] > Battery_Cost)
-			fl_ruina_battery[npc.index] = Battery_Cost;
+		
 		RaidModeScaling = battery_Ratio;
 
 		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
