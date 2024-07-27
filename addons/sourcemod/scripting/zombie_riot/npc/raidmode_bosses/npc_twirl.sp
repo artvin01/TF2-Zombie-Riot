@@ -389,7 +389,7 @@ methodmap Twirl < CClotBody
 		music.Time = 285;
 		music.Volume = 2.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "[原曲:霊知の太陽信仰(Solar Sect of Mystic Wisdom ~ Nuclear Fusion)]");
+		strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
 		strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
 		Music_SetRaidMusic(music);
 		
@@ -404,7 +404,6 @@ methodmap Twirl < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
-		
 
 		fl_npc_basespeed = 290.0;
 		npc.m_flSpeed = fl_npc_basespeed;
