@@ -674,10 +674,10 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		if(npc.m_flEffectThrottle < gameTime)
 		{
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
 			npc.m_flEffectThrottle = gameTime + 0.25;
 		}
 		if(npc.m_flVoidGroundShakeHappening < gameTime)
