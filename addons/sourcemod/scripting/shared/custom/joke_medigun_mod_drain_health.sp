@@ -509,7 +509,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				MedigunChargeUber(owner, medigun, 2.0, true);
+				MedigunChargeUber(owner, medigun, 2.0);
 				int new_ammo = GetAmmo(owner, 22);
 				
 				if (!team)

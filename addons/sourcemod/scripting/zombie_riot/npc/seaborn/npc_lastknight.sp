@@ -279,7 +279,7 @@ public void LastKnight_ClotThink(int iNPC)
 
 		// Won't attack runners, find players
 		if(npc.m_iTarget < 1)
-			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2);
 	}
 
 	if(aggressive)
