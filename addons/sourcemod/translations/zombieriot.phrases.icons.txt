@@ -300,4 +300,8 @@
 	{
 		"en"		"A Ruanian Anchor builder has arrived."
 	}
+	"Twirl Spawn"
+	{
+		"en"		"Her majesty, the ruler of magic has descended..."	//idk, temP?
+	}
 }

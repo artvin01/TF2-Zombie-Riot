@@ -2514,6 +2514,14 @@
 	{
 		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
 	}
+	"Twirl"
+	{
+		"en"	"Twirl"
+	}
+	"Twirl Desc"
+	{
+		"en"	"aya"
+	}
 	"Ealing"
 	{
 		"en"	"Ealing"

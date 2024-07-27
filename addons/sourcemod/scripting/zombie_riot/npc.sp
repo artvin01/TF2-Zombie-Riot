@@ -380,6 +380,7 @@ void NPC_ConfigSetup()
 	Lancelot_OnMapStart_NPC();
 
 	//Special.
+	Twirl_OnMapStart_NPC();
 	Magia_Anchor_OnMapStart_NPC();
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
@@ -1109,6 +1110,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_twirl.sp"
 
 #endif
 
