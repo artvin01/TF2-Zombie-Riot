@@ -200,7 +200,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						}
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.05;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.34;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.24;
 						npc.m_flNextMeleeAttack = GameTime + (0.1 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -257,15 +257,15 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 	if(npc.m_bLostHalfHealth)
 	{
 		TrueArmor *= 0.9;
-		switch(GetRandomInt(1, 2))
+		switch(GetRandomInt(1, 4))
 		{
-			case 1:
+			case 1,2,3:
 			{
 
 			}
-			case 2:
+			case 4:
 			{
-				damage *= 0.6;
+				damage *= 0.1;
 				npc.PlayDeflectSound();
 				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
