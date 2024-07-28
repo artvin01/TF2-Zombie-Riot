@@ -83,7 +83,13 @@ void OverlordRogue_OnMapStart_NPC()
 	data.Flags = 0;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/wave_music/bat_talulha.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -209,10 +215,22 @@ methodmap OverlordRogue < CClotBody
 		func_NPCThink[npc.index] = OverlordRogue_ClotThink;
 		
 		bool final = StrContains(data, "final_item") != -1;
+		bool final2 = StrContains(data, "music_do") != -1;
 		
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+		}
+		if(final2)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/wave_music/bat_talulha.mp3");
+			music.Time = 209;
+			music.Volume = 1.75;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights bat_talulha (no Official name.)");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
 		}
 		
 		strcopy(SpawnPoint, sizeof(SpawnPoint), data);
