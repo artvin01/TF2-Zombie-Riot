@@ -157,7 +157,7 @@ static const char TextColour[] = "{snow}";
 
 	retreat: stage 4 laser.
 	cosmic gaze: casting sounds?
-	Fractal casting sounds.
+	Fractal casting sounds. also somekind of animation?
 
 	Text lines for: Death. Timer runout. Lifeloss. LastMann
 	Maybe text lines for the abilities?
