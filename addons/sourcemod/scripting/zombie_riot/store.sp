@@ -4531,6 +4531,8 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("526", 1.0);//
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
+	else
+		map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute

@@ -210,8 +210,8 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		float value;
 
 		// -20% move speed
-		map.GetValue("107", value);
-		map.SetValue("107", value * (seaborn ? 1.1 : 0.8));
+		map.GetValue("442", value);
+		map.SetValue("442", value * (seaborn ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
