@@ -419,12 +419,10 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		if(!ignore_allied_npc)
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayer, iClient);
-			TR_GetEndPosition(vecEndOrigin, hTrace);
 		}
 		else
 		{
 			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( flags ), RayType_Infinite, Trace_DontHitEntityOrPlayerOrAlliedNpc, iClient);
-			TR_GetEndPosition(vecEndOrigin, hTrace);		
 		}
 		iHit = TR_GetEntityIndex(hTrace);
 		if(iHit > 0)
@@ -438,7 +436,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 	i_PreviousInteractedEntity[iClient] = iHit;
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+	if (TR_DidHit(hTrace) && iHit != iClient/* && GetVectorDistance(vecOrigin, vecEndOrigin, true) < ((flDistance * 1.35) * (flDistance * 1.35))*/)
 		iReturn = iHit;
 	
 	delete hTrace;
