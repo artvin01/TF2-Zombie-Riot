@@ -698,7 +698,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			//This will only detect people, not damage them.
 			Zero(VoidGroundShake);
 			ProjectileLoc[2] += 60.0;
-			Explode_Logic_Custom(1.0, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 99,_,_,_,VoidVhxis_GroundQuakeCheck);
+			Explode_Logic_Custom(1.0, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, false, 99,_,_,_,VoidVhxis_GroundQuakeCheck);
 			
 			static float victimPos[3];
 			static float partnerPos[3];

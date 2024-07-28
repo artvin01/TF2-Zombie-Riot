@@ -2843,6 +2843,10 @@ int inflictor = 0)
 		if(spawnLoc[0] == 0.0)
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				spawnLoc[2] += 45.0;
+			}
 		}
 	}
 	else //only nerf blue npc radius!
@@ -2855,6 +2859,10 @@ int inflictor = 0)
 		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
 			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				spawnLoc[2] += 45.0;
+			}
 		} 
 	}
 	
@@ -2997,6 +3005,7 @@ int inflictor = 0)
 			if(FromBlueNpc)
 			{
 				Handle trace; 
+				vicpos[2] += 45.0;
 				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);
 				int Traced_Target;
 									
