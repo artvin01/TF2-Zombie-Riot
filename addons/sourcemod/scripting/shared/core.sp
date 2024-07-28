@@ -883,7 +883,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
-DynamicHook g_DHookMedigunPrimary; 
+//DynamicHook g_DHookMedigunPrimary; 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
 //Death

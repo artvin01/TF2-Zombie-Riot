@@ -84,29 +84,10 @@ int MedigunModeSet[MAXTF2PLAYERS];
 
 void Medigun_OnEntityCreated(int entity) 
 {
-	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
+//	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
 	DHookEntity(g_DHookWeaponPostFrame, true, entity, .callback = OnMedigunPostFramePost);
 }
 
-static float f_MedigunDelayAttackThink[MAXTF2PLAYERS]={0.0, ...};
-
-public MRESReturn DHook_MedigunPrimaryAttack(int entity)
-{
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (0 < owner <= MaxClients)
-	{
-		if(f_MedigunDelayAttackThink[owner] < GetGameTime())
-		{
-			f_MedigunDelayAttackThink[owner] = GetGameTime() + 0.05;
-		 	return MRES_Ignored;
-		}
-		else
-		{
-			return MRES_Supercede;	
-		}
-	}
-	return MRES_Ignored;
-}
 //static bool s_ForceGibRagdoll;
 static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
 
@@ -115,7 +96,6 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	int target = DHookGetParam(hParams, 1);
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
-	
 	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
 	{
@@ -195,7 +175,6 @@ stock float Target_Sucked_Long_Return(int entity)
 
 public void Medigun_ClearAll()
 {
-	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);
 	for(int entity; entity<MAXENTITIES; entity++)

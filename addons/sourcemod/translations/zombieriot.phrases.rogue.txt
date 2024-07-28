@@ -33,7 +33,7 @@
 		"en"	"Nightmares Evolve"
 		"pt"	"Pesadelos Evolvem"
 	}
-	"Losted Ingots"
+	"Lost Ingots"
 	{
 		"#format"	"{1:t}"
 		"en"		"{red}Lost {1} Australium Ingots!"
@@ -1391,8 +1391,16 @@
 	}
 	"Supply Depot Desc"
 	{
-		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +1 maximum allies."
-		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +1 к максимуму союзников."
+		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +2 maximum allies."
+		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
+	}
+	"Al-Hallam's Fortress Blueprints"
+	{
+		"en"	"Al-Hallam's Fortress Blueprints"
+	}
+	"Al-Hallam's Fortress Blueprints Desc"
+	{
+		"en"	"''Seems almost mythological...''\n{green}+2 supply for Barracks, +4 maximum allies."
 	}
 	"Gambesons"
 	{

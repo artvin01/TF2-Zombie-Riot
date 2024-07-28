@@ -25,6 +25,11 @@ public void Rogue_SupplyDepot_Collect()
 	SupplyBonus++;
 }
 
+public void Rogue_AlHallam_Fortress_Collect()
+{
+	SupplyBonus += 2;
+}
+
 public void Rogue_Gambesons_Collect()
 {
 	FlatArmor += 10.0;
