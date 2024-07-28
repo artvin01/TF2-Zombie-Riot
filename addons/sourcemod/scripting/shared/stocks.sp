@@ -2840,12 +2840,16 @@ int inflictor = 0)
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
-		if(spawnLoc[0] == 0.0)
+		if(entity > 0 && spawnLoc[0] == 0.0)
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 			if(b_ThisWasAnNpc[entity])
 			{
-				spawnLoc[2] += 45.0;
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
 			}
 		}
 	}
@@ -2856,12 +2860,16 @@ int inflictor = 0)
 		{
 			explosion_range_dmg_falloff = 0.8;
 		}
-		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		if(entity > 0 && spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
 			if(b_ThisWasAnNpc[entity])
 			{
-				spawnLoc[2] += 45.0;
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
 			}
 		} 
 	}
@@ -3005,7 +3013,6 @@ int inflictor = 0)
 			if(FromBlueNpc)
 			{
 				Handle trace; 
-				vicpos[2] += 45.0;
 				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);
 				int Traced_Target;
 									
