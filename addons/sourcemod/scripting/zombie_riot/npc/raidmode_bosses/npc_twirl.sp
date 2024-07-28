@@ -47,7 +47,7 @@ static const char g_RangeAttackSounds[][] = {
 	"weapons/dragons_fury_shoot.wav",
 };
 static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
+	"weapons/bison_main_shot.wav",
 };
 static const char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense01.mp3",
@@ -64,6 +64,10 @@ static int i_ranged_combo[MAXENTITIES];
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
+static int i_ranged_ammo[MAXENTITIES];
+static int i_hand_particles[MAXENTITIES][2];
+
+static float fl_force_ranged[MAXENTITIES];
 
 static float fl_npc_basespeed;
 
@@ -82,6 +86,7 @@ void Twirl_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
+	Zero(fl_force_ranged);
 	Zero(fl_retreat_timer);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
@@ -103,6 +108,20 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 
 static const char NameColour[] = "{purple}";
 static const char TextColour[] = "{snow}";
+
+/*
+	The notepad:
+
+	Create an easy way to do multiple lines of text, probably using translation cfg's 
+
+	Things to do: almost everything lmao:
+
+	Core: 
+		Combo system. cosmetics.
+
+	Stage 1:
+		Retreat.
+*/
 
 methodmap Twirl < CClotBody
 {
@@ -181,6 +200,67 @@ methodmap Twirl < CClotBody
 		#endif
 	}
 
+	public void Fire_Combo()
+	{
+		if(this.m_fbGunout)
+		{	//Laser
+		
+		}
+		else
+		{	//Ion
+			this.Predictive_Ion();
+		}
+	}
+	public void Predictive_Ion()
+	{
+		float Time = (this.Anger ? 0.6 : 1.0);
+		float Predicted_Pos[3],
+		SubjectAbsVelocity[3];
+		float vecTarget[3];
+		GetEntPropVector(this.m_iTarget, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+		ScaleVector(SubjectAbsVelocity, Time);
+		AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
+
+		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+
+		float Radius = (this.Anger ? 325.0 : 250.0);
+		float dmg = (this.Anger ? 45.0 : 30.0);
+		dmg *= RaidModeScaling;
+
+		this.Ion_On_Loc(Predicted_Pos, Radius, dmg, Time);
+		
+	}
+	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
+	{
+		int color[4]; Ruina_Color(color);
+
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
+		TE_SendToAll();
+
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+		DataPack pack;
+		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
+		pack.WriteCellArray(color, sizeof(color));
+		pack.WriteFloat(Radius);
+		pack.WriteFloat(dmg);
+		pack.WriteFloat(0.25);			//Sickness %
+		pack.WriteCell(100);			//Sickness flat
+		pack.WriteCell(this.Anger);		//Override sickness timeout
+
+		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+
+		int laser;
+		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+	}
+
 	public bool Add_Combo(int amt)
 	{
 		if(this.m_fbGunout)
@@ -190,7 +270,30 @@ methodmap Twirl < CClotBody
 				i_ranged_combo[this.index] = 0;
 				return true;
 			}
-			i_ranged_combo[this.index]++;
+			else
+			{
+				i_ranged_combo[this.index]++;
+			}
+			if(i_ranged_combo[this.index]>=amt)
+			{
+				if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index][0])))
+				{
+					float flPos[3], flAng[3];
+					this.GetAttachment("effect_hand_l", flPos, flAng);
+					i_hand_particles[this.index][0] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", this.index, "effect_hand_l", {0.0,0.0,0.0}));
+				}
+			}
+			else
+			{
+				int ent = EntRefToEntIndex(i_hand_particles[this.index][0]);
+				if(IsValidEntity(ent))
+				{
+					RemoveEntity(ent);
+					i_hand_particles[this.index][0] = INVALID_ENT_REFERENCE;
+				}
+					
+			}
+			
 		}
 		else
 		{
@@ -199,18 +302,40 @@ methodmap Twirl < CClotBody
 				i_melee_combo[this.index] = 0;
 				return true;
 			}
-			i_melee_combo[this.index]++;
+			else
+			{
+				i_melee_combo[this.index]++;
+			}
+			if(i_melee_combo[this.index]>=amt)
+			{
+				if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index][1])))
+				{
+					float flPos[3], flAng[3];
+					this.GetAttachment("effect_hand_r", flPos, flAng);
+					i_hand_particles[this.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", this.index, "effect_hand_r", {0.0,0.0,0.0}));
+				}
+			}
+			else
+			{
+				int ent = EntRefToEntIndex(i_hand_particles[this.index][1]);
+				if(IsValidEntity(ent))
+				{
+					RemoveEntity(ent);
+					i_hand_particles[this.index][1] = INVALID_ENT_REFERENCE;
+				}
+					
+			}
 		}
 		return false;
 	}
 
 	public void Handle_Weapon()
 	{
-		switch(this.PlayerType())
+		switch(this.i_stance_status())
 		{
 			case -1:
 			{
-				CPrintToChatAll("Invalid target");
+				//CPrintToChatAll("Invalid target");
 				return;
 			}
 			case 0:	//melee
@@ -220,7 +345,7 @@ methodmap Twirl < CClotBody
 					this.m_fbGunout = false;
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
-					CPrintToChatAll("Melee enemy");
+					//CPrintToChatAll("Melee enemy");
 				}
 				
 			}
@@ -228,8 +353,10 @@ methodmap Twirl < CClotBody
 			{
 				if(!this.m_fbGunout)
 				{
+					this.m_iState = 0;
+					this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
 					this.m_fbGunout = true;
-					CPrintToChatAll("Ranged enemy");
+					//CPrintToChatAll("Ranged enemy");
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
 				}
@@ -237,6 +364,14 @@ methodmap Twirl < CClotBody
 			}
 
 		}
+	}
+	public int i_stance_status()
+	{
+		float GameTime = GetGameTime(this.index);
+		if(fl_force_ranged[this.index] > GameTime)
+			return 1;
+
+		return this.PlayerType();
 	}
 	public int i_weapon_type()
 	{
@@ -328,6 +463,10 @@ methodmap Twirl < CClotBody
 				}
 			}
 		}
+
+		//edge case: player is a mage, has 2 weapons that take the melee slot, the player could take out a melee weapon to trick this system into thinking they are a melee when in reality they are a mage.
+		//hypothesis: 
+		//even if it isn't him who discovers it, I'll have to add a thing that checks multiple weapon slots too...
 
 		return type;
 	}
@@ -472,8 +611,16 @@ methodmap Twirl < CClotBody
 
 		npc.Anger = false;
 
+		i_ranged_ammo[npc.index] = 5;
 
-		CPrintToChatAll("%s Stage 1, ara ara~", npc.GetName());
+
+		CPrintToChatAll("%s Stage 1, ara ara~", npc.GetName());	//fixtext
+		//test. works. 
+		//next test: see about using translation files as a way of sending text?
+
+		npc.m_flDoingAnimation = 0.0;
+
+		npc.m_flNextTeleport = GetGameTime(npc.index) + 15.0;
 		
 		return npc;
 	}
@@ -481,8 +628,6 @@ methodmap Twirl < CClotBody
 	
 }
 
-//TODO 
-//Rewrite
 static void ClotThink(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
@@ -528,6 +673,11 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 0.75);
 
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
+
+	Retreat(npc);
+
 	npc.Handle_Weapon();	//adjusts weapon model/state depending on target
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	
@@ -543,41 +693,9 @@ static void ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-		bool backing_up = false;
-		if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5)  && npc.m_fbGunout)
-		{
-			int Enemy_I_See;
-				
-			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			//Target close enough to hit
-			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
-			{
-				if(flDistanceToTarget < (75000))
-				{
-					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					npc.m_bAllowBackWalking=true;
-					backing_up = true;
-				}
-				else
-				{
-					NPC_StopPathing(npc.index);
-					npc.m_bPathing = false;
-					npc.m_bAllowBackWalking=false;
-				}
-			}
-			else
-			{
-				npc.StartPathing();
-				npc.m_bPathing = true;
-				npc.m_bAllowBackWalking=false;
-			}		
-		}
-		else
-		{
-			npc.StartPathing();
-			npc.m_bPathing = true;
-			npc.m_bAllowBackWalking=false;
-		}
+		npc.StartPathing();
+
+		bool backing_up = KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex, GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5);
 
 		if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0)
 		{
@@ -586,11 +704,10 @@ static void ClotThink(int iNPC)
 		}
 			
 
-		Self_Defense(npc, flDistanceToTarget, PrimaryThreatIndex);
+		Self_Defense(npc, flDistanceToTarget, PrimaryThreatIndex, vecTarget);
 
 		if(npc.m_bAllowBackWalking && backing_up)
 		{
-			npc.StartPathing();
 			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 		}
@@ -609,43 +726,144 @@ static void ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex)	//temp
+static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float Distance)
+{
+	bool backing_up = false;
+	if(flDistanceToTarget < Distance  && npc.m_fbGunout)
+	{
+		int Enemy_I_See;
+			
+		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
+		//Target close enough to hit
+		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		{
+			if(flDistanceToTarget < (Distance*0.6))
+			{
+				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
+				npc.m_bAllowBackWalking=true;
+				backing_up = true;
+			}
+			else
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_bPathing = false;
+				npc.m_bAllowBackWalking=false;
+			}
+		}
+		else
+		{
+			npc.StartPathing();
+			npc.m_bPathing = true;
+			npc.m_bAllowBackWalking=false;
+		}		
+	}
+	else
+	{
+		npc.StartPathing();
+		npc.m_bPathing = true;
+		npc.m_bAllowBackWalking=false;
+	}
+
+	return backing_up;
+}
+
+static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float vecTarget[3])
 {
 	float GameTime = GetGameTime(npc.index);
+
 	if(npc.m_fbGunout)
 	{
+		//enemy is too far
 		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))	
-			return;
+		{
+			if(npc.m_flNextMeleeAttack < GameTime)	//might as well check if we are done reloading so our "clip" is refreshed
+				npc.m_iState = 0;
 
+			return;
+		}
+			
+		//we are "reloading", so keep distance.
 		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex, GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5);
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 			return;
+		}
 
-		int Enemy_I_See;
-									
+		int Enemy_I_See;	
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-				
+		//I cannot see the target.
 		if(!IsValidEnemy(npc.index, Enemy_I_See))
 			return;
+		//our special multi attack is still recharging
+		if(fl_multi_attack_delay[npc.index] > GameTime)
+			return;
 
-		npc.m_flNextMeleeAttack = GameTime+0.25;
-		float flPos[3]; // original
-		float flAng[3]; // original
+		float	Multi_Delay = (npc.Anger ? 0.2 : 0.5),
+				Reload_Delay = (npc.Anger ? 3.0 : 5.0);
+		
+		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
+		{
+			npc.m_iState = 0;
+			npc.m_flNextMeleeAttack = GameTime + Reload_Delay;	//"reload" time
+		}
+		else
+		{
+			npc.m_iState++;
+		}
+				
+		fl_multi_attack_delay[npc.index] = GameTime + Multi_Delay;
+
+		fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
+
+		npc.FaceTowards(vecTarget, 100000.0);
+		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+		npc.PlayMeleeSound();
+
+		float 	flPos[3], // original
+				flAng[3]; // original
 			
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+		float 	projectile_speed = (npc.Anger ? 1800.0 : 900.0),
+				target_vec[3];
 
-		npc.PlayRangeAttackSound();
+		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Vec_Target[3];
-		WorldSpaceCenter(PrimaryThreatIndex, Vec_Target);
-		npc.FaceTowards(Vec_Target, 2000.0);
-			
-		float projectile_speed = 1000.0;
-		float target_vec[3];
-		PredictSubjectPositionForProjectiles(npc, Enemy_I_See, projectile_speed, _,target_vec);
+		float Dmg = (npc.Anger ? 15.0 : 10.0);
+		float Radius = (npc.Anger ? 150.0 : 100.0);
+		Dmg *=RaidModeScaling;
 
-		npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+		char Particle[50];
+		if(npc.m_iState % 2)
+			Particle = "raygun_projectile_blue";
+		else
+			Particle = "raygun_projectile_red";
+
+		int Proj = npc.FireParticleRocket(target_vec, Dmg , projectile_speed , Radius , Particle, _, _, true, flPos);
+
+		if(npc.Add_Combo(15))
+			npc.Fire_Combo();
+
+		//idk if I will add homing or not... gonna keep it here until I decide
+		/*if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
+		{
+			float 	Homing_Power = 7.0,
+					Homing_Lockon = 50.0;
+
+			float Ang[3];
+			MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+			GetVectorAngles(Ang, Ang);
+
+			Initiate_HomingProjectile(Proj,
+			npc.index,
+			Homing_Lockon,			// float lockonAngleMax,
+			Homing_Power,			// float homingaSec,
+			true,					// bool LockOnlyOnce,
+			true,					// bool changeAngles,
+			Ang);
+		}*/
 	}
 	else
 	{
@@ -672,7 +890,10 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 350.0), DMG_CLUB, -1, _, vecHit);
+						if(npc.Add_Combo(10))
+							npc.Fire_Combo();
+
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 15.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -685,7 +906,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 						}
 
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.25, 125);
+						Ruina_Add_Mana_Sickness(npc.index, target, 0.25, RoundToNearest(Modify_Damage(npc, target, 20.0)));
 					}
 					npc.PlayMeleeHitSound();
 					
@@ -697,7 +918,6 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		{
 			if(fl_retreat_timer[npc.index] > GameTime || (flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*2.0 && npc.m_flNextMeleeAttack > GameTime))
 			{
-				float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
@@ -714,11 +934,11 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 					
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
+				fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 				npc.m_flAttackHappens = GameTime + Swing_Delay;
-				npc.m_flDoingAnimation = GameTime + Swing_Delay;
 				npc.m_flNextMeleeAttack = GameTime + Swing_Speed;
 			}
 		}
@@ -736,23 +956,197 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 	if(npc.Anger)
 		damage *=1.5;
 
-	if(Target > MaxClients)
-		return damage;
-
-	int weapon = GetEntPropEnt(Target, Prop_Send, "m_hActiveWeapon");
-						
-	if(!IsValidEntity(weapon))
-		return damage;
-
-	char classname[32];
-	GetEntityClassname(weapon, classname, 32);
-
-	int weapon_slot = TF2_GetClassnameSlot(classname);
-
-	if(weapon_slot != 2 || i_IsWandWeapon[weapon])
-		damage *= 2.0;
+	damage*=RaidModeScaling;
 
 	return damage;
+}
+static int i_targets_inrange;
+static void Retreat(Twirl npc)
+{
+	float GameTime = GetGameTime(npc.index);
+	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
+	
+	if(npc.m_flNextTeleport > GameTime)	//internal teleportation device is still recharging...
+		return;
+
+	npc.m_flNextTeleport = GameTime + 1.0;
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	i_targets_inrange = 0;
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+
+	if(i_targets_inrange < 4)	//not worth "retreating"
+		return;
+
+	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
+
+	float Angles[3];
+	int loop_for = 8;
+	float Ang_Adjust = 360.0/loop_for;
+	
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	Angles[0] =0.0;
+	Angles[1]+=180.0;	//she prefers teleporting backwards first
+	Angles[2] =0.0;
+
+	bool success = false;
+
+	
+	switch(GetRandomInt(0, 1))
+	{
+		case 1:
+			Ang_Adjust*=-1.0;
+	}
+	//float Final_Vec[3];
+	for(int i=0 ; i < loop_for ; i++)
+	{
+		float Test_Vec[3];
+		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
+		{
+			if(NPC_Teleport(npc.index, Test_Vec))
+			{
+				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+				//TE_SendToAll();
+				//Final_Vec = Test_Vec;
+				success = true;
+				break;
+			}
+		}
+		Angles[1]+=Ang_Adjust;
+	}
+	if(!success)
+		return;
+	
+	npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
+	
+	//YAY IT WORKED!!!!!!!
+
+	npc.PlayTeleportSound();
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+			
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 30000.0);
+	
+	}
+	else
+	{
+		npc.FaceTowards(VecSelfNpc, 30000.0);
+	}
+
+	int wave = i_current_wave[npc.index];
+
+	float start_offset[3], end_offset[3];
+	start_offset = VecSelfNpc;
+
+	float effect_duration = 0.25;
+	
+	WorldSpaceCenter(npc.index, end_offset);
+					
+	for(int help=1 ; help<=8 ; help++)
+	{	
+		Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+						
+		start_offset[2] += 12.5;
+		end_offset[2] += 12.5;
+	}
+
+	if(wave<=15)	//stage 1: a simple ion where she was.
+	{
+		float radius = (npc.Anger ? 325.0 : 250.0);
+		float dmg = (npc.Anger ? 45.0 : 30.0);
+		dmg *= RaidModeScaling;
+
+		float Time = (npc.Anger ? 1.0 : 1.5);
+		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
+	}
+	else if(wave <=45)	//stage 2, 3: an ion cast on anyone near her previous location when she teleports
+	{
+		float aoe_check = (npc.Anger ? 250.0 : 150.0);
+		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
+	}
+	else
+	{
+		
+	}
+
+	fl_force_ranged[npc.index] = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
+
+	CPrintToChatAll("%s Oh my, your all such brutes~", npc.GetName());	//fixtext
+}
+static bool Directional_Trace(Twirl npc, float Origin[3], float Angle[3], float Result[3])
+{
+	Ruina_Laser_Logic Laser;
+
+	float Distance = 750.0;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Custom(Angle, Origin, Distance);
+	float Dist = GetVectorDistance(Origin, Laser.End_Point);
+
+	//TE_SetupBeamPoints(Origin, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+	//TE_SendToAll();
+
+	//the distance it too short, try a new angle
+	if(Dist < 500.0)
+		return false;
+
+	Result = Laser.End_Point;
+	ConformLineDistance(Result, Origin, Result, Dist - 100.0);	//need to add a bit of extra room to make sure its a valid teleport location. otherwise she might materialize into a wall
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Result);	//now get the vector but on the floor.
+	float Ang[3];
+	MakeVectorFromPoints(Origin, Result, Ang);
+	GetVectorAngles(Ang, Ang);
+
+	//TE_SetupBeamPoints(Origin, Result, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {255, 0, 0, 255}, 3);
+	//TE_SendToAll();
+
+	float Sub_Dist = GetVectorDistance(Origin, Result);
+
+	Laser.DoForwardTrace_Custom(Ang, Origin, Sub_Dist);	//check if we can see that vector
+	//TE_SetupBeamPoints(Origin, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {0, 0, 255, 255}, 3);
+	//TE_SendToAll();
+	if(Similar_Vec(Result, Laser.End_Point))			//then check if its similar to the one that was traced via a ground clip
+	{
+		float sky[3]; sky = Result; sky[2]+=500.0;
+		//TE_SetupBeamPoints(sky, Result, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {0, 255, 0, 255}, 3);
+		//TE_SendToAll();
+		Result = Laser.End_Point;
+		return true;
+	}
+	return false;
+}
+static void AoeIonCast(int entity, int victim, float damage, int weapon)
+{
+	if(!IsValidEnemy(entity, victim))
+		return;
+	
+	Twirl npc = view_as<Twirl>(entity);
+
+	float radius = (npc.Anger ? 325.0 : 250.0);
+	float dmg = (npc.Anger ? 45.0 : 30.0);
+	dmg *= RaidModeScaling;
+	float Target_Vec[3];
+	WorldSpaceCenter(victim, Target_Vec);
+	float Time = (npc.Anger ? 1.0 : 1.5);
+	npc.Ion_On_Loc(Target_Vec, radius, dmg, Time);
+}
+static void CountTargets(int entity, int victim, float damage, int weapon)
+{
+	i_targets_inrange++;
+}
+static bool Similar_Vec(float Vec1[3], float Vec2[3])
+{
+	bool similar = true;
+	for(int i=0 ; i < 3 ; i ++)
+	{
+		similar = Similar(Vec1[i], Vec2[i]);
+	}
+	return similar;
+}
+static bool Similar(float val1, float val2)
+{
+	return fabs(val1 - val2) < 2.0;
 }
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -770,6 +1164,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
+
+		i_ranged_ammo[npc.index] += RoundToFloor(i_ranged_ammo[npc.index]*0.5);
 
 		if(npc.m_bThisNpcIsABoss)
 		{
@@ -795,6 +1191,16 @@ static void NPC_Death(int entity)
 	}
 
 	Ruina_NPCDeath_Override(npc.index);
+
+	for(int i=0 ; i < 2 ; i++)
+	{
+		int ent = EntRefToEntIndex(i_hand_particles[npc.index][i]);
+		if(IsValidEntity(ent))
+		{
+			RemoveEntity(ent);
+		}
+		i_hand_particles[npc.index][i] = INVALID_ENT_REFERENCE;
+	}
 
 		
 	if(IsValidEntity(npc.m_iWearable2))
