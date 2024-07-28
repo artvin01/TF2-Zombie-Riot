@@ -33,7 +33,7 @@
 		"en"	"Nightmares Evolve"
 		"pt"	"Pesadelos Evolvem"
 	}
-	"Losted Ingots"
+	"Lost Ingots"
 	{
 		"#format"	"{1:t}"
 		"en"		"{red}Lost {1} Australium Ingots!"

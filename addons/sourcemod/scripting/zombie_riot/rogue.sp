@@ -1195,8 +1195,8 @@ void Rogue_NextProgress()
 							}
 						}
 					}
-
-					Rogue_Paradox_OnNewFloor(CurrentFloor);
+					if(RogueTheme == BlueParadox)
+						Rogue_Paradox_OnNewFloor(CurrentFloor);
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
@@ -2230,13 +2230,13 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
-				if(artifact.FuncRemove != INVALID_FUNCTION)	// Items can only be "removed" when have a func_remove
+				if(artifact.FuncRemove != INVALID_FUNCTION)
 				{
+					//call remove function.
 					Call_StartFunction(null, artifact.FuncRemove);
 					Call_Finish();
-
-					CurrentCollection.Erase(i);
 				}
+				CurrentCollection.Erase(i);
 				return;
 			}
 		}
@@ -2269,7 +2269,7 @@ void Rogue_AddIngots(int amount, bool silent = false)
 	{
 		if(amount < 0)
 		{
-			CPrintToChatAll("%t", "Losted Ingots", -amount);
+			CPrintToChatAll("%t", "Lost Ingots", -amount);
 		}
 		else
 		{
@@ -2375,7 +2375,7 @@ stock void Rogue_RemoveChaos(int amount)
 	}
 
 	Waves_UpdateMvMStats();
-	CPrintToChatAll("%t", "Losted Chaos", change);
+	CPrintToChatAll("%t", "Lost Chaos", change);
 }
 
 stock bool Rogue_CurseActive()

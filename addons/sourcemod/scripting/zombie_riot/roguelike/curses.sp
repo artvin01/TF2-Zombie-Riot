@@ -34,7 +34,7 @@ public void Rogue_Curse_Bewildered(bool enable)
 	{
 		Rogue_AddExtraStage(1);
 	}
-	
+		
 	// ExtraStageCount cleared on new floor
 }
 

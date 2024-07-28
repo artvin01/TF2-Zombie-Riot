@@ -6,7 +6,6 @@ static bool ExtremeHeat;
 static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
-static bool StartCamping;
 static bool ForceNextHunter;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
@@ -57,7 +56,7 @@ bool Rogue_Paradox_Lastman()
 
 void Rogue_Paradox_OnNewFloor(int floor)
 {
-	if(StartCamping && floor < 4)
+	if(/*StartCamping && */floor < 3)
 		Rogue_AddExtraStage(1);
 }
 
@@ -153,16 +152,6 @@ public void Rogue_Lastman_Collect()
 public void Rogue_Lastman_Remove()
 {
 	StartLastman = false;
-}
-
-public void Rogue_Camping_Collect()
-{
-	StartCamping = true;
-}
-
-public void Rogue_Camping_Remove()
-{
-	StartCamping = false;
 }
 
 public void Rogue_Trading_Collect()

@@ -5,10 +5,10 @@
 		"#format"	"{1:d}"
 		"en"		"{red}Gained {1} Chaos Instability!"
 	}
-	"Losted Chaos"
+	"Lost Chaos"
 	{
 		"#format"	"{1:d}"
-		"en"		"{green}Losted {1} Chaos Instability!"
+		"en"		"{green}Lost {1} Chaos Instability!"
 	}
 	"Heavy Rain"
 	{
