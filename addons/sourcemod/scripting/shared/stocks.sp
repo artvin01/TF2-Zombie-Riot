@@ -438,7 +438,17 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 	i_PreviousInteractedEntity[iClient] = iHit;
-	if (TR_DidHit(hTrace) && iHit != iClient/* && GetVectorDistance(vecOrigin, vecEndOrigin, true) < ((flDistance * 1.35) * (flDistance * 1.35))*/)
+	if(i_IsABuilding[iHit])
+	{
+		//if a building is mounted, we grant extra range.
+		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
+		if(IsValidClient(Building_Index))
+		{
+			flDistance *= 1.35;
+		}
+	}
+
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < ((flDistance) * (flDistance)))
 		iReturn = iHit;
 	
 	delete hTrace;
