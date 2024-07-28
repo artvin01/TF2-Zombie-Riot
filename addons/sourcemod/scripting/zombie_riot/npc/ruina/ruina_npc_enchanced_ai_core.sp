@@ -138,6 +138,7 @@ enum
 }
 
 //static char gLaser1;
+int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
@@ -213,6 +214,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
+	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
@@ -1162,7 +1164,10 @@ void Ruina_Projectile_Touch(int entity, int target)
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
-		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		if(fl_ruina_Projectile_radius[entity]>0.0)
+			Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		else
+			SDKHooks_TakeDamage(target, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 		Ruina_Remove_Projectile(entity);
 	}
@@ -1614,7 +1619,7 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 
 	fl_ruina_battery[npc.index] += Amt;
 }
-public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
+void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	if(fl_npc_healing_duration[npc.index] > GetGameTime(npc.index))

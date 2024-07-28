@@ -884,7 +884,7 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	float SelfVec[3];
 	WorldSpaceCenter(iNPC, SelfVec);
 	float Proj_Vec[3];
-	GetEntPropVector(Laser_Entity, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
+	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
 	Laser.client = iNPC;
 	Laser.Start_Point = SelfVec;
 	Laser.End_Point = Proj_Vec;

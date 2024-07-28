@@ -23,7 +23,7 @@ static const char g_IdleSounds[][] = {
 	"vo/medic_standonthepoint02.mp3",
 	"vo/medic_standonthepoint03.mp3",
 	"vo/medic_standonthepoint04.mp3",
-	"vo/medic_standonthepoint05.mp3",
+	"vo/medic_standonthepoint05.mp3"
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -31,23 +31,30 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry02.mp3",
 	"vo/medic_battlecry03.mp3",
 	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3",
+	"vo/medic_battlecry05.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/batsaber_hit_flesh1.wav",
+	"weapons/batsaber_hit_flesh2.wav",
+	"weapons/batsaber_hit_world1.wav",
+	"weapons/batsaber_hit_world2.wav"
 };
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/batsaber_swing1.wav",
+	"weapons/batsaber_swing2.wav",
+	"weapons/batsaber_swing3.wav"
 };
 
 static const char g_RangeAttackSounds[][] = {
-	"weapons/dragons_fury_shoot.wav",
+	"ui/hitsound_vortex1.wav",
+	"ui/hitsound_vortex2.wav",
+	"ui/hitsound_vortex3.wav",
+	"ui/hitsound_vortex4.wav",
+	"ui/hitsound_vortex5.wav"
 };
 static char g_TeleportSounds[][] = {
-	"weapons/bison_main_shot.wav",
+	"weapons/bison_main_shot.wav"
 };
 static const char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense01.mp3",
@@ -55,9 +62,16 @@ static const char g_AngerSounds[][] = {
 	"vo/medic_cartgoingforwardoffense03.mp3",
 	"vo/medic_cartgoingforwardoffense06.mp3",
 	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+	"vo/medic_cartgoingforwardoffense08.mp3"
+};
+static const char g_LaserComboSound[][] = {
+	"weapons/physcannon/superphys_launch1.wav",
+	"weapons/physcannon/superphys_launch2.wav",
+	"weapons/physcannon/superphys_launch3.wav",
+	"weapons/physcannon/superphys_launch4.wav"
 };
 
+#define TWIRL_TE_DURATION 0.08
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
 
 static int i_ranged_combo[MAXENTITIES];
@@ -66,10 +80,25 @@ static int i_current_wave[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
 static int i_ranged_ammo[MAXENTITIES];
 static int i_hand_particles[MAXENTITIES][2];
-
 static float fl_force_ranged[MAXENTITIES];
+static float fl_comsic_gaze_timer[MAXENTITIES];
 
 static float fl_npc_basespeed;
+
+static int i_barrage_ammo[MAXENTITIES];
+
+static const char Cosmic_Launch_Sounds[][] ={
+	"weapons/physcannon/superphys_launch1.wav",
+	"weapons/physcannon/superphys_launch2.wav",
+	"weapons/physcannon/superphys_launch3.wav",
+	"weapons/physcannon/superphys_launch4.wav"
+}; 
+
+static char gGlow1;	//blue
+#define TWIRL_THUMP_SOUND	"ambient/machines/thumper_hit.wav"
+#define TWIRL_COSMIC_GAZE_LOOP_SOUND1 "weapons/physcannon/energy_sing_loop4.wav"
+#define TWIRL_COSMIC_GAZE_END_SOUND1 "weapons/physcannon/physcannon_drop.wav"
+#define TWIRL_COSMIC_GAZE_END_SOUND2 "ambient/energy/whiteflash.wav"
 
 void Twirl_OnMapStart_NPC()
 {
@@ -86,8 +115,11 @@ void Twirl_OnMapStart_NPC()
 }
 static void ClotPrecache()
 {
+	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
+	Zero(i_barrage_ammo);
 	Zero(fl_force_ranged);
 	Zero(fl_retreat_timer);
+	Zero(fl_comsic_gaze_timer);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -96,6 +128,11 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_RangeAttackSounds);
 	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(Cosmic_Launch_Sounds);
+	PrecacheSound(TWIRL_THUMP_SOUND, true);
+	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
+	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND1, true);
+	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND2, true);
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
 
@@ -112,15 +149,18 @@ static const char TextColour[] = "{snow}";
 /*
 	The notepad:
 
-	Create an easy way to do multiple lines of text, probably using translation cfg's 
-
-	Things to do: almost everything lmao:
+	fl_ruina_battery_timeout[npc.index]	//used for abilities that DON'T want to overlap, eg: Laser combo. Retreat Laser. Cosmic Gaze
+	Things to do:
 
 	Core: 
-		Combo system. cosmetics.
+		cosmetics. Wings.
 
-	Stage 1:
-		Retreat.
+	retreat: stage 4 laser.
+	cosmic gaze: casting sounds?
+	Fractal casting sounds.
+
+	Text lines for: Death. Timer runout. Lifeloss. LastMann
+	Maybe text lines for the abilities?
 */
 
 methodmap Twirl < CClotBody
@@ -200,40 +240,30 @@ methodmap Twirl < CClotBody
 		#endif
 	}
 
-	public void Fire_Combo()
-	{
-		if(this.m_fbGunout)
-		{	//Laser
-		
-		}
-		else
-		{	//Ion
-			this.Predictive_Ion();
-		}
+	public void PlayLaserComboSound() {
+		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void Predictive_Ion()
+	public void Predictive_Ion(int Target, float Time, float Radius, float dmg)
 	{
-		float Time = (this.Anger ? 0.6 : 1.0);
 		float Predicted_Pos[3],
 		SubjectAbsVelocity[3];
 		float vecTarget[3];
-		GetEntPropVector(this.m_iTarget, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+		WorldSpaceCenter(Target, vecTarget);
+		GetEntPropVector(Target, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 
 		ScaleVector(SubjectAbsVelocity, Time);
 		AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
-		float Radius = (this.Anger ? 325.0 : 250.0);
-		float dmg = (this.Anger ? 45.0 : 30.0);
-		dmg *= RaidModeScaling;
-
 		this.Ion_On_Loc(Predicted_Pos, Radius, dmg, Time);
 		
 	}
 	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
 	{
-		int color[4]; Ruina_Color(color);
+		int color[4]; 
+		Ruina_Color(color);
 
 		float Thickness = 6.0;
 		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
@@ -259,16 +289,26 @@ methodmap Twirl < CClotBody
 		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
 
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		int loop_for = 5;
+		float Add_Height = 500.0/loop_for;
+		for(int i=0 ; i < loop_for ; i++)
+		{
+			Predicted_Pos[2]+=Add_Height;
+			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+			TE_SendToAll();
+		}
+		
 	}
 
 	public bool Add_Combo(int amt)
 	{
 		if(this.m_fbGunout)
 		{
-			if(i_ranged_combo[this.index]>amt)
+			bool fired = false;
+			if(i_ranged_combo[this.index]>amt && fl_ruina_battery_timeout[this.index] < GetGameTime(this.index))
 			{
 				i_ranged_combo[this.index] = 0;
-				return true;
+				fired = true;
 			}
 			else
 			{
@@ -293,14 +333,15 @@ methodmap Twirl < CClotBody
 				}
 					
 			}
-			
+			return fired;
 		}
 		else
 		{
+			bool fired = false;
 			if(i_melee_combo[this.index]>amt)
 			{
 				i_melee_combo[this.index] = 0;
-				return true;
+				fired = true;
 			}
 			else
 			{
@@ -325,8 +366,8 @@ methodmap Twirl < CClotBody
 				}
 					
 			}
+			return fired;
 		}
-		return false;
 	}
 
 	public void Handle_Weapon()
@@ -343,6 +384,7 @@ methodmap Twirl < CClotBody
 				if(this.m_fbGunout)
 				{
 					this.m_fbGunout = false;
+					this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
 					//CPrintToChatAll("Melee enemy");
@@ -483,6 +525,7 @@ methodmap Twirl < CClotBody
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
+		i_barrage_ammo[npc.index] = 0;
 		i_ranged_combo[npc.index] = 0;
 		i_melee_combo[npc.index] = 0;
 
@@ -512,7 +555,6 @@ methodmap Twirl < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 	
-		
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -613,19 +655,66 @@ methodmap Twirl < CClotBody
 
 		i_ranged_ammo[npc.index] = 5;
 
-
-		CPrintToChatAll("%s Stage 1, ara ara~", npc.GetName());	//fixtext
-		//test. works. 
-		//next test: see about using translation files as a way of sending text?
+		if(wave <=15)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
+				case 1: Twirl_Lines(npc, "Oh the joy I will get from {crimson}fighting{snow} you all");
+				case 2: Twirl_Lines(npc, "From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}..");
+				case 3: Twirl_Lines(npc, "Let's see who dies {crimson}first{snow}!");
+			}
+		}
+		else if(wave <=30)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
+				case 1: Twirl_Lines(npc, "Our last fight was so fun, I hope this fight is as fun as the last one!");
+				case 2: Twirl_Lines(npc, "{aqua}Stella{snow} was right, you all ARE great fun to play with!");
+				case 3: Twirl_Lines(npc, "Ehe, now who will die {crimson}last{snow}?");
+			}
+		}
+		else if(wave <=45)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "My Oh my, your still here, {purple}how wonderful!");
+				case 1: Twirl_Lines(npc, "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!");
+				case 2: Twirl_Lines(npc, "{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!");
+				case 3: Twirl_Lines(npc, "Ive brought some {purple}Heavy Equipment{snow} heh");
+			}
+		}
+		else if(wave <=60)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
+				case 1: Twirl_Lines(npc, "Ah, it was a {purple}briliant idea to not use my powers {snow}and only use this crest instead.");
+				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
+				case 3: Twirl_Lines(npc, "I hope your ready for this {purple}battle{snow}.");
+			}
+		}
+		else	//freeplay
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");
+				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
+				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}ofcourse you do{snow}!");
+				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
+			}
+		}
+		
 
 		npc.m_flDoingAnimation = 0.0;
 
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 15.0;
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
+		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index) + 1.0;
 		
 		return npc;
 	}
-	
-	
 }
 
 static void ClotThink(int iNPC)
@@ -676,22 +765,42 @@ static void ClotThink(int iNPC)
 	if(npc.m_flDoingAnimation > GameTime)
 		return;
 
-	Retreat(npc);
+	if(!NpcStats_IsEnemySilenced(npc.index))
+	{
+		Retreat(npc);
+	}
 
 	npc.Handle_Weapon();	//adjusts weapon model/state depending on target
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
-	
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
+		if(!NpcStats_IsEnemySilenced(npc.index))
+		{
+			Fractal_Gram(npc, PrimaryThreatIndex);
+			Cosmic_Gaze(npc, PrimaryThreatIndex);
+		}
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+		int iPitch = npc.LookupPoseParameter("body_pitch");
+		if(iPitch < 0)
+			return;		
+
+		//Body pitch
+		float v[3], ang[3];
+		SubtractVectors(VecSelfNpc, vecTarget, v); 
+		NormalizeVector(v, v);
+		GetVectorAngles(v, ang); 
+								
+		float flPitch = npc.GetPoseParameter(iPitch);
+								
+		npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 
 		npc.StartPathing();
 
@@ -737,7 +846,7 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		{
-			if(flDistanceToTarget < (Distance*0.6))
+			if(flDistanceToTarget < (Distance*0.9))
 			{
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 				npc.m_bAllowBackWalking=true;
@@ -819,7 +928,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		npc.FaceTowards(vecTarget, 100000.0);
 		npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-		npc.PlayMeleeSound();
+		npc.PlayRangeAttackSound();
 
 		float 	flPos[3], // original
 				flAng[3]; // original
@@ -844,7 +953,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		int Proj = npc.FireParticleRocket(target_vec, Dmg , projectile_speed , Radius , Particle, _, _, true, flPos);
 
 		if(npc.Add_Combo(15))
-			npc.Fire_Combo();
+			Initiate_Combo_Laser(npc.index);
 
 		//idk if I will add homing or not... gonna keep it here until I decide
 		/*if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
@@ -891,7 +1000,13 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 					if(IsValidEnemy(npc.index, target))
 					{
 						if(npc.Add_Combo(10))
-							npc.Fire_Combo();
+						{
+							float Radius = (npc.Anger ? 225.0 : 150.0);
+							float dmg = (npc.Anger ? 45.0 : 30.0);
+							dmg *= RaidModeScaling;
+							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
+						}
+							
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 15.0), DMG_CLUB, -1, _, vecHit);
 
@@ -951,7 +1066,7 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 		damage*=10.0;
 
 	if(NpcStats_IsEnemySilenced(npc.index))
-		damage *=0.5;
+		damage *=0.9;
 
 	if(npc.Anger)
 		damage *=1.5;
@@ -959,6 +1074,522 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 	damage*=RaidModeScaling;
 
 	return damage;
+}
+static bool b_animation_set[MAXENTITIES];
+static float fl_cosmic_gaze_throttle[MAXENTITIES];
+static float fl_cosmic_gaze_windup[MAXENTITIES];
+static float fl_cosmic_gaze_duration_offset[MAXENTITIES];
+static float fl_gaze_Dist[MAXENTITIES];
+static float fl_cosmic_gaze_range = 2500.0;
+static void Cosmic_Gaze(Twirl npc, int Target)
+{
+	if(i_current_wave[npc.index]<=30)
+		return;
+
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
+	if(fl_comsic_gaze_timer[npc.index] > GameTime)
+		return;
+
+	int Enemy_I_See;
+			
+	Enemy_I_See = Can_I_See_Enemy(npc.index, Target);
+	//Target close enough to hit
+	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		return;
+
+	Target = Enemy_I_See;
+
+	npc.m_iState = 0;
+	npc.m_flNextMeleeAttack = GameTime + 0.5;
+	npc.m_fbGunout = true;
+	SetVariantInt(npc.i_weapon_type());
+	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+
+	float Windup = 2.0;
+	float Duration;
+	float Baseline = 1.75;
+
+	float Ratio = (Baseline/Windup);
+
+	float anim_ratio = Ratio;
+	Duration = 1.3 * (Windup/Baseline);
+
+	npc.m_flDoingAnimation = GameTime + Duration + Windup + 0.2;
+	fl_ruina_battery_timeout[npc.index] = GameTime + Duration +Windup;
+	fl_cosmic_gaze_windup[npc.index] = GameTime + Windup;
+
+	b_animation_set[npc.index] = false;
+	fl_cosmic_gaze_throttle[npc.index] = 0.0;
+
+	npc.AddActivityViaSequence("taunt08");
+	npc.SetPlaybackRate(1.36*anim_ratio);	
+	npc.SetCycle(0.01);
+
+
+	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
+	npc.FaceTowards(VecTarget, 10000.0);
+
+	NPC_StopPathing(npc.index);
+	npc.m_bPathing = false;
+
+	npc.m_flSpeed = 0.0;
+
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Basic(fl_cosmic_gaze_range);
+	float EndLoc[3], Start[3];
+	EndLoc = Laser.End_Point;
+	Start = Laser.Start_Point;
+
+	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
+
+	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
+	SDKHook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
+
+
+
+}
+static Action Cosmic_Gaze_Tick(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+	float GameTime = GetGameTime(npc.index);
+	if(fl_ruina_battery_timeout[npc.index] < GameTime)
+	{
+		fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 45.0 : 30.0);
+		SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
+		f_NpcTurnPenalty[npc.index] = 1.0;
+		npc.m_flSpeed = fl_npc_basespeed;
+		npc.StartPathing();
+
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		return Plugin_Stop;
+	}
+
+	bool tick = false;
+	if(fl_cosmic_gaze_throttle[npc.index] < GameTime)
+	{
+		tick = true;
+	}
+
+	if(fl_cosmic_gaze_windup[npc.index] < GameTime)
+	{
+		if(!b_animation_set[npc.index])
+		{
+			npc.SetPlaybackRate(0.25);
+
+			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+
+			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			
+			b_animation_set[npc.index] = true;
+
+			fl_cosmic_gaze_duration_offset[npc.index] = GameTime + 0.72;
+		}
+		if(fl_cosmic_gaze_duration_offset[npc.index] > GameTime && fl_cosmic_gaze_duration_offset[npc.index] !=FAR_FUTURE)
+		{
+			float Angles[3], Start[3];
+			WorldSpaceCenter(npc.index, Start);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+				
+			float flPitch = npc.GetPoseParameter(iPitch);
+			if(flPitch>15.0)
+				flPitch=15.0;
+			if(flPitch <-15.0)
+				flPitch = -15.0;
+
+			flPitch *= -1.0;
+			Angles[0] = flPitch;
+
+			float	EndLoc[3],
+					Radius = 30.0,
+					diameter = Radius*2.0;
+
+			if(tick)
+			{
+				Ruina_Laser_Logic Laser;
+				Laser.client = npc.index;
+				
+				float Eye_Loc[3];
+				WorldSpaceCenter(npc.index, Eye_Loc);
+				
+				Laser.DoForwardTrace_Custom(Angles, Eye_Loc, fl_cosmic_gaze_range);
+				
+				EndLoc = Laser.End_Point;
+
+				Laser.Radius = Radius;
+				Laser.damagetype = DMG_PLASMA;
+				Laser.Damage = (npc.Anger ? 20.0 : 10.0)*RaidModeScaling;
+
+				Laser.Deal_Damage();
+
+				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
+			}
+			Get_Fake_Forward_Vec(fl_gaze_Dist[npc.index], Angles, EndLoc, Start);
+
+			float 	flPos[3], // original
+					flAng[3]; // original
+			
+			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+
+			float TE_Duration = 0.1;
+
+			int color[4]; Ruina_Color(color);
+
+			float Offset_Loc[3];
+			Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
+
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[1]);
+			int colorLayer3[4];
+			SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+			int colorLayer2[4];
+			SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+			int colorLayer1[4];
+			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
+
+			float 	Rng_Start = GetRandomFloat(diameter*0.5, diameter*0.7);
+
+			float 	Start_Diameter1 = ClampBeamWidth(Rng_Start*0.7),
+					Start_Diameter2 = ClampBeamWidth(Rng_Start*0.9),
+					Start_Diameter3 = ClampBeamWidth(Rng_Start);
+				
+			float 	End_Diameter1 = ClampBeamWidth(diameter*0.7),
+					End_Diameter2 = ClampBeamWidth(diameter*0.9),
+					End_Diameter3 = ClampBeamWidth(diameter);
+
+			int Beam_Index = g_Ruina_BEAM_Combine_Black;
+
+			TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter1, 0, 10.0, colorLayer2, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter2, 0, 10.0, colorLayer3, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index,	0, 0, 66, TE_Duration, 0.0, Start_Diameter3, 0, 10.0, colorLayer4, 3);
+			TE_SendToAll(0.0);
+
+			TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter1*0.9, End_Diameter1, 0, 0.1, colorLayer2, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter2*0.9, End_Diameter2, 0, 0.1, colorLayer3, 3);
+			TE_SendToAll(0.0);
+			TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter3*0.9, End_Diameter3, 0, 0.1, colorLayer4, 3);
+			TE_SendToAll(0.0);
+
+			Get_Fake_Forward_Vec(-50.0, Angles, Offset_Loc, EndLoc);
+
+			TE_SetupGlowSprite(Offset_Loc, gGlow1, TE_Duration, 3.0, 255);
+			TE_SendToAll();
+
+		}
+		else if(fl_cosmic_gaze_duration_offset[npc.index] != FAR_FUTURE)
+		{
+			fl_cosmic_gaze_duration_offset[npc.index] = FAR_FUTURE;
+			npc.SetPlaybackRate(1.36*0.72);
+
+			Ruina_Laser_Logic Laser;
+			Laser.client = npc.index;
+			float Angles[3], Start[3];
+			WorldSpaceCenter(npc.index, Start);
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+				
+			float flPitch = npc.GetPoseParameter(iPitch);
+			if(flPitch>15.0)
+				flPitch=15.0;
+			if(flPitch <-15.0)
+				flPitch = -15.0;
+			flPitch *= -1.0;
+			Angles[0] = flPitch;
+			Laser.DoForwardTrace_Custom(Angles, Start, fl_cosmic_gaze_range);
+			float EndLoc[3];
+			EndLoc = Laser.End_Point;
+
+			Do_Cosmic_Gaze_Explosion(npc.index, EndLoc);
+		}
+	}
+
+
+	return Plugin_Continue;
+}
+static int i_explosion_core[MAXENTITIES];
+static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
+{
+	float Radius = 750.0;
+
+	int create_center = Ruina_Create_Entity(Loc, 1.0, true);
+
+	if(IsValidEntity(create_center))
+	{
+		i_explosion_core[client] = EntIndexToEntRef(create_center);
+	}
+
+	Explode_Logic_Custom(125.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+
+	int color[4]; Ruina_Color(color);
+
+	float Time = 0.25;
+	float Thickness = 10.0;
+
+	float Offset_Loc[3]; Offset_Loc = Loc;
+	
+	Loc[2]+=Thickness*0.5;
+
+	TE_SetupBeamRingPoint(Loc, Radius*2.0+1.0, Radius*2.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, 3.0, Thickness, 1.5, color, 1, 0);
+	TE_SendToAll();
+
+	StopSound(client, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+	StopSound(client, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+
+	EmitSoundToAll(TWIRL_COSMIC_GAZE_END_SOUND1);
+	
+	int loop_for = GetRandomInt(4, 7);
+	for(int i=0 ; i < loop_for ; i++)
+	{	
+		float Random_Loc[3];
+		float Ang[3]; Ang[1] = (360.0/loop_for)*i+GetRandomFloat(-(360.0/loop_for)*0.25, (360.0/loop_for)*0.25);	//what in the fuck did I create here?
+		float Dist = GetRandomFloat(Radius*0.4, Radius*0.75);
+		Get_Fake_Forward_Vec(Dist, Ang, Random_Loc, Offset_Loc);
+		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Random_Loc);
+		float Sky_Loc[3]; Sky_Loc = Random_Loc; Sky_Loc[2]+=9999.0;
+		TE_SetupBeamPoints(Random_Loc, Sky_Loc, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 66, Time*i+2.5, 5.0*Thickness, Thickness*0.25, 10, 0.1, color, 10);
+		TE_SendToAll(i/10.0);
+		float Radius_Ratio = 1.0 - (Dist/Radius);
+		TE_SetupBeamRingPoint(Random_Loc, 0.0, (Radius_Ratio*Radius)*2.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, Time+0.5, Thickness, 1.0, color, 1, 0);
+		TE_SendToAll(i/10.0);
+
+		char SoundString[255];
+		SoundString = TWIRL_THUMP_SOUND;
+		DataPack data;
+		CreateDataTimer(i/10.0, Timer_Repeat_Sound, data, TIMER_FLAG_NO_MAPCHANGE);
+		data.WriteString(SoundString);
+		data.WriteCell(2);
+		data.WriteFloat(1.0);
+		data.WriteFloatArray(Random_Loc, 3);
+
+		TE_SetupGlowSprite(Random_Loc, gGlow1, Time*i+2.5, 0.5, 255);
+		TE_SendToAll(i/10.0);
+
+	}
+}
+static Action Timer_Repeat_Sound(Handle Timer, DataPack data)
+{
+	ResetPack(data);
+	char Sound[255];
+	data.ReadString(Sound, sizeof(Sound));
+	int type = data.ReadCell();
+	float Volume = data.ReadFloat();
+
+	switch(type)
+	{
+		case 1:
+		{
+			EmitSoundToAll(Sound, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, Volume, SNDPITCH_NORMAL);
+		}
+		case 2:
+		{
+			float Loc[3];
+			data.ReadFloatArray(Loc, 3);
+			EmitSoundToAll(Sound, 0, SNDCHAN_AUTO, 120, SND_NOFLAGS, Volume, SNDPITCH_NORMAL, -1, Loc);
+		}
+		default:
+		{
+			EmitSoundToAll(Sound, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, Volume, SNDPITCH_NORMAL);
+		}
+	}
+
+	return Plugin_Stop;
+}
+static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidClient(victim))
+		Client_Shake(victim, 0, 7.5, 7.5, 3.0);
+
+	int creater = EntRefToEntIndex(i_explosion_core[entity]);
+
+	if(IsValidEntity(creater))
+	{
+		int Beam_Index = g_Ruina_BEAM_Diamond;	
+
+		int color[4]; Ruina_Color(color);
+
+		TE_SetupBeamRing(creater, victim, Beam_Index, g_Ruina_HALO_Laser, 0, 10, 0.75, 7.5, 1.0, color, 10, 0);	
+		TE_SendToAll(0.0);
+	}
+}
+static void Fractal_Gram(Twirl npc, int Target)
+{
+	if(i_current_wave[npc.index]<=15)
+		return;
+
+	float GameTime = GetGameTime();
+	if(npc.m_flNextRangedBarrage_Spam > GameTime)
+		return;
+	
+	if(npc.m_flNextRangedBarrage_Singular > GameTime)
+		return;
+
+	int amt = (npc.Anger ? 20 : 10);
+
+	if(i_barrage_ammo[npc.index] > amt)
+	{
+		i_barrage_ammo[npc.index] = 0;
+		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 30.0 : 45.0);
+		return;
+	}
+
+	int Enemy_I_See;
+			
+	Enemy_I_See = Can_I_See_Enemy(npc.index, Target);
+	//Target close enough to hit
+	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
+		return;
+
+	Target = Enemy_I_See;
+
+	i_barrage_ammo[npc.index]++;
+
+	npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.2 : 0.4);
+
+	float vecTarget[3];
+	WorldSpaceCenter(Target, vecTarget);
+	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
+	float Laser_Dmg = (npc.Anger ? 5.0 : 2.5);
+	float Speed = (npc.Anger ? 1750.0 : 1000.0);
+	float Direct_Dmg = (npc.Anger ? 50.0 : 25.0);
+	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
+}
+static int i_laser_entity[MAXENTITIES];
+static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
+{
+	float SelfVec[3];
+	Ruina_Projectiles Projectile;
+	WorldSpaceCenter(iNPC, SelfVec);
+	Projectile.iNPC = iNPC;
+	Projectile.Start_Loc = SelfVec;
+	float Ang[3];
+	MakeVectorFromPoints(SelfVec, VecTarget, Ang);
+	GetVectorAngles(Ang, Ang);
+	Projectile.Angles = Ang;
+	Projectile.speed = speed;
+	Projectile.radius = direct_radius;
+	Projectile.damage = direct_damage;
+	Projectile.bonus_dmg = direct_damage*2.5;
+	Projectile.Time = time;
+	Projectile.visible = false;
+	int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
+
+	if(IsValidEntity(Proj))
+	{
+		float 	f_start = 0.3*radius,
+				f_end = 0.2*radius,
+				amp = 0.25;
+	
+		int color[4];
+		Ruina_Color(color);
+		Twirl npc = view_as<Twirl>(iNPC);
+		int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
+		i_laser_entity[Proj] = EntIndexToEntRef(beam);
+		DataPack pack;
+		CreateDataTimer(0.1, Laser_Projectile_Timer, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		pack.WriteCell(EntIndexToEntRef(iNPC));
+		pack.WriteCell(EntIndexToEntRef(beam));
+		pack.WriteCell(EntIndexToEntRef(Proj));
+		pack.WriteCellArray(color, sizeof(color));
+		pack.WriteFloat(radius);
+		pack.WriteFloat(dmg);
+	}
+}
+
+static void Func_On_Proj_Touch(int entity, int other)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))	//owner is invalid, evacuate.
+	{
+		Ruina_Remove_Projectile(entity);
+		return;
+	}
+
+	int beam = EntRefToEntIndex(i_laser_entity[entity]);
+	if(IsValidEntity(beam))
+		RemoveEntity(beam);
+
+	i_laser_entity[entity] = INVALID_ENT_REFERENCE;
+	
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+
+	if(i_current_wave[owner] >= 60)
+	{
+		Twirl npc = view_as<Twirl>(owner);
+		float radius = (npc.Anger ? 325.0 : 250.0);
+		float dmg = (npc.Anger ? 45.0 : 30.0);
+		dmg *= RaidModeScaling;
+
+		float Time = (npc.Anger ? 1.0 : 1.5);
+		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
+	}
+
+	if(fl_ruina_Projectile_radius[entity]>0.0)
+		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+	else
+		SDKHooks_TakeDamage(other, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
+
+	Ruina_Remove_Projectile(entity);
+
+}
+static Action Laser_Projectile_Timer(Handle timer, DataPack data)
+{
+	data.Reset();
+	int iNPC = EntRefToEntIndex(data.ReadCell());
+	int Laser_Entity = EntRefToEntIndex(data.ReadCell());
+	int Projectile = EntRefToEntIndex(data.ReadCell());
+	int color[4];
+	data.ReadCellArray(color, sizeof(color));
+	float Radius	= data.ReadFloat();
+	float dmg 		= data.ReadFloat();
+
+	if(!IsValidEntity(iNPC) || !IsValidEntity(Laser_Entity) || !IsValidEntity(Projectile))
+	{
+		if(IsValidEntity(Laser_Entity))
+			RemoveEntity(Laser_Entity);
+
+		if(IsValidEntity(Projectile))
+			RemoveEntity(Projectile);
+		
+		return Plugin_Stop;
+	}
+
+	Ruina_Laser_Logic Laser;
+
+	float SelfVec[3];
+	WorldSpaceCenter(iNPC, SelfVec);
+	float Proj_Vec[3];
+	GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
+
+	float Dist = GetVectorDistance(Proj_Vec, SelfVec);
+	if(Dist > 1750.0)
+	{
+		SetEntityMoveType(Projectile, MOVETYPE_FLYGRAVITY);
+	}
+	Laser.client = iNPC;
+	Laser.Start_Point = SelfVec;
+	Laser.End_Point = Proj_Vec;
+
+	Laser.Radius = Radius;
+	Laser.Damage = dmg;
+	Laser.Bonus_Damage = dmg*6.0;
+	Laser.damagetype = DMG_PLASMA;
+
+	Laser.Deal_Damage();
+
+
+	return Plugin_Continue;
 }
 static int i_targets_inrange;
 static void Retreat(Twirl npc)
@@ -1068,12 +1699,22 @@ static void Retreat(Twirl npc)
 	}
 	else
 	{
-		
+		float aoe_check = (npc.Anger ? 250.0 : 150.0);
+		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
+		//2 second duration laser.
 	}
 
 	fl_force_ranged[npc.index] = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
 
-	CPrintToChatAll("%s Oh my, your all such brutes~", npc.GetName());	//fixtext
+	switch(GetRandomInt(0, 5))
+	{
+		case 0: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
+		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
+		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
+		case 3: Twirl_Lines(npc, "So close, yet far");
+		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
+		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
+	}
 }
 static bool Directional_Trace(Twirl npc, float Origin[3], float Angle[3], float Result[3])
 {
@@ -1135,19 +1776,6 @@ static void CountTargets(int entity, int victim, float damage, int weapon)
 {
 	i_targets_inrange++;
 }
-static bool Similar_Vec(float Vec1[3], float Vec2[3])
-{
-	bool similar = true;
-	for(int i=0 ; i < 3 ; i ++)
-	{
-		similar = Similar(Vec1[i], Vec2[i]);
-	}
-	return similar;
-}
-static bool Similar(float val1, float val2)
-{
-	return fabs(val1 - val2) < 2.0;
-}
 
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
@@ -1160,7 +1788,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
-	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
+	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && i_current_wave[npc.index] >=30) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -1175,6 +1803,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		npc.m_flNextTeleport -= 0.2;
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
@@ -1212,4 +1841,159 @@ static void NPC_Death(int entity)
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	
+}
+static float fl_combo_laser_throttle[MAXENTITIES];
+static void Initiate_Combo_Laser(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
+	float Duration = (npc.Anger ? 1.0 : 0.7);
+	npc.m_flDoingAnimation = GameTime + Duration+0.1;
+	fl_ruina_battery_timeout[npc.index] = GameTime + Duration;
+	fl_combo_laser_throttle[npc.index] = GameTime + 0.2;	//the windup period
+	
+	SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
+	SDKHook(npc.index, SDKHook_Think, Combo_Laser_Logic);
+	
+	npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 0.5);
+	float VecTarget[3]; WorldSpaceCenter(npc.m_iTarget, VecTarget);
+	npc.FaceTowards(VecTarget, 10000.0);
+	npc.PlayLaserComboSound();
+
+	NPC_StopPathing(npc.index);
+	npc.m_bPathing = false;
+
+	npc.m_flSpeed = 0.0;
+
+	f_NpcTurnPenalty[npc.index] = 0.0001;
+}
+
+static Action Combo_Laser_Logic(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+	float GameTime = GetGameTime(npc.index);
+	if(fl_ruina_battery_timeout[npc.index] < GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
+		f_NpcTurnPenalty[npc.index] = 1.0;
+		npc.m_flSpeed = fl_npc_basespeed;
+		npc.StartPathing();
+
+		//int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		//if(iActivity > 0) npc.StartActivity(iActivity);
+
+		return Plugin_Stop;
+	}
+	
+	if(fl_combo_laser_throttle[npc.index] > GameTime)
+		return Plugin_Continue;
+	
+	fl_combo_laser_throttle[npc.index] = GameTime + 0.1;
+
+	//f_NpcTurnPenalty[npc.index] = 0.0001;
+
+	float Angles[3], startPoint[3];
+	WorldSpaceCenter(npc.index, startPoint);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+
+	float Radius = (npc.Anger ? 30.0 : 15.0);
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Custom(Angles, startPoint, 900.0);	// no pitch control
+	Laser.Radius = Radius;
+	Laser.Damage = (npc.Anger ? 15.0 : 10.0)*RaidModeScaling;
+	Laser.Bonus_Damage = (npc.Anger ? 45.0 : 30.0)*RaidModeScaling;
+	Laser.damagetype = DMG_PLASMA;
+	Laser.Deal_Damage(On_LaserHit_two);
+
+	float Start_Vec[3], End[3];
+	float flPos[3]; // original
+	float flAng[3]; // original
+	GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+	End = Laser.End_Point;
+	Start_Vec = flPos;
+
+	float diameter = ClampBeamWidth(Radius * 2.0);
+	float TE_Duration = TWIRL_TE_DURATION;
+
+	int color[4];
+	Ruina_Color(color);
+
+	//color[3] = 75;
+
+	float vecAngles[3];
+	MakeVectorFromPoints(Start_Vec, End, vecAngles);
+	GetVectorAngles(vecAngles, vecAngles);
+
+	float Offset_Start[3];
+
+	Get_Fake_Forward_Vec(100.0, vecAngles, Offset_Start, Start_Vec);
+
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
+
+
+	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, diameter, diameter, 0, 0.25, colorLayer1, 24);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start_Vec, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, diameter*0.4, diameter*0.8, 1, 0.25, colorLayer2, 3);
+	TE_SendToAll();
+	colorLayer3[3]+=100;
+	if(colorLayer3[3]>255)
+		colorLayer3[3] = 255;
+	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, diameter*0.5, diameter*0.5, 1, 2.0, colorLayer3, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start_Vec, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 66, TE_Duration, diameter*0.2, diameter*0.4, 1, 1.0, colorLayer4, 3);
+	TE_SendToAll();
+
+	diameter *=0.8;
+
+	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, 0.0, diameter, 0, 0.1, colorLayer1, 24);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.8, 1, 0.1, colorLayer2, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.6, 1, 1.0, colorLayer3, 3);
+	TE_SendToAll();
+	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.4, 1, 5.0, colorLayer4, 3);
+	TE_SendToAll();
+
+	return Plugin_Continue;
+}
+static void On_LaserHit_two(int client, int Target, int damagetype, float damage)
+{
+	Ruina_Add_Mana_Sickness(client, Target, 0.05, 25);
+}
+
+
+static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+{
+	float Direction[3];
+	
+	GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
+	ScaleVector(Direction, Range);
+	AddVectors(Pos, Direction, Vec_Target);
+}
+static bool Similar_Vec(float Vec1[3], float Vec2[3])
+{
+	bool similar = true;
+	for(int i=0 ; i < 3 ; i ++)
+	{
+		similar = Similar(Vec1[i], Vec2[i]);
+	}
+	return similar;
+}
+static bool Similar(float val1, float val2)
+{
+	return fabs(val1 - val2) < 2.0;
+}
+
+static void Twirl_Lines(Twirl npc, const char[] text)
+{
+	CPrintToChatAll("%s %s", npc.GetName(), text);
 }
