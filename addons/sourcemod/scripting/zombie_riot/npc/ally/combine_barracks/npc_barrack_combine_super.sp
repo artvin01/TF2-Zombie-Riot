@@ -140,7 +140,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	{
 		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Super_NPCDeath;
@@ -200,7 +200,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						}
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.05;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.34;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.24;
 						npc.m_flNextMeleeAttack = GameTime + (0.1 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -256,16 +256,16 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 
 	if(npc.m_bLostHalfHealth)
 	{
-		TrueArmor *= 0.9;
-		switch(GetRandomInt(1, 2))
+		TrueArmor *= 0.85;
+		switch(GetRandomInt(1, 4))
 		{
-			case 1:
+			case 1,2,3:
 			{
 
 			}
-			case 2:
+			case 4:
 			{
-				damage *= 0.6;
+				damage *= 0.1;
 				npc.PlayDeflectSound();
 				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}
