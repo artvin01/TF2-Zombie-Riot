@@ -134,7 +134,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
 				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= f_FreeplayDamageExtra;
+				enemy.ExtraDamage *= (f_FreeplayDamageExtra * 0.5);
 			}
 			case 10:	
 			{
@@ -145,30 +145,43 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_raidboss_nemesis");
 				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= f_FreeplayDamageExtra;
+				enemy.ExtraDamage *= (f_FreeplayDamageExtra * 0.5);
 			}
 			case 12:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= f_FreeplayDamageExtra;
+				enemy.Health = RoundToFloor(20000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraDamage *= (f_FreeplayDamageExtra * 0.5);
 			}
 			case 13:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_corruptedbarney");
 				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= f_FreeplayDamageExtra;
+				enemy.ExtraDamage *= (f_FreeplayDamageExtra * 0.5);
 			}
 			case 14:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_overlord_rogue");
+				enemy.Health = RoundToFloor(30000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.ExtraDamage *= (f_FreeplayDamageExtra);
+				enemy.Data = "music_do";
+				enemy.ExtraSpeed = 4.1;
+			}
+			case 15:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_void_unspeakable");
 				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraDamage *= f_FreeplayDamageExtra;
+				enemy.Data = "forth";
+			}
+			case 16:
+			{
+				enemy.Index = NPC_GetByPlugin("npc_vhxis");
+				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			default:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_true_fusion_warrior");
-				enemy.Health = RoundToFloor(6000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(7000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 		}
 		//raids otherwise have too much damage.
@@ -328,7 +341,7 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 
 	int rand = 6;
 	if((++RerollTry) < 4)
-		rand = GetURandomInt() % 57;
+		rand = GetURandomInt() % 60;
 	
 	char message[128];
 	switch(rand)
@@ -752,6 +765,16 @@ void Freeplay_SetupStart(int postWaves, bool wave = false)
 		{
 			strcopy(message, sizeof(message), "{red}The next enemy group will be Overlord The Last! Killing awards 5k credits!");
 			RaidFight = 14;
+		}
+		case 58:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Unspeakable! Killing awards 5k credits!");
+			RaidFight = 15;
+		}
+		case 59:
+		{
+			strcopy(message, sizeof(message), "{red}The next enemy group will be Vhxis! Killing awards 5k credits!");
+			RaidFight = 16;
 		}
 		default:
 		{

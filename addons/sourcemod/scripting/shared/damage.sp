@@ -1296,18 +1296,14 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					}
 
 					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
+						damage *= 0.40; //extra delay.
 #endif
-					if(i_NpcIsABuilding[victim])
-					{
-						damage *= 0.35; //cut damage in half and then some.
-					}	
 					
 					bool IsTargeter = false;
 #if defined ZR
 					if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
 					{
 						IsTargeter = true;
-						damage *= 2.0; // EXTRA BONUS DAMAGE GIVEN BEACUSE OF THE AI BEING SMARTER AND AVOIDING HITS BETTER! But not for facestabbers.
 					}
 #endif
 
