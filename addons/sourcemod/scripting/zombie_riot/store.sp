@@ -2285,6 +2285,12 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	int GrigoriCashLogic = CurrentCash;
 	if(GrigoriCashLogic > 70000)
 		GrigoriCashLogic = 70000;
+		
+	if(unlock)
+	{
+		if(GrigoriCashLogic < 4000)
+			GrigoriCashLogic = 4000;
+	}
 
 	for(int i; i < length; i++)
 	{
