@@ -103,9 +103,7 @@ methodmap Draedon < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -117,26 +115,40 @@ methodmap Draedon < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
+	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_SECONDARY");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_SECONDARY");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
 	}
 	
 	public Draedon(int client, float vecPos[3], float vecAng[3], int ally)
@@ -149,6 +161,8 @@ methodmap Draedon < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
@@ -245,6 +259,8 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	npc.AdjustWalkCycle();
 
 	Ruina_Add_Battery(npc.index, 1.0);
 

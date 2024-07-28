@@ -6,7 +6,6 @@ static bool ExtremeHeat;
 static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
-static bool StartCamping;
 static bool ForceNextHunter;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
@@ -55,9 +54,9 @@ bool Rogue_Paradox_Lastman()
 	return StartLastman;
 }
 
-void Rogue_Paradox_OnNewFloor()
+void Rogue_Paradox_OnNewFloor(int floor)
 {
-	if(StartCamping)
+	if(/*StartCamping && */floor < 3)
 		Rogue_AddExtraStage(1);
 }
 
@@ -98,7 +97,7 @@ bool Rogue_Paradox_JesusBlessing(int client, int &healing_Amount)
 			// Degen if no blessing or above 50% health
 			if(Jesus_Blessing[client] != 1 || (health > maxhealth / 2))
 			{
-				int damage = maxhealth / -100;
+				int damage = maxhealth / -400;
 				health += damage;
 				if(health < 1)
 				{
@@ -155,16 +154,6 @@ public void Rogue_Lastman_Remove()
 	StartLastman = false;
 }
 
-public void Rogue_Camping_Collect()
-{
-	StartCamping = true;
-}
-
-public void Rogue_Camping_Remove()
-{
-	StartCamping = false;
-}
-
 public void Rogue_Trading_Collect()
 {
 	Rogue_AddIngots(20, true);
@@ -185,18 +174,33 @@ public void Rogue_Something_Collect()
 
 public void Rogue_HeavyWind_Weapon(int entity)
 {
-	Attributes_SetMulti(entity, 103, 0.67);
+	if(Attributes_Has(entity, 103))
+		Attributes_SetMulti(entity, 103, 0.67);
 }
 
 public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
+		bool seaborn;
+		int i, weapon;
+		while(TF2_GetItem(entity, weapon, i))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_SEABORNMELEE:
+				{
+					seaborn = true;
+					break;
+				}
+			}
+		}
+
 		float value;
 
 		// -20% move speed
-		map.GetValue("107", value);
-		map.SetValue("107", value * 0.8);
+		map.GetValue("442", value);
+		map.SetValue("442", value * (seaborn ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -269,7 +273,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && !b_NpcIsInvulnerable[entity])
 		{
 			if(WinterTheme && WinterTheme.FindValue(i_NpcInternalId[entity]) != -1)
 				continue;
@@ -277,9 +281,9 @@ static Action Timer_ParadoxFrost(Handle timer)
 			int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 			if(health > 1)
 			{
-				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 400;
-				if(damage > 125)
-					damage = 125;
+				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 1600;
+				if(damage > 50)
+					damage = 50;
 				
 				health -= damage;
 				if(health < 1)

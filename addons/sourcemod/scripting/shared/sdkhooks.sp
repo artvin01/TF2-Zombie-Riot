@@ -1494,7 +1494,7 @@ public void OnPostThinkPost(int client)
 public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
 #if defined ZR
-	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
+	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
 	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
 	{
 		int i_damage = RoundToCeil(damage);
@@ -1638,7 +1638,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			//This kills the target.
 			MakePlayerGiveResponseVoice(victim, 2); //dead!
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamage 1");
 			damage = 2.0;
 			ClientPassAliveCheck[victim] = true;
 			return Plugin_Changed;	
@@ -1756,7 +1756,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	
 public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 1");
+	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 1");
 	//in on take damage, the client shouldnt be reciving this down phase, kill em.
 	if(ClientPassAliveCheck[victim])
 	{	
@@ -1772,14 +1772,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 	float GameTime = GetGameTime();
 	int flHealth = GetEntProp(victim, Prop_Send, "m_iHealth");
 	//damage is more then their health, they will die.
-	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 2, Health: %i, damage float %f damage int:%i ",flHealth, damage,RoundToCeil(damage));
+	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 2, Health: %i, damage float %f damage int:%i ",flHealth, damage,RoundToCeil(damage));
 	if(RoundToCeil(damage) >= flHealth)
 	{
-		PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
+		//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 3");
 		//the client has a suit, save them !!
 		if(i_HealthBeforeSuit[victim] > 0)
 		{
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 4");
 			damage = 0.0;
 			TF2_AddCondition(victim, TFCond_UberchargedCanteen, 1.0);
 			TF2_AddCondition(victim, TFCond_MegaHeal, 1.0);
@@ -1801,15 +1801,15 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			GiveCompleteInvul(victim, 2.0);
 			EmitSoundToAll("misc/halloween/spell_overheal.wav", victim, SNDCHAN_STATIC, 80, _, 0.8);
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 5");
 
 			return Plugin_Handled;
 		}
 		//if they were supposed to die, but had protection from the marchant kit, do this instead.
 		else if(Merchant_OnLethalDamage(attacker, victim))
 		{
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 6");
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 7");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 6");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 7");
 			damage = 0.0;
 			GiveCompleteInvul(victim, 0.1);
 			KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype, true);
@@ -1818,7 +1818,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 		//all checks passed, now go into here
 		else if((!LastMann && !b_IsAloneOnServer) || SpecterCheckIfAutoRevive(victim))
 		{
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 9");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 9");
 			//are they alone? is any player alive that isnt downed left?
 			bool Any_Left = false;
 			for(int client=1; client<=MaxClients; client++)
@@ -1831,7 +1831,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					}
 				}
 			}
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 10");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 10");
 			//there was no one left, they are the only one left, trigger last man.
 			//make sure they are in a wave.
 			if(!Any_Left && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
@@ -1842,15 +1842,15 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				// Die in Rogue, there's no lastman
 				return Rogue_NoLastman() ? Plugin_Changed : Plugin_Handled;
 			}
-			PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
+			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
 			i_AmountDowned[victim] += 1;
-			Rogue_PlayerDowned();
+			Rogue_PlayerDowned(victim);
 			
 			//there are players still left, down them.
 			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
 			{
-				PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
+				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
 				MakePlayerGiveResponseVoice(victim, 2); //dead!
 				i_CurrentEquippedPerkPreviously[victim] = i_CurrentEquippedPerk[victim];
@@ -1940,7 +1940,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			}
 			else
 			{
-				PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
+				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
 				i_AmountDowned[victim] = 0;
 				if(CurrentModifOn() == 2)
@@ -1949,8 +1949,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			}
 		}
 	}
-	PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
-	return Plugin_Continue;
+	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 14");
+	return Plugin_Changed;
 #endif	// ZR
 }
 

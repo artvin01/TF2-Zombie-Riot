@@ -1003,6 +1003,66 @@ methodmap CClotBody < CBaseCombatCharacter
 		public set(float TempValueForProperty) 	{ fl_JumpStartTimeInternal[this.index] = TempValueForProperty; }
 	}
 
+	property float m_flAbilityOrAttack0
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack1
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack2
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack3
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack4
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
+	property float m_flAbilityOrAttack5
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack6
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack7
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack8
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
+	}
+
+	property float m_flAbilityOrAttack9
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
+	}
+
+
 	property float m_flJumpStartTime
 	{
 		public get()							{ return fl_JumpStartTime[this.index]; }
@@ -1508,7 +1568,14 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		if(b_npcspawnprotection[this.index])
 		{
+#if defined ZR
+			if(!Rogue_Mode())
+				return 400.0;
+			else
+				return 1200.0;
+#else
 			return 400.0;
+#endif
 		}
 		float speed_for_return;
 		
@@ -3289,10 +3356,14 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 		float GibEnemyGive = 1.0;
+
+#if defined ZR || defined RPG
 		if(IsValidEntity(iWeapon))
 		{
 			GibEnemyGive *= Attributes_Get(iWeapon, 4012, 1.0);
 		}
+#endif
+
 		//MUST be at top, or else there can be heavy issues regarding infinite loops!
 		b_NpcHasDied[pThis] = true;
 
@@ -3411,16 +3482,16 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		{	
 			SetNpcToDeadViaGib(pThis);
 		}
-
 #if defined ZR
 		Waves_UpdateMvMStats();
 #endif
-
 	}
+	/*
 	else
 	{	
 		SetNpcToDeadViaGib(pThis);
 	}
+	*/
 }
 
 
@@ -3919,7 +3990,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 		}
 		case STEPTYPE_TANK:
 		{
-			if(IsWalkEvent(event, 5))
+			if(IsWalkEvent(event, 5) || IsWalkEvent(event))
 			{
 				if(npc.m_flDoSpawnGesture < GetGameTime())
 				{
@@ -4419,7 +4490,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	
 	if ( height < 35 )
 	{
-		additionalHeight = 50.0;
+		additionalHeight = 25.0;
 	}
 	
 	height += additionalHeight;
@@ -5617,20 +5688,20 @@ public void NpcBaseThink(int iNPC)
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.004;
+		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.002;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
-			HealingAmount *= 0.1;
+			HealingAmount *= 0.01;
 		}
 		else if(b_thisNpcIsABoss[iNPC])
 		{
-			HealingAmount *= 0.25;
+			HealingAmount *= 0.125;
 		}
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 		
-		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.5, 0.0, HEAL_SELFHEAL);
+		HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 	}
 #endif
 #if defined RPG
@@ -5766,40 +5837,44 @@ public void NpcOutOfBounds(CClotBody npc, int iNPC)
 			}
 			if(OutOfBounds)
 			{
-			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
-#if defined ZR
-				int target = 0;
-				for(int i=1; i<=MaxClients; i++)
-				{
-					if(IsClientInGame(i))
-					{
-						if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
-						{
-							target = i;
-							break;
-						}
-					}
-				}
-				
-				if(target)
-				{
-					float pos[3], ang[3];
-					GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
-					GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-					ang[2] = 0.0;
-					TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-				}
-				else
-#endif
-				{
-					RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
-				}
+				TeleportNpcToRandomPlayer(iNPC);
 			}
 		}
 	}
 #endif	// Non-RTS
 }
 
+void TeleportNpcToRandomPlayer(int iNPC)
+{
+			//	LogError("Allied NPC somehow got out of the map..., Cordinates : {%f,%f,%f}", flMyPos_Bounds[0],flMyPos_Bounds[1],flMyPos_Bounds[2]);
+#if defined ZR
+	int target = 0;
+	for(int i=1; i<=MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(IsPlayerAlive(i) && GetClientTeam(i)==2 && TeutonType[i] == TEUTON_NONE)
+			{
+				target = i;
+				break;
+			}
+		}
+	}
+	
+	if(target)
+	{
+		float pos[3], ang[3];
+		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos);
+		GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+		ang[2] = 0.0;
+		TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
+	}
+	else
+#endif
+	{
+		RequestFrame(KillNpc, EntIndexToEntRef(iNPC));
+	}
+}
 public void NpcStuckInSomethingOutOfBonunds(CClotBody npc, int iNPC)
 {
 	if (!b_DoNotUnStuck[iNPC])
@@ -6625,7 +6700,7 @@ public Action Did_They_Get_Suck(Handle cut_timer, int ref)
 }
 
 
-stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype=-1, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
+stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float start[3]=NULL_VECTOR, float angles[3]=NULL_VECTOR, int entindex=-1, int attachtype= 0, int attachpoint=-1, bool resetParticles=true, int customcolors=0, float color1[3]=NULL_VECTOR, float color2[3]=NULL_VECTOR, int controlpoint=-1, int controlpointattachment=-1, float controlpointoffset[3]=NULL_VECTOR, float delay=0.0)
 {
 	// find string table
 	int tblidx = FindStringTable("ParticleEffectNames");
@@ -6665,8 +6740,9 @@ stock void TE_Particle(const char[] Name, float origin[3]=NULL_VECTOR, float sta
 	TE_WriteVector("m_vecAngles", angles);
 	TE_WriteNum("m_iParticleSystemIndex", stridx);
 
-	if(entindex != -1)
-		TE_WriteNum("entindex", entindex);
+//must include -1, or else it freaks out!!!!
+//	if(entindex != -1)
+	TE_WriteNum("entindex", entindex);
 
 	if(attachtype != -1)
 		TE_WriteNum("m_iAttachType", attachtype);
@@ -7786,7 +7862,7 @@ stock bool IsValidAlly(int index, int ally)
 public int PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
 	int value;
-	Function func = func_NPCAnimEvent[actor.index];
+	Function func = func_NPCActorEmoted[actor.index];
 	if(func && func != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, func);
@@ -7921,6 +7997,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 		f_BackstabBossDmgPenaltyNpcTime[entity][client] = 0.0;
 	}
 #endif
+	for(int repeat; repeat <= 9; repeat++)
+	{
+		fl_AbilityOrAttack[entity][repeat] = 0.0;
+	}
 
 	fl_JumpStartTimeInternal[entity] = 0.0;
 	fl_JumpCooldown[entity] = 0.0;
@@ -8038,6 +8118,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
 	b_npcspawnprotection[entity] = false;
+	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
 	f_UnstuckSuckMonitor[entity] = 0.0;
@@ -9362,7 +9443,7 @@ public void MakeEntityRagdollNpc(int pThis)
 	float Push[3];
 	npc.m_vecpunchforce(Push, false);
 	ScaleVector(Push, 2.0);
-	if(Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
+	if(Push[0] > 100000.0 || Push[1] > 100000.0 || Push[2] > 100000.0 || Push[0] < -100000.0 || Push[1] < -100000.0 || Push[2] < -100000.0) //knockback is way too huge. set to 0.
 	{
 		Push[0] = 1.0;
 		Push[1] = 1.0;
@@ -9382,27 +9463,6 @@ public void MakeEntityRagdollNpc(int pThis)
 #endif
 
 	SDKCall_BecomeRagdollOnClient(pThis, Push);
-}
-
-
-public MRESReturn CTFBaseBoss_Ragdoll(int pThis, Handle hReturn, Handle hParams)  
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	float Push[3];
-	npc.m_vecpunchforce(Push, false);
-	ScaleVector(Push, 2.0);
-	if(Push[0] > 10000000.0 || Push[1] > 10000000.0 || Push[2] > 10000000.0 || Push[0] < -10000000.0 || Push[1] < -10000000.0 || Push[2] < -10000000.0) //knockback is way too huge. set to 0.
-	{
-		Push[0] = 1.0;
-		Push[1] = 1.0;
-		Push[2] = 1.0;
-	}
-	DHookSetParamVector(hParams, 2, view_as<float>(Push));
-//	RequestFrames(Kill_Npc, 5, EntIndexToEntRef(pThis));		
-	//Play Ragdolls correctly.
-		
-	DHookSetReturn(hReturn, true);
-	return MRES_ChangedOverride;
 }
 
 void RemoveNpcFromEnemyList(int npc, bool ingoresetteam = false)

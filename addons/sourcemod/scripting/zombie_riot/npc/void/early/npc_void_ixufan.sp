@@ -45,6 +45,13 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_slice_4.wav",
 };
 
+static int NPCId;
+
+int Ixufan_ID()
+{
+	return NPCId;
+}
+
 void VoidIxufan_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -56,12 +63,12 @@ void VoidIxufan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Ixufan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_ixufan");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_psychic");
 	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Void;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId = NPC_Add(data);
 }
 
 
@@ -110,7 +117,7 @@ methodmap VoidIxufan < CClotBody
 	
 	public VoidIxufan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "3000", ally, false, true));
+		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -181,11 +188,31 @@ public void VoidIxufan_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 320.0;
 		fl_TotalArmor[iNPC] = 0.85;
+		SetEntityRenderFx(npc.index, RENDERFX_DISTORT);
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_DISTORT);
+		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_DISTORT);
+		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_DISTORT);
+		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_DISTORT);
 	}
 	else
 	{
 		npc.m_flSpeed = 290.0;
 		fl_TotalArmor[iNPC] = 1.0;
+		SetEntityRenderFx(npc.index, RENDERFX_NONE);
+		SetEntityRenderFx(npc.m_iWearable1, RENDERFX_NONE);
+		SetEntityRenderFx(npc.m_iWearable2, RENDERFX_NONE);
+		SetEntityRenderFx(npc.m_iWearable3, RENDERFX_NONE);
+		SetEntityRenderFx(npc.m_iWearable4, RENDERFX_NONE);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 	}
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -263,6 +290,14 @@ public void VoidIxufan_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -282,7 +317,7 @@ void VoidIxufanSelfDefense(VoidIxufan npc, float gameTime, int target, float dis
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -321,8 +356,8 @@ void VoidIxufanSelfDefense(VoidIxufan npc, float gameTime, int target, float dis
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

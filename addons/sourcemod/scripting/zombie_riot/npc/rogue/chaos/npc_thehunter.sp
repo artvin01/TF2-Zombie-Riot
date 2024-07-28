@@ -81,11 +81,12 @@ methodmap TheHunter < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 0;
 
-		npc.m_flNextMeleeAttack = GetGameTime() + 15.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 5.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Is_a_Medic[npc.index] = true;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -135,6 +136,19 @@ public void TheHunter_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	if(Rogue_InSetup())
+	{
+		if(npc.m_iChanged_WalkCycle != 2)
+		{
+			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
+			npc.StopPathing();
+			npc.m_flSpeed = 0.0;
+		}
+		return;
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -217,6 +231,8 @@ public void TheHunter_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	SpawnMoney(entity);
 		
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
@@ -328,7 +344,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 3.05;
 		npc.m_flDoingAnimation = gameTime + 2.95;
-		npc.m_flNextMeleeAttack = gameTime + 15.0 - (Rogue_GetChaosLevel() * 3.0);
+		npc.m_flNextMeleeAttack = gameTime + 10.0 - (Rogue_GetChaosLevel() * 2.0);
 	}
 	return 1;
 }

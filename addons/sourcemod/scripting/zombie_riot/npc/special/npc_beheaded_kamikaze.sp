@@ -139,6 +139,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_bDissapearOnDeath = true;
 
 		if(ally == TFTeam_Blue)
 		{
@@ -160,8 +161,7 @@ methodmap BeheadedKamiKaze < CClotBody
 			}
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
-
-			npc.m_bDissapearOnDeath = true;
+			
 			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
 			{
 				//incase their random spawn code fails, they'll spawn here.
@@ -291,7 +291,7 @@ public void BeheadedKamiKaze_NPCDeath(int entity)
 {
 	BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(entity);
 	
-	StopSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
+	StopCustomSound(npc.index, SNDCHAN_VOICE, "zombie_riot/miniboss/kamikaze/become_enraged56.wav");
 	Kamikaze_DeathExplosion(entity);
 }
 

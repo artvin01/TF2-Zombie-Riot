@@ -84,9 +84,7 @@ methodmap Europis < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -98,18 +96,14 @@ methodmap Europis < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -126,7 +120,26 @@ methodmap Europis < CClotBody
 		#endif
 	}
 	
-	
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
+
 	public Europis(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Europis npc = view_as<Europis>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
@@ -137,6 +150,8 @@ methodmap Europis < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		
 		/*
@@ -228,6 +243,8 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	npc.AdjustWalkCycle();
+
 	Ruina_Add_Battery(npc.index, 1.5);
 
 	
@@ -245,14 +262,13 @@ static void ClotThink(int iNPC)
 		{
 			fl_ruina_battery[npc.index] = 0.0;
 			Europis_Spawn_Self(npc);
-			Master_Apply_Speed_Buff(npc.index, 100.0, 10.0, 1.75);	//a strong buff.
 		}
 		
 	}
 
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		fl_ruina_battery_timer[npc.index]=GameTime+7.5;
+		fl_ruina_battery_timer[npc.index]=GameTime+15.0;
 		if(Zombies_Currently_Still_Ongoing < RoundToFloor(NPC_HARD_LIMIT*0.5))
 		{
 			Europis_Spawn_Minnions(npc);
@@ -379,17 +395,7 @@ static void Europis_Spawn_Minnions(Europis npc)
 			int spawn_index;
 
 			char NpcName[50];
-
-			switch(GetRandomInt(0, 5))
-			{
-				case 0:
-					NpcName = "npc_ruina_magia";
-				case 3:
-					NpcName = "npc_ruina_lanius";
-				default: 
-					NpcName = "npc_ruina_dronian";
-			}
-			
+			NpcName = "npc_ruina_dronian";
 			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
 			maxhealth = RoundToNearest(maxhealth * 0.45);
 

@@ -134,12 +134,12 @@ public void FirstToTalk_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
+	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
 	
 	if(!npc.m_iTarget || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index, _, _, true);
+		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 	
@@ -184,7 +184,7 @@ public void FirstToTalk_ClotThink(int iNPC)
 		if(distance < 250000.0 && npc.m_flNextMeleeAttack < gameTime)	// 2.5 * 200
 		{
 			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-			if(IsValidEnemy(npc.index, target, true))
+			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
 

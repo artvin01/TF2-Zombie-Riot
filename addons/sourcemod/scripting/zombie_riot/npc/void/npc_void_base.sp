@@ -71,8 +71,11 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 		SpreadTicks = 0;
 		return Plugin_Stop;
 	}
+	int SpreadTicksMax = 24;
+	if(RaidbossIgnoreBuildingsLogic(0))
+		SpreadTicksMax = 6;
 
-	if(++SpreadTicks > 24)
+	if(++SpreadTicks > SpreadTicksMax)
 	{
 		SpreadTicks = (GetURandomInt() % 3) - 1;
 
@@ -303,15 +306,29 @@ public Action VoidArea_DamageTimer(Handle timer, DataPack pack)
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
+			CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
+			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
 			{
-				CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
-				if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+				NervousTouching[entity] = NervousTouching[0];
+			//	NervousLastTouch[entity] = NULL_AREA;
+				if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_VOID)
 				{
 					VoidWave_ApplyBuff(entity, 1.0);
-					NervousTouching[entity] = NervousTouching[0];
-					NervousLastTouch[entity] = NULL_AREA;
 				}
+			}
+		}
+	}
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!view_as<CClotBody>(client).m_bThisEntityIgnored && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client))
+		{
+			GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+
+			// Find entities touching infected tiles
+			CNavArea nav = TheNavMesh.GetNavArea(pos, 70.0);
+			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+			{
+				NervousTouching[client] = NervousTouching[0];
 			}
 		}
 	}
@@ -330,7 +347,7 @@ void Void_PlaceZRSpawnpoint(float SpawnPos[3], int WaveDuration = 2000000000, in
 		DispatchKeyValueVector(ref, "origin", SpawnPos);
 		DispatchSpawn(ref);
 	}
-	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax);
+	SDKHook_TeamSpawn_SpawnPostInternal(ref, SpawnsMax, 1);
 
 	if(WaveDuration >= 1 || ParticleToSpawn[0])
 	{
@@ -357,11 +374,14 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int SpawnRef = pack.ReadCell();
+	int ParticleRef = pack.ReadCell();
 	if(!IsValidEntity(SpawnRef))
 	{
+		if(IsValidEntity(ParticleRef))
+			RemoveEntity(ParticleRef);
+
 		return Plugin_Stop;
 	}
-	int ParticleRef = pack.ReadCell();
 	int RandomSeed = pack.ReadCell();
 	int WaveDuration = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedFallenWarrior())
@@ -381,6 +401,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 		pack.Position--;
 		//Set The current Random seed
 		pack.WriteCell(GetRandomSeedFallenWarrior(), false);
+		pack.Position++;
 	}
 	bool SpreadVoid = pack.ReadCell();
 	if(SpreadVoid)

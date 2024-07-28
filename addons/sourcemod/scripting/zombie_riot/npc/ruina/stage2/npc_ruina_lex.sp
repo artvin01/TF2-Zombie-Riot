@@ -29,13 +29,15 @@ static const char g_IdleSounds[][] = {
 static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry01.mp3",
 	"vo/medic_battlecry02.mp3",
-	"vo/medic_battlecry03.mp3",
-	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3",
+	"medic_autocappedcontrolpoint01.mp3",
+	"medic_autocappedcontrolpoint02.mp3",
+	"medic_autocappedcontrolpoint03.mp3"
 };
 
-static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+static const char g_LaserWebInvokeSounds[][] = {
+	"vo/medic_mvm_loot_godlike01.mp3",
+	"vo/medic_mvm_loot_godlike02.mp3",
+	"vo/medic_mvm_loot_godlike03.mp3"
 };
 static const char g_MeleeAttackSounds[][] = {
 	"weapons/demo_sword_swing1.wav",
@@ -50,13 +52,10 @@ static const char g_MeleeMissSounds[][] = {
 static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
-static char g_AngerSounds[][] = {	//todo: make it different!
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3",
+static char g_AngerSounds[][] = {	
+	"vo/medic_mvm_get_upgrade01.mp3",
+	"vo/medic_mvm_get_upgrade02.mp3",
+	"vo/medic_mvm_get_upgrade03.mp3"
 };
 
 #define LEX_LASER_LOOP_SOUND	"player/taunt_rocket_hover_loop.wav"//"weapons/gauss/chargeloop.wav"
@@ -83,7 +82,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_LaserWebInvokeSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
@@ -162,7 +161,7 @@ methodmap Lex < CClotBody
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 		
 		#if defined DEBUG_SOUND
@@ -171,7 +170,7 @@ methodmap Lex < CClotBody
 	}
 	
 	public void PlayTeleportSound() {
-		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
@@ -182,12 +181,10 @@ methodmap Lex < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -196,21 +193,17 @@ methodmap Lex < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -224,26 +217,24 @@ methodmap Lex < CClotBody
 	}
 
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
+		PrintToServer("CClot::PlayMeleeSound()");
 		#endif
 	}
-	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+	public void PlayLaserWebInvokeSound() {
+		EmitSoundToAll(g_LaserWebInvokeSounds[GetRandomInt(0, sizeof(g_LaserWebInvokeSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
+		PrintToServer("CClot::PlayLaserWebInvokeSound()");
 		#endif
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 
 	property int m_ially
@@ -355,6 +346,26 @@ methodmap Lex < CClotBody
 		}
 		return this.m_iTarget;
 	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -366,6 +377,8 @@ methodmap Lex < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_iChanged_WalkCycle = 1;
 		
 		//now all thats left is the, wings, and 2nd boss + fusing with 2nd boss!
 		/*
@@ -445,6 +458,8 @@ methodmap Lex < CClotBody
 
 		if(!npc.m_bSolo)
 			RequestFrame(Do_OnSpawn, npc.index);
+
+		npc.m_fbGunout = false;
 		
 		return npc;
 	}
@@ -490,6 +505,8 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	npc.AdjustWalkCycle();
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
@@ -522,6 +539,7 @@ static void ClotThink(int iNPC)
 		if(fl_ruina_battery_timer[npc.index] > GameTime)
 		{
 			npc.m_iState = 0;
+			npc.m_fbGunout = false;
 			Delete_Beacons(npc.index);
 			npc.m_flNextMeleeAttack = GameTime + 9.0;
 
@@ -662,6 +680,11 @@ static void ClotThink(int iNPC)
 					{
 						if(npc.m_iState < RUINA_LEX_LASER_BEACON_AMT && fl_multi_attack_delay[npc.index] < GameTime)
 						{
+							if(!npc.m_fbGunout)
+							{
+								npc.PlayLaserWebInvokeSound();
+								npc.m_fbGunout = true;
+							}
 							fl_ruina_in_combat_timer[npc.index]=GameTime+5.0;
 
 							fl_multi_attack_delay[npc.index] = GameTime + 0.2;
@@ -743,6 +766,7 @@ static void ClotThink(int iNPC)
 					else
 					{
 						npc.m_iState = 0;
+						npc.m_fbGunout = false;
 						Delete_Beacons(npc.index);
 						npc.m_flNextMeleeAttack = GameTime + 9.0;
 					}
@@ -839,7 +863,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		damage = 0.0;
 	}
 
-	if(!npc.Anger && Ratio < 0.75) 
+	if(!npc.Anger && Ratio < 0.5) 
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

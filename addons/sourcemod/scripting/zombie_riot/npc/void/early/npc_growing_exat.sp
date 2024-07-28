@@ -58,10 +58,10 @@ void GrowingExat_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Growing Exat");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_growing_exat");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
-	data.Flags = 0;
-	data.Category = Type_Void;
+	strcopy(data.Icon, sizeof(data.Icon), "scout_bat");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -112,7 +112,7 @@ methodmap GrowingExat < CClotBody
 	
 	public GrowingExat(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "3000", ally, false, true));
+		GrowingExat npc = view_as<GrowingExat>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.25", "2000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -137,7 +137,7 @@ methodmap GrowingExat < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 270.0;
+		npc.m_flSpeed = 240.0;
 		
 		
 		int skin = 1;
@@ -236,12 +236,12 @@ public Action GrowingExat_OnTakeDamage(int victim, int &attacker, int &inflictor
 		npc.m_blPlayHurtAnimation = true;
 	}
 	float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
-	ModelSize += 0.15;
+	ModelSize += 0.05;
 	if(ModelSize >= 3.0)
 	{
 		ModelSize = 3.0;
 	}
-	fl_TotalArmor[victim] = (3.0 / ModelSize) * 0.33;
+	fl_TotalArmor[victim] = ((3.0 / ModelSize) * 0.33) + 0.33;
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", ModelSize); // ZZZZ i sleep
 	
 	return Plugin_Changed;
@@ -255,6 +255,14 @@ public void GrowingExat_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -314,8 +322,8 @@ void GrowingExatSelfDefense(GrowingExat npc, float gameTime, int target, float d
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

@@ -84,29 +84,10 @@ int MedigunModeSet[MAXTF2PLAYERS];
 
 void Medigun_OnEntityCreated(int entity) 
 {
-	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
+//	g_DHookMedigunPrimary.HookEntity(Hook_Pre, entity, DHook_MedigunPrimaryAttack);
 	DHookEntity(g_DHookWeaponPostFrame, true, entity, .callback = OnMedigunPostFramePost);
 }
 
-static float f_MedigunDelayAttackThink[MAXTF2PLAYERS]={0.0, ...};
-
-public MRESReturn DHook_MedigunPrimaryAttack(int entity)
-{
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if (0 < owner <= MaxClients)
-	{
-		if(f_MedigunDelayAttackThink[owner] < GetGameTime())
-		{
-			f_MedigunDelayAttackThink[owner] = GetGameTime() + 0.05;
-		 	return MRES_Ignored;
-		}
-		else
-		{
-			return MRES_Supercede;	
-		}
-	}
-	return MRES_Ignored;
-}
 //static bool s_ForceGibRagdoll;
 static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
 
@@ -115,7 +96,6 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	int target = DHookGetParam(hParams, 1);
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
 	float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
-	
 	
 	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
 	{
@@ -195,7 +175,6 @@ stock float Target_Sucked_Long_Return(int entity)
 
 public void Medigun_ClearAll()
 {
-	Zero(f_MedigunDelayAttackThink);
 	Zero(medigun_heal_delay);
 	Zero(medigun_hud_delay);
 	for(int entity; entity<MAXENTITIES; entity++)
@@ -225,19 +204,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-				
-				if(!TF2_IsPlayerInCondition(owner, TFCond_Ubercharged) && !TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
-				{
-					flChargeLevel += 0.3*GetGameFrameTime();
-					
-					if (flChargeLevel > 1.0)
-					{
-						flChargeLevel = 1.0;
-					}
-					
-					SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-				}
+				MedigunChargeUber(owner, medigun, 1.0);
 				
 				if (!team)
 				{
@@ -299,15 +266,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(GetEntProp(healTarget, Prop_Data, "m_iHealth") <= 0 && !TF2_IsPlayerInCondition(owner, TFCond_Ubercharged) && !TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
-						flChargeLevel += 0.1;
-					
-						if (flChargeLevel > 1.0)
-						{
-							flChargeLevel = 1.0;
-						}
-						
-						SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-						
+						MedigunChargeUber(owner, medigun, 1.0);
 					}
 					
 				}
@@ -332,22 +291,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				if(team)
 				{
 					bool Is_Allied_Npc = false;
-					if(!b_NpcHasDied[healTarget]) //Give uber
-					{
-#if defined ZR
-						float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-						flChargeLevel += 0.12*GetGameFrameTime();
-					
-						if (flChargeLevel > 1.0)
-						{
-							flChargeLevel = 1.0;
-						}
-						
-						SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
-#endif
-						Is_Allied_Npc = true;
-					}
+					MedigunChargeUber(owner, medigun, 1.0);
 					
 					float Healing_Value = Attributes_Get(medigun, 8, 1.0);
 					Healing_Value *= Attributes_GetOnPlayer(owner, 8, true, true);
@@ -399,6 +343,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount_Self *= 0.33;
 						}
+#if defined ZR	
 						if(owner <= MaxClients && dieingstate[owner] > 0)
 						{
 							healing_Amount_Self = 0.0;
@@ -407,6 +352,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount = 0.0;
 						}
+#endif
 
 						float flMaxHealth;
 						//The healing is less then 1 ? Do own logic.
@@ -542,17 +488,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
-						
-				
-				flChargeLevel += 0.15*GetGameFrameTime();
-				
-				if (flChargeLevel > 1.0)
-				{
-					flChargeLevel = 1.0;
-				}
-				
-				SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+				MedigunChargeUber(owner, medigun, 2.0);
 				int new_ammo = GetAmmo(owner, 22);
 				
 				if (!team)
@@ -587,7 +523,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						
 					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
 				}
-				
+				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				if (flChargeLevel==1.0) 
 				{
 					SetEntProp(medigun, Prop_Send, "m_bChargeRelease", 1);
@@ -719,6 +655,29 @@ public void GB_Check_Ball(int owner, int weapon, bool crit)
 	Weapon_GB_Ball(owner, weapon, crit);
 }
 #endif
+
+void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUberDuration = false)
+{
+	if (IsInvuln(owner))
+		return;
+		
+	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
+
+	flChargeLevel += 0.10*GetGameFrameTime();
+	
+	if(RespectUberDuration)
+		flChargeLevel = flChargeLevel / MedigunGetUberDuration(owner);
+	
+
+	flChargeLevel *= extra_logic;
+	
+	if (flChargeLevel > 1.0)
+	{
+		flChargeLevel = 1.0;
+	}
+	
+	SetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel", flChargeLevel);
+}
 
 public Action Reset_suck_bonus(Handle cut_timer, int entity)
 {

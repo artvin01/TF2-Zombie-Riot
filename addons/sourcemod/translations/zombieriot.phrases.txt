@@ -3000,7 +3000,11 @@
 	}
 	"Blitzkrieg Desc"
 	{
-		"en"	"The machine that rapidly fires rockets and zaps players outside his range!"
+		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
+	}
+	"Blitzkrieg Hard Desc"
+	{
+		"en"	"Do not dare fight him."
 	}
 	"Xeno Desc"
 	{
@@ -3045,6 +3049,14 @@
 	"Khaml Desc"
 	{
 		"en"	"The judges of your actions have arrived."
+	}
+	"Void Desc"
+	{
+		"en"	"Help Kahmlstein agains the void!"
+	}
+	"Unspeakable Raid Desc"
+	{
+		"en"	"Directly after you release the void in rogue2..."
 	}
 	"CoF Normal Desc"
 	{

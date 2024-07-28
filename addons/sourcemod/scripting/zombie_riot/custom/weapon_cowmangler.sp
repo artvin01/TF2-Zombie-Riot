@@ -70,6 +70,21 @@ public void Weapon_Mangler(int client, int weapon, const char[] classname, bool 
 	}
 }
 
+
+public void Weapon_ManglerLol(int client, int weapon, const char[] classname, bool &result)
+{
+	BEAM_Targets_Hit[client] = 0.0;
+	
+	Strength[client] = 112.0;
+			
+	Strength[client] *= Attributes_Get(weapon, 1, 1.0);
+				
+	Strength[client] *= Attributes_Get(weapon, 2, 1.0);
+		
+	//TBB_Ability(client);
+	TBB_Ability_Mangler_1(client);
+}
+
 static void TBB_Precahce_Mangler_1()
 {
 	Beam_Laser = PrecacheModel("materials/sprites/laser.vmt", false);

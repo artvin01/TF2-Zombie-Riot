@@ -107,7 +107,6 @@ static Function ModFuncWeapon = INVALID_FUNCTION;
 
 static ConVar CvarSkyName;
 static char SkyNameRestore[64];
-static int FogEntity = INVALID_ENT_REFERENCE;
 
 static StringMap g_AllocPooledStringCache;
 
@@ -783,6 +782,13 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						if(!enemy.Credits)
 							nonBosses++;
 						
+						if(enemy.Team == 4 && Rogue_GetChaosLevel() > 3)
+						{
+							enemy.Team = TFTeam_Red;
+							enemy.Health /= 10;
+							enemy.ExtraDamage *= 5.0;
+						}
+						
 						wave.EnemyData = enemy;
 						round.Waves.PushArray(wave);
 					}
@@ -829,6 +835,74 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 				break;
 			}
 		}
+	}
+	else
+	{
+		bool RoundHadCustomMusic = false;
+	
+		if(MusicString1.Path[0])
+			RoundHadCustomMusic = true;
+				
+		if(MusicString2.Path[0])
+			RoundHadCustomMusic = true;
+
+		if(RaidMusicSpecial1.Path[0])
+		{
+			RoundHadCustomMusic = true;
+		}
+
+		Rounds.GetArray(0, round);
+
+		if(RoundHadCustomMusic) //only do it when there was actually custom music previously
+		{	
+			bool ReplaceMusic = false;
+			if(!round.music_round_1.Path[0] && MusicString1.Path[0])
+			{
+				ReplaceMusic = true;
+			}
+			if(round.music_round_1.Path[0])
+			{
+				if(!StrEqual(MusicString1.Path, round.music_round_1.Path))
+				{
+					ReplaceMusic = true;
+				}
+			}
+			//there was music the previous round, but there is none now.
+			if(!round.music_round_2.Path[0] && MusicString2.Path[0])
+			{
+				ReplaceMusic = true;
+			}
+			//they are different, cancel out.
+			if(round.music_round_1.Path[0])
+			{
+				if(!StrEqual(MusicString2.Path, round.music_round_2.Path))
+				{
+					ReplaceMusic = true;
+				}
+			}
+
+			//if it had raid music, replace anyways.
+			if(RaidMusicSpecial1.Path[0])
+				ReplaceMusic = true;
+			
+			if(ReplaceMusic)
+			{
+				for(int client=1; client<=MaxClients; client++)
+				{
+					if(IsClientInGame(client))
+					{
+						SetMusicTimer(client, GetTime() + RoundToNearest(round.Setup) + 2); //This is here beacuse of raid music.
+						Music_Stop_All(client);
+					}
+				}	
+			}
+		}
+
+		//This should nullfy anyways if nothings in it
+		RemoveAllCustomMusic();
+
+		MusicString1 = round.music_round_1;
+		MusicString2 = round.music_round_2;
 	}
 
 	Waves_UpdateMvMStats();
@@ -1297,10 +1371,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			CurrentCash += round.Cash;
-			if(round.Cash)
+			int CashGive = round.Cash;
+			CurrentCash += CashGive;
+
+			if(CashGive)
 			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave", round.Cash);
+				CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
 			}
 
 			ExcuteRelay("zr_wavedone");
@@ -1674,7 +1750,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 						EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 					
 
-					if(zr_allowfreeplay.BoolValue && i_WaveHasFreeplay >= 0)
+					if(zr_allowfreeplay.BoolValue && i_WaveHasFreeplay > 0)
 					{
 						if(i_WaveHasFreeplay == 1)
 						{
@@ -1743,7 +1819,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 				Citizen_SetupStart();
 			}
-			else if(wasLastMann)
+			else if(wasLastMann && !Rogue_Mode())
 			{
 				Cooldown = GetGameTime() + 30.0;
 
@@ -1764,7 +1840,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 
 			if(refreshNPCStore)
 				Store_RandomizeNPCStore(0);
-
 			
 			Store_RandomizeNPCStore(0, _, true);
 		}
@@ -2371,7 +2446,7 @@ static void UpdateMvMStatsFrame()
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
-			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", RoundToNearest(cashLeft));
+			SetEntProp(objective, Prop_Send, "m_nMvMWorldMoney", Rogue_GetChaosLevel() > 2 ? (GetURandomInt() % 99999) : RoundToNearest(cashLeft));
 			SetEntProp(objective, Prop_Send, "m_nMannVsMachineWaveEnemyCount", totalcount > activecount ? totalcount : activecount);
 
 			if(FakeMaxWaves)
@@ -2408,14 +2483,18 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
-		int acquired = RoundFloat(totalCash - cashLeft);
-		SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
+		if(Rogue_GetChaosLevel() < 3)
+		{
+			int acquired = RoundFloat(totalCash - cashLeft);
+		
+			SetEntData(mvm, m_currentWaveStats + 4, acquired, 4, true);	// nCreditsDropped
+			SetEntData(mvm, m_currentWaveStats + 8, acquired, 4, true);	// nCreditsAcquired
+			SetEntData(mvm, m_currentWaveStats + 12, 0, 4, true);	// nCreditsBonus
 
-		SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
-		SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
-		SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+			SetEntData(mvm, m_runningTotalWaveStats + 4, CurrentCash - StartCash, 4, true);	// nCreditsDropped
+			SetEntData(mvm, m_runningTotalWaveStats + 8, CurrentCash - StartCash, 4, true);	// nCreditsAcquired
+			SetEntData(mvm, m_runningTotalWaveStats + 12, GlobalExtraCash, 4, true);	// nCreditsBonus
+		}
 	}
 
 	//profiler.Stop();
@@ -2821,6 +2900,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		int postWaves = CurrentRound - length;
 		Freeplay_OnEndWave(postWaves, round.Cash);
+		
 		CurrentCash += round.Cash;
 
 		if(round.Cash)

@@ -111,9 +111,7 @@ methodmap Heliara < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -125,18 +123,14 @@ methodmap Heliara < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -157,11 +151,28 @@ methodmap Heliara < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	public Heliara(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -198,6 +209,7 @@ methodmap Heliara < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 		
+		npc.m_iChanged_WalkCycle = 1;
 		
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -264,6 +276,8 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
+	npc.AdjustWalkCycle();
+
 	Ruina_Add_Battery(npc.index, 1.0);
 
 	
@@ -286,12 +300,9 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		if(fl_multi_attack_delay[npc.index] < GameTime)
-		{
-			fl_multi_attack_delay[npc.index] = GameTime + 0.25;
-					
-			Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0, {255, 255, 255, 255});
-		}
+		
+		Helia_Healing_Logic(npc.index, 500, 500.0, GameTime, 1.0, {255, 255, 255, 255});
+
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -314,22 +325,15 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-						Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 
-					}
+					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
+
 				}
 				else	
 				{
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-						Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
-					}
+
+					Helia_Healing_Logic(npc.index, 300, 250.0, GameTime, 3.5, {255, 155, 155, 255});
+	
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -339,13 +343,9 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				if(fl_multi_attack_delay[npc.index] < GameTime)
-				{
-					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					
-					Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 
-				}
+					
+				Helia_Healing_Logic(npc.index, 150, 175.0, GameTime, 3.5, {255, 155, 155, 255});
 			
 			}	
 		}

@@ -792,16 +792,16 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 		
 		if(valueFormat[9] == 'a' && valueFormat[10] == 'd') // value_is_additive & value_is_additive_percentage
 		{
-			Attributes_Set(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0, true);
 		}
 		else if((valueFormat[9] == 'i' && valueFormat[18] == 'p')
 			|| (valueFormat[9] == 'p' && valueFormat[10] == 'e')) // value_is_percentage & value_is_inverted_percentage
 		{
-			Attributes_Set(entity, currentAttrib, 1.0);
+			Attributes_Set(entity, currentAttrib, 1.0, true);
 		}
 		else if(valueFormat[9] == 'o' && valueFormat[10] == 'r') // value_is_or
 		{
-			Attributes_Set(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0, true);
 		}
 		
 		NullifySpecificAttributes(entity,currentAttrib);
@@ -5057,7 +5057,9 @@ stock void ForcePlayerCrouch(int client, bool enable)
 			{
 				SetVariantInt(0);
 				AcceptEntityInput(client, "SetForcedTauntCam");
+#if defined ZR || defined RPG
 				ViewChange_Update(client);
+#endif
 			}
 			SetForceButtonState(client, false, IN_DUCK);
 			b_NetworkedCrouch[client] = false;

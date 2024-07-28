@@ -111,9 +111,7 @@ methodmap Helia < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -125,18 +123,14 @@ methodmap Helia < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -157,9 +151,7 @@ methodmap Helia < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
@@ -289,11 +281,8 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		if(fl_multi_attack_delay[npc.index] < GameTime)
-		{
-			Helia_Healing_Logic(npc.index, 500, 300.0, GameTime, 1.0, {255, 255, 255, 255});
-			fl_multi_attack_delay[npc.index] = GameTime + 0.25;
-		}	
+		Helia_Healing_Logic(npc.index, 500, 300.0, GameTime, 1.0, {255, 255, 255, 255});
+
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -317,19 +306,14 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						Helia_Healing_Logic(npc.index, 75, 150.0, GameTime, 3.5, {20, 150, 255, 150});
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					}
+					Helia_Healing_Logic(npc.index, 75, 150.0, GameTime, 3.5, {20, 150, 255, 150});
+					
 				}
 				else	
 				{
-					if(fl_multi_attack_delay[npc.index] < GameTime)
-					{
-						fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-						Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5, {20, 150, 255, 150});
-					}
+					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
+					Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5, {20, 150, 255, 150});
+
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 				}
@@ -339,12 +323,9 @@ static void ClotThink(int iNPC)
 				npc.StartPathing();
 				npc.m_bPathing = true;
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-				if(fl_multi_attack_delay[npc.index] < GameTime)
-				{
-					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});
-				}
-			
+
+				fl_multi_attack_delay[npc.index] = GameTime + 0.5;
+				Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});	
 			}	
 		}
 		else

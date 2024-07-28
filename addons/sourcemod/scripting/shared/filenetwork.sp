@@ -443,6 +443,23 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 		//LogError("Failed to delete file \"%s\"", file);
 }
 
+stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
+{
+	if(entity > 0 && entity <= MaxClients && channel == SNDCHAN_STATIC)
+	{
+		// Assume it's music
+		EmitCustomToClient(entity, sound, entity, channel, _, SND_STOP, volume);
+	}
+	else
+	{
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && !IsFakeClient(client))
+				EmitCustomToClient(client, sound, entity, channel, _, SND_STOP, volume);
+		}
+	}
+}
+
 stock bool EmitCustomToClient(int client, const char[] sound, int entity = SOUND_FROM_PLAYER, int channel = SNDCHAN_AUTO, int level = SNDLEVEL_NORMAL, int flags = SND_NOFLAGS, float volume = SNDVOL_NORMAL, int pitch = SNDPITCH_NORMAL, int speakerentity = -1, const float origin[3]=NULL_VECTOR, const float dir[3]=NULL_VECTOR, bool updatePos = true, float soundtime = 0.0)
 {
 #if defined UseDownloadTable

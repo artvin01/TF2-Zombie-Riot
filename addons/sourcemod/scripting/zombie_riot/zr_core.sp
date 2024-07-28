@@ -563,11 +563,6 @@ void ZR_PluginStart()
 	RegAdminCmd("sm_afk_knight", Command_AFKKnight, ADMFLAG_ROOT, "BRB GONNA MURDER MY MOM'S DISHES");
 	RegAdminCmd("sm_spawn_grigori", Command_SpawnGrigori, ADMFLAG_ROOT, "Forcefully summon grigori");
 	RegAdminCmd("sm_displayhud", CommandDebugHudTest, ADMFLAG_ROOT, "debug stuff");
-	
-	#if defined RUINA_BASE
-	RegAdminCmd("sm_spawn_ruina_ion", Command_Spawn_Ruina_Cannon, ADMFLAG_ROOT, "Spawns a ruina Ion Cannon"); 
-	RegAdminCmd("sm_kill_ruina_ion", Command_Kill_Ruina_Cannon, ADMFLAG_ROOT, "Kills all ruina Ion Cannon"); 
-	#endif
 	RegAdminCmd("sm_fake_death_client", Command_FakeDeathCount, ADMFLAG_GENERIC, "Fake Death Count");
 	
 	CookieXP = new Cookie("zr_xp", "Your XP", CookieAccess_Protected);
@@ -865,6 +860,7 @@ void ZR_ClientDisconnect(int client)
 	DataBase_ClientDisconnect(client);
 	Pets_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
+	ViewChange_ClientDisconnect(client);
 	Reset_stats_Irene_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
@@ -1508,7 +1504,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = NPC_CreateByName("noc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateByName("npc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 }

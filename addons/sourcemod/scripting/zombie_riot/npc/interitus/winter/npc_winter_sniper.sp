@@ -305,6 +305,9 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 			return 0;
 		}
 	}
+	if(RogueTheme == BlueParadox && b_npcspawnprotection[npc.index])
+		return 0;
+		
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
 

@@ -109,9 +109,7 @@ methodmap Aetheria < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -123,18 +121,14 @@ methodmap Aetheria < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayRangedSound() {
@@ -147,9 +141,36 @@ methodmap Aetheria < CClotBody
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayRangedReloadSound()");
-		#endif
+		
+	}
+
+	public void Set_WalkCycle()
+	{
+		bool Aimed = false;
+
+		float GameTime = GetGameTime(this.index);
+
+		if(this.m_flNextRangedAttack < (GameTime + 1.0))	//we are about to fire a arrow, aim.
+			Aimed = true;
+
+		if(Aimed)
+		{
+			if(!this.m_fbGunout)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_DEPLOYED_ITEM2");	//OR ACT_MP_DEPLOYED_ITEM2
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = true;
+			}
+		}
+		else
+		{
+			if(this.m_fbGunout)
+			{
+				int iActivity = this.LookupActivity("ACT_MP_RUN_ITEM2");
+				if(iActivity > 0) this.StartActivity(iActivity);
+				this.m_fbGunout = false;
+			}
+		}
 	}
 	
 	
@@ -271,7 +292,8 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			
+		npc.Set_WalkCycle();
+		
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
@@ -371,14 +393,6 @@ static void NPC_Death(int entity)
 
 	Ruina_NPCDeath_Override(npc.index);
 
-	int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
-
-	if(IsValidEntity(Laser_End))
-	{
-		RemoveEntity(Laser_End);
-		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
-	}
-
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
@@ -394,42 +408,6 @@ static void NPC_Death(int entity)
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 }
-
-static void On_LaserHit(int client, int target, int damagetype, float damage)
-{
-	Ruina_Add_Mana_Sickness(client, target, 0.01, 1);
-}
-
-static void Func_On_Proj_Touch(int projectile, int other)
-{
-	int owner = GetEntPropEnt(projectile, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(owner))
-	{
-		owner = 0;
-	}
-	else
-	{
-		Aetheria npc = view_as<Aetheria>(owner);
-		i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
-	}
-
-	if(IsValidEnemy(owner, other))
-	{
-		Ruina_Add_Mana_Sickness(owner, other, 0.5, 50);
-
-		float Dmg = fl_ruina_Projectile_dmg[projectile];
-		if(ShouldNpcDealBonusDamage(other))
-			Dmg = fl_ruina_Projectile_bonus_dmg[projectile];
-
-		float ProjectileLoc[3];
-		GetEntPropVector(projectile, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		
-		SDKHooks_TakeDamage(other, owner, owner, Dmg, DMG_PLASMA, -1, _, ProjectileLoc);
-	}
-
-	Ruina_Remove_Projectile(projectile);
-}
-
 static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//ty artvin
 {
 	int GetClosestEnemyToAttack;
@@ -443,125 +421,28 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
-
-	if(npc.m_flAttackHappens > gameTime)
-	{
-		npc.m_flSpeed = 0.0;
-		int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
-
-		if(!IsValidEntity(Laser_End))
-		{
-			npc.m_flAttackHappens = 0.0;
-			i_laz_entity[npc.index] = INVALID_ENT_REFERENCE;
-
-			return;
-		}
-
-		float Proj_Vec[3];
-		GetEntPropVector(Laser_End, Prop_Data, "m_vecAbsOrigin", Proj_Vec);
-
-		npc.FaceTowards(Proj_Vec, 20000.0);
-			
-		Ruina_Laser_Logic Laser;
-
-		Laser.client = npc.index;
-		Laser.Start_Point = Npc_Vec;
-		Laser.End_Point = Proj_Vec;
-
-		float dmg = 25.0;
-		float radius = 15.0;
-
-		Laser.Radius = radius;
-		Laser.Damage = dmg;
-		Laser.Bonus_Damage = dmg*6.0;
-		Laser.damagetype = DMG_PLASMA;
-
-		Laser.Deal_Damage(On_LaserHit);
-	}
-	else
-	{
-		npc.m_flSpeed = 200.0;
-	}
-
 	
 	if(flDistanceToTarget < (2250.0*2250.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
-			if(fl_ruina_battery[npc.index]>500.0)
+			fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
+			npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+			npc.PlayRangedSound();
+			//after we fire, we will have a short delay beteween the actual laser, and when it happens
+			//This will predict as its relatively easy to dodge
+			float projectile_speed = 2000.0;
+			//lets pretend we have a projectile.
+			if(flDistanceToTarget < 1250.0*1250.0)
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
+			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
-				fl_ruina_battery[npc.index] = 0.0;
-				npc.PlayHyperArrowSound();
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
-
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
-				npc.PlayRangedReloadSound();
-
-				Ruina_Projectiles Projectile;
-				float Projectile_Time = 2.5;
-
-				float projectile_speed = 2250.0;	
-				float target_vec[3];
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, _,target_vec);
-
-				Projectile.iNPC = npc.index;
-				Projectile.Start_Loc = Npc_Vec;
-				float Ang[3];
-				MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
-				GetVectorAngles(Ang, Ang);
-				Projectile.Angles = Ang;
-				Projectile.speed = projectile_speed;
-				Projectile.radius = 0.0;
-				Projectile.damage = 750.0;
-				Projectile.bonus_dmg = 900.0;
-				Projectile.Time = Projectile_Time;
-				Projectile.visible = false;
-				int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
-
-				if(IsValidEntity(Proj))
-				{
-					npc.m_flAttackHappens = gameTime + Projectile_Time;
-
-					i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
-				
-
-					float 	f_start = 3.5,
-							f_end = 2.5,
-							amp = 0.25;
-					
-					int r = 1,
-						g = 1,
-						b = 255;
-					
-					//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
-							
-					int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
-					i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
-				}
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
-			else
-			{
-				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-				npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
-				npc.PlayRangedSound();
-				//after we fire, we will have a short delay beteween the actual laser, and when it happens
-				//This will predict as its relatively easy to dodge
-				float projectile_speed = 2000.0;
-				//lets pretend we have a projectile.
-				if(flDistanceToTarget < 1250.0*1250.0)
-					PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-				{
-					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-				}
-				float DamageDone = 50.0;
-				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
-				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
-			}
-			
+			float DamageDone = 50.0;
+			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+			npc.FaceTowards(vecTarget, 20000.0);
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;	
 		}
 	}
 	else
@@ -581,87 +462,23 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
-					if(fl_ruina_battery[npc.index]>500.0)
+					npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
+					npc.PlayRangedSound();
+					//after we fire, we will have a short delay beteween the actual laser, and when it happens
+					//This will predict as its relatively easy to dodge
+					float projectile_speed = 2000.0;
+					//lets pretend we have a projectile.
+					if(flDistanceToTarget < 1250.0*1250.0)
+						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
+					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
-						int Laser_End = EntRefToEntIndex(i_laz_entity[npc.index]);
-
-						if(IsValidEntity(Laser_End))
-							return;
-
-						fl_ruina_battery[npc.index] = 0.0;
-						npc.PlayHyperArrowSound();
-
-						npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM2", true);
-
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 8.5;
-						npc.PlayRangedReloadSound();
-
-						
-
-						Ruina_Projectiles Projectile;
-						float Projectile_Time = 2.5;
-
-						float projectile_speed = 2500.0;	
-						float target_vec[3];
-						PredictSubjectPositionForProjectiles(npc, target, projectile_speed, _,target_vec);
-
-						Projectile.iNPC = npc.index;
-						Projectile.Start_Loc = Npc_Vec;
-						float Ang[3];
-						MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
-						GetVectorAngles(Ang, Ang);
-						Projectile.Angles = Ang;
-						Projectile.speed = projectile_speed;
-						Projectile.radius = 0.0;
-						Projectile.damage = 750.0;
-						Projectile.bonus_dmg = 900.0;
-						Projectile.Time = Projectile_Time;
-						Projectile.visible = false;
-						int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
-
-						if(IsValidEntity(Proj))
-						{
-							npc.m_flAttackHappens = gameTime + Projectile_Time;
-
-							i_laz_entity[npc.index] = EntIndexToEntRef(Proj);
-						
-
-							float 	f_start = 2.5,
-									f_end = 1.5,
-									amp = 0.25;
-							
-							int r = 1,
-								g = 1,
-								b = 255;
-
-							//int beam_start = EntRefToEntIndex(i_particle_ref_id[npc.index][0]);
-							
-							int beam = ConnectWithBeamClient(npc.m_iWearable7, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
-							i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
-						}
+						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
-					else
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
-						npc.PlayRangedSound();
-						//after we fire, we will have a short delay beteween the actual laser, and when it happens
-						//This will predict as its relatively easy to dodge
-						float projectile_speed = 2000.0;
-						//lets pretend we have a projectile.
-						if(flDistanceToTarget < 1250.0*1250.0)
-							PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-						if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-						{
-							WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-						}
-						float DamageDone = 50.0;
-						npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
-						npc.FaceTowards(vecTarget, 20000.0);
-						npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
-						npc.PlayRangedReloadSound();
-					}
-					
+					float DamageDone = 50.0;
+					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
+					npc.FaceTowards(vecTarget, 20000.0);
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 7.5;
+					npc.PlayRangedReloadSound();			
 				}
 			}
 		}

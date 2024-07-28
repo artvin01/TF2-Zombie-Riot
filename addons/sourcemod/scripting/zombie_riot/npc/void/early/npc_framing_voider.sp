@@ -58,10 +58,10 @@ void VoidFramingVoider_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Framing Voider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_framing_voider");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "soldier");
+	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -112,7 +112,7 @@ methodmap VoidFramingVoider < CClotBody
 	
 	public VoidFramingVoider(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		VoidFramingVoider npc = view_as<VoidFramingVoider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "700", ally));
+		VoidFramingVoider npc = view_as<VoidFramingVoider>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -252,6 +252,14 @@ public void VoidFramingVoider_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	FramingInfestorSpread(entity);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -340,8 +348,8 @@ void VoidFramingVoiderSelfDefense(VoidFramingVoider npc, float gameTime, int tar
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

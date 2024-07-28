@@ -412,7 +412,7 @@ methodmap Sensal < CClotBody
 		float flPos[3]; // original
 		float flAng[3]; // original
 		npc.GetAttachment("head", flPos, flAng);
-		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_fire", npc.index, "head", {0.0,0.0,0.0});
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_symbols_parent_ice", npc.index, "head", {0.0,0.0,0.0});
 
 		
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);

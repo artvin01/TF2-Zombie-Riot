@@ -517,8 +517,8 @@ static void TBB_Tick(int client)
 						if (damage < 0)
 							damage *= -1.0;
 
-						Damage_dealt[building] += (damage / BEAM_Targets_Hit[client]);
-						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
+						Damage_dealt[building] += (damage * BEAM_Targets_Hit[client]);
+						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF - 0.1); //Nerf the pierce by alot
 					}
 					else
 						BEAM_BuildingHit[building][repeats] = false;

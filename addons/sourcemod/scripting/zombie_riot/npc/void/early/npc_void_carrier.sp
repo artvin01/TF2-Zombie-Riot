@@ -58,10 +58,10 @@ void VoidCarrier_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Void Carrier");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_void_carrier");
-	strcopy(data.Icon, sizeof(data.Icon), "militia");
-	data.IconCustom = true;
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_gru");
+	data.IconCustom = false;
 	data.Flags = 0;
-	data.Category = Type_Interitus;
+	data.Category = Type_Void; 
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -111,7 +111,7 @@ methodmap VoidCarrier < CClotBody
 	
 	public VoidCarrier(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "700", ally));
+		VoidCarrier npc = view_as<VoidCarrier>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.1", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -186,9 +186,9 @@ public void VoidCarrier_ClotThink(int iNPC)
 		float Injured[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Injured); 
 		Injured[2] += 30.0;
-		b_NoGravity[npc.index] = true;
-		b_DoNotUnStuck[npc.index] = true;
-		b_CannotBeKnockedUp[npc.index] = true;
+		b_NoGravity[npc.m_iTargetAlly] = true;
+		b_DoNotUnStuck[npc.m_iTargetAlly] = true;
+		b_CannotBeKnockedUp[npc.m_iTargetAlly] = true;
 		SDKCall_SetLocalOrigin(npc.m_iTargetAlly, Injured); //keep teleporting just incase.
 		LiberiBuff[npc.m_iTargetAlly] = GetGameTime() + 0.09;
 		FreezeNpcInTime(npc.m_iTargetAlly, 0.09);
@@ -348,6 +348,14 @@ public void VoidCarrier_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -403,8 +411,8 @@ void VoidCarrierSelfDefense(VoidCarrier npc, float gameTime, int target, float d
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.35;
+				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
