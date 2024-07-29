@@ -409,7 +409,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				
 				if(healing > ammo)
 					healing = ammo;
-					
+
 				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
@@ -456,8 +456,8 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		int maxHealth = SDKCall_GetMaxHealth(client);
 		
 		int healing = maxHealth - health;
-		if(healing > 50)
-			healing = 50;
+		if(healing > 35)
+			healing = 35;
 
 		healing *= Attributes_Get(weapon, 8, 1.0);
 		healing *= Attributes_GetOnPlayer(client, 8, true, true);
@@ -468,9 +468,8 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		if(healing > ammo)
 			healing = ammo;
 		
-		healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+		healing = HealEntityGlobal(client, client, float(healing), 1.0, 0.5, _);
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-		ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 
 		PrintHintText(client,"You Healed yourself for %d HP!, you gain a 25 healing cooldown.", healing);
 
