@@ -153,7 +153,6 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.AddGesture("ACT_RELOAD_PISTOL");
 						npc.m_flNextRangedAttack = GameTime + 1.35;
 						npc.m_iAttacksTillReload = 18;
-						npc.m_flSpeed = 0.0;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)

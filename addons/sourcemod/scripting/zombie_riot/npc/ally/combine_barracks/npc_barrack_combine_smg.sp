@@ -154,7 +154,6 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 						npc.AddGesture("ACT_RELOAD_SMG1");
 						npc.m_flNextRangedAttack = GameTime + 1.75;
 						npc.m_iAttacksTillReload = 45;
-						npc.m_flSpeed = 0.0;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)

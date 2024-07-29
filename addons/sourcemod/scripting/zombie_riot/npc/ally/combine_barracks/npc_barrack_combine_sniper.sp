@@ -162,7 +162,6 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = GameTime + 3.0;
 						npc.m_iAttacksTillReload = 1;
 						npc.PlayPistolReload();
-						npc.m_flSpeed = 0.0;
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{

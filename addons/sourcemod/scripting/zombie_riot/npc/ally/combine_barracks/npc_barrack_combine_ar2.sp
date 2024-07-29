@@ -153,7 +153,6 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = GameTime + 1.85;
 						npc.m_iAttacksTillReload = 31;
 						npc.PlayPistolReload();
-						npc.m_flSpeed = 0.0;
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
