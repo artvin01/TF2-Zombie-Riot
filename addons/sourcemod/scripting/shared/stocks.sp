@@ -438,7 +438,17 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 	i_PreviousInteractedEntity[iClient] = iHit;
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+	if(i_IsABuilding[iHit])
+	{
+		//if a building is mounted, we grant extra range.
+		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
+		if(IsValidClient(Building_Index))
+		{
+			flDistance *= 1.35;
+		}
+	}
+
+	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < ((flDistance) * (flDistance)))
 		iReturn = iHit;
 	
 	delete hTrace;
@@ -2840,9 +2850,17 @@ int inflictor = 0)
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
-		if(spawnLoc[0] == 0.0)
+		if(entity > 0 && spawnLoc[0] == 0.0)
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
+			}
 		}
 	}
 	else //only nerf blue npc radius!
@@ -2852,9 +2870,17 @@ int inflictor = 0)
 		{
 			explosion_range_dmg_falloff = 0.8;
 		}
-		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		if(entity > 0 && spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
+			}
 		} 
 	}
 	
