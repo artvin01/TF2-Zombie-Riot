@@ -1258,7 +1258,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 		{
 
 #if defined ZR
-			if(IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
+			if(IsBehindAndFacingTarget(attacker, victim, weapon) || (b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim])
 #else
 			if(IsBehindAndFacingTarget(attacker, victim, weapon) || i_NpcIsABuilding[victim])
 #endif
@@ -1268,6 +1268,12 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 				{
+					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
+					{
+						PrintToChat(attacker, "You think you can circumvent this challange?! Shame on you!");
+						damage = 0.0;
+						return false;
+					}
 					i_HasBeenBackstabbed[victim] = true;
 						
 					float attack_speed;
@@ -1295,7 +1301,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 						attack_speed *= 0.5; //extra delay.
 					}
 
-					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
+					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 						damage *= 0.40; //extra delay.
 #endif
 					
@@ -1348,7 +1354,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 						TE_SendToAll();
 					}
 #if defined ZR
-					if(b_FaceStabber[attacker])
+					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
 					{
 						if(b_thisNpcIsARaid[victim])
 						{
@@ -1874,7 +1880,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_PernellBuff[victim] > GameTime) //hussar!
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
 	}
 	if(f_GodAlaxiosBuff[victim] > GameTime)
 	{
@@ -1977,7 +1983,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			}
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
-				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+				Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
 			}
 		}
 	}

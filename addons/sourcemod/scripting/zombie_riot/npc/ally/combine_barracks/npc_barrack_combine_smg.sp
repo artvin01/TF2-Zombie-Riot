@@ -103,14 +103,14 @@ methodmap Barrack_Combine_SMG < BarrackBody
 
 	public Barrack_Combine_SMG(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "150", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_SMG npc = view_as<Barrack_Combine_SMG>(BarrackBody(client, vecPos, vecAng, "175", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_SMG_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_SMG_ClotThink;
-		npc.m_flSpeed = 210.0;
+		npc.m_flSpeed = 235.0;
 
 
 		npc.m_iAttacksTillReload = 45;
@@ -154,7 +154,6 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 						npc.AddGesture("ACT_RELOAD_SMG1");
 						npc.m_flNextRangedAttack = GameTime + 1.75;
 						npc.m_iAttacksTillReload = 45;
-						npc.m_flSpeed = 0.0;
 						npc.PlayPistolReload();
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
@@ -163,7 +162,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 250000.0);
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -178,13 +177,14 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 15.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 45.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
-						delete swingTrace;				
+						delete swingTrace;		
+						npc.m_flSpeed = 200.0;			
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 200.0;
 					}
 				}
 			}
@@ -194,7 +194,7 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE_ANGRY_SMG1", "ACT_RUN_AIM_RIFLE", 225000.0,_, true);
 	}
 }
 

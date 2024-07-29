@@ -2154,6 +2154,11 @@ int LevelToXp(int lv)
 
 void GiveXP(int client, int xp)
 {
+	if(Waves_InFreeplay())
+	{
+		//no xp in freeplay.
+		return;
+	}
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])

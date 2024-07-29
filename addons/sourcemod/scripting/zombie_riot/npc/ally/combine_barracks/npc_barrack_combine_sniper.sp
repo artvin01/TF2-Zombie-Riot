@@ -103,7 +103,7 @@ methodmap Barrack_Combine_Sniper < BarrackBody
 
 	public Barrack_Combine_Sniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "235", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Sniper npc = view_as<Barrack_Combine_Sniper>(BarrackBody(client, vecPos, vecAng, "300", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -169,6 +169,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 800000.0);
+						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -185,7 +186,8 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 8500.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
-						delete swingTrace;				
+						delete swingTrace;		
+						npc.m_flSpeed = 150.0;		
 					}
 					else
 					{
@@ -199,7 +201,7 @@ public void Barrack_Combine_Sniper_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 175.0, "ACT_IDLE_ANGRY_RPG", "ACT_RUN_RPG", 750000.0,_, true);
 	}
 }
 
