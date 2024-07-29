@@ -5630,8 +5630,8 @@ public void NpcBaseThink(int iNPC)
 //	static float FakeRotationFix[3];
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
-	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
-	if(!TheNPCs.IsValidNPC(iNPC))
+	//tempfix didnt work
+	if(!TheNPCs.IsValidNPC(npc.GetBaseNPC()))
 	{
 		//delete, somehow they arent valid!
 		LogStackTrace("Somehow i was an invalid npc, look into me, my name was: %s, and i was in this dead state: %b, and i was i even an npcs : %b.",c_NpcName[iNPC], b_NpcHasDied[iNPC], b_ThisWasAnNpc[iNPC]);

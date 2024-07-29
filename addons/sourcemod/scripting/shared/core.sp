@@ -660,7 +660,7 @@ float Mana_Regen_Block_Timer[MAXTF2PLAYERS];
 float Mana_Loss_Delay[MAXTF2PLAYERS];
 float RollAngle_Regen_Delay[MAXTF2PLAYERS];
 int i_BarbariansMind[MAXPLAYERS + 1]={0, ...}; 				//830
-bool b_FaceStabber[MAXTF2PLAYERS];
+bool b_FaceStabber[MAXENTITIES];
 int Armor_Level[MAXPLAYERS + 1]={0, ...}; 				//701
 int Jesus_Blessing[MAXPLAYERS + 1]={0, ...}; 				//777
 int i_BadHealthRegen[MAXENTITIES]={0, ...}; 				//805
@@ -2799,6 +2799,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		i_PullTowardsTarget[entity] = 0;
 		f_PullStrength[entity] = 0.0;
 #if defined ZR
+		b_FaceStabber[entity] = false;
 		i_CustomWeaponEquipLogic[entity] = -1;
 		Resistance_for_building_High[entity] = 0.0;
 		Building_Mounted[entity] = 0;
