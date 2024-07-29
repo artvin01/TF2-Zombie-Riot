@@ -5631,6 +5631,14 @@ public void NpcBaseThink(int iNPC)
 //	npc.FaceTowards(FakeRotationFix, 1.0);
 	//issue: There is a bug where particles dont get updated to the newest position, this is a temp fix
 	//wait for kennzer to fix this, in the meantime, alter their rotation just a slight bit to fix it 
+	if(!TheNPCs.IsValidNPC(iNPC))
+	{
+		//delete, somehow they arent valid!
+		LogStackTrace("Somehow i was an invalid npc, look into me, my name was: %s, and i was in this dead state: %b, and i was i even an npcs : %b.",c_NpcName[iNPC], b_NpcHasDied[iNPC], b_ThisWasAnNpc[iNPC]);
+		SDKUnhook(iNPC, SDKHook_Think, NpcBaseThink);
+		RemoveEntity(iNPC);
+		return;
+	}
 	if(b_NpcHasDied[iNPC])
 	{
 		if(npc.GetPathFollower().IsValid())
@@ -5662,11 +5670,6 @@ public void NpcBaseThink(int iNPC)
 	}
 	SaveLastValidPositionEntity(iNPC);
 	NpcSetGravity(npc,iNPC);
-	
-	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
-	{
-		npc.GetBaseNPC().flGravity = 0.0;
-	}
 
 	if(f_TextEntityDelay[iNPC] < GetGameTime())
 	{
@@ -5733,11 +5736,18 @@ public void NpcBaseThink(int iNPC)
 
 public void NpcSetGravity(CClotBody npc, int iNPC)
 {
+	if(f_KnockbackPullDuration[iNPC] > GetGameTime())
+	{
+		npc.GetBaseNPC().flGravity = 0.0;
+	}
+	else
+	{
 #if defined ZR || defined RPG
-	npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = (Npc_Is_Targeted_In_Air(iNPC) || b_NoGravity[iNPC]) ? 0.0 : 800.0;
 #else
-	npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
+		npc.GetBaseNPC().flGravity = b_NoGravity[iNPC] ? 0.0 : 800.0;
 #endif
+	}
 }
 public void NpcOutOfBounds(CClotBody npc, int iNPC)
 {

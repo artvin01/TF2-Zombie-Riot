@@ -1874,7 +1874,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_PernellBuff[victim] > GameTime) //hussar!
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
 	}
 	if(f_GodAlaxiosBuff[victim] > GameTime)
 	{
@@ -1977,7 +1977,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 			}
 			if(FlameTail_Global_Buff() && IsWeaponKazimierz(Victim_weapon))
 			{	
-				Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
+				Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
 			}
 		}
 	}
