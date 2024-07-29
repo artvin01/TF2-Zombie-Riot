@@ -230,7 +230,7 @@ public void Barrack_Combine_Collos_ClotThink(int iNPC)
 							float vecHit[3];
 							TR_GetEndPosition(vecHit, swingTrace);
 							
-							float damage = 2800.0;
+							float damage = 2200.0;
 
 							if(npc.Anger)
 							{

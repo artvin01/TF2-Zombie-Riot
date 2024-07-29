@@ -104,7 +104,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
 
 	public Barrack_Combine_Shotgun(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "625", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Shotgun npc = view_as<Barrack_Combine_Shotgun>(BarrackBody(client, vecPos, vecAng, "650", "models/combine_soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
  	   	SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
-		SetVariantString("1.15");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		return npc;
@@ -176,10 +176,10 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2250.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2550.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}

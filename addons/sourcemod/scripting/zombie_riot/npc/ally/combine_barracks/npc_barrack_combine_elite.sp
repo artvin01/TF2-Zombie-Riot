@@ -114,7 +114,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 
 	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "375", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "425", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -174,7 +174,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						if(!npc.m_fbRangedSpecialOn)
 						{
 							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1000.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
+							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1250.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
 							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 							npc.PlayRangedAttackSecondarySound();
 							npc.m_fbRangedSpecialOn = true;
@@ -184,6 +184,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 300000.0);
+						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -204,7 +205,8 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 						{
 							npc.m_fbRangedSpecialOn = false;
-						}		
+						}	
+						npc.m_flSpeed = 220.0;	
 					}
 					else
 					{

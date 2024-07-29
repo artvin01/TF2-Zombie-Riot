@@ -103,14 +103,14 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 
 	public Barrack_Combine_Pistol(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "75", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Pistol npc = view_as<Barrack_Combine_Pistol>(BarrackBody(client, vecPos, vecAng, "100", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 190.0;
 
 		npc.m_iAttacksTillReload = 18;
 		npc.m_flNextRangedAttack = 0.0;
@@ -161,6 +161,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 300000.0);
+						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -175,13 +176,14 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.2 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 35.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 40.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
-						delete swingTrace;				
+						delete swingTrace;	
+						npc.m_flSpeed = 190.0;				
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 190.0;
 					}
 				}
 			}
@@ -190,8 +192,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
 	}
 }
 
