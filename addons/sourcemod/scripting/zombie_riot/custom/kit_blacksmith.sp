@@ -566,7 +566,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 							}
 							case 5:
 							{
-								if(Attributes_Get(weapon, 45, 0.0) > 0.0)
+								if(Attributes_Get(weapon, 45, 0.0) > 0.1)
 								{
 									RetryTillWin = 11;
 									TinkerSprayAndPray(tinker.Rarity, tinker);
@@ -1448,13 +1448,13 @@ static void TinkerHeavyTrigger(int rarity, TinkerEnum tinker)
 		}
 		case 1:
 		{
-			tinker.Value[0] = 1.3 + ExtraDamage;
+			tinker.Value[0] = 1.25 + ExtraDamage;
 			tinker.Value[1] = 1.15 + attackspeedSpeedLuck;
 			tinker.Value[2] = 1.15 + reloadSpeedLuck;
 		}
 		case 2:
 		{
-			tinker.Value[0] = 1.35 + ExtraDamage;
+			tinker.Value[0] = 1.3 + ExtraDamage;
 			tinker.Value[1] = 1.2 + attackspeedSpeedLuck;
 			tinker.Value[2] = 1.2 + reloadSpeedLuck;
 		}
@@ -1468,7 +1468,7 @@ static void TinkerSprayAndPray(int rarity, TinkerEnum tinker)
 	tinker.Attrib[1] = 2; //damage
 	
 	float BulletPetShotBonus = (0.1 * (tinker.Luck[0]));
-	float AccuracySuffering = (0.2 * (1.0 + (-1.0*(tinker.Luck[1]))));
+	float AccuracySuffering = (0.1 * (1.0 + (-1.0*(tinker.Luck[1]))));
 
 	switch(rarity)
 	{
