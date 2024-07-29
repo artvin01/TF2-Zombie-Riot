@@ -4,11 +4,7 @@ USE 32 BIT SERVER AS OF NOW!
 this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
 there are some things missing as its still a WIP fix:
 
--Killfeed bots
-
--MVM hud setting resetting
-
--Bob the second not listenign to commands
+-Killfeed bots (you can use sourceTV and that will work)
 
 -EDAlloc remover, i.e. edicts being reserved.
 
