@@ -395,10 +395,6 @@
 	{
 		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
 	}
-	"Xeno Malfunctioning Robot Desc"
-	{
-		"en"		"A Xeno Robot that overheats after hitting enough targets. Figment of Simon's Mind"
-	}
 	"Nazi Panzer Desc"
 	{
 		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
@@ -418,6 +414,10 @@
 	"Cured Father Grigori Desc"
 	{
 		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20%% off."
+	}
+	"Cured Purnell Desc"
+	{
+		"en"		"He was always on your side."
 	}
 	"Combine Mage Desc"
 	{
@@ -577,7 +577,11 @@
 	}
 	"Corrupted Barney Desc"
 	{
-		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ ̴̧͔̫̻̏̊̈́f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶̘̒̏ ̵̪̱͎̤̋͊͝͝M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
+		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚
+	}
+	"Xeno Malfunctioning Robot Desc"
+	{
+		"en"		"A Xeno Robot that overheats after hitting enough targets. Figment of Simon's Mind."
 	}
 	"Kahmlstein Desc"
 	{
@@ -1679,5 +1683,17 @@
 	"Old Times Desc"
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
+	}
+	"Sphynx Desc"
+	{
+		"en"		"Rumors say this beast was created in the Abandoned Lab."\n"It emits noxious gasses and heals zombies."
+	}
+	"Petrisis' Baron Desc"
+	{
+		"en"		"It's neverending hunger works very well against barricades."\n"The ability to regenerate health per barricade hit makes it very dangerous."\n"Not very effective against humans."
+	}
+	"Nightmare Desc"
+	{
+		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with."\n"One swipe of its claws is enough to put down almost any person."
 	}
 }

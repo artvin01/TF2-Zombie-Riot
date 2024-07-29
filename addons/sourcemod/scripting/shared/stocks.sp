@@ -2843,7 +2843,8 @@ int inflictor = 0)
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
-		maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
+		if(maxtargetshit == 10)
+			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
 	}
 #endif
 

@@ -572,7 +572,6 @@
 	{
 		"en" 		"Xeno Malfunctioning Robot"
 	}
-
 	"Nazi Panzer"
 	{
 		"en" 		"Nazi Panzer"
@@ -2849,5 +2848,17 @@
 	"Voided Erasus Desc"
 	{
 		"en"	"Fallen. to the void."
+	}
+	"Sphynx"
+	{
+		"en" 		"Sphynx"
+	}
+	"Petrisis' Baron"
+	{
+		"en" 		"Petrisis' Baron"
+	}
+	"Nightmare"
+	{
+		"en" 		"Nightmare"
 	}
 }
