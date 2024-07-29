@@ -102,14 +102,14 @@ methodmap Barrack_Combine_AR2 < BarrackBody
 
 	public Barrack_Combine_AR2(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(BarrackBody(client, vecPos, vecAng, "235", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_AR2 npc = view_as<Barrack_Combine_AR2>(BarrackBody(client, vecPos, vecAng, "275", "models/combine_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_AR2_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_AR2_ClotThink;
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 235.0;
 
 		npc.m_iAttacksTillReload = 31;
 		npc.m_flNextRangedAttack = 0.0;
@@ -153,6 +153,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = GameTime + 1.85;
 						npc.m_iAttacksTillReload = 31;
 						npc.PlayPistolReload();
+						npc.m_flSpeed = 0.0;
 					}
 					if(npc.m_flNextRangedAttack < GameTime)
 					{
@@ -160,6 +161,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 300000.0);
+						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -180,7 +182,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 220.0;
+						npc.m_flSpeed = 235.0;
 					}
 				}
 			}
@@ -190,7 +192,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 235.0, "ACT_IDLE", "ACT_WALK_AIM_RIFLE", 275000.0,_, true);
 	}
 }
 
