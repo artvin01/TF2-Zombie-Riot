@@ -3,10 +3,11 @@
 
 $modelname "zombie_riot/weapons/ruina_models_3_1.mdl"	//current one on the server: null
 
-$bodygroup "ruina_bow_3"	
+
+$bodygroup "wings_4"	
 {
 	blank
-	studio "v3/ruina_bow_3.smd"
+	studio "v3/wings_4.smd"
 }
 $bodygroup "wings_3"	
 {
@@ -72,6 +73,11 @@ $bodygroup "twirl_crest_4"
 {
 	blank
 	studio "v3/twirl_crest_4.smd"
+}
+$bodygroup "ruina_bow_3"	
+{
+	blank
+	studio "v3/ruina_bow_3.smd"
 }
 
 

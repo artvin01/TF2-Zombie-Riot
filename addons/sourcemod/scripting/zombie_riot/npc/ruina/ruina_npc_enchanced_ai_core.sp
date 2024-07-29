@@ -2728,7 +2728,12 @@ Names per stage:
 	Lunar Radiance: shoots ions on every player that also predict's thier pos.
 
 	
+	FINAL TODO LIST:
+	Make hud icons for: Twirl, Lanelot, Ruliana, Lex, Adiantum 
+	Make the cfg.
 
+	Nerf blitz army
+	Do stuff for blitz kit
 
 
 */

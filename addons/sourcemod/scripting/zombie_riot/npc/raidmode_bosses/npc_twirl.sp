@@ -31,7 +31,11 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/medic_battlecry02.mp3",
 	"vo/medic_battlecry03.mp3",
 	"vo/medic_battlecry04.mp3",
-	"vo/medic_battlecry05.mp3"
+	"vo/medic_battlecry05.mp3",
+	"vo/medic_item_secop_domination01.mp3",
+	"vo/medic_item_secop_idle03.mp3",
+	"vo/medic_item_secop_idle01.mp3",
+	"vo/medic_item_secop_idle02.mp3"
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -57,18 +61,23 @@ static char g_TeleportSounds[][] = {
 	"weapons/bison_main_shot.wav"
 };
 static const char g_AngerSounds[][] = {
-	"vo/medic_cartgoingforwardoffense01.mp3",
-	"vo/medic_cartgoingforwardoffense02.mp3",
-	"vo/medic_cartgoingforwardoffense03.mp3",
-	"vo/medic_cartgoingforwardoffense06.mp3",
-	"vo/medic_cartgoingforwardoffense07.mp3",
-	"vo/medic_cartgoingforwardoffense08.mp3"
+	"vo/medic_mvm_get_upgrade01.mp3",
+	"vo/medic_mvm_get_upgrade02.mp3",
+	"vo/medic_mvm_get_upgrade03.mp3",
+	"vo/medic_hat_taunts01.mp3",
+	"vo/medic_hat_taunts04.mp3",
+	"vo/medic_item_secop_round_start05.mp3",
+	"vo/medic_item_secop_round_start07.mp3",
+	"vo/medic_item_secop_kill_assist01.mp3"
 };
 static const char g_LaserComboSound[][] = {
 	"weapons/physcannon/superphys_launch1.wav",
 	"weapons/physcannon/superphys_launch2.wav",
 	"weapons/physcannon/superphys_launch3.wav",
 	"weapons/physcannon/superphys_launch4.wav"
+};
+static const char g_FractalSound[][] = {
+	"weapons/capper_shoot.wav"
 };
 
 #define TWIRL_TE_DURATION 0.08
@@ -88,6 +97,13 @@ static float fl_npc_basespeed;
 static int i_barrage_ammo[MAXENTITIES];
 static int i_lunar_ammo[MAXENTITIES];
 static float fl_lunar_timer[MAXENTITIES];
+static bool b_lastman[MAXENTITIES];
+static bool b_wonviatimer[MAXENTITIES];
+static bool b_wonviakill[MAXENTITIES];
+static bool b_allow_final[MAXENTITIES];
+static float fl_next_textline[MAXENTITIES];
+static float fl_raidmode_freeze[MAXENTITIES];
+static int i_current_Text[MAXENTITIES];
 
 
 static const char Cosmic_Launch_Sounds[][] ={
@@ -98,10 +114,11 @@ static const char Cosmic_Launch_Sounds[][] ={
 }; 
 
 static char gGlow1;	//blue
-#define TWIRL_THUMP_SOUND	"ambient/machines/thumper_hit.wav"
-#define TWIRL_COSMIC_GAZE_LOOP_SOUND1 "zombiesurvival/seaborn/loop_laser.mp3"//"weapons/physcannon/energy_sing_loop4.wav"
-#define TWIRL_COSMIC_GAZE_END_SOUND1 "weapons/physcannon/physcannon_drop.wav"
-#define TWIRL_COSMIC_GAZE_END_SOUND2 "ambient/energy/whiteflash.wav"
+#define TWIRL_THUMP_SOUND				"ambient/machines/thumper_hit.wav"
+#define TWIRL_COSMIC_GAZE_LOOP_SOUND1 	"weapons/physcannon/energy_sing_loop4.wav"
+#define TWIRL_RETREAT_LASER_SOUND 		"zombiesurvival/seaborn/loop_laser.mp3"
+#define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
+#define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
 
 void Twirl_OnMapStart_NPC()
 {
@@ -132,8 +149,9 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_RangeAttackSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheSoundArray(Cosmic_Launch_Sounds);
+	PrecacheSoundArray(g_FractalSound);
 	PrecacheSound(TWIRL_THUMP_SOUND, true);
-	//PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
+	PrecacheSound(TWIRL_COSMIC_GAZE_LOOP_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND1, true);
 	PrecacheSound(TWIRL_COSMIC_GAZE_END_SOUND2, true);
 
@@ -160,15 +178,7 @@ static const char TextColour[] = "{snow}";
 	fl_ruina_battery_timeout[npc.index]	//used for abilities that DON'T want to overlap, eg: Laser combo. Retreat Laser. Cosmic Gaze
 	Things to do:
 
-	Core: 
-		cosmetics. Wings.
-
-	retreat: stage 4 laser.
-	cosmic gaze: casting sounds?
-	Fractal casting sounds. also somekind of animation?. also make it so primary attack doesn't happen during fractal casting.
-
-	Text lines for: Death. Timer runout. Lifeloss. LastMann
-	Maybe text lines for the abilities?
+	sound effects for launcing a fractal
 */
 
 methodmap Twirl < CClotBody
@@ -191,6 +201,9 @@ methodmap Twirl < CClotBody
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayTeleportSound()");
 		#endif
+	}
+	public void PlayFractalSound() {
+		EmitSoundToAll(g_FractalSound[GetRandomInt(0, sizeof(g_FractalSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayIdleAlertSound() {
@@ -527,16 +540,40 @@ methodmap Twirl < CClotBody
 		Format(Name, sizeof(Name), "%s%s%s:", NameColour, c_NpcName[this.index], TextColour);
 		return Name;
 	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
+	}
 	
 	
 	public Twirl(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
+		npc.m_iChanged_WalkCycle = 1;
 		i_barrage_ammo[npc.index] = 0;
 		i_ranged_combo[npc.index] = 0;
 		i_melee_combo[npc.index] = 0;
 		i_lunar_ammo[npc.index] = 0;
+		b_lastman[npc.index] = false;
+		b_wonviatimer[npc.index] = false;
+		b_wonviakill[npc.index] = false;
 
 		c_NpcName[npc.index] = "Twirl";
 
@@ -564,6 +601,7 @@ methodmap Twirl < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 	
+		fl_next_textline[npc.index] = 0.0;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
@@ -583,7 +621,7 @@ methodmap Twirl < CClotBody
 		strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
 		Music_SetRaidMusic(music);
 		
-		bool final = StrContains(data, "final_item") != -1;
+		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -591,6 +629,7 @@ methodmap Twirl < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
+		func_NPCFuncWin[npc.index] = view_as<Function>(Twirl_WinLine);
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
@@ -652,13 +691,16 @@ methodmap Twirl < CClotBody
 		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
 		npc.m_iWearable2 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
-		/*npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
-		*/
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl", _, skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_medic.mdl", _, skin);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl", _, skin);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/tomb_readers/tomb_readers_medic.mdl", _, skin);
+		float flPos[3], flAng[3];
+		npc.GetAttachment("head", flPos, flAng);	
+		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
+		
 
-		SetVariantInt(RUINA_WINGS_3);
+		SetVariantInt(RUINA_WINGS_4);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
@@ -669,12 +711,13 @@ methodmap Twirl < CClotBody
 
 		if(wave <=15)
 		{
-			switch(GetRandomInt(0, 3))
+			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
 				case 1: Twirl_Lines(npc, "Oh the joy I will get from {crimson}fighting{snow} you all");
 				case 2: Twirl_Lines(npc, "From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}..");
 				case 3: Twirl_Lines(npc, "Let's see who dies {crimson}first{snow}!");
+				case 4: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");	//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
 			}
 		}
 		else if(wave <=30)
@@ -704,19 +747,20 @@ methodmap Twirl < CClotBody
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
 				case 1: Twirl_Lines(npc, "Ah, it was a {purple}briliant idea to not use my powers {snow}and only use this crest instead.");
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 3: Twirl_Lines(npc, "I hope your ready for this {purple}battle{snow}.");
+				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
 			}
 		}
 		else	//freeplay
 		{
 			switch(GetRandomInt(0, 3))
 			{
-				case 0: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");
 				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
 				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}ofcourse you do{snow}!");
 				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
 			}
 		}
+
+		i_current_Text[npc.index] = 0;
 		
 
 		npc.m_flDoingAnimation = 0.0;
@@ -730,22 +774,142 @@ methodmap Twirl < CClotBody
 	}
 }
 
+static void Twirl_WinLine(int entity)
+{
+	b_wonviakill[entity] = true;
+	Twirl npc = view_as<Twirl>(entity);
+	if(b_wonviatimer[npc.index])
+		return;
+
+	switch(GetRandomInt(0, 9))
+	{
+		case 0: Twirl_Lines(npc, "Wait, your all dead already??");
+		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
+		case 2: Twirl_Lines(npc, "Huh, I guess this was all you were capable of, a shame");
+		case 3: Twirl_Lines(npc, "I, as the empress, thank you for this wonderful time");
+		case 4: Twirl_Lines(npc, "Ahhh, that was a great workout, time to hit the showers");
+		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arest");
+		case 6: Twirl_Lines(npc, "Another one bites the dust");
+		case 7: Twirl_Lines(npc, "Ah foolish Mercenary's, maybe next time think about a proper strategy");
+		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know whats better? {crimson}Debuffs");
+		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
+	}
+
+}
+
 static void ClotThink(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
 	
 	float GameTime = GetGameTime(npc.index);
-	if(npc.m_flNextDelayTime > GameTime)
+
+	if(npc.m_flNextThinkTime == FAR_FUTURE && b_allow_final[npc.index])
 	{
+		GameTime = GetGameTime();	//No slowing it down!
+		RaidModeTime = fl_raidmode_freeze[npc.index] + GameTime;	//"freeze" the raid timer
+		if(npc.m_iChanged_WalkCycle != 99)
+		{
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+
+			npc.m_iChanged_WalkCycle = 99;
+			npc.AddActivityViaSequence("competitive_loserstate_idle");
+		}
+		if(fl_next_textline[npc.index] < GameTime)
+		{	
+			fl_next_textline[npc.index] = GameTime + 3.0;
+			switch(i_current_Text[npc.index])
+			{
+				case 0: Twirl_Lines(npc, "So then, you managed to beat me");
+				case 1: Twirl_Lines(npc, "Thats great, why you may ask?");
+				case 2: Twirl_Lines(npc, "Its quite simple, it shows that you've all gone far");
+				case 3: Twirl_Lines(npc, "You beat several world ending infections, alongside that gained many allies");
+				case 4: Twirl_Lines(npc, "But, the future holds many more hardships and dangers");
+				case 5: Twirl_Lines(npc, "And so it was decided that we the Ruanian's would test your skills");
+				case 6: Twirl_Lines(npc, "To see if your all ready for what the future holds");
+				case 7: Twirl_Lines(npc, "And well, you do, you are certainly ready for the future");
+				case 8: Twirl_Lines(npc, "But do keep this in mind, the ''Ruina'' that you fought here, was just a mere...");
+				case 9: Twirl_Lines(npc, "Heh.. Yeah, a mere fraction of what we are capable off");
+				case 10:
+				{
+					Twirl_Lines(npc, "Regardless take this, its something that might help in your future adventures");
+
+					npc.m_bDissapearOnDeath = true;
+
+					RaidBossActive = INVALID_ENT_REFERENCE;
+					func_NPCThink[npc.index] = INVALID_FUNCTION;
+
+					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+					for (int client = 0; client < MaxClients; client++)
+					{
+						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
+						{
+							Items_GiveNamedItem(client, "Twirl's Hairpins");
+							CPrintToChat(client,"You have been give {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
+						}
+					}
+					Twirl_Lines(npc, "Make sure to take good care of them... or else.");
+					return;
+				}
+			}
+			i_current_Text[npc.index]++;
+		}
 		return;
 	}
+
+	if(LastMann && !b_lastman[npc.index])
+	{
+		b_lastman[npc.index] = true;
+		switch(GetRandomInt(0, 6))
+		{
+			case 0: Twirl_Lines(npc, "Oh my, quite the situation your in here");
+			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
+			case 2: Twirl_Lines(npc, "I know your capable more then just this");
+			case 3: Twirl_Lines(npc, "Your the last one alive, {purple}but{snow} are you the strongest?");
+			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all..");
+			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
+			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
+		}
+	}
+	
 
 	if(RaidModeTime < GetGameTime())
 	{
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("lost via timer");
+		int wave = i_current_wave[npc.index];
+		b_wonviatimer[npc.index] = true;
+		if(wave <=60)
+		{
+			switch(GetRandomInt(0, 9))
+			{
+				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk");
+				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
+				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
+				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
+				case 4: Twirl_Lines(npc, "Times up, Ive got better things to do, so here, {crimson}have this parting gift{snow}!");
+				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, thats it, {crimson}im ending this");
+				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
+				case 7: Twirl_Lines(npc, "I don't even have any form of {aqua}healing{snow} or {aqua}shielding{snow}, yet you still took this long");
+				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
+				case 9: Twirl_Lines(npc, "Im bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+			}
+		}
+		else	//freeplay
+		{
+			switch(GetRandomInt(0, 1))
+			{
+				case 0: Twirl_Lines(npc, "Well conisdering you all were just some random's this was to be expected");
+				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
+			}
+		}
+		
+		return;
+	}
+
+	if(npc.m_flNextDelayTime > GameTime)
+	{
 		return;
 	}
 	
@@ -781,7 +945,7 @@ static void ClotThink(int iNPC)
 		i_NpcWeight[npc.index]=15;
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
-		switch(GetRandomInt(0, 5))
+		switch(GetRandomInt(0, 6))
 		{
 			case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
@@ -789,6 +953,7 @@ static void ClotThink(int iNPC)
 			case 3: Twirl_Lines(npc, "Ai, this is getting fun");
 			case 4: Twirl_Lines(npc, "Im extremely curious to see how you fair {purple}aggianst this");
 			case 5: Twirl_Lines(npc, "Ahahahah, The joy of battle, don't act like your not enjoying this");
+			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
 		}
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -811,6 +976,7 @@ static void ClotThink(int iNPC)
 				EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM3, npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 		}
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		fl_npc_basespeed = 310.0;
@@ -826,6 +992,8 @@ static void ClotThink(int iNPC)
 		Retreat(npc);
 	}
 
+	npc.AdjustWalkCycle();
+
 	npc.Handle_Weapon();	//adjusts weapon model/state depending on target
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	
@@ -834,7 +1002,7 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(!NpcStats_IsEnemySilenced(npc.index))
+		if(!NpcStats_IsEnemySilenced(npc.index) && npc.IsOnGround())
 		{
 			Fractal_Gram(npc, PrimaryThreatIndex);
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
@@ -1247,6 +1415,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		npc.StartPathing();
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		return Plugin_Stop;
@@ -1267,8 +1436,8 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			EmitSoundToAll(Cosmic_Launch_Sounds[GetRandomInt(0, sizeof(Cosmic_Launch_Sounds) - 1)], npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 
-			EmitCustomToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
-			EmitCustomToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
+			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			
 			b_animation_set[npc.index] = true;
 
@@ -1531,6 +1700,8 @@ static void Fractal_Gram(Twirl npc, int Target)
 	//Target close enough to hit
 	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 		return;
+
+	npc.PlayFractalSound();
 
 	npc.m_flNextMeleeAttack = GameTime + 1.0;
 
@@ -1815,6 +1986,8 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
+	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+
 	float Duration = 2.0;
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
@@ -1855,6 +2028,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		return Plugin_Stop;
@@ -2017,10 +2191,35 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+
+	if(b_allow_final[npc.index])
+	{
+		int Health_After_Damage = RoundToCeil(float(Health)-damage);
+		if(Health_After_Damage <= 5)
+		{
+			i_current_Text[npc.index] = 0;
+			npc.m_flNextThinkTime = FAR_FUTURE;
+			b_NpcIsInvulnerable[npc.index] = true;
+			damage = 0.0;
+
+			npc.m_flSpeed = 0.0;
+			f_NpcTurnPenalty[npc.index] = 0.0;
+
+			fl_raidmode_freeze[npc.index] = RaidModeTime - GetGameTime();
+
+			Kill_Abilities(npc);
+			return Plugin_Changed;
+		}
+	}
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
+
+	
 
 	if(npc.m_flNextChargeSpecialAttack > GetGameTime() && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
@@ -2029,7 +2228,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Changed;
 	}
 
-	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime()) //Anger after half hp
+	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime()) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -2078,6 +2277,13 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	return Plugin_Changed;
 }
 
+static void Kill_Abilities(Twirl npc)
+{
+	SDKUnhook(npc.index, SDKHook_Think, Retreat_Laser_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
+	SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
+}
+
 static void NPC_Death(int entity)
 {
 	Twirl npc = view_as<Twirl>(entity);
@@ -2085,6 +2291,8 @@ static void NPC_Death(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+
+	Kill_Abilities(npc);
 
 	Ruina_NPCDeath_Override(npc.index);
 
@@ -2098,6 +2306,54 @@ static void NPC_Death(int entity)
 		i_hand_particles[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+
+	if(!b_wonviakill[npc.index] && !b_wonviatimer[npc.index])
+	{	
+		int wave = i_current_wave[npc.index];
+		if(wave <=15)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
+				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
+				case 2: Twirl_Lines(npc, "Ahaha, toddles");
+				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
+			}
+		}
+		else if(wave <=30)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
+				case 1: Twirl_Lines(npc, "Oh my, I may have understimated you, this is great news");
+				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a litle treat, this has been great fun");
+				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
+			}
+		}
+		else if(wave <=45)
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
+				case 1: Twirl_Lines(npc, "Your quite strong, and so am I, can't wait for our next math");
+				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
+				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do belive our next and final battle will be the {crimson}most fun{snow}!");
+			}
+		}
+		else if(!b_allow_final[npc.index])
+		{
+			switch(GetRandomInt(0, 3))
+			{
+				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
+				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
+				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
+				case 3: Twirl_Lines(npc, "Toddles!");
+			}
+		}
+	}
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -2106,6 +2362,14 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	
 }
 static float fl_combo_laser_throttle[MAXENTITIES];

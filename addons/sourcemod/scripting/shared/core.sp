@@ -993,7 +993,7 @@ enum
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
 enum
 {
-	RUINA_QUINCY_BOW_3		= 1,			//1
+	RUINA_WINGS_4			= 1,			//1
 	RUINA_WINGS_3			= 2,			//2
 	RUINA_MAGIA_TOWER_1		= 4,			//3
 	RUINA_MAGIA_TOWER_2		= 8,			//4
@@ -1006,7 +1006,8 @@ enum
 	RUINA_TWIRL_CREST_3		= 1024,			//11
 	RUINA_TWIRL_MELEE_3		= 2048,			//12
 	RUINA_TWIRL_MELEE_4		= 4096,			//13
-	RUINA_TWIRL_CREST_4		= 8192			//14
+	RUINA_TWIRL_CREST_4		= 8192,			//14
+	RUINA_QUINCY_BOW_3		= 16384			//15
 }
 
 
