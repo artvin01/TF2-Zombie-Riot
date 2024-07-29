@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Shotgun < BarrackBody
  	   	SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
 		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_shotgun.mdl");
-		SetVariantString("1.15");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
 		return npc;
@@ -176,7 +176,7 @@ public void Barrack_Combine_Shotgun_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.5 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2550.0, 1), DMG_BULLET, -1, _, vecHit);
