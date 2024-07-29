@@ -109,7 +109,7 @@ methodmap Barrack_Combine_AR2 < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_AR2_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_AR2_ClotThink;
-		npc.m_flSpeed = 235.0;
+		npc.m_flSpeed = 210.0;
 
 		npc.m_iAttacksTillReload = 31;
 		npc.m_flNextRangedAttack = 0.0;
@@ -178,11 +178,11 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;		
-						npc.m_flSpeed = 235.0;		
+						npc.m_flSpeed = 210.0;		
 					}
 					else
 					{
-						npc.m_flSpeed = 235.0;
+						npc.m_flSpeed = 210.0;
 					}
 				}
 			}

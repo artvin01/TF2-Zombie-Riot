@@ -110,7 +110,7 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
-		npc.m_flSpeed = 230.0;
+		npc.m_flSpeed = 200.0;
 
 		npc.m_iAttacksTillReload = 18;
 		npc.m_flNextRangedAttack = 0.0;
@@ -179,11 +179,11 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 40.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;	
-						npc.m_flSpeed = 230.0;				
+						npc.m_flSpeed = 200.0;				
 					}
 					else
 					{
-						npc.m_flSpeed = 230.0;
+						npc.m_flSpeed = 200.0;
 					}
 				}
 			}
@@ -192,7 +192,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 230.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
 	}
 }
 

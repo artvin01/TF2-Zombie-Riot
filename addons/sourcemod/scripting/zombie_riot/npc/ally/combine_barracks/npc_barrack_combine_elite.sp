@@ -121,7 +121,7 @@ methodmap Barrack_Combine_Elite < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Elite_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Elite_ClotThink;
-		npc.m_flSpeed = 240.0;
+		npc.m_flSpeed = 220.0;
 
 		npc.m_iAttacksTillReload = 30;
 		npc.m_flNextRangedAttack = 0.0;
@@ -206,11 +206,11 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						{
 							npc.m_fbRangedSpecialOn = false;
 						}	
-						npc.m_flSpeed = 240.0;	
+						npc.m_flSpeed = 220.0;	
 					}
 					else
 					{
-						npc.m_flSpeed = 240.0;
+						npc.m_flSpeed = 220.0;
 					}
 				}
 			}
@@ -220,7 +220,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 240.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
 	}
 }
 
