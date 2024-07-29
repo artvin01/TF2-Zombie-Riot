@@ -18,7 +18,7 @@ static const char g_AdvAttackSounds[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
-#define STELLAR_WEAVER_THEME "#zombiesurvival/ruina/storm_weaver_test.mp3"
+//#define STELLAR_WEAVER_THEME "#zombiesurvival/ruina/storm_weaver_test.mp3"
 
 #define RUINA_STORM_WEAVER_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
 #define RUINA_STORM_WEAVER_HEAD_MODEL "models/props_moonbase/moon_gravel_crystal_blue.mdl" //"models/props_borealis/bluebarrel001.mdl"
@@ -73,7 +73,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_AttackSounds);
 	PrecacheSoundArray(g_AdvAttackSounds);
 
-	PrecacheSoundCustom(STELLAR_WEAVER_THEME);
+	//PrecacheSoundCustom(STELLAR_WEAVER_THEME);
 
 	Zero2(i_segment_id);
 	Zero(b_storm_weaver_noclip);
@@ -167,14 +167,14 @@ methodmap Storm_Weaver < CClotBody
 
 			RaidModeTime = FAR_FUTURE;
 
-			MusicEnum music;
+			/*MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), STELLAR_WEAVER_THEME);
 			music.Time = 350;
 			music.Volume = 1.0;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "''Servants of The Scourge'' - Theme of The Sentinels of The Devourer");
 			strcopy(music.Artist, sizeof(music.Artist), "DM DOKURO");
-			Music_SetRaidMusic(music);
+			Music_SetRaidMusic(music);*/
 		}
 
 		

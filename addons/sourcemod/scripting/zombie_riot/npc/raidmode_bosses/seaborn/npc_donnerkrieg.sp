@@ -164,8 +164,7 @@ bool b_schwert_ded;
 
 void Raidboss_Donnerkrieg_OnMapStart_NPC()
 {
-	Zero(fl_nightmare_cannon_core_sound_timer);
-	donner_sea_created=false;
+	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSoundCustom(g_nightmare_cannon_core_sound[i]);	}	//need it to be precached since its used elsewhere
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Stella");
@@ -182,13 +181,14 @@ void Raidboss_Donnerkrieg_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
+	Zero(fl_nightmare_cannon_core_sound_timer);
+	donner_sea_created=false;
+
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_heavens_fall_strike_sound);
-
-	for (int i = 0; i < (sizeof(g_nightmare_cannon_core_sound));   i++) { PrecacheSoundCustom(g_nightmare_cannon_core_sound[i]);	}
 
 	g_ProjectileModelRocket = PrecacheModel("models/props_moonbase/moon_gravel_crystal_blue.mdl");
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");

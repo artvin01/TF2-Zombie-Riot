@@ -2228,6 +2228,7 @@ enum struct Ruina_Laser_Logic
 	int client;
 	float Start_Point[3];
 	float End_Point[3];
+	float Angles[3];
 	float Radius;
 	float Damage;
 	float Bonus_Damage;
@@ -2269,6 +2270,7 @@ enum struct Ruina_Laser_Logic
 			this.Start_Point = startPoint;
 			this.End_Point = Loc;
 			this.trace_hit=true;
+			this.Angles = Angles;
 		}
 		else
 		{
@@ -2291,6 +2293,7 @@ enum struct Ruina_Laser_Logic
 			}
 			this.Start_Point = startPoint;
 			this.End_Point = Loc;
+			this.Angles = Angles;
 			this.trace_hit=true;
 		}
 		else
@@ -2723,10 +2726,6 @@ Names per stage:
 	Laser Punch: the same + wherever the projectile hits a ION strike happens a second later
 	Cosmic Gaze: the same
 	Lunar Radiance: shoots ions on every player that also predict's thier pos.
-
-	gains a phase 2:
-	upon reaching 25% hp, she will summon 4 magia anchors. these anchors will begin summoning ruina npc's. all of these npc's will rush towards her to be turned into healing for the raid. One time.
-	 
 
 	
 
