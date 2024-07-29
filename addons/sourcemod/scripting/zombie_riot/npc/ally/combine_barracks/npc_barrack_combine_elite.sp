@@ -205,7 +205,8 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 						{
 							npc.m_fbRangedSpecialOn = false;
-						}		
+						}	
+						npc.m_flSpeed = 240.0;	
 					}
 					else
 					{

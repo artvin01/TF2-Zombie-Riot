@@ -179,7 +179,8 @@ public void Barrack_Combine_SMG_ClotThink(int iNPC)
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 45.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
-						delete swingTrace;				
+						delete swingTrace;		
+						npc.m_flSpeed = 235.0;			
 					}
 					else
 					{
