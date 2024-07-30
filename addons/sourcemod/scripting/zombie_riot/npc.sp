@@ -612,6 +612,11 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+
+	// Survival
+	Nightmare_OnMapStart_NPC();
+	PetrisBaron_OnMapStart_NPC();
+	Sphynx_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1430,6 +1435,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
+
+#include "zombie_riot/npc/survival/npc_nightmare.sp"
+#include "zombie_riot/npc/survival/npc_petrisisbaron.sp"
+#include "zombie_riot/npc/survival/npc_sphynx.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 {
