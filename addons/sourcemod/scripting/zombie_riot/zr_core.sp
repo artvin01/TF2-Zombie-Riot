@@ -193,7 +193,6 @@ enum
 
 enum
 {
-	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -209,6 +208,7 @@ enum
 	Type_Interitus,
 	Type_BlueParadox,
 	Type_Void,
+	Type_Ruina,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -415,6 +415,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/steamworks.sp"
+#include "zombie_riot/zsclassic.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
@@ -602,6 +603,7 @@ void ZR_MapStart()
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
+	Classic_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -2159,6 +2161,7 @@ void GiveXP(int client, int xp)
 		//no xp in freeplay.
 		return;
 	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
@@ -2234,7 +2237,7 @@ void PlayerApplyDefaults(int client)
 		
 		if(point_difference > 0)
 		{
-			if(Waves_GetRound() +1 > 60)
+			if(Classic_Mode() || Waves_GetRound() > 59)
 			{
 				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
 			}
