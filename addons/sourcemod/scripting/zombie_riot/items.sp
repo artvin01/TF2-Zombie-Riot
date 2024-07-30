@@ -31,6 +31,7 @@ static const char Categories[][] =
 	"Interitus Alliances",
 	"Chaos Allience",
 	"Voided Subjects",
+	"Ruina",
 	//"Blue Paradox"
 };
 
