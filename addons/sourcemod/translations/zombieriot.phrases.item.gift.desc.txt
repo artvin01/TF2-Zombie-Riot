@@ -1686,14 +1686,14 @@
 	}
 	"Sphynx Desc"
 	{
-		"en"		"Rumors say this beast was created in the Abandoned Lab."\n"It emits noxious gasses and heals zombies."
+		"en"		Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies.
 	}
 	"Petrisis' Baron Desc"
 	{
-		"en"		"It's neverending hunger works very well against barricades."\n"The ability to regenerate health per barricade hit makes it very dangerous."\n"Not very effective against humans."
+		"en"		It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans.
 	}
 	"Nightmare Desc"
 	{
-		"en"		"Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with."\n"One swipe of its claws is enough to put down almost any person."
+		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
 	}
 }
