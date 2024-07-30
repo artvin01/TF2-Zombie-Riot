@@ -645,6 +645,8 @@ static void ClotThink(int iNPC)
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
 		{
 			int Enemy_I_See;
+
+			npc.StartPathing();
 				
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
