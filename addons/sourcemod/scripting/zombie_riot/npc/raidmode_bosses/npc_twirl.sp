@@ -1404,9 +1404,6 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 	SDKHook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
-
-
-
 }
 static Action Cosmic_Gaze_Tick(int iNPC)
 {
@@ -1949,7 +1946,7 @@ static void Retreat(Twirl npc)
 	if(wave<=15)	//stage 1: a simple ion where she was.
 	{
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 125.0 : 70.0);
+		float dmg = (npc.Anger ? 300.0 : 125.0);
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -1960,7 +1957,7 @@ static void Retreat(Twirl npc)
 		float aoe_check = (npc.Anger ? 250.0 : 175.0);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 125.0 : 70.0);
+		float dmg = (npc.Anger ? 300.0 : 125.0);
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -1970,7 +1967,7 @@ static void Retreat(Twirl npc)
 	{
 		float aoe_check = (npc.Anger ? 350.0 : 250.0);
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 125.0 : 70.0);
+		float dmg = (npc.Anger ? 300.0 : 125.0);
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -2191,7 +2188,7 @@ static void AoeIonCast(int entity, int victim, float damage, int weapon)
 	Twirl npc = view_as<Twirl>(entity);
 
 	float radius = (npc.Anger ? 325.0 : 250.0);
-	float dmg = (npc.Anger ? 45.0 : 30.0);
+	float dmg = (npc.Anger ? 500.0 : 125.0);
 	dmg *= RaidModeScaling;
 	float Target_Vec[3];
 	WorldSpaceCenter(victim, Target_Vec);
