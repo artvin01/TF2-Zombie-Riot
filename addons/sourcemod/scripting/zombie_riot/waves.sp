@@ -1996,7 +1996,7 @@ void Waves_AddNextEnemy(const Enemy enemy, bool random = false)
 			{
 				index = GetURandomInt() % index;
 
-				Enemies.ShiftUp(index)
+				Enemies.ShiftUp(index);
 				Enemies.SetArray(index, enemy);
 				return;
 			}

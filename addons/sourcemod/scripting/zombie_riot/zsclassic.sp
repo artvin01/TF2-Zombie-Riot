@@ -3,10 +3,6 @@
 
 static bool InClassicMode;
 
-void Classic_PluginStart()
-{
-}
-
 bool Classic_Mode()	// If ZS-Classic is enabled
 {
 	return InClassicMode;
@@ -14,7 +10,7 @@ bool Classic_Mode()	// If ZS-Classic is enabled
 
 void Classic_MapStart()
 {
-	InRogueMode = false;
+	InClassicMode = false;
 }
 
 void Classic_Enable()

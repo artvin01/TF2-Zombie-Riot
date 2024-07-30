@@ -415,6 +415,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/steamworks.sp"
+#include "zombie_riot/zsclassic.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
 #include "zombie_riot/custom/healing_medkit.sp"
@@ -602,6 +603,7 @@ void ZR_MapStart()
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
+	Classic_MapStart();
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
