@@ -565,8 +565,8 @@ int SSB_DefaultSpecial[4] = { 0, 0, 0, 0 };				//The Spooky Special slot to defa
 float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB will use his next Spooky Special.
 //float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 //float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
-float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 10.0 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 10.0 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 20.0 };	//The minimum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 20.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -618,11 +618,11 @@ float Hell_Velocity[4] = { 360.0, 380.0, 400.0, 420.0 };			//Skull velocity.
 float Hell_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
 float Hell_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };					//Skull base damage.
 float Hell_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };					//Amount to multiply damage dealt by skulls to entities.
-float Hell_Radius[4] = { 30.0, 40.0, 50.0, 60.0 };					//Skull explosion radius.
+float Hell_Radius[4] = { 20.0, 20.0, 20.0, 20.0 };					//Skull explosion radius.
 float Hell_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };			//Skull falloff, based on radius.
 float Hell_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 			//Amount to multiply explosion damage for each target hit.
-float Hell_HomingAngle[4] = { 90.0, 92.5, 92.5, 95.0 };				//Skulls' maximum homing angle.
-float Hell_HomingPerSecond[4] = { 9.0, 9.25, 9.5, 10.0 };			//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Hell_HomingAngle[4] = { 70.0, 72.5, 72.5, 75.0 };				//Skulls' maximum homing angle.
+float Hell_HomingPerSecond[4] = { 7.0, 7.25, 7.5, 8.0 };			//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
 float Hell_Spread[4] = { 9.0, 10.0, 11.0, 12.0 };					//Random spread of skulls.
 float Hell_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };				//Distance to spread skulls apart when they spawn.
 float Hell_SpinSpeed[4] = { 2.0, 4.0, 6.0, 8.0 };					//Amount to rotate the firing angle per frame.
@@ -674,10 +674,8 @@ float Warp_Range[4] = { 1000.0, 1200.0, 1400.0, 1600.0 };	//Max distance away th
 
 //TO-DO:
 //	- The following abilities still need their base functionality coded:
-//		- Hell is Here (needs animations in order to be coded)
-//		- MEGA-MORTIS (ditto)
+//		- MEGA-MORTIS (needs animations too)
 //	- The following abilities need animations:
-//		- Hell is Here (Wind-Up, Intro Delay Loop, Active Loop)
 //		- MEGA-MORTIS (Wind-Up, Intro Delay Loop, Swing)
 //		- Death Magnetic (Wind-Up, Intro Delay, Activation, attach particle to hand while charging and have player tether beams emit from that hand)
 //		- Necrotic Bombardment, Ring of Tartarus (Finger Snap Gesture, activation beams should spawn from the hand)
@@ -3413,7 +3411,6 @@ public void Hell_ShootWave(SupremeSpookmasterBones ssb, float pos[3], float ang[
 		for (int vec = 0; vec < 3; vec++)
 			randAng[vec] += GetRandomFloat(-Hell_Spread[SSB_WavePhase], Hell_Spread[SSB_WavePhase]);
 
-		ParticleEffectAt(randPos, PARTICLE_GREENBLAST_SSB, 3.0);
 		Hell_ShootSkull(ssb, randPos, randAng, Hell_Velocity[SSB_WavePhase]);
 	}
 }
