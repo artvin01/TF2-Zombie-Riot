@@ -1069,6 +1069,8 @@ static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 
 static void Luanar_Radiance(Twirl npc)
 {
+	if(i_current_wave[npc.index] <=45)
+		return;
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
