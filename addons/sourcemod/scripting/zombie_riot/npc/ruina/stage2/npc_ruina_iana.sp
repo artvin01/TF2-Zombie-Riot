@@ -413,7 +413,7 @@ static void ClotThink(int iNPC)
 					ScaleVector(SubjectAbsVelocity, Time);
 					AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
-					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+					//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
 					float Radius = (npc.Anger ? 125.0 : 100.0);
 					float dmg = (npc.Anger ? 450.0 : 300.0);

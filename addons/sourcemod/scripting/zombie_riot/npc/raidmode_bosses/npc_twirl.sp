@@ -1215,7 +1215,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 125.0 : 75.0);
+		float Dmg = (npc.Anger ? 100.0 : 50.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1258,7 +1258,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						if(npc.Add_Combo(10))
 						{
 							float Radius = (npc.Anger ? 225.0 : 150.0);
-							float dmg = (npc.Anger ? 75.0 : 50.0);
+							float dmg = (npc.Anger ? 100.0 : 75.0);
 							dmg *= RaidModeScaling;
 							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 						}
@@ -1277,7 +1277,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 						}
 
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.25, RoundToNearest(Modify_Damage(npc, target, 5.0)));
+						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(npc, target, 5.0)));
 					}
 					npc.PlayMeleeHitSound();
 					
