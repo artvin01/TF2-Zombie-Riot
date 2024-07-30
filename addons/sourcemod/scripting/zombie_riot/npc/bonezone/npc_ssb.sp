@@ -82,6 +82,17 @@ static char Volley_HomingSFX[][] = {
 	")items/halloween/witch03.wav"
 };
 
+static char Hell_HomingSFX[][] = {
+	")ambient/halloween/male_scream_03.wav",
+	")ambient/halloween/male_scream_04.wav",
+	")ambient/halloween/male_scream_05.wav",
+	")ambient/halloween/male_scream_06.wav",
+	")ambient/halloween/male_scream_07.wav",
+	")ambient/halloween/male_scream_08.wav",
+	")ambient/halloween/male_scream_09.wav",
+	")ambient/halloween/male_scream_10.wav"
+};
+
 static char Cross_BlastSFX[][] = {
 	")misc/halloween_eyeball/book_exit.wav",
 	")misc/halloween/merasmus_hiding_explode.wav",
@@ -392,6 +403,7 @@ public void SupremeSpookmasterBones_OnMapStart_NPC()
 	PrecacheSound(SND_HELL_STOMP);
 
 	for (int i = 0; i < (sizeof(Volley_HomingSFX));   i++) { PrecacheSound(Volley_HomingSFX[i]);   }
+	for (int i = 0; i < (sizeof(Hell_HomingSFX));   i++) { PrecacheSound(Hell_HomingSFX[i]);   }
 	for (int i = 0; i < (sizeof(Cross_BlastSFX));   i++) { PrecacheSound(Cross_BlastSFX[i]);   }
 	for (int i = 0; i < (sizeof(Skull_LaughSFX));   i++) { PrecacheSound(Skull_LaughSFX[i]);   }
 
@@ -554,7 +566,7 @@ float SSB_NextSpecial[MAXENTITIES] = { 0.0, ... };		//The GameTime at which SSB 
 //float SSB_SpecialCDMin[4] = { 20.0, 17.5, 15.0, 12.5 };	//The minimum cooldown between specials.
 //float SSB_SpecialCDMax[4] = { 30.0, 27.5, 25.0, 22.5 }; //The maximum cooldown between specials.
 float SSB_SpecialCDMin[4] = { 10.0, 0.0, 0.0, 10.0 };	//The minimum cooldown between specials.
-float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 20.0 }; //The maximum cooldown between specials.
+float SSB_SpecialCDMax[4] = { 10.0, 0.0, 0.0, 10.0 }; //The maximum cooldown between specials.
 
 //SPOOKY SPECIAL #1 - NECROTIC BLAST: SSB takes a stance where he points a finger gun forwards and begins to charge up an enormous laser. Once fully-charged, he unleashes the laser
 //in one giant, cataclysmic blast which obliterates everything in its path. The laser has infinite range and pierces EVERYTHING, including walls. SSB cannot move or turn while charging.
@@ -596,22 +608,24 @@ float Harvester_MinPullStrengthMultiplier[4] = { 0.2, 0.25, 0.3, 0.35 };	//The m
 
 //SPOOKY SPECIAL #4 - HELL IS HERE: SSB takes - you guessed it - an immobile stance where he proudly stands up straight in a sardonic superman pose, with his head floating high 
 //above his body. After a brief delay, his head begins to rapidly spin while firing homing skulls in all directions.
-int Hell_Count[4] = { 4, 4, 3, 2 };									//Number of skulls fired per interval.
-float Hell_Delay[4] = { 1.66, 1.66, 1.66, 1.66 };						//Wind-up time.
+int Hell_Count[4] = { 3, 3, 2, 2 };									//Number of skulls fired per interval.
+int Hell_MaxTargets[4] = { 8, 12, 16, 32 };							//Max targets hit by skull explosions.
+float Hell_Delay[4] = { 1.66, 1.66, 1.66, 1.66 };					//Wind-up time.
 float Hell_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };					//Duration.
 float Hell_Resistance[4] = { 0.5, 0.5, 0.5, 0.5 };					//Amount to multiply damage taken by SSB during this ability.
 float Hell_Interval[4] = { 1.0, 0.66, 0.33, 0.2 };					//Interval in which skulls are fired.
-float Hell_Velocity[4] = { 360.0, 420.0, 480.0, 540.0 };			//Skull velocity.
+float Hell_Velocity[4] = { 360.0, 380.0, 400.0, 420.0 };			//Skull velocity.
 float Hell_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
 float Hell_DMG[4] = { 60.0, 90.0, 160.0, 250.0 };					//Skull base damage.
 float Hell_EntityMult[4] = { 2.0, 2.5, 3.0, 4.0 };					//Amount to multiply damage dealt by skulls to entities.
-float Hell_Radius[4] = { 60.0, 100.0, 140.0, 180.0 };				//Skull explosion radius.
+float Hell_Radius[4] = { 30.0, 40.0, 50.0, 60.0 };					//Skull explosion radius.
 float Hell_Falloff_Radius[4] = { 0.66, 0.5, 0.33, 0.165 };			//Skull falloff, based on radius.
 float Hell_Falloff_MultiHit[4] = {0.66, 0.76, 0.86, 1.0 }; 			//Amount to multiply explosion damage for each target hit.
-float Hell_HomingAngle[4] = { 90.0, 95.0, 100.0, 105.0 };			//Skulls' maximum homing angle.
-float Hell_HomingPerSecond[4] = { 9.0, 10.0, 11.0, 12.0 };			//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
+float Hell_HomingAngle[4] = { 90.0, 92.5, 92.5, 95.0 };				//Skulls' maximum homing angle.
+float Hell_HomingPerSecond[4] = { 9.0, 9.25, 9.5, 10.0 };			//Number of times per second for skulls to readjust their velocity for the sake of homing in on their target.
 float Hell_Spread[4] = { 9.0, 10.0, 11.0, 12.0 };					//Random spread of skulls.
 float Hell_Distance[4] = { 60.0, 80.0, 100.0, 120.0 };				//Distance to spread skulls apart when they spawn.
+float Hell_SpinSpeed[4] = { 2.0, 4.0, 6.0, 8.0 };					//Amount to rotate the firing angle per frame.
 static int Hell_Fireball[2049] = { -1, ... };
 
 //SPOOKY SPECIAL #5 - SPIN 2 WIN: SSB pulls out his trusty Mortis Masher and begins to spin wildly. During this, he moves VERY quickly, but has his friction reduced, making
@@ -869,7 +883,7 @@ static void SSB_PrepareAbilities()
 	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, SSB_Filter_MustBeOnGround, false, _, Necrotic_Delay[0] + 1.6));
 	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("MASTER OF THE DAMNED", 0.0, -1, Special_Summoner, SSB_Filter_MustBeOnGround, false, _, Summon_Duration[0] + 2.2));
 	//PushArrayCell(SSB_Specials[0], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, SSB_Filter_MustBeOnGround, false, _, Spin_Delay[1] + Spin_Duration[1] + 1.0));
-	PushArrayCell(SSB_Specials[0], SSB_CreateAbility("HELL IS HERE", 1.0, 0, Special_Hell, SSB_Filter_MustBeOnGround, false, _, Hell_Delay[0] + Hell_Duration[0] + 1.5));
+	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("HELL IS HERE", 1.0, 0, Special_Hell, SSB_Filter_MustBeOnGround, false, _, Hell_Delay[3] + Hell_Duration[3] + 1.5));
 
 	//Wave 30:
 	//Spell Cards:
@@ -899,18 +913,18 @@ static void SSB_PrepareAbilities()
 
 	//Wave 60+:
 	//Spell Cards:
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, SSB_Filter_MustBeOnGround, _, true, Cross_Delay[3]));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, SSB_Filter_MustBeOnGround, _, true, Death_Delay[3]));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
-	PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NIGHTMARE VOLLEY", 1.0, 0, SpellCard_NightmareVolley));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CURSED CROSS", 1.0, 0, SpellCard_CursedCross, SSB_Filter_MustBeOnGround, _, true, Cross_Delay[3]));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("CHAOS BARRAGE", 1.0, 0, SpellCard_ChaosBarrage));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("DEATH MAGNETIC", 0.66, 3, SpellCard_DeathMagnetic, SSB_Filter_MustBeOnGround, _, true, Death_Delay[3]));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("NECROTIC BOMBARDMENT", 0.66, 3, SpellCard_CosmicTerror));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("RING OF TARTARUS", 0.33, 3, SpellCard_RingOfTartarus));
+	//PushArrayCell(SSB_SpellCards[3], SSB_CreateAbility("WITNESS THE SKULL", 0.125, 3, SpellCard_TheSkull));
 	//Spooky Specials:
-	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, SSB_Filter_MustBeOnGround, false, _, Necrotic_Delay[3] + 1.6));
-	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, SSB_Filter_MustBeOnGround, false, _, Summon_Duration[3] + 2.2));
-	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, SSB_Filter_MustBeOnGround, false, _, Harvester_Delay[3] + Harvester_Duration[3] + 2.2));
-	PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, SSB_Filter_MustBeOnGround, false, _, Spin_Delay[3] + Spin_Duration[3] + 1.0));
+	//PushArrayCell(SSB_Specials[3], SSB_CreateAbility("NECROTIC CATACLYSM", 1.0, 0, Special_NecroticBlast, SSB_Filter_MustBeOnGround, false, _, Necrotic_Delay[3] + 1.6));
+	//PushArrayCell(SSB_Specials[3], SSB_CreateAbility("MASTER OF THE DAMNED", 1.0, 1, Special_Summoner, SSB_Filter_MustBeOnGround, false, _, Summon_Duration[3] + 2.2));
+	//PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SOUL HARVESTER", 0.0, -1, Special_Harvester, SSB_Filter_MustBeOnGround, false, _, Harvester_Delay[3] + Harvester_Duration[3] + 2.2));
+	//PushArrayCell(SSB_Specials[3], SSB_CreateAbility("SPIN 2 WIN", 1.0, 0, Special_Spin, SSB_Filter_MustBeOnGround, false, _, Spin_Delay[3] + Spin_Duration[3] + 1.0));
 }
 
 /*void SpellCard_Example(SupremeSpookmasterBones ssb, int target)
@@ -1066,7 +1080,7 @@ public bool NightmareVolley_WouldSkullCollide(float pos[3])
 	
 	return GetVectorDistance(pos, otherLoc) <= 25.0;
 }
-//BOOKMARK
+
 public void NightmareVolley_ShootSkull(SupremeSpookmasterBones ssb, float pos[3], float ang[3], float vel)
 {
 	int skull = SSB_CreateProjectile(ssb, MODEL_SKULL, pos, ang, vel, GetRandomFloat(0.8, 1.2), NightmareVolley_Collide);
@@ -3238,7 +3252,7 @@ public void Hell_IntroLogic(DataPack pack)
 	if (gt >= fireball)
 	{
 		EmitSoundToAll(SND_HELL_STOMP, ssb.index, _, 120);
-		Hell_Fireball[ssb.index] = EntIndexToEntRef(SSB_AttachParticle(ssb.index, PARTICLE_HELLISHERE_HEAD, _, "eyes"));
+		Hell_Fireball[ssb.index] = EntIndexToEntRef(SSB_AttachParticle(ssb.index, PARTICLE_HELLISHERE_HEAD, _, "head", -10.0));
 
 		fireball += 999999.0;
 	}
@@ -3282,11 +3296,14 @@ public void Hell_Begin(DataPack pack)
 		WritePackCell(pack, phase);
 		WritePackFloat(pack, GetGameTime(user) + Hell_Interval[phase]);
 		WritePackFloat(pack, GetGameTime(user) + Hell_Duration[phase]);
+		WritePackFloat(pack, 0.0);
 
 		int iActivity = ssb.LookupActivity("ACT_HELL_IS_HERE_ACTIVE");
 		if(iActivity > 0) ssb.StartActivity(iActivity);
 
-		ssb.SetPlaybackRate(0.25 / Hell_Interval[phase]);
+		float spin = (Hell_SpinSpeed[phase] / 360.0) * 63.0;
+		ssb.SetPlaybackRate(spin);
+		//ssb.SetPlaybackRate(0.25 / Hell_Interval[phase]);
 
 		EmitSoundToAll(SND_HELL_BEGIN, ssb.index, _, 120);
 
@@ -3304,6 +3321,7 @@ public void Hell_Logic(DataPack pack)
 	int phase = ReadPackCell(pack);
 	float nextWave = ReadPackFloat(pack);
 	float endTime = ReadPackFloat(pack);
+	float rotation = ReadPackFloat(pack);
 
 	delete pack;
 
@@ -3321,6 +3339,7 @@ public void Hell_Logic(DataPack pack)
 		ssb.SetPlaybackRate(1.0);
 		ssb.UsingAbility = false;
 		ssb.RevertSequence();
+		ssb.Unpause();
 		EmitSoundToAll(SND_HELL_END, ssb.index, _, 120);
 		Hell_RemoveParticle(ssb.index);
 
@@ -3335,10 +3354,14 @@ public void Hell_Logic(DataPack pack)
 		int ent = EntRefToEntIndex(Hell_Fireball[ssb.index]);
 		if (IsValidEntity(ent))
 		{
-			float pos[3];
+			float pos[3], ang[3], attachmentAng[3];
+			GetAttachment(ssb.index, "head", pos, attachmentAng);
 			GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", pos);
+			GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+			
+			ang[1] = attachmentAng[1];
 
-
+			Hell_ShootWave(ssb, pos, ang);
 		}
 
 		nextWave = gt + Hell_Interval[phase];
@@ -3350,6 +3373,105 @@ public void Hell_Logic(DataPack pack)
 	WritePackCell(pack, phase);
 	WritePackFloat(pack, nextWave);
 	WritePackFloat(pack, endTime);
+	WritePackFloat(pack, rotation + Hell_SpinSpeed[phase]);
+}
+
+public void Hell_ShootWave(SupremeSpookmasterBones ssb, float pos[3], float ang[3])
+{
+	float testAng[3];
+	testAng[0] = 0.0;
+	testAng[1] = ang[1];
+	testAng[2] = 0.0;
+				
+	GetPointFromAngles(pos, testAng, 20.0, pos, Priest_IgnoreAll, MASK_SHOT);
+
+	int num = Hell_Count[SSB_WavePhase];
+	NightmareVolley_ShootSkull(ssb, pos, ang, Volley_Velocity[SSB_WavePhase]);
+	num--;
+
+	if (num < 1)
+		return;
+
+	for (int i = 0; i < num; i++)
+	{
+		float randAng[3], randPos[3];
+		randPos = pos;
+		randAng = ang;
+		for (int vec = 0; vec < 2; vec++)
+			randAng[vec] += GetRandomFloat(-60.0, 60.0);
+
+		GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Hell_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
+
+		int attempts = 10;	//SSB can sometimes try to use this attack in a position where the skulls would spawn in a wall, which causes script execution timeout. This is a hack which fixes that. I may or may not eventually add a REAL fix, but for now, this will do.
+		while (NightmareVolley_WouldSkullCollide(pos) && attempts > 0)	//Don't let skulls spawn in places where they would collide with something
+		{
+			GetPointFromAngles(pos, randAng, GetRandomFloat(0.0, Hell_Distance[SSB_WavePhase]), randPos, Priest_OnlyHitWorld, MASK_SHOT);
+			attempts--;
+		}
+
+		randAng = ang;
+		for (int vec = 0; vec < 3; vec++)
+			randAng[vec] += GetRandomFloat(-Hell_Spread[SSB_WavePhase], Hell_Spread[SSB_WavePhase]);
+
+		ParticleEffectAt(randPos, PARTICLE_GREENBLAST_SSB, 3.0);
+		Hell_ShootSkull(ssb, randPos, randAng, Hell_Velocity[SSB_WavePhase]);
+	}
+}
+
+public void Hell_ShootSkull(SupremeSpookmasterBones ssb, float pos[3], float ang[3], float vel)
+{
+	int skull = SSB_CreateProjectile(ssb, MODEL_SKULL, pos, ang, vel, GetRandomFloat(0.8, 1.2), Hell_Collide);
+	if (IsValidEntity(skull))
+	{
+		b_IsHoming[skull] = false;
+		i_SkullParticle[skull] = EntIndexToEntRef(SSB_AttachParticle(skull, PARTICLE_FIREBALL_RED, _, ""));
+		CreateTimer(Hell_HomingDelay[SSB_WavePhase], Hell_StartHoming, EntIndexToEntRef(skull), TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+public Action Hell_StartHoming(Handle timer, int ref)
+{
+	int ent = EntRefToEntIndex(ref);
+	if (!IsValidEntity(ent))
+		return Plugin_Continue;
+
+	int particle = EntRefToEntIndex(i_SkullParticle[ent]);
+	if (IsValidEntity(particle))
+		RemoveEntity(particle);
+
+	i_SkullParticle[ent] = EntIndexToEntRef(SSB_AttachParticle(ent, PARTICLE_FIREBALL_BLUE, _, ""));
+
+	EmitSoundToAll(SND_HOMING_ACTIVATE, ent, _, 120, _, _, GetRandomInt(80, 110));
+	EmitSoundToAll(Hell_HomingSFX[GetRandomInt(0, sizeof(Hell_HomingSFX) - 1)], ent, _, 120, _, _, GetRandomInt(80, 110));
+
+	int owner = GetEntPropEnt(ent, Prop_Send, "m_hOwnerEntity");
+	float ang[3];
+	GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
+	Initiate_HomingProjectile(ent, owner, Hell_HomingAngle[SSB_WavePhase], Hell_HomingPerSecond[SSB_WavePhase], false, true, ang);
+	b_IsHoming[ent] = true;
+
+	return Plugin_Continue;
+}
+
+public MRESReturn Hell_Collide(int entity)
+{
+	float position[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
+
+	ParticleEffectAt(position, b_IsHoming[entity] ? PARTICLE_EXPLOSION_FIREBALL_BLUE : PARTICLE_EXPLOSION_FIREBALL_RED, 1.0);
+
+	EmitSoundToAll(SND_FIREBALL_EXPLODE, entity);
+	
+	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
+	if(IsValidEntity(owner))
+	{
+		bool isBlue = GetEntProp(owner, Prop_Send, "m_iTeamNum") == view_as<int>(TFTeam_Blue);
+		Explode_Logic_Custom(Hell_DMG[SSB_WavePhase], owner, entity, 0, position, Hell_Radius[SSB_WavePhase], Hell_Falloff_MultiHit[SSB_WavePhase],
+		Hell_Falloff_Radius[SSB_WavePhase], isBlue, Hell_MaxTargets[SSB_WavePhase], true, Hell_EntityMult[SSB_WavePhase]);
+	}
+
+	RemoveEntity(entity);
+	return MRES_Supercede;
 }
 
 public void Special_Harvester(SupremeSpookmasterBones ssb, int target)
@@ -3912,14 +4034,14 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		int wave = ZR_GetWaveCount() + 1;
+		/*int wave = ZR_GetWaveCount() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
 		else if (wave <= 30)
 			SSB_WavePhase = 1;
 		else if (wave <= 45)
 			SSB_WavePhase = 2;
-		else
+		else*/
 			SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];
