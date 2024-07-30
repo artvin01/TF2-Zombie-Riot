@@ -707,10 +707,11 @@ methodmap Twirl < CClotBody
 
 		npc.Anger = false;
 
-		i_ranged_ammo[npc.index] = 5;
+		
 
 		if(wave <=15)
 		{
+			i_ranged_ammo[npc.index] = 5;
 			switch(GetRandomInt(0, 4))
 			{
 				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
@@ -722,6 +723,7 @@ methodmap Twirl < CClotBody
 		}
 		else if(wave <=30)
 		{
+			i_ranged_ammo[npc.index] = 7;
 			switch(GetRandomInt(0, 3))
 			{
 				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
@@ -732,6 +734,7 @@ methodmap Twirl < CClotBody
 		}
 		else if(wave <=45)
 		{
+			i_ranged_ammo[npc.index] = 9;
 			switch(GetRandomInt(0, 3))
 			{
 				case 0: Twirl_Lines(npc, "My Oh my, your still here, {purple}how wonderful!");
@@ -742,6 +745,7 @@ methodmap Twirl < CClotBody
 		}
 		else if(wave <=60)
 		{
+			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
@@ -752,6 +756,7 @@ methodmap Twirl < CClotBody
 		}
 		else	//freeplay
 		{
+			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
 				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
@@ -765,10 +770,10 @@ methodmap Twirl < CClotBody
 
 		npc.m_flDoingAnimation = 0.0;
 
-		npc.m_flNextTeleport = GetGameTime(npc.index) + GetRandomFloat(10.0, 15.0);
+		npc.m_flNextTeleport = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
-		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index)  + GetRandomFloat(15.0, 30.0);
-		fl_lunar_timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(30.0, 65.0);
+		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index)  + GetRandomFloat(5.0, 10.0);
+		fl_lunar_timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 		
 		return npc;
 	}
@@ -958,7 +963,7 @@ static void ClotThink(int iNPC)
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		Explode_Logic_Custom(125.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
+		Explode_Logic_Custom(500.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
 		if(npc.m_bThisNpcIsABoss)
 		{
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
@@ -1077,11 +1082,11 @@ static void Luanar_Radiance(Twirl npc)
 	if(fl_lunar_timer[npc.index] > GameTime)
 		return;
 
-	int amt = (npc.Anger ? 4 : 2);
+	int amt = (npc.Anger ? 10 : 5);
 	if(i_lunar_ammo[npc.index] > amt)
 	{
 		i_lunar_ammo[npc.index] = 0;
-		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 75.0 : 60.0);
+		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 30.0 : 45.0);
 		return;
 	}
 	i_lunar_ammo[npc.index]++;
@@ -1179,8 +1184,8 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(fl_multi_attack_delay[npc.index] > GameTime)
 			return;
 
-		float	Multi_Delay = (npc.Anger ? 0.2 : 0.5),
-				Reload_Delay = (npc.Anger ? 3.0 : 5.0);
+		float	Multi_Delay = (npc.Anger ? 0.2 : 0.4),
+				Reload_Delay = (npc.Anger ? 2.0 : 4.0);
 		
 		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
 		{
@@ -1210,7 +1215,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 75.0 : 50.0);
+		float Dmg = (npc.Anger ? 100.0 : 50.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1259,7 +1264,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						}
 							
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 15.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 75.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1456,8 +1461,8 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			flPitch *= -1.0;
 			if(flPitch>15.0)
 				flPitch=15.0;
-			if(flPitch <-3.0)
-				flPitch = -3.0;
+			if(flPitch <-15.0)
+				flPitch = -15.0;
 			Angles[0] = flPitch;
 
 			float	EndLoc[3],
@@ -1478,7 +1483,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = (npc.Anger ? 20.0 : 10.0)*RaidModeScaling;
+				Laser.Damage = (npc.Anger ? 125.0 : 50.0)*RaidModeScaling;
 
 				Laser.Deal_Damage();
 
@@ -1691,7 +1696,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	if(i_barrage_ammo[npc.index] > amt)
 	{
 		i_barrage_ammo[npc.index] = 0;
-		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 30.0 : 45.0);
+		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 25.0 : 30.0);
 		return;
 	}
 
@@ -1715,7 +1720,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = (npc.Anger ? 5.0 : 2.5);
+	float Laser_Dmg = (npc.Anger ? 50.0 : 25.0);
 	float Speed = (npc.Anger ? 1750.0 : 1000.0);
 	float Direct_Dmg = (npc.Anger ? 50.0 : 25.0);
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
@@ -1780,7 +1785,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
-	if(i_current_wave[owner] >= 60)
+	if(i_current_wave[owner] >= 45)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
@@ -1904,7 +1909,7 @@ static void Retreat(Twirl npc)
 	if(!success)
 		return;
 	
-	npc.m_flNextTeleport = GameTime + (npc.Anger ? 30.0 : 45.0);
+	npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
 	
 	//YAY IT WORKED!!!!!!!
 
@@ -1944,7 +1949,7 @@ static void Retreat(Twirl npc)
 	if(wave<=15)	//stage 1: a simple ion where she was.
 	{
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 45.0 : 30.0);
+		float dmg = (npc.Anger ? 125.0 : 70.0);
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -1954,10 +1959,22 @@ static void Retreat(Twirl npc)
 	{
 		float aoe_check = (npc.Anger ? 250.0 : 175.0);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
+		float radius = (npc.Anger ? 325.0 : 250.0);
+		float dmg = (npc.Anger ? 125.0 : 70.0);
+		dmg *= RaidModeScaling;
+
+		float Time = (npc.Anger ? 1.0 : 1.5);
+		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 	}
 	else
 	{
 		float aoe_check = (npc.Anger ? 350.0 : 250.0);
+		float radius = (npc.Anger ? 325.0 : 250.0);
+		float dmg = (npc.Anger ? 125.0 : 70.0);
+		dmg *= RaidModeScaling;
+
+		float Time = (npc.Anger ? 1.0 : 1.5);
+		npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
 		Retreat_Laser(npc, VecSelfNpc);
 		//2 second duration laser.
