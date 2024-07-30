@@ -2731,9 +2731,6 @@ Names per stage:
 	FINAL TODO LIST:
 	Make the cfg.
 
-	Nerf blitz army
-	Do stuff for blitz kit
-
 
 */
 void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point[3], float end_point[3])

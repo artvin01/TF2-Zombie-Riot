@@ -20,6 +20,8 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_battlecry04.mp3",
 };
 
+static float fl_npc_basespeed;
+
 public void Barrack_Alt_Intermediate_Mage_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
@@ -79,6 +81,7 @@ methodmap Barrack_Alt_Intermediate_Mage < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Intermediate_Mage_ClotThink;
 
 		npc.m_flSpeed = 200.0;
+		fl_npc_basespeed = 200.0;
 		
 		
 		
@@ -167,6 +170,15 @@ public void Barrack_Alt_Intermediate_Mage_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 300000.0, _, false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

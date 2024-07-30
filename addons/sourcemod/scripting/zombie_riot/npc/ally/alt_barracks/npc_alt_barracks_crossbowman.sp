@@ -36,6 +36,8 @@ public void Barrack_Alt_Crossbowmedic_MapStart()
 	NPC_Add(data);
 }
 
+
+static float fl_npc_basespeed;
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
@@ -69,6 +71,7 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Crossbowmedic_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Crossbowmedic_ClotThink;
 
+		fl_npc_basespeed = 125.0;
 		npc.m_flSpeed = 125.0;
 		
 		
@@ -171,6 +174,15 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

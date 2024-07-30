@@ -1451,12 +1451,12 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			int iPitch = npc.LookupPoseParameter("body_pitch");
 				
 			float flPitch = npc.GetPoseParameter(iPitch);
-			if(flPitch>15.0)
-				flPitch=15.0;
-			if(flPitch <-15.0)
-				flPitch = -15.0;
 
 			flPitch *= -1.0;
+			if(flPitch>15.0)
+				flPitch=15.0;
+			if(flPitch <-3.0)
+				flPitch = -3.0;
 			Angles[0] = flPitch;
 
 			float	EndLoc[3],
