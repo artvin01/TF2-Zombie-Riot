@@ -59,6 +59,10 @@
 	{
 		"en" 		"Voided Subjects"
 	}
+	"Ruina"
+	{
+		"en" 		"Ruina"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
