@@ -77,8 +77,8 @@ void Ruliana_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "ruliana"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -365,10 +365,13 @@ static void ClotThink(int iNPC)
 
 	float Battery_Cost = 3500.0;
 	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
+
+	if(fl_ruina_battery[npc.index] > Battery_Cost)
+		fl_ruina_battery[npc.index] = Battery_Cost;
+		
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
-		if(fl_ruina_battery[npc.index] > Battery_Cost)
-			fl_ruina_battery[npc.index] = Battery_Cost;
+		
 		RaidModeScaling = battery_Ratio;
 
 		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
@@ -376,10 +379,14 @@ static void ClotThink(int iNPC)
 	
 		float Ratio = (float(Health)/float(MaxHealth));
 
+		if(Ratio < 0.4)
+			Ruina_Master_Rally(npc.index, true);
+		else
+			Ruina_Master_Rally(npc.index, false);
+			
 		if(Ratio < 0.25)
-		{
 			SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
-		}
+
 	}
 
 	
@@ -757,6 +764,10 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	
 	int Health 		= GetEntProp(victim, Prop_Data, "m_iHealth"),
 		MaxHealth 	= GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	
+	float Ratio = (float(Health)/float(MaxHealth));
+	if(Ratio > 0.5)
+		return;
 
 	int ru_MaxHealth 	= GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 
@@ -778,7 +789,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 		Ruina_Color(color);
 		int laser;
 		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, BEAM_COMBINE_BLUE);
-		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 }

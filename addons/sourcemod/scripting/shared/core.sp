@@ -603,6 +603,7 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 #define ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS		(1 << 7)
 #define ZR_SLAY_DAMAGE							(1 << 8)
 #define ZR_STAIR_ANTI_ABUSE_DAMAGE				(1 << 9)
+#define ZR_DAMAGE_NPC_REFLECT					(1 << 10)	//this npc reflects damage to another npc that can also reflect damage, use this to filter out the damage.
 
 #define HEAL_NO_RULES	            0     	 
 //Nothing special.
@@ -947,7 +948,7 @@ enum
 */
 
 #define RUINA_CUSTOM_MODELS_1			"models/zombie_riot/weapons/ruina_models_1_1.mdl"
-enum	//can have a maximum of 16 (I think)	it appears if I try to make it go above 14 it starts glitching out
+enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= 1,		//1
 	RUINA_HALO_1 			= 2,		//2
@@ -964,7 +965,7 @@ enum	//can have a maximum of 16 (I think)	it appears if I try to make it go abov
 	RUINA_W30_HAND_CREST	= 4096,		//13
 	RUINA_IANA_BLADE		= 8192,		//14
 }
-#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_1.mdl"
+#define RUINA_CUSTOM_MODELS_2			"models/zombie_riot/weapons/ruina_models_2_2.mdl"
 enum
 {
 	RUINA_QUINCY_BOW_2		= 1,			//1
@@ -982,7 +983,31 @@ enum
 	RUINA_IMPACT_LANCE_3	= 4096,			//13
 	RUINA_IMPACT_LANCE_4	= 8192,			//14
 	RUINA_HAND_CREST_3		= 16384,		//15
-	RUINA_ZANGETSU			= 32768			//16
+	RUINA_ZANGETSU			= 32768,		//16
+	RUINA_ZANGETSU_2		= 65536,		//17
+	RUINA_BLADE_3			= 131072,		//18
+	RUINA_LAN_SWORD_3		= 262144,		//19
+	RUINA_LAZER_CANNON_2	= 524288,		//20
+	RUINA_WINGS_2			= 1048576		//21	going beyond this it legit cannot compile anymore, likely due to too many things
+}
+#define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_1.mdl"
+enum
+{
+	RUINA_WINGS_4			= 1,			//1
+	RUINA_WINGS_3			= 2,			//2
+	RUINA_MAGIA_TOWER_1		= 4,			//3
+	RUINA_MAGIA_TOWER_2		= 8,			//4
+	RUINA_MAGIA_TOWER_3		= 16,			//5
+	RUINA_MAGIA_TOWER_4		= 32,			//6
+	RUINA_TWIRL_MELEE_1		= 64,			//7
+	RUINA_TWIRL_CREST_1		= 128,			//8
+	RUINA_TWIRL_MELEE_2		= 256,			//9
+	RUINA_TWIRL_CREST_2		= 512,			//10
+	RUINA_TWIRL_CREST_3		= 1024,			//11
+	RUINA_TWIRL_MELEE_3		= 2048,			//12
+	RUINA_TWIRL_MELEE_4		= 4096,			//13
+	RUINA_TWIRL_CREST_4		= 8192,			//14
+	RUINA_QUINCY_BOW_3		= 16384			//15
 }
 
 
@@ -1715,6 +1740,7 @@ public void OnMapStart()
 
 	PrecacheModel(RUINA_CUSTOM_MODELS_1);
 	PrecacheModel(RUINA_CUSTOM_MODELS_2);
+	PrecacheModel(RUINA_CUSTOM_MODELS_3);
 	
 #if defined ZR
 	PrecacheSound("npc/scanner/cbot_discharge1.wav");
@@ -2104,7 +2130,7 @@ public void OnClientPutInServer(int client)
 	f_Ocean_Buff_Stronk_Buff[client] = 0.0;
 	f_Ocean_Buff_Weak_Buff[client] = 0.0;
 #if defined RUINA_BASE
-	Ruina_Reset_Starts_Npc(client);
+	Ruina_Reset_Stats_Npc(client);
 #endif
 	f_MultiDamageTaken[client] = 1.0;
 	f_MultiDamageTaken_Flat[client] = 1.0;
@@ -2835,13 +2861,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_HussarBuff[entity] = 0.0;
 		f_CombineCommanderBuff[entity] = 0.0;
 #if defined RUINA_BASE
-		Ruina_Reset_Starts_Npc(entity);
-		f_Ruina_Speed_Buff[entity] = 0.0;
-		f_Ruina_Defense_Buff[entity] = 0.0;
-		f_Ruina_Attack_Buff[entity] = 0.0;
-		f_Ruina_Speed_Buff_Amt[entity] = 0.0;
-		f_Ruina_Defense_Buff_Amt[entity] = 0.0;
-		f_Ruina_Attack_Buff_Amt[entity] = 0.0;
+		Ruina_Reset_Stats_Npc(entity);
 #endif
 		f_GodAlaxiosBuff[entity] = 0.0;
 		f_WidowsWineDebuffPlayerCooldown[entity] = 0.0;

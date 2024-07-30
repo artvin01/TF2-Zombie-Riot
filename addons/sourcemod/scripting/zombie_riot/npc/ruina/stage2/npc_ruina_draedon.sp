@@ -52,9 +52,9 @@ void Draedon_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_buff"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
-	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()

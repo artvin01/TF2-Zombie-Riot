@@ -107,6 +107,10 @@ methodmap EgaBunar < CClotBody
 	}
 	public void PlayHurtArmorSound() 
 	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}

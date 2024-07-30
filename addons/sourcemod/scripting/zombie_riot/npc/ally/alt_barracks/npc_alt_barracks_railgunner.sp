@@ -43,6 +43,7 @@ public void Barrack_Railgunner_MapStart()
 	NPC_Add(data);
 }
 
+static float fl_npc_basespeed;
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
@@ -80,7 +81,7 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Raigunner_ClotThink;
 
 		npc.m_flSpeed = 150.0;
-		
+		fl_npc_basespeed = 150.0;
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
@@ -178,6 +179,15 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 
