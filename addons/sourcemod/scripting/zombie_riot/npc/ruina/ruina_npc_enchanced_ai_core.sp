@@ -2729,7 +2729,6 @@ Names per stage:
 
 	
 	FINAL TODO LIST:
-	Make hud icons for: Twirl, Lanelot, Ruliana, Lex, Adiantum 
 	Make the cfg.
 
 	Nerf blitz army
