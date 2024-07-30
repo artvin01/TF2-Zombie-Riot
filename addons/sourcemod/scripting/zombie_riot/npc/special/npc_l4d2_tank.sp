@@ -210,6 +210,8 @@ methodmap L4D2_Tank < CClotBody
 
 		if(StrContains(data, "no_music") != -1)
 		{
+			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.0;
+			npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 0.0;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
