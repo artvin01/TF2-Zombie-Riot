@@ -2861,4 +2861,8 @@
 	{
 		"en" 		"Nightmare"
 	}
+	"Zombine"
+	{
+		"en" 		"Zombine"
+	}
 }
