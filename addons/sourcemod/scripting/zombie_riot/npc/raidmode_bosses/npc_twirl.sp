@@ -1411,7 +1411,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 static Action Cosmic_Gaze_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime(npc.index);
+	float GameTime = GetGameTime();
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
 		fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 45.0 : 60.0);
