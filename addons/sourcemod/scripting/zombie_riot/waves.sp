@@ -760,7 +760,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 						enemy.Health = kv.GetNum("health");
 						enemy.Is_Boss = kv.GetNum("is_boss");
 						enemy.Does_Not_Scale = kv.GetNum("does_not_scale");
-						enemy.ignore_max_cap = kv.GetNum("ingore_max_cap");
+						enemy.ignore_max_cap = kv.GetNum("ignore_max_cap");
 						if(wave.Count <= 0)
 						{
 							enemy.Does_Not_Scale = true;
@@ -1315,8 +1315,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				count = 1;
 				
 			
-			if(!wave.EnemyData.ignore_max_cap && count > 250) //So its always less then 250, except if defined otherwise.
-				count = 250;
+			if(wave.EnemyData.ignore_max_cap == 0)
+			{
+				if(count > 250) //So its always less then 250, except if defined otherwise.
+					count = 250;
+			}
 			
 			if(wave.EnemyData.Team != TFTeam_Red)
 			{
@@ -2343,9 +2346,10 @@ static void UpdateMvMStatsFrame()
 					{
 						num = 1;
 					}
-					else if(!wave.EnemyData.ignore_max_cap && num > 250)
+					else if(num > 250)
 					{
-						num = 250;
+						if(wave.EnemyData.ignore_max_cap == 0)
+							num = 250;
 					}
 
 					totalcount += num;
