@@ -193,7 +193,6 @@ enum
 
 enum
 {
-	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -209,6 +208,7 @@ enum
 	Type_Interitus,
 	Type_BlueParadox,
 	Type_Void,
+	Type_Ruina,
 }
 
 //int Bob_To_Player[MAXENTITIES];
