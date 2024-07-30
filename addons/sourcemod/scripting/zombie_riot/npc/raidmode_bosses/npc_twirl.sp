@@ -876,7 +876,6 @@ static void ClotThink(int iNPC)
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
 		}
 	}
-	
 
 	if(RaidModeTime < GetGameTime())
 	{
@@ -913,38 +912,7 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.m_flNextDelayTime > GameTime)
-	{
-		return;
-	}
-	
-	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
-	
-	npc.Update();
-
-	if(npc.m_flGetClosestTargetTime < GameTime)
-	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
-	}
-			
-	if(npc.m_blPlayHurtAnimation)
-	{
-		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
-		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();
-	}
-	
-	if(npc.m_flNextThinkTime > GameTime)
-	{
-		return;
-	}
-	
-	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	Ruina_Add_Battery(npc.index, 0.75);
-
-	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GameTime && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
+	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
 		i_NpcWeight[npc.index]=15;
@@ -989,13 +957,42 @@ static void ClotThink(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 	}
 
+	if(npc.m_flNextDelayTime > GameTime)
+	{
+		return;
+	}
+	
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
+	
+	npc.Update();
+
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+			
+	if(npc.m_blPlayHurtAnimation)
+	{
+		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
+		npc.m_blPlayHurtAnimation = false;
+		npc.PlayHurtSound();
+	}
+	
+	if(npc.m_flNextThinkTime > GameTime)
+	{
+		return;
+	}
+	
+	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	Ruina_Add_Battery(npc.index, 0.75);
+
 	if(npc.m_flDoingAnimation > GameTime)
 		return;
 
-	if(!NpcStats_IsEnemySilenced(npc.index))
-	{
+	if(npc.IsOnGround())
 		Retreat(npc);
-	}
 
 	npc.AdjustWalkCycle();
 
@@ -1007,7 +1004,7 @@ static void ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(!NpcStats_IsEnemySilenced(npc.index) && npc.IsOnGround())
+		if(npc.IsOnGround())
 		{
 			Fractal_Gram(npc, PrimaryThreatIndex);
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
@@ -1320,9 +1317,6 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
 		damage*=10.0;
-
-	if(NpcStats_IsEnemySilenced(npc.index))
-		damage *=0.9;
 
 	if(npc.Anger)
 		damage *=2.0;
