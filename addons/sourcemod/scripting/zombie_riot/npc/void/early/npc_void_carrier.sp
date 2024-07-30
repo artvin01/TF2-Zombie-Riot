@@ -317,10 +317,10 @@ static void LiberiBuffThink(int entity)
 	if(GetGameTime() > LiberiBuff[entity])
 	{
 		b_NpcIsInvulnerable[entity] = false;
-		SDKUnhook(entity, SDKHook_ThinkPost, LiberiBuffThink);
 		b_NoGravity[entity] = false;
 		b_DoNotUnStuck[entity] = false;
 		b_CannotBeKnockedUp[entity] = false;
+		SDKUnhook(entity, SDKHook_ThinkPost, LiberiBuffThink);	
 	}
 }
 

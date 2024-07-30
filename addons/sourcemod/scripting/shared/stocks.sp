@@ -438,18 +438,43 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 	i_PreviousInteractedEntity[iClient] = iHit;
-	if(i_IsABuilding[iHit])
+	bool DoAlternativeCheck = false;
+	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
 		//if a building is mounted, we grant extra range.
 		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
 		if(IsValidClient(Building_Index))
 		{
-			flDistance *= 1.35;
+			//intercted with a player
+			DoAlternativeCheck = true;
 		}
 	}
-
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < ((flDistance) * (flDistance)))
-		iReturn = iHit;
+	else if(IsValidClient(iHit))
+	{
+		//intercted with a player
+		DoAlternativeCheck = true;
+	}
+	
+	if (!TR_DidHit(hTrace) || iHit == iClient || !IsValidEntity(iHit))
+	{
+		delete hTrace;
+		return iReturn;
+	}
+	
+	if(DoAlternativeCheck)
+	{
+		float VecAbsClient[3];
+		float VecAbsEntity[3];
+		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
+		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
+			iReturn = iHit;
+	}
+	else
+	{
+		if (GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+			iReturn = iHit;
+	}
 	
 	delete hTrace;
 	return iReturn;

@@ -56,7 +56,7 @@ public void XenoMalfuncRobot_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Hidden;
+	data.Category = Type_COF;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }

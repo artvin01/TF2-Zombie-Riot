@@ -189,6 +189,7 @@ methodmap CaptinoAgentus < CClotBody
 		
 		if(final)
 		{
+			b_FaceStabber[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
