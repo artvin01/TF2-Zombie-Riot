@@ -612,7 +612,7 @@ int Hell_Count[4] = { 3, 3, 2, 2 };									//Number of skulls fired per interva
 int Hell_MaxTargets[4] = { 8, 12, 16, 32 };							//Max targets hit by skull explosions.
 float Hell_Delay[4] = { 1.66, 1.66, 1.66, 1.66 };					//Wind-up time.
 float Hell_Duration[4] = { 6.0, 7.0, 8.0, 9.0 };					//Duration.
-float Hell_Resistance[4] = { 0.5, 0.5, 0.5, 0.5 };					//Amount to multiply damage taken by SSB during this ability.
+float Hell_Resistance[4] = { 0.33, 0.5, 0.5, 0.66 };				//Amount to multiply damage taken by SSB during this ability. This is backwards on purpose, I want him to have less resistance based on how hard this is to dodge.
 float Hell_Interval[4] = { 1.0, 0.66, 0.33, 0.2 };					//Interval in which skulls are fired.
 float Hell_Velocity[4] = { 360.0, 380.0, 400.0, 420.0 };			//Skull velocity.
 float Hell_HomingDelay[4] = { 0.75, 0.625, 0.5, 0.375 };			//Time until the skulls begin to home in on targets.
@@ -3205,6 +3205,7 @@ public void Special_Hell(SupremeSpookmasterBones ssb, int target)
 	ssb.UsingAbility = true;
 	ssb.Pause();
 	ssb.PlayHellIntro();
+	ssb.DmgMult = Hell_Resistance[SSB_WavePhase];
 
 	int iActivity = ssb.LookupActivity("ACT_HELL_IS_HERE_INTRO");
 	if(iActivity > 0) ssb.StartActivity(iActivity);
@@ -3338,6 +3339,7 @@ public void Hell_Logic(DataPack pack)
 		ssb.UsingAbility = false;
 		ssb.RevertSequence();
 		ssb.Unpause();
+		ssb.DmgMult = 1.0;
 		EmitSoundToAll(SND_HELL_END, ssb.index, _, 120);
 		Hell_RemoveParticle(ssb.index);
 
