@@ -316,42 +316,6 @@ methodmap Lex < CClotBody
 			ally.m_bThisNpcIsABoss = this.m_bThisNpcIsABoss;
 		}
 	}
-	public int Get_Target()
-	{
-		float GameTime = GetGameTime();
-		if(!this.IsAlive())
-		{
-			if(this.m_flGetClosestTargetTime < GameTime)
-			{
-				this.m_iTarget = GetClosestTarget(this.index);
-				this.m_flGetClosestTargetTime = GameTime + 1.0;
-			}
-		}
-		else
-		{
-			Iana ally = view_as<Iana>(EntRefToEntIndex(this.m_ially));
-
-			int Old_Target = this.m_iTarget;
-
-			this.m_iTarget = ally.m_iTarget;
-
-			if(!IsValidEnemy(this.index, this.m_iTarget))
-			{
-				this.m_iTarget = Old_Target;
-
-				if(!IsValidEnemy(this.index, this.m_iTarget) || this.m_flGetClosestTargetTime < GameTime)
-				{
-					if(this.m_flGetClosestTargetTime < GameTime)
-					{
-						this.m_iTarget = GetClosestTarget(this.index);
-						this.m_flGetClosestTargetTime = GameTime + 1.0;
-					}
-				}
-			}
-		}
-		return this.m_iTarget;
-	}
-
 	public void AdjustWalkCycle()
 	{
 		if(this.IsOnGround())
@@ -520,7 +484,13 @@ static void ClotThink(int iNPC)
 	else
 		Ruina_Add_Battery(npc.index, 10.0);	//10
 
-	int PrimaryThreatIndex = npc.Get_Target();
+	if(npc.m_flGetClosestTargetTime < GameTime)
+	{
+		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_flGetClosestTargetTime = GameTime + 1.0;
+	}
+
+	int PrimaryThreatIndex = npc.m_iTarget;
 
 	if(!npc.m_bRetreating)
 		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting

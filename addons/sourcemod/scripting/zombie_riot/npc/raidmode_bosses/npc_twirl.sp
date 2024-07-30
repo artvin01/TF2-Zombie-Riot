@@ -1036,7 +1036,6 @@ static void ClotThink(int iNPC)
 			npc.m_bAllowBackWalking = true;
 			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*2.0);
 		}
-			
 
 		Self_Defense(npc, flDistanceToTarget, PrimaryThreatIndex, vecTarget);
 
@@ -1069,6 +1068,8 @@ static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 
 static void Luanar_Radiance(Twirl npc)
 {
+	if(i_current_wave[npc.index] <=45)
+		return;
 	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
@@ -1209,7 +1210,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 15.0 : 10.0);
+		float Dmg = (npc.Anger ? 75.0 : 50.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1252,7 +1253,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						if(npc.Add_Combo(10))
 						{
 							float Radius = (npc.Anger ? 225.0 : 150.0);
-							float dmg = (npc.Anger ? 45.0 : 30.0);
+							float dmg = (npc.Anger ? 75.0 : 50.0);
 							dmg *= RaidModeScaling;
 							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 						}
@@ -1319,7 +1320,7 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 		damage *=0.9;
 
 	if(npc.Anger)
-		damage *=1.5;
+		damage *=2.0;
 
 	damage*=RaidModeScaling;
 

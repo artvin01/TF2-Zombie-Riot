@@ -284,7 +284,7 @@ methodmap Magia_Anchor < CClotBody
 			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidAllowsBuildings = false;
+			RaidAllowsBuildings = true;
 
 			RaidModeScaling = 0.0;
 		
