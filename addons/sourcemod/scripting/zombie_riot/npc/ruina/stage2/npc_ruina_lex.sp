@@ -634,7 +634,7 @@ static void ClotThink(int iNPC)
 			if(npc.m_iState > 0)
 			{
 				int Previous_Proj = EntRefToEntIndex(i_laser_beacons[iNPC][0]);
-				for(int i=1 ; i < npc.m_iState ; i++)
+				for(int i=1 ; i < npc.m_iState && i < RUINA_LEX_LASER_BEACON_AMT; i++)
 				{
 					int Proj = EntRefToEntIndex(i_laser_beacons[iNPC][i]);
 

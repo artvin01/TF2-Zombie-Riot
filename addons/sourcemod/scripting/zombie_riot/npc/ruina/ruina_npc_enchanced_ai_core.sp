@@ -2754,3 +2754,56 @@ void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point
 		pack.WriteCell(duration);
 	}
 }
+
+/*
+//stage1:
+npc_ruina_magia
+npc_ruina_lanius
+npc_ruina_aether
+npc_ruina_daedalus
+npc_ruina_europa
+npc_ruina_helia
+npc_ruina_ruriana   1300
+npc_ruina_laz
+npc_ruina_astria
+npc_ruina_malius
+npc_ruina_adiantum
+npc_ruina_theocracy
+//stage2:
+npc_ruina_magnium     500
+npc_ruina_laniun      1000
+npc_ruina_aetheria    700
+npc_ruina_lazius      900
+npc_ruina_europis     900
+npc_ruina_heliara     1250
+npc_ruina_draedon     900
+npc_ruina_astriana    2600
+npc_ruina_maliana     1200
+npc_ruina_ruianus     3000
+npc_ruina_iana        30000
+npc_ruina_lex         
+//stage3:
+npc_ruina_magianas    1250
+npc_ruina_loonaris    2500
+npc_ruina_lazines     1800
+npc_ruina_heliaris    3000
+npc_ruina_rulius      5000
+npc_ruina_eurainis    2000
+npc_ruina_draeonis    2250
+npc_ruina_malianium   2400
+npc_ruina_aetherium   1500
+npc_ruina_astrianis   4000
+npc_ruina_ruliana     350000
+//stage 4:
+npc_ruina_magianius    6000
+npc_ruina_loonarionus  7500
+npc_ruina_heliarionus  6000
+npc_ruina_euranionis   8000
+npc_ruina_draconia     9000
+npc_ruina_malianius    12500
+npc_ruina_lazurus      8000
+npc_ruina_aetherianus  9000
+npc_ruina_rulianius    30000
+npc_ruina_astrianious  20000
+npc_ruina_lancelot
+*/
