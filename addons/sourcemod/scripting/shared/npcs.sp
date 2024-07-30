@@ -2036,9 +2036,7 @@ void NPC_DeadEffects(int entity)
 		{
 			
 #if defined ZR
-			if(!Classic_Mode())
-				GiveXP(client, 1);
-			
+			GiveXP(client, 1);
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			

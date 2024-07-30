@@ -441,7 +441,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	bool DoAlternativeCheck = false;
 	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
-#if defined ZR
 		//if a building is mounted, we grant extra range.
 		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
 		if(IsValidClient(Building_Index))
@@ -449,7 +448,6 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 			//intercted with a player
 			DoAlternativeCheck = true;
 		}
-#endif
 	}
 	else if(IsValidClient(iHit))
 	{
