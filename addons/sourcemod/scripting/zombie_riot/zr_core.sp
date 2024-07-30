@@ -2159,6 +2159,7 @@ void GiveXP(int client, int xp)
 		//no xp in freeplay.
 		return;
 	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
@@ -2234,7 +2235,7 @@ void PlayerApplyDefaults(int client)
 		
 		if(point_difference > 0)
 		{
-			if(Waves_GetRound() +1 > 60)
+			if(Classic_Mode() || Waves_GetRound() > 59)
 			{
 				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
 			}
