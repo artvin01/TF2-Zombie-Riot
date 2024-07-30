@@ -73,6 +73,8 @@ public void Barrack_Alt_Donnerkrieg_MapStart()
 	NPC_Add(data);
 }
 
+static float fl_npc_basespeed;
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
@@ -163,6 +165,7 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Donnerkrieg_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Donnerkrieg_ClotThink;
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -315,7 +318,7 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
@@ -355,6 +358,18 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 		}
 		if(!b_cannon_active[npc.index])
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE", 100000.0, _, false);
+
+		if(!b_cannon_active[npc.index])
+		{
+			if(npc.m_flNextMeleeAttack > GameTime)
+			{
+				npc.m_flSpeed = 10.0;
+			}
+			else
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+			}
+		}
 	}
 }
 

@@ -3058,6 +3058,14 @@
 	{
 		"en"	"Directly after you release the void in rogue2..."
 	}
+	"Twirl Raid Desc"
+	{
+		"en"	"A certain individual has taken an interest in your group"
+	}
+	"Ruina waves Desc"
+	{
+		"en"	"Can you withstand the power of magic?"
+	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."

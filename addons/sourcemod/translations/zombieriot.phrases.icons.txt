@@ -296,4 +296,12 @@
 	{
 		"en" 		"Long enough, and it might go away on its own."
 	}
+	"Venium Spawn"
+	{
+		"en"		"A Ruanian Anchor builder has arrived."
+	}
+	"Twirl Spawn"
+	{
+		"en"		"Her majesty, the ruler of magic has descended..."	//idk, temP?
+	}
 }

@@ -37,6 +37,7 @@ public void Barrack_Alt_Basic_Mage_MapStart()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -77,6 +78,7 @@ methodmap Barrack_Alt_Basic_Mage < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Alt_Basic_Mage_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Basic_Mage_ClotThink;
+		fl_npc_basespeed = 190.0;
 		npc.m_flSpeed = 190.0;
 		
 		
@@ -159,6 +161,15 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 200000.0, _, false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

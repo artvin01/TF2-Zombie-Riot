@@ -33,8 +33,7 @@ float fl_ruina_battery_timeout[MAXENTITIES];
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 static float fl_ruina_internal_healing_timer[MAXENTITIES];
 
-#define RUINA_ANCHOR_HARD_LIMIT 10
-int i_magia_anchors_active;
+
 
 static float fl_mana_sickness_timeout[MAXTF2PLAYERS];
 
@@ -72,6 +71,10 @@ static int i_shield_color[3] = {0, 0, 0};
 	1 1 0		//Y
 	1 1 1
 */
+
+float fl_ruina_buff_amt[MAXENTITIES];
+float fl_ruina_buff_time[MAXENTITIES];
+bool b_ruina_buff_override[MAXENTITIES];
 
 //these scales on wavecount
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	175.0
@@ -135,6 +138,7 @@ enum
 }
 
 //static char gLaser1;
+int g_Ruina_BEAM_Diamond;
 int g_Ruina_BEAM_Laser;
 int g_Ruina_HALO_Laser;
 int g_Ruina_BEAM_Combine_Black;
@@ -203,8 +207,6 @@ public void Ruina_Ai_Core_Mapstart()
 	PrecacheModel(RUINA_POINT_MODEL);
 
 	g_rocket_particle = PrecacheModel(PARTICLE_ROCKET_MODEL);
-
-	i_magia_anchors_active=0;
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 
@@ -212,6 +214,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
+	g_Ruina_BEAM_Diamond = PrecacheModel("materials/sprites/physring1.vmt", true);
 	g_Ruina_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", true);
 	g_Ruina_HALO_Laser = PrecacheModel("materials/sprites/halo01.vmt", true);
 	g_Ruina_BEAM_Combine_Black 	= PrecacheModel("materials/sprites/combineball_trail_black_1.vmt", true);
@@ -287,7 +290,7 @@ void Ruina_Set_Overlord(int client, bool state)
 	}
 }
 
-void Ruina_Reset_Starts_Npc(int client)
+void Ruina_Reset_Stats_Npc(int client)
 {
 	f_Ruina_Speed_Buff[client] = 0.0;
 	f_Ruina_Defense_Buff[client] = 0.0;
@@ -320,7 +323,7 @@ public void Ruina_NPC_OnTakeDamage_Override(int victim, int &attacker, int &infl
 void Ruina_Npc_Give_Shield(int client, float strenght)
 {
 	float GameTime = GetGameTime();
-	if(fl_ruina_shield_break_timeout[client] > GameTime)
+	if(fl_ruina_shield_break_timeout[client] > GameTime && !b_ruina_buff_override[client])
 		return;
 	
 	Ruina_Remove_Shield(client);
@@ -1161,7 +1164,10 @@ void Ruina_Projectile_Touch(int entity, int target)
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 
-		Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		if(fl_ruina_Projectile_radius[entity]>0.0)
+			Explode_Logic_Custom(fl_ruina_Projectile_dmg[entity] , owner , owner , -1 , ProjectileLoc , fl_ruina_Projectile_radius[entity] , _ , _ , true, _,_, fl_ruina_Projectile_bonus_dmg[entity]);
+		else
+			SDKHooks_TakeDamage(target, owner, owner, fl_ruina_Projectile_dmg[entity], DMG_PLASMA, -1, _, ProjectileLoc);
 
 		Ruina_Remove_Projectile(entity);
 	}
@@ -1609,11 +1615,11 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(NpcStats_IsEnemySilenced(npc.index))
-		Amt*=0.75;
+		Amt*=0.5;
 
 	fl_ruina_battery[npc.index] += Amt;
 }
-public void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
+void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	if(fl_npc_healing_duration[npc.index] > GetGameTime(npc.index))
@@ -1659,13 +1665,11 @@ public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTi
 		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
 }
-static void Helia_Healing_Buff(int baseboss_index, float Power)
+void Helia_Healing_Buff(int baseboss_index, float Power)
 {
 	int Healing = RoundToFloor(Power);
 
 	CClotBody npc = view_as<CClotBody>(baseboss_index);
-
-	
 
 	int Current_Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
@@ -1820,9 +1824,9 @@ public void Master_Apply_Attack_Buff(int client, float range, float time, float 
 	Apply_Master_Buff(client, RUINA_ATTACK_BUFF, range, time, power);
 }
 
-public void Master_Apply_Shield_Buff(int client, float range, float power)
+void Master_Apply_Shield_Buff(int client, float range, float power, bool override = false)
 {
-	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power);
+	Apply_Master_Buff(client, RUINA_SHIELD_BUFF, range, 0.0, power, override);
 }
 public void Master_Apply_Battery_Buff(int client, float range, float power)
 {
@@ -1837,10 +1841,6 @@ void Ruina_Special_Logic(int iNPC, int Target)
 	}
 }
 
-static float fl_buff_amt[MAXENTITIES];
-static float fl_buff_time[MAXENTITIES];
-static bool b_buff_override[MAXENTITIES];
-
 /*
 	Should work with non ruina npc's - NOT TESTED YET!
 */
@@ -1851,45 +1851,45 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 	if(NpcStats_IsEnemySilenced(npc.index))
 		return;
 	
-	b_buff_override[npc.index] = Override;
+	b_ruina_buff_override[npc.index] = Override;
 
 	switch(buff_type)
 	{
 		case RUINA_DEFENSE_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Defense_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_SPEED_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Speed_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_ATTACK_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
-			fl_buff_time[npc.index] = time;
+			fl_ruina_buff_amt[npc.index] = amt;
+			fl_ruina_buff_time[npc.index] = time;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Apply_Attack_buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_SHIELD_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Shield_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
 		case RUINA_HEALING_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Healing_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
@@ -1901,7 +1901,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 		}
 		case RUINA_BATTERY_BUFF:
 		{
-			fl_buff_amt[npc.index] = amt;
+			fl_ruina_buff_amt[npc.index] = amt;
 			b_NpcIsTeamkiller[npc.index] = true;
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Battery_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
@@ -1920,7 +1920,7 @@ public void Ruina_Battery_Buff(int entity, int victim, float damage, int weapon)
 	if(b_is_battery_buffed[victim])	
 		return;
 	
-	Ruina_Add_Battery(victim, fl_buff_amt[entity]);
+	Ruina_Add_Battery(victim, fl_ruina_buff_amt[entity]);
 }
 public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 {
@@ -1931,9 +1931,9 @@ public void Ruina_Shield_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float amt = fl_buff_amt[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		Ruina_Npc_Give_Shield(victim, amt);
 	}
 }
@@ -1946,7 +1946,7 @@ public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		b_ruina_allow_teleport[victim]=true;
 	}
@@ -1960,9 +1960,9 @@ public void Ruina_Healing_Buff(int entity, int victim, float damage, int weapon)
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float amt = fl_buff_amt[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		Helia_Healing_Buff(victim, amt);
 	}
 }
@@ -1980,10 +1980,10 @@ public void Ruina_Apply_Defense_buff(int entity, int victim, float damage, int w
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 		float GameTime = GetGameTime();
 		if(f_Ruina_Defense_Buff[victim]>GameTime)
 		{
@@ -2011,10 +2011,10 @@ public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int wea
 	
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 
 		float GameTime = GetGameTime();
 		if(f_Ruina_Speed_Buff[victim]>GameTime)
@@ -2031,7 +2031,7 @@ public void Ruina_Apply_Speed_buff(int entity, int victim, float damage, int wea
 		f_Ruina_Speed_Buff[victim] = GameTime + time;
 	}
 }
-public void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
+void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int weapon)
 {
 	if(entity==victim)
 		return;	//don't buff itself!
@@ -2040,10 +2040,10 @@ public void Ruina_Apply_Attack_buff(int entity, int victim, float damage, int we
 		return;
 
 	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_buff_override[entity]))	
+	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
-		float time = fl_buff_time[entity];
-		float amt = fl_buff_amt[entity];
+		float time = fl_ruina_buff_time[entity];
+		float amt = fl_ruina_buff_amt[entity];
 
 		float GameTime = GetGameTime();
 		if(f_Ruina_Attack_Buff[victim]>GameTime)
@@ -2228,6 +2228,7 @@ enum struct Ruina_Laser_Logic
 	int client;
 	float Start_Point[3];
 	float End_Point[3];
+	float Angles[3];
 	float Radius;
 	float Damage;
 	float Bonus_Damage;
@@ -2269,6 +2270,7 @@ enum struct Ruina_Laser_Logic
 			this.Start_Point = startPoint;
 			this.End_Point = Loc;
 			this.trace_hit=true;
+			this.Angles = Angles;
 		}
 		else
 		{
@@ -2291,6 +2293,7 @@ enum struct Ruina_Laser_Logic
 			}
 			this.Start_Point = startPoint;
 			this.End_Point = Loc;
+			this.Angles = Angles;
 			this.trace_hit=true;
 		}
 		else
@@ -2489,9 +2492,9 @@ Names per stage:
 		Battery: Buff's nearby Ranged npc's speed
 
 		Stage 1: Done.
-		Stage 2: Done.
+		Stage 2: Done.  . Gains the ability to fire a ICBM
 		Stage 3: Done.	is just a stronger variant. Additionally: while the battery boost is active fired projectiles have homing
-		Stage 4: Null
+		Stage 4: Done.  is stronger
 
 		Magnium:
 		{
@@ -2513,7 +2516,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	Is just stronger variant + Teleport deals damage to targets hit
 		Stage 3: Done.	Is just stronger variant
-		Stage 4: Null
+		Stage 4: Done. Stronger and	Can heal other nearby lanius type npc's
 
 	}
 	//created
@@ -2528,7 +2531,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just stronger variant
 		Stage 3: Done. is just stronger variant
-		Stage 4: Null
+		Stage 4: Done. Class becomes sniper. Nearby npc's gain a 50% dmg bonus
 
 	}
 	//created
@@ -2542,7 +2545,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is simply stronger.
 		Stage 3: Done.  is simply stronger.
-		Stage 4: Null
+		Stage 4: Done. stronger
 	}
 
 	//created
@@ -2556,7 +2559,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done. can summon now includes Magia and Lanius from the previous stage.
 		Stage 3: Done. stronger also when summoning itself, it boosts the speed of ruina npc's in a small radius. this is heavy boost, lasts for a while	
-		Stage 4: Null
+		Stage 4: Done. stronger
 	}
 	//created
 	6: Daedalus -> Draedon -> Draeonis -> Draconia
@@ -2569,7 +2572,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done. 	Its just a buffed version.
 		Stage 3: Done. 	Its just a buffed version.
-		Stage 4: Null.	Will be able to override the shield timeout
+		Stage 4: Done.	Will be able to override the shield timeout
 
 	}
 	//created
@@ -2584,7 +2587,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just buffed variant
 		Stage 3: Done.	battery: gains the ability to shoot a laser projectile of D00M
-		Stage 4: Null
+		Stage 4: Done.		Buff other nearby Aether class npc's dmg
 	}
 	//created
 	8: Malius -> Maliana -> Malianium -> Malianius.
@@ -2597,7 +2600,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.		Is a stronger variant, does an animation and stands still while casting the battery buff.
 		Stage 3: Done. Is stronger.
-		Stage 4: Null.		Once starting the animation, will fire an ion onto some random dude it can see.
+		Stage 4: Done.		Once starting the animation, will fire an ion onto some random dude it can see.
 
 	}
 	//created
@@ -2615,7 +2618,7 @@ Names per stage:
 			Every 20 seconds fire a fantasmal wave.
 			This fantasmal wave can be dodged by simply jumping over it.
 			Additionally, a portion of the damage dealt by this wave is transfered over to the healing amount.
-		Stage 4: Null
+		Stage 4: Done. Class becomes soldier. gains the ability to fire a laser every once in a while
 
 	}
 	10: Laz -> Lazius -> Lazines -> Lazurus
@@ -2627,7 +2630,7 @@ Names per stage:
 		Stage 1: Done.	Laz
 		Stage 2: Done.	battery: shoot a stronger variant of the laser, has better homing too
 		Stage 3: Done.	Lazines. is a stronger variant
-		Stage 4: Null	Lazurus
+		Stage 4: Done.	Lazurus is stronger.
 
 	}
 	//created
@@ -2641,7 +2644,7 @@ Names per stage:
 		Stage 1: Done.
 		Stage 2: Done.	is just a stronger variant
 		Stage 3: Done.	stronger.		(the shanker 9000)
-		Stage 4: Null
+		Stage 4: Done.	Stronger.		MORE SHANKING. EVEN DEADLIER also gives a 25% dmg bonus to everyone around it. self not included
 	}
 
 	Todo: Rewrite these.
@@ -2649,18 +2652,20 @@ Names per stage:
 	{
 		State: Independant
 		Class: Engie
-		Has the ability to build a special building that once built spawns drones and maintains an ION
+		Has the ability to build a special building that once built spawns drones
 	}
-	Building: "Magia Anchor"	these can summon a weaver when 4 exist, but even when only 1 of them is fully operational. fix that
+	Building: "Magia Anchor"
 	{
 		spawns drones respective to the stage.
-		controls a special ION, 1 ion per stage.
-		A maximum of 4 of them can exist at a time.
-		once 4 exist, they have the abiltiy to summon a "Storm Weaver"
+	
+		they have the abiltiy to summon a "Stellar Weaver" once "power" hits 100%
 	}
-	Special: "Storm Weaver":	its body just kinda poof's out of existance, idk why, investigate.
+	Special: "Stellar Weaver":
 	{
 		A worm boss, it itself doesn't have a hitbox.
+
+		Seems to be functional, it can handle situtations where the anchor doesn't exist, when one appears.
+		its damage scales on wave count too.
 	}
 
 
@@ -2672,8 +2677,8 @@ Names per stage:
 
 	Stage 2 specials:
 
-	Lex. - Boss. W30.	Give the ability to connect the two wings if close to eachother.
-	Iana - Boss. W30.	Add wings
+	Lex. - Boss. W30.
+	Iana - Boss. W30.	
 
 	Stage 3 specials:
 
@@ -2681,11 +2686,50 @@ Names per stage:
 
 	Stage 4 specials:
 
+	Lancelot - W60 boss. 
+	- Add sound effects for the various things
+
 
 	Ruliana: - Blitzkrieg was based off of her. so has a similar-ish theme of rocket spam. but gonna need to do make it seems different so its not just a copy of blitz.
 	Is a "super boss". so only one of her.
 	Custom model somewhat goes into the hand, *hinting towards Reiuji*. see about making wings with a custom model too.
 	Medic class.
+
+
+	RAIDBOSS: Twirl.
+
+	Core:
+
+	High damage, low hp. like blitzkrieg
+
+	Dual mode:
+	If fighting a melee player, uses a melee weapon.
+	If fighting a ranged player, uses a ranged weapon.
+
+	Every 10th? ranged hit, fire a laser.	Hand throw anim, 0.5s duration. 0.0 turnrate.
+	Every 10th? melee hit, fie an ION.		on target. 1.25 det time. 
+
+	Stage 1:
+	Retreat: Teleports in a random set direction, leaving behind a ION cannon.
+
+	Stage 2:
+	Retreat: Fires a ion on every player who is near the position she was at before teleporting.
+	Laser Punch: Fires several lazius lasers, they all go towards the same target, no homing, no prediction. stagger fire.
+
+	Stage 3:
+	Retreat: the same.
+	Laser Punch: the same
+	Cosmic Gaze: MOOOOOOOOOOOOOOOOOOORTIS. punches and an explosion happens a second later where she was looking.
+
+	Stage 4:
+	Retreat: The same + upon retreating, fires a 2 second laser towards where she was. use z anim.
+	Laser Punch: the same + wherever the projectile hits a ION strike happens a second later
+	Cosmic Gaze: the same
+	Lunar Radiance: shoots ions on every player that also predict's thier pos.
+
+	
+	FINAL TODO LIST:
+	Make the cfg.
 
 
 */
@@ -2710,3 +2754,56 @@ void Lanius_Teleport_Effect(char[] type, float duration = 0.0, float start_point
 		pack.WriteCell(duration);
 	}
 }
+
+/*
+//stage1:
+npc_ruina_magia
+npc_ruina_lanius
+npc_ruina_aether
+npc_ruina_daedalus
+npc_ruina_europa
+npc_ruina_helia
+npc_ruina_ruriana   1300
+npc_ruina_laz
+npc_ruina_astria
+npc_ruina_malius
+npc_ruina_adiantum
+npc_ruina_theocracy
+//stage2:
+npc_ruina_magnium     500
+npc_ruina_laniun      1000
+npc_ruina_aetheria    700
+npc_ruina_lazius      900
+npc_ruina_europis     900
+npc_ruina_heliara     1250
+npc_ruina_draedon     900
+npc_ruina_astriana    2600
+npc_ruina_maliana     1200
+npc_ruina_ruianus     3000
+npc_ruina_iana        30000
+npc_ruina_lex         
+//stage3:
+npc_ruina_magianas    1250
+npc_ruina_loonaris    2500
+npc_ruina_lazines     1800
+npc_ruina_heliaris    3000
+npc_ruina_rulius      5000
+npc_ruina_eurainis    2000
+npc_ruina_draeonis    2250
+npc_ruina_malianium   2400
+npc_ruina_aetherium   1500
+npc_ruina_astrianis   4000
+npc_ruina_ruliana     350000
+//stage 4:
+npc_ruina_magianius    6000
+npc_ruina_loonarionus  7500
+npc_ruina_heliarionus  6000
+npc_ruina_euranionis   8000
+npc_ruina_draconia     9000
+npc_ruina_malianius    12500
+npc_ruina_lazurus      8000
+npc_ruina_aetherianus  9000
+npc_ruina_rulianius    30000
+npc_ruina_astrianious  20000
+npc_ruina_lancelot
+*/

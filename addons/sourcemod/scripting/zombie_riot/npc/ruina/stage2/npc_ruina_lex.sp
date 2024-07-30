@@ -71,8 +71,8 @@ void Lex_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "lex"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -283,11 +283,14 @@ methodmap Lex < CClotBody
 		if(!this.IsAlive())
 			return;
 		
+		if(i_HexCustomDamageTypes[this.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
+			return;
+
 		if(this.IsClose())
 		{	
 			int Ally = EntRefToEntIndex(this.m_ially);
 			damage *= 0.5;
-			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+			SDKHooks_TakeDamage(Ally, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 		}
 	}
 	public void Spawn_Ally()
@@ -309,6 +312,8 @@ methodmap Lex < CClotBody
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+			Iana ally = view_as<Iana>(spawn_index);
+			ally.m_bThisNpcIsABoss = this.m_bThisNpcIsABoss;
 		}
 	}
 	public int Get_Target()
@@ -629,7 +634,7 @@ static void ClotThink(int iNPC)
 			if(npc.m_iState > 0)
 			{
 				int Previous_Proj = EntRefToEntIndex(i_laser_beacons[iNPC][0]);
-				for(int i=1 ; i < npc.m_iState ; i++)
+				for(int i=1 ; i < npc.m_iState && i < RUINA_LEX_LASER_BEACON_AMT; i++)
 				{
 					int Proj = EntRefToEntIndex(i_laser_beacons[iNPC][i]);
 

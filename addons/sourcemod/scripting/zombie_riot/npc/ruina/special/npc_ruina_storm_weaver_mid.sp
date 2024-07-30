@@ -3,25 +3,15 @@
 
 //this thing is *kinda* an npc, but also not really
 
-
-static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
-};
-
-static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+static char g_HurtSounds[][] = {
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
 	"weapons/dragons_fury_shoot.wav",
 };
-
-static int i_following_id[MAXENTITIES];
 
 void Ruina_Storm_Weaver_Mid_MapStart()
 {
@@ -31,14 +21,13 @@ void Ruina_Storm_Weaver_Mid_MapStart()
 	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "tank"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "blimp"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
 {	
-	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 
@@ -58,22 +47,11 @@ methodmap Storm_Weaver_Mid < CClotBody
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
-	public void PlayDeathSound() {
-	
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-	}
+
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	
 	public Storm_Weaver_Mid(int client, float vecPos[3], float vecAng[3], int ally, float in_line_id)
@@ -85,7 +63,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		
-		i_following_id[npc.index] = EntIndexToEntRef(RoundToFloor(in_line_id));
+		npc.m_iState = EntIndexToEntRef(RoundToFloor(in_line_id));
 
 
 		if(ally != TFTeam_Red)
@@ -164,7 +142,7 @@ static void ClotThink(int iNPC)
 
 	int PrimaryThreatIndex = npc.m_iTarget;
 
-	int follow_id = EntRefToEntIndex(i_following_id[npc.index]);
+	int follow_id = EntRefToEntIndex(npc.m_iState);
 
 	if(IsValidEntity(follow_id))
 	{
@@ -182,6 +160,15 @@ static void ClotThink(int iNPC)
 		}
 		
 	}
+	else
+	{
+		npc.m_bDissapearOnDeath = true;	
+		//CPrintToChatAll("death cause no hp.");
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+
+		return;
+	}
 
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -195,11 +182,20 @@ static void ClotThink(int iNPC)
 			float vecTarget[3];
 			WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 
+			if(b_stellar_weaver_allow_attack[npc.index] && fl_stellar_weaver_special_attack_offset < GameTime)
+			{
+				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
+				Stellar_Weaver_Attack(npc.index, vecTarget, 100.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
+				b_stellar_weaver_allow_attack[npc.index] = false;
+			}
+				
+
 			if(GameTime > npc.m_flNextRangedAttack)
 			{
 				npc.PlayMeleeHitSound();
-
-				float DamageDone = 100.0*RaidModeScaling;
+				float Ratio = (ZR_GetWaveCount()+1)/60.0;
+				float DamageDone = 100.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, 1250.0, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 5.0;
 			}
@@ -223,16 +219,16 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 	if(!b_storm_weaver_solo)
 	{
-		Storm_Weaver_Share_With_Anchor_Damage(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Storm_Weaver_Share_With_Anchor_Damage(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(npc));
 	}
 	else if(b_stellar_weaver_true_solo)
 	{
-		Stellar_Weaver_Share_Damage_With_All(attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+		Stellar_Weaver_Share_Damage_With_All(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health());
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Storm_Weaver_Return_Health(npc));
 	}
 
 	damage=0.0;	//storm weaver doesn't really take any damage, his "health bar" is just the combined health of all the towers
@@ -249,10 +245,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 static void NPC_Death(int entity)
 {
 	Storm_Weaver_Mid npc = view_as<Storm_Weaver_Mid>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	
+	npc.m_iState = -1;
 	
 	Ruina_NPCDeath_Override(entity);
 
