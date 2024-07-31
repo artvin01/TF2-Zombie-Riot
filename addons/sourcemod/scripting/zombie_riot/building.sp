@@ -154,7 +154,7 @@ bool BuildingIsBeingCarried(int buildingindx)
 	return false;
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
-#define MAX_SUPPLIES_EACH_WAVE 5
+#define MAX_SUPPLIES_EACH_WAVE 25
 static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
 static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
 static int i_GiveCashBuilding[MAXTF2PLAYERS];
