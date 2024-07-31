@@ -872,7 +872,7 @@ public void SaintBones_PriestLogic(SaintBones npc, int closest)
 		npc.StartPathing();
 	}
 	
-	if (!IsValidEntity(closest))
+	if (!IsValidEntity(closest) || closest == npc.index)
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;

@@ -275,13 +275,6 @@ methodmap PirateBones < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		Pirate_GiveCosmetics(npc, buffed);
-		if (b_BonesBuffed[npc.index])
-		{
-			int iActivity = npc.LookupActivity("ACT_PIRATE_RUN");
-			if(iActivity > 0) npc.StartActivity(iActivity);
-		}
-		
-		DispatchKeyValue(npc.index, "skin", buffed ? BONES_PIRATE_SKIN_BUFFED : BONES_PIRATE_SKIN);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -293,8 +286,6 @@ methodmap PirateBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_PIRATE_SPEED_BUFFED : BONES_PIRATE_SPEED);
 		
 		SDKHook(npc.index, SDKHook_Think, PirateBones_ClotThink);
-		
-		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
 		
@@ -349,7 +340,7 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		DispatchKeyValue(npc.m_iWearable3, "skin", BONES_PIRATE_SKIN);
 	}
 
-	//RequestFrame(PirateBones_FixAnims, npc);
+	RequestFrame(PirateBones_FixAnims, npc);
 }
 
 public void PirateBones_FixAnims(CClotBody npc)
