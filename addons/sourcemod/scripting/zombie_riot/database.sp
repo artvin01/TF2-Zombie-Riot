@@ -319,7 +319,7 @@ void DataBase_ClientDisconnect(int client)
 			... "tp = %d, "
 			... "zomvol = %.3f, "
 			... "tauntspeed = %d, "
-			... "battletimehud = %.3f "
+			... "battletimehud = %.3f, "
 			... "mapmusic = %d "
 			... "WHERE steamid = %d;",
 			i_PlayerModelOverrideIndexWearable[client] + 1,

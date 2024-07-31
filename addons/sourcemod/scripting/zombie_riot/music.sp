@@ -54,6 +54,7 @@ static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
 static bool AltExtraLogic;
+static int MusicMapRemove[MAXTF2PLAYERS];
 
 static float DelayStopSoundAll[MAXTF2PLAYERS];
 
@@ -106,6 +107,9 @@ static const char g_LastMannAnnouncer[][] =
 };
 
 
+int g_iSoundEnts[MAXENTITIES];
+int g_iNumSounds;
+
 void Music_MapStart()
 {
 	Zero(DelayStopSoundAll);
@@ -144,6 +148,56 @@ void Music_MapStart()
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
 	}
+	EventRoundStartMusicFilter();
+}
+
+void EventRoundStartMusicFilter()
+{
+	char sSound[256];
+	int entity;
+	g_iNumSounds = 0;
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		MusicMapRemove[client] = 2000000000;
+	}
+	while ((entity = FindEntityByClassname(entity, "ambient_generic")) != INVALID_ENT_REFERENCE)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iszSound", sSound, sizeof(sSound));
+		
+		if(StrContains(sSound, "#", true) != -1)
+		{
+			Zero(MusicMapRemove);
+			g_iSoundEnts[g_iNumSounds++] = EntIndexToEntRef(entity);
+		}
+	}
+	RequestFrames(StopMapMusicAll, 60);
+}
+void StopMapMusicAll()
+{
+	int entity;
+	char sSound[256];
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		{
+			for (int i = 0; i < g_iNumSounds; i++)
+			{
+				entity = EntRefToEntIndex(g_iSoundEnts[i]);
+				
+				if (entity != INVALID_ENT_REFERENCE)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iszSound", sSound, sizeof(sSound));
+					Client_StopSound(client, entity, SNDCHAN_STATIC, sSound);
+				}
+			}
+		}
+	}
+}
+
+stock void Client_StopSound(int client, int entity, int channel, char[] name)
+{
+	EmitSoundToClient(client, name, entity, channel, SNDLEVEL_NONE, SND_STOP, 0.0, SNDPITCH_NORMAL, _, _, _, true);
 }
 
 bool Music_Disabled()
@@ -401,6 +455,12 @@ void Music_PostThink(int client)
 			SetEntPropFloat(client, Prop_Send, "m_flMaxspeed", 250.0);
 		}
 		*/
+	}
+
+	if(MusicMapRemove[client] < GetTime())
+	{
+		StopMapMusicAll();
+		MusicMapRemove[client] = GetTime() + 30;
 	}
 	
 	if(MusicDisabled && !b_IgnoreMapMusic[client])
