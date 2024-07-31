@@ -1277,7 +1277,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 100.0 : 50.0);
+		float Dmg = (npc.Anger ? 60.0 : 30.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1326,7 +1326,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						}
 							
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 75.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 45.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1776,9 +1776,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = (npc.Anger ? 50.0 : 25.0);
+	float Laser_Dmg = (npc.Anger ? 10.0 : 5.0);
 	float Speed = (npc.Anger ? 1750.0 : 1000.0);
-	float Direct_Dmg = (npc.Anger ? 50.0 : 25.0);
+	float Direct_Dmg = (npc.Anger ? 30.0 : 15.0);
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
