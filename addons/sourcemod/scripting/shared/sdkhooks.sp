@@ -2026,6 +2026,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+#if defined ZR
 	if(b_IsAmbientGeneric[entity])
 	{
 		if(StrContains(sample, "#", true) != -1)
@@ -2050,6 +2051,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			return Plugin_Changed;
 		}
 	}
+#endif
 
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
