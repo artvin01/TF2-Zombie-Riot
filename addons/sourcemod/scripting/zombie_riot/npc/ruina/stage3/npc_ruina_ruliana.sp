@@ -379,8 +379,10 @@ static void ClotThink(int iNPC)
 	
 		float Ratio = (float(Health)/float(MaxHealth));
 
-		if(npc.Anger)
+		if(Ratio < 0.4)
 		{
+			Ruina_Master_Rally(npc.index, true);
+
 			if(npc.m_flNextTeleport < GameTime)	//so allies can actually keep up
 			{
 				npc.m_flNextTeleport = GameTime + 1.0;
@@ -390,8 +392,6 @@ static void ClotThink(int iNPC)
 					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
 			}
 		}
-		if(Ratio < 0.4)
-			Ruina_Master_Rally(npc.index, true);
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
