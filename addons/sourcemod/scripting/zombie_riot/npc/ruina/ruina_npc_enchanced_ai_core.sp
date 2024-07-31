@@ -1285,10 +1285,10 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	int flat_amt = i_mana_sickness_flat[entity];
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
-	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(weapon))
+	int wep_hold = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(wep_hold))
 	{
-		if(!i_IsWandWeapon[weapon])
+		if(!i_IsWandWeapon[wep_hold])
 		{
 			flat_amt = RoundToFloor(flat_amt*0.5);
 			Multi *=0.9;
