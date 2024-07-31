@@ -81,10 +81,10 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 
 void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
-	int MaxShieldCapacity = 5;
+	int MaxShieldCapacity = 10;
 	if(b_thisNpcIsABoss[entity])
 	{
-		MaxShieldCapacity = 10;
+		MaxShieldCapacity = 20;
 	}
 	if(b_thisNpcIsARaid[entity])
 	{

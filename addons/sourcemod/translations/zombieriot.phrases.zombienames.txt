@@ -2867,7 +2867,7 @@
 	}
 	"Nightmare Spawned"
 	{
-		"en" 		"Nightares will haunt you."
+		"en" 		"Nightmares will haunt you."
 	}
 	"Zombine"
 	{
