@@ -49,20 +49,20 @@ static const char RobotModels[][] =
 static const char PlayerModelsCustom[][] =
 {
 	"models/bots/headless_hatman.mdl",
-	"models/zombie_riot/player_model_add/model_player_1_2.mdl",
+	"models/zombie_riot/player_model_add/model_player_1_3.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
-	"models/zombie_riot/player_model_add/model_player_1_2.mdl",
+	"models/zombie_riot/player_model_add/model_player_2_1.mdl",
 };
 
 
 static const char PlayerCustomHands[][] =
 {
 	"",
-	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
+	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
-	"models/zombie_riot/weapons/soldier_hands/c_soldier_arms.mdl", //needed custom model due to rocket in face, looks like kleiners, kinda.
+	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
 };
 
 int PlayerCustomModelBodyGroup[] =
@@ -224,6 +224,7 @@ void ViewChange_PlayerModel(int client)
 					
 					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
 					SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+					SetEntProp(client, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
 				}
 				else
 				{
@@ -266,7 +267,9 @@ void ViewChange_PlayerModel(int client)
 		ActivateEntity(entity);
 
 		SDKCall_EquipWearable(client, entity);
+		
 		SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+
 		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
 		//get its attachemt once, it probably has to authorise it once to work correctly for later.
 		//otherwise, trying to get its attachment breaks, i dont know why, it has to be here.
@@ -548,7 +551,9 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		}
 		
 		entity = CreateViewmodel(client, model, model, weapon);
-		SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+		if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+			SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+			
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}
