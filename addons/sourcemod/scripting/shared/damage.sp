@@ -8,6 +8,8 @@
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
 
+
+
 float BarbariansMindNotif[MAXTF2PLAYERS];
 void DamageModifMapStart()
 {
@@ -421,8 +423,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 	RPG_FlatRes(victim, attacker, weapon, damage);
 #endif
 
+	NpcArmorExtra(victim, attacker, inflictor, damage, damagetype);
 	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+	//Do armor.
 #if defined ZR
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 	{
@@ -435,6 +439,32 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 #endif
 
 	return false;
+}
+
+void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
+{
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_flArmorCount > 0.0)
+	{
+		if(damagetype & DMG_CLUB)
+		{
+			npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+		}
+		else
+		{
+			npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
+		}
+		damage *= npc.m_flArmorProtect; //negate damage
+		
+		if(npc.m_iArmorType == 0)
+			npc.PlayHurtArmorSound();
+
+		if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		{
+			//let melee be really good against armor and stuff to reward them.
+			damage -= npc.m_flArmorCount;
+		}
+	}
 }
 
 stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -1268,12 +1298,14 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 				{
+#if defined ZR
 					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
 					{
 						PrintToChat(attacker, "You think you can circumvent this challange?! Shame on you!");
 						damage = 0.0;
 						return false;
 					}
+#endif
 					i_HasBeenBackstabbed[victim] = true;
 						
 					float attack_speed;

@@ -79,8 +79,8 @@ public void Theocracy_OnMapStart_NPC()
 	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "eisenhard"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -272,7 +272,7 @@ static void ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GameTime || npc.m_flDoingAnimation > GameTime)
+	if(npc.m_flNextThinkTime > GameTime || npc.m_flDoingAnimation > GetGameTime())
 	{
 		return;
 	}
@@ -318,14 +318,13 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(npc.m_flDoingAnimation<=GameTime)
+		if(npc.m_flDoingAnimation<=GetGameTime())
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 		
 		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
-		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.25);	//25% speed bonus, going bellow 1.0 will make npc's slower
+		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.20);	//25% speed bonus, going bellow 1.0 will make npc's slower
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
-		
 		
 		if(fl_rally_timer[npc.index]<=GameTime && !b_rally_active[npc.index])
 		{
@@ -360,7 +359,7 @@ static void ClotThink(int iNPC)
 			npc.AddActivityViaSequence("taunt_yetipunch");
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
-			npc.m_flDoingAnimation = GameTime + 6.25;
+			npc.m_flDoingAnimation = GetGameTime() + 6.25;
 			CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			
 			CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);

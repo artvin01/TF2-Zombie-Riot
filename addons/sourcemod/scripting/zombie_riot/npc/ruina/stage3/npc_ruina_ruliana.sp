@@ -77,8 +77,8 @@ void Ruliana_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "ruliana"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -365,10 +365,13 @@ static void ClotThink(int iNPC)
 
 	float Battery_Cost = 3500.0;
 	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
+
+	if(fl_ruina_battery[npc.index] > Battery_Cost)
+		fl_ruina_battery[npc.index] = Battery_Cost;
+		
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
-		if(fl_ruina_battery[npc.index] > Battery_Cost)
-			fl_ruina_battery[npc.index] = Battery_Cost;
+		
 		RaidModeScaling = battery_Ratio;
 
 		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
@@ -376,10 +379,25 @@ static void ClotThink(int iNPC)
 	
 		float Ratio = (float(Health)/float(MaxHealth));
 
-		if(Ratio < 0.25)
+		if(Ratio < 0.4)
 		{
-			SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+			Ruina_Master_Rally(npc.index, true);
+
+			if(npc.m_flNextTeleport < GameTime)	//so allies can actually keep up
+			{
+				npc.m_flNextTeleport = GameTime + 1.0;
+				if(Ratio < 0.1)
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 10.0);
+				else
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
+			}
 		}
+		else
+			Ruina_Master_Rally(npc.index, false);
+			
+		if(Ratio < 0.25)
+			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+
 	}
 
 	
@@ -737,11 +755,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void SactificeAllies(Ruliana npc)
+void SacrificeAllies(int npc)
 {
-	b_NpcIsTeamkiller[npc.index] = true;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
-	b_NpcIsTeamkiller[npc.index] = false;
+	b_NpcIsTeamkiller[npc] = true;
+	Explode_Logic_Custom(0.0, npc, npc, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
+	b_NpcIsTeamkiller[npc] = false;
 }
 
 static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
@@ -752,13 +770,15 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	if(GetTeam(entity) != GetTeam(victim))
 		return;
 
-	if(b_ruina_npc_healer[victim])	//don't harm the healers, they heal, *they goooood*
-		return;
-	
 	int Health 		= GetEntProp(victim, Prop_Data, "m_iHealth"),
 		MaxHealth 	= GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
 	int ru_MaxHealth 	= GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int ru_Health		= GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	float Ratio = (float(ru_Health)/float(ru_MaxHealth));
+	if(Ratio > 0.5)
+		return;
 
 
 	float Healing_Amt = float(ru_MaxHealth)*0.1;
@@ -771,14 +791,14 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	if(Health > TrueHealing)
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + RoundToFloor(TrueHealing));
-		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		SetEntProp(entity, Prop_Data, "m_iHealth", ru_Health + RoundToFloor(TrueHealing));
+		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 
 		int color[4];
 		Ruina_Color(color);
 		int laser;
 		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, BEAM_COMBINE_BLUE);
-		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 }

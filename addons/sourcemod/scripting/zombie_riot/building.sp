@@ -154,7 +154,7 @@ bool BuildingIsBeingCarried(int buildingindx)
 	return false;
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
-#define MAX_SUPPLIES_EACH_WAVE 5
+#define MAX_SUPPLIES_EACH_WAVE 25
 static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
 static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
 static int i_GiveCashBuilding[MAXTF2PLAYERS];
@@ -207,7 +207,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		CashRecievedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
-	if(AmmoSupply <= 0.0)
+	if(AmmoSupply <= 0.0 || Classic_Mode())
 	{
 		return;
 	}
@@ -222,11 +222,14 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		f_GiveAmmoSupplyFacture[owner] -= 1.0;
 		ConvertedAmmoSupplyGive += 1;
 	}
+	if(ConvertedAmmoSupplyGive <= 0)
+		return;
+		
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)
 		{
-			i_GiveCashBuilding[owner] += ConvertedAmmoSupplyGive;
+			i_GiveAmmoSupplyLimit[owner] += ConvertedAmmoSupplyGive;
 			Ammo_Count_Used[owner] -= ConvertedAmmoSupplyGive;
 		}
 	}

@@ -59,6 +59,10 @@
 	{
 		"en" 		"Voided Subjects"
 	}
+	"Ruina"
+	{
+		"en" 		"Ruina"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
@@ -1346,9 +1350,9 @@
 	}	
 	"Magia Anchor Desc"
 	{
-		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
+		"en"		"A magia anchor, spawns drones\nOnce a tower has been active for long enough something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
 	}
-	"Storm Weaver Desc"
+	"Stellar Weaver Desc"
 	{
 		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
 	}
@@ -1659,6 +1663,22 @@
 	"Ruliana Desc"
 	{
 		"en"	"Blitzkrieg was based off of her, so be careful~"
+	}
+	"Mana Overload"
+	{
+		"en"	"Mana Overload"
+	}
+	"Master System"
+	{
+		"en"	"Master System"
+	}
+	"Mana Overload Desc"
+	{
+		"en"	"Certain npc's can add mana to you. once you have over 2x you max mana, you are slowed and then an ion cannon is fired onto your location\nThe damage of this ion cannon scales on how much max mana you have. it also deals true damage\nit has a timeout period of where it can't be reapplied.\nNon mages overmana decays far faster then players who are mages"
+	}
+	"Master System Desc"
+	{
+		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\Make them rally to the master"
 	}
 	"Chaos Intrusion"
 	{

@@ -131,6 +131,9 @@ methodmap Nightmare < CClotBody
 		npc.m_flSpeed = 350.0;
 
 		npc.m_bDissapearOnDeath = false;
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		
 		
 		return npc;
 	}

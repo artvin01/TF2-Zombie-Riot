@@ -30,6 +30,7 @@ void Events_PluginStart()
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
 	
 	
@@ -443,6 +444,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
+	
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -481,6 +483,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Skulls_PlayerKilled(client);
 	// Save current uber.
 	ClientSaveUber(client);
+
 #endif
 
 #if defined RPG
@@ -493,7 +496,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif
-
+	
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }
