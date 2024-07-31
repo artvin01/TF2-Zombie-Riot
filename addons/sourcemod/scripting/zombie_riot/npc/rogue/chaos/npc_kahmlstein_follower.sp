@@ -251,15 +251,15 @@ methodmap KahmlsteinFollower < CClotBody
 		if(npc.m_bScalesWithWaves)
 		{
 			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.index, 255, 255, 255, 200);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
 			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 200);
+			SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 125);
 			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 200);
+			SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 125);
 			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 200);
+			SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 125);
 			SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 200);
+			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 125);
 		}
 
 		
