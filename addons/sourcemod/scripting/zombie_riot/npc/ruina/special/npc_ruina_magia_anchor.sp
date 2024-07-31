@@ -342,15 +342,7 @@ methodmap Magia_Anchor < CClotBody
 
 		NPC_StopPathing(npc.index);
 
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
-		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
-				break;
-			}
-		}
+		npc.m_flMeleeArmor = 2.5;
 
 		/*int test;
 		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
@@ -764,6 +756,16 @@ static bool Charging(Magia_Anchor npc)
 	}
 	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
 	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
+		
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;

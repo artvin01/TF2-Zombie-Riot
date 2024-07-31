@@ -285,6 +285,8 @@ methodmap Ruliana < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		fl_ruina_battery_timeout[npc.index] = 0.0;
 
+		npc.m_flMeleeArmor = 1.25;
+
 		bool lord = StrContains(data, "overlord") != -1;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc		

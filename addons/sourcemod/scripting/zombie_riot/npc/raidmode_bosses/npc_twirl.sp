@@ -785,6 +785,8 @@ methodmap Twirl < CClotBody
 
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+
+		npc.m_flMeleeArmor = 1.5;
 		
 		return npc;
 	}
