@@ -353,7 +353,6 @@ float f_InBattleDelay[MAXTF2PLAYERS];
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_PlayerDamaged[MAXTF2PLAYERS];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
-bool b_IsAmbientGeneric[MAXENTITIES];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
@@ -3007,7 +3006,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
-		b_IsAmbientGeneric[entity] = false;
 		b_IsAProjectile[entity] = false;
 /*		if(!StrContains(classname, "env_entity_dissolver"))
 		{
@@ -3023,10 +3021,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
-		}
-		else if(!StrContains(classname, "ambient_generic"))
-		{
-			b_IsAmbientGeneric[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_player_manager"))
 		{

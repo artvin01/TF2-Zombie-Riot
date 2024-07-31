@@ -1396,6 +1396,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				FormatEx(ExecuteRelayThings, sizeof(ExecuteRelayThings), "zr_wavefinish_wave_%i",CurrentRound);
 				ExcuteRelay(ExecuteRelayThings);
 			}
+			RequestFrames(StopMapMusicAll, 60);
 			
 			Waves_ClearWaves();
 
@@ -1467,6 +1468,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ExcuteRelay("zr_setuptime");
 				Citizen_SetupStart();
 				f_DelaySpawnsForVariousReasons = GetGameTime() + 1.5; //Delay spawns for 1.5 seconds, so maps can do their thing.
+				RequestFrames(StopMapMusicAll, 60);
 			}
 
 			if(round.Skyname[0])
@@ -1729,6 +1731,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					SpawnTimer(30.0);
 					CreateTimer(30.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				}
+				RequestFrames(StopMapMusicAll, 60);
 				
 				int total = 0;
 				int[] players = new int[MaxClients];
@@ -1827,6 +1830,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					SpawnTimer(round.Setup);
 					CreateTimer(round.Setup, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
 				}
+				RequestFrames(StopMapMusicAll, 60);
 
 				Citizen_SetupStart();
 			}
@@ -2975,6 +2979,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			
 			SpawnTimer(15.0);
 			CreateTimer(15.0, Waves_RoundStartTimer, _, TIMER_FLAG_NO_MAPCHANGE);
+			RequestFrames(StopMapMusicAll, 60);
 			
 			Citizen_SetupStart();
 		}

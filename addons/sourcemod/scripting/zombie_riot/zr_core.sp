@@ -592,6 +592,11 @@ void ZR_PluginStart()
 	{
 		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
+
+	for (int ent = -1; (ent = FindEntityByClassname(ent, "ambient_generic")) != -1;) 
+	{
+		OnEntityCreated(ent, "ambient_generic");	
+	}
 	
 	BobTheGod_OnPluginStart();
 }
