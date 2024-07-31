@@ -1285,6 +1285,16 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	int flat_amt = i_mana_sickness_flat[entity];
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
+	int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(weapon))
+	{
+		if(!i_IsWandWeapon[weapon])
+		{
+			flat_amt = RoundToFloor(flat_amt*0.5);
+			Multi *=0.9;
+		}
+	}
+
 	b_override_Sickness[entity] = false;
 
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
@@ -1304,6 +1314,16 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 			return;
 
 		float OverMana_Ratio = Current_Mana[Target]/max_mana[Target];
+
+		int weapon = GetEntPropEnt(Target, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon))
+		{
+			if(!i_IsWandWeapon[weapon])
+			{
+				flat_amt = RoundToFloor(flat_amt*0.5);
+				Multi *=0.9;
+			}
+		}
 
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
