@@ -353,6 +353,7 @@ float f_InBattleDelay[MAXTF2PLAYERS];
 int Healing_done_in_total[MAXTF2PLAYERS];
 int i_PlayerDamaged[MAXTF2PLAYERS];
 bool b_PlayerWasAirbornKnockbackReduction[MAXTF2PLAYERS];
+bool b_IsAmbientGeneric[MAXENTITIES];
 ConVar CvarRPGInfiniteLevelAndAmmo;
 ConVar CvarXpMultiplier;
 TFClassType CurrentClass[MAXTF2PLAYERS]={TFClass_Scout, ...};
@@ -422,6 +423,7 @@ bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -752,7 +754,8 @@ bool Viewchanges_PlayerModelsAnims[] =
 	false,
 	true,
 	true,
-	false
+	false,
+	true,
 };
 
 float f_NpcImmuneToBleed[MAXENTITIES];
@@ -1187,6 +1190,7 @@ float fl_GetClosestTargetTimeTouch[MAXENTITIES];
 int b_DoNotChangeTargetTouchNpc[MAXENTITIES];
 float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
+float fl_NextHurtSoundArmor[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
 bool b_CollidesWithEachother[MAXENTITIES];
@@ -1278,6 +1282,8 @@ float fl_WaveScale[MAXENTITIES];
 float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
+float fl_ArmorSetting[MAXENTITIES][3];
+int i_ArmorSetting[MAXENTITIES][2];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 bool b_PlayHurtAnimation[MAXENTITIES];
@@ -3001,7 +3007,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
-
+		b_IsAmbientGeneric[entity] = false;
 		b_IsAProjectile[entity] = false;
 /*		if(!StrContains(classname, "env_entity_dissolver"))
 		{
@@ -3017,6 +3023,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+		}
+		else if(!StrContains(classname, "ambient_generic"))
+		{
+			b_IsAmbientGeneric[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_player_manager"))
 		{

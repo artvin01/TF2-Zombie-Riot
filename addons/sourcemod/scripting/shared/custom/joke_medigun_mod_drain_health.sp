@@ -204,7 +204,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				MedigunChargeUber(owner, medigun, 1.0);
+				MedigunChargeUber(owner, medigun, 2.0);
 				
 				if (!team)
 				{
@@ -266,7 +266,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(GetEntProp(healTarget, Prop_Data, "m_iHealth") <= 0 && !TF2_IsPlayerInCondition(owner, TFCond_Ubercharged) && !TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
-						MedigunChargeUber(owner, medigun, 1.0);
+						MedigunChargeUber(owner, medigun, 7.0);
 					}
 					
 				}
@@ -488,7 +488,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				MedigunChargeUber(owner, medigun, 2.0);
+				MedigunChargeUber(owner, medigun, 2.0, true);
+
 				int new_ammo = GetAmmo(owner, 22);
 				
 				if (!team)
@@ -663,14 +664,11 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 		
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
-	flChargeLevel += 0.10*GetGameFrameTime();
+	flChargeLevel += (0.10 * GetGameFrameTime() * extra_logic);
 	
 	if(RespectUberDuration)
 		flChargeLevel = flChargeLevel / MedigunGetUberDuration(owner);
-	
 
-	flChargeLevel *= extra_logic;
-	
 	if (flChargeLevel > 1.0)
 	{
 		flChargeLevel = 1.0;
