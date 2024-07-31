@@ -44,10 +44,7 @@ static bool b_ruina_allow_teleport[MAXENTITIES];
 
 	/// Ruina Shields ///
 
-static float fl_ruina_shield_power[MAXENTITIES];
-static float fl_ruina_shield_strength[MAXENTITIES];
 static float fl_ruina_shield_timer[MAXENTITIES];
-static bool b_ruina_shield_active[MAXENTITIES];
 static int i_shield_effect[MAXENTITIES];
 float fl_ruina_shield_break_timeout[MAXENTITIES];
 static int i_shield_color[3] = {0, 0, 0};			
@@ -85,7 +82,7 @@ bool b_ruina_buff_override[MAXENTITIES];
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.75	//for npc's that walk backwards, how much slower (or faster :3) should be walk
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.6		//for npc's that walk backwards, how much slower (or faster :3) should be walk
 #define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 
 static bool b_master_is_rallying[MAXENTITIES];
@@ -165,10 +162,7 @@ public void Ruina_Ai_Core_Mapstart()
 	Zero(b_ruina_battery_ability_active);
 	Zero(fl_ruina_battery_timer);
 	
-	Zero(fl_ruina_shield_power);
 	Zero(fl_ruina_shield_timer);
-	Zero(fl_ruina_shield_strength);
-	Zero(b_ruina_shield_active);
 	Zero(i_shield_effect);
 	Zero(fl_ruina_shield_break_timeout);
 	Zero(fl_ontake_sound_timer);
@@ -341,9 +335,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
 	}
 	Shield_Power *= wave;
-	
-	fl_ruina_shield_power[client] = Shield_Power;
-	fl_ruina_shield_strength[client] = strenght;
+
+	GrantEntityArmor(client, false, 0.0, strenght, 1, Shield_Power);
 	
 	Ruina_Update_Shield(client);
 }
@@ -351,41 +344,24 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[3], float GameTime)
 {
 	//does this npc have shield power?
-	if(fl_ruina_shield_power[victim]>0.0)	
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_flArmorCount>0.0)	
 	{
 		Ruina_Update_Shield(victim);
-		
-		//remove shield damage dependant on damage dealt
-		fl_ruina_shield_power[victim] -= damage*(1.0-fl_ruina_shield_strength[victim]);	
-		//if the shield is still intact remove all damage
-		if(fl_ruina_shield_power[victim]>=0.0)		
+
+		if(fl_ontake_sound_timer[victim]<=GameTime)
 		{
-			fl_TotalArmor[victim] = fl_ruina_shield_strength[victim];
-			if(fl_ontake_sound_timer[victim]<=GameTime)
-			{
-				fl_ontake_sound_timer[victim] = GameTime + 0.25;
-				EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-			}
-			//damage -= damage*fl_ruina_shield_strength[victim];
-			b_ruina_shield_active[victim] = true;
-			//also remove kb dependant on strength
-			damageForce[0] = damageForce[0]*fl_ruina_shield_strength[victim];	
-			damageForce[1] = damageForce[1]*fl_ruina_shield_strength[victim];
-			damageForce[2] = damageForce[2]*fl_ruina_shield_strength[victim];
-			
-			
+			fl_ontake_sound_timer[victim] = GameTime + 0.25;
+			EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		}
-		else	//if not, remove shield
-		{
-			fl_ruina_shield_power[victim] = 0.0;
-			b_ruina_shield_active[victim] = false;
-			Ruina_Remove_Shield(victim);
-			fl_TotalArmor[victim] = 1.0;
+		//also remove kb dependant on strength
+		for(int i=0 ; i < 3 ; i ++)
+		{	
+			damageForce[i] = damageForce[i] * npc.m_flArmorProtect;
 		}
 	}
 	else
 	{
-		fl_TotalArmor[victim] = 1.0;
 		Ruina_Remove_Shield(victim);
 	}
 }
@@ -393,7 +369,6 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 static void Ruina_Remove_Shield(int client)
 {
 	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
-	fl_TotalArmor[client] = 1.0;
 	if(IsValidEntity(i_shield_entity))
 	{
 		fl_ruina_shield_break_timeout[client] = GetGameTime() + RUINA_SHIELD_NPC_TIMEOUT;
@@ -402,23 +377,11 @@ static void Ruina_Remove_Shield(int client)
 }
 static void Ruina_Update_Shield(int client)
 {
-	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
-	int wave =(ZR_GetWaveCount()+1);
-	if(b_thisNpcIsABoss[client])
-	{
-		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
-	}
-	else if(b_thisNpcIsARaid[client])
-	{
-		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
-	}
-	Shield_Power *= wave;
-	
-	float current_shield_power = fl_ruina_shield_power[client];
-	
+	CClotBody npc = view_as<CClotBody>(client);
+
 	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
 
-	int alpha = RoundToFloor(255*(current_shield_power/Shield_Power));
+	int alpha = RoundToFloor(255*(npc.m_flArmorCount/npc.m_flArmorCountMax));
 	if(alpha > 255)
 	{
 		alpha = 255;
@@ -427,13 +390,12 @@ static void Ruina_Update_Shield(int client)
 	{
 		SetEntityRenderMode(i_shield_entity, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(i_shield_entity, i_shield_color[0], i_shield_color[1], i_shield_color[2], alpha);
-		return;
 	}
 	else
 	{
 		Ruina_Give_Shield(client, alpha);
-		return;
 	}
+	
 }
 static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from artvins vaus shield...
 {
@@ -1323,6 +1285,16 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	int flat_amt = i_mana_sickness_flat[entity];
 	float OverMana_Ratio = Current_Mana[victim]/max_mana[victim];
 
+	int wep_hold = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+	if(IsValidEntity(wep_hold))
+	{
+		if(!i_IsWandWeapon[wep_hold])
+		{
+			flat_amt = RoundToFloor(flat_amt*0.5);
+			Multi *=0.9;
+		}
+	}
+
 	b_override_Sickness[entity] = false;
 
 	Current_Mana[victim] += RoundToCeil(max_mana[victim]*Multi+flat_amt);
@@ -1342,6 +1314,16 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 			return;
 
 		float OverMana_Ratio = Current_Mana[Target]/max_mana[Target];
+
+		int weapon = GetEntPropEnt(Target, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(weapon))
+		{
+			if(!i_IsWandWeapon[weapon])
+			{
+				flat_amt = RoundToFloor(flat_amt*0.5);
+				Multi *=0.9;
+			}
+		}
 
 		Current_Mana[Target] += RoundToCeil(max_mana[Target]*Multi+flat_amt);
 
@@ -1413,7 +1395,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, Slow_Time, 0.75, TF_STUNFLAG_SLOWDOWN);
+	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
@@ -1615,7 +1597,7 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	if(NpcStats_IsEnemySilenced(npc.index))
-		Amt*=0.5;
+		Amt*=0.9;
 
 	fl_ruina_battery[npc.index] += Amt;
 }
@@ -1849,7 +1831,7 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 	CClotBody npc = view_as<CClotBody>(iNPC);
 	
 	if(NpcStats_IsEnemySilenced(npc.index))
-		return;
+		time*0.75;
 	
 	b_ruina_buff_override[npc.index] = Override;
 

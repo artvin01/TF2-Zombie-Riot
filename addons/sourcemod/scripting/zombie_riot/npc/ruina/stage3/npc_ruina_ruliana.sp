@@ -380,12 +380,23 @@ static void ClotThink(int iNPC)
 		float Ratio = (float(Health)/float(MaxHealth));
 
 		if(Ratio < 0.4)
+		{
 			Ruina_Master_Rally(npc.index, true);
+
+			if(npc.m_flNextTeleport < GameTime)	//so allies can actually keep up
+			{
+				npc.m_flNextTeleport = GameTime + 1.0;
+				if(Ratio < 0.1)
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 10.0);
+				else
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
+			}
+		}
 		else
 			Ruina_Master_Rally(npc.index, false);
 			
 		if(Ratio < 0.25)
-			SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
 
 	}
 
@@ -744,11 +755,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void SactificeAllies(Ruliana npc)
+void SacrificeAllies(int npc)
 {
-	b_NpcIsTeamkiller[npc.index] = true;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
-	b_NpcIsTeamkiller[npc.index] = false;
+	b_NpcIsTeamkiller[npc] = true;
+	Explode_Logic_Custom(0.0, npc, npc, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
+	b_NpcIsTeamkiller[npc] = false;
 }
 
 static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
@@ -759,17 +770,15 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	if(GetTeam(entity) != GetTeam(victim))
 		return;
 
-	if(b_ruina_npc_healer[victim])	//don't harm the healers, they heal, *they goooood*
-		return;
-	
 	int Health 		= GetEntProp(victim, Prop_Data, "m_iHealth"),
 		MaxHealth 	= GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-	
-	float Ratio = (float(Health)/float(MaxHealth));
-	if(Ratio > 0.5)
-		return;
 
 	int ru_MaxHealth 	= GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int ru_Health		= GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	float Ratio = (float(ru_Health)/float(ru_MaxHealth));
+	if(Ratio > 0.5)
+		return;
 
 
 	float Healing_Amt = float(ru_MaxHealth)*0.1;
@@ -782,8 +791,8 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	if(Health > TrueHealing)
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + RoundToFloor(TrueHealing));
-		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		SetEntProp(entity, Prop_Data, "m_iHealth", ru_Health + RoundToFloor(TrueHealing));
+		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 
 		int color[4];
 		Ruina_Color(color);
