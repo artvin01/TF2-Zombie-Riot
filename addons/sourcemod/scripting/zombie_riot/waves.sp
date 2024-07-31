@@ -473,11 +473,16 @@ void Waves_SetupVote(KeyValues map)
 	
 	StartCash = kv.GetNum("cash");
 
+	// Rogue Gamemode
 	if(map && kv.GetNum("roguemode"))
 	{
 		Rogue_SetupVote(kv);
 		return;
 	}
+
+	// ZS-Classic Gamemode
+	if(kv.GetNum("classicmode"))
+		Classic_Enable();
 
 	if(!kv.JumpToKey("Waves"))
 	{
@@ -1264,6 +1269,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 
+			if(!CurrentWave)
+				Classic_NewRoundStart(round.Cash);
+
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
@@ -1364,7 +1372,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		
 			for(int i; i<count; i++)
 			{
-				Waves_AddNextEnemy(wave.EnemyData);
+				Waves_AddNextEnemy(wave.EnemyData, view_as<bool>(wave.EnemyData.ignore_max_cap));
 			}
 			
 			if(wave.Delay > 0.0)
@@ -1378,14 +1386,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			int CashGive = round.Cash;
-			CurrentCash += CashGive;
 
-			if(CashGive)
+			if(!Classic_Mode())
 			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
-			}
+				int CashGive = round.Cash;
+				CurrentCash += CashGive;
 
+				if(CashGive)
+				{
+					CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+				}
+			}
+			
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
@@ -1896,25 +1908,33 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Renable_Powerups();
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
-		for (int target = 1; target <= MaxClients; target++)
+
+/*		if(!Classic_Mode())
 		{
-			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			for (int target = 1; target <= MaxClients; target++)
 			{
-				Ammo_Count_Used[target] -= 1;
+				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				{
+					Ammo_Count_Used[target] -= 1;
+				}
 			}
-		}
+		}*/
 	}
 	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
-		for (int target = 1; target <= MaxClients; target++)
+
+/*		if(!Classic_Mode())
 		{
-			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			for (int target = 1; target <= MaxClients; target++)
 			{
-				Ammo_Count_Used[target] -= 1;
+				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				{
+					Ammo_Count_Used[target] -= 1;
+				}
 			}
-		}
+		}*/
 	}	
 	else if(GiveAmmoSupplies)
 	{
@@ -1986,10 +2006,25 @@ bool Waves_GetNextEnemy(Enemy enemy)
 	return true;
 }
 
-void Waves_AddNextEnemy(const Enemy enemy)
+void Waves_AddNextEnemy(const Enemy enemy, bool random = false)
 {
 	if(Enemies)
+	{
+		if(random)
+		{
+			int index = Enemies.Length;
+			if(index > 1)
+			{
+				index = GetURandomInt() % index;
+
+				Enemies.ShiftUp(index);
+				Enemies.SetArray(index, enemy);
+				return;
+			}
+		}
+		
 		Enemies.PushArray(enemy);
+	}
 }
 
 void Waves_ClearWave()
@@ -2124,7 +2159,7 @@ void WaveStart_SubWaveStart(float time = 0.0)
 
 void Zombie_Delay_Warning()
 {
-	if(InSetup)
+	if(InSetup || Classic_Mode())
 		return;
 
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2174,7 +2209,7 @@ void Zombie_Delay_Warning()
 
 float Zombie_DelayExtraSpeed()
 {
-	if(InSetup)
+	if(InSetup || Classic_Mode())
 		return 1.0;
 	
 	switch(i_ZombieAntiDelaySpeedUp)
@@ -2518,7 +2553,7 @@ static int SetupFlags(const Enemy data, bool support)
 {
 	int flags = 0;
 	
-	if(data.Is_Boss < 2 && (support || data.Is_Static || data.Team == TFTeam_Red))
+	if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
 	{
 		flags |= MVM_CLASS_FLAG_SUPPORT;
 	}

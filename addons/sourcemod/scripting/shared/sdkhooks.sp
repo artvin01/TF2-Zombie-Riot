@@ -563,6 +563,11 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 1.35;
 		}
 
+		if(Classic_Mode())
+		{
+			mana_regen[client] *= 0.3;
+		}
+
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
 
@@ -2026,6 +2031,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+#if defined ZR
 	if(b_IsAmbientGeneric[entity])
 	{
 		if(StrContains(sample, "#", true) != -1)
@@ -2050,6 +2056,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			return Plugin_Changed;
 		}
 	}
+#endif
 
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
@@ -2075,12 +2082,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Changed;
 	}
 	*/
-	if(StrContains(sample, "misc/halloween/spell_") != -1)
-	{
-		volume *= 0.75;
-		level = 85;
-		return Plugin_Changed;
-	}
 	if(StrContains(sample, "vo/", true) != -1)
 	{
 		if(entity > 0 && entity <= MaxClients)
@@ -2162,7 +2163,13 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			if(ChangedSound)
 				return Plugin_Changed;
 		}
-	}			
+	}
+	if(StrContains(sample, "misc/halloween/spell_") != -1)
+	{
+		volume *= 0.75;
+		level = 85;
+		return Plugin_Changed;
+	}		
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;
