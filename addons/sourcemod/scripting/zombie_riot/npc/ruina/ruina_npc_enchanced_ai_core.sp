@@ -142,8 +142,35 @@ int g_Ruina_BEAM_Combine_Black;
 int g_Ruina_BEAM_Combine_Blue;
 int g_Ruina_BEAM_lightning;
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return -1;
+}
+
 public void Ruina_Ai_Core_Mapstart()
 {
+
+	NPCData data1;
+	strcopy(data1.Name, sizeof(data1.Name), "Mana Overload");
+	strcopy(data1.Plugin, sizeof(data1.Plugin), "npc_donoteveruse_3");
+	data1.Category = Type_Ruina;
+	data1.Func = ClotSummon;
+	strcopy(data1.Icon, sizeof(data1.Icon), ""); 						//leaderboard_class_(insert the name)
+	data1.IconCustom = false;											//download needed?
+	data1.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data1);
+
+	NPCData data2;
+	strcopy(data2.Name, sizeof(data2.Name), "Master System");
+	strcopy(data2.Plugin, sizeof(data2.Plugin), "npc_donoteveruse_4");
+	data2.Category = Type_Ruina;
+	data2.Func = ClotSummon;
+	strcopy(data2.Icon, sizeof(data2.Icon), ""); 						//leaderboard_class_(insert the name)
+	data2.IconCustom = false;											//download needed?
+	data2.Flags = 0;													//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data2);
+
+
 	Zero(fl_master_change_timer);
 	Zero(i_master_target_id);
 	Zero(b_master_exists);
