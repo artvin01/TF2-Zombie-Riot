@@ -76,7 +76,7 @@ public void Theocracy_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Theocracy");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
-	data.Category = -1;
+	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	strcopy(data.Icon, sizeof(data.Icon), "eisenhard"); 						//leaderboard_class_(insert the name)

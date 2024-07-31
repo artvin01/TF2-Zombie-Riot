@@ -736,7 +736,7 @@ static void ClotThink(int iNPC)
 			{
 				float Ratio = (ZR_GetWaveCount()+1)/60.0;
 				fl_stellar_weaver_special_attack_offset = GameTime + 0.1;
-				Stellar_Weaver_Attack(npc.index, vecTarget, 100.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
+				Stellar_Weaver_Attack(npc.index, vecTarget, 50.0*Ratio, 500.0, 15.0, 500.0*Ratio, 150.0, 10.0);
 				b_stellar_weaver_allow_attack[npc.index] = false;
 			}
 			if(GameTime > npc.m_flNextRangedAttack)
@@ -752,7 +752,7 @@ static void ClotThink(int iNPC)
 					WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				}
 				float Ratio = (ZR_GetWaveCount()+1)/60.0;
-				float DamageDone = 150.0*Ratio;
+				float DamageDone = 100.0*Ratio;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 				npc.m_flNextRangedAttack = GameTime + 1.1;
 			}

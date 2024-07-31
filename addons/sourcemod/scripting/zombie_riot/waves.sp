@@ -2313,12 +2313,12 @@ static int GetMvMStats()
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
 
-void Waves_UpdateMvMStats()
+void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrames(UpdateMvMStatsFrame, 10);
+		RequestFrames(UpdateMvMStatsFrame, frames);
 	}
 }
 
@@ -2365,6 +2365,7 @@ static void UpdateMvMStatsFrame()
 			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
 			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
 			active[0] = true;
+			Waves_UpdateMvMStats(33);
 		}
 		
 		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
