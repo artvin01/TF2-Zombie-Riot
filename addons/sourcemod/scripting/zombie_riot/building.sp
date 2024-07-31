@@ -222,11 +222,14 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		f_GiveAmmoSupplyFacture[owner] -= 1.0;
 		ConvertedAmmoSupplyGive += 1;
 	}
+	if(ConvertedAmmoSupplyGive <= 0)
+		return;
+		
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)
 		{
-			i_GiveCashBuilding[owner] += ConvertedAmmoSupplyGive;
+			i_GiveAmmoSupplyLimit[owner] += ConvertedAmmoSupplyGive;
 			Ammo_Count_Used[owner] -= ConvertedAmmoSupplyGive;
 		}
 	}
