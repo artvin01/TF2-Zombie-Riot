@@ -247,11 +247,6 @@ methodmap Lex < CClotBody
 		public get()			{	return this.m_flCharge_delay;	}
 		public set(float value) 	{	this.m_flCharge_delay = value;	}
 	}
-	property bool m_bRetreating
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	property bool m_bSolo
 	{
 		public get()							{ return b_solo[this.index]; }
@@ -334,6 +329,41 @@ methodmap Lex < CClotBody
 				this.m_iChanged_WalkCycle = 0;
 			}
 		}
+	}
+	public int Get_Target()
+	{
+		float GameTime = GetGameTime();
+		if(!this.IsAlive())
+		{
+			if(this.m_flGetClosestTargetTime < GameTime)
+			{
+				this.m_iTarget = GetClosestTarget(this.index);
+				this.m_flGetClosestTargetTime = GameTime + 1.0;
+			}
+		}
+		else
+		{
+			Iana ally = view_as<Iana>(EntRefToEntIndex(this.m_ially));
+
+			int Old_Target = this.m_iTarget;
+
+			this.m_iTarget = ally.m_iTarget;
+
+			if(!IsValidEnemy(this.index, this.m_iTarget))
+			{
+				this.m_iTarget = Old_Target;
+
+				if(!IsValidEnemy(this.index, this.m_iTarget) || this.m_flGetClosestTargetTime < GameTime)
+				{
+					if(this.m_flGetClosestTargetTime < GameTime)
+					{
+						this.m_iTarget = GetClosestTarget(this.index);
+						this.m_flGetClosestTargetTime = GameTime + 1.0;
+					}
+				}
+			}
+		}
+		return this.m_iTarget;
 	}
 	
 	public Lex(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -440,7 +470,6 @@ static void Do_OnSpawn(int ref)
 	{
 		Lex npc = view_as<Lex>(entity);
 		npc.m_flRange = (300.0*300.0);
-		npc.m_bRetreating = false;
 		npc.Spawn_Ally();
 	}
 	
@@ -484,16 +513,16 @@ static void ClotThink(int iNPC)
 	else
 		Ruina_Add_Battery(npc.index, 10.0);	//10
 
-	if(npc.m_flGetClosestTargetTime < GameTime)
+	/*if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GameTime + 1.0;
-	}
+	}*/
 
-	int PrimaryThreatIndex = npc.m_iTarget;
+	int PrimaryThreatIndex = npc.Get_Target();
 
-	if(!npc.m_bRetreating)
-		Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+
+	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 	
 	if(fl_ruina_battery[npc.index]>3000.0 && npc.m_flDoingAnimation < GameTime-1.0)	//every 30 seconds.
 	{
@@ -522,6 +551,11 @@ static void ClotThink(int iNPC)
 		}
 
 		return;
+	}
+	else
+	{
+		npc.m_flSpeed = fl_npc_basespeed;
+		npc.StartPathing();
 	}
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -557,6 +591,7 @@ static void ClotThink(int iNPC)
 				}
 			}
 		}
+		npc.StartPathing();
 		if(flDistanceToTarget < 100000)
 		{
 			int Enemy_I_See;
@@ -646,7 +681,6 @@ static void ClotThink(int iNPC)
 		{
 			int Enemy_I_See;
 
-			npc.StartPathing();
 				
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 			if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
@@ -753,6 +787,7 @@ static void ClotThink(int iNPC)
 					npc.m_iState = 0;
 					fl_ruina_battery_timer[npc.index] = GameTime + 12.0;
 				}
+
 			}
 		}
 		else
@@ -925,6 +960,9 @@ static Action Laser_Revert(Handle timer, int ref)
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		f_NpcTurnPenalty[npc.index] = 1.0;
+		npc.StartPathing();
+
 		npc.m_iWearable7 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_1);
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
@@ -962,6 +1000,8 @@ static void Initiate_Laser(Lex npc)
 		}
 		i_ring_dots[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
+
+	f_NpcTurnPenalty[npc.index] = 0.0;
 	
 	CreateTimer(Duration, Laser_Revert, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 

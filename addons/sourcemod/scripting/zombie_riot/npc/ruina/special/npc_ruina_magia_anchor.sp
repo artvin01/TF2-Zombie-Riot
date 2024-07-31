@@ -121,6 +121,8 @@ static int i_weaver_index[MAXENTITIES];
 static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
 
+static int i_current_cycle[MAXENTITIES];
+
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
 
@@ -256,6 +258,8 @@ methodmap Magia_Anchor < CClotBody
 		
 		if(StrContains(data, "raid") != -1)
 			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
+
+		i_current_cycle[npc.index] = 0;
 		
 		//whats a "switch" statement??
 		if(wave<=15)	
@@ -396,9 +400,9 @@ static void ClotThink(int iNPC)
 
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
-
+		Raid_Spwaning_Logic(npc);
 	}
-	if(b_allow_spawns[npc.index])
+	if(b_allow_spawns[npc.index] && i_RaidGrantExtra[npc.index] != RAIDITEM_INDEX_WIN_COND)
 		Spawning_Logic(npc);
 
 
@@ -407,6 +411,62 @@ static void ClotThink(int iNPC)
 		Weaver_Logic(npc);
 	}
 	
+	
+}
+static void Raid_Spwaning_Logic(Magia_Anchor npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
+	int npc_current_count;
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+		{
+			npc_current_count += 1;
+		}
+	}
+
+	if(npc_current_count > RoundToFloor(LimitNpcs*1.5))
+		return;
+
+	float Time = 1.0;
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+
+
+	static const char npc_names[][] = {
+		"npc_ruina_magianius",
+		"npc_ruina_loonarionus",
+		"npc_ruina_heliarionus",
+		"npc_ruina_euranionis",
+		"npc_ruina_draconia",
+		"npc_ruina_malianius",
+		"npc_ruina_lazurus",
+		"npc_ruina_aetherianus",
+		"npc_ruina_rulianius",
+		"npc_ruina_astrianious",
+		"npc_ruina_dronianis"
+	};
+	static const int npc_health[] = {
+		20000,	//"npc_ruina_magianius",
+		30000,	//"npc_ruina_loonarionus"
+		40000,	//"npc_ruina_heliarionus"
+		30000,	//"npc_ruina_euranionis",
+		60000,	//"npc_ruina_draconia",
+		30000,	//"npc_ruina_malianius",
+		40000,	//"npc_ruina_lazurus",
+		30000,	//"npc_ruina_aetherianus"
+		60000,	//"npc_ruina_rulianius",
+		30000,	//"npc_ruina_astrianious"
+		60000	//"npc_ruina_dronianis"
+	};
+
+	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], GetRandomInt(1, 3), true);
+
+	i_current_cycle[npc.index] = GetRandomInt(0, sizeof(npc_names)-1);
+
 	
 }
 static void Spawning_Logic(Magia_Anchor npc)
@@ -524,8 +584,16 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 	//do not bother outlining.
 	enemy.ExtraMeleeRes = 1.0;
 	enemy.ExtraRangedRes = 1.0;
-	enemy.ExtraSpeed = 1.0;
-	enemy.ExtraDamage = 1.0;
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		enemy.ExtraSpeed = 1.7;
+		enemy.ExtraDamage = 1.2;
+	}
+	else
+	{
+		enemy.ExtraSpeed = 1.0;
+		enemy.ExtraDamage = 1.0;
+	}
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(iNPC);
 	for(int i; i<count; i++)
@@ -616,7 +684,7 @@ static void Weaver_Logic(Magia_Anchor npc)
 	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
 		i_weaver_index[npc.index] = test;
 
-	fl_weaver_charge[npc.index]+=0.005;
+	fl_weaver_charge[npc.index]+=0.002;
 
 	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;

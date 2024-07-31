@@ -2249,10 +2249,6 @@
 	{
 		"en"	"Ransacker"
 	}
-	"Stellar Weaver"
-	{
-		"en"	"Stellar Weaver"
-	}
 	"Runover"
 	{
 		"en"	"Runover"

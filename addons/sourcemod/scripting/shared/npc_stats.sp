@@ -10462,7 +10462,8 @@ void ResetAllArmorStatues(int entiity)
 	i_ArmorSetting[entiity][1] = 0;
 }
 
-void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType)
+void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
+float custom_maxarmour = 0.0)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	if(Once)
@@ -10475,8 +10476,17 @@ void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float 
 	npc.m_iArmorGiven = true;
 	npc.m_iArmorType = ArmorType;
 	npc.m_flArmorProtect = ArmorProtect;
-	float flMaxHealth = ScaleMaxHealth * float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
-	npc.m_flArmorCount = flMaxHealth;
-	npc.m_flArmorCountMax = flMaxHealth;
+	if(custom_maxarmour == 0.0)
+	{
+		float flMaxHealth = ScaleMaxHealth * float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		npc.m_flArmorCount = flMaxHealth;
+		npc.m_flArmorCountMax = flMaxHealth;
+	}
+	else
+	{
+		npc.m_flArmorCount = 	custom_maxarmour;
+		npc.m_flArmorCountMax = custom_maxarmour;
+	}
+	
 	//any extra logic please add here. deivid.
 }
