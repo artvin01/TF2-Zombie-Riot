@@ -33,8 +33,8 @@ void Classic_EnemySpawned(int entity)
 {
 	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
 	{
-		// At 4-players, need 100 kills to get all wave money
-		int given = RoundToCeil(float(CashTotal) / 100.0 / MultiGlobalEnemy);
+		// At 4-players, need 1000 kills to get all wave money
+		int given = RoundToCeil(float(CashTotal) / 1000.0 / MultiGlobalEnemy);
 		if(given > CashLeft)
 			given = CashLeft;
 		
@@ -43,10 +43,13 @@ void Classic_EnemySpawned(int entity)
 	}
 }
 
-bool Classic_CanTeutonUpdate(bool respawn)
+bool Classic_CanTeutonUpdate(int client, bool respawn)
 {
-	if(Classic_Mode() && !respawn)
+	if(Classic_Mode() && Waves_Started() && !respawn)
+	{
+		TeutonType[client] = TEUTON_DEAD;
 		return false;
+	}
 
 	return true;
 }

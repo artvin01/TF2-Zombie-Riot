@@ -118,12 +118,14 @@ static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
+static float ProgressTimerEndAt;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
+	ProgressTimerEndAt = 0.0;
 	WaveTimer = null;
 	Waves_Progress();
 	return Plugin_Continue;
@@ -1249,7 +1251,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		return;
 
 	Cooldown = GetGameTime();
-	
+	ProgressTimerEndAt = 0.0;
 	delete WaveTimer;
 	
 	Round round;
@@ -1376,7 +1378,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4)), Waves_ProgressTimer);
+			{
+				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
+				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
+				if(CurrentWave == (round.Waves.Length - 1))
+					ProgressTimerEndAt = GetGameTime() + delay;
+			}
 		}
 		else if(donotAdvanceRound)
 		{
@@ -2306,12 +2313,12 @@ static int GetMvMStats()
 	return FindEntityByClassname(-1, "tf_mann_vs_machine_stats");
 }
 
-void Waves_UpdateMvMStats()
+void Waves_UpdateMvMStats(int frames = 10)
 {
 	if(!UpdateFramed)
 	{
 		UpdateFramed = true;
-		RequestFrames(UpdateMvMStatsFrame, 10);
+		RequestFrames(UpdateMvMStatsFrame, frames);
 	}
 }
 
@@ -2351,6 +2358,15 @@ static void UpdateMvMStatsFrame()
 		int count[24];
 		int flags[24];
 		bool active[24];
+
+		if(Classic_Mode() && ProgressTimerEndAt)
+		{
+			id[0] = -1;
+			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
+			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
+			active[0] = true;
+			Waves_UpdateMvMStats(33);
+		}
 		
 		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
 		bool freeplay = !(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves);
@@ -2509,7 +2525,11 @@ static void UpdateMvMStatsFrame()
 			NPCData data;
 			for(int i; i < sizeof(id); i++)
 			{
-				if(id[i])
+				if(id[i] == -1)
+				{
+					Waves_SetWaveClass(objective, i, count[i], "heavy_deflector", flags[i], active[i]);
+				}
+				else if(id[i])
 				{
 					NPC_GetById(id[i], data);
 					if(data.Flags == -1)
