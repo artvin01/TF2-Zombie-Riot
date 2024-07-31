@@ -43,10 +43,13 @@ void Classic_EnemySpawned(int entity)
 	}
 }
 
-bool Classic_CanTeutonUpdate(bool respawn)
+bool Classic_CanTeutonUpdate(int client, bool respawn)
 {
 	if(Classic_Mode() && !respawn)
+	{
+		TeutonType[client] = TEUTON_DEAD;
 		return false;
+	}
 
 	return true;
 }
