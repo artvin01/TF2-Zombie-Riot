@@ -1901,25 +1901,33 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Renable_Powerups();
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
-		for (int target = 1; target <= MaxClients; target++)
+
+/*		if(!Classic_Enable())
 		{
-			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			for (int target = 1; target <= MaxClients; target++)
 			{
-				Ammo_Count_Used[target] -= 1;
+				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				{
+					Ammo_Count_Used[target] -= 1;
+				}
 			}
-		}
+		}*/
 	}
 	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
-		for (int target = 1; target <= MaxClients; target++)
+
+/*		if(!Classic_Enable())
 		{
-			if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+			for (int target = 1; target <= MaxClients; target++)
 			{
-				Ammo_Count_Used[target] -= 1;
+				if(i_CurrentEquippedPerk[target] == 7) //recycle gives extra
+				{
+					Ammo_Count_Used[target] -= 1;
+				}
 			}
-		}
+		}*/
 	}	
 	else if(GiveAmmoSupplies)
 	{
@@ -1998,7 +2006,7 @@ void Waves_AddNextEnemy(const Enemy enemy, bool random = false)
 		if(random)
 		{
 			int index = Enemies.Length;
-			if(index)
+			if(index > 1)
 			{
 				index = GetURandomInt() % index;
 

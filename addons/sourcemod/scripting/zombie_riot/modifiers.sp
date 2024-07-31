@@ -83,18 +83,21 @@ float ZRModifs_MaxSpawnsAlive()
 
 float ZRModifs_SpawnSpeedModif()
 {
+	float value = Classic_Enable() ? 3.0 : 1.0;
+
 	switch(CurrentModifActive)
 	{
 		case CHAOS_INTRUSION:
 		{
-			return 0.85;
+			value *= 0.85;
 		}
 		case OLD_TIMES:
 		{
-			return 0.75;
+			value *= 0.75;
 		}
 	}
-	return 1.0;
+
+	return value;
 }
 
 float ZRModifs_MaxSpawnWaveModif()
