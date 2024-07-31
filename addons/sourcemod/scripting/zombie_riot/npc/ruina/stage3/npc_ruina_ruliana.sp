@@ -68,6 +68,7 @@ static char g_AngerSounds2[][] = {
 	"hl1/fvox/health_dropping2.wav",
 	"hl1/fvox/innsuficient_medical.wav",
 };
+static bool b_angered_once[MAXENTITIES];
 
 void Ruliana_OnMapStart_NPC()
 {
@@ -258,6 +259,8 @@ methodmap Ruliana < CClotBody
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 		SetVariantInt(RUINA_WINGS_1);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
+
+		b_angered_once[npc.index] = true;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -387,7 +390,7 @@ static void ClotThink(int iNPC)
 			{
 				npc.m_flNextTeleport = GameTime + 1.0;
 				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 10.0);
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 2.5);
 				else
 					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
 			}
@@ -734,18 +737,28 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 
-	if(!npc.Anger && Ratio < 0.5) 
+	if(Ratio < 0.5)
 	{
-		npc.Anger = true; //	>:(
-		npc.PlayAngerSound();
-
-		fl_npc_basespeed = 330.0;
-		
-		if(npc.m_bThisNpcIsABoss)
+		if(!npc.Anger) 
 		{
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+			npc.Anger = true; //	>:(
+			if(!b_angered_once[npc.index])
+			{
+				b_angered_once[npc.index] = true;
+				npc.PlayAngerSound();
+
+				fl_npc_basespeed = 330.0;
+				
+				if(npc.m_bThisNpcIsABoss)
+				{
+					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+				}
+			}
 		}
+		else
+			npc.Anger = false;
 	}
+	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
