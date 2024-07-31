@@ -207,7 +207,7 @@ public void Sphynx_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget > (100.0*100.0))
+			if(flDistanceToTarget > (0.0*0.0))
 			{
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -225,12 +225,12 @@ public void Sphynx_ClotThink(int iNPC)
 				NPC_StopPathing(npc.index);
 			}
 		}
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.5;
 	}
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 40.0, 250, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 40.0, 500, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
