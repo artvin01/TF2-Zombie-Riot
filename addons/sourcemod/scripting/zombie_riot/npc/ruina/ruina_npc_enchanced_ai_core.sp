@@ -130,8 +130,7 @@ enum
 	RUINA_ATTACK_BUFF		= 3,
 	RUINA_SHIELD_BUFF		= 4,
 	RUINA_TELEPORT_BUFF 	= 5,
-	RUINA_HEALING_BUFF 		= 6,
-	RUINA_BATTERY_BUFF	 	= 7
+	RUINA_BATTERY_BUFF	 	= 6
 }
 
 //static char gLaser1;
@@ -1667,36 +1666,17 @@ public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTi
 	{
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, cylce_speed, Thickness, 0.5, color, 1, 0);
+		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.15, Thickness, 0.5, color, 1, 0);
 		TE_SendToAll();
 		
+		ExpidonsaGroupHeal(npc.index, Range, 5, float(Healing), 0.1, false, _ , Ruina_HealVisualEffect);
+
 		fl_ruina_helia_healing_timer[npc.index]=cylce_speed+GameTime;
-		Apply_Master_Buff(npc.index, RUINA_HEALING_BUFF, Range, 0.0, float(Healing), true);
 	}
 }
-void Helia_Healing_Buff(int baseboss_index, float Power)
+void Ruina_HealVisualEffect(int healer, int victim)
 {
-	int Healing = RoundToFloor(Power);
-
-	CClotBody npc = view_as<CClotBody>(baseboss_index);
-
-	int Current_Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-
-	//if we have overheal, don't bother
-	if(Current_Health > Max_Health)
-		return;
-
-	int Healed_Health = Current_Health + Healing;
-
-	if(Healed_Health >= Max_Health)
-	{
-		Healed_Health = Max_Health;
-	}
-
-	SetEntProp(npc.index, Prop_Data, "m_iHealth", Healed_Health);
-
-	//Todo: Test if this works properly!
+	CClotBody npc = view_as<CClotBody>(victim);
 
 	float GameTime = GetGameTime(npc.index);
 
@@ -1895,13 +1875,6 @@ static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, 
 			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Shield_Buff);
 			b_NpcIsTeamkiller[npc.index] = false;
 		}
-		case RUINA_HEALING_BUFF:
-		{
-			b_NpcIsTeamkiller[npc.index] = true;
-			fl_ruina_buff_amt[npc.index] = amt;
-			Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, range, _, _, true, 99, false, _, Ruina_Healing_Buff);
-			b_NpcIsTeamkiller[npc.index] = false;
-		}
 		case RUINA_TELEPORT_BUFF:
 		{
 			b_NpcIsTeamkiller[npc.index] = true;
@@ -1958,21 +1931,6 @@ public void Ruina_Teleport_Buff(int entity, int victim, float damage, int weapon
 	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
 	{
 		b_ruina_allow_teleport[victim]=true;
-	}
-}
-public void Ruina_Healing_Buff(int entity, int victim, float damage, int weapon)
-{
-	if(entity==victim)
-		return;	//don't buff itself!
-
-	if(GetTeam(entity) != GetTeam(victim))
-		return;
-
-	//same type of npc, or a global type
-	if(i_npc_type[victim]==i_master_attracts[entity] || (i_master_attracts[entity]==RUINA_GLOBAL_NPC || b_ruina_buff_override[entity]))	
-	{
-		float amt = fl_ruina_buff_amt[entity];
-		Helia_Healing_Buff(victim, amt);
 	}
 }
 /*

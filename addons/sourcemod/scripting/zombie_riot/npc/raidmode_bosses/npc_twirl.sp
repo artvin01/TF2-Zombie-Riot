@@ -165,6 +165,7 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
+	PrecacheSound("mvm/mvm_tele_deliver.wav");
 
 	PrecacheModel("models/player/medic.mdl");
 }
@@ -768,7 +769,6 @@ methodmap Twirl < CClotBody
 		}
 
 		i_current_Text[npc.index] = 0;
-		
 
 		npc.m_flDoingAnimation = 0.0;
 
@@ -782,6 +782,11 @@ methodmap Twirl < CClotBody
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);	
+
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+
+		npc.m_flMeleeArmor = 1.5;
 		
 		return npc;
 	}
@@ -1102,17 +1107,6 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
-		spawn_index = NPC_CreateByName("npc_ruina_lancelot", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-		if(spawn_index > MaxClients)
-		{
-			if(GetTeam(npc.index) != TFTeam_Red)
-			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			}
-			TeleportDiversioToRandLocation(spawn_index);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health*0.5));
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health*0.5));
-		}
 	}
 	switch(GetRandomInt(0, 6))
 	{
@@ -1278,7 +1272,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 60.0 : 30.0);
+		float Dmg = (npc.Anger ? 35.0 : 21.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1325,9 +1319,8 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							dmg *= RaidModeScaling;
 							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 						}
-							
-
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 50.0), DMG_CLUB, -1, _, vecHit);
+			
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 35.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1340,7 +1333,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 						}
 
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(npc, target, 5.0)));
+						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(npc, target, 7.0)));
 					}
 					npc.PlayMeleeHitSound();
 					
@@ -1385,7 +1378,7 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 		damage*=10.0;
 
 	if(npc.Anger)
-		damage *=2.0;
+		damage *=1.5;
 
 	damage*=RaidModeScaling;
 
@@ -1540,7 +1533,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = (npc.Anger ? 125.0 : 50.0)*RaidModeScaling;
+				Laser.Damage = (npc.Anger ? 120.0 : 60.0)*RaidModeScaling;
 
 				Laser.Deal_Damage();
 
@@ -1643,7 +1636,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	Explode_Logic_Custom(1250.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	Explode_Logic_Custom(200.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 	int color[4]; Ruina_Color(color);
 
@@ -1777,9 +1770,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = (npc.Anger ? 10.0 : 5.0);
+	float Laser_Dmg = (npc.Anger ? 7.5 : 2.5);
 	float Speed = (npc.Anger ? 1750.0 : 1000.0);
-	float Direct_Dmg = (npc.Anger ? 30.0 : 15.0);
+	float Direct_Dmg = (npc.Anger ? 10.0 : 5.0);
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
@@ -2458,8 +2451,14 @@ static float fl_combo_laser_throttle[MAXENTITIES];
 static void Initiate_Combo_Laser(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-
 	float GameTime = GetGameTime();
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
+	
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
+	
 	float Duration = (npc.Anger ? 1.0 : 0.7);
 	npc.m_flDoingAnimation = GameTime + Duration+0.1;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration;
@@ -2478,7 +2477,7 @@ static void Initiate_Combo_Laser(int iNPC)
 
 	npc.m_flSpeed = 0.0;
 
-	f_NpcTurnPenalty[npc.index] = 0.0001;
+	f_NpcTurnPenalty[npc.index] = 0.0;
 }
 
 static Action Combo_Laser_Logic(int iNPC)

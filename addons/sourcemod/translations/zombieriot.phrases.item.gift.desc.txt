@@ -1662,7 +1662,7 @@
 	}
 	"Ruliana Desc"
 	{
-		"en"	"Blitzkrieg was based off of her, so be careful~"
+		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 25% hp, she will start to suck up nearby ally hp to heal herself\nOnce she reaches 10% hp, all npc's within line of sight gain a large speed boost"
 	}
 	"Mana Overload"
 	{
@@ -1678,7 +1678,7 @@
 	}
 	"Master System Desc"
 	{
-		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\Make them rally to the master"
+		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMake them rally to the master"
 	}
 	"Chaos Intrusion"
 	{
