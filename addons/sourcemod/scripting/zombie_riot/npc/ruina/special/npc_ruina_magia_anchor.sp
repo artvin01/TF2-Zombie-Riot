@@ -429,7 +429,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		}
 	}
 
-	if(npc_current_count > RoundToFloor(LimitNpcs*1.5))
+	if(npc_current_count > RoundToFloor(LimitNpcs*0.7))
 		return;
 
 	float Time = 1.0;

@@ -165,6 +165,7 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
+	PrecacheSound("mvm/mvm_tele_deliver.wav");
 
 	PrecacheModel("models/player/medic.mdl");
 }
@@ -768,7 +769,6 @@ methodmap Twirl < CClotBody
 		}
 
 		i_current_Text[npc.index] = 0;
-		
 
 		npc.m_flDoingAnimation = 0.0;
 
@@ -782,6 +782,9 @@ methodmap Twirl < CClotBody
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);	
+
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
+		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 		
 		return npc;
 	}
@@ -2458,8 +2461,14 @@ static float fl_combo_laser_throttle[MAXENTITIES];
 static void Initiate_Combo_Laser(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-
 	float GameTime = GetGameTime();
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
+	
+	if(fl_ruina_battery_timeout[npc.index] > GameTime)
+		return;
+
+	
 	float Duration = (npc.Anger ? 1.0 : 0.7);
 	npc.m_flDoingAnimation = GameTime + Duration+0.1;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration;
@@ -2478,7 +2487,7 @@ static void Initiate_Combo_Laser(int iNPC)
 
 	npc.m_flSpeed = 0.0;
 
-	f_NpcTurnPenalty[npc.index] = 0.0001;
+	f_NpcTurnPenalty[npc.index] = 0.0;
 }
 
 static Action Combo_Laser_Logic(int iNPC)

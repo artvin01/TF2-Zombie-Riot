@@ -641,7 +641,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		GetVectorAngles(Ang, Ang);
 		Projectile.Angles = Ang;
 		Projectile.speed = (npc.Anger ? 750.0 : 600.0);
-		Projectile.radius = 300.0;
+		Projectile.radius = 100.0;
 		Projectile.damage = (npc.Anger ? 600.0 : 450.0);
 		Projectile.bonus_dmg = 2.5;
 		Projectile.Time = 10.0;
@@ -662,9 +662,9 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 				SetVariantInt(RUINA_ICBM);
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
 			}
-
-			float 	Homing_Power = 15.0,
-					Homing_Lockon = 90.0;
+			
+			float 	Homing_Power = 5.0,
+					Homing_Lockon = 45.0;
 
 			Initiate_HomingProjectile(Proj,
 			npc.index,
