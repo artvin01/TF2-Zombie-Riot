@@ -432,7 +432,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 	if(npc_current_count > RoundToFloor(LimitNpcs*0.7))
 		return;
 
-	float Time = 1.0;
+	float Time = 4.0;
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 
 
@@ -463,7 +463,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		60000	//"npc_ruina_dronianis"
 	};
 
-	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], GetRandomInt(1, 3), true);
+	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
 
 	i_current_cycle[npc.index] = GetRandomInt(0, sizeof(npc_names)-1);
 

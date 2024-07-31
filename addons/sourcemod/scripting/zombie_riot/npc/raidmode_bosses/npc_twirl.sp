@@ -1105,17 +1105,6 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
-		spawn_index = NPC_CreateByName("npc_ruina_lancelot", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
-		if(spawn_index > MaxClients)
-		{
-			if(GetTeam(npc.index) != TFTeam_Red)
-			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			}
-			TeleportDiversioToRandLocation(spawn_index);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health*0.5));
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health*0.5));
-		}
 	}
 	switch(GetRandomInt(0, 6))
 	{
