@@ -1086,7 +1086,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float Tower_Health = MaxHealth*0.2;
+	float Tower_Health = MaxHealth*0.15;
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1122,8 +1122,9 @@ static void Final_Invocation(Twirl npc)
 		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
 		case 5: Twirl_Lines(npc, "Aye, this'l do, no go forth my minnion's {crimson}and crush them{snow}!");
-		case 6: Twirl_Lines(npc, "The Final Inovation!");
+		case 6: Twirl_Lines(npc, "The Final Invocation!");
 	}
+	RaidModeTime +=50.0;
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1277,7 +1278,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 100.0 : 50.0);
+		float Dmg = (npc.Anger ? 60.0 : 30.0);
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1326,7 +1327,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						}
 							
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 75.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 50.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1642,7 +1643,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	Explode_Logic_Custom(125.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	Explode_Logic_Custom(1250.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 	int color[4]; Ruina_Color(color);
 
@@ -1776,9 +1777,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = (npc.Anger ? 50.0 : 25.0);
+	float Laser_Dmg = (npc.Anger ? 10.0 : 5.0);
 	float Speed = (npc.Anger ? 1750.0 : 1000.0);
-	float Direct_Dmg = (npc.Anger ? 50.0 : 25.0);
+	float Direct_Dmg = (npc.Anger ? 30.0 : 15.0);
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
@@ -2513,7 +2514,7 @@ static Action Combo_Laser_Logic(int iNPC)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angles, startPoint, 900.0);	// no pitch control
 	Laser.Radius = Radius;
-	Laser.Damage = (npc.Anger ? 15.0 : 10.0)*RaidModeScaling;
+	Laser.Damage = (npc.Anger ? 12.0 : 7.5)*RaidModeScaling;
 	Laser.Bonus_Damage = (npc.Anger ? 45.0 : 30.0)*RaidModeScaling;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage(On_LaserHit_two);
