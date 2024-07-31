@@ -21,9 +21,9 @@ void Ruina_Storm_Weaver_Mid_MapStart()
 	data.Category = -1;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "blimp"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
