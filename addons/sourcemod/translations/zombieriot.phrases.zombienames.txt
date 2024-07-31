@@ -2794,6 +2794,14 @@
 	{
 		"en"	"Boner Bomber"
 	}
+	"Buccaneer Bones"
+	{
+		"en"	"Buccaneer Bones"
+	}
+	"Calcium Corsair"
+	{
+		"en"	"Calcium Corsair"
+	}
 	"Supreme Spookmaster Bones"
 	{
 		"en"	"Supreme Spookmaster Bones"

@@ -619,6 +619,7 @@ void NPC_ConfigSetup()
 	SaintBones_OnMapStart_NPC();
 	BuccaneerBones_OnMapStart_NPC();
 	ArchmageBones_OnMapStart_NPC();
+	PirateBones_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -1446,6 +1447,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/npc_bigbones.sp"
 #include "zombie_riot/npc/bonezone/npc_archmage.sp"
 #include "zombie_riot/npc/bonezone/npc_buccaneerbones.sp"
+#include "zombie_riot/npc/bonezone/npc_calciumcorsair.sp"
 #include "zombie_riot/npc/bonezone/npc_necromancer.sp"
 #include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
