@@ -118,16 +118,14 @@ static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
-static float ProgressTimerStartedAt;
-static float ProgressTimerEndedAt;
+static float ProgressTimerEndAt;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
-	ProgressTimerStartedAt = 0.0;
-	ProgressTimerEndedAt = 0.0;
+	ProgressTimerEndAt = 0.0;
 	WaveTimer = null;
 	Waves_Progress();
 	return Plugin_Continue;
@@ -1383,8 +1381,8 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
-				ProgressTimerStartedAt = GetGameTime();
-				ProgressTimerEndedAt = ProgressTimerStartedAt + delay;
+				if(CurrentWave == (round.Waves.Length - 1))
+					ProgressTimerEndAt = GetGameTime() + delay;
 			}
 		}
 		else if(donotAdvanceRound)
@@ -2361,10 +2359,10 @@ static void UpdateMvMStatsFrame()
 		int flags[24];
 		bool active[24];
 
-		if(Classic_Mode() && WaveTimer)
+		if(Classic_Mode() && WaveTimer && ProgressTimerEndAt)
 		{
 			id[0] = -1;
-			count[0] = RoundToCeil(ProgressTimerEndedAt - GetGameTime());
+			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
 			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
 			active[0] = true;
 		}
