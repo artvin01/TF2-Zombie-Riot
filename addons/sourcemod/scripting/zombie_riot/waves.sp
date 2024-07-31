@@ -118,12 +118,16 @@ static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
+static float ProgressTimerStartedAt;
+static float ProgressTimerEndedAt;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
+	ProgressTimerStartedAt = 0.0;
+	ProgressTimerEndedAt = 0.0;
 	WaveTimer = null;
 	Waves_Progress();
 	return Plugin_Continue;
@@ -1376,7 +1380,12 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			
 			if(wave.Delay > 0.0)
-				WaveTimer = CreateTimer(wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4)), Waves_ProgressTimer);
+			{
+				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
+				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
+				ProgressTimerStartedAt = GetGameTime();
+				ProgressTimerEndedAt = ProgressTimerStartedAt + delay;
+			}
 		}
 		else if(donotAdvanceRound)
 		{
@@ -2351,6 +2360,14 @@ static void UpdateMvMStatsFrame()
 		int count[24];
 		int flags[24];
 		bool active[24];
+
+		if(Classic_Mode() && WaveTimer)
+		{
+			id[0] = -1;
+			count[0] = RoundToCeil(ProgressTimerEndedAt - GetGameTime());
+			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
+			active[0] = true;
+		}
 		
 		int maxwaves = Rounds ? (Rounds.Length - 1) : 0;
 		bool freeplay = !(maxwaves && CurrentRound >= 0 && CurrentRound < maxwaves);
@@ -2509,7 +2526,11 @@ static void UpdateMvMStatsFrame()
 			NPCData data;
 			for(int i; i < sizeof(id); i++)
 			{
-				if(id[i])
+				if(id[i] == -1)
+				{
+					Waves_SetWaveClass(objective, i, count[i], "heavy_deflector", flags[i], active[i]);
+				}
+				else if(id[i])
 				{
 					NPC_GetById(id[i], data);
 					if(data.Flags == -1)
