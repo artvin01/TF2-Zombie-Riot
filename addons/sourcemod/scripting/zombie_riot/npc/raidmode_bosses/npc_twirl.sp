@@ -105,6 +105,10 @@ static float fl_next_textline[MAXENTITIES];
 static float fl_raidmode_freeze[MAXENTITIES];
 static int i_current_Text[MAXENTITIES];
 
+static float fl_final_invocation_timer[MAXENTITIES];
+static bool b_allow_final_invocation[MAXENTITIES];
+static float fl_final_invocation_logic[MAXENTITIES];
+
 
 static const char Cosmic_Launch_Sounds[][] ={
 	"weapons/physcannon/superphys_launch1.wav",
@@ -682,8 +686,6 @@ methodmap Twirl < CClotBody
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
-		
-		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
 
 		int skin = 1;	//1=blue, 0=red
 		SetVariantInt(1);	
@@ -774,6 +776,12 @@ methodmap Twirl < CClotBody
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
 		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index)  + GetRandomFloat(5.0, 10.0);
 		fl_lunar_timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+		fl_final_invocation_timer[npc.index] = 0.0;
+		fl_final_invocation_logic[npc.index] = 0.0;
+		b_allow_final_invocation[npc.index] = false;
+
+		Ruina_Set_Heirarchy(npc.index, RUINA_GLOBAL_NPC);
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_GLOBAL_NPC, true, 999, 999);	
 		
 		return npc;
 	}
@@ -895,7 +903,7 @@ static void ClotThink(int iNPC)
 				case 4: Twirl_Lines(npc, "Times up, Ive got better things to do, so here, {crimson}have this parting gift{snow}!");
 				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, thats it, {crimson}im ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I don't even have any form of {aqua}healing{snow} or {aqua}shielding{snow}, yet you still took this long");
+				case 7: Twirl_Lines(npc, "I don't even have any form of real {aqua}shielding{snow}, yet you still took this long");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
 				case 9: Twirl_Lines(npc, "Im bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 			}
@@ -961,6 +969,16 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(b_allow_final_invocation[npc.index])
+	{
+		if(fl_final_invocation_timer[npc.index] != FAR_FUTURE)
+		{
+			fl_final_invocation_timer[npc.index] = FAR_FUTURE;
+			//fl_final_invocation_logic[npc.index] = GetGameTime() + 5.0;
+			Final_Invocation(npc);
+		}
+	}
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -988,7 +1006,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 0.75);
 
-	if(npc.m_flDoingAnimation > GameTime)
+	if(npc.m_flDoingAnimation > GetGameTime())
 		return;
 
 	if(npc.IsOnGround())
@@ -1001,6 +1019,9 @@ static void ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;	
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
+
+	if(b_allow_final_invocation[npc.index])
+		SacrificeAllies(npc.index);
 
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
@@ -1059,6 +1080,50 @@ static void ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
+}
+static void Final_Invocation(Twirl npc)
+{
+	Ruina_Set_Overlord(npc.index, true);
+	Ruina_Master_Rally(npc.index, true);
+	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	float Tower_Health = MaxHealth*0.2;
+	for(int i=0 ; i < 4 ; i++)
+	{
+		float AproxRandomSpaceToWalkTo[3];
+		WorldSpaceCenter(npc.index, AproxRandomSpaceToWalkTo);
+		int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index), "force60;raid;noweaver;full");
+		if(spawn_index > MaxClients)
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+			{
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			}
+			TeleportDiversioToRandLocation(spawn_index, true);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health));
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
+		}
+		spawn_index = NPC_CreateByName("npc_ruina_lancelot", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
+		if(spawn_index > MaxClients)
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+			{
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			}
+			TeleportDiversioToRandLocation(spawn_index);
+			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToCeil(Tower_Health*0.5));
+			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health*0.5));
+		}
+	}
+	switch(GetRandomInt(0, 6))
+	{
+		case 0: Twirl_Lines(npc, "If you think im all you have to deal with, {crimson}well then...");
+		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler afterall, {purple}and a ruler usually has an army");
+		case 2: Twirl_Lines(npc, "How's your aoe situation?");
+		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
+		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
+		case 5: Twirl_Lines(npc, "Aye, this'l do, no go forth my minnion's {crimson}and crush them{snow}!");
+		case 6: Twirl_Lines(npc, "The Final Inovation!");
+	}
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -2217,7 +2282,10 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			npc.m_flSpeed = 0.0;
 			f_NpcTurnPenalty[npc.index] = 0.0;
 
-			fl_raidmode_freeze[npc.index] = RaidModeTime - GetGameTime();
+			float timer = RaidModeTime - GetGameTime();
+			if(timer < 75.0)	//to avoid the "you are running out of time" thing.
+				timer = 75.0;
+			fl_raidmode_freeze[npc.index] = timer;
 
 			Kill_Abilities(npc);
 			return Plugin_Changed;
@@ -2235,6 +2303,10 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		damage=0.0;
 		//CPrintToChatAll("Damage nulified");
 		return Plugin_Changed;
+	}
+	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=60 && npc.m_flDoingAnimation < GetGameTime())
+	{
+		b_allow_final_invocation[npc.index] = true;
 	}
 
 	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime()) //Anger after half hp
@@ -2386,7 +2458,7 @@ static void Initiate_Combo_Laser(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
 
-	float GameTime = GetGameTime(npc.index);
+	float GameTime = GetGameTime();
 	float Duration = (npc.Anger ? 1.0 : 0.7);
 	npc.m_flDoingAnimation = GameTime + Duration+0.1;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration;
