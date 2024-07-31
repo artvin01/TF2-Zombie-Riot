@@ -2,6 +2,8 @@
 #pragma newdecls required
 
 static bool InClassicMode;
+static int CashLeft;
+static int CashTotal;
 
 bool Classic_Mode()	// If ZS-Classic is enabled
 {
@@ -11,11 +13,33 @@ bool Classic_Mode()	// If ZS-Classic is enabled
 void Classic_MapStart()
 {
 	InClassicMode = false;
+	CashTotal = 0;
+	CashLeft = 0;
 }
 
 void Classic_Enable()
 {
 	InClassicMode = true;
+}
+
+void Classic_NewRoundStart(int cash)
+{
+	CashTotal = cash;
+	CashLeft = cash;
+}
+
+void Classic_EnemySpawned(int entity)
+{
+	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
+	{
+		// At 4-players, need 100 kills to get all wave money
+		int given = RoundToCeil(float(CashTotal) / 100.0 / MultiGlobalEnemy);
+		if(given > CashLeft)
+			given = CashLeft;
+		
+		CashLeft -= given;
+		view_as<CClotBody>(entity).m_fCreditsOnKill = float(given);
+	}
 }
 
 bool Classic_CanTeutonUpdate(bool respawn)

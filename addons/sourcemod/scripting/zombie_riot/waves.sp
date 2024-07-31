@@ -1269,6 +1269,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 
+			if(!CurrentWave)
+				Classic_NewRoundStart(round.Cash);
+
 			if(wave.RelayName[0])
 				ExcuteRelay(wave.RelayName, wave.RelayFire);
 			
@@ -1383,14 +1386,18 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		else
 		{
 			WaveEndLogicExtra();
-			int CashGive = round.Cash;
-			CurrentCash += CashGive;
 
-			if(CashGive)
+			if(!Classic_Mode())
 			{
-				CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
-			}
+				int CashGive = round.Cash;
+				CurrentCash += CashGive;
 
+				if(CashGive)
+				{
+					CPrintToChatAll("{green}%t","Cash Gained This Wave", CashGive);
+				}
+			}
+			
 			ExcuteRelay("zr_wavedone");
 			CurrentRound++;
 			CurrentWave = -1;
