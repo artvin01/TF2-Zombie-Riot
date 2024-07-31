@@ -2194,6 +2194,10 @@
 		"ru"		"Маркер попад."
 		"chi"		"攻击标记"
 	}	
+	"Disable Map Music"
+	{
+		"en"		"Disable Map Music"
+	}	
 	"You have been Infected by Nemesis"
 	{
 		"en"		"You have been Infected by Nemesis!\nDo not get close to allies."
@@ -3255,5 +3259,9 @@
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
+	}
+	"Kleiner"
+	{
+		"en"	"Kleiner"
 	}
 }

@@ -49,9 +49,10 @@ static const char RobotModels[][] =
 static const char PlayerModelsCustom[][] =
 {
 	"models/bots/headless_hatman.mdl",
-	"models/zombie_riot/player_model_add/model_player_1_1.mdl",
+	"models/zombie_riot/player_model_add/model_player_1_2.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
+	"models/zombie_riot/player_model_add/model_player_1_2.mdl",
 };
 
 
@@ -60,7 +61,17 @@ static const char PlayerCustomHands[][] =
 	"",
 	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
+	"models/zombie_riot/weapons/soldier_hands/c_soldier_arms.mdl", //needed custom model due to rocket in face, looks like kleiners, kinda.
+};
+
+int PlayerCustomModelBodyGroup[] =
+{
+	0,
+	1,
+	0,
+	0,
+	2,
 };
 
 enum
@@ -69,6 +80,7 @@ enum
 	BARNEY = 1,
 	NIKO_2 = 2,
 	SKELEBOY = 3,
+	KLEINER = 4,
 }
 
 static int HandIndex[10];
@@ -211,6 +223,7 @@ void ViewChange_PlayerModel(int client)
 					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 					
 					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
+					SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
 				}
 				else
 				{
@@ -476,6 +489,11 @@ void MedicAdjustModel(int client)
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(!IsValidEntity(ViewmodelPlayerModel))
 		return;
+		
+	if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+	{
+		return;
+	}
 
 	if(CurrentClass[client] != view_as<TFClassType>(5))
 		return;
@@ -530,6 +548,7 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		}
 		
 		entity = CreateViewmodel(client, model, model, weapon);
+		SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}

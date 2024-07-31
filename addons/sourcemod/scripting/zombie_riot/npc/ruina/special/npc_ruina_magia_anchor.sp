@@ -107,7 +107,7 @@ static char[] GetBuildingHealth()
 	health /= 2;
 	
 	
-	health = RoundToCeil(float(health) * 1.2);
+	health = RoundToCeil(float(health) * 1.4);
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
@@ -284,7 +284,7 @@ methodmap Magia_Anchor < CClotBody
 			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidAllowsBuildings = false;
+			RaidAllowsBuildings = true;
 
 			RaidModeScaling = 0.0;
 		
@@ -545,7 +545,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	if(fl_ruina_battery[npc.index] <=200.0)
-		Ruina_Add_Battery(npc.index, 0.5);	//anchor gets charge every hit. :)
+		Ruina_Add_Battery(npc.index, 1.0);	//anchor gets charge every hit. :)
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -616,7 +616,7 @@ static void Weaver_Logic(Magia_Anchor npc)
 	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
 		i_weaver_index[npc.index] = test;
 
-	fl_weaver_charge[npc.index]+=0.001;
+	fl_weaver_charge[npc.index]+=0.005;
 
 	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;

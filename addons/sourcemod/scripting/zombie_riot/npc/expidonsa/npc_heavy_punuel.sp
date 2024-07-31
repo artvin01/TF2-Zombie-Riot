@@ -198,13 +198,7 @@ public void HeavyPunuel_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(!npc.m_bArmorGiven)
-	{
-		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 2.0;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 2.0;
-	}
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(npc.m_flArmorCount > 0.0)
 	{
@@ -269,16 +263,6 @@ public Action HeavyPunuel_OnTakeDamage(int victim, int &attacker, int &inflictor
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 
 		if(percentageArmorLeft <= 0.0)
@@ -305,6 +289,12 @@ public Action HeavyPunuel_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

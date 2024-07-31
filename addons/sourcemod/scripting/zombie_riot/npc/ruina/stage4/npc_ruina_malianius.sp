@@ -462,7 +462,7 @@ static void Fire_Random_Ion(Malianius npc)
 		ScaleVector(SubjectAbsVelocity, Time);
 		AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
-		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+		//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
 		float Radius = 250.0;
 

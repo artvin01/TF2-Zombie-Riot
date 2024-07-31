@@ -403,9 +403,9 @@ void Music_PostThink(int client)
 		*/
 	}
 	
-	if(MusicDisabled)
+	if(MusicDisabled && !b_IgnoreMapMusic[client])
 		return;
-
+	
 	if(!b_GameOnGoing)
 		return;
 	

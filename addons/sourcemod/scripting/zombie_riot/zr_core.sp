@@ -193,7 +193,6 @@ enum
 
 enum
 {
-	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -209,6 +208,7 @@ enum
 	Type_Interitus,
 	Type_BlueParadox,
 	Type_Void,
+	Type_Ruina,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -409,6 +409,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/barney_sound_override.sp"
+#include "zombie_riot/kleiner_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -600,6 +601,7 @@ void ZR_MapStart()
 {
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
+	KleinerSoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();

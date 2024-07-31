@@ -54,6 +54,7 @@ enum struct Round
 {
 	int Xp;
 	int Cash;
+	int AmmoBoxExtra;
 	bool MapSetupRelay;
 	bool Custom_Refresh_Npc_Store;
 	int medival_difficulty;
@@ -695,6 +696,7 @@ void Waves_SetupWaves(KeyValues kv, bool start)
 	do
 	{
 		round.Cash = kv.GetNum("cash");
+		round.AmmoBoxExtra = kv.GetNum("ammobox_extra");
 		round.Custom_Refresh_Npc_Store = view_as<bool>(kv.GetNum("grigori_refresh_store"));
 		round.medival_difficulty = kv.GetNum("medival_research_level");
 		round.MapSetupRelay = view_as<bool>(kv.GetNum("map_setup_fake"));
@@ -1608,6 +1610,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				ReviveAll();
 				Music_EndLastmann();
 				CheckAlivePlayers();
+			}
+			if(round.AmmoBoxExtra)
+			{
+				Ammo_Count_Ready += round.AmmoBoxExtra;	
 			}
 			if(round.Custom_Refresh_Npc_Store)
 			{

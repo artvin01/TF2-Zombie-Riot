@@ -1443,6 +1443,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
 			
+			if(npc.m_flArmorCount > 0.0)
+			{
+				percentage *= npc.m_flArmorProtect;
+			}
+
 			if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
 				percentage *= GetRandomFloat(0.5, 1.5);
 #endif
@@ -1486,6 +1491,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 			if(VausMagicaShieldLogicEnabled(victim))
 				percentage *= 0.25;
+
+			if(npc.m_flArmorCount > 0.0)
+			{
+				percentage *= npc.m_flArmorProtect;
+			}
 			
 			if(Rogue_GetChaosLevel() > 0 && !(GetURandomInt() % 4))
 				percentage *= GetRandomFloat(0.5, 1.5);
@@ -1586,6 +1596,18 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		ThousandString(c_Health[offset], sizeof(c_Health) - offset);
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
+
+		if(npc.m_flArmorCount > 0.0)
+		{
+			int ArmorInt = RoundToNearest(npc.m_flArmorCount);
+			char c_Armor[255];
+			IntToString(ArmorInt,c_Armor, sizeof(c_Armor));
+			//has armor? Add extra.
+			int offsetarm = ArmorInt < 0 ? 1 : 0;
+			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
+			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		
 #if defined RPG
 		Format(ExtraHudHurt, sizeof(ExtraHudHurt), "Level %d", Level[victim]);
 		RPGSpawns_UpdateHealthNpc(victim);
@@ -1663,6 +1685,17 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 
+		if(npc.m_flArmorCount > 0.0)
+		{
+			int ArmorInt = RoundToNearest(npc.m_flArmorCount);
+			char c_Armor[255];
+			IntToString(ArmorInt,c_Armor, sizeof(c_Armor));
+			//has armor? Add extra.
+			int offsetarm = ArmorInt < 0 ? 1 : 0;
+			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
+			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		
 		if(!b_NameNoTranslation[victim])
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s\n%t\n%s / %s",ExtraHudHurt,c_NpcName[victim], c_Health, c_MaxHealth);
@@ -1752,6 +1785,10 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 		return true;
 
 	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_flArmorCount > 0.0)
+	{
+		return true;
+	}
 	switch(type)
 	{
 		case 1:
