@@ -83,7 +83,7 @@ float ZRModifs_MaxSpawnsAlive()
 
 float ZRModifs_SpawnSpeedModif()
 {
-	float value = Classic_Enable() ? 3.0 : 1.0;
+	float value = Classic_Mode() ? 3.0 : 1.0;
 
 	switch(CurrentModifActive)
 	{

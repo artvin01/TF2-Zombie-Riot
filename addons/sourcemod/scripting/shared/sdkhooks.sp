@@ -563,7 +563,7 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 1.35;
 		}
 
-		if(Classic_Enable())
+		if(Classic_Mode())
 		{
 			mana_regen[client] *= 0.3;
 		}

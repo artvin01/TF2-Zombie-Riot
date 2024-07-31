@@ -1302,7 +1302,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			HealTotal *= 1.5;
 		}
 
-		if(Classic_Enable() && GetTeam(reciever) == TFTeam_Red)
+		if(Classic_Mode() && GetTeam(reciever) == TFTeam_Red)
 			HealTotal *= 0.5;
 #endif
 

@@ -1909,7 +1909,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
 
-/*		if(!Classic_Enable())
+/*		if(!Classic_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -1925,7 +1925,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
 
-/*		if(!Classic_Enable())
+/*		if(!Classic_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{

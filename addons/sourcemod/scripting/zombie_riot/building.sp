@@ -207,7 +207,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		CashRecievedNonWave[owner] += Cash;
 		CashSpent[owner] -= Cash;
 	}
-	if(AmmoSupply <= 0.0 || Classic_Enable())
+	if(AmmoSupply <= 0.0 || Classic_Mode())
 	{
 		return;
 	}

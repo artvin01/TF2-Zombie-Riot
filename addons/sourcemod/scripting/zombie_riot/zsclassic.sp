@@ -19,6 +19,7 @@ void Classic_MapStart()
 
 void Classic_Enable()
 {
+	PrintToChatAll("Classic Mode!");
 	InClassicMode = true;
 }
 
