@@ -14,7 +14,7 @@
 
 static float BONES_PIRATE_SPEED = 220.0;
 static float BONES_PIRATE_SPEED_BUFFED = 260.0;
-static float BONES_PIRATE_SPEED_BUFFED_RAMPAGE = 400.0;
+static float BONES_PIRATE_SPEED_BUFFED_RAMPAGE = 440.0;
 static float PIRATE_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float PIRATE_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float PIRATE_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
@@ -31,7 +31,7 @@ static float BONES_PIRATE_ATTACKINTERVAL = 1.2;
 static float BONES_PIRATE_ATTACKINTERVAL_BUFFED = 0.8;
 static float BONES_PIRATE_ATTACKINTERVAL_BUFFED_RAMPAGE = 0.25;
 
-static float BONES_PIRATE_RAMPAGE_THRESHOLD = 0.4;		//HP threshold at which the buffed variant enters a rampage state.
+static float BONES_PIRATE_RAMPAGE_THRESHOLD = 0.5;		//HP threshold at which the buffed variant enters a rampage state.
 
 static char g_DeathSounds[][] = {
 	")misc/halloween/skeleton_break.wav",

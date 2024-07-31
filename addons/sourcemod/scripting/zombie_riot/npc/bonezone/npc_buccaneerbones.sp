@@ -10,8 +10,8 @@ static float BUCCANEER_NATURAL_BUFF_CHANCE = 0.05;	//Percentage chance for non-b
 static float BUCCANEER_NATURAL_BUFF_LEVEL_MODIFIER = 0.15;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float BUCCANEER_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
 
-#define BONES_BUCCANEER_HP				"6000"
-#define BONES_BUCCANEER_HP_BUFFED			"60000"
+#define BONES_BUCCANEER_HP				"1000"
+#define BONES_BUCCANEER_HP_BUFFED			"30000"
 
 //BRIGADIER BONES (NON-BUFFED VARIANT):
 //Walks around holding a Loose Cannon, which it fires at survivors within a given range.
