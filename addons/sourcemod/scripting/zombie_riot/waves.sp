@@ -1251,7 +1251,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		return;
 
 	Cooldown = GetGameTime();
-	
+	ProgressTimerEndAt = 0.0;
 	delete WaveTimer;
 	
 	Round round;
