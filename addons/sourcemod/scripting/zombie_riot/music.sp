@@ -159,7 +159,7 @@ void EventRoundStartMusicFilter()
 	
 	for(int client=1; client<=MaxClients; client++)
 	{
-		MusicMapRemove[client] = FAR_FUTURE;
+		MusicMapRemove[client] = 2000000000;
 	}
 	while ((entity = FindEntityByClassname(entity, "ambient_generic")) != INVALID_ENT_REFERENCE)
 	{
@@ -460,7 +460,7 @@ void Music_PostThink(int client)
 	if(MusicMapRemove[client] < GetTime())
 	{
 		StopMapMusicAll();
-		MusicMapRemove[client] = GetTime() + 30.0;
+		MusicMapRemove[client] = GetTime() + 30;
 	}
 	
 	if(MusicDisabled && !b_IgnoreMapMusic[client])
