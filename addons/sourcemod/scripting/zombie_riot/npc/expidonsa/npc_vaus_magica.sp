@@ -115,7 +115,7 @@ methodmap VausMagica < CClotBody
 		func_NPCThink[npc.index] = VausMagica_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 7.0);
+		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
