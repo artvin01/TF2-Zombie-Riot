@@ -297,7 +297,8 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	float healing = float(Max_Health)*0.25;
 	
-	Helia_Healing_Buff(entity, healing);
+	HealEntityGlobal(entity, victim, healing, 0.1);
+
 }
 
 //TODO 
