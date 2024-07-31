@@ -130,6 +130,16 @@ methodmap PetrisBaron < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(PetrisBaron_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(PetrisBaron_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(PetrisBaron_ClotThink);
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "voice_player", 1, "%t", "Petrisis' Baron Spawned");
+				UTIL_ScreenFade(client_check, 180, 1, FFADE_OUT, 0, 0, 0, 255);
+			}
+		}
 		
 		
 		//IDLE

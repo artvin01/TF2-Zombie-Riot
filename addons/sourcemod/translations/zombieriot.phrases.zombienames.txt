@@ -2849,13 +2849,25 @@
 	{
 		"en" 		"Sphynx"
 	}
+	"Sphynx Spawned"
+	{
+		"en" 		"Zombies refuse to stay down..."
+	}
 	"Petrisis' Baron"
 	{
 		"en" 		"Petrisis' Baron"
 	}
+	"Petrisis' Baron Spawned"
+	{
+		"en" 		"Your barricades cry in fear."
+	}
 	"Nightmare"
 	{
 		"en" 		"Nightmare"
+	}
+	"Nightmare Spawned"
+	{
+		"en" 		"Nightares will haunt you."
 	}
 	"Zombine"
 	{
