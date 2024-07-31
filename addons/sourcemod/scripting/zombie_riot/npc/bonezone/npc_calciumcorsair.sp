@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define BONES_PIRATE_HP			"2000"
+#define BONES_PIRATE_HP			"1500"
 #define BONES_PIRATE_HP_BUFFED	"4000"
 
 #define BONES_PIRATE_SKIN		"2"
@@ -29,7 +29,7 @@ static float BONES_PIRATE_BUILDINGDAMAGE_BUFFED_RAMPAGE = 300.0;
 
 static float BONES_PIRATE_ATTACKINTERVAL = 1.2;
 static float BONES_PIRATE_ATTACKINTERVAL_BUFFED = 0.8;
-static float BONES_PIRATE_ATTACKINTERVAL_BUFFED_RAMPAGE = 0.25;
+static float BONES_PIRATE_ATTACKINTERVAL_BUFFED_RAMPAGE = 0.2;
 
 static float BONES_PIRATE_RAMPAGE_THRESHOLD = 0.5;		//HP threshold at which the buffed variant enters a rampage state.
 
@@ -378,6 +378,7 @@ public void PirateBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_PIRATE_SPEED_BUFFED;
 
 		Pirate_GiveCosmetics(npc, true);
+		npc.SetActivity("ACT_PIRATE_RUN");
 		DispatchKeyValue(index, "skin", BONES_PIRATE_SKIN_BUFFED);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
@@ -401,6 +402,7 @@ public void PirateBones_SetBuffed(int index, bool buffed)
 		{
 			b_PirateRampage[index] = false;
 			view_as<PirateBones>(index).PlayRampageEnd();
+			npc.SetPlaybackRate(1.0);
 		}
 	}
 }
@@ -431,6 +433,8 @@ public void PirateBones_ClotThink(int iNPC)
 	
 	if (b_BonesBuffed[npc.index])
 	{
+		npc.SetActivity("ACT_PIRATE_RUN");
+
 		float maxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 		float current = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 		float percentage = current / maxHealth;
@@ -441,6 +445,7 @@ public void PirateBones_ClotThink(int iNPC)
 			npc.m_flSpeed = BONES_PIRATE_SPEED_BUFFED;
 			b_PirateRampage[npc.index] = false;
 			npc.PlayRampageEnd();
+			npc.SetPlaybackRate(1.0);
 		}
 		else if (!b_PirateRampage[npc.index] && percentage <= BONES_PIRATE_RAMPAGE_THRESHOLD)
 		{
@@ -448,6 +453,7 @@ public void PirateBones_ClotThink(int iNPC)
 			npc.m_flSpeed = BONES_PIRATE_SPEED_BUFFED_RAMPAGE;
 			b_PirateRampage[npc.index] = true;
 			npc.PlayRampageStart();
+			npc.SetPlaybackRate(1.5);
 		}
 	}
 
