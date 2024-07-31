@@ -59,10 +59,10 @@ void PetrisBaron_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSoundCustom(g_DeathSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSound(g_DeathSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
