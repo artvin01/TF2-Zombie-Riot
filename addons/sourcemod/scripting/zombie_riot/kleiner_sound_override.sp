@@ -71,7 +71,6 @@ static const char g_HurtSound[][] =
 static const char g_Thanks[][] =
 {
 	"vo/k_lab/kl_weowe.wav",
-	"vo/k_lab/ba_geethanks.wav",
 };
 static const char g_NiceShot[][] =
 {
