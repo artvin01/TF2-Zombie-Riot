@@ -2513,7 +2513,7 @@ static Action Combo_Laser_Logic(int iNPC)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angles, startPoint, 900.0);	// no pitch control
 	Laser.Radius = Radius;
-	Laser.Damage = (npc.Anger ? 15.0 : 10.0)*RaidModeScaling;
+	Laser.Damage = (npc.Anger ? 12.0 : 7.5)*RaidModeScaling;
 	Laser.Bonus_Damage = (npc.Anger ? 45.0 : 30.0)*RaidModeScaling;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage(On_LaserHit_two);
