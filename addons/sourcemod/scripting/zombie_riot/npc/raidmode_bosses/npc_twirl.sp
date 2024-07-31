@@ -1327,7 +1327,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						}
 							
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 45.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 50.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
