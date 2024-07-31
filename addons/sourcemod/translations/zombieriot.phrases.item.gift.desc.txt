@@ -1678,7 +1678,7 @@
 	}
 	"Master System Desc"
 	{
-		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\Make them rally to the master"
+		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMake them rally to the master"
 	}
 	"Chaos Intrusion"
 	{
