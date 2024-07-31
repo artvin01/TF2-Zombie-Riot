@@ -45,7 +45,7 @@ void Classic_EnemySpawned(int entity)
 
 bool Classic_CanTeutonUpdate(int client, bool respawn)
 {
-	if(Classic_Mode() && !respawn)
+	if(Classic_Mode() && Waves_Started() && !respawn)
 	{
 		TeutonType[client] = TEUTON_DEAD;
 		return false;
