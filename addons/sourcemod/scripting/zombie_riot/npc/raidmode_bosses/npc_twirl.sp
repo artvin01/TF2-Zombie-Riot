@@ -1086,7 +1086,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float Tower_Health = MaxHealth*0.2;
+	float Tower_Health = MaxHealth*0.15;
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1122,8 +1122,9 @@ static void Final_Invocation(Twirl npc)
 		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
 		case 5: Twirl_Lines(npc, "Aye, this'l do, no go forth my minnion's {crimson}and crush them{snow}!");
-		case 6: Twirl_Lines(npc, "The Final Inovation!");
+		case 6: Twirl_Lines(npc, "The Final Invocation!");
 	}
+	RaidModeTime +=50.0;
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
