@@ -563,6 +563,11 @@ public void OnPostThink(int client)
 			mana_regen[client] *= 1.35;
 		}
 
+		if(Classic_Mode())
+		{
+			mana_regen[client] *= 0.3;
+		}
+
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
 
@@ -2077,12 +2082,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Changed;
 	}
 	*/
-	if(StrContains(sample, "misc/halloween/spell_") != -1)
-	{
-		volume *= 0.75;
-		level = 85;
-		return Plugin_Changed;
-	}
 	if(StrContains(sample, "vo/", true) != -1)
 	{
 		if(entity > 0 && entity <= MaxClients)
@@ -2164,7 +2163,13 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			if(ChangedSound)
 				return Plugin_Changed;
 		}
-	}			
+	}
+	if(StrContains(sample, "misc/halloween/spell_") != -1)
+	{
+		volume *= 0.75;
+		level = 85;
+		return Plugin_Changed;
+	}		
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;

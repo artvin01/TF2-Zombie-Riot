@@ -360,6 +360,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						
 						CreateTimer(zr_spawnprotectiontime.FloatValue, Remove_Spawn_Protection, EntIndexToEntRef(entity_Spawner), TIMER_FLAG_NO_MAPCHANGE);
 					}
+
 					if(GetTeam(entity_Spawner) == 2)
 					{
 						Rogue_AllySpawned(entity_Spawner);
@@ -369,6 +370,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						Rogue_EnemySpawned(entity_Spawner);
 						Waves_EnemySpawned(entity_Spawner);
+						Classic_EnemySpawned(entity_Spawner);
 					}
 
 					if(Waves_InFreeplay())
@@ -2073,7 +2075,9 @@ void NPC_DeadEffects(int entity)
 		{
 			
 #if defined ZR
-			GiveXP(client, 1);
+			if(!Classic_Mode())
+				GiveXP(client, 1);
+			
 			Saga_DeadEffects(entity, client, WeaponLastHit);
 #endif
 			

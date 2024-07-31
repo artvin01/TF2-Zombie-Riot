@@ -1298,12 +1298,14 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 				{
+#if defined ZR
 					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
 					{
 						PrintToChat(attacker, "You think you can circumvent this challange?! Shame on you!");
 						damage = 0.0;
 						return false;
 					}
+#endif
 					i_HasBeenBackstabbed[victim] = true;
 						
 					float attack_speed;
