@@ -114,21 +114,6 @@ methodmap EgaBunar < CClotBody
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	
 	
 	public EgaBunar(int client, float vecPos[3], float vecAng[3], int ally)
@@ -157,8 +142,6 @@ methodmap EgaBunar < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-
-		npc.m_bArmorGiven = false;
 		
 		
 		//IDLE
@@ -202,13 +185,8 @@ public void EgaBunar_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(!npc.m_bArmorGiven)
-	{
-		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 1.25;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 1.25;
-	}
+	GrantEntityArmor(iNPC, true, 1.25, 0.1, 0);
+
 	if(npc.m_flArmorCount > 0.0)
 	{
 		npc.m_flSpeed = 330.0;
@@ -272,16 +250,6 @@ public Action EgaBunar_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 
 		if(percentageArmorLeft <= 0.0)
@@ -308,6 +276,12 @@ public Action EgaBunar_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -329,6 +303,8 @@ public void EgaBunar_NPCDeath(int entity)
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))

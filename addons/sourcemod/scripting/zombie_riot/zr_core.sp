@@ -409,6 +409,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/barney_sound_override.sp"
+#include "zombie_riot/kleiner_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
@@ -599,6 +600,7 @@ void ZR_MapStart()
 {
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
+	KleinerSoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();

@@ -223,13 +223,7 @@ public void ZombineSurvival_ClotThink(int iNPC)
 	{
 		return;
 	}
-	if(!npc.m_bArmorGiven)
-	{
-		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 0.25;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 0.25;
-	}
+	GrantEntityArmor(iNPC, true, 0.25, 0.1, 0);
 	
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -368,16 +362,7 @@ public Action ZombineSurvival_OnTakeDamage(int victim, int &attacker, int &infli
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
+		
 	}
 	else
 	{

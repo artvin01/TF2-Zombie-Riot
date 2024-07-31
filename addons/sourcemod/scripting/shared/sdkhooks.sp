@@ -2026,6 +2026,31 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+	if(b_IsAmbientGeneric[entity])
+	{
+		if(StrContains(sample, "#", true) != -1)
+		{
+			//loop through all clients it tries to play to
+			//but also make sure it doesnt play to clients who didnt get info from the database.
+			for(int loop1=0; loop1<numClients; loop1++)
+			{
+				int listener = clients[loop1];
+				if(b_IgnoreMapMusic[listener] || !Database_IsCached(listener))
+				{
+					//replace client with client one up so the array doesnt mess up!
+					for(int loop2 = loop1; loop2 < numClients-1; loop2++)
+					{
+						clients[loop2] = clients[loop2+1];
+					}
+					//we move the array one down!
+					loop1--;
+					numClients--;
+				}
+			}
+			return Plugin_Changed;
+		}
+	}
+
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
 		return Plugin_Handled;
@@ -2099,6 +2124,11 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					{
 						pitch -= 20;
 						return Plugin_Changed;
+					}
+					case KLEINER:
+					{
+						Changed = KleinerSoundOverride(numClients, sample, 
+						entity, channel, volume, level, pitch, flags,seed);
 					}
 				}
 				if(Changed)
@@ -2367,6 +2397,11 @@ void UpdatePlayerFakeModel(int client)
 	if(PlayerModel > 0)
 	{	
 #if defined ZR || defined RPG
+		if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+		{
+			SetEntProp(PlayerModel, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+			return;
+		}
 		SDKCall_RecalculatePlayerBodygroups(client);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
