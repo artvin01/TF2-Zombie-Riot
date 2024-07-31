@@ -2359,7 +2359,7 @@ static void UpdateMvMStatsFrame()
 		int flags[24];
 		bool active[24];
 
-		if(Classic_Mode() && WaveTimer && ProgressTimerEndAt)
+		if(Classic_Mode() && ProgressTimerEndAt)
 		{
 			id[0] = -1;
 			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
