@@ -695,8 +695,6 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayAngerSound();
 
 
-		fl_npc_basespeed = 340.0;
-
 		if(npc.m_bThisNpcIsABoss)
 		{
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
