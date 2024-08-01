@@ -498,17 +498,17 @@ public Action Victorian_DrainHealth(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 		{
-			int health = GetClientHealth(client) * 98 / 100;
-			if(health < 100)
-				health = 100;
+			if(GetClientHealth(client) > 100)
+			{
+				int health = GetClientHealth(client) * 98 / 100;
+				if(health < 100)
+					health = 100;
+				
+				SetEntityHealth(client, health);
+			}
 			
-			SetEntityHealth(client, health);
 			return Plugin_Continue;
 		}
-	}
-	else
-	{
-		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
 	}
 	return Plugin_Stop;
 }
