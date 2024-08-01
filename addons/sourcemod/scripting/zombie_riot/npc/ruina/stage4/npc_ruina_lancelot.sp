@@ -297,7 +297,7 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 	int i=1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		if(i > 10)
+		if(i > 9)
 			break;	//somehow more then 10 lancelot's exist, abort.
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
@@ -696,7 +696,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 
 		fl_npc_basespeed = 340.0;
-		
+
 		if(npc.m_bThisNpcIsABoss)
 		{
 			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
