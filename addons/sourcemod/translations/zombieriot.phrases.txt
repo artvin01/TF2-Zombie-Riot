@@ -71,7 +71,7 @@
 		"ru"		"Кредиты: {1}"
 		"pl"		"Kredyty: {1}"
 		"es"		"Dinero: {1}"
-		"fr"		"Crédits: {1}"
+		"fr"		"Argent: {1}"
 		"de"		"Kredit: {1}"
 		"pt"		"Créditos: {1}"
 		"nl"		"Krediet: {1}"
@@ -85,7 +85,7 @@
 		"ru"		"Кредиты: {1} (+{2})"
 		"pl"		"Kredyty: {1} (+{2})"
 		"es"		"Dinero: {1} (+{2})"
-		"fr"		"Crédits: {1} (+{2})"
+		"fr"		"Argent: {1} (+{2})"
 		"de"		"Kredit: {1} (+{2})"
 		"pt"		"Créditos: {1} (+{2})"
 		"nl"		"Krediet: {1} (+{2})"
@@ -95,7 +95,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Extra Cash: +{1}"
-		"fr"		"Crédits Extra: +{1}"
+		"fr"		"Argent Extra: +{1}"
 		"pt"		"Crédito Extra: +{1}"
 	}
 	"Armor Counter"
@@ -649,7 +649,7 @@
 		"ru"		"Кто-то воспользовался вашим ящиком с боеприпасами, получено +20 кредитов!"
 		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
 		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
-		"fr"		"Quelqu'un a utilisé votre boîte de munitions, vous obtenez +20 Crédits!"
+		"fr"		"Quelqu'un a utilisé votre boîte de munitions, vous obtenez +20 Argent!"
 		"pt"		"Alguém usou sua caixa de munição, você ganhou +20 Créditos"
 		"nl"		"Iemand gebruikte net uw munitiekist, je krijgt hiervoor +20 krediet!"
 		"chi"       "队友使用了你的弹药箱，你获得 20 的现金奖励"
@@ -661,7 +661,7 @@
 		"ru"		"Кто-то воспользовался вашим верстаком брони, получено +20 кредитов!"
 		"pl"		"Ktoś użył twojego pudła z amunicją, otrzymujesz +20 Kredytów!"
 		"es"		"Alguién usó tu caja de munición, ganas 20 dolares"
-		"fr"		"Quelqu'un a utilisé votre table d'armure, vous obtenez +20 Crédits!"
+		"fr"		"Quelqu'un a utilisé votre table d'armure, vous obtenez +20 Argent!"
 		"de"		"Jemand hat deinen Rüstungstisch benutzt, Du bekommst +20 Kredits!"
 		"pt"		"Alguém usou sua mesa de armadura, você ganhou +20 Créditos!"
 		"nl"		"Iemand gebruikte net uw SchildTafel, je krijgt hiervoor +20 krediet!"
@@ -670,7 +670,7 @@
 	"Perk Machine Used"
 	{
 		"en"		"Someone used your perk machine, you gain +40 Cash!"
-		"fr"		"Quelqu'un a utilisé votre machine de perks, vous obtenez +40 Crédits!"
+		"fr"		"Quelqu'un a utilisé votre machine de perks, vous obtenez +40 Argent!"
 		"ru"		"Кто-то воспользовался вашей перк-машиной, получено +40 кредитов!"
 		"de"		"Jemand hat deine perk Maschine benutzt, du bekommst +40 Kredit!"
 		"pt"		"Alguém usou sua maquina de habilidade, você ganhou +40 Créditos!"
@@ -680,7 +680,7 @@
 	"Pap Machine Used"
 	{
 		"en"		"Someone used your Pack-A-Punch Machine, you gain +400 Cash!"
-		"fr"		"Quelqu'un a utilisé votre machine Pack-A-Punch, vous obtenez +400 Crédits!"
+		"fr"		"Quelqu'un a utilisé votre machine Pack-A-Punch, vous obtenez +400 Argent!"
 		"ru"		"Кто-то воспользовался вашим улучшайзером, получено +400 кредитов!"
 		"de"		"Jemand hat ihre PackAPunch Maschine benutzt, du bekommst +400 Kredit!"
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, Você ganhou +400 Créditos!"
@@ -690,14 +690,14 @@
 	"Pap Machine Used But Another"
 	{
 		"en"		"Someone used your Pack-A-Punch Machine, you gain +100 Cash!\nAnother builder has more advanced tech then you, and gained the rest"
-		"fr"		"Quelqu'un a utilisé votre machine Pack-A-Punch, vous obtenez +100 Crédits!\nUn autre constructeur a de la technologie plus avancée, donc vous obtenez le reste."
+		"fr"		"Quelqu'un a utilisé votre machine Pack-A-Punch, vous obtenez +100 Argent!\nUn autre constructeur a de la technologie plus avancée, donc vous obtenez le reste."
 		"pt"		"Alguém usou sua maquina de Pack-a-Punch, você ganhou +100 Créditos!\nOutro construtor tem tecnologia mais avançada que você, e recebeu o resto"
         "ru"		"Кто-то воспользовался вашим улучшайзером, получено +100 кредитов!\nДругой строитель имеет более продвинутые технологии, чем ваши, и получил остальное."
 	}
 	"Pap Machine Used Me"
 	{
 		"en"		"A Pack-A-Punch was used that wasnt yours, but your tech is more advanced! You gain 300+ Cash."
-		"fr"		"Quelqu'un a utilisé une machine Pack-A-Punch appartenant à un autre constructeur, mais votre technologie est plus avancée!\nVous obtenez +300 Crédits!"
+		"fr"		"Quelqu'un a utilisé une machine Pack-A-Punch appartenant à un autre constructeur, mais votre technologie est plus avancée!\nVous obtenez +300 Argent!"
 		"pt"		"Uma maquina de Pack-A-Punch foi usada que não era sua, mas sua tecnologia é mais avançada! você ganha +300 Créditos."
 		"ru"		"Был использован улучшайзер, который не принадлежал вам, но ваша техника более совершенна! Получено 300+ кредитов."
 	}
@@ -776,7 +776,7 @@
 		"ru"		"Получено +{1} кредитов за эту волну!"
 		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
 		"es"		"Encontraste {1} en esta oleada!"
-		"fr"		"Vous avez obtenu {1} crédits cette vague!"
+		"fr"		"Vous avez obtenu {1} argent cette vague!"
 		"pt"		"Ganhou +{1} em Créditos nesta onda."
 		"nl"		"Je hebt {1} geld gekregen van deze golf!"
 		"chi"       "回合胜利!你获得了 {1} 的现金奖励!"
@@ -785,14 +785,14 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"Gained {1} cash!"
-		"fr" 		"Obtenu {1} crédits!"
+		"fr" 		"Obtenu {1} argent!"
 		"pt"		"Ganhou {1} dinheiro!"
 	}
 	"Cash Gained This Wave Village"
 	{
 		"#format"	"{1:d}"
 		"en" 		"Gained an extra {1} cash this wave thanks to Villages!"
-		"fr" 		"Vous avez collectioné un bonus de {1} crédits de vos villages!"
+		"fr" 		"Vous avez collectioné un bonus de {1} argent de vos villages!"
 		"ru" 		"Получено дополнительно +{1} кредитов за волну благодаря деревням!"
 		"pt"		"Ganhou {1} extra nesta onda graças aos Aldeões!"
 		"nl"		"Je krijgt een extra {1} geld dankzij uw dorp!"
@@ -1149,7 +1149,7 @@
 	"Max Ammo Activated"
 	{
 		"en" 		"Extra Ammo!"
-		"fr" 		"Bonus Munitions!"
+		"fr" 		"Munitions Bonus!"
 		"ru" 		"Дополнительные патроны!"
 		"de"		"Extra Munition!"
 		"pt"		"Munição extra!"
@@ -1159,7 +1159,7 @@
 	"Max Health Activated"
 	{
 		"en" 		"Extra Health!"
-		"fr" 		"Bonus Soins!"
+		"fr" 		"Soins Bonus!"
 		"pt"		"Vida Extra!"
 		"ru" 		"Дополнительное здоровье!"
 		"chi"       "额外的血量!"
@@ -1167,7 +1167,7 @@
 	"Max Money Activated"
 	{
 		"en" 		"Extra Cash!"
-		"fr" 		"Bonus Crédits!"
+		"fr" 		"Argent Bonus!"
 		"pt"		"Dinheiro Extra!"
 		"ru" 		"Дополнительные деньги!"
 		"chi"       "额外的现金!"
@@ -1175,7 +1175,7 @@
 	"Grigori Shop Extra Activated"
 	{
 		"en" 		"Extra Super Sale!"
-		"fr" 		"Bonus Solde!"
+		"fr" 		"Rabais Bonus!"
 		"pt"		"Super Desconto Extra!"
 	}
 	"Help?"
@@ -1279,7 +1279,7 @@
 	"Gamemode Help Explained"
 	{
 		"en" 		"You survive against waves of zombies upto usually 60 waves.\nBuy guns and barricade yourself to survive.\nMake sure to play as a team and don't save up all the time.\nOr else you will be the downfall of your team.\n\n If you dont know what to buy, Then buy any high cost weapon of your choice and get upgrades for that weapon type in the upgrade tab.\nAlso buy passive upgrades to have more surviveability.\nThe rest will come to you naturally."
-		"fr" 		"Survivez jusqu'a 60(?) vagues de zombies.\nAchetez des armes et construisez des barricades pour survivre.\nTravaillez avec vos coéquipiers et ayez pas peur d'échanger vos Crédits\nou riquez de perdre le jeu pour votre équipe.\n\n Si vous ne savez pas quelle arme vous devrez vous acheter, essayez n'importe quelle arme à haut prix.\nN'oubliez pas d'obtenir des améliorations dans la boutique.\nLe reste vous viendra naturellement."
+		"fr" 		"Survivez jusqu'a 60(?) vagues de zombies.\nAchetez des armes et construisez des barricades pour survivre.\nTravaillez avec vos coéquipiers et n'ayez pas peur d'échanger votre Argent\nou riquez de perdre le jeu pour votre équipe.\n\n Si vous ne savez pas quelle arme vous devrez vous acheter, essayez n'importe quelle arme à haut prix.\nN'oubliez pas d'obtenir des améliorations dans la boutique.\nLe reste vous viendra naturellement."
 		"ru" 		"Вам предстоит выжить против 60 волн зомби.\nПокупайте оружие и баррикады, чтобы выжить.\nУбедитесь, что вы играете в команде и не копили деньги понапрасну.\nИначе вы станете гибелью вашей команды.\n\n Если вы не знаете, что купить, купите любое дорогое оружие по своему выбору и получите улучшения для этого типа оружия на вкладке УЛУЧШЕНИЯ.\nТакже покупайте пассивные улучшения, чтобы повысить выживаемость.\nОстальное придёт само собой."
 	//	"de"		"Du überlebst gegen wellen von Zombies, bis zu 60 runde.\nKaufe Waffen und Barrikade für dich selber um zu überleben.\nSei sicher mit deinem Team zu spielen und Sparre nicht die ganze zeit!\nOder sie werden der Untergang für ihr Team sein."
 		"pt"		"Sobrevive contra ondas de zumbis até normalmente 60 ondas.\nComprar armas e barricar-se para sobreviver.\nNão se esqueça de jogar em equipa e não poupe o tempo todo.\n Senão será a queda da sua equipa.\n Se não souber o que comprar, então compre qualquer arma de alto custo à sua escolha e obtenha melhorias para esse tipo de arma no separador das melhorias.\nTambém compre melhorias passivas para ter mais capacidade de sobrevivência.\n O resto virá até si naturalmente."
@@ -1455,7 +1455,7 @@
 	"Not Enough Money To Pap"
 	{
 		"en" 		"You do not have enough cash to Pack-a-Punch your Weapon."
-		"fr" 		"Vous n'avez pas assez de Crédits pour appliquer une amélioration Pack-a-Punch sur votre arme."
+		"fr" 		"Vous n'avez pas assez d'Argent pour appliquer une amélioration Pack-a-Punch sur votre arme."
 		"ru" 		"У вас недостаточно кредитов на улучшение вашего оружия."
 		"de"		"Sie haben nicht genügend Geld um ihre Waffe zu Pack-A-Punchen."
 		"pt"		"Você não tem dinheiro suficiente para dar um Pack-a-Punch em sua arma."
@@ -1524,7 +1524,7 @@
 	"Healing Station Used"
 	{
 		"en" 		"Someone used your Healing Station, you gain +20 Cash!"
-		"fr" 		"Quelqu'un à utilisé votre Station de Soins, vous obtenez +20 Crédits!"
+		"fr" 		"Quelqu'un à utilisé votre Station de Soins, vous obtenez +20 Argent!"
 		"ru" 		"Кто-то воспользовался вашей лечебной станцией, получено +20 кредитов!"
 		"de"		"Jemand hat deine Heilstation benutzt, du hast +20 Kredit bekommen!"
 		"pt"		"Alguem se curou em sua Estação de Cura, você ganhou +20 créditos!"
@@ -1714,7 +1714,7 @@
 	"Credits After Selling"
 	{
 		"en" 		"Cash After Selling"
-		"fr" 		"Crédits après Vente"
+		"fr" 		"Argent après Vente"
 		"ru" 		"Кредитов после продажи"
 		"de"		"Kredit nach verkauf"
 		"pt"		"Créditos após vender"
@@ -1818,7 +1818,7 @@
 	"Be sure to spend all your starting cash!"
 	{
 		"en"		"Be sure to spend all your starting cash!"
-		"fr"		"Faites sûr de dépenser tous vos Crédits!"
+		"fr"		"Faites sûr de dépenser tout votre argent de départ!"
 		"ru"		"Не забудьте потратить все свои кредиты!"
 		"de"		"Sein sie sicher das sie ihr ganzes Startgeld verbrauchen!"
 		"pt"		"Certifique-se de gastar todo seu dinheiro inicial!"
@@ -1919,7 +1919,7 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Someone bought something else for the npc, You get [{1}] Cash back in return as compensation."
-		"fr"		"Quelqu'un a acheté autre chose pour le NPC. [{1}] Crédits vous sont retournés comme compensation."
+		"fr"		"Quelqu'un a acheté autre chose pour le NPC. [{1}] Argent vous sont retournés comme compensation."
 		"ru"		"Кто-то купил что-то другое для NPC, вы получили [{1}] кредитов взамен в качестве компенсации."
 		"pt"		"Alguém comprou algo para o npc, Você ganha [{1}] em retorno por compensação."
 		"nl"		"Iemand heeft iets anders voor de npc gekocht. U krijgt [{1}] geld terug als compensatie."
@@ -2036,7 +2036,7 @@
 	"Save New"
 	{
 		"en"		"Enter name in chatbox to create a new loadout.\nIt will save your current bought items with the name you give.\nYou can rebuy said loadout if you have enough cash."
-		"fr"		"Entrez un nom pour votre nouveau chargement dans la boîte de discussion.\nVos achats courants seront enregistrés.\nVous pouvez re-acheter votre chargement avec vos Crédits."
+		"fr"		"Entrez un nom pour votre nouveau chargement dans la boîte de discussion.\nVos achats courants seront enregistrés.\nVous pouvez re-acheter votre chargement avec votre Argent."
 		"ru"		"Введите имя в чат для создания нового снаряжения.\nЭто сохранит ваши купленные предметы с именем, которое вы дали.\nВы можете повторно купить это снаряжение, если у вас достаточно денег."
 		"chi"       "在聊天框中输入名字创建一个新的预设\n这将保存您当前购买的物品。如果你有足够的现金，你可以一件购买。"
 	}
