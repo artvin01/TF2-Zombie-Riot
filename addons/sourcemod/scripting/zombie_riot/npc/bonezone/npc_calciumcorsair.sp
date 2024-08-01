@@ -12,6 +12,10 @@
 
 #define BONES_PIRATE_RAMPAGEPARTICLE	"utaunt_glitter_teamcolor_red"
 
+static float BONES_PIRATE_MELEE_HIT_DELAY =  0.5;
+static float BONES_PIRATE_MELEE_HIT_DELAY_BUFFED = 0.5;
+static float BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE = 0.2;
+
 static float BONES_PIRATE_SPEED = 220.0;
 static float BONES_PIRATE_SPEED_BUFFED = 260.0;
 static float BONES_PIRATE_SPEED_BUFFED_RAMPAGE = 440.0;
@@ -316,8 +320,8 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		
-		int iActivity = npc.LookupActivity("ACT_PIRATE_RUN");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_blSetBuffedSkeletonAnimation = true;
+		npc.m_blSetNonBuffedSkeletonAnimation = false;
 	}
 	else
 	{
@@ -326,8 +330,8 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-		if(iActivity > 0) npc.StartActivity(iActivity);
+		npc.m_blSetBuffedSkeletonAnimation = false;
+		npc.m_blSetNonBuffedSkeletonAnimation = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
 		SetVariantString("1.2");
@@ -340,26 +344,7 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		DispatchKeyValue(npc.m_iWearable3, "skin", BONES_PIRATE_SKIN);
 	}
 
-	RequestFrame(PirateBones_FixAnims, npc);
-}
-
-public void PirateBones_FixAnims(CClotBody npc)
-{
-	if (IsValidEntity(npc.index))
-	{
-		if (b_BonesBuffed[npc.index])
-		{
-			npc.SetActivity("ACT_PIRATE_RUN");
-			//int iActivity = npc.LookupActivity("ACT_PIRATE_RUN");
-			//if(iActivity > 0) npc.StartActivity(iActivity);
-		}
-		else
-		{
-			npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-			//int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
-			//if(iActivity > 0) npc.StartActivity(iActivity);
-		}
-	}
+	//RequestFrame(PirateBones_FixAnims, npc);
 }
 
 public void PirateBones_SetBuffed(int index, bool buffed)
@@ -378,7 +363,6 @@ public void PirateBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_PIRATE_SPEED_BUFFED;
 
 		Pirate_GiveCosmetics(npc, true);
-		npc.SetActivity("ACT_PIRATE_RUN");
 		DispatchKeyValue(index, "skin", BONES_PIRATE_SKIN_BUFFED);
 	}
 	else if (b_BonesBuffed[index] && !buffed)
@@ -433,8 +417,6 @@ public void PirateBones_ClotThink(int iNPC)
 	
 	if (b_BonesBuffed[npc.index])
 	{
-		npc.SetActivity("ACT_PIRATE_RUN");
-
 		float maxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
 		float current = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 		float percentage = current / maxHealth;
@@ -455,6 +437,18 @@ public void PirateBones_ClotThink(int iNPC)
 			npc.PlayRampageStart();
 			npc.SetPlaybackRate(1.5);
 		}
+	}
+
+	if (npc.m_blSetBuffedSkeletonAnimation)
+	{
+		npc.SetActivity("ACT_PIRATE_RUN");
+		npc.m_blSetBuffedSkeletonAnimation = false;
+	}
+
+	if (npc.m_blSetNonBuffedSkeletonAnimation)
+	{
+		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.m_blSetNonBuffedSkeletonAnimation = false;
 	}
 
 	npc.Update();
@@ -544,8 +538,8 @@ public void PirateBones_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index)+0.7;
-					npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.83;
+					npc.m_flAttackHappens = GetGameTime(npc.index) + b_BonesBuffed[npc.index] ? (b_PirateRampage[npc.index] ? BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_PIRATE_MELEE_HIT_DELAY_BUFFED) : BONES_PIRATE_MELEE_HIT_DELAY;
+					npc.m_flAttackHappens_bullshit = npc.m_flAttackHappens + 0.15;
 					npc.m_flAttackHappenswillhappen = true;
 				}
 				//Can we attack right now?

@@ -81,6 +81,8 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 
 bool b_BoneZoneNaturallyBuffed[MAXENTITIES];
+bool b_SetBuffedSkeletonAnimation[MAXENTITIES];
+bool b_SetNonBuffedSkeletonAnimation[MAXENTITIES];
 bool b_IsSkeleton[MAXENTITIES];
 bool b_BonesBuffed[MAXENTITIES];
 int i_BoneZoneSummoner[MAXENTITIES];
@@ -1354,6 +1356,18 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()				{ return b_BoneZoneNaturallyBuffed[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_BoneZoneNaturallyBuffed[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_blSetBuffedSkeletonAnimation
+	{
+		public get()			{ return b_SetBuffedSkeletonAnimation[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_SetBuffedSkeletonAnimation[this.index] = TempValueForProperty; }
+	}
+
+	property bool m_blSetNonBuffedSkeletonAnimation
+	{
+		public get()			{ return b_SetNonBuffedSkeletonAnimation[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_SetNonBuffedSkeletonAnimation[this.index] = TempValueForProperty; }
 	}
 
 	property bool m_bIsSkeleton
@@ -3624,6 +3638,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		ExtinguishTarget(pThis);
 		NPCDeath(pThis);
 		delete g_BoneZoneBuffers[pThis];
+		b_SetBuffedSkeletonAnimation[pThis] = false;
+		b_SetNonBuffedSkeletonAnimation[pThis] = false;
 		NPCStats_SetFuncsToZero(pThis);
 		//We do not want this entity to collide with anything when it dies. 
 		//yes it is a single frame, but it can matter in ugly ways, just avoid this.
