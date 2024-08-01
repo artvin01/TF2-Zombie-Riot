@@ -4,6 +4,7 @@
 	"Credits Page"
 	{
 		"en" 		"Artvin: NPC And Gamemode Development\nBatfoxkid: Gamemode Development\nPelipoika: Original NPC base and help\nAlex: Weapon Plugins and overall plugin Assistance\nSuza: Weapon and some Base stock help\nMikusch: Early Gamedata help\nKenzzer: NPC help and bug fix help\nAlex Turtle & Stranger & Syko: Map Assistance\nCrusty: Model/Animating\njDeivid: Alternative Waves\nGMOD Zombie Survival Devs: Music and base concept from them"
+		"fr" 		"Artvin: Développeur NPC et Mode de Jeu\nBatfoxkid: Développeur Mode de jeu\nPelipoika: Base des NPCs, Aide\nAlex: Plugins Armes et Assistance Plugins\nSuza: Aide Armes et Base Stock\nMikusch: Aide Gamedata Initiale\nKenzzer: Aide NPCs, Débogage\nAlex Turtle & Stranger & Syko: Aide Niveaux\nCrusty: Modèles & Animations\njDeivid: Vagues Alternatives\nDéveloppeurs GMOD Zombie Survival: Musique, Concept Original\nTraduction Français par minenice"
 		"ru" 		"Artvin: Разработка NPC и режима\nBatfoxkid: Разработка режима\nPelipoika: База оригинальных NPC и помощь\nAlex: Плагины оружия и помощь с плагинами\nSuza: Оружие и помощь с базой\nMikusch: Помощь с игровыми данными\nKenzzer: Помощь с NPC и исправление ошибок\nAlex Turtle и Stranger и Syko: Помощь с картами\nCrusty: Модели/анимация\njDeivid: Новые волны\nРазработчики ZS в GMOD: Музыка и концепция игры от них"
 		"de"		"Artvin: NPC und Spielmodus entwickler\nBatfoxkid: Spielmodus Entwickler\nPelipoika: Original NPC basis und hilfe\nAlex: Waffen Plugins und überall plugin hilfe\nSuza: Waffe und etwas Basismaterial geholfen\nMikusch früher spieldatei helfer\nKenzzer: NPC hilfe und bug fix hilfe\nAlex Turtle, Stranger, Syko: Map Hilfe\nCrusty Model/Animationen\njDeivid: Alternative Wellen\nGMOD Zombie überleben Entwickler: Musik und Basis konzept von ihnen"
 		"pt"		"Artvin: Desenvolvimento de NPCs e Gameplay\nBatfoxkid: Desenvolvimento de Gameplay\nPelipoika: Base original de NPCs e assistencia\nAlex: Plugin de armas e assistencia no geral\nSuza: Armas e algumas assistencias com a base de stock\nMikusch: Ajudou com a gamedata inicial\nKenzzer: ajudou com NPCs e correções de bugs\nAlex Turtle & Stranger & Syko: Ajudaram no mapa\nCrusty: Modelagem e Animação\nDeivid: Ondas alternativas\nGMOD Zombie Survival Devs: Música e conceito base"
@@ -30,7 +31,7 @@
 		"ru"		"Вы последний выживший.\nПереживите волну, чтобы возродить всех своих товарищей."
 		"pl"		"Jesteś ostatnim człowiekiem.\nPrzeżyj następną rundę z bossem aby wskrzeszyć resztę drużyny."  
 		"es"		"Eres el último humano con vida.\nGana la siguiente oleada de jefe para revivirlos a todos"
-		"fr"		"Vous êtes le dernier survivant.\nSurvivez la vague pour réanimer vos coéquipier."
+		"fr"		"Vous êtes le dernier survivant.\nSurvivez la vague pour réanimer vos coéquipiers."
 		"de"		"Du bist der letzte mensch am Leben.\nGewinne Die nächste boss runde um alle wiederzubeleben"
 		"pt"		"Você é o ultimo humano vivo. \nVença o próximo chefe do round para reviver todos."
 		"nl"		"Jij bent de laatste overelevende.\nOverleef de huidige golf om all uw bondgenoten tot leven te brengen" 
@@ -296,7 +297,7 @@
 		"ru"		"Нет"
 		"pl"		"N/A"
 		"es"		"N/A"
-		"fr"		"N/A"
+		"fr"		"N/D"
 		"de"		"N/A"
 		"pt"		"N/A"
 		"nl"		"Nvt"
@@ -1289,7 +1290,7 @@
 	"Debuff/Buff Explain 1"
 	{
 		"en" 		"On the left side will be debuffs.\nOn the right side will be buffs.\nEach symbol is a new buff or debuff. \nFinger means melee %% damage taken, arrow means ranged %% damage taken."
-		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement."	\\ todo: translate rest of line
+		"fr" 		"À votre gauche sera vous affaiblissements.\nÀ votre droite sera vos buffs.\nChaque symbol sera un buff ou affaiblissement.\nLa main représente le %% des dégats corps à corps reçus, La flèche représente le %% des dégats à portée reçus."
 	}
 	"Show Debuffs"
 	{
@@ -1304,11 +1305,12 @@
 	"Debuff/Buff Explain 2"
 	{
 		"en" 		"There are too many buffs and debuffs to be shown.\nBuffs and debuffs will be on weapons themselves instead, not all are added currently in that list."
-	
+		"fr" 		"Il y de buffs et affaiblissements à montrer.\nIls seront présents sur vos armes, mais ils ne sont pas tous dans la liste."
 	}
 	"Command Help Explained"
 	{
 		"en" 		"''/tp'' To toggle thirdperson.\n''/make_niko'' To toggle niko (This is more of a silly thing the anything)."
+		"fr" 		"''/tp'' pour utiliser la vue à la troisième personne."
 		"ru" 		"''/tp'' для переключения режима от 3-го лица.\n''/make_niko'' для переключения Нико (это скорее глупая вещь, чем что-либо ещё)."
 		"de"		"''/tp'' Umschaltung für Dritte Person."
 		"pt"		"''/tp'' Para ativar modo de 3ª pessoa"
@@ -1318,6 +1320,7 @@
 	"Difficulty Help Explained"
 	{
 		"en" 		"Each Higher Difficulty is harder and gives but no extra cash and different zombie types/mutations.\nThey are there as a challenge but reward almost upto 3x the EXP.\nMap difficulties are arbitrary and only state how hard the layout is."
+		"fr" 		"Les difficultés deviennent plus difficiles et introduisent de nouveaux types d'ennemis.\nIls sont présents comme défi, et peuvent donner jusqu'à 3x de EXP.\nLes difficultés des niveaux sont estimées sur celle de leur structure."
 		"ru" 		"Более высокая сложность - сложнее и даёт доп. деньги и имеет новые типы зомби.\nЭто как испытание, но в нём вы получите почти в 3 раза больше опыта.\nСложности на картах случайны и только указывают, насколько сложны структуры врагов."
 		"de"		"Jeder höhere Schwierigkeitsgrad ist schwerer aber gibt dir kein extra Geld, aber Neue Zombie Typen/Mutationen.\nDie sind eine Herausforderung aber geben bis zu 3-mal mehr XP.\n Karten Schwierigkeitsgrade sind willkürlich und zustand wie hart das Layout ist."
 		"pt"		"Cada dificuldade mais elevada é mais difícil e não dá mas nenhum dinheiro extra e diferentes tipos/mutações de zumbis.\nEstão lá como um desafio, mas recompensam até 3x em Experiência.\nAs restrições do mapa são arbitrárias e apenas declaram quão difícil é o layout."
@@ -1327,6 +1330,7 @@
 	"Level Help Explained"
 	{
 		"en" 		"You gain EXP per survived wave.\nHigh levels unlock items and perks for you that are for free.\nSome have returns for upgrades, Some are just free buffs or items.\nYou keep levels when you leave"
+		"fr" 		"Vous obtenez du EXP pour chaque vague survécu\nLe EXP vous donne des niveaux qui vous permet d'obtenir des objets gratuits\nqui peuvent vous aider ou vous donner des armes.\nVous gardez votre EXP quand vous partez."
 		"ru" 		"Вы получаете опыт за каждую пережитую волну.\nВысокие уровни открывают для вас предметы и перки - бесплатно.\nНекоторые из них это улучшения или просто бесплатные усиления и предметы.\nНабранный уровень сохраняется, когда вы уходите из игры."
 		"de"		"Sie bekommen XP per runde.\nHohe Levels freischalten Gegenstände und Perks für dich gratis.\nPaar haben Umgekährte Upgrades, Paar sind gratis Buffs oder Gegenstände.\nDu behältst die Levels, wenn du gehst."
 		"pt"		"Você ganha EXP pra cada onda sobrevivida.\nNiveis altos desbloqueiam itens e habilidades para você de graça.\nAlguns tem lados negativos, outros são simplesmente uteis ou itens.\nVocê mantém niveis após desconectar"
@@ -1336,11 +1340,13 @@
 	"Special Zombies Explained"
 	{
 		"en" 		"These are mini-bosses that spawn randomly after wave 12.\nRaids:\nRaids take 25%% more explosive damage, and usually 25% more melee damage.\nSome weapons deal extra damage againt raids, see desc if they do."
+		"fr" 		"Après la vague 12, des Miniboss vont apparaître.\nRaids:\nLes boss Raid recoivent 25%% plus de dégats par les explosions,\net habituellement, 25%% plus de dégats par les coups corps à corps.\nCertaines armes deviennent plus forts contre les Raids, vérifiez leur description."
 		// "pt"		"Tem alguns mini-chefes que aparecem aleatoriamente na onda 12.\nRaids:\n
 	}
 	"Revival Zombies Explained"
 	{
 		"en" 		"Instead of dying you get downed.\nWhen an ally is half invis, you can revive them by holding RELOAD."
+		"fr" 		"Au lieu de mourir, vous êtes KO.\nQuand un allié est KO ( demi-visible, ) vous pouvez les resuciter en appuyant RELOAD."
 		"ru" 		"Вместо того, чтобы убить, вас выводят из строя.\nКогда союзник наполовину невидим, вы можете оживить его, удерживая кнопку ПЕРЕЗАРЯДКИ."
 		"de"		"Anstatt zu sterben, wirst du niedergeschlagen.\nWenn ein Kamerad halb unsichtbar ist, kannst du sie wiederbeleben mit NACHLADEN halten."
 		"pt"		"Em vez de morrer você é derrubado.\nQuando um aliado está transparente, você pode o reanimar apertando o botão de RECARREGAR."
@@ -1350,6 +1356,7 @@
 	"Building Explained"
 	{
 		"en" 		"You can use machines by pressing R on them.\nPeople can mount buildings and will have an icon above their head.\nThis allows you to press R on them for the same effect.\nRegen icon: Ammo box.\nArmour icon: Armour Table.\nKing icon: Perk Machine.\nPunch icon: Pack-A-Punch.\nVampire icon: Healing Station."
+		"fr" 		"Vous pouvez utiliser des construction en appuyant R.\nLes constructeurs peuvent monter leurs constructions.\nCeci vous permet d'appuyer R sur eux pour utiliser les constructions montés."
 		"ru" 		"R - использование построек.\nНад головой игроков с постройкой будет значок.\nR - для того же действия.\nЗначок реген.: Ящик с боеприпасами.\nБроня: Верстак брони.\nКороль: Перк-машина.\nКулак: Улучшайзер.\nВампир: Лечебная станция."
 		"de"		"Sie können Maschinen mit NACHLADEN benutzen.\nLeute können ihre Gebäude aufheben und haben ein Symbol auf deren Kopf.\nDies ermöglicht Ihnen mit NACHLADEN für denselben Effekt.\nRegen Symbol: Munitionsbox\nRüstung Symbol: Rüstungstisch\nKönig Symbol: Perkmachine\nFaust Symbol: Pack-A-Punch.\nVampire Symbol: Heilstation."
 		"pt"		"Você pode utilizar maquinas apertando R nelas.\nPessoas podem montar construções e teram um icone sobre suas cabeças.\nIsto permite que você aperta R nelas para o mesmo efeito.\nÍcone de Regen: Caixa de Munição.\nÍcone de Escudo: Mesa de Armadura.\nÍcone de Coroa: Maquina de Habilidades.\nÍcone de luva: Pack-A-Punch.\nÍcone de Vampiro: Estação de Cura."
@@ -1358,6 +1365,7 @@
 	"Extra Buttons Explained"
 	{
 		"en" 		"Store Button + Inspect Weapon: Allows you to instantly access your holding weapon in the store, to for example, buy ammo."
+		"fr" 		"Bouton Boutique + Bouton Inspection : Ouvre automatiquement la page de la boutique pour votre arme, ou vous pouvez acheter des munitions."
 		"ru" 		"Кнопка открытия магазина + осмотра оружия: Позволяет мгновенно получить доступ к удерживаемому оружию в магазине, чтобы, например, купить патроны."
 		"pt"    	"Botão da Loja + Inspecionar Arma: Permite você acesso rápido à arma que você está utilizando na loja, para por exemplo, comprar munição"
 		"nl"		"Winkel knop + Wapeninspectie: Zorgt dat je onmiddelijk de winkelpagina van uw momenteel gebruikte wapen ziet om bijvoorbeeld snel ammunitie te kopen."
@@ -1445,7 +1453,7 @@
 	"Packed"
 	{
 		"en" 		"Packed"
-		"fr" 		"Amélioration PaP"	// this doesn't translate well
+		"fr" 		"Amélioré avec PaP"
 		"ru" 		"Улучшено"
 		"de"		"Verpackt"
 		"pt"		"Carregada" // i could also use "Melhorada" here but i dunno, i think sounds cooler like that
@@ -1973,7 +1981,7 @@
 	"Is already at full hp"
 	{
 		"en"		"is already at full hp."
-		"fr"		"n'a plus besoin de soins."
+		"fr"		"n'a pas besoin de soins."
 		"ru"		"уже имеет полное здоровье."
 		"pt"		"ja está com a vida cheia"
 		"nl"		"heeft al volledige gezondheidspunten"
@@ -2138,6 +2146,7 @@
 	"Gambler Spawn Message"
 	{
 		"en"		"You think you can easily run in here for safety? Not with me."
+		"fr"		"Croyez-vous vraiment que vous pouvez courir ici pour vous sauver? Pas avec moi."
 		"de"		"Du denkst du kannst einfach hier rein gehen zur Sicherheit? Nicht mit mir."
 		"ru"		"Думаешь, ты можешь так легко забежать сюда? Только не в мною смену."
 		"chi"		"你以为你能轻易跑到这里安全吗?对我来说不是。"
@@ -2145,6 +2154,7 @@
 	"Pablo Spawn Message"
 	{
 		"en"		"Let's see if you can handle me."
+		"fr"		"Voyons si vous pouvez me prendre."
 		"de"		"Mal sehen ob du es mit mir handel kannst."
 		"ru"		"Давай посмотрим, сможешь ли ты справиться со мной."
 		"chi"		"看看你能不能应付我。"
@@ -2152,6 +2162,7 @@
 	"DokMed Spawn Message"
 	{
 		"en"		"Let's see how long you can last with us both."
+		"fr"		"Voyons comment longtemps vous pouvez durer avec nous deux."
 		"de"		"Mal sehen wie lange du es aushalten kannst mit uns beiden."
 		"ru"		"Давай посмотрим, как долго ты сможешь продержаться с нами обоими."
 		"chi"		"看看你和我们俩能坚持多久。"
@@ -2202,6 +2213,7 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Armor Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		"fr"		"Position Indicateur Armure\nX:{1}\nY:{2}"
 		"ru"		"Смещ. интерф. брони\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"装甲Hud偏移量\nX轴:{1}\nY轴:{2}"
 	}
@@ -2209,6 +2221,7 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Hurt Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		"fr"		"Position Indicateur Dégats\nX:{1}\nY:{2}"
 		"ru"		"Смещ. интерф. угроз\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"伤害Hud偏移量\nX轴:{1}\nY轴:{2}"
 	}
@@ -2216,6 +2229,7 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Weapon Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		"fr"		"position Indicateur Armes\nX:{1}\nY:{2}"
 		"ru"		"Смещ. интерф. оруж.\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"武器Hud偏移量\nX轴:{1}\nY轴:{2}"
 	}
@@ -2223,36 +2237,42 @@
 	{
 		"#format"	"{1:.3f},{2:.3f}"
 		"en"		"Notif Hud Offset\nX-Axis:{1}\nY-Axis:{2}"
+		"fr"		"Position Messages\nX:{1}\nY:{2}"
 		"ru"		"Смещ. интерф. увед.\nПо верт.:{1}\nПо гориз.:{2}"
 		"chi"		"通知Hud偏移量\nX轴:{1}\nY轴:{2}"
 	}
 	"Move Hud Up"
 	{
 		"en"		"Move Hud Up"
+		"fr"		"Bouger Interface vers le Haut"
 		"ru"		"Интерф. вверх"
 		"chi"		"向上移动Hud"
 	}
 	"Move Hud Down"
 	{
 		"en"		"Move Hud Down"
+		"fr"		"Bouger Interface vers le Bas"
 		"ru"		"Интерф. вниз"
 		"chi"		"向下移动Hud"
 	}
 	"Move Hud Left"
 	{
 		"en"		"Move Hud Left"
+		"fr"		"Bouger Interface vers la Gauche"
 		"ru"		"Интерф. влево"
 		"chi"		"向左移动Hud"
 	}
 	"Move Hud Right"
 	{
 		"en"		"Move Hud Right"
+		"fr"		"Bouger Interface vers la Droite"
 		"ru"		"Интерф. вправо"
 		"chi"		"向右移动Hud"
 	}
 	"Reset to Default"
 	{
 		"en"		"Reset to Default"
+		"fr"		"Réinitialiser"
 		"ru"		"По умолч."
 		"chi"		"重置为默认值"
 	}
@@ -2299,7 +2319,6 @@
 	"Final_wave_message"
 	{
 		"en"		"This is the final wave, Prepare."
-		//"fr"		"Ceci est la dernière vague. Préparez vos bails."
 		"fr"		"Ceci est la dernière vague. Préparez-vous."
 		"ru"		"Это последняя волна, приготовьтесь."
 		"chi"		"这是最后一波，准备。"
@@ -2358,7 +2377,7 @@
 	"Hit Marker"
 	{
 		"en"		"Hit Marker"
-		"fr"		"Marqueur de contact"
+		"fr"		"Marqueur de Coups"
 		"ru"		"Маркер попад."
 		"chi"		"攻击标记"
 	}	
@@ -2962,50 +2981,59 @@
 	"Barracks Villager Desc"
 	{
 		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
-		"fr"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
+		"fr"		"Un assistant qui répare vos constructions, collectionne des ressources, et construit une tour pour vous."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
 	{
 		"en"		"The strongest of the strongest. Ultimate melee unit."	
+		"fr"		"Le meilleur des meilleurs. L'unité corps à corps ultime."	
 		"chi"       "强者中的强者。终极近战单位。"
 	}
 	"Barracks Troop Classes"
 	{
 		"en"		"Barracks Troop Classes"
+		"fr"		"Formation d'Unités"
 		"chi"       "兵营部队等级"
 	}
 	"Barracks Troop Classes Desc"
 	{
 		"en"		"Allows the training of troops, but it will set your support building max to 1 (the villgaer is excluded from this.)"
+		"fr"		"Permet la formation d'unités, mais limite votre capacité de constructions de support à 1. ( Le villageois est exclus de ceci. )"
 		"chi"       "允许训练部队，但它会将你的支援建筑最大值设置为1.（村民不包括在内）"
 	}
 	"Research Troop Classes"
 	{
 		"en"		"Research Troop Classes to train units (excludes villager)"
+		"fr"		"Recherchez des Unités pour débuter leur formation. ( Le villageois est exclus. )"
 		"chi"       "训练士兵的专项技能（村民不包括在内）"
 	}
 	"Spike Masspickup Confirm"
 	{
 		"en"		"Look up and Press M2 again to confirm picking up all your spikes!"		
+		"fr"		"Visez vers le haut et appuyez sur M2 encore pour ramasser vos piques!"
 	}
 	"Spike Masspickup Done"
 	{
 		"en"		"Picked up all your spikes!"		
+		"fr"		"Vous avez ramassé vos piques!"
 	}
 	"Spike Masspickup None"
 	{
 		"en"		"There are no spikes left to pick up."		
+		"fr"		"Pas de piques à ramasser."
 		"chi"       "没有钉子可捡了。"
 	}
 	"Pre Round Pap Limit"
 	{
 		"en"		"The PAP is still booting up, wait untill the round starts."		
+		"fr"		"La machine Pack-a-Punch se démarre, attendez pour le début du jeu."
 		"chi"       "PAP仍在启动，请等待回合开始。"
 	}
 	"Zombie Volume Setting Show"
 	{
 		"en"		"Zombie Volume Setting"
+		"fr"		"Paramètres Volume des Zombies"
 		"chi"       "僵尸声音设置"
 	}
 	"Zombie Volume Setting"
@@ -3017,6 +3045,7 @@
 	"Zombie In Battle Show"
 	{
 		"en"		"Zombie In Battle Time"
+		"fr"		"Temps en Combat pour Zombies"
 	}
 	"Zombie In Battle Logic Setting"
 	{
@@ -3026,498 +3055,617 @@
 	"Turn up volume"
 	{
 		"en"		"Turn up volume"
+		"fr"		"Monter volume"
 		"chi"       "提高音量"		
 	}
 	"Turn down volume"
 	{
 		"en"		"Turn down volume"
+		"fr"		"Baisser volume"
 		"chi"       "降低音量"		
 	}
 	"Burstpack Already Used This Round, Recharging"
 	{
 		"en"		"Burstpack already used this round, recharging..."	
+		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, recharge..."
 		"chi"       "Burstpack这一轮已经用过了，正在充电。。。"	
 	}
 	"Quincy Menu First"
 	{
 		"#format"	"{1:d}"
 		"en"		"Select which skill you wish to upgrade. You have [{1}] Skill points Left"
+		"fr"		"Choisissez une abilité à améliorer. Il vous reste [{1}] points d'abilité"
 		"chi"       "选择要升级的技能。你还剩下[｛1｝]技能点"		
 	}
 	"Quincy Menu Second"
 	{
 		"en"		"You do not have any Skill Points left\nCurrent Skill Investments:"
+		"fr"		"Vous n'avez plus de points d'abilité\nAbilités Courantes :"
 	}
 	"Quincy Fast1"
 	{
 		"en"		"Basic Reishi Collectors\nIncreased Charge Rate"
+		"fr"		"Collecteurs Reishi de Base\nVitesse de charge améliorée"
 	}
 	"Quincy Fast2"
 	{
 		"en"		"Mediocre Reishi Collectors\nIncreasd Charge Rate"
+		"fr"		"Collecteurs Reishi Moyennes\nVitesse de charge améliorée"
 	}
 	"Quincy Fast3"
 	{
 		"en"		"Excellent Reishi Collectors\nYou gain a multi shot with 50% or more raishi"
+		"fr"		"Collecteurs Reishi Excellents\nÀ 50%% Reishi, vous tirez des multi-flèches"
 	}
 	"Quincy Fast4"
 	{
 		"en"		"Quincy Reishi Collectors\nYou gain a Hyper barrage, its speed and damage depends on your reish charge"
+		"fr"		"Collecteurs Reishi de Quincy\nPermet l'utilisation du hyper-barrage. La vitesse et les dégats dépendent de votre charge Reishi"
 	}
 	"Quincy Bat1"
 	{
 		"en"		"Basic Reishi Cappacitor\nIncreased max Battery"
+		"fr"		"Capaciteurs Reishi de Base\nCapacité de charge améliorée"
 	}
 	"Quincy Bat2"
 	{
 		"en"		"Mediocre Reishi Cappacitor\nIncreased max Battery"
+		"fr"		"Capaciteurs Reishi Moyennes\nCapacité de charge améliorée"
 	}
 	"Quincy Bat3"
 	{
 		"en"		"Excellent Reishi Cappacitor\nYou gain a penetrating laser arrow at 50% charge"
+		"fr"		"Capaciteurs Reishi Excellents\nÀ 50%% charge, vos flèches pénètreront les ennemis."
 	}
 	"Quincy Bat4"
 	{
 		"en"		"Quincy Reishi Cappacitor\nYou gain a Hyper penetrating arrow with no falloff"
+		"fr"		"Capaciteurs Reishi de Quincy\nPermet l'utilisation de la hyper-flèche qui perd pas de dégats en fonction de distance."
 	}
 	"Quincy Charge_0"
 	{
 		"en"		"No Charge Upgrades"
+		"fr"		"Aucune amélioration de charge"
 	}
 	"Quincy Charge_1"
 	{
 		"en"		"Charge Rate:\n[+] Improved Charge Rate"
+		"fr"		"Vitesse de charge :\n[+] Vitesse de charge améliorée"
 	}
 	"Quincy Charge_2"
 	{
 		"en"		"Charge Rate:\n[+] Improved Charge Rate x2"
+		"fr"		"Vitesse de charge :\n[+] Vitesse de charge améliorée x2"
 	}
 	"Quincy Charge_3"
 	{
 		"en"		"Charge Rate:\n[+] Improved Charge Rate x3\n[+] Multi-Shot"
+		"fr"		"Vitesse de charge :\n[+] Vitesse de charge améliorée x3\n[+] Multi-flèches"
 	}
 	"Quincy Charge_4"
 	{
 		"en"		"Charge Rate:\n[+] Improved Charge Rate x4\n[+] Multi-Shot\n[+] Hyper Barrage"
+		"fr"		"Vitesse de charge :\n[+] Vitesse de charge améliorée x4\n[+] Multi-flèches\n[+] Hyper-barrage"
 	}
 	"Quincy Bat_0"
 	{
 		"en"		"No Battery Upgrades"
+		"fr"		"Aucune amélioration de capacité"
 	}
 	"Quincy Bat_1"
 	{
 		"en"		"Battery:\n[+] Bigger Battery"
+		"fr"		"Capacité :\n[+] Capacité de charge améliorée"
 	}
 	"Quincy Bat_2"
 	{
 		"en"		"Battery:\n[+] Bigger Battery x2"
+		"fr"		"Capacité :\n[+] Capacité de charge améliorée x2"
 	}
 	"Quincy Bat_3"
 	{
 		"en"		"Battery:\n[+] Bigger Battery x3\n[+] Penetrating Arrow"
+		"fr"		"Capacité :\n[+] Capacité de charge améliorée x3\n[+] Flèches pénètrantes"
 	}
 	"Quincy Bat_4"
 	{
 		"en"		"Battery:\n[+] Bigger Battery x4\n[+] Penetrating Arrow\n[+] Hyper Arrow"
+		"fr"		"Capacité :\n[+] Capacité de charge améliorée x4\n[+] Flèches pénètrantes\n[+] Hyper-flèches"
 	}
 	"Zombie Kills"
 	{
 		"#format"	"{1:d}"
 		"en"		"Kills: {1}"
+		"fr"		"Tué {1} ennemis"
 		"chi"       "杀敌数:{1}"
 	}
 	"Allied Summons"
 	{
 		"#format"	"{1:d}"
 		"en"		"Summons: {1}"
+		"fr"		"Convoqué {1} alliés"
 		"chi"       "召唤: {1}"
 	}
 	"Sensal Scythes Not Fully Charged"
 	{
 		"en"		"Sensal Scythes Not Fully Charged"
+		"fr"		"Scythes Sensal ne sont pas rechargés"
 	}
 	"Pre Setup Cash Gain Hint"
 	{
 		"en"		"During ready setup phases, you gain half the cash from buildings, it will be given to you once the waves start again."
+		"fr"		"Lors des temps de préparation, vous recevez la moitié de l'argent de vos constructions. Le reste vous sera donné quand la vague commence."
 	}
 	"Extra Description"
 	{
 		"en"		"Extra Description"
+		"fr"		"Description Extra"
 	}
 	"Neuvellete dmg"
 	{
 		"en"		"Extra Beam Damage"
+		"fr"		"Dégats améliorés"
 	}
 	"Neuvellete Turn"
 	{
 		"en"		"Extra Beam Turnrate"
+		"fr"		"Manoeuvrabilité améliorée"
 	}
 	"Neuvellete Mana"
 	{
 		"en"		"Lower Mana Cost"
+		"fr"		"Coût Mana diminué"
 	}
 	"Neuvellete Range"
 	{
 		"en"		"Longer Beam Range"
+		"fr"		"Portée améliorée"
 	}
 	"Neuvellete Pen"
 	{
 		"en"		"Beam can penetrate more targets"
+		"fr"		"Pénètrage du rayon amélioré"
 	}
 	"Neuvellete PenFallOff"
 	{
 		"en"		"Dmage penalty per target hit reduced"
+		"fr"		"Réduction des dégats par ennemi frappé diminué"
 	}
 	"Neuvellete Nightmare"
 	{
 		"en"		"Nightmare Cannon: Heavily reduced Turn speed, Increased damage"
+		"fr"		"Cannon de Cauchemars : Manoeuvrabilité réduite, dégats améliorés"
 	}
 	"Neuvellete Pulse"
 	{
 		"en"		"Pulse Cannon: Heavily increased turnrate, but beam is only active for 2.5 seconds, shorter recharge period"
+		"fr"		"Cannon Impulsion : Manoeuvrabilité améliorée, mais le rayon dure pour seulement 2.5 secondes. Période de recharge réduite."
 	}
 	"Neuvellete Feedback"
 	{
 		"en"		"Feeback Loop: The longer your Beam is active, the more damage it deals up to a maximum cap of 2.5x"
+		"fr"		"Rétroaction : Les dégats du rayon augmentent avec la durée, jusqu'à un maximum de 2.5x"
 	}
 	"Neuvellete Menu First"
 	{
 		"#format"	"{1:d}"
 		"en"		"Select what upgrade you wish to apply. You have [{1}] Upgrade points points Left"
+		"fr"		"Choisissez une abilité à améliorer. Il vous reste [{1}] points d'abilité"
 	}
 	"Neuvellete Menu Third"
 	{
 		"en"	"Current Upgrade Path:"
+		"fr"	"Trajet d'améliorations :"
 	}
 	"Neuvellete pap0"
 	{
 		"en" 	"Tier 1:"
+		"fr" 	"Niveau 1 :"
 	}
 	"Neuvellete pap1"
 	{
 		"en" 	"Tier 2:"
+		"fr" 	"Niveau 2 :"
 	}
 	"Neuvellete pap2"
 	{
 		"en" 	"Tier 3:"
+		"fr" 	"Niveau 3 :"
 	}
 	"Neuvellete pap3"
 	{
 		"en" 	"Tier 4:"
+		"fr" 	"Niveau 4 :"
 	}
 	"Neuvellete pap4"	
 	{
 		"en" 	"Overclocks:"
+		"fr" 	"Surcadençages :"
 	}
 	"Neuvellete Overclock Info"
 	{
 		"en" 	"These ''Overclocks'' Will heavily alter your weapon, applying buffs and nerfs"
+		"fr" 	"Les Surcadençages modifient fortement votre arme, ajoutant des bénéfices et défauts."
 	}
 	"Taunt Speed Increace"
 	{
 		"en" 	"Taunt Speed Increace"
+		"fr" 	"Vitesse des Railleries Augmuntée"
 	}
 	"Must be below half health"
 	{
 		"en"	"You must be below half health of your max health"
+		"fr"	"Vouz devez être a demi soins de votre maximum."
 	}
 	"Cherrypick Weapon"
 	{
 		"en"	"Search Store Using Tags"
+		"fr"	"Chercher la Boutique avec des Étiquettes"
 	}
 	"Tags List"
 	{
 		"#format"	"{1:s}"
 		"en"	"Tags: {1}"
+		"fr"	"Étiquettes : {1}"
 	}
 	"Search With Tags"
 	{
 		"en"	"Search With Tags"
+		"fr"	"Chercher avec des Étiquettes"
 	}
 	"Clear Whitelist"
 	{
 		"en"	"Clear Whitelist"
+		"fr"	"Effacer Étiquettes"
 	}
 	"Crouch on ground for ability"
 	{
 		"en"	"Crouch on ground for ability"
+		"fr"	"Accroupissez-vous pour cet abilité"
 	}
 	"Railcannon Charged"
 	{
 		"en"	"Railcannon is fully charged"
+		"fr"	"Canon à rail est rechargé"
 	}
 	"Default Desc"
 	{
 		"en"	"Fight against the classic zombies and combine!"
+		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 	}
 	"True Fusion Warrior Desc"
 	{
 		"en"	"Raids appear at the end of every 15 waves, they get more stronger with more abilities!"
+		"fr"	"À tous les 15 vagues, des Raids vont apparaître. Leur prouesse et abilités s'amélioreront graduellement!"
 	}
 	"Alternative Desc"
 	{
 		"en"	"Fight with a new twist on the classic with magical new enemies!"
+		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 	}
 	"Blitzkrieg Desc"
 	{
 		"en"	"The machine that rapidly fires rockets and zaps players outside his range!\nDo not fight him in any expidonsan areas..."
+		"fr"	"La machine qui tire rapidement des roquettes et choque les survivants hors de sa portée!\nÉvitez de se bagarrer contre lui dans des zones Expidonsannes..."
 	}
 	"Blitzkrieg Hard Desc"
 	{
 		"en"	"Do not dare fight him."
+		"fr"	"Le combat est futile."
 	}
 	"Xeno Desc"
 	{
 		"en"	"The Xeno infection has arrived, mutating enemies with new abilities!"
+		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 	}
 	"Silvester Waldch Desc"
 	{
 		"en"	"Silvester fights with his laser and rock attacks while Waldch snipes from a distance!"
+		"fr"	"Silvester attaque avec des rayons laser et des roches, alors que Waldch tir à distance!"
 	}
 	"Xeno Hard Desc"
 	{
 		"en"	"You enter the source of the Xeno infection, they're much stronger here, beware..."
+		"fr"	"Vouz avez trouvé la source de l'infection Xéno. Les ennemis sont beaucoup plus forts ici, gare à vous..."
 	}
 	"Medieval Desc"
 	{
 		"en"	"Fight against the middle-age with their armor to counter melee or ranged attacks!"
+		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 	}
 	"God Alaxios Desc"
 	{
 		"en"	"Fight him and his rapidly spawning army, kill the army first whenever they show up!"
+		"fr"	"Alaxios apporte son armée, tuez ses unités en premier quand ils apparaîssent!"
 	}
 	"Expidonsa Desc"
 	{
 		"en"	"Hold back against the advanced underground city, watch out for their self-healing and surprise attacks!"
+		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 	}
 	"Sensal Desc"
 	{
 		"en"	"The scouting party operative which rapidly summons homing scythes and laser attacks!"
+		"fr"	"Le capitaine d'un groupe de scouts qui convoque des scythes chercheurs et des rayons laser!"
 	}
 	"Deep Sea Desc"
 	{
 		"en"	"The Seaborn infection has arrived, Armor Corrosion attacks will infect your armor, cure it with armor tables!"
+		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 	}
 	"Interitus Desc"
 	{
 		"en"	"Chaos has afflicted many cities, His group is ready to serve you justics. Get ready."
+		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 	}
 	"Schwert Donner Desc"
 	{
 		"en"	"Karlas charges you down with his Lance while Stella fires laser attacks!"
+		"fr"	"Karlas vous perce avec sa Lance alors que Stella vous vire des rayons laser!"
 	}
 	"Khaml Desc"
 	{
 		"en"	"The judges of your actions have arrived."
+		"fr"	"Voiçi le juge de vos actions."
 	}
 	"Void Desc"
 	{
 		"en"	"Help Kahmlstein agains the void!"
+		"fr"	"Aidez Kahmlstein contre le Void!"
 	}
 	"Unspeakable Raid Desc"
 	{
 		"en"	"Directly after you release the void in rogue2..."
+		"fr"	"Après avoir relâché le Void dans Rogue 2..."
 	}
 	"Twirl Raid Desc"
 	{
 		"en"	"A certain individual has taken an interest in your group"
+		"fr"	"Cet individuel s'est intéressé dans votre groupe."
 	}
 	"Ruina waves Desc"
 	{
 		"en"	"Can you withstand the power of magic?"
+		"fr"	"Pouvez-vous survivre la prouesse de la magie?"
 	}
 	"CoF Normal Desc"
 	{
 		"en"	"Enter Simon's Book."
+		"fr"	"Entrez le Livre de Simon."
 	}
 	"CoF Nightmare Desc"
 	{
 		"en"	"Enter Simon's Mind."
+		"fr"	"Entrez les Pensées de Simon."
 	}
 	"Wait for power"
 	{
 		"#format"	"{1:.1f}"
 		"en" "You need to rest: [{1}]"
+		"fr" "Vous avez besoin de vous reposer pour [{1}]."
 	}
 	"Stop playing with"
 	{
 		"en" "Stop playing with death"
+		"fr" "Cessez de jouer avec la mort."
 	}
 	"Not Enough Health"
 	{
 		"#format"	"{1:d}"
 		"en" "Not Enough Health, you need: [{1}] hp"
+		"fr" "Pas assez de soins, vous avez besoin de [{1}]"
 	}
 	"Let the beast sleeps"
 	{
 		"#format"	"{1:.1f}"
 		"en" "Let the beast sleeps: {1:.1f}"
+		"fr" "Laissez la bête dormir pour {1:.1f}"
 	}
 	"Angel hoe on"
 	{
 		"en" "Angel Transformation: On"
+		"fr" "Transformation Angélique : On"
 	}
 	"Angel hoe off"
 	{
 		"en" "Angel Transformation: Off"
+		"fr" "Transformation Angélique : Off"
 	}
 	"Evil hoe on"
 	{
 		"en" "Blood pact: On"
+		"fr" "Pacte Sanguinaire: On"
 	}
 	"Evil hoe off"
 	{
 		"en" "Blood pact: Off"
+		"fr" "Pacte Sanguinaire: Off"
 	}
 	"Tags & Author"
 	{
 		"en"		"Tags & Author"
+		"fr"		"Étiquettes & Auteur(e)"
 	}
 	"Created By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Created by: {community}{1}"
+		"fr"		"{darkgrey}Creé par: {community}{1}"
 	}
 	"NPCs By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}NPCs by: {community}{1}"
+		"fr"		"{darkgrey}NPCs par: {community}{1}"
 	}
 	"Format By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Format by: {community}{1}"
+		"fr"		"{darkgrey}Format par: {community}{1}"
 	}
 	"Raidboss By"
 	{
 		"#format"	"{1:s}"
 		"en"		"{darkgrey}Raidboss by: {community}{1}"
+		"fr"		"{darkgrey}Raid boss par: {community}{1}"
 	}
 	"Now Playing Song"
 	{
 		"#format"	"{1:s},{2:s}"
 		"en"		"{darkgrey}Now Playing: {community}{1} {default}| {lightgreen}{2}"
+		"fr"		"{darkgrey}Musique : {community}{1} {default}| {lightgreen}{2}"
 	}
 	"Blacksmith Tooltip"
 	{
 		"en"		"Press RELOAD to apply a tinker effect to your active weapon."
+		"fr"		"Appuyez sur RELOAD pour appliquer un effet de forge sur votre arme"
 	}
 	"Blacksmith Used"
 	{
 		"en"		"Someone used your Tinker Station, you gain +20 Cash!"
+		"fr"		"Quelqu'un a utilisé votre Station de Forgerie, vous obtenez +20 Argent!"
 	}
 	"Blacksmith Maxed"
 	{
 		"en"		"Maximum amount of attributes applied to this weapon"
+		"fr"		"Le maximum d'effets de forge est atteint sur cet arme."
 	}
 	"Blacksmith Underleveled"
 	{
 		"en"		"You can not tinker this weapon"
+		"fr"		"Vous ne pouvez pas appliquer un effet de forge sur cet arme."
 	}
 	"The Blacksmith Failed!"
 	{
 		"en"		"The blacksmith is no longer alive or a tinker, anvil broke!"
+		"fr"		"Le forgeron n'est plus présent. L'enclume s'est cassé!"
 	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
+		"fr"		"Vous n'avez pas d'effet de forge."
 	}
 	"Removed Tinker Attributes"
 	{
 		"en"		"Removed Tinker Attributes"
+		"fr"		"Enlevé les effets de forge."
 	}
 	"View Modifiers"
 	{
 		"en"	"View Modifiers"
+		"fr"	"Voir effets de forge"
 		"de" 	"oha ein deutscher!"
 	}
 	"Bring up Class Change Menu"
 	{
 		"en"	"Bring up Class Change Menu"
+		"fr"	"Montrer le Menu de Changement de Classe"
 	}
 	"Corrode"
 	{
 		"en"	"Corrode"
+		"fr"	"Corrosion"
 	}
 	"Chaos"
 	{
 		"en"	"Chaos"
+		"fr"	"Chaos"
 	}
 	"Cyro"
 	{
 		"en"	"Cyro"
+		"fr"	"Cryo"
 	}
 	"Necrosis"
 	{
 		"en"	"Necrosis"
+		"fr"	"Nécrose"
 	}
 	"Building Menu"
 	{
 		"en"	"Building Menu\nHold crouch for more info"
+		"fr"	"Menu de Construction\nAccroupissez-vous pour plus d'informations"
 	}
 	"Barracks Gained Resources"
 	{
 		"en"	"Your barracks gained resouces from this action!"
+		"fr"	"Votre caserne a reçu des ressources par cet action!"
 	}
 	"Resource Gain Mult Villager"
 	{
 		"#format"	"{1:.1f},{2:.1f}"
 		"en" 		"Resource Mult: {1}x\nGold Mult: {2}x"
+		"fr" 		"Revenu Ressources : {1}x\nRevenu Or : {2}x"
 	}
 	"Barbarians Mind Warning"
 	{
 		"en"	"Your mind is too barbaric to deal damage with anything except melee!!"
+		"fr"	"Vous êtes trop enragés pour utiliser des armes autre que corps à corps!!"
 	}
 	"purnell_message"
 	{
 		"en"	"Relax, I'm not one of them."
+		"fr"	"Calmez-vous, je ne suis pas avec eux."
 	}
 	"Modifier set to"
 	{
 		"en"	"Modifier set to"
+		"fr"	"Le modifieur est maintenant"
 	}
 	"Vote for the modifier"
 	{
 		"en"	"Vote for the modifier"
+		"fr"	"Votez pour le modifieur"
 	}
 	"Anvil Menu Main"
 	{
 		"en"	"What do you wish to do with the Anvil?"
+		"fr"	"Que voulez-vous faire avec l'enclume?"
 	}
 	"Re-Roll Weapon Stats"
 	{
 		"en"	"Re-Roll Weapon Stats"
+		"fr"	"Obtenir des effets aléatoires"
 	}
 	"Remove Weapon Stats"
 	{
 		"en"	"Remove Weapon Stats"
+		"fr"	"Enlever les effets de cet arme"
 	}
 	"Display Current Stats"
 	{
 		"en"	"Display Current Stats"
+		"fr"	"Voir les effets de cet arme"
 	}
 	"Custom Models"
 	{
 		"en"	"Custom Models"
+		"fr"	"Modèles personnalisés"
 	}
 	"TF2 Class"
 	{
 		"en"	"TF2 Class"
+		"fr"	"Classes TF2"
 	}
 	"Barney"
 	{
 		"en"	"Barney"
+		"fr"	"Barney"
 	}
 	"Niko Oneshot"
 	{
 		"en"	"Niko Oneshot"
+		"fr"	"Niko Oneshot"
 	}
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"
+		"fr"	"M. Squelette"
 	}
 	"Kleiner"
 	{
 		"en"	"Kleiner"
+		"fr"	"Kleiner"
 	}
 }
