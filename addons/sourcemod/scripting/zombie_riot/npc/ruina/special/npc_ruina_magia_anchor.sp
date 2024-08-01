@@ -122,6 +122,7 @@ static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
 
 static int i_current_cycle[MAXENTITIES];
+static int i_strikes[MAXTF2PLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
@@ -303,6 +304,8 @@ methodmap Magia_Anchor < CClotBody
 			fl_ruina_battery[npc.index] = 255.0;
 		}
 
+		Zero(i_strikes);
+
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 
@@ -344,6 +347,8 @@ methodmap Magia_Anchor < CClotBody
 
 		npc.m_flMeleeArmor = 2.5;
 
+		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
+
 		/*int test;
 		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
 		CPrintToChatAll("m_usSolidFlags %i", test);
@@ -351,6 +356,42 @@ methodmap Magia_Anchor < CClotBody
 		CPrintToChatAll("m_nSolidType %i", test);
 		*/
 		return npc;
+	}
+}
+
+static void TowerDetectRiding(int entity, int client)
+{
+	if(!IsValidClient(client))
+		return;
+
+	float Vec[3], vec2[3];
+	WorldSpaceCenter(entity, Vec);
+	Vec[2]+=20.0;
+	WorldSpaceCenter(client, vec2);
+	if(vec2[2] > Vec[2])	
+	{
+		//anihilate them immediately
+		i_strikes[client]++;
+		if(i_strikes[client]>0)
+		{
+			SDKHooks_TakeDamage(client, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE);
+		}
+		else
+			CPrintToChat(client, "{red}GET OFF THE TOWER, STRIKE %i/2", i_strikes[client]);
+
+
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+
+		newVel[2] = 500.0;
+
+		newVel[0] +=GetRandomFloat(-505.0, 505.0);
+		newVel[1] +=GetRandomFloat(-505.0, 505.0);
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, newVel);
 	}
 }
 
@@ -379,6 +420,7 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+	
 
 	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 	{
