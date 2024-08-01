@@ -397,16 +397,17 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 		
-		
-		
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/seaborn/donner_schwert_5.mp3");
-		music.Time = 290;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
-		strcopy(music.Artist, sizeof(music.Artist), "Arknights");
-		Music_SetRaidMusic(music);
+		if(!(StrContains(data, "triple_enemies") != -1))
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/seaborn/donner_schwert_5.mp3");
+			music.Time = 290;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
 
