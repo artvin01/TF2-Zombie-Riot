@@ -320,6 +320,8 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		
 		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
 		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+		npc.m_iState = -1;
+		npc.m_iActivity = -1;
 		
 		npc.m_blSetBuffedSkeletonAnimation = true;
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
@@ -330,10 +332,12 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		view_as<CBaseCombatCharacter>(npc).SetModel("models/player/demo.mdl");
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
+		npc.m_iState = -1;
+		npc.m_iActivity = -1;
 		
 		npc.m_blSetBuffedSkeletonAnimation = false;
 		npc.m_blSetNonBuffedSkeletonAnimation = true;
-		
+
 		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
