@@ -1381,7 +1381,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
-				if(CurrentWave == (round.Waves.Length - 1))
+				if(delay > 9.0)
 					ProgressTimerEndAt = GetGameTime() + delay;
 			}
 		}
@@ -2363,7 +2363,10 @@ static void UpdateMvMStatsFrame()
 		{
 			id[0] = -1;
 			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
-			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
+			flags[0] = CurrentWave == (round.Waves.Length - 1) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
+			if(count[0] < 31)
+				flags[0] += MVM_CLASS_FLAG_ALWAYSCRIT;
+			
 			active[0] = true;
 			Waves_UpdateMvMStats(33);
 		}
@@ -2374,7 +2377,7 @@ static void UpdateMvMStatsFrame()
 		{
 			Round round;
 			Rounds.GetArray(CurrentRound, round);
-			if(!InSetup && CurrentRound != (maxwaves - 1))
+			if(!InSetup && !Classic_Mode() && CurrentRound != (maxwaves - 1))
 			{
 				cashLeft += float(round.Cash);
 				totalCash += float(round.Cash);
@@ -2510,6 +2513,8 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
+		Classic_UpdateMvMStats(cashLeft);
+
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
@@ -2527,7 +2532,7 @@ static void UpdateMvMStatsFrame()
 			{
 				if(id[i] == -1)
 				{
-					Waves_SetWaveClass(objective, i, count[i], "heavy_deflector", flags[i], active[i]);
+					Waves_SetWaveClass(objective, i, count[i], (flags[i] & MVM_CLASS_FLAG_MINIBOSS) ? "classic_reinforce" : "classic_defend", flags[i], active[i]);
 				}
 				else if(id[i])
 				{

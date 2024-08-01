@@ -19,7 +19,6 @@ void Classic_MapStart()
 
 void Classic_Enable()
 {
-	PrintToChatAll("Classic Mode!");
 	InClassicMode = true;
 }
 
@@ -52,4 +51,9 @@ bool Classic_CanTeutonUpdate(int client, bool respawn)
 	}
 
 	return true;
+}
+
+void Classic_UpdateMvMStats(int &cashLeft)
+{
+	cashLeft += CashLeft;
 }
