@@ -12,8 +12,8 @@
 
 #define BONES_PIRATE_RAMPAGEPARTICLE	"utaunt_glitter_teamcolor_red"
 
-static float BONES_PIRATE_MELEE_HIT_DELAY =  0.5;
-static float BONES_PIRATE_MELEE_HIT_DELAY_BUFFED = 0.5;
+static float BONES_PIRATE_MELEE_HIT_DELAY =  0.35;
+static float BONES_PIRATE_MELEE_HIT_DELAY_BUFFED = 0.35;
 static float BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE = 0.2;
 
 static float BONES_PIRATE_SPEED = 220.0;
@@ -269,6 +269,7 @@ methodmap PirateBones < CClotBody
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
 		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(PirateBones_SetBuffed);
+		npc.m_bisWalking = true;
 
 		func_NPCDeath[npc.index] = view_as<Function>(PirateBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(PirateBones_OnTakeDamage);
@@ -538,7 +539,7 @@ public void PirateBones_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 
 					npc.PlayMeleeSound();
-					npc.m_flAttackHappens = GetGameTime(npc.index) + b_BonesBuffed[npc.index] ? (b_PirateRampage[npc.index] ? BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_PIRATE_MELEE_HIT_DELAY_BUFFED) : BONES_PIRATE_MELEE_HIT_DELAY;
+					npc.m_flAttackHappens = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_PirateRampage[npc.index] ? BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_PIRATE_MELEE_HIT_DELAY_BUFFED) : BONES_PIRATE_MELEE_HIT_DELAY);
 					npc.m_flAttackHappens_bullshit = npc.m_flAttackHappens + 0.15;
 					npc.m_flAttackHappenswillhappen = true;
 				}
