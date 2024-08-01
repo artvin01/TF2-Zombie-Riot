@@ -2473,7 +2473,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = enemy.Index;
-							flags[b] = SetupFlags(enemy, !freeplay);
+							flags[b] = SetupFlags(enemy, (!Classic_Mode() && !freeplay));
 						}
 						
 						break;
@@ -2500,7 +2500,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = i_NpcInternalId[entity];
-							flags[b] = (freeplay || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
+							flags[b] = (freeplay || Classic_Mode() || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
 
 							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
