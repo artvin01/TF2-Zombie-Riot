@@ -312,6 +312,7 @@ methodmap Sensal < CClotBody
 		if(tripple)
 		{
 			CPrintToChatAll("{blue}Sensal{default}: This is your final challange, beat all 3 of us at once, Fear the might of {gold}Expidonsa{default}!");
+			GiveOneRevive(true);
 		}
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -359,7 +360,7 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		if(!cutscene)
+		if(!cutscene && !tripple)
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 			MusicEnum music;
