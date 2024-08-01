@@ -313,7 +313,7 @@ methodmap Ruliana < CClotBody
 		fl_multi_attack_delay[npc.index] = 0.0;
 
 		npc.Anger = false;
-
+		npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 15.0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 2.5;	// GetGameTime(npc.index) + GetRandomFloat(7.5, 15.0);
 		
 		return npc;
@@ -462,6 +462,10 @@ static void ClotThink(int iNPC)
 			npc.m_flNextRangedBarrage_Spam = GameTime + 10.0;	//retry in 10 seconds if we failed
 			Ruliana_Barrage_Invoke(npc, Battery_Cost);
 		}
+		else
+		{
+			npc.m_flNextRangedBarrage_Singular = GameTime+5.0; 
+		}
 
 		//Target close enough to hit
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
@@ -550,6 +554,16 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 
 	int minimum_targets = 4;
 
+	float GameTime = GetGameTime(npc.index);
+
+	bool FIREEVERYTHING = false;
+	if(npc.m_flNextRangedBarrage_Singular < (GameTime-10.0))
+	{
+		minimum_targets = 1;
+		FIREEVERYTHING = true;	//OBLITERATE THEM
+	}
+		
+
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(targets_aquired >= RULIANA_MAX_BARRAGE_SIZE)
@@ -610,6 +624,21 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	if(targets_aquired < minimum_targets)	//we didn't get enough targets, abort abort abort
 		return;
 
+	if(FIREEVERYTHING)
+	{
+		int previous_target = valid_targets[0];
+		for(int i=1 ; i < RULIANA_MAX_BARRAGE_SIZE ; i++)
+		{
+			int Target = valid_targets[i];
+			if(!IsValidEnemy(npc.index, Target))
+				valid_targets[i] = previous_target;
+			else
+				previous_target = Target;
+		}
+	}
+
+	targets_aquired = RULIANA_MAX_BARRAGE_SIZE;
+
 	float Base_Recharge = Cost;
 	float Modify_Charge = Base_Recharge*(float(targets_aquired)/float(RULIANA_MAX_BARRAGE_SIZE));
 
@@ -620,6 +649,8 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 
 	float Npc_Vec[3];
 	WorldSpaceCenter(npc.index, Npc_Vec);
+
+	
 
 	for(int i=0 ; i < targets_aquired ; i++)
 	{
@@ -665,6 +696,9 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
 			}
 			
+			if(FIREEVERYTHING)
+				continue;
+
 			float 	Homing_Power = 5.0,
 					Homing_Lockon = 45.0;
 

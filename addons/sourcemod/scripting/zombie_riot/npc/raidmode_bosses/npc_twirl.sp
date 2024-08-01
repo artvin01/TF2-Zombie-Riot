@@ -326,9 +326,9 @@ methodmap Twirl < CClotBody
 		
 	}
 
-	public bool Add_Combo(int amt)
+	public bool Add_Combo(int amt, int type)
 	{
-		if(this.m_fbGunout)
+		if(type == 0)
 		{
 			bool fired = false;
 			if(i_ranged_combo[this.index]>amt && fl_ruina_battery_timeout[this.index] < GetGameTime(this.index))
@@ -439,7 +439,25 @@ methodmap Twirl < CClotBody
 		if(fl_force_ranged[this.index] > GameTime)
 			return 1;
 
-		return this.PlayerType();
+		int type = this.PlayerType();
+		if(type != 0)
+			return type;
+		
+		float vecTarget[3]; WorldSpaceCenter(this.m_iTarget, vecTarget);
+		
+		float VecSelfNpc[3]; WorldSpaceCenter(this.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
+		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))
+			type = 1;	//ranged
+		else
+			type = 0;	//melee
+
+		if(this.m_flNextMeleeAttack > (GameTime + 1.0))
+			type = 1;	//ranged
+
+		return type;
+
 	}
 	public int i_weapon_type()
 	{
@@ -1284,7 +1302,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , Radius , Particle, _, _, true, flPos);
 
-		if(npc.Add_Combo(15))
+		if(npc.Add_Combo(15, 0))
 			Initiate_Combo_Laser(npc.index);
 	}
 	else
@@ -1312,7 +1330,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						if(npc.Add_Combo(10))
+						if(npc.Add_Combo(10, 1))
 						{
 							float Radius = (npc.Anger ? 225.0 : 150.0);
 							float dmg = (npc.Anger ? 100.0 : 75.0);
