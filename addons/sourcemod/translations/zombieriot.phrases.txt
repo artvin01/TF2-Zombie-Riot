@@ -762,7 +762,7 @@
 		"ru"		"Этот объект перезаряжается. {1} сек. до следующего использования."
 		"pl"		"Ten przedmiot jeszcze będzie się odświerzał przez {1} sekund przed następnym użyciem"
 		"es"		"Ten paciencia, aun quedan {1} segundos para volver a usar esto"
-		"fr"		"Attendez {1} secondes de recharge avant utiliser cet objet."
+		"fr"		"Attendez {1} secondes de recharge avant d'utiliser cet objet."
 		"pt"		"Este objeto ainda está em recarga de {1} segundos antes de outro uso."
 		"nl"		"Dit object heeft nog steeds {1} seconden over voor het volgend gebruik!"
 		"chi"       "物品使用已进入冷却时间，你将在 {1} 后可以再次使用。"
@@ -1123,7 +1123,7 @@
 	"Widows Wine Recieved"
 	{
 		"en" 		"WIDOWS WINE! Rechargeable protection that debuffs zombies and blocks 75 Percent of the damage if activated.\nDebuffed enemies are slowed down heavily and take 35 Percent more damage."
-		"fr" 		"Vin des Veuves! Protection rechargable qui bloque 75%% des dégats et affaiblit les ennemis quand activé.\n Ennemis affaiblits recoivent 35%% plus de dégats et se ralentissent."
+		"fr" 		"VIN DES VEUVES! Protection rechargable qui bloque 75%% des dégats et affaiblit les ennemis quand activé.\nLes ennemis affaiblits recoivent 35%% plus de dégats et se ralentissent considérablement."
 		"ru" 		"ВИНО ВДОВЫ! Перезаряжаемая защита, накладывающая негативный эффект на зомби и блокирующая 75% урона при активации.\nЭффект сильно замедляет врагов и наносит на 35% больше урона."
 		"pt"		"VINHO VIÚVO! Proteção recarregavel que afeta negativamente zumbis e bloqueia 75% do dano quando ativado.\nInimigos afetados negativamente tem a sua velocidade diminuida drasticamente e tomam 35% mais dano."
 		"nl"		"WIJN VAN DE WEDUWE! Herlaadbare verdediging dat zombies verzwakt en 75 procent van de schade die je krijgt blokeerd wanneer het activeerd.\nVerzwakte vijanden worden zwaar vertraagd en lopen 35 procent meer schade op."
@@ -1679,7 +1679,7 @@
 	"Father Grigori No Talk"
 	{
 		"en"		"Father Grigori: There is no time to trade my child. The zombies are invading!"
-		"fr"		"Père Grigori: Ce n'esp pas le temps d'échanges, mon enfant. Les zombies viennent!"
+		"fr"		"Père Grigori: Ce n'est pas le temps pour les affaires, mon enfant. Les zombies viennent!"
 		"ru"		"Отец Григорий: Нет времени торговаться, дитя. Зомби наступают!"
 		"de"		"Vater Grigor: Wir haben keine Zeit um zu handeln mein Kind. Die Untoten Dringen ein!"
 		"pt"		"Senhor Grigori: Não há tempo meu consagrado. Os zumbis estão invadindo!"
@@ -1763,7 +1763,7 @@
 	"Your loadout was updated from your previous state."
 	{
 		"en"		"Your loadout was updated from your previous state."
-		"fr"		"Votre chargement a été mise à jour."
+		"fr"		"Votre chargement a été mis à jour."
 		"ru"		"Ваше снаряжение было обновлено по сравнению с предыдущей игрой."
 		"de"		"Ihr Loadout wurde geupdated von ihren vorigen zustand."
 		"pt"		"Seu Inventário foi atualizado com seu estado anterior."
@@ -1937,7 +1937,7 @@
 	"Not Enough Builder Upgrades"
 	{
 		"en"		"You do not have enough builder upgrades to use this skill."
-		"fr"		"Vous n'aves pas assez d'améliorations de constructeur pour être capable d'utiliser cette abilité."
+		"fr"		"Vous n'avez pas assez d'améliorations de constructeur pour pouvoir utiliser cette abilité."
 		"ru"		"У вас недостаточно улучшений строителя, чтобы использовать это умение."
 		"pt"		"Você não tem melhorias de construtor suficiente para usar está habilidade."
 		"nl"		"Je hebt niet genoeg upgrades voor gebouwen om deze kracht te gebruiken."
@@ -2314,7 +2314,7 @@
 	"Opened store via command"
 	{
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"
-		"fr"		"Utilizes le bouton TAB, la boutique s'ouvrira sans commandes!"
+		"fr"		"Utilisez le bouton TAB, la boutique s'ouvrira sans commandes!"
 		"ru"		"В будущем используйте кнопку TAB/таблицы очков, она откроет магазин без всяких команд!"
 		"chi"		"在未来，使用TAB/计分板按钮，它将打开商店没有任何命令!"
 	}
@@ -2962,6 +2962,7 @@
 	"Barracks Villager Desc"
 	{
 		"en"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."	
+		"fr"		"A helping hand who repairs, gathers resources, and builds upto 1 tower for you."
 		"chi"       "一个修理、收集资源，为你建造一座塔的帮手。"
 	}
 	"Barracks Teutonic Knight Desc"
