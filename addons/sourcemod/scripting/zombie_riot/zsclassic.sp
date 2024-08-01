@@ -35,8 +35,8 @@ void Classic_EnemySpawned(int entity)
 {
 	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
 	{
-		// At 4-players, need 1000 kills to get all wave money
-		int given = RoundToCeil(float(CashTotal) / 1000.0 / MultiGlobalEnemy);
+		// At 4-players, need 750 kills to get all wave money
+		int given = RoundToCeil(float(CashTotal) / 750.0 / MultiGlobalEnemy);
 		if(given > CashLeft)
 			given = CashLeft;
 		
