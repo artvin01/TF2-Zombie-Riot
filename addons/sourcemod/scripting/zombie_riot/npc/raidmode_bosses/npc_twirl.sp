@@ -2397,6 +2397,9 @@ static void NPC_Death(int entity)
 
 	Kill_Abilities(npc);
 
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+	StopSound(npc.index, SNDCHAN_STATIC, TWIRL_COSMIC_GAZE_LOOP_SOUND1);
+
 	Ruina_NPCDeath_Override(npc.index);
 
 	for(int i=0 ; i < 2 ; i++)
