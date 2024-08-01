@@ -297,6 +297,7 @@ methodmap VoidUnspeakable < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_flMeleeArmor = 1.25;	
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
