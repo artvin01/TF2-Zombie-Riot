@@ -2362,6 +2362,7 @@ static void UpdateMvMStatsFrame()
 		int count[24];
 		int flags[24];
 		bool active[24];
+		bool forceflags[24];
 
 		if(Classic_Mode() && ProgressTimerEndAt)
 		{
@@ -2443,6 +2444,7 @@ static void UpdateMvMStatsFrame()
 							{
 								id[b] = wave.EnemyData.Index;
 								flags[b] = SetupFlags(wave.EnemyData, false);
+								forceflags[0] = wave.EnemyData.ignore_max_cap > 0;
 							}
 							
 							break;
@@ -2550,7 +2552,7 @@ static void UpdateMvMStatsFrame()
 					if(!data.Icon[0])
 						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 					
-					if(!data.Flags)
+					if(!data.Flags && !forceflags[i])
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
