@@ -398,7 +398,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
 		healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
 		
-		if(healing < 0)
+		if(healing <= 0)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			return;
