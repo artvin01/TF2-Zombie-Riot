@@ -263,7 +263,7 @@ methodmap PirateBones < CClotBody
 			buffed = (GetRandomFloat() <= chance);
 		}
 			
-		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, buffed ? "models/zombie_riot/the_bone_zone/basic_bones.mdl" : "models/player/demo.mdl", buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
+		PirateBones npc = view_as<PirateBones>(CClotBody(vecPos, vecAng, "models/zombie_riot/the_bone_zone/basic_bones.mdl", buffed ? BONES_PIRATE_SCALE_BUFFED : BONES_PIRATE_SCALE, buffed ? BONES_PIRATE_HP_BUFFED : BONES_PIRATE_HP, ally, false));
 		
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
@@ -317,9 +317,7 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 9999.0);
 		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 9999.0);
-		
-		DispatchKeyValue(npc.index, "model", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
-		view_as<CBaseCombatCharacter>(npc).SetModel("models/zombie_riot/the_bone_zone/basic_bones.mdl");
+
 		npc.m_iState = -1;
 		npc.m_iActivity = -1;
 		
@@ -328,10 +326,6 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 	}
 	else
 	{
-		DispatchKeyValue(npc.index, "model", "models/player/demo.mdl");
-		view_as<CBaseCombatCharacter>(npc).SetModel("models/player/demo.mdl");
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 0.0);
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 1.0);
 		npc.m_iState = -1;
 		npc.m_iActivity = -1;
 		
@@ -344,12 +338,7 @@ stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 
 		npc.m_iWearable2 = npc.EquipItem("pelvis", "models/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl");
-
-		npc.m_iWearable3 = npc.EquipItem("pelvis", "models/zombie_riot/the_bone_zone/basic_bones.mdl");
-		DispatchKeyValue(npc.m_iWearable3, "skin", BONES_PIRATE_SKIN);
 	}
-
-	//RequestFrame(PirateBones_FixAnims, npc);
 }
 
 public void PirateBones_SetBuffed(int index, bool buffed)
@@ -417,7 +406,7 @@ public void PirateBones_RemoveRampageParticle(int index)
 public void PirateBones_ClotThink(int iNPC)
 {
 	PirateBones npc = view_as<PirateBones>(iNPC);
-	
+	npc.Update();
 //	PrintToChatAll("%.f",GetEntPropFloat(view_as<int>(iNPC), Prop_Data, "m_speed"));
 	
 	if (b_BonesBuffed[npc.index])
@@ -452,11 +441,9 @@ public void PirateBones_ClotThink(int iNPC)
 
 	if (npc.m_blSetNonBuffedSkeletonAnimation)
 	{
-		npc.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		npc.SetActivity("ACT_PIRATE_RUN_NON_BUFFED");
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
 	}
-
-	npc.Update();
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
