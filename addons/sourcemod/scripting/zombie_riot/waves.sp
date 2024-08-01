@@ -2444,7 +2444,7 @@ static void UpdateMvMStatsFrame()
 							{
 								id[b] = wave.EnemyData.Index;
 								flags[b] = SetupFlags(wave.EnemyData, false);
-								forceflags[0] = wave.EnemyData.ignore_max_cap > 0;
+								forceflags[b] = wave.EnemyData.ignore_max_cap > 0;
 							}
 							
 							break;
