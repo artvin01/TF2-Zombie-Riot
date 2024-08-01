@@ -743,7 +743,7 @@ methodmap Twirl < CClotBody
 				case 0: Twirl_Lines(npc, "My Oh my, your still here, {purple}how wonderful!");
 				case 1: Twirl_Lines(npc, "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!");
 				case 2: Twirl_Lines(npc, "{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!");
-				case 3: Twirl_Lines(npc, "Ive brought some {purple}Heavy Equipment{snow} heh");
+				case 3: Twirl_Lines(npc, "I've brought some {purple}Heavy Equipment{snow} heh");
 			}
 		}
 		else if(wave <=60)
@@ -752,7 +752,7 @@ methodmap Twirl < CClotBody
 			switch(GetRandomInt(0, 3))
 			{
 				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope your all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, it was a {purple}briliant idea to not use my powers {snow}and only use this crest instead.");
+				case 1: Twirl_Lines(npc, "Ah, it was a {purple}brilliant idea to not use my powers {snow}and only use this crest instead.");
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
 				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
 			}
@@ -763,7 +763,7 @@ methodmap Twirl < CClotBody
 			switch(GetRandomInt(0, 3))
 			{
 				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
-				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}ofcourse you do{snow}!");
+				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}of course you do{snow}!");
 				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
 			}
 		}
@@ -806,10 +806,10 @@ static void Twirl_WinLine(int entity)
 		case 2: Twirl_Lines(npc, "Huh, I guess this was all you were capable of, a shame");
 		case 3: Twirl_Lines(npc, "I, as the empress, thank you for this wonderful time");
 		case 4: Twirl_Lines(npc, "Ahhh, that was a great workout, time to hit the showers");
-		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arest");
+		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arrest");
 		case 6: Twirl_Lines(npc, "Another one bites the dust");
 		case 7: Twirl_Lines(npc, "Ah foolish Mercenary's, maybe next time think about a proper strategy");
-		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know whats better? {crimson}Debuffs");
+		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
 		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
 	}
 
@@ -842,15 +842,15 @@ static void ClotThink(int iNPC)
 				case 1: Twirl_Lines(npc, "Thats great, why you may ask?");
 				case 2: Twirl_Lines(npc, "Its quite simple, it shows that you've all gone far");
 				case 3: Twirl_Lines(npc, "You beat several world ending infections, alongside that gained many allies");
-				case 4: Twirl_Lines(npc, "But, the future holds many more hardships and dangers");
-				case 5: Twirl_Lines(npc, "And so it was decided that we the Ruanian's would test your skills");
-				case 6: Twirl_Lines(npc, "To see if your all ready for what the future holds");
+				case 4: Twirl_Lines(npc, "But the future holds many more hardships and dangers");
+				case 5: Twirl_Lines(npc, "And so, it was decided that we the Ruanian's would test your skills");
+				case 6: Twirl_Lines(npc, "To see if you’re all ready for what the future holds");
 				case 7: Twirl_Lines(npc, "And well, you do, you are certainly ready for the future");
 				case 8: Twirl_Lines(npc, "But do keep this in mind, the ''Ruina'' that you fought here, was just a mere...");
 				case 9: Twirl_Lines(npc, "Heh.. Yeah, a mere fraction of what we are capable off");
 				case 10:
 				{
-					Twirl_Lines(npc, "Regardless take this, its something that might help in your future adventures");
+					Twirl_Lines(npc, "Regardless take this, it's something that might help in your future adventures");
 
 					npc.m_bDissapearOnDeath = true;
 
@@ -880,11 +880,11 @@ static void ClotThink(int iNPC)
 		b_lastman[npc.index] = true;
 		switch(GetRandomInt(0, 6))
 		{
-			case 0: Twirl_Lines(npc, "Oh my, quite the situation your in here");
+			case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
 			case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-			case 2: Twirl_Lines(npc, "I know your capable more then just this");
+			case 2: Twirl_Lines(npc, "I know your capable more than just this");
 			case 3: Twirl_Lines(npc, "Your the last one alive, {purple}but{snow} are you the strongest?");
-			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all..");
+			case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
 			case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
 			case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
 		}
@@ -905,19 +905,19 @@ static void ClotThink(int iNPC)
 				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun");
 				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this..");
 				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die.");
-				case 4: Twirl_Lines(npc, "Times up, Ive got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, thats it, {crimson}im ending this");
+				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
+				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
 				case 7: Twirl_Lines(npc, "I don't even have any form of real {aqua}shielding{snow}, yet you still took this long");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
-				case 9: Twirl_Lines(npc, "Im bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
+				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 			}
 		}
 		else	//freeplay
 		{
 			switch(GetRandomInt(0, 1))
 			{
-				case 0: Twirl_Lines(npc, "Well conisdering you all were just some random's this was to be expected");
+				case 0: Twirl_Lines(npc, "Well considering you all were just some random's this was to be expected");
 				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
 			}
 		}
@@ -937,8 +937,8 @@ static void ClotThink(int iNPC)
 			case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
 			case 2: Twirl_Lines(npc, "Round 2. Fight!");
 			case 3: Twirl_Lines(npc, "Ai, this is getting fun");
-			case 4: Twirl_Lines(npc, "Im extremely curious to see how you fair {purple}aggianst this");
-			case 5: Twirl_Lines(npc, "Ahahahah, The joy of battle, don't act like your not enjoying this");
+			case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
+			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
 		}
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
@@ -1110,12 +1110,12 @@ static void Final_Invocation(Twirl npc)
 	}
 	switch(GetRandomInt(0, 6))
 	{
-		case 0: Twirl_Lines(npc, "If you think im all you have to deal with, {crimson}well then...");
-		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler afterall, {purple}and a ruler usually has an army");
+		case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
+		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
 		case 2: Twirl_Lines(npc, "How's your aoe situation?");
 		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-		case 5: Twirl_Lines(npc, "Aye, this'l do, no go forth my minnion's {crimson}and crush them{snow}!");
+		case 5: Twirl_Lines(npc, "Aye, this’ll do, no go forth my minion’s {crimson}and crush them{snow}!");
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
 	}
 	RaidModeTime +=50.0;
@@ -2402,8 +2402,8 @@ static void NPC_Death(int entity)
 			switch(GetRandomInt(0, 3))
 			{
 				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
-				case 1: Twirl_Lines(npc, "Oh my, I may have understimated you, this is great news");
-				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a litle treat, this has been great fun");
+				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
+				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
 				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
 			}
 		}
@@ -2414,7 +2414,7 @@ static void NPC_Death(int entity)
 				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
 				case 1: Twirl_Lines(npc, "Your quite strong, and so am I, can't wait for our next math");
 				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
-				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do belive our next and final battle will be the {crimson}most fun{snow}!");
+				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
 			}
 		}
 		else if(!b_allow_final[npc.index])
