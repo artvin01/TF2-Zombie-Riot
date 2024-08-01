@@ -89,7 +89,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 				}
 				PlayersInGame += 1;
 
-				if(Level[client] > 7)
+				if(Level[client] > 9)
 					AllowSpecialSpawns = true;
 			}
 		}
