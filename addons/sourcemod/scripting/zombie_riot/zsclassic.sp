@@ -53,7 +53,7 @@ bool Classic_CanTeutonUpdate(int client, bool respawn)
 	return true;
 }
 
-void Classic_UpdateMvMStats(int &cashLeft)
+void Classic_UpdateMvMStats(float &cashLeft)
 {
-	cashLeft += CashLeft;
+	cashLeft += float(CashLeft);
 }
