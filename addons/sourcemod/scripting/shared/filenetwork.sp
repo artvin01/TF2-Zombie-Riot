@@ -220,18 +220,23 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 #endif
 }
 
-stock void PrecacheMvMIconCustom(const char[] icon)
+stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
 
 	char buffer[PLATFORM_MAX_PATH];
-	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
+
+	if(vtf)
+	{
+		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
 
 #if defined UseDownloadTable
-	AddFileToDownloadsTable(buffer);
+		AddFileToDownloadsTable(buffer);
 #else
-	if(ExtraList.FindString(buffer) == -1)
-		ExtraList.PushString(buffer);
+		if(ExtraList.FindString(buffer) == -1)
+			ExtraList.PushString(buffer);
 #endif
+
+	}
 
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 

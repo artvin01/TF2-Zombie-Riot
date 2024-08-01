@@ -20,6 +20,9 @@ void Classic_MapStart()
 void Classic_Enable()
 {
 	InClassicMode = true;
+
+	PrecacheMvMIconCustom("classic_defend", false);
+	PrecacheMvMIconCustom("classic_reinforce", false);
 }
 
 void Classic_NewRoundStart(int cash)
