@@ -422,7 +422,7 @@ methodmap Twirl < CClotBody
 				if(!this.m_fbGunout)
 				{
 					this.m_iState = 0;
-					this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
+					this.m_flReloadIn = GetGameTime(this.index) + 0.5;
 					this.m_fbGunout = true;
 					//CPrintToChatAll("Ranged enemy");
 					SetVariantInt(this.i_weapon_type());
@@ -448,12 +448,12 @@ methodmap Twirl < CClotBody
 		float VecSelfNpc[3]; WorldSpaceCenter(this.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))
+		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5))	//do a range check, if the melee player is 50 miles away, use a ranged attack.
 			type = 1;	//ranged
 		else
 			type = 0;	//melee
 
-		if(this.m_flNextMeleeAttack > (GameTime + 1.0))
+		if(this.m_flReloadIn > (GameTime + 1.0))	//However, if we are reloading, we should probably use a melee
 			type = 1;	//ranged
 
 		return type;
@@ -647,6 +647,7 @@ methodmap Twirl < CClotBody
 		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flReloadIn = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -1133,10 +1134,10 @@ static void Final_Invocation(Twirl npc)
 		case 2: Twirl_Lines(npc, "How's your aoe situation?");
 		case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-		case 5: Twirl_Lines(npc, "Aye, this’ll do, no go forth my minion’s {crimson}and crush them{snow}!");
+		case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
 	}
-	RaidModeTime +=50.0;
+	RaidModeTime +=30.0;
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1235,14 +1236,14 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		//enemy is too far
 		if(flDistanceToTarget > (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))	
 		{
-			if(npc.m_flNextMeleeAttack < GameTime)	//might as well check if we are done reloading so our "clip" is refreshed
+			if(npc.m_flReloadIn < GameTime)	//might as well check if we are done reloading so our "clip" is refreshed
 				npc.m_iState = 0;
 
 			return;
 		}
 			
 		//we are "reloading", so keep distance.
-		if(npc.m_flNextMeleeAttack > GameTime)
+		if(npc.m_flReloadIn > GameTime)
 		{
 			KeepDistance(npc, flDistanceToTarget, PrimaryThreatIndex, GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 7.5);
 			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
@@ -1265,7 +1266,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
 		{
 			npc.m_iState = 0;
-			npc.m_flNextMeleeAttack = GameTime + Reload_Delay;	//"reload" time
+			npc.m_flReloadIn = GameTime + Reload_Delay;	//"reload" time
 		}
 		else
 		{
@@ -1407,7 +1408,7 @@ static float fl_cosmic_gaze_throttle[MAXENTITIES];
 static float fl_cosmic_gaze_windup[MAXENTITIES];
 static float fl_cosmic_gaze_duration_offset[MAXENTITIES];
 static float fl_gaze_Dist[MAXENTITIES];
-static float fl_cosmic_gaze_range = 2500.0;
+static float fl_cosmic_gaze_range = 2000.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
 {
 	if(i_current_wave[npc.index]<=30)
@@ -1431,6 +1432,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	npc.m_iState = 0;
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
+	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
 	SetVariantInt(npc.i_weapon_type());
 	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
@@ -1500,6 +1502,11 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	{
 		tick = true;
 	}
+
+	npc.m_iState = 0;
+	npc.m_flNextMeleeAttack = GameTime + 0.5;
+	npc.m_flReloadIn = GameTime + 0.5;
+	npc.m_fbGunout = true;
 
 	if(fl_cosmic_gaze_windup[npc.index] < GameTime)
 	{
@@ -1778,6 +1785,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	npc.PlayFractalSound();
 
 	npc.m_flNextMeleeAttack = GameTime + 1.0;
+	npc.m_flReloadIn = GameTime + 1.0;
 
 	Target = Enemy_I_See;
 
@@ -2120,6 +2128,8 @@ static Action Retreat_Laser_Tick(int iNPC)
 		return Plugin_Stop;
 	}
 
+	npc.m_flSpeed = 0.0;	//DON'T MOVE
+
 	if(fl_retreat_laser_throttle[npc.index] > GameTime)
 		return Plugin_Continue;
 
@@ -2159,7 +2169,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 	flPos[2] += actualBeamOffset[2];
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-	Laser.DoForwardTrace_Custom(Angles, flPos, 1500.0);
+	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	Laser.Damage = (npc.Anger ? 20.0 : 15.0)*RaidModeScaling;
 	Laser.Radius = Radius;
 	Laser.Bonus_Damage = (npc.Anger ? 20.0 : 15.0)*RaidModeScaling*6.0;
