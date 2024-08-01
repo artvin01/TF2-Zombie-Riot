@@ -645,7 +645,28 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(!MiniBosses)
 		return false;
 	
-	MiniBosses.GetArray(GetURandomInt() % MiniBosses.Length, boss);
+	int length = MiniBosses.Length;
+	if(!length)
+		return false;
+
+	int level;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == 2)
+		{
+			if(Level[client] > level)
+				level = Level[client];
+		}
+	}
+
+	level = level / 10 - 10;
+	if(level < 0)
+		return false;
+
+	if(length > level)
+		length = level;
+
+	MiniBosses.GetArray(GetURandomInt() % length, boss);
 	return true;
 }
 

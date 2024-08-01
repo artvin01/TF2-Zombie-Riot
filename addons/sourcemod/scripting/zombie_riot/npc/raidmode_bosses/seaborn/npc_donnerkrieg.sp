@@ -405,7 +405,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Arknights - Martyr/Guiding Ahead Boss");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 		Music_SetRaidMusic(music);
 		
 		b_thisNpcIsARaid[npc.index] = true;
