@@ -1293,7 +1293,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 
-			if(!CurrentWave)
+			if(!CurrentWave && Classic_Mode())
 				Classic_NewRoundStart(round.Cash);
 
 			if(wave.RelayName[0])
