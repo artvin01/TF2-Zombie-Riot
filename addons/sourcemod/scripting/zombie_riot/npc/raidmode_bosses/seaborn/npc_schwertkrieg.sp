@@ -1260,6 +1260,7 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 		color[0] = 255;
 		color[1] = 50;
 		color[2] = 50;
+		radius *= 1.5;
 	}
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
