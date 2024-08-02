@@ -2573,7 +2573,7 @@ static void UpdateMvMStatsFrame()
 					if(!data.Icon[0])
 						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 					
-					if(!data.Flags && !forceflags[i])
+					if(!data.Flags || forceflags[i])
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
