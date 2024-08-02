@@ -2706,7 +2706,7 @@
 	//"Pinus Knight"
 	//{
 	//	"en"	"Pinus Knight"
-	//	"fr"	"chevalier des bites"
+	//	"fr"	"and by ''it'', haha, well. let's just say. My Pinus."
 	//}
 	"Flaming Tail Knight"
 	{
