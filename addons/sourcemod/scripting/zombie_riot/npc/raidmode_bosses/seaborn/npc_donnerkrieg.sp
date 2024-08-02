@@ -143,6 +143,7 @@ bool donner_sea_created;
 
 static bool b_angered_twice[MAXENTITIES];
 
+static bool b_tripple_raid[MAXENTITIES];
 //static float fl_divine_intervention_retry;
 
 #define DONNERKRIEG_NIGHTMARE_CANNON_INTRO_LINE 1
@@ -327,8 +328,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		}*/
 
 		b_allow_schwert_transformation = false;
-		
-		RaidBossActive = EntIndexToEntRef(npc.index);
+		if(!IsValidEntity(RaidBossActive))
+			RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		
 		b_thisNpcIsARaid[npc.index] = true;
@@ -396,8 +397,8 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		
-		if(!(StrContains(data, "triple_enemies") != -1))
+		b_tripple_raid[npc.index] = (StrContains(data, "triple_enemies") != -1);
+		if(!b_tripple_raid[npc.index])
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/seaborn/donner_schwert_5.mp3");
@@ -757,6 +758,8 @@ static void Internal_ClotThink(int iNPC)
 			schwert_retreat=false;	//schwert goes back to normal
 
 		fl_cannon_Recharged[npc.index] = GameTime + 45.0;
+		if(b_tripple_raid[npc.index])
+			fl_cannon_Recharged[npc.index] = GameTime + 75.0;
 
 		npc.m_flSpeed = 300.0;
 		
@@ -820,6 +823,8 @@ static void Internal_ClotThink(int iNPC)
 			{
 				b_force_heavens_light[npc.index]=false;
 				fl_heavens_light_use_timer[npc.index] = GameTime + 75.0;
+				if(b_tripple_raid[npc.index])
+					fl_heavens_light_use_timer[npc.index] = GameTime + 120.0;
 				Heavens_Light_Active[npc.index]=true;
 
 				Invoke_Heavens_Light(npc, GameTime);
@@ -1599,6 +1604,9 @@ static void Heavens_Fall(Raidboss_Donnerkrieg npc, float GameTime, int Infection
 		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer;
 	else
 		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*0.5;
+
+	if(b_tripple_raid[npc.index])
+		fl_heavens_fall_use_timer[npc.index] = GameTime+Timer*1.5;
 
 
 	int Base_Amt = RoundToFloor((Base_Dist/Distance_Ratios)/DONNERKRIEG_HEAVENS_FALL_MAX_AMT);

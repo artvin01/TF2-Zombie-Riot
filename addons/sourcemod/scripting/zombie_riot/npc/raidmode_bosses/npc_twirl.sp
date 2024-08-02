@@ -82,6 +82,7 @@ static const char g_FractalSound[][] = {
 
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
+#define RAIDBOSS_TWIRL_HYPER_THEME "#zombiesurvival/ruina/raid_ruina_trio.mp3"
 
 static int i_ranged_combo[MAXENTITIES];
 static int i_melee_combo[MAXENTITIES];
@@ -91,6 +92,7 @@ static int i_ranged_ammo[MAXENTITIES];
 static int i_hand_particles[MAXENTITIES][2];
 static float fl_force_ranged[MAXENTITIES];
 static float fl_comsic_gaze_timer[MAXENTITIES];
+static bool b_tripple_raid[MAXENTITIES];
 
 static float fl_npc_basespeed;
 
@@ -165,6 +167,7 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
+	PrecacheSoundCustom(RAIDBOSS_TWIRL_HYPER_THEME);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 
 	PrecacheModel("models/player/medic.mdl");
@@ -634,7 +637,16 @@ methodmap Twirl < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Twirl Spawn");
 			}
 		}
-		if(!(StrContains(data, "triple_enemies") != -1))
+		b_tripple_raid[npc.index] = false;
+		bool default_theme = true;
+		if((StrContains(data, "triple_enemies") != -1))
+		{
+			b_tripple_raid[npc.index] = true;
+			default_theme = false;
+		}
+			
+
+		if(default_theme)
 		{
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
@@ -1037,6 +1049,11 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+
+	if(!IsValidEntity(RaidBossActive))
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
@@ -1175,6 +1192,8 @@ static void Luanar_Radiance(Twirl npc)
 	{
 		i_lunar_ammo[npc.index] = 0;
 		fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 30.0 : 45.0);
+		if(b_tripple_raid[npc.index])
+			fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 50.0 : 60.0);
 		return;
 	}
 	i_lunar_ammo[npc.index]++;
@@ -1497,6 +1516,8 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
 		fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 45.0 : 60.0);
+		if(b_tripple_raid[npc.index])
+			fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 60.0 : 90.0);
 		SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -1784,6 +1805,8 @@ static void Fractal_Gram(Twirl npc, int Target)
 	{
 		i_barrage_ammo[npc.index] = 0;
 		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 25.0 : 30.0);
+		if(b_tripple_raid[npc.index])
+			npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 45.0 : 60.0);
 		return;
 	}
 

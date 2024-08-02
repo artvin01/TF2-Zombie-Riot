@@ -543,7 +543,7 @@ static void Internal_ClotThink(int iNPC)
 		
 	}	
 
-	if(!IsValidEntity(RaidBossActive))
+	if(!IsValidEntity(RaidBossActive) && !b_raidboss_donnerkrieg_alive)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
