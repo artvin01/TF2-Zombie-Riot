@@ -1099,7 +1099,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.index, (700.0 * 700.0));
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({125, 0, 125, 200});
-			float damageDealt = 50.0 * RaidModeScaling;
+			float damageDealt = 35.0 * RaidModeScaling;
 			float ang_Look[3];
 			float PosLoc[3];
 			GetEntPropVector(Enemy_I_See, Prop_Send, "m_angRotation", ang_Look);
