@@ -565,7 +565,7 @@ public void OnPostThink(int client)
 
 		if(Classic_Mode())
 		{
-			mana_regen[client] *= 0.3;
+			mana_regen[client] *= 0.7;
 		}
 
 		mana_regen[client] *= Mana_Regen_Level[client];
@@ -2249,7 +2249,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			return Gladiia_OnTakeDamageAlly_Hud(victim);
 		}

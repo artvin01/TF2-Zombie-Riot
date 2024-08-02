@@ -27,6 +27,8 @@ void Classic_Enable()
 
 void Classic_NewRoundStart(int cash)
 {
+	//todo: Put it in wave CFG instead, too lazy rn
+	cash = RoundToCeil(float(cash) * 1.1);
 	CashTotal = cash;
 	CashLeft = cash;
 }
@@ -35,8 +37,8 @@ void Classic_EnemySpawned(int entity)
 {
 	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
 	{
-		// At 4-players, need 800 kills to get all wave money
-		int given = RoundToCeil(float(CashTotal) / 800.0 / MultiGlobalEnemy);
+		// At 4-players, need 600 kills to get all wave money
+		int given = RoundToCeil(float(CashTotal) / 600.0 / MultiGlobalEnemy);
 		if(given > CashLeft)
 			given = CashLeft;
 		

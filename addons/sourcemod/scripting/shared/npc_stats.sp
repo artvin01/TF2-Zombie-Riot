@@ -9305,6 +9305,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		float Offset[3];
 
 		Offset[2] += 95.0;
+		Offset[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 #if defined RPG

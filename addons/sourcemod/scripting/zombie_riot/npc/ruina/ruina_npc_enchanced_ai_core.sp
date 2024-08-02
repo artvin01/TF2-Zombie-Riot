@@ -119,9 +119,9 @@ float fl_ruina_throttle[MAXENTITIES];
 
 enum
 {
-	RUINA_GLOBAL_NPC = 0,	//global npc's, OR non ruina npc's
-	RUINA_MELEE_NPC = 1,
-	RUINA_RANGED_NPC = 2
+	RUINA_GLOBAL_NPC = 1,
+	RUINA_MELEE_NPC = 2,
+	RUINA_RANGED_NPC = 3
 }
 enum
 {
@@ -242,7 +242,7 @@ public void Ruina_Ai_Core_Mapstart()
 
 	g_Ruina_BEAM_lightning= PrecacheModel("materials/sprites/lgtning.vmt", true);
 }
-public void Ruina_Set_Heirarchy(int client, int type)
+void Ruina_Set_Heirarchy(int client, int type)
 {
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
@@ -258,6 +258,8 @@ public void Ruina_Set_Heirarchy(int client, int type)
 
 	CClotBody npc = view_as<CClotBody>(client);
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
+	npc.m_flNextRangedAttack = GetRandomFloat(0.5, 2.5) + GetGameTime();
+	npc.m_flNextMeleeAttack = GetRandomFloat(0.5, 2.5) + GetGameTime();
 	
 }
 public void Ruina_Set_Battery_Buffer(int client, bool state)

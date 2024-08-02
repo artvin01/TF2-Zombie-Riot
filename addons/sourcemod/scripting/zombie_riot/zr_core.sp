@@ -188,7 +188,8 @@ enum
 	WEAPON_ION_BEAM_NIGHT = 108,
 	WEAPON_ION_BEAM_FEED  = 109,
 	WEAPON_CHAINSAW  = 110,
-	WEAPON_FLAMETAIL = 111
+	WEAPON_FLAMETAIL = 111,
+	WEAPON_OCEAN_PAP = 112
 }
 
 enum
@@ -611,6 +612,8 @@ void ZR_MapStart()
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
+	Zero(i_NormalBarracks_HexBarracksUpgrades);
+	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -900,6 +903,9 @@ void ZR_ClientDisconnect(int client)
 	i_PlayerModelOverrideIndexWearable[client] = -1;
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
+	//reeset to 0
+	i_NormalBarracks_HexBarracksUpgrades[client] = 0;
+	i_NormalBarracks_HexBarracksUpgrades_2[client] = 0;
 }
 
 public void OnMapInit()
