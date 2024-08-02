@@ -212,6 +212,8 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	{
 		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 		CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+		b_ShowNpcHealthbar[entity] = true;
 	}
 }
 
@@ -338,8 +340,8 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				if(healing > 150)
 					healing = 150;
 
-				healing *= Attributes_Get(weapon, 8, 1.0);
-				healing *= Attributes_GetOnPlayer(client, 8, true, true);
+				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
+				healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
 				
 				if(healing > ammo)
 					healing = ammo;
@@ -393,10 +395,10 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		if(healing > 35)
 			healing = 35;
 
-		healing *= Attributes_Get(weapon, 8, 1.0);
-		healing *= Attributes_GetOnPlayer(client, 8, true, true);
+		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
+		healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
 		
-		if(healing < 0)
+		if(healing <= 0)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			return;

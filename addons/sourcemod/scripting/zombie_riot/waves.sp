@@ -119,6 +119,7 @@ static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
 static Handle WaveTimer;
 static float ProgressTimerEndAt;
+static bool ProgressTimerType;
 
 static bool UpdateFramed;
 static int WaveGiftItem;
@@ -644,7 +645,28 @@ bool Waves_GetMiniBoss(MiniBoss boss)
 	if(!MiniBosses)
 		return false;
 	
-	MiniBosses.GetArray(GetURandomInt() % MiniBosses.Length, boss);
+	int length = MiniBosses.Length;
+	if(!length)
+		return false;
+
+	int level;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(TeutonType[client] != TEUTON_WAITING && IsClientInGame(client) && GetClientTeam(client) == 2)
+		{
+			if(Level[client] > level)
+				level = Level[client];
+		}
+	}
+
+	level = level / 10 - 10;
+	if(level < 0)
+		return false;
+
+	if(length > level)
+		length = level;
+
+	MiniBosses.GetArray(GetURandomInt() % length, boss);
 	return true;
 }
 
@@ -1271,7 +1293,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			f_FreeplayDamageExtra = 1.0;
 			round.Waves.GetArray(CurrentWave, wave);
 
-			if(!CurrentWave)
+			if(!CurrentWave && Classic_Mode())
 				Classic_NewRoundStart(round.Cash);
 
 			if(wave.RelayName[0])
@@ -1381,8 +1403,11 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
-				if(CurrentWave == (round.Waves.Length - 1))
+				if(delay > 9.0)
+				{
 					ProgressTimerEndAt = GetGameTime() + delay;
+					ProgressTimerType = CurrentWave == (round.Waves.Length - 1);
+				}
 			}
 		}
 		else if(donotAdvanceRound)
@@ -2358,12 +2383,16 @@ static void UpdateMvMStatsFrame()
 		int count[24];
 		int flags[24];
 		bool active[24];
+		bool forceflags[24];
 
 		if(Classic_Mode() && ProgressTimerEndAt)
 		{
 			id[0] = -1;
 			count[0] = RoundToCeil(ProgressTimerEndAt - GetGameTime());
-			flags[0] = count[0] < 100 ? MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT : MVM_CLASS_FLAG_NORMAL;
+			flags[0] = ProgressTimerType ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_MINIBOSS;
+			if(count[0] < 31)
+				flags[0] += MVM_CLASS_FLAG_ALWAYSCRIT;
+			
 			active[0] = true;
 			Waves_UpdateMvMStats(33);
 		}
@@ -2374,7 +2403,7 @@ static void UpdateMvMStatsFrame()
 		{
 			Round round;
 			Rounds.GetArray(CurrentRound, round);
-			if(!InSetup && CurrentRound != (maxwaves - 1))
+			if(!InSetup && !Classic_Mode() && CurrentRound != (maxwaves - 1))
 			{
 				cashLeft += float(round.Cash);
 				totalCash += float(round.Cash);
@@ -2436,6 +2465,7 @@ static void UpdateMvMStatsFrame()
 							{
 								id[b] = wave.EnemyData.Index;
 								flags[b] = SetupFlags(wave.EnemyData, false);
+								forceflags[b] = wave.EnemyData.ignore_max_cap > 0;
 							}
 							
 							break;
@@ -2464,7 +2494,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = enemy.Index;
-							flags[b] = SetupFlags(enemy, !freeplay);
+							flags[b] = SetupFlags(enemy, (!Classic_Mode() && !freeplay));
 						}
 						
 						break;
@@ -2491,7 +2521,7 @@ static void UpdateMvMStatsFrame()
 						if(!id[b])
 						{
 							id[b] = i_NpcInternalId[entity];
-							flags[b] = (freeplay || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
+							flags[b] = (freeplay || Classic_Mode() || b_thisNpcIsARaid[entity]) ? MVM_CLASS_FLAG_NORMAL : MVM_CLASS_FLAG_SUPPORT;
 
 							if(b_thisNpcIsABoss[entity] || b_thisNpcHasAnOutline[entity])
 								flags[b] |= MVM_CLASS_FLAG_MINIBOSS;
@@ -2510,6 +2540,8 @@ static void UpdateMvMStatsFrame()
 			}
 		}
 
+		Classic_UpdateMvMStats(cashLeft);
+
 		int objective = GetObjectiveResource();
 		if(objective != -1)
 		{
@@ -2527,7 +2559,7 @@ static void UpdateMvMStatsFrame()
 			{
 				if(id[i] == -1)
 				{
-					Waves_SetWaveClass(objective, i, count[i], "heavy_deflector", flags[i], active[i]);
+					Waves_SetWaveClass(objective, i, count[i], (flags[i] & MVM_CLASS_FLAG_MINIBOSS) ? "classic_reinforce" : "classic_defend", flags[i], active[i]);
 				}
 				else if(id[i])
 				{
@@ -2541,7 +2573,7 @@ static void UpdateMvMStatsFrame()
 					if(!data.Icon[0])
 						strcopy(data.Icon, sizeof(data.Icon), "robo_extremethreat");
 					
-					if(!data.Flags)
+					if(!data.Flags && !forceflags[i])
 						data.Flags = flags[i];
 
 					//PrintToChatAll("ID: %d Count: %d Flags: %d On: %d", id[i], count[i], flags[i], active[i]);
