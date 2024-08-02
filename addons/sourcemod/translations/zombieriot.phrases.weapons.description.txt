@@ -308,6 +308,10 @@
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
 	
+	"Tommygun Desc"
+	{
+		"en"		"While equipped and in your hand, take 20% less ranged damage."
+	}
 	"Tommygun Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"

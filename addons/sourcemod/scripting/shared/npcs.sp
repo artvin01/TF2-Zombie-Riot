@@ -289,7 +289,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						AddNpcToAliveList(entity_Spawner, 1);
 					}
-					if(enemy.Team == TFTeam_Red)
+					//if its an ally and NOT static, itll teleport to a player!
+					if(enemy.Team == TFTeam_Red && !enemy.Is_Static)
 					{
 						TeleportNpcToRandomPlayer(entity_Spawner);
 					}
