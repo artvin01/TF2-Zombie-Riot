@@ -302,7 +302,7 @@
 	"Sentry here? Its better to wait for teammates to engage so i'll look."
 	{
 		"en"	"Sentry here? Its better to wait for teammates to engage so i'll look."
-		"fr"	"Une Mitraillette ici? Je vais voir, faut bien attendre nos coéquipiers pour attaquer."
+		"fr"	"Une Mitrailleuse ici? Je vais voir, faut bien attendre nos coéquipiers pour attaquer."
 		"ru"	"Турель здесь? Лучше подождать, пока союзники вступят в бой, так что я понаблюдаю."
 		"de"	"Sentry hier? es ist besser auf das team zu warten um Anzugreifen, also werde ich gucken."
 		"pl"    "Działko tutaj? Lepiej poczekać aż koledzy z drużyny się zaangażują, więc popatrzę."
@@ -335,7 +335,7 @@
 	"I cant build a sentry, sorry."
 	{
 		"en"	"I cant build a sentry, sorry."
-		"fr"	"Désolé, je ne peux pas construir une Mitraillette."
+		"fr"	"Désolé, je ne peux pas construir une Mitrailleuse."
 		"ru"	"Я не могу построить турель, извините."
 		"de"	"Ich kann keine sentry bauen, entschuldigung."
 		"pl"    "Nie mogę zbudować działka, przepraszam."
