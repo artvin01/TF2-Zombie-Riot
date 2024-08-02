@@ -82,7 +82,6 @@ static const char g_FractalSound[][] = {
 
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
-#define RAIDBOSS_TWIRL_HYPER_THEME "#zombiesurvival/ruina/raid_ruina_trio.mp3"
 
 static int i_ranged_combo[MAXENTITIES];
 static int i_melee_combo[MAXENTITIES];
@@ -167,7 +166,6 @@ static void ClotPrecache()
 	PrecacheSound(NPC_PARTICLE_LANCE_BOOM3);
 
 	PrecacheSoundCustom(RAIDBOSS_TWIRL_THEME);
-	PrecacheSoundCustom(RAIDBOSS_TWIRL_HYPER_THEME);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 
 	PrecacheModel("models/player/medic.mdl");
