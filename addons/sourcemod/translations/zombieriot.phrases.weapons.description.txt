@@ -2023,6 +2023,10 @@
 		"en" 	"Heals allies slowly around you and gives them a 10%% dmg buff.\nScales with medigun upgrades.\nM1 Casts an extra heal onto allies.\nM2 Applies a stronger 25%% dmg buff to all allies for 15 sec.\nYou count as a seaborn while wielding this weapon."
 		"chi"	"缓慢治疗你附近的队友，提供+10%%伤害buff。\n随着医疗枪升级。\nM1提供更多治疗，M2提供15秒的+25%%伤害buff。\n手持物品时，你将被判定为海嗣。"
 	}
+	"Fish Melee Desc 2"
+	{
+		"en" 	"Looks like before seaborn attacked everyone, they and expidonsans were allies...\nAttacks 15%% faster, heals 25%% more.\nYou also gain 10%% ranged resistance and an extra 5%% melee resistance."
+	}
 	"Lantean Staff Desc"
 	{
 		"en" 	"Wherever you look, the drones fly\nGoing over 10 drones makes the wand go into overcharge meaning they do less damage, and are harder to control\nM2: Fire several drones at once\nR: Your drones noclip for 2.5 seconds"
