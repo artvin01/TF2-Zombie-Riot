@@ -27,7 +27,7 @@ void Classic_Enable()
 
 void Classic_NewRoundStart(int cash)
 {
-	//todo: Put it in wave CFG, batfox doesnt listen and always does his own things instead, i wont change cfg.
+	//todo: Put it in wave CFG instead, too lazy rn
 	cash = RoundToCeil(float(cash) * 1.1);
 	CashTotal = cash;
 	CashLeft = cash;
