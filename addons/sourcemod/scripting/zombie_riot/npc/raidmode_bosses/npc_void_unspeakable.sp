@@ -227,6 +227,10 @@ methodmap VoidUnspeakable < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 0;
 		}
+		if(StrContains(data, "bossrush") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = -5;
+		}
 		npc.m_flDeathAnimation = 0.0;
 		i_NpcWeight[npc.index] = 5;
 		npc.g_TimesSummoned = 1;
@@ -293,6 +297,7 @@ methodmap VoidUnspeakable < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_flMeleeArmor = 1.25;	
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
@@ -326,39 +331,42 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeScaling *= 0.85;
 		}
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
+		if(i_RaidGrantExtra[npc.index] != -5)
 		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "25 0 25 50");
-			DispatchKeyValue(entity, "fogcolor2", "25 0 25 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.85);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
+			if(FogEntity != INVALID_ENT_REFERENCE)
 			{
-				if(IsClientInGame(client1))
+				int entity = EntRefToEntIndex(FogEntity);
+				if(entity > MaxClients)
+					RemoveEntity(entity);
+				
+				FogEntity = INVALID_ENT_REFERENCE;
+			}
+			
+			int entity = CreateEntityByName("env_fog_controller");
+			if(entity != -1)
+			{
+				DispatchKeyValue(entity, "fogblend", "2");
+				DispatchKeyValue(entity, "fogcolor", "25 0 25 50");
+				DispatchKeyValue(entity, "fogcolor2", "25 0 25 50");
+				DispatchKeyValueFloat(entity, "fogstart", 400.0);
+				DispatchKeyValueFloat(entity, "fogend", 1000.0);
+				DispatchKeyValueFloat(entity, "fogmaxdensity", 0.85);
+
+				DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+				DispatchKeyValue(entity, "fogenable", "1");
+				DispatchKeyValue(entity, "spawnflags", "1");
+				DispatchSpawn(entity);
+				AcceptEntityInput(entity, "TurnOn");
+
+				FogEntity = EntIndexToEntRef(entity);
+
+				for(int client1 = 1; client1 <= MaxClients; client1++)
 				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
+					if(IsClientInGame(client1))
+					{
+						SetVariantString("rpg_fortress_envfog");
+						AcceptEntityInput(client1, "SetFogController");
+					}
 				}
 			}
 		}
@@ -938,13 +946,16 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
+	if(i_RaidGrantExtra[npc.index] != -5)
 	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
+		if(FogEntity != INVALID_ENT_REFERENCE)
+		{
+			int entity1 = EntRefToEntIndex(FogEntity);
+			if(entity1 > MaxClients)
+				RemoveEntity(entity1);
+			
+			FogEntity = INVALID_ENT_REFERENCE;
+		}
 	}
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
@@ -1088,7 +1099,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.index, (700.0 * 700.0));
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({125, 0, 125, 200});
-			float damageDealt = 50.0 * RaidModeScaling;
+			float damageDealt = 35.0 * RaidModeScaling;
 			float ang_Look[3];
 			float PosLoc[3];
 			GetEntPropVector(Enemy_I_See, Prop_Send, "m_angRotation", ang_Look);

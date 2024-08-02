@@ -308,6 +308,10 @@
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
 	
+	"Tommygun Desc"
+	{
+		"en"		"While equipped and in your hand, take 20% less ranged damage."
+	}
 	"Tommygun Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
@@ -367,15 +371,11 @@
 	}
 	"RPG Pap 2"
 	{
-		"en"		"Increased damage, gain an extra rocket, faster reload"
-		"ru"		"Увеличенный урон, дополнительная ракета, более быстрая перезарядка."
-		"chi"       "增加伤害，获得额外的火箭弹，更快的装弹速度"
+		"en"		"Increased damage, gain an extra rocket, faster reload\n Only hits 4 enemies now instead of 10"
 	}
 	"RPG Pap 3"
 	{
-		"en"		"Massively Increased damage and REDUCED reload speed."
-		"ru"		"Значительно увеличен урон и СНИЖЕНА скорость перезарядки."
-		"chi"       "增加大量伤害和更快的装填速度"
+		"en"		"Massively Increased damage and REDUCED reload speed.\n And has better enemy pierce"
 	}
 	
 	"The Pomson 7000 Desc"

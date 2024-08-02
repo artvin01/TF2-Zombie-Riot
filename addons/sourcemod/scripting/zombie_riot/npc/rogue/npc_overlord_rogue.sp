@@ -229,7 +229,7 @@ methodmap OverlordRogue < CClotBody
 			music.Volume = 1.75;
 			music.Custom = true;
 			strcopy(music.Name, sizeof(music.Name), "Arknights bat_talulha (no Official name.)");
-			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 			Music_SetRaidMusic(music);
 		}
 		

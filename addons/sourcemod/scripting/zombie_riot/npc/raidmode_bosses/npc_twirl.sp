@@ -634,15 +634,17 @@ methodmap Twirl < CClotBody
 				ShowGameText(client_check, "item_armor", 1, "%t", "Twirl Spawn");
 			}
 		}
-
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
-		music.Time = 285;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
-		strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
-		Music_SetRaidMusic(music);
+		if(!(StrContains(data, "triple_enemies") != -1))
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), RAIDBOSS_TWIRL_THEME);
+			music.Time = 285;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Solar Sect of Mystic Wisdom ~ Nuclear Fusion");
+			strcopy(music.Artist, sizeof(music.Artist), "maritumix/まりつみ");
+			Music_SetRaidMusic(music);	
+		}
 		
 		b_allow_final[npc.index] = StrContains(data, "final_item") != -1;
 		
@@ -730,8 +732,18 @@ methodmap Twirl < CClotBody
 		npc.Anger = false;
 
 		
+		
 
-		if(wave <=15)
+		if(StrContains(data, "triple_enemies") != -1)
+		{
+			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
+			Twirl_Lines(npc, "... Except Karlas but shhhh!");
+			CPrintToChatAll("{crimson}Karlas{snow}: .....");
+			CPrintToChatAll("{crimson}Karlas{snow}: :(");
+			RaidModeTime = GetGameTime(npc.index) + 500.0;
+			GiveOneRevive(true);
+		}
+		else if(wave <=15)
 		{
 			i_ranged_ammo[npc.index] = 5;
 			switch(GetRandomInt(0, 4))

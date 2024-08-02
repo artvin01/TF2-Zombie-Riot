@@ -565,7 +565,7 @@ public void OnPostThink(int client)
 
 		if(Classic_Mode())
 		{
-			mana_regen[client] *= 0.3;
+			mana_regen[client] *= 0.7;
 		}
 
 		mana_regen[client] *= Mana_Regen_Level[client];

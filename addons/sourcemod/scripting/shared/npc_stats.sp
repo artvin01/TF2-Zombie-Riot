@@ -8030,6 +8030,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][2] = 0.0;
+	f_ExtraOffsetNpcHudAbove[entity] = 0.0;
 	i_Wearable[entity][0] = -1;
 	i_Wearable[entity][1] = -1;
 	i_Wearable[entity][2] = -1;
@@ -9215,6 +9216,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 		float Offset[3];
 
 		Offset[2] += 95.0;
+		Offset[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 		
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 17, HealthColour, npc.index);
@@ -9303,6 +9305,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		float Offset[3];
 
 		Offset[2] += 95.0;
+		Offset[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 #if defined RPG

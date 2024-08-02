@@ -306,7 +306,7 @@ methodmap GodAlaxios < CClotBody
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Arknights - Putrid");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 		Music_SetRaidMusic(music);
 
 		float flPos[3]; // original

@@ -1288,7 +1288,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 		{
 
 #if defined ZR
-			if(IsBehindAndFacingTarget(attacker, victim, weapon) || (b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim])
+			if(IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 #else
 			if(IsBehindAndFacingTarget(attacker, victim, weapon) || i_NpcIsABuilding[victim])
 #endif
@@ -1299,7 +1299,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 				if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 				{
 #if defined ZR
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
+					if((b_FaceStabber[attacker] && b_FaceStabber[victim]))
 					{
 						PrintToChat(attacker, "You think you can circumvent this challange?! Shame on you!");
 						damage = 0.0;
@@ -1333,13 +1333,13 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 						attack_speed *= 0.5; //extra delay.
 					}
 
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
+					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 						damage *= 0.40; //extra delay.
 #endif
 					
 					bool IsTargeter = false;
 #if defined ZR
-					if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
+					if(attacker == npc.m_iTarget)
 					{
 						IsTargeter = true;
 					}
