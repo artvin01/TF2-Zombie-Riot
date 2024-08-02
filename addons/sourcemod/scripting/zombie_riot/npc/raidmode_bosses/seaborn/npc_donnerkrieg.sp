@@ -678,7 +678,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			else
 			{
-				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: I'm about to turn into an unrecognisable mass of sea for {crimson}what you've DONE TO MY BELOVED", name_color, text_color);
+				Format(text_lines, sizeof(text_lines), "{%s}Stella{%s}: I'm about to turn you into an unrecognisable mass of sea for {crimson}what you've DONE TO MY BELOVED", name_color, text_color);
 			}
 			CPrintToChatAll(text_lines);
 		}
@@ -1242,12 +1242,13 @@ static void Heavens_Full_Charge(Raidboss_Donnerkrieg npc, float GameTime)
 			color[1] = 9;
 			color[2] = 235;
 		}
-		else if(wave > 60)
+		else if(wave >= 60)
 		{
 			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
+			color[3] = 255;
 		}
 
 		Doonerkrieg_Do_AOE_Damage(npc, loc, fl_heavens_damage/TickrateModify, fl_heavens_radius, infection, false);
@@ -2452,12 +2453,13 @@ public Action Donnerkrieg_Laser_Think(int iNPC)	//A short burst of a laser.
 			color[1] = 107;
 			color[2] = 250;
 		}
-		else if(wave > 60)
+		else if(wave >= 60)
 		{
 			infection=3;
 			color[0] = 0;
 			color[1] = 250;
 			color[2] = 237;
+			color[3] = 255;
 		}
 
 		if(NpcStats_IsEnemySilenced(npc.index) && wave<60)
@@ -2612,7 +2614,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		infection=2;
 	}
-	else if(wave > 60)
+	else if(wave >= 60)
 	{
 		infection=3;
 	}
