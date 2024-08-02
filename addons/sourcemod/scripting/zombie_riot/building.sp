@@ -1453,6 +1453,15 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
 		}
+		if(!WildingenBuilder2[entity] && WildingenBuilder2[client])
+		{
+			WildingenBuilder2[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+		}
 		if(FinalBuilder[entity] && !FinalBuilder[client])
 		{
 			FinalBuilder[entity] = false;

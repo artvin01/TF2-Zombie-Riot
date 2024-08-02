@@ -611,6 +611,8 @@ void ZR_MapStart()
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
 	Classic_MapStart();
+	Zero(i_NormalBarracks_HexBarracksUpgrades);
+	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -900,6 +902,9 @@ void ZR_ClientDisconnect(int client)
 	i_PlayerModelOverrideIndexWearable[client] = -1;
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
+	//reeset to 0
+	i_NormalBarracks_HexBarracksUpgrades[client] = 0;
+	i_NormalBarracks_HexBarracksUpgrades_2[client] = 0;
 }
 
 public void OnMapInit()
