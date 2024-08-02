@@ -345,8 +345,6 @@ methodmap SaintBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_SAINT_SPEED_BUFFED : BONES_SAINT_SPEED);
 		
-		SDKHook(npc.index, SDKHook_Think, SaintBones_ClotThink);
-		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -1202,8 +1200,7 @@ public void SaintBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(entity, SDKHook_Think, SaintBones_ClotThink);
-	
+
 	for (int i = 1; i < 2049; i++)
 	{
 		if (!IsValidEntity(i) || i == entity)

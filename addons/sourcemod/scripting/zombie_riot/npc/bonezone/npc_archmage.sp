@@ -328,7 +328,6 @@ methodmap ArchmageBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_ARCHMAGE_SPEED_BUFFED : BONES_ARCHMAGE_SPEED);
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-		SDKHook(npc.index, SDKHook_Think, ArchmageBones_ClotThink);
 		
 		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
@@ -868,8 +867,7 @@ public void ArchmageBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, ArchmageBones_ClotThink);
-	
+
 	int particle = EntRefToEntIndex(throwParticle[entity]);
 	if (IsValidEntity(particle))
 		RemoveEntity(particle);

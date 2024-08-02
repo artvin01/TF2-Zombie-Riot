@@ -346,8 +346,7 @@ methodmap BuccaneerBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_BUCCANEER_SPEED_BUFFED : BONES_BUCCANEER_SPEED);
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-		SDKHook(npc.index, SDKHook_Think, BuccaneerBones_ClotThink);
-		
+
 		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -895,8 +894,7 @@ public void BuccaneerBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BuccaneerBones_ClotThink);
-		
+
 	npc.RemoveAllWearables();
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");

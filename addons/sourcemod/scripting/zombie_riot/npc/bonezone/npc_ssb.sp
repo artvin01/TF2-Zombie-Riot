@@ -4013,8 +4013,6 @@ methodmap SupremeSpookmasterBones < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_SKELETON;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		
-		SDKHook(npc.index, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 
 		npc.StartPathing();
 		npc.PlayIntroSound();
@@ -4211,7 +4209,6 @@ public void SupremeSpookmasterBones_NPCDeath(int entity)
 	SupremeSpookmasterBones npc = view_as<SupremeSpookmasterBones>(entity);
 
 	npc.PlayMinorLoss();	//TODO: He needs to have a more cinematic death sequence when defeated on wave 60.
-	SDKUnhook(entity, SDKHook_Think, SupremeSpookmasterBones_ClotThink);
 		
 	npc.RemoveAllWearables();
 	Summon_StopLoop(npc);

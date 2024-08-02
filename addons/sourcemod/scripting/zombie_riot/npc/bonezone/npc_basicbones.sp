@@ -255,8 +255,6 @@ methodmap BasicBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_BASIC_SPEED_BUFFED : BONES_BASIC_SPEED);
 		
-		SDKHook(npc.index, SDKHook_Think, BasicBones_ClotThink);
-		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -469,7 +467,6 @@ public void BasicBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BasicBones_ClotThink);
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");

@@ -294,9 +294,6 @@ methodmap BrittleBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_BRITTLE_SPEED_BUFFED : BONES_BRITTLE_SPEED);
 		
-		
-		SDKHook(npc.index, SDKHook_Think, BrittleBones_ClotThink);
-		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -546,8 +543,7 @@ public void BrittleBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BrittleBones_ClotThink);
-	
+
 	int particle = EntRefToEntIndex(Brittle_Particle[entity]);
 	if (IsValidEntity(particle))
 		RemoveEntity(particle);

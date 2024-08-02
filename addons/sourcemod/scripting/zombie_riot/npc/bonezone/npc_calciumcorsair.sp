@@ -290,8 +290,6 @@ methodmap PirateBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_PIRATE_SPEED_BUFFED : BONES_PIRATE_SPEED);
 		
-		SDKHook(npc.index, SDKHook_Think, PirateBones_ClotThink);
-		
 		npc.StartPathing();
 		
 		return npc;
@@ -508,12 +506,11 @@ public void PirateBones_ClotThink(int iNPC)
 					{
 						if (b_LastAttackWasLeftHand[npc.index])
 						{
-							npc.RemoveGesture("ACT_PIRATE_ATTACK_RIGHT");
-							npc.AddGesture("ACT_PIRATE_ATTACK_RIGHT");
+							//npc.AddGesture("ACT_PIRATE_ATTACK_RIGHT");
+							npc.AddGesture("ACT_PIRATE_ATTACK_RIGHT_NON_BUFFED");	//This one looks better
 						}
 						else
 						{
-							npc.RemoveGesture("ACT_PIRATE_ATTACK_LEFT");
 							npc.AddGesture("ACT_PIRATE_ATTACK_LEFT");
 						}
 
@@ -601,8 +598,7 @@ public void PirateBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, PirateBones_ClotThink);
-	
+
 	npc.RemoveAllWearables();
 	
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");

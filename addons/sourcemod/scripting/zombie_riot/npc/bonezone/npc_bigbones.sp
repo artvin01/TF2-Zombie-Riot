@@ -267,9 +267,6 @@ methodmap BigBones < CClotBody
 		//IDLE
 		npc.m_flSpeed = (buffed ? BONES_BIG_SPEED_BUFFED : BONES_BIG_SPEED);
 		
-		
-		SDKHook(npc.index, SDKHook_Think, BigBones_ClotThink);
-		
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -572,8 +569,7 @@ public void BigBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, BigBones_ClotThink);
-	
+
 	DispatchKeyValue(npc.index, "model", "models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	view_as<CBaseCombatCharacter>(npc).SetModel("models/bots/skeleton_sniper/skeleton_sniper.mdl");
 	BigBones_Bursting[npc.index] = false;

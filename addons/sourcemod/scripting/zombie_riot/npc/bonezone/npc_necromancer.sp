@@ -324,8 +324,7 @@ methodmap NecromancerBones < CClotBody
 		npc.m_flSpeed = (buffed ? BONES_NECROMANCER_SPEED_BUFFED : BONES_NECROMANCER_SPEED);
 		
 		throwState[npc.index] = THROWSTATE_INACTIVE;
-		SDKHook(npc.index, SDKHook_Think, NecromancerBones_ClotThink);
-		
+
 		//npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		npc.StartPathing();
@@ -714,7 +713,7 @@ public void NecromancerBones_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(entity, SDKHook_Think, NecromancerBones_ClotThink);
+
 	Necro_DeleteCastParticle(entity);
 		
 	npc.RemoveAllWearables();
