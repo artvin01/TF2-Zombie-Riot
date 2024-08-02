@@ -301,43 +301,37 @@ methodmap PirateBones < CClotBody
 stock void Pirate_GiveCosmetics(CClotBody npc, bool buffed)
 {
 	npc.RemoveAllWearables();
+
+	npc.m_iState = -1;
+	npc.m_iActivity = -1;
 	
 	if (buffed)
 	{
-		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
-		SetVariantString("1.25");
+		npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/demo/hw2013_blackguards_bicorn/hw2013_blackguards_bicorn.mdl");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		npc.m_iWearable2 = npc.EquipItem("hat", "models/player/items/sniper/summer_shades.mdl");
-		
-		float pos[3];
-		GetEntPropVector(npc.m_iWearable2, Prop_Data, "m_vecAbsOrigin", pos);
-		pos[2] += 10.0;
-		TeleportEntity(npc.m_iWearable2, pos);
-		
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMinDist", 9999.0);
-		SetEntPropFloat(npc.index, Prop_Send, "m_fadeMaxDist", 9999.0);
+		//npc.m_iWearable2 = npc.EquipItem("hat", "models/workshop/player/items/demo/tw2_demo_pants/tw2_demo_pants.mdl");
 
-		npc.m_iState = -1;
-		npc.m_iActivity = -1;
-		
 		npc.m_blSetBuffedSkeletonAnimation = true;
 		npc.m_blSetNonBuffedSkeletonAnimation = false;
+
+		DispatchKeyValue(npc.index, "skin", BONES_PIRATE_SKIN_BUFFED);
 	}
 	else
 	{
-		npc.m_iState = -1;
-		npc.m_iActivity = -1;
-		
 		npc.m_blSetBuffedSkeletonAnimation = false;
 		npc.m_blSetNonBuffedSkeletonAnimation = true;
 
-		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/drinking_hat.mdl");
-		SetVariantString("1.2");
+		npc.m_iWearable1 = npc.EquipItem("hat", "models/player/items/demo/mighty_pirate.mdl");
+		SetVariantString("2.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		DispatchKeyValue(npc.m_iWearable1, "skin", "1");
 
-		npc.m_iWearable2 = npc.EquipItem("pelvis", "models/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl");
+		//npc.m_iWearable2 = npc.EquipItem("hat", "models/workshop/player/items/demo/tw2_demo_pants/tw2_demo_pants.mdl");
+		//DispatchKeyValue(npc.m_iWearable2, "skin", "1");
+
+		DispatchKeyValue(npc.index, "skin", BONES_PIRATE_SKIN);
 	}
 }
 
@@ -371,7 +365,6 @@ public void PirateBones_SetBuffed(int index, bool buffed)
 		npc.m_flSpeed = BONES_PIRATE_SPEED;
 
 		Pirate_GiveCosmetics(npc, false);
-		DispatchKeyValue(index, "skin", BONES_PIRATE_SKIN);
 		
 		//Remove buffed particle:
 		PirateBones_RemoveRampageParticle(index);
@@ -527,7 +520,7 @@ public void PirateBones_ClotThink(int iNPC)
 						b_LastAttackWasLeftHand[npc.index] = !b_LastAttackWasLeftHand[npc.index];
 					}
 					else
-						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.AddGesture("ACT_PIRATE_ATTACK_RIGHT_NON_BUFFED");
 
 					npc.PlayMeleeSound();
 					npc.m_flAttackHappens = GetGameTime(npc.index) + (b_BonesBuffed[npc.index] ? (b_PirateRampage[npc.index] ? BONES_PIRATE_MELEE_HIT_DELAY_BUFFED_RAMPAGE : BONES_PIRATE_MELEE_HIT_DELAY_BUFFED) : BONES_PIRATE_MELEE_HIT_DELAY);
