@@ -738,6 +738,8 @@ methodmap Twirl < CClotBody
 		{
 			Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
 			Twirl_Lines(npc, "... Except Karlas but shhhh!");
+			CPrintToChatAll("{crimson}Karlas{snow}: .....");
+			CPrintToChatAll("{crimson}Karlas{snow}: :(");
 			RaidModeTime = GetGameTime(npc.index) + 500.0;
 			GiveOneRevive(true);
 		}
