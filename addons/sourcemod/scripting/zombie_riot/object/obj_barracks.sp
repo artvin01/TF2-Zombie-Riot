@@ -342,7 +342,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	OpenSummonerMenu(Owner, client);
 	return true;
 }
-
 void BarracksCheckItems(int client)
 {
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
@@ -1210,6 +1209,10 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"))	// lol
+		SupplyRate[client] += 10;
+
+
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
 
@@ -1218,6 +1221,7 @@ void CheckSummonerUpgrades(int client)
 
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
+	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
 }
 
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)

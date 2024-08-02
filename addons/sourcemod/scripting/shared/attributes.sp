@@ -15,10 +15,11 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011, 4012: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
 		// 4011: Explosive enemeis hit MAX
 		// 4012: redued healing from gibs
 		// 4013: Override Explosion FAloff
+		// 4014: Ammo consume extra in reserve
 		{
 			return true;
 		}

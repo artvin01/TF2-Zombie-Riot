@@ -679,6 +679,7 @@ bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool WildingenBuilder[MAXENTITIES];
+bool WildingenBuilder2[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
@@ -2614,6 +2615,8 @@ public void Update_Ammo(DataPack pack)
 }
 #endif
 
+float f_AmmoConsumeExtra[MAXTF2PLAYERS];
+
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
 #if defined ZR
@@ -2623,6 +2626,43 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(Update_Ammo, pack);
+	}
+	float ExtraAmmoConsume = Attributes_Get(weapon, 4014, 0.0);
+	if(ExtraAmmoConsume != 0.0)
+	{
+		if(ExtraAmmoConsume > 0.0)
+		{
+			f_AmmoConsumeExtra[client] += ExtraAmmoConsume;
+			
+			int ConsumeAmmoReserve;
+			while (f_AmmoConsumeExtra[client] >= 1.0)
+			{
+				f_AmmoConsumeExtra[client] -= 1.0;
+				ConsumeAmmoReserve++;
+			}
+			if(ConsumeAmmoReserve >= 1)
+			{
+				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) - ConsumeAmmoReserve);
+			}
+		}
+		else
+		{
+			//it is negative, we give back ammo?
+			f_AmmoConsumeExtra[client] += ExtraAmmoConsume;
+			
+			int ConsumeAmmoReserve;
+			while (f_AmmoConsumeExtra[client] <= -1.0)
+			{
+				f_AmmoConsumeExtra[client] += 1.0;
+				ConsumeAmmoReserve++;
+			}
+			if(ConsumeAmmoReserve >= 1)
+			{
+				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
+			}
+		}
 	}
 #endif
 
@@ -2984,6 +3024,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
 		WildingenBuilder[entity] = false;
+		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
 		b_IsATrigger[entity] = false;
 #endif
