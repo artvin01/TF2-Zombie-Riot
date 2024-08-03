@@ -846,6 +846,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 2)
 		i_AmountDowned[client] = 1;
+		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;

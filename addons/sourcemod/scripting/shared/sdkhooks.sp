@@ -1411,7 +1411,14 @@ public void OnPostThink(int client)
 		{
 			int downsleft;
 
-
+			if(b_LeftForDead[client])
+			{
+				//only give 1 revive at all costs.
+				if(i_AmountDowned[client] < 1)
+				{
+					i_AmountDowned[client] = 1;
+				}
+			}
 			downsleft -= i_AmountDowned[client];
 			if(downsleft < 0)
 			{
@@ -1865,11 +1872,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					i_CurrentEquippedPerk[victim] = 0;
 				}
+
 				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
 				{
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
