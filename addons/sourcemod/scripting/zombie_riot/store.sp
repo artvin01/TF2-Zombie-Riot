@@ -5446,6 +5446,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+						//only give 1 revive at all costs.
+						if(i_AmountDowned[client] < 1)
+						{
+							i_AmountDowned[client] = 1;
+						}
 					}
 					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
 					{

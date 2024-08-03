@@ -1945,7 +1945,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 		CheckIfAloneOnServer();
 		Ammo_Count_Ready += 1;
 
-/*		if(!Classic_Mode())
+	//	if(!Classic_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -1954,14 +1954,14 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					Ammo_Count_Used[target] -= 1;
 				}
 			}
-		}*/
+		}
 	}
 	else if (Gave_Ammo_Supply > 2 && GiveAmmoSupplies)
 	{
 		Ammo_Count_Ready += 1;
 		Gave_Ammo_Supply = 0;
 
-/*		if(!Classic_Mode())
+	//	if(!Classic_Mode())
 		{
 			for (int target = 1; target <= MaxClients; target++)
 			{
@@ -1970,7 +1970,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 					Ammo_Count_Used[target] -= 1;
 				}
 			}
-		}*/
+		}
 	}	
 	else if(GiveAmmoSupplies)
 	{
