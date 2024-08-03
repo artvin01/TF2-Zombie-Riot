@@ -1404,6 +1404,7 @@ public void OnPostThink(int client)
 			int downsleft;
 			downsleft = 2;
 
+			/*
 			if(b_LeftForDead[client])
 			{
 				//only give 1 revive at all costs.
@@ -1412,11 +1413,13 @@ public void OnPostThink(int client)
 					i_AmountDowned[client] = 1;
 				}
 			}
+			*/
 			downsleft -= i_AmountDowned[client];
 			if(downsleft < 0)
 			{
 				downsleft = 0;
 			}
+			/*
 			if(b_LeftForDead[client])
 			{
 				if(downsleft > 1)
@@ -1424,6 +1427,7 @@ public void OnPostThink(int client)
 					downsleft = 1;
 				}
 			}
+			*/
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
 			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
@@ -1855,7 +1859,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp

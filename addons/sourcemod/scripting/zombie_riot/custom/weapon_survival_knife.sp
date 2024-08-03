@@ -368,7 +368,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
 	}
 	else
 	{
@@ -395,7 +395,7 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Madness ends");
 			
-			CreateTimer(10.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
+			CreateTimer(20.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
 		}
 	}
 	InMadness[client] = false;
