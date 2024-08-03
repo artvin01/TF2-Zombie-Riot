@@ -325,7 +325,7 @@ static void XenoMalfuncRobot_SelfDefense(XenoMalfuncRobot npc, float gameTime, i
 				{
 					float damage = 100.0;
 					if(npc.m_fbGunout)//nightmare
-					damage *= 1.4;
+						damage *= 1.4;
 
 					if(target > 0) 
 					{
