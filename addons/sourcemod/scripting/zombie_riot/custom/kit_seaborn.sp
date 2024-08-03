@@ -244,6 +244,8 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
 		}
 	}
 }
@@ -283,6 +285,8 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
 		}
 	}
 	/*
