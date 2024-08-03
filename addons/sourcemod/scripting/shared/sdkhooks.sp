@@ -1402,6 +1402,7 @@ public void OnPostThink(int client)
 		if(!TeutonType[client])
 		{
 			int downsleft;
+			downsleft = 2;
 
 			if(b_LeftForDead[client])
 			{
@@ -1870,6 +1871,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
