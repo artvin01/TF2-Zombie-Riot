@@ -884,7 +884,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
 	if(Owner > 0 && Owner <= MaxClients)
 	{
-		i_BarricadeHasBeenDamaged[Owner] += RoundToNearest(dmg);
+		i_BarricadeHasBeenDamaged[Owner] += dmg;
 	}
 
 	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
