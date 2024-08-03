@@ -403,7 +403,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						int ammoSubtract;
 						ammoSubtract = HealEntityGlobal(owner, owner, healing_Amount_Self, 1.0, 0.0, _, new_ammo);
 						new_ammo -= ammoSubtract;
-						ApplyHealEvent(owner, ammoSubtract);
 
 						//Ally Heal
 						ammoSubtract = HealEntityGlobal(owner, healTarget, healing_Amount, flMaxHealth, 0.0, _, new_ammo);
@@ -412,11 +411,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						if(!b_NpcHasDied[healTarget])
 						{
 							Calculate_And_Display_hp(owner, healTarget, 0.0, true);
-						}
-						else //is a player probably.
-						{
-
-							ApplyHealEvent(healTarget, ammoSubtract);
 						}
 						
 						float duration;

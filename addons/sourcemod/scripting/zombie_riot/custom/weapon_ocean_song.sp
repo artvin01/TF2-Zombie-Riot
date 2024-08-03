@@ -408,7 +408,6 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0, .MaxHealPermitted = new_ammo);
 					if(healingdone > 0)
 					{
-						ApplyHealEvent(ally, healingdone);
 						if(!HordingsBuff)
 						{
 							new_ammo -= healingdone;

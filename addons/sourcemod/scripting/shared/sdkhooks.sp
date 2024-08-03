@@ -677,9 +677,6 @@ public void OnPostThink(int client)
 			}
 		}
 
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
-
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
 #endif	// ZR
@@ -2649,9 +2646,6 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		else
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
-
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
