@@ -1704,6 +1704,14 @@
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
 	}
+	"BUSTING"
+	{
+		"en"	"BUSTING"
+	}
+	"BUSTING Desc"
+	{
+		"en"	"Bustin' makes me feel good"
+	}
 	"Sphynx Desc"
 	{
 		"en"		Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies.
