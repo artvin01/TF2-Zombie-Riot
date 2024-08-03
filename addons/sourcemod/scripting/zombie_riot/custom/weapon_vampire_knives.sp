@@ -461,7 +461,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		//against raidbosses, you heal less, or else you just outheal 24/7.
 		if (b_thisNpcIsARaid[victim])
 		{
-			heal *= 0.65;
+			heal *= 0.7;
 		}
 
 		int healingdone = HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
