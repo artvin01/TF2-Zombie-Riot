@@ -1086,6 +1086,7 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
+	CheckAlivePlayers(0, 0, true);
 	SDKCall_ResetPlayerAndTeamReadyState();
 
 	char buf[12];
@@ -1654,6 +1655,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
 				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
+						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+					}
+				}
+				RaidModeTime += 3.0;
 			}
 
 			ExcuteRelay("zr_lasthuman");
