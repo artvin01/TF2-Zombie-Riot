@@ -1411,16 +1411,19 @@ public void OnPostThink(int client)
 		{
 			int downsleft;
 
-			if(b_LeftForDead[client])
-			{
-				downsleft = 1;
-			}
-			else
-			{
-				downsleft = 2;
-			}
 
 			downsleft -= i_AmountDowned[client];
+			if(downsleft < 0)
+			{
+				downsleft = 0;
+			}
+			if(b_LeftForDead[client])
+			{
+				if(downsleft > 1)
+				{
+					downsleft = 1;
+				}
+			}
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
 			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
@@ -1849,11 +1852,10 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			}
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
-			i_AmountDowned[victim] += 1;
-			Rogue_PlayerDowned(victim);
+			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -1862,6 +1864,11 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				if(!Rogue_Mode() && !SpecterCheckIfAutoRevive(victim))
 				{
 					i_CurrentEquippedPerk[victim] = 0;
+				}
+				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
+				{
+					//left for dead actives, no more revives.
+					i_AmountDowned[victim] = 99;
 				}
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
@@ -1947,9 +1954,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
-				i_AmountDowned[victim] = 0;
-				if(CurrentModifOn() == 2)
-					i_AmountDowned[victim] = 1;
 				return Plugin_Changed;
 			}
 		}

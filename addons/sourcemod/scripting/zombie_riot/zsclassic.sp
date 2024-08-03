@@ -37,8 +37,13 @@ void Classic_EnemySpawned(int entity)
 {
 	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
 	{
-		// At 4-players, need 600 kills to get all wave money
-		int given = RoundToCeil(float(CashTotal) / 600.0 / MultiGlobalEnemy);
+		// At 4-players, need 150 kills to get all wave money
+		
+		//scaling for players on how many zombies spawn in much harder in lower counts
+		//so we have to extrapolate MultiGlobalEnemy, i.e. max players, 42 zombies, at 4 plasers only 12 spawn.
+		float ScalingMoneyCount = MultiGlobalEnemy * 2.5;
+
+		int given = RoundToCeil(float(CashTotal) / 150.0 / ScalingMoneyCount);
 		if(given > CashLeft)
 			given = CashLeft;
 		
