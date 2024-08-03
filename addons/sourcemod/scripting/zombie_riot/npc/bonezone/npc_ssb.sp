@@ -326,7 +326,6 @@ static char g_SSBVictorySpeech_Captions[][] = {
 	//"Dealing with just one of you {olive}mortals{default}can take up to an hour, sometimes even longer!",
 	"Do you have {crimson}ANY IDEA{default} how much overtime I have to clock in for you people every time there's a {orange}war{default}, or an {red}apocalyptic event{default} like this?",
 	"I haven't had so much as a {orange}single minute{default} of free time since those {red}bastard cat people{default} let their silly little infection breach containment, and that's not even mentioning all of the trouble caused by those {vintage}disgusting fish people{default}.",
-	"Don't even get me started on that {crimson}ABSOLUTE BASTARD KAHMLSTEIN{default}... It's just been headache after headache for me down there, dealing with all of this.",
 	"I used to think the {green}Ruanians{default} and their magic were proof that you mortals weren't ALL bad, but even THEY messed up by somehow managing to build {haunted}a robot that can be infected by a disease{default}... Like, WHAT? {red}HOW DO YOU MESS UP THAT BADLY?{default}",
 	"So I thought, {haunted}''hey! If there are no more mortals, there won't be any mortals that I need to judge!''{default} Brilliant idea, right? At least, I thought so.",
 	"...But fine, I'll admit it: Maybe trying to {red}wipe out all of humanity{default} wasn't the {yellow}best{default} way to get some relief from my day job.",
