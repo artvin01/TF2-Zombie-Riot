@@ -54,8 +54,6 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 				damage *= Attributes_Get(weapon, 410, 1.0);
 
 				damage *= 1.1;
-				if(LastMann)
-					damage *= 0.33;
 				
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;

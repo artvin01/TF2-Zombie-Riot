@@ -488,7 +488,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				MedigunChargeUber(owner, medigun, 2.0, true);
+				MedigunChargeUber(owner, medigun, 5.0);
 
 				int new_ammo = GetAmmo(owner, 22);
 				
@@ -638,7 +638,7 @@ public void GB_Check_Ball(int owner, int weapon, bool crit)
 		ClientCommand(owner, "playgamesound items/medshotno1.wav");
 		return;
 	}
-	float heatrefresh = 0.06;
+	float heatrefresh = 0.12;
 
 	heatrefresh = heatrefresh / MedigunGetUberDuration(owner);
 	float flChargeLevel = GetEntPropFloat(weapon, Prop_Send, "m_flChargeLevel")+heatrefresh;
@@ -664,11 +664,13 @@ void MedigunChargeUber(int owner, int medigun, float extra_logic, bool RespectUb
 		
 	float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 
-	flChargeLevel += (0.10 * GetGameFrameTime() * extra_logic);
-	
-	if(RespectUberDuration)
-		flChargeLevel = flChargeLevel / MedigunGetUberDuration(owner);
+	float HeatExtra = 0.10;
 
+	if(RespectUberDuration)
+		HeatExtra = HeatExtra / MedigunGetUberDuration(owner);
+
+	flChargeLevel += (HeatExtra * GetGameFrameTime() * extra_logic);
+	
 	if (flChargeLevel > 1.0)
 	{
 		flChargeLevel = 1.0;

@@ -549,14 +549,6 @@ public void OnPostThink(int client)
 
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
-			
-		if(LastMann)
-		{
-			if(!b_AggreviatedSilence[client])	
-				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
-			else
-				mana_regen[client] *= 10.0; // only 10x the regen as they always regen.
-		}
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
