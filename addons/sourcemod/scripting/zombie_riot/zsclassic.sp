@@ -49,7 +49,17 @@ void Classic_EnemySpawned(int entity)
 			default is 8 * 1.54560840063 if its 4 players
 			See NPC_SpawnNext
 		*/
-		float ScalingMoneyCount = ((float(PlayersAliveScaling) * 0.01) / 12.0);
+		float ScalingMoneyCount = ((float(PlayersAliveScaling) + 0.01) / 12.0);
+		//too little people makes the above scaling impossible
+		switch(PlayersInGame)
+		{
+			case 1:
+				ScalingMoneyCount *= 0.35;
+			case 2:
+				ScalingMoneyCount *= 0.75;
+			case 3:
+				ScalingMoneyCount *= 0.95;
+		}
 
 
 		int given = RoundToCeil(float(CashTotal) / 110.0 / ScalingMoneyCount);
