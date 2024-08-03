@@ -585,7 +585,7 @@
 	}
 	"Xeno Malfunctioning Robot Desc"
 	{
-		"en"		"A Xeno Robot that overheats after hitting enough targets. Figment of Simon's Mind."
+		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
 	}
 	"Kahmlstein Desc"
 	{
