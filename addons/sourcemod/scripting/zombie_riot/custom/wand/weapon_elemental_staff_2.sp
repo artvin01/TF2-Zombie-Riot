@@ -634,6 +634,7 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
 	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
+	damage *= 0.7;
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
