@@ -309,31 +309,31 @@ public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] clas
 }
 public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 3, 19.0, 1.2);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 1, 19.0, 2.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 3, 19.0, 1.2);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 1, 19.0, 2.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 5, 14.0, 0.6);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0, 0.66);
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 7, 10.0, 0.45);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 3, 19.0, 0.66);
 }
 public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 7, 10.0, 0.44);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 5, 12.0, 0.4);
 }
 public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 7, 10.0, 0.428);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 5, 12.0, 0.4);
 }
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 9, 7.0, 0.33);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 7, 10.0, 0.285);
 }
 
 
