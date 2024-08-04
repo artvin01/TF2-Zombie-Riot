@@ -1201,9 +1201,9 @@
 	{
 		"en"	"Darkwood"
 	}
-	"Last of Internius"
+	"Last of Interitus"
 	{
-		"en"	"Last of Internius"
+		"en"	"Last of Interitus"
 	}
 	"Escapee 1"
 	{
