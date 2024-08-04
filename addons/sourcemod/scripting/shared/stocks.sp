@@ -2903,7 +2903,7 @@ int inflictor = 0)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
 
 		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
-			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF));
+			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
 	}
 #endif
 
