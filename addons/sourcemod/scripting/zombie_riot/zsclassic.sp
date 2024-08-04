@@ -28,22 +28,41 @@ void Classic_Enable()
 void Classic_NewRoundStart(int cash)
 {
 	//todo: Put it in wave CFG instead, too lazy rn
-	cash = RoundToCeil(float(cash) * 1.1);
+	cash = RoundToCeil(float(cash) * 1.05);
 	CashTotal = cash;
 	CashLeft = cash;
 }
 
 void Classic_EnemySpawned(int entity)
 {
-	if(CashLeft && MultiGlobalEnemy && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
+	if(CashLeft && view_as<CClotBody>(entity).m_fCreditsOnKill == 0.0)
 	{
 		// At 4-players, need 150 kills to get all wave money
 		
 		//scaling for players on how many zombies spawn in much harder in lower counts
-		//so we have to extrapolate MultiGlobalEnemy, i.e. max players, 42 zombies, at 4 plasers only 12 spawn.
-		float ScalingMoneyCount = MultiGlobalEnemy * 2.5;
+		/*
+			this meanswe cannot use MultiGlobalEnemy stuff.
+			PlayersAliveScaling is the cloest we have, this is for max enemies at once.
+			it starts at 8 and ends around at 42.
 
-		int given = RoundToCeil(float(CashTotal) / 150.0 / ScalingMoneyCount);
+			no divide by 0,
+			default is 8 * 1.54560840063 if its 4 players
+			See NPC_SpawnNext
+		*/
+		float ScalingMoneyCount = ((float(PlayersAliveScaling) + 0.01) / 12.0);
+		//too little people makes the above scaling impossible
+		switch(PlayersInGame)
+		{
+			case 1:
+				ScalingMoneyCount *= 0.35;
+			case 2:
+				ScalingMoneyCount *= 0.75;
+			case 3:
+				ScalingMoneyCount *= 0.95;
+		}
+
+
+		int given = RoundToCeil(float(CashTotal) / 220.0 / ScalingMoneyCount);
 		if(given > CashLeft)
 			given = CashLeft;
 		

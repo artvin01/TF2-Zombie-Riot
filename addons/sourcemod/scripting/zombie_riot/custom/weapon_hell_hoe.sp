@@ -235,11 +235,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 				
 				if (flHealToGainNotRounded > 0.0) {
 					int playerMaxHp = SDKCall_GetMaxHealth(client);
-					int healingdone = HealEntityGlobal(client, client, flHealToGainNotRounded, 1.0,_,HEAL_ABSOLUTE|HEAL_SELFHEAL, playerMaxHp/2);
-					if(healingdone > 0)
-					{
-						ApplyHealEvent(client, healingdone);
-					}
+					HealEntityGlobal(client, client, flHealToGainNotRounded, 1.0,_,HEAL_ABSOLUTE|HEAL_SELFHEAL, playerMaxHp/2);
 				}
 			}
 		}
@@ -657,11 +653,7 @@ public void Weapon_Angel_Sword_PAP_M2(int client, int weapon, const char[] class
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.3, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.3, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -739,11 +731,7 @@ public void Weapon_DRMad_Reload(int client, int weapon, bool crit, int slot)
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.5, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.5, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -791,11 +779,7 @@ public void Weapon_DRMad_M2(int client, int weapon, bool &result, int slot)
 						int playerMaxHp = SDKCall_GetMaxHealth(ally);
 						if (playerMaxHp<clientMaxHp)
 							playerMaxHp=clientMaxHp;
-						int healingdone = HealEntityGlobal(client, ally, playerMaxHp * 0.1, 10.0,_,HEAL_ABSOLUTE);
-						if(healingdone > 0)
-						{
-							ApplyHealEvent(ally, healingdone);
-						}
+						HealEntityGlobal(client, ally, playerMaxHp * 0.1, 10.0,_,HEAL_ABSOLUTE);
 						
 						ClientCommand(ally, "playgamesound player/taunt_medic_heroic.wav");
 					}
@@ -908,11 +892,7 @@ public Action Event_Hell_Hoe_OnHatTouch(int entity, int other)
 			int client = Projectile_To_Client[entity];
 			int flMaxHealth = SDKCall_GetMaxHealth(client);
 			
-			int healingdone = HealEntityGlobal(client, client, flMaxHealth * Healing_Projectile[entity], 1.0,_, HEAL_ABSOLUTE|HEAL_SELFHEAL);
-			if(healingdone > 0)
-			{
-				ApplyHealEvent(client, healingdone);
-			}
+			HealEntityGlobal(client, client, flMaxHealth * Healing_Projectile[entity], 1.0,_, HEAL_ABSOLUTE|HEAL_SELFHEAL);
 		}
 		else if (Healing_Projectile[entity] == -2.0) {
 			int client = Projectile_To_Client[entity];

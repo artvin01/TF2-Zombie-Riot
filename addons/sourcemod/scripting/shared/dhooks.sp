@@ -1775,14 +1775,14 @@ public MRESReturn OnHealingBoltImpactTeamPlayer(int healingBolt, Handle hParams)
 				ammo_amount_left = Health_To_Max;
 			}
 
-			HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
+			int HealDone = HealEntityGlobal(owner, target, float(ammo_amount_left), 1.0, 1.0, _);
 			
 			int new_ammo = GetAmmo(owner, 21) - ammo_amount_left;
 			ClientCommand(owner, "playgamesound items/smallmedkit1.wav");
 			ClientCommand(target, "playgamesound items/smallmedkit1.wav");
 			SetGlobalTransTarget(owner);
 			
-			PrintHintText(owner, "%t", "You healed for", target, ammo_amount_left);
+			PrintHintText(owner, "%t", "You healed for", target, HealDone);
 			SetAmmo(owner, 21, new_ammo);
 			Increaced_Overall_damage_Low[owner] = GameTime + 5.0;
 			Increaced_Overall_damage_Low[target] = GameTime + 15.0;

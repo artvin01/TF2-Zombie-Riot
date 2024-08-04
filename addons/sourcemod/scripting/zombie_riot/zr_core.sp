@@ -846,6 +846,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 2)
 		i_AmountDowned[client] = 1;
+		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
@@ -1085,6 +1086,7 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
+	CheckAlivePlayers(0, 0, true);
 	SDKCall_ResetPlayerAndTeamReadyState();
 
 	char buf[12];
@@ -1653,6 +1655,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
 				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
+						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+					}
+				}
+				RaidModeTime += 3.0;
 			}
 
 			ExcuteRelay("zr_lasthuman");
@@ -1826,7 +1838,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
-	Points += i_BarricadeHasBeenDamaged[client] / 65;
+	Points += i_BarricadeHasBeenDamaged[client] / 6;
 
 	Points += i_PlayerDamaged[client] / 5;
 	

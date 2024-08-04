@@ -105,9 +105,10 @@ public void Chainsaw_ability_Prethink(int client)
 			return;
 		}
 		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
+		/*
 		if(LastMann)
 			Getspeed *= 0.5;
-
+		*/
 		f_AttackDelayChainsaw[client] = GetGameTime() + (1.0 * Getspeed);
 		Chainsaw_SawAttack(client, weapon_active);
 	}

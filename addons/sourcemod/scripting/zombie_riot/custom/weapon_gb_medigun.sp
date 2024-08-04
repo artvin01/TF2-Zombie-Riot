@@ -22,9 +22,6 @@ public void Weapon_GB_Ball(int client, int weapon, bool crit)
 		damage *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
 		damage *= Attributes_GetOnPlayer(client, 8, true, true);
 
-		if(LastMann)	
-			damage *= 2.0;
-
 		float speed = 2000.0;
 
 		float time = 1000.0/speed;

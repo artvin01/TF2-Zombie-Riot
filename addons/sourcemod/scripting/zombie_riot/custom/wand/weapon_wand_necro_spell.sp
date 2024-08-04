@@ -106,10 +106,6 @@ public Action Necro_Remove_Spell(Handle Necro_Remove_SpellHandle, int client)
 	if (IsValidClient(client))
 	{
 		Spawn_Necromancy(client);
-		if(LastMann)
-		{
-			Spawn_Necromancy(client);			
-		}
 		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
 		Attributes_Set(client, 178, 1.0);

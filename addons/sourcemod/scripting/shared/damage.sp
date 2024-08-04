@@ -1328,10 +1328,6 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 
 #if defined ZR
 					CClotBody npc = view_as<CClotBody>(victim);
-					if(LastMann)
-					{
-						attack_speed *= 0.5; //extra delay.
-					}
 
 					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 						damage *= 0.40; //extra delay.

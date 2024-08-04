@@ -549,14 +549,6 @@ public void OnPostThink(int client)
 
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
-			
-		if(LastMann)
-		{
-			if(!b_AggreviatedSilence[client])	
-				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
-			else
-				mana_regen[client] *= 10.0; // only 10x the regen as they always regen.
-		}
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -684,9 +676,6 @@ public void OnPostThink(int client)
 				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
 			}
 		}
-
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
@@ -1410,13 +1399,24 @@ public void OnPostThink(int client)
 		if(!TeutonType[client])
 		{
 			int downsleft;
+			downsleft = 2;
 
-
+			/*
+			if(b_LeftForDead[client])
+			{
+				//only give 1 revive at all costs.
+				if(i_AmountDowned[client] < 1)
+				{
+					i_AmountDowned[client] = 1;
+				}
+			}
+			*/
 			downsleft -= i_AmountDowned[client];
 			if(downsleft < 0)
 			{
 				downsleft = 0;
 			}
+			/*
 			if(b_LeftForDead[client])
 			{
 				if(downsleft > 1)
@@ -1424,6 +1424,7 @@ public void OnPostThink(int client)
 					downsleft = 1;
 				}
 			}
+			*/
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
 			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
@@ -1855,7 +1856,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -1865,11 +1866,14 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					i_CurrentEquippedPerk[victim] = 0;
 				}
+
 				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
 				{
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				i_AmountDowned[victim]++;
+				
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
@@ -2642,9 +2646,6 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		else
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
-
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{
