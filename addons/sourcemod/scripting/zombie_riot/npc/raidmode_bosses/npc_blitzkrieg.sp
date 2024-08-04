@@ -1728,7 +1728,7 @@ static void NPC_Death(int entity)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", closest);
+					CPrintToChatAll("{crimson}%s{default}: What, HOW, {yellow}%N{default} How did you beat me before my army arrived, {crimson}no matter{default} theres always next time...", c_NpcName[npc.index], closest);
 				}
 			}
 		}
