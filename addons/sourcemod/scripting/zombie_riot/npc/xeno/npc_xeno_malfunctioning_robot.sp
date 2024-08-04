@@ -248,11 +248,14 @@ public void XenoMalfuncRobot_ClotThink(int iNPC)
 			if(npc.f_Overheat_Timer <= gameTime)
 			{
 				npc.f_Overheat_Timer = gameTime + 0.3;
-				float radius = 160.0, damage = 200.0;
+				float radius = 160.0, damage = 350.0;
 				float Loc[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
 				Explode_Logic_Custom(damage, npc.index, npc.index, -1, _, radius, _, _, true);
-				spawnRing_Vectors(Loc, radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
 				npc.PlayOverHeatSound();
 			}
 		}
@@ -325,7 +328,7 @@ static void XenoMalfuncRobot_SelfDefense(XenoMalfuncRobot npc, float gameTime, i
 				{
 					float damage = 100.0;
 					if(npc.m_fbGunout)//nightmare
-					damage *= 1.4;
+						damage *= 1.4;
 
 					if(target > 0) 
 					{

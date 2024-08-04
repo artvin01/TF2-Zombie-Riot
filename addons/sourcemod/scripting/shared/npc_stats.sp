@@ -8793,9 +8793,9 @@ public void KillNpc(int ref)
 	}
 }
 
-stock void FreezeNpcInTime(int npc, float Duration_Stun)
+stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
-	if(b_CannotBeStunned[npc])
+	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
 	{
 		return;
 	}
@@ -8818,7 +8818,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
+	if(!IgnoreAllLogic && b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{

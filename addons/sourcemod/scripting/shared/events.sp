@@ -141,6 +141,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Escape_DropItem(client);
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
+			i_BarricadeHasBeenDamaged[client] = 0;
 			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
@@ -474,9 +475,6 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//
-	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 2)
-		i_AmountDowned[client] = 1;
 
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);

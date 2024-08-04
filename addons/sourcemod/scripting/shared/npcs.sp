@@ -74,10 +74,8 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		limit = RoundToNearest(float(limit) * MaxEnemyMulti());
 
 		float f_limit = Pow(1.115, float(CountPlayersOnRed()));
-	//	float f_limit_alive = Pow(1.115, float(CountPlayersOnRed(2)));
 
 		f_limit *= float(limit);
-	//	f_limit_alive *= float(limit);
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -105,9 +103,6 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 		
 		if(RoundToNearest(f_limit) >= MaxNpcEnemyAllowed())
 			f_limit = float(MaxNpcEnemyAllowed());
-
-	//	if(RoundToNearest(f_limit_alive) >= MaxNpcEnemyAllowed())
-	//		f_limit_alive = float(MaxNpcEnemyAllowed());
 			
 		
 		if(PlayersAliveScaling >= MaxNpcEnemyAllowed())

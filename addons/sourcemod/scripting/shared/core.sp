@@ -389,6 +389,7 @@ int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS] = {-1, ...};
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
+float f_HealDelayParticle[MAXENTITIES]={1.0, ...};
 
 bool b_IsAloneOnServer = false;
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
@@ -2901,6 +2902,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_LeeSuperEffect[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
+		f_HealDelayParticle[entity] = 0.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 #endif

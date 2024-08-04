@@ -4567,10 +4567,12 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	/*
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 	else
-		map.SetValue("442", 1.0);	// Move Speed
+	*/
+	map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
@@ -5446,6 +5448,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+						//only give 1 revive at all costs.
+						if(i_AmountDowned[client] < 1)
+						{
+							i_AmountDowned[client] = 1;
+						}
 					}
 					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
 					{

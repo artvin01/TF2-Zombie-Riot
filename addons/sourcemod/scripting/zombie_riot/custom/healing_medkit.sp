@@ -83,14 +83,14 @@ public Action Medikit_healing(int client, int buttons)
 											{
 												ammo_amount_left = Health_To_Max;
 											}
-											HealEntityGlobal(client, player_looking_at, float(ammo_amount_left), _, 0.0, _);
-											healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 5);
+											int healdo = HealEntityGlobal(client, player_looking_at, float(ammo_amount_left), _, 0.0, _, GetAmmo(client, 21));
+											healing_cooldown[client] = GetGameTime() + float(healdo / 5);
 											
 											int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
 											ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 											ClientCommand(player_looking_at, "playgamesound items/smallmedkit1.wav");
 											f_cooldown_per_usage_global[client] = GetGameTime() + 1.0;
-											PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, ammo_amount_left, ammo_amount_left / 5);
+											PrintHintText(client,"You Healed %N for %i HP!, you gain a %i healing cooldown.", player_looking_at, healdo, healdo / 5);
 											
 											SetAmmo(client, 21, new_ammo);
 											for(int i; i<Ammo_MAX; i++)
@@ -161,16 +161,16 @@ public Action Medikit_healing(int client, int buttons)
 								}
 								else
 								{
-									if(Health_To_Max < 15)
+									if(Health_To_Max < 50)
 									{
 										ammo_amount_left = Health_To_Max;
 									}
-									HealEntityGlobal(client, client, float(ammo_amount_left), 1.0, 0.0, _);
-									int new_ammo = GetAmmo(client, 21) - ammo_amount_left;
+									int healdo = HealEntityGlobal(client, client, float(ammo_amount_left), 1.0, 0.0, _, GetAmmo(client, 21));
+									int new_ammo = GetAmmo(client, 21) - healdo;
 									
-									healing_cooldown[client] = GetGameTime() + float(ammo_amount_left / 2);
+									healing_cooldown[client] = GetGameTime() + float(healdo / 2);
 									
-									PrintHintText(client,"You Healed yourself for %i HP!, you gain a %i healing cooldown.", ammo_amount_left, ammo_amount_left / 2);
+									PrintHintText(client,"You Healed yourself for %i HP!, you gain a %i healing cooldown.", healdo, ammo_amount_left / 2);
 									
 									f_cooldown_per_usage_global[client] = GetGameTime() + 1.0;
 									ClientCommand(client, "playgamesound items/smallmedkit1.wav");
