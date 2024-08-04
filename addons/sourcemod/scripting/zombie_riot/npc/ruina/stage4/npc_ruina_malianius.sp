@@ -398,7 +398,7 @@ static void Fire_Random_Ion(Malianius npc)
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsValidEnemy(npc.index, target))
+		if(target != -1)
 			break;
 		
 		if(!IsValidEnemy(npc.index, client))
@@ -413,7 +413,7 @@ static void Fire_Random_Ion(Malianius npc)
 	}
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		if(IsValidEnemy(npc.index, target))
+		if(target != -1)
 			break;
 
 		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
@@ -421,7 +421,7 @@ static void Fire_Random_Ion(Malianius npc)
 		if(!IsValidEnemy(npc.index, entity))
 			continue;
 
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, entity);
 
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
@@ -431,14 +431,14 @@ static void Fire_Random_Ion(Malianius npc)
 
 	for(int a; a < i_MaxcountBuilding; a++)
 	{
-		if(IsValidEnemy(npc.index, target))
+		if(target != -1)
 			break;
 
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
 		if(!IsValidEnemy(npc.index, entity))
 			continue;
 
-		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, entity);
 
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
