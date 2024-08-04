@@ -4,162 +4,199 @@
 	"Multi Pellet"
 	{
 		"en"		"Archetype: Multi Pellet"
+		"fr"		"Archetype: Multi-plombs"
 		"ru"		"Архетип: Мультивыстрел"
 		"chi"		"类型：霰弹"
 	}
 	"Rapid Fire"
 	{
 		"en"		"Archetype: Rapid Fire"
+		"fr"		"Archetype: Tirs Rapides"
 		"ru"		"Архетип: Быстрый огонь"
 		"chi"		"类型：连发"
 	}
 	"Single Pellet"
 	{
 		"en"		"Archetype: Single Pellet"
+		"fr"		"Archetype: Chevrotine"
 		"ru"		"Архетип: Одиночный выстрел"
 		"chi"		"类型：单发"
 	}
 	"Infinite Fire"
 	{
 		"en"		"Archetype: Infinite Fire"
+		"fr"		"Archetype: Tir Infini"
 		"ru"		"Архетип: Бесконечный огонь"
 		"chi"		"类型：火力压制"
 	}
 	"Trap Master"
 	{
 		"en"		"Archetype: Trap Master"
+		"fr"		"Archetype: Maître des Pièges"
 		"ru"		"Архетип: Ловчий"
 		"chi"		"类型：陷阱大师"
 	}
 	"Far Range"
 	{
 		"en"		"Archetype: Far Range"
+		"fr"		"Archetype: Longue Portée"
 		"ru"		"Архетип: Дальняя дальность"
 		"chi"		"类型：远程"
 	}
 	"Explosive Mind"
 	{
 		"en"		"Archetype: Explosive Mind"
+		"fr"		"Archetype: Maître des Explosions"
 		"ru"		"Архетип: Взрывной разум"
 		"chi"		"类型：爆炸"
 	}
 	"Team Support"
 	{
 		"en"		"Archetype: Team Support"
+		"fr"		"Archetype: Bon Coéquipier"
 		"ru"		"Архетип: Командная поддержка"
 		"chi"		"类型：辅助"
 	}
 	"ArchDebuff"
 	{
 		"en"		"Archetype: Debuff"
+		"fr"		"Archetype: Affaiblisseur"
 		"ru"		"Архетип: Ослабление"
 		"chi"		"类型：Debuff"
 	}
 	"Brawler"
 	{
 		"en"		"Archetype: Brawler"
+		"fr"		"Archetype: Bagarreur"
 		"ru"		"Архетип: Боец"
 		"chi"		"类型：战士"
 	}
 	"Ambusher"
 	{
 		"en"		"Archetype: Ambusher"
+		"fr"		"Archetype: Embusqueur"
 		"ru"		"Архетип: Засадник"
 		"chi"		"类型：偷袭"
 	}
 	"Combatant"
 	{
 		"en"		"Archetype: Combatant"
+		"fr"		"Archetype: Combatant"
 		"ru"		"Архетип: Комбатант"
 		"chi"		"类型：斗士"
 	}
 	"Aberration"
 	{
 		"en"		"Archetype: Aberration"
+		"fr"		"Archetype: Aberration"
 		"ru"		"Архетип: Аберрация"
 		"chi"		"类型：异类"
 	}
 	"Duelist"
 	{
 		"en"		"Archetype: Duelist"
+		"fr"		"Archetype: Dueliste"
 		"ru"		"Архетип: Дуэлянт"
 		"chi"		"类型：决斗"
 	}
 	"Lord"
 	{
 		"en"		"Archetype: Lord"
+		"fr"		"Archetype: Roi"
 		"ru"		"Архетип: Лорд"
 		"chi"		"类型：王"
 	}
 	"Crusher"
 	{
 		"en"		"Archetype: Crusher"
+		"fr"		"Archetype: Broyeur"
 		"ru"		"Архетип: Дробитель"
 		"chi"		"类型：碾压"
 	}
 	"Summoner"
 	{
 		"en"		"Archetype: Summoner"
+		"fr"		"Archetype: Convoqueur"
 		"ru"		"Архетип: Призыватель"
 		"chi"		"类型：召唤师"
 	}
 	"Chain Caster"
 	{
 		"en"		"Archetype: Chain Caster"
+		"fr"		"Archetype: Sortilèges Successifs"
 		"ru"		"Архетип: Мастер цепей"
 		"chi"		"类型：连环法师"
 	}
 	"Multi Caster"
 	{
 		"en"		"Archetype: Multi Caster"
+		"fr"		"Archetype: Multi-sortilèges"
 		"ru"		"Архетип: Мультизаклинатель"
 		"chi"		"类型：多重法师"
 	}
 	"Base Caster"
 	{
 		"en"		"Archetype: Base Caster"
+		"fr"		"Archetype: Sortilèges Amateurs"
 		"ru"		"Архетип: Базовый заклинатель"
 	}
 	"Mythic Caster"
 	{
 		"en"		"Archetype: Mythic Caster"
+		"fr"		"Archetype: Sortilèges Mythiques"
 		"chi"		"类型：至尊法师"
 	}
 	"Abyssal Hunter"
 	{
 		"en"		"Archetype: Abyssal Hunter"
+		"fr"		"Archetype: Sortilèges des Abîmes"
 		"chi"		"类型：深渊猎人"
 	}
 	"Kazimierz"
 	{
 		"en"		"Archetype: Kazimierz"
+		"fr"		"Archetype: Kazimierz"
 		"chi"		"类型：卡齐米日"
 	}
 	"Bloodletter"
 	{
 		"en"		"Archetype: Bloodletter"
+		"fr"		"Archetype: Hémorragie"
 		"chi"		"类型：放血者"
 	}
 	"Bloody Butcher"
 	{
 		"en"		"Archetype: Bloody Butcher"
+		"fr"		"Archetype: Boucher Dégorgeur"
 		"chi"		"类型：血腥屠夫"
 	}
+
+	"Common Pap Damage Attack Speed Desc"
+	{
+		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
+		"ru"		"Увеличенный урон и скорость атаки."
+		"chi"       "增加伤害和攻击速度"
+	}
+
 	"Syringe Gun Desc"
 	{
 		"en"		"Low Damage but very high bleed duration"
+		"fr"		"Peu de dégats, mais fais saigner pour longtemps"
 		"ru"		"Низкий урон, но очень высокая длительность кровотечения."
 		"chi"       	"低伤害，但流血持续时间非常高"
 	}
 	"Syringe Gun Pap 1 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 	}
 	"Syringe Gun Pap 2 Desc"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 	}
@@ -168,30 +205,35 @@
 	"Sniper Rifle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, consumes 2 bullets per shot."
+		"fr"		"Dégats et cadence de tir améliorés, 2 balles utilisées par tir"
 		"ru"		"Увеличенный урон и скорость атаки, расходует 2 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，每次射击消耗2发子弹。"
 	}
 	"Sniper Rifle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, Scoping isn't needed anymore but attacks are delayed."
+		"fr"		"Dégats et cadence de tir améliorés, le zoom n'est plus requis, mais les tirs seront retardés"
 		"ru"		"Увеличенный урон и скорость атаки, прицеливание больше не нужно, но атаки имеют задержку."
 		"chi"       "增加伤害和攻击速度，增大攻击范围，但换弹速度加长"
 	}
 	"Sniper Rifle Pap 3"
 	{
 		"en"		"Expensive Super Upgrade, 5 bullets at once for extreme damage.\nSome pair of goggles may increase damage further when fully charged."
+		"fr"		"5 balles utilisées par tir.\nDes lunettes pourrait améliorer les dégats pour des charges pleines"
 		"ru"		"Дорогое суперулучшение, 5 пуль одновременно для нанес. огромн. урона.\nНекоторые очки могут ещё больше увелич. урон при полном заряде."
 		"chi"       "昂贵的超级升级，5发子弹一次造成极端伤害。\n有些护目镜在充满电时可能会进一步增加伤害。"
 	}
 	"Sniper Rifle Pap 4"
 	{
 		"en"		"Heavily increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Сильное Увеличенный урон и скорость атаки."
 		"chi"       "大幅增加伤害和攻击速度"
 	}
 	"Sniper Rifle Pap 5"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 	}
@@ -199,24 +241,28 @@
 	"Annabelle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed."
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度"
 	}
 	"Annabelle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
 	"Annabelle Pap 4"
 	{
 		"en"		"Increased damage and attackspeed and extra ammo."
+		"fr"		"Dégats et cadence de tir améliorés, capacité de munitions augmuntée"
 		"ru"		"Увелич. урон и скорость атаки, а также доп. патроны."
 		"chi"       "增加伤害和攻击速度和额外的弹药。"
 	}
@@ -224,18 +270,21 @@
 	"Huntsman Desc"
 	{
 		"en"		"Can headshot. Press M2 To fire a barrage"
+		"fr"		"Les Tirs en Pleine Tête sont possibles. Appuyez sur M2 pour un barrage de flèches"
 		"ru"		"Может стрелять в голову. Нажмите M2, чтобы открыть шквальный огонь."
 		"chi"       "可以造成爆头伤害！按下M2键发射多个弓箭"
 	}
 	"Huntsman Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed."
+		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré"
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности М2."
 		"chi"       "增加伤害和攻击速度，加强右键技能。"
 	}
 	"Huntsman Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed.\nBase attack now shoots 3 arrows."
+		"fr"		"Dégats et cadence de tir améliorés, barrage amélioré\nLes attaques réguliers tirent 3 flèches"
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2.\nСтреляет 3-я стрелами (обычная)."
 		"chi"       "增加伤害和攻击速度，加强右键技能。普通攻击现可发射3支箭。"
 	}
@@ -243,35 +292,41 @@
 	"Huntsman Pap 3"
 	{
 		"en"		"Increased damage and attackspeed."
+		"fr"		"Dégats et cadence de tir améliorés"
 		"chi"		"增加伤害和攻速。"
 	}
 	
 	"Deagle Desc"
 	{
 		"en"		"Deagle that throws objects with m2, shoot them to deal even more damage.\nTime correctly after a blue flash, and throw multiple for even more damage.\nThis projectile always counts as a HEADSHOT."
+		"fr"		"Lancez des objets avec M2, et tirez-les pour des dégats additionels.\nLancez plusieurs pour davantage de dégats, essayez de syncroniser avec le flash bleu.\nL'objet effectuera toujours des tirs en pleine tête."
 		"ru"		"Орёл, который бросает предметы клавишей М2, стреляйте ими, чтобы нанести ещё больше урона.\nРассчитайте время после синей вспышки и бросайте несколько раз для нанесения ещё большего урона.\nЭти снаряды всегда засчитываются как ВЫСТРЕЛ В ГОЛОВУ."
 		"chi"       "M2投出硬币，击中硬币将子弹反射到敌人弱点造成暴击。如在硬币发出闪光后击中，造成额外伤害。空中如有多个硬币，则可以多次反弹，叠加伤害。"
 	}
 	"Deagle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable."
+		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté"
 		"ru"		"Увелич. урон и скорость атаки, усиление способности на М2 получает один доп. бросок."
 		"chi"       "增加伤害和攻击速度，可投硬币+1。"
 	}
 	"Deagle Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
+		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
 		"ru"		"Увеличенный урон и скорость атаки, усиление способности на М2 получает один доп. бросок.\n2 пули за выстрел."
 		"chi"       "增加伤害和攻击速度，鼠标右键的投掷物+1。\n每发子弹消耗2颗子弹"
 	}
 	"Deagle Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, m2 ability buffed gains one extra throwable.\n2 bullets per shot consumed."
+		"fr"		"Dégats et cadence de tir améliorés, abilité objet amélioré, capacité d'objets augmunté\n2 balles utilisées par tir"
 	}
 	
 	"Flamethrower Pap 1"
 	{
 		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
+		"fr"		"Dégats améliorés. Abilité M2 donne des Mini-Crits et du Über pour une courte période."
 		"ru"		"Увеличенный урон. Способность на М2 даёт мини-криты и убер на короткое время."
 		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
 	}
@@ -279,12 +334,14 @@
 	"Leone 12 Gauge Super Desc"
 	{
 		"en"		"Semi automatic shotgun, you cannot hold down to shoot.\nMore powerful but harder to use since its single fire nature and poor accuracy"
+		"fr"		"Fusil à pompe semi-automatique, vous ne pouvez pas maintenir la détente pour tirer.\nDégats sont améliorés en échange d'une déviation plus grande."
 		"ru"		"Полуавт. дробовик, для стрельбы из которого нельзя удерживать нажатой клавишу.\nМощнее, стреляет одиночными выстрелами и имеет низкую точность."
 		"chi"       "半自动霰弹枪，你不能按住射击。虽然强大，但因为它的单一火力性质和较差的准确性，使它更难使用"
 	}
 	"Leone 12 Gauge Super Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, much tighter spread."
+		"fr"		"Dégats et cadence de tir améliorés, déviation réduite."
 		"ru"		"Увеличенный урон и скорость атаки, гораздо более плотный разброс."
 		"chi"       "增加伤害和攻击速度，子弹扩散减少。"
 	}
@@ -292,18 +349,21 @@
 	"Grenade Launcher Pap 1"
 	{
 		"en"		"Increased damage and attackspeed."
+		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 2"
 	{
 		"en"		"Reduced damage but higher attackspeed attack speed and reload speed."
+		"fr"		"Dégats réduits, cadence de tir et vitesse de rechargement améliorées."
 		"ru"		"Уменьшенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Grenade Launcher Pap 3"
 	{
 		"en"		"Sligthty increased damage and massively increased attackspeed and reload speed."
+		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés."
 		"ru"		"Немного увеличенный урон и крупно увеличенная скорость атаки и перезарядки."
 		"chi"       "增加伤害,大幅度增加攻击速度和装弹速度。"
 	}
@@ -311,22 +371,26 @@
 	"Tommygun Desc"
 	{
 		"en"		"While equipped and in your hand, take 20% less ranged damage."
+		"fr"		"20%% de résistance contre les dégats par les sources distantes quand actif"
 	}
 	"Tommygun Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
 	"Tommygun Pap 3"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés."
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
@@ -334,18 +398,21 @@
 	"Shrapnel Shredder Desc"
 	{
 		"en"		"A slow shotgun that fires explosive pellets. Can be Pack-a-Punched twice to increase damage, clip size, and number of pellets."
+		"fr"		"Fusil à pompe lente qui tire des plombs explosifs. Les améliorations Pack-a-Punch augmuntent les dégats, la capacité chargeur, et le nombre de plombs."
 		"ru"		"Медл. дробовик, стреляющий взрывными дробинками. Может быть дважды улучшен, чтобы увеличить урон, размер обоймы и количество дробинок."
 		"chi"       "一种发射爆炸子弹的慢速霰弹枪。可以使用武器工作台升级两次，以增加伤害，增加弹药。"
 	}
 	"Shrapnel Shredder Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
+		"fr"		"Dégats et cadence de tir améliorés, plomb additionel par tir."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
 		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
 	}
 	"Shrapnel Shredder Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, extra bullet per shot."
+		"fr"		"Dégats et cadence de tir améliorés, plomb additionel par tir."
 		"ru"		"Увеличенный урон и скорость атаки, дополнительная пуля за выстрел."
 		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
 	}
@@ -353,12 +420,14 @@
 	"Double Barrel Shotgun Pap 1"
 	{
 		"en"		"Increased damage and slightly faster attackspeed and reload speed"
+		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés"
 		"ru"		"Увеличенный урон и немного более высокая скорости атаки и скорость перезарядки."
 		"chi"       "增加伤害和攻击速度，每次射击增加额外子弹。"
 	}
 	"Double Barrel Shotgun Pap 2"
 	{
 		"en"		"Increased damage and attackspeed, reload speed and 4 clip, meaning you can shoot twice."
+		"fr"		"Dégats, cadence de tir et vitesse de rechargement améliorés. Capacité chargeur doublé."
 		"ru"		"Увелич. урон и скорость атаки, скорости перез. и обойма на 4-е патрона, что означает, что вы можете стрелять дважды."
 		"chi"       "增加伤害、攻击速度、装填速度和4发弹夹，这意味着你可以射击两次。"
 	}
@@ -366,27 +435,32 @@
 	"RPG Pap 1"
 	{
 		"en"		"Increased damage and reload speed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорости перезарядки."
 		"chi"       "增加伤害和装填速度"
 	}
 	"RPG Pap 2"
 	{
 		"en"		"Increased damage, gain 3 extra clipsize, faster reload\n Only hits 4 enemies now instead of 10"
+		"fr"		"Dégats et vitesse de rechargement améliorés. +3 capacité chargeur.\nFrappe seulement 4 ennemis à la fois au lieu de 10."
 	}
 	"RPG Pap 3"
 	{
 		"en"		"Massively Increased damage and REDUCED reload speed.\n And has better enemy pierce"
+		"fr"		"Dégats et vitesse de rechargement améliorés.\nFrappe plus d'ennemis à la fois."
 	}
 	
 	"The Pomson 7000 Desc"
 	{
 		"en"		"Rapid fire laser gun!\nTurns to Primary!"
+		"fr"		"Fusil à rayon laser avec cadence de tir rapide!\nDevient une arme principale!"
 		"ru"		"Скорострельная лазерная пушка!\nПревращается в основное!"
 		"chi"       "快速激光枪!"
 	}
 	"The Pomson 7000 Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
@@ -394,12 +468,14 @@
 	"IEM Launcher Desc"
 	{
 		"en"		"Engi says to not touch his stuff, but you don't care"
+		"fr"		"L'Engineer vous demande de pas toucher ses choses, mais vous vous foutez de lui."
 		"ru"		"Инженер говорит не трогать его вещи, но вам всё равно."
 		"chi"       "工程师说不要碰他的东西，但你不在乎"
 	}
 	"IEM Launcher Pap 1"
 	{
 		"en"		"Increased damage and range and less falloff"
+		"fr"		"Dégats et cadence de tir améliorés, baisse de puissance avec distance réduite"
 		"ru"		"Увеличенный урон и дальность, а также меньшее падение урона на расстоянии."
 		"chi"       "增加伤害和射程，伤害衰减程度减少"
 	}
@@ -407,18 +483,21 @@
 	"Marksman Rifle Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, Bullets turn into explosive hitscan.\nArchetype changes to ''Explosive Mind''"
+		"fr"		"Dégats et cadence de tir améliorés, balles deviennent explosives.\nArchetype devient «Maître des Explosions»"
 	    "ru"		"Увеличенный урон и скорость атаки, пули превращаются во взрывные.\nАрхетип меняется на «Взрывной разум»"
 	}
 	
 	"Quad Launcher Desc"
 	{
 		"en"		"4 shots into 1 spam.." 
+		"fr"		"4 tirs par spam..." 
 		"ru"		"4 выстрела за один выстрел."
 		"chi"       "4次射击后将发射垃圾...."
 	}
 	"Quad Launcher Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
@@ -426,6 +505,7 @@
 	"The Loch-n-Load Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}
@@ -433,39 +513,46 @@
 	"Boomstick Desc"
 	{
 		"en"		"Load 4 bullets and shoot all at once\nDeals 10%% dmg against raids."
+		"fr"		"Chargez 4 munitions et tirez-les toutes à la fois\nInflige 10%% des dégats contre les Raids."
 	}
 	
 	"Boomstick Pap 1"
 	{
 		"en"		"Increased damage and attackspeed, loads up to 6 shells."
+		"fr"		"Dégats et cadence de tir améliorés, charge 6 munitions à la fois"
 		"ru"		"Увеличенный урон и скорость атаки, заряжает до 6 патронов."
 		"chi"       "增加伤害和攻击速度，子弹装载量增加到6发。"
 	}
 	"Boomstick Pap 3"
 	{
 		"en"		"Increased damage and attackspeed, Louder and loads more clips!"
+		"fr"		"Dégats et cadence de tir améliorés, charge plus de munitions et fait plus de bruit!"
 	}
 	"Boomstick Pap 2"
 	{
 		"en"		"Bullets turn into piercing lasers with damage falloff.\nDamage stays the same on full hits but it is easier to hit as you dont have to headshot."
+		"fr"		"Remplace les plombs avec des rayons laser perçantes.\nDégats sont identiques à courte portée mais les tirs en pleine tête ne sont plus possibles."
 		"chi"		"子弹换为带穿透的激光子弹，带有距离衰减。伤害无改变，但更容易集中敌人。"
 	}
 	
 	"Terroriser Bomb Implanter Sniperrifle Desc"
 	{
 		"en"	"Implant a bomb onto the target you hit, press R to detonate them.\nImplant multiple for more dmg. More charge = more bombs, headshot = more bombs"
+		"fr"	"Plante une bombe dans vos cibles, appuyez sur R pour les détoner.\nPlantez plus de bombes pour plus de dégats. Les tirs en pleine tête et une charge plus grande augmuntent le nombre de bombes."
 		"ru"	"Устанавливает бомбу на цель, в которую вы попали, нажмите R, чтобы взорвать её.\nУстановите несколько бомб для большего урона. Больше зарядов = больше бомб, выстрел в голову = больше бомб."
 		"chi"   "射击将会发出黏弹，按R引爆它们。\n部下多颗黏弹可造成更多伤害.更多的冲锋=更多的炸弹，爆头=更多的炸弹"
 	}
 	"Terroriser Bomb Implanter Sniperrifle Desc PaP 1"
 	{
 		"en"	"Increaces firerare, chargetime, and bombs planted at once"
+		"fr"	"Cadence de tir et vitesse de charge améliorés, plante plus de bombes à la fois"
 		"chi"	"加攻速，充能速度，以及炸弹上限"
 	}
 	
 	"Rampager Automatic Rifle Desc"
 	{
 		"en"	"Rapid Fire LMG with no reload, the more you shoot, the faster it shoots."
+		"fr"	"Mitraillette sans rechargeur. Plus que vous tirez, plus la cadence de tirs accélère."
 		"ru"	"Скорострельный ручной пулемёт без перезарядки, чем больше вы стреляете, тем быстрее он стреляет."
 		"chi"   "无需装填的速射轻机枪，你射击的时间越久，它射得越快。"
 	}
@@ -473,6 +560,7 @@
 	"Star Shooter Desc"
 	{
 		"en"	"Sure, Brain, but where are you going to get enough stars for this?\nYour M1 CD will show you how long untill it will cool off again.\nHigher overheat means less damage."
+		"fr"	"Tant pis, cerveau, mais oû allez-vous trouver des étoîles pour ça?\nCet arme se chauffe graduellement, qui réduit les dégats.\nLa minuterie M1 vous donnera le temps de refroidissement."
 		"ru"	"Конечно, Мозг, но где ты достанешь достаточно звёзд для этого?\nВремя восст. M1 покажет вам, через какое время она снова будет восстанавливаться.\nБольше перегрев означает меньший урон."
 		"chi"   "当然，兄弟，但你要去哪里弄到足够的星星呢?你射击时，冷却时间会告诉你它多久才会再次冷却。更高的过热意味着更少的伤害。"
 	}
@@ -480,12 +568,14 @@
 	"Star Shooter Pap 1"
 	{
 		"en"	"Increased damage,reduced overheat gained each shot and gains an ability.\nAbility gives increased attack speed and removes overheat gain from shooting for 7.5 seconds."
+		"fr"	"Dégats améliorés, chauffage de l'arme réduite.\nL'abilité améliore la cadence de tirs et empêche le chauffage de l'arme pour 7.5 secondes."
 		"chi"	"增加伤害，减少过热。获得新技能，激活时增加攻速并且无过热，持续时间7.5秒"
 	}
 	
 	"Loose Cannon Pap 1"
 	{
 		"en"		"Increased damage and attackspeed"
+		"fr"		"Dégats et cadence de tir améliorés"
 		"ru"		"Увеличенный урон и скорость атаки."
 		"chi"       "增加伤害和攻击速度。"
 	}

@@ -8,56 +8,67 @@
 	"Allies"
 	{
 		"en" 		"Allies"
+		"fr" 		"Alliés"
 		"pt"		"Aliados"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
+		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
+		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
+		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
+		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
+		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
+		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
+		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
+		"fr" 		"Bloons"
 		"pt"		"Balões"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
+		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
+		"fr" 		"Disciples du Void"
 	}
 	"Ruina"
 	{
@@ -66,6 +77,7 @@
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
+		"fr" 		"Alliance du Chaos"
 	}
 	"Expidonsa"
 	{
@@ -75,10 +87,12 @@
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
+		"fr"		"Alliés de Interitus"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
+		"fr" 		"Le zombie le plus commun. Rien de spécial."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
