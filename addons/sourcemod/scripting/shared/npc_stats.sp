@@ -96,6 +96,11 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 
 int i_EntitiesHitAoeSwing_NpcSwing[MAXENTITIES]= {-1, ...};	//Who got hit
 int i_EntitiesHitAtOnceMax_NpcSwing; //How many do we stack
+static const char g_HurtArmorSounds[][] = {
+	")physics/metal/metal_box_impact_bullet1.wav",
+	")physics/metal/metal_box_impact_bullet2.wav",
+	")physics/metal/metal_box_impact_bullet3.wav",
+};
 
 public Action Command_RemoveAll(int client, int args)
 {
@@ -203,6 +208,7 @@ void OnMapStart_NPC_Base()
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundSuccess));	   i++) { PrecacheSound(g_ArrowHitSoundSuccess[i]);	   }
 	for (int i = 0; i < (sizeof(g_ArrowHitSoundMiss));	   i++) { PrecacheSound(g_ArrowHitSoundMiss[i]);	   }
 	for (int i = 0; i < (sizeof(g_PanzerStepSound));   i++) { PrecacheSound(g_PanzerStepSound[i]);   }
+	for (int i = 0; i < (sizeof(g_HurtArmorSounds));   i++) { PrecacheSound(g_HurtArmorSounds[i]);   }
 #if defined ZR
 	for (int i = 0; i < (sizeof(g_TankStepSound));   i++) { PrecacheSoundCustom(g_TankStepSound[i]);   }
 #endif
@@ -746,6 +752,34 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return fl_HookDamageTaken[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_HookDamageTaken[this.index] = TempValueForProperty; }
 	}
+	
+	property float m_flArmorCountMax
+	{
+		public get()							{ return fl_ArmorSetting[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_ArmorSetting[this.index][0] = TempValueForProperty; }
+	}
+	property float m_flArmorCount
+	{
+		public get()							{ return fl_ArmorSetting[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_ArmorSetting[this.index][1] = TempValueForProperty; }
+	}
+	property float m_flArmorProtect
+	{
+		public get()							{ return fl_ArmorSetting[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_ArmorSetting[this.index][2] = TempValueForProperty; }
+	}
+
+	property int m_iArmorGiven
+	{
+		public get()							{ return i_ArmorSetting[this.index][0]; }
+		public set(int TempValueForProperty) 	{ i_ArmorSetting[this.index][0] = TempValueForProperty; }
+	}
+	property int m_iArmorType
+	{
+		public get()							{ return i_ArmorSetting[this.index][1]; }
+		public set(int TempValueForProperty) 	{ i_ArmorSetting[this.index][1] = TempValueForProperty; }
+	}
+
 	property float m_flGrappleCooldown
 	{
 		public get()							{ return fl_GrappleCooldown[this.index]; }
@@ -1061,6 +1095,15 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return fl_AbilityOrAttack[this.index][9]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][9] = TempValueForProperty; }
 	}
+	public void PlayHurtArmorSound() 
+	{
+		if(this.m_flNextHurtSoundArmor > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSoundArmor = GetGameTime(this.index) + 0.4;
+		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+
+	}
 
 
 	property float m_flJumpStartTime
@@ -1251,6 +1294,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	{
 		public get()							{ return fl_NextHurtSound[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextHurtSound[this.index] = TempValueForProperty; }
+	}
+	property float m_flNextHurtSoundArmor
+	{
+		public get()							{ return fl_NextHurtSoundArmor[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_NextHurtSoundArmor[this.index] = TempValueForProperty; }
 	}
 	property float m_flHeadshotCooldown
 	{
@@ -7971,6 +8019,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+	ResetAllArmorStatues(entity);
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
 	f_UnstuckTimerCheck[entity][1] = 0.0;
@@ -7981,6 +8030,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f3_CustomMinMaxBoundingBox[entity][0] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][1] = 0.0;
 	f3_CustomMinMaxBoundingBox[entity][2] = 0.0;
+	f_ExtraOffsetNpcHudAbove[entity] = 0.0;
 	i_Wearable[entity][0] = -1;
 	i_Wearable[entity][1] = -1;
 	i_Wearable[entity][2] = -1;
@@ -8025,6 +8075,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_DoNotChangeTargetTouchNpc[entity] = 0;
 	fl_GetClosestTargetNoResetTime[entity] = 0.0;
 	fl_NextHurtSound[entity] = 0.0;
+	fl_NextHurtSoundArmor[entity] = 0.0;
 	fl_HeadshotCooldown[entity] = 0.0;
 	b_CantCollidie[entity] = false;
 	b_CollidesWithEachother[entity] = false;
@@ -8742,9 +8793,9 @@ public void KillNpc(int ref)
 	}
 }
 
-stock void FreezeNpcInTime(int npc, float Duration_Stun)
+stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
-	if(b_CannotBeStunned[npc])
+	if(!IgnoreAllLogic && b_CannotBeStunned[npc])
 	{
 		return;
 	}
@@ -8767,7 +8818,7 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun)
 	}
 
 	float Duration_Stun_Post = Duration_Stun;
-	if(b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
+	if(!IgnoreAllLogic && b_thisNpcIsARaid[npc]/* && Duration_Stun >= 1.0*/)
 	{
 		if(f_RaidStunResistance[npc] > GameTime)
 		{
@@ -9165,6 +9216,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 		float Offset[3];
 
 		Offset[2] += 95.0;
+		Offset[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 		
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 17, HealthColour, npc.index);
@@ -9253,6 +9305,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		float Offset[3];
 
 		Offset[2] += 95.0;
+		Offset[2] += f_ExtraOffsetNpcHudAbove[npc.index];
 
 		Offset[2] *= GetEntPropFloat(npc.index, Prop_Send, "m_flModelScale");
 #if defined RPG
@@ -10401,4 +10454,42 @@ void Spawns_CheckBadClient(int client)
 		int teamID = TEAM_ANY,
 		bool ignoreNavBlockers = false);
 	*/
+}
+
+void ResetAllArmorStatues(int entiity)
+{
+	fl_ArmorSetting[entiity][0] = 0.0;
+	fl_ArmorSetting[entiity][1] = 0.0;
+	fl_ArmorSetting[entiity][2] = 0.0;
+	i_ArmorSetting[entiity][0] = 0;
+	i_ArmorSetting[entiity][1] = 0;
+}
+
+void GrantEntityArmor(int entity, bool Once = true, float ScaleMaxHealth, float ArmorProtect, int ArmorType,
+float custom_maxarmour = 0.0)
+{
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(Once)
+	{
+		if(npc.m_iArmorGiven)
+		{
+			return;
+		}
+	}
+	npc.m_iArmorGiven = true;
+	npc.m_iArmorType = ArmorType;
+	npc.m_flArmorProtect = ArmorProtect;
+	if(custom_maxarmour == 0.0)
+	{
+		float flMaxHealth = ScaleMaxHealth * float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		npc.m_flArmorCount = flMaxHealth;
+		npc.m_flArmorCountMax = flMaxHealth;
+	}
+	else
+	{
+		npc.m_flArmorCount = 	custom_maxarmour;
+		npc.m_flArmorCountMax = custom_maxarmour;
+	}
+	
+	//any extra logic please add here. deivid.
 }

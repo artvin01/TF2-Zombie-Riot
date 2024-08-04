@@ -1305,7 +1305,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
+							Building_GiveRewardsUse(client, owner, 250, true, 5.0, true);
 					}
 				}
 				
@@ -1805,6 +1805,17 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-42", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Map Music");
+	if(b_IgnoreMapMusic[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-80", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
 	if(b_TauntSpeedIncreace[client])
 	{
@@ -2182,6 +2193,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					else
 					{
 						b_HudHitMarker[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
+				case -80:
+				{
+					if(b_IgnoreMapMusic[client])
+					{
+						b_IgnoreMapMusic[client] = false;
+					}
+					else
+					{
+						b_IgnoreMapMusic[client] = true;
 					}
 					ReShowSettingsHud(client);
 				}
@@ -3698,6 +3721,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Skeleboy");
 						menu2.AddItem("-49", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Kleiner");
+						menu2.AddItem("-50", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
 						
@@ -3724,6 +3750,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -49:
 					{
 						OverridePlayerModel(client, SKELEBOY, false);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -50:
+					{
+						OverridePlayerModel(client, KLEINER, true);
 						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
@@ -4535,10 +4567,12 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	/*
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
 	else
-		map.SetValue("442", 1.0);	// Move Speed
+	*/
+	map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
@@ -5414,6 +5448,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+						//only give 1 revive at all costs.
+						if(i_AmountDowned[client] < 1)
+						{
+							i_AmountDowned[client] = 1;
+						}
 					}
 					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
 					{

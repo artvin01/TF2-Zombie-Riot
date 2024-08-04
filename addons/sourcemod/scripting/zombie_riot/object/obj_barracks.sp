@@ -27,9 +27,10 @@ static int CivType[MAXTF2PLAYERS];
 static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
-int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
+
+//defined inside obj_shared
+//int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 int i_EntityRecievedUpgrades[MAXENTITIES];
-//int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
@@ -237,7 +238,8 @@ enum
 #define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2) //Done :)
 //allow to get 3 deployment slots again.
 
-#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
+//defined higher up, see obj_shared
+//#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
 
 
 //in the end, this should be stronger then a sentry with full upgrades by 2x
@@ -340,7 +342,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	OpenSummonerMenu(Owner, client);
 	return true;
 }
-
 void BarracksCheckItems(int client)
 {
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
@@ -837,7 +838,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if(ActiveCurrentNpcsBarracksTotal() < (9 + (Rogue_Barracks_BonusSupply() * 2)) && ((/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost)))
+		if((ActiveCurrentNpcsBarracksTotal() < (9 + (Rogue_Barracks_BonusSupply() * 2))) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -1208,6 +1209,10 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"))	// lol
+		SupplyRate[client] += 10;
+
+
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
 
@@ -1216,6 +1221,7 @@ void CheckSummonerUpgrades(int client)
 
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
+	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
 }
 
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
@@ -1578,7 +1584,7 @@ static void SummonerMenu(int client, int viewer)
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
-			else if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+			else if(!subtractVillager && GetSupplyLeft(client) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
@@ -1588,7 +1594,7 @@ static void SummonerMenu(int client, int viewer)
 			else if(TrainingStartedIn[client] < 0.0)
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", buffer2);
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied, somethings blocking spawns, move barracks.)\n ", buffer2);
 			}
 			else
 			{

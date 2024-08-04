@@ -107,7 +107,7 @@ static char[] GetBuildingHealth()
 	health /= 2;
 	
 	
-	health = RoundToCeil(float(health) * 1.2);
+	health = RoundToCeil(float(health) * 1.4);
 	
 	char buffer[16];
 	IntToString(health, buffer, sizeof(buffer));
@@ -120,6 +120,9 @@ static float fl_weaver_charge[MAXENTITIES];
 static int i_weaver_index[MAXENTITIES];
 static int i_wave[MAXENTITIES];
 static bool b_allow_spawns[MAXENTITIES];
+
+static int i_current_cycle[MAXENTITIES];
+static int i_strikes[MAXTF2PLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
@@ -256,6 +259,8 @@ methodmap Magia_Anchor < CClotBody
 		
 		if(StrContains(data, "raid") != -1)
 			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
+
+		i_current_cycle[npc.index] = 0;
 		
 		//whats a "switch" statement??
 		if(wave<=15)	
@@ -284,7 +289,7 @@ methodmap Magia_Anchor < CClotBody
 			RaidModeTime = FAR_FUTURE;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
-			RaidAllowsBuildings = false;
+			RaidAllowsBuildings = true;
 
 			RaidModeScaling = 0.0;
 		
@@ -298,6 +303,8 @@ methodmap Magia_Anchor < CClotBody
 		{
 			fl_ruina_battery[npc.index] = 255.0;
 		}
+
+		Zero(i_strikes);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -338,15 +345,9 @@ methodmap Magia_Anchor < CClotBody
 
 		NPC_StopPathing(npc.index);
 
-		for(int i; i < ZR_MAX_SPAWNERS; i++)
-		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
-				break;
-			}
-		}
+		npc.m_flMeleeArmor = 2.5;
+
+		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
 
 		/*int test;
 		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
@@ -355,6 +356,42 @@ methodmap Magia_Anchor < CClotBody
 		CPrintToChatAll("m_nSolidType %i", test);
 		*/
 		return npc;
+	}
+}
+
+static void TowerDetectRiding(int entity, int client)
+{
+	if(!IsValidClient(client))
+		return;
+
+	float Vec[3], vec2[3];
+	WorldSpaceCenter(entity, Vec);
+	Vec[2]+=20.0;
+	WorldSpaceCenter(client, vec2);
+	if(vec2[2] > Vec[2])	
+	{
+		//anihilate them immediately
+		i_strikes[client]++;
+		if(i_strikes[client]>0)
+		{
+			SDKHooks_TakeDamage(client, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE);
+		}
+		else
+			CPrintToChat(client, "{red}GET OFF THE TOWER, STRIKE %i/2", i_strikes[client]);
+
+
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+
+		newVel[2] = 500.0;
+
+		newVel[0] +=GetRandomFloat(-505.0, 505.0);
+		newVel[1] +=GetRandomFloat(-505.0, 505.0);
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, newVel);
 	}
 }
 
@@ -383,6 +420,7 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+	
 
 	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 	{
@@ -396,9 +434,9 @@ static void ClotThink(int iNPC)
 
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
 	{
-
+		Raid_Spwaning_Logic(npc);
 	}
-	if(b_allow_spawns[npc.index])
+	if(b_allow_spawns[npc.index] && i_RaidGrantExtra[npc.index] != RAIDITEM_INDEX_WIN_COND)
 		Spawning_Logic(npc);
 
 
@@ -407,6 +445,62 @@ static void ClotThink(int iNPC)
 		Weaver_Logic(npc);
 	}
 	
+	
+}
+static void Raid_Spwaning_Logic(Magia_Anchor npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
+	int npc_current_count;
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+		{
+			npc_current_count += 1;
+		}
+	}
+
+	if(npc_current_count > RoundToFloor(LimitNpcs*0.4))
+		return;
+
+	float Time = 4.0;
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+
+
+	static const char npc_names[][] = {
+		"npc_ruina_magianius",
+		"npc_ruina_loonarionus",
+		"npc_ruina_heliarionus",
+		"npc_ruina_euranionis",
+		"npc_ruina_draconia",
+		"npc_ruina_malianius",
+		"npc_ruina_lazurus",
+		"npc_ruina_aetherianus",
+		"npc_ruina_rulianius",
+		"npc_ruina_astrianious",
+		"npc_ruina_dronianis"
+	};
+	static const int npc_health[] = {
+		20000,	//"npc_ruina_magianius",
+		30000,	//"npc_ruina_loonarionus"
+		40000,	//"npc_ruina_heliarionus"
+		30000,	//"npc_ruina_euranionis",
+		60000,	//"npc_ruina_draconia",
+		30000,	//"npc_ruina_malianius",
+		40000,	//"npc_ruina_lazurus",
+		30000,	//"npc_ruina_aetherianus"
+		60000,	//"npc_ruina_rulianius",
+		30000,	//"npc_ruina_astrianious"
+		60000	//"npc_ruina_dronianis"
+	};
+
+	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
+
+	i_current_cycle[npc.index] = GetRandomInt(0, sizeof(npc_names)-1);
+
 	
 }
 static void Spawning_Logic(Magia_Anchor npc)
@@ -524,8 +618,16 @@ static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int c
 	//do not bother outlining.
 	enemy.ExtraMeleeRes = 1.0;
 	enemy.ExtraRangedRes = 1.0;
-	enemy.ExtraSpeed = 1.0;
-	enemy.ExtraDamage = 1.0;
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		enemy.ExtraSpeed = 1.7;
+		enemy.ExtraDamage = 1.2;
+	}
+	else
+	{
+		enemy.ExtraSpeed = 1.0;
+		enemy.ExtraDamage = 1.0;
+	}
 	enemy.ExtraSize = 1.0;		
 	enemy.Team = GetTeam(iNPC);
 	for(int i; i<count; i++)
@@ -545,7 +647,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	if(fl_ruina_battery[npc.index] <=200.0)
-		Ruina_Add_Battery(npc.index, 0.5);	//anchor gets charge every hit. :)
+		Ruina_Add_Battery(npc.index, 1.0);	//anchor gets charge every hit. :)
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -616,7 +718,7 @@ static void Weaver_Logic(Magia_Anchor npc)
 	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
 		i_weaver_index[npc.index] = test;
 
-	fl_weaver_charge[npc.index]+=0.001;
+	fl_weaver_charge[npc.index]+=0.002;
 
 	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
 		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
@@ -696,6 +798,16 @@ static bool Charging(Magia_Anchor npc)
 	}
 	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
 	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
+		
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
 		fl_ruina_battery[npc.index]=333.0;

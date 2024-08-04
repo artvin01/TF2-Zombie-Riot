@@ -86,7 +86,7 @@ void Vhxis_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Vhxis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vhxis");
 	strcopy(data.Icon, sizeof(data.Icon), "void_vhxis");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;

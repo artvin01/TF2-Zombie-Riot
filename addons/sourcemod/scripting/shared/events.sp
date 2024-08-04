@@ -30,6 +30,7 @@ void Events_PluginStart()
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
 	
 	
@@ -140,6 +141,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 			Escape_DropItem(client);
 			Damage_dealt_in_total[client] = 0.0;
 			Resupplies_Supplied[client] = 0;
+			i_BarricadeHasBeenDamaged[client] = 0;
 			CashRecievedNonWave[client] = 0;
 			Healing_done_in_total[client] = 0;
 			Ammo_Count_Used[client] = 0;
@@ -443,6 +445,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	if(!client)
 		return Plugin_Continue;
 	
+	
 #if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -472,15 +475,13 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//
-	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 2)
-		i_AmountDowned[client] = 1;
 
 	Citizen_PlayerDeath(client);
 	Bob_player_killed(event, name, dontBroadcast);
 	Skulls_PlayerKilled(client);
 	// Save current uber.
 	ClientSaveUber(client);
+
 #endif
 
 #if defined RPG
@@ -493,7 +494,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	Store_WeaponSwitch(client, -1);
 	RequestFrame(CheckAlivePlayersforward, client); //REQUEST frame cus isaliveplayer doesnt even get applied yet in this function instantly, so wait 1 frame
 #endif
-
+	
 	event.BroadcastDisabled = true;
 	return Plugin_Changed;
 }

@@ -21,7 +21,7 @@ void Gladiia_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			if (HealingTimer[client] != null)
 			{
@@ -109,9 +109,8 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
+					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA:
 					{
-						f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
 						float amount = 0.0;
 						int elite = EliteLevel[GetHighestGladiiaClient()];
 						switch(elite)
@@ -132,6 +131,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
+							f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
 							int maxhealth = SDKCall_GetMaxHealth(client);
 							if(maxhealth > 1000)
 								maxhealth = 1000;
@@ -141,8 +141,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							amount *= float(maxhealth);
 
-							int healing_Amount = HealEntityGlobal(client, client, amount, _, 0.0,HEAL_SELFHEAL);
-							ApplyHealEvent(client, healing_Amount);	
+							HealEntityGlobal(client, client, amount, _, 0.0,HEAL_SELFHEAL);
 
 							if(ParticleRef[client] == -1)
 							{

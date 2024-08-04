@@ -335,6 +335,7 @@ float f_AntiStuckPhaseThroughFirstCheck[MAXTF2PLAYERS];
 float f_AntiStuckPhaseThrough[MAXTF2PLAYERS];
 float f_MultiDamageTaken[MAXENTITIES];
 float f_MultiDamageTaken_Flat[MAXENTITIES];
+float f_ExtraOffsetNpcHudAbove[MAXENTITIES];
 int i_OwnerEntityEnvLaser[MAXENTITIES];
 int TeamNumber[MAXENTITIES];
 
@@ -388,6 +389,7 @@ int i_SemiAutoWeapon_AmmoCount[MAXENTITIES];
 float f_DelayAttackspeedPreivous[MAXENTITIES]={1.0, ...};
 int i_PlayerModelOverrideIndexWearable[MAXTF2PLAYERS] = {-1, ...};
 bool b_HideCosmeticsPlayer[MAXTF2PLAYERS];
+float f_HealDelayParticle[MAXENTITIES]={1.0, ...};
 
 bool b_IsAloneOnServer = false;
 bool b_TauntSpeedIncreace[MAXTF2PLAYERS] = {true, ...};
@@ -422,6 +424,7 @@ bool b_HudHitMarker[MAXTF2PLAYERS] = {true, ...};
 bool b_HudScreenShake[MAXTF2PLAYERS] = {true, ...};
 bool b_HudLowHealthShake[MAXTF2PLAYERS] = {true, ...};
 float f_ZombieVolumeSetting[MAXTF2PLAYERS];
+bool b_IgnoreMapMusic[MAXTF2PLAYERS];
 
 float Increaced_Overall_damage_Low[MAXENTITIES];
 float Resistance_Overall_Low[MAXENTITIES];
@@ -677,6 +680,7 @@ bool b_StickyExtraGrenades[MAXTF2PLAYERS];
 bool FinalBuilder[MAXENTITIES];
 bool GlassBuilder[MAXENTITIES];
 bool WildingenBuilder[MAXENTITIES];
+bool WildingenBuilder2[MAXENTITIES];
 bool HasMechanic[MAXENTITIES];
 bool b_ExpertTrapper[MAXENTITIES];
 bool b_RaptureZombie[MAXENTITIES];
@@ -752,7 +756,8 @@ bool Viewchanges_PlayerModelsAnims[] =
 	false,
 	true,
 	true,
-	false
+	false,
+	true,
 };
 
 float f_NpcImmuneToBleed[MAXENTITIES];
@@ -1187,6 +1192,7 @@ float fl_GetClosestTargetTimeTouch[MAXENTITIES];
 int b_DoNotChangeTargetTouchNpc[MAXENTITIES];
 float fl_GetClosestTargetNoResetTime[MAXENTITIES];
 float fl_NextHurtSound[MAXENTITIES];
+float fl_NextHurtSoundArmor[MAXENTITIES];
 float fl_HeadshotCooldown[MAXENTITIES];
 bool b_CantCollidie[MAXENTITIES];
 bool b_CollidesWithEachother[MAXENTITIES];
@@ -1278,6 +1284,8 @@ float fl_WaveScale[MAXENTITIES];
 float fl_StandStill[MAXENTITIES];
 float fl_GrappleCooldown[MAXENTITIES];
 float fl_HookDamageTaken[MAXENTITIES];
+float fl_ArmorSetting[MAXENTITIES][3];
+int i_ArmorSetting[MAXENTITIES][2];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
 
 bool b_PlayHurtAnimation[MAXENTITIES];
@@ -2608,6 +2616,8 @@ public void Update_Ammo(DataPack pack)
 }
 #endif
 
+float f_AmmoConsumeExtra[MAXTF2PLAYERS];
+
 public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname, bool &result)
 {
 #if defined ZR
@@ -2617,6 +2627,43 @@ public Action TF2_CalcIsAttackCritical(int client, int weapon, char[] classname,
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		RequestFrame(Update_Ammo, pack);
+	}
+	float ExtraAmmoConsume = Attributes_Get(weapon, 4014, 0.0);
+	if(ExtraAmmoConsume != 0.0)
+	{
+		if(ExtraAmmoConsume > 0.0)
+		{
+			f_AmmoConsumeExtra[client] += ExtraAmmoConsume;
+			
+			int ConsumeAmmoReserve;
+			while (f_AmmoConsumeExtra[client] >= 1.0)
+			{
+				f_AmmoConsumeExtra[client] -= 1.0;
+				ConsumeAmmoReserve++;
+			}
+			if(ConsumeAmmoReserve >= 1)
+			{
+				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) - ConsumeAmmoReserve);
+			}
+		}
+		else
+		{
+			//it is negative, we give back ammo?
+			f_AmmoConsumeExtra[client] += ExtraAmmoConsume;
+			
+			int ConsumeAmmoReserve;
+			while (f_AmmoConsumeExtra[client] <= -1.0)
+			{
+				f_AmmoConsumeExtra[client] += 1.0;
+				ConsumeAmmoReserve++;
+			}
+			if(ConsumeAmmoReserve >= 1)
+			{
+				int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
+				SetAmmo(client, Ammo_type, GetAmmo(client, Ammo_type) + ConsumeAmmoReserve);
+			}
+		}
 	}
 #endif
 
@@ -2855,6 +2902,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_LeeSuperEffect[entity] = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[entity] = 1.0;
 #if defined ZR
+		f_HealDelayParticle[entity] = 0.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
 #endif
@@ -2978,6 +3026,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		FinalBuilder[entity] = false;
 		GlassBuilder[entity] = false;
 		WildingenBuilder[entity] = false;
+		WildingenBuilder2[entity] = false;
 		Armor_Charge[entity] = 0;
 		b_IsATrigger[entity] = false;
 #endif
@@ -3001,7 +3050,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RPG_EntityCreated(entity, classname);
 		TextStore_EntityCreated(entity);
 #endif
-
 		b_IsAProjectile[entity] = false;
 /*		if(!StrContains(classname, "env_entity_dissolver"))
 		{

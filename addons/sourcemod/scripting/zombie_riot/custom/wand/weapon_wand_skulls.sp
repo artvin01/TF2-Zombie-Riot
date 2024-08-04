@@ -678,11 +678,7 @@ void Skull_SetNextShootTime(int ent)
 	{
 		BuffAmt = Attributes_Get(weapon, 6, 1.0);
 	}
-	
-	if (LastMann)
-	{
-		BuffAmt = BuffAmt / 2.0;
-	}
+
 	
 	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
 }

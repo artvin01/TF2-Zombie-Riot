@@ -593,6 +593,8 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			if(b_thisNpcIsARaid[enemy])
 			{
 				damage *= 1.5;
+				//undo damage nerf that we did before
+				damage /= 0.7;
 			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
@@ -634,6 +636,7 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
 	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
+	damage *= 0.7;
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!

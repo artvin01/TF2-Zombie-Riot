@@ -308,23 +308,12 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 			
 			DisplayCritAboveNpc(victim, attacker, PlaySound,_,_,true); //Display crit above head
 		}
-		damage *= 1.5;
+		damage *= 1.35;
 	}
 	
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
-
 		if(percentageArmorLeft <= 0.0)
 		{
 			if(IsValidEntity(npc.m_iWearable2))
@@ -349,6 +338,15 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 	}
 	else if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		if(npc.Anger)
+		{
+			if(IsValidEntity(npc.m_iWearable2))
+				RemoveEntity(npc.m_iWearable2);
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+			if(IsValidEntity(npc.m_iWearable4))
+				RemoveEntity(npc.m_iWearable4);
+		}
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
@@ -359,9 +357,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.PlayAngerSound();
 		
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 0.5;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 0.5;
+		GrantEntityArmor(npc.index, true, 0.5, 0.1, 0);
 	}
 	return Plugin_Changed;
 }
