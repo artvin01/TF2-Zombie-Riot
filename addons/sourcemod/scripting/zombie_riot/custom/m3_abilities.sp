@@ -1184,7 +1184,7 @@ public Action Timer_Detect_Player_Near_Repair_Grenade(Handle timer, DataPack pac
 				bool Repaired_Building = false;
 
 				//just get highest value
-				RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
+				float RepairRateBonus = Attributes_GetOnPlayer(client, 95, true, false);
 				int healing_Amount = RoundToCeil(20.0 * RepairRateBonus);
 				int CurrentMetal = GetAmmo(client, 3);
 

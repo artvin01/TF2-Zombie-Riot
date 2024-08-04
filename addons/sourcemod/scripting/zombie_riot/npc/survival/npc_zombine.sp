@@ -176,7 +176,6 @@ methodmap ZombineSurvival < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		npc.m_bArmorGiven = false;
 		
 		//IDLE
 		npc.m_flSpeed = 330.0;

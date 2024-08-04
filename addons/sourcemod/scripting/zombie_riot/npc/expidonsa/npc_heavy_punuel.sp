@@ -136,7 +136,6 @@ methodmap HeavyPunuel < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		npc.m_bArmorGiven = false;
 		
 		func_NPCDeath[npc.index] = HeavyPunuel_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = HeavyPunuel_OnTakeDamage;

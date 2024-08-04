@@ -158,7 +158,6 @@ methodmap AnfuhrerEisenhard < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		npc.m_bArmorGiven = true;
 		
 		//IDLE
 		npc.m_iState = 0;
