@@ -28,7 +28,7 @@ void Classic_Enable()
 void Classic_NewRoundStart(int cash)
 {
 	//todo: Put it in wave CFG instead, too lazy rn
-	cash = RoundToCeil(float(cash) * 1.1);
+	cash = RoundToCeil(float(cash) * 1.05);
 	CashTotal = cash;
 	CashLeft = cash;
 }
@@ -62,7 +62,7 @@ void Classic_EnemySpawned(int entity)
 		}
 
 
-		int given = RoundToCeil(float(CashTotal) / 110.0 / ScalingMoneyCount);
+		int given = RoundToCeil(float(CashTotal) / 220.0 / ScalingMoneyCount);
 		if(given > CashLeft)
 			given = CashLeft;
 		
