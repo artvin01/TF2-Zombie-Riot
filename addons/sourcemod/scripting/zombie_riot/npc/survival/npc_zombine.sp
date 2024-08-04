@@ -156,22 +156,6 @@ methodmap ZombineSurvival < CClotBody
 
 	}
 	
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
-	
 	
 	public ZombineSurvival(int client, float vecPos[3], float vecAng[3], int ally)
 	{

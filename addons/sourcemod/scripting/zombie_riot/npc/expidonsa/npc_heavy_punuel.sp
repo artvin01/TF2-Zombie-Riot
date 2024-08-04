@@ -110,21 +110,6 @@ methodmap HeavyPunuel < CClotBody
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 
 	}
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], int ally)
