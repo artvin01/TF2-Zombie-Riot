@@ -1626,8 +1626,8 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 		}
 		
-		float GetPercentageAdjust;
-		GetPercentageAdjust *= this.GetDebuffPercentage();	
+		float GetPercentageAdjust = 1.0;
+		GetPercentageAdjust = this.GetDebuffPercentage();	
 		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 
 #if defined ZR
@@ -1655,11 +1655,8 @@ methodmap CClotBody < CBaseCombatCharacter
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
-		static float ReturnSpeed;
 
-		ReturnSpeed = this.m_flSpeed * GetPercentageAdjust;
-		
-		return ReturnSpeed;
+		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
 	{
