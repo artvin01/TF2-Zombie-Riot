@@ -56,13 +56,21 @@ void Classic_EnemySpawned(int entity)
 			case 1:
 				ScalingMoneyCount *= 0.35;
 			case 2:
-				ScalingMoneyCount *= 0.75;
+				ScalingMoneyCount *= 0.5;
 			case 3:
-				ScalingMoneyCount *= 0.95;
+				ScalingMoneyCount *= 0.6;
+			case 4:
+				ScalingMoneyCount *= 0.75;
+			case 7,8,9,10:
+				ScalingMoneyCount *= 1.25;
+			case 11,12,13,14:
+				ScalingMoneyCount *= 1.4;
+			case 15,16,17,18:
+				ScalingMoneyCount *= 1.5;
 		}
 
 
-		int given = RoundToCeil(float(CashTotal) / 220.0 / ScalingMoneyCount);
+		int given = RoundToCeil(float(CashTotal) / 110.0 / ScalingMoneyCount);
 		if(given > CashLeft)
 			given = CashLeft;
 		

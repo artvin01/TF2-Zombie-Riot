@@ -1318,8 +1318,7 @@ void Ruina_Apply_Mana_Debuff(int entity, int victim, float damage, int weapon)
 	{
 		if(!i_IsWandWeapon[wep_hold])
 		{
-			flat_amt = RoundToFloor(flat_amt*0.5);
-			Multi *=0.9;
+			flat_amt = RoundToFloor(flat_amt*0.75);
 		}
 	}
 
@@ -1348,8 +1347,7 @@ stock void Ruina_Add_Mana_Sickness(int iNPC, int Target, float Multi, int flat_a
 		{
 			if(!i_IsWandWeapon[weapon])
 			{
-				flat_amt = RoundToFloor(flat_amt*0.5);
-				Multi *=0.9;
+				flat_amt = RoundToFloor(flat_amt*0.75);
 			}
 		}
 
@@ -1423,7 +1421,7 @@ static void Apply_Sickness(int iNPC, int Target)
 	Mana_Regen_Delay[Target] = GameTime + Timeout;
 	Mana_Regen_Block_Timer[Target] = GameTime + Timeout;
 
-	TF2_StunPlayer(Target, Slow_Time, 0.5, TF_STUNFLAG_SLOWDOWN);
+	TF2_StunPlayer(Target, Slow_Time, 0.6, TF_STUNFLAG_SLOWDOWN);
 
 	float end_point[3];
 	GetClientAbsOrigin(Target, end_point);
