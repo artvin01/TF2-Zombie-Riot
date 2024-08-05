@@ -1609,7 +1609,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 0.9;
 		
 #if !defined RPG
-	if(b_npcspawnprotection[victim])
+	if(b_npcspawnprotection[attacker])
 		damage *= 1.5;
 #endif
 	if(f_MultiDamageTaken[victim] != 1.0)
