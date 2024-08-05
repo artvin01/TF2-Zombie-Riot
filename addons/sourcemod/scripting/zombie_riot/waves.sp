@@ -2240,6 +2240,14 @@ void Zombie_Delay_Warning()
 				CPrintToChatAll("{crimson}Enemies become infuriated and will reach you...");
 			}
 		}
+		case 5:
+		{
+			if(f_ZombieAntiDelaySpeedUp + 150.0 < GetGameTime())
+			{
+				i_ZombieAntiDelaySpeedUp = 6;
+				CPrintToChatAll("{crimson}Die.");
+			}
+		}
 	}
 }
 
@@ -2265,6 +2273,10 @@ float Zombie_DelayExtraSpeed()
 		case 5:
 		{
 			return 1.75;
+		}
+		case 6:
+		{
+			return 3.0;
 		}
 	}
 	return 1.0;
