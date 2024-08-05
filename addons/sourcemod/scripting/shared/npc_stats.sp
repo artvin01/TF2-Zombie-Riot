@@ -1655,8 +1655,11 @@ methodmap CClotBody < CBaseCombatCharacter
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
+		static float ReturnSpeed;
+
+		ReturnSpeed = this.m_flSpeed * GetPercentageAdjust;
 		
-		return (this.m_flSpeed * GetPercentageAdjust);
+		return ReturnSpeed;
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
 	{
