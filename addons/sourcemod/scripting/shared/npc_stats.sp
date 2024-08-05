@@ -1625,9 +1625,6 @@ methodmap CClotBody < CBaseCombatCharacter
 			return 400.0;
 #endif
 		}
-		float speed_for_return;
-		
-		speed_for_return = this.m_flSpeed;
 		
 		float GetPercentageAdjust;
 		GetPercentageAdjust *= this.GetDebuffPercentage();	
@@ -1642,7 +1639,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
 			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
-			
 		}
 		else
 		{
@@ -1660,8 +1656,7 @@ methodmap CClotBody < CBaseCombatCharacter
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
 		
-		speed_for_return *= GetPercentageAdjust;
-		return speed_for_return; 
+		return (this.m_flSpeed * GetPercentageAdjust);
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
 	{

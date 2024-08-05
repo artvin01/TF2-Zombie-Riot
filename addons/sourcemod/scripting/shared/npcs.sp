@@ -1416,6 +1416,11 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			if(b_npcspawnprotection[victim])
+			{
+				percentage *= 0.05;
+			}
+			b_npcspawnprotection
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1469,6 +1474,10 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			if(b_npcspawnprotection[victim])
+			{
+				percentage *= 0.05;
+			}
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1764,6 +1773,9 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	{
 		return true;
 	}	
+	if(b_npcspawnprotection[victim])
+		return true;
+
 	float DamageTest = 1.0;
 	int testvalue = 1;
 	int DmgType;
