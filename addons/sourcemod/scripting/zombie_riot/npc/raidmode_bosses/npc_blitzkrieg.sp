@@ -531,7 +531,6 @@ methodmap Blitzkrieg < CClotBody
 			{
 				strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "TRUE BLITZKRIEG");
 				b_pureblitz = true;
-				fl_Extra_Speed[npc.index] *= 1.5;
 				switch(GetRandomInt(0,7))
 				{
 					case 0:
@@ -1473,8 +1472,34 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
-		CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
 		
+		if(b_pureblitz)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+				}
+			}
+		}
+		else
+		{
+			
+			CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
+		}
 		if(IsValidClient(closest))//Fancy text for blitz
 		{
 			switch(GetRandomInt(1, 4))
