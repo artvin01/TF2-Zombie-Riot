@@ -1336,7 +1336,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(healer != reciever && healer <= MaxClients)
 			Healing_done_in_total[healer] += HealingDoneInt;
 #endif
-			ApplyHealEvent(healer, HealingDoneInt);
+			ApplyHealEvent(reciever, HealingDoneInt);
 		}
 		return HealingDoneInt;
 	}
