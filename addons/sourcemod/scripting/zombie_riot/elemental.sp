@@ -385,9 +385,10 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	{
 		//removes repair of buildings.
 		int Repair = GetEntProp(victim, Prop_Data, "m_iRepair");
-		Repair -= damage;
+		Repair -= (damage / 2);
 		if(Repair <= 0)
 			Repair = 0;
+
 		SetEntProp(victim, Prop_Data, "m_iRepair", Repair);
 	}
 }

@@ -1629,24 +1629,38 @@ methodmap CClotBody < CBaseCombatCharacter
 		
 		speed_for_return = this.m_flSpeed;
 		
-		speed_for_return *= this.GetDebuffPercentage();	
+		float GetPercentageAdjust;
+		GetPercentageAdjust *= this.GetDebuffPercentage();	
+		CBaseNPC baseNPC = view_as<CClotBody>(this.index).GetBaseNPC();
 
 #if defined ZR
 		if(!b_thisNpcIsARaid[this.index] && GetTeam(this.index) != TFTeam_Red && XenoExtraLogic(true))
 		{
-			speed_for_return *= 1.1;
+			GetPercentageAdjust *= 1.1;
 		}
 
-		if(GetTeam(this.index) != TFTeam_Red)
+		if(GetTeam(this.index) != TFTeam_Red && Zombie_DelayExtraSpeed() != 1.0)
 		{
-			speed_for_return *= Zombie_DelayExtraSpeed();
+			GetPercentageAdjust *= Zombie_DelayExtraSpeed();
+			
 		}
 		else
 		{
 			if(VIPBuilding_Active())
-				speed_for_return *= 2.0;
+			{
+				GetPercentageAdjust *= 2.0;
+				baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
+				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+			}
 		}
 #endif
+		if(!VIPBuilding_Active())
+		{
+			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
+			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
+		}
+		
+		speed_for_return *= GetPercentageAdjust;
 		return speed_for_return; 
 	}
 	public void m_vecLastValidPos(float pos[3], bool set)
@@ -9924,6 +9938,8 @@ public void TeleportBackToLastSavePosition(int entity)
 			FreezeNpcInTime(entity, 0.5);
 			CClotBody npcBase = view_as<CClotBody>(entity);
 			npcBase.m_iTarget = 0;
+			npcBase.GetPathFollower().Invalidate();
+			npcBase.SetVelocity({0.0,0.0,0.0});
 			//make them lose their target.
 		}
 	}
