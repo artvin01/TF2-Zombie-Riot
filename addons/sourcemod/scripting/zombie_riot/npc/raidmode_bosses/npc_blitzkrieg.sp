@@ -888,20 +888,7 @@ static void ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	} 
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
+
 	if(RaidModeTime < GetGameTime() && !b_lost)	//warp
 	{
 		
@@ -999,6 +986,20 @@ static void ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+	{
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
+	}
+	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+	{	
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -1495,12 +1496,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 			}
 		}
-		else
-		{
-			
-			CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
-		}
-		if(IsValidClient(closest))//Fancy text for blitz
+		else if(IsValidClient(closest))//Fancy text for blitz
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -1556,9 +1552,30 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
-		CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
 
-		if(IsValidClient(closest))
+		if(b_pureblitz)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+				}
+			}
+		}
+		else if(IsValidClient(closest))
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -1608,9 +1625,30 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 		fl_move_speed[npc.index] = 280.0;
 		
-		CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
 		
-		if(IsValidClient(closest))
+		if(b_pureblitz)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+				}
+			}
+		}
+		else if(IsValidClient(closest))
 		{
 			switch(GetRandomInt(1, 4))
 			{
