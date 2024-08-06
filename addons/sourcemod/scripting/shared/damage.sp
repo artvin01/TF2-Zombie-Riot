@@ -1515,7 +1515,17 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	//these are absolutes
 #if !defined RPG
 	if(victim > MaxClients && b_npcspawnprotection[victim])
-		DamageRes *= 0.05;
+	{
+		//dont give spawnprotection if both are
+		if(attacker <= MaxClients)
+		{
+			DamageRes *= 0.05;
+		}
+		else if(!b_npcspawnprotection[attacker])
+		{
+			DamageRes *= 0.05;
+		}
+	}
 #endif
 	if(f_PernellBuff[victim] > GameTime)
 	{
@@ -1610,7 +1620,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		
 #if !defined RPG
 	if(attacker > MaxClients && b_npcspawnprotection[attacker])
+	{
 		damage *= 1.5;
+	}
 #endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
