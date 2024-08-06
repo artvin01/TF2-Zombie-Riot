@@ -1638,9 +1638,6 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
-		static int testest;
-		testest++;
-		PrintToChatAll("testest %i",testest);
 		damage *= f_MultiDamageTaken[victim];
 	}
 	if(f_MultiDamageTaken_Flat[victim] != 1.0)
