@@ -1586,7 +1586,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			panzer_chance--;
 			//always increace chance of miniboss.
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
@@ -1626,6 +1625,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
+			panzer_chance--;
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
