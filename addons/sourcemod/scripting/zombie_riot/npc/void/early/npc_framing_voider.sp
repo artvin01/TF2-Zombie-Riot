@@ -304,8 +304,8 @@ void VoidWave_ApplyBuff(int entity, float Duration, int strength = 0)
 	}
 	else if(strength == 1)
 	{
-		if(f_VoidAfflictionStrength[entity] < GetGameTime() + Duration)
-			f_VoidAfflictionStrength[entity] = GetGameTime() + Duration;
+		if(f_VoidAfflictionStrength2[entity] < GetGameTime() + Duration)
+			f_VoidAfflictionStrength2[entity] = GetGameTime() + Duration;
 	}
 }
 
