@@ -892,10 +892,6 @@ void Barracks_BuildingThink(int entity)
 						{
 							trainingTime = 0.0;
 						}
-						if(RaidbossIgnoreBuildingsLogic(0))
-						{
-							trainingTime *= 0.85;
-						}
 						TrainingIn[client] = TrainingStartedIn[client] + trainingTime;
 						TrainingQueue[client] = -1;
 					}
@@ -1289,10 +1285,6 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		if(Rogue_Mode())
 		{
 			SupplyRateCalc *= 1.35;
-		}
-		if(RaidbossIgnoreBuildingsLogic(0))
-		{
-			SupplyRateCalc *= 1.25;
 		}
 	}
 	else

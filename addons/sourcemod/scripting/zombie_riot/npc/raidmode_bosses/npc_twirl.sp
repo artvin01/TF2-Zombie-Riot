@@ -705,6 +705,8 @@ methodmap Twirl < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+
+		RaidModeScaling *= 1.1;
 				
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -1368,7 +1370,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 						}
 			
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 35.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 40.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1424,9 +1426,6 @@ static float Modify_Damage(Twirl npc, int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
 		damage*=10.0;
-
-	if(npc.Anger)
-		damage *=1.5;
 
 	damage*=RaidModeScaling;
 
@@ -2376,6 +2375,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		npc.m_flSpeed = 0.0;
 		f_NpcTurnPenalty[npc.index] = 0.0;
+		RaidModeScaling *= 1.35;
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
