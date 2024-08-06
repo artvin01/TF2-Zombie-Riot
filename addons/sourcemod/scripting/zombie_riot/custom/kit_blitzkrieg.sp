@@ -313,7 +313,7 @@ public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] c
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 1, 19.0, 2.0);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 2, 19.0, 1.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
@@ -321,7 +321,7 @@ public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] c
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 3, 19.0, 0.66);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 4, 19.0, 0.5);
 }
 public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
 {
@@ -329,7 +329,7 @@ public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] c
 }
 public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 5, 12.0, 0.4);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 6, 12.0, 0.33);
 }
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
@@ -396,6 +396,13 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			int type=3;
 			for(int i=0 ; i<spread ; i++)
 			{
+				if((spread % 2) == 0)
+				{
+					//its an even one! do extra logic, ignore the middle rocket!
+					spread++;
+					type=1;
+					continue;
+				}
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing);
 				Blitzkrieg_Kit_Rocket_Fire(client, speedMult, dmgProjectile, weapon, fAng, end_vec);
@@ -428,6 +435,13 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			delete swingTrace;
 			for(int i=0 ; i<spread ; i++)
 			{
+				if((spread % 2) == 0)
+				{
+					//its an even one! do extra logic, ignore the middle rocket!
+					spread++;
+					type=1;
+					continue;
+				}
 				float end_vec[3];
 				Do_Vector_Stuff(i, fPos, end_vec, fAng, spread, type, spacing*1.25);
 				float ang_Look[3];
