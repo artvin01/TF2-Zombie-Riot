@@ -152,7 +152,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD");
+						npc.AddGesture("ACT_RELOAD",_,_,_,0.5);
 						npc.m_flNextMeleeAttack = GameTime + 3.7;
 						npc.m_iAttacksTillReload = 31;
 						npc.PlayPistolReload();
@@ -183,7 +183,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 235.0;
 					}
 				}
 			}

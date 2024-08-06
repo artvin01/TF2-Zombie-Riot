@@ -121,12 +121,14 @@ methodmap Barrack_Combine_Elite < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Elite_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Elite_ClotThink;
-		npc.m_flSpeed = 220.0;
+		fl_npc_basespeed = 240.0;
+		npc.m_flSpeed = 240.0;
 
 		npc.m_iAttacksTillReload = 30;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flRangedSpecialDelay = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		KillFeed_SetKillIcon(npc.index, "smg");
 		
@@ -164,12 +166,12 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD");
-						npc.m_flNextRangedAttack = GameTime + 2.2;
+						npc.AddGesture("ACT_RELOAD",_,_,_,0.5);
+						npc.m_flNextMeleeAttack = GameTime + 3.7;
 						npc.m_iAttacksTillReload = 30;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime)
+					if(npc.m_flNextRangedAttack < GameTime && npc.m_flNextMeleeAttack < GameTime)
 					{
 						if(!npc.m_fbRangedSpecialOn)
 						{
@@ -184,7 +186,6 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 300000.0);
-						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -206,11 +207,10 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						{
 							npc.m_fbRangedSpecialOn = false;
 						}	
-						npc.m_flSpeed = 220.0;	
 					}
 					else
 					{
-						npc.m_flSpeed = 220.0;
+						npc.m_flSpeed = 240.0;
 					}
 				}
 			}
@@ -221,6 +221,19 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+
+		if(npc.m_flNextRangedAttack > GameTime)
+		{
+			npc.m_flSpeed = 0.0;
+		}
+		else if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 120.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 
