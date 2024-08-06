@@ -1361,9 +1361,10 @@ void DisplayHealParticleAbove(int entity)
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 100.0;
+		ProjLoc[2] += 95.0;
 		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
 		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc[2] -= 10.0;
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else

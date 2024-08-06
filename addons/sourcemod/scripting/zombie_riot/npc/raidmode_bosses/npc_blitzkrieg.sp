@@ -1492,7 +1492,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}

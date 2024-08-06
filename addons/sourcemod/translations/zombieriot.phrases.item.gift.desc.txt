@@ -1302,7 +1302,7 @@
 	}
 	"Giant Tankus Desc"
 	{
-		"en"	"A aboslute giant of a tank."
+		"en"	"A absolute giant of a tank."
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
