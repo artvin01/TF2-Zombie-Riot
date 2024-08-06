@@ -184,7 +184,7 @@ methodmap VoidIxufan < CClotBody
 public void VoidIxufan_ClotThink(int iNPC)
 {
 	VoidIxufan npc = view_as<VoidIxufan>(iNPC);
-	if(f_VoidAfflictionStrength[iNPC] > GetGameTime())
+	if(f_VoidAfflictionStrength[iNPC] > GetGameTime() || f_VoidAfflictionStrength2[iNPC] > GetGameTime())
 	{
 		npc.m_flSpeed = 320.0;
 		fl_TotalArmor[iNPC] = 0.85;

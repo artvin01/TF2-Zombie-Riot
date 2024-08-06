@@ -289,16 +289,24 @@ stock bool VoidWave_FramingVoiderBuff(int entity, int victim)
 		Duration = 1.0;
 
 	if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID)
-		VoidWave_ApplyBuff(victim, Duration);
+		VoidWave_ApplyBuff(victim, Duration, 1);
 	
 
 	return true;
 }
 
-void VoidWave_ApplyBuff(int entity, float Duration)
+void VoidWave_ApplyBuff(int entity, float Duration, int strength = 0)
 {
-	if(f_VoidAfflictionStrength[entity] < GetGameTime() + Duration)
-		f_VoidAfflictionStrength[entity] = GetGameTime() + Duration;
+	if(strength == 0)
+	{
+		if(f_VoidAfflictionStrength[entity] < GetGameTime() + Duration)
+			f_VoidAfflictionStrength[entity] = GetGameTime() + Duration;
+	}
+	else if(strength == 1)
+	{
+		if(f_VoidAfflictionStrength[entity] < GetGameTime() + Duration)
+			f_VoidAfflictionStrength[entity] = GetGameTime() + Duration;
+	}
 }
 
 void VoidFramingVoiderSelfDefense(VoidFramingVoider npc, float gameTime, int target, float distance)

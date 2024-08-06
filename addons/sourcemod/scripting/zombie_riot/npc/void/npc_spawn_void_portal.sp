@@ -2,8 +2,6 @@
 #pragma newdecls required
 
 
-float SpawnedOneAlready;
-int IdRef;
 void VoidPortal_OnMapStart_NPC()
 {
 	NPCData data;
@@ -28,7 +26,7 @@ void VoidPortal_OnMapStart_NPC()
 	NPC_Add(data2);
 
 	NPCData data3;
-	strcopy(data3.Name, sizeof(data3.Name), "Void Elemntal Damage");
+	strcopy(data3.Name, sizeof(data3.Name), "Void Elemtal Damage");
 	strcopy(data3.Plugin, sizeof(data3.Plugin), "npc_donotuseever_2");
 	strcopy(data3.Icon, sizeof(data3.Icon), "");
 	data3.IconCustom = false;
@@ -72,7 +70,10 @@ methodmap VoidPortal < CClotBody
 				ShowGameText(client_check, "voice_player", 1, "%t", "A Void Gate Apeared...");
 			}
 		}
-		TeleportDiversioToRandLocation(npc.index);
+		if(TeleportDiversioToRandLocation(npc.index,true,850.0, 500.0) == 2)
+		{
+			TeleportDiversioToRandLocation(npc.index, true);
+		}
 		
 		return npc;
 	}

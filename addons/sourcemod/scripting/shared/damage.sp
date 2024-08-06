@@ -501,13 +501,17 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		{
 			damage += basedamage * 0.1;
 		}
-		if(f_VoidAfflictionStrength[attacker] > GameTime)
+		if(f_VoidAfflictionStrength2[attacker] > GameTime)
+			damage += basedamage * 0.3;
+		else if(f_VoidAfflictionStrength[attacker] > GameTime)
 			damage += basedamage * 0.2;
 	}
 	else
 	{
 		//silence weakens them.
-		if(f_VoidAfflictionStrength[attacker] > GameTime)
+		if(f_VoidAfflictionStrength2[attacker] > GameTime)
+			damage += basedamage * 0.15;
+		else if(f_VoidAfflictionStrength[attacker] > GameTime)
 			damage += basedamage * 0.1;
 	}
 
@@ -1565,14 +1569,22 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		{
 			DamageRes *= 0.90;
 		}
-		if(f_VoidAfflictionStrength[victim] > GameTime)
+		if(f_VoidAfflictionStrength2[victim] > GameTime)
+		{
+			DamageRes *= 0.8;
+		}
+		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
 			DamageRes *= 0.85;
 		}
 	}
 	else
 	{
-		if(f_VoidAfflictionStrength[victim] > GameTime)
+		if(f_VoidAfflictionStrength2[victim] > GameTime)
+		{
+			DamageRes *= 0.85;
+		}
+		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
 			DamageRes *= 0.9;
 		}
@@ -1626,6 +1638,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 #endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
+		static int testest;
+		testest++;
+		PrintToChatAll("testest %i",testest);
 		damage *= f_MultiDamageTaken[victim];
 	}
 	if(f_MultiDamageTaken_Flat[victim] != 1.0)
@@ -1879,6 +1894,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 	//BUFFS GO HERE.
 	if(f_VoidAfflictionStrength[victim] > GameTime)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "⌵⌵%s", Debuff_Adder_right);
+	}
+	else if(f_VoidAfflictionStrength[victim] > GameTime)
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "⌵%s", Debuff_Adder_right);
 	}

@@ -488,6 +488,7 @@ float f_WeaponSpecificClassBuff[MAXENTITIES][1];
 bool b_WeaponSpecificClassBuff[MAXENTITIES][1];
 float f_HighTeslarDebuff[MAXENTITIES];
 float f_VoidAfflictionStrength[MAXENTITIES];
+float f_VoidAfflictionStrength2[MAXENTITIES];
 float f_Silenced[MAXENTITIES];
 float f_VeryLowIceDebuff[MAXENTITIES];
 float f_LowIceDebuff[MAXENTITIES];
@@ -3372,13 +3373,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 			SDKHook(entity, SDKHook_Touch, SDKHook_Regenerate_Touch);
 		}
 #endif
-		else if(!StrContains(classname, "prop_vehicle"))
-		{
-#if defined ZR
-			Armor_Charge[entity] = 100000;
-#endif
-			b_IsVehicle[entity] = true;
-		}
 	}
 }
 

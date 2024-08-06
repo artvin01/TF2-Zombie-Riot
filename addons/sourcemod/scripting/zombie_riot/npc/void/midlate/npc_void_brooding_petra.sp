@@ -206,10 +206,14 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	//always leaves creep onto the floor
-	float ProjectileLoc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	ProjectileLoc[2] += 5.0;
-	VoidArea_SpawnNethersea(ProjectileLoc);
+	if(GetGameTime(npc.index) > npc.m_flAttackHappens_2)
+	{	
+		npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 0.35;
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 5.0;
+		VoidArea_SpawnNethersea(ProjectileLoc);
+	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{

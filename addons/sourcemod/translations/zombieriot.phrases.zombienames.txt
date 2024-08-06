@@ -2783,15 +2783,15 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance, regen, damage and speed.\n"
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(15%%)."
 	}
-	"Void Elemntal Damage"
+	"Void Elemtal Damage"
 	{
-		"en"	"Void Elemntal Damage"
+		"en"	"Void Elemtal Damage"
 	}
-	"Void Elemntal Damage Desc"
+	"Void Elemtal Damage Desc"
 	{
-		"en"	"Once full, buffs all void npcs around you and places void creep below you.\nCan be healed with armor."
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
 	}
 	"Vhxis"
 	{

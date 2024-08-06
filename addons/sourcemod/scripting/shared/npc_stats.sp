@@ -1440,7 +1440,11 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
-		if(f_VoidAfflictionStrength[this.index] > Gametime)
+		if(f_VoidAfflictionStrength2[this.index] > Gametime)
+		{
+			speed_for_return *= 1.15;
+		}
+		else if(f_VoidAfflictionStrength[this.index] > Gametime)
 		{
 			speed_for_return *= 1.15;
 		}
@@ -5744,7 +5748,7 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime() || f_VoidAfflictionStrength2[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
@@ -5758,6 +5762,8 @@ public void NpcBaseThink(int iNPC)
 		{
 			HealingAmount *= 0.125;
 		}
+		if(f_VoidAfflictionStrength2[iNPC] > GetGameTime())
+			HealingAmount *= 1.25;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 		
@@ -8204,6 +8210,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_Silenced[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
+	f_VoidAfflictionStrength2[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -9275,7 +9282,11 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
-	if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
+	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
+	{
+		Format(HealthText, sizeof(HealthText), "%sVV",HealthText);
+	}
+	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
 	{
 		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
 	}

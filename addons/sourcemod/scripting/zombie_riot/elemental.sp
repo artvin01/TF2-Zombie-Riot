@@ -281,7 +281,6 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
 						return;
 				}
-
 			}
 			
 			trigger = TriggerDamage(victim, Element_Chaos);
@@ -294,7 +293,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				ElementDamage[victim][Element_Chaos] = 0;
 				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
-				IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
+				IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
 
 				float burn = GetTeam(victim) == TFTeam_Red ? 10.0 : 25.0;
@@ -303,14 +302,10 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 			}
 		}
 	}
-	/*
-	Too strong.
-	Remove.
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.0001), 10.0, true);
+		IncreaceEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
-	*/
 }
 
 
@@ -414,14 +409,7 @@ static void SakratanGroupDebuffInternal(int victim, int attacker)
 		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
 
 	b_ThisNpcIsSawrunner[attacker] = sawrunner;
-	if(i_IsABuilding[victim])	// Buildings
-	{
-		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
-	}
-	else
-	{
-		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0, true);
-	}
+	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 }
 
 void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
@@ -452,7 +440,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 	else if(i_IsABuilding[victim])	// Buildings
 	{
-		IncreaceEntityDamageTakenBy(victim, 1.0 + (damage * 0.001), 10.0);
+		IncreaceEntityDamageTakenBy(victim, (damage * 0.001), 5.0, true);
 	}
 }
 
