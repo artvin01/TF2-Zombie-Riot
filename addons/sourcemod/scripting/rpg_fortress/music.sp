@@ -41,6 +41,7 @@ static bool OverrideCustom[MAXTF2PLAYERS];
 static float OverrideVolume[MAXTF2PLAYERS];
 static float MusicDelay[MAXTF2PLAYERS];
 
+
 void Music_ZoneEnter(int client, int entity)
 {
 	// TODO: Set all oberservers too

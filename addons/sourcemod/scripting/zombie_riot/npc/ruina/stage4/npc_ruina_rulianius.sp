@@ -296,6 +296,8 @@ static void ClotThink(int iNPC)
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
+		npc.StartPathing();
+
 		if(npc.m_flNextRangedBarrage_Singular < GameTime && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
 			float Difference = FloatAbs(Npc_Vec[2]-vecTarget[2]);

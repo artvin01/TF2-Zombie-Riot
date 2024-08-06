@@ -244,12 +244,12 @@ public Action Cosmic_Activate_Tick(int client)
 			}
 
 			float Speed = Cosmic_Base_BeamSpeed[client];
-			
+			/*
 			if(LastMann)
 			{
 				Speed *=3.0;
 			}
-
+			*/
 			if(Cosmic_Heat[client]>=Cosmic_Heat_Max[client])
 			{
 				b_cosmic_overheat[client]=true;	//we overheated the gun, cool it.
@@ -269,19 +269,16 @@ public Action Cosmic_Activate_Tick(int client)
 					Cosmic_Terror_Sound(client);
 					b_cosmic_touchdown[client] = true;
 				}
-				if(!LastMann)
+				
+				float heating = 1.0;
+				heating = heating*fl_cosmic_heat_multi[client];
+				if(fl_cosmic_heating_timer[client] < GameTime)
 				{
-					float heating = 1.0;
-					heating = heating*fl_cosmic_heat_multi[client];
-					if(fl_cosmic_heating_timer[client] < GameTime)
-					{
-						Cosmic_Heat[client]+=heating*3.0;
-					}
-					else
-					{
-						Cosmic_Heat[client]+=heating;
-					}
-					
+					Cosmic_Heat[client]+=heating*3.0;
+				}
+				else
+				{
+					Cosmic_Heat[client]+=heating;
 				}
 
 				Cosmic_Terror_FullCharge(client, Speed, GameTime);

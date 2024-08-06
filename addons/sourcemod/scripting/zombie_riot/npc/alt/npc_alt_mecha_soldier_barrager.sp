@@ -179,7 +179,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		i_ammo_count[npc.index]=0;
+		i_ammo_count[npc.index]=10;
 		b_target_close[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);

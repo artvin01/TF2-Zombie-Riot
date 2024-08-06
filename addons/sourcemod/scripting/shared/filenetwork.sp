@@ -220,18 +220,23 @@ stock void PrecacheSoundCustom(const char[] sound, const char[] altsound = "", i
 #endif
 }
 
-stock void PrecacheMvMIconCustom(const char[] icon)
+stock void PrecacheMvMIconCustom(const char[] icon, bool vtf = true)
 {
 
 	char buffer[PLATFORM_MAX_PATH];
-	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
+
+	if(vtf)
+	{
+		FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vtf", icon);
 
 #if defined UseDownloadTable
-	AddFileToDownloadsTable(buffer);
+		AddFileToDownloadsTable(buffer);
 #else
-	if(ExtraList.FindString(buffer) == -1)
-		ExtraList.PushString(buffer);
+		if(ExtraList.FindString(buffer) == -1)
+			ExtraList.PushString(buffer);
 #endif
+
+	}
 
 	FormatEx(buffer, sizeof(buffer), "materials/hud/leaderboard_class_%s.vmt", icon);
 
@@ -279,6 +284,7 @@ static void AddSoundFile(const char[] sound)
 	}
 }
 
+#if !defined UseDownloadTable
 static void FormatFileCheck(const char[] file, int client, char[] output, int length)
 {
 	strcopy(output, length, file);
@@ -319,9 +325,7 @@ static void SendNextFile(int client)
 		
 		static char filecheck[PLATFORM_MAX_PATH];
 		FormatFileCheck(download, client, filecheck, sizeof(filecheck));
-#if !defined UseDownloadTable
 		FileNet_RequestFile(client, filecheck, FileNetwork_RequestResults, pack);
-#endif
 		if(!DeleteFile(filecheck, true))	// There has been some cases where we still have a file (Eg. plugin unload)
 		{
 			Format(filecheck, sizeof(filecheck), "download/%s", filecheck);
@@ -375,14 +379,12 @@ public void FileNetwork_RequestResults(int client, const char[] file, int id, bo
 		}
 		else
 		{
-#if !defined UseDownloadTable
 			// So the client doesn't freak out about existing CreateFragmentsFromFile spam
 			PrintToConsole(client, "[ZR] Downloading '%s'", download);
 			if(FileNet_SendFile(client, download, FileNetwork_SendResults, pack))
 				return;
 			
 			LogError("Failed to queue file \"%s\" to client", download);
-#endif
 		}
 	}
 
@@ -401,16 +403,22 @@ public void FileNetwork_SendResults(int client, const char[] file, bool success,
 			FormatFileCheck(file, client, filecheck, sizeof(filecheck));
 
 			File filec = OpenFile(filecheck, "wt");
-			filec.WriteLine("Used for file checks for ZR");
-			filec.Close();
-#if !defined UseDownloadTable
-			if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
+			if(filec)
 			{
-				LogError("Failed to queue file \"%s\" to client", filecheck);
-				DeleteFile(filecheck);
-					//LogError("Failed to delete file \"%s\"", filecheck);
+				filec.WriteLine("Used for file checks for ZR");
+				filec.Close();
+				if(!FileNet_SendFile(client, filecheck, FileNetwork_SendFileCheck))
+				{
+					LogError("Failed to queue file \"%s\" to client", filecheck);
+					DeleteFile(filecheck);
+						//LogError("Failed to delete file \"%s\"", filecheck);
+				}
 			}
-#endif
+			else
+			{
+				LogError("Failed to write file \"%s\"", filecheck);
+			}
+
 			pack.Reset();
 			if(pack.ReadCell())
 			{
@@ -442,6 +450,7 @@ public void FileNetwork_SendFileCheck(int client, const char[] file, bool succes
 	DeleteFile(file);
 		//LogError("Failed to delete file \"%s\"", file);
 }
+#endif
 
 stock void StopCustomSound(int entity, int channel, const char[] sound, float volume = SNDVOL_NORMAL)
 {

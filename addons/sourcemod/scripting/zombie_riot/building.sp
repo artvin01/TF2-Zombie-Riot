@@ -154,7 +154,7 @@ bool BuildingIsBeingCarried(int buildingindx)
 	return false;
 }
 #define MAX_CASH_VIA_BUILDINGS 5000
-#define MAX_SUPPLIES_EACH_WAVE 5
+#define MAX_SUPPLIES_EACH_WAVE 10
 static float f_GiveAmmoSupplyFacture[MAXTF2PLAYERS];
 static int i_GiveAmmoSupplyLimit[MAXTF2PLAYERS];
 static int i_GiveCashBuilding[MAXTF2PLAYERS];
@@ -222,11 +222,14 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 		f_GiveAmmoSupplyFacture[owner] -= 1.0;
 		ConvertedAmmoSupplyGive += 1;
 	}
+	if(ConvertedAmmoSupplyGive <= 0)
+		return;
+		
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)
 		{
-			i_GiveCashBuilding[owner] += ConvertedAmmoSupplyGive;
+			i_GiveAmmoSupplyLimit[owner] += ConvertedAmmoSupplyGive;
 			Ammo_Count_Used[owner] -= ConvertedAmmoSupplyGive;
 		}
 	}
@@ -1444,6 +1447,15 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!WildingenBuilder[entity] && WildingenBuilder[client])
 		{
 			WildingenBuilder[entity] = true;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
+			if(BarracksUpgrade)
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+		}
+		if(!WildingenBuilder2[entity] && WildingenBuilder2[client])
+		{
+			WildingenBuilder2[entity] = true;
 			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)

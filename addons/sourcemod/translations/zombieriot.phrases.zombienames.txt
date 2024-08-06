@@ -844,6 +844,10 @@
 	{
 		"en"		"Hyper Blitzkrieg"
 	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"		"TRUE BLITZKRIEG"
+	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"
@@ -2249,10 +2253,6 @@
 	{
 		"en"	"Ransacker"
 	}
-	"Stellar Weaver"
-	{
-		"en"	"Stellar Weaver"
-	}
 	"Runover"
 	{
 		"en"	"Runover"
@@ -2519,7 +2519,7 @@
 	}
 	"Twirl Desc"
 	{
-		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nSilence: Blocks most abilities."
+		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
 	}
 	"Ealing"
 	{
@@ -2853,13 +2853,25 @@
 	{
 		"en" 		"Sphynx"
 	}
+	"Sphynx Spawned"
+	{
+		"en" 		"Zombies refuse to stay down..."
+	}
 	"Petrisis' Baron"
 	{
 		"en" 		"Petrisis' Baron"
 	}
+	"Petrisis' Baron Spawned"
+	{
+		"en" 		"Your barricades cry in fear."
+	}
 	"Nightmare"
 	{
 		"en" 		"Nightmare"
+	}
+	"Nightmare Spawned"
+	{
+		"en" 		"Nightmares will haunt you."
 	}
 	"Zombine"
 	{

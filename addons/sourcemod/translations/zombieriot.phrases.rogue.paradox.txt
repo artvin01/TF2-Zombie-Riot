@@ -76,7 +76,7 @@
 	}
 	"Compass and Map Desc"
 	{
-		"en"	"Go the right way, nothing more.\n{green}Enemies move 20%% slower, take 35%% more damage, and deal 35%% less damage\n{green}Gain 75%% less Chaos Infliction"
+		"en"	"Go the right way, nothing more.\n{green}Enemies move 20%% slower, take 35%% more damage, and deal 35%% less damage\n{green}Gain 75%% less Chaos Infliction\n{crimson}Prevents gaining alternative endings."
 	}
 	"Healing Supplies"
 	{
@@ -1201,9 +1201,9 @@
 	{
 		"en"	"Darkwood"
 	}
-	"Last of Internius"
+	"Last of Interitus"
 	{
-		"en"	"Last of Internius"
+		"en"	"Last of Interitus"
 	}
 	"Escapee 1"
 	{

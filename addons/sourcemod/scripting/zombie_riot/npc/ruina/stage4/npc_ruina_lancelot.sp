@@ -297,7 +297,7 @@ static void Equalize_HP(Lancelot npc, int &attacker, int &inflictor, float &dama
 	int i=1;
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		if(i > 10)
+		if(i > 9)
 			break;	//somehow more then 10 lancelot's exist, abort.
 		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
 		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
@@ -496,6 +496,8 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 	float Swing_Speed = (npc.Anger ? 1.0 : 2.0);
 	float Swing_Delay = (npc.Anger ? 0.1 : 0.2);
 
+	bool retreat = false;
+
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < GameTime)
@@ -543,12 +545,16 @@ static void Lancelot_Melee(Lancelot npc, float flDistanceToTarget, int PrimaryTh
 		{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			float vBackoffPos[3];
+			retreat = true;
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flSpeed =  fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;
 		}
 	}
+
+	if(!retreat)
+		npc.m_flSpeed = fl_npc_basespeed;
 
 	if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*1.25))	//its a lance so bigger range
 	{
@@ -687,6 +693,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
+
 
 		if(npc.m_bThisNpcIsABoss)
 		{

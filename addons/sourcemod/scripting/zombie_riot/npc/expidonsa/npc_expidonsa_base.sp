@@ -81,10 +81,10 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 
 void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
-	int MaxShieldCapacity = 5;
+	int MaxShieldCapacity = 10;
 	if(b_thisNpcIsABoss[entity])
 	{
-		MaxShieldCapacity = 10;
+		MaxShieldCapacity = 20;
 	}
 	if(b_thisNpcIsARaid[entity])
 	{
@@ -234,10 +234,6 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		return;
 	
 	i_Expidonsa_HealingCount[HealerNpc] -= 1;
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Function func2 = func_Expidonsa_Heal_After[HealerNpc];
 	if(func2 && func2 != INVALID_FUNCTION)
 	{

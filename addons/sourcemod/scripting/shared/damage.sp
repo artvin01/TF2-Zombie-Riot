@@ -8,6 +8,8 @@
 #define DMG_WIDOWS_WINE 1.35
 #define DMG_ANTI_RAID 1.1
 
+
+
 float BarbariansMindNotif[MAXTF2PLAYERS];
 void DamageModifMapStart()
 {
@@ -421,8 +423,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 	RPG_FlatRes(victim, attacker, weapon, damage);
 #endif
 
+	NpcArmorExtra(victim, attacker, inflictor, damage, damagetype);
 	NpcSpecificOnTakeDamage(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
+	//Do armor.
 #if defined ZR
 	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 	{
@@ -435,6 +439,32 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float bas
 #endif
 
 	return false;
+}
+
+void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
+{
+	CClotBody npc = view_as<CClotBody>(victim);
+	if(npc.m_flArmorCount > 0.0)
+	{
+		if(damagetype & DMG_CLUB)
+		{
+			npc.m_flArmorCount -= ((damage * ((npc.m_flArmorProtect - 1.0) * -1.0)) * 1.35);
+		}
+		else
+		{
+			npc.m_flArmorCount -= (damage * ((npc.m_flArmorProtect - 1.0) * -1.0));
+		}
+		damage *= npc.m_flArmorProtect; //negate damage
+		
+		if(npc.m_iArmorType == 0)
+			npc.PlayHurtArmorSound();
+
+		if(npc.m_flArmorCount <= 0.0) //over damage, add as damage.
+		{
+			//let melee be really good against armor and stuff to reward them.
+			damage -= npc.m_flArmorCount;
+		}
+	}
 }
 
 stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -609,7 +639,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
-		case WEAPON_OCEAN, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
@@ -744,13 +774,6 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	{
 		i_HasBeenHeadShotted[victim] = false;
 	}
-#if !defined RPG
-	if(b_npcspawnprotection[victim])
-		damage *= 0.05;
-
-	if(b_npcspawnprotection[attacker])
-		damage *= 1.5;
-#endif
 		
 #if defined ZR
 	if(GetTeam(victim) == TFTeam_Red)
@@ -1258,7 +1281,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 		{
 
 #if defined ZR
-			if(IsBehindAndFacingTarget(attacker, victim, weapon) || (b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim])
+			if(IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim])
 #else
 			if(IsBehindAndFacingTarget(attacker, victim, weapon) || i_NpcIsABuilding[victim])
 #endif
@@ -1268,12 +1291,14 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 				int melee = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 				if(melee != 4 && melee != 1003 && viewmodel>MaxClients && IsValidEntity(viewmodel))
 				{
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
+#if defined ZR
+					if((b_FaceStabber[attacker] && b_FaceStabber[victim]))
 					{
 						PrintToChat(attacker, "You think you can circumvent this challange?! Shame on you!");
 						damage = 0.0;
 						return false;
 					}
+#endif
 					i_HasBeenBackstabbed[victim] = true;
 						
 					float attack_speed;
@@ -1296,18 +1321,14 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 
 #if defined ZR
 					CClotBody npc = view_as<CClotBody>(victim);
-					if(LastMann)
-					{
-						attack_speed *= 0.5; //extra delay.
-					}
 
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]) || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
+					if(b_FaceStabber[attacker] || i_NpcIsABuilding[victim] || IsEntityTowerDefense(victim))
 						damage *= 0.40; //extra delay.
 #endif
 					
 					bool IsTargeter = false;
 #if defined ZR
-					if(attacker == npc.m_iTarget && !b_FaceStabber[attacker])
+					if(attacker == npc.m_iTarget)
 					{
 						IsTargeter = true;
 					}
@@ -1491,6 +1512,21 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 {
 	float DamageRes = 1.0;
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
+	//these are absolutes
+#if !defined RPG
+	if(victim > MaxClients && b_npcspawnprotection[victim])
+	{
+		//dont give spawnprotection if both are
+		if(attacker <= MaxClients)
+		{
+			DamageRes *= 0.05;
+		}
+		else if(!b_npcspawnprotection[attacker])
+		{
+			DamageRes *= 0.05;
+		}
+	}
+#endif
 	if(f_PernellBuff[victim] > GameTime)
 	{
 		DamageRes *= 0.6;
@@ -1582,6 +1618,12 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
 		damage *= 0.9;
 		
+#if !defined RPG
+	if(attacker > MaxClients && b_npcspawnprotection[attacker])
+	{
+		damage *= 1.5;
+	}
+#endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
 		damage *= f_MultiDamageTaken[victim];

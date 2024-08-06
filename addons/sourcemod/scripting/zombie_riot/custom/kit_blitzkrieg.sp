@@ -123,6 +123,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 
 	float GameTime = GetGameTime();
 
+/*
 	if(LastMann)	//if lastman triggers and we happen to be reloading, insta reload it!
 	{
 		if(!b_was_lastman[client])
@@ -135,6 +136,7 @@ public Action Timer_Management_KitBlitzkrieg(Handle timer, DataPack pack)
 		}
 	}
 	else
+	*/
 	{
 		if(b_was_lastman[client])
 		{
@@ -274,10 +276,10 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, const char[] c
 	
 	if(time>120.0)	//incase somehow it goes insanely high.
 		time=30.0;
-
+/*
 	if(LastMann)
 		time /=4.0;
-
+*/
 	fl_primary_reloading[client] = GameTime + time;
 
 	//8 is rockets ammo
@@ -307,31 +309,31 @@ public void Blitzkrieg_Kit_Switch_Mode(int client, int weapon, const char[] clas
 }
 public void Blitzkrieg_Kit_Primary_Fire_1(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 3, 19.0, 1.2);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.1, 1, 19.0, 2.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_2(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 3, 19.0, 1.2);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.175, 1, 19.0, 2.0);
 }
 public void Blitzkrieg_Kit_Primary_Fire_3(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 5, 14.0, 0.6);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.2, 3, 19.0, 0.66);
 }
 public void Blitzkrieg_Kit_Primary_Fire_4(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 7, 10.0, 0.45);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.275, 3, 19.0, 0.66);
 }
 public void Blitzkrieg_Kit_Primary_Fire_5(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 7, 10.0, 0.44);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.325, 5, 12.0, 0.4);
 }
 public void Blitzkrieg_Kit_Primary_Fire_6(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 7, 10.0, 0.428);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.35, 5, 12.0, 0.4);
 }
 public void Blitzkrieg_Kit_Primary_Fire_7(int client, int weapon, const char[] classname, bool &result)
 {
-	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 9, 7.0, 0.33);
+	Blitzkrieg_Kit_Rocket(client, weapon, 0.375, 7, 10.0, 0.285);
 }
 
 
@@ -598,7 +600,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", fl_ion_charge[client], BLITZKREIG_KIT_ION_COST_CHARGE);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.\n[%i/%i]", RoundToFloor(fl_ion_charge[client]), RoundToFloor(BLITZKREIG_KIT_ION_COST_CHARGE));
 		return;
 	}
 	float GameTime = GetGameTime();
@@ -805,12 +807,14 @@ void Blitzkrieg_Kit_OnHitEffect(int client)
 
 	if(fl_primary_reloading[client]>GameTime)
 	{
+		/*
 		if(LastMann)
 		{
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;
 			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*2.0;	//Reduce the cooldowns by a bit if you hit something!
 		}
 		else
+		*/
 		{
 			fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;
 			fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION;	//Reduce the cooldowns by a bit if you hit something!

@@ -117,7 +117,8 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "tp INTEGER NOT NULL DEFAULT 0, "
 		... "zomvol FLOAT NOT NULL DEFAULT 0.0, "
 		... "tauntspeed INTEGER NOT NULL DEFAULT 1, "
-		... "battletimehud FLOAT NOT NULL DEFAULT 0.0);");
+		... "battletimehud FLOAT NOT NULL DEFAULT 0.0, "
+		... "mapmusic INTEGER NOT NULL DEFAULT 0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -249,6 +250,7 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
 			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
+			b_IgnoreMapMusic[client] = view_as<bool>(results[2].FetchInt(17));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -317,7 +319,8 @@ void DataBase_ClientDisconnect(int client)
 			... "tp = %d, "
 			... "zomvol = %.3f, "
 			... "tauntspeed = %d, "
-			... "battletimehud = %.3f "
+			... "battletimehud = %.3f, "
+			... "mapmusic = %d "
 			... "WHERE steamid = %d;",
 			i_PlayerModelOverrideIndexWearable[client] + 1,
 			f_ArmorHudOffsetX[client],
@@ -335,6 +338,7 @@ void DataBase_ClientDisconnect(int client)
 			f_ZombieVolumeSetting[client],
 			b_TauntSpeedIncreace[client],
 			f_Data_InBattleHudDisableDelay[client],
+			b_IgnoreMapMusic[client],
 			id);
 
 			tr.AddQuery(buffer);

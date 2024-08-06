@@ -441,6 +441,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 	bool DoAlternativeCheck = false;
 	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
 	{
+#if defined ZR
 		//if a building is mounted, we grant extra range.
 		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
 		if(IsValidClient(Building_Index))
@@ -448,6 +449,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 			//intercted with a player
 			DoAlternativeCheck = true;
 		}
+#endif
 	}
 	else if(IsValidClient(iHit))
 	{
@@ -1299,6 +1301,9 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 1.5;
 		}
+
+		if(Classic_Mode() && GetTeam(reciever) == TFTeam_Red)
+			HealTotal *= 0.5;
 #endif
 
 #if !defined RTS
@@ -1325,10 +1330,14 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 	{
 		int HealingDoneInt;
 		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+		if(HealingDoneInt > 0)
+		{
 #if defined ZR
 		if(healer != reciever && healer <= MaxClients)
 			Healing_done_in_total[healer] += HealingDoneInt;
 #endif
+			ApplyHealEvent(reciever, HealingDoneInt);
+		}
 		return HealingDoneInt;
 	}
 	else
@@ -1342,6 +1351,25 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		pack.WriteCell(Maxhealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
 		return 0; //this is a timer, we cant really quantify this.
+	}
+}
+
+void DisplayHealParticleAbove(int entity)
+{
+	if(f_HealDelayParticle[entity] < GetGameTime())
+	{
+		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
+		float ProjLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+		ProjLoc[2] += 95.0;
+		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
+		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc[2] -= 10.0;
+		if(GetTeam(entity) != TFTeam_Red)
+			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		else
+			TE_Particle("healthgained_red", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
 	}
 }
 
@@ -1400,6 +1428,10 @@ stock void ApplyHealEvent(int entindex, int amount)
 			pack.WriteCell(entindex);
 			pack.WriteCell(EntIndexToEntRef(entindex));
 		}
+	}
+	else
+	{
+		DisplayHealParticleAbove(entindex);
 	}
 }
 
@@ -2870,6 +2902,9 @@ int inflictor = 0)
 		explosionRadius *= value;
 		if(maxtargetshit == 10)
 			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
+
+		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
+			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
 	}
 #endif
 

@@ -55,10 +55,10 @@ void Sphynx_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSoundCustom(g_DeathSounds[i]);	}
+	for (int i = 0; i < (sizeof(g_DeathSounds));	i++) { PrecacheSound(g_DeathSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSoundCustom(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSoundCustom(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
+	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 }
@@ -133,6 +133,19 @@ methodmap Sphynx < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 275.0;
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
+		for(int client_check=1; client_check<=MaxClients; client_check++)
+		{
+			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+			{
+				LookAtTarget(client_check, npc.index);
+				SetGlobalTransTarget(client_check);
+				ShowGameText(client_check, "voice_player", 1, "%t", "Sphynx Spawned");
+				UTIL_ScreenFade(client_check, 180, 1, FFADE_OUT, 0, 0, 0, 255);
+			}
+		}
+		
 
 		npc.m_bDissapearOnDeath = false;
 		
@@ -194,7 +207,7 @@ public void Sphynx_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			if(flDistanceToTarget > (100.0*100.0))
+			if(flDistanceToTarget > (0.0*0.0))
 			{
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
@@ -212,12 +225,12 @@ public void Sphynx_ClotThink(int iNPC)
 				NPC_StopPathing(npc.index);
 			}
 		}
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
+		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 0.5;
 	}
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		npc.m_flDoingAnimation = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 40.0, 250, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 40.0, 500, 9999.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))

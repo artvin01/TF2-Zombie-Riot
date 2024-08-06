@@ -444,15 +444,23 @@ methodmap RaidbossSilvester < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-		music.Time = 117;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
-		Music_SetRaidMusic(music);
+		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
+		
+		if(!ingoremusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+			music.Time = 117;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 450.0;
+		}
 		
 		npc.Anger = false;
 		//IDLE
@@ -1835,6 +1843,7 @@ float extra_pillar_size = 1.0)
 		Range *= extra_pillar_size;
 
 		Range += (float(Repeats) * 10.0);
+		Range += 10.0;
 		Silvester_TE_Used += 1;
 		if(Silvester_TE_Used > 31)
 		{
@@ -1853,19 +1862,6 @@ float extra_pillar_size = 1.0)
 		{
 			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
 	}
 }
 
@@ -2000,7 +1996,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float SizeScale = 0.9;
 			SizeScale *= PillarSizeEdit; 
 
-			SizeScale += (count * 0.1);
+			SizeScale += (float(count -1) * 0.1);
 
 			char FloatString[8];
 			FloatToString(SizeScale, FloatString, sizeof(FloatString));
@@ -2021,7 +2017,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float Range = 100.0;
 			Range *= PillarSizeEdit;
 
-			Range += (float(count) * 10.0);
+			Range += (float(count -1) * 10.0);
+			Range += 10.0;
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
