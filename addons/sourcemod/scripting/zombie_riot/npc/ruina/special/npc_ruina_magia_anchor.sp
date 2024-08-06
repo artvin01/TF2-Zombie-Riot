@@ -484,17 +484,17 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_dronianis"
 	};
 	static const int npc_health[] = {
-		20000,	//"npc_ruina_magianius",
-		30000,	//"npc_ruina_loonarionus"
-		40000,	//"npc_ruina_heliarionus"
-		30000,	//"npc_ruina_euranionis",
-		60000,	//"npc_ruina_draconia",
-		30000,	//"npc_ruina_malianius",
-		40000,	//"npc_ruina_lazurus",
-		30000,	//"npc_ruina_aetherianus"
-		60000,	//"npc_ruina_rulianius",
-		30000,	//"npc_ruina_astrianious"
-		60000	//"npc_ruina_dronianis"
+		100000,	//"npc_ruina_magianius",
+		150000,	//"npc_ruina_loonarionus"
+		200000,	//"npc_ruina_heliarionus"
+		150000,	//"npc_ruina_euranionis",
+		300000,	//"npc_ruina_draconia",
+		150000,	//"npc_ruina_malianius",
+		200000,	//"npc_ruina_lazurus",
+		150000,	//"npc_ruina_aetherianus"
+		300000,	//"npc_ruina_rulianius",
+		150000,	//"npc_ruina_astrianious"
+		300000	//"npc_ruina_dronianis"
 	};
 
 	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);

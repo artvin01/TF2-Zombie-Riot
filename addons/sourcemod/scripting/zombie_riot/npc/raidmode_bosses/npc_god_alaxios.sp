@@ -411,6 +411,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	if(b_angered_twice[npc.index])
 	{
+		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
@@ -1874,8 +1875,11 @@ bool AlaxiosForceTalk()
 }
 public void Raidmode_Alaxios_Win(int entity)
 {
+	GodAlaxios npc = view_as<GodAlaxios>(entity);
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
+	npc.m_bDissapearOnDeath = true;
+	BlockLoseSay = true;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:
