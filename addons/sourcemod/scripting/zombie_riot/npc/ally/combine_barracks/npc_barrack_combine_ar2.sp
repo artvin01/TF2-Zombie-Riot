@@ -174,7 +174,7 @@ public void Barrack_Combine_AR2_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (0.15 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (0.12 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
