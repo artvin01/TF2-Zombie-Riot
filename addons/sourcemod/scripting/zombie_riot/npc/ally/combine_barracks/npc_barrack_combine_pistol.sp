@@ -53,6 +53,7 @@ void Barracks_Combine_Pistol_Precache()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
