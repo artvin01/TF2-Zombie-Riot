@@ -111,6 +111,7 @@ methodmap AlliedSensalAbility < CClotBody
 		}
 	
 		npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
+		npc.SetPlaybackRate(2.0);	
 		npc.PlayChargeSound();
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -128,8 +129,8 @@ methodmap AlliedSensalAbility < CClotBody
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		npc.m_flAttackHappens_2 = GetGameTime() + 1.5;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 3.0;
+		npc.m_flAttackHappens_2 = GetGameTime() + 0.75;
+		npc.m_flRangedSpecialDelay = GetGameTime() + 1.5;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
