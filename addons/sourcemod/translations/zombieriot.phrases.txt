@@ -604,7 +604,7 @@
 	"Out of Laser Battery"
 	{
 		"en"		"You ran out of Laser Battery!"
-		"en"		"Vous avez épuisé vos Batteries de laser!"
+		"fr"		"Vous avez épuisé vos Batteries de laser!"
 		"ru"		"У вас закончилась лазерная батарея!"
 		"de"		"Sie haben keine Laser-batterie mehr!"
 		"pt"		"Você ficou sem Baterias Laser!"
@@ -614,7 +614,7 @@
 	"Potion Supply"
 	{
 		"en"		"Potion Supply"
-		"en"		"Réserves de Potion"
+		"fr"		"Réserves de Potion"
 		"ru"		"Запас зелий"
 		"de"		"Trankversorgung"
 		"pt"		"Suplemento de Poções"
@@ -747,7 +747,7 @@
 	"Max Mana Reached"
 	{
 		"en"		"You reached your maximum amount of mana!"
-		"en"		"Vous avez atteint votre maximum de mana!"
+		"fr"		"Vous avez atteint votre maximum de mana!"
 		"ru"		"Вы достигли максимального количества маны!"
 		"de"		"Sie haben ihre Maximalen Menge an Mana Erreicht!"
 		"pt"		"Você chegou na quantidade máxima de mana!"

@@ -2671,7 +2671,6 @@
 	{
 		"en"	"The Merchant"
 		"fr"	"Le Marchand"
-		"fr"	"Le Marchand"
 	}
 	"Merchant's Wrench"
 	{
