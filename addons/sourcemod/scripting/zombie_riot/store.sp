@@ -54,6 +54,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool IsSupport;
 	bool IsAlone;
 	bool InternalMeleeTrace;
 	
@@ -248,6 +249,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%sis_a_support", prefix);
+		this.IsSupport	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%signore_upgrades", prefix);
 		this.IsAlone	= view_as<bool>(kv.GetNum(buffer));
@@ -5170,6 +5174,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				i_IsSupportWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
 				i_WeaponAmmoAdjustable[entity] = 0;
 				
@@ -5258,6 +5263,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(info.IsSupport)
+					{
+						i_IsSupportWeapon[entity] = true;
 					}
 					if(!info.InternalMeleeTrace)
 					{
@@ -6339,6 +6348,14 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		case 10:
 		{
 			return true;
+		}
+		case 11:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+
+			if(i_IsSupportWeapon[entity])
+				return true;
 		}
 	}
 

@@ -1563,44 +1563,32 @@
 	
 	"Doctor Certificate Desc"
 	{
-		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"Двукратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+2倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"2x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Professor Certificate Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Death Certificate Desc"
 	{
-		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,4-кратный урон и лечение у лечебной пушки и +2 секунды убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.4倍的医枪伤害和治疗效果，每秒恢复2的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.4x Medigun Hurt and Heal and +2 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Reaper's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复1的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Hell's Certificate Desc"
 	{
-		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,45-кратный урон и лечение у лечебной пушки и +1 секунда убера, а также 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.45倍的医枪伤害和治疗效果，每秒恢复的超量。当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.45x Medigun Hurt and Heal and +1 seconds of uber and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Medic's Lost Medical Lisence Desc"
 	{
-		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
-		"ru"	"1,5-кратный урон и лечение у лечебной пушки и 5%% сопр. ближнему бою при использ. доп./лечебной пушки"
-		"chi"   "+1.5倍的医枪伤害和治疗效果，当拿起医疗枪时获得5%%的近战抗性."
+		"en"	"1.5x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
 	}
 	
 	"Panic Attack Desc"
@@ -2960,7 +2948,7 @@
 	}
 	"Helena's Elite Medicine Desc"
 	{
-		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Secondary/Medigun out"
+		"en"	"1.6x Medigun Hurt and Heal and 5%% melee resistance with Healing Support Weapons out"
 	}
 	"Messenger Launcher Desc"
 	{

@@ -834,9 +834,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-		}
-#endif
-#if defined ZR
 			else
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
@@ -871,7 +868,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-#endif	// ZR
+		}
+#endif
 	}
 	return Plugin_Changed;
 }
