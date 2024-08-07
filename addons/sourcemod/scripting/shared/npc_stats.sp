@@ -1653,12 +1653,13 @@ methodmap CClotBody < CBaseCombatCharacter
 				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 			}
 		}
-#endif
+		
 		if(!VIPBuilding_Active())
 		{
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
+#endif
 
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}

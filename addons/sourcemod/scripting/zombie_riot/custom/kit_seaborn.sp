@@ -345,7 +345,7 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 					healing = 75;
 
 				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
-				healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
+				healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
 				
 				if(healing > ammo)
 					healing = ammo;

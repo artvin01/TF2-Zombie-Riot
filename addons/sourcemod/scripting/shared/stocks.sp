@@ -1542,8 +1542,6 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 #if defined ZR
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
-#else
-		return false;
 #endif
 	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
