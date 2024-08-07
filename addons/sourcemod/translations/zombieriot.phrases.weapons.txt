@@ -413,7 +413,7 @@
 	"USP tactical"
 	{
 		"en"		"USP tactical"
-		"fr"		"USP tactical"
+		"fr"		"USP tactique"
 		"ru"		"Тактический пистолет"
 		"de"		"USP taktisch"
 		"pt"		"USP tática"
@@ -2170,9 +2170,14 @@
 	"Deployable Quantum Suit"
 	{
 		"en"       "Deployable Quantum Suit"
-		"fr"       "Costume Quantum Déployable"
+		"fr"       "Armure Quantum Déployable"
 		"ru"       "Развёрт. квантовый костюм"
 		"chi"       "量子套装"
+	}
+	"Throwable Repair Kit"
+	{
+		"en"       "Throwable Repair Kit"
+		"fr"       "Kit de Réparation Lançable"
 	}
 	"Primary Builder Weapons"
 	{
@@ -2712,5 +2717,15 @@
 	{
 		"en"	"Flaming Tail Knight"
 		"fr"	"Chevalier à Queue Enflamée"
+	}
+	"Song Of The Ocean"
+	{
+		"en"	"Song Of The Ocean"
+		"fr"	"Chant de l'Océan"
+	}
+	"Taurus Judge"
+	{
+		"en"	"Taurus Judge"
+		"fr"	"Juge Taurus"
 	}
 }

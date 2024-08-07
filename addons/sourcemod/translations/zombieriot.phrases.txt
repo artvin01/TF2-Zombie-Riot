@@ -731,7 +731,7 @@
 	"Armor Max Reached Raid"
 	{
 		"en"		"You cannot use anymore Armortables this Raid Battle!"
-		"fr"		"Vous ne pouvez plus utiliser les tables d'armure lors de ce Raid!
+		"fr"		"Vous ne pouvez plus utiliser les tables d'armure lors de ce Raid!"
 		"pt"		"Você não pode usar mais mesas de armaduras durante essa Batalha!"
 	}
 	"Armor Max Reached Ammo Box"
@@ -1160,7 +1160,7 @@
 	"Max Health Activated"
 	{
 		"en" 		"Extra Health!"
-		"fr" 		"Soins Bonus!"
+		"fr" 		"Santé Bonus!"
 		"pt"		"Vida Extra!"
 		"ru" 		"Дополнительное здоровье!"
 		"chi"       "额外的血量!"
@@ -2363,7 +2363,7 @@
 	"Low Health Shake"
 	{
 		"en"		"Low Health Shake"
-		"fr"		"Secousses Peu Soins"
+		"fr"		"Secousses Peu Santé"
 		"ru"		"Тряска при низк. ур. здор."
 		"chi"		"低生命值屏幕效果"
 	}	
@@ -2702,7 +2702,7 @@
 	"Barracks Refined Medicine Desc"
 	{
 		"en"		"Increased health regen and 10%% more max health"
-		"fr"		"Amélioration des soins passifs, +10%% de soins sur vos unités"
+		"fr"		"Amélioration des soins passifs, +10%% de santé sur vos unités"
 		"ru"		"Увелич. восст. здоровья и на 10% больше макс. запас здоровья"
 		"chi"		"增加生命回复，最大生命值提高10%"
 	}
@@ -2717,7 +2717,7 @@
 	"Barracks Tower Desc"
 	{
 		"en"		"unlock more upgrades\nmore health for your building, and it defends itself."
-		"fr"		"Faire plus d'améliorations disponibles\nAméliorer la durabilité de votre construction, qui va maintenant se défendre"
+		"fr"		"Fais plus d'améliorations disponibles\nAméliore la durabilité de votre construction, qui va maintenant se défendre"
 		"ru"		"новые улучшения\nбольше прочности для вашей постройки, и оно защищает себя само."
 		"chi"		"为你的建筑解锁更多的升级和更多的生命值\n它会自我防御。"
 	}
@@ -2731,7 +2731,7 @@
 	"Barracks Guard Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
-		"fr"		"Améliorer la durabilité, les dégats, et le nombre de flèches de votre construction."
+		"fr"		"Améliore la durabilité, les dégats, et le nombre de flèches de votre construction."
 		"ru"		"Увеличение прочности, урона и количества стрел."
 		"chi"		"增加生命值，伤害和箭数。"
 	}
@@ -2745,7 +2745,7 @@
 	"Barracks Imperial Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
-		"fr"		"Améliorer la durabilité, les dégats, et le nombre de flèches de votre construction."
+		"fr"		"Améliore la durabilité, les dégats, et le nombre de flèches de votre construction."
 		"ru"		"Увеличение прочности, урона и количества стрел."
 		"chi"		"增加生命值，伤害和箭数。"
 	}
@@ -2759,7 +2759,7 @@
 	"Barracks Ballistical Tower Desc"
 	{
 		"en"		"Increased health and damage and arrow count."
-		"fr"		"Améliorer la durabilité, les dégats, et le nombre de flèches de votre construction."
+		"fr"		"Améliore la durabilité, les dégats, et le nombre de flèches de votre construction."
 		"ru"		"Увеличение прочности, урона и количества стрел."
 		"chi"		"增加生命值，伤害和箭数。"
 	}
@@ -2779,7 +2779,7 @@
 	"Barracks Donjon Desc"
 	{
 		"en"		"Increased health and damage and arrow count, you lose 1 supply slot, unlocks more upgrades."
-		"fr"		"Améliorer la durabilité et le nombre de flèches de votre construction. Echanger 1 espace de déploiement pour plus d'améliorations."
+		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Échange 1 espace de déploiement pour plus d'améliorations."
 		"ru"		"Увелич. прочн., урона и кол-ва стрел, вы теряете 1 ячейку припасов, открывает новые улучшения."
 		"chi"		"增加生命值，伤害和箭数，你失去1个补给槽，解锁更多升级。"
 	}
@@ -2793,7 +2793,7 @@
 	"Barracks Krepost Desc"
 	{
 		"en"		"Increased health and damage and arrow count, unlocks more upgrades."
-		"fr"		"Améliorer la durabilité et le nombre de flèches de votre construction. Faire plus d'améliorations diponibles."
+		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Fais plus d'améliorations diponibles."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения."
 		"chi"		"增加生命值，伤害和箭数，解锁更多升级。"
 	}
@@ -2807,7 +2807,7 @@
 	"Barracks Castle Desc"
 	{
 		"en"		"Increased health and damage and arrow count, unlocks more upgrades.\nAllows you to train a new special unit slowly."
-		"fr"		"Améliorer la durabilité et le nombre de flèches de votre construction. Faire plus d'améliorations diponibles.\nPermet la formation lente d'un unité spécial."
+		"fr"		"Améliore la durabilité et le nombre de flèches de votre construction. Fais plus d'améliorations diponibles.\nPermet la formation lente d'un unité spécial."
 		"ru"		"Увеличение прочности, урона и количества стрел, открывает новые улучшения.\nПозволяет медленно обучать нового особого воина."
 		"chi"		"增加生命值，伤害和箭数，解锁更多升级。允许你慢慢训练一个新的特殊单位。"
 	}
@@ -3067,7 +3067,7 @@
 	"Burstpack Already Used This Round, Recharging"
 	{
 		"en"		"Burstpack already used this round, recharging..."	
-		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, recharge..."
+		"fr"		"Vous avez déja épuisé votre Burstpack cette vague, rechargement..."
 		"chi"       "Burstpack这一轮已经用过了，正在充电。。。"	
 	}
 	"Quincy Menu First"
@@ -3295,7 +3295,7 @@
 	"Must be below half health"
 	{
 		"en"	"You must be below half health of your max health"
-		"fr"	"Vouz devez être a demi soins de votre maximum."
+		"fr"	"Vouz devez être a demi santé de votre maximum."
 	}
 	"Cherrypick Weapon"
 	{
@@ -3453,7 +3453,7 @@
 	{
 		"#format"	"{1:d}"
 		"en" "Not Enough Health, you need: [{1}] hp"
-		"fr" "Pas assez de soins, vous avez besoin de [{1}]"
+		"fr" "Pas assez de santé, vous avez besoin de [{1}]"
 	}
 	"Let the beast sleeps"
 	{
