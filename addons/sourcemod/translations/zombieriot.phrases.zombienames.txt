@@ -2711,7 +2711,7 @@
 	}
 	"Brooding Petra Desc"
 	{
-		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime."
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
 	}
 	"Kunul"
 	{
