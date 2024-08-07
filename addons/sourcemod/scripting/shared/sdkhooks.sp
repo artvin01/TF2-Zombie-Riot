@@ -1872,11 +1872,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_CurrentEquippedPerk[victim] = 0;
 				}
 
+				/*
 				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
 				{
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				*/
 				i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);

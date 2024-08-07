@@ -665,7 +665,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
-			Flagellant_OnTakeDamage(victim, damage);
+			Flagellant_OnTakeDamage(victim);
 		}
 		case WEAPON_RAPIER:
 		{

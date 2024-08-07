@@ -350,6 +350,7 @@ methodmap Magia_Anchor < CClotBody
 		NPC_StopPathing(npc.index);
 
 		npc.m_flMeleeArmor = 2.5;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
 		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
 
@@ -424,36 +425,12 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
-	
-
-	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
-	{
-		RaidBossActive=EntIndexToEntRef(npc.index);
-	}
-
-	if(!Charging(npc))
-		return;
-
-	npc.m_flNextThinkTime = GameTime + 0.1;
-
-	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
-	{
-		Raid_Spwaning_Logic(npc);
-	}
-	if(b_allow_spawns[npc.index] && i_RaidGrantExtra[npc.index] != RAIDITEM_INDEX_WIN_COND)
-		Spawning_Logic(npc);
-
-
-	if(b_allow_weaver[npc.index])
-	{
-		Weaver_Logic(npc);
-	}
-	
 	if(!npc.m_flAttackHappens)
 	{
 		npc.m_flAttackHappens = FAR_FUTURE;
 		
 		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		VecSelfNpcabs[2] += 100.0;
 		if(SpawnedOneAlready > GetGameTime())
 		{
 			Event event = CreateEvent("show_annotation");
@@ -486,6 +463,30 @@ static void ClotThink(int iNPC)
 				event.Fire();
 			}
 		}
+	}
+	
+
+	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
+	{
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
+	if(!Charging(npc))
+		return;
+
+	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
+	{
+		Raid_Spwaning_Logic(npc);
+	}
+	if(b_allow_spawns[npc.index] && i_RaidGrantExtra[npc.index] != RAIDITEM_INDEX_WIN_COND)
+		Spawning_Logic(npc);
+
+
+	if(b_allow_weaver[npc.index])
+	{
+		Weaver_Logic(npc);
 	}
 	
 }

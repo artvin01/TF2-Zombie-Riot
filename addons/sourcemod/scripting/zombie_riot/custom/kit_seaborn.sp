@@ -341,8 +341,8 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
-				if(healing > 150)
-					healing = 150;
+				if(healing > 75)
+					healing = 75;
 
 				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
 				healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
@@ -396,8 +396,8 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		int maxHealth = SDKCall_GetMaxHealth(client);
 		
 		int healing = maxHealth - health;
-		if(healing > 35)
-			healing = 35;
+		if(healing > 30)
+			healing = 30;
 
 		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
 		healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));

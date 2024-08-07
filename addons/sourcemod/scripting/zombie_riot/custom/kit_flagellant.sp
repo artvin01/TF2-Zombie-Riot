@@ -178,13 +178,16 @@ public Action Flagellant_EffectTimer(Handle timer, int client)
 
 void Flagellant_DoSwingTrace(int client)
 {
-	TriggerSelfDamage(client, 0.025);
+	TriggerSelfDamage(client, 0.0001);
 }
 
-void Flagellant_OnTakeDamage(int victim, float damage)
+void Flagellant_OnTakeDamage(int victim)
 {
-	if(damage > 5.0)
+	//dont gain power from bleed or burns, otherwise itll be abit op, inturn we allow damages below 5!
+	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		MoreMoreHits[victim]++;
+
+	//if(damage > 5.0)
 }
 
 public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
@@ -318,7 +321,7 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 
 	MoreMoreHealing[client] = RoundToFloor(SDKCall_GetMaxHealth(client) * ratio);
 
-	CreateTimer(0.3, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.55, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
@@ -437,8 +440,9 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		if(health < maxhealth)
 		{
 			float multi = Attributes_Get(weapon, 2, 1.0);
+			multi *= Attributes_GetOnPlayer(client, 8, true, true);
 			
-			float base = 30.0 + (HealLevel[client] * 7.5);
+			float base = 40.0 + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
 
 			float healing = base * multi;
@@ -557,6 +561,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_Get(weapon, 2, 1.0);
+		multi *= Attributes_GetOnPlayer(client, 8, true, true);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
@@ -775,6 +780,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 		float multi = Attributes_Get(weapon, 2, 1.0);
+		multi *= Attributes_GetOnPlayer(client, 8, true, true);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
@@ -812,7 +818,12 @@ static void TriggerSelfDamage(int client, float multi)
 	int armor = Armor_Charge[client];
 	int maxhealth = SDKCall_GetMaxHealth(client);
 	Armor_Charge[client] = 0;
-	SDKHooks_TakeDamage(client, 0, 0, maxhealth * multi, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+	float damage = float(maxhealth) * multi;
+	if(damage <= 1.0)
+	{
+		damage = 1.0;
+	}
+	SDKHooks_TakeDamage(client, 0, 0, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 	Armor_Charge[client] = armor;
 }
 
@@ -850,6 +861,7 @@ static void TriggerDeathDoor(int client, int &healing)
 
 		int round = Rogue_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
+		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)
 		{
 			DeathDoors[client] = 2;
