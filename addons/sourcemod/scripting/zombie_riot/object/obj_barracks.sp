@@ -938,6 +938,7 @@ void Barracks_BuildingThink(int entity)
 				i_NormalBarracks_HexBarracksUpgrades_2[client] |= Get_GiveClient;
 				Store_SetNamedItem(client, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[client]);
 			}
+			Building_Check_ValidSupportcount(client);
 			Barracks_UpdateAllEntityUpgrades(client);
 		}
 	}
