@@ -494,7 +494,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 		UserLoc[2] += 12.0*(speed-7);
 	}
 
-	for(int i=1 ; i<=speed ; i++)
+	for(int i=1 ; i<speed ; i++)
 	{	
 		if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
 		{

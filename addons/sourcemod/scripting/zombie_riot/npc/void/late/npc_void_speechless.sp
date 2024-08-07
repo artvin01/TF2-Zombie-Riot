@@ -121,7 +121,6 @@ methodmap VoidSpeechless < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		VausMagicaGiveShield(npc.index, 5);
 		func_NPCDeath[npc.index] = VoidSpeechless_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VoidSpeechless_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidSpeechless_ClotThink;
@@ -131,6 +130,7 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		VausMagicaGiveShield(npc.index, 5);
 
 		VoidSpeechlessEffects(npc.index);
 		

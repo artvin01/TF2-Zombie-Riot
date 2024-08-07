@@ -131,7 +131,7 @@ methodmap VoidRejuvinator < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
-		VausMagicaGiveShield(npc.index, 5);
+		VausMagicaGiveShield(npc.index, 20);
 		
 
 		

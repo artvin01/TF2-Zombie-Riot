@@ -694,6 +694,9 @@ static int SentUser1 = -1;
 static int SentUser2 = -1;
 public float Rogue_Encounter_EmergencyDispatch()
 {
+	SentUser1 = -1;
+	SentUser2 = -1;
+	HasSent = false;
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EmergencyDispatch, "Emergency Dispatch Lore");
 	Vote vote;
 

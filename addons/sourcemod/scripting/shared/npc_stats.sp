@@ -1653,7 +1653,7 @@ methodmap CClotBody < CBaseCombatCharacter
 				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 			}
 		}
-		
+
 		if(!VIPBuilding_Active())
 		{
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
@@ -3510,6 +3510,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 		VausMagicaRemoveShield(pThis);
 #endif
 
+
 #if !defined RTS
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
 #endif
@@ -3576,6 +3577,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 
 	static int Main_Gib;
 	int GibAny;
+	
 	switch(npc.m_iBleedType)
 	{
 		case BLEEDTYPE_NORMAL:
@@ -10313,6 +10315,7 @@ void IsEntityInvincible_Shield(int entity)
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
 	
+	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
 	{
 		IsEntityInvincible_ShieldRemove(entity);
@@ -10323,16 +10326,23 @@ void IsEntityInvincible_Shield(int entity)
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
 		if(b_NpcIsInvulnerable[entity])
 		{
-			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+			if(i_InvincibleParticlePrev[Shield] != 0)
+			{
+				SetEntityRenderColor(Shield, 0, 255, 0, 255);
+				i_InvincibleParticlePrev[Shield] = 0;
+			}
 		}
 		else if(b_npcspawnprotection[entity])
 		{
-			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+			if(i_InvincibleParticlePrev[Shield] != 1)
+			{
+				SetEntityRenderColor(Shield, 0, 50, 50, 35);
+				i_InvincibleParticlePrev[Shield] = 1;
+			}
 		}
 		return;
 	}
 
-	CClotBody npc = view_as<CClotBody>(entity);
 	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
 		SetVariantString("1.38");
@@ -10344,11 +10354,19 @@ void IsEntityInvincible_Shield(int entity)
 	
 	if(b_NpcIsInvulnerable[entity])
 	{
-		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		if(i_InvincibleParticlePrev[Shield] != 0)
+		{
+			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+			i_InvincibleParticlePrev[Shield] = 0;
+		}
 	}
 	else if(b_npcspawnprotection[entity])
 	{
-		SetEntityRenderColor(Shield, 0, 50, 50, 35);
+		if(i_InvincibleParticlePrev[Shield] != 1)
+		{
+			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+			i_InvincibleParticlePrev[Shield] = 1;
+		}
 	}
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 

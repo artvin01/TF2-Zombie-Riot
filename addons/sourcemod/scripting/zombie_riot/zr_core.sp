@@ -1086,9 +1086,8 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
-	CheckAlivePlayers(0, 0, true);
-	SDKCall_ResetPlayerAndTeamReadyState();
 
+	Rogue_Encounter_EmergencyDispatch();
 	char buf[12];
 	GetCmdArg(1, buf, sizeof(buf));
 	

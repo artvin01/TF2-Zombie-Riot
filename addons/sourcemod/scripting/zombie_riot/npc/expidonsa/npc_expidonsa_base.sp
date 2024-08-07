@@ -105,16 +105,22 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	{
 		alpha = 255;
 	}
+	CClotBody npc = view_as<CClotBody>(entity);
 	if(IsValidEntity(i_Expidonsa_ShieldEffect[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]);
-		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+		if(npc.m_iBleedType == BLEEDTYPE_VOID)
+		{
+			SetEntityRenderColor(Shield, 255, 0, 175, alpha);	
+		}
+		else
+		{
+			SetEntityRenderColor(Shield, 255, 255, 255, alpha);	
+		}
 		return;
 	}
-
-	CClotBody npc = view_as<CClotBody>(entity);
 	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
+
 	if(b_IsGiant[entity])
 		SetVariantString("1.35");
 	else
@@ -123,8 +129,16 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
-	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	if(npc.m_iBleedType == BLEEDTYPE_VOID)
+	{
+		SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderColor(Shield, 255, 0, 175, alpha);	
+	}
+	else
+	{
+		SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderColor(Shield, 255, 255, 255, alpha);	
+	}
 
 	i_Expidonsa_ShieldEffect[entity] = EntIndexToEntRef(Shield);
 }
