@@ -1892,11 +1892,11 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	//BUFFS GO HERE.
 	if(f_VoidAfflictionStrength2[victim] > GameTime)
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌵⌵%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "V%s", Debuff_Adder_right);
 	}
 	else if(f_VoidAfflictionStrength[victim] > GameTime)
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌵%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
 	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{

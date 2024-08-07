@@ -9287,11 +9287,11 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	}
 	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
 	{
-		Format(HealthText, sizeof(HealthText), "%sVV",HealthText);
+		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
 	}
 	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
 	{
-		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
+		Format(HealthText, sizeof(HealthText), "%sv",HealthText);
 	}
 	/*
 	if(IgniteFor[npc.index] > 0)
@@ -9336,8 +9336,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 #endif
 		Offset[2] += 15.0;
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
-	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
-	//	DispatchKeyValue(TextEntity, "font", "1");
+		DispatchKeyValue(TextEntity, "font", "4");
 		npc.m_iTextEntity4 = TextEntity;	
 	}
 }
@@ -10348,6 +10347,7 @@ void IsEntityInvincible_Shield(int entity)
 		SetVariantString("1.38");
 	else
 		SetVariantString("1.05");
+	i_InvincibleParticlePrev[Shield] = -1;
 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
