@@ -762,6 +762,10 @@
 	{
 		"en"		"Combine Collos"
 	}
+	"Barracks Iberian Runner"
+	{
+		"en"		"Iberian Runner"
+	}
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
