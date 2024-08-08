@@ -1446,7 +1446,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		}
 		else if(f_VoidAfflictionStrength[this.index] > Gametime)
 		{
-			speed_for_return *= 1.15;
+			speed_for_return *= 1.05;
 		}
 		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
@@ -3507,7 +3507,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 #if defined EXPIDONSA_BASE
-		VausMagicaRemoveShield(pThis);
+		VausMagicaRemoveShield(pThis, true);
 #endif
 
 
@@ -9255,6 +9255,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		}		
 		return;
 	}
+	VausMagicaRemoveShield(npc.index);
 	char HealthText[32];
 	int HealthColour[4];
 
@@ -9287,7 +9288,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	}
 	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
 	{
-		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
+		Format(HealthText, sizeof(HealthText), "%sV!",HealthText);
 	}
 	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
 	{

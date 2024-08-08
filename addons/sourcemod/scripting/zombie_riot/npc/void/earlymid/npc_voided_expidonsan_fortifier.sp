@@ -118,6 +118,7 @@ methodmap VoidExpidonsanFortifier < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		EnemyShieldCantBreak[npc.index] = true;
 		VausMagicaGiveShield(npc.index, 5);
 
 		func_NPCDeath[npc.index] = view_as<Function>(VoidExpidonsanFortifier_NPCDeath);

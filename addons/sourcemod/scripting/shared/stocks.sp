@@ -2810,9 +2810,12 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
 }
-
-int CountPlayersOnRed(int alive = 0)
+int SavedFromLastTimeCount = 0;
+int CountPlayersOnRed(int alive = 0, bool saved = false)
 {
+	if(saved)
+		return SavedFromLastTimeCount;
+
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2850,7 +2853,7 @@ int CountPlayersOnRed(int alive = 0)
 #endif
 		}
 	}
-	
+	SavedFromLastTimeCount = amount;
 	return amount;
 	
 }
