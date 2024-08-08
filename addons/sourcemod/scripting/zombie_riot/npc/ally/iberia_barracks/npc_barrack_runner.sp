@@ -25,11 +25,6 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/machete_swing.wav",
 };
 
-static const char g_MeleeMissSounds[][] = {
-	"weapons/bat_draw_swoosh1.wav",
-	"weapons/bat_draw_swoosh2.wav",
-};
-
 static const char g_IdleAlertedSounds[][] =
 {
 	"vo/scout_standonthepoint01.mp3",
@@ -113,14 +108,6 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 		#endif
 	}
 
-	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
-	}
-
 	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "100", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
@@ -195,7 +182,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 					if(!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.PlaySwordSound();
+						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
 						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
@@ -215,7 +202,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 							if(target > 0) 
 							{
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250, 0), DMG_CLUB, -1, _, vecHit);
-								npc.PlaySwordHitSound();
+								npc.PlayMeleeHitSound();
 							} 
 						}
 						delete swingTrace;
