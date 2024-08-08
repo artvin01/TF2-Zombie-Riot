@@ -1224,9 +1224,9 @@
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
 	}
-	"Seargent Ideal Desc"
+	"Sergeant Ideal Desc"
 	{
-		"en"	"A seargent who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
 	}
 	"VIP Building, The Objective Desc"
 	{

@@ -41,21 +41,21 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/boxing_gloves_hit4.wav",
 };
 
-int SeargentIdeal_Alive = 0;
+int SergeantIdeal_Alive = 0;
 #define SEARGENT_IDEAL_RANGE 250.0
 
 static int NPCId;
 
-bool SeargentIdeal_Existant()
+bool SergeantIdeal_Existant()
 {
-	if(SeargentIdeal_Alive > 0)
+	if(SergeantIdeal_Alive > 0)
 	{
 		return true;
 	}
 	return false;
 }
 
-void SeargentIdeal_OnMapStart_NPC()
+void SergeantIdeal_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -64,11 +64,11 @@ void SeargentIdeal_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/soldier.mdl");
-	SeargentIdeal_Alive = 0;
+	SergeantIdeal_Alive = 0;
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Seargent Ideal");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seargent_ideal");
-	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
+	strcopy(data.Name, sizeof(data.Name), "Sergeant Ideal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sergeant_ideal");
+	strcopy(data.Icon, sizeof(data.Icon), "sergeant_ideal");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
@@ -79,36 +79,36 @@ void SeargentIdeal_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return SeargentIdeal(client, vecPos, vecAng, ally, data);
+	return SergeantIdeal(client, vecPos, vecAng, ally, data);
 }
-methodmap SeargentIdeal < CClotBody
+methodmap SergeantIdeal < CClotBody
 {
-	property int m_iGetSeargentProtector
+	property int m_iGetSergeantProtector
 	{
 		public get()		 
 		{ 
-			int Entity_Seargent = 0;
-			float GameTimeSeargent = this.GetPropFloat(Prop_Data, "zr_fSeargentProtectTime");
-			if(GameTimeSeargent > GetGameTime())
+			int Entity_Sergeant = 0;
+			float GameTimeSergeant = this.GetPropFloat(Prop_Data, "zr_fSergeantProtectTime");
+			if(GameTimeSergeant > GetGameTime())
 			{
-				Entity_Seargent = EntRefToEntIndex(this.GetProp(Prop_Data, "zr_iRefSeargentProtect")); 
-				if(b_NpcHasDied[Entity_Seargent])
-					Entity_Seargent = 0;
+				Entity_Sergeant = EntRefToEntIndex(this.GetProp(Prop_Data, "zr_iRefSergeantProtect")); 
+				if(b_NpcHasDied[Entity_Sergeant])
+					Entity_Sergeant = 0;
 			}
-			return Entity_Seargent;
+			return Entity_Sergeant;
 		}
 		public set(int iInt) 
 		{
 			if(iInt == -1)
 			{
-				this.SetProp(Prop_Data, "zr_iRefSeargentProtect", INVALID_ENT_REFERENCE); 
+				this.SetProp(Prop_Data, "zr_iRefSergeantProtect", INVALID_ENT_REFERENCE); 
 			}
 			else
 			{
-				if(this.m_iGetSeargentProtector == 0) //do not override the protector
-					this.SetProp(Prop_Data, "zr_iRefSeargentProtect", EntIndexToEntRef(iInt)); 
+				if(this.m_iGetSergeantProtector == 0) //do not override the protector
+					this.SetProp(Prop_Data, "zr_iRefSergeantProtect", EntIndexToEntRef(iInt)); 
 
-				this.SetPropFloat(Prop_Data, "zr_fSeargentProtectTime", GetGameTime() + 0.25);
+				this.SetPropFloat(Prop_Data, "zr_fSergeantProtectTime", GetGameTime() + 0.25);
 			}
 		}
 	}
@@ -156,9 +156,9 @@ methodmap SeargentIdeal < CClotBody
 			EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL - 10, _, NORMAL_ZOMBIE_VOLUME * 0.4);
 	}
 
-	public SeargentIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public SergeantIdeal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		SeargentIdeal npc = view_as<SeargentIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
+		SergeantIdeal npc = view_as<SergeantIdeal>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "25000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -176,9 +176,9 @@ methodmap SeargentIdeal < CClotBody
 		if(data[0])
 			npc.g_TimesSummoned = StringToInt(data);
 		
-		func_NPCDeath[npc.index] = SeargentIdeal_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SeargentIdeal_OnTakeDamage;
-		func_NPCThink[npc.index] = SeargentIdeal_ClotThink;
+		func_NPCDeath[npc.index] = SergeantIdeal_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SergeantIdeal_OnTakeDamage;
+		func_NPCThink[npc.index] = SergeantIdeal_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
@@ -234,14 +234,14 @@ methodmap SeargentIdeal < CClotBody
 			SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		}
 	//	SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
-		SeargentIdeal_Alive += 1;
+		SergeantIdeal_Alive += 1;
 		return npc;
 	}
 }
 
-public void SeargentIdeal_ClotThink(int iNPC)
+public void SergeantIdeal_ClotThink(int iNPC)
 {
-	SeargentIdeal npc = view_as<SeargentIdeal>(iNPC);
+	SergeantIdeal npc = view_as<SergeantIdeal>(iNPC);
 	if(npc.g_TimesSummoned == 0)
 	{
 		if(f_TimeFrozenStill[iNPC])
@@ -309,14 +309,14 @@ public void SeargentIdeal_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
 	if(npc.g_TimesSummoned == 0)
-		SeargentIdealShield(npc.index);
+		SergeantIdealShield(npc.index);
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	SeargentIdealSelfDefense(npc, GetGameTime(npc.index));
+	SergeantIdealSelfDefense(npc, GetGameTime(npc.index));
 	if(npc.m_flDoingAnimation)
 	{
 		npc.m_flSpeed = 0.0;
@@ -357,9 +357,9 @@ public void SeargentIdeal_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action SeargentIdeal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SergeantIdeal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	SeargentIdeal npc = view_as<SeargentIdeal>(victim);
+	SergeantIdeal npc = view_as<SergeantIdeal>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -373,15 +373,15 @@ public Action SeargentIdeal_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void SeargentIdeal_NPCDeath(int entity)
+public void SergeantIdeal_NPCDeath(int entity)
 {
-	SeargentIdeal npc = view_as<SeargentIdeal>(entity);
+	SergeantIdeal npc = view_as<SergeantIdeal>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	SeargentIdeal_Alive -= 1;
-	SDKUnhook(npc.index, SDKHook_Think, SeargentIdeal_ClotThink);
+	SergeantIdeal_Alive -= 1;
+	SDKUnhook(npc.index, SDKHook_Think, SergeantIdeal_ClotThink);
 
 //	if(IsValidEntity(npc.m_iWearable7))
 	//	RemoveEntity(npc.m_iWearable7);
@@ -400,16 +400,16 @@ public void SeargentIdeal_NPCDeath(int entity)
 
 }
 
-Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
+Action SergeantIdeal_Protect(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
 	if(i_NpcInternalId[victim] != NPCId)
 	{
 		if(!f_TimeFrozenStill[victim])
 		{
-			SeargentIdeal npc = view_as<SeargentIdeal>(victim);
-			if(npc.m_iGetSeargentProtector)
+			SergeantIdeal npc = view_as<SergeantIdeal>(victim);
+			if(npc.m_iGetSergeantProtector)
 			{
-				SDKHooks_TakeDamage(npc.m_iGetSeargentProtector, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+				SDKHooks_TakeDamage(npc.m_iGetSergeantProtector, attacker, inflictor, damage * 0.75, damagetype, weapon, damageForce, damagePosition, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
 				damage = 0.0;
 			}
 		}
@@ -417,7 +417,7 @@ Action SeargentIdeal_Protect(int victim, int &attacker, int &inflictor, float &d
 	return Plugin_Continue;
 }
 
-void SeargentIdealShield(int iNpc)
+void SergeantIdealShield(int iNpc)
 {
 	b_NpcIsTeamkiller[iNpc] = true;
 	Explode_Logic_Custom(0.0,
@@ -432,32 +432,32 @@ void SeargentIdealShield(int iNpc)
 	99,
 	false,
 	_,
-	SeargentIdealShieldAffected);
+	SergeantIdealShieldAffected);
 	b_NpcIsTeamkiller[iNpc] = false;
 }
 
 
-void SeargentIdealShieldAffected(int entity, int victim, float damage, int weapon)
+void SergeantIdealShieldAffected(int entity, int victim, float damage, int weapon)
 {
 	if(entity == victim)
 		return;
 
 	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
 	{
-		SeargentIdealShieldInternal(entity, victim);
+		SergeantIdealShieldInternal(entity, victim);
 	}
 }
 
-void SeargentIdealShieldInternal(int shielder, int victim)
+void SergeantIdealShieldInternal(int shielder, int victim)
 {
 	if(i_NpcInternalId[victim] != DiversionisticoID() && !b_NpcHasDied[victim]) //do not shield diversios.
 	{
-		SeargentIdeal npc = view_as<SeargentIdeal>(victim);
-		npc.m_iGetSeargentProtector = shielder;
+		SergeantIdeal npc = view_as<SergeantIdeal>(victim);
+		npc.m_iGetSergeantProtector = shielder;
 	}
 }
 
-void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
+void SergeantIdealSelfDefense(SergeantIdeal npc, float gameTime)
 {
 	int GetClosestEnemyToAttack;
 	//Ranged units will behave differently.
@@ -477,7 +477,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 	}
 	if(npc.m_flAttackHappens)
 	{
-		SeargentIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
+		SergeantIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
 	}
 	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
@@ -495,7 +495,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 		}
 		if(flDistanceToTarget <(NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.4))
 		{
-			SeargentIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
+			SergeantIdealSelfDefenseMelee(npc,gameTime,GetClosestEnemyToAttack);
 		}
 		else
 		{
@@ -536,7 +536,7 @@ void SeargentIdealSelfDefense(SeargentIdeal npc, float gameTime)
 	}
 }
 
-void SeargentIdealSelfDefenseMelee(SeargentIdeal npc, float gameTime, int target)
+void SergeantIdealSelfDefenseMelee(SergeantIdeal npc, float gameTime, int target)
 {
 	if(npc.m_flAttackHappens)
 	{

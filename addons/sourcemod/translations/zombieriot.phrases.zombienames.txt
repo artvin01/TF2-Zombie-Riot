@@ -1925,9 +1925,9 @@
 	{
 		"en"	"Heavy Punuel"
 	}
-	"Seargent Ideal"
+	"Sergeant Ideal"
 	{
-		"en"	"Seargent Ideal"
+		"en"	"Sergeant Ideal"
 	}
 	"VIP Building, The Objective"
 	{

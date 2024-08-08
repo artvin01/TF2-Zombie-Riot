@@ -3262,9 +3262,9 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.BeginDataMapDesc()
 		.DefineIntField("zr_pPath")
 	
-		//Seargent Ideal Shield Netprops
-		.DefineIntField("zr_iRefSeargentProtect")
-		.DefineFloatField("zr_fSeargentProtectTime")
+		//Sergeant Ideal Shield Netprops
+		.DefineIntField("zr_iRefSergeantProtect")
+		.DefineFloatField("zr_fSergeantProtectTime")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 

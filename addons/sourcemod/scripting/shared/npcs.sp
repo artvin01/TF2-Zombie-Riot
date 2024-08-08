@@ -1011,10 +1011,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(SeargentIdeal_Existant())
+			if(SergeantIdeal_Existant())
 			{
 				//LogEntryInvicibleTest(victim, attacker, damage, 17);
-				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+				SergeantIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 				if(damage == 0.0)
 				{
 					b_DoNotDisplayHurtHud[victim] = true;

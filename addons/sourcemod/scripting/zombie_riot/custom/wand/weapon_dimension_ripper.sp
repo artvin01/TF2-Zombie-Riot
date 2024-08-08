@@ -482,7 +482,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 		case 3:
 			Dimension_Summon_Npc(client, "npc_rifal_manu" ,weapon, 1.0, 1.5, "eyeboss_death_vortex");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_seargent_ideal" ,weapon, 2.2, 1.3, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_sergeant_ideal" ,weapon, 2.2, 1.3, "eyeboss_death_vortex");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
