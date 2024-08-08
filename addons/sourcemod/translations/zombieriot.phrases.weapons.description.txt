@@ -371,7 +371,7 @@
 	}
 	"RPG Pap 2"
 	{
-		"en"		"Increased damage, gain an extra rocket, faster reload\n Only hits 4 enemies now instead of 10"
+		"en"		"Increased damage, gain 3 extra clipsize, faster reload\n Only hits 4 enemies now instead of 10"
 	}
 	"RPG Pap 3"
 	{
