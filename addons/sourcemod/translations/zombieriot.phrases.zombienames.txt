@@ -2277,9 +2277,9 @@
 	{
 		"en"	"Braindead"
 	}
-	"Behemonth"
+	"Behemoth"
 	{
-		"en"	"Behemonth"
+		"en"	"Behemoth"
 	}
 	"Absolute Incinirator"
 	{

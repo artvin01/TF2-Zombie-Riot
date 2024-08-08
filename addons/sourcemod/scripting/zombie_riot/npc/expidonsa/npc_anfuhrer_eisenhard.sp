@@ -140,7 +140,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCDeath[npc.index] = AnfuhrerEisenhard_NPCDeath;

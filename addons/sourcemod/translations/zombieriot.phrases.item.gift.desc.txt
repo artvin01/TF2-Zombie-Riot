@@ -1552,7 +1552,7 @@
 	{
 		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time."
 	}
-	"Behemonth Desc"
+	"Behemoth Desc"
 	{
 		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
 	}
