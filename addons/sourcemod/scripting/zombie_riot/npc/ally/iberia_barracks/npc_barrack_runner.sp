@@ -3,41 +3,40 @@
 
 static const char g_DeathSounds[][] =
 {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav"
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_IdleSounds[][] =
 {
-	"npc/metropolice/vo/takecover.wav",
-	"npc/metropolice/vo/readytojudge.wav",
-	"npc/metropolice/vo/subject.wav",
-	"npc/metropolice/vo/subjectis505.wav"
+	"vo/scout_standonthepoint01.mp3",
+	"vo/scout_standonthepoint02.mp3",
+	"vo/scout_standonthepoint03.mp3",
+	"vo/scout_standonthepoint04.mp3",
+	"vo/scout_standonthepoint05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/halloween_boss/knight_axe_hit.wav",
+	"weapons/bat_hit.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/demo_sword_swing1.wav",
-	"weapons/demo_sword_swing2.wav",
-	"weapons/demo_sword_swing3.wav",
+	"weapons/machete_swing.wav",
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/cbar_miss1.wav",
+	"weapons/bat_draw_swoosh1.wav",
+	"weapons/bat_draw_swoosh2.wav",
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"npc/metropolice/vo/airwatchsubjectis505.wav",
-	"npc/metropolice/vo/allunitscloseonsuspect.wav",
-	"npc/metropolice/vo/allunitsmovein.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/destroythatcover.wav"
+	"vo/scout_standonthepoint01.mp3",
+	"vo/scout_standonthepoint02.mp3",
+	"vo/scout_standonthepoint03.mp3",
+	"vo/scout_standonthepoint04.mp3",
+	"vo/scout_standonthepoint05.mp3",
 };
 
 void Barrack_Iberia_Runner_Precache()
@@ -48,7 +47,7 @@ void Barrack_Iberia_Runner_Precache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	
+	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Runner");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_runner");
@@ -137,7 +136,7 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
 
-		KillFeed_SetKillIcon(npc.index, "sword");
+		KillFeed_SetKillIcon(npc.index, "bat");
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
