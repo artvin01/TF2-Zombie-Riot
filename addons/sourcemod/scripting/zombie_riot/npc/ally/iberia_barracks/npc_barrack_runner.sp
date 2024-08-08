@@ -40,7 +40,6 @@ void Barrack_Iberia_Runner_Precache()
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
-	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
