@@ -9288,7 +9288,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	}
 	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
 	{
-		Format(HealthText, sizeof(HealthText), "%sV!",HealthText);
+		Format(HealthText, sizeof(HealthText), "%svV",HealthText);
 	}
 	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
 	{
@@ -9318,10 +9318,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 	if(IsValidEntity(npc.m_iTextEntity4))
 	{
-	//	char sColor[32];
-	//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-	//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
-	// Colour will never be Edited probably.
+		//	char sColor[32];
+		//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+		// Colour will never be Edited probably.
 		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
 	else
