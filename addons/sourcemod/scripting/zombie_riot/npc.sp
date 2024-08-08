@@ -566,7 +566,7 @@ void NPC_ConfigSetup()
 	Barracks_Combine_Commander_Precache();
 
 	//Iberia Barracks
-	Barrack_Iberia_Runner_Precache():
+	Barrack_Iberia_Runner_Precache();
 	Barracks_Thorns();
 
 	// Raid Low Prio
