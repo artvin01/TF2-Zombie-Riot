@@ -116,11 +116,10 @@ methodmap Barrack_Iberia_Rocketeer < BarrackBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/jul13_helicopter_helmet/jul13_helicopter_helmet.mdl");
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
+		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_shortness_breath/hwn2023_shortness_breath.mdl");
 		
 		return npc;
