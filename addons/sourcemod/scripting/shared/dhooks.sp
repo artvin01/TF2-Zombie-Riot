@@ -14,7 +14,6 @@ static int ForceRespawnHook[MAXTF2PLAYERS];
 #if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
 //static bool Disconnecting;
-static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
@@ -124,8 +123,7 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
-#if !defined RTS
-	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+#if !defined RTS;
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
@@ -301,63 +299,6 @@ public MRESReturn DHook_PreClientUpdatePost()
 	
 	return MRES_Ignored;
 }
-
-#if !defined RTS
-void OnWrenchCreated(int entity) 
-{
-	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
-	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
-}
-static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
-int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
-
-public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
-{	
-	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
-	StartLagCompResetValues();
-	Dont_Move_Building = true;
-	Dont_Move_Allied_Npc = false;
-	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	LagCompEntitiesThatAreIntheWay(Compensator);
-
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
-		{
-			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
-			SDKCall_SetLocalOrigin(baseboss_index_allied, OFF_THE_MAP_NONCONST);
-		}
-	}
-	return MRES_Ignored;
-}
-
-public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
-{	
-	FinishLagCompMoveBack();
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
-		{
-			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
-		}
-	}
-	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
-	return MRES_Ignored;
-}
-#endif
-
-//NEVER upgrade buildings, EVER.
-/*
-public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookParam param)
-{	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199); //just incase.
-	return MRES_Supercede;
-}
-*/
-
 
 
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!

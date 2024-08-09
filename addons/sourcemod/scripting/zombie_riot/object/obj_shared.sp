@@ -80,6 +80,7 @@ void Object_PluginStart()
 	.DefineIntField("m_iRepairMax")
 	.DefineIntField("m_iMaxHealth")
 	.DefineBoolField("m_bSentryBuilding")
+	.DefineIntField("m_lifeState")
 	.EndDataMapDesc();
 	factory.Install();
 }
@@ -145,8 +146,10 @@ methodmap ObjectGeneric < CClotBody
 		SDKHook(obj, SDKHook_Think, ObjBaseThink);
 		SDKHook(obj, SDKHook_ThinkPost, ObjBaseThinkPost);
 		objstats.SetNextThink(GetGameTime());
-		SetEntityCollisionGroup(obj, 24);
+		SetEntityFlags(obj, FL_NPC);
+		SetEntProp(obj, Prop_Data, "m_nSolidType", 2); 
 		RotateByDefault[obj] = 0.0;
+   		SetEntProp(obj, Prop_Data, "m_lifeState", 0); 
 		
 		for (int i = 0; i < ZR_MAX_BUILDINGS; i++)
 		{

@@ -9,39 +9,14 @@
 
 
 Handle g_DHookWeaponPostFrame;
-//Handle g_SDKCallFindEntityInSphere;
-//Handle g_SDKCallGetCombatCharacterPtr;
-// read from CTFPlayer::DeathSound() disasm
-//int offs_CTFPlayer_LastDamageType = 0x215C;
 
-char g_MedicScripts[][] = {
-	"medic_sf13_influx_big03",
-	"medic_sf13_magic_reac07",
-	"Medic.CritDeath",
-};
 
 void Medigun_PluginStart() {
 	Handle hGameConf_med = LoadGameConfigFile("zombie_riot");
 	if (!hGameConf_med) {
 		SetFailState("Failed to load gamedata (zombie_riot).");
 	}
-/*
-	StartPrepSDKCall(SDKCall_EntityList);
-	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Signature,
-			"CGlobalEntityList::FindEntityInSphere()");
-	PrepSDKCall_SetReturnInfo(SDKType_CBaseEntity, SDKPass_Pointer);
-	PrepSDKCall_AddParameter(SDKType_CBaseEntity, SDKPass_Pointer,
-			VDECODE_FLAG_ALLOWNULL | VDECODE_FLAG_ALLOWWORLD);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
-	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
-	g_SDKCallFindEntityInSphere = EndPrepSDKCall();
-	
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(hGameConf, SDKConf_Virtual,
-			"CBaseEntity::MyCombatCharacterPointer()");
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	g_SDKCallGetCombatCharacterPtr = EndPrepSDKCall();
-	*/
+
 	Handle dtMedigunAllowedToHealTarget = DHookCreateFromConf(hGameConf_med,
 			"CWeaponMedigun::AllowedToHealTarget()");
 			
@@ -54,29 +29,12 @@ void Medigun_PluginStart() {
 	if (!g_DHookWeaponPostFrame) {
 		SetFailState("Failed to setup detour for CBaseCombatWeapon::ItemPostFrame()");
 	}
-
-	
-	int offslastDamage = FindSendPropInfo("CTFPlayer", "m_flMvMLastDamageTime");
-	if (offslastDamage < 0) {
-		SetFailState("Could not get offset for CTFPlayer::m_flMvMLastDamageTime");
-	}
-	
-//	offs_CTFPlayer_LastDamageType = offslastDamage + 0x14;
 	
 	delete hGameConf_med;
 }
 
 void Medigun_PersonOnMapStart() {
-	PrecacheScriptSound("MVM.BombExplodes");
-	PrecacheSound("mvm/mvm_bomb_explode.wav");
-	for (int i; i < sizeof(g_MedicScripts); i++) {
-		PrecacheScriptSound(g_MedicScripts[i]);
-	}
-	
-	int entity = -1;
-	while ((entity = FindEntityByClassname(entity, "tf_weapon_medigun")) != -1) {
-		DHookEntity(g_DHookWeaponPostFrame, true, entity, .callback = OnMedigunPostFramePost);
-	}
+	return;
 	
 }
 
@@ -95,34 +53,33 @@ static bool gb_medigun_on_reload[MAXTF2PLAYERS]={false, ...};
 public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle hParams) {
 	int target = DHookGetParam(hParams, 1);
 	int owner = GetEntPropEnt(medigun, Prop_Send, "m_hOwnerEntity");
+	PrevOwnerMedigun[medigun] = owner;
 	float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
 	
-	if(owner > 0 && owner<=MaxClients && IsValidEntity(target))
+	if(owner > 0 && owner<=MaxClients)
 	{
-		if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
+		if(IsValidEntity(target))
 		{
-		//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
-			if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
+			if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 			{
-				DHookSetReturn(hReturn, true);
-				return MRES_Supercede;
+			//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
+				if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
+				{
+					DHookSetReturn(hReturn, true);
+					return MRES_Supercede;
+				}
+				else if(!b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
+				{
+					DHookSetReturn(hReturn, true);
+					return MRES_Supercede;
+				}
+				else
+				{
+					DHookSetReturn(hReturn, false);
+					return MRES_Supercede;				
+				}
 			}
-			else if(!b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
-			{
-				DHookSetReturn(hReturn, true);
-				return MRES_Supercede;
-			}
-			else
-			{
-				DHookSetReturn(hReturn, false);
-				return MRES_Supercede;				
-			}
-		}
-		bool heals = true;
-		bool drains = true;
-		if(heals || drains)
-		{
-			if(target>MaxClients)	//only allow hurt enemy IF you have attribute.
+			else if(target>MaxClients)	//only allow hurt enemy IF you have attribute.
 			{
 				if(What_type_Heal == 2.0 || (What_type_Heal == 4.0 && !gb_medigun_on_reload[owner] && GetEntProp(medigun, Prop_Send, "m_bChargeRelease")!=1))
 				{
@@ -131,19 +88,7 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					if(!StrContains(buffer, "zr_base_npc", true))
 					{
 						bool team = GetTeam(owner)==GetTeam(target);
-						if(drains && !team)
-						{
-							DHookSetReturn(hReturn, true);
-							return MRES_Supercede;
-						}
-					}
-				}
-				else if(What_type_Heal == 3.0)
-				{
-					if(i_IsABuilding[target])
-					{
-						bool team = GetTeam(owner)==GetTeam(target);
-						if((heals && team) || (drains && !team))
+						if(!team)
 						{
 							DHookSetReturn(hReturn, true);
 							return MRES_Supercede;
@@ -151,10 +96,9 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					}
 				}
 			}
-
-			DHookSetReturn(hReturn, false);
-			return MRES_Supercede;
 		}
+		DHookSetReturn(hReturn, false);
+		return MRES_Supercede;
 	}
 	return MRES_Ignored;
 }
@@ -191,7 +135,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		int healTarget = GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget");
 		
 		float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
-		
 		if(What_type_Heal == 2.0)
 		{
 			int new_ammo = GetAmmo(owner, 22);

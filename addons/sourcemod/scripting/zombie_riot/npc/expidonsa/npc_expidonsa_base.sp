@@ -141,7 +141,7 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 		SetEntityRenderFx(Shield, RENDERFX_NONE);
 		if(npc.m_iBleedType == BLEEDTYPE_VOID)
 		{
-			SetEntityRenderColor(Shield, 255, 0, 175, alpha);	
+			SetEntityRenderColor(Shield, 255, 0, 100, alpha);	
 		}
 		else
 		{
@@ -163,7 +163,7 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	if(npc.m_iBleedType == BLEEDTYPE_VOID)
 	{
 		SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(Shield, 255, 0, 175, alpha);	
+		SetEntityRenderColor(Shield, 255, 0, 100, alpha);	
 	}
 	else
 	{
