@@ -55,6 +55,8 @@ float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 float b_AvoidObstacleType_Time[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES][2];
+//int i_MasterSequenceNpc[MAXENTITIES];
+//float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
@@ -1744,12 +1746,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_DoNotGiveWaveDelay[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_DoNotGiveWaveDelay[this.index] = TempValueForProperty; }
 	}
-	property float m_bisGiantWalkCycle
-	{
-		public get()							{ return b_isGiantWalkCycle[this.index]; }
-		public set(float TempValueForProperty) 	{ b_isGiantWalkCycle[this.index] = TempValueForProperty; }
-	}
-	
 	property int m_iSpawnProtectionEntity
 	{
 		public get()		 
@@ -2377,6 +2373,56 @@ methodmap CClotBody < CBaseCombatCharacter
 	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
 	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
+	/*
+	public void SetSequence(int iSequence)
+	{
+		if(iSequence == -1)
+			return;
+
+		
+		int layer = this.AddLayeredSequence(iSequence, 1);
+		if (!this.IsValidLayer(layer))
+		{
+			i_MasterSequenceNpc[this.index] = -1;
+			return;
+		}
+
+		this.SetLayerCycle(layer, 0.0);
+		this.SetLayerPlaybackRate(layer, 1.0);
+		f_MasterSequenceNpcPlayBackRate[this.index] = 1.0;
+
+		i_MasterSequenceNpc[this.index] = layer;
+		// SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); 
+	}
+	public float GetPlaybackRate() 
+	{
+		//return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); 
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return -1.0;
+		}
+		return f_MasterSequenceNpcPlayBackRate[this.index];
+	}
+	public void SetPlaybackRate(float flRate) 
+	{
+		//we cant just 
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return;
+		}
+		f_MasterSequenceNpcPlayBackRate[this.index] = flRate;
+		this.SetLayerPlaybackRate(i_MasterSequenceNpc[this.index], flRate);
+	}
+	public void SetCycle(float flCycle)
+	{
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return;
+		}
+		this.SetLayerCycle(i_MasterSequenceNpc[this.index], flCycle);
+	//	 SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
+	}
+	*/
 	
 	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { view_as<CBaseEntity>(this).GetVectors(pForward, pRight, pUp); }
 	
@@ -3020,18 +3066,24 @@ methodmap CClotBody < CBaseCombatCharacter
 
 			f_TimeFrozenStill[this.index] = 0.0;
 		}
-
+		
 		if(this.m_bisWalking) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
-				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
+				if(PlaybackSpeed <= 0.01)
+					PlaybackSpeed = 0.01;
 					
 				this.SetPlaybackRate(PlaybackSpeed);
+			}
+			else
+			{
+				//if its lower then this value, then itll mess up and particles wont animate.
+				this.SetPlaybackRate(0.01);
 			}
 		}
 		
@@ -3157,11 +3209,13 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 #endif
+
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
 
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
+		
 	}
 
 	 	
@@ -8037,6 +8091,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+//	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
@@ -8184,7 +8239,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_IsCamoNPC[entity] = false;
 	b_NoKillFeed[entity] = false;
 	b_ThisWasAnNpc[entity] = false;
-	b_isGiantWalkCycle[entity] = 1.0;
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;

@@ -893,7 +893,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
-//DynamicHook g_DHookMedigunPrimary; 
+DynamicHook g_DHookMedigunPrimary; 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
 //Death
@@ -1321,7 +1321,6 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_ThisWasAnNpc[MAXENTITIES];
-float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -3529,6 +3528,7 @@ void MedigunCheckAntiCrash(int entity)
 	*/
 	if(b_IsAMedigun[entity])
 	{
+		GetEntProp(entity, Prop_Send, "m_bHealing", 0);
 		//owner netprop doesnt work sadly.
 		int MedigunOwner = PrevOwnerMedigun[entity];
 		if(IsValidClient(MedigunOwner))

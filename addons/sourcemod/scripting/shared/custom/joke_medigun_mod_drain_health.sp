@@ -58,6 +58,11 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 	
 	if(owner > 0 && owner<=MaxClients)
 	{
+		if(f_PreventMedigunCrashMaybe[owner] > GetGameTime())
+		{
+			DHookSetReturn(hReturn, false);
+			return MRES_Supercede;			
+		}
 		if(IsValidEntity(target))
 		{
 			if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
@@ -65,11 +70,14 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 			//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
 				if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
 				{
-					DHookSetReturn(hReturn, true);
-					return MRES_Supercede;
+					return MRES_Ignored;
+				//This is just normal code, let it be itself.
+				//	DHookSetReturn(hReturn, true);
+				//	return MRES_Supercede;
 				}
-				else if(!b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
+				else if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
 				{
+					//when healing an npc, make sure they are alive, and ontop of that, make sure that they are on red team.
 					DHookSetReturn(hReturn, true);
 					return MRES_Supercede;
 				}
@@ -79,20 +87,15 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 					return MRES_Supercede;				
 				}
 			}
-			else if(target>MaxClients)	//only allow hurt enemy IF you have attribute.
+			else if(target>MaxClients)
 			{
 				if(What_type_Heal == 2.0 || (What_type_Heal == 4.0 && !gb_medigun_on_reload[owner] && GetEntProp(medigun, Prop_Send, "m_bChargeRelease")!=1))
 				{
-					static char buffer[64];
-					GetEntityClassname(target, buffer, sizeof(buffer));
-					if(!StrContains(buffer, "zr_base_npc", true))
+					//when having a medigun that atttacks enemies, make sure that it only targets enemy alive npcs.
+					if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) != TFTeam_Red)
 					{
-						bool team = GetTeam(owner)==GetTeam(target);
-						if(!team)
-						{
-							DHookSetReturn(hReturn, true);
-							return MRES_Supercede;
-						}
+						DHookSetReturn(hReturn, true);
+						return MRES_Supercede;
 					}
 				}
 			}
@@ -100,7 +103,11 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 		DHookSetReturn(hReturn, false);
 		return MRES_Supercede;
 	}
-	return MRES_Ignored;
+	else
+	{
+		DHookSetReturn(hReturn, false);
+		return MRES_Supercede;		
+	}
 }
 static float medigun_heal_delay[MAXTF2PLAYERS];
 static float medigun_hud_delay[MAXTF2PLAYERS];
@@ -137,8 +144,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		float What_type_Heal = Attributes_Get(medigun, 2046, 1.0);
 		if(What_type_Heal == 2.0)
 		{
+			//We hurt enemies, make sure all valid checks are the same as before.
 			int new_ammo = GetAmmo(owner, 22);
-			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0)
+			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
 			{
 				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
@@ -155,10 +163,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
 					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
-#if defined ZR						
-					if(LastMann)	
-						flDrainRate *= 2.0;
-#endif					
 					if(TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
 						target_sucked_long[healTarget] += 0.21;
@@ -228,6 +232,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		}
 		else if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 		{
+			//we heal players or npcs, make sure we can heal them.
 			int new_ammo = GetAmmo(owner, 21);
 			if((IsValidClient(healTarget) && healTarget<=MaxClients && GetAmmo(owner, 21) > 0) || (IsValidEntity(healTarget) && !b_NpcHasDied[healTarget] && GetTeam(healTarget) == TFTeam_Red) && GetAmmo(owner, 21) > 0)
 			{
@@ -242,8 +247,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;
-
-
 
 					if(What_type_Heal == 5.0)
 					{
@@ -278,7 +281,6 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 						{
 							healing_Amount *= 0.25;
 						}	
-
 						if(f_TimeUntillNormalHeal[healTarget] - 2.0 > GetGameTime())
 						{
 							healing_Amount *= 0.33;
@@ -417,9 +419,9 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 		}
 		else if(What_type_Heal == 4.0 && GetAmmo(owner, 22) > 0)
 		{
-			if(IsValidEntity(healTarget) && healTarget>MaxClients)
+			//Special medigun that sucks hp, but also reduces has cooldown.
+			if(IsValidEntity(healTarget) && healTarget>MaxClients && GetAmmo(owner, 22) > 0 && b_ThisWasAnNpc[healTarget] && !b_NpcHasDied[healTarget] && GetTeam(healTarget) != TFTeam_Red)
 			{
-				bool team = GetTeam(owner)==GetTeam(healTarget);
 				float flDrainRate = 500.0;
 				if (b_thisNpcIsARaid[healTarget])
 				{
@@ -430,38 +432,32 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 
 				int new_ammo = GetAmmo(owner, 22);
 				
-				if (!team)
+				flDrainRate *= Attributes_Get(medigun, 8, 1.0);
+				flDrainRate *= Attributes_Get(medigun, 1, 1.0);
+				flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
+				//there are some updgras that require medigun damage only!
+				
+				target_sucked_long[healTarget] += 0.07;
+				
+				if(target_sucked_long[healTarget] >= 4.0)
 				{
-
-					flDrainRate *= Attributes_Get(medigun, 8, 1.0);
-					flDrainRate *= Attributes_Get(medigun, 1, 1.0);
-					flDrainRate *= Attributes_GetOnPlayer(owner, 8, true, true);
-					//there are some updgras that require medigun damage only!
-#if defined ZR
-					if(LastMann)	
-						flDrainRate *= 2.0;
-#endif				
-					target_sucked_long[healTarget] += 0.07;
-					
-					if(target_sucked_long[healTarget] >= 4.0)
-					{
-						target_sucked_long[healTarget] = 4.0;
-					}
-						
-					if(Handle_on_target_sucked_long[healTarget])
-					{
-						delete Revert_target_sucked_long_timer[healTarget];
-					}
-					Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
-					Handle_on_target_sucked_long[healTarget] = true;
-						
-					flDrainRate *= target_sucked_long[healTarget];
-						
-					static float Entity_Position[3];
-					WorldSpaceCenter(healTarget, Entity_Position );
-						
-					SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
+					target_sucked_long[healTarget] = 4.0;
 				}
+					
+				if(Handle_on_target_sucked_long[healTarget])
+				{
+					delete Revert_target_sucked_long_timer[healTarget];
+				}
+				Revert_target_sucked_long_timer[healTarget] = CreateTimer(1.0, Reset_suck_bonus, healTarget, TIMER_FLAG_NO_MAPCHANGE);
+				Handle_on_target_sucked_long[healTarget] = true;
+					
+				flDrainRate *= target_sucked_long[healTarget];
+					
+				static float Entity_Position[3];
+				WorldSpaceCenter(healTarget, Entity_Position );
+					
+				SDKHooks_TakeDamage(healTarget, medigun, owner, flDrainRate * GetGameFrameTime(), DMG_PLASMA, medigun, _, Entity_Position);
+
 				float flChargeLevel = GetEntPropFloat(medigun, Prop_Send, "m_flChargeLevel");
 				if (flChargeLevel==1.0) 
 				{
