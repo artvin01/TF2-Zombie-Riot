@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-void Barrack_Iberia_Tanker_Precache()
+void Barracks_Iberia_Tanker_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);

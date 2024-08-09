@@ -28,7 +28,7 @@ static const char g_IdleAlert[][] =
 	"vo/taunts/soldier_taunts18.mp3"
 };
 
-void Barracks_Combine_Commander_Precache()
+void Barracks_Iberia_Gunner_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);

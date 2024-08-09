@@ -34,7 +34,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/scout_standonthepoint05.mp3",
 };
 
-void Barrack_Iberia_Runner_Precache()
+void Barracks_Iberia_Runner_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
