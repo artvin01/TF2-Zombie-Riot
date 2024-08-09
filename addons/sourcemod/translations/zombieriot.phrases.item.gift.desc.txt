@@ -234,7 +234,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
 	}
 		
 	//XENO
@@ -477,7 +477,7 @@
 	}
 	"Medic Berserker Desc"
 	{
-		"en" 		"They seem to feed off of blood. \nThe lower heatlh he has, the deadlier he becomes."
+		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
 	}
 	"Militia Desc"
 	{
@@ -1498,7 +1498,7 @@
 	}
 	"Snowey Gunner Desc" 
 	{
-		"en"	"Tries to kite you, and has great heatlh and ranged damage."
+		"en"	"Tries to kite you, and has great health and ranged damage."
 	}
 	"Freezing Cleaner Desc" 
 	{
