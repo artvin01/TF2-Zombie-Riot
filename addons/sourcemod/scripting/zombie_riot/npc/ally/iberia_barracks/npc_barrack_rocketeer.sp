@@ -10,15 +10,14 @@ static const char g_DeathSounds[][] =
 
 static const char g_IdleSounds[][] =
 {
-	"npc/metropolice/vo/takecover.wav",
-	"npc/metropolice/vo/readytojudge.wav",
-	"npc/metropolice/vo/subject.wav",
-	"npc/metropolice/vo/subjectis505.wav"
+	"vo/taunts/soldier_taunts01.mp3",
+	"vo/taunts/soldier_taunts09.mp3",
+	"vo/taunts/soldier_taunts14.mp3",
 };
 
 static const char g_RangedAttackSounds[][] =
 {
-	"weapons/pistol/pistol_fire2.wav"
+	"weapons/rocket_shoot.wav",
 };
 
 static const char g_IdleAlert[][] =
@@ -29,10 +28,6 @@ static const char g_IdleAlert[][] =
 	"vo/taunts/soldier_taunts18.mp3"
 };
 
-
-static float f_GlobalSoundCD;
-static bool buffing;
-
 void Barracks_Combine_Commander_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -42,8 +37,8 @@ void Barracks_Combine_Commander_Precache()
 	PrecacheModel("models/player/soldier.mdl");
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Commander");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Iberia_Gunner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Rocketeer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_rocketeer");
 	data.IconCustom = false;
 	
 	data.Flags = 0;
@@ -55,10 +50,10 @@ void Barracks_Combine_Commander_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Iberia_Gunner(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Rocketeer(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Iberia_Gunner < BarrackBody
+methodmap Barrack_Iberia_Rocketeer < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -92,55 +87,50 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
 
-	public Barrack_Iberia_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Rocketeer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
+		Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
-		
+
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head")
+
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Gunner_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Gunner_ClotThink;
-		npc.m_flSpeed = 150.0;
+		func_NPCDeath[npc.index] = Barrack_Iberia_Rocketeer_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Iberia_Rocketeer_ClotThink;
+		npc.m_flSpeed = 125.0;
 
 		npc.m_flNextRangedAttack = 0.0;
-		npc.m_flRangedSpecialDelay = 0.0;
-		buffing = false;
 
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
 		
 		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		npc.m_iWearable1 = npc.EquipItem("anim_attachment_RH", "models/weapons/w_pistol.mdl");
-		SetVariantString("1.4");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_helmet/tw_soldierbot_helmet.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 175, 175, 175, 255);
-		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
-		SetVariantString("0.8");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/tw_soldierbot_armor/tw_soldierbot_armor.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		SetVariantString("1.2");
-		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable4, 175, 175, 175, 255);
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/jul13_helicopter_helmet/jul13_helicopter_helmet.mdl");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/bak_caped_crusader/bak_caped_crusader.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr17_flakcatcher/spr17_flakcatcher.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
+		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2023_shortness_breath/hwn2023_shortness_breath.mdl");
 		
 		return npc;
 	}
 }
 
-public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
+public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(iNPC);
+	Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -155,7 +145,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 450000.0)
+			if(flDistanceToTarget < 250000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -163,30 +153,23 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 				{
 					if((npc.m_flNextRangedAttack < GameTime))
 					{
-						npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", false);
-						npc.m_iTarget = Enemy_I_See;
+						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 450000.0);
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-								
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							float origin[3], angles[3];
-							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
+						npc.FaceTowards(vecTarget, 250000.0);
+						float speed = 800.0;
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 							
-							npc.m_flNextRangedAttack = GameTime + (1.00 * npc.BonusFireRate);
-							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
-						} 		
+						float flPos[3]; // original
+						float flAng[3]; // original
+						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+						npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 625.0, 1), speed+100.0, "models/effects/combineball.mdl",0.5, _, _,GetClientOfUserId(npc.OwnerUserId));	
+						//npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
 						delete swingTrace;				
 					}
 					else
 					{
-						npc.m_flSpeed = 150.0;
+						npc.m_flSpeed = 125.0;
 					}
 				}
 			}
@@ -197,18 +180,13 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 225000.0,_, true);
 	}
 }
 
-void Barrack_Iberia_Gunner_NPCDeath(int entity)
+void Barrack_Iberia_Rocketeer_NPCDeath(int entity)
 {
-	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(entity);
+	Barrack_Iberia_Rocketeer npc = view_as<Barrack_Iberia_Rocketeer>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }
-/*
-public Action Boolchange(Handle Timer)
-{
-	buffing = false;
-}*/

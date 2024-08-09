@@ -567,6 +567,11 @@ void NPC_ConfigSetup()
 
 	//Iberia Barracks
 	Barrack_Iberia_Runner_Precache();
+
+	Barracks_Combine_Commander_Precache();
+	Barrack_Iberia_Tanker_Precache();
+	
+	Barracks_Combine_Commander_Precache();
 	Barracks_Thorns();
 
 	// Raid Low Prio
@@ -1270,6 +1275,9 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/combine_barracks/npc_barrack_combine_commander.sp"
 
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_runner.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_gunner.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_tanker.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_rocketeer.sp"
 
 #include "zombie_riot/npc/ally/npc_nearl_sword.sp"
 

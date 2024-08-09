@@ -3,48 +3,50 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/heavy_paincrticialdeath01.mp3",
+	"vo/heavy_paincrticialdeath02.mp3",
+	"vo/heavy_paincrticialdeath03.mp3",
 };
 
 static const char g_IdleSounds[][] =
 {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
+	"vo/heavy_jeers03.mp3",	
+	"vo/heavy_jeers04.mp3",	
+	"vo/heavy_jeers06.mp3",
+	"vo/heavy_jeers09.mp3",	
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/bat_hit.wav",
+	"weapons/metal_gloves_hit_flesh1.wav",
+	"weapons/metal_gloves_hit_flesh2.wav",
+	"weapons/metal_gloves_hit_flesh3.wav",
+	"weapons/metal_gloves_hit_flesh4.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"weapons/boxing_gloves_swing1.wav",
+	"weapons/boxing_gloves_swing2.wav",
+	"weapons/boxing_gloves_swing4.wav",
 };
 
 static const char g_IdleAlertedSounds[][] =
 {
-	"vo/scout_standonthepoint01.mp3",
-	"vo/scout_standonthepoint02.mp3",
-	"vo/scout_standonthepoint03.mp3",
-	"vo/scout_standonthepoint04.mp3",
-	"vo/scout_standonthepoint05.mp3",
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3",
+	"vo/taunts/heavy_taunts19.mp3",
 };
 
-void Barrack_Iberia_Runner_Precache()
+void Barrack_Iberia_Tanker_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
-	PrecacheModel("models/player/scout.mdl");
+	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Runner");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_runner");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Tanker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_tanker");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -54,10 +56,10 @@ void Barrack_Iberia_Runner_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Iberia_Runner(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Tanker(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Iberia_Runner < BarrackBody
+methodmap Barrack_Iberia_Tanker < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -107,60 +109,42 @@ methodmap Barrack_Iberia_Runner < BarrackBody
 		#endif
 	}
 
-	public Barrack_Iberia_Runner(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Tanker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(BarrackBody(client, vecPos, vecAng, "100", "models/player/scout.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(BarrackBody(client, vecPos, vecAng, "100", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Runner_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Runner_ClotThink;
-		npc.m_flSpeed = 300.0;
+		func_NPCDeath[npc.index] = Barrack_Iberia_Tanker_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Iberia_Tanker_ClotThink;
+		npc.m_flSpeed = 200.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "bat");
-
-		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_sledgehammer/c_sledgehammer.mdl");
-		SetVariantString("0.6");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/scout/robo_scout_bolt_boy/robo_scout_bolt_boy.mdl", "", skin);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/riflemans_rallycap/riflemans_rallycap_scout.mdl", "",skin);
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2015_death_racer_jacket/hwn2015_death_racer_jacket.mdl","",skin);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/scout/hwn2019_fuel_injector_style2/hwn2019_fuel_injector_style2.mdl","",skin);
-		
-		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.index, 200, 200, 255, 255);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style2/sum23_brother_mann_style2.mdl");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
-		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
-
 		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable2, 200, 200, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable3, 200, 200, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable4, 200, 200, 255, 255);
-		SetEntityRenderColor(npc.m_iWearable5, 200, 200, 255, 255);
 
 		return npc;
 	}
 }
 
-public void Barrack_Iberia_Runner_ClotThink(int iNPC)
+public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(iNPC);
+	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 0.25, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -184,7 +168,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (1.5 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -200,7 +184,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),500.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
@@ -218,13 +202,13 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE");
 	}
 }
 
-void Barrack_Iberia_Runner_NPCDeath(int entity)
+void Barrack_Iberia_Tanker_NPCDeath(int entity)
 {
-	Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(entity);
+	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }

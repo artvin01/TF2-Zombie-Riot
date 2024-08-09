@@ -766,6 +766,18 @@
 	{
 		"en"		"Iberian Runner"
 	}
+	"Barracks Iberian Gunner"
+	{
+		"en"		"Iberian Runner"
+	}
+	"Barracks Iberian Tanker"
+	{
+		"en"		"Iberian Runner"
+	}	
+	"Barracks Iberian Rocketeer"
+	{
+		"en"		"Iberian Runner"
+	}	
 	"Barracks Militia"
 	{
 		"en" 		"Militia"

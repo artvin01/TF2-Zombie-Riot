@@ -499,10 +499,10 @@ static const char SummonerThornsNPC[][] =
 {
 	"npc_barrack_runner",
 	
-	"npc_barrack_archer",
-	"npc_barrack_man_at_arms",
+	"npc_barrack_gunner",
+	"npc_barrack_tanker",
 	
-	"npc_barrack_crossbow",
+	"npc_barrack_rocketeer",
 	"npc_barrack_swordsman",
 	
 	"npc_barrack_arbelast",
