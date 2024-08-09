@@ -1450,12 +1450,13 @@
 		"chi"   "工程师的初始武器"
 	}
 	
-	"Mechanical Medigun Desc"
+	"Expidonsan Repair Device Desc"
 	{
-		"en"	"Buffs and heals buildings. Uber amplifies the Buffs by a lot. Requires Handling books."
-		"fr"	"Répare et améliorent les constructions. Über améliorent les constructions davantage. Améliorations Construction requis."
-		"ru"	"Усиливает и лечит постройки. Убер увеличивает эффекты от усиления на много. Требуются книги по ремонту."
-		"chi"   "可以给建筑添加Buff和治疗。Uber将可以提升建筑属性"
+		"en"	"Made in Expidonsa but pretty used.\nHeals building from far ranges!"
+	}
+	"Expidonsan Repair Device Pap 1 Desc"
+	{
+		"en"	"Just as new!\nHas 75%% more range\nRepairs 25%% faster then before."
 	}
 	
 	"Mounter Desc"
@@ -3539,9 +3540,7 @@
 	}
 	"Tinker Ranger Desc"
 	{
-		"en"	"Fires bolt projectiles, able to repair buildings, has an ability to pickup buildings from a distance but costs 1000 metal."
-		"fr"	"Projectiles répare les constructions. Peut ramasser les constructions de loin, mais coûte 1000 métal."
-		"chi"	"发射修复建筑物的钉子。可以远程搬起建筑。消耗1000金属。"
+		"en"	"Fires bolt projectiles."
 	}
 	"Tinker Pap 1 Desc"
 	{

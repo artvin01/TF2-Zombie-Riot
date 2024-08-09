@@ -215,6 +215,7 @@ enum
 	Ammo_Laser,		// 23 Laser Battery
 	Ammo_Hand_Grenade,		// 24 Hand Grenade types
 	Ammo_Potion_Supply,		// 25 Drink Types
+	Ammo_Metal_Sub,		// 26 Used to display metal on other types of weapons.
 	Ammo_MAX
 };
 
@@ -278,6 +279,7 @@ Handle g_hSetAbsVelocity;
 
 float f_BotDelayShow[MAXTF2PLAYERS];
 float f_OneShotProtectionTimer[MAXTF2PLAYERS];
+float f_PreventMedigunCrashMaybe[MAXTF2PLAYERS];
 int i_EntityToAlwaysMeleeHit[MAXTF2PLAYERS];
 //int Dont_Crouch[MAXENTITIES]={0, ...};
 
@@ -477,6 +479,7 @@ int RogueTheme;
 bool b_IsABow[MAXENTITIES];
 bool b_WeaponHasNoClip[MAXENTITIES];
 bool b_IsAMedigun[MAXENTITIES];
+int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
 bool b_npcspawnprotection[MAXENTITIES];
@@ -890,7 +893,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
-//DynamicHook g_DHookMedigunPrimary; 
+DynamicHook g_DHookMedigunPrimary; 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
 //Death
@@ -1318,7 +1321,6 @@ int i_PoseMoveX[MAXENTITIES];
 int i_PoseMoveY[MAXENTITIES];
 //Arrays for npcs!
 bool b_ThisWasAnNpc[MAXENTITIES];
-float b_isGiantWalkCycle[MAXENTITIES];
 
 bool Is_a_Medic[MAXENTITIES]; //THIS WAS INSIDE THE NPCS!
 
@@ -1473,6 +1475,7 @@ public void OnPluginStart()
 	200,
 	1000,
 	100,
+	1,
 	1,
 	1};
 #endif
@@ -1731,6 +1734,7 @@ public void OnMapStart()
 	PrecacheSound("weapons/breadmonster/throwable/bm_throwable_throw.wav");
 	Zero2(f_WeaponSpecificClassBuff);
 	Zero2(b_WeaponSpecificClassBuff);
+	Zero(f_PreventMedigunCrashMaybe);
 
 #if defined ZR || defined RPG
 	PrecacheSoundCustom("zombiesurvival/headshot1.wav");
@@ -2248,6 +2252,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	{
 		return Plugin_Continue;
 	}
+	if(f_PreventMedigunCrashMaybe[client] > GetGameTime())
+	{
+		buttons &= ~IN_ATTACK;
+	}
 	
 	OnPlayerRunCmd_Lag_Comp(client, angles, tickcount);
 	
@@ -2541,6 +2549,10 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 #endif	// ZR
 #endif	// ZR & RPG
 
+	if(f_PreventMedigunCrashMaybe[client] > GetGameTime())
+	{
+		return Plugin_Changed;
+	}
 	return Plugin_Continue;
 }
 
@@ -3118,10 +3130,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
 		}
-		else if(!StrContains(classname, "tf_weapon_wrench" /*REPLACE ME WITH tf_weapon_wrench WHEN WRENCH FIX HAPPEND!*/)) //need custom logic here
-		{
-			OnWrenchCreated(entity);
-		}
 #endif
 		else if(!StrContains(classname, "tf_weapon_compound_bow"))
 		{
@@ -3479,6 +3487,7 @@ public void OnEntityDestroyed(int entity)
 
 		if(entity > MaxClients)
 		{
+			MedigunCheckAntiCrash(entity);
 #if !defined RTS
 			Attributes_EntityDestroyed(entity);
 #endif
@@ -3496,7 +3505,38 @@ public void OnEntityDestroyed(int entity)
 		NPCStats_SetFuncsToZero(entity);
 	}
 }
+void PreMedigunCheckAntiCrash(int client)
+{
+	int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(active != -1)
+	{
+		MedigunCheckAntiCrash(active);
+	}
+}
+void MedigunCheckAntiCrash(int entity)
+{
+	//This is needed beacuse:
+	/*
+		If a client holds m1, and then their medigun changes or-
+		 to any other weapon it will try to play the animation
+		 onto the new weapon, if the player has a bad weapon
+		 or an invalid weapon, or nothing...
 
+		 CRASH!
+
+		 This prevents the client from holding m1 when it despawns a medigun, hopefully it works!
+	*/
+	if(b_IsAMedigun[entity])
+	{
+		GetEntProp(entity, Prop_Send, "m_bHealing", 0);
+		//owner netprop doesnt work sadly.
+		int MedigunOwner = PrevOwnerMedigun[entity];
+		if(IsValidClient(MedigunOwner))
+		{
+			f_PreventMedigunCrashMaybe[MedigunOwner] = GetGameTime() + 0.1;
+		}
+	}
+}
 #if defined ZR || defined RPG
 public void CheckIfAloneOnServer()
 {

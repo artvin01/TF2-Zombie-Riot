@@ -689,6 +689,12 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 
 stock int GetAmmo(int client, int type)
 {
+	/*
+	if(type == Ammo_Metal_Sub)
+	{
+		type = Ammo_Metal;
+	}
+	*/
 	int ammo = GetEntProp(client, Prop_Data, "m_iAmmo", _, type);
 	if(ammo < 0)
 		ammo = 0;
@@ -698,6 +704,10 @@ stock int GetAmmo(int client, int type)
 
 stock void SetAmmo(int client, int type, int ammo)
 {
+	if(type == Ammo_Metal)
+	{
+		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
+	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
@@ -2810,9 +2820,12 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
 }
-
-int CountPlayersOnRed(int alive = 0)
+int SavedFromLastTimeCount = 0;
+int CountPlayersOnRed(int alive = 0, bool saved = false)
 {
+	if(saved)
+		return SavedFromLastTimeCount;
+
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2850,7 +2863,7 @@ int CountPlayersOnRed(int alive = 0)
 #endif
 		}
 	}
-	
+	SavedFromLastTimeCount = amount;
 	return amount;
 	
 }

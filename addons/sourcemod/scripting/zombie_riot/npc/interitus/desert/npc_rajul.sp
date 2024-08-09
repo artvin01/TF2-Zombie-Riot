@@ -235,7 +235,7 @@ void DesertRajulHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 99.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
+		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 2.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }

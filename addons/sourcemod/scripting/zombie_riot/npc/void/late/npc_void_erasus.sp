@@ -112,17 +112,17 @@ methodmap VoidedErasus < CClotBody
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		
-		VausMagicaGiveShield(npc.index, 5);
 		func_NPCDeath[npc.index] = VoidedErasus_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VoidedErasus_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidedErasus_ClotThink;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		EnemyShieldCantBreak[npc.index] = true;
+		VausMagicaGiveShield(npc.index, 5);
 		
 		
 		//IDLE
