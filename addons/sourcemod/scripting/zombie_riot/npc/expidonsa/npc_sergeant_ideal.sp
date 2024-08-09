@@ -68,7 +68,7 @@ void SergeantIdeal_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Sergeant Ideal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sergeant_ideal");
-	strcopy(data.Icon, sizeof(data.Icon), "sergeant_ideal");
+	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Expidonsa;
