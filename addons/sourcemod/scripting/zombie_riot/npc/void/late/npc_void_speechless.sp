@@ -130,7 +130,6 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		EnemyShieldCantBreak[npc.index] = true;
 		VausMagicaGiveShield(npc.index, 5);
 
 		VoidSpeechlessEffects(npc.index);
@@ -291,7 +290,7 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					Elemental_AddVoidDamage(target, npc.index, 200, true, true);
-					VausMagicaGiveShield(npc.index, 3, true);
+					VausMagicaGiveShield(npc.index, 1, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
