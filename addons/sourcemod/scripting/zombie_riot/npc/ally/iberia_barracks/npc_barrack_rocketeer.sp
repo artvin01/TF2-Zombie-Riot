@@ -167,14 +167,13 @@ public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 					}
 				}
 			}
-			CommanderAOEBuff(npc,GetGameTime(npc.index));
 		}
 		else
 		{
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 225000.0,_, true);
 	}
 }
 
