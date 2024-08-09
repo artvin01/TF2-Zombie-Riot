@@ -42,7 +42,6 @@ void Barracks_Iberia_Rocketeer_Precache()
 	data.IconCustom = false;
 	
 	data.Flags = 0;
-	f_GlobalSoundCD = 0.0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -157,15 +156,10 @@ public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 250000.0);
 						float speed = 800.0;
-						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
-							
-						float flPos[3]; // original
-						float flAng[3]; // original
-						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+						float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 						npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 625.0, 1), speed+100.0, "models/effects/combineball.mdl",0.5, _, _,GetClientOfUserId(npc.OwnerUserId));	
 						//npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
-						npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
-						delete swingTrace;				
+						npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);		
 					}
 					else
 					{

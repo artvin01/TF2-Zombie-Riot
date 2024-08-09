@@ -42,7 +42,6 @@ void Barracks_Iberia_Gunner_Precache()
 	data.IconCustom = false;
 	
 	data.Flags = 0;
-	f_GlobalSoundCD = 0.0;
 	data.Category = Type_Ally;
 	data.Func = ClotSummon;
 	NPC_Add(data);
