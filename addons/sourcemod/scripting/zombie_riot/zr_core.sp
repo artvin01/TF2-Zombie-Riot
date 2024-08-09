@@ -2186,6 +2186,12 @@ void GiveXP(int client, int xp)
 		return;
 	}
 
+	if(Rogue_Mode())
+	{
+		//in rogue, give much less XP
+		xp = RoundToNearest(float(xp) * 0.15);
+	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
