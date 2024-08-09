@@ -497,23 +497,23 @@ static int SummonerCombine[][] =
 
 static const char SummonerThornsNPC[][] =
 {
-	"npc_barrack_militia",
+	"npc_barrack_runner",
 	
-	"npc_barrack_archer",
-	"npc_barrack_man_at_arms",
+	"npc_barrack_gunner",
+	"npc_barrack_tanker",
 	
-	"npc_barrack_crossbow",
-	"npc_barrack_swordsman",
+	"npc_barrack_rocketeer",
+	"npc_barrack_healer",
 	
 	"npc_barrack_arbelast",
 	"npc_barrack_twohanded",
 	
-	"npc_barrack_longbow",
+	"npc_barrack_elite_gunner",
 	"npc_barrack_champion",
 	
-	"npc_barrack_thorns",
-	
+	"npc_barrack_thorns",	
 	"npc_barrack_teutonic_knight",
+	
 	"npc_barrack_teutonic_knight",
 	"npc_barrack_villager"
 };
@@ -538,7 +538,7 @@ static int SummonerThorns[][] =
 	{ 0, 1000, 1000, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
 	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 9999, 99999, 	9999, 9999, 9999, 9999, 0, 0 },	// Fillter
+	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
 };
 
