@@ -160,7 +160,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 	Barrack_Iberia_Runner npc = view_as<Barrack_Iberia_Runner>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.25, 0.5, 0);
+	GrantEntityArmor(iNPC, true, 0.25, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -200,7 +200,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),250,0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
