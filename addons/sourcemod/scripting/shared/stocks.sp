@@ -689,10 +689,12 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 
 stock int GetAmmo(int client, int type)
 {
+	/*
 	if(type == Ammo_Metal_Sub)
 	{
 		type = Ammo_Metal;
 	}
+	*/
 	int ammo = GetEntProp(client, Prop_Data, "m_iAmmo", _, type);
 	if(ammo < 0)
 		ammo = 0;

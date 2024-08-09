@@ -1396,8 +1396,10 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 			case 1:
 				EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70,_,1.0);
 			case 2:
-				EmitSoundToAll("player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
-
+			{
+				EmitSoundToAll("player/taunt_sorcery_fail.wav", target, SNDCHAN_AUTO, 70,_,0.5);
+				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+			}
 		}
 		return;
 	}
@@ -1421,7 +1423,10 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 				case 1:
 					EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70,_,1.0);
 				case 2:
-					EmitSoundToAll("player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+				{
+					EmitSoundToAll("player/taunt_sorcery_fail.wav", target, SNDCHAN_AUTO, 70,_,0.5);
+					EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+				}
 
 			}
 			return;
@@ -1456,15 +1461,17 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 					case 0:
 					{
 						//particle can spawn stuff at 0 0 0 in world spawn, oops!
-						TE_Particle("impact_metal", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.7, 120);
-						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.7, 120);
+						TE_Particle("manmelter_impact_sparks01", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToClient(client, "physics/metal/metal_box_strain2.wav", client, SNDCHAN_AUTO, 70,_,0.7, 120);
 					}
 					case 1:
 					{
-						TE_Particle("impact_metal", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.7, 120);
-						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.7, 120);
+						TE_Particle("manmelter_impact_sparks01", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToClient(client, "physics/metal/metal_box_strain4.wav", client, SNDCHAN_AUTO, 70,_,0.7, 120);
 					}
 				}
 			}
@@ -1472,7 +1479,11 @@ void Building_RepairObject(int client, int target, int weapon,float vectorhit[3]
 		}
 		
 	}
-	new_ammo -= HealGiven / 3;
+	int HealDo;
+	HealDo = HealGiven / 3;
+	if(HealDo <= 1)
+		HealDo = 1;
+	new_ammo -= HealDo;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
 }

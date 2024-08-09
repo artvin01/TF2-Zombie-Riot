@@ -147,7 +147,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					flDrainRate *= 0.65;
 				}
 				
-				MedigunChargeUber(owner, medigun, 2.0);
+				if(!TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
+					MedigunChargeUber(owner, medigun, 2.0);
 				
 				if (!team)
 				{
@@ -209,7 +210,7 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					
 					if(GetEntProp(healTarget, Prop_Data, "m_iHealth") <= 0 && !TF2_IsPlayerInCondition(owner, TFCond_Ubercharged) && !TF2_IsPlayerInCondition(owner, TFCond_MegaHeal))
 					{
-						MedigunChargeUber(owner, medigun, 7.0);
+						MedigunChargeUber(owner, medigun, 11.0);
 					}
 					
 				}
