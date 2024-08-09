@@ -3,10 +3,9 @@
 
 static const char g_DeathSounds[][] =
 {
-	"npc/metropolice/die1.wav",
-	"npc/metropolice/die2.wav",
-	"npc/metropolice/die3.wav",
-	"npc/metropolice/die4.wav"
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3"
 };
 
 static const char g_IdleSounds[][] =
@@ -22,23 +21,14 @@ static const char g_RangedAttackSounds[][] =
 	"weapons/pistol/pistol_fire2.wav"
 };
 
-static const char g_RangedReloadSound[][] =
-{
-	"weapons/pistol/pistol_reload1.wav"
-};
-
 static const char g_IdleAlert[][] =
 {
-	"npc/metropolice/vo/airwatchsubjectis505.wav",
-	"npc/metropolice/vo/allunitscloseonsuspect.wav",
-	"npc/metropolice/vo/allunitsmovein.wav",
-	"npc/metropolice/vo/breakhiscover.wav",
-	"npc/metropolice/vo/destroythatcover.wav"
+	"vo/taunts/soldier_taunts19.mp3",
+	"vo/taunts/soldier_taunts20.mp3",
+	"vo/taunts/soldier_taunts21.mp3",
+	"vo/taunts/soldier_taunts18.mp3"
 };
 
-static const char g_WarCry[][] = {
-	"mvm/mvm_used_powerup.wav",
-};
 
 static float f_GlobalSoundCD;
 static bool buffing;
@@ -48,13 +38,12 @@ void Barracks_Combine_Commander_Precache()
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
-	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheSoundArray(g_IdleAlert);
-	PrecacheSoundArray(g_WarCry);
+	PrecacheModel("models/player/soldier.mdl");
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Combine Commander");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_combine_commander");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Barrack_Iberia_Gunner");
 	data.IconCustom = false;
 	
 	data.Flags = 0;
@@ -66,10 +55,10 @@ void Barracks_Combine_Commander_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Combine_Commander(client, vecPos, vecAng, ally);
+	return Barrack_Iberia_Gunner(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Combine_Commander < BarrackBody
+methodmap Barrack_Iberia_Gunner < BarrackBody
 {
 	public void PlayIdleSound()
 	{
@@ -94,14 +83,6 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public void PlayPistolReload()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
 	public void PlayNPCDeath()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -110,25 +91,16 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-	public void PlayWarCry() 
-	{
-		if(f_GlobalSoundCD > GetGameTime())
-			return;
-			
-		f_GlobalSoundCD = GetGameTime() + 5.0;
 
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.5, 100);
-	}
-
-	public Barrack_Combine_Commander(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barrack_Iberia_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(BarrackBody(client, vecPos, vecAng, "1750", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_crit.mdl"));
+		Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Combine_Commander_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Combine_Commander_ClotThink;
+		func_NPCDeath[npc.index] = Barrack_Iberia_Gunner_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Iberia_Gunner_ClotThink;
 		npc.m_flSpeed = 150.0;
 
 		npc.m_flNextRangedAttack = 0.0;
@@ -166,9 +138,9 @@ methodmap Barrack_Combine_Commander < BarrackBody
 	}
 }
 
-public void Barrack_Combine_Commander_ClotThink(int iNPC)
+public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 {
-	Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(iNPC);
+	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -206,9 +178,9 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (2.00 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (1.00 * npc.BonusFireRate);
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 8000.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
@@ -229,9 +201,9 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 	}
 }
 
-void Barrack_Combine_Commander_NPCDeath(int entity)
+void Barrack_Iberia_Gunner_NPCDeath(int entity)
 {
-	Barrack_Combine_Commander npc = view_as<Barrack_Combine_Commander>(entity);
+	Barrack_Iberia_Gunner npc = view_as<Barrack_Iberia_Gunner>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	npc.PlayNPCDeath();
 }
