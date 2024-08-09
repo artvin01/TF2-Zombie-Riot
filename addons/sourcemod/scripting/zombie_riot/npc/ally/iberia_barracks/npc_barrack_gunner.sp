@@ -93,7 +93,7 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		
 		i_NpcWeight[npc.index] = 1;
 
-		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head")
+		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
 		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
