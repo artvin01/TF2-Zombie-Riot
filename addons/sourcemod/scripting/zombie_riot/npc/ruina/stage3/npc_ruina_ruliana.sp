@@ -859,9 +859,9 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(EntRefToEntIndex(i_Ruina_Ovelord_Ref)==npc.index)
+	if(EntRefToEntIndex(i_Ruina_Overlord_Ref)==npc.index)
 	{
-		i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+		i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 		//CPrintToChatAll("set invalid");
 	}
 		

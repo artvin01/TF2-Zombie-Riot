@@ -586,6 +586,8 @@ static void Internal_ClotThink(int iNPC)
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		npc.m_bisWalking = true;
+
 		npc.m_flSpeed=fl_schwert_speed;
 
 		

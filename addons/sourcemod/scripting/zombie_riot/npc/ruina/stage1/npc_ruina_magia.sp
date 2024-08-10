@@ -352,10 +352,8 @@ static void ClotThink(int iNPC)
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
 					float projectile_speed = 1000.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 		
-					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+					npc.FireParticleRocket(vecTarget, 30.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else

@@ -348,8 +348,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 600.0;
-					Projectile.bonus_dmg = 750.0;
+					Projectile.damage = 175.0;
+					Projectile.bonus_dmg = 400.0;
 					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -446,7 +446,7 @@ static void ClotThink(int iNPC)
 			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
-			float dmg = 30.0;
+			float dmg = 15.0;
 			float radius = 15.0;
 
 			Laser.Radius = radius;
