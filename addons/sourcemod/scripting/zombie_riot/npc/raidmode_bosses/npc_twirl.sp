@@ -590,7 +590,7 @@ methodmap Twirl < CClotBody
 		npc.m_fbGunout = true;
 		i_current_wave[npc.index] = wave;
 
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -856,7 +856,7 @@ static void ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle = 99;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("competitive_loserstate_idle");
-			i_NpcWeight[npc.index]=999;
+			
 		}
 		if(fl_next_textline[npc.index] < GameTime)
 		{	
@@ -950,10 +950,10 @@ static void ClotThink(int iNPC)
 		return;
 	}
 
-	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
+	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
-		i_NpcWeight[npc.index]=5;
+
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		switch(GetRandomInt(0, 6))
@@ -1080,7 +1080,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 0.75);
 
-	if(npc.m_flDoingAnimation > GetGameTime())
+	if(npc.m_flDoingAnimation > GetGameTime(npc.index))
 		return;
 
 	if(npc.IsOnGround())
@@ -1462,7 +1462,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	if(i_current_wave[npc.index]<=30)
 		return;
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] > GameTime)
 		return;
 
@@ -1502,7 +1502,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	b_animation_set[npc.index] = false;
 	fl_cosmic_gaze_throttle[npc.index] = 0.0;
 
-	i_NpcWeight[npc.index]=999;
+	
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
 	npc.SetCycle(0.01);
@@ -1531,7 +1531,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 static Action Cosmic_Gaze_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
 		fl_comsic_gaze_timer[npc.index] = GameTime + (npc.Anger ? 45.0 : 60.0);
@@ -1541,7 +1541,6 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		i_NpcWeight[npc.index]=5;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_bisWalking = true;
@@ -1813,7 +1812,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	if(i_current_wave[npc.index]<=15)
 		return;
 
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(npc.m_flNextRangedBarrage_Spam > GameTime)
 		return;
 	
@@ -2135,9 +2134,9 @@ static bool Retreat(Twirl npc, bool custom = false)
 static float fl_retreat_laser_throttle[MAXENTITIES];
 static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	npc.AddActivityViaSequence("secondrate_sorcery_medic");
-	i_NpcWeight[npc.index]=999;
+	
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
@@ -2172,7 +2171,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 static Action Retreat_Laser_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
@@ -2182,8 +2181,6 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		i_NpcWeight[npc.index]=5;
-
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
@@ -2355,7 +2352,7 @@ static void On_LaserHit(int client, int target, int damagetype, float damage)
 static float fl_magia_angle[MAXENTITIES];
 static void Magia_Overflow(Twirl npc)
 {
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 	if(fl_magia_overflow_recharge[npc.index] > GameTime)
 		return;
 
@@ -2364,7 +2361,7 @@ static void Magia_Overflow(Twirl npc)
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
 	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
-	i_NpcWeight[npc.index]=999;
+	
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
@@ -2397,7 +2394,7 @@ static void Magia_Overflow(Twirl npc)
 static Action Magia_Overflow_Tick(int iNPC)
 {
 	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime();
+	float GameTime = GetGameTime(npc.index);
 
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
 	{
@@ -2408,7 +2405,6 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 
-		i_NpcWeight[npc.index]=5;
 		npc.m_bInKame = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -2636,18 +2632,18 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 	
 
-	if(npc.m_flNextChargeSpecialAttack > GetGameTime() && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
+	if(npc.m_flNextChargeSpecialAttack > GetGameTime(npc.index) && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		damage=0.0;
 		//CPrintToChatAll("Damage nulified");
 		return Plugin_Changed;
 	}
-	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=60 && npc.m_flDoingAnimation < GetGameTime())
+	if(!b_allow_final_invocation[npc.index] && (MaxHealth/4) >= Health && i_current_wave[npc.index] >=60 && npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
 		b_allow_final_invocation[npc.index] = true;
 	}
 
-	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime()) //Anger after half hp
+	if(!npc.Anger && (MaxHealth/2) >= Health && i_current_wave[npc.index] >=30 && npc.m_flDoingAnimation < GetGameTime(npc.index)) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -2656,7 +2652,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
-		i_NpcWeight[npc.index]=999;
+		
 
 		npc.m_flSpeed = 0.0;
 		f_NpcTurnPenalty[npc.index] = 0.0;
@@ -2678,7 +2674,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.SetPlaybackRate(1.0);	
 		npc.SetCycle(0.01);
 
-		float GameTime = GetGameTime();
+		float GameTime = GetGameTime(npc.index);
 		npc.m_flDoingAnimation = GameTime + 2.5;
 		fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
 		npc.m_flNextChargeSpecialAttack = GameTime + 2.5;

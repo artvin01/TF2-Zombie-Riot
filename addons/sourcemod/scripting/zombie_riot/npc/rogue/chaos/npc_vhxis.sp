@@ -237,7 +237,7 @@ methodmap Vhxis < CClotBody
 	{
 		Vhxis npc = view_as<Vhxis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "2.0", "30000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_ROGUE2_VOID_WALK");
