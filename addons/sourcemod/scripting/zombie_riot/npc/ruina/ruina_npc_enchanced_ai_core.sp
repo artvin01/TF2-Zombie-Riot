@@ -1590,7 +1590,7 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
 
-	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _  , Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
+	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, end_point, Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
