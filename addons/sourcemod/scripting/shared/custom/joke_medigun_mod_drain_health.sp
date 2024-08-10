@@ -62,13 +62,18 @@ public MRESReturn OnAllowedToHealTargetPre(int medigun, Handle hReturn, Handle h
 		{
 			if(What_type_Heal == 1.0 || What_type_Heal == 5.0 || What_type_Heal == 6.0)
 			{
-			//	bool is_uber_activated=view_as<bool>(GetEntProp(medigun, Prop_Send, "m_bChargeRelease"));
-				if (target > 0 && target <= MaxClients)	//only allow player heal IF you have attribute.
+
+				if (target > 0 && target <= MaxClients)
 				{
+					//dont heal downed targets that have left for dead.
+					if(b_LeftForDead[target] && dieingstate[target] > 0)
+					{
+						DHookSetReturn(hReturn, false);
+						return MRES_Supercede;		
+
+					}
 					return MRES_Ignored;
-				//This is just normal code, let it be itself.
-				//	DHookSetReturn(hReturn, true);
-				//	return MRES_Supercede;
+					//This is just normal code, let it be itself.
 				}
 				else if(b_ThisWasAnNpc[target] && !b_NpcHasDied[target] && GetTeam(target) == TFTeam_Red)
 				{
@@ -267,7 +272,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 #if defined ZR
 					if(healTarget <= MaxClients && dieingstate[healTarget] > 0 && dieingstate[owner] == 0)
 					{
-						ReviveClientFromOrToEntity(healTarget, owner,_, 1);
+						if(!b_LeftForDead[healTarget])
+							ReviveClientFromOrToEntity(healTarget, owner,_, 1);
 					}
 					else
 #endif
