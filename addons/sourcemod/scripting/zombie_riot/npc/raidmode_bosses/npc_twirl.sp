@@ -71,10 +71,7 @@ static const char g_AngerSounds[][] = {
 	"vo/medic_item_secop_kill_assist01.mp3"
 };
 static const char g_LaserComboSound[][] = {
-	"weapons/physcannon/superphys_launch1.wav",
-	"weapons/physcannon/superphys_launch2.wav",
-	"weapons/physcannon/superphys_launch3.wav",
-	"weapons/physcannon/superphys_launch4.wav"
+	"zombiesurvival/seaborn/loop_laser.mp3",
 };
 static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
@@ -276,8 +273,7 @@ methodmap Twirl < CClotBody
 	public void PlayLaserComboSound() {
 		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
 			return;
-		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, BOSS_ZOMBIE_VOLUME);
+		EmitCustomToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, BOSS_ZOMBIE_VOLUME);
 		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 	}
 	public void Predictive_Ion(int Target, float Time, float Radius, float dmg)
