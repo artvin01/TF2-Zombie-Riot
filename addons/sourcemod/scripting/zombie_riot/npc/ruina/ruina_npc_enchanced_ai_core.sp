@@ -73,11 +73,10 @@ float fl_ruina_buff_amt[MAXENTITIES];
 float fl_ruina_buff_time[MAXENTITIES];
 bool b_ruina_buff_override[MAXENTITIES];
 
-//these scales on wavecount
-#define RUINA_NORMAL_NPC_MAX_SHIELD	 	175.0
-#define RUINA_BOSS_NPC_MAX_SHIELD 		250.0
-#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	1000.0
-#define RUINA_SHIELD_NPC_TIMEOUT 		15.0
+#define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
+#define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.1
+#define RUINA_SHIELD_NPC_TIMEOUT 		7.5
 #define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
 
@@ -353,7 +352,6 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	fl_ruina_shield_break_timeout[client] = GameTime + 120.0;
 	
 	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
-	int wave =(ZR_GetWaveCount()+1);
 	if(b_thisNpcIsABoss[client])
 	{
 		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
@@ -362,9 +360,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
 	}
-	Shield_Power *= wave;
 
-	GrantEntityArmor(client, false, 0.0, strenght, 1, Shield_Power);
+	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
 	
 	Ruina_Update_Shield(client);
 }

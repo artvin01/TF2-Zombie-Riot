@@ -590,7 +590,7 @@ methodmap Twirl < CClotBody
 		npc.m_fbGunout = true;
 		i_current_wave[npc.index] = wave;
 
-		i_NpcWeight[npc.index] = 15;
+		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -856,6 +856,7 @@ static void ClotThink(int iNPC)
 			npc.m_iChanged_WalkCycle = 99;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("competitive_loserstate_idle");
+			i_NpcWeight[npc.index]=999;
 		}
 		if(fl_next_textline[npc.index] < GameTime)
 		{	
@@ -952,7 +953,7 @@ static void ClotThink(int iNPC)
 	if(npc.Anger && npc.m_flNextChargeSpecialAttack < GetGameTime() && npc.m_flNextChargeSpecialAttack != FAR_FUTURE)
 	{
 		npc.m_flNextChargeSpecialAttack = FAR_FUTURE;
-		i_NpcWeight[npc.index]=15;
+		i_NpcWeight[npc.index]=5;
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		switch(GetRandomInt(0, 6))
@@ -1501,6 +1502,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	b_animation_set[npc.index] = false;
 	fl_cosmic_gaze_throttle[npc.index] = 0.0;
 
+	i_NpcWeight[npc.index]=999;
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
 	npc.SetCycle(0.01);
@@ -1539,6 +1541,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
+		i_NpcWeight[npc.index]=5;
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_bisWalking = true;
@@ -2134,6 +2137,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 {
 	float GameTime = GetGameTime();
 	npc.AddActivityViaSequence("secondrate_sorcery_medic");
+	i_NpcWeight[npc.index]=999;
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
@@ -2178,6 +2182,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
+		i_NpcWeight[npc.index]=5;
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -2358,8 +2363,8 @@ static void Magia_Overflow(Twirl npc)
 		return;
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
-	Ruina_Npc_Give_Shield(npc.index, 0.5);				//give the shield to itself.
-
+	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
+	i_NpcWeight[npc.index]=999;
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
@@ -2403,6 +2408,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 
+		i_NpcWeight[npc.index]=5;
 		npc.m_bInKame = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
@@ -2736,7 +2742,7 @@ static void NPC_Death(int entity)
 			{
 				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
 				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 2: Twirl_Lines(npc, "Ahaha, toddles");
+				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
 			}
 		}
@@ -2767,7 +2773,7 @@ static void NPC_Death(int entity)
 				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-				case 3: Twirl_Lines(npc, "Toddles!");
+				case 3: Twirl_Lines(npc, "toodles!");
 			}
 		}
 	}
