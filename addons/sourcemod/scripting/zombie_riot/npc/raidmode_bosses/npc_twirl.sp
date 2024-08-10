@@ -1057,6 +1057,10 @@ static void ClotThink(int iNPC)
 									
 			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}
 	}
 			
 	if(npc.m_blPlayHurtAnimation)
