@@ -420,7 +420,6 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/zsclassic.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
 #include "zombie_riot/custom/weapon_boom_stick.sp"
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
@@ -635,7 +634,6 @@ void ZR_MapStart()
 	Wand_Cryo_Burst_ClearAll();
 	Arrow_Spell_ClearAll();
 	Survival_Knife_ClearAll();
-	MedKit_ClearAll();
 	Wand_autoaim_ClearAll();
 	Weapon_lantean_Wand_ClearAll();
 	Wand_Elemental_2_ClearAll();
@@ -696,8 +694,6 @@ void ZR_MapStart()
 	
 	Waves_MapStart();
 	Music_MapStart();
-	Remove_Healthcooldown();
-	Medigun_PersonOnMapStart();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
 	Pomson_MapStart();

@@ -33,11 +33,6 @@ void Medigun_PluginStart() {
 	delete hGameConf_med;
 }
 
-void Medigun_PersonOnMapStart() {
-	return;
-	
-}
-
 int MedigunModeSet[MAXTF2PLAYERS];
 
 void Medigun_OnEntityCreated(int entity) 

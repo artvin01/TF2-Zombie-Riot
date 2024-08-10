@@ -346,6 +346,24 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 
 				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
 				healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
+
+				int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+				if(Pap != 0.0)
+				{
+					if(Pap == 1)
+					{
+						healing = 60;
+					}
+					else
+					{
+						healing = 80;
+					}
+				}
+
+				if((health + healing) > maxHealth)
+				{
+					healing = maxHealth - health;
+				}
 				
 				if(healing > ammo)
 					healing = ammo;
@@ -368,7 +386,8 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				
 				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
 
-				Ability_Apply_Cooldown(client, slot, cooldown);
+				Ability_Apply_Cooldown(client, 1, cooldown);
+				Ability_Apply_Cooldown(client, 2, cooldown);
 
 				CurrentAmmo[client][21] = ammo - healing;
 				SetAmmo(client, 21, CurrentAmmo[client][21]);
@@ -405,6 +424,24 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 
 		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
 		healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
+
+		int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+		if(Pap != 0.0)
+		{
+			if(Pap == 1)
+			{
+				healing = 20;
+			}
+			else
+			{
+				healing = 30;
+			}
+		}
+
+		if((health + healing) > maxHealth)
+		{
+			healing = maxHealth - health;
+		}
 		
 		if(healing <= 0)
 		{
@@ -420,7 +457,8 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 
 		PrintHintText(client,"You Healed yourself for %d HP!, you gain a 25 healing cooldown.", healing);
 
-		Ability_Apply_Cooldown(client, slot, 25.0);
+		Ability_Apply_Cooldown(client, 1, 25.0);
+		Ability_Apply_Cooldown(client, 2, 25.0);
 
 		CurrentAmmo[client][21] = ammo - healing;
 		SetAmmo(client, 21, CurrentAmmo[client][21]);
