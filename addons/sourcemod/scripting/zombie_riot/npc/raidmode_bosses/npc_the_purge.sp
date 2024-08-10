@@ -143,6 +143,7 @@ methodmap ThePurge < CClotBody
 		i_NpcWeight[npc.index] = 5;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
+		npc.m_bisWalking = true;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		npc.AddGesture("ACT_MP_CYOA_PDA_OUTRO");
 
@@ -268,6 +269,7 @@ static void ClotThink(int iNPC)
 			npc.m_flNextMeleeAttack = gameTime + 1.0;
 			npc.m_flSwitchCooldown = FAR_FUTURE;
 			npc.m_flSpeed = 450.0;
+			npc.m_bisWalking = true;
 			npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 			npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 			npc.StartPathing();
@@ -321,7 +323,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_iGunType == 0)
 	{
-		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ RaidModeScaling * 0.1);
+		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ RaidModeScaling * 5.0);
 	}
 
 	if(target > 0)
@@ -352,6 +354,7 @@ static void ClotThink(int iNPC)
 						npc.PlayMinigunStopSound();
 					
 					npc.m_iGunType++;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
@@ -364,6 +367,7 @@ static void ClotThink(int iNPC)
 				case 1, 4, 7:	// Shotgun -> SMG
 				{
 					npc.m_iGunType++;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_trenchgun/c_trenchgun.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 0.5;
@@ -376,6 +380,7 @@ static void ClotThink(int iNPC)
 				case 2:	// SMG/Healing -> Minigun
 				{
 					npc.m_iGunType = 3;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_iron_curtain/c_iron_curtain.mdl");
 					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 0.5 : 1.0);
@@ -392,6 +397,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_iGunType = 6;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = false;
 					npc.SetActivity("taunt_burstchester_heavy", true);
 					npc.m_flNextMeleeAttack = gameTime + (npc.Anger ? 1.65 : 3.25);
 					npc.m_flSpeed = 1.0;
@@ -409,6 +415,7 @@ static void ClotThink(int iNPC)
 				case 8:	// SMG -> Grenade
 				{
 					npc.m_iGunType = 9;
+					npc.m_bisWalking = true;
 					npc.SetWeaponModel("models/workshop/weapons/c_models/c_quadball/c_quadball.mdl");
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
@@ -427,6 +434,7 @@ static void ClotThink(int iNPC)
 
 					npc.m_iGunType = 0;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					cooldown = 3.0;
 
@@ -438,6 +446,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.m_iGunType = 0;
 					npc.SetWeaponModel("");
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
 					npc.m_flSpeed = 400.0;
 					cooldown = 5.0;
@@ -671,6 +680,7 @@ static void ClotThink(int iNPC)
 			case 10:	// Healing
 			{
 				npc.StopPathing();
+				npc.m_bisWalking = false;
 				npc.SetActivity("taunt_cheers_heavy", true);
 				npc.SetWeaponModel("models/workshop/weapons/c_models/c_scotland_shard/c_scotland_shard.mdl");
 			}
@@ -726,7 +736,7 @@ static void ClotThink(int iNPC)
 	else
 	{
 		npc.StopPathing();
-
+		npc.m_bisWalking = false;
 		npc.SetActivity("taunt02", true);
 		npc.SetPlaybackRate(0.5);
 		npc.SetWeaponModel("models/workshop/weapons/c_models/c_russian_riot/c_russian_riot.mdl");
@@ -739,8 +749,10 @@ static void ClotDeathStartThink(int iNPC)
 	ThePurge npc = view_as<ThePurge>(iNPC);
 	
 	CPrintToChatAll("{crimson}The Purge{default}: {crimson}ERROR ERROR ERROR.");
+	npc.m_bisWalking = false;
 	npc.SetActivity("taunt_mourning_mercs_heavy", true);
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.5;
+	npc.StopPathing();
 	func_NPCThink[npc.index] = ClotDeathLoopThink;
 	ClotDeathLoopThink(npc.index);
 }

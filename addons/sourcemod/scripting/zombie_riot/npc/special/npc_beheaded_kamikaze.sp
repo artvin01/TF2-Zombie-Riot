@@ -103,6 +103,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 2;
+		npc.m_bisWalking = false;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
