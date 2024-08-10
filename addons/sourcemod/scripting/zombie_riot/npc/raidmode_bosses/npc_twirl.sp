@@ -175,7 +175,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 {
 	return Twirl(client, vecPos, vecAng, ally, data);
 }
-
+static float fl_nightmare_cannon_core_sound_timer[MAXENTITIES];
 static const char NameColour[] = "{purple}";
 static const char TextColour[] = "{snow}";
 
@@ -274,8 +274,11 @@ methodmap Twirl < CClotBody
 	}
 
 	public void PlayLaserComboSound() {
-		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		if(fl_nightmare_cannon_core_sound_timer[this.index] > GetGameTime())
+			return;
+		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_LaserComboSound[GetRandomInt(0, sizeof(g_LaserComboSound) - 1)], this.index, _, SNDLEVEL_RAIDSIREN, _, BOSS_ZOMBIE_VOLUME);
+		fl_nightmare_cannon_core_sound_timer[this.index] = GetGameTime() + 2.25;
 	}
 	public void Predictive_Ion(int Target, float Time, float Radius, float dmg)
 	{
@@ -2425,6 +2428,7 @@ static Action Magia_Overflow_Tick(int iNPC)
 	if(!b_animation_set[npc.index])
 		return Plugin_Continue;
 
+	npc.PlayLaserComboSound();
 	
 	float Radius = 30.0;
 	float diameter = Radius*2.0;

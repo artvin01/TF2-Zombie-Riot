@@ -1035,6 +1035,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			npc.SetPlaybackRate(0.75);	
 			npc.SetCycle(0.1);
 
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
 			Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
@@ -1087,6 +1088,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 		npc.m_flSpeed =fl_schwert_speed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
 
 		Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 		Schwert_Impact_Lance_Create(npc.index);
