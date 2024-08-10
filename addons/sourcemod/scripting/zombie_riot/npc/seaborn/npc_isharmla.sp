@@ -316,7 +316,7 @@ public void Isharmla_ClotThink(int iNPC)
 					
 					if(healing > 0)
 					{
-						int maxhealth = ReturnEntityMaxHealth(Ally);;
+						int maxhealth = ReturnEntityMaxHealth(ally);
 						int health = GetEntProp(ally, Prop_Data, "m_iHealth") + healing;
 						if(health > maxhealth)
 							health = maxhealth;

@@ -440,7 +440,7 @@ public void DesertAncientDemon_NPCDeathAlly(int self, int ally)
 	float AllyAng[3];
 	GetEntPropVector(ally, Prop_Data, "m_angRotation", AllyAng);
 	int flMaxHealth = GetEntProp(self, Prop_Data, "m_iMaxHealth");
-	int flMaxHealthally = ReturnEntityMaxHealth(Ally);;
+	int flMaxHealthally = ReturnEntityMaxHealth(ally);
 	float pos[3]; 
 	WorldSpaceCenter(ally, pos);
 	pos[2] -= 10.0;

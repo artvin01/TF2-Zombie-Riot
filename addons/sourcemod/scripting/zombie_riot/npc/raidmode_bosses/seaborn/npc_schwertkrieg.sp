@@ -686,7 +686,7 @@ static void Internal_ClotThink(int iNPC)
 		{
 		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			
-			int AllyMaxHealth = ReturnEntityMaxHealth(Ally);;
+			int AllyMaxHealth = ReturnEntityMaxHealth(Ally);
 			int AllyHealth = GetEntProp(Ally, Prop_Data, "m_iHealth");
 			int SchwertMaxHealth = ReturnEntityMaxHealth(npc.index);
 			int SchwertHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
