@@ -2363,7 +2363,7 @@ static void Magia_Overflow(Twirl npc)
 		return;
 
 	fl_ruina_shield_break_timeout[npc.index] = 0.0;		//make 100% sure he WILL get the shield.
-	Ruina_Npc_Give_Shield(npc.index, 0.5);				//give the shield to itself.
+	Ruina_Npc_Give_Shield(npc.index, 0.45);				//give the shield to itself.
 	i_NpcWeight[npc.index]=999;
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
@@ -2742,7 +2742,7 @@ static void NPC_Death(int entity)
 			{
 				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
 				case 1: Twirl_Lines(npc, "Your strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 2: Twirl_Lines(npc, "Ahaha, toddles");
+				case 2: Twirl_Lines(npc, "Ahaha, toodles");
 				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
 			}
 		}
@@ -2773,7 +2773,7 @@ static void NPC_Death(int entity)
 				case 0: Twirl_Lines(npc, "Ahhh, you've won, ahaha, this is why I always limit myself, cause otherwise its no fun!");
 				case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
 				case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-				case 3: Twirl_Lines(npc, "Toddles!");
+				case 3: Twirl_Lines(npc, "toodles!");
 			}
 		}
 	}
