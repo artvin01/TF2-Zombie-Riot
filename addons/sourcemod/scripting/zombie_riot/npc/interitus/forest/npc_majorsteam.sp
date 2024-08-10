@@ -105,6 +105,7 @@ static void ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
+		SmiteNpcToDeath(npc.index);
 		return;
 	}
 
