@@ -10589,3 +10589,12 @@ float custom_maxarmour = 0.0)
 	
 	//any extra logic please add here. deivid.
 }
+
+int ReturnEntityMaxHealth(int entity)
+{
+	if(entity <= MaxClients)
+	{
+		return SDKCall_GetMaxHealth(entity);
+	}
+	return GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+}

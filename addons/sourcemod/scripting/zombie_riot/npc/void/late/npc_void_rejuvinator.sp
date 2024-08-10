@@ -289,6 +289,8 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 			}
 			if(!npc.m_bnew_target)
 			{
+				if(IsValidEntity(npc.m_iWearable4))
+					RemoveEntity(npc.m_iWearable4);
 				npc.StartHealing(PrimaryThreatIndex);
 				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 125, 0, 125, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
@@ -391,7 +393,7 @@ public void VoidRejuvinator_NPCDeath(int entity)
 
 public bool VoidRejuvinator_HealCheck(int provider, int entity)
 {
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(entity);
 	MaxHealth = RoundToNearest(float(MaxHealth) * 1.49);
 	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	if(MaxHealth <= Health)
