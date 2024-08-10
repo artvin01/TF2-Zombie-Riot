@@ -270,6 +270,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MUDROCK_RAGE");
 		b_NpcIsInvulnerable[npc.index] = true;
 
@@ -561,6 +562,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			// Play funny animation intro
 			NPC_StopPathing(npc.index);
 			npc.m_flNextThinkTime = FAR_FUTURE;
+			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
 		}
 		else
@@ -590,6 +592,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		NPC_StopPathing(npc.index);
 		npc.m_flNextThinkTime = FAR_FUTURE;
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_IDLE_SHIELDZOBIE");
 		RaidModeTime += 1000.0;
 
@@ -708,6 +711,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							TeleportEntity(npc.index, pos);
 
 							npc.m_iState = -1;
+							npc.m_bisWalking = false;
 							npc.SetActivity("ACT_PUSH_PLAYER");
 							npc.SetPlaybackRate(3.0);
 
@@ -892,6 +896,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			RaidModeTime += 260.0;
 
 			npc.Anger = true;
+			npc.m_bisWalking = false;
 			npc.SetActivity("ACT_IDLE_ZOMBIE");
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "??? the First");
 
@@ -1152,6 +1157,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 				}
 
 				npc.StartPathing();
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_DARIO_WALK");
 
 				if(npc.m_iAttackType == 12)
@@ -1191,6 +1197,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					{
 						npc.m_iAttackType = 14;
 						npc.m_iState = -1;	// Replay the animation regardless
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_PUSH_PLAYER");
 						npc.SetPlaybackRate(2.0);
 						npc.m_flAttackHappens = gameTime + 0.2;
@@ -1309,6 +1316,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						{
 							case 0:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO1_BOBPRIME");
 								npc.m_iAttackType = 2;
 								npc.m_flAttackHappens = gameTime + 0.916;
@@ -1317,6 +1325,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 1:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO2_BOBPRIME");
 								npc.m_iAttackType = 4;
 								npc.m_flAttackHappens = gameTime + 0.5;
@@ -1325,6 +1334,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							}
 							case 2:
 							{
+								npc.m_bisWalking = false;
 								npc.SetActivity("ACT_COMBO3_BOBPRIME");
 								npc.m_flAttackHappens = gameTime + 3.25;
 								
@@ -1340,7 +1350,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_flNextRangedAttack = gameTime + (healthPoints < 9 ? 6.0 : 12.0);
 						npc.PlayRangedSound();
 						npc.StopPathing();
-
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 8;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1353,7 +1363,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						npc.m_flNextRangedSpecialAttack = gameTime + (healthPoints < 7 ? 15.0 : 27.0);
 						npc.StopPathing();
 						npc.PlaySkyShieldSound();
-
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_METROPOLICE_DEPLOY_MANHACK");
 						npc.m_iAttackType = 10;
 						npc.m_flAttackHappens = gameTime + 1.0;
@@ -1369,6 +1379,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 						npc.m_iAttackType = 13;
 						npc.m_iPullCount = 0;
+						npc.m_bisWalking = false;
 						//npc.m_flAttackHappens = gameTime + 1.0;
 					}
 					else if(healthPoints < 3 && npc.m_bFakeClone)
@@ -1415,6 +1426,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 
 						npc.StartPathing();
+						npc.m_bisWalking = true;
 						
 						if(distance < 10000.0)	// 100 HU
 						{
@@ -1422,6 +1434,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 							
 							npc.SetActivity("ACT_RUN_BOB");
 							npc.AddGesture("ACT_MELEE_BOB");
+							npc.m_bisWalking = false;
 							npc.m_iAttackType = 9;
 							npc.m_flAttackHappens = gameTime + 0.35;
 							npc.PlayMeleeHitSound();
@@ -1451,6 +1464,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		}
 		
 		npc.StopPathing();
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_IDLE_BOBPRIME");
 	}
 }

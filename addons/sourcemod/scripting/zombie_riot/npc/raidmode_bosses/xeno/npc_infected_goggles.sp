@@ -428,7 +428,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		return;
 	
 	if(npc.m_flNextThinkTime == FAR_FUTURE)
+	{
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+	}
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -490,6 +493,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.SetVelocity({0.0,0.0,0.0});
 			TeleportEntity(npc.index, flPos, NULL_VECTOR, _);
 		}
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.StopPathing();
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -964,6 +968,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					if(npc.m_flNextMeleeAttack && npc.m_flNextMeleeAttack < gameTime)
 					{
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
 						npc.m_flNextMeleeAttack = 0.0;
 					}
@@ -995,6 +1000,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		{
 			case 0:	// Melee
 			{
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 					npc.StartPathing();
@@ -1003,23 +1009,27 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
 				else if(alone)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else if(npc.m_flNextMeleeAttack < gameTime)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
@@ -1028,11 +1038,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
 					npc.StopPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
@@ -1046,6 +1058,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	}
 	else
 	{
+		npc.m_bisWalking = false;
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_COMPETITIVE_LOSERSTATE");
 	}

@@ -177,7 +177,7 @@ public void SeabornCaster_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 
 				npc.PlayMeleeSound();
-				npc.FireParticleRocket(vecTarget, 100.0, 600.0, 150.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
+				npc.FireParticleRocket(vecTarget, 180.0, 600.0, 150.0, "raygun_projectile_blue", true, true, _, _, EP_DEALS_DROWN_DAMAGE);
 			}
 
 			npc.m_flSpeed = 115.0;

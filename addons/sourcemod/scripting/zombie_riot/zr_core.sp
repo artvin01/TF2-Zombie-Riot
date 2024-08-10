@@ -1086,9 +1086,8 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
-	CheckAlivePlayers(0, 0, true);
-	SDKCall_ResetPlayerAndTeamReadyState();
 
+	Rogue_Encounter_EmergencyDispatch();
 	char buf[12];
 	GetCmdArg(1, buf, sizeof(buf));
 	
@@ -2187,6 +2186,12 @@ void GiveXP(int client, int xp)
 		return;
 	}
 
+	if(Rogue_Mode())
+	{
+		//in rogue, give much less XP
+		xp = RoundToNearest(float(xp) * 0.15);
+	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
@@ -2256,7 +2261,6 @@ void PlayerApplyDefaults(int client)
 	{
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

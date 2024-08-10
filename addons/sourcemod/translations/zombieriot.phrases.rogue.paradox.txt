@@ -108,7 +108,7 @@
 	}
 	"Weapon Supplies Desc"
 	{
-		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 credits and 30 ammo supplies"
+		"en"	"Make sure we don't run out of ammo.\n{green}Gain 250 cash and 30 ammo supplies"
 	}
 	"Something Else"
 	{
@@ -140,7 +140,7 @@
 	}
 	"Hot Water Kettle Desc"
 	{
-		"en"	"Want to make some noodles?\n{green}+1000 Credits, Allies gain +125 max health"
+		"en"	"Want to make some noodles?\n{green}+1000 Cash, Allies gain +125 max health"
 	}
 	"Special Suppressor"
 	{
@@ -180,7 +180,7 @@
 	}
 	"Banshee's Kiss Desc"
 	{
-		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Credits"
+		"en"	"A pretty necklace, who gonna wear it?\n{green}+8000 Cash"
 	}
 	"Blood Diamond"
 	{
@@ -677,7 +677,7 @@
 	}
 	"Prophecy Desc 2c"
 	{
-		"en"	"{green}Gain 4000 credits {red}but gain 20 Chaos Infliction"
+		"en"	"{green}Gain 4000 cash {red}but gain 20 Chaos Infliction"
 	}
 	"Prophecy Lore 2c"
 	{
@@ -774,7 +774,7 @@
 	}
 	"Lost Villager Desc 2"
 	{
-		"en"	"{green}Gain 2000 credits"
+		"en"	"{green}Gain 2000 cash"
 	}
 	"Lost Villager Lore 2"
 	{
@@ -787,7 +787,7 @@
 	}
 	"Lost Villager Desc 3"
 	{
-		"en"	"{green}Gain 2000 credits, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
+		"en"	"{green}Gain 2000 cash, 15 australium ingots, and recover 4 weapons {red}but gain 15 Chaos Infliction"
 	}
 	"Lost Villager Lore 3"
 	{
@@ -842,7 +842,7 @@
 	}
 	"Downtime Recreation Desc 2"
 	{
-		"en"	"{green}Gain 4000 Credits"
+		"en"	"{green}Gain 4000 Cash"
 	}
 	"Downtime Recreation Lore 2"
 	{
@@ -1201,9 +1201,9 @@
 	{
 		"en"	"Darkwood"
 	}
-	"Last of Internius"
+	"Last of Interitus"
 	{
-		"en"	"Last of Internius"
+		"en"	"Last of Interitus"
 	}
 	"Escapee 1"
 	{

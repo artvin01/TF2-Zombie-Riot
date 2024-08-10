@@ -501,13 +501,17 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		{
 			damage += basedamage * 0.1;
 		}
-		if(f_VoidAfflictionStrength[attacker] > GameTime)
+		if(f_VoidAfflictionStrength2[attacker] > GameTime)
+			damage += basedamage * 0.3;
+		else if(f_VoidAfflictionStrength[attacker] > GameTime)
 			damage += basedamage * 0.2;
 	}
 	else
 	{
 		//silence weakens them.
-		if(f_VoidAfflictionStrength[attacker] > GameTime)
+		if(f_VoidAfflictionStrength2[attacker] > GameTime)
+			damage += basedamage * 0.15;
+		else if(f_VoidAfflictionStrength[attacker] > GameTime)
 			damage += basedamage * 0.1;
 	}
 
@@ -611,6 +615,10 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(b_thisNpcIsABoss[attacker])
+	{
+		damage *= 1.5;
+	}
 	return false;
 }
 
@@ -661,7 +669,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		}
 		case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL:
 		{
-			Flagellant_OnTakeDamage(victim, damage);
+			Flagellant_OnTakeDamage(victim);
 		}
 		case WEAPON_RAPIER:
 		{
@@ -774,13 +782,6 @@ static bool OnTakeDamageAbsolutes(int victim, int &attacker, int &inflictor, flo
 	{
 		i_HasBeenHeadShotted[victim] = false;
 	}
-#if !defined RPG
-	if(b_npcspawnprotection[victim])
-		damage *= 0.05;
-
-	if(b_npcspawnprotection[attacker])
-		damage *= 1.5;
-#endif
 		
 #if defined ZR
 	if(GetTeam(victim) == TFTeam_Red)
@@ -1519,6 +1520,21 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 {
 	float DamageRes = 1.0;
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
+	//these are absolutes
+#if !defined RPG
+	if(victim > MaxClients && b_npcspawnprotection[victim])
+	{
+		//dont give spawnprotection if both are
+		if(attacker <= MaxClients)
+		{
+			DamageRes *= 0.05;
+		}
+		else if(!b_npcspawnprotection[attacker])
+		{
+			DamageRes *= 0.05;
+		}
+	}
+#endif
 	if(f_PernellBuff[victim] > GameTime)
 	{
 		DamageRes *= 0.6;
@@ -1557,14 +1573,22 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		{
 			DamageRes *= 0.90;
 		}
-		if(f_VoidAfflictionStrength[victim] > GameTime)
+		if(f_VoidAfflictionStrength2[victim] > GameTime)
+		{
+			DamageRes *= 0.8;
+		}
+		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
 			DamageRes *= 0.85;
 		}
 	}
 	else
 	{
-		if(f_VoidAfflictionStrength[victim] > GameTime)
+		if(f_VoidAfflictionStrength2[victim] > GameTime)
+		{
+			DamageRes *= 0.85;
+		}
+		else if(f_VoidAfflictionStrength[victim] > GameTime)
 		{
 			DamageRes *= 0.9;
 		}
@@ -1610,6 +1634,12 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateSelf[victim] > GameTime) //Allow stacking.
 		damage *= 0.9;
 		
+#if !defined RPG
+	if(attacker > MaxClients && b_npcspawnprotection[attacker])
+	{
+		damage *= 1.5;
+	}
+#endif
 	if(f_MultiDamageTaken[victim] != 1.0)
 	{
 		damage *= f_MultiDamageTaken[victim];
@@ -1864,9 +1894,13 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 
 	//BUFFS GO HERE.
-	if(f_VoidAfflictionStrength[victim] > GameTime)
+	if(f_VoidAfflictionStrength2[victim] > GameTime)
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "⌵%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "vV%s", Debuff_Adder_right);
+	}
+	else if(f_VoidAfflictionStrength[victim] > GameTime)
+	{
+		Format(Debuff_Adder_right, SizeOfChar, "v%s", Debuff_Adder_right);
 	}
 	if(Increaced_Overall_damage_Low[victim] > GameTime)
 	{
@@ -1908,7 +1942,7 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	}
 	if(f_PernellBuff[victim] > GameTime) //hussar!
 	{
-		Format(Debuff_Adder_right, SizeOfChar, "F%s", Debuff_Adder_right);
+		Format(Debuff_Adder_right, SizeOfChar, "P%s", Debuff_Adder_right);
 	}
 	if(f_GodAlaxiosBuff[victim] > GameTime)
 	{

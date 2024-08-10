@@ -411,7 +411,8 @@ methodmap Twirl < CClotBody
 				if(this.m_fbGunout)
 				{
 					this.m_fbGunout = false;
-					this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
+					if(this.m_flNextMeleeAttack > GetGameTime(this.index) + 0.5)
+						this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
 					SetVariantInt(this.i_weapon_type());
 					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
 					//CPrintToChatAll("Melee enemy");
@@ -423,7 +424,10 @@ methodmap Twirl < CClotBody
 				if(!this.m_fbGunout)
 				{
 					this.m_iState = 0;
-					this.m_flReloadIn = GetGameTime(this.index) + 0.5;
+
+					if(this.m_flReloadIn > GetGameTime(this.index) + 0.5)
+						this.m_flReloadIn = GetGameTime(this.index) + 0.5;
+
 					this.m_fbGunout = true;
 					//CPrintToChatAll("Ranged enemy");
 					SetVariantInt(this.i_weapon_type());
@@ -705,6 +709,8 @@ methodmap Twirl < CClotBody
 			amount_of_people = 1.0;
 			
 		RaidModeScaling *= amount_of_people;
+
+		RaidModeScaling *= 1.1;
 				
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
@@ -1137,7 +1143,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float Tower_Health = MaxHealth*0.15;
+	float Tower_Health = MaxHealth*0.25;
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1154,7 +1160,7 @@ static void Final_Invocation(Twirl npc)
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToCeil(Tower_Health));
 		}
 	}
-	switch(GetRandomInt(0, 6))
+	switch(GetRandomInt(0, 7))
 	{
 		case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
 		case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
@@ -1163,6 +1169,7 @@ static void Final_Invocation(Twirl npc)
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
 		case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
+		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might be hurt.");
 	}
 	RaidModeTime +=30.0;
 }
@@ -1208,7 +1215,7 @@ static void Luanar_Radiance(Twirl npc)
 		if(enemy_2[i])
 		{
 			float Radius = (npc.Anger ? 225.0 : 150.0);
-			float dmg = (npc.Anger ? 45.0 : 30.0);
+			float dmg = 30.0;
 			dmg *= RaidModeScaling;
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 		}
@@ -1320,7 +1327,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 		PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 
-		float Dmg = (npc.Anger ? 35.0 : 21.0);
+		float Dmg = 21.0;
 		float Radius = (npc.Anger ? 150.0 : 100.0);
 		Dmg *=RaidModeScaling;
 
@@ -1363,12 +1370,12 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 						if(npc.Add_Combo(10, 1))
 						{
 							float Radius = (npc.Anger ? 225.0 : 150.0);
-							float dmg = (npc.Anger ? 100.0 : 75.0);
+							float dmg = 75.0;
 							dmg *= RaidModeScaling;
 							npc.Predictive_Ion(target, (npc.Anger ? 1.0 : 1.5), Radius, dmg);
 						}
 			
-						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(npc, target, 35.0), DMG_CLUB, -1, _, vecHit);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, Modify_Damage(target, 40.0), DMG_CLUB, -1, _, vecHit);
 
 						Ruina_Add_Battery(npc.index, 250.0);
 
@@ -1381,7 +1388,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 							TF2_AddCondition(target, TFCond_AirCurrent, 0.5);
 						}
 
-						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(npc, target, 7.0)));
+						Ruina_Add_Mana_Sickness(npc.index, target, 0.1, RoundToNearest(Modify_Damage(target, 7.0)));
 					}
 					npc.PlayMeleeHitSound();
 					
@@ -1420,13 +1427,10 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 	}
 }
 
-static float Modify_Damage(Twirl npc, int Target, float damage)
+static float Modify_Damage(int Target, float damage)
 {
 	if(ShouldNpcDealBonusDamage(Target))
 		damage*=10.0;
-
-	if(npc.Anger)
-		damage *=1.5;
 
 	damage*=RaidModeScaling;
 
@@ -1589,7 +1593,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = (npc.Anger ? 120.0 : 60.0)*RaidModeScaling;
+				Laser.Damage = 70.0 *RaidModeScaling;
 
 				Laser.Deal_Damage();
 
@@ -1829,9 +1833,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = (npc.Anger ? 7.5 : 2.5);
+	float Laser_Dmg = 3.5;
 	float Speed = (npc.Anger ? 1750.0 : 1000.0);
-	float Direct_Dmg = (npc.Anger ? 10.0 : 5.0);
+	float Direct_Dmg = 5.5;
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
@@ -1898,7 +1902,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
-		float dmg = (npc.Anger ? 45.0 : 30.0);
+		float dmg = 30.0;
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -2058,7 +2062,7 @@ static void Retreat(Twirl npc)
 	if(wave<=15)	//stage 1: a simple ion where she was.
 	{
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 300.0 : 125.0);
+		float dmg = 210.0;
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -2069,7 +2073,7 @@ static void Retreat(Twirl npc)
 		float aoe_check = (npc.Anger ? 250.0 : 175.0);
 		Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, aoe_check, _, _, true, _, false, _, AoeIonCast);
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 300.0 : 125.0);
+		float dmg = 210.0;
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -2079,7 +2083,7 @@ static void Retreat(Twirl npc)
 	{
 		float aoe_check = (npc.Anger ? 350.0 : 250.0);
 		float radius = (npc.Anger ? 325.0 : 250.0);
-		float dmg = (npc.Anger ? 300.0 : 125.0);
+		float dmg = 210.0;
 		dmg *= RaidModeScaling;
 
 		float Time = (npc.Anger ? 1.0 : 1.5);
@@ -2203,9 +2207,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = (npc.Anger ? 20.0 : 15.0)*RaidModeScaling;
+	Laser.Damage = 15.0 *RaidModeScaling;
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = (npc.Anger ? 20.0 : 15.0)*RaidModeScaling*6.0;
+	Laser.Bonus_Damage = 15.0 *RaidModeScaling*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2302,7 +2306,7 @@ static void AoeIonCast(int entity, int victim, float damage, int weapon)
 	Twirl npc = view_as<Twirl>(entity);
 
 	float radius = (npc.Anger ? 325.0 : 250.0);
-	float dmg = (npc.Anger ? 500.0 : 125.0);
+	float dmg = 350.0;
 	dmg *= RaidModeScaling;
 	float Target_Vec[3];
 	WorldSpaceCenter(victim, Target_Vec);
@@ -2376,6 +2380,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		npc.m_flSpeed = 0.0;
 		f_NpcTurnPenalty[npc.index] = 0.0;
+		RaidModeScaling *= 1.35;
 
 		b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
 
@@ -2577,7 +2582,7 @@ static Action Combo_Laser_Logic(int iNPC)
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angles, startPoint, 900.0);	// no pitch control
 	Laser.Radius = Radius;
-	Laser.Damage = (npc.Anger ? 12.0 : 7.5)*RaidModeScaling;
+	Laser.Damage = 7.5*RaidModeScaling;
 	Laser.Bonus_Damage = (npc.Anger ? 45.0 : 30.0)*RaidModeScaling;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage(On_LaserHit_two);

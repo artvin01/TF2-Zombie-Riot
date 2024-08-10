@@ -593,8 +593,9 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			if(b_thisNpcIsARaid[enemy])
 			{
 				damage *= 1.5;
-				//undo damage nerf that we did before
-				damage /= 0.7;
+				//undo damage nerf that we did before for the ability
+				if(Firstlightning == false)
+					damage /= 0.7;
 			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		

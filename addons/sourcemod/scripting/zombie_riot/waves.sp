@@ -1506,6 +1506,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
 			// Below is the new round
+			//add a minimum of 0.5 seconds because of custom spawns.
+			GiveProgressDelay(0.5);
+			f_DelaySpawnsForVariousReasons = GetGameTime() + 0.5;
 			
 			if(round.MapSetupRelay)
 			{
@@ -1586,7 +1589,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			panzer_chance--;
 			//always increace chance of miniboss.
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
@@ -1626,6 +1628,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
+			panzer_chance--;
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)
@@ -2240,6 +2243,14 @@ void Zombie_Delay_Warning()
 				CPrintToChatAll("{crimson}Enemies become infuriated and will reach you...");
 			}
 		}
+		case 5:
+		{
+			if(f_ZombieAntiDelaySpeedUp + 150.0 < GetGameTime())
+			{
+				i_ZombieAntiDelaySpeedUp = 6;
+				CPrintToChatAll("{crimson}Die.");
+			}
+		}
 	}
 }
 
@@ -2265,6 +2276,10 @@ float Zombie_DelayExtraSpeed()
 		case 5:
 		{
 			return 1.75;
+		}
+		case 6:
+		{
+			return 3.0;
 		}
 	}
 	return 1.0;

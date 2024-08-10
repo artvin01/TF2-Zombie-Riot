@@ -110,6 +110,7 @@ methodmap IsharmlaTrans < CClotBody
 
 		b_ThisNpcIsSawrunner[npc.index] = true;
 		b_CannotBeKnockedUp[npc.index] = true;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 35.0;
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 55, 55, 255, 255);

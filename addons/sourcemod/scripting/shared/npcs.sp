@@ -834,9 +834,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-		}
-#endif
-#if defined ZR
 			else
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
@@ -871,7 +868,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-#endif	// ZR
+		}
+#endif
 	}
 	return Plugin_Changed;
 }
@@ -1013,10 +1011,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(SeargentIdeal_Existant())
+			if(SergeantIdeal_Existant())
 			{
 				//LogEntryInvicibleTest(victim, attacker, damage, 17);
-				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+				SergeantIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 				if(damage == 0.0)
 				{
 					b_DoNotDisplayHurtHud[victim] = true;
@@ -1764,6 +1762,9 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	{
 		return true;
 	}	
+	if(b_npcspawnprotection[victim])
+		return true;
+
 	float DamageTest = 1.0;
 	int testvalue = 1;
 	int DmgType;
@@ -1874,6 +1875,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
+		return true;
+	if(f_VoidAfflictionStrength2[npc] > GameTime)
 		return true;
 	if(f_VoidAfflictionStrength[npc] > GameTime)
 		return true;

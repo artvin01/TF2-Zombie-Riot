@@ -583,6 +583,7 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_roar_owar");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -685,6 +686,7 @@ bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_cheers_demo");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);

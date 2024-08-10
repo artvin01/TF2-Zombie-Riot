@@ -123,7 +123,7 @@ methodmap SeabornSpecialist < CClotBody
 			}
 		}
 
-		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "24000", ally, false));
+		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "29000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -137,6 +137,8 @@ methodmap SeabornSpecialist < CClotBody
 			npc.AddGesture("ACT_CUSTOM_TELEPORT_LUCIAN");
 			npc.PlayTeleportSound();
 			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.8;
+			npc.m_flMeleeArmor = 0.25;
+			npc.m_flRangedArmor = 0.25;
 		}
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
@@ -202,6 +204,8 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
@@ -236,7 +240,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 300.0 : 100.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 300.0 : 125.0, DMG_CLUB);
 					}
 				}
 
@@ -250,7 +254,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
+				npc.m_flNextMeleeAttack = gameTime + 0.65;
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_CUSTOM_ATTACK_LUCIAN");

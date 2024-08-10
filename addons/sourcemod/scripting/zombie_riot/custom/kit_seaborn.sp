@@ -341,21 +341,25 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
-				if(healing > 150)
-					healing = 150;
+				if(healing > 75)
+					healing = 75;
 
 				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
-				healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
+				healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
 				
 				if(healing > ammo)
 					healing = ammo;
 
-				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+
+				if(healing <= 0)
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					return;
+				}
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-
-				float cooldown = float(health) / 10.0;
+				float cooldown = float(healing) / 10.0;
 				if(cooldown < 1.0)
 					cooldown = 1.0;
 
@@ -396,11 +400,11 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		int maxHealth = SDKCall_GetMaxHealth(client);
 		
 		int healing = maxHealth - health;
-		if(healing > 35)
-			healing = 35;
+		if(healing > 30)
+			healing = 30;
 
 		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
-		healing = RoundToNearest(float(healing) *Attributes_GetOnPlayer(client, 8, true, true));
+		healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
 		
 		if(healing <= 0)
 		{
@@ -411,7 +415,7 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		if(healing > ammo)
 			healing = ammo;
 		
-		healing = HealEntityGlobal(client, client, float(healing), 1.0, 0.5, _);
+		HealEntityGlobal(client, client, float(healing), 1.0, 0.5, _);
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
 		PrintHintText(client,"You Healed yourself for %d HP!, you gain a 25 healing cooldown.", healing);

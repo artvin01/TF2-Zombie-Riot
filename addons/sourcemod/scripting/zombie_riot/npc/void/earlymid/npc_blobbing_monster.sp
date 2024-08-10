@@ -97,7 +97,7 @@ methodmap VoidBlobbingMonster < CClotBody
 	{
 		VoidBlobbingMonster npc = view_as<VoidBlobbingMonster>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.25", "8000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

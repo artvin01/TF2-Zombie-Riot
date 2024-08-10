@@ -768,27 +768,23 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 		
 	if(!b_thisNpcIsARaid[attacker])
 	{
-		damage *= 0.5;
+		damage *= 0.65;
 	}
 	else
 	{
-		damage *= 0.75;
 		if(damagetype & (DMG_CLUB))
 		{
 			if(CurrentPlayers == 1)
 			{
-				damage *= 0.75;
+				damage *= 0.65;
 			}
 			else if(CurrentPlayers <= 4)
 			{
-				damage *= 0.7;
-			}
-			else
-			{
-				damage *= 0.8;
+				damage *= 0.75;
 			}
 		}
 	}
+
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(client > 0)

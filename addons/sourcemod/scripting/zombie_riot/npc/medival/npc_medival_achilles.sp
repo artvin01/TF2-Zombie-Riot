@@ -330,7 +330,7 @@ public void MedivalAchilles_ClotThink(int iNPC)
 				float vecTarget[3];
 				WorldSpaceCenter(npc.m_iTarget, vecTarget);
 
-				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
+				if(distance <= (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 16.0)) //Sanity check! we want to change targets but if they are too far away then we just dont cast it.
 				{
 					PluginBot_Jump(npc.index, vecTarget);
 				}

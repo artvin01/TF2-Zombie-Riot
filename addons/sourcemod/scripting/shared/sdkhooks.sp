@@ -1265,22 +1265,26 @@ public void OnPostThink(int client)
 		{
 			switch(Armor_DebuffType[armorEnt])
 			{
-				case 1:
-				{
-					green = 0;
-					blue = 255;
-				}
+				//chaos
 				case 2:
 				{
 					red = 0;
 					green = 255;
 					blue = 255;
 				}
+				//void
 				case 3:
 				{
-					red = 200;
-					green = 0;
-					blue = 200;
+					red = 179;
+					green = 8;
+					blue = 209;
+				}
+				//seaborn
+				default:
+				{
+					red = 150;
+					green = 143;
+					blue = 255;
 				}
 			}
 		}
@@ -1301,6 +1305,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+
 		ArmorDisplayClient(client);
 
 		char buffer[64];
@@ -1867,11 +1872,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_CurrentEquippedPerk[victim] = 0;
 				}
 
+				/*
 				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
 				{
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				*/
 				i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);
