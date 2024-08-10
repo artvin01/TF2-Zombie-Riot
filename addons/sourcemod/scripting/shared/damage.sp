@@ -615,6 +615,10 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, float basedamage, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	if(b_thisNpcIsABoss[victim])
+	{
+		damage *= 1.5;
+	}
 	return false;
 }
 
