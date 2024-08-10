@@ -110,7 +110,7 @@ methodmap Suicider < CClotBody
 	{
 		Suicider npc = view_as<Suicider>(CClotBody(vecPos, vecAng, COF_SUICIDER_MODEL_PATH, "1.0", "400", ally, false));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

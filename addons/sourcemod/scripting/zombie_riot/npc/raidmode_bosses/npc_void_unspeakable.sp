@@ -232,7 +232,7 @@ methodmap VoidUnspeakable < CClotBody
 			i_RaidGrantExtra[npc.index] = -5;
 		}
 		npc.m_flDeathAnimation = 0.0;
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		npc.g_TimesSummoned = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

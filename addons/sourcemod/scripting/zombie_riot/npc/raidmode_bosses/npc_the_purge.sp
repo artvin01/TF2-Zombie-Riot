@@ -140,7 +140,7 @@ methodmap ThePurge < CClotBody
 	{
 		ThePurge npc = view_as<ThePurge>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "25000", team, false, true, true, true));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		npc.m_bisWalking = true;
