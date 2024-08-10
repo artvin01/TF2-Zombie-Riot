@@ -172,7 +172,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				{
 					ThornsLevelAt[npc.index] = 1;
 					npc.BonusDamageBonus *= 2.0;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",ReturnEntityMaxHealth(npc.index) * 2);
 				}
 			}
 			if(!ThornsHasMaxPot[npc.index])
@@ -181,7 +181,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasMaxPot[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 2;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.5));
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5));
 				}
 			}
 			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index] && ThornsLevelAt[npc.index] == 2)
@@ -217,12 +217,12 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(ThornsAttackedSince[npc.index] < GetGameTime(npc.index))
 		{
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index))
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 10);
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				}
 			}
 		}

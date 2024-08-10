@@ -1888,7 +1888,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.PlaySound(Cit_FirstBlood);
 							}
 							
-							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
 							int health = GetEntProp(npc.index, Prop_Data, "m_iHealth") + (maxhealth / 15);
 							if(health > maxhealth)
 								health = maxhealth;
@@ -1976,7 +1976,7 @@ public void Citizen_ClotThink(int iNPC)
 
 	bool combat = !Waves_InSetup();
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	bool injured = (health < 60) || (health < (maxhealth / 5));
 	float distance = 100000000.0;
 	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);

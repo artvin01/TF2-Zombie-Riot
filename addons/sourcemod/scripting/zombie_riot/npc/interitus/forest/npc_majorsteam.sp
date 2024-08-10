@@ -278,7 +278,7 @@ static void ClotDeath(int entity)
 	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
 	b_NpcIsTeamkiller[npc.index] = false;
 
-	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
+	int health = ReturnEntityMaxHealth(npc.index) / 4;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	

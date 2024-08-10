@@ -227,7 +227,7 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 		}
 		
 		float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float MaxHealth =  float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealth =  float(ReturnEntityMaxHealth(npc.index));
 		if(fl_self_heal_timer[npc.index]<GameTime)
 		{
 			int Heal_Amt = RoundToFloor((MaxHealth / 100.0)*1.0);

@@ -654,7 +654,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
@@ -663,7 +663,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 	if(npc.g_TimesSummoned < 3)
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
 
@@ -795,7 +795,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			return true;
 		}
 		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 0.1;
-		float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 		flMaxhealth *= 0.0001;
 		HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 		float ProjLoc[3];
@@ -1171,7 +1171,7 @@ public void VoidUnspeakableWin(int entity)
 
 void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 {
-	float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 	flMaxhealth *= 0.01;
 	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
 	//rapid self heal to indicate power!

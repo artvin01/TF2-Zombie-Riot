@@ -423,7 +423,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			}
 			else
 			{
-				flMaxHealth = float(GetEntProp(target, Prop_Data, "m_iMaxHealth"));
+				flMaxHealth = float(ReturnEntityMaxHealth(target));
 			}
 
 			flMaxHealth *= 1.15;
@@ -512,7 +512,7 @@ public bool Syringe_Shot_BulletAndMeleeTraceAlly(int entity, int contentsMask, a
 	}
 	else
 	{
-		maxhealth = float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+		maxhealth = float(ReturnEntityMaxHealth(entity));
 		if(RoundToNearest(health) >= (RoundToNearest(maxhealth * 1.15)))
 		{
 			return false;

@@ -381,7 +381,7 @@ static void NPC_Death(int entity)
 }
 static void Europis_Spawn_Minnions(Europis npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
@@ -405,7 +405,7 @@ static void Europis_Spawn_Minnions(Europis npc)
 }
 static void Europis_Spawn_Self(Europis npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 	if(maxhealth<100)
 		return;

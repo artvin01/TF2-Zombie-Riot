@@ -175,7 +175,7 @@ public void BobTheTargetDummy_OnTakeDamagePost(int victim, int attacker, int inf
 		DamageUpdate[attacker] = true;
 	}
 
-	SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 }
 
 public void BobTheTargetDummy_NPCDeath(int entity)

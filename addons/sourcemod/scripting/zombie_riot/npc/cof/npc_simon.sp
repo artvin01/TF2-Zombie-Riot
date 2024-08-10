@@ -207,7 +207,7 @@ public void Simon_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
 		{
 			if(Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))

@@ -331,7 +331,7 @@ public Action CorruptedBarney_OnTakeDamage(int victim, int &attacker, int &infli
 {
 	CorruptedBarney npc = view_as<CorruptedBarney>(victim);
 	
-	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+	if(((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 	}

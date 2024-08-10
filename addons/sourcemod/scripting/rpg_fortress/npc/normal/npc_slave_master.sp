@@ -204,7 +204,7 @@ public void SlaveMaster_ClotThink(int iNPC)
 	
 	if(npc.Anger)
 	{
-		int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxHealth = ReturnEntityMaxHealth(npc.index);
 		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 		if(Health >= maxHealth)
@@ -259,7 +259,7 @@ public void SlaveMaster_ClotThink(int iNPC)
 					float damage = 4000.0;
 					if(npc.m_iOverlordComboAttack >= 1)
 					{
-						float maxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+						float maxHealth = float(ReturnEntityMaxHealth(npc.index));
 						float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 						float DmgCalc;
 
@@ -422,7 +422,7 @@ public void SlaveMaster_OnTakeDamagePost(int victim, int attacker, int inflictor
 {
 	SlaveMaster npc = view_as<SlaveMaster>(victim);
 
-	int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 	if(maxHealth/4 >= Health && !npc.Anger) //Anger after half hp/400 hp

@@ -326,7 +326,7 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 void WinterArcticMageAllyHealInternal(int entity, int victim)
 {
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	int flMaxHealth = ReturnEntityMaxHealth(victim);
 
 	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 	{

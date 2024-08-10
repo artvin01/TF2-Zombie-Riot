@@ -785,7 +785,7 @@ public Action XenoSpyMainBoss_OnTakeDamage(int victim, int &attacker, int &infli
 public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	XenoSpyMainBoss npc = view_as<XenoSpyMainBoss>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
@@ -794,7 +794,7 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
 		if(EscapeModeForNpc)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2 ));
 			CreateTimer(0.1, XenoSpyMainBoss_Set_Spymain_HP, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			int amount_of_people;
 			
@@ -818,8 +818,8 @@ public void XenoSpyMainBoss_ClotDamagedPost(int victim, int attacker, int inflic
 					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					XenoSpyMainBoss npc_minion = view_as<XenoSpyMainBoss>(spawn_index);
 					TeleportEntity(spawn_index, NULL_VECTOR, ang, NULL_VECTOR);
-					SetEntProp(spawn_index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
-					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10);
+					SetEntProp(spawn_index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/10);
 					npc_minion.m_bThisNpcIsABoss = true;
 					GiveNpcOutLineLastOrBoss(spawn_index, true);
 					Allies_Alive += 1;
@@ -859,7 +859,7 @@ public Action XenoSpyMainBoss_Set_Spymain_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }

@@ -596,7 +596,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
-							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 							maxhealth /= 6;
 

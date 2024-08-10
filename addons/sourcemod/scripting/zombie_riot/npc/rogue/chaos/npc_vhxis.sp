@@ -532,7 +532,7 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		npc.m_flDeathAnimation = GetGameTime(npc.index) + 4.1;
 		npc.PlayDeathSound();
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		CPrintToChatAll("{purple}Vhxis: {default}Die already! Im giving it all already!!");
@@ -874,7 +874,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			TE_Particle("asplode_hoodoo", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 			maxhealth *= 0.0015;
 			for (int DoSpawns = 0; DoSpawns < CountPlayersOnRed(1); DoSpawns++)
 			{
@@ -1194,7 +1194,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 			maxhealth *= 0.02;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{

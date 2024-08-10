@@ -161,7 +161,7 @@ static void ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
 
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int minhealth = maxhealth / (Rogue_Paradox_RedMoon() ? 8 : 4);
 	if(health < minhealth)

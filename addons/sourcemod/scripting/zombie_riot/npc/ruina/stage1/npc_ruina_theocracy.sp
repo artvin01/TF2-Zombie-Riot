@@ -835,7 +835,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		i_string_Theory_battery[npc.index] = 0;
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

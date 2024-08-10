@@ -110,7 +110,7 @@ methodmap SeabornSpecialist < CClotBody
 				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
-					float ratio = float(GetEntProp(entity, Prop_Data, "m_iHealth") + 2) / float(GetEntProp(entity, Prop_Data, "m_iMaxHealth") + 1);
+					float ratio = float(GetEntProp(entity, Prop_Data, "m_iHealth") + 2) / float(ReturnEntityMaxHealth(entity) + 1);
 					if(ratio < lowest)
 					{
 						teleported = true;

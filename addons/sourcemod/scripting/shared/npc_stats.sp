@@ -5809,7 +5809,7 @@ public void NpcBaseThink(int iNPC)
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.002;
+		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.002;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
@@ -9260,7 +9260,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 	char HealthText[32];
 	int HealthColour[4];
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	for(int i=0; i<(NpcTypeDefine ? 20 : 10); i++)
 	{
@@ -10577,7 +10577,7 @@ float custom_maxarmour = 0.0)
 	npc.m_flArmorProtect = ArmorProtect;
 	if(custom_maxarmour == 0.0)
 	{
-		float flMaxHealth = ScaleMaxHealth * float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));
 		npc.m_flArmorCount = flMaxHealth;
 		npc.m_flArmorCountMax = flMaxHealth;
 	}

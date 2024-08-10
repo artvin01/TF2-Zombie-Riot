@@ -92,7 +92,7 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		int health = GetClientHealth(attacker);
 		int maxhealth = SDKCall_GetMaxHealth(attacker);
 		float attackerHealthRatio = float(health) / float(maxhealth);
-		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
+		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(victim));
 		
 		if(victimHealthRatio < attackerHealthRatio)
 		{

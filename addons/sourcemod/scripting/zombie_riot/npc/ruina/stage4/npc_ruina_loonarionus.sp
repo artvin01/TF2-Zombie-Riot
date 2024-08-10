@@ -293,7 +293,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	if(!valid)
 		return;
 
-	int Max_Health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int Max_Health = ReturnEntityMaxHealth(entity);
 
 	float healing = float(Max_Health)*0.25;
 	

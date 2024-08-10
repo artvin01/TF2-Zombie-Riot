@@ -208,7 +208,7 @@ static void ClotThink(int iNPC)
 	if(!npc.m_bArmorGiven)
 	{
 		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int flMaxHealth = ReturnEntityMaxHealth(npc.index);
 		npc.m_flArmorCount = float(flMaxHealth) * 0.5;
 		npc.m_flArmorCountMax = float(flMaxHealth) * 0.5;
 	}

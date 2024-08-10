@@ -420,7 +420,7 @@ public void Doctor_ClotDamagedPost(int victim, int attacker, int inflictor, floa
 	if(damage > 0.0)
 	{
 		Doctor npc = view_as<Doctor>(victim);
-		npc.m_iInjuredLevel = 4 - (GetEntProp(victim, Prop_Data, "m_iHealth") * 5 / GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
+		npc.m_iInjuredLevel = 4 - (GetEntProp(victim, Prop_Data, "m_iHealth") * 5 / ReturnEntityMaxHealth(victim));
 		
 		npc.PlayHurtSound();
 	}

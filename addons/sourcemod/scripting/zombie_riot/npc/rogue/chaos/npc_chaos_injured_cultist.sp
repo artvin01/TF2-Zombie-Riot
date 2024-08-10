@@ -329,7 +329,7 @@ public Action ChaosInjuredCultist_OnTakeDamage(int victim, int &attacker, int &i
 
 	if(npc.g_TimesSummoned < 3)
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
 		float Scaling = float(health) * 3.0 / float(maxhealth);

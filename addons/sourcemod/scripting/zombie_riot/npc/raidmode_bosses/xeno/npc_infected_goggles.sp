@@ -360,7 +360,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	bool alonecheck = !IsEntityAlive(AllyEntity);
 	if(!alonecheck)
 	{
-		float MaxHealthCalc = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealthCalc = float(ReturnEntityMaxHealth(npc.index));
 		switch(i_GogglesHurtTalkMessage[npc.index])
 		{
 			case 0:

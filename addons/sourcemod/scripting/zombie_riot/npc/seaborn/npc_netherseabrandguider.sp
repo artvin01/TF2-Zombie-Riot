@@ -157,7 +157,7 @@ public void SeaBrandguider_ClotThink(int iNPC)
 
 		if(!npc.Anger)
 		{
-			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 			if(health < (maxhealth / 2))
