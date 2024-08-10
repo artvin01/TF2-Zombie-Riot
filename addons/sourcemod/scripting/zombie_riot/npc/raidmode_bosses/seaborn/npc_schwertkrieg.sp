@@ -583,6 +583,8 @@ static void Internal_ClotThink(int iNPC)
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
+		npc.m_bisWalking = true;
+
 		npc.m_flSpeed=fl_schwert_speed;
 
 		
@@ -1603,6 +1605,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		donner_sea_created=true;
 
 		npc.m_flNextChargeSpecialAttack = GetGameTime()+8.0;
+
+		npc.m_bisWalking = false;
 
 		npc.AddActivityViaSequence("taunt_the_fist_bump");
 		npc.SetPlaybackRate(0.2);	

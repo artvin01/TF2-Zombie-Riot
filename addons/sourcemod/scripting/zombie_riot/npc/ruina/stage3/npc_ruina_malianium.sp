@@ -261,7 +261,7 @@ static void ClotThink(int iNPC)
 	{
 		fl_ruina_battery[npc.index] = 0.0;
 		fl_ruina_battery_timer[npc.index] = GameTime + 5.0;
-
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_drg_melee");
 		npc.SetCycle(0.01);
 		npc.SetPlaybackRate(0.7);
@@ -310,6 +310,7 @@ static void ClotThink(int iNPC)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 
+			npc.m_bisWalking = true;
 			i_NpcWeight[npc.index] = 1;
 			npc.m_flSpeed = fl_npc_basespeed;
 			npc.m_flRangedArmor = 1.0;
