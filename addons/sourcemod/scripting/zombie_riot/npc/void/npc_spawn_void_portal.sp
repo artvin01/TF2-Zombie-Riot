@@ -26,7 +26,7 @@ void VoidPortal_OnMapStart_NPC()
 	NPC_Add(data2);
 
 	NPCData data3;
-	strcopy(data3.Name, sizeof(data3.Name), "Void Elemtal Damage");
+	strcopy(data3.Name, sizeof(data3.Name), "Void Elemental Damage");
 	strcopy(data3.Plugin, sizeof(data3.Plugin), "npc_donotuseever_2");
 	strcopy(data3.Icon, sizeof(data3.Icon), "");
 	data3.IconCustom = false;
