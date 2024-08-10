@@ -50,6 +50,7 @@ methodmap MajorSteam < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		b_NpcUnableToDie[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
