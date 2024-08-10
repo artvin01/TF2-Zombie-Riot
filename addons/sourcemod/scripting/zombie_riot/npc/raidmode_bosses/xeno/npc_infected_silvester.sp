@@ -90,10 +90,52 @@ static bool b_RageAnimated[MAXENTITIES];
 static bool b_angered_twice[MAXENTITIES];
 static float f_TalkDelayCheck;
 static int i_TalkDelayCheck;
-
+static int i_SadText;
+static int i_ColoursTEPillars[4];
+bool AlreadySaidWin;
+bool AlreadySaidLastmann;
 
 static int Silvester_TE_Used;
+
+void ResetTEStatusSilvester()
+{
+	Silvester_TE_Used = 0;
+}
+void SetSilvesterPillarColour(int colours[4])
+{
+	i_ColoursTEPillars = colours;
+}
+
 public void RaidbossSilvester_OnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Silvester");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_raidboss_silvester");
+	strcopy(data.Icon, sizeof(data.Icon), "silvester_raid");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = Silvester_TBB_Precahce;
+	NPC_Add(data);
+	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
+	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
+	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
+	PrecacheSound("player/flow.wav");
+	PrecacheModel(LINKBEAM);
+	PrecacheModel(PILLAR_MODEL);
+	
+	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
+	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
+	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
+	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
+}
+
+void Silvester_TBB_Precahce()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
@@ -109,29 +151,14 @@ public void RaidbossSilvester_OnMapStart()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	
-	PrecacheSound("weapons/physcannon/superphys_launch1.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch2.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch3.wav", true);
-	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
-	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
-	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	Silvester_TBB_Precahce();
 	
-	PrecacheSound("weapons/mortar/mortar_explode3.wav", true);
-	PrecacheSound("mvm/mvm_tele_deliver.wav", true);
-	PrecacheSound("player/flow.wav");
-	PrecacheModel(LINKBEAM);
-	PrecacheModel(PILLAR_MODEL);
 	PrecacheSoundCustom("#zombiesurvival/silvester_raid/silvester.mp3");
 }
 
-void Silvester_TBB_Precahce()
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	Silvester_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
-	Silvester_BEAM_Laser_1 = PrecacheModel("materials/cable/blue.vmt", false);
-	Silvester_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	return RaidbossSilvester(client, vecPos, vecAng, ally, data);
 }
-
 #define EMPOWER_SOUND "items/powerup_pickup_king.wav"
 #define EMPOWER_MATERIAL "materials/sprites/laserbeam.vmt"
 #define EMPOWER_WIDTH 5.0
@@ -210,9 +237,7 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -269,23 +294,18 @@ methodmap RaidbossSilvester < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
-	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossSilvester(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossSilvester npc = view_as<RaidbossSilvester>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SILVESTER;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -295,24 +315,32 @@ methodmap RaidbossSilvester < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		
+		AlreadySaidWin = false;
+		AlreadySaidLastmann = false;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Shared_Xeno_Duo);
 		
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
+		i_TimesSummoned[npc.index] = 0;
+
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
 			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Blue Goggles Arrived.");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Silvester And Waldch Arrived.");
 			}
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		b_thisNpcIsARaid[npc.index] = true;
@@ -320,6 +348,7 @@ methodmap RaidbossSilvester < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
+		i_SadText = false;
 		
 		npc.m_bThisNpcIsABoss = true;
 		
@@ -353,9 +382,7 @@ methodmap RaidbossSilvester < CClotBody
 
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
-		
-		SDKHook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
+	
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 		b_angered_twice[npc.index] = false;
@@ -417,8 +444,23 @@ methodmap RaidbossSilvester < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
-		Music_SetRaidMusic("#zombiesurvival/silvester_raid/silvester.mp3", 117, true);
+		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
+		
+		if(!ingoremusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+			music.Time = 117;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 450.0;
+		}
 		
 		npc.Anger = false;
 		//IDLE
@@ -441,6 +483,7 @@ methodmap RaidbossSilvester < CClotBody
 		//Spawn in the duo raid inside him, i didnt code for duo raids, so if one dies, it will give the timer to the other and vise versa.
 		
 		RequestFrame(Silvester_SpawnAllyDuoRaid, EntIndexToEntRef(npc.index)); 
+		npc.m_flNextDelayTime = GetGameTime() + 0.2;
 		if(XenoExtraLogic())
 		{
 			switch(GetRandomInt(1,3))
@@ -466,21 +509,63 @@ methodmap RaidbossSilvester < CClotBody
 
 //TODO 
 //Rewrite
-public void RaidbossSilvester_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(iNPC);
 	
 	//Raidmode timer runs out, they lost.
+	if(LastMann && !AlreadySaidLastmann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			AlreadySaidLastmann = true;
+			npc.m_fbGunout = true;
+			if(!XenoExtraLogic())
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Give up and turn yourself in.");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Ready to listen?");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Maybe you just hate us?");
+					}
+				}
+			}
+			else
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Death may be your only choice from here on out!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: You're probably already infected, should kill you instead!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{gold}Silvester{default}: Listening is too hard for you ******* isnt it?");
+					}
+				}				
+			}
+		}
+	}
 	if(RaidModeTime < GetGameTime())
 	{
-		int entity = CreateEntityByName("game_round_win"); 
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		DeleteAndRemoveAllNpcs = 8.0;
+		mp_bonusroundtime.IntValue = (10 * 2);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
+		SharedTimeLossSilvesterDuo(npc.index);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -497,7 +582,8 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -531,6 +617,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
@@ -565,7 +652,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 			SetEntityRenderColor(npc.m_iWearable2, 255, 255, 0, 255);
-			i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
+			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
@@ -661,7 +748,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	{
 		if(IsValidEntity(npc.m_iTargetWalkTo))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 			npc.FaceTowards(vecTarget, 80.0);
 		}
 		NPC_StopPathing(npc.index);
@@ -785,6 +872,34 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(!i_SadText)
+		{
+			i_SadText = true;
+			switch(GetRandomInt(1,3))
+			{
+				case 1:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: N-No!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}..?");
+				}
+				case 2:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Why him?? Attack me you bunch of cowards!");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: Dont faint, im here, im here!");
+				}
+				case 3:
+				{
+					if(!XenoExtraLogic())
+						CPrintToChatAll("{gold}Silvester{default}: Hang on, i got this, rest.");
+					else
+						CPrintToChatAll("{gold}Silvester{default}: ... if you think ill let that slide...");
+				}
+			}
+		}
 		if(IsValidEntity(i_LaserEntityIndex[npc.index]))
 		{
 			RemoveEntity(i_LaserEntityIndex[npc.index]);
@@ -945,9 +1060,10 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 		int ActionToTake = -1;
 
 		//Predict their pos.
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-		float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+		float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			NPC_SetGoalVector(npc.index, vPredictedPos);
@@ -963,7 +1079,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(npc.m_iTargetWalkTo), v); 
+		SubtractVectors(VecSelfNpc, vecTarget, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -1045,6 +1161,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
@@ -1062,6 +1179,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
@@ -1098,13 +1216,36 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 					MaxCount = 1;
 				}
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
+				if(ZR_GetWaveCount()+1 >= 60 && i_TimesSummoned[npc.index] >= 3)
+				{
+					i_TimesSummoned[npc.index] = 0;
+					ang_Look[1] -= 30.0;
+					for(int Repeat; Repeat <= 1; Repeat++)
+					{
+						Silvester_Damaging_Pillars_Ability(npc.index,
+						10.0 * RaidModeScaling,				 	//damage
+						MaxCount, 	//how many
+						DelayPillars,									//Delay untill hit
+						DelaybewteenPillars,									//Extra delay between each
+						ang_Look 								/*2 dimensional plane*/,
+						pos,
+						0.25,
+						0.5);
+						if(Repeat == 0)
+							ang_Look[1] += 60.0;
+					}	
+					ang_Look[1] -= 30.0;
+				}
+
+				i_TimesSummoned[npc.index] += 1;
 				Silvester_Damaging_Pillars_Ability(npc.index,
 				25.0 * RaidModeScaling,				 	//damage
 				MaxCount, 	//how many
 				DelayPillars,									//Delay untill hit
 				DelaybewteenPillars,									//Extra delay between each
 				ang_Look 								/*2 dimensional plane*/,
-				pos);
+				pos);					
 
 				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 				if(npc.Anger)
@@ -1125,16 +1266,36 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
-				if(ZR_GetWaveCount()+1 > 29)
-				{
-					DelayPillars = 2.5;
-					DelaybewteenPillars = 0.1;
-				}
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
-			//	npc.AddGesture("ACT_");
-			//	npc.AddActivityViaSequence("taunt_the_");
 				npc.SetPlaybackRate(0.5);
+				if(ZR_GetWaveCount()+1 > 29)
+				{
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.5;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.5;
+					DelayPillars = 2.5;
+					DelaybewteenPillars = 0.1;
+					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+					for(int i; i < layerCount; i++)
+					{
+						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 1.15);
+					}
+					npc.SetPlaybackRate(0.6);
+				}
+				if(ZR_GetWaveCount()+1 >= 60)
+				{
+					npc.m_flDoingAnimation = GetGameTime(npc.index) + 2.0;
+					npc.m_flReloadDelay = GetGameTime(npc.index) + 2.0;
+					DelayPillars = 2.0;
+					DelaybewteenPillars = 0.1;
+					int layerCount = CBaseAnimatingOverlay(npc.index).GetNumAnimOverlays();
+					for(int i; i < layerCount; i++)
+					{
+						view_as<CClotBody>(npc.index).SetLayerPlaybackRate(i, 1.35);
+					}
+					npc.SetPlaybackRate(1.35);
+				}
 				npc.SetCycle(0.05);
 				npc.m_bisWalking = false;
 				npc.PlayTeleportSound();
@@ -1158,6 +1319,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 				}
 				
 				Silvester_TE_Used = 0;
+				SetSilvesterPillarColour({212, 150, 0, 200});
 				for(int Repeat; Repeat <= 7; Repeat++)
 				{
 					Silvester_Damaging_Pillars_Ability(npc.index,
@@ -1198,7 +1360,7 @@ public void RaidbossSilvester_ClotThink(int iNPC)
 }
 
 	
-public Action RaidbossSilvester_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -1301,14 +1463,13 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	}
 }
 
-public void RaidbossSilvester_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
 	if(!npc.m_bDissapearOnDeath)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossSilvester_ClotThink);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSilvester_OnTakeDamagePost);
 	StopSound(entity, SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
@@ -1371,7 +1532,8 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1384,7 +1546,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 							float damage = 24.0;
 							float damage_rage = 28.0;
 							if(ZR_GetWaveCount()+1 > 40 && ZR_GetWaveCount()+1 < 55)
@@ -1426,7 +1588,7 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 							}
 										
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						} 
 					}
 				}
@@ -1442,11 +1604,12 @@ void RaidbossSilvesterSelfDefense(RaidbossSilvester npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+			if(flDistanceToTarget < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 			{
 				int Enemy_I_See;
 									
@@ -1520,7 +1683,7 @@ public Action contact_throw_Silvester_entity(int client)
 	else
 	{
 		char classname[60];
-		chargerPos = WorldSpaceCenterOld(client);
+		WorldSpaceCenter(client, chargerPos);
 		for(int entity=1; entity <= MAXENTITIES; entity++)
 		{
 			if (IsValidEntity(entity) && !b_ThisEntityIgnored[entity])
@@ -1528,16 +1691,24 @@ public Action contact_throw_Silvester_entity(int client)
 				GetEntityClassname(entity, classname, sizeof(classname));
 				if (!StrContains(classname, "zr_base_npc", true) || !StrContains(classname, "player", true) || !StrContains(classname, "obj_dispenser", true) || !StrContains(classname, "obj_sentrygun", true))
 				{
-					targPos = WorldSpaceCenterOld(entity);
-					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(client, Prop_Send, "m_iTeamNum"))
+					WorldSpaceCenter(entity, targPos);
+					if (GetVectorDistance(chargerPos, targPos, true) <= (250.0* 250.0) && GetTeam(entity)!=GetTeam(client))
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client)
 						{		
-							if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] >= XENO_RAIDBOSS_SILVESTER && i_NpcInternalId[entity] <= XENO_RAIDBOSS_SUPERSILVESTER)
+							if(!b_NpcHasDied[entity])
 								continue;
 								
-							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
-							
+							int damage;
+							if(client <= MaxClients)
+							{
+								damage = SDKCall_GetMaxHealth(client) / 3;
+
+							}
+							else
+							{
+								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+							}
 							if(damage > 2000)
 							{
 								damage = 2000;
@@ -1600,13 +1771,17 @@ void Silvester_SpawnAllyDuoRaid(int ref)
 			
 		maxhealth -= (maxhealth / 4);
 
-		int spawn_index = Npc_Create(XENO_RAIDBOSS_BLUE_GOGGLES, -1, pos, ang, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2);
+		int spawn_index = NPC_CreateByName("npc_infected_goggles", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
 			i_RaidGrantExtra[spawn_index] = i_RaidGrantExtra[entity];
+			if(i_RaidGrantExtra[spawn_index] == 1)
+			{
+				b_NpcUnableToDie[spawn_index] = true;
+			}
 			i_RaidDuoAllyIndex = EntIndexToEntRef(spawn_index);
 			Goggles_SetRaidPartner(entity);
-			Zombies_Currently_Still_Ongoing += 1;
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 		}
@@ -1620,7 +1795,8 @@ float delay,
 float delay_PerPillar,
 float direction[3] /*2 dimensional plane*/,
 float origin[3],
-float volume = 0.7)
+float volume = 0.7,
+float extra_pillar_size = 1.0)
 {
 	float timerdelay = GetGameTime() + delay;
 	DataPack pack;
@@ -1637,10 +1813,16 @@ float volume = 0.7)
 	pack.WriteCell(origin[1]);
 	pack.WriteCell(origin[2]);
 	pack.WriteCell(volume);
+	pack.WriteCell(extra_pillar_size);
 
 	float origin_altered[3];
 	origin_altered = origin;
-
+	bool DontClipOrMove = false;
+	if(count == 0)
+	{
+		DontClipOrMove = true;
+		count = 1;
+	}
 	for(int Repeats; Repeats < count; Repeats++)
 	{
 		float VecForward[3];
@@ -1650,18 +1832,22 @@ float volume = 0.7)
 		GetAngleVectors(direction, VecForward, vecRight, vecUp);
 		
 		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING);
+		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING * extra_pillar_size);
+		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING * extra_pillar_size);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
 
 		origin_altered = vecSwingEnd;
+		if(DontClipOrMove)
+			origin_altered = origin;
 
 		//Clip to ground, its like stepping on stairs, but for these rocks.
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, origin_altered);
 		float Range = 100.0;
+		Range *= extra_pillar_size;
 
 		Range += (float(Repeats) * 10.0);
+		Range += 10.0;
 		Silvester_TE_Used += 1;
 		if(Silvester_TE_Used > 31)
 		{
@@ -1678,21 +1864,8 @@ float volume = 0.7)
 		}
 		else
 		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
+			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
 	}
 }
 
@@ -1743,7 +1916,7 @@ public void Silvester_DelayTE(DataPack pack)
 	Origin[2] = pack.ReadCell();
 	float Range = pack.ReadCell();
 	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 212, 150, 0, 200, 1, Delay, 5.0, 0.0, 1);	
+	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, Delay, 5.0, 0.0, 1);	
 		
 	delete pack;
 }
@@ -1767,11 +1940,17 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 	origin[1] = pack.ReadCell();
 	origin[2] = pack.ReadCell();
 	float volume = pack.ReadCell();
+	float PillarSizeEdit = pack.ReadCell();
 
 	//Timers have a 0.1 impresicison logic, accont for it.
 	if(delayUntillImpact - 0.1 > GetGameTime())
 	{
 		return Plugin_Continue;
+	}
+	bool DontClipOrMove = false;
+	if(countMax == 0)
+	{
+		DontClipOrMove = true;
 	}
 
 	count += 1;
@@ -1786,9 +1965,11 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 		GetAngleVectors(direction, VecForward, vecRight, vecUp);
 		
 		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
+		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING * PillarSizeEdit);
+		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING * PillarSizeEdit);
 		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
+		if(DontClipOrMove)
+			vecSwingEnd = origin;
 
 		Silvester_ClipPillarToGround({24.0,24.0,24.0}, 300.0, vecSwingEnd);
 
@@ -1817,8 +1998,9 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 
 
 			float SizeScale = 0.9;
+			SizeScale *= PillarSizeEdit; 
 
-			SizeScale += (count * 0.1);
+			SizeScale += (float(count -1) * 0.1);
 
 			char FloatString[8];
 			FloatToString(SizeScale, FloatString, sizeof(FloatString));
@@ -1831,20 +2013,18 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			DispatchSpawn(prop);
 			TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, vel);
 			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, 215, 200, 0, 200);
+			SetEntityRenderColor(prop, i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3]);
 			SetEntityCollisionGroup(prop, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
 
 			float Range = 100.0;
+			Range *= PillarSizeEdit;
 
-			Range += (float(count) * 10.0);
+			Range += (float(count -1) * 10.0);
+			Range += 10.0;
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
-			
-			SpawnParticlePos[2] += 80.0;
-			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
-			SpawnParticlePos[2] -= 80.0;
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
 			if(volume == 0.25)
 			{
@@ -1857,7 +2037,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			}
 		
 		//	spawnRing_Vectors(vecSwingEnd, Range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 0, 0, 200, 1, 1.0, 12.0, 6.1, 1);
-			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 0, 200, 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
+			spawnRing_Vectors(SpawnParticlePos, 0.0, 0.0, 0.0, 3.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, 0.5, 12.0, 6.1, 1,Range * 2.0);
 
 			CreateTimer(4.0, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 		}
@@ -1902,7 +2082,7 @@ void Silvester_TBB_Ability(int client)
 	Silvester_BEAM_MaxDistance[client] = 2000;
 	Silvester_BEAM_BeamRadius[client] = 45;
 	Silvester_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	Silvester_BEAM_ChargeUpTime[client] = 200;
+	Silvester_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	Silvester_BEAM_CloseBuildingDPT[client] = 0.0;
 	Silvester_BEAM_FarBuildingDPT[client] = 0.0;
 	Silvester_BEAM_Duration[client] = 6.0;
@@ -1989,7 +2169,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(client);
@@ -1999,7 +2179,7 @@ static void Silvester_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Silvester_BEAM_BeamOffset[client][0] && 0.0 == Silvester_BEAM_BeamOffset[client][1] && 0.0 == Silvester_BEAM_BeamOffset[client][2])
@@ -2053,7 +2233,7 @@ public Action Silvester_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 75.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Silvester_BEAM_TraceWallsOnly);
@@ -2085,7 +2265,7 @@ public Action Silvester_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Silvester_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Silvester_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -2097,8 +2277,9 @@ public Action Silvester_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					damage /= TickrateModify;
+					float vic_vec[3]; WorldSpaceCenter(victim, vic_vec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, vic_vec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -2168,16 +2349,16 @@ bool SharedGiveupSilvester(int entity, int entity2)
 				case 1:
 				{
 					if(!XenoExtraLogic())
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: There is a far greater enemy then us, we can't beat him.");
+						CPrintToChatAll("{darkblue}Waldch{default}: There is a far greater enemy then us, we can't beat him.");
 					else
-						CPrintToChatAll("{darkblue}Blue Goggles{default}: It appears like you already know what you get yourself into.");
+						CPrintToChatAll("{darkblue}Waldch{default}: It appears like you already know what you get yourself into.");
 
 					i_TalkDelayCheck += 1;
 				}
 				case 2:
 				{
 					
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
+					CPrintToChatAll("{darkblue}Waldch{default}: I doubt you can defeat him, but if you do, then you will assist greatly in defeating the great chaos.");
 					i_TalkDelayCheck += 1;
 				}
 				case 3:
@@ -2623,3 +2804,66 @@ int IsSilvesterTransforming(int silvester)
 
 	return 3;
 }
+
+public void Raidmode_Shared_Xeno_Duo(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
+	func_NPCThink[entity] = INVALID_FUNCTION;
+	if(AlreadySaidWin)
+		return;
+
+	AlreadySaidWin = true;
+	//b_NpcHasDied[client]
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+	
+	if(StrEqual(npc_classname, "npc_xeno_raidboss_silvester"))
+	{
+		if(XenoExtraLogic())
+		{
+			CPrintToChatAll("{gold}Silvester{default}: You're too stubborn.");
+		}
+		else
+		{
+			CPrintToChatAll("{gold}Silvester{default}: Maybe we should have thought of a better way to warn them.");
+		}
+		return;
+	}
+	if(StrEqual(npc_classname, "npc_infected_goggles"))
+	{
+		if(XenoExtraLogic())
+		{
+			CPrintToChatAll("{darkblue}Waldch{default}: Too far.");
+		}
+		else
+		{
+			CPrintToChatAll("{darkblue}Waldch{default}: Way better then to die to {green}Him.");
+		}
+	}
+}
+
+void SharedTimeLossSilvesterDuo(int entity)
+{
+	float SelfPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", SelfPos);
+	float AllyAng[3];
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", AllyAng);
+	int Spawner_entity = GetRandomActiveSpawner();
+	if(IsValidEntity(Spawner_entity))
+	{
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", SelfPos);
+		GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", AllyAng);
+	}
+	int SensalSpawn = NPC_CreateByName("npc_sensal", -1, SelfPos, AllyAng, GetTeam(entity), "duo_cutscene"); //can only be enemy
+	if(IsValidEntity(SensalSpawn))
+	{
+		if(GetTeam(SensalSpawn) != TFTeam_Red)
+		{
+			NpcAddedToZombiesLeftCurrently(SensalSpawn, true);
+		}
+		SetEntProp(SensalSpawn, Prop_Data, "m_iHealth", 100000000);
+		SetEntProp(SensalSpawn, Prop_Data, "m_iMaxHealth", 100000000);
+		CPrintToChatAll("{blue}Sensal{default}: Stop fighting, now. What is going on here?");
+	}
+}
+

@@ -1,12 +1,20 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#if defined ZR || defined RPG
 static int i_ProjectileIndex;
+Function func_WandOnTouch[MAXENTITIES];
 
 void WandStocks_Map_Precache()
 {
 	i_ProjectileIndex = PrecacheModel(ENERGY_BALL_MODEL);
 }
+
+stock void WandProjectile_ApplyFunctionToEntity(int projectile, Function Function)
+{
+	func_WandOnTouch[projectile] = Function;
+}
+#endif
 
 int iref_PropAppliedToRocket[MAXENTITIES];
 //todo:
@@ -24,7 +32,9 @@ void WandProjectile_GamedataInit()
 
 	EntityFactory.Install();
 }
-int Wand_Projectile_Spawn(int client,
+
+#if defined ZR || defined RPG
+stock int Wand_Projectile_Spawn(int client,
 float speed,
 float time,
 float damage,
@@ -87,13 +97,14 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 		i_WandOwner[entity] = EntIndexToEntRef(client);
 		if(IsValidEntity(weapon))
 			i_WandWeapon[entity] = EntIndexToEntRef(weapon);
+			
 		f_WandDamage[entity] = damage;
 		i_WandIdNumber[entity] = WandId;
 		b_EntityIsArrow[entity] = true;
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client); //No owner entity! woo hoo
 		//Edit: Need owner entity, otheriwse you can actuall hit your own god damn rocket and make a ding sound. (Really annoying.)
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage should be nothing. if it somehow goes boom.
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		int frame = GetEntProp(entity, Prop_Send, "m_ubInterpolationFrame");
 		TeleportEntity(entity, fPos, fAng, NULL_VECTOR);
 		DispatchSpawn(entity);
@@ -131,13 +142,27 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 			i_WandParticle[entity] = EntIndexToEntRef(particle);
 		}
 
-		if(time < 60.0 && time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
+		if(time > 60.0)
+		{
+			time = 60.0;
+		}
+#if defined RPG
+		//average is 10.
+		if(time < 0.1)
+		{
+			time = 10.0;
+		}
+#endif
+		if(time > 0.1) //Make it vanish if there is no time set, or if its too big of a timer to not even bother.
 		{
 			DataPack pack;
 			CreateDataTimer(time, Timer_RemoveEntity_CustomProjectileWand, pack, TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(entity));
 			pack.WriteCell(EntIndexToEntRef(particle));
 		}
+		//so they dont get stuck on entities in the air.
+		//todo: Fix them
+		SetEntProp(entity, Prop_Send, "m_usSolidFlags", FSOLID_NOT_SOLID | FSOLID_TRIGGER); 
 
 		g_DHookRocketExplode.HookEntity(Hook_Pre, entity, Wand_DHook_RocketExplodePre); //im lazy so ill reuse stuff that already works *yawn*
 		SDKHook(entity, SDKHook_ShouldCollide, Never_ShouldCollide);
@@ -149,6 +174,7 @@ float CustomPos[3] = {0.0,0.0,0.0}) //This will handle just the spawning, the re
 	//Somehow failed...
 	return -1;
 }
+#endif
 
 public MRESReturn Wand_DHook_RocketExplodePre(int arrow)
 {
@@ -171,11 +197,23 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 	return Plugin_Stop; 
 }
 
-
+#if defined ZR || defined RPG
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = Target_Hit_Wand_Detection(entity, other);
+	Function func = func_WandOnTouch[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_PushCell(target);
+		Call_Finish();
+		//todo: convert all on death and on take damage to this.
+		return;
+	}
 #if defined ZR
+	//OLD CODE!!! DONT USE BELOW!!!
+	//USE WandProjectile_ApplyFunctionToEntity
 	switch(i_WandIdNumber[entity])
 	{
 		case 0:
@@ -250,10 +288,6 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Vamp_CleaverHit(entity, target);
 		}
-		case WEAPON_QUINCY_BOW:
-		{
-			Quincy_Touch(entity, target);
-		}
 		case 23:
 		{
 			Event_GB_OnHatTouch(entity, target);
@@ -276,6 +310,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_German_WandTouch(entity, target);
 		}
+		case WEAPON_LUDO:
+		{
+			Weapon_Ludo_WandTouch(entity, target);
+		}
 		case WEAPON_SENSAL_SCYTHE:
 		{
 			Weapon_Sensal_WandTouch(entity, target);
@@ -296,31 +334,18 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Heavy_Particle_Rifle(entity, target);
 		}
-	}
-#else
-	switch(i_WandIdNumber[entity])
-	{
-		case 0:
+		case WEAPON_KAHMLFIST:
 		{
-			return; //This was has its own entire logic, dont do anything.
+			Melee_KahmlFistTouch(entity, target);
 		}
-		case 1:
+		case WEAPON_MESSENGER_LAUNCHER:
 		{
-			Want_DefaultWandTouch(entity, target);
+			Gun_MessengerTouch(entity, target);
 		}
-		case 2:
-		{
-			Want_LightningTouch(entity, target);
-		}
-		case 4:
-		{
-			Want_FireWandTouch(entity, target);
-		}	
 	}
 #endif
 }
-
-
+#endif
 
 static void OnCreate_Proj(CClotBody body)
 {
@@ -338,6 +363,9 @@ static void OnDestroy_Proj(CClotBody body)
 		RemoveEntity(extra_index);
 
 	iref_PropAppliedToRocket[body.index] = INVALID_ENT_REFERENCE;
+#if defined ZR || defined RPG
+	func_WandOnTouch[body.index] = INVALID_FUNCTION;
+#endif
 	return;
 }
 
@@ -362,10 +390,8 @@ stock int ApplyCustomModelToWandProjectile(int rocket, char[] modelstringname, f
 		TeleportEntity(entity, rocketOrigin, rocketang, NULL_VECTOR);
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", GetGameTime());
 		DispatchSpawn(entity);
-		SetEntityCollisionGroup(entity, 1); //COLLISION_GROUP_DEBRIS_TRIGGER
 		SetEntProp(entity, Prop_Send, "m_ubInterpolationFrame", frame);
-		SetEntProp(entity, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(entity, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(entity);
 		SetParent(rocket, entity);
 		iref_PropAppliedToRocket[rocket] = EntIndexToEntRef(entity);
 		

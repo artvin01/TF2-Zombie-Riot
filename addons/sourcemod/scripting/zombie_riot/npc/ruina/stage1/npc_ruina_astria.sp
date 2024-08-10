@@ -55,17 +55,39 @@ static const char g_RangedAttackSounds[][] = {
 
 void Astria_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_TeleportSounds));   i++) { PrecacheSound(g_TeleportSounds[i]);  			}
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Astria");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_astria");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "scout_jumping"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_TeleportSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	
 	PrecacheModel("models/player/engineer.mdl");
 }
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Astria(client, vecPos, vecAng, ally);
+}
+
+static float fl_npc_basespeed;
 
 methodmap Astria < CClotBody
 {
@@ -96,9 +118,7 @@ methodmap Astria < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -110,18 +130,14 @@ methodmap Astria < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -142,9 +158,7 @@ methodmap Astria < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 
 	public void PlayRangedSound()
@@ -153,11 +167,10 @@ methodmap Astria < CClotBody
 	}
 	
 	
-	public Astria(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Astria(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.5", "1250", ally));
+		Astria npc = view_as<Astria>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = RUINA_ASTRIA;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -182,10 +195,11 @@ methodmap Astria < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Astria_ClotThink);
-		
+		fl_npc_basespeed = 200.0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -229,8 +243,8 @@ methodmap Astria < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a melee npc
-		Ruina_Set_Master_Heirarchy(npc.index, 1, false, 15, 10);	//Priority 10: Teleporting/Movement masters
+		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
+		Ruina_Set_Master_Heirarchy(npc.index, RUINA_MELEE_NPC, false, 15, 10);	//Priority 10: Teleporting/Movement masters
 		
 		return npc;
 	}
@@ -238,7 +252,7 @@ methodmap Astria < CClotBody
 
 //TODO 
 //Rewrite
-public void Astria_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Astria npc = view_as<Astria>(iNPC);
 	
@@ -248,7 +262,7 @@ public void Astria_ClotThink(int iNPC)
 		return;
 	}
 	
-	Ruina_Add_Battery(npc.index, 2.5);
+	
 	
 	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
@@ -267,6 +281,8 @@ public void Astria_ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	Ruina_Add_Battery(npc.index, 2.5);
 
 	
 	if(npc.m_flGetClosestTargetTime < GameTime)
@@ -315,14 +331,16 @@ public void Astria_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Astria_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Astria npc = view_as<Astria>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
-	fl_ruina_battery[npc.index] += damage*0.75;	//turn damage taken into energy
+	Ruina_Add_Battery(npc.index, damage*0.75);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -333,15 +351,16 @@ public Action Astria_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Astria_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Astria npc = view_as<Astria>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, Astria_ClotThink);	
+
+	Ruina_NPCDeath_Override(entity);
+
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -368,9 +387,11 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 	{	
 		//target is within range, attack them
@@ -385,39 +406,48 @@ static void Astria_SelfDefense(Astria npc, float gameTime)	//ty artvin
 				if(flDistanceToTarget < (750.0*750.0))
 				{
 					Ruina_Runaway_Logic(npc.index, GetClosestEnemyToAttack);
+					npc.m_bAllowBackWalking=true;
 				}
 				else
 				{
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+
+			if(npc.m_bAllowBackWalking)
+			{
+				npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+			}
+			else
+				npc.m_flSpeed = fl_npc_basespeed;
 		}
 		else
 		{
+			npc.m_bAllowBackWalking=false;
 			if(gameTime > npc.m_flNextRangedAttack)
 			{
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", true);
 				npc.PlayRangedSound();
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
-				//after we fire, we will have a short delay beteween the actual laser, and when it happens
-				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
-				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 				float DamageDone = 25.0;
 				npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "raygun_projectile_blue", false, true, false,_,_,_,10.0);
 				npc.FaceTowards(vecTarget, 20000.0);
-				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.25;
+				npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 			}
 		}
 	}

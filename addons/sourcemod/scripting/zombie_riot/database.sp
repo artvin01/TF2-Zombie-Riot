@@ -26,8 +26,8 @@ void Database_PluginStart()
 	Database.Connect(Database_GlobalConnected, DATABASE_GLOBAL);
 
 	RegServerCmd("zr_convert_from_textstore", DBCommand);
-}
 
+}
 bool Database_Escape(char[] buffer, int length, int &bytes)
 {
 	if(!Global)
@@ -116,7 +116,9 @@ public void Database_GlobalConnected(Database db, const char[] error, any data)
 		... "hitmarker INTEGER NOT NULL DEFAULT 1, "
 		... "tp INTEGER NOT NULL DEFAULT 0, "
 		... "zomvol FLOAT NOT NULL DEFAULT 0.0, "
-		... "tauntspeed INTEGER NOT NULL DEFAULT 1);");
+		... "tauntspeed INTEGER NOT NULL DEFAULT 1, "
+		... "battletimehud FLOAT NOT NULL DEFAULT 0.0, "
+		... "mapmusic INTEGER NOT NULL DEFAULT 0);");
 		
 		tr.AddQuery("CREATE TABLE IF NOT EXISTS " ... DATATABLE_GIFTITEM ... " ("
 		... "steamid INTEGER NOT NULL, "
@@ -227,7 +229,12 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 		
 		if(results[2].FetchRow())
 		{
-			b_IsPlayerNiko[client] = view_as<bool>(results[2].FetchInt(1));
+			int value = results[2].FetchInt(1);
+			if(value >= 2)
+			{
+				OverridePlayerModel(client, value - 1, Viewchanges_PlayerModelsAnims[value - 1]);
+				JoinClassInternal(client, CurrentClass[client]);
+			}
 			f_ArmorHudOffsetX[client] = results[2].FetchFloat(2);
 			f_ArmorHudOffsetY[client] = results[2].FetchFloat(3);
 			f_HurtHudOffsetX[client] = results[2].FetchFloat(4);
@@ -242,6 +249,8 @@ public void Database_GlobalClientSetup(Database db, int userid, int numQueries, 
 			thirdperson[client] = view_as<bool>(results[2].FetchInt(13));
 			f_ZombieVolumeSetting[client] = results[2].FetchFloat(14);
 			b_TauntSpeedIncreace[client] = view_as<bool>(results[2].FetchFloat(15));
+			f_Data_InBattleHudDisableDelay[client] = results[2].FetchFloat(16);
+			b_IgnoreMapMusic[client] = view_as<bool>(results[2].FetchInt(17));
 		}
 		else if(!results[2].MoreRows)
 		{
@@ -309,9 +318,11 @@ void DataBase_ClientDisconnect(int client)
 			... "hitmarker = %d, "
 			... "tp = %d, "
 			... "zomvol = %.3f, "
-			... "tauntspeed = %d "
+			... "tauntspeed = %d, "
+			... "battletimehud = %.3f, "
+			... "mapmusic = %d "
 			... "WHERE steamid = %d;",
-			b_IsPlayerNiko[client],
+			i_PlayerModelOverrideIndexWearable[client] + 1,
 			f_ArmorHudOffsetX[client],
 			f_ArmorHudOffsetY[client],
 			f_HurtHudOffsetX[client],
@@ -326,6 +337,8 @@ void DataBase_ClientDisconnect(int client)
 			thirdperson[client],
 			f_ZombieVolumeSetting[client],
 			b_TauntSpeedIncreace[client],
+			f_Data_InBattleHudDisableDelay[client],
+			b_IgnoreMapMusic[client],
 			id);
 
 			tr.AddQuery(buffer);
@@ -510,7 +523,6 @@ public void Database_LocalClientSetup(Database db, int userid, int numQueries, D
 				CashSpent[client] = results[0].FetchInt(2);
 				CashSpentTotal[client] = results[0].FetchInt(3);
 				Ammo_Count_Used[client] = results[0].FetchInt(4);
-				f_LeftForDead_Cooldown[client] = results[0].FetchFloat(5);
 
 				Transaction tr = new Transaction();
 					
@@ -610,7 +622,7 @@ void Database_SaveGameData(int client)
 			CashSpent[client],
 			CashSpentTotal[client],
 			Ammo_Count_Used[client],
-			f_LeftForDead_Cooldown[client] + 30.0,
+			0.0,
 			id);
 			
 

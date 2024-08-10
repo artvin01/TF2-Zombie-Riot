@@ -13,6 +13,21 @@ static int SimonRagdollRef = INVALID_ENT_REFERENCE;
 
 void Simon_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Book Simon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_simon");
+	strcopy(data.Icon, sizeof(data.Icon), "simon");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_COF;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_HurtSounds));	   i++) { PrecacheSoundCustom(g_HurtSounds[i]);	   }
 
 	PrecacheSoundCustom("cof/simon/passive.mp3");
@@ -20,9 +35,12 @@ void Simon_MapStart()
 	PrecacheSoundCustom("cof/simon/intro.mp3");
 	PrecacheSoundCustom("cof/simon/reload.mp3");
 	PrecacheSoundCustom("cof/simon/shoot.mp3");
-	PrecacheModel("models/zombie_riot/cof/booksimon.mdl");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Simon(client, vecPos, vecAng, ally, data);
+}
 methodmap Simon < CClotBody
 {
 	public void PlayIdleSound()
@@ -57,12 +75,8 @@ methodmap Simon < CClotBody
 	{
 		EmitCustomToAll("cof/simon/shoot.mp3", this.index);
 	}
-	public void PlayBuffSound(int entity)
-	{
-		EmitCustomToAll("cof/purnell/buff.mp3", entity);
-	}
 	
-	public Simon(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Simon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool newSimon = data[0] == 's';
 		
@@ -73,7 +87,7 @@ methodmap Simon < CClotBody
 			return view_as<Simon>(INVALID_ENT_REFERENCE);
 		
 		Simon npc = view_as<Simon>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/booksimon.mdl", "1.15", data[0] == 'f' ? "300000" : "200000", ally, false, false, true));
-		i_NpcInternalId[npc.index] = BOOKSIMON;
+		
 		i_NpcWeight[npc.index] = 3;
 		
 		int body = EntRefToEntIndex(SimonRagdollRef);
@@ -85,13 +99,14 @@ methodmap Simon < CClotBody
 		npc.PlayIntroSound();
 		ExcuteRelay("zr_simonspawn");
 		
+		func_NPCDeath[npc.index] = Simon_NPCDeath;
+		func_NPCThink[npc.index] = Simon_ClotThink;
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Simon_ClotThink);
-		
+
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_iTarget = -1;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -175,7 +190,6 @@ public void Simon_ClotThink(int iNPC)
 				{
 					ally.m_bLostHalfHealth = true;
 					ally.m_flSpeed *= 1.15;
-					npc.PlayBuffSound(target);
 				}
 			}
 		}
@@ -218,7 +232,8 @@ public void Simon_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _, 1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -247,8 +262,8 @@ public void Simon_ClotThink(int iNPC)
 	{
 		if(npc.m_iTarget > 0)	// We have a target
 		{
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 			
 			float distance = GetVectorDistance(vecTarget, vecPos, true);
 			if(distance < 10000.0 && npc.m_flNextMeleeAttack < gameTime)	// Close at any time: Melee
@@ -292,7 +307,7 @@ public void Simon_ClotThink(int iNPC)
 							
 							npc.m_iAttacksTillReload--;
 							
-							vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1000.0);
+							PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1000.0,_, vecTarget);
 							npc.FireRocket(vecTarget, 140.0, 1000.0, "models/weapons/w_bullet.mdl", 2.0);
 							
 							npc.PlayShootSound();
@@ -385,7 +400,7 @@ public void Simon_ClotThink(int iNPC)
 			if(!npc.m_flRangedSpecialDelay)	// Reload anyways timer
 				npc.m_flRangedSpecialDelay = gameTime + 3.0;
 			
-			float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+			float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos);
 			
 			if(!npc.m_bPathing)
@@ -415,13 +430,13 @@ public void Simon_ClotThink(int iNPC)
 			int ClosestTarget;
 			float TargetLocation[3];
 			float TargetDistance;
-			float vecPos[3]; vecPos = WorldSpaceCenterOld(npc.index);
+			float vecPos[3]; WorldSpaceCenter(npc.index, vecPos );
 			for(int entitycount; entitycount<i_MaxcountSpawners; entitycount++) //Faster check for spawners
 			{
 				int entity = i_ObjectsSpawners[entitycount];
 				if(IsValidEntity(entity) && entity != 0)
 				{
-					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetEntProp(entity, Prop_Data, "m_iTeamNum") != 2)
+					if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) != 2)
 					{
 						GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
 						float distance = GetVectorDistance( vecPos, TargetLocation, true); 
@@ -475,7 +490,7 @@ public void Simon_ClotThink(int iNPC)
 				
 				if(npc.m_iTarget)
 				{
-					float vBackoffPos[3]; vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, npc.m_iTarget);
+					float vBackoffPos[3]; BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 					NPC_SetGoalVector(npc.index, vBackoffPos);
 					
 					if(!npc.m_bPathing)
@@ -500,7 +515,6 @@ public void Simon_NPCDeath(int entity)
 	Simon npc = view_as<Simon>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Simon_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Simon_ClotThink);
 	
 	NPC_StopPathing(npc.index);
 	npc.m_bPathing = false;

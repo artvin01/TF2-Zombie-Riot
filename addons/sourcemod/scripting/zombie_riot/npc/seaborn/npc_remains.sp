@@ -22,30 +22,48 @@ static const char RemainModels[][] =
 	"models/pickups/pickup_powerup_strength_arm.mdl"
 };
 
+static int RemainsID;
+
+int Remain_ID()
+{
+	return RemainsID;
+}
+
 void Remain_MapStart()
 {
 	for(int i; i < sizeof(RemainModels); i++)
 	{
 		PrecacheModel(RemainModels[i]);
 	}
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Consumable Remains");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_endspeaker_freeplay");
+	data.Category = Type_Hidden;
+	data.Func = ClotSummon;
+	RemainsID = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Remains(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Remains < CClotBody
 {
-	public Remains(int client, float vecPos[3], float vecAng[3], const char[] data)
+	public Remains(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(!data[0])
-			return view_as<Remains>(EndSpeaker(client, vecPos, vecAng, false));
+			return view_as<Remains>(EndSpeaker(client, vecPos, vecAng, ally));
 		
 		int type = StringToInt(data);
 		if(type < 0 || type >= sizeof(RemainModels))
 			return view_as<Remains>(-1);
 
-		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", true, true));
+		Remains npc = view_as<Remains>(CClotBody(vecPos, vecAng, RemainModels[type], "1.0", "100", TFTeam_Red, true));
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 2);
 
-		i_NpcInternalId[npc.index] = REMAINS;
 		i_NpcWeight[npc.index] = 999;
 		i_NpcIsABuilding[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
@@ -57,7 +75,7 @@ methodmap Remains < CClotBody
 		npc.m_bThisEntityIgnored = true;
 		npc.m_iBuffType = type;
 		
-		SDKHook(npc.index, SDKHook_Think, Remains_ClotThink);
+		func_NPCThink[npc.index] = Remains_ClotThink;
 		return npc;
 	}
 	property int m_iBuffType
@@ -95,17 +113,12 @@ void Remains_SpawnDrop(float pos[3], int type)
 {
 	char data[4];
 	IntToString(type, data, sizeof(data));
-	Npc_Create(REMAINS, -1, pos, {0.0, 0.0, 0.0}, true, data);
-}
-
-void Remains_NPCDeath(int entity)
-{
-	SDKUnhook(entity, SDKHook_Think, Remains_ClotThink);
+	NPC_CreateById(RemainsID, -1, pos, {0.0, 0.0, 0.0}, TFTeam_Red, data);
 }
 
 static void ShowScuffedRemainsCircle(int entity)
 {
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(entity);
+	float vecTarget[3]; WorldSpaceCenter(entity, vecTarget);
 	int alpha = IsClosestRemain(entity) ? 200 : 50;
 
 	spawnRing_Vectors(vecTarget, DEEP_SEA_VORE_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 50, 50, 255, alpha, 1, 0.55, 6.0, 0.1, 1);
@@ -128,12 +141,13 @@ static bool IsClosestRemain(int thisEntity)
 	int remain1, remain2;
 	float dist1 = FAR_FUTURE;
 	float dist2 = FAR_FUTURE;
-	for(int i; i < i_MaxcountNpc_Allied; i++)
+	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[i]);
-		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == REMAINS && IsEntityAlive(entity))
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+		if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == RemainsID && IsEntityAlive(entity))
 		{
-			float distance = GetVectorDistance(GetWorldSpaceCenterOld(entity), pos, true);
+			float WorldSpaceVec[3]; WorldSpaceCenter(entity, WorldSpaceVec);
+			float distance = GetVectorDistance(WorldSpaceVec, pos, true);
 			if(distance < dist1)
 			{
 				remain2 = remain1;

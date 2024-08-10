@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int SupplyBonus;
 static float FlatArmor;
 
@@ -22,6 +25,11 @@ public void Rogue_SupplyDepot_Collect()
 	SupplyBonus++;
 }
 
+public void Rogue_AlHallam_Fortress_Collect()
+{
+	SupplyBonus += 2;
+}
+
 public void Rogue_Gambesons_Collect()
 {
 	FlatArmor += 10.0;
@@ -44,12 +52,13 @@ public void Rogue_Neosteel_Remove()
 
 public void Rogue_ThumbRing_Ally(int entity, StringMap map)
 {
-	if(!b_NpcHasDied[entity])
+	if(!b_NpcHasDied[entity] && view_as<BarrackBody>(entity).OwnerUserId)
 	{
-		switch(i_NpcInternalId[entity])
+		char buffer[32];
+		NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+		if(StrContains(buffer, "archer") != -1 || StrContains(buffer, "bow") != -1 || StrContains(buffer, "arbelast") != -1)
 		{
-			case BARRACK_ARCHER, BARRACK_CROSSBOW, BARRACK_ARBELAST, BARRACK_LONGBOW:
-				view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
 		}
 	}
 }

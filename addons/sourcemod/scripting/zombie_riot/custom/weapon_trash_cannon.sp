@@ -7,8 +7,8 @@
 //FLIMSY ROCKET: The default roll. If all other rolls fail, this is what gets launched. A rocket that flops out of the barrel and explodes on impact.
 int i_FlimsyMaxTargets[3] = { 4, 5, 6 };				//Max targets hit by the blast.
 
-float f_FlimsyDMG[3] = { 600.0, 1000.0, 1200.0 };		//Flimsy Rocket base damage.
-float f_FlimsyRadius[3] = { 200.0, 250.0, 300.0 };		//Flimsy Rocket explosion radius.
+float f_FlimsyDMG[3] = { 600.0, 1500.0, 2000.0 };		//Flimsy Rocket base damage.
+float f_FlimsyRadius[3] = { 200.0, 150.0, 200.0 };		//Flimsy Rocket explosion radius.
 float f_FlimsyVelocity[3] = { 600.0, 800.0, 1200.0 };	//Flimsy Rocket projectile velocity.
 
 //SHOCK STOCK: An electric orb, affected by gravity. Explodes into Passanger's Device-esque chain lightning on impact.
@@ -16,8 +16,8 @@ int i_ShockMaxHits[3] = { 6, 7, 8 };					//Max number of zombies hit by the shoc
 
 float f_ShockChance[3] = { 0.1, 0.12, 0.14 };			//Chance for Shock Stock to be fired.
 float f_ShockVelocity[3] = { 600.0, 800.0, 1200.0 };	//Shock Stock projectile velocity.
-float f_ShockDMG[3] = { 800.0, 1250.0, 1500.0 };		//Base damage dealt.
-float f_ShockRadius[3] = { 200.0, 250.0, 300.0 };		//Initial blast radius.
+float f_ShockDMG[3] = { 1200.0, 2000.0, 3000.0 };		//Base damage dealt.
+float f_ShockRadius[3] = { 100.0, 150.0, 200.0 };		//Initial blast radius.
 float f_ShockChainRadius[3] = { 400.0, 600.0, 800.0 };	//Chain lightning radius.
 float f_ShockDMGReductionPerHit[3] = { 0.65, 0.75, 0.85 };	//Amount to multiply damage dealt for each zombie shocked.
 float f_ShockPassangerTime[3] = { 0.2, 0.25, 0.3 };			//Duration to apply the Passanger's Device debuff to zombies hit by Shock Stock chain lightning.
@@ -41,7 +41,7 @@ bool b_ArrowsEnabled[3] = { true, true, true };			//Is Bundle of Arrows enabled 
 
 //PYRE: A fireball which is affected by gravity.
 float f_PyreChance[3] = { 0.06, 0.1, 0.14 };			//Chance for Pyre to be fired.
-float f_PyreDMG[3] = { 1000.0, 1500.0, 2000.0 };		//Damage dealt by fireballs.
+float f_PyreDMG[3] = { 1000.0, 2500.0, 4000.0 };		//Damage dealt by fireballs.
 float f_PyreVel[3] = { 600.0, 800.0, 1200.0 };			//Fireball velocity.
 float f_PyreGravity[3] = { 1.0, 1.0, 1.0 };				//Fireball gravity multiplier.
 
@@ -59,7 +59,7 @@ bool b_SkeletonEnabled[3] = { false, true, true };		//Is Skeleton enabled on thi
 //NICE ICE: Fires a big block of ice which deals enormous damage and explodes, with a high chance of freezing all zombies hit by it.
 int i_IceMaxTargets[3] = { 3, 4, 5 };
 
-float f_IceChance[3] = { 0.00, 0.025, 0.05 };
+float f_IceChance[3] = { 0.00, 0.025, 0.03 };
 float f_IceDMG[3] = { 400.0, 600.0, 800.0 };
 float f_IceRadius[3] = { 300.0, 350.0, 400.0 };
 float f_IceVelocity[3] = { 600.0, 800.0, 1000.0 };
@@ -75,10 +75,10 @@ int i_TrashMaxExtras[3] = { 8, 12, 16 };				//Maximum number of extra projectile
 float f_TrashChance[3] = { 0.04, 0.08, 0.12 };			//Chance for Trash to be fired.
 float f_TrashVelocity[3] = { 600.0, 1000.0, 1400.00 };	//Projectile velocity for the trash bag.
 float f_TrashMiniVelocity[3] = { 400.0, 450.0, 500.00 };	//Projectile velocity for the extra projectiles created when the trash bag explodes.
-float f_TrashDMG[3] = { 800.0, 1000.0, 1200.0 };			//Base damage for the trash bag.
-float f_TrashMiniDMG[3] = { 400.0, 500.0, 600.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
-float f_TrashRadius[3] = { 400.0, 450.0, 500.0 };			//Blast radius for the trash bag.
-float f_TrashMiniRadius[3] = { 200.0, 225.0, 250.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
+float f_TrashDMG[3] = { 800.0, 1500.0, 2000.0 };			//Base damage for the trash bag.
+float f_TrashMiniDMG[3] = { 400.0, 750.0, 1000.0 };			//Base damage for the extra projectiles created when the trash bag explodes.
+float f_TrashRadius[3] = { 400.0, 250.0, 350.0 };			//Blast radius for the trash bag.
+float f_TrashMiniRadius[3] = { 200.0, 150.0, 175.0 };		//Blast radius for the extra projectiles created when the trash bag explodes.
 
 bool b_TrashEnabled[3] = { true, true, true };			//Is Trash enabled on this pap tier?
 
@@ -88,9 +88,9 @@ int i_MissilesMaxTargets[3] = { 4, 5, 6 };					//The max number of zombies hit b
 int i_MissilesNumWaves[3] = { 6, 3, 6 };					//Number of sets of micro-missiles to be fired.
 
 float f_MissilesChance[3] = { 0.00, 0.00, 0.05 };			//The chance for Micro-Missiles to be fired.
-float f_MissilesDMG[3] = { 400.0, 600.0, 800.0 };			//Base missile damage.
+float f_MissilesDMG[3] = { 400.0, 800.0, 1200.0 };			//Base missile damage.
 float f_MissilesVelocity[3] = { 1600.0, 1800.0, 2000.0 };	//Base missile velocity.
-float f_MissilesRadius[3] = { 200.0, 250.0, 300.0 };		//Base blast radius.
+float f_MissilesRadius[3] = { 200.0, 150.0, 200.0 };		//Base blast radius.
 float f_MissilesSpread[3] = { 6.0, 6.0, 6.0 };				//Micro-Missile initial projectile spread.
 float f_MissilesHomingStartTime[3] = { 0.2, 0.15, 0.1 };	//Delay after firing before micro-missiles begin to home.
 float f_MissilesWaveDelay[3] = { 0.1, 0.2, 0.1 };			//Delay between sets.
@@ -103,7 +103,7 @@ int i_MondoMaxTargets[3] = { 999, 999, 999 };
 float f_MondoChance[3] = { 0.00, 0.00, 0.0001 };
 float f_MondoVelocity[3] = { 2000.0, 3000.0, 4000.0 };
 float f_MondoDMG[3] = { 100000.0, 100000.0, 100000.0 };
-float f_MondoRadius[3] = { 1000.0, 1500.0, 2000.0 };
+float f_MondoRadius[3] = { 2000.0, 3000.0, 4000.0 };
 
 bool b_MondoEnabled[3] = { false, false, true };
 
@@ -506,9 +506,9 @@ public MRESReturn Shock_Explode(int entity)
 	float damage = f_ShockDMG[tier] * Attributes_Get(weapon, 2, 1.0);
 	float radius = f_ShockRadius[tier];
 
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
 		if (IsValidEntity(ent) && !b_NpcHasDied[ent])
 		{
@@ -533,7 +533,7 @@ public void Shock_ChainToVictim(int inflictor, int client, int weapon, float dam
 	if (IsValidEntity(victim))
 	{
 		float vicLoc[3];
-		vicLoc = WorldSpaceCenterOld(victim);
+		WorldSpaceCenter(victim, vicLoc);
 		SDKHooks_TakeDamage(victim, inflictor, client, damage, DMG_BLAST | DMG_ALWAYSGIB, weapon);
 		
 		if (f_PassangerDebuff[victim] < gt)
@@ -600,7 +600,7 @@ public void Trash_Arrows(int client, int weapon, int tier)
 		int arrow = SDKCall_CTFCreateArrow(pos, ang, vel, 0.1, 8, client, client);
 		if (IsValidEntity(arrow))
 		{
-			RequestFrame(See_Projectile_Team, EntIndexToEntRef(arrow));
+			
 			SetEntityCollisionGroup(arrow, 27);
 			SetEntDataFloat(arrow, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, damage, true);	// Damage
 			SetEntPropEnt(arrow, Prop_Send, "m_hOriginalLauncher", weapon);
@@ -642,7 +642,7 @@ public void Trash_Pyre(int client, int weapon, int tier)
 	
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 		SetEntDataFloat(entity, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);	// Damage
-		SetEntProp(entity, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity, GetTeam(client));
 		
 		DispatchSpawn(entity);
 		
@@ -806,7 +806,7 @@ public MRESReturn Ice_Explode(int entity)
 
 void Trash_IceHitPre(int entity, int victim, float damage, int weapon)
 {
-	f_HealthBeforeHurt[victim] = 9999999999.0;		//A little hack to guarantee a freeze. Anything that doesn't have anywhere near 999 billion, 999 million, 999 thousand, 999 HP will always be frozen. 
+	Cryo_FreezeZombie(victim, 1);
 }
 
 public bool Trash_RollTrash(int client, int tier)
@@ -975,7 +975,7 @@ public Action Missiles_FireWave(Handle timed, DataPack pack)
 	if (!IsValidClient(client) || !IsValidEntity(weapon) || remaining < 1)
 		return Plugin_Stop;
 	
-	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 1.0);
+	EmitSoundToAll(SOUND_MISSILES_FIRE, client, SNDCHAN_STATIC, 60, _, 0.8);
 	
 	for (int i = 0; i < i_MissilesCount[tier]; i++)
 	{
@@ -1010,7 +1010,7 @@ public MRESReturn Missiles_Explode(int entity)
 	
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 	ParticleEffectAt(position, PARTICLE_EXPLOSION_GENERIC, 1.0);
-	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 1.0);
+	EmitSoundToAll(SOUND_FLIMSY_BLAST, entity, SNDCHAN_STATIC, 80, _, 0.8);
 	
 	int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
 	int weapon = EntRefToEntIndex(i_TrashWeapon[entity]);
@@ -1057,7 +1057,7 @@ public Action Missiles_BeginHoming(Handle begin, int ref)
 		float ang[3];
 		GetEntPropVector(ent, Prop_Data, "m_angRotation", ang);
 		Initiate_HomingProjectile(ent, owner, 360.0, 120.0, false, true, ang);
-		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 1.0);
+		EmitSoundToAll(SOUND_MISSILES_BEGIN_HOMING, ent, SNDCHAN_STATIC, 80, _, 0.8);
 	}
 	
 	return Plugin_Stop;
@@ -1152,11 +1152,10 @@ int Trash_LaunchPhysProp(int client, char model[255], float scale, float velocit
 			
 	if (IsValidEntity(prop))
 	{
-		b_Is_Player_Projectile[prop] = true;
 		DispatchKeyValue(prop, "targetname", "trash_projectile"); 
 				
 		SetEntDataFloat(prop, FindSendPropInfo("CTFProjectile_Rocket", "m_iDeflected")+4, 0.0, true);
-		SetEntProp(prop, Prop_Send, "m_iTeamNum", GetEntProp(client, Prop_Send, "m_iTeamNum"));
+		SetTeam(prop, GetTeam(client));
 				
 		DispatchSpawn(prop);
 				
@@ -1238,14 +1237,14 @@ public int Trash_GetClosestVictim(float position[3], float radius, bool shock)
 	int closest = -1;
 	float dist = 999999999.0;
 	
-	for (int i = 0; i < i_MaxcountNpc; i++)
+	for (int i = 0; i < i_MaxcountNpcTotal; i++)
 	{
-		int ent = EntRefToEntIndex(i_ObjectsNpcs[i]);
+		int ent = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
 		
-		if (IsValidEntity(ent) && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
+		if (IsValidEntity(ent) && GetTeam(ent) != TFTeam_Red && !b_NpcHasDied[ent] && (!shock || f_NextShockTime[ent] <= GetGameTime()))
 		{
 			float vicLoc[3];  
-			vicLoc = WorldSpaceCenterOld(ent);
+			WorldSpaceCenter(ent, vicLoc);
 			
 			float targDist = GetVectorDistance(position, vicLoc, true);  
 				
@@ -1311,7 +1310,9 @@ stock void Trash_AttachParticle(int entity, char type[255], float duration = 0.0
 			SetVariantString("!activator");
 			AcceptEntityInput(part1, "SetParent", entity, part1);
 			SetVariantString(point);
+			/*
 			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			*/	
 			DispatchKeyValue(part1, "targetname", "present");
 			DispatchSpawn(part1);
 			ActivateEntity(part1);

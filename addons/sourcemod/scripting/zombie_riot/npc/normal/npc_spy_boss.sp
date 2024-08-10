@@ -92,8 +92,21 @@ void SpyMainBoss_OnMapStart_NPC()
 	PrecacheSound("ambient/halloween/mysterious_perc_01.wav",true);
 	
 	PrecacheSound("player/flow.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "X10 Spy Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_spy_boss");
+	strcopy(data.Icon, sizeof(data.Icon), "spy_x10_main");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SpyMainBoss(client, vecPos, vecAng, ally);
+}
 methodmap SpyMainBoss < CClotBody
 {
 	public void PlayIdleSound() {
@@ -114,9 +127,7 @@ methodmap SpyMainBoss < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -128,18 +139,14 @@ methodmap SpyMainBoss < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -186,9 +193,7 @@ methodmap SpyMainBoss < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	public void PlayDecloakSound() {
@@ -196,16 +201,13 @@ methodmap SpyMainBoss < CClotBody
 		EmitSoundToAll(g_decloak[GetRandomInt(0, sizeof(g_decloak) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_decloak[GetRandomInt(0, sizeof(g_decloak) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 
-	public SpyMainBoss(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SpyMainBoss(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SpyMainBoss npc = view_as<SpyMainBoss>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "500000", ally));
 		
-		i_NpcInternalId[npc.index] = SPY_MAIN_BOSS;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -213,7 +215,10 @@ methodmap SpyMainBoss < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
+
+		func_NPCDeath[npc.index] = SpyMainBoss_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SpyMainBoss_OnTakeDamage;
+		func_NPCThink[npc.index] = SpyMainBoss_ClotThink;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -221,8 +226,7 @@ methodmap SpyMainBoss < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SpyMainBoss_ClotThink);
+
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SpyMainBoss_ClotDamaged_Post);
 		
 		npc.m_iAttacksTillReload = 6;
@@ -334,7 +338,6 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	int PrimaryThreatIndex = npc.m_iTarget;
 	if(npc.m_flDead_Ringer_Invis < GetGameTime(npc.index) && npc.m_flDead_Ringer_Invis_bool)
 	{
-		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		npc.m_flDead_Ringer_Invis_bool = false;
 			
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
@@ -365,8 +368,9 @@ public void SpyMainBoss_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
 	
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if (npc.m_flReloadDelay < GetGameTime(npc.index) && flDistanceToTarget < 40000 || flDistanceToTarget > 90000 && npc.m_fbGunout == true && npc.m_flReloadDelay < GetGameTime(npc.index))
 		{
 			if (!npc.m_bmovedelay)
@@ -413,7 +417,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 		/*	int color[4];
 			color[0] = 255;
@@ -452,14 +456,15 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			float vecDirShooting[3], vecRight[3], vecUp[3];
 			
 			vecTarget[2] += 15.0;
-			MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+			float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+			MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 			GetVectorAngles(vecDirShooting, vecDirShooting);
 			vecDirShooting[1] = eyePitch[1];
 			GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
 			
 			float m_vecSrc[3];
 			
-			m_vecSrc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, m_vecSrc);
 			
 			float vecEnd[3];
 			vecEnd[0] = m_vecSrc[0] + vecDirShooting[0] * 9000; 
@@ -492,8 +497,9 @@ public void SpyMainBoss_ClotThink(int iNPC)
 			vecDir[1] = vecDirShooting[1] + x * vecSpread * vecRight[1] + y * vecSpread * vecUp[1]; 
 			vecDir[2] = vecDirShooting[2] + x * vecSpread * vecRight[2] + y * vecSpread * vecUp[2]; 
 			NormalizeVector(vecDir, vecDir);
-			
-			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceCenterOld(npc.index), vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+
+			FireBullet(npc.index, npc.m_iWearable5, WorldSpaceVec, vecDir, 60.0, 9000.0, DMG_BULLET, "bullet_tracer01_blue");
 			
 			npc.PlayRangedSound();
 		}
@@ -501,7 +507,7 @@ public void SpyMainBoss_ClotThink(int iNPC)
 		{		
 			npc.FaceTowards(vecTarget, 20000.0);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.3;
 			npc.m_iAttacksTillReload -= 1;
@@ -616,8 +622,6 @@ public Action SpyMainBoss_OnTakeDamage(int victim, int &attacker, int &inflictor
 	
 	if(npc.m_flDead_Ringer < GetGameTime(npc.index))
 	{
-		SDKUnhook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
-		SDKHook(npc.index, SDKHook_SetTransmit, SDKHook_Settransmit_Hide);
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 		
@@ -691,9 +695,6 @@ public void SpyMainBoss_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SpyMainBoss_ClotThink);
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SpyMainBoss_ClotDamaged_Post);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);

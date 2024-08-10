@@ -50,6 +50,21 @@ void KazimierzBeserker_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeDeflectAttack));	i++) { PrecacheSound(g_MeleeDeflectAttack[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bloodboil Knightclub Trainee");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_beserker");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_berserker");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return KazimierzBeserker(client, vecPos, vecAng, ally);
 }
 
 methodmap KazimierzBeserker < CClotBody
@@ -115,14 +130,13 @@ methodmap KazimierzBeserker < CClotBody
 	}
 	
 	
-	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzBeserker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", false, true));
+		KazimierzBeserker npc = view_as<KazimierzBeserker>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.75", "20000", ally,_, true));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_BESERKER;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -137,8 +151,10 @@ methodmap KazimierzBeserker < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzBeserker_ClotThink);
+		func_NPCDeath[npc.index] = KazimierzBeserker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzBeserker_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzBeserker_ClotThink;
+		func_NPCDeathForward[npc.index] = KazimierzBeserker_AllyDeath;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 220.0;
@@ -262,7 +278,8 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float TargetVecPos[3]; WorldSpaceCenter(npc.m_iTarget, TargetVecPos);
+				npc.FaceTowards(TargetVecPos, 15000.0); 
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -298,13 +315,14 @@ public void KazimierzBeserker_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -431,9 +449,6 @@ public void KazimierzBeserker_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzBeserker_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -448,7 +463,7 @@ public void KazimierzBeserker_AllyDeath(int ally, int self)
 {
 	KazimierzBeserker npc = view_as<KazimierzBeserker>(self);
 
-	if(GetEntProp(ally, Prop_Send, "m_iTeamNum") != GetEntProp(self, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(ally) != GetTeam(self))
 	{
 		return;
 	}

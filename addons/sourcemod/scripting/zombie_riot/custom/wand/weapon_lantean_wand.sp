@@ -4,7 +4,6 @@
 static int lantean_Wand_Drone_Count[MAXPLAYERS+1]={0, ...};
 static float fl_hud_timer[MAXPLAYERS+1]={0.0, ...};
 static float fl_AimbotTimer[MAXPLAYERS+1]={0.0, ...};
-static float fl_overcharge[MAXENTITIES]={0.0, ...};
 
 static float fl_lantean_Wand_Drone_Life[MAXENTITIES] = { 0.0, ... };
 static float fl_lantean_Wand_Drone_HitSafe[MAXENTITIES][MAXENTITIES];
@@ -21,6 +20,7 @@ static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static int i_lantean_max_penetration[MAXENTITIES];	//how many npc's the drone will penetrate before commiting die
 static float fl_lantean_penetration_dmg_penatly[MAXENTITIES];	
 static float fl_lantean_overcharge_dmg_penalty[MAXENTITIES];
+static float fl_drone_base_speed[MAXENTITIES];
 static float fl_targetshit[MAXENTITIES];	//
 static bool b_is_lantean[MAXENTITIES];
 
@@ -49,7 +49,6 @@ public void Weapon_lantean_Wand_ClearAll()
 	Zero(fl_AimbotTimer);
 	Zero(fl_hud_timer);
 	Zero(fl_lantean_Wand_Drone_Life);
-	Zero(fl_overcharge);
 	Zero2(fl_lantean_Wand_Drone_HitSafe);
 	Zero(fl_lantean_drone_life);
 	Zero(fl_targetshit);
@@ -402,6 +401,8 @@ float time)
 	SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 	SDKHook(projectile, SDKHook_Touch, lantean_Wand_Touch_World);//need collisions all the time!
 
+	fl_drone_base_speed[projectile] = speed;
+
 	lantean_Wand_Drone_Count[client] += 1;
 	fl_lantean_Wand_Drone_Life[projectile] = GetGameTime()+time;
 	i_drone_targets_penetrated[projectile] = 0;
@@ -502,7 +503,7 @@ public void lantean_Wand_Touch(int entity, int target)
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			static float Entity_Position[3];
-			Entity_Position = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, Entity_Position);
 
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			
@@ -515,8 +516,8 @@ public void lantean_Wand_Touch(int entity, int target)
 			{
 				dmg_penalty=(lantean_Wand_Drone_Count[owner]/10)*fl_lantean_overcharge_dmg_penalty[entity];
 			}
-			
-			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+			SDKHooks_TakeDamage(target, entity, owner, (Wand_Dmg / dmg_penalty), DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 			fl_targetshit[entity] *=fl_lantean_penetration_dmg_penatly[entity];
 			
 			switch(GetRandomInt(1,5)) 
@@ -564,30 +565,23 @@ public Action Lantean_PerfectHomingShot(Handle timer, DataPack pack)
 	{
 		return Plugin_Continue;
 	}
-	if(fl_lantean_Wand_Drone_Life[Projectile] > GetGameTime())	//if drone is beyond its lifetime, it loses homing and crashes and burns 
+	float GameTime = GetGameTime();
+	if(fl_lantean_Wand_Drone_Life[Projectile] > GameTime)	//if drone is beyond its lifetime, it loses homing and crashes and burns 
 	{
 		if(i_CustomWeaponEquipLogic[weapon]==WEAPON_LANTEAN)
 		{
-			if(fl_AimbotTimer[Client] < GetGameTime())
+			if(fl_AimbotTimer[Client] < GameTime)
 			{
-				if(fl_hud_timer[Client] < GetGameTime())
+				if(fl_hud_timer[Client] < GameTime)
 				{
 					Lantean_Wand_Hud(Client);
-					fl_hud_timer[Client] = GetGameTime() + 0.5;
+					fl_hud_timer[Client] = GameTime + 0.5;
 				}
-				fl_AimbotTimer[Client] = GetGameTime() + 0.25;
+				fl_AimbotTimer[Client] = GameTime + 0.25;
 
 				LanternFindVecToBotTo(Client);
 			}
-			if(fl_overcharge[Projectile] < GetGameTime())
-			{
-				if(lantean_Wand_Drone_Count[Client]>10)
-				{
-					fl_overcharge[Projectile] = GetGameTime() + lantean_Wand_Drone_Count[Client] / 10.0 - 1.0;	//if drones are over 10, the homing update becomes delayed making them harder to control/hopefuly less resource intensive
-				}
-
-				Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[Client], Projectile);
-			}
+			Lantean_HomingProjectile_TurnToTarget(f3_Vector_To_Aimbot_To[Client], Projectile);
 		}
 		return Plugin_Continue;
 	}
@@ -606,7 +600,7 @@ static void LanternFindVecToBotTo(int client)
 	int target = TR_GetEntityIndex(swingTrace);	
 	if(IsValidEnemy(client, target))
 	{
-		vec = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, vec);
 	}
 	else
 	{
@@ -642,7 +636,13 @@ static void Lantean_HomingProjectile_TurnToTarget(float Vec[3], int Projectile)
 	float flInitialVelocity[3];
 	GetEntPropVector(Projectile, Prop_Send, "m_vInitialVelocity", flInitialVelocity);
 	float flSpeedInit = GetVectorLength(flInitialVelocity);
+
+	float Ratio = (GetVectorDistance(flTargetPos, flRocketPos))/750.0;
+
+	if(Ratio<1.0)
+		Ratio=1.0;
 	
+	flSpeedInit = fl_drone_base_speed[Projectile]*Ratio;
 	
 	float flNewVec[3];
 	SubtractVectors(flTargetPos, flRocketPos, flNewVec);

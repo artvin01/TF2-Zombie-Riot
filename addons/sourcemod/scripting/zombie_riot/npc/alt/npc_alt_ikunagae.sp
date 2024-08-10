@@ -85,12 +85,12 @@ static bool Ikunagae_BEAM_UseWeapon[MAXENTITIES];
 
 public void Ikunagae_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_HurtSounds));			i++) { PrecacheSound(g_HurtSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); 	i++) { PrecacheSound(g_IdleAlertedSounds[i]); 	}
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));		i++) { PrecacheSound(g_MeleeHitSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_DeathSounds));		i++) { PrecacheSound(g_DeathSounds[i]);			}
-	for (int i = 0; i < (sizeof(g_PullSounds));  		i++) { PrecacheSound(g_PullSounds[i]);   		}
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_PullSounds);
 	
 	Ikunagae_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	Ikunagae_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
@@ -105,8 +105,22 @@ public void Ikunagae_OnMapStart_NPC()
 	//gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 	gLaser2= PrecacheModel("materials/sprites/lgtning.vmt");
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
-}
 
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ikunagae");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_ikunagae");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "ikunage"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Ikunagae(client, vecPos, vecAng, ally);
+}
 methodmap Ikunagae < CClotBody
 {
 	property int m_iAmountProjectiles
@@ -121,9 +135,7 @@ methodmap Ikunagae < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeHitSound() {
@@ -149,9 +161,7 @@ methodmap Ikunagae < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	public void PlayPullSound() {
 		EmitSoundToAll(g_PullSounds[GetRandomInt(0, sizeof(g_PullSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -168,15 +178,13 @@ methodmap Ikunagae < CClotBody
 		#endif
 	}
 	//static bool b_scaramouche_used[MAXENTITIES] = { false, ... };
-	public Ikunagae(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Ikunagae(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Ikunagae npc = view_as<Ikunagae>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		
-		i_NpcInternalId[npc.index] = ALT_IKUNAGAE;
 		i_NpcWeight[npc.index] = 3;
 		
 		
@@ -187,8 +195,9 @@ methodmap Ikunagae < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		
-		
-		SDKHook(npc.index, SDKHook_Think, Ikunagae_ClotThink);				
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);		
 		
 		
 		npc.m_bThisNpcIsABoss = true;
@@ -260,16 +269,25 @@ methodmap Ikunagae < CClotBody
 		
 		npc.StartPathing();
 		
-		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
-		
-		fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
+		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 5.0;
+		i_Severity_Barrage[npc.index] = 6;
 
-		fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+		if(GetTeam(npc.index)!=TFTeam_Red)
+		{
+			npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
+			fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(15.0, 30.0);
+
+			fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 30.0);
+			
+			clearance[npc.index] = false;
+			b_Severity_Spin_To_Win[npc.index] = false;
+			
+			Severity_Core(npc.index);
+		}
+
 		
-		clearance[npc.index] = false;
-		b_Severity_Spin_To_Win[npc.index] = false;
 		
-		Severity_Core(npc.index);
+		
 		
 		//Scaramouche_Activate(npc.index);
 		
@@ -285,16 +303,18 @@ static float Normal_Attack_Angles[MAXENTITIES];	//placing this here to use the c
 
 //TODO 
 //Rewrite
-public void Ikunagae_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Ikunagae npc = view_as<Ikunagae>(iNPC);
+
+	float GameTime = GetGameTime(npc.index);
 	
-	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
+	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	npc.m_flNextDelayTime = GameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
 		
@@ -305,32 +325,36 @@ public void Ikunagae_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	Normal_Attack_Angles[npc.index] += 1.0;
-	
-	if(Normal_Attack_Angles[npc.index]>=135.0)
+	if(GetTeam(npc.index)!=TFTeam_Red)
 	{
-		Normal_Attack_Angles[npc.index] = 45.0;
+		Normal_Attack_Angles[npc.index] += 1.0;
+		
+		if(Normal_Attack_Angles[npc.index]>=135.0)
+		{
+			Normal_Attack_Angles[npc.index] = 45.0;
+		}
 	}
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	if(npc.m_flNextThinkTime > GameTime)
 	{
 		return;
 	}
 	
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+		npc.m_flGetClosestTargetTime = GameTime + GetRandomRetargetTime();
 	}
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 		//Predict their pos.
 		
@@ -340,7 +364,9 @@ public void Ikunagae_ClotThink(int iNPC)
 			
 		//Body pitch
 		float v[3], ang[3];
-		SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+		float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+		SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 		NormalizeVector(v, v);
 		GetVectorAngles(v, ang); 
 				
@@ -351,7 +377,7 @@ public void Ikunagae_ClotThink(int iNPC)
 		
 		if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -363,53 +389,56 @@ public void Ikunagae_ClotThink(int iNPC)
 			
 		int Enemy_I_See;		
 		Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-		
-		if(fl_Spin_To_Win_Global_Ability_Timer < GetGameTime(npc.index))
+
+		if(GetTeam(npc.index)!=TFTeam_Red)
 		{
-			if(fl_Spin_To_Win_Ability_Timer[npc.index] < GetGameTime(npc.index))
+			if(fl_Spin_To_Win_Global_Ability_Timer < GameTime)
 			{
-				clearance[npc.index] = false;
-				fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 12.5;	//retry in 12.5 seconds
-				Spin_To_Win_Clearance_Check(npc.index);
-				if(clearance[npc.index])
+				if(fl_Spin_To_Win_Ability_Timer[npc.index] < GameTime)
 				{
-					fl_Spin_To_Win_Ability_Timer[npc.index] = GetGameTime(npc.index) + 120.0;
-					fl_Spin_To_Win_Global_Ability_Timer=GetGameTime(npc.index) + 30.0;
-					
-					Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+					clearance[npc.index] = false;
+					fl_Spin_To_Win_Ability_Timer[npc.index] = GameTime + 12.5;	//retry in 12.5 seconds
+					Spin_To_Win_Clearance_Check(npc.index);
+					if(clearance[npc.index])
+					{
+						fl_Spin_To_Win_Ability_Timer[npc.index] = GameTime + 120.0;
+						fl_Spin_To_Win_Global_Ability_Timer=GameTime + 30.0;
+						
+						Spin_To_Win_Activate(npc.index, i_Severity_Spin_To_Win[npc.index], b_Severity_Spin_To_Win[npc.index], 15.0, 10.0);	//setting severity to 10 or more is just pointless, also lots of lag! same thing when using alt but with over 5
+					}
 				}
 			}
-		}
-		if(fl_Scaramouche_Global_Ability_Timer < GetGameTime(npc.index))
-		{
-			if(fl_Scaramouche_Ability_Timer[npc.index] < GetGameTime(npc.index))
+			if(fl_Scaramouche_Global_Ability_Timer < GameTime)
 			{
-				fl_Scaramouche_Ability_Timer[npc.index] = GetGameTime(npc.index) + 60.0;
-				fl_Scaramouche_Global_Ability_Timer = GetGameTime(npc.index) + 12.5;
-				Scaramouche_Activate(npc.index);
+				if(fl_Scaramouche_Ability_Timer[npc.index] < GameTime)
+				{
+					fl_Scaramouche_Ability_Timer[npc.index] = GameTime + 60.0;
+					fl_Scaramouche_Global_Ability_Timer = GameTime + 12.5;
+					Scaramouche_Activate(npc.index);
+				}
 			}
 		}
 		//Target close enough to hit
 		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
 				//Can we attack right now?
-				if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					//Play attack ani
 					if (!npc.m_flAttackHappenswillhappen)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-						npc.m_flAttackHappens = GetGameTime(npc.index)+0.4;
-						npc.m_flAttackHappens_bullshit = GetGameTime(npc.index)+0.54;
+						npc.m_flAttackHappens = GameTime+0.4;
+						npc.m_flAttackHappens_bullshit = GameTime+0.54;
 						npc.m_flAttackHappenswillhappen = true;
 					}
 						
-					if (npc.m_flAttackHappens < GetGameTime(npc.index) && npc.m_flAttackHappens_bullshit >= GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						Handle swingTrace;
 						npc.FaceTowards(vecTarget, 20000.0);
@@ -434,22 +463,22 @@ public void Ikunagae_ClotThink(int iNPC)
 							} 
 						}
 						delete swingTrace;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
+						npc.m_flNextMeleeAttack = GameTime + 0.8;
 						npc.m_flAttackHappenswillhappen = false;
 					}
-					else if (npc.m_flAttackHappens_bullshit < GetGameTime(npc.index) && npc.m_flAttackHappenswillhappen)
+					else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.m_flAttackHappenswillhappen = false;
-						npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.8;
+						npc.m_flNextMeleeAttack = GameTime + 0.8;
 					}
 				}
 			}
 			else
 			{
-				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GetGameTime(npc.index))
+				if(flDistanceToTarget < 202500 && npc.m_flNextMeleeAttack < GameTime)
 				{
 					npc.PlayPullSound();
-					npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 1.5;
+					npc.m_flNextMeleeAttack = GameTime + 1.5;
 					npc.AddGesture("ACT_MP_THROW");
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.FaceTowards(vecTarget, 20000.0);
@@ -458,18 +487,19 @@ public void Ikunagae_ClotThink(int iNPC)
 
 				npc.StartPathing();
 			}
-			if(npc.m_flNextRangedBarrage_Spam < GetGameTime(npc.index) && npc.m_flNextRangedBarrage_Singular < GetGameTime(npc.index))
+			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 			{	
 				npc.m_iAmountProjectiles += 1;
 				float dmg = 100.0;
 				Normal_Attack_Start(npc.index, PrimaryThreatIndex, dmg, true);	//kinda custom attack logic for this npc
 				npc.PlayRangedSound();
-				npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 0.1;
-				if (npc.m_iAmountProjectiles >= i_Severity_Barrage[npc.index])
+				npc.m_flNextRangedBarrage_Singular = GameTime + 0.1;
+				if(npc.m_iAmountProjectiles >= i_Severity_Barrage[npc.index])
 				{
 					npc.m_iAmountProjectiles = 0;
-					npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 45.0;
-					Ikunagae_Spawn_Minnions(npc.index, 8);
+					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
+					if(GetTeam(npc.index)!=TFTeam_Red)
+						Ikunagae_Spawn_Minnions(npc.index, 8);
 				}
 			}
 		}
@@ -488,14 +518,15 @@ public void Ikunagae_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Ikunagae_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
 		return Plugin_Continue;
 	Ikunagae npc = view_as<Ikunagae>(victim);
 	
-	Severity_Core(npc.index);
+	if(GetTeam(npc.index)!=TFTeam_Red)
+		Severity_Core(npc.index);
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -506,15 +537,13 @@ public Action Ikunagae_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	return Plugin_Changed;
 }
 
-public void Ikunagae_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Ikunagae npc = view_as<Ikunagae>(entity);
 	
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_Think, Scaramouche_TBB_Tick);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Ikunagae_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
@@ -559,7 +588,7 @@ static void Scaramouche_Activate(int client)
 	
 	float UserLoc[3];
 	
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	UserLoc[2] += 10.0;
 	
 	int type_class = 2;
@@ -640,7 +669,7 @@ public Action Scaramouche_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 				{
-					float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+					float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					npc.FireParticleRocket(vecTarget, 100.0 , 450.0 , 100.0 , "raygun_projectile_blue",_,_,true,Location);
 				}
 				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
@@ -722,7 +751,7 @@ static void Spin_To_Win_Activate(int client, int severity, bool alternate_attack
 	i_spin_to_win_throttle[npc.index] = 0;
 	
 	float UserLoc[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	
 	int r, g, b, a;
 	r = 41;
@@ -814,7 +843,7 @@ public Action Spin_To_Win_TBB_Tick(int client)
 		fl_Spin_to_win_Angle[npc.index] = 0.0;
 	}
 	int testing = i_spin_to_win_Severity[npc.index];
-	if(i_spin_to_win_throttle[npc.index]>15)//Very fast
+	if(i_spin_to_win_throttle[npc.index]> RoundToFloor(15*TickrateModify))//Very fast
 	{
 		i_spin_to_win_throttle[npc.index] = 0;
 		if(b_spin_to_win_Alternate[npc.index])
@@ -910,7 +939,7 @@ static void Spin_To_Win_Clearance_Check(int client)
 {
 	
 	float UserLoc[3], Angles[3];
-	UserLoc = GetAbsOriginOld(client);
+	GetAbsOrigin(client, UserLoc);
 	float distance = 100.0;
 	
 	int Total_Hit = 0;
@@ -979,11 +1008,11 @@ static void Normal_Attack_Start(int client, int target, float damgae, bool alter
 	float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-	UserLoc = GetAbsOriginOld(npc.index);
+	GetAbsOrigin(npc.index, UserLoc);
 	
 	UserLoc[2] += 50.0;
 	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+	float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 	
 	MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 	GetVectorAngles(Angles, Angles);
@@ -1175,7 +1204,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 1000;
 	Ikunagae_BEAM_BeamRadius[client] = 10;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c1f7f4");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	Ikunagae_BEAM_CloseBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_FarBuildingDPT[client] = 0.0;
 	Ikunagae_BEAM_Duration[client] = 0.25;
@@ -1228,7 +1257,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	Ikunagae npc = view_as<Ikunagae>(client);
@@ -1238,7 +1267,7 @@ static void Ikunagae_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == Ikunagae_BEAM_BeamOffset[client][0] && 0.0 == Ikunagae_BEAM_BeamOffset[client][1] && 0.0 == Ikunagae_BEAM_BeamOffset[client][2])
@@ -1291,7 +1320,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, Ikunagae_BEAM_TraceWallsOnly);
@@ -1323,7 +1352,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -1336,8 +1365,8 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						damage *= 5.0;
 					}
-
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -1396,33 +1425,33 @@ static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 			{
 				case 1:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_BERSERKER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = NPC_CreateByName("npc_alt_medic_berserker", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 2:
 				{
-					spawn_index = Npc_Create(ALT_MEDIC_CHARGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = NPC_CreateByName("npc_alt_medic_charger", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.2);
 				}
 				case 3:
 				{
-					spawn_index = Npc_Create(ALT_COMBINE_DEUTSCH_RITTER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = NPC_CreateByName("npc_alt_combine_soldier_deutsch_ritter", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 0.8);
 				}
 				case 4:
 				{
-					spawn_index = Npc_Create(ALT_SNIPER_RAILGUNNER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = NPC_CreateByName("npc_alt_sniper_railgunner", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 				case 5:
 				{
-					spawn_index = Npc_Create(ALT_MECHASOLDIER_BARRAGER, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+					spawn_index = NPC_CreateByName("npc_alt_soldier_barrager", npc.index, pos, ang, GetTeam(npc.index));
 					maxhealth = RoundToNearest(maxhealth * 1.1);
 				}
 			}
 			if(spawn_index > MaxClients)
 			{
-				Zombies_Currently_Still_Ongoing += 1;
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 			}

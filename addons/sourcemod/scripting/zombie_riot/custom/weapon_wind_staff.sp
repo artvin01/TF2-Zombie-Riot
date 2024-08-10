@@ -295,7 +295,7 @@ public void WindStaffM2_Think(int client)
 				Mana_Regen_Delay[client] = GetGameTime() + 1.0;
 				Mana_Hud_Delay[client] = 0.0;
 				float TornadoRange = 300.0;
-				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,1.9,_,false);
+				Explode_Logic_Custom(f_TornadoDamage[client], client, client, weapon, _, TornadoRange,0.52,_,false, 4);
 				float flCarrierPos[3];//, targPos[3];
 				GetEntPropVector(client, Prop_Send, "m_vecOrigin", flCarrierPos);
 				flCarrierPos[2] += 15.0;
@@ -324,7 +324,7 @@ void TBB_Precache_Wind_Staff()
 
 void TBB_Ability_Wind_Staff(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BEAM_BuildingHit[building] = false;
 		BEAM_Targets_Hit[client] = 0.0;
@@ -478,7 +478,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BEAM_BuildingHit[building] = false;
 		}
@@ -502,14 +502,15 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BEAM_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BEAM_BuildingHit[building]);
+					WorldSpaceCenter(BEAM_BuildingHit[building], playerPos);
 					
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BEAM_CloseBuildingDPT[client] + (BEAM_FarBuildingDPT[client]-BEAM_CloseBuildingDPT[client]) * (distance/BEAM_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 
-					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage/BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, CalculateDamageForceOld(vecForward, 10000.0), playerPos);	// 2048 is DMG_NOGIB?
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
+					SDKHooks_TakeDamage(BEAM_BuildingHit[building], client, client, damage*BEAM_Targets_Hit[client], DMG_PLASMA, weapon_active, damage_force, playerPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF; //sneaky. DONT do 1.25.
 				}
 				else
@@ -571,11 +572,9 @@ static void Wand_Launch_Tornado(int client, int iRot, float speed, float time, f
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);	
 	
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
 
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iCarrier));
-	RequestFrame(See_Projectile_Team, EntIndexToEntRef(iRot));
 	
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -631,10 +630,10 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
-		
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, CalculateDamageForceOld(vecForward, 10000.0),Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force,Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
@@ -781,7 +780,7 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],2.2,_,false);
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],0.45,_,false, 4);
 	
 	return Plugin_Continue;
 }

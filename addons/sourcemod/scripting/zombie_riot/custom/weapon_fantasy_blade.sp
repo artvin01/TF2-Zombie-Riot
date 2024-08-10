@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define H_SLICER_AMOUNT 6
 
 /*
 	Shards:
@@ -48,14 +49,12 @@ static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Fantasy_Blade_BEAM_HitDetected[MAXENTITIES];
 static int Fantasy_Blade_BEAM_BuildingHit[MAXENTITIES];
 
-static float fl_trace_target_timeout[MAXTF2PLAYERS+1][MAXENTITIES];
-
 
 #define WAND_TELEPORT_SOUND "weapons/bison_main_shot.wav"
 
 #define FANTASY_BLADE_MAX_SHARDS 9.0
 #define FANTASY_BLADE_MAX_PENETRATION 15	//how many targets the blade will penetrate before killing itself
-#define FANTASY_BLADE_PENETRATION_FALLOFF 1.2	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
+#define FANTASY_BLADE_PENETRATION_FALLOFF 0.8	//by how much the damage is lowered per penetration, decided to use a seperate one from the one used in all laser weps
 
 #define FANTASY_BLADE_SHARDS_GAIN_PER_HIT 0.3
 
@@ -101,7 +100,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 			h_TimerFantasyManagement[client] = null;
 			i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 			
-			Create_Halo_And_Wings(client, true);
 			DataPack pack;
 			h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -114,7 +112,6 @@ public void Activate_Fantasy_Blade(int client, int weapon)
 	{
 		i_Current_Pap[client] = Fantasy_Blade_Get_Pap(weapon);
 		
-		Create_Halo_And_Wings(client, true);
 		DataPack pack;
 		h_TimerFantasyManagement[client] = CreateDataTimer(0.1, Timer_Management_Fantasy, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -128,7 +125,7 @@ public Action Timer_Management_Fantasy(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		h_TimerFantasyManagement[client] = null;
 		return Plugin_Stop;
 	}	
@@ -257,7 +254,7 @@ static void Fantasy_Blade_Loop_Logic(int client, int weapon)
 	}
 	else
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 	}
 }
 static void Fantasy_Show_Hud(int client, float GameTime, int pap)
@@ -401,9 +398,11 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 			
 			if(times_hurt>10)
 				break;
-			VictimPos = WorldSpaceCenterOld(HitEntitiesTeleportTrace[entity_traced]);
+			WorldSpaceCenter(HitEntitiesTeleportTrace[entity_traced], VictimPos);
 
-			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 / damage_reduction, DMG_CLUB, weapon, CalculateExplosiveDamageForceOld(abspos, VictimPos, 5000.0), VictimPos, false);	
+			float ExplodePos[3]; CalculateExplosiveDamageForce(abspos, VictimPos, 5000.0, ExplodePos);
+
+			SDKHooks_TakeDamage(HitEntitiesTeleportTrace[entity_traced], client, client, damage_1 * damage_reduction, DMG_CLUB, weapon, ExplodePos, VictimPos, false);	
 			damage_reduction *= ExplosionDmgMultihitFalloff;
 			Teleport_CD--;
 			times_hurt++;
@@ -462,7 +461,7 @@ static int i_wing_particles[MAXTF2PLAYERS+1][6];
 
 static int i_halo_particles[MAXTF2PLAYERS+1];
 			
-static void Create_Halo_And_Wings(int client, bool first=false)
+static void Create_Halo_And_Wings(int client)
 {
 	//Ty artvin <3
 	
@@ -470,11 +469,14 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 	viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 
 	if(!IsValidEntity(viewmodelModel))
+	{
+		Destroy_Halo_And_Wings(client);
 		return;
+	}
 		
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		return;
 	}
 
@@ -489,60 +491,25 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		}
 	}
 	
-	if(first)
-	{
-		if(pap>=1)
-		{
-			bool do_new = false;
-			int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
-			
-			if(!IsValidEntity(halo_particle))
-				do_new = true;
-			if(do_new)
-				Create_Halo(client);
-		}
-		if(pap>=2)
-		{
-			bool do_new = false;
-			for(int i=0 ; i < 6 ; i++)
-			{
-				int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
-				if(!IsValidEntity(wing_laser))
-				{
-					do_new = true;
-				}
-			}	
-			for(int i=0 ; i < 6 ; i++)
-			{
-				int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
-				if(!IsValidEntity(wing_particle))
-				{
-					do_new = true;
-				}
-			}
-			if(do_new)
-				Create_Wings(client,viewmodelModel);
-		}
-		
-		return;
-	}
-	if(pap>=1)
+	if(pap == 1)
 	{
 		bool do_new = false;
 		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
 		
 		if(!IsValidEntity(halo_particle))
 			do_new = true;
-		if(do_new)
-		{
-			Destroy_Halo_And_Wings(client, 2);
-			Create_Halo(client);
-		}
 		
+		if(do_new)
+			Create_Halo(client);
 	}
-	if(pap>=2)
+	if(pap == 2)
 	{
 		bool do_new = false;
+		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+		
+		if(!IsValidEntity(halo_particle))
+			do_new = true;
+	
 		for(int i=0 ; i < 6 ; i++)
 		{
 			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
@@ -561,15 +528,11 @@ static void Create_Halo_And_Wings(int client, bool first=false)
 		}
 		if(do_new)
 		{
-			Destroy_Halo_And_Wings(client, 1);
+			Destroy_Halo_And_Wings(client);
+			Create_Halo(client);
 			Create_Wings(client,viewmodelModel);
 		}
-		
 	}
-	
-	
-		
-	
 }
 
 static void Create_Halo(int client)
@@ -584,16 +547,16 @@ static void Create_Halo(int client)
 
 	if(AtEdictLimit(EDICT_PLAYER))
 	{
-		Destroy_Halo_And_Wings(client, 3);
+		Destroy_Halo_And_Wings(client);
 		return;
 	}
-		
+
 	GetAttachment(viewmodelModel, "head", flPos, flAng);
 	flPos[2] += 10.0;
 	int particle = ParticleEffectAt(flPos, "unusual_symbols_parent_ice", 0.0);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetParent(viewmodelModel, particle, "head");
-	i_halo_particles[client] = EntRefToEntIndex(particle);
+	i_halo_particles[client] = EntIndexToEntRef(particle);
 }
 static void Create_Wings(int client, int viewmodelModel)
 {
@@ -660,35 +623,27 @@ static void Create_Wings(int client, int viewmodelModel)
 	i_wing_particles[client][5] = EntIndexToEntRef(particle_0);
 	
 }
-static void Destroy_Halo_And_Wings(int client, int type)
+static void Destroy_Halo_And_Wings(int client)
 {
-	if(type==1 || type == 3)
+	for(int i=0 ; i < 6 ; i++)
 	{
-		
-		
-		for(int i=0 ; i < 6 ; i++)
+		int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
+		if(IsValidEntity(wing_laser))
 		{
-			int wing_laser = EntRefToEntIndex(i_wing_lasers[client][i]);
-			if(IsValidEntity(wing_laser))
-			{
-				RemoveEntity(wing_laser);
-			}
-		}	
-		for(int i=0 ; i < 6 ; i++)
+			RemoveEntity(wing_laser);
+		}
+	}	
+	for(int i=0 ; i < 6 ; i++)
+	{
+		int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
+		if(IsValidEntity(wing_particle))
 		{
-			int wing_particle = EntRefToEntIndex(i_wing_particles[client][i]);
-			if(IsValidEntity(wing_particle))
-			{
-				RemoveEntity(wing_particle);
-			}
+			RemoveEntity(wing_particle);
 		}
 	}
-	if(type==2 || type == 3)
-	{
-		int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
-		if(IsValidEntity(halo_particle))
-			RemoveEntity(halo_particle);
-	}
+	int halo_particle = EntRefToEntIndex(i_halo_particles[client]);
+	if(IsValidEntity(halo_particle))
+		RemoveEntity(halo_particle);
 }
 			
 		  ////////////////////
@@ -711,7 +666,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 {
 	vecTarget[2] -= 10.0;
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	switch(GetRandomInt(1, 2))
 	{
@@ -795,7 +750,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range, float
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Horizontal_Slicer_Tick);
 }
@@ -908,7 +863,7 @@ static void Vertical_Slicer(int client, float vecTarget[3], float time, float da
 	
 	i_Slicer_Throttle[client] = 0;
 	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
 	SDKHook(client, SDKHook_PreThink, Vertical_Slicer_Tick);
 }
@@ -984,13 +939,13 @@ static void Fantasy_Blade_Damage_Trace(int client, float Vec_1[3], float Vec_2[3
 	
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+		if (Fantasy_Blade_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 		{
 			float damage_xd = dmg;
 			if(b_thisNpcIsARaid[victim])
 				damage_xd*= 1.25;
 				
-			SDKHooks_TakeDamage(victim, client, client, damage_xd/BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			SDKHooks_TakeDamage(victim, client, client, damage_xd*BEAM_Targets_Hit[client], DMG_CLUB, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
 			BEAM_Targets_Hit[client] *= FANTASY_BLADE_PENETRATION_FALLOFF;
 		}
 	}

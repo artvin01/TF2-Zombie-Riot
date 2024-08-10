@@ -50,6 +50,21 @@ void KazimierzKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeDeflectAttack));	i++) { PrecacheSound(g_MeleeDeflectAttack[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Armorless Union Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_knight");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return KazimierzKnight(client, vecPos, vecAng, ally);
 }
 
 methodmap KazimierzKnight < CClotBody
@@ -101,14 +116,13 @@ methodmap KazimierzKnight < CClotBody
 	}
 	
 	
-	public KazimierzKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzKnight npc = view_as<KazimierzKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "8000", ally));
 		
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_KNIGHT;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -124,8 +138,9 @@ methodmap KazimierzKnight < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzKnight_ClotThink);
+		func_NPCDeath[npc.index] = KazimierzKnight_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzKnight_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzKnight_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -221,7 +236,8 @@ public void KazimierzKnight_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float TargetVecPos[3]; WorldSpaceCenter(npc.m_iTarget, TargetVecPos);
+				npc.FaceTowards(TargetVecPos, 15000.0); 
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -255,7 +271,8 @@ public void KazimierzKnight_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0); //Snap to the enemy. make backstabbing hard to do.
+				float TargetVecPos[3]; WorldSpaceCenter(npc.m_iTarget, TargetVecPos);
+				npc.FaceTowards(TargetVecPos, 15000.0); 
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, _)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -281,13 +298,14 @@ public void KazimierzKnight_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -377,7 +395,7 @@ public void KazimierzKnight_ClotThink(int iNPC)
 				npc.m_fbRangedSpecialOn = false;
 				npc.PlayDeflectSound();
 
-				npc.m_flDoingAnimation = gameTime + 0.8;
+				npc.m_flDoingAnimation = gameTime + 0.81;
 			}
 		}
 	}
@@ -437,9 +455,6 @@ public void KazimierzKnight_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzKnight_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

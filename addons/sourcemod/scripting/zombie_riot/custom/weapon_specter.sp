@@ -10,7 +10,7 @@
 #define SPECTER_AOE_HIT_RANGE						100.0
 #define SPECTER_MAXCHARGE							100
 #define SPECTER_DEAD_RANGE							350.0
-#define SPECTER_DAMAGE_FALLOFF_PER_ENEMY			1.1
+#define SPECTER_DAMAGE_FALLOFF_PER_ENEMY			0.9
 
 #define SPECTER_THREE	(1 << 0)
 #define SPECTER_REVIVE	(1 << 1)
@@ -332,12 +332,12 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					//Bleed sucks but thats on purpose
 
 					float vecTarget[3];
-					for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
-						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-						if (IsValidEntity(baseboss_index))
+						int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 						{
-							vecTarget = WorldSpaceCenterOld(baseboss_index);
+							WorldSpaceCenter(baseboss_index, vecTarget);
 							
 							float flDistanceToTarget = GetVectorDistance(flPos, vecTarget, true);
 							if(flDistanceToTarget < (SPECTER_DEAD_RANGE * SPECTER_DEAD_RANGE))
@@ -356,8 +356,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 			{
 				f_SpecterDyingTime[client] = 0.0;
 				int maxhealth = SDKCall_GetMaxHealth(client);
-				ApplyHealEvent(client, maxhealth / 2);
-				SetEntityHealth(client, maxhealth / 2); //Heal the client to half of their max health after being revived, otherwise this revive makes no sense.
+				HealEntityGlobal(client, client, float(maxhealth / 2), _,_,HEAL_SELFHEAL);
 			}
 		}
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
@@ -415,6 +414,7 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 		{
 			if(h_TimerSpecterAlterManagement[i])
 			{
+				b_WeaponSpecificClassBuff[weapon][0] = true;
 				Attributes_Set(weapon, 26, 200.0);
 				break;
 			}

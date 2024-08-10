@@ -303,7 +303,7 @@ public Action Timer_Detect_Player_Near_Nuke(Handle timer, any entid)
 					{
 						if(IsValidEntity(base_boss) && base_boss > 0)
 						{
-							if(GetEntProp(base_boss, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+							if(GetTeam(base_boss) != TFTeam_Red)
 							{
 								CClotBody npcstats = view_as<CClotBody>(base_boss);
 								if(!npcstats.m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[base_boss] && RaidBossActive != base_boss) //Make sure it doesnt actually kill map base_bosses
@@ -444,7 +444,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 									{
 										int Ammo_type = GetEntProp(weapon, Prop_Send, "m_iPrimaryAmmoType");
 										int weaponindex = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-										if(weaponindex == 211)
+										if(weaponindex == 211 || weaponindex == 998)
 										{
 											AddAmmoClient(client_Hud, 21 ,_,4.0);
 										}
@@ -456,9 +456,9 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 										{
 											AddAmmoClient(client_Hud, 23 ,_,4.0);	
 										}
-										else if(weaponindex == 998)
+										else if (i_WeaponAmmoAdjustable[weapon])
 										{
-											AddAmmoClient(client_Hud, 3 ,_,4.0);
+											AddAmmoClient(client_Hud, i_WeaponAmmoAdjustable[weapon] ,_,4.0);
 										}
 										else if(Ammo_type != -1 && Ammo_type < Ammo_Hand_Grenade) //Disallow Ammo_Hand_Grenade, that ammo type is regenerative!, dont use jar, tf2 needs jar? idk, wierdshit.
 										{
@@ -496,6 +496,7 @@ public Action Timer_Detect_Player_Near_Ammo(Handle timer, any entid)
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Ammo Activated");
+							Barracks_TryRegenIfBuilding(client_Hud, 4.0);
 						}
 					}
 					AcceptEntityInput(entity, "KillHierarchy"); 
@@ -654,6 +655,7 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 				client_pos[2] += 35.0;
 				if (GetVectorDistance(powerup_pos, client_pos, true) <= PLAYER_DETECT_RANGE_DROPS)
 				{
+					GlobalExtraCash += 500;
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(MONEY_SOUND, _, SNDCHAN_STATIC, 100, _);
@@ -662,7 +664,6 @@ public Action Timer_Detect_Player_Near_Money(Handle timer, any entid)
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))
 						{
 							CashSpent[client_Hud] -= 500;
-							CashRecievedNonWave[client_Hud] += 500;
 							SetHudTextParams(-1.0, 0.30, 3.01, 125, 125, 255, 255);
 							SetGlobalTransTarget(client_Hud);
 							ShowHudText(client_Hud,  -1, "%t", "Max Money Activated");
@@ -793,7 +794,7 @@ public Action Timer_Detect_Player_Near_Grigori(Handle timer, any entid)
 					ParticleEffectAt(powerup_pos, "utaunt_arcane_green_sparkle_start", 1.0);
 					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
 					EmitSoundToAll(GRIGORI_POWERUP_SOUND, _, SNDCHAN_STATIC, 100, _);
-					Store_RandomizeNPCStore(false, 1);
+					Store_RandomizeNPCStore(0, 1);
 					for (int client_Hud = 1; client_Hud <= MaxClients; client_Hud++)
 					{
 						if (IsValidClient(client_Hud) && IsPlayerAlive(client_Hud) && GetClientTeam(client_Hud) == view_as<int>(TFTeam_Red))

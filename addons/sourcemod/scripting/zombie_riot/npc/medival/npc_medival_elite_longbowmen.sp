@@ -19,7 +19,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -71,8 +71,21 @@ void MedivalEliteLongbowmen_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Medival Elite Longbowmen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_elite_longbowmen");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow_multi");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalEliteLongbowmen(client, vecPos, vecAng, ally);
+}
 methodmap MedivalEliteLongbowmen < CClotBody
 {
 	public void PlayIdleSound() {
@@ -93,9 +106,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -107,18 +118,14 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -140,17 +147,14 @@ methodmap MedivalEliteLongbowmen < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
-	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalEliteLongbowmen(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalEliteLongbowmen npc = view_as<MedivalEliteLongbowmen>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_ELITE_LONGBOWMEN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -165,6 +169,11 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
+		func_NPCDeath[npc.index] = MedivalEliteLongbowmen_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalEliteLongbowmen_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalEliteLongbowmen_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedivalEliteLongbowmen;
+		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -172,10 +181,8 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/player/items/scout/spr17_the_lightning_lid/spr17_the_lightning_lid.mdl");
 		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
-	
+
+
 //		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 //		SetEntityRenderColor(npc.index, 200, 255, 200, 255);
 
@@ -257,14 +264,15 @@ public void MedivalEliteLongbowmen_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -346,7 +354,7 @@ public void HandleAnimEventMedivalEliteLongbowmen(int entity, int event)
 				
 			float projectile_speed = 2000.0;
 			
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
@@ -386,9 +394,6 @@ public void MedivalEliteLongbowmen_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalEliteLongbowmen_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

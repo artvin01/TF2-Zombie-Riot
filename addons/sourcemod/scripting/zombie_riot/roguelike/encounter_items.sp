@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static ArrayList ShopListing;
 static bool FirstSuperSale;
 
@@ -92,11 +95,11 @@ public void Rogue_Vote_ShopEncounter(const Vote vote)
 		if(FirstSuperSale && index == 0)
 		{
 			FirstSuperSale = false;
-			Rogue_AddIngots(-artifact.ShopCost * 7 / 10);
+			Rogue_AddIngots(-artifact.ShopCost * 7 / 10, true);
 		}
 		else
 		{
-			Rogue_AddIngots(-artifact.ShopCost);
+			Rogue_AddIngots(-artifact.ShopCost, true);
 		}
 
 		StartShopVote();
@@ -452,16 +455,10 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 		case 1:
 		{
 			Ammo_Count_Ready -= 20;
-
+			
 			CurrentCash += 1500;
-			for(int client = 1; client <= MaxClients; client++)
-			{
-				if(IsClientInGame(client))
-				{
-					CashRecievedNonWave[client] += 1500;
-				}
-			}
-
+			GlobalExtraCash += 1500;
+			
 			PrintToChatAll("%t", "Eye for an Eye Lore 2");
 		}
 		default:
@@ -612,4 +609,11 @@ public void Rogue_Vote_BrokenBridge(const Vote vote, int index)
 		if(Rogue_GetRandomArtfiact(artifact, true) != -1)
 			Rogue_GiveNamedArtifact(artifact.Name);
 	}
+}
+
+static void GrantAllPlayersCredits_Rogue(int cash)
+{
+	cash *= (Rogue_GetRound()+1);
+	CPrintToChatAll("{green}%t","Cash Gained!", cash);
+	CurrentCash += cash;
 }

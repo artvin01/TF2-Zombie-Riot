@@ -174,6 +174,9 @@ public void SepcialBackstabLaughSpy(int attacker)
 {
 	EmitSoundToAll(g_WeebKnifeLaughBackstab[GetRandomInt(0, sizeof(g_WeebKnifeLaughBackstab) - 1)], attacker, SNDCHAN_VOICE, 70, _, 1.0);
 }
+#if defined RPG
+#define WEAPON_BOOM_HAMMER 10000
+#endif
 
 #define MELEE_RANGE 64.0
 #define MELEE_BOUNDS 22.0
@@ -221,6 +224,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Blitzkrieg_Kit_Custom_Melee_Logic(client, CustomMeleeRange, CustomMeleeWide, enemies_hit_aoe);
 			}
+			case WEAPON_VICTORIAN_LAUNCHER:
+			{
+				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
+			}
 		}	
 	}
 #endif
@@ -264,34 +271,38 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 	float vecSwingEndHull[3];
 	float vecSwingEndHullHeadshot[3];
 	
-
+	float ExtraMeleeRange = 1.0;
+	if(weapon > 0)
+	{
+		ExtraMeleeRange = Attributes_Get(weapon, 4001, 1.0);
+	}
 	if(CustomMeleeRange)
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * CustomMeleeRange;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * CustomMeleeRange;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * CustomMeleeRange;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * ExtraMeleeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * ExtraMeleeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.75 * ExtraMeleeRange);
 	
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (CustomMeleeRange * 2.1 * ExtraMeleeRange);
 	}
 	else
 	{
-		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * MELEE_RANGE;
-		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * MELEE_RANGE;
-		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * MELEE_RANGE;
+		vecSwingEnd[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * ExtraMeleeRange);
+		vecSwingEnd[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * ExtraMeleeRange);
+		vecSwingEnd[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * ExtraMeleeRange);
 
-		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75);
-		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75);
+		vecSwingEndHullHeadshot[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
+		vecSwingEndHullHeadshot[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.75 * ExtraMeleeRange);
 
-		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1);
-		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1);
+		vecSwingEndHull[0] = vecSwingStart[0] + vecSwingForward[0] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[1] = vecSwingStart[1] + vecSwingForward[1] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
+		vecSwingEndHull[2] = vecSwingStart[2] + vecSwingForward[2] * (MELEE_RANGE * 2.1 * ExtraMeleeRange);
 	}
 
 	i_EntitiesHitAtOnceMax = enemies_hit_aoe;
@@ -384,7 +395,7 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 	if(target == -1)
 		return ZEROSOUND;
 
-	if(target > 0 && !b_NpcHasDied[target])
+	if(target > 0 && (!b_NpcHasDied[target] || target <= MaxClients))
 	{
 		switch(weapon_index)
 		{
@@ -408,6 +419,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundSpecter(client);
 				return ZEROSOUND;
 			}	
+			case WEAPON_ANGELIC_SHOTGUN:
+			{
+				PlayCustomSoundAngelica(client);
+				return ZEROSOUND;
+			}
 		}
 #endif
 		return MELEE_HIT;
@@ -533,12 +549,25 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		}						
 		float vecHit[3];
 		TR_GetEndPosition(vecHit, swingTrace);	
+		bool DontPlaySound = false;
 #if defined ZR		
 		//We want extra rules!, do we have a melee that acts differently when we didnt hit an enemy or ally?
 		if(target < 1)
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
+				case WEAPON_CHAINSAW:
+				{
+					DontPlaySound = true;
+					if(target == 0)
+					{
+						EmitSoundChainsaw(client, 0);
+					}
+					else
+					{
+						EmitSoundChainsaw(client, 1);
+					}
+				}
 				case WEAPON_LAPPLAND: //yes, if we miss, then we do other stuff.
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
@@ -568,20 +597,25 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 #endif
 		int Item_Index = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 		int soundIndex = PlayCustomWeaponSoundFromPlayerCorrectly(client, target, Item_Index, weapon);	
-		if(soundIndex > 0)
+		if(soundIndex > 0 && !DontPlaySound)
 		{
 			char SoundStringToPlay[256];
-			if(i_WeaponSoundIndexOverride[weapon] != -1)
+			if(soundIndex == MELEE_HIT && c_WeaponSoundOverrideString[weapon][0])
+			{
+				EmitSoundToAll(c_WeaponSoundOverrideString[weapon], client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
+				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
+			}
+			else if(i_WeaponSoundIndexOverride[weapon] != -1)
 			{
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", i_WeaponSoundIndexOverride[weapon]);
 
 				SDKCall_GetShootSound(weapon, soundIndex, SoundStringToPlay, sizeof(SoundStringToPlay));
+
 				if(i_WeaponSoundIndexOverride[weapon] > 0)
 					SetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex", Item_Index);
 
 				EmitGameSoundToAll(SoundStringToPlay, client);
-					
 			}
 		}
 
@@ -594,28 +628,21 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 		{
 			damage = 40.0;
 		}
-
+		
 		if(Item_Index != 155)
 		{
-			damage *= Attributes_Get(weapon, 2, 1.0);
+			damage *= WeaponDamageAttributeMultipliers(weapon);
 		}
 		else
 		{
-			damage = 30.0;
-			float attack_speed;		
-			attack_speed = 1.0 / Attributes_FindOnPlayerZR(client, 343, true, 1.0); //Sentry attack speed bonus
-						
-			damage = attack_speed * damage * Attributes_FindOnPlayerZR(client, 287, true, 1.0);			//Sentry damage bonus
+			damage = 30.0;	
+			damage *= WeaponDamageAttributeMultipliers(weapon, MULTIDMG_BUILDER, client);
 
 #if defined ZR
 			damage *= BuildingWeaponDamageModif(1);
 			damage *= 0.5;
 #endif
-
 		}
-		
-			
-		damage *= Attributes_Get(weapon, 1, 1.0);
 
 #if defined ZR
 		switch(i_CustomWeaponEquipLogic[weapon])
@@ -626,7 +653,7 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			}
 			case WEAPON_KIT_BLITZKRIEG_CORE:
 			{
-				Blitzkrieg_Kit_OnHitEffect(client, weapon, damage);
+				Blitzkrieg_Kit_ModifyMeleeDmg(client, damage);
 			}
 		}
 #endif
@@ -669,13 +696,18 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 						{
 							Angelic_Shotgun_Meleetrace_Hit_Before(client, damage, i_EntitiesHitAoeSwing[counter]);
 						}
+						case WEAPON_KIT_BLITZKRIEG_CORE:
+						{
+							Blitzkrieg_Kit_OnHitEffect(client);
+						}
 						default:
 						{
 							
 						}
 					}
-#endif
-					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), playerPos);
+#endif				
+					float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+					SDKHooks_TakeDamage(i_EntitiesHitAoeSwing[counter], client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, playerPos);
 					
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
@@ -702,22 +734,22 @@ public void Timer_Do_Melee_Attack(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 
-		if(target > 0 && IsValidEntity(target) && Item_Index != 214)
+		if(target > 0 && IsValidEntity(target) && i_CustomWeaponEquipLogic[weapon] != WEAPON_BOOM_HAMMER)
 		{
 		//	PrintToChatAll("%i",MELEE_HIT);
 		//	SDKCall_CallCorrectWeaponSound(weapon, MELEE_HIT, 1.0);
 		// 	This doesnt work sadly and i dont have the power/patience to make it work, just do a custom check with some big shit, im sorry.
 			
-				
-			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalculateDamageForceOld(vecSwingForward, 20000.0), vecHit);	
+			float CalcDamageForceVec[3]; CalculateDamageForce(vecSwingForward, 20000.0, CalcDamageForceVec);
+			SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, vecHit);	
 		}
-		else if(target > -1 && Item_Index == 214)
+		else if(target > -1 && i_CustomWeaponEquipLogic[weapon] == WEAPON_BOOM_HAMMER)
 		{
 			i_ExplosiveProjectileHexArray[weapon] = 0;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_DEALS_CLUB_DAMAGE;
 			i_ExplosiveProjectileHexArray[weapon] |= EP_GIBS_REGARDLESS;
 				
-			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5); //Only allow 5 targets hit, otherwise it can be really op.
+			Explode_Logic_Custom(damage, client, weapon, weapon, vecHit, _, _, _, _, 5,_,_,_,AOEHammerExtraLogic); //Only allow 5 targets hit, otherwise it can be really op.
 			DataPack pack_boom = new DataPack();
 			pack_boom.WriteFloat(vecHit[0]);
 			pack_boom.WriteFloat(vecHit[1]);
@@ -834,48 +866,14 @@ void FindHullIntersection(const float vecSrc[3], Handle &tr, const float mins[3]
 	}
 }
 
-/*
-
-void FindHullIntersection( const Vector &vecSrc, trace_t &tr, const Vector &mins, const Vector &maxs, CBaseEntity *pEntity )
+void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 {
-	int	i, j, k;
-	trace_t tmpTrace;
-	Vector vecEnd;
-	float distance = 1e6f;
-	Vector minmaxs[2] = {mins, maxs};
-	Vector vecHullEnd = tr.endpos;
-
-	vecHullEnd = vecSrc + ((vecHullEnd - vecSrc)*2);
-	UTIL_TraceLine( vecSrc, vecHullEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
-	if ( tmpTrace.fraction < 1.0 )
+	if(b_thisNpcIsARaid[victim])
 	{
-		tr = tmpTrace;
-		return;
-	}
-
-	for ( i = 0; i < 2; i++ )
+		damage *= 2.0;
+	}	
+	else if(b_thisNpcIsABoss[victim])
 	{
-		for ( j = 0; j < 2; j++ )
-		{
-			for ( k = 0; k < 2; k++ )
-			{
-				vecEnd.x = vecHullEnd.x + minmaxs[i][0];
-				vecEnd.y = vecHullEnd.y + minmaxs[j][1];
-				vecEnd.z = vecHullEnd.z + minmaxs[k][2];
-
-				UTIL_TraceLine( vecSrc, vecEnd, MASK_SOLID, pEntity, COLLISION_GROUP_NONE, &tmpTrace );
-				if ( tmpTrace.fraction < 1.0 )
-				{
-					float thisDistance = (tmpTrace.endpos - vecSrc).Length();
-					if ( thisDistance < distance )
-					{
-						tr = tmpTrace;
-						distance = thisDistance;
-					}
-				}
-			}
-		}
-	}
+		damage *= 1.15;
+	}	
 }
-
-*/

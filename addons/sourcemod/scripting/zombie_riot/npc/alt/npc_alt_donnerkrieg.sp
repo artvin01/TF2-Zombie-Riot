@@ -86,13 +86,13 @@ static bool b_enraged=false;
 
 void Donnerkrieg_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);	}
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSoundArray(g_MeleeAttackSounds);
+	PrecacheSoundArray(g_MeleeMissSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
 	
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	NightmareCannon_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -106,6 +106,20 @@ void Donnerkrieg_OnMapStart_NPC()
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("mvm/sentrybuster/mvm_sentrybuster_spin.wav");
 	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_donnerkrieg");
+	data.Category = Type_Alt;
+	data.Func = ClotSummon;
+	strcopy(data.Icon, sizeof(data.Icon), "donner"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = true;													//download needed?
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+
+}
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Donnerkrieg(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Donnerkrieg < CClotBody
@@ -127,9 +141,7 @@ methodmap Donnerkrieg < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -141,18 +153,14 @@ methodmap Donnerkrieg < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -173,9 +181,7 @@ methodmap Donnerkrieg < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -187,15 +193,15 @@ methodmap Donnerkrieg < CClotBody
 	
 	
 	
-	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Donnerkrieg npc = view_as<Donnerkrieg>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.1", "25000", ally));
 		
-		i_NpcInternalId[npc.index] = ALT_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -216,14 +222,17 @@ methodmap Donnerkrieg < CClotBody
 		else
 		{
 			RaidModeScaling = 10.0;	//just a safety net
-			if(RaidBossActive==INVALID_ENT_REFERENCE)
+			if(!IsValidEntity(RaidBossActive))
 			{
 				RaidBossActive = EntIndexToEntRef(npc.index);
 				RaidModeTime = GetGameTime(npc.index) + 9000.0;
 				RaidAllowsBuildings = true;
 			}
 		}
-		SDKHook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
+
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 			
 		g_b_donner_died=false;
 
@@ -253,7 +262,7 @@ methodmap Donnerkrieg < CClotBody
 					
 		npc.GetAttachment("effect_hand_l", flPos, flAng);
 		npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", npc.index, "effect_hand_l", {0.0,0.0,0.0});
-		npc.GetAttachment("root", flPos, flAng);
+		npc.GetAttachment("", flPos, flAng);
 		
 		//SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 		npc.StartPathing();
@@ -293,7 +302,7 @@ methodmap Donnerkrieg < CClotBody
 
 //TODO 
 //Rewrite
-public void Donnerkrieg_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(iNPC);
 	
@@ -302,21 +311,16 @@ public void Donnerkrieg_ClotThink(int iNPC)
 	{
 		if(RaidModeTime < GameTime)
 		{
-			int entity = CreateEntityByName("game_round_win"); //You loose.
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
+			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
+			func_NPCThink[npc.index] = INVALID_FUNCTION;
 		}
 	}
 	if(npc.m_flNextDelayTime > GameTime)
 	{
 		return;
 	}
-	if(RaidBossActive == INVALID_ENT_REFERENCE && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
+	if(!IsValidEntity(RaidBossActive) && !g_b_donner_died && ZR_GetWaveCount()+1 >=60 && i_RaidGrantExtra[npc.index] == 1)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -365,9 +369,10 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = 0.0;
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
-		if(g_b_schwert_died && RaidBossActive == INVALID_ENT_REFERENCE)
+		if(g_b_schwert_died && !IsValidEntity(RaidBossActive))
 		{
 			for(int client=1; client<=MaxClients; client++)
 			{
@@ -385,7 +390,9 @@ public void Donnerkrieg_ClotThink(int iNPC)
 			{
 				CPrintToChatAll("{crimson}Donnerkrieg{default}: Blitzkrieg's army is happy to serve you as thanks for setting us free...");
 				npc.m_bDissapearOnDeath = true;
-						
+
+				CPrintToChatAll("{aqua}Stella{snow}: Oh also our true names are, {aqua}Stella{snow}, thats me");
+				CPrintToChatAll("{aqua}Stella{snow}: And hes {crimson}Karlas{snow}!");
 				
 				RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				for (int client = 0; client < MaxClients; client++)
@@ -480,6 +487,7 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		
 		f_NpcTurnPenalty[npc.index] = 1.0;	//:)
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -501,124 +509,127 @@ public void Donnerkrieg_ClotThink(int iNPC)
 		if(!b_nightmare_logic[npc.index])
 		{	
 	
-				float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-				float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 				
-				//Predict their pos.
-				if(flDistanceToTarget < npc.GetLeadRadius()) {
-					
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-					
-				/*	int color[4];
-					color[0] = 255;
-					color[1] = 255;
-					color[2] = 0;
-					color[3] = 255;
+			//Predict their pos.
+			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-					int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
-					TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
-					TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+			/*	int color[4];
+				color[0] = 255;
+				color[1] = 255;
+				color[2] = 0;
+				color[3] = 255;
+			
+				int xd = PrecacheModel("materials/sprites/laserbeam.vmt");
+			
+				TE_SetupBeamPoints(vPredictedPos, vecTarget, xd, xd, 0, 0, 0.25, 0.5, 0.5, 5, 5.0, color, 30);
+				TE_SendToAllInRange(vecTarget, RangeType_Visibility);*/
+				
+				NPC_SetGoalVector(npc.index, vPredictedPos);
+			} else {
+				NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
+			}
+				
+			if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
+			{
+				int iPitch = npc.LookupPoseParameter("body_pitch");
+				if(iPitch < 0)
+					return;		
 					
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				} else {
-					NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
-				}
-					
-				if(g_b_angered)	//thanks to the loss of his companion donner has gained A NECK
-				{
-					int iPitch = npc.LookupPoseParameter("body_pitch");
-					if(iPitch < 0)
-						return;		
+				//Body pitch
+				float v[3], ang[3];
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
+				NormalizeVector(v, v);
+				GetVectorAngles(v, ang); 
 						
-					//Body pitch
-					float v[3], ang[3];
-					SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
-					NormalizeVector(v, v);
-					GetVectorAngles(v, ang); 
-							
-					float flPitch = npc.GetPoseParameter(iPitch);
-							
-					npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
-				}
-				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
-				{	
-
-					npc.FaceTowards(vecTarget);
-					float projectile_speed = 400.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
-					if(g_b_angered)
-					{
-						npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
-					else
-					{
-						npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
-					}
+				float flPitch = npc.GetPoseParameter(iPitch);
 						
-					//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
+				npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+			}
+			if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime && flDistanceToTarget > (110.0 * 110.0) && flDistanceToTarget < (500.0 * 500.0))
+			{	
 
-					npc.m_iAmountProjectiles += 1;
-					npc.PlayRangedSound();
-					npc.AddGesture("ACT_MP_THROW");
-					npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
-					if (npc.m_iAmountProjectiles >= 15.0)
-					{
-						npc.m_iAmountProjectiles = 0;
-						npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
-					}
-				}
-				
-				//Target close enough to hit
-				if(flDistanceToTarget < 100000 || npc.m_flAttackHappenswillhappen)
+				npc.FaceTowards(vecTarget);
+				float projectile_speed = 400.0;
+				PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
+				if(g_b_angered)
 				{
-					//Look at target so we hit.
-				//	npc.FaceTowards(vecTarget, 1000.0);
-					
-					//Can we attack right now?
-					if(npc.m_flNextMeleeAttack < GameTime)
-					{
-						//Play attack ani
-						if (!npc.m_flAttackHappenswillhappen)
-						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-							npc.PlayMeleeSound();
-							npc.m_flAttackHappens = GameTime+0.4;
-							npc.m_flAttackHappens_bullshit = GameTime+0.54;
-							npc.m_flAttackHappenswillhappen = true;
-							npc.FaceTowards(vecTarget);
-							Normal_Attack_BEAM_TBB_Ability(npc.index);
-							
-							if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
-							{
-								Handle swingTrace;
-								if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
-								{
-									int target = TR_GetEntityIndex(swingTrace);	
-								
-									float vecHit[3];
-									TR_GetEndPosition(vecHit, swingTrace);
-									
-									if(target > 0) 
-									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
-									} 
-								}
-								delete swingTrace;
-							}
-						}
-						if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
-						{
-							npc.m_flAttackHappenswillhappen = false;
-							npc.m_flNextMeleeAttack = GameTime + 0.6;
-						}
-					}
+					npc.FireParticleRocket(vecTarget, 125.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
 				else
 				{
-					npc.StartPathing();
+					npc.FireParticleRocket(vecTarget, 25.0*RaidModeScaling , 400.0 , 100.0 , "raygun_projectile_blue");
 				}
+					
+				//(Target[3],dmg,speed,radius,"particle",bool do_aoe_dmg(default=false), bool frombluenpc (default=true), bool Override_Spawn_Loc (default=false), if previus statement is true, enter the vector for where to spawn the rocket = vec[3], flags)
+
+				npc.m_iAmountProjectiles += 1;
+				npc.PlayRangedSound();
+				npc.AddGesture("ACT_MP_THROW");
+				npc.m_flNextRangedBarrage_Singular = GameTime + 0.15;
+				if (npc.m_iAmountProjectiles >= 15.0)
+				{
+					npc.m_iAmountProjectiles = 0;
+					npc.m_flNextRangedBarrage_Spam = GameTime + 45.0;
+				}
+			}
+			
+			//Target close enough to hit
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
+			{
+				//Look at target so we hit.
+			//	npc.FaceTowards(vecTarget, 1000.0);
+				
+				//Can we attack right now?
+				if(npc.m_flNextMeleeAttack < GameTime)
+				{
+					//Play attack ani
+					if (!npc.m_flAttackHappenswillhappen)
+					{
+						npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+						npc.PlayMeleeSound();
+						npc.m_flAttackHappens = GameTime+0.4;
+						npc.m_flAttackHappens_bullshit = GameTime+0.54;
+						npc.m_flAttackHappenswillhappen = true;
+						npc.FaceTowards(vecTarget);
+						Normal_Attack_BEAM_TBB_Ability(npc.index);
+						
+						if(flDistanceToTarget < 100.0*100.0)	//to prevent players from sitting ontop of donnerkrieg and just stabing his head
+						{
+							Handle swingTrace;
+							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, _, _, _, 1))
+							{
+								int target = TR_GetEntityIndex(swingTrace);	
+							
+								float vecHit[3];
+								TR_GetEndPosition(vecHit, swingTrace);
+								
+								if(target > 0) 
+								{
+									SDKHooks_TakeDamage(target, npc.index, npc.index, 22.0*RaidModeScaling, DMG_CLUB, -1, _, vecHit);						
+								} 
+							}
+							delete swingTrace;
+						}
+					}
+					if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
+					{
+						npc.m_flAttackHappenswillhappen = false;
+						npc.m_flNextMeleeAttack = GameTime + 0.6;
+					}
+				}
+			}
+			else
+			{
+				npc.StartPathing();
+			}
 		}
 		else
 		{
@@ -647,12 +658,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 				
 	Donnerkrieg npc = view_as<Donnerkrieg>(ref);
 	
-	//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
-	
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			
-	//float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(PrimaryThreatIndex), true);
-	
+
+	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+
 	float GameTime = GetGameTime(npc.index);
 	if(!npc.m_bInKame)
 	{
@@ -722,7 +730,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 			{
 				npc.StartPathing();
 				float vBackoffPos[3];
-				vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true);
 				
 				if(fl_nightmare_grace_period[npc.index]<GameTime)
@@ -770,14 +778,15 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					float flPos[3]; // original
 					float flAng[3]; // original
 						
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "root", {0.0,0.0,0.0});
-					npc.GetAttachment("root", flPos, flAng);
-					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "root", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable5 = ParticleEffectAt_Parent(flPos, "utaunt_portalswirl_purple_parent", npc.index, "", {0.0,0.0,0.0});
+					npc.GetAttachment("", flPos, flAng);
+					npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "utaunt_runeprison_yellow_parent", npc.index, "", {0.0,0.0,0.0});
 						
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
 						
+					npc.m_bisWalking = false;
 					if(g_b_angered)
 					{
 						//npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
@@ -812,7 +821,9 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 						
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+			float WorldSpaceVec2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec2);
+			SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 							
@@ -825,13 +836,14 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 		
 		NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 		
+		float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 		if(g_b_angered)
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 150.0);
+			npc.FaceTowards(WorldSpaceVec, 150.0);
 		}
 		else
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(PrimaryThreatIndex), 5.0);
+			npc.FaceTowards(WorldSpaceVec, 5.0);
 		}
 		
 		NPC_StopPathing(npc.index);
@@ -852,7 +864,7 @@ static Action Donner_Nightmare_Offset(Handle timer, int ref)
 	}
 	return Plugin_Handled;
 }
-public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(victim);
 	
@@ -921,7 +933,7 @@ public Action Donnerkrieg_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void Donnerkrieg_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Donnerkrieg npc = view_as<Donnerkrieg>(entity);
 	if(!npc.m_bGib)
@@ -937,14 +949,15 @@ public void Donnerkrieg_NPCDeath(int entity)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 	}
 	
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
+	StopSound(npc.index, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	
-	
-	StopSound(entity,SNDCHAN_STATIC,"weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	
-	SDKUnhook(npc.index, SDKHook_Think, Donnerkrieg_ClotThink);
+	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -981,7 +994,7 @@ void Normal_Attack_BEAM_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 1000;
 	NightmareCannon_BEAM_BeamRadius[client] = 10;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 12;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 0.25;
@@ -1032,7 +1045,8 @@ void NightmareCannon_TBB_Ability(int client)
 		NightmareCannon_BEAM_BuildingHit[building] = false;
 	}
 	
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	EmitSoundToAll("mvm/mvm_tank_ping.wav");
 			
 	NightmareCannon_BEAM_IsUsing[client] = false;
@@ -1049,7 +1063,7 @@ void NightmareCannon_TBB_Ability(int client)
 	NightmareCannon_BEAM_MaxDistance[client] = 10000;
 	NightmareCannon_BEAM_BeamRadius[client] = 150;
 	NightmareCannon_BEAM_ColorHex[client] = ParseColor("ff0303");
-	NightmareCannon_BEAM_ChargeUpTime[client] = 150;
+	NightmareCannon_BEAM_ChargeUpTime[client] = RoundToFloor(150 * TickrateModify);
 	NightmareCannon_BEAM_CloseBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_FarBuildingDPT[client] = 0.0;
 	NightmareCannon_BEAM_Duration[client] = 15.0;
@@ -1137,7 +1151,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	Donnerkrieg npc = view_as<Donnerkrieg>(client);
@@ -1147,7 +1161,7 @@ static void NightmareCannon_GetBeamDrawStartPoint(int client, float startPoint[3
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == NightmareCannon_BEAM_BeamOffset[client][0] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][1] && 0.0 == NightmareCannon_BEAM_BeamOffset[client][2])
@@ -1204,7 +1218,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 		
 		if(!b_nightmare_logic[npc.index])
@@ -1235,7 +1249,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 				int PrimaryThreatIndex = npc.m_iTarget;
 				if(IsValidEnemy(npc.index, PrimaryThreatIndex) &&  !b_nightmare_logic[npc.index])
 				{
-					float target_vec[3]; target_vec = GetAbsOriginOld(PrimaryThreatIndex);
+					float target_vec[3]; GetAbsOrigin(PrimaryThreatIndex, target_vec);
 					endPoint[2] = target_vec[2];
 				}
 			}
@@ -1251,7 +1265,7 @@ public Action NightmareCannon_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (NightmareCannon_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (NightmareCannon_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -1263,7 +1277,8 @@ public Action NightmareCannon_TBB_Tick(int client)
 					{
 						damage *= 5.0;
 					}
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			static float belowBossEyes[3];

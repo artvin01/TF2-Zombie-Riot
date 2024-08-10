@@ -25,6 +25,16 @@ public void StartChicken_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
 	PrecacheModel("models/player/scout.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Chicken");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_chicken_2");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StartChicken(client, vecPos, vecAng, ally);
 }
 
 methodmap StartChicken < CClotBody
@@ -46,11 +56,9 @@ methodmap StartChicken < CClotBody
 	}
 	
 	
-	public StartChicken(int client, float vecPos[3], float vecAng[3], bool ally)
+	public StartChicken(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{8.0,8.0,36.0}));
-		
-		i_NpcInternalId[npc.index] = START_CHICKEN;
+		StartChicken npc = view_as<StartChicken>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "0.5", "300", ally, false,_,_,_,{16.0,16.0,36.0}));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -73,9 +81,6 @@ methodmap StartChicken < CClotBody
 
 		npc.m_bisWalking = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, StartChicken_ClotThink);
-		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
@@ -95,7 +100,13 @@ methodmap StartChicken < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetVariantInt(7);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+
+		func_NPCDeath[npc.index] = StartChicken_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StartChicken_OnTakeDamage;
+		func_NPCThink[npc.index] = StartChicken_ClotThink;
 		
 		npc.StartPathing();
 		
@@ -106,7 +117,6 @@ methodmap StartChicken < CClotBody
 
 //TODO 
 //Rewrite
-static float f3_PositionArrival[MAXENTITIES][3];
 public void StartChicken_ClotThink(int iNPC)
 {
 	StartChicken npc = view_as<StartChicken>(iNPC);
@@ -190,7 +200,7 @@ public void StartChicken_ClotThink(int iNPC)
 	//	if(!PF_IsPathToVectorPossible(iNPC, AproxRandomSpaceToWalkTo))
 	//		return;
 		
-		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 		delete ToGroundTrace;
@@ -199,8 +209,8 @@ public void StartChicken_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 		NPC_StartPathing(iNPC);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];
@@ -231,10 +241,7 @@ public Action StartChicken_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void StartChicken_NPCDeath(int entity)
 {
 	StartChicken npc = view_as<StartChicken>(entity);
-
-	SDKUnhook(entity, SDKHook_OnTakeDamage, StartChicken_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, StartChicken_ClotThink);
-
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

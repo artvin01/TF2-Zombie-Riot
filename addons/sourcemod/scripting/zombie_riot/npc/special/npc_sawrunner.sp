@@ -40,8 +40,21 @@ void SawRunner_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleChainsaw));   i++) { PrecacheSoundCustom(g_IdleChainsaw[i]);   }
 	for (int i = 0; i < (sizeof(g_IdleMusic));   i++) { PrecacheSoundCustom(g_IdleMusic[i]);   }
 	PrecacheModel("models/zombie_riot/cof/sawrunner_2.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sawrunner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sawrunner");
+	strcopy(data.Icon, sizeof(data.Icon), "sawrunner");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SawRunner(client, vecPos, vecAng, ally);
+}
 static int i_PlayIdleAlertSound[MAXENTITIES];
 static int i_PlayMusicSound[MAXENTITIES];
 static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
@@ -54,17 +67,17 @@ static char[] GetSawRunnerHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(CurrentRound+1 < 30)
+	if(ZR_GetWaveCount()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
 	}
-	else if(CurrentRound+1 < 45)
+	else if(ZR_GetWaveCount()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health = health * 3 / 8;
@@ -140,11 +153,10 @@ methodmap SawRunner < CClotBody
 	}
 	
 	
-	public SawRunner(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SawRunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.5", GetSawRunnerHealth(), ally, false, false, true));
+		SawRunner npc = view_as<SawRunner>(CClotBody(vecPos, vecAng, "models/zombie_riot/cof/sawrunner_2.mdl", "1.35", GetSawRunnerHealth(), ally, false, false, true));
 		
-		i_NpcInternalId[npc.index] = SAWRUNNER;
 		i_NpcWeight[npc.index] = 2;
 		
 		int iActivity = npc.LookupActivity("ACT_RUN");
@@ -153,14 +165,12 @@ methodmap SawRunner < CClotBody
 		
 		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisGiantWalkCycle = 1.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
 		npc.m_bDoSpawnGesture = true;
 		
@@ -169,6 +179,9 @@ methodmap SawRunner < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		func_NPCDeath[npc.index] = SawRunner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SawRunner_OnTakeDamage;
+		func_NPCThink[npc.index] = SawRunner_ClotThink;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 2.0;
 		
 		b_ThisNpcIsSawrunner[npc.index] = true;
@@ -272,10 +285,11 @@ public void SawRunner_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			NPC_SetGoalEntity(npc.index, PrimaryThreatIndex);
 			
@@ -355,7 +369,7 @@ public void SawRunner_ClotThink(int iNPC)
 									}
 									else
 									{
-										SDKHooks_TakeDamage(target, npc.index, npc.index, 999999.0, DMG_CLUB, -1, _, vecHit);
+										SDKHooks_TakeDamage(target, npc.index, npc.index, 99999.0, DMG_CLUB, -1, _, vecHit);
 									}
 									
 									// Hit particle
@@ -424,9 +438,6 @@ public void SawRunner_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SawRunner_ClotThink);
 		
 	Music_Stop_All_Sawrunner(entity);
 					
@@ -488,13 +499,5 @@ public Action Timer_RemoveEntitySawrunner_Tantrum(Handle timer, any entid)
 
 void Music_Stop_All_Sawrunner(int entity)
 {
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
-	StopSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3");
+	StopCustomSound(entity, SNDCHAN_AUTO, "#zombie_riot/sawrunner/near_loop.mp3", 9.0);
 }

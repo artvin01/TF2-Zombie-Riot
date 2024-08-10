@@ -8,6 +8,24 @@ bool CitizenRunner_WasKilled()
 	return CitizenHasDied;
 }
 
+void CitizenRunner_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Citizen");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_citizen_runner");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_citizen");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return CitizenRunner(client, vecPos, vecAng, data);
+}
+
 methodmap CitizenRunner < CClotBody
 {
 	public CitizenRunner(int client, float vecPos[3], float vecAng[3], const char[] data)
@@ -19,9 +37,8 @@ methodmap CitizenRunner < CClotBody
 
 		int seed = GetURandomInt();
 		Citizen_GenerateModel(seed, view_as<bool>(seed % 2), Cit_Unarmed, buffer, sizeof(buffer));
-		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", true, false,_,_,_,_,_,true));
+		CitizenRunner npc = view_as<CitizenRunner>(CClotBody(vecPos, vecAng, buffer, "1.15", "500", TFTeam_Red, false));
 		
-		i_NpcInternalId[npc.index] = CITIZEN_RUNNER;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN_PROTECTED");
 		
@@ -31,7 +48,9 @@ methodmap CitizenRunner < CClotBody
 
 		npc.m_bDissapearOnDeath = true;
 
-		SDKHook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
+		func_NPCDeath[npc.index] = CitizenRunner_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = CitizenRunner_OnTakeDamage;
+		func_NPCThink[npc.index] = CitizenRunner_ClotThink;
 		
 		npc.m_flSpeed = 241.5;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -64,7 +83,7 @@ public void CitizenRunner_ClotThink(int iNPC)
 
 	if(!npc.Anger)
 	{
-		Change_Npc_Collision(npc.index, 3); //they go through enemy npcs
+		b_IgnorePlayerCollisionNPC[npc.index] = true;
 		npc.Anger = true;
 	}
 	
@@ -86,8 +105,9 @@ public void CitizenRunner_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 
 		if(distance < 10000.0)
 		{
@@ -114,7 +134,6 @@ public void CitizenRunner_ClotThink(int iNPC)
 void CitizenRunner_NPCDeath(int entit)
 {
 	CitizenRunner npc = view_as<CitizenRunner>(entit);
-	SDKUnhook(npc.index, SDKHook_Think, CitizenRunner_ClotThink);
 	
 	if(!Waves_InSetup())
 	{
@@ -126,9 +145,7 @@ void CitizenRunner_NPCDeath(int entit)
 
 		SeaFounder_SpawnNethersea(pos);
 
-		static const int RandomInfection[] = { SEAPREDATOR_ALT, SEAPREDATOR_ALT, SEAFOUNDER_ALT, SEASPEWER_ALT, SEASWARMCALLER_ALT };
-
-		int entity = Npc_Create(RandomInfection[GetURandomInt() % sizeof(RandomInfection)], -1, pos, angles, false);
+		int entity = NPC_CreateByName("npc_netherseafounder", -1, pos, angles, TFTeam_Blue);
 		if(entity > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;

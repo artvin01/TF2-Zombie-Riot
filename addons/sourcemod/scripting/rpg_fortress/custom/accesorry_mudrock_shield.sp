@@ -1,39 +1,44 @@
 
-static Handle MudrockShieldHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
-static bool MudrockShield[MAXPLAYERS+1] = {false, ...};
-static int MudrockShieldCounter[MAXPLAYERS+1] = {0, ...};
+static Handle TrueStrengthShieldHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
+static bool TrueStrengthShield[MAXPLAYERS+1] = {false, ...};
+static int TrueStrengthShieldCounter[MAXPLAYERS+1] = {0, ...};
 
-public void MudrockShieldUnequip(int client)
+static bool BobsPureRage[MAXPLAYERS+1] = {false, ...};
+
+public void TrueStrengthShieldUnequip(int client)
 {
-	MudrockShieldCounter[client] = 0;
-	MudrockShield[client] = false;
+	TrueStrengthShieldCounter[client] = 0;
+	TrueStrengthShield[client] = false;
+	BobsPureRage[client] = false;
 	TF2_RemoveCondition(client, TFCond_UberFireResist);
-	
-	delete MudrockShieldHandle[client];
+
+	if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
+		delete TrueStrengthShieldHandle[client];
 }
 
-public void MudrockShieldDisconnect(int client)
+public void TrueStrengthShieldDisconnect(int client)
 {
-	MudrockShieldCounter[client] = 0;
-	MudrockShield[client] = false;
-	MudrockShieldHandle[client] = INVALID_HANDLE;
+	TrueStrengthShieldCounter[client] = 0;
+	TrueStrengthShield[client] = false;
+	TrueStrengthShieldHandle[client] = INVALID_HANDLE;
+	BobsPureRage[client] = false;
 }
 
-public void MudrockShieldEquip(int client, int weapon, int index)
+public void TrueStrengthShieldEquip(int client, int weapon, int index)
 {
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		if (MudrockShieldHandle[client] != INVALID_HANDLE)
+		if (TrueStrengthShieldHandle[client] != INVALID_HANDLE)
 			return;
 
-		MudrockShieldCounter[client] = 80;
-		MudrockShield[client] = true;		
-		MudrockShieldHandle[client] = CreateTimer(0.5, MudrockShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+		TrueStrengthShieldCounter[client] = 80;
+		TrueStrengthShield[client] = true;		
+		TrueStrengthShieldHandle[client] = CreateTimer(0.5, TrueStrengthShieldTimer, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	}
 }
 
-void Abiltity_Mudrock_Shield_Shield_PluginStart()
+void Abiltity_TrueStrength_Shield_Shield_PluginStart()
 {
 	PrecacheSound("player/resistance_light1.wav", true);
 	PrecacheSound("player/resistance_light2.wav", true);
@@ -51,13 +56,13 @@ void Abiltity_Mudrock_Shield_Shield_PluginStart()
 	PrecacheSound("weapons/medi_shield_retract.wav", true);
 }
 
-bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
+bool Ability_TrueStrength_Shield_OnTakeDamage(int victim)
 {
-	if (MudrockShield[victim])
+	if (TrueStrengthShield[victim])
 	{
-		if(MudrockShieldCounter[victim] > 80)
+		if(TrueStrengthShieldCounter[victim] > 80)
 		{
-			MudrockShieldCounter[victim] = 0;
+			TrueStrengthShieldCounter[victim] = 0;
 			TF2_RemoveCondition(victim, TFCond_UberFireResist);
 
 			switch(GetRandomInt(1,4))
@@ -87,17 +92,8 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 			int MaxHealth = SDKCall_GetMaxHealth(victim);
 			int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
 
-			float PercentageHeal = 0.10;
+			float PercentageHeal = 0.2;
 			
-			if(Stats_Strength(victim) > 30) //Give melee more
-			{
-				PercentageHeal = 0.15;
-			}
-			else if(Stats_Strength(victim) > 45) //Give melee more
-			{
-				PercentageHeal = 0.20;
-			}
-
 			int NewHealth = Health + RoundToCeil(float(MaxHealth) * PercentageHeal);
 
 			if(NewHealth > MaxHealth)
@@ -116,7 +112,7 @@ bool Ability_Mudrock_Shield_OnTakeDamage(int victim)
 	return false;
 }
 
-static Action MudrockShieldTimer(Handle dashHud, int ref)
+static Action TrueStrengthShieldTimer(Handle dashHud, int ref)
 {
 	int client = EntRefToEntIndex(ref);
 	if (IsValidClient(client))
@@ -124,15 +120,15 @@ static Action MudrockShieldTimer(Handle dashHud, int ref)
 		if(!IsPlayerAlive(client))
 			return Plugin_Continue;
 
-		if(MudrockShieldCounter[client] > 80)
+		if(TrueStrengthShieldCounter[client] > 80)
 			return Plugin_Continue;
 
-		MudrockShieldCounter[client] += 1;
-		if(MudrockShieldCounter[client] > 79)
+		TrueStrengthShieldCounter[client] += 1;
+		if(TrueStrengthShieldCounter[client] > 79)
 		{
 			EmitSoundToAll("weapons/medi_shield_deploy.wav",client,_,70,_,0.4);
 			TF2_AddCondition(client, TFCond_MegaHeal, 0.5, client);
-			MudrockShieldCounter[client] = 81;
+			TrueStrengthShieldCounter[client] = 81;
 			TF2_AddCondition(client, TFCond_UberFireResist, -1.0, client);
 		}
 		return Plugin_Continue;
@@ -141,4 +137,48 @@ static Action MudrockShieldTimer(Handle dashHud, int ref)
 	{
 		return Plugin_Stop;
 	}
+}
+
+
+//bobs Strength
+
+
+public void RPG_BobsPureRageEquip(int client, int weapon, int index)
+{
+	KeyValues kv = TextStore_GetItemKv(index);
+	if(kv)
+	{
+		BobsPureRage[client] = true;
+	}
+}
+
+
+bool RPG_BobsPureRage(int victim, int attacker, float &damage)
+{
+	bool ReturnVal;
+	if(IsValidClient(attacker) && BobsPureRage[attacker])
+	{
+		int MaxHealth = SDKCall_GetMaxHealth(attacker);
+		int Health = GetEntProp(attacker, Prop_Send, "m_iHealth");
+
+		float Ratio = float(Health) / float(MaxHealth);
+		if(Ratio <= 0.65)
+		{
+			damage *= 1.25;
+			ReturnVal = true;
+		}
+	}
+	if(IsValidClient(victim) && BobsPureRage[victim])
+	{
+		int MaxHealth = SDKCall_GetMaxHealth(victim);
+		int Health = GetEntProp(victim, Prop_Send, "m_iHealth");
+
+		float Ratio = float(Health) / float(MaxHealth);
+		if(Ratio <= 0.65)
+		{
+			damage *= 0.85;
+			ReturnVal = true;
+		}
+	}
+	return ReturnVal;
 }

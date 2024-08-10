@@ -14,6 +14,7 @@ static bool already_ricocated[MAXENTITIES];
 static int Beam_Laser;
 static int Entity_Owner[MAXENTITIES];
 static float damage_multiplier[MAXENTITIES];
+static float f_Thrownrecently[MAXENTITIES];
 static float mf_extra_damage[MAXENTITIES];
 static int coins_flipped[MAXTF2PLAYERS];
 
@@ -22,6 +23,11 @@ static int coins_flipped[MAXTF2PLAYERS];
 //		Ability_Apply_Cooldown(client, slot, 10.0);
 		
 // Ability_Check_Cooldown(client, slot);
+
+void CoinEntityCreated(int entity)
+{
+	mb_coin[entity] = false;
+}
 
 public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
@@ -200,9 +206,9 @@ public Action flip_extra(Handle timer, int client)
 		//	SetEntityCollisionGroup(entity, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 		//	SDKHook(entity, SDKHook_ShouldCollide, Gib_ShouldCollide);
 			AddEntityToLagCompList(entity);
-			b_IsAlliedNpc[entity] = true;
 			b_DoNotIgnoreDuringLagCompAlly[entity] = true;
 			Entity_Owner[entity] = client;
+			f_Thrownrecently[entity] = GetGameTime () + 0.35;
 
 			fPlayerPos[0] = fPlayerPos[0] + fLen * Cosine( DegToRad( fPlayerAngles[1] + 0.0) );
 			fPlayerPos[1] = fPlayerPos[1] + fLen * Sine( DegToRad( fPlayerAngles[1] + 0.0) );
@@ -224,7 +230,7 @@ public Action flip_extra(Handle timer, int client)
 			Coin_flip[client] = EntIndexToEntRef(entity);
 			mb_coin[entity] = true;
 			
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", TFTeam_Red);
+			SetTeam(entity, TFTeam_Spectator);
 			
 			SDKHook(entity, SDKHook_OnTakeDamage, Coin_HookDamaged);
 			
@@ -343,8 +349,8 @@ public Action coin_got_rioceted(Handle timer, int client)
 
 public Action Coin_HookDamaged(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	if(GetEntProp(victim, Prop_Send, "m_iTeamNum") != GetEntProp(attacker, Prop_Send, "m_iTeamNum"))
-		return Plugin_Continue;
+//	if(GetTeam(victim) != GetTeam(attacker))
+//		return Plugin_Continue;
 		
 	//Valid attackers only.
 	if(attacker < 0)
@@ -420,19 +426,23 @@ stock void Do_Coin_calc(int victim)
 	float targPos[3];
 	float chargerPos[3];
 		
+	SetTeam(victim, TFTeam_Red);
 	int Closest_entity = GetClosestTarget_Coin(victim);
-	
+	SetTeam(victim, TFTeam_Spectator);
 	if (IsValidEntity(Closest_entity))
 	{
-		
-		SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 		damage_multiplier[victim] *= 1.6;
 		damage_multiplier[Closest_entity] = damage_multiplier[victim]; //Extra bonus dmg
+		if(f_Thrownrecently[victim] > GetGameTime())
+		{
+			damage_multiplier[victim] *= 0.25;
+		}
 		
 		static char classname[36];
 		GetEntityClassname(Closest_entity, classname, sizeof(classname));
 		if (mb_coin[Closest_entity] && !StrContains(classname, "prop_physics_multiplayer", true))
 		{
+			SetEntityMoveType(Closest_entity, MOVETYPE_NONE);
 			GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", chargerPos);
 			ParticleEffectAt(chargerPos, "raygun_projectile_red_crit", 0.3);
 			
@@ -450,7 +460,7 @@ stock void Do_Coin_calc(int victim)
 					int target = TR_GetEntityIndex();	
 					static char classname_baseboss_extra[36];
 					GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+					if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 					{
 						if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1) //You got one second.
 						{
@@ -477,7 +487,7 @@ stock void Do_Coin_calc(int victim)
 					static char classname_baseboss[36];
 					GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
 					
-					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetEntProp(Closest_entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+					if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
 					{
 						GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 						targPos[2] += 35;
@@ -491,7 +501,7 @@ stock void Do_Coin_calc(int victim)
 								int target = TR_GetEntityIndex();	
 								static char classname_baseboss_extra[36];
 								GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+								if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 								{
 									if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 									{
@@ -540,7 +550,7 @@ stock void Do_Coin_calc(int victim)
 			{
 				static char classname_baseboss[36];
 				GetEntityClassname(Closest_entity, classname_baseboss, sizeof(classname_baseboss));
-				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetEntProp(Closest_entity, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+				if (!StrContains(classname_baseboss, "zr_base_npc", true) && (GetTeam(Closest_entity) != GetTeam(victim)))
 				{
 					GetEntPropVector(Closest_entity, Prop_Data, "m_vecAbsOrigin", targPos);
 					targPos[2] += 35;
@@ -554,7 +564,7 @@ stock void Do_Coin_calc(int victim)
 							int target = TR_GetEntityIndex();	
 							static char classname_baseboss_extra[36];
 							GetEntityClassname(target, classname_baseboss_extra, sizeof(classname_baseboss_extra));
-							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetEntProp(target, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum")))
+							if ( target != Closest_entity && !StrContains(classname_baseboss_extra, "zr_base_npc", true) && (GetTeam(target) != GetTeam(victim)))
 							{
 								if(mf_extra_damage[victim] > GetGameTime() && mf_extra_damage[victim] < GetGameTime() + 1.0) //You got one second.
 								{
@@ -670,9 +680,7 @@ stock int GetClosestTarget_Coin(int entity)
 	{
 		if (IsValidEntity(new_entity) && !b_NpcHasDied[new_entity])
 		{
-			static char classname[36];
-			GetEntityClassname(new_entity, classname, sizeof(classname));
-			if (!b_npcspawnprotection[new_entity] && !b_NpcIsInvulnerable[new_entity] && !StrContains(classname, "zr_base_npc", false) && (GetEntProp(new_entity, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum")) && entity != new_entity)
+			if(IsValidEnemy(entity, new_entity))
 			{
 				float EntityLocation[3], TargetLocation[3]; 
 				GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -720,7 +728,7 @@ public bool WorldOnly(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetTeam(iExclude) == GetTeam(entity))
 		return false;
 	
 	return !(entity == iExclude);

@@ -34,6 +34,21 @@ void KazimierzKnightArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	PrecacheSound("physics/metal/metal_box_impact_bullet1.wav");
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Roar Knightclub Trainee");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_archer");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_archer");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return KazimierzKnightArcher(client, vecPos, vecAng, ally, data);
 }
 
 methodmap KazimierzKnightArcher < CClotBody
@@ -69,7 +84,7 @@ methodmap KazimierzKnightArcher < CClotBody
 	}
 	
 	
-	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public KazimierzKnightArcher(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		KazimierzKnightArcher npc = view_as<KazimierzKnightArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "4000", ally));
 		
@@ -86,7 +101,6 @@ methodmap KazimierzKnightArcher < CClotBody
 			npc.m_iOverlordComboAttack = 1000;
 		}
 
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_KNIGHT_ARCHER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -102,8 +116,10 @@ methodmap KazimierzKnightArcher < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzKnightArcher_ClotThink);
+		func_NPCDeath[npc.index] = KazimierzKnightArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzKnightArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzKnightArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedival_KazimierzArcher;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 210.0;
@@ -128,7 +144,7 @@ methodmap KazimierzKnightArcher < CClotBody
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 155, 155, 255, 255);
 
-		npc.m_iWearable3 = npc.EquipItem("root", "models/effects/resist_shield/resist_shield.mdl");
+		npc.m_iWearable3 = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 /*
@@ -205,13 +221,14 @@ public void KazimierzKnightArcher_ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -348,9 +365,6 @@ public void KazimierzKnightArcher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzKnightArcher_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -374,7 +388,7 @@ public void HandleAnimEventMedival_KazimierzArcher(int entity, int event)
 				
 			float projectile_speed = 1200.0;
 			
-			vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed,_,vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						

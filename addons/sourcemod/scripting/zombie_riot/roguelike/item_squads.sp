@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_BonusLife_Collect()
 {
 	Rogue_AddBonusLife(1);
@@ -18,15 +21,14 @@ public void Rogue_Gathering_Collect()
 public void Rogue_Support_Collect()
 {
 	Rogue_AddBonusLife(1);
-	Rogue_AddIngots(20);
+	Rogue_AddIngots(20, true);
+
+	GlobalExtraCash += 250;
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 250;
 			CashSpent[client] -= 250;
-		}
 	}
 }
 
@@ -47,7 +49,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -74,12 +76,10 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 public void Rogue_Spearhead_Weapon(int entity)

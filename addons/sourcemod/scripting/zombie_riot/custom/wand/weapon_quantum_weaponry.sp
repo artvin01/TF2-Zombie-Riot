@@ -18,6 +18,8 @@ public void Quantum_Repeater_Main_Attack(int client, int weapon, bool crit)
 	
 	
 	float time = 5000.0/speed;
+	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+		damage *= 1.1;
 		
 	EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 	//	CreateTimer(0.1, Timer_HatThrow_Woosh, EntIndexToEntRef(iRot), TIMER_REPEAT);
@@ -36,12 +38,12 @@ public void Gun_QuantumTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -68,5 +70,9 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
 	damageMulti = damageMulti / 850.0;
+
+	if(Items_HasNamedItem(client, "Chaos Machina Waldch Chip"))
+		damageMulti *= 1.1;
+		
 	Attributes_Set(weapon, 2, damageMulti);
 }

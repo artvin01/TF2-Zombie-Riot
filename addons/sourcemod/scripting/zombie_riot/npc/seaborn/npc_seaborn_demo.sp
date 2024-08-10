@@ -8,6 +8,24 @@ static const char g_IdleAlertedSounds[][] =
 	"weapons/demo_charge_windup3.wav"
 };
 
+void SeabornDemo_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Demoman");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_demo");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_demo");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornDemo(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornDemo < CClotBody
 {
 	public void PlayIdleSound()
@@ -19,11 +37,10 @@ methodmap SeabornDemo < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 3.0);
 	}
 	
-	public SeabornDemo(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornDemo(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornDemo npc = view_as<SeabornDemo>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "750", ally));
 		
-		i_NpcInternalId[npc.index] = SEABORN_DEMO;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		
@@ -33,7 +50,9 @@ methodmap SeabornDemo < CClotBody
 		
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 
-		SDKHook(npc.index, SDKHook_Think, SeabornDemo_ClotThink);
+		func_NPCDeath[npc.index] = SeabornDemo_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornDemo_ClotThink;
 		
 		npc.m_bDissapearOnDeath = true;
 		npc.m_flSpeed = 406.56;
@@ -83,12 +102,12 @@ public void SeabornDemo_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
-		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -171,12 +190,11 @@ void SeabornDemo_NPCDeath(int entity)
 		pack_boom.WriteCell(1);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornDemo_ClotThink);
 }
 
 public void SeabornDemo_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(victim), "water_bulletsplash01", 3.0);
-	SeaSlider_AddNeuralDamage(victim, attacker, RoundToCeil(damage * 2.0));
+	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
+	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
+	Elemental_AddNervousDamage(victim, attacker, RoundToCeil(damage * 2.0));
 }

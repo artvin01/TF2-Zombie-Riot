@@ -33,6 +33,7 @@ static float f_TimeSinceLastStunHit[MAXENTITIES];
 static bool b_IreneNpcWasShotUp[MAXENTITIES];
 static int i_RefWeaponDelete[MAXTF2PLAYERS];
 static float f_WeaponDamageCalculated[MAXTF2PLAYERS];
+static bool b_SeabornDetected;
 
 static int LaserSprite;
 
@@ -110,15 +111,15 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 
 	//todo: If needed, add a delay so it doesnt happen on every swing
 	bool ThereWasSeaborn = false;
-	if(!StrContains(WhatDifficultySetting_Internal, "Schwert & Donner") || !StrContains(WhatDifficultySetting_Internal, "You."))
+	if(!StrContains(WhatDifficultySetting_Internal, "Stella & Karlas") || !StrContains(WhatDifficultySetting_Internal, "You."))
 	{
 		ThereWasSeaborn = true;
 	}
 	if(!ThereWasSeaborn)
 	{
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEntity(entity) && i_BleedType[entity] == BLEEDTYPE_SEABORN)
 			{
 				ThereWasSeaborn = true;
@@ -137,7 +138,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA:
 						{
 							ThereWasSeaborn = true;
 							break;
@@ -147,6 +148,8 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 			}
 		}
 	}
+
+	b_SeabornDetected = ThereWasSeaborn;
 
 	if(b_WeaponAttackSpeedModifiedSeaborn[weapon] && !ThereWasSeaborn)
 	{
@@ -215,13 +218,27 @@ public void Irene_Cooldown_Logic(int client, int weapon)
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 		{
-			if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+			if(b_SeabornDetected)
 			{
-				PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Seaborn Detected.\nJudgemet Of Iberia [READY!]");
+				}
 			}
 			else
-			{
-				PrintHintText(client,"Judgemet Of Iberia [READY!]");
+			{	
+				if(i_IreneHitsDone[client] < IRENE_JUDGEMENT_MAX_HITS_NEEDED)
+				{
+					PrintHintText(client,"Judgemet Of Iberia [%i%/%i]", i_IreneHitsDone[client], IRENE_JUDGEMENT_MAX_HITS_NEEDED);
+				}
+				else
+				{
+					PrintHintText(client,"Judgemet Of Iberia [READY!]");
+				}
 			}
 			
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
@@ -286,12 +303,12 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int target = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+			int target = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 			if(IsValidEnemy(client, target, true, false))
 			{
-				VicLoc = WorldSpaceCenterOld(target);
+				WorldSpaceCenter(target, VicLoc);
 				
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
@@ -405,12 +422,12 @@ public void Npc_Irene_Launch_client(int client)
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);	
 
-			for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
-				int enemy = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
+				int enemy = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 				if(IsValidEnemy(client, enemy, true, false))
 				{
-					VicLoc = WorldSpaceCenterOld(enemy);
+					WorldSpaceCenter(enemy, VicLoc);
 					
 					if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED) //respect max range.
 					{
@@ -436,7 +453,7 @@ public void Npc_Irene_Launch_client(int client)
 			float VicLoc[3];
 
 			//poisition of the enemy we random decide to shoot.
-			VicLoc = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, VicLoc);
 
 			LookAtTarget(client, target);
 
@@ -501,7 +518,7 @@ public void Npc_Irene_Launch(int iNPC)
 	if(b_IreneNpcWasShotUp[iNPC])
 	{
 		float VicLoc[3];
-		VicLoc = WorldSpaceCenterOld(iNPC);
+		WorldSpaceCenter(iNPC, VicLoc);
 		VicLoc[2] += 250.0; //Jump up.
 		PluginBot_Jump(iNPC, VicLoc);
 	}

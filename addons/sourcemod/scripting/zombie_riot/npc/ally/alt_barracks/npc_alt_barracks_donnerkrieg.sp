@@ -26,8 +26,6 @@ static char g_PullSounds[][] = {
 	"weapons/physcannon/superphys_launch4.wav",
 };
 
-#define MAX_TARGETS_HIT 10
-
 static float BEAM_Targets_Hit[MAXENTITIES];
 static bool Ikunagae_BEAM_IsUsing[MAXENTITIES];
 static int Ikunagae_BEAM_Laser;
@@ -63,6 +61,23 @@ public void Barrack_Alt_Donnerkrieg_MapStart()
 	Ikunagae_BEAM_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	
 	PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Donnerkrieg");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_donnerkrieg");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static float fl_npc_basespeed;
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Donnerkrieg(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Donnerkrieg < BarrackBody
@@ -140,15 +155,17 @@ methodmap Barrack_Alt_Donnerkrieg < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Donnerkrieg(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Donnerkrieg(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(BarrackBody(client, vecPos, vecAng, "650", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_DONNERKRIEG;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Donnerkrieg_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Donnerkrieg_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Donnerkrieg_ClotThink;
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -226,7 +243,9 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 				return;	
 			//Body pitch
 			float v[3], ang[3];
-			SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(PrimaryThreatIndex), v); 
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+			float WorldSpaceVec_2[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec_2);
+			SubtractVectors(WorldSpaceVec, WorldSpaceVec_2, v); 
 			NormalizeVector(v, v);
 			GetVectorAngles(v, ang); 
 					
@@ -238,8 +257,9 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0 && !b_cannon_active[npc.index])
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			int iPitch = npc.LookupPoseParameter("body_pitch");
 			if(iPitch < 0)
@@ -298,7 +318,7 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
@@ -338,6 +358,18 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 		}
 		if(!b_cannon_active[npc.index])
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE", 100000.0, _, false);
+
+		if(!b_cannon_active[npc.index])
+		{
+			if(npc.m_flNextMeleeAttack > GameTime)
+			{
+				npc.m_flSpeed = 10.0;
+			}
+			else
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+			}
+		}
 	}
 }
 
@@ -345,7 +377,6 @@ void Barrack_Alt_Donnerkrieg_NPCDeath(int entity)
 {
 	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Donnerkrieg_ClotThink);
 }
 
 static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
@@ -362,7 +393,7 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
-	Ikunagae_BEAM_ChargeUpTime[client] = 12;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(12 * TickrateModify);
 
 	tickCountClient[client] = 0;
 
@@ -385,7 +416,7 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");
-	Ikunagae_BEAM_ChargeUpTime[client] = 50;
+	Ikunagae_BEAM_ChargeUpTime[client] = RoundToFloor(50 * TickrateModify);
 	Ikunagae_BEAM_Duration[client] = 10.0;
 
 	Ikunagae_BEAM_IsUsing[client] = true;
@@ -481,7 +512,7 @@ static Action Ikunagae_TBB_Tick(int client)
 		int target = npc.m_iTarget;
 		if(IsValidEntity(target))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 
@@ -523,7 +554,7 @@ static Action Ikunagae_TBB_Tick(int client)
 			BEAM_Targets_Hit[client] = 1.0;
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -536,7 +567,8 @@ static Action Ikunagae_TBB_Tick(int client)
 					{
 						inflictor=client;
 					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
+					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6) * BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, EnemyVecPos);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}
@@ -609,7 +641,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 		int target = npc.m_iTarget;
 		if(IsValidEntity(target))
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 
@@ -651,7 +683,7 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 			BEAM_Targets_Hit[npc.index] = 1.0;
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (Ikunagae_BEAM_HitDetected[victim] && GetEntProp(npc.index, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (Ikunagae_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -664,7 +696,8 @@ static void DonnerKrieg_Normal_Attack(Barrack_Alt_Donnerkrieg npc)
 					{
 						inflictor=npc.index;
 					}
-					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)/BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+					SDKHooks_TakeDamage(victim, npc.index, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), damage, 1)/6)*BEAM_Targets_Hit[npc.index], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[npc.index] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}

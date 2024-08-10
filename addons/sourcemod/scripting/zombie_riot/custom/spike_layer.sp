@@ -132,7 +132,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 		
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, !Merchant_IsAMerchant(client));			//Sentry damage bonus
 
 		Bonus_damage *= BuildingWeaponDamageModif(1);
 
@@ -160,7 +160,7 @@ public void Weapon_Spike_Layer(int client, int weapon, const char[] classname, b
 			b_ExpertTrapper[entity] = b_ExpertTrapper[client];
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 			SetEntProp(entity, Prop_Send, "m_iType", 1);
@@ -231,7 +231,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 		
 		attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+		Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, !Merchant_IsAMerchant(client));			//Sentry damage bonus
 
 		Bonus_damage *= BuildingWeaponDamageModif(1);
 
@@ -260,7 +260,7 @@ public void Weapon_Spike_Layer_PAP(int client, int weapon, const char[] classnam
 			b_ExpertTrapper[entity] = b_ExpertTrapper[client];
 			b_StickyIsSticking[entity] = true; //Make them not stick to npcs.
 			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
-			SetEntProp(entity, Prop_Send, "m_iTeamNum", team);
+			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_bCritical", false); 	//No crits, causes particles which cause FPS DEATH!! Crits in tf2 cause immensive lag from what i know from ff2.
 																	//Might also just be cosmetics, eitherways, dont use this, litterally no reason to!
 			SetEntProp(entity, Prop_Send, "m_iType", 1);
@@ -361,10 +361,10 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 				float targPos[3];
 				float Spikepos[3];
 				
-				for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 				{
-					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-					if (IsValidEntity(baseboss_index))
+					int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
 					{
 						if(!b_NpcHasDied[baseboss_index])
 						{
@@ -381,7 +381,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 								//Just do full damage.
 								float DamageTrap = float(Spike_Health[entity]);
 								if(b_ExpertTrapper[client] && b_ExpertTrapper[entity])
-									DamageTrap *= 5.0;
+									DamageTrap *= 4.5;
 
 								SDKHooks_TakeDamage(baseboss_index, client, client, DamageTrap, DMG_BULLET, -1, NULL_VECTOR, Spikepos);
 

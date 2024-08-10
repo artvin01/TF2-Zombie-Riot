@@ -23,9 +23,25 @@ static const char g_IdleAlertedSounds[][] =
 public void Barrack_Alt_Basic_Mage_MapStart()
 {
 	PrecacheModel("models/player/medic.mdl");
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Basic Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_basic_mage");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+static float fl_npc_basespeed;
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Basic_Mage(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Basic_Mage < BarrackBody
@@ -53,15 +69,16 @@ methodmap Barrack_Alt_Basic_Mage < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Basic_Mage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Basic_Mage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(BarrackBody(client, vecPos, vecAng, "100", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_BASIC_MAGE;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Basic_Mage_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Basic_Mage_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Basic_Mage_ClotThink;
+		fl_npc_basespeed = 190.0;
 		npc.m_flSpeed = 190.0;
 		
 		
@@ -105,8 +122,9 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < 300000.0)
 			{
@@ -118,7 +136,7 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 					if(npc.m_flNextMeleeAttack < GameTime)
 					{
 						float speed = 750.0;
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, speed);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, speed,_,vecTarget);
 						npc.m_flSpeed = 0.0;
 						npc.FaceTowards(vecTarget, 30000.0);
 						//Play attack anim
@@ -143,6 +161,15 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 200000.0, _, false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 
@@ -150,5 +177,4 @@ void Barrack_Alt_Basic_Mage_NPCDeath(int entity)
 {
 	Barrack_Alt_Basic_Mage npc = view_as<Barrack_Alt_Basic_Mage>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Basic_Mage_ClotThink);
 }

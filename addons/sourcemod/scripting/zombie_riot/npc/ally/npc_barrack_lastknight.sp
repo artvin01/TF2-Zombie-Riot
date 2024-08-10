@@ -1,20 +1,39 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+public void BarrackLastKnightOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Tide-Hunt Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lastknight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackLastKnight(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackLastKnight < BarrackBody
 {
-	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackLastKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackLastKnight npc = view_as<BarrackLastKnight>(BarrackBody(client, vecPos, vecAng, "3000", _, _, "0.75",_,"models/pickups/pickup_powerup_regen.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_LASTKNIGHT;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "spy_cicle");
 		
 		npc.m_bSelectableByAll = true;
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackLastKnight_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackLastKnight_NPCDeath;
+		func_NPCThink[npc.index] = BarrackLastKnight_ClotThink;
 
 		npc.m_flSpeed = 150.0;
 		
@@ -48,11 +67,12 @@ public void BarrackLastKnight_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
@@ -117,5 +137,4 @@ void BarrackLastKnight_NPCDeath(int entity)
 {
 	BarrackLastKnight npc = view_as<BarrackLastKnight>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackLastKnight_ClotThink);
 }

@@ -17,7 +17,7 @@ static char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static char g_IdleAlertedSounds[][] = {
@@ -78,8 +78,21 @@ public void XenoCombineCollos_OnMapStart_NPC()
 	
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Combine Golden Collos");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_combine_soldier_collos_swordsman");
+	strcopy(data.Icon, sizeof(data.Icon), "combine_gold");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Xeno;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoCombineCollos(client, vecPos, vecAng, ally);
+}
 methodmap XenoCombineCollos < CClotBody
 {
 	public void PlayIdleSound() {
@@ -100,9 +113,7 @@ methodmap XenoCombineCollos < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -110,18 +121,14 @@ methodmap XenoCombineCollos < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -165,18 +172,15 @@ methodmap XenoCombineCollos < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
-	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoCombineCollos(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoCombineCollos npc = view_as<XenoCombineCollos>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.85", "30000", ally, false, true));
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = XENO_COMBINE_SOLDIER_COLLOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -193,8 +197,11 @@ methodmap XenoCombineCollos < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;		
 
 		
-		
-		SDKHook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
+	
+
+		func_NPCDeath[npc.index] = XenoCombineCollos_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoCombineCollos_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoCombineCollos_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 300.0;
@@ -274,15 +281,16 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -337,7 +345,8 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 					//GetAngleVectors(eyePitch, vecDirShooting, vecRight, vecUp);
 					
 					vecTarget[2] += 15.0;
-					MakeVectorFromPoints(WorldSpaceCenterOld(npc.index), vecTarget, vecDirShooting);
+					float SelfVecPos[3]; WorldSpaceCenter(npc.index, SelfVecPos);
+					MakeVectorFromPoints(SelfVecPos, vecTarget, vecDirShooting);
 					GetVectorAngles(vecDirShooting, vecDirShooting);
 					vecDirShooting[1] = eyePitch[1];
 					GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
@@ -351,13 +360,14 @@ public void XenoCombineCollos_ClotThink(int iNPC)
 					
 					npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 					
+					float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
 					if(EscapeModeForNpc)
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, npc_vec, vecDir, 50.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 					else
 					{
-						FireBullet(npc.index, npc.index, WorldSpaceCenterOld(npc.index), vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
+						FireBullet(npc.index, npc.index, npc_vec, vecDir, 35.0, 250.0, DMG_BULLET, "bullet_tracer02_blue");
 					}
 				}
 			}
@@ -473,7 +483,6 @@ public void XenoCombineCollos_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, XenoCombineCollos_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

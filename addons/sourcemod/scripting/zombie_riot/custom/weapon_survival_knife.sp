@@ -193,7 +193,7 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 				
 			Knife_Count[client]++;
 
-			CD_Knife[client] = GetGameTime() + CD_KnifeSet[client];
+			CD_Knife[client] = GetGameTime() + (CD_KnifeSet[client] * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 		}
 	}
 	if(f_KnifeHudDelay[client] < GetGameTime())
@@ -230,7 +230,7 @@ public void Survival_Knife_Tier1_Alt(int client, int weapon, bool crit, int slot
 	if (CD_Throw[client]>GetGameTime())
 		return;
 
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 
 	if(Knife_Count[client]>0)
 	{
@@ -260,22 +260,21 @@ public void Survival_Knife_Tier2_Reload(int client, int weapon, bool crit)
 		return;
 	
 	Knife_Triple_Mode[client] = (!Knife_Triple_Mode[client]);
-	CD_Mode[client] = GetGameTime() + 0.3;
+	CD_Mode[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0));
 }
 
 public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot)
 {
-
 	if (CD_Throw[client]>GetGameTime())
 		return;
 		
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 	if (!Knife_Triple_Mode[client])
 	{
 		if(Knife_Count[client]>0)
 		{
 			Knife_Count[client] -= 1;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 			
 			SetDefaultHudPosition(client);
@@ -299,7 +298,7 @@ public void Survival_Knife_Tier2_Alt(int client, int weapon, bool crit, int slot
 		if(Knife_Count[client]>=3)
 		{
 			Knife_Count[client] -= 3;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_2, 1);
 
 			DataPack pack = new DataPack();
@@ -353,7 +352,8 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		int flHealth = GetClientHealth(client);
 		
-		int health = flMaxHealth / 5;
+		int health = flMaxHealth / 4;
+		f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
 
 		flHealth -= health;
 		if((flHealth) < 1)
@@ -368,7 +368,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
 	}
 	else
 	{
@@ -395,7 +395,7 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Madness ends");
 			
-			CreateTimer(10.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
+			CreateTimer(20.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
 		}
 	}
 	InMadness[client] = false;
@@ -422,13 +422,13 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 
 	if (CD_Throw[client]>GetGameTime())
 		return;
-	CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+	CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 	if (!InMadness[client])
 	{
 		if(Knife_Count[client]>0)
 		{
 			Knife_Count[client] -= 1;
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
+			CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 			if(Knife_Count[client] <= 0)
 			{
@@ -445,8 +445,8 @@ public void Survival_Knife_Tier3_Alt(int client, int weapon, bool crit, int slot
 	}
 	else
 	{
-			CD_Throw[client] = GetGameTime() + 0.3; // prevent spamming, idk if you already have something for that but hee
-			Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
+		CD_Throw[client] = GetGameTime() + (0.4 * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
+		Throw_Knife(client, weapon, KNIFE_SPEED_3, 2);
 	}
 }
 public Action Timer_Throw_Extra_Knife(Handle timer, DataPack pack)
@@ -468,7 +468,7 @@ public Action Timer_Throw_Extra_Knife(Handle timer, DataPack pack)
 public void Throw_Knife(int client, int weapon, float speed, int iModel)
 {
 	f_KnifeHudDelay[client] = 0.0;
-	float damage = 75.0;
+	float damage = 65.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 	
 	float fAng[3], fPos[3];
@@ -546,8 +546,8 @@ static void Wand_Launch(int client, int iRot, float speed, float time, float dam
 	TeleportEntity(iCarrier, fPos, NULL_VECTOR, fVel);
 	SetEntityMoveType(iCarrier, MOVETYPE_FLY);
 	
-	SetEntProp(iCarrier, Prop_Send, "m_iTeamNum", GetClientTeam(client));
-	SetEntProp(iRot, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+	SetTeam(iCarrier, GetClientTeam(client));
+	SetTeam(iRot, GetClientTeam(client));
 
 	SetVariantString("!activator");
 	AcceptEntityInput(iRot, "SetParent", iCarrier, iRot, 0);
@@ -603,11 +603,11 @@ public Action Event_Knife_Touch(int entity, int other)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
-		
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		int weapon = EntRefToEntIndex(Projectile_To_Weapon[entity]);
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{

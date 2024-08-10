@@ -47,8 +47,22 @@ void WinterArcticMage_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Arctic Mage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_arctic_mage");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius_1");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterArcticMage(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterArcticMage < CClotBody
 {
@@ -84,17 +98,16 @@ methodmap WinterArcticMage < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
 	
-	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterArcticMage(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "10000", ally, false, true));
+		WinterArcticMage npc = view_as<WinterArcticMage>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "15000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_ARCTIC_MAGE;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -174,13 +187,14 @@ public void WinterArcticMage_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -223,22 +237,7 @@ void WinterArcticMageHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		int TeamNum = GetEntProp(victim, Prop_Send, "m_iTeamNum");
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		victim,
-		victim,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		99,
-		false,
-		_,
-		WinterArcticMageAllyHeal);
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
+		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }
@@ -273,7 +272,8 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -286,11 +286,11 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 				{
 					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.5;
+						damageDealt *= 1.75;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 40);
+					Elemental_AddCyroDamage(target, npc.index, 40, 1);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -323,32 +323,8 @@ void WinterArcticMageSelfDefense(WinterArcticMage npc, float gameTime, int targe
 }
 
 
-void WinterArcticMageAllyHeal(int entity, int victim, float damage, int weapon)
+void WinterArcticMageAllyHealInternal(int entity, int victim)
 {
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
-		{
-			RajulHealAllyDone[entity] += 1;
-			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-	else
-	{
-		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_WINTER_ARCTIC_MAGE)
-		{
-			RajulHealAllyDone[entity] += 1;
-			WinterArcticMageAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-}
-
-void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
@@ -371,11 +347,7 @@ void WinterArcticMageAllyHealInternal(int entity, int victim, float heal)
 			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
 		}
 	}
-
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	
 	VausMagicaGiveShield(victim, 1);
 	//yippie reuse
 }

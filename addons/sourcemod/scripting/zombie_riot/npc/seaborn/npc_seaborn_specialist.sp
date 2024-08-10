@@ -48,6 +48,24 @@ static const char g_RangedAttackSoundsSecondary[][] =
 	"ambient/levels/labs/electric_explosion5.wav",
 };
 
+void SeabornSpecialist_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Specialist");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_specialist");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_specialist");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornSpecialist(client, vecPos, vecAng, ally);
+}
+
 methodmap SeabornSpecialist < CClotBody
 {
 	public void PlayIdleSound()
@@ -79,18 +97,18 @@ methodmap SeabornSpecialist < CClotBody
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornSpecialist(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool teleported;
 
 		float vecPos2[3], vecAng2[3];
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			float lowest = 1.0;
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity) && GetTeam(entity) != TFTeam_Red)
 				{
 					float ratio = float(GetEntProp(entity, Prop_Data, "m_iHealth") + 2) / float(GetEntProp(entity, Prop_Data, "m_iMaxHealth") + 1);
 					if(ratio < lowest)
@@ -98,19 +116,18 @@ methodmap SeabornSpecialist < CClotBody
 						teleported = true;
 						lowest = ratio;
 
-						vecPos2 = GetAbsOriginOld(entity);
+						GetAbsOrigin(entity, vecPos2);
 						GetEntPropVector(entity, Prop_Data, "m_angRotation", vecAng2);
 					}
 				}
 			}
 		}
 
-		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "24000", ally, false));
+		SeabornSpecialist npc = view_as<SeabornSpecialist>(CClotBody(teleported ? vecPos2 : vecPos, teleported ? vecAng2 : vecAng, COMBINE_CUSTOM_MODEL, "1.15", "29000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_SPECIALIST;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_CUSTOM_WALK_LUCIAN");
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
@@ -120,13 +137,17 @@ methodmap SeabornSpecialist < CClotBody
 			npc.AddGesture("ACT_CUSTOM_TELEPORT_LUCIAN");
 			npc.PlayTeleportSound();
 			npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.8;
+			npc.m_flMeleeArmor = 0.25;
+			npc.m_flRangedArmor = 0.25;
 		}
 		
 		npc.m_iBleedType = BLEEDTYPE_SEABORN;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornSpecialist_ClotThink);
+		func_NPCDeath[npc.index] = SeabornSpecialist_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornSpecialist_ClotThink;
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -183,6 +204,8 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	npc.m_flMeleeArmor = 1.0;
+	npc.m_flRangedArmor = 1.0;
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget))
 		npc.m_iTarget = 0;
@@ -195,8 +218,9 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -216,7 +240,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 300.0 : 100.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 300.0 : 125.0, DMG_CLUB);
 					}
 				}
 
@@ -230,7 +254,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-				npc.m_flNextMeleeAttack = gameTime + 0.95;
+				npc.m_flNextMeleeAttack = gameTime + 0.65;
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_CUSTOM_ATTACK_LUCIAN");
@@ -248,7 +272,7 @@ public void SeabornSpecialist_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_,vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -273,8 +297,6 @@ void SeabornSpecialist_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornSpecialist_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

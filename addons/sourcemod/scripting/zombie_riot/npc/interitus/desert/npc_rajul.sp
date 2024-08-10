@@ -52,8 +52,21 @@ void DesertRajul_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Rajul");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_rajul");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_heal_intertius_1");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertRajul(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertRajul < CClotBody
 {
@@ -89,17 +102,16 @@ methodmap DesertRajul < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
 	
-	public DesertRajul(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertRajul(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.5", "3500", ally, false, true));
+		DesertRajul npc = view_as<DesertRajul>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.35", "3000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_RAJUL;
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -123,6 +135,9 @@ methodmap DesertRajul < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 250.0;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		int skin = 1;
@@ -172,13 +187,14 @@ public void DesertRajul_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -219,22 +235,7 @@ void DesertRajulHealRandomAlly(int victim, float damage)
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		int TeamNum = GetEntProp(victim, Prop_Send, "m_iTeamNum");
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		victim,
-		victim,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		99,
-		false,
-		_,
-		DesertRajulAllyHeal);
-		SetEntProp(victim, Prop_Send, "m_iTeamNum", TeamNum);	
+		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 2.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;
 	}
 }
@@ -266,7 +267,8 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1))//Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -279,7 +281,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 				{
 					float damageDealt = 75.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 2.5;
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -314,33 +316,8 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 	}
 }
 
-
-void DesertRajulAllyHeal(int entity, int victim, float damage, int weapon)
+void DesertRajulAllyHealInternal(int entity, int victim)
 {
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if (RajulHealAllyDone[entity] <= 2 && b_IsAlliedNpc[victim])
-		{
-			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-	else
-	{
-		if (RajulHealAllyDone[entity] <= 2 && !b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && i_NpcInternalId[victim] != INTERITUS_DESERT_RAJUL)
-		{
-			RajulHealAllyDone[entity] += 1;
-			DesertRajulAllyHealInternal(entity, victim, RajulHealAlly[entity]);
-		}
-	}
-}
-
-void DesertRajulAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 99.0,_,_);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
 	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
 
@@ -363,9 +340,4 @@ void DesertRajulAllyHealInternal(int entity, int victim, float heal)
 			f_BattilonsNpcBuff[victim] = FAR_FUTURE;
 		}
 	}
-
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

@@ -102,8 +102,22 @@ void MedivalBuilding_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(TOWER_MODEL);
 
-
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Building");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_building");
+	strcopy(data.Icon, sizeof(data.Icon), "tower");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return MedivalBuilding(client, vecPos, vecAng, ally, data);
+}
+
 methodmap MedivalBuilding < CClotBody
 {
 	public void PlayIdleSound() 
@@ -161,34 +175,38 @@ methodmap MedivalBuilding < CClotBody
 		
 	}
 	
-	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalBuilding(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalBuilding npc = view_as<MedivalBuilding>(CClotBody(vecPos, vecAng, TOWER_MODEL, TOWER_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,200.0}));
 		
-		i_NpcInternalId[npc.index] = MEDIVAL_BUILDING;
 		i_NpcWeight[npc.index] = 999;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 //		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 //		if(iActivity > 0) npc.StartActivity(iActivity);
-		if(data[0])
-		{
-			i_AttacksTillMegahit[npc.index] = StringToInt(data);
-
-		}
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		if(data[0])
+		{
+			i_AttacksTillMegahit[npc.index] = StringToInt(data);
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		}
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 		
+		func_NPCDeath[npc.index] = MedivalBuilding_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalBuilding_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalBuilding_ClotThink;
+
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
-		if(!ally)
+		if(ally != TFTeam_Red)
 		{
 			b_thisNpcIsABoss[npc.index] = true;
 		}
@@ -206,9 +224,6 @@ methodmap MedivalBuilding < CClotBody
 
 		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
-
 		GiveNpcOutLineLastOrBoss(npc.index, true);
 
 		npc.m_iState = 0;
@@ -216,6 +231,7 @@ methodmap MedivalBuilding < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 180.0;
 
 		NPC_StopPathing(npc.index);
 
@@ -262,26 +278,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 		if(npc.m_flAttackHappens < GetGameTime(npc.index)) //spawn enemy!
 		{
 			int npc_current_count;
-			if(!b_IsAlliedNpc[iNPC])
+			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 			{
-				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+				if(IsValidEntity(entity) && GetTeam(iNPC) == GetTeam(entity))
 				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-					if(IsValidEntity(entity))
-					{
-						npc_current_count += 1;
-					}
-				}
-			}
-			else
-			{
-				for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
-				{
-					int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
-					if(IsValidEntity(entity) && AllyIsBoundToVillage[entity])
-					{
-						npc_current_count += 1;
-					}
+					npc_current_count += 1;
 				}
 			}
 			//emercency stop. 
@@ -289,66 +291,66 @@ public void MedivalBuilding_ClotThink(int iNPC)
 
 			IncreaceSpawnRates /= (Pow(1.14, f_PlayerScalingBuilding));
 
-			if((!b_IsAlliedNpc[iNPC] && npc_current_count < LimitNpcs) || (b_IsAlliedNpc[iNPC] && npc_current_count < 6))
+			if((GetTeam(iNPC) != TFTeam_Red && npc_current_count < LimitNpcs) || (GetTeam(iNPC) == TFTeam_Red && npc_current_count < 6))
 			{
 				float AproxRandomSpaceToWalkTo[3];
 				GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", AproxRandomSpaceToWalkTo);
 				
 				AproxRandomSpaceToWalkTo[2] += 10.0;
 
-				int EnemyToSpawn = MEDIVAL_MILITIA;
+				char EnemyToSpawn[255] = "npc_medival_militia";
 				bool Construct = false;
 
-				if(b_IsAlliedNpc[iNPC])
+				if(GetTeam(iNPC) == TFTeam_Red)
 				{
 					IncreaceSpawnRates *= 5.0; //way slower.
 				}
 				
 				if(i_currentwave[iNPC] < 15)
 				{
-					EnemyToSpawn = MEDIVAL_MILITIA;
+					EnemyToSpawn = "npc_medival_militia";
 					IncreaceSpawnRates *= 1.2; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 20)
 				{
-					EnemyToSpawn = MEDIVAL_MAN_AT_ARMS;
+					EnemyToSpawn = "npc_medival_man_at_arms";
 				}
 				else if(i_currentwave[iNPC] < 25)
 				{
-					EnemyToSpawn = MEDIVAL_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_swordsman";
 				}
 				else if(i_currentwave[iNPC] < 30)
 				{
-					EnemyToSpawn = MEDIVAL_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_swordsman";
 					IncreaceSpawnRates *= 0.75; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 40)
 				{
-					EnemyToSpawn = MEDIVAL_TWOHANDED_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_twohanded_swordsman";
 				}
 				else if(i_currentwave[iNPC] < 45)
 				{
-					EnemyToSpawn = MEDIVAL_TWOHANDED_SWORDSMAN;
+					EnemyToSpawn = "npc_medival_twohanded_swordsman";
 					IncreaceSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] < 50)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 1.75; //less swarm!
 				}
 				else if(i_currentwave[iNPC] < 55)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 1.0;
 				}
 				else if(i_currentwave[iNPC] < 60)
 				{
-					EnemyToSpawn = MEDIVAL_CHAMPION;
+					EnemyToSpawn = "npc_medival_champion";
 					IncreaceSpawnRates *= 0.85; //Swarm.
 				}
 				else if(i_currentwave[iNPC] >= 60)
 				{
-					EnemyToSpawn = MEDIVAL_CONSTRUCT;
+					EnemyToSpawn = "npc_medival_construct";
 					IncreaceSpawnRates *= 0.70; //Swarm.
 					Construct = true;
 				}
@@ -356,14 +358,14 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				if(Rogue_Mode())
 					IncreaceSpawnRates *= 3.0;
 
-				int spawn_index = Npc_Create(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = NPC_CreateByName(EnemyToSpawn, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					npc.PlayMeleeMissSound();
 					npc.PlayMeleeMissSound();
-					if(!b_IsAlliedNpc[iNPC])
+					if(GetTeam(iNPC) != TFTeam_Red)
 					{
-						Zombies_Currently_Still_Ongoing += 1;
+						NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					}
 					else
 					{
@@ -415,8 +417,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 			{
 				float vecTarget[3];
 				float projectile_speed = 1200.0;
-			//	vecTarget = PredictSubjectPositionForProjectilesOld(npc, Target, projectile_speed, 75.0);
-				vecTarget = WorldSpaceCenterOld(Target);
+				WorldSpaceCenter(Target, vecTarget );
 
 				npc.PlayMeleeSound();
 
@@ -434,8 +435,7 @@ public void MedivalBuilding_ClotThink(int iNPC)
 				{
 					float vecTarget[3];
 					float projectile_speed = 1200.0;
-				//	vecTarget = PredictSubjectPositionForProjectilesOld(npc, Target, projectile_speed, 75.0);
-					vecTarget = WorldSpaceCenterOld(Target);
+					WorldSpaceCenter(Target, vecTarget );
 
 					npc.PlayMeleeSound();
 
@@ -451,26 +451,12 @@ public void MedivalBuilding_ClotThink(int iNPC)
 	else
 	{
 		bool villagerexists = false;
-		if(!b_IsAlliedNpc[iNPC])
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if (IsValidEntity(entity) && i_NpcInternalId[entity] == MedivalVillager_ID() && !b_NpcHasDied[entity] && GetTeam(entity) == GetTeam(iNPC))
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
-				{
-					villagerexists = true;
-				}
-			}
-		}
-		else
-		{
-			for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc_Allied; entitycount_again_2++) //Check for npcs
-			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount_again_2]);
-				if (IsValidEntity(entity) && i_NpcInternalId[entity] == MEDIVAL_VILLAGER && !b_NpcHasDied[entity])
-				{
-					villagerexists = true;
-				}
+				villagerexists = true;
 			}
 		}
 		if(!villagerexists)
@@ -514,7 +500,6 @@ public void MedivalBuilding_NPCDeath(int entity)
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalBuilding_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -533,17 +518,17 @@ static char[] GetBuildingHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(CurrentRound+1 < 30)
+	if(ZR_GetWaveCount()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
 	}
-	else if(CurrentRound+1 < 45)
+	else if(ZR_GetWaveCount()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

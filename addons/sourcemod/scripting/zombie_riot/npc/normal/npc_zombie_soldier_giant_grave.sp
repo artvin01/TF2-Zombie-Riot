@@ -63,8 +63,21 @@ void SoldierGiant_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Soldier Giant Summoner");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zombie_soldier_giant_grave");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_libertylauncher");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Common;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SoldierGiant(client, vecPos, vecAng, ally);
+}
 methodmap SoldierGiant < CClotBody
 {
 	
@@ -86,9 +99,7 @@ methodmap SoldierGiant < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -100,18 +111,14 @@ methodmap SoldierGiant < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -140,17 +147,14 @@ methodmap SoldierGiant < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
 	
-	public SoldierGiant(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SoldierGiant(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "200000", ally, false, true));
+		SoldierGiant npc = view_as<SoldierGiant>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "200000", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = SOLDIER_ZOMBIE_BOSS;
 		i_NpcWeight[npc.index] = 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -166,8 +170,11 @@ methodmap SoldierGiant < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
+
+		func_NPCDeath[npc.index] = SoldierGiant_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SoldierGiant_OnTakeDamage;
+		func_NPCThink[npc.index] = SoldierGiant_ClotThink;
+				
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 		
 		//IDLE
@@ -255,14 +262,15 @@ public void SoldierGiant_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -385,6 +393,15 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
 		{
+			if(MaxEnemiesAllowedSpawnNext(1) <= EnemyNpcAlive)
+			{
+				fl_TotalArmor[npc.index] = 0.5;
+				//grrr i cant spawn!!!!
+				//become fat.
+				return;
+			}
+			fl_TotalArmor[npc.index] = 1.0;
+			//yay i spawned, im now thinn :3
 			npc.g_TimesSummoned++;
 			maxhealth /= 7;
 			for(int i; i<1; i++)
@@ -392,15 +409,19 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 				float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 				float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 				
-				int spawn_index = Npc_Create(SOLDIER_ZOMBIE_MINION, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+				int spawn_index = NPC_CreateByName("npc_zombie_soldier_minion_grave", -1, pos, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
-					Zombies_Currently_Still_Ongoing += 1;
+					NpcAddedToZombiesLeftCurrently(spawn_index, true);
 					SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 				}
 			}
 		}
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 1.0;
 	}
 }
 
@@ -411,10 +432,7 @@ public void SoldierGiant_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SoldierGiant_ClotThink);
+
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, SoldierGiant_ClotDamaged_Post);
 	
 	if(IsValidEntity(npc.m_iWearable1))

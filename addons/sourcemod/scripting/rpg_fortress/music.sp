@@ -30,9 +30,8 @@ enum struct MusicEnum
 	}
 }
 
-static StringMap MusicList;
-static char CurrentSong[MAXTF2PLAYERS][64];
-static char NextSong[MAXTF2PLAYERS][64];
+static int CurrentZone[MAXTF2PLAYERS] = {-1, ...};
+static int NextZone[MAXTF2PLAYERS] = {-1, ...};
 static int NextSoundIn[MAXTF2PLAYERS];
 static float FadingOut[MAXTF2PLAYERS];
 static float FadingIn[MAXTF2PLAYERS];
@@ -40,87 +39,28 @@ static char OverrideSong[MAXTF2PLAYERS][PLATFORM_MAX_PATH];
 static int OverrideTime[MAXTF2PLAYERS];
 static bool OverrideCustom[MAXTF2PLAYERS];
 static float OverrideVolume[MAXTF2PLAYERS];
+static float MusicDelay[MAXTF2PLAYERS];
 
-void Music_ConfigSetup(KeyValues map)
+
+void Music_ZoneEnter(int client, int entity)
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Music"))
-			kv = null;
-	}
-	
-	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "music");
-		kv = new KeyValues("Music");
-		kv.ImportFromFile(buffer);
-	}
-
-	delete MusicList;
-	MusicList = new StringMap();
-
-	MusicEnum music;
-
-	if(kv.GotoFirstSubKey())
-	{
-		do
-		{
-			kv.GetSectionName(buffer, sizeof(buffer));
-			music.SetupEnum(kv);
-			MusicList.SetArray(buffer, music, sizeof(music));
-		}
-		while(kv.GotoNextKey());
-	}
-
-	if(kv != map)
-		delete kv;
-}
-
-void Music_ZoneEnter(int client, const char[] name)
-{
-	if(MusicList)
-	{
-		static MusicEnum newSong;
-		if(MusicList.GetArray(name, newSong, sizeof(newSong)))
-		{
-			if(CurrentSong[client][0])
-			{
-				static MusicEnum oldSong;
-				if(MusicList.GetArray(CurrentSong[client], oldSong, sizeof(oldSong)) && oldSong.Sound[0])
-				{
-					if(StrEqual(oldSong.Sound, newSong.Sound))
-						return;
-					
-					//StopSound(client, SNDCHAN_STATIC, oldSong.Sound);
-					//StopSound(client, SNDCHAN_STATIC, oldSong.Sound);
-					//EmitSoundToClient(client, oldSong.Sound, client, SNDCHAN_AUTO, SNDLEVEL_NONE, SND_CHANGEVOL, 0.0001);
-					
-					//FadingOut[client] = GetGameTime();
-				}
-			}
-
-			FadingOut[client] = GetGameTime();
-			NextSoundIn[client] = 0;
-			strcopy(NextSong[client], sizeof(NextSong[]), name);
-		}
-	}
+	// TODO: Set all oberservers too
+	static char newSong[PLATFORM_MAX_PATH];
+	GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
+	if(newSong[0])
+		NextZone[client] = EntIndexToEntRef(entity);
 }
 
 void Music_ClientDisconnect(int client)
 {
-	CurrentSong[client][0] = 0;
-	NextSong[client][0] = 0;
+	MusicDelay[client] = 0.0;
+	CurrentZone[client] = -1;
+	NextZone[client] = -1;
 	OverrideSong[client][0] = 0;
 }
 
 void Music_SetOverride(int client, const char[] file = "", int time = 0, bool custom = false, float volume = 1.0)
 {
-	FadingOut[client] = GetGameTime();
-	NextSoundIn[client] = 0;
-
 	if(OverrideSong[client][0])
 	{
 		StopSound(client, SNDCHAN_STATIC, OverrideSong[client]);
@@ -139,79 +79,117 @@ void Music_PlayerRunCmd(int client)
 	if(f_ClientMusicVolume[client] < 0.05)
 		return;
 
-	if(CurrentSong[client][0] || NextSong[client][0] || OverrideSong[client][0])
+	if(MusicDelay[client] > GetGameTime())
+		return;
+
+	MusicDelay[client] = GetGameTime() + 0.1;
+
+	if(CurrentZone[client] != -1 || NextZone[client] != -1 || OverrideSong[client][0])
 	{
-		bool wasInFade;
-		static MusicEnum music;
+		static char oldSong[PLATFORM_MAX_PATH], newSong[PLATFORM_MAX_PATH];
+		int time = GetTime();
+
 		if(FadingOut[client])
 		{
-			if(CurrentSong[client][0])
+			if(CurrentZone[client] != -1)
 			{
-				if(MusicList.GetArray(CurrentSong[client], music, sizeof(music)))
+				int entity = EntRefToEntIndex(CurrentZone[client]);
+				if(entity != -1)
 				{
-					float vol = music.Volume - ((GetGameTime() - FadingOut[client]) / 2.0);
+					GetEntPropString(entity, Prop_Data, "m_nMusicFile", oldSong, sizeof(oldSong));
+
+					float vol = GetEntPropFloat(entity, Prop_Data, "m_fMusicVolume") - ((GetGameTime() - FadingOut[client]) / 2.0);
 					if(vol > 0.0)
 					{
-						EmitMusicToClient(client, music.Sound, music.Custom, vol, SND_CHANGEVOL);
+						EmitMusicToClient(client, oldSong, view_as<bool>(GetEntProp(entity, Prop_Data, "m_bMusicCustom")), vol, SND_CHANGEVOL);
 						return;
 					}
 
-					StopSound(client, SNDCHAN_STATIC, music.Sound);
-					StopSound(client, SNDCHAN_STATIC, music.Sound);
+					StopSound(client, SNDCHAN_STATIC, oldSong);
+					StopSound(client, SNDCHAN_STATIC, oldSong);
 				}
 			
-				CurrentSong[client][0] = 0;
+				CurrentZone[client] = -1;
 			}
 			
 			FadingOut[client] = 0.0;
-			wasInFade = true;
+			//PrintToChat(client, "DEBUG: Fade Out Done");
 		}
-
-		if(FadingIn[client])
+		else if(FadingIn[client])
 		{
-			if(CurrentSong[client][0] && MusicList.GetArray(CurrentSong[client], music, sizeof(music)))
+			if(CurrentZone[client] != -1)
 			{
-				float vol = ((GetGameTime() - FadingIn[client]) / 2.0);
-				if(vol < music.Volume)
+				int entity = EntRefToEntIndex(CurrentZone[client]);
+				if(entity != -1)
 				{
-					EmitMusicToClient(client, music.Sound, music.Custom, vol, SND_CHANGEVOL);
-					return;
-				}
+					GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
+					float volume = GetEntPropFloat(entity, Prop_Data, "m_fMusicVolume");
 
-				EmitMusicToClient(client, music.Sound, music.Custom, music.Volume, SND_CHANGEVOL);
+					float vol = ((GetGameTime() - FadingIn[client]) / 2.0);
+					if(vol < volume)
+					{
+						EmitMusicToClient(client, newSong, view_as<bool>(GetEntProp(entity, Prop_Data, "m_bMusicCustom")), vol, SND_CHANGEVOL);
+						return;
+					}
+
+					EmitMusicToClient(client, newSong, view_as<bool>(GetEntProp(entity, Prop_Data, "m_bMusicCustom")), volume, SND_CHANGEVOL);
+				}
 			}
 			
 			FadingIn[client] = 0.0;
+			//PrintToChat(client, "DEBUG: Fade In Done");
 		}
-		
-		int time = GetTime();
-		if(wasInFade)
+		else if(NextZone[client] != -1 && (CurrentZone[client] != -1 || !OverrideSong[client][0]))
 		{
-			if(OverrideSong[client][0])
+			if(CurrentZone[client] == -1)
 			{
-				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
-				NextSoundIn[client] = time + OverrideTime[client];
-				CurrentSong[client][0] = 0;
-			}
-			else if(NextSong[client][0])
-			{
-				if(MusicList.GetArray(NextSong[client], music, sizeof(music)) && music.Sound[0])
+				int entity = EntRefToEntIndex(NextZone[client]);
+				if(entity != -1)
 				{
-					EmitMusicToClient(client, music.Sound, music.Custom, 0.00001);
+					// Start fading in our new
+					CurrentZone[client] = NextZone[client];
 					FadingIn[client] = GetGameTime();
-					
-					NextSoundIn[client] = time + music.Duration;
-					strcopy(CurrentSong[client], sizeof(CurrentSong[]), NextSong[client]);
+					NextSoundIn[client] = time + GetEntProp(entity, Prop_Data, "m_iMusicDuration");
+				}
+
+				NextZone[client] = -1;
+				//PrintToChat(client, "DEBUG: Start Fade In");
+			}
+			else
+			{
+				int entity = EntRefToEntIndex(CurrentZone[client]);
+				if(entity != -1)
+					GetEntPropString(entity, Prop_Data, "m_nMusicFile", oldSong, sizeof(oldSong));
+				
+				if(OverrideSong[client][0])
+				{
+					// Start fading out our current
+					FadingOut[client] = GetGameTime();
+					NextSoundIn[client] = 0;
+					//PrintToChat(client, "DEBUG: Start Fade Out Override");
 				}
 				else
 				{
-					NextSong[client][0] = 0;
+					entity = EntRefToEntIndex(NextZone[client]);
+					if(entity != -1)
+						GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
+					
+					if(StrEqual(oldSong, newSong))
+					{
+						// Same music, don't start fading
+						NextZone[client] = -1;
+						//PrintToChat(client, "DEBUG: Music Same");
+					}
+					else
+					{
+						// Start fading out our current
+						FadingOut[client] = GetGameTime();
+						//PrintToChat(client, "DEBUG: Start Fade Out");
+					}
 				}
 			}
-			return;
 		}
-
-		if(NextSoundIn[client] < time)
+		else if(NextSoundIn[client] < time)
 		{
 			NextSoundIn[client] = 0;
 
@@ -219,15 +197,23 @@ void Music_PlayerRunCmd(int client)
 			{
 				EmitMusicToClient(client, OverrideSong[client], OverrideCustom[client], OverrideVolume[client]);
 				NextSoundIn[client] = time + OverrideTime[client];
-				CurrentSong[client][0] = 0;
+				CurrentZone[client] = -1;
+				//PrintToChat(client, "DEBUG: Override Start");
 			}
-			else if(CurrentSong[client][0])
+			else if(CurrentZone[client] != -1)
 			{
-				if(MusicList.GetArray(CurrentSong[client], music, sizeof(music)) && music.Sound[0])
+				int entity = EntRefToEntIndex(CurrentZone[client]);
+				if(entity != -1)
 				{
-					EmitMusicToClient(client, music.Sound, music.Custom, music.Volume);
-					NextSoundIn[client] = time + music.Duration;
+					GetEntPropString(entity, Prop_Data, "m_nMusicFile", newSong, sizeof(newSong));
+					if(newSong[0])
+					{
+						EmitMusicToClient(client, newSong, view_as<bool>(GetEntProp(entity, Prop_Data, "m_bMusicCustom")), GetEntPropFloat(entity, Prop_Data, "m_fMusicVolume"));
+						NextSoundIn[client] = time + GetEntProp(entity, Prop_Data, "m_iMusicDuration");
+					}
 				}
+
+				//PrintToChat(client, "DEBUG: Current Start");
 			}
 		}
 	}

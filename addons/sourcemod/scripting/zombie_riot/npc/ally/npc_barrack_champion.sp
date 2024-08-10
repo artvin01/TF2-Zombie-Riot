@@ -2,18 +2,36 @@
 #pragma newdecls required
 
 // Balanced around Mid Spy
+public void BarrackChampionOnMapStart()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Champion");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_champion");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackChampion(client, vecPos, vecAng, ally);
+}
 
 methodmap BarrackChampion < BarrackBody
 {
-	public BarrackChampion(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackChampion(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackChampion npc = view_as<BarrackChampion>(BarrackBody(client, vecPos, vecAng, "1000",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_CHAMPION;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "claidheamohmor");
-		
-		SDKHook(npc.index, SDKHook_Think, BarrackChampion_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackChampion_NPCDeath;
+		func_NPCThink[npc.index] = BarrackChampion_ClotThink;
+
 
 		npc.m_flSpeed = 250.0;
 		
@@ -43,11 +61,12 @@ public void BarrackChampion_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
@@ -75,7 +94,7 @@ public void BarrackChampion_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),6000.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),5900.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlaySwordHitSound();
 							} 
 						}

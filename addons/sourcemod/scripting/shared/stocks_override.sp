@@ -16,7 +16,7 @@ void Stock_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float
 
 bool Stock_IsValidEntity(int entity)
 {
-	if(entity == 0)
+	if(entity == 0 || entity == -1)
 	{
 		return false;
 	}
@@ -28,6 +28,24 @@ bool Stock_IsValidEntity(int entity)
 }
 
 #define IsValidEntity Stock_IsValidEntity
+
+
+#define SDKHooks_TakeDamage Stock_TakeDamage
+
+stock void Stock_SetEntityMoveType(int entity, MoveType mt)
+{
+	if(b_ThisWasAnNpc[entity] && mt != MOVETYPE_CUSTOM)
+	{
+		ThrowError("Do not dare! Dont set SetEntityMoveType on an NPC that isnt MOVECUSTOM.");
+		return;
+	}
+	else
+	{
+		SetEntityMoveType(entity, mt);
+	}
+}
+
+#define SetEntityMoveType Stock_SetEntityMoveType
 
 
 #define KillTimer KILLTIMER_DONOTUSE_USE_DELETE
@@ -254,6 +272,7 @@ stock void RemoveSlotWeapons(int client, int slot)
 
 stock void RemoveAllWeapons(int client)
 {
+	PreMedigunCheckAntiCrash(client);
 	int entity;
 	bool found;
 	do
@@ -277,9 +296,20 @@ stock float ZR_GetGameTime(int entity = 0)
 	{
 		return GetGameTime();
 	}
-	else	
+	else
 	{
-		return (GetGameTime() - f_StunExtraGametimeDuration[entity]);
+		float gameTime = GetGameTime();
+
+#if defined RTS
+		float speed = RTS_GameSpeed();
+		if(speed != 1.0)
+		{
+			float lifetime = gameTime - flNpcCreationTime[entity];
+			gameTime += lifetime * (speed - 1.0);
+		}
+#endif
+
+		return gameTime - f_StunExtraGametimeDuration[entity];
 		//This will allow for stuns and other stuff like that. Mainly used for tank and other stuns.
 		//We will treat the tank stun as such.
 	}
@@ -293,16 +323,21 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 {
 	if(!do_original && entity <= MaxClients)
 	{
-		if(origin[1] != NULL_VECTOR[1])
+		if(origin[1] != NULL_VECTOR[1] || origin[0] != NULL_VECTOR[0] || origin[2] != NULL_VECTOR[2])
 		{
+			if(origin[0] == 0.0 && origin[1] == 0.0 && origin[2] == 0.0)
+				LogStackTrace("Possible unintended 0 0 0 teleport");
+			
 			Custom_SDKCall_SetLocalOrigin(entity, origin);
 		}
 
-		if(angles[1] != NULL_VECTOR[1])
+		if(angles[1] != NULL_VECTOR[1] || angles[0] != NULL_VECTOR[0] || angles[2] != NULL_VECTOR[2])
 		{
 			if(entity <= MaxClients)
 			{
-				Custom_SetAbsVelocity(entity, angles);
+				float angles2[3];
+				angles2 = angles;
+				SnapEyeAngles(entity, angles2);
 			}
 			else
 			{
@@ -310,7 +345,7 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 			}
 		}
 
-		if(velocity[1] != NULL_VECTOR[1])
+		if(velocity[0] != NULL_VECTOR[0] || velocity[1] != NULL_VECTOR[1] || velocity[2] != NULL_VECTOR[2])
 		{
 			Custom_SetAbsVelocity(entity, velocity);
 		}
@@ -343,7 +378,11 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 
 void Edited_TF2_RegeneratePlayer(int client)
 {
+#if defined ZR
+	PreMedigunCheckAntiCrash(client);
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 #if defined ZR
 	KillDyingGlowEffect(client);
 #endif
@@ -359,9 +398,13 @@ void Edited_TF2_RegeneratePlayer(int client)
 #define TF2_RegeneratePlayer Edited_TF2_RegeneratePlayer
 
 
-void Edited_TF2_RespawnPlayer(int client)
+stock void Edited_TF2_RespawnPlayer(int client)
 {
+#if defined ZR
+	PreMedigunCheckAntiCrash(client);
+	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
+#endif
 
 #if defined ZR
 	KillDyingGlowEffect(client);
@@ -400,9 +443,7 @@ void SetPlayerClass(int client, TFClassType classType, bool weapons = false, boo
 }
 
 #define TF2_SetPlayerClass_ZR SetPlayerClass*/
-#if !defined UseDownloadTable
-#define AddFileToDownloadsTable UseDownloadsCfgPlzThanks
-#endif
+
 stock void PrecacheSoundList(const char[][] array, int length)
 {
     for(int i; i < length; i++)
@@ -439,7 +480,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && !IsFakeClient(client))
+			if(IsClientInGame(client) && (!IsFakeClient(client) || IsClientSourceTV(client)))
 			{
 				float volumeedited = volume;
 				if(entity > 0 && b_ThisWasAnNpc[entity])
@@ -455,7 +496,7 @@ void Edited_EmitSoundToAll(const char[] sample,
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && !IsFakeClient(client) && f_ClientMusicVolume[client] > 0.05)
+			if(IsClientInGame(client) && !IsFakeClient(client) && (f_ClientMusicVolume[client] > 0.05 || IsClientSourceTV(client)))
 			{
 				EmitSoundToClient(client, sample,entity,channel,level,flags,volume,pitch,speakerentity,origin,dir,updatePos,soundtime);
 			}
@@ -469,3 +510,63 @@ void Edited_EmitSoundToAll(const char[] sample,
 
 #define TF2Attrib_GetByDefIndex OLD_CODE_FIX_IT
 #define TF2Items_SetAttribute OLD_CODE_FIX_IT
+
+int MaxInfractionsAcceptEntityInput;
+float f_TimeSinceLastInfraction;
+
+bool Stock_AcceptEntityInput(int dest, const char[] input, int activator=-1, int caller=-1, int outputid=0)
+{
+	if(!IsValidEntity(dest) && dest != 0)
+	{
+		if(f_TimeSinceLastInfraction > GetEngineTime())
+		{
+			MaxInfractionsAcceptEntityInput++;
+		}
+		else
+		{
+			MaxInfractionsAcceptEntityInput = 0;
+		}
+		f_TimeSinceLastInfraction = GetEngineTime() + 0.5;
+
+		if(MaxInfractionsAcceptEntityInput > 10)
+		{		
+			/*
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+				this is an emergency, it might actually spam this very very often. In this case, we nuke all npcs immediently.
+				There is a rare bug where it sometimes just doesnt spawn the entity. such as NPC wearables.
+				too many infractions. slay all npcs no matter what, but do not grant bonuses if it was a raid.
+			*/
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
+			{
+#if defined ZR
+				if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+#else
+				if(IsValidEntity(entity))
+#endif
+				{
+					if(entity != 0)
+					{
+						i_RaidGrantExtra[entity] = 0;
+						b_DissapearOnDeath[entity] = true;
+						b_DoGibThisNpc[entity] = true;
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+						SmiteNpcToDeath(entity);
+					}
+				}
+			}
+			LogStackTrace("We failed, man! Please look into this eventually!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			CPrintToChatAll("{crimson}[Zombie-Riot] UN-RECOVEABLE ERROR!!! All Enemies have been slain to prevent major issues, Raids will not give rewards!");
+			MaxInfractionsAcceptEntityInput = 0;
+		}
+		return false;
+	}
+	return AcceptEntityInput(dest, input, activator, caller, outputid);
+}
+
+#define AcceptEntityInput Stock_AcceptEntityInput

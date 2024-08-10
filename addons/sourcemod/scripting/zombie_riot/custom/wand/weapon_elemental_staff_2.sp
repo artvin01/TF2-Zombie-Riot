@@ -51,7 +51,7 @@ public void Weapon_Elemental_Wand_2(int client, int weapon, bool crit, int slot)
 				float vecUp[3];
 				
 				GetVectors(client, client_slammed_forward[client], client_slammed_right[client], vecUp); //Sorry i dont know any other way with this :(
-				client_slammed_pos[client] = GetAbsOriginOld(client);
+				GetAbsOrigin(client, client_slammed_pos[client]);
 				client_slammed_pos[client][2] += 5.0;
 				
 				float vecSwingEnd[3];
@@ -259,10 +259,10 @@ stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 
-	for(int targ; targ<i_MaxcountNpc; targ++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index])
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 		{
 			float TargetLocation[3]; 
 			GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -422,7 +422,7 @@ public void Passanger_Cooldown_Logic(int client, int weapon)
 		{
 			b_PassangerExtraCharge[client] = true;
 			float ClientPos[3];
-			ClientPos = WorldSpaceCenterOld(client);
+			WorldSpaceCenter(client, ClientPos);
 			TR_EnumerateEntitiesSphere(ClientPos, 100.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Passanger, client);
 
 			if(b_PassangerExtraCharge[client])
@@ -575,9 +575,10 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	}
 	if(Firstlightning)
 	{
-		Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(target), 1);
+		float EnemyVecPos[3]; WorldSpaceCenter(target, EnemyVecPos);
+		Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 1);
 	}
-	StartLightningPos = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, StartLightningPos);
 	f_PassangerDebuff[target] = GetGameTime() + 0.3;
 	SDKHooks_TakeDamage(target, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);	//BURNING TO THE GROUND!!!
 	f_CooldownForHurtHud[client] = 0.0;
@@ -592,13 +593,17 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 			if(b_thisNpcIsARaid[enemy])
 			{
 				damage *= 1.5;
+				//undo damage nerf that we did before for the ability
+				if(Firstlightning == false)
+					damage /= 0.7;
 			}
 			f_PassangerDebuff[enemy] = GetGameTime() + 0.3;
 			SDKHooks_TakeDamage(enemy, client, client, damage, DMG_PLASMA, weapon, {0.0, 0.0, -50000.0}, vecHit);		
 			f_CooldownForHurtHud[client] = 0.0;
 			GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecHit);
-			Passanger_Lightning_Effect(StartLightningPos, WorldSpaceCenterOld(enemy), 3);
-			StartLightningPos = WorldSpaceCenterOld(enemy);
+			float EnemyVecPos[3]; WorldSpaceCenter(enemy, EnemyVecPos);
+			Passanger_Lightning_Effect(StartLightningPos, EnemyVecPos, 3);
+			WorldSpaceCenter(enemy, StartLightningPos);
 		}
 		else
 		{
@@ -632,6 +637,7 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 {
 	float damage = 150.0;
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
+	damage *= 0.7;
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
@@ -673,10 +679,10 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 	{
 		int count;
 		static int targets[i_MaxcountNpc];
-		for(int targ; targ<i_MaxcountNpc; targ++)
+		for(int targ; targ<i_MaxcountNpcTotal; targ++)
 		{
-			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+			int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
 			{
 				static float TargetLocation[3]; 
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

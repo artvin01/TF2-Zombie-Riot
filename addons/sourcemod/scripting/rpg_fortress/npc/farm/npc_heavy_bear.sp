@@ -15,8 +15,17 @@ public void FarmBear_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	PrecacheModel("models/player/heavy.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Farm Bear");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_heavy_bear_farm");
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return FarmBear(client, vecPos, vecAng, TFTeam_Red);
+}
 methodmap FarmBear < CClotBody
 {
 	public void PlayIdleSound()
@@ -29,12 +38,10 @@ methodmap FarmBear < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public FarmBear(int client, float vecPos[3], float vecAng[3], bool ally)
+	public FarmBear(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		//Hardcode them being allies, it would make no sense if they were enemies.
-		FarmBear npc = view_as<FarmBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", true, false,_,_,_));
-		
-		i_NpcInternalId[npc.index] = FARM_BEAR;
+		FarmBear npc = view_as<FarmBear>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "300", ally, false,_,_,_));
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -57,8 +64,10 @@ methodmap FarmBear < CClotBody
 
 		npc.m_bisWalking = false;
 
-		SDKHook(npc.index, SDKHook_OnTakeDamage, FarmBear_OnTakeDamage);
-		SDKHook(npc.index, SDKHook_Think, FarmBear_ClotThink);
+		func_NPCDeath[npc.index] = FarmBear_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = FarmBear_OnTakeDamage;
+		func_NPCThink[npc.index] = FarmBear_ClotThink;
+		func_NPCInteract[npc.index] = HeavyBear_Interact;
 		
 		int skin = GetRandomInt(0, 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -84,7 +93,6 @@ methodmap FarmBear < CClotBody
 
 //TODO 
 //Rewrite
-static float f3_PositionArrival[MAXENTITIES][3];
 public void FarmBear_ClotThink(int iNPC)
 {
 	FarmBear npc = view_as<FarmBear>(iNPC);
@@ -162,7 +170,7 @@ public void FarmBear_ClotThink(int iNPC)
 			return;
 		*/	
 
-		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), npc.GetSolidMask(), RayType_Infinite, BulletAndMeleeTrace, npc.index);
+		Handle ToGroundTrace = TR_TraceRayFilterEx(AproxRandomSpaceToWalkTo, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
 		
 		TR_GetEndPosition(AproxRandomSpaceToWalkTo, ToGroundTrace);
 		delete ToGroundTrace;
@@ -171,8 +179,8 @@ public void FarmBear_ClotThink(int iNPC)
 
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 
-		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 		NPC_StartPathing(iNPC);
+		NPC_SetGoalVector(iNPC, AproxRandomSpaceToWalkTo);
 
 		f3_PositionArrival[iNPC][0] = AproxRandomSpaceToWalkTo[0];
 		f3_PositionArrival[iNPC][1] = AproxRandomSpaceToWalkTo[1];
@@ -193,9 +201,6 @@ public void FarmBear_NPCDeath(int entity)
 	FarmBear npc = view_as<FarmBear>(entity);
 
 	//how did you kill it?????????
-
-	SDKUnhook(entity, SDKHook_OnTakeDamage, FarmBear_OnTakeDamage);
-	SDKUnhook(entity, SDKHook_Think, FarmBear_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -233,7 +238,7 @@ bool HeavyBear_Interact(int client, int weapon)
 				if(amount < 1)
 				{
 					TF2_RemoveItem(client, weapon);
-					Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+					SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 				}
 
 				switch(Farm_Animal_Food_Type)
@@ -248,6 +253,7 @@ bool HeavyBear_Interact(int client, int weapon)
 							float vecTarget[3];
 							GetClientEyePosition(client, vecTarget);
 							TextStore_DropNamedItem(client, "High Quality Furr", vecTarget, 1); //Drops 1 milk.
+							TextStore_DropNamedItem(client, "Seed Bag I", vecTarget, 1); //Drops 1 milk.
 							Animal_Happy[client][0][Farm_Animal_Food_Type] -= 1.0;
 							switch(GetRandomInt(1,3))
 							{
@@ -271,7 +277,7 @@ bool HeavyBear_Interact(int client, int weapon)
 			else
 			{
 				TF2_RemoveItem(client, weapon);
-				Store_SwapToItem(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
+				SetPlayerActiveWeapon(client, GetPlayerWeaponSlot(client, TFWeaponSlot_Melee));
 			}
 		}
 		else

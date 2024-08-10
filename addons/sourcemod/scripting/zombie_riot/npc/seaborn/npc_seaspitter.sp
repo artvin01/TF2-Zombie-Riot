@@ -37,7 +37,25 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie/zo_attack2.wav"
 };
 
-methodmap SeaSpitter < CClotBody
+void SeaSpitter_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ridge Sea Spitter");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaspitter");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_spitter");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaSpitter(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaSpitter < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -64,7 +82,7 @@ methodmap SeaSpitter < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSpitter(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSpitter(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaSpitter npc = view_as<SeaSpitter>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "750" : "660", ally, false));
 		// 4400 x 0.15
@@ -76,7 +94,7 @@ methodmap SeaSpitter < CClotBody
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 		}
 		
-		i_NpcInternalId[npc.index] = data[0] ? SEASPITTER_ALT : SEASPITTER;
+		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
@@ -85,8 +103,9 @@ methodmap SeaSpitter < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
+		func_NPCDeath[npc.index] = SeaSpitter_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaSpitter_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaSpitter_ClotThink;
 		
 		npc.m_flSpeed = 187.5;	// 0.75 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -133,8 +152,9 @@ public void SeaSpitter_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec );
+		float distance = GetVectorDistance(vecTarget, npc_vec, true);
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -145,7 +165,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 15000.0);
 				
 				npc.PlayRangedSound();
-				int entity = npc.FireArrow(vecTarget, i_NpcInternalId[npc.index] == SEASPITTER_ALT ? 24.0 : 21.0, 800.0, "models/weapons/w_bugbait.mdl");
+				int entity = npc.FireArrow(vecTarget, npc.m_bElite ? 24.0 : 21.0, 800.0, "models/weapons/w_bugbait.mdl");
 				// 280 * 0.15
 				// 320 * 0.15
 				
@@ -157,7 +177,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 					SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(entity, 100, 100, 255, 255);
 					
-					vecTarget = WorldSpaceCenterOld(entity);
+					WorldSpaceCenter(entity, vecTarget);
 					f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 					SetParent(entity, f_ArrowTrailParticle[entity]);
 					f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
@@ -192,7 +212,7 @@ public void SeaSpitter_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -231,6 +251,4 @@ void SeaSpitter_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaSpitter_ClotThink);
 }

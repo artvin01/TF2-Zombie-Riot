@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 public void Rogue_None_Remove()
 {
 	// Nothing happens when removed
@@ -29,7 +32,7 @@ public void Rogue_Item_GrigoriCoinPurse_Ally(int entity, StringMap map)
 	float Multi = GrigoriCoinPurseCalc();
 	if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -51,11 +54,14 @@ public void Rogue_Item_GrigoriCoinPurse_Weapon(int entity)
 {
 	float Multi = GrigoriCoinPurseCalc();
 
-
-	Attributes_SetMulti(entity, 6, Multi);
-	Attributes_SetMulti(entity, 97, Multi);
-	Attributes_SetMulti(entity, 733, Multi);
-	Attributes_SetMulti(entity, 8, (1.0 / Multi));
+	if(Attributes_Has(entity, 6))
+		Attributes_SetMulti(entity, 6, Multi);
+	if(Attributes_Has(entity, 97))
+		Attributes_SetMulti(entity, 97, Multi);
+	if(Attributes_Has(entity, 733))
+		Attributes_SetMulti(entity, 733, Multi);
+	if(Attributes_Has(entity, 8))
+		Attributes_SetMulti(entity, 8, (1.0 / Multi));
 }
 
 public void Rogue_Item_Provoked_Anger()
@@ -81,7 +87,7 @@ public void Rogue_Item_Malfunction_ShieldRemove()
 public void Rogue_Item_Bob_Exchange_Money()
 {
 	//give 18 dollars
-	Rogue_AddIngots(18);
+	Rogue_AddIngots(18, true);
 }
 
 public void Rogue_Item_ReleasingRadio()
@@ -129,13 +135,10 @@ public void Rogue_Item_HealingSalveRemove()
 	b_HealingSalve = false;
 }
 
-void Rogue_HealingSalve(int client)
+void Rogue_HealingSalve(int client, int &healing_Amount)
 {
 	if(b_HealingSalve)
-	{
-		int healing_Amount = HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);		
-		ApplyHealEvent(client, healing_Amount);
-	}
+		healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
 }
 
 public void Rogue_SteelRazor_Weapon(int entity)
@@ -150,7 +153,8 @@ public void Rogue_SteelRazor_Weapon(int entity)
 	}
 	if(WeaponSlot == TFWeaponSlot_Melee)
 	{
-		Attributes_SetMulti(entity, 2, 1.15);
+		if(Attributes_Has(entity, 2))
+			Attributes_SetMulti(entity, 2, 1.15);
 	}
 }
 public void Rogue_Item_SteelRazor()
@@ -210,7 +214,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	{
 		if(attacker > MaxClients || inflictor > MaxClients)
 		{
-			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
 				//15%% more melee dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
@@ -224,7 +228,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	{
 		if(attacker > MaxClients || inflictor > MaxClients)
 		{
-			if(b_IsAlliedNpc[attacker] || b_IsAlliedNpc[inflictor])
+			if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			{
 				//15%% more Ranged dmg for all allies
 				if(damagetype & (DMG_CLUB|DMG_SLASH))
@@ -241,7 +245,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 	}
 	if(b_NickelInjectedPack)
 	{
-		if(attacker > 0 && (b_IsAlliedNpc[attacker] || attacker <= MaxClients))
+		if(attacker > 0 && (GetTeam(attacker) == TFTeam_Red || attacker <= MaxClients))
 		{
 			int maxhealth;
 			if(attacker <= MaxClients)
@@ -277,13 +281,7 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 public void Rogue_Item_HandWrittenLetter()
 {
 	CurrentCash += 750;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 750;
-		}
-	}	
+	GlobalExtraCash += 750;	
 }
 
 public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
@@ -299,7 +297,7 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -321,13 +319,16 @@ public void Rogue_Item_HandWrittenLetter_Ally(int entity, StringMap map)
 public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 {
 	// +3% damage bonus
-	Attributes_SetMulti(entity, 2, 1.03);
-	Attributes_SetMulti(entity, 410, 1.03);
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.03);
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.03);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.03);
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.03);
 	}
 	//Extra damage for mediguns.
 }
@@ -337,19 +338,13 @@ public void Rogue_Item_HandWrittenLetter_Weapon(int entity)
 public void Rogue_Item_CrudeFlute()
 {
 	CurrentCash += 500;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 500;
-		}
-	}	
+	GlobalExtraCash += 500;	
 }
 public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 {
 	if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -375,37 +370,32 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 			}
 		}
 	}
-	/*
 	else if(i_IsABuilding[entity])	// Building
 	{
 
 	}
-	*/
 }
 
 
 public void Rogue_Item_ScrappedWallet()
 {
 	CurrentCash += 500;
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 500;
-		}
-	}	
+	GlobalExtraCash += 500;	
 }
 
 public void Rogue_Item_ScrappedWallet_Weapon(int entity)
 {
 	// +1% damage bonus
-	Attributes_SetMulti(entity, 2, 1.01);
-	Attributes_SetMulti(entity, 410, 1.01);
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.01);
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.01);
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.01);
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.01);
 	}
 	//Extra damage for mediguns.
 }
@@ -422,7 +412,7 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -443,15 +433,10 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 
 public void Rogue_Item_GoldenCoin()
 {
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			CashRecievedNonWave[client] += 2000;
-			CashSpent[client] -= 2000;
-		}
-	}	
-	Rogue_AddIngots(10);
+	CurrentCash += 2000;
+	GlobalExtraCash += 2000;
+		
+	Rogue_AddIngots(10, true);
 }
 
 public void Rogue_Item_NickelInjectedPack()
@@ -478,14 +463,17 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Weapon(int entity)
 
 	if(WeaponSlot != TFWeaponSlot_Melee) //anything that isnt melee
 	{
-		Attributes_SetMulti(entity, 2, 1.15);
+		if(Attributes_Has(entity, 2))
+			Attributes_SetMulti(entity, 2, 1.15);
 	}
 
-	Attributes_SetMulti(entity, 410, 1.15);
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.15);
 
 	if(!StrContains(classname, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.15);
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.15);
 	}
 }
 public void Rogue_Item_SpanishSpecialisedGunpowder()
@@ -513,14 +501,17 @@ public void Rogue_Item_SpanishSpecialisedGunpowder_Ally(int entity, StringMap ma
 public void Rogue_Item_GenericDamage5_Weapon(int entity)
 {
 	// +5% damage bonus
-	Attributes_SetMulti(entity, 2, 1.05);
-	Attributes_SetMulti(entity, 410, 1.05);
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.05);
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.05);
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.05);
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.05);
 	}
 }
 public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
@@ -536,7 +527,7 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -558,14 +549,18 @@ public void Rogue_Item_GenericDamage5_Ally(int entity, StringMap map)
 public void Rogue_Item_GenericDamage10_Weapon(int entity)
 {
 	// +10% damage bonus
-	Attributes_SetMulti(entity, 2, 1.1);
-	Attributes_SetMulti(entity, 410, 1.1);
+	if(Attributes_Has(entity, 2))
+		Attributes_SetMulti(entity, 2, 1.1);
+
+	if(Attributes_Has(entity, 410))
+		Attributes_SetMulti(entity, 410, 1.1);
 
 	char buffer[36];
 	GetEntityClassname(entity, buffer, sizeof(buffer));
 	if(!StrEqual(buffer, "tf_weapon_medigun"))
 	{
-		Attributes_SetMulti(entity, 1, 1.1);
+		if(Attributes_Has(entity, 1))
+			Attributes_SetMulti(entity, 1, 1.1);
 	}
 }
 public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
@@ -581,7 +576,7 @@ public void Rogue_Item_GenericDamage10_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
@@ -614,7 +609,7 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
-		if(i_NpcInternalId[entity] == CITIZEN)	// Rebel
+		if(Citizen_IsIt(entity))	// Rebel
 		{
 			Citizen npc = view_as<Citizen>(entity);
 

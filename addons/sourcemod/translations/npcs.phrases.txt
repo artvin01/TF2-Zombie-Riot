@@ -1,0 +1,58 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 		"Example Text!"
+	}
+	"Headcrab Zombie"
+	{
+		"en" 		"Headcrab Zombie"
+		"fr" 		"Zombie"
+	}
+	"Metro Cop"
+	{
+		"en"		"Metro Cop"
+		"fr"		"Métro-police"
+	}
+	"Sensal"
+	{
+		"en"		"Sensal"
+		"fr"		"Sensal"
+	}
+	"Bob The First"
+	{
+		"en"		"Bob The First"
+		"fr"		"Bob I"
+	}
+	"??????? First"
+	{
+		"en"		"??????? First"
+		"fr"		"??????? I"
+	}
+	"??? the First"
+	{
+		"en"		"??? the First"
+		"fr"		"??? I"
+	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+		"fr"		"Kahmlstein Chaos"
+	}
+	"Donnerkrieg"
+	{
+		"en"		"Donnerkrieg"
+		"fr"		"Donnerkrieg"
+		"pt"		"Donnerkrieg"
+		"ru"		"Доннеркриг"
+		"nl"		"Donnerkrieg"
+	}
+	"Schwertkrieg"
+	{
+		"en"		"Schwertkrieg"
+		"fr"		"Schwertkrieg"
+		"pt"		"Schwertkrieg"
+		"ru"		"Шверткриг"
+		"nl"		"Schwertkrieg"
+	}
+}

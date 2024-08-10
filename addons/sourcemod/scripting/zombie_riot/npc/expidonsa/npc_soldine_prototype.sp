@@ -49,8 +49,22 @@ void SoldinePrototype_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	PrecacheModel("models/player/soldier.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Soldine Prototype");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_soldine_prototype");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SoldinePrototype(client, vecPos, vecAng, ally);
+}
 
 methodmap SoldinePrototype < CClotBody
 {
@@ -96,11 +110,10 @@ methodmap SoldinePrototype < CClotBody
 	}
 	
 	
-	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SoldinePrototype(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.5", "7500", ally, false, true));
+		SoldinePrototype npc = view_as<SoldinePrototype>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "7500", ally, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_SOLDINE_PROTOTYPE;
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -116,8 +129,10 @@ methodmap SoldinePrototype < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_ROBOT;
 		
-		SDKHook(npc.index, SDKHook_Think, SoldinePrototype_ClotThink);
 		
+		func_NPCDeath[npc.index] = SoldinePrototype_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SoldinePrototype_OnTakeDamage;
+		func_NPCThink[npc.index] = SoldinePrototype_ClotThink;
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -185,13 +200,14 @@ public void SoldinePrototype_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -233,7 +249,6 @@ public void SoldinePrototype_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, SoldinePrototype_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))
@@ -256,7 +271,7 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(target);
+			float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 
 			int Enemy_I_See;
 								
@@ -269,7 +284,7 @@ void SoldinePrototypeSelfDefense(SoldinePrototype npc, float gameTime, int targe
 				
 				npc.FaceTowards(vecTarget, 20000.0);
 				float DamageRocket = 50.0;
-				npc.PlayMeleeSound();
+				npc.PlayMeleeHitSound();
 				npc.FireRocket(vecTarget, DamageRocket, 900.0);
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.5;

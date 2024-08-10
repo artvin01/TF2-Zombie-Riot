@@ -51,8 +51,22 @@ void EgaBunar_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_HurtArmorSounds)); i++) { PrecacheSound(g_HurtArmorSounds[i]); }
 	PrecacheModel("models/player/demo.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Ega Bunar");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ega_bunar");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return EgaBunar(client, vecPos, vecAng, ally);
+}
 
 methodmap EgaBunar < CClotBody
 {
@@ -93,38 +107,26 @@ methodmap EgaBunar < CClotBody
 	}
 	public void PlayHurtArmorSound() 
 	{
+		if(this.m_flNextHurtSound > GetGameTime(this.index))
+			return;
+			
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	
 	
-	public EgaBunar(int client, float vecPos[3], float vecAng[3], bool ally)
+	public EgaBunar(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		EgaBunar npc = view_as<EgaBunar>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_EGABUNAR;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
@@ -132,15 +134,15 @@ methodmap EgaBunar < CClotBody
 			once armor breaks, gains heavy speed
 		*/
 		
+		func_NPCDeath[npc.index] = EgaBunar_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = EgaBunar_OnTakeDamage;
+		func_NPCThink[npc.index] = EgaBunar_ClotThink;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-
-		npc.m_bArmorGiven = false;
 		
-		SDKHook(npc.index, SDKHook_Think, EgaBunar_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -183,13 +185,8 @@ public void EgaBunar_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(!npc.m_bArmorGiven)
-	{
-		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 1.25;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 1.25;
-	}
+	GrantEntityArmor(iNPC, true, 1.25, 0.1, 0);
+
 	if(npc.m_flArmorCount > 0.0)
 	{
 		npc.m_flSpeed = 330.0;
@@ -220,13 +217,14 @@ public void EgaBunar_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -252,16 +250,6 @@ public Action EgaBunar_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 
 		if(percentageArmorLeft <= 0.0)
@@ -288,6 +276,12 @@ public Action EgaBunar_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -307,9 +301,10 @@ public void EgaBunar_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, EgaBunar_ClotThink);
 		
 	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -328,8 +323,9 @@ void EgaBunarSelfDefense(EgaBunar npc, float gameTime, int target, float distanc
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -356,7 +352,7 @@ void EgaBunarSelfDefense(EgaBunar npc, float gameTime, int target, float distanc
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								

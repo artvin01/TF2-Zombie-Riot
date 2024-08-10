@@ -31,6 +31,24 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
+void TidelinkedArchon_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Tidelinked Archon");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_tidelinkedarchon");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_archon");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return TidelinkedArchon(client, vecPos, vecAng, ally);
+}
+
 methodmap TidelinkedArchon < CClotBody
 {
 	public void PlayIdleSound()
@@ -58,12 +76,11 @@ methodmap TidelinkedArchon < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public TidelinkedArchon(int client, float vecPos[3], float vecAng[3], bool ally)
+	public TidelinkedArchon(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		TidelinkedArchon npc = view_as<TidelinkedArchon>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "2.3", "20000", ally, false, true));
 		// 20000 x 1.0
 
-		i_NpcInternalId[npc.index] = TIDELINKED_ARCHON;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -72,7 +89,9 @@ methodmap TidelinkedArchon < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
+		func_NPCDeath[npc.index] = TidelinkedArchon_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = TidelinkedArchon_OnTakeDamage;
+		func_NPCThink[npc.index] = TidelinkedArchon_ClotThink;
 		
 		npc.m_flSpeed = 300.0;//150.0;	// 0.6 x 250
 		npc.m_flMeleeArmor = 0.5;
@@ -116,14 +135,14 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 5;
 		
-		int entity = Npc_Create(TIDELINKED_BISHOP, -1, pos, ang, GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2);
+		int entity = NPC_CreateByName("npc_tidelinkedbishop", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
 		{
 			i_TargetAlly[npc.index] = EntIndexToEntRef(entity);
 			i_TargetAlly[entity] = EntIndexToEntRef(npc.index);
 			view_as<CClotBody>(entity).m_bThisNpcIsABoss = npc.m_bThisNpcIsABoss;
 
-			Zombies_Currently_Still_Ongoing++;
+			Zombies_Currently_Still_Ongoing++;	// FIXME
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			
@@ -178,12 +197,13 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -214,7 +234,7 @@ public void TidelinkedArchon_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 6000.0 : 300.0, DMG_CLUB);
 						// 600 x 0.5
 
-						SeaSlider_AddNeuralDamage(target, npc.index, 150);
+						Elemental_AddNervousDamage(target, npc.index, 150);
 						// 600 x 0.5 x 0.5
 					}
 				}
@@ -285,6 +305,4 @@ void TidelinkedArchon_NPCDeath(int entity)
 	TidelinkedArchon npc = view_as<TidelinkedArchon>(entity);
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
-	
-	SDKUnhook(npc.index, SDKHook_Think, TidelinkedArchon_ClotThink);
 }

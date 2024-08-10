@@ -46,6 +46,8 @@ int i_DiversioAntiCheese_Tolerance[MAXENTITIES];
 
 float LastSpawnDiversio;
 
+static int NPCId;
+
 void Diversionistico_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -57,6 +59,25 @@ void Diversionistico_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/spy.mdl");
 	LastSpawnDiversio = 0.0;
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Diversionistico");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_diversionistico");
+	strcopy(data.Icon, sizeof(data.Icon), "diversionistico");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+int DiversionisticoID()
+{
+	return NPCId;
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Diversionistico(client, vecPos, vecAng, ally, data);
 }
 
 void DiversionSpawnNpcReset(int index)
@@ -115,11 +136,10 @@ methodmap Diversionistico < CClotBody
 		
 	}
 
-	public Diversionistico(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Diversionistico(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Diversionistico npc = view_as<Diversionistico>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, false, false, true));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DIVERSIONISTICO;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -133,7 +153,10 @@ methodmap Diversionistico < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
-		SDKHook(npc.index, SDKHook_Think, Diversionistico_ClotThink);
+
+		func_NPCDeath[npc.index] = Diversionistico_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Diversionistico_OnTakeDamage;
+		func_NPCThink[npc.index] = Diversionistico_ClotThink;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -147,6 +170,7 @@ methodmap Diversionistico < CClotBody
 		
 		if(final)
 		{
+			b_FaceStabber[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
@@ -187,21 +211,24 @@ methodmap Diversionistico < CClotBody
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMinDist", 350.0);
 		SetEntPropFloat(npc.m_iWearable4, Prop_Send, "m_fadeMaxDist", 500.0);
 
-		if(LastSpawnDiversio < GetGameTime())
+		if(ally != TFTeam_Red)
 		{
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
-			for(int client_check=1; client_check<=MaxClients; client_check++)
+			if(LastSpawnDiversio < GetGameTime())
 			{
-				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("player/spy_uncloak_feigndeath.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
 				{
-					SetGlobalTransTarget(client_check);
-					ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Diversionistico Spawn");
+					}
 				}
 			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index);
 		}
-		LastSpawnDiversio = GetGameTime() + 20.0;
-		TeleportDiversioToRandLocation(npc.index);
 		return npc;
 	}
 }
@@ -239,14 +266,15 @@ public void Diversionistico_ClotThink(int iNPC)
 	{
 		int AntiCheeseReply = 0;
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
 			b_TryToAvoidTraverse[npc.index] = false;
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			vPredictedPos = GetBehindTarget(npc.m_iTarget, 40.0 ,vPredictedPos);
 			AntiCheeseReply = DiversionAntiCheese(npc.m_iTarget, npc.index, vPredictedPos);
 			b_TryToAvoidTraverse[npc.index] = true;
@@ -325,7 +353,6 @@ public void Diversionistico_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	SDKUnhook(npc.index, SDKHook_Think, Diversionistico_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable5))
@@ -342,7 +369,8 @@ public void Diversionistico_NPCDeath(int entity)
 }
 void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int target)
 {
-	npc.FaceTowards(WorldSpaceCenterOld(target), 15000.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(target, WorldSpaceVec);
+	npc.FaceTowards(WorldSpaceVec, 15000.0);
 	if(gameTime > npc.m_flNextRangedAttack)
 	{
 		npc.PlayZapSound();
@@ -350,7 +378,7 @@ void DiversionisticoSelfDefenseRanged(Diversionistico npc, float gameTime, int t
 		npc.m_flDoingAnimation = gameTime + 0.25;
 		npc.m_flNextRangedAttack = gameTime + 1.2;
 		float damageDealt = 85.0;
-		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceCenterOld(target));
+		SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, WorldSpaceVec);
 		if(IsValidEntity(npc.m_iWearable5))
 			RemoveEntity(npc.m_iWearable5);
 
@@ -368,7 +396,8 @@ void DiversionisticoSelfDefense(Diversionistico npc, float gameTime, int target,
 			int Enemy_I_See;					
 			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.PlayMeleeSound();
@@ -455,6 +484,12 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 			
 		if(RandomArea == NULL_AREA) 
 			break; //No nav?
+
+		int NavAttribs = RandomArea.GetAttributes();
+		if(NavAttribs & NAV_MESH_AVOID)
+		{
+			continue;
+		}
 
 		RandomArea.GetCenter(AproxRandomSpaceToWalkTo);
 		bool DoNotTeleport = false;

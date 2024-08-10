@@ -6,25 +6,44 @@
 void AlliedLeperVisualiserAbility_OnMapStart_NPC()
 {
 	PrecacheModel("models/weapons/c_models/c_claymore/c_claymore.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Allied Leper Afterimage");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_allied_leper_visualiser");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return AlliedLeperVisualiserAbility(client, vecPos, vecAng, ally, data);
+}
 methodmap AlliedLeperVisualiserAbility < CClotBody
 {
 	
-	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public AlliedLeperVisualiserAbility(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", true, true));
+		AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "100", TFTeam_Red, true));
 		
-		i_NpcInternalId[npc.index] = WEAPON_LEPER_AFTERIMAGE;
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
 		int ModelIndex;
 		char ModelPath[255];
 		int entity, i;
-			
-		SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
-		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		if((i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		}
+		else
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSALPHA);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		}
 
 
 		SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
@@ -32,14 +51,20 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 
 		while(TF2U_GetWearable(client, entity, i, "tf_wearable"))
 		{
-			ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
-			if(ModelIndex < 0)
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+				continue;
+
+			if(EntRefToEntIndex(i_Viewmodel_PlayerModel[client]) != entity || (i_CustomModelOverrideIndex[client] < BARNEY || !b_HideCosmeticsPlayer[client]))
 			{
-				GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
-			}
-			else
-			{
-				ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				ModelIndex = GetEntProp(entity, Prop_Data, "m_nModelIndex");
+				if(ModelIndex < 0)
+				{
+					GetEntPropString(entity, Prop_Data, "m_ModelName", ModelPath, sizeof(ModelPath));
+				}
+				else
+				{
+					ModelIndexToString(ModelIndex, ModelPath, sizeof(ModelPath));
+				}
 			}
 			if(!ModelPath[0])
 				continue;
@@ -65,6 +90,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 				}
 			}
 		}
+		npc.m_bisWalking = false;
 		bool solemny = StrContains(data, "solemny") != -1;
 		bool hew = StrContains(data, "hew") != -1;
 		
@@ -116,7 +142,8 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		
-		SDKHook(npc.index, SDKHook_Think, AlliedLeperVisaluser_ClotThink);
+		func_NPCDeath[npc.index] = AlliedLeperVisualiserAbility_NPCDeath;
+		func_NPCThink[npc.index] = AlliedLeperVisaluser_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -131,9 +158,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 		b_DoNotUnStuck[npc.index] = true;
 		b_NoGravity[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
-		SetEntityCollisionGroup(npc.index, 1); //Dont Touch Anything.
-		SetEntProp(npc.index, Prop_Send, "m_usSolidFlags", 12); 
-		SetEntProp(npc.index, Prop_Data, "m_nSolidType", 6); 
+		MakeObjectIntangeable(npc.index);
 		if(IsValidEntity(npc.m_iTeamGlow))
 			RemoveEntity(npc.m_iTeamGlow);
 
@@ -213,7 +238,6 @@ public void AlliedLeperVisualiserAbility_NPCDeath(int entity)
 {
 	AlliedLeperVisualiserAbility npc = view_as<AlliedLeperVisualiserAbility>(entity);
 
-	SDKUnhook(npc.index, SDKHook_Think, AlliedLeperVisaluser_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

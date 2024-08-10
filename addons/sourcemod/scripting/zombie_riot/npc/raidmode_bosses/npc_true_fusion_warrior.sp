@@ -93,6 +93,24 @@ static float f_TimeSinceHasBeenHurt[MAXENTITIES];
 
 public void TrueFusionWarrior_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "True Fusion Warrior");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_true_fusion_warrior");
+	strcopy(data.Icon, sizeof(data.Icon), "fusion_warrior");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+	TrueFusionWarrior_TBB_Precahce();
+	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
+	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
+	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
+}
+
+static void ClotPrecache()
+{
 	for (int i = 0; i < (sizeof(g_DeathSounds));       i++) { PrecacheSound(g_DeathSounds[i]);       }
 	for (int i = 0; i < (sizeof(g_HurtSounds));        i++) { PrecacheSound(g_HurtSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_IdleSounds));        i++) { PrecacheSound(g_IdleSounds[i]);        }
@@ -112,17 +130,17 @@ public void TrueFusionWarrior_OnMapStart()
 	PrecacheSound("weapons/physcannon/superphys_launch4.wav", true);
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
-	TrueFusionWarrior_TBB_Precahce();
 	
-	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
-	gGlow1 = PrecacheModel("sprites/blueglow2.vmt", true);
-	gExplosive1 = PrecacheModel("materials/sprites/sprite_fire01.vmt");
 	
 	PrecacheSound("player/flow.wav");
 
 	PrecacheSoundCustom("#zombiesurvival/fusion_raid/fusion_bgm.mp3");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return TrueFusionWarrior(client, vecPos, vecAng, ally, data);
+}
 void TrueFusionWarrior_TBB_Precahce()
 {
 	FusionWarrior_BEAM_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
@@ -209,9 +227,7 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayAngerSound() {
@@ -252,24 +268,20 @@ methodmap TrueFusionWarrior < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
-	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public TrueFusionWarrior(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		TrueFusionWarrior npc = view_as<TrueFusionWarrior>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = RAIDMODE_TRUE_FUSION_WARRIOR;
 		i_NpcWeight[npc.index] = 4;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Fusion_Warrior_Win);
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -298,6 +310,7 @@ methodmap TrueFusionWarrior < CClotBody
 		if(final)
 		{
 			i_RaidGrantExtra[npc.index] = 1;
+			b_NpcUnableToDie[npc.index] = true;
 		}
 		
 		b_thisNpcIsARaid[npc.index] = true;
@@ -335,9 +348,10 @@ methodmap TrueFusionWarrior < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
-		Raidboss_Clean_Everyone();
+		func_NPCDeath[npc.index] = TrueFusionWarrior_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = TrueFusionWarrior_OnTakeDamage;
+		func_NPCThink[npc.index] = TrueFusionWarrior_ClotThink;
 		
-		SDKHook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 		
 		
 		for(int client_clear=1; client_clear<=MaxClients; client_clear++)
@@ -397,7 +411,14 @@ methodmap TrueFusionWarrior < CClotBody
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
 
-		Music_SetRaidMusic("#zombiesurvival/fusion_raid/fusion_bgm.mp3", 178, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/fusion_raid/fusion_bgm.mp3");
+		music.Time = 178;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Dragon Ball Z Dokkan Battle - LR Nappa & Vegeta");
+		strcopy(music.Artist, sizeof(music.Artist), "???");
+		Music_SetRaidMusic(music);
 		
 		npc.Anger = false;
 		b_angered_twice[npc.index] = false;
@@ -421,16 +442,42 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 {
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(iNPC);
 	
+	if(LastMann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			npc.m_fbGunout = true;
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{default}: Run... Away...");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{default}: Help...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{gold}True Fusion Warrior{crimson}: AGHHRRR!!!");
+				}
+			}
+		}
+	}
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		
+		CPrintToChatAll("{gold}True Fusion Warrior{default}: New... victims to infect...");
+		return;
+	}
 	if(RaidModeTime < GetGameTime())
 	{
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
+		CPrintToChatAll("{gold}True Fusion Warrior{default}: {green}Xeno{default} virus too strong... to resist.. {crimson}join...{default}");
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
+		return;
 	}
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -448,7 +495,10 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = 0.0;
 		int enemyGet = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(enemyGet))
-			npc.FaceTowards(WorldSpaceCenterOld(enemyGet), 100.0);
+		{
+			float WorldSpaceVec[3]; WorldSpaceCenter(enemyGet, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
+		}
 			
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
@@ -522,7 +572,7 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 		if(npc.m_bInKame)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
-			if(npc.m_iTarget == -1)
+			if(npc.m_iTarget < 1)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 			}
@@ -575,11 +625,12 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, closest, true))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(closest);
+			float vecTarget[3]; WorldSpaceCenter(closest, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, closest);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, closest,_,_, vPredictedPos);
 		
 			//Body pitch
 	//		if(flDistanceToTarget < Pow(110.0,2.0))
@@ -590,7 +641,9 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 			
 				//Body pitch
 				float v[3], ang[3];
-				SubtractVectors(WorldSpaceCenterOld(npc.index), WorldSpaceCenterOld(closest), v); 
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+				float WorldSpaceVec2[3]; WorldSpaceCenter(closest, WorldSpaceVec2);
+				SubtractVectors(WorldSpaceVec, WorldSpaceVec2, v); 
 				NormalizeVector(v, v);
 				GetVectorAngles(v, ang); 
 				
@@ -1009,7 +1062,6 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
 	StopSound(entity, SNDCHAN_STATIC, "weapons/physcannon/energy_sing_loop4.wav");
-	SDKUnhook(npc.index, SDKHook_Think, TrueFusionWarrior_ClotThink);
 	ExpidonsaRemoveEffects(entity);
 	
 	RaidBossActive = INVALID_ENT_REFERENCE;
@@ -1037,7 +1089,8 @@ public void TrueFusionWarrior_NPCDeath(int entity)
 
 void TrueFusionWarrior_TBB_Ability_Anger(int client)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 	
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1048,7 +1101,7 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 45;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("EEDD44");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200 * TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 6.0;
@@ -1099,7 +1152,8 @@ void TrueFusionWarrior_TBB_Ability_Anger(int client)
 
 void TrueFusionWarrior_TBB_Ability(int client)
 {
-	ParticleEffectAt(WorldSpaceCenterOld(client), "eyeboss_death_vortex", 2.0);
+	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "eyeboss_death_vortex", 2.0);
 			
 	FusionWarrior_BEAM_IsUsing[client] = false;
 	FusionWarrior_BEAM_TicksActive[client] = 0;
@@ -1110,7 +1164,7 @@ void TrueFusionWarrior_TBB_Ability(int client)
 	FusionWarrior_BEAM_MaxDistance[client] = 2000;
 	FusionWarrior_BEAM_BeamRadius[client] = 25;
 	FusionWarrior_BEAM_ColorHex[client] = ParseColor("FFFFFF");
-	FusionWarrior_BEAM_ChargeUpTime[client] = 200;
+	FusionWarrior_BEAM_ChargeUpTime[client] = RoundToFloor(200*TickrateModify);
 	FusionWarrior_BEAM_CloseBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_FarBuildingDPT[client] = 0.0;
 	FusionWarrior_BEAM_Duration[client] = 4.0;
@@ -1197,7 +1251,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 {
 	float angles[3];
 	GetEntPropVector(client, Prop_Data, "m_angRotation", angles);
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	TrueFusionWarrior npc = view_as<TrueFusionWarrior>(client);
@@ -1207,7 +1261,7 @@ static void FusionWarrior_GetBeamDrawStartPoint(int client, float startPoint[3])
 	float flPitch = npc.GetPoseParameter(iPitch);
 	flPitch *= -1.0;
 	angles[0] = flPitch;
-	startPoint = GetAbsOriginOld(client);
+	GetAbsOrigin(client, startPoint);
 	startPoint[2] += 50.0;
 	
 	if (0.0 == FusionWarrior_BEAM_BeamOffset[client][0] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][1] && 0.0 == FusionWarrior_BEAM_BeamOffset[client][2])
@@ -1262,7 +1316,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 		float flPitch = npc.GetPoseParameter(iPitch);
 		flPitch *= -1.0;
 		angles[0] = flPitch;
-		startPoint = GetAbsOriginOld(client);
+		GetAbsOrigin(client, startPoint);
 		startPoint[2] += 50.0;
 
 		Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, FusionWarrior_BEAM_TraceWallsOnly);
@@ -1294,7 +1348,7 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 			
 			for (int victim = 1; victim < MAXENTITIES; victim++)
 			{
-				if (FusionWarrior_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
+				if (FusionWarrior_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
 				{
 					GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
@@ -1306,8 +1360,10 @@ public Action TrueFusionWarrior_TBB_Tick(int client)
 					{
 						damage *= 3.0; //give 3x dmg to anything
 					}
+					damage /= TickrateModify;
+					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 
-					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceCenterOld(victim));	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, client, (damage/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 				}
 			}
 			
@@ -1364,7 +1420,7 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		static float distance=87.0; // /29 for duartion till boom
 		static float IOCDist=250.0;
 		static float IOCdamage;
-		IOCdamage= (35.0 * RaidModeScaling);
+		IOCdamage= (150.0 * RaidModeScaling);
 		
 		float vecTarget[3];
 		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);
@@ -1375,8 +1431,8 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		WritePackFloat(data, vecTarget[2]);
 		WritePackCell(data, distance); // Distance
 		WritePackFloat(data, 0.0); // nphi
-		WritePackCell(data, IOCDist); // Range
-		WritePackCell(data, IOCdamage); // Damge
+		WritePackFloat(data, IOCDist); // Range
+		WritePackFloat(data, IOCdamage); // Damge
 		WritePackCell(data, ref);
 		ResetPack(data);
 		TrueFusionwarrior_IonAttack(data);
@@ -1413,8 +1469,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		startPosition[2] = ReadPackFloat(data);
 		float Iondistance = ReadPackCell(data);
 		float nphi = ReadPackFloat(data);
-		int Ionrange = ReadPackCell(data);
-		int Iondamage = ReadPackCell(data);
+		float Ionrange = ReadPackFloat(data);
+		float Iondamage = ReadPackFloat(data);
 		int client = EntRefToEntIndex(ReadPackCell(data));
 		
 		if(!IsValidEntity(client) || b_NpcHasDied[client])
@@ -1508,8 +1564,8 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		WritePackFloat(nData, startPosition[2]);
 		WritePackCell(nData, Iondistance);
 		WritePackFloat(nData, nphi);
-		WritePackCell(nData, Ionrange);
-		WritePackCell(nData, Iondamage);
+		WritePackFloat(nData, Ionrange);
+		WritePackFloat(nData, Iondamage);
 		WritePackCell(nData, EntIndexToEntRef(client));
 		ResetPack(nData);
 		
@@ -1519,10 +1575,10 @@ public void TrueFusionwarrior_DrawIonBeam(float startPosition[3], const int colo
 		{
 			startPosition[2] += 25.0;
 			if(!b_Anger[client])
-				makeexplosion(client, client, startPosition, "", Iondamage, 100);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage), 100);
 				
 			else if(b_Anger[client])
-				makeexplosion(client, client, startPosition, "", RoundToCeil(float(Iondamage) * 1.25), 120);
+				makeexplosion(client, client, startPosition, "", RoundToCeil(Iondamage * 1.25), 120);
 				
 			startPosition[2] -= 25.0;
 			TE_SetupExplosion(startPosition, gExplosive1, 10.0, 1, 0, 0, 0);
@@ -1594,7 +1650,8 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 			{
 				int HowManyEnemeisAoeMelee = 64;
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 20000.0);
+				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
+				npc.FaceTowards(WorldSpaceVec, 20000.0);
 				npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1,_,HowManyEnemeisAoeMelee);
 				delete swingTrace;
 				bool PlaySound = false;
@@ -1607,7 +1664,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 							PlaySound = true;
 							int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 							float vecHit[3];
-							vecHit = WorldSpaceCenterOld(target);
+							WorldSpaceCenter(target, vecHit);
 
 							float damage = 24.0;
 							float damage_rage = 28.0;
@@ -1651,7 +1708,7 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 							}
 							
 							if(!Knocked)
-								Custom_Knockback(npc.index, target, 650.0); 
+								Custom_Knockback(npc.index, target, 450.0, true); 
 						}
 					}
 				}
@@ -1667,9 +1724,10 @@ void TrueFusionSelfDefense(TrueFusionWarrior npc, float gameTime)
 	{
 		if(IsValidEnemy(npc.index, npc.m_iTarget)) 
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.5))
 			{
@@ -1841,4 +1899,9 @@ void FusionApplyEffectsForm2(int entity)
 	i_ExpidonsaEnergyEffect[entity][12] = EntIndexToEntRef(Laser_1_1);
 	i_ExpidonsaEnergyEffect[entity][13] = EntIndexToEntRef(Laser_2_1);
 	i_ExpidonsaEnergyEffect[entity][14] = EntIndexToEntRef(Laser_3_1);
+}
+
+public void Raidmode_Fusion_Warrior_Win(int entity)
+{
+	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }

@@ -6,6 +6,9 @@ enum
 
 public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 {
+	if(entity == iExclude)
+		return false;
+		
 #if defined ZR
 	if(entity > 0 && entity <= MaxClients) 
 	{
@@ -22,16 +25,29 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	}
 	else if(!b_NpcHasDied[entity])
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+#if defined ZR
+		if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 		{
-			return false;
+			if(!b_AllowCollideWithSelfTeam[iExclude] && !b_AllowCollideWithSelfTeam[entity])
+				return false;
 		}
 		else if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity]) //If both are on, then that means the npc shouldnt be invis and stuff
+#else
+		if(!b_IsCamoNPC[entity] && b_CantCollidie[entity] && b_CantCollidieAlly[entity])
+#endif
 		{
 			return false;
 		}
 	}
-	
+	/*
+#if defined RTS
+	else if(IsObject(entity))
+	{
+		return true;
+	}
+#endif
+	*/
+
 	//if anything else is team
 	if(b_IsARespawnroomVisualiser[entity])
 	{
@@ -42,20 +58,39 @@ public bool BulletAndMeleeTrace(int entity, int contentsMask, any iExclude)
 	{
 		return false;
 	}	
-	if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+#if defined ZR
+	if(!b_NpcIsTeamkiller[iExclude] && GetTeam(iExclude) == GetTeam(entity))
 	{
-		return false;
+		if(!b_AllowCollideWithSelfTeam[iExclude] || !b_AllowCollideWithSelfTeam[entity])
+			return false;
 	}
 
-#if defined ZR
 	if(Saga_EnemyDoomed(entity) && Saga_EnemyDoomed(iExclude))
 	{
 		return false;
 	}
 #endif
+#if defined RPG
+	if(GetTeam(iExclude) == GetTeam(entity))
+	{
+		if(entity > 0 && entity <= MaxClients) 
+		{
+			if(!RPGCore_PlayerCanPVP(iExclude,entity))
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	if(OnTakeDamageRpgPartyLogic(entity, iExclude, GetGameTime()))
+		return false;
+#endif
 
 	if(!b_NpcHasDied[iExclude])
-	{
+	{	
 		//1 means we treat it as a bullet trace
 		return NpcCollisionCheck(iExclude, entity, 1);
 	}
@@ -125,7 +160,7 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 
 	//if anything else is team
 	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 	
 
@@ -153,7 +188,7 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	{
 		return true;
 	}
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 
 	if(b_is_a_brush[entity])
@@ -178,7 +213,7 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	
 	//if anything else is team
 	
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 	
 
@@ -213,7 +248,7 @@ public bool TraceRayHitWorldAndBuildingsOnly(int entity,int mask,any data)
 	{
 		return true;
 	}
-	if(GetEntProp(data, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	if(GetTeam(data) == GetTeam(entity))
 		return false;
 
 	if(b_is_a_brush[entity])

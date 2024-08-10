@@ -12,7 +12,22 @@ static bool b_barrage[MAXENTITIES];
 
 public void Barrack_Alt_Holy_Knight_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
+	PrecacheSoundArray(g_RangedAttackSounds);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Holy Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_holy_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Holy_Knight(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Holy_Knight < BarrackBody
@@ -24,14 +39,15 @@ methodmap Barrack_Alt_Holy_Knight < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
-	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Holy_Knight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(BarrackBody(client, vecPos, vecAng, "1250",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACKS_HOLY_KNIGHT;
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Holy_Knight_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Holy_Knight_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Holy_Knight_ClotThink;
 
 		npc.m_flSpeed = 225.0;
 		
@@ -99,8 +115,9 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(fl_barragetimer[npc.index] <= GetGameTime(npc.index) && fl_singularbarrage[npc.index] <= GetGameTime(npc.index))
 			{	
@@ -112,7 +129,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 				float Angles[3], distance = 100.0, UserLoc[3];
 				
 				
-				UserLoc = GetAbsOriginOld(npc.index);
+				GetAbsOrigin(npc.index, UserLoc);
 				
 				MakeVectorFromPoints(UserLoc, vecTarget, Angles);
 				GetVectorAngles(Angles, Angles);
@@ -160,7 +177,7 @@ public void Barrack_Alt_Holy_Knight_ClotThink(int iNPC)
 				}
 			}
 			
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 				
@@ -219,5 +236,4 @@ void Barrack_Alt_Holy_Knight_NPCDeath(int entity)
 	Barrack_Alt_Holy_Knight npc = view_as<Barrack_Alt_Holy_Knight>(entity);
 		
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Holy_Knight_ClotThink);
 }

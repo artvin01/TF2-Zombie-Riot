@@ -21,7 +21,7 @@ void Gladiia_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			if (HealingTimer[client] != null)
 			{
@@ -109,7 +109,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
+					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA:
 					{
 						float amount = 0.0;
 						int elite = EliteLevel[GetHighestGladiiaClient()];
@@ -131,6 +131,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 						if(amount)
 						{
+							f_WeaponSpecificClassBuff[client][0] = GetGameTime() + 0.5;
 							int maxhealth = SDKCall_GetMaxHealth(client);
 							if(maxhealth > 1000)
 								maxhealth = 1000;
@@ -144,7 +145,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 
 							if(ParticleRef[client] == -1)
 							{
-								float pos[3]; pos = WorldSpaceCenterOld(client);
+								float pos[3]; WorldSpaceCenter(client, pos);
 								pos[2] += 500.0;
 
 								int entity = ParticleEffectAt(pos, "env_rain_128", -1.0);
@@ -469,7 +470,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
 			
-			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
+			SDKHooks_TakeDamage(entity, client, client, damage, DMG_PLASMA, weapon);
 
 			EmitSoundToAll("weapons/grappling_hook_impact_flesh.wav", entity, SNDCHAN_STATIC, 80, _, 1.0);
 			EmitSoundToAll("weapons/grappling_hook_shoot.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
@@ -543,18 +544,28 @@ void Gladiia_WandTouch(int entity, int target)
 		float vecForward[3], Entity_Position[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", vecForward);
 		GetAngleVectors(vecForward, vecForward, NULL_VECTOR, NULL_VECTOR);
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);
+		
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(particle > MaxClients)
+			RemoveEntity(particle);
+		
+		EmitGameSoundToAll("Underwater.BulletImpact", entity);
+		RemoveEntity(entity);
 	}
-
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if(particle > MaxClients)
-		RemoveEntity(particle);
-	
-	EmitGameSoundToAll("Underwater.BulletImpact", entity);
-	RemoveEntity(entity);
+	else if(target == 0)
+	{
+		int particle = EntRefToEntIndex(i_WandParticle[entity]);
+		if(particle > MaxClients)
+			RemoveEntity(particle);
+		
+		EmitGameSoundToAll("Underwater.BulletImpact", entity);
+		RemoveEntity(entity);
+	}
 }

@@ -193,7 +193,7 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -208,10 +208,10 @@ public void Weapon_Wand_PotionBasicTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i])
+		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -233,7 +233,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -309,7 +309,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 	
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -360,7 +360,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	
 	if(target)
 	{
-		if(target == owner || GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(target == owner || GetTeam(target) != 2)
 			return;
 	}
 
@@ -425,7 +425,7 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -440,18 +440,19 @@ public void Weapon_Wand_PotionUnstableTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+	char npc_classname[60];
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i])
+		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red && !b_NpcIsInvulnerable[i])
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
 			{
 				float damage = f_WandDamage[entity];
 				StartBleedingTimer(i, owner, damage / 8.0, 8, weapon, DMG_SLASH);
-
-				if(i_NpcInternalId[i] == BTD_BLOON)
+				NPC_GetPluginById(i_NpcInternalId[i], npc_classname, sizeof(npc_classname));
+				if(StrEqual(npc_classname, "npc_bloon"))
 				{
 					if(view_as<Bloon>(i).m_bFortified)
 					{
@@ -565,10 +566,10 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 				int entity = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
 				if(entity != -1)
 				{
-					ApplyTempAttrib(entity, 2, 0.666, 10.0);
+					ApplyTempAttrib(entity, 2, 0.4, 10.0);
 					ApplyTempAttrib(entity, 6, 0.333, 10.0);
 					ApplyTempAttrib(entity, 97, 0.333, 10.0);
-					ApplyTempAttrib(entity, 410, 0.666, 10.0);
+					ApplyTempAttrib(entity, 410, 0.4, 10.0);
 					ApplyTempAttrib(entity, 733, 0.333, 10.0);
 					EmitSoundToClient(target, SOUND_TRANSFORM2);
 
@@ -589,7 +590,7 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -612,10 +613,10 @@ public void Weapon_Wand_PotionLeadTouch(int entity, int target)
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 	
 	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i])
+		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -647,7 +648,7 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -672,10 +673,10 @@ public void Weapon_Wand_PotionGoldTouch(int entity, int target)
 	int count;
 	if(IsValidEntity(weapon))
 	{
-		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 		{
-			int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-			if(IsValidEntity(i) && !b_NpcHasDied[i])
+			int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+			if(IsValidEntity(i) && !b_NpcHasDied[i] && GetTeam(i) != TFTeam_Red)
 			{
 				GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -712,7 +713,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 		if(target <= MaxClients)
 			return;
 		
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2)
+		if(GetTeam(target) == 2)
 			return;
 	}
 
@@ -724,10 +725,10 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 	EmitSoundToAll(SOUND_SHRINK, entity, _, _, _, _, _, _, pos1);
 
 	int count;
-	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpc; entitycount_again_2++) //Check for npcs
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
 	{
-		int i = EntRefToEntIndex(i_ObjectsNpcs[entitycount_again_2]);
-		if(IsValidEntity(i) && !b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE)
+		int i = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(i) && !b_NpcHasDied[i] && f_MaimDebuff[i] != FAR_FUTURE && GetTeam(i) != TFTeam_Red)
 		{
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))

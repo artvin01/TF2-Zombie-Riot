@@ -65,24 +65,18 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayChargeSound() {
 		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayDeathSound() {
 		
@@ -100,11 +94,9 @@ methodmap Adiantum < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
-	public Adiantum(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Adiantum(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Adiantum npc = view_as<Adiantum>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "13500", ally));
 		
@@ -176,7 +168,7 @@ methodmap Adiantum < CClotBody
 		SetEntityRenderColor(npc.m_iWearable1, 7, 255, 255, 255);
 		
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 		
 		npc.m_flSpeed = 0.0;
 		
@@ -230,9 +222,10 @@ public void Adiantum_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex);	//handles movement
 			
@@ -241,7 +234,7 @@ public void Adiantum_ClotThink(int iNPC)
 				TE_Madness(npc.index, PrimaryThreatIndex);
 				TE_Madness_Used[npc.index]=true;
 			}
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				//Look at target so we hit.
 			//	npc.FaceTowards(vecTarget, 1000.0);
@@ -321,11 +314,6 @@ public void TE_Madness(int ref, int enemy)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
-		
-		//TE_Madness_BEAM_LOC[npc.index][1]=WorldSpaceCenterOld(enemy)	//1st loc on enemy
-		
-		//TE_Madness_END_BEAM_LOC[npc.index][1]=WorldSpaceCenterOld(enemy)
-		
 		SDKHook(ref, SDKHook_Think, TE_Madness_Primary_TBB_Tick);
 		CreateTimer(60.0, TE_Madness_TBB_Timer, ref, TIMER_FLAG_NO_MAPCHANGE);
 	}
@@ -412,7 +400,7 @@ public Action TE_Madness_Primary_TBB_Tick(int client)
 			{
 				case 0:
 				{			
-					UserLoc = GetAbsOriginOld(client);
+					GetAbsOrigin(client, UserLoc);
 					CustomAng=-1;
 					radius=200.0;
 					UserLoc[2]+=500.0;
@@ -420,7 +408,7 @@ public Action TE_Madness_Primary_TBB_Tick(int client)
 				}
 				case 1:
 				{
-					UserLoc = GetAbsOriginOld(client);
+					GetAbsOrigin(client, UserLoc);
 					CustomAng=1;
 					radius=50.0;
 					UserLoc[2]+=10.0;
@@ -499,7 +487,7 @@ void TE_Madness_spawn_beams(int client, int colour[4], int o)
 			{
 				int PrimaryThreatIndex = npc.m_iTarget;
 				float vecTarget[3];
-				vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+				WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				TE_Madness_Attack_Timer[npc.index][m]=GetGameTime(npc.index)+GetRandomFloat(15.0, 5.0);
 				
 				int SPRITE_INT_2 = PrecacheModel("materials/sprites/lgtning.vmt", false);
@@ -530,8 +518,8 @@ public void TE_Madness_Attack(float vecTarget[3], int m, int client, int colour[
 	WritePackFloat(data, vecTarget[1]);
 	WritePackFloat(data, vecTarget[2]);
 	WritePackCell(data, m); // mmmmmmmm microwave
-	WritePackCell(data, Range); // Range
-	WritePackCell(data, Dmg); // Damge
+	WritePackFloat(data, Range); // Range
+	WritePackFloat(data, Dmg); // Damge
 	WritePackCell(data, client);
 }
 public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
@@ -543,8 +531,8 @@ public Action Smite_Timer_TE_Madness(Handle Smite_Logic, DataPack data)
 	vecTarget[1] = ReadPackFloat(data);
 	vecTarget[2] = ReadPackFloat(data);
 	int m = ReadPackCell(data);
-	float Ionrange = ReadPackCell(data);
-	float Iondamage = ReadPackCell(data);
+	float Ionrange = ReadPackFloat(data);
+	float Iondamage = ReadPackFloat(data);
 	int client = EntRefToEntIndex(ReadPackCell(data));
 	
 	Adiantum npc = view_as<Adiantum>(client);

@@ -3,7 +3,6 @@
 
 static float ability_cooldown[MAXPLAYERS+1]={0.0, ...};
 static float Necro_Damage[MAXPLAYERS+1]={0.0, ...};
-static bool Delete_Flame[MAXPLAYERS+1]={false, ...};
 
 public void Wand_Calcium_Spell_ClearAll()
 {
@@ -107,10 +106,6 @@ public Action Calcium_Remove_Spell(Handle Calcium_Remove_SpellHandle, int client
 	if (IsValidClient(client))
 	{
 		Spawn_Calcium(client);
-		if(LastMann)
-		{
-			Spawn_Calcium(client);			
-		}
 		Attributes_Set(client, 698, 0.0);
 		FakeClientCommand(client, "use tf_weapon_bonesaw");
 		Attributes_Set(client, 178, 1.0);
@@ -125,8 +120,6 @@ public void Spawn_Calcium(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	
-	char buffer[16];
-	FloatToString(Necro_Damage[client], buffer, sizeof(buffer));
-	Npc_Create(NECRO_CALCIUM, client, flPos, flAng, true, buffer);
-	Items_GiveNPCKill(client, NECRO_CALCIUM);
+	int npc = NPC_CreateByName("npc_necromancy_calcium", client, flPos, flAng, TFTeam_Red);
+	fl_Extra_Damage[npc] = Necro_Damage[client];
 }

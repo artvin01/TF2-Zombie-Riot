@@ -17,6 +17,16 @@ static const char g_IdleSound[][] = {
 void BobTheTargetDummy_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bob The First");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_first_targetdummy");
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BobTheTargetDummy(client, vecPos, vecAng, ally);
 }
 
 methodmap BobTheTargetDummy < CClotBody
@@ -31,14 +41,12 @@ methodmap BobTheTargetDummy < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
 	}
 	
-	public BobTheTargetDummy(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BobTheTargetDummy(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BobTheTargetDummy npc = view_as<BobTheTargetDummy>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "300", ally, false,_,_,_,_));
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
-		i_NpcInternalId[npc.index] = BOB_THE_TARGETDUMMY;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -58,7 +66,10 @@ methodmap BobTheTargetDummy < CClotBody
 		f3_SpawnPosition[npc.index][2] = vecPos[2];
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, BobTheTargetDummy_OnTakeDamagePost);
-		SDKHook(npc.index, SDKHook_Think, BobTheTargetDummy_ClotThink);
+
+		func_NPCDeath[npc.index] = BobTheTargetDummy_NPCDeath;
+	//	func_NPCOnTakeDamage[npc.index] = BobTheTargetDummy_OnTakeDamage;
+		func_NPCThink[npc.index] = BobTheTargetDummy_ClotThink;
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_claymore/c_claymore.mdl");
 		SetVariantString("0.7");
@@ -172,7 +183,6 @@ public void BobTheTargetDummy_NPCDeath(int entity)
 	BobTheTargetDummy npc = view_as<BobTheTargetDummy>(entity);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, BobTheTargetDummy_OnTakeDamagePost);
-	SDKUnhook(entity, SDKHook_Think, BobTheTargetDummy_ClotThink);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

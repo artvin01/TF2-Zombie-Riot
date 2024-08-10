@@ -100,6 +100,20 @@ public void BobTheGod_OnMapStart_NPC()
 	{
 		Has_a_bob[client] = 0;
 	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bob the Second");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_overlord");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BobTheGod(client, vecPos, vecAng, ally);
 }
 
 methodmap BobTheGod < CClotBody
@@ -123,9 +137,7 @@ methodmap BobTheGod < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -133,35 +145,27 @@ methodmap BobTheGod < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 		this.m_flNextHurtSound = GetGameTime(this.index) + GetRandomFloat(0.6, 1.6);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayMovingSound() {
 		
 		EmitSoundToAll(g_Moving_Sound[GetRandomInt(0, sizeof(g_Moving_Sound) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayRangedSound() {
@@ -190,26 +194,21 @@ methodmap BobTheGod < CClotBody
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, _, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, 80, _, 1.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 
 
-	public BobTheGod(int client, float vecPos[3], float vecAng[3])
+	public BobTheGod(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		
-		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", true, true));
+		BobTheGod npc = view_as<BobTheGod>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "0.7", "9999999", ally, true));
 		
-		i_NpcInternalId[npc.index] = BOB_THE_GOD_OF_GODS;
 		i_NpcWeight[npc.index] = 999;
 
 		SetVariantInt(1);
@@ -228,6 +227,10 @@ methodmap BobTheGod < CClotBody
 		
 	//	SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
 		
+		func_NPCDeath[npc.index] = BobTheGod_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = BobTheGod_OnTakeDamage;
+		func_NPCThink[npc.index] = BobTheGod_ClotThink;
+		func_NPCActorEmoted[npc.index] = BobTheGod_PluginBot_OnActorEmoted;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 					
@@ -380,8 +383,9 @@ public void BobTheGod_ClotThink(int iNPC)
 	{
 		if(IsPlayerAlive(client) && npc.m_b_follow)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(client);
-			flDistanceToOwner = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself );
+			flDistanceToOwner = GetVectorDistance(vecTarget, Vecself);
 		}
 		else
 		{
@@ -408,9 +412,9 @@ public void BobTheGod_ClotThink(int iNPC)
 		if(IsValidEnemy(npc.index, attacker, true))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(attacker);
-						
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			
 			if(!IsPlayerAlive(client))
 			{
@@ -445,9 +449,10 @@ public void BobTheGod_ClotThink(int iNPC)
 		else
 		{
 			int PrimaryThreatIndex = npc.m_iTarget;
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 					
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float Vecself[3]; WorldSpaceCenter(client, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			if (npc.m_fbGunout == false && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
 				if (!npc.m_bmovedelay)
@@ -482,7 +487,7 @@ public void BobTheGod_ClotThink(int iNPC)
 			}
 			else
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			
@@ -492,7 +497,7 @@ public void BobTheGod_ClotThink(int iNPC)
 				float vecSpread = 0.1;
 				
 				float npc_pos[3];
-				npc_pos = GetAbsOriginOld(npc.index);
+				GetAbsOrigin(npc.index, npc_pos);
 					
 				npc_pos[2] += 30.0;
 					
@@ -610,7 +615,7 @@ public void BobTheGod_ClotThink(int iNPC)
 	
 						float vecSpread = 0.1;
 						float npc_pos[3];
-						npc_pos = GetAbsOriginOld(npc.index);
+						GetAbsOrigin(npc.index, npc_pos);
 							
 						npc_pos[2] += 30.0;
 						npc.FaceTowards(vecTarget, 15000.0);
@@ -752,9 +757,10 @@ public void BobTheGod_ClotThink(int iNPC)
 		else if ((npc.m_iState == 0 || npc.m_iState == 2) && npc.m_flFollowing_Master_Now < GetGameTime(npc.index))
 		{
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(client);
+			float vecTarget[3]; WorldSpaceCenter(client, vecTarget );
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index));
+			float Vecself[3]; WorldSpaceCenter(npc.index, Vecself);	
+			float flDistanceToTarget = GetVectorDistance(vecTarget, Vecself);
 			
 			if (flDistanceToTarget > 300 && npc.m_flReloadDelay < GetGameTime(npc.index))
 			{
@@ -957,9 +963,13 @@ public void roundStart(Event hEvent, const char[] sEvName, bool bDontBroadcast)
 	}
 }
 
-public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int concept)
+public int BobTheGod_PluginBot_OnActorEmoted(NextBotAction action, CBaseCombatCharacter actor, CBaseCombatCharacter emoter, int emote)
 {
 //	PrintToServer(">>>>>>>>>> PluginBot_OnActorEmoted %i who %i concept %i", bot_entidx, who, concept);
+
+	int bot_entidx = actor.index;
+	int who = emoter.index;
+	int concept = emote;
 	
 	if (concept == 13)
 	{
@@ -969,7 +979,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		SetGlobalTransTarget(client);
 		PrintHintText(client, "%t %t","Bob The Second:", "On my way, sir!");
@@ -1016,11 +1026,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1051,11 +1062,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1090,11 +1102,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1129,11 +1142,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1150,11 +1164,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1171,11 +1186,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1192,11 +1208,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1214,7 +1231,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		if(!npc.m_b_stand_still) //Already moving, geez!
 		{
@@ -1222,7 +1239,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			PrintHintText(client, "%t %t","Bob The Second:", "Standing right here!");
 			npc.m_flidle_talk += 2.0;
 			npc.m_b_stand_still = true;
-			return;
+			return 0;
 		}
 		
 		else if(npc.m_b_stand_still) //Already moving, geez!
@@ -1231,7 +1248,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			PrintHintText(client, "%t %t","Bob The Second:", "I'm on my move again!");
 			npc.m_flidle_talk += 2.0;
 			npc.m_b_stand_still = false;
-			return;
+			return 0;
 		}
 		
 	}
@@ -1242,13 +1259,14 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		//"Help me!"
 		
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget > 300)
 		{
@@ -1282,7 +1300,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}	
 		TeleportEntity(npc.index, pos, NULL_VECTOR, NULL_VECTOR); 
-		return;
+		return 0;
 
 	}
 	else if (concept == 58)
@@ -1293,11 +1311,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		if(flDistanceToTarget < 300)
 		{
 			int iActivity_melee = npc.LookupActivity("ACT_BUSY_THREAT");
@@ -1307,7 +1326,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 17)
@@ -1318,14 +1337,14 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		SetGlobalTransTarget(client);
 		PrintHintText(client, "%t %t","Bob The Second:", "Follow? Sure!");
 		npc.m_flidle_talk += 2.0;
 		npc.m_b_follow = true;
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 15)
@@ -1336,11 +1355,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1349,7 +1369,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 16)
@@ -1360,11 +1380,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1373,7 +1394,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 29)
@@ -1384,11 +1405,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1409,7 +1431,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		}
 		*/
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 30)
@@ -1420,11 +1442,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1441,7 +1464,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
-		return;
+		return 0;
 
 	}
 	else if (concept == 31)
@@ -1452,11 +1475,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1473,7 +1497,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
-		return;
+		return 0;
 
 	}
 	else if (concept == 32)
@@ -1484,11 +1508,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300/* && GetEntProp(npc.index, Prop_Data, "m_iHealth") > 500*/)
 		{
@@ -1505,7 +1530,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		*/
-		return;
+		return 0;
 
 	}
 	else if (concept == 18)
@@ -1516,7 +1541,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 		
 		SetGlobalTransTarget(client);
 		PrintHintText(client, "%t %t","Bob The Second:", "Not Follow? Sure!");
@@ -1524,7 +1549,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		npc.m_flidle_talk += 2.0;
 		npc.m_b_follow = false;
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 28)
@@ -1535,7 +1560,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		if(!npc.m_bIsFriendly) //Already moving, geez!
 		{
@@ -1546,7 +1571,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = true;
-			return;
+			return 0;
 		}
 		else if(npc.m_bIsFriendly) //Already moving, geez!
 		{
@@ -1556,9 +1581,9 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 			npc.m_bIsFriendly = false;
-			return;
+			return 0;
 		}
-		return;
+		return 0;
 	}
 	else if (concept == 33)
 	{
@@ -1568,11 +1593,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1582,7 +1608,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 34)
@@ -1593,11 +1619,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 300)
 		{
@@ -1607,7 +1634,7 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			npc.m_flidle_talk += 2.0;
 		}
 		
-		return;
+		return 0;
 
 	}
 	else if (concept == 5)
@@ -1618,11 +1645,12 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 		int client = who_owns_this_bob[npc.index];
 			
 		if(client != who) //You are not my dad!
-			return;
+			return 0;
 			
 		float pos[3]; GetEntPropVector(who, Prop_Data, "m_vecAbsOrigin", pos);
 		
-		float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+		float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+		float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 		
 		if(flDistanceToTarget < 100 && npc.m_flheal_cooldown < GetGameTime(npc.index))
 		{
@@ -1687,8 +1715,9 @@ public void BobTheGod_PluginBot_OnActorEmoted(int bot_entidx, int who, int conce
 			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
 			npc.m_flidle_talk += 2.0;
 		}
-		return;
+		return 0;
 	}
+	return 0;
 }
 
 public Action BobTheGod_showHud(Handle dashHud, int client)
@@ -1713,7 +1742,8 @@ public Action BobTheGod_anger_medkit(Handle dashHud, int entity)
 		{
 			float pos[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
 			
-			float flDistanceToTarget = GetVectorDistance(pos, WorldSpaceCenterOld(npc.index));	
+			float PosNpc[3]; WorldSpaceCenter(npc.index, PosNpc);
+			float flDistanceToTarget = GetVectorDistance(pos, PosNpc);	
 			if(flDistanceToTarget < 150)
 			{
 				SDKHooks_TakeDamage(client, npc.index, client, 35.0, DMG_CLUB);

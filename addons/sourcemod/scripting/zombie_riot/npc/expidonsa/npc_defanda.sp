@@ -43,8 +43,21 @@ void Defanda_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Defanda");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_defanda");
+	strcopy(data.Icon, sizeof(data.Icon), "medic"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;								//download needed?
+	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Category = Type_Expidonsa;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Defanda(client, vecPos, vecAng, ally);
+}
 
 methodmap Defanda < CClotBody
 {
@@ -80,16 +93,15 @@ methodmap Defanda < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
 	
-	public Defanda(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Defanda(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Defanda npc = view_as<Defanda>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 		
-		i_NpcInternalId[npc.index] = EXPIDONSA_DEFANDA;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -106,8 +118,10 @@ methodmap Defanda < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		func_NPCDeath[npc.index] = view_as<Function>(Internal_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 		
-		SDKHook(npc.index, SDKHook_Think, Defanda_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -133,7 +147,7 @@ methodmap Defanda < CClotBody
 	}
 }
 
-public void Defanda_ClotThink(int iNPC)
+static void Internal_ClotThink(int iNPC)
 {
 	Defanda npc = view_as<Defanda>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -164,13 +178,14 @@ public void Defanda_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -187,7 +202,7 @@ public void Defanda_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Defanda npc = view_as<Defanda>(victim);
 		
@@ -203,7 +218,7 @@ public Action Defanda_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	return Plugin_Changed;
 }
 
-public void Defanda_NPCDeath(int entity)
+static void Internal_NPCDeath(int entity)
 {
 	Defanda npc = view_as<Defanda>(entity);
 	if(!npc.m_bGib)
@@ -211,7 +226,6 @@ public void Defanda_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	ExpidonsaRemoveEffects(entity);
-	SDKUnhook(npc.index, SDKHook_Think, Defanda_ClotThink);
 		
 	
 	if(IsValidEntity(npc.m_iWearable4))
@@ -234,7 +248,8 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -252,40 +267,23 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
-					int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
 					// Hit sound
 					npc.PlayMeleeHitSound();
-					//on hit, we heal all allies around us
 					if(target <= MaxClients)
 					{
 						if (IsInvuln(target))
 						{
-							b_ExpidonsaWasAttackingNonPlayer = true;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 75.0, 1.0, true);
 						}
 						else
 						{
-							b_ExpidonsaWasAttackingNonPlayer = false;
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 100.0, 1.0, true);
 						}
 					}
 					else
 					{
-						b_ExpidonsaWasAttackingNonPlayer = true;
+						ExpidonsaGroupHeal(npc.index, 150.0, 5, 75.0, 1.0, true);
 					}
-					Explode_Logic_Custom(0.0,
-					npc.index,
-					npc.index,
-					-1,
-					_,
-					150.0,
-					_,
-					_,
-					true,
-					5,
-					false,
-					_,
-					DefandaAllyHeal);
-					SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
 				} 
 			}
 			delete swingTrace;
@@ -294,7 +292,7 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 
 	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -345,42 +343,4 @@ void DefandaEffects(int iNpc)
 	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
 	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
 	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
-}
-
-
-void DefandaAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			DefandaAllyHealInternal(entity, victim, 50.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			DefandaAllyHealInternal(entity, victim, 50.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients)
-		{
-			DefandaAllyHealInternal(entity, victim, 100.0);
-		}
-	}
-}
-
-void DefandaAllyHealInternal(int entity, int victim, float heal)
-{
-	if(b_ExpidonsaWasAttackingNonPlayer)
-		heal *= 0.5;
-
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

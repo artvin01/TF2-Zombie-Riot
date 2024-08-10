@@ -38,7 +38,25 @@ static const char g_MeleeAttackSounds[][] =
 	"weapons/demo_sword_swing3.wav",
 };
 
-methodmap SeaReefbreaker < CClotBody
+void SeaReefbreaker_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Reefbreaker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseareefbreaker");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_reefbreaker");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaReefbreaker(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaReefbreaker < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -65,7 +83,7 @@ methodmap SeaReefbreaker < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
-	public SeaReefbreaker(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaReefbreaker(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -77,7 +95,7 @@ methodmap SeaReefbreaker < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAREEFBREAKER_CARRIER : (elite ? SEAREEFBREAKER_ALT : SEAREEFBREAKER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 		
@@ -86,7 +104,9 @@ methodmap SeaReefbreaker < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		KillFeed_SetKillIcon(npc.index, "nessieclub");
 		
-		SDKHook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
+		func_NPCDeath[npc.index] = SeaReefbreaker_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaReefbreaker_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaReefbreaker_ClotThink;
 		
 		npc.m_flSpeed = 300.0;	// 1.2 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -100,7 +120,7 @@ methodmap SeaReefbreaker < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_strength", -1.0);
@@ -241,8 +261,9 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(npc.m_flAttackHappens)
 		{
@@ -252,7 +273,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 			{
 				npc.m_flAttackHappens = 0.0;
 
-				float attack = (i_NpcInternalId[npc.index] == SEAREEFBREAKER_ALT ? 120.0 : 90.0) * npc.Attack(gameTime);
+				float attack = (npc.m_bElite ? 120.0 : 90.0) * npc.Attack(gameTime);
 				// 300 x 0.3
 				// 400 x 0.3
 
@@ -278,8 +299,8 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 							SDKHooks_TakeDamage(target, npc.index, npc.index, attack * 1.1, DMG_CLUB);
 							npc.PlayMeleeHitSound();
 
-							if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
-								SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * 0.2));
+							if(npc.m_bCarrier)
+								Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * 0.2));
 						}
 					}
 
@@ -288,7 +309,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 
 				if(failed)
 				{
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1200.0);
+					PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1200.0, _,vecTarget);
 					int entity = npc.FireArrow(vecTarget, attack, 1200.0, "models/weapons/w_bugbait.mdl");
 					
 					if(entity != -1)
@@ -299,12 +320,12 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 						SetEntityRenderMode(entity, RENDER_TRANSCOLOR);
 						SetEntityRenderColor(entity, 100, 100, 255, 255);
 						
-						vecTarget = WorldSpaceCenterOld(entity);
+						WorldSpaceCenter(entity, vecTarget);
 						f_ArrowTrailParticle[entity] = ParticleEffectAt(vecTarget, "rockettrail_bubbles", 3.0);
 						SetParent(entity, f_ArrowTrailParticle[entity]);
 						f_ArrowTrailParticle[entity] = EntIndexToEntRef(f_ArrowTrailParticle[entity]);
 
-						if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
+						if(npc.m_bCarrier)
 							i_NervousImpairmentArrowAmount[entity] = RoundToCeil(attack * 0.1);
 					}
 				}
@@ -337,7 +358,7 @@ public void SeaReefbreaker_ClotThink(int iNPC)
 		{
 			if(distance < npc.GetLeadRadius())
 			{
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
 			else 
@@ -377,16 +398,13 @@ void SeaReefbreaker_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	if(i_NpcInternalId[npc.index] == SEAREEFBREAKER_CARRIER)
+	if(npc.m_bCarrier)
 	{
 		float pos[3];
 		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
 		Remains_SpawnDrop(pos, Buff_Reefbreaker);
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaReefbreaker_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

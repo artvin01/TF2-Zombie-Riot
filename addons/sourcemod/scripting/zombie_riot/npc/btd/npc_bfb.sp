@@ -54,7 +54,34 @@ static int MoabHealth(bool fortified)
 
 void Bfb_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Brutal Floating Behemoth");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bfb");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
+	for(int i; i<sizeof(SoundMoabPop); i++)
+	{
+		PrecacheSoundCustom(SoundMoabPop[i]);
+	}
 	PrecacheModel("models/zombie_riot/btd/bfb.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return BFB(client, vecPos, vecAng, ally, data);
 }
 
 methodmap BFB < CClotBody
@@ -88,7 +115,7 @@ methodmap BFB < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public BFB(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public BFB(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -97,16 +124,19 @@ methodmap BFB < CClotBody
 		
 		BFB npc = view_as<BFB>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bfb.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_BFB;
 		i_NpcWeight[npc.index] = 3;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
+		func_NPCDeath[npc.index] = Bfb_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Bfb_OnTakeDamage;
+		func_NPCThink[npc.index] = Bfb_ClotThink;
+
 		int iActivity = npc.LookupActivity("ACT_FLOAT");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
@@ -123,7 +153,6 @@ methodmap BFB < CClotBody
 		
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bfb_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bfb_ClotThink);
 		
 		npc.StartPathing();
 		
@@ -173,16 +202,18 @@ public void Bfb_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
+			
+			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
+			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}
 		else
 		{
@@ -193,27 +224,27 @@ public void Bfb_ClotThink(int iNPC)
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
-				
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				if(npc.m_bFortified)
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 30.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 100.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 100.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}
 				else
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 20.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 80.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 80.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}					
 			}
@@ -254,14 +285,12 @@ public void Bfb_NPCDeath(int entity)
 	npc.PlayDeathSound();
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bfb_ClotDamagedPost);
-	
-	SDKUnhook(npc.index, SDKHook_Think, Bfb_ClotThink);
-	
+
 	float pos[3], angles[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", angles);
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 	
-	int spawn_index = Npc_Create(BTD_MOAB, -1, pos, angles, GetEntProp(entity, Prop_Send, "m_iTeamNum") == 2, npc.m_bFortified ? "f" : "");
+	int spawn_index = NPC_CreateByName("npc_moab", -1, pos, angles, GetTeam(entity), npc.m_bFortified ? "f" : "");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

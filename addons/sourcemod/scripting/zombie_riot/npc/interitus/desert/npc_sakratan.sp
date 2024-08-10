@@ -45,9 +45,23 @@ void DesertSakratan_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Sakratan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sakratan");
+	strcopy(data.Icon, sizeof(data.Icon), "demo");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertSakratan(client, vecPos, vecAng, ally);
+}
 methodmap DesertSakratan < CClotBody
 {
 	public void PlayIdleAlertSound() 
@@ -82,16 +96,15 @@ methodmap DesertSakratan < CClotBody
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
 	
 	
-	public DesertSakratan(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertSakratan(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		DesertSakratan npc = view_as<DesertSakratan>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "550", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_SAKRATAN;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -112,6 +125,9 @@ methodmap DesertSakratan < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 330.0;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 
 		func_NPCDeath[npc.index] = view_as<Function>(DesertSakratan_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DesertSakratan_OnTakeDamage);
@@ -170,13 +186,14 @@ public void DesertSakratan_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -240,7 +257,8 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 			{
 							
@@ -252,12 +270,12 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damageDealt = 30.0;
-					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+				//	if(ShouldNpcDealBonusDamage(target))
+				//		damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
-					Sakratan_AddNeuralDamage(target, npc.index, 20, true);
+					Elemental_AddChaosDamage(target, npc.index, 20, true);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -269,7 +287,7 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.25))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -287,83 +305,4 @@ void DesertSakratanSelfDefense(DesertSakratan npc, float gameTime, int target, f
 			}
 		}
 	}
-}
-
-
-
-
-void Sakratan_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
-{
-	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
-	{
-		Armor_DebuffType[victim] = 2;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
-		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
-			{
-				Armor_Charge[victim] = 0;
-				float ProjectileLoc[3];
-				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-				ProjectileLoc[2] += 45.0;
-
-				//if server starts crashing out of nowhere, change how to change teamnum
-				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				ParticleEffectAt(ProjectileLoc, "hightower_explosion", 1.0);
-				int TeamNum = GetEntProp(attacker, Prop_Send, "m_iTeamNum");
-				SetEntProp(attacker, Prop_Send, "m_iTeamNum", 4);
-				Explode_Logic_Custom(0.0,
-				attacker,
-				attacker,
-				-1,
-				ProjectileLoc,
-				250.0,
-				_,
-				_,
-				true,
-				99,
-				false,
-				_,
-				SakratanGroupDebuff);
-				SetEntProp(attacker, Prop_Send, "m_iTeamNum", TeamNum);
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
-			//	Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
-			}
-			
-			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound friends/friend_online.wav");
-		}
-	}
-}
-
-
-void SakratanGroupDebuff(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[victim])
-	{
-		SakratanGroupDebuffInternal(victim);
-	}
-	else if(victim <= MaxClients)
-	{
-		SakratanGroupDebuffInternal(victim);
-	}
-}
-
-void SakratanGroupDebuffInternal(int victim)
-{
-	if(!b_BobsTrueFear[victim])
-	{
-		HealEntityGlobal(victim, victim, -250.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.25, 10.0);
-	}
-	else
-	{
-		HealEntityGlobal(victim, victim, -200.0, 1.0, 0.0, HEAL_ABSOLUTE);
-		IncreaceEntityDamageTakenBy(victim, 1.18, 8.0);		
-	}
-
 }

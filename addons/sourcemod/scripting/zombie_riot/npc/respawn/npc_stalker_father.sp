@@ -8,6 +8,21 @@ void StalkerFather_MapStart()
 {
 	PrecacheSound("#music/radio1.mp3");
 	PrecacheModel("models/zombie/monk_combine.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Spawned Father Grigori");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_stalker_father");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return StalkerFather(client, vecPos, vecAng, ally);
 }
 
 methodmap StalkerFather < StalkerShared
@@ -22,11 +37,10 @@ methodmap StalkerFather < StalkerShared
 		i_PlayMusicSound = GetTime() + 39;
 	}
 	
-	public StalkerFather(int client, float vecPos[3], float vecAng[3], bool ally)
+	public StalkerFather(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		StalkerFather npc = view_as<StalkerFather>(CClotBody(vecPos, vecAng, "models/zombie/monk_combine.mdl", "1.15", "66666", ally));
 		
-		i_NpcInternalId[npc.index] = STALKER_FATHER;
 		i_NpcWeight[npc.index] = 5;
 		fl_GetClosestTargetTimeTouch[npc.index] = 99999.9;
 		
@@ -41,7 +55,9 @@ methodmap StalkerFather < StalkerShared
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		
-		SDKHook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
+		func_NPCDeath[npc.index] = StalkerFather_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = StalkerFather_OnTakeDamage;
+		func_NPCThink[npc.index] = StalkerFather_ClotThink;
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		Is_a_Medic[npc.index] = true;
@@ -73,7 +89,7 @@ public void StalkerFather_ClotThink(int iNPC)
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
-	if(!Waves_InSetup() && Waves_GetRound() > 29)
+	if(!Waves_InSetup()/* && Waves_GetRound() > 29*/)
 	{
 		if(b_NpcIsInvulnerable[npc.index])
 		{
@@ -139,10 +155,10 @@ public void StalkerFather_ClotThink(int iNPC)
 		}
 	}
 	
-	float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+	float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 	if(npc.m_bChaseAnger && npc.CanSeeEnemy())
 	{
-		LastKnownPos = WorldSpaceCenterOld(npc.m_iTarget);
+		WorldSpaceCenter(npc.m_iTarget, LastKnownPos);
 		float distance = GetVectorDistance(LastKnownPos, vecMe, true);
 		
 		int state;
@@ -173,7 +189,7 @@ public void StalkerFather_ClotThink(int iNPC)
 				npc.StartPathing();
 				if(distance < npc.GetLeadRadius()) 
 				{
-					LastKnownPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_,LastKnownPos);
 					NPC_SetGoalVector(npc.index, LastKnownPos);
 				}
 				else
@@ -332,9 +348,6 @@ public Action StalkerFather_OnTakeDamage(int victim, int &attacker, int &inflict
 void StalkerFather_NPCDeath(int entity)
 {
 	StalkerFather npc = view_as<StalkerFather>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, StalkerFather_ClotThink);
 
 	for(int i; i < 9; i++)
 	{
@@ -362,7 +375,7 @@ public Action StalkerFather_Timer(Handle timer)
 		return Plugin_Continue;
 	
 	Enemy enemy;
-	enemy.Index = STALKER_GOGGLES;
+	enemy.Index = NPC_GetByPlugin("npc_stalker_googgles");
 	enemy.Health = 66666666;
 	enemy.Is_Immune_To_Nuke = true;
 	enemy.Is_Static = true;
@@ -371,6 +384,7 @@ public Action StalkerFather_Timer(Handle timer)
 	enemy.ExtraSpeed = 1.0;
 	enemy.ExtraDamage = 1.0;	
 	enemy.ExtraSize = 1.0;	
+	enemy.Team = TFTeam_Blue;	
 	Waves_AddNextEnemy(enemy);
 	return Plugin_Stop;
 }

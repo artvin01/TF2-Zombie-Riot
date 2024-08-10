@@ -3,18 +3,38 @@
 
 // Balanced around Early Zombie
 
+public void BarrackMilitiaOnMapStart()
+{
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Militia");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_militia");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+	
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackMilitia(client, vecPos, vecAng, ally);
+}
+
 methodmap BarrackMilitia < BarrackBody
 {
-	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackMilitia(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		BarrackMilitia npc = view_as<BarrackMilitia>(BarrackBody(client, vecPos, vecAng, "165",_,_,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
-		i_NpcInternalId[npc.index] = BARRACK_MILITIA;
 		i_NpcWeight[npc.index] = 1;
 		KillFeed_SetKillIcon(npc.index, "boston_basher");
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
-
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackMilitia_NPCDeath;
+		func_NPCThink[npc.index] = BarrackMilitia_ClotThink;
 		npc.m_flSpeed = 150.0;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_boston_basher/c_boston_basher.mdl");
@@ -39,11 +59,12 @@ public void BarrackMilitia_ClotThink(int iNPC)
 
 		if(npc.m_iTarget > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 			//Target close enough to hit
-			if(flDistanceToTarget < 10000 || npc.m_flAttackHappenswillhappen)
+			if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 				{
@@ -71,7 +92,7 @@ public void BarrackMilitia_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 280.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
 							} 
 						}
@@ -94,5 +115,4 @@ void BarrackMilitia_NPCDeath(int entity)
 {
 	BarrackMilitia npc = view_as<BarrackMilitia>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, BarrackMilitia_ClotThink);
 }

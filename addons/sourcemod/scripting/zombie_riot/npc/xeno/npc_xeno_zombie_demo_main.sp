@@ -36,8 +36,21 @@ public void XenoDemoMain_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_charge_sound)); i++) { PrecacheSound(g_charge_sound[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds));	i++) { PrecacheSound(g_MeleeHitSounds[i]);	}
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Xeno Demoknight Main");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_zombie_demo_main");
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Xeno;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return XenoDemoMain(client, vecPos, vecAng, ally);
+}
 methodmap XenoDemoMain < CClotBody
 {
 	public void PlayIdleAlertSound() {
@@ -47,24 +60,18 @@ methodmap XenoDemoMain < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	public void PlayChargeSound() {
 		EmitSoundToAll(g_charge_sound[GetRandomInt(0, sizeof(g_charge_sound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80, 85));
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -76,11 +83,9 @@ methodmap XenoDemoMain < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
-	public XenoDemoMain(int client, float vecPos[3], float vecAng[3], bool ally)
+	public XenoDemoMain(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoDemoMain npc = view_as<XenoDemoMain>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "13500", ally));
 		
@@ -88,7 +93,6 @@ methodmap XenoDemoMain < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
-		i_NpcInternalId[npc.index] = XENO_DEMO_MAIN;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -102,7 +106,9 @@ methodmap XenoDemoMain < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);				
+		func_NPCDeath[npc.index] = XenoDemoMain_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = XenoDemoMain_OnTakeDamage;
+		func_NPCThink[npc.index] = XenoDemoMain_ClotThink;					
 		
 		
 		
@@ -191,9 +197,10 @@ public void XenoDemoMain_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(npc.m_flCharge_Duration < GetGameTime(npc.index))
 			{
@@ -203,7 +210,7 @@ public void XenoDemoMain_ClotThink(int iNPC)
 					int Enemy_I_See;
 					Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 					//Target close enough to hit
-					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > 10000 && flDistanceToTarget < 1000000)
+					if(IsValidEnemy(npc.index, Enemy_I_See) && Enemy_I_See == PrimaryThreatIndex && flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0)
 					{
 						npc.PlayChargeSound();
 						npc.m_flCharge_delay = GetGameTime(npc.index) + 5.0;
@@ -220,7 +227,7 @@ public void XenoDemoMain_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 				NPC_SetGoalVector(npc.index, vPredictedPos);
 			}
@@ -320,9 +327,6 @@ public Action XenoDemoMain_OnTakeDamage(int victim, int &attacker, int &inflicto
 public void XenoDemoMain_NPCDeath(int entity)
 {
 	XenoDemoMain npc = view_as<XenoDemoMain>(entity);
-	
-	
-	SDKUnhook(npc.index, SDKHook_Think, XenoDemoMain_ClotThink);	
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);

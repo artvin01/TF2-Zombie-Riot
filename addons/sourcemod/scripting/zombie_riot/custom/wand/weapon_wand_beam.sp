@@ -258,7 +258,7 @@ public Action Reset_BeamWand_Attackspeed(Handle cut_timer, int ref)
 
 static void TBB_Ability_BeamWand(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client] = 0.0;
@@ -323,7 +323,7 @@ static void TBB_Ability_BeamWand(int client)
 }
 static void TBB_Ability_BeamWand_pap(int client)
 {
-	for (int building = 1; building < MAX_TARGETS_HIT; building++)
+	for (int building = 0; building < MAX_TARGETS_HIT; building++)
 	{
 		BeamWand_BuildingHit[building] = false;
 		BeamWand_Targets_Hit[client] = 0.0;
@@ -500,7 +500,7 @@ static void TBB_Tick(int client)
 		}
 		
 		
-		for (int building = 1; building < MAX_TARGETS_HIT; building++)
+		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			BeamWand_BuildingHit[building] = false;
 		}
@@ -527,19 +527,18 @@ static void TBB_Tick(int client)
 			{
 				if(IsValidEntity(BeamWand_BuildingHit[building]))
 				{
-					playerPos = WorldSpaceCenterOld(BeamWand_BuildingHit[building]);
+					WorldSpaceCenter(BeamWand_BuildingHit[building],playerPos);
 					float distance = GetVectorDistance(startPoint, playerPos, false);
 					float damage = BeamWand_CloseBuildingDPT[client] + (BeamWand_FarBuildingDPT[client]-BeamWand_CloseBuildingDPT[client]) * (distance/BeamWand_MaxDistance[client]);
 					if (damage < 0)
 						damage *= -1.0;
 					
-					float damage_force[3];
-					damage_force = CalculateDamageForceOld(vecForward, 10000.0);
+					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(BeamWand_BuildingHit[building]));
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteCell(EntIndexToEntRef(client));
-					pack.WriteFloat(damage/BeamWand_Targets_Hit[client]);
+					pack.WriteFloat(damage*BeamWand_Targets_Hit[client]);
 					pack.WriteCell(DMG_PLASMA);
 					pack.WriteCell(EntIndexToEntRef(weapon_active));
 					pack.WriteFloat(damage_force[0]);

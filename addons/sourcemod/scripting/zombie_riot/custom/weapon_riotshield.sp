@@ -26,15 +26,20 @@ void Weapon_RiotShield_Map_Precache()
 
 public void Weapon_RiotShield_M2(int client, int weapon, bool crit, int slot)
 {
-	Weapon_RiotShield_M2_Base(client, weapon, crit, slot, 0);
+	Weapon_RiotShield_M2_Base(client, weapon, slot, 0);
 }
 
 public void Weapon_RiotShield_M2_PaP(int client, int weapon, bool crit, int slot)
 {
-	Weapon_RiotShield_M2_Base(client, weapon, crit, slot, 1);
+	Weapon_RiotShield_M2_Base(client, weapon, slot, 1);
 }
 
-public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slot, int pap)
+public void Weapon_RiotShield_M2_Alt(int client, int weapon, bool crit, int slot)
+{
+	Weapon_RiotShield_M2_Base(client, weapon, slot, 2);
+}
+
+static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
@@ -113,11 +118,17 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 			Rogue_OnAbilityUse(weapon);
 			//Boom! Do effects and buff weapon!
 
-			float Original_Atackspeed = 1.0;
+			if(pap == 2)
+			{
+				ApplyTempAttrib(weapon, 2, 1.35, 5.0);
+				ApplyTempAttrib(weapon, 6, 2.0, 5.0);
+				ApplyTempAttrib(weapon, 45, 3.0, 5.0);
+			}
+			else
+			{
+				ApplyTempAttrib(weapon, 6, 0.25, 3.0); //Make them attack WAY faster.
+			}
 
-			Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-				
-			Attributes_Set(weapon, 6, Original_Atackspeed * 0.25); //Make them attack WAY faster.
 			EmitSoundToAll(SOUND_RIOTSHIELD_ACTIVATION, client, SNDCHAN_STATIC, 80, _, 0.9);
 
 			float ClientAng[3];
@@ -131,8 +142,6 @@ public void Weapon_RiotShield_M2_Base(int client, int weapon, bool crit, int slo
 			TE_Particle("mvm_soldier_shockwave", ClientPos, NULL_VECTOR, ClientAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
 			TeleportEntity(particle, NULL_VECTOR,fAng,NULL_VECTOR);
-
-			CreateTimer(3.0, RiotShieldAbilityEnd_M2, EntIndexToEntRef(weapon), TIMER_FLAG_NO_MAPCHANGE);
 
 			float cooldownAbility = 25.0;
 			if(pap == 1)
@@ -220,6 +229,7 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			
 			DispatchSpawn(entity);
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+			SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 			
 			WearableRef[client] = EntIndexToEntRef(entity);
 			SDKCall_EquipWearable(client, entity);
@@ -235,6 +245,8 @@ public void Weapon_RiotShield_Deploy(int client, int weapon)
 			ang[1] = 180.0;
 			ang[2] = 1.5;
 			TeleportEntity(entity, pos, ang, NULL_VECTOR);
+
+			SDKHook(entity, SDKHook_SetTransmit, ThirdPersonTransmit);
 		}
 	}
 }
@@ -260,7 +272,17 @@ public Action FirstPersonTransmit(int entity, int client)
 	if(client > 0 && client <= MaxClients)
 	{
 		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(owner == client)
+		if(owner == -1)
+		{
+			RemoveEntity(owner);
+			return Plugin_Stop;
+		}
+
+		if(Armor_Charge[owner] < 1)
+		{
+			return Plugin_Stop;
+		}
+		else if(owner == client)
 		{
 			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
 				return Plugin_Stop;
@@ -273,21 +295,24 @@ public Action FirstPersonTransmit(int entity, int client)
 	return Plugin_Continue;
 }
 
-
-public Action RiotShieldAbilityEnd_M2(Handle cut_timer, int ref)
+public Action ThirdPersonTransmit(int entity, int client)
 {
-	int weapon = EntRefToEntIndex(ref);
-	if (IsValidEntity(weapon))
+	if(client > 0 && client <= MaxClients)
 	{
-		float Original_Atackspeed;
+		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(owner == -1)
+		{
+			RemoveEntity(owner);
+			return Plugin_Stop;
+		}
 
-		Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
-
-		Attributes_Set(weapon, 6, Original_Atackspeed / 0.25);
+		if(Armor_Charge[owner] < 1)
+		{
+			return Plugin_Stop;
+		}
 	}
-	return Plugin_Handled;
+	return Plugin_Continue;
 }
-
 
 static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 {
@@ -298,7 +323,7 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 		{
 			GetEntityClassname(entity, classname, sizeof(classname));
 			
-			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetEntProp(entity, Prop_Send, "m_iTeamNum") != GetEntProp(client, Prop_Send, "m_iTeamNum")))
+			if (((!StrContains(classname, "zr_base_npc", true) && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
 			{
 				for(int i=1; i <= (MAX_TARGETS_HIT_RIOT -1 ); i++)
 				{
@@ -318,6 +343,10 @@ static bool Shield_TraceTargets(int entity, int contentsMask, int client)
 //taken and edited from ff2_sarysapub3
 public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int attacker, int weapon, float damagePosition[3])
 {
+	// Require armor charge
+	if(Armor_Charge[victim] < 1)
+		return damage;
+	
 	// need position of either the inflictor or the attacker
 	float actualDamagePos[3];
 	float victimPos[3];
@@ -358,30 +387,54 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	// now it's a simple check
 	if ((yawOffset >= MINYAW_RAID_SHIELD && yawOffset <= MAXYAW_RAID_SHIELD) || BlockAnyways)
 	{
-		if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
+		float resist = (b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker]) ? 0.65 : 0.45;
+		int HalfarmorValue = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
+		if(Armor_Charge[victim] < HalfarmorValue)
 		{
-			damage *= 0.7; //35% res instead of 61%, too op against singular.
+			float ResistLeft = float(Armor_Charge[victim]) / float(HalfarmorValue);
+			//invert resistance.
+			resist *= -1.0;
+			resist += 1.0;
+			//do calcs
+			resist *= ResistLeft;
+
+			//invert it again.
+			resist *= -1.0;
+			resist += 1.0;
+
 		}
-		else
-		{
-			damage *= 0.5;
-		}
+
+		damage *= resist;
+		
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
-			switch(GetRandomInt(1,2))
+
+			if(Attributes_Get(weapon, 868, 0.0))	// Alt Pap, Cooldown Reduction
 			{
-				case 1:
+				ClientCommand(victim, "playgamesound ambient/energy/spark%d.wav", 1 + (GetURandomInt() % 6));
+				Saga_ChargeReduction(victim, weapon, 0.5);
+
+				int ally = GetClosestAlly(victim, 100000.0, victim, Saga_ChargeValidityFunction);
+				if(ally > 0)
 				{
-					ClientCommand(victim, "playgamesound items/pegleg_01.wav");
+					ClientCommand(ally, "playgamesound ambient/energy/spark%d.wav", 1 + (GetURandomInt() % 6));
+
+					int i, other;
+					while(TF2_GetItem(ally, other, i))
+					{
+						Saga_ChargeReduction(ally, other, 0.5);
+					}
 				}
-				case 2:
-				{
-					ClientCommand(victim, "playgamesound items/pegleg_02.wav");
-				}
+			}
+			else
+			{
+				ClientCommand(victim, "playgamesound Wood_Box.BulletImpact");
 			}
 		}
 	}
 
 	return damage;
 }
+
+

@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define AUTO_RARITY	4	// Mythic and above
-
 static const char TierName[][] =
 {
 	// 1 = Sell
@@ -21,6 +19,10 @@ static const char TierName[][] =
 	"Legendary"			// 10 / 16
 };
 
+#define FORGE_COST	2000
+#define ROLLING_COST	2000
+#define REROLL_COST	3000
+
 #define TINKER_CAP	10
 
 #define FLAG_MELEE	(1 << 0)	// 1
@@ -30,6 +32,7 @@ static const char TierName[][] =
 #define FLAG_FISH	(1 << 4)	// 16
 #define FLAG_WRENCH	(1 << 5)	// 32
 #define FLAG_ALL	63
+
 
 enum struct TinkerNPCEnum
 {
@@ -139,10 +142,6 @@ enum struct TinkerNPCEnum
 enum struct TinkerEnum
 {
 	char Name[32];
-	int ToolMinLv;
-	int ToolMaxLv;
-	int ToolMinRarity;
-	int ToolMaxRarity;
 	int PlayerLevel;
 
 	int ToolFlags;
@@ -171,15 +170,12 @@ enum struct TinkerEnum
 	Function FuncAttack3;
 	Function FuncReload;
 	Function FuncGainXP;
+	Function FuncMining;
 
 	void SetupEnum(KeyValues kv)
 	{
 		kv.GetSectionName(this.Name, 32);
 
-		this.ToolMinLv = kv.GetNum("tool_minlevel");
-		this.ToolMaxLv = kv.GetNum("tool_maxlevel", 99999);
-		this.ToolMinRarity = kv.GetNum("tool_minrarity");
-		this.ToolMaxRarity = kv.GetNum("tool_maxrarity", 9);
 		this.PlayerLevel = kv.GetNum("player_minlevel");
 		this.ToolFlags = kv.GetNum("tools", FLAG_ALL);
 		this.Levels = kv.GetNum("levels");
@@ -210,6 +206,9 @@ enum struct TinkerEnum
 
 		kv.GetString("func_gainxp", this.Desc, 256);
 		this.FuncGainXP = GetFunctionByName(null, this.Desc);
+
+		kv.GetString("func_mining", this.Desc, 256);
+		this.FuncMining = GetFunctionByName(null, this.Desc);
 
 		static char buffers[32][16];
 		kv.GetString("attribs", this.Desc, 256);
@@ -257,7 +256,6 @@ enum struct WeaponEnum
 	int Store;
 	int Owner;
 	int XP;
-	int Auto;
 
 	int Perks[TINKER_CAP];
 	int PerkCount;
@@ -268,7 +266,7 @@ enum struct WeaponEnum
 
 	int Tier()
 	{
-		int tier = XpToLevel(this.XP * 5);
+		int tier = RoundToFloor(Pow(this.XP / 20.0, 0.5));
 		if(tier >= sizeof(TierName))
 			tier = sizeof(TierName) - 1;
 		
@@ -276,11 +274,11 @@ enum struct WeaponEnum
 	}
 	int XpToNextTier()
 	{
-		int tier = XpToLevel(this.XP * 5) + 1;
+		int tier = RoundToFloor(Pow(this.XP / 20.0, 0.5)) + 1;
 		if(tier >= sizeof(TierName))
 			return 0;
 		
-		return LevelToXp(tier) / 5;
+		return tier * tier * 20;
 	}
 }
 
@@ -288,28 +286,16 @@ static StringMap NPCList;
 static ArrayList TinkerList;
 static ArrayList WeaponList;
 static ArrayList ForgeList;
-static ArrayList AutoMultiList;
 static int CurrentWeapon[MAXTF2PLAYERS];
 static bool ChatListen[MAXTF2PLAYERS];
 
-void Tinker_ConfigSetup(KeyValues map)
+void Tinker_ConfigSetup()
 {
-	KeyValues kv = map;
-	if(kv)
-	{
-		kv.Rewind();
-		if(!kv.JumpToKey("Tinker"))
-			kv = null;
-	}
-	
 	char buffer[PLATFORM_MAX_PATH];
-	if(!kv)
-	{
-		BuildPath(Path_SM, buffer, sizeof(buffer), CONFIG_CFG, "tinker");
-		kv = new KeyValues("Tinker");
-		kv.SetEscapeSequences(true);
-		kv.ImportFromFile(buffer);
-	}
+	RPG_BuildPath(buffer, sizeof(buffer), "tinker");
+	KeyValues kv = new KeyValues("Tinker");
+	kv.SetEscapeSequences(true);
+	kv.ImportFromFile(buffer);
 
 	Tinker_ResetAll();
 
@@ -383,27 +369,7 @@ void Tinker_ConfigSetup(KeyValues map)
 		kv.GoBack();
 	}
 
-	delete AutoMultiList;
-	AutoMultiList = new ArrayList();
-
-	if(kv.JumpToKey("MythicMulti"))
-	{
-		if(kv.GotoFirstSubKey(false))
-		{
-			do
-			{
-				AutoMultiList.Push(kv.GetFloat(NULL_STRING));
-			}
-			while(kv.GotoNextKey(false));
-
-			kv.GoBack();
-		}
-
-		kv.GoBack();
-	}
-
-	if(kv != map)
-		delete kv;
+	delete kv;
 }
 
 void Tinker_ResetAll()
@@ -432,30 +398,18 @@ void Tinker_DisableZone(const char[] name)
 	}
 }
 
-static int TinkerCost(int level)
+static void ToMetaData(const WeaponEnum weapon, char data[512])
 {
-	return 2000 + (level * 75);
-}
-
-static void ToMetaData(int level, const WeaponEnum weapon, char data[512])
-{
-	int sell = TinkerCost(level);
+	int sell = FORGE_COST;
 
 	Format(data, sizeof(data), "txp%d", weapon.XP);
 
-	if(weapon.Auto)
+	for(int i; i < weapon.PerkCount; i++)
 	{
-		Format(data, sizeof(data), "%s:autowep", data);
-	}
-	else
-	{
-		for(int i; i < weapon.PerkCount; i++)
-		{
-			static TinkerEnum tinker;
-			TinkerList.GetArray(weapon.Perks[i], tinker);
-			Format(data, sizeof(data), "%s:%s", data, tinker.Name);
-			sell += tinker.Credits - (tinker.Levels * 200);
-		}
+		static TinkerEnum tinker;
+		TinkerList.GetArray(weapon.Perks[i], tinker);
+		Format(data, sizeof(data), "%s:%s", data, tinker.Name);
+		sell += tinker.Credits - (tinker.Levels * 200);
 	}
 
 	if(weapon.ForgeCount)
@@ -465,7 +419,7 @@ static void ToMetaData(int level, const WeaponEnum weapon, char data[512])
 			Format(data, sizeof(data), "%s:forge,%d,%.2f", data, weapon.Forge[i], weapon.Value[i]);
 		}
 
-		sell += TinkerCost(level) / 2;
+		sell += ROLLING_COST;
 	}
 	
 	Format(data, sizeof(data), "sell%d:%s", sell, data);
@@ -478,22 +432,21 @@ static int ConvertToTinker(int client, int index)
 	KeyValues kv = TextStore_GetItemKv(index);
 	if(kv)
 	{
-		int cost = TinkerCost(kv.GetNum("level"));
 		int cash = TextStore_Cash(client);
-		if(cost <= cash)
+		if(FORGE_COST <= cash)
 		{
 			int amount;
 			TextStore_GetInv(client, index, amount);
 			if(amount)
 			{
-				TextStore_SetInv(client, index, amount - 1, false);
+				TextStore_SetInv(client, index, _, false);
 
 				char data[20];
-				FormatEx(data, sizeof(data), "sell%d", cost);
+				FormatEx(data, sizeof(data), "sell%d", FORGE_COST);
 				newIndex = TextStore_CreateUniqueItem(client, index, data);
 				TextStore_UseItem(client, newIndex, false);
 
-				TextStore_Cash(client, -cost);
+				TextStore_Cash(client, -FORGE_COST);
 			}
 		}
 	}
@@ -533,18 +486,6 @@ void Tinker_EquipItem(int client, int index)
 					weapon.Value[weapon.ForgeCount++] = StringToFloat(buffers[2]);
 				}
 			}
-			else if(!StrContains(buffers[i], "autowep"))
-			{
-				KeyValues kv = TextStore_GetItemKv(index);
-				if(kv)
-				{
-					weapon.Auto = kv.GetNum("level", 999999);
-				}
-				else
-				{
-					weapon.Auto = 999999;
-				}
-			}
 			else
 			{
 				for(int a; a < length; a++)
@@ -577,14 +518,6 @@ void Tinker_SpawnItem(int client, int index, int entity)
 			{
 				TextStore_GetItemName(index, StoreWeapon[entity], sizeof(StoreWeapon[]));
 
-				if(weapon.Auto)
-				{
-					float multi = GetAutoMulti(weapon.Auto, Level[client], weapon.XP);
-
-					Attributes_SetMulti(entity, 2, multi);
-					Attributes_SetMulti(entity, 410, multi);
-				}
-				
 				static TinkerEnum tinker;
 				for(i = 0; i < weapon.PerkCount; i++)
 				{
@@ -594,7 +527,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 					{
 						if(tinker.Attrib[a] < 0)
 						{
-							Stats_GetCustomStats(entity, tinker.Attrib[a], tinker.Value[a]);
+							Stats_SetCustomStats(entity, tinker.Attrib[a], tinker.Value[a]);
 						}
 						else
 						{
@@ -639,7 +572,7 @@ void Tinker_SpawnItem(int client, int index, int entity)
 				{
 					if(weapon.Forge[i] < 0)
 					{
-						Stats_GetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
+						Stats_SetCustomStats(entity, weapon.Forge[i], weapon.Value[i]);
 					}
 					else if(weapon.Forge[i])
 					{
@@ -656,7 +589,8 @@ void Tinker_SpawnItem(int client, int index, int entity)
 							Attributes_SetMulti(entity, weapon.Forge[i], weapon.Value[i]);
 						}
 
-						Attributes_Set(entity, 128, 1.0);
+					//	Attributes_Set(entity, 128, 1.0);
+					// 	Breaks animations heavily
 					}
 				}
 
@@ -711,7 +645,7 @@ void Tinker_GainXP(int client, int entity)
 					if(kv)
 					{
 						static char data[512];
-						ToMetaData(kv.GetNum("level"), weapon, data);
+						ToMetaData(weapon, data);
 						TextStore_SetItemData(weapon.Store, data);
 					}
 				}
@@ -737,7 +671,7 @@ void Tinker_GainXP(int client, int entity)
 	}
 }
 
-void Tinker_DescItem(int client, int index, char[] desc)
+void Tinker_DescItem(int index, char[] desc)
 {
 	static char data[512];
 	TextStore_GetItemData(index, data, sizeof(data));
@@ -746,7 +680,6 @@ void Tinker_DescItem(int client, int index, char[] desc)
 	static char buffers[16][32];
 	int perks, xp;
 	int count = ExplodeString(data, ":", buffers, sizeof(buffers), sizeof(buffers[]));
-	bool auto;
 	for(int i; i < count; i++)
 	{
 		if(!StrContains(buffers[i], "sell"))
@@ -772,10 +705,6 @@ void Tinker_DescItem(int client, int index, char[] desc)
 				Stats_DescItem(desc, attribs, values, 1);
 			}
 		}
-		else if(!StrContains(buffers[i], "autowep"))
-		{
-			auto = true;
-		}
 		else
 		{
 			Format(desc, 512, "%s\n%s", desc, buffers[i]);
@@ -785,25 +714,13 @@ void Tinker_DescItem(int client, int index, char[] desc)
 
 	Format(desc, 512, "XP: %d%s", xp, desc);
 
-	if(auto)
-	{
-		KeyValues kv = TextStore_GetItemKv(CurrentWeapon[client]);
-		if(kv)
-		{
-			float value = GetAutoMulti(kv.GetNum("level"), Level[client], xp);
-			Format(desc, 512, "%s\n \n%s Level Bonus", desc, CharPercent(value));
-		}
-	}
-	else
-	{
-		int limit = XpToLevel(xp * 5);
-		if(limit >= sizeof(TierName))
-			limit = sizeof(TierName) - 1;
-		
-		limit += 3;
-		if(perks > limit)
-			Format(desc, 512, "%s\n \nModifier Slots: %d", desc, perks - limit);
-	}
+	int limit = RoundToFloor(Pow(xp / 20.0, 0.5));
+	if(limit >= sizeof(TierName))
+		limit = sizeof(TierName) - 1;
+	
+	limit += 3;
+	if(perks > limit)
+		Format(desc, 512, "%s\n \nModifier Slots: %d", desc, perks - limit);
 }
 
 static void GetAttributeFormat(char[] desc, int attrib, float value)
@@ -818,6 +735,9 @@ static void GetAttributeFormat(char[] desc, int attrib, float value)
 		
 		case 96:
 			Format(desc, 512, "%s\n%s Reload Speed", desc, CharPercent(1.0 / value));
+
+		case 4009:
+			Format(desc, 512, "%s\n%s Damage Resistance", desc, CharPercent(1.0 / value));
 		
 		case 410:
 			Format(desc, 512, "%s\n%s Magic Damage", desc, CharPercent(value));
@@ -884,12 +804,8 @@ static void ShowMenu(int client, int page)
 							menu.AddItem("-3", "Rename");
 							menu.AddItem("-4", "Tinker\n ");
 
-							if(!weapon.Auto && (weapon.Tier() + 3) > weapon.PerkCount)
+							if((weapon.Tier() + 3) > weapon.PerkCount)
 							{
-								int baseLv = kv.GetNum("level");
-								int buffLv = baseLv;
-								int rarity = kv.GetNum("rarity");
-
 								bool hasFunc[4];
 								
 								hasFunc[0] = view_as<bool>(buffer[0]);
@@ -938,7 +854,6 @@ static void ShowMenu(int client, int page)
 								for(i = 0; i < weapon.PerkCount; i++)
 								{
 									TinkerList.GetArray(weapon.Perks[i], tinker);
-									buffLv += tinker.Levels;
 
 									if(!hasFunc[0])
 										hasFunc[0] = tinker.FuncAttack != INVALID_FUNCTION;
@@ -958,8 +873,6 @@ static void ShowMenu(int client, int page)
 								{
 									TinkerList.GetArray(i, tinker);
 									if((tinker.ToolFlags & tool) &&
-									   tinker.ToolMinLv <= buffLv && tinker.ToolMaxLv >= baseLv && 
-									   tinker.ToolMinRarity <= rarity && tinker.ToolMaxRarity >= rarity &&
 									 (!hasFunc[0] || tinker.FuncAttack == INVALID_FUNCTION) &&
 									 (!hasFunc[1] || tinker.FuncAttack2 == INVALID_FUNCTION) &&
 									 (!hasFunc[2] || tinker.FuncAttack3 == INVALID_FUNCTION) &&
@@ -990,13 +903,11 @@ static void ShowMenu(int client, int page)
 				}
 				else
 				{
-					int level = kv.GetNum("level");
-					if(level)
+					if(kv.GetNum("forgable", 1))
 					{
 						int cash = TextStore_Cash(client);
-						int cost = TinkerCost(level);
-						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, cost);
-						menu.AddItem("-2", buffer, cash < cost ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+						Format(buffer, sizeof(buffer), "Forge Item (%d / %d Credits)", cash, FORGE_COST);
+						menu.AddItem("-2", buffer, cash < FORGE_COST ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 					}
 					else
 					{
@@ -1032,11 +943,9 @@ static void ShowMenu(int client, int page)
 					WeaponList.GetArray(i, weapon);
 					if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
 					{
-						cost = TinkerCost(kv.GetNum("level")) * 4;
-
 						if(weapon.ForgeCount)
 						{
-							cost /= 5;
+							cost = REROLL_COST;
 
 							for(int a; a < weapon.ForgeCount; a++)
 							{
@@ -1047,7 +956,7 @@ static void ShowMenu(int client, int page)
 						}
 						else
 						{
-							cost /= 8;
+							cost = ROLLING_COST;
 							first = true;
 						}
 					}
@@ -1136,9 +1045,7 @@ static void ShowMenu(int client, int page)
 
 							if(tinker.Levels)
 							{
-								GetDisplayString(level, tinker.Cost1, sizeof(tinker.Cost1));
-								GetDisplayString(level + tinker.Levels, tinker.Cost2, sizeof(tinker.Cost2));
-								Format(buffer, sizeof(buffer), "%s\n%s -> %s", buffer, tinker.Cost1, tinker.Cost2);
+								Format(buffer, sizeof(buffer), "%s\nLevel %d -> Level %d", buffer, level, level + tinker.Levels);
 
 								if(!failed)
 									failed = Level[client] < (level + tinker.Levels);
@@ -1239,15 +1146,10 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 							WeaponList.GetArray(i, weapon);
 							if(weapon.Owner == client && weapon.Store == CurrentWeapon[client])
 							{
-								int cost = TinkerCost(kv.GetNum("level")) * 4;
+								int cost = ROLLING_COST;
 								if(weapon.ForgeCount)
-								{
-									cost /= 5;
-								}
-								else
-								{
-									cost /= 8;
-								}
+									cost = REROLL_COST;
+								
 								TextStore_Cash(client, -cost);
 
 								kv.GetString("func_attack", data, sizeof(data));
@@ -1285,7 +1187,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 								RollRandomAttribs(Level[client], weapon, tool);
 								WeaponList.SetArray(i, weapon);
 
-								ToMetaData(kv.GetNum("level"), weapon, data);
+								ToMetaData(weapon, data);
 								TextStore_SetItemData(weapon.Store, data);
 								TF2_RegeneratePlayer(client);
 								break;
@@ -1340,7 +1242,7 @@ public int Tinker_MainMenu(Menu menu, MenuAction action, int client, int choice)
 									weapon.Perks[weapon.PerkCount++] = page;
 									WeaponList.SetArray(i, weapon);
 
-									ToMetaData(kv.GetNum("level"), weapon, data);
+									ToMetaData(weapon, data);
 									TextStore_SetItemData(weapon.Store, data);
 									TF2_RegeneratePlayer(client);
 									break;
@@ -1365,7 +1267,7 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 
 	int fails;
 	int length = ForgeList.Length;
-	while(weapon.ForgeCount < 4 || (weapon.Auto && weapon.ForgeCount < 2))
+	while(weapon.ForgeCount < 4)
 	{
 		static ForgeEnum forge;
 		ForgeList.GetArray(GetURandomInt() % length, forge);
@@ -1382,33 +1284,52 @@ static void RollRandomAttribs(int level, WeaponEnum weapon, int tool)
 		}
 
 		weapon.Forge[weapon.ForgeCount] = forge.Attrib;
-
-		float value = GetRandomFloat(forge.Low, forge.High);
-		weapon.Value[weapon.ForgeCount++] = value;		
-		bool bad = view_as<bool>(GetURandomInt() % 2);
-/*
-		if(!bad)
+		
+		float value = 1.0;
+		switch(weapon.ForgeCount)
 		{
-			switch(forge.Type)
+			case 0:
 			{
-				case 0:
-					bad = value <= 1.0;
-				
-				case 1:
-					bad = value >= 1.0;
-				
-				case 2:
-					bad = value <= 0.0;
+				switch(forge.Type)
+				{
+					case 0:
+						value = GetRandomFloat(1.0, forge.High);
+					
+					case 1:
+						value = GetRandomFloat(forge.Low, 1.0);
+					
+					case 2:
+						value = GetRandomFloat(0.0, forge.High);
+				}
+			}
+			case 1:
+			{
+				switch(forge.Type)
+				{
+					case 0:
+						value = GetRandomFloat(forge.Low, 1.0);
+					
+					case 1:
+						value = GetRandomFloat(1.0, forge.High);
+					
+					case 2:
+						value = GetRandomFloat(forge.Low, 0.0);
+				}
+			}
+			default:
+			{
+				value = GetRandomFloat(forge.Low, forge.High);
 			}
 		}
-*/
-		if(!bad)
-			break;
 
+		weapon.Value[weapon.ForgeCount++] = value;
+
+		if(weapon.ForgeCount > 1 && GetURandomInt() % 2)
+			break;
 	}
 }
 
-void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
+void Tinker_StatsLevelUp(int client, int oldLevel)
 {
 	int count;
 	int length = TinkerList.Length;
@@ -1422,9 +1343,7 @@ void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Modifiers In Forge", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat(client, "%d New Modifiers In Forge", count);
 	}
 
 	count = 0;
@@ -1442,30 +1361,42 @@ void Tinker_StatsLevelUp(int client, int oldLevel, Menu menu)
 
 	if(count > 0)
 	{
-		char buffer[32];
-		FormatEx(buffer, sizeof(buffer), "%d New Attributes In Tinker", count);
-		menu.AddItem(buffer, buffer, ITEMDRAW_DISABLED);
+		SPrintToChat(client, "%d New Attributes In Tinker", count);
 	}
 }
 
-static float GetAutoMulti(int baseLevel, int playerLevel, int xp)
+void Tinker_Mining(int client, int entity, int toolTier, int mineTier, int &damage)
 {
-	int length = AutoMultiList.Length - 1;
+	int index = Store_GetStoreOfEntity(entity);
+	if(index < 0)
+	{
+		static WeaponEnum weapon;
+		int length = WeaponList.Length;
+		for(int i; i < length; i++)
+		{
+			WeaponList.GetArray(i, weapon);
+			if(weapon.Store == index && weapon.Owner == client)
+			{
+				for(i = 0; i < weapon.PerkCount; i++)
+				{
+					static TinkerEnum tinker;
+					TinkerList.GetArray(weapon.Perks[i], tinker);
+					if(tinker.FuncMining != INVALID_FUNCTION)
+					{
+						Call_StartFunction(null, tinker.FuncMining);
+						Call_PushCell(client);
+						Call_PushCell(entity);
+						Call_PushCell(toolTier);
+						Call_PushCell(mineTier);
+						Call_PushCellRef(damage);
+						Call_Finish();
+					}
+				}
 
-	int baseLv = baseLevel;
-	if(baseLv > length)
-		baseLv = length;
-	
-	int playerLv = playerLevel;
-	if(playerLv > length)
-		playerLv = length;
-
-	float base = AutoMultiList.Get(baseLv);
-	float player = AutoMultiList.Get(playerLv);
-
-	int rank = XpToLevel(xp * 5);
-
-	return (1.0 + (rank * 0.125)) * (player / base);
+				break;
+			}
+		}
+	}
 }
 
 public void Tinker_XP_Ecological(int client, int weapon)
@@ -1481,8 +1412,23 @@ public void Tinker_XP_Ecological(int client, int weapon)
 public void Tinker_XP_Glassy(int client, int weapon)
 {
 	Attributes_SetMulti(weapon, 2, 0.99);
-	Attributes_SetMulti(weapon, 410, 0.99);
-	Attributes_SetMulti(weapon, 2016, 0.99);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 0.99);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 0.98);
+}
+
+public void Tinker_XP_Dense(int client, int weapon)
+{
+	Attributes_SetMulti(weapon, 2, 1.005);
+
+	if(Attributes_Has(weapon, 410))
+		Attributes_SetMulti(weapon, 410, 1.005);
+	
+	if(Attributes_Has(weapon, 2016))
+		Attributes_SetMulti(weapon, 2016, 1.01);
 }
 
 public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
@@ -1503,4 +1449,34 @@ public void Tinker_Attack_Addiction(int client, int weapon, bool crit, int slot)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 	}
+}
+
+public void Tinker_XP_Stonebound(int client, int weapon)
+{
+	if(f_MomentumAntiOpSpam[weapon] > GetGameTime())
+	{
+		//dont do anything.
+		return;
+	}
+//	f_MomentumAntiOpSpam[weapon] = GetGameTime() + 0.5;
+	ApplyTempAttrib(weapon, 6, 0.985, 45.0);
+	ApplyTempAttrib(weapon, 2, 0.985, 45.0);
+
+	if(Attributes_Has(weapon, 410))
+		ApplyTempAttrib(weapon, 410, 0.985, 45.0);
+}
+
+public void Tinker_XP_Momentum(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 6.0, client);
+}
+
+public void Tinker_XP_Momentum2(int client, int weapon)
+{
+	TF2_AddCondition(client, TFCond_SpeedBuffAlly, 12.0, client);
+}
+
+public void Tinker_Mining_Unnatural(int client, int weapon, int toolTier, int mineTier, int &damage)
+{
+	damage += 5 * (toolTier - mineTier);
 }

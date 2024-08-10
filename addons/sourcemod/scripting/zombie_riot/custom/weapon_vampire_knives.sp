@@ -28,23 +28,23 @@ public void Vampire_Knives_Precache()
 //that damage, up to a cap.
 static float Vamp_BleedDMGMax[4] = { 99999.0, 99999.0, 99999.0, 99999.0 };	//The absolute maximum damage a single Bloodlust tick can inflict.
 static float Vamp_BleedRate[4] = { 0.33, 0.275, 0.25, 0.2 }; //The rate at which Bloodlust deals damage.
-static float Vamp_BleedHeal[4] = { 0.17, 0.085, 0.0475, 0.0475 };	//Portion of Bloodlust damage to heal the user for.
-static float Vamp_HealRadius[4] = { 300.0, 330.0, 360.0, 390.0 };	//Max distance from the victim to heal the user in.
-static float Vamp_HealMultIfHurt[4] = { 0.25, 0.25, 0.25, 0.25 };	//Amount to multiply healing received by Bloodlust if recently harmed.
+static float Vamp_BleedHeal[4] = { 0.25, 0.125, 0.0655, 0.0655 };	//Portion of Bloodlust damage to heal the user for.
+static float Vamp_HealRadius[4] = { 330.0, 350.0, 400.0, 420.0 };	//Max distance from the victim to heal the user in.
+static float Vamp_HealMultIfHurt[4] = { 0.33, 0.33, 0.33, 0.33 };	//Amount to multiply healing received by Bloodlust if recently harmed.
 
 //Default + Pap Route 1 - Vampire Knives: Fast melee swing speed, low melee damage, M2 throws X knives in a fan pattern which inflict Y* your melee damage.
-static float Vamp_MaxHeal_Normal[4] = { 3.0, 2.5, 2.0, 1.8 };	//Max heal per tick.
-static float Vamp_MinHeal_Normal[4] = { 1.5, 1.25, 1.1, 1.0 };	//Minimum healing received per Bloodlust tick.
-static float Vamp_BleedDMG_Normal[4] = { 5.0, 6.5, 7.0, 8.5 }; //The base damage dealt per Bloodlust tick.
+static float Vamp_MaxHeal_Normal[4] = { 5.0, 4.5, 4.0, 3.25 };	//Max heal per tick.
+static float Vamp_MinHeal_Normal[4] = { 2.5, 2.25, 2.1, 2.0 };	//Minimum healing received per Bloodlust tick.
+static float Vamp_BleedDMG_Normal[4] = { 6.0, 7.5, 8.0, 9.5 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Normal[4] = { 7, 10, 12, 14 }; //Number of Bloodlust stacks applied on a melee hit.
-static int Vamp_BleedStacksOnThrow_Normal[4] = { 5, 7, 10, 12 }; //Number of Bloodlust stacks applied on a throw hit.
+static int Vamp_BleedStacksOnThrow_Normal[4] = { 3, 4, 5, 6 }; //Number of Bloodlust stacks applied on a throw hit.
 static float Vamp_ThrowMultiplier_Normal[4] = { 2.0, 3.0, 3.75, 4.25 }; //Amount to multiply damage dealt by thrown knives.
-static float Vamp_ThrowCD_Normal[4] = { 6.0, 9.0, 14.0, 14.0 }; //Knife throw cooldown.
-static int Vamp_ThrowKnives_Normal[4] = { 1, 3, 5, 6 }; //Number of knives thrown by M2.
+static float Vamp_ThrowCD_Normal[4] = { 6.0, 9.0, 12.0, 12.0 }; //Knife throw cooldown.
+static int Vamp_ThrowKnives_Normal[4] = { 2, 3, 5, 6 }; //Number of knives thrown by M2.
 static int Vamp_ThrowWaves_Normal[4] = { 2, 2, 4, 4 }; //Number of times to throw knives with M2.
 static float Vamp_ThrowRate_Normal[4] = { 0.15, 0.1, 0.05, 0.05 }; //Time between throws if more than one wave in M2.
-static float Vamp_ThrowSpread_Normal[4] = { 0.0, 30.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
-static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	//Velocity of thrown knives.w 
+static float Vamp_ThrowSpread_Normal[4] = { 15.0, 30.0, 30.0, 30.0 }; //Degree of fan throw when throwing knives.
+static float Vamp_ThrowVelocity_Normal[4] = { 1800.0, 2200.0, 2600.0, 2600.0 };	//Velocity of thrown knives.
 
 //Pap Route 2 - Bloody Butcher: Becomes a slow but deadly cleaver which inflicts heavy damage and gibs zombies on kill. Inflicts more Bloodlust on hit to balance out the
 //slower swing speed. M2 has a longer cooldown and throws fewer knives, but knives become extremely powerful cleavers which keep flying if they kill the
@@ -54,7 +54,7 @@ static float Vamp_MaxHeal_Cleaver[4] = { 4.0, 4.0, 4.0, 4.0 };	//Max heal per ti
 static float Vamp_MinHeal_Cleaver[4] = { 2.0, 2.0, 2.0, 2.0 };	//Minimum healing received per Bloodlust tick.
 static float Vamp_BleedDMG_Cleaver[4] = { 7.5, 20.0, 25.0, 30.0 }; //The base damage dealt per Bloodlust tick.
 static int Vamp_BleedStacksOnMelee_Cleaver[4] = { 12, 16, 20, 24 }; //Same as pap route 1, but for pap route 2.
-static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 16, 20, 24, 28 }; //Same as pap route 1, but for pap route 2.
+static int Vamp_BleedStacksOnThrow_Cleaver[4] = { 8, 10, 12, 14 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowMultiplier_Cleaver[4] = { 2.0, 1.33, 1.15, 1.0 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowCD_Cleaver[4] = { 10.0, 9.0, 12.0, 12.0 }; //Same as pap route 1, but for pap route 2.
 static int Vamp_ThrowKnives_Cleaver[4] = { 1, 1, 2, 3 }; //Same as pap route 1, but for pap route 2.
@@ -62,7 +62,7 @@ static int Vamp_ThrowWaves_Cleaver[4] = { 1, 2, 2, 2 }; //Same as pap route 1, b
 static float Vamp_ThrowRate_Cleaver[4] = { 0.0, 0.66, 0.4, 0.3 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowSpread_Cleaver[4] = { 0.0, 0.0, 20.0, 20.0 }; //Same as pap route 1, but for pap route 2.
 static float Vamp_ThrowVelocity_Cleaver[4] = { 1800.0, 2200.0, 2600.0, 2600.0 }; //Same as pap route 1, but for pap route 2.
-static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.66, 0.8, 0.8 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
+static float Vamp_ThrowDMGMultPerKill[4] = { 0.0, 0.4, 0.45, 0.5 }; //Amount to multiply the damage dealt by thrown cleavers every time they kill a zombie.
 
 int i_VampThrowType[MAXENTITIES] = { 0, ... };
 int i_VampThrowProp[MAXENTITIES] = { 0, ... };
@@ -156,7 +156,12 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		float DMG_Final = 65 * DMGMult;
 		DMG_Final *= Attributes_Get(weapon, 1, 1.0);
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
+		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
+
+		if(cleaver)
+			DMG_Final *= 0.85;
+		else
+			DMG_Final *= 0.4;
 		
 		Vamp_ThrowKnives(client, weapon, BleedStacks, DMG_Final, NumKnives, NumWaves, Rate, Spread, Velocity, 0, cleaver, pap, CleaverMult);
 	}
@@ -239,9 +244,7 @@ public void Vamp_ThrowKnives(int client, int weapon, int BleedStacks, float DMG_
 			DispatchKeyValue(prop, "model", modelName);
 			DispatchKeyValue(prop, "modelscale", "2.0"); //comically large cleaver :)
 			DispatchSpawn(prop);
-			SetEntityCollisionGroup(prop, 1); //Do not collide. //0 doesnt work, use 1
-			SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
-			SetEntProp(prop, Prop_Data, "m_nSolidType", 6); 
+			MakeObjectIntangeable(prop);
 			
 			TeleportEntity(prop, loc, Angles, NULL_VECTOR);
 			SetParent(projectile, prop);
@@ -381,19 +384,19 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (!IsValidClient(attacker) || !IsValidEntity(victim))
 	{
 		BleedAmountCountStack[victimOriginalId] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 		
 	if (b_NpcIsInvulnerable[victim]) //If the NPC is invulnerable, stop all bleeding.
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}	
 	
 	if (b_NpcHasDied[victim]) //Npc died, stop bleed and stop life leech
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 	
 	int NumHits = ReadPackCell(pack);
@@ -413,7 +416,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	if (IsValidEntity(weapon))
 	{
 		DMG_Final *= Attributes_Get(weapon, 2, 1.0);
-		DMG_Final *= Attributes_Get(weapon, 476, 1.0);
+		DMG_Final *= Attributes_Get(weapon, 1000, 1.0);
 	}
 	
 	if (DMG_Final > MaxDMG)
@@ -421,7 +424,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 	
 	float loc[3], vicloc[3], dist;
 	GetClientAbsOrigin(attacker, loc);
-	vicloc = WorldSpaceCenterOld(victim);
+	WorldSpaceCenter(victim, vicloc);
 	dist = GetVectorDistance(loc, vicloc);
 	
 	for (int i = 0; i < 3; i++)
@@ -429,6 +432,10 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		vicloc[i] += GetRandomFloat(-45.0, 45.0);
 	}
 	
+	if (b_thisNpcIsARaid[victim])
+	{
+		DMG_Final *= 0.65;
+	}
 	SDKHooks_TakeDamage(victim, attacker, attacker, DMG_Final, DMG_CLUB, _, _, vicloc, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 	
 	if (dist <= Radius && dieingstate[attacker] == 0)
@@ -451,17 +458,20 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		{
 			heal *= HealMultIfHurt;
 		}
+		//against raidbosses, you heal less, or else you just outheal 24/7.
+		if (b_thisNpcIsARaid[victim])
+		{
+			heal *= 0.7;
+		}
 
-		int healingdone = HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
-		if(healingdone > 0)
-			ApplyHealEvent(attacker, healingdone);
+		HealEntityGlobal(attacker, attacker, heal, _,1.0,HEAL_SELFHEAL);
 	}
 	
 	NumHits++;
 	if (NumHits >= HitQuota)
 	{
 		BleedAmountCountStack[victim] -= 1;
-		return Plugin_Continue;
+		return Plugin_Stop;
 	}
 	Handle pack2;
 	CreateDataTimer(Rate, Vamp_BloodlustTick, pack2, TIMER_FLAG_NO_MAPCHANGE);
@@ -493,13 +503,14 @@ public void Vamp_Knife_Touch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle))
 		{
 			RemoveEntity(particle);
@@ -533,7 +544,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 		float position[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", position);
 		EmitSoundToAll(SND_KNIFE_MISS, entity, SNDCHAN_STATIC, 80, _, 1.0);
-		ParticleEffectAt(position, "ExplosionCore_buildings", 1.0);
+		ParticleEffectAt(position, "ExplosionCore_MidAir", 1.0);
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
@@ -552,7 +563,7 @@ public bool Vamp_CleaverHit(int entity, int target)
 	float vecForward[3];
 	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	static float Entity_Position[3];
-	Entity_Position = WorldSpaceCenterOld(target);
+	WorldSpaceCenter(target, Entity_Position);
 	//Code to do damage position and ragdolls
 		
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
@@ -561,15 +572,17 @@ public bool Vamp_CleaverHit(int entity, int target)
 	float dmg = f_WandDamage[entity];
 	int hp = GetEntProp(target, Prop_Data, "m_iHealth");
 
+	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+
 	if (dmg >= hp)
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, Dmg_Force, Entity_Position, false, ZR_DAMAGE_GIB_REGARDLESS);	// 2048 is DMG_NOGIB?
 		f_WandDamage[entity] *= f_CleaverMultOnKill[entity];
 		return false;
 	}
 	else
 	{
-		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, dmg, DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))

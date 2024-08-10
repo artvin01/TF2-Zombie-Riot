@@ -38,7 +38,25 @@ static const char g_MeleeAttackSounds[][] =
 	"npc/zombie/zo_attack2.wav"
 };
 
-methodmap SeaSlider < CClotBody
+void SeaSlider_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Deep Sea Slider");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaslider");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_slider");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaSlider(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaSlider < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -65,7 +83,7 @@ methodmap SeaSlider < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME,_);	
 	}
 	
-	public SeaSlider(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaSlider(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		SeaSlider npc = view_as<SeaSlider>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", data[0] ? "540" : "420", ally, false));
 		// 2800 x 0.15
@@ -77,7 +95,7 @@ methodmap SeaSlider < CClotBody
 			AcceptEntityInput(npc.index, "SetBodyGroup");
 		}
 		
-		i_NpcInternalId[npc.index] = data[0] ? SEASLIDER_ALT : SEASLIDER;
+		npc.SetElite(view_as<bool>(data[0]));
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_WALK_ON_FIRE");
 		KillFeed_SetKillIcon(npc.index, "warrior_spirit");
@@ -86,8 +104,9 @@ methodmap SeaSlider < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
+		func_NPCDeath[npc.index] = SeaSlider_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaSlider_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaSlider_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 1.1 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -134,12 +153,13 @@ public void SeaSlider_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -167,11 +187,11 @@ public void SeaSlider_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 54.0 : 42.0, DMG_CLUB);
+						SDKHooks_TakeDamage(target, npc.index, npc.index, npc.m_bElite ? 54.0 : 42.0, DMG_CLUB);
 						// 280 x 0.15
 						// 360 x 0.15
 
-						SeaSlider_AddNeuralDamage(target, npc.index, i_NpcInternalId[npc.index] == SEASLIDER_ALT ? 9 : 7);
+						Elemental_AddNervousDamage(target, npc.index, npc.m_bElite ? 9 : 7);
 						// 280 x 0.15 x 0.15
 						// 360 x 0.15 x 0.15
 					}
@@ -228,80 +248,4 @@ void SeaSlider_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaSlider_ClotThink);
-}
-
-void SeaSlider_AddNeuralDamage(int victim, int attacker, int damagebase, bool sound = true, bool ignoreArmor = false)
-{
-	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
-	{
-		Armor_DebuffType[victim] = 1;
-		if(f_ArmorCurrosionImmunity[victim] < GetGameTime() && (ignoreArmor || Armor_Charge[victim] < 1) && !TF2_IsPlayerInCondition(victim, TFCond_DefenseBuffed))
-		{
-			Armor_Charge[victim] -= damage;
-			if(Armor_Charge[victim] < (-MaxArmorCalculation(Armor_Level[victim], victim, 1.0)))
-			{
-				Armor_Charge[victim] = 0;
-
-				if(!b_BobsTrueFear[victim])
-					TF2_StunPlayer(victim, 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-				else
-					TF2_StunPlayer(victim, 3.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				if(!b_BobsTrueFear[victim])
-					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				else
-					SDKHooks_TakeDamage(victim, attacker, attacker, 400.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
-				f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
-			}
-			
-			if(sound || !Armor_Charge[victim])
-				ClientCommand(victim, "playgamesound player/crit_received%d.wav", (GetURandomInt() % 3) + 1);
-		}
-	}
-	else if(!b_NpcHasDied[victim])	// NPCs
-	{
-		if(i_NpcInternalId[victim] == CITIZEN)	// Rebels
-		{
-			Citizen npc = view_as<Citizen>(victim);
-			
-			npc.m_iArmorErosion += damage * 50;
-			if(npc.m_iArmorErosion > npc.m_iGunValue)
-			{
-				npc.m_iArmorErosion = 0;
-
-				FreezeNpcInTime(victim, 3.0);
-
-				bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-				b_ThisNpcIsSawrunner[attacker] = true;
-				SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-				b_ThisNpcIsSawrunner[attacker] = sawrunner;
-			}
-		}
-		else if(view_as<BarrackBody>(victim).OwnerUserId)	// Barracks Unit
-		{
-			int health = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
-			if(health > 0)
-			{
-				health -= damage;
-				if(health < 1)
-					health = 1;
-				
-				SetEntProp(victim, Prop_Data, "m_iMaxHealth", health);
-			}
-		}
-	}
-	else if(i_IsABuilding[victim])	// Buildings
-	{
-		int health = Building_GetBuildingRepair(victim);
-		if(health < 1)
-		{
-			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-		}
-	}
 }

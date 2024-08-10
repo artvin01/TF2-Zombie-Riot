@@ -1,3 +1,6 @@
+#pragma semicolon 1
+#pragma newdecls required
+
 static int ObsessedIngots = -1;
 static bool Solitary;
 static bool Blind;
@@ -31,7 +34,7 @@ public void Rogue_Curse_Bewildered(bool enable)
 	{
 		Rogue_AddExtraStage(1);
 	}
-	
+		
 	// ExtraStageCount cleared on new floor
 }
 
@@ -63,12 +66,16 @@ public void Rogue_SensitiveCurse_Ally(int entity, StringMap map)
 
 public void Rogue_FirstClass_Collect()
 {
+	/*
 	int entity = Citizen_SpawnAtPoint("a");
 	if(entity != -1)
 	{
 		Citizen_ReviveTicks(entity, 999, 0);
 		Citizen_GivePerk(entity, 2);
 	}
+	*/
+	Spawn_Cured_Grigori();
+	Store_RandomizeNPCStore(0);
 }
 
 public void Rogue_Curse_Obsessed(bool enable)

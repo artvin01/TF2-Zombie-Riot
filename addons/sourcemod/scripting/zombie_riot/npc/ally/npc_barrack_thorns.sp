@@ -32,9 +32,22 @@ public void Barracks_Thorns()
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsAbilityActivate));   i++)			{ PrecacheSound(g_RangedAttackSoundsAbilityActivate[i]);}
 	for (int i = 0; i < (sizeof(g_ThornsSpawn));   i++)			{ PrecacheSound(g_ThornsSpawn[i]);   }
 	for (int i = 0; i < (sizeof(g_ThornsDeath));   i++)			{ PrecacheSound(g_ThornsDeath[i]);   }
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Thorns");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_thorns");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 	
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return BarrackThorns(client, vecPos, vecAng, ally);
+}
 bool ThornsHasElite[MAXENTITIES];
 bool ThornsHasMaxPot[MAXENTITIES];
 
@@ -66,7 +79,7 @@ methodmap BarrackThorns < BarrackBody
 		EmitSoundToAll(g_ThornsDeath[GetRandomInt(0, sizeof(g_ThornsDeath) - 1)],
 		this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
-	public BarrackThorns(int client, float vecPos[3], float vecAng[3], bool ally)
+	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
 		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
@@ -101,18 +114,20 @@ methodmap BarrackThorns < BarrackBody
 		ThornsHasElite[npc.index] = elite;
 		ThornsHasMaxPot[npc.index] = MaxPot;
 
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = BarrackThorns_NPCDeath;
+		func_NPCThink[npc.index] = BarrackThorns_ClotThink;
+
 		ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
 
-		i_NpcInternalId[npc.index] = BARRACK_THORNS;
 		i_NpcWeight[npc.index] = 2;
 		
-		SDKHook(npc.index, SDKHook_Think, BarrackThorns_ClotThink);
 		npc.PlayThornsSpawn();
 
 		npc.m_flSpeed = 250.0;
 
 		if(elite)
-			npc.BonusDamageBonus *= 1.5;
+			npc.BonusDamageBonus *= 2.0;
 
 		ThornsDecidedOnAttack[npc.index] = 0;
 		ThornsAbilityAttackTimes[npc.index] = 0;
@@ -156,7 +171,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasElite[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 1.5;
+					npc.BonusDamageBonus *= 2.0;
 					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
 				}
 			}
@@ -211,7 +226,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				}
 			}
 		}
-		float RangeLimit = 1200.0;
+		float RangeLimit = 700.0;
 
 		if(retreating)
 			RangeLimit = 100.0;
@@ -232,8 +247,9 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(EnemyToAttack > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(EnemyToAttack);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(EnemyToAttack, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
 
 			if(ThornsAbilityAttackTimes[npc.index] >= 15)
@@ -247,12 +263,12 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsAbilityActiveTimes[npc.index] > 1)
 				{
 					ThornsAbilityActive[npc.index] = FAR_FUTURE;
-					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
+					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "", {0.0,0.0,0.0});
 
 				}
 				else
 				{
-					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "root", {0.0,0.0,0.0});
+					npc.m_iWearable3 = ParticleEffectAt_Parent(startPosition, "utaunt_gifts_floorglow_brown", npc.index, "", {0.0,0.0,0.0});
 					CreateTimer(30.0, Timer_RemoveEntity, EntIndexToEntRef(npc.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
 				}
 				switch(GetRandomInt(0,3))
@@ -279,18 +295,18 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 			if(ThornsAbilityActive[npc.index] > GetGameTime(npc.index) || ThornsDecidedOnAttack[npc.index] == 3)
 			{
-				if(flDistanceToTarget < (1200.0 * 1200.0) || ThornsDecidedOnAttack[npc.index] == 3)
+				if(flDistanceToTarget < (650.0 * 650.0) || ThornsDecidedOnAttack[npc.index] == 3)
 				{
 					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
 			}
 			else
 			{
-				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
+				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
 				{
 					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
-				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
+				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
 				{
 					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}				
@@ -358,9 +374,9 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 			ThornsDecidedOnAttack[npc.index] = 0;
 			if(IsValidEnemy(npc.index, EnemyToAttack))
 			{
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+				float SelfVecPos[3]; WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+				npc.FaceTowards(SelfVecPos, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, EnemyToAttack, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 								
@@ -429,9 +445,11 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 {
 	if(npc.m_flAttackHappens)
 	{
+		float SelfVecPos[3];
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -463,7 +481,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
@@ -478,7 +496,7 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0))
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (100.0 * 100.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{
@@ -516,9 +534,11 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 {
 	if(npc.m_flAttackHappens)
 	{
+		float SelfVecPos[3];
 		if(IsValidEnemy(npc.index, EnemyToAttack))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(EnemyToAttack), 15000.0);
+			WorldSpaceCenter(EnemyToAttack, SelfVecPos);
+			npc.FaceTowards(SelfVecPos, 15000.0);
 		}
 		if(npc.m_flAttackHappens < GetGameTime(npc.index))
 		{
@@ -539,7 +559,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 
 					if(ThornsAbilityActiveTimes[npc.index] > 1)
 					{
-						damage = 1250.0;
+						damage = 1100.0;
 					}
 					
 					if(ThornsLevelAt[npc.index] == 2)
@@ -556,12 +576,11 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
 					float vecTarget[3];
 					float speed = 2000.0;
-					vecTarget = PredictSubjectPositionForProjectilesOld(npc, EnemyToAttack, speed);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
 					npc.m_flSpeed = 0.0;
 					int rocket;
 					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
-				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 					DataPack pack;
 					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
@@ -572,7 +591,7 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (1200.0 * 1200.0))
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (650.0 * 650.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{

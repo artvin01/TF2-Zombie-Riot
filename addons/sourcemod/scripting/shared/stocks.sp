@@ -251,6 +251,16 @@ stock bool ExcuteRelay(const char[] name, const char[] input="Trigger")
 	return found;
 }
 
+void ResetReplications()
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		ReplicateClient_Svairaccelerate[client] = -1.0;
+		ReplicateClient_Tfsolidobjects[client] = -1;
+		ReplicateClient_RollAngle[client] = -1;
+	}
+}
+
 stock void CreateAttachedAnnotation(int client, int entity, float time, const char[] buffer)
 {
 	Event event = CreateEvent("show_annotation");
@@ -349,18 +359,27 @@ stock int ExplodeStringFloat(const char[] text, const char[] split, float[] buff
 	return total;
 }
 
-stock bool KvJumpToKeySymbol2(KeyValues kv, int id)
+stock void KvGetTranslation(KeyValues kv, const char[] string, char[] buffer, int length, const char[] defaul = "")
 {
-	if(kv.GotoFirstSubKey())
+	kv.GetString(string, buffer, length, defaul);
+	if(buffer[0] && !TranslationPhraseExists(buffer))
 	{
-		do
-		{
-			if(kv.JumpToKeySymbol(id))
-				return true;
-		} while(kv.GotoNextKey());
+		LogError("[Config] Missing translation '%s'", buffer);
+		strcopy(buffer, length, defaul);
 	}
-	return false;
 }
+
+stock Function KvGetFunction(KeyValues kv, const char[] string, Function defaul = INVALID_FUNCTION)
+{
+	char buffer[64];
+	kv.GetString(string, buffer, sizeof(buffer));
+	if(buffer[0])
+		return GetFunctionByName(null, buffer);
+
+	return defaul;
+}
+
+static bool i_PreviousInteractedEntityDo[MAXENTITIES];
 
 stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool ignore_allied_npc = false, bool mask_shot = false, float vecEndOrigin[3] = {0.0, 0.0, 0.0}, int repeatsretry = 2)
 {
@@ -419,8 +438,45 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 	i_PreviousInteractedEntity[iClient] = iHit;
-	if (TR_DidHit(hTrace) && iHit != iClient && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
-		iReturn = iHit;
+	bool DoAlternativeCheck = false;
+	if(IsValidEntity(iHit) && i_IsABuilding[iHit])
+	{
+#if defined ZR
+		//if a building is mounted, we grant extra range.
+		int Building_Index = EntRefToEntIndex(Building_Mounted[iHit]);
+		if(IsValidClient(Building_Index))
+		{
+			//intercted with a player
+			DoAlternativeCheck = true;
+		}
+#endif
+	}
+	else if(IsValidClient(iHit))
+	{
+		//intercted with a player
+		DoAlternativeCheck = true;
+	}
+	
+	if (!TR_DidHit(hTrace) || iHit == iClient || !IsValidEntity(iHit))
+	{
+		delete hTrace;
+		return iReturn;
+	}
+	
+	if(DoAlternativeCheck)
+	{
+		float VecAbsClient[3];
+		float VecAbsEntity[3];
+		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
+		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
+			iReturn = iHit;
+	}
+	else
+	{
+		if (GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+			iReturn = iHit;
+	}
 	
 	delete hTrace;
 	return iReturn;
@@ -481,6 +537,7 @@ stock void CreateExplosion(int owner, const float origin[3], float damage, int m
 	}
 }
 
+#if defined __tf_econ_data_included
 stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unknown, int checkSlot=-1)
 {
 	switch(index)
@@ -532,6 +589,7 @@ stock TFClassType TF2_GetWeaponClass(int index, TFClassType defaul=TFClass_Unkno
 	
 	return defaul;
 }
+#endif
 
 stock bool TF2_GetItem(int client, int &weapon, int &pos)
 {
@@ -631,6 +689,12 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 
 stock int GetAmmo(int client, int type)
 {
+	/*
+	if(type == Ammo_Metal_Sub)
+	{
+		type = Ammo_Metal;
+	}
+	*/
 	int ammo = GetEntProp(client, Prop_Data, "m_iAmmo", _, type);
 	if(ammo < 0)
 		ammo = 0;
@@ -640,16 +704,21 @@ stock int GetAmmo(int client, int type)
 
 stock void SetAmmo(int client, int type, int ammo)
 {
+	if(type == Ammo_Metal)
+	{
+		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
+	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
+#if defined _tf2items_included
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
 	if(custom_classSetting == 11)
 	{
 		custom_classSetting = 0;
 	}
-	int weapon = SpawnWeaponBase(client, name, index, level, qual, attrib, value, count, custom_classSetting);
+	int weapon = SpawnWeaponBase(client, name, index, level, qual, custom_classSetting);
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
@@ -657,7 +726,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 	return weapon;
 }
 
-stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
+static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
 	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
@@ -669,32 +738,30 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
+#if defined ZR || defined RPG
+
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
 		class = view_as<TFClassType>(custom_classSetting);
 	}
 	TF2_SetPlayerClass_ZR(client, class, _, false);
+#endif
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
 	if(entity > MaxClients)
 	{
+#if defined ZR
+		f_TimeSinceLastGiveWeapon[entity] = 0.0;
+#endif
+
 		Attributes_EntityDestroyed(entity);
 
-		for(int i; i < count; i++)
-		{
-#if defined RPG
-			if(attrib[i] < 0)
-			{
-				Stats_GetCustomStats(entity, attrib[i], value[i]);
-			}
-			else
-#endif
-			{
-				Attributes_Set(entity, attrib[i], value[i]);
-			}
-		}
+		//for(int i; i < count; i++)
+		//{
+		//	Attributes_Set(entity, attrib[i], value[i]);
+		//}
 		
 		if(StrEqual(name, "tf_weapon_sapper"))
 		{
@@ -713,14 +780,18 @@ stock int SpawnWeaponBase(int client, char[] name, int index, int level, int qua
 			SetEntProp(entity, Prop_Send, "m_aBuildableObjectTypes", false, _, 3);
 		}
 
-		EquipPlayerWeapon(client, entity);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
+
+		EquipPlayerWeapon(client, entity);
 	}
 
+#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
+#endif
 	return entity;
 }
+
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
@@ -768,16 +839,16 @@ void RemoveAllDefaultAttribsExceptStrings(int entity)
 		
 		if(valueFormat[9] == 'a' && valueFormat[10] == 'd') // value_is_additive & value_is_additive_percentage
 		{
-			Attributes_Set(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0, true);
 		}
 		else if((valueFormat[9] == 'i' && valueFormat[18] == 'p')
 			|| (valueFormat[9] == 'p' && valueFormat[10] == 'e')) // value_is_percentage & value_is_inverted_percentage
 		{
-			Attributes_Set(entity, currentAttrib, 1.0);
+			Attributes_Set(entity, currentAttrib, 1.0, true);
 		}
 		else if(valueFormat[9] == 'o' && valueFormat[10] == 'r') // value_is_or
 		{
-			Attributes_Set(entity, currentAttrib, 0.0);
+			Attributes_Set(entity, currentAttrib, 0.0, true);
 		}
 		
 		NullifySpecificAttributes(entity,currentAttrib);
@@ -799,8 +870,8 @@ stock void NullifySpecificAttributes(int entity, int attribute)
 			Attributes_Set(entity, attribute, 0.0);	
 		}
 	}
-	
 }
+#endif
 
 stock void TF2_RemoveItem(int client, int weapon)
 {
@@ -882,6 +953,7 @@ stock float RemoveExtraSpeed(TFClassType class, float value)
 
 void RequestFrames(RequestFrameCallback func, int frames, any data=0)
 {
+	frames = RoundToNearest(TickrateModify * float(frames));
 	DataPack pack = new DataPack();
 	pack.WriteCell(frames);
 	pack.WriteFunction(func);
@@ -912,37 +984,6 @@ public void RequestFramesCallback(DataPack pack)
 	}
 }
 
-/*
-int TF2_CreateGlow(int entity, const char[] model, int owner, int color[4])
-{
-	int prop = CreateEntityByName("tf_taunt_prop");
-	if(IsValidEntity(prop))
-	{
-		DispatchSpawn(prop);
-
-		SetEntityModel(prop, model);
-		SetEntPropEnt(prop, Prop_Data, "m_hEffectEntity", owner);
-		SetEntProp(prop, Prop_Send, "m_bGlowEnabled", true);
-		SetEntProp(prop, Prop_Send, "m_fEffects", GetEntProp(prop, Prop_Send, "m_fEffects")|EF_BONEMERGE|EF_NOSHADOW|EF_NOINTERP);
-
-		SetVariantString("!activator");
-		AcceptEntityInput(prop, "SetParent", entity);
-
-		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(prop, color[0], color[1], color[2], color[3]);
-		SDKHook(prop, SDKHook_SetTransmit, GlowTransmit);
-	}
-	return prop;
-}
-
-public Action GlowTransmit(int entity, int target)
-{
-	if(GetEntPropEnt(entity, Prop_Data, "m_hEffectEntity") == target)
-		return Plugin_Continue;
-
-	return Plugin_Handled;
-}
-*/
 
 stock int TF2_CreateGlow(int iEnt)
 {
@@ -1041,6 +1082,7 @@ stock int GiveWearable(int client, int index)
 		SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
 		SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
 		SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+		SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 		
 		DispatchSpawn(entity);
 		SDKCall_EquipWearable(client, entity);
@@ -1061,6 +1103,17 @@ public Action Timer_RemoveEntity(Handle timer, any entid)
 	if(IsValidEntity(entity))
 	{
 		RemoveEntity(entity);
+	}
+	return Plugin_Stop;
+}
+public Action Timer_RemoveEntityParticle(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity))
+	{
+		AcceptEntityInput(entid, "ClearParent");
+		TeleportEntity(entid, {16000.0,16000.0,16000.0});
+		CreateTimer(0.1, Timer_RemoveEntity, entid, TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return Plugin_Stop;
 }
@@ -1149,7 +1202,7 @@ public Action Timer_Bleeding_Against_Client(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype)
+stock void StartBleedingTimer(int entity, int client, float damage, int amount, int weapon, int damagetype, int customtype = 0)
 {
 	if(IsValidEntity(entity) && IsValidEntity(weapon) && IsValidEntity(client))
 	{
@@ -1161,6 +1214,7 @@ void StartBleedingTimer(int entity, int client, float damage, int amount, int we
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(damagetype);
+		pack.WriteCell(customtype);
 		pack.WriteFloat(damage);
 		pack.WriteCell(amount);
 	}
@@ -1201,9 +1255,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 	
 	WorldSpaceCenter(entity, pos);
 	int damagetype = pack.ReadCell(); //Same damagetype as the weapon.
+	int customtype = pack.ReadCell() | ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED;
 	
 	GetClientEyeAngles(client, ang);
-	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(entity, client, client, pack.ReadFloat(), damagetype, weapon, _, pos, false, customtype);
 
 	entity = pack.ReadCell();
 	if(entity < 1)
@@ -1223,6 +1278,8 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
+#define HEAL_SILENCEABLE				(1 << 3) 
+//Silence Entirely nukes this heal
 */
 //this will return the amount of healing it actually did.
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
@@ -1232,13 +1289,34 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		Good for ammo based healing.
 	*/
 
+#if defined ZR
+	if(reciever <= MaxClients)
+		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))
+			return 0;
+#endif
+
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
 #if defined ZR
-		if(b_HealthyEssence)
+		if(b_HealthyEssence && GetTeam(reciever) == TFTeam_Red)
 			HealTotal *= 1.25;
+			
+		bool RegrowthBlock;
+ 		Building_CamoOrRegrowBlocker(healer, _, RegrowthBlock);
+		if(RegrowthBlock)
+		{
+			HealTotal *= 0.5;
+		}
+		if(CurrentModifOn() == 2 && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
+		{
+			HealTotal *= 1.5;
+		}
+
+		if(Classic_Mode() && GetTeam(reciever) == TFTeam_Red)
+			HealTotal *= 0.5;
 #endif
 
+#if !defined RTS
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(reciever <= MaxClients)
 			HealTotal *= Attributes_GetOnPlayer(reciever, 526, true, false);
@@ -1249,9 +1327,29 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 			if(reciever <= MaxClients)
 				HealTotal *= Attributes_GetOnPlayer(reciever, 734, true, false);
 		}
+#endif
 	}
+#if defined ZR
+	if(healer != reciever && HealOverThisDuration != 0.0)
+	{
+		if(healer > 0 && healer <= MaxClients)
+			Healing_done_in_total[healer] += RoundToNearest(HealTotal);
+	}
+#endif
 	if(HealOverThisDuration == 0.0)
-		return HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+	{
+		int HealingDoneInt;
+		HealingDoneInt = HealEntityViaFloat(reciever, HealTotal, Maxhealth, MaxHealPermitted);
+		if(HealingDoneInt > 0)
+		{
+#if defined ZR
+		if(healer != reciever && healer <= MaxClients)
+			Healing_done_in_total[healer] += HealingDoneInt;
+#endif
+			ApplyHealEvent(reciever, HealingDoneInt);
+		}
+		return HealingDoneInt;
+	}
 	else
 	{
 		float HealTotalTimer = HealOverThisDuration / 0.1;
@@ -1263,6 +1361,25 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		pack.WriteCell(Maxhealth);
 		pack.WriteCell(RoundToNearest(HealTotalTimer));		
 		return 0; //this is a timer, we cant really quantify this.
+	}
+}
+
+void DisplayHealParticleAbove(int entity)
+{
+	if(f_HealDelayParticle[entity] < GetGameTime())
+	{
+		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
+		float ProjLoc[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
+		ProjLoc[2] += 95.0;
+		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
+		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc[2] -= 10.0;
+		if(GetTeam(entity) != TFTeam_Red)
+			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		else
+			TE_Particle("healthgained_red", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+
 	}
 }
 
@@ -1322,6 +1439,10 @@ stock void ApplyHealEvent(int entindex, int amount)
 			pack.WriteCell(EntIndexToEntRef(entindex));
 		}
 	}
+	else
+	{
+		DisplayHealParticleAbove(entindex);
+	}
 }
 
 public Action Timer_HealEventApply(Handle timer, DataPack pack)
@@ -1349,6 +1470,10 @@ public Action Timer_HealEventApply(Handle timer, DataPack pack)
 	return Plugin_Stop;
 }
 
+public bool Trace_WorldOnly(int entity, int mask, any data)
+{
+	return entity == 0;
+}
 
 public bool Trace_DontHitEntity(int entity, int mask, any data)
 {
@@ -1407,13 +1532,28 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 		
 	}
 	
-#if !defined RTS
-	if(entity > MaxClients && b_IsAlliedNpc[entity])
+#if defined ZR
+	if(entity > MaxClients && !b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 	{
 		return false;
 	}
 #endif
 
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		//if the building is ignored, prevent interaction with it.
+		//Edit: if its a barricade this is ignored so they can reclaim it.
+#if defined ZR
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
+#endif	
+			return false;
+			
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+#if defined ZR
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
+			return false;
+#endif
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1475,7 +1615,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 				return entity!=data;
 			}
 		}
-		else if(b_IsAlliedNpc[entity])
+		else if(!b_NpcHasDied[entity] && GetTeam(entity) == TFTeam_Red)
 		{
 			if(i_PreviousInteractedEntity[data] != entity || !i_PreviousInteractedEntityDo[data])
 			{
@@ -1488,6 +1628,22 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 		}
 	}
 #endif	
+
+	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
+	{
+		//if the building is ignored, prevent interaction with it.
+		//Edit: if its a barricade this is ignored so they can reclaim it.
+#if defined ZR
+		if(i_NpcInternalId[entity] != ObjectBarricade_ID())
+			return false;
+
+		//dont allow interaction within itself, i.e. i as the player cant ray trace my own mounted building
+		if(data == EntRefToEntIndex(Building_Mounted[entity]))
+			return false;
+#else
+		return false;
+#endif
+	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
 	{
 		return false;
@@ -1538,15 +1694,6 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 	return entity!=data;
 }
 
-#if defined ZR
-stock float[] GetAbsOriginOld(int client)
-{
-	float v[3];
-	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
-	return v;
-}
-#endif
-
 stock void GetAbsOrigin(int client, float v[3])
 {
 	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", v);
@@ -1567,33 +1714,11 @@ stock bool IsValidClient( int client)
 	return true; 
 }
 
-#if defined ZR
-stock float[] GetWorldSpaceCenterOld(int client)
-{
-	float v[3]; v = GetAbsOriginOld(client);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-	
-	return v;
-}
-#endif
-
-stock void GetWorldSpaceCenter(int client, float v[3])
-{
-	GetAbsOrigin(client, v);
-	
-	float max_space[3];
-	GetEntPropVector(client, Prop_Data, "m_vecMaxs", max_space);
-	v[2] += max_space[2] / 2;
-}
-
-bool IsBehindAndFacingTarget(int owner, int target)
+stock bool IsBehindAndFacingTarget(int owner, int target, int weapon = -1)
 {
 	float vecToTarget[3], vecEyeAngles[3];
-	GetWorldSpaceCenter(target, vecToTarget);
-	GetWorldSpaceCenter(owner, vecEyeAngles);
+	WorldSpaceCenter(target, vecToTarget);
+	WorldSpaceCenter(owner, vecEyeAngles);
 	SubtractVectors(vecToTarget, vecEyeAngles, vecToTarget);
 
 	vecToTarget[2] = 0.0;
@@ -1622,7 +1747,28 @@ bool IsBehindAndFacingTarget(int owner, int target)
 	float flPosVsTargetViewDot = GetVectorDotProduct(vecToTarget, vecTargetForward);
 	float flPosVsOwnerViewDot = GetVectorDotProduct(vecToTarget, vecOwnerForward);
 	float flViewAnglesDot = GetVectorDotProduct(vecTargetForward, vecOwnerForward);
-	
+	if(weapon > 0)
+	{
+#if defined ZR
+		if(b_BackstabLaugh[weapon])
+		{
+			int AllCorrect = 0;
+			if(flPosVsTargetViewDot > -0.6)
+				AllCorrect++;
+
+			if(flPosVsOwnerViewDot > 0.5)
+				AllCorrect++;
+				
+			if(flViewAnglesDot > -0.8)
+				AllCorrect++;
+			
+			if(AllCorrect >= 3)
+				return true;
+			else
+				return false;
+		}
+#endif
+	}
 	return ( flPosVsTargetViewDot > 0.0 && flPosVsOwnerViewDot > 0.5 && flViewAnglesDot > -0.3 );
 }
 
@@ -1639,7 +1785,7 @@ stock float AngleNormalize(float angle)
 	return angle;
 }
 
-void DoOverlay(int client, const char[] overlay, int Methods = 0)
+stock void DoOverlay(int client, const char[] overlay, int Methods = 0)
 {
 	if(Methods == 1 || Methods == 2)
 	{
@@ -1668,18 +1814,18 @@ public bool PlayersOnly(int entity, int contentsMask, any iExclude)
 		return false;
 	}
 	
-	else if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") != GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+	else if(GetTeam(iExclude) != GetTeam(entity))
 		return false;
 		
 	
 	return !(entity == iExclude);
 }
 
-stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0)
+stock bool Client_Shake(int client, int command=SHAKE_START, float amplitude=50.0, float frequency=150.0, float duration=3.0, bool respectSetting = true)
 {
 	//allow settings for the sick who cant handle screenshake.
 	//can cause headaches.
-	if(!b_HudScreenShake[client])
+	if(respectSetting && !b_HudScreenShake[client])
 	{
 		return false;
 	}
@@ -1919,7 +2065,7 @@ public bool Base_Boss_Hit(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun")))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return true;
 		}
@@ -1952,7 +2098,7 @@ public bool IngorePlayersAndBuildings(int entity, int contentsMask, any iExclude
 	}
 	if(entity != iExclude && (StrEqual(class, "obj_dispenser") || StrEqual(class, "obj_teleporter") || StrEqual(class, "obj_sentrygun") || StrEqual(class, "zr_base_npc"))) //include baseboss so it goesthru
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -1978,7 +2124,7 @@ public bool Detect_BaseBoss(int entity, int contentsMask, any iExclude)
 	
 	if(entity != iExclude && StrEqual(class, "zr_base_npc"))
 	{
-		if(GetEntProp(iExclude, Prop_Send, "m_iTeamNum") == GetEntProp(entity, Prop_Send, "m_iTeamNum"))
+		if(GetTeam(iExclude) == GetTeam(entity))
 		{
 			return false;
 		}
@@ -1999,7 +2145,7 @@ stock int GetClosestTarget_BaseBoss(int entity)
 	int i = MaxClients + 1;
 	while ((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 	{
-		if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
+		if (GetTeam(entity)!=GetEntProp(i, Prop_Send, "m_iTeamNum") && !b_NpcHasDied[i]) 
 		{
 			float EntityLocation[3], TargetLocation[3]; 
 			GetEntPropVector( entity, Prop_Data, "m_vecAbsOrigin", EntityLocation ); 
@@ -2021,76 +2167,6 @@ stock int GetClosestTarget_BaseBoss(int entity)
 				TargetDistance = distance;
 			}				
 		}
-	}
-	return ClosestTarget; 
-}
-
-bool b_WasAlreadyCalculatedToBeClosest[MAXENTITIES]; //should be false by default...
-
-stock int GetClosestTarget_BaseBoss_Pos(float pos[3],int entity)
-{
-	float TargetDistance = 0.0; 
-	int ClosestTarget = -1; 
-	for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
-	{
-		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-		if (IsValidEntity(baseboss_index) && !b_WasAlreadyCalculatedToBeClosest[baseboss_index])
-		{
-			if(!b_NpcHasDied[baseboss_index])
-			{
-				if (GetEntProp(entity, Prop_Send, "m_iTeamNum")!=GetEntProp(baseboss_index, Prop_Send, "m_iTeamNum")) 
-				{
-					float TargetLocation[3]; 
-					GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-					
-					float distance = GetVectorDistance( pos, TargetLocation, true ); 
-					if( TargetDistance ) 
-					{
-						if( distance < TargetDistance ) 
-						{
-							ClosestTarget = baseboss_index; 
-							TargetDistance = distance;		  
-						}
-					} 
-					else 
-					{
-						ClosestTarget = baseboss_index; 
-						TargetDistance = distance;
-					}				
-				}
-			}
-		}
-	}
-	for(int entitycount; entitycount<i_MaxcountBreakable; entitycount++)
-	{
-		int breakable_entity = EntRefToEntIndex(i_ObjectsBreakable[entitycount]);
-		if(IsValidEntity(breakable_entity))
-		{
-			if (GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")!=GetEntProp(breakable_entity, Prop_Send, "m_iTeamNum")) 
-			{
-				float TargetLocation[3]; 
-				GetEntPropVector( breakable_entity, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
-				
-				float distance = GetVectorDistance( pos, TargetLocation, true ); 
-				if( TargetDistance ) 
-				{
-					if( distance < TargetDistance ) 
-					{
-						ClosestTarget = breakable_entity; 
-						TargetDistance = distance;		  
-					}
-				} 
-				else 
-				{
-					ClosestTarget = breakable_entity; 
-					TargetDistance = distance;
-				}				
-			}
-		}
-	}
-	if(IsValidEntity(ClosestTarget))
-	{
-		b_WasAlreadyCalculatedToBeClosest[ClosestTarget] = true;
 	}
 	return ClosestTarget; 
 }
@@ -2143,7 +2219,7 @@ stock bool IsEntityStuck(int entity)
 	return (TR_DidHit());
 }
 
-
+#if defined _tf2items_included
 stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int qual, const char[] att, bool visible=true)
 {
 	if(StrEqual(name, "saxxy", false))	// if "saxxy" is specified as the name, replace with appropiate name
@@ -2217,6 +2293,7 @@ stock int SpawnWeapon_Special(int client, char[] name, int index, int level, int
 	}
 	return entity;
 }
+#endif
 
 stock void GetRayAngles(float startPoint[3], float endPoint[3], float angle[3])
 {
@@ -2267,6 +2344,7 @@ stock float fixAngle(float angle)
 	return angle;
 }
 
+#if defined _tf2items_included
 stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 {
 	int entity = SpawnWeapon(client, "tf_weapon_builder", 28, 1, 0, view_as<int>({148}), view_as<float>({1.0}), 1); 
@@ -2317,6 +2395,7 @@ stock int Spawn_Buildable(int client, int AllowBuilding = -1)
 	}	
 	return -1;
 }
+#endif
 
 public void CreateEarthquake(float position[3], float duration, float radius, float amplitude, float frequency)
 {
@@ -2457,7 +2536,7 @@ public bool TraceRayOnlyNpc(int entity, any contentsMask, any data)
 	return !(entity == data);
 }
 
-stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, TFTeam team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
+stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, bool checkTeam=false, int team=TFTeam_Red, bool send=false) //An extension of IsValidClient that also checks for boss status, alive-ness, and optionally a team. Send is used for debug purposes to inform the programmer when and why this stock returns false.
 {
 	if (!IsValidClient(client)) //Self-explanatory
 	{
@@ -2478,7 +2557,7 @@ stock bool IsValidMulti(int client, bool checkAlive=true, bool isAlive=true, boo
 	
 	if (checkTeam) //Do we want to check the client's team?
 	{
-		if (TF2_GetClientTeam(client) != team) //If they aren't on the desired team, return false.
+		if (GetTeam(client) != team) //If they aren't on the desired team, return false.
 		{
 			return false;
 		}
@@ -2530,7 +2609,7 @@ stock int TracePlayerHulls(const float pos[3], const float mins[3], const float 
 	return bHit;
 }
 
-void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
+stock void TE_DrawBox(int client, float m_vecOrigin[3], float m_vecMins[3], float m_vecMaxs[3], float flDur = 0.1, const int color[4])
 {
 	//Trace top down
 	/*
@@ -2608,20 +2687,14 @@ void TE_SendBeam(int client, float m_vecMins[3], float m_vecMaxs[3], float flDur
 	TE_SendToClient(client);
 }
 
-/*
-float[] CalculateBulletDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-*/
 
-int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
+stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
 	if(owner_projectile < 1)
+	{
+		return -1; //I dont exist?
+	}
+	if(other_entity < 0)
 	{
 		return -1; //I dont exist?
 	}
@@ -2637,36 +2710,41 @@ int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 	{
 		return -1;
 	}
-#if !defined RTS
-	else if(b_IsAlliedNpc[other_entity])
+#if defined ZR
+	else if(GetTeam(other_entity) == TFTeam_Red)
 	{
-		return -1;
+		if(b_NpcIsTeamkiller[owner_projectile])
+			return other_entity;
+		else
+			return -1;
 	}
 #endif
 	else if(other_entity <= MaxClients)
 	{
-		return -1;
+#if defined RPG
+		if(RPGCore_PlayerCanPVP(owner_projectile, other_entity))
+			return other_entity;
+		else
+			return -1;
+#else
+			return -1;
+#endif	
 	}
 //	else if(IsValidEnemy(owner_projectile, other_entity, true, true))
 	else if(!b_NpcHasDied[other_entity]) //way less cheap, lets see how that goes.
 	{
+#if defined RPG
+	int owner = GetEntPropEnt(owner_projectile, Prop_Send, "m_hOwnerEntity");
+	if(OnTakeDamageRpgPartyLogic(other_entity, owner, GetGameTime()))
+		return -1;
+#endif
 		return other_entity;
 	}
 	return 0;
 }
 
-#if defined ZR
-float[] CalculateDamageForceOld( const float vecBulletDir[3], float flScale )
-{
-	float vecForce[3]; vecForce = vecBulletDir;
-	NormalizeVector( vecForce, vecForce );
-	ScaleVector(vecForce, FindConVar("phys_pushscale").FloatValue);
-	ScaleVector(vecForce, flScale);
-	return vecForce;
-}
-#endif
 
-void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
+stock void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vecForce[3])
 {
 	vecForce = vecBulletDir;
 	NormalizeVector( vecForce, vecForce );
@@ -2674,7 +2752,7 @@ void CalculateDamageForce( const float vecBulletDir[3], float flScale, float vec
 	ScaleVector(vecForce, flScale);
 }
 
-void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
+stock void CalculateDamageForceSelfCalculated(int client, float flScale, float vec[3])
 {
 	float vecSwingForward[3];
 	float ang[3];
@@ -2692,14 +2770,6 @@ float ImpulseScale( float flTargetMass, float flDesiredSpeed )
 
 #define INNER_RADIUS_FRACTION 0.25
 
-#if defined ZR
-stock float[] CalculateExplosiveDamageForceOld(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius)
-{
-	float v[3];
-	CalculateExplosiveDamageForce(vec_Explosive, vecEndPosition, damage_Radius, v);
-	return v;
-}
-#endif
 
 void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vecEndPosition[3], float damage_Radius, float vecForce[3])
 {
@@ -2750,23 +2820,54 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
 }
-
-int CountPlayersOnRed(bool alive = false)
+int SavedFromLastTimeCount = 0;
+int CountPlayersOnRed(int alive = 0, bool saved = false)
 {
+	if(saved)
+		return SavedFromLastTimeCount;
+
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR
-		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING && (!alive || (TeutonType[client] != TEUTON_NONE && dieingstate[client] > 0)))
+		if(!b_IsPlayerABot[client] && b_HasBeenHereSinceStartOfWave[client] && IsClientInGame(client) && GetClientTeam(client)==2 && TeutonType[client] != TEUTON_WAITING)
 #else
-		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client) == 2 && (!alive || IsPlayerAlive(client)))
+		if(!b_IsPlayerABot[client] && IsClientInGame(client) && GetClientTeam(client)==2)
 #endif
-			amount++;
+		{
+			if(alive == 0)
+			{
+				amount++;
+				continue;
+			}
+#if defined ZR
+			else
+			{
+				if(alive == 1) //check if just not teuton
+				{
+					if(TeutonType[client] == TEUTON_NONE)
+					{
+						amount++;
+						continue;
+					}
+				}
+				else if(alive == 2) //check if downed too
+				{
+					if(TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+					{
+						amount++;
+						continue;
+					}
+				}
+			}
+#endif
+		}
 	}
-	
+	SavedFromLastTimeCount = amount;
 	return amount;
 	
 }
+
 
 int CountPlayersOnServer()
 {
@@ -2805,20 +2906,33 @@ int inflictor = 0)
 
 	float damage_reduction = 1.0;
 
-#if !defined RTS
+#if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_FindOnWeapon(client, weapon, 99, true, 1.0);//increaced blast radius attribute (Check weapon only)
 		explosionRadius *= value;
+		if(maxtargetshit == 10)
+			maxtargetshit = RoundToNearest(Attributes_Get(weapon, 4011, 10.0));
+
+		if(ExplosionDmgMultihitFalloff == EXPLOSION_AOE_DAMAGE_FALLOFF)
+			ExplosionDmgMultihitFalloff = Attributes_Get(weapon, 4013, EXPLOSION_AOE_DAMAGE_FALLOFF);
 	}
 #endif
 
 	//this should make explosives during raids more usefull.
 	if(!FromBlueNpc) //make sure that there even is any valid npc before we do these huge calcs.
 	{ 
-		if(spawnLoc[0] == 0.0)
+		if(entity > 0 && spawnLoc[0] == 0.0)
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
+			}
 		}
 	}
 	else //only nerf blue npc radius!
@@ -2828,9 +2942,17 @@ int inflictor = 0)
 		{
 			explosion_range_dmg_falloff = 0.8;
 		}
-		if(spawnLoc[0] == 0.0) //only get position if thhey got notin
+		if(entity > 0 && spawnLoc[0] == 0.0) //only get position if thhey got notin
 		{
-			GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+			if(b_ThisWasAnNpc[entity])
+			{
+				WorldSpaceCenter(entity, spawnLoc);
+			}
+			else
+			{	
+				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", spawnLoc);
+				spawnLoc[2] += 5.0;
+			}
 		} 
 	}
 	
@@ -3015,7 +3137,7 @@ int inflictor = 0)
 				Call_StartFunction(null, FunctionToCallBeforeHit);
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
-				Call_PushFloat(damage_1 / damage_reduction);
+				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
 				Call_Finish(GetBeforeDamage);
 			}
@@ -3043,10 +3165,14 @@ int inflictor = 0)
 				//idealy we should fire a trace and see the distance from the trace
 				//ill do it in abit if i dont forget.
 				damage_1 *= Pow(explosion_range_dmg_falloff, (ClosestDistance/((explosionRadius * explosionRadius) * 1.5))); //this is 1000, we use squared for optimisations sake
+
+				damage_1 *= damage_reduction;
 				
 				float v[3];
 				CalculateExplosiveDamageForce(spawnLoc, vicpos, explosionRadius, v);
-				SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1 / damage_reduction, damage_flags, weapon, v, vicpos, false, custom_flags);	
+				//dont do damage ticks if its actually 0 dmg.
+				if(damage_1 != 0.0)
+					SDKHooks_TakeDamage(ClosestTarget, entityToEvaluateFrom, inflictor, damage_1, damage_flags, weapon, v, vicpos, false, custom_flags);	
 			}
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
@@ -3054,10 +3180,8 @@ int inflictor = 0)
 				Call_PushCell(entityToEvaluateFrom);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
-				if(damage_1 == 0.0)
-					Call_PushFloat(damage_1);
-				else
-					Call_PushFloat(damage_1 / damage_reduction);
+				damage_1 *= damage_reduction;
+				Call_PushFloat(damage_1);
 					
 				Call_PushCell(weapon);
 				Call_Finish();
@@ -3383,6 +3507,20 @@ public void MakeExplosionFrameLater(DataPack pack)
 	delete pack;
 }
 
+stock void SetPlayerActiveWeapon(int client, int weapon)
+{
+	TF2Util_SetPlayerActiveWeapon(client, weapon);
+#if defined ZR
+//	WeaponSwtichToWarningPostDestroyed(weapon);
+#endif
+	/*
+	char buffer[64];
+	GetEntityClassname(weapon, buffer, sizeof(buffer));
+	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
+	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
+	OnWeaponSwitchPost(client, weapon);
+	*/
+}
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
 {
@@ -3432,6 +3570,13 @@ public void GiveCompleteInvul(int client, float time)
 	f_ClientInvul[client] = GetGameTime() + time;
 	TF2_AddCondition(client, TFCond_UberchargedCanteen, time);
 	TF2_AddCondition(client, TFCond_MegaHeal, time);
+}
+
+public void RemoveInvul(int client)
+{
+	f_ClientInvul[client] = 0.0;
+	TF2_RemoveCondition(client, TFCond_UberchargedCanteen);
+	TF2_RemoveCondition(client, TFCond_MegaHeal);
 }
 
 stock int SpawnFormattedWorldText(const char[] format, float origin[3], int textSize = 10, const int colour[4] = {255,255,255,255}, int entity_parent = -1, bool rainbow = false, bool teleport = false)
@@ -3579,8 +3724,10 @@ int BrushToEntity(int brush)
 
 stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 {
+	Stats_UpdateLevel(client);
 	int textentity = EntRefToEntIndex(i_TextEntity[client][0]);
 	int textentity2 = EntRefToEntIndex(i_TextEntity[client][1]);
+	int textentity3 = EntRefToEntIndex(i_TextEntity[client][2]);
 	if(deleteText)
 	{
 		if(IsValidEntity(textentity))
@@ -3591,21 +3738,21 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		{
 			RemoveEntity(textentity2);
 		}
+		if(IsValidEntity(textentity3))
+		{
+			RemoveEntity(textentity3);
+		}
 	}
 	if(deleteText)
 		return;
 		
+	char LVLBuffer[64];
+	IntToString(Level[client],LVLBuffer, sizeof(LVLBuffer));
+	ThousandString(LVLBuffer, sizeof(LVLBuffer));
 	if(IsValidEntity(textentity))
 	{
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		DispatchKeyValue(textentity, "message", buffer);
 	}
 	else
@@ -3614,19 +3761,9 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 
 		OffsetFromHead[2] = 120.0;
 		static char buffer[128];
-		if(Tier[client])
-		{
-			Format(buffer, sizeof(buffer), "Elite %d Level %d", Tier[client], Level[client] - GetLevelCap(Tier[client] - 1));
-		}
-		else
-		{
-			Format(buffer, sizeof(buffer), "Level %d", Level[client]);
-		}
+		Format(buffer, sizeof(buffer), "LVL %s", LVLBuffer);
 		int textentityMade = SpawnFormattedWorldText(buffer, OffsetFromHead, 10, {255,255,255,255}, client);
 		i_TextEntity[client][0] = EntIndexToEntRef(textentityMade);
-	//	b_TextEntityToOwner[textentityMade] = client;
-	//	SetEdictFlags(textentityMade, GetEdictFlags(textentityMade) &~ FL_EDICT_ALWAYS);
-	//	SDKHook(textentityMade, SDKHook_SetTransmit, SDKHook_Settransmit_TextParentedToPlayer);
 	}
 	if(IsValidEntity(textentity2))
 	{
@@ -3663,7 +3800,103 @@ stock void UpdateLevelAbovePlayerText(int client, bool deleteText = false)
 		
 		i_TextEntity[client][1] = EntIndexToEntRef(textentityMade);
 	}
+	if(IsValidEntity(textentity3))
+	{
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+		DispatchKeyValue(textentity3, "message", c_Powerlevel);
+		char sColor[32];
+		
+
+		// form.Name
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		Format(sColor, sizeof(sColor), " %d %d %d %d ", color4[0], color4[1], color4[2], color4[3]);
+		DispatchKeyValue(textentity3,     "color", sColor);
+	}
+	else
+	{
+		float OffsetFromHead[3];
+
+		OffsetFromHead[2] = 130.0;
+
+		float Powerlevel = RPGStocks_CalculatePowerLevel(client);
+		char c_Powerlevel[255];
+		Format(c_Powerlevel, sizeof(c_Powerlevel), "%.0f", Powerlevel);
+		ThousandString(c_Powerlevel, sizeof(c_Powerlevel));
+
+		static Form form;
+		Races_GetClientInfo(client, _, form);
+		int color4[4] = {255,255,255,255};
+		if(i_TransformationLevel[client] > 0)
+		{
+			color4[0] = form.Form_RGBA[0];
+			color4[1] = form.Form_RGBA[1];
+			color4[2] = form.Form_RGBA[2];
+			color4[3] = form.Form_RGBA[3];
+		}
+		int textentityMade = SpawnFormattedWorldText(c_Powerlevel, OffsetFromHead, 10, color4, client, false);
+		
+		i_TextEntity[client][2] = EntIndexToEntRef(textentityMade);
+	}
 }
+
+float RPGStocks_CalculatePowerLevel(int client)
+{
+	int total;
+	float BigTotal;
+	total = Stats_Strength(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Precision(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Artifice(client);
+	total *= 3;
+	BigTotal += float(total);
+
+	total = Stats_Endurance(client);
+	total *= 2;
+	BigTotal += float(total);
+
+	total = Stats_Structure(client);
+	total *= 4;
+	BigTotal += float(total);
+
+	total = Stats_Capacity(client);
+	total *= 3;
+	BigTotal += float(total);
+
+
+	static Race race;
+	static Form form;
+	Races_GetClientInfo(client, race, form);
+	float ResMulti;
+	ResMulti = form.GetFloatStat(Form::DamageResistance, Stats_GetFormMastery(client, form.Name));
+	
+	BigTotal *= (1.0 / ResMulti);
+
+	//These stats are abit different
+	total = Stats_Agility(client);
+	total *= 30;
+	BigTotal += float(total);
+	//luck doesnt exist
+
+	return BigTotal;
+}
+
 /*
 public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 {
@@ -3680,28 +3913,13 @@ public Action SDKHook_Settransmit_TextParentedToPlayer(int entity, int client)
 #endif
 
 
-stock void spawnRing_Vectors(float center[3],
- float range,
-  float modif_X,
-  float modif_Y,
-   float modif_Z,
-    char sprite[255],
-	 int r,
-	  int g,
-	   int b,
-	    int alpha,
-		 int fps,
-		  float life,
-		   float width,
-		    float amp,
-			 int speed,
-			  float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
+stock void spawnRing_Vectors(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0, int client = 0) //Spawns a TE beam ring at a client's/entity's location
 {
-	float Center_Internal[3];
-	Center_Internal = center;
-	Center_Internal[0] += modif_X;
-	Center_Internal[1] += modif_Y;
-	Center_Internal[2] += modif_Z;
+	float PosUse[3];
+	PosUse = center;
+	PosUse[0] += modif_X;
+	PosUse[1] += modif_Y;
+	PosUse[2] += modif_Z;
 			
 	int ICE_INT = PrecacheModel(sprite);
 		
@@ -3716,8 +3934,15 @@ stock void spawnRing_Vectors(float center[3],
 		endRange = range + 0.5;
 	}
 	
-	TE_SetupBeamRingPoint(Center_Internal, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
+	TE_SetupBeamRingPoint(PosUse, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
+	if(client > 0)
+	{
+		TE_SendToClient(client);
+	}
+	else
+	{
+		TE_SendToAll();
+	}
 }
 
 stock char[] CharInt(int value)
@@ -3798,7 +4023,7 @@ stock void GetBeamDrawStartPoint_Stock(int client, float startPoint[3] = {0.0,0.
 
 static bool HazardResult;
 
-bool IsPointHazard(const float pos1[3])
+stock bool IsPointHazard(const float pos1[3])
 {
 	HazardResult = false;
 	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers);
@@ -3827,16 +4052,16 @@ public bool TraceEntityEnumerator_EnumerateTriggers(int entity, int client)
 }
 
 
-bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[3])
+stock bool IsBoxHazard(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
 	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers, _);
 	return HazardResult;
 }
-bool IsPointNoBuild(const float pos1[3])
+stock bool IsPointNoBuild(const float pos1[3],const float mins[3],const float maxs[3])
 {
 	HazardResult = false;
-	TR_EnumerateEntities(pos1, pos1, PARTITION_TRIGGER_EDICTS, RayType_EndPoint, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
+	TR_EnumerateEntitiesHull(pos1, pos1, mins, maxs, PARTITION_TRIGGER_EDICTS, TraceEntityEnumerator_EnumerateTriggers_noBuilds);
 	return HazardResult;
 }
 
@@ -3866,18 +4091,21 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 {
 	float HudY = 0.75;
 	float HudX = -1.0;
+#if defined ZR
 	HudX += f_NotifHudOffsetY[client];
 	HudY += f_NotifHudOffsetX[client];
+#endif
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
+#if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
 	if(Attributes_Has(entity,index))
 	{
 		Attributes_SetMulti(entity, index, multi);
 		//Attributes_Get(weapon, 466, 1.0);
-
+		
 		DataPack pack;
 		CreateDataTimer(duration, StreetFighter_RestoreAttrib, pack, TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(entity));
@@ -3916,6 +4144,7 @@ public Action StreetFighter_RestoreAttrib(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
+#endif
 
 /*
 void PlayFakeDeathSound(int client)
@@ -3959,7 +4188,6 @@ stock bool ShouldNpcDealBonusDamage(int entity, int attacker = -1)
 	return i_IsABuilding[entity];
 }
 
-int i_OwnerEntityEnvLaser[MAXENTITIES];
 
 stock int ConnectWithBeamClient(int iEnt, int iEnt2, int iRed=255, int iGreen=255, int iBlue=255,
 							float fStartWidth=0.8, float fEndWidth=0.8, float fAmp=1.35, char[] Model = "sprites/laserbeam.vmt", int ClientToHideFirstPerson = 0)
@@ -4126,7 +4354,6 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	return HealAmount;
 }
 
-#if defined ZR
 static const char g_ScoutDownedResponse[][] = {
 	"vo/scout_paincrticialdeath01.mp3",
 	"vo/scout_paincrticialdeath02.mp3",
@@ -4383,11 +4610,8 @@ void PrecachePlayerGiveGiveResponseVoice()
 }
 
 
-void MakePlayerGiveResponseVoice(int client, int status)
+stock void MakePlayerGiveResponseVoice(int client, int status)
 {
-	if(b_IsPlayerNiko[client])
-		return;
-	
 	int ClassShown = view_as<int>(CurrentClass[client]);
 
 	switch(status)
@@ -4563,6 +4787,7 @@ void MakePlayerGiveResponseVoice(int client, int status)
 	}
 }
 
+#if defined ZR
 void KillDyingGlowEffect(int client)
 {
 	int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
@@ -4614,7 +4839,7 @@ enum g_Collision_Group
 
 float f_HitmarkerSameFrame[MAXTF2PLAYERS];
 
-void DoClientHitmarker(int client)
+stock void DoClientHitmarker(int client)
 {
 	if(b_HudHitMarker[client] && f_HitmarkerSameFrame[client] != GetGameTime())
 	{
@@ -4714,12 +4939,19 @@ stock void SpawnTimer(float time)
 	AcceptEntityInput(timer, "Resume");
 	AcceptEntityInput(timer, "Enable");
 	SetEntProp(timer, Prop_Send, "m_bAutoCountdown", false);
-	
 	GameRules_SetPropFloat("m_flStateTransitionTime", GetGameTime() + time);
 	CreateTimer(time, Timer_RemoveEntity, EntIndexToEntRef(timer));
 	
 	Event event = CreateEvent("teamplay_update_timer", true);
 	event.Fire();
+/*
+	GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + time);
+	GameRules_SetProp("m_bAwaitingReadyRestart", false);
+
+	Event event = CreateEvent("teamplay_update_timer", true);
+	event.SetInt("seconds", RoundFloat(time));
+	event.Fire();
+*/
 }
 
 stock int GetOwnerLoop(int entity)
@@ -4923,6 +5155,9 @@ stock void ForcePlayerCrouch(int client, bool enable)
 			{
 				SetVariantInt(0);
 				AcceptEntityInput(client, "SetForcedTauntCam");
+#if defined ZR || defined RPG
+				ViewChange_Update(client);
+#endif
 			}
 			SetForceButtonState(client, false, IN_DUCK);
 			b_NetworkedCrouch[client] = false;
@@ -4946,4 +5181,78 @@ stock void SetForceButtonState(int client, bool apply, int button_flag)
 		Buttons &= ~button_flag;
 	}
 	SetEntProp(client, Prop_Data, "m_afButtonForced", Buttons);
+}
+
+stock int GetTeam(int entity)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+#if !defined RTS
+		if(entity && entity <= MaxClients)
+			return GetClientTeam(entity);
+#endif
+
+		if(TeamNumber[entity] == -1)
+		{
+			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
+		}
+		return TeamNumber[entity];
+	}
+	return GetEntProp(entity, Prop_Data, "m_iTeamNum");
+}
+
+stock void SetTeam(int entity, int teamSet)
+{
+	if(entity > 0 && entity <= MAXENTITIES)
+	{
+		TeamNumber[entity] = teamSet;
+		if(teamSet <= TFTeam_Blue)
+		{
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
+				ChangeClientTeam(entity, teamSet);
+			}
+			else
+#endif
+
+			{
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+			}
+		}
+		else if(teamSet > TFTeam_Blue)
+		{
+
+#if !defined RTS
+			if(entity <= MaxClients)
+			{
+				ChangeClientTeam(entity, TFTeam_Blue);
+			}
+			else
+#endif
+
+			{
+				SetEntProp(entity, Prop_Data, "m_iTeamNum", 4);
+			}
+		}
+	}
+	else
+	{
+		SetEntProp(entity, Prop_Data, "m_iTeamNum", teamSet);
+	}
+}
+
+stock bool FailTranslation(const char[] phrase)
+{
+	if(TranslationPhraseExists(phrase))
+		return false;
+	
+	LogError("Translation '%s' does not exist", phrase);
+	return true;
+}
+
+stock any GetItemInArray(any[] array, int pos)
+{
+	return array[pos];
 }

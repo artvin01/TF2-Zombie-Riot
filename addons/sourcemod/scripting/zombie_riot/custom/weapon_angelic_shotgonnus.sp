@@ -16,6 +16,8 @@ static float f_DoubleHitGameTime[MAXENTITIES];
 static float f_DoubleHitGameTimeTimeSince[MAXENTITIES];
 static int f_DoubleHitStack[MAXENTITIES];
 
+#define ANGELIC_HIT_1	"npc/scanner/scanner_electric1.wav"
+
 static int b_HasHitAlreadyAngelic[MAXENTITIES];
 static bool FireCritOntoEnemy[MAXPLAYERS+1];
 
@@ -24,6 +26,7 @@ public void AngelicShotgun_MapStart()
 	Zero(f_AngelicShotgunHudCD);
 	PrecacheSound(ANGELIC_SHOTGUN_ABILTIY_SOUND_1);
 	PrecacheSound(ANGELIC_SHOTGUN_SHOOT_ABILITY);
+	PrecacheSound(ANGELIC_HIT_1);
 	Zero(i_AbilityActiveAngelic);
 	Zero(i_AbilityChargeAngelic);
 	Zero(f_DoubleHitGameTimeTimeSince);
@@ -132,8 +135,11 @@ static int Fantasy_Blade_Get_Pap(int weapon)
 	return pap;
 }
 
-#define DEFAULT_MELEE_RANGE 64.0
-#define DEFAULT_MELEE_BOUNDS 22.0
+void PlayCustomSoundAngelica(int client)
+{
+	int pitch = GetRandomInt(125,135);
+	EmitSoundToAll(ANGELIC_HIT_1, client, SNDCHAN_AUTO, 75,_,0.6,pitch);
+}
 void Angelic_Shotgun_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
 	switch(i_Current_Pap[client])
@@ -364,9 +370,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
 
-				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.35,_,HEAL_SELFHEAL);
-				if(healingdone > 0)
-					ApplyHealEvent(client, healingdone);
+				HealEntityGlobal(client, client, HealingPerHit, 1.35,_,HEAL_SELFHEAL);
 
 			}
 		}
@@ -383,9 +387,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
-				if(healingdone > 0)
-					ApplyHealEvent(client, healingdone);
+				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
 		case 1:
@@ -401,9 +403,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
-				if(healingdone > 0)
-					ApplyHealEvent(client, healingdone);
+				HealEntityGlobal(client, client, HealingPerHit, 1.25,_,HEAL_SELFHEAL);
 			}
 		}
 		default:
@@ -419,9 +419,7 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					HealingPerHit *= 1.5;
 				if(FireCritOntoEnemy[client])
 					HealingPerHit *= 1.25;
-				int healingdone = HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
-				if(healingdone > 0)
-					ApplyHealEvent(client, healingdone);
+				HealEntityGlobal(client, client, HealingPerHit, 1.15,_,HEAL_SELFHEAL);
 			}
 		}
 	}
@@ -552,6 +550,7 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 	if(!IsValidEntity(viewmodelModel))
 		return;
 	
+	/*
 	float flPos[3];
 	float flAng[3];
 	float flPos2[3];
@@ -561,8 +560,64 @@ public void Angelic_ShotgunEffectM1(int client, int weapon, bool crit, int slot)
 	int particle = ParticleEffectAt(flPos, "rocketbackblast", 0.25);
 	AddEntityToThirdPersonTransitMode(client, particle);
 	SetEntPropVector(particle, Prop_Data, "m_angRotation", flAng); 
+	*/
+	static float angles[3];
+	static float startPoint[3];
+	static float endPoint[3];
+	
+	
+	GetClientEyePosition(client, startPoint);
+	GetClientEyeAngles(client, angles);
+
+	Handle trace = TR_TraceRayFilterEx(startPoint, angles, 11, RayType_Infinite, BEAM_TraceWallsOnly);
+	if (TR_DidHit(trace))
+	{
+		float RangeDo;
+		float RangeDo2;
+		bool invalid1;
+		int invalid2;
+		Angelic_Shotgun_DoSwingTrace(client, RangeDo, RangeDo2, invalid1, invalid2);
+		RangeDo *= Attributes_Get(weapon, 4001, 1.0);
+		RangeDo *= 2.5;
+		TR_GetEndPosition(endPoint, trace);
+		ConformLineDistance(endPoint, startPoint, endPoint, RangeDo);
+		
+		static float belowBossEyes[3];
+		GetClientEyePosition(client, belowBossEyes);
+		belowBossEyes[2] -= 25.0;
+		float tmp[3];
+		float actualBeamOffset[3];
+		tmp[0] = 15.0;
+		tmp[1] = -8.0;
+		tmp[2] = 0.0;
+		float diameter = float(10 * 2);
+		int r = 125;
+		int g = 125;
+		int b = 255;
+		VectorRotate(tmp, angles, actualBeamOffset);
+		actualBeamOffset[2] = 0.0;
+		belowBossEyes[0] += actualBeamOffset[0];
+		belowBossEyes[1] += actualBeamOffset[1];
+		belowBossEyes[2] += actualBeamOffset[2];
+		int colorLayer4[4];
+		SetColorRGBA(colorLayer4, r, g, b, 60);
+		TE_SetupBeamPoints(belowBossEyes, endPoint, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
+		TE_SendToAll(0.0);
+		TE_SetupBeamPoints(belowBossEyes, endPoint, Shared_BEAM_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 0.5 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0,  colorLayer4, 3);
+		TE_SendToAll(0.0);
+		TE_SetupBeamPoints(belowBossEyes, endPoint, g_Ruina_BEAM_Combine_Black, 0, 0, 66, 0.22, ClampBeamWidth(diameter * 0.4 * 1.28), ClampBeamWidth(diameter * 0.4 * 1.28), 0, 1.0,  {255,255,255,125}, 3);
+		TE_SendToAll(0.0);
+
+		TE_SetupBeamPoints(belowBossEyes, endPoint, Shared_BEAM_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, colorLayer4, 1);
+		TE_SendToAll(0.0);
+	}
 }
 
+
+static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
+{
+	return !entity;
+}
 
 
 public void Angelic_ShotgunAbilityM2(int client, int weapon, bool crit, int slot)

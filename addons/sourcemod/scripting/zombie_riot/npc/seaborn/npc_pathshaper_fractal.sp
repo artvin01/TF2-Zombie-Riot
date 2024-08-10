@@ -31,6 +31,31 @@ static const char g_MeleeHitSounds[][] =
 	"npc/headcrab/headbite.wav"
 };
 
+static int NPCId;
+
+int PathshaperFractal_ID()
+{
+	return NPCId;
+}
+
+void PathshaperFractal_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Pathshaper Fractal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pathshaper_fractal");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_fractal");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return PathshaperFractal(client, vecPos, vecAng, ally);
+}
+
 methodmap PathshaperFractal < CClotBody
 {
 	public void PlayIdleSound()
@@ -58,12 +83,11 @@ methodmap PathshaperFractal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME,_);	
 	}
 	
-	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], bool ally)
+	public PathshaperFractal(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		PathshaperFractal npc = view_as<PathshaperFractal>(CClotBody(vecPos, vecAng, "models/headcrabblack.mdl", "1.3", "20000", ally));
 		// 20000 x 1.0
 
-		i_NpcInternalId[npc.index] = PATHSHAPER_FRACTAL;
 		i_NpcWeight[npc.index] = 0;
 		npc.SetActivity("ACT_RUN");
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
@@ -72,7 +96,9 @@ methodmap PathshaperFractal < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
+		func_NPCDeath[npc.index] = PathshaperFractal_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = PathshaperFractal_ClotThink;
 		
 		npc.m_flSpeed = 100.0;	// 0.4 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -122,12 +148,13 @@ public void PathshaperFractal_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -204,5 +231,4 @@ void PathshaperFractal_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, PathshaperFractal_ClotThink);
 }

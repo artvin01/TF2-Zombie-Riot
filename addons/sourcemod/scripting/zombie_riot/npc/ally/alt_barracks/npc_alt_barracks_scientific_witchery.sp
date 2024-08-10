@@ -51,6 +51,21 @@ public void Barrack_Alt_Scientific_Witchery_MapStart()
 	Zero2(fl_trace_target_timeout);
 	
 	gLaser2 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Scientific Witchery");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_witch");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Scientific_Witchery(client, vecPos, vecAng, ally);
 }
 
 methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
@@ -86,18 +101,17 @@ methodmap Barrack_Alt_Scientific_Witchery < BarrackBody
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
-	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Scientific_Witchery(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(BarrackBody(client, vecPos, vecAng, "1300", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_crit.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_SCIENTIFIC_WITCHERY;
 		i_NpcWeight[npc.index] = 1;
-		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
+
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Scientific_Witchery_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Scientific_Witchery_ClotThink;
 
 		npc.m_flSpeed = 250.0;
 		
@@ -179,8 +193,9 @@ public void Barrack_Alt_Scientific_Witchery_ClotThink(int iNPC)
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
@@ -251,7 +266,6 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 {
 	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Scientific_Witchery_ClotThink);
 	
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 	SDKUnhook(npc.index, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
@@ -260,18 +274,18 @@ void Barrack_Alt_Scientific_Witchery_NPCDeath(int entity)
 static int H_Tick_Count[MAXENTITIES];
 static int H_Tick_Count_Max[MAXENTITIES];
 
-#define H_SLICER_AMOUNT 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
+#define H_SLICER_AMOUNT_WITCH 6	//how many individual pieces of the arc are there, more = nicer curve but more traces
 
 static int H_i_Slicer_Throttle[MAXENTITIES];
 
-static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
+static float H_fl_target_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
 static float H_fl_starting_vec[MAXENTITIES][3];
-static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT+2][3];
+static float H_fl_current_vec[MAXENTITIES][H_SLICER_AMOUNT_WITCH+2][3];
 
 static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	H_fl_starting_vec[client] = Npc_Vec;
@@ -284,7 +298,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 	float wide_set = 45.0;	//How big the angle difference from left to right, in this case its 90 \/ if you set it to 90 rather then 45 it would be a 180 degree swing
 	
 	ang_Look[1] -= wide_set;
-	float type = (wide_set*2) / H_SLICER_AMOUNT;
+	float type = (wide_set*2) / H_SLICER_AMOUNT_WITCH;
 	ang_Look[1] -= type;
 	if(ang_Look[1]>360.0)
 	{
@@ -295,7 +309,7 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 		ang_Look[1] +=360.0;
 	}
 		
-	for(int i=1 ; i<=H_SLICER_AMOUNT+1 ; i++)
+	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
 	{
 		H_fl_current_vec[client][i] = Npc_Vec;
 		
@@ -329,9 +343,11 @@ static void Horizontal_Slicer(int client, float vecTarget[3], float Range)
 	H_i_Slicer_Throttle[client] = 0;
 
 	H_Tick_Count[client] = 0;
-	H_Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	H_Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
+	SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
 	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability_Two);
+	
 }
 static Action Scientific_Witchery_TBB_Ability_Two(int client)
 {
@@ -347,7 +363,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 	float Spn_Vec[3];
 	Spn_Vec = H_fl_starting_vec[client];
 	
-	for(int i=1 ; i<=H_SLICER_AMOUNT+1 ; i++)
+	for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH+1 ; i++)
 	{
 		float Trg_Vec[3], Cur_Vec[3], vecAngles[3], Direction[3];
 	
@@ -382,12 +398,12 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 	if(H_i_Slicer_Throttle[client]>2)
 	{
 		H_i_Slicer_Throttle[client] = 0;
-		for(int i=1 ; i<=H_SLICER_AMOUNT ; i++)
+		for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH ; i++)
 		{
-				Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 10000.0);
-				
-				TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
-				TE_SendToAll(0.0);
+			Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 10000.0);
+			
+			TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
+			TE_SendToAll(0.0);
 			
 		}
 	}
@@ -410,7 +426,7 @@ static float fl_current_vec[MAXENTITIES][3];
 static void Create_Laser_Hell(int client, float vecTarget[3])
 {
 	float Vec_offset[3]; Vec_offset = vecTarget;
-	float Npc_Vec[3]; Npc_Vec = WorldSpaceCenterOld(client);
+	float Npc_Vec[3]; WorldSpaceCenter(client, Npc_Vec);
 	
 	
 	fl_target_vec[client] = Vec_offset;
@@ -440,8 +456,9 @@ static void Create_Laser_Hell(int client, float vecTarget[3])
 	TE_SetupBeamPoints(Vec_offset, skyloc, gLaser2, 0, 0, 0, time, 0.75, 5.0, 0, 0.1, colour, 1);
 	TE_SendToAll(0.0);
 	Tick_Count[client] = 0;
-	Tick_Count_Max[client] = RoundToFloor(66.0*time);
+	Tick_Count_Max[client] = RoundToFloor(float(TickrateModifyInt)*time);
 	
+	SDKUnhook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 	SDKHook(client, SDKHook_Think, Scientific_Witchery_TBB_Ability);
 }
 static Action Scientific_Witchery_TBB_Ability(int client)
@@ -495,42 +512,43 @@ static Action Scientific_Witchery_TBB_Ability(int client)
 
 static void Scientific_Witchery_Ability(int client, float Vec_1[3], float Vec_2[3], float radius, float dmg)
 {
-	
-			Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
-	
-			static float hullMin[3];
-			static float hullMax[3];
 
-			for (int i = 1; i < MAXENTITIES; i++)
-			{
-				Scientific_Witchery_BEAM_HitDetected[i] = false;
-			}
-			
-			hullMin[0] = -radius;
-			hullMin[1] = hullMin[0];
-			hullMin[2] = hullMin[0];
-			hullMax[0] = -hullMin[0];
-			hullMax[1] = -hullMin[1];
-			hullMax[2] = -hullMin[2];
-			Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-			delete trace;
-			
-			BEAM_Targets_Hit[client] = 1.0;
-			
-			for (int victim = 1; victim < MAXENTITIES; victim++)
-			{
-				if (Scientific_Witchery_BEAM_HitDetected[victim] && GetEntProp(client, Prop_Send, "m_iTeamNum") != GetEntProp(victim, Prop_Send, "m_iTeamNum"))
-				{
-					int inflictor = GetClientOfUserId(npc.OwnerUserId);
-					if(inflictor==-1)
-					{
-						inflictor=client;
-					}
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))/BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
-					BEAM_Targets_Hit[client] *= 1.2;
-				}
-			}
+	Barrack_Alt_Scientific_Witchery npc = view_as<Barrack_Alt_Scientific_Witchery>(client);
 
+	static float hullMin[3];
+	static float hullMax[3];
+
+	for (int i = 1; i < MAXENTITIES; i++)
+	{
+		Scientific_Witchery_BEAM_HitDetected[i] = false;
+	}
+	
+	hullMin[0] = -radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+	Handle trace = TR_TraceHullFilterEx(Vec_1, Vec_2, hullMin, hullMax, 1073741824, Scientific_Witchery_BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
+	delete trace;
+	
+	BEAM_Targets_Hit[client] = 1.0;
+	
+	for (int victim = 1; victim < MAXENTITIES; victim++)
+	{
+		if (Scientific_Witchery_BEAM_HitDetected[victim] && GetTeam(client) != GetTeam(victim))
+		{
+			int inflictor = GetClientOfUserId(npc.OwnerUserId);
+			if(inflictor==-1)
+			{
+				inflictor=client;
+			}
+			SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),dmg, 1))*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, Vec_1);	// 2048 is DMG_NOGIB?
+			BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
+		}
+	}
+	
+	
 }
 static bool Scientific_Witchery_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {

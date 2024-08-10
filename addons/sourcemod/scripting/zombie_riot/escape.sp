@@ -1,17 +1,15 @@
 static int Carrying[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
-static bool Waiting;
-
 void Escape_RoundStart()
 {
-	Waiting = true;
+	DeleteAndRemoveAllNpcs = 5.0;
+	mp_bonusroundtime.IntValue = 15;
 }
-
 
 void Escape_RoundEnd()
 {
 	//Just delete, dont wanna risk anything staying and that causing the server to lag like in the case of serious sam.
 //	RequestFrames(Remove_All, 300);
-	CreateTimer(5.0, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(DeleteAndRemoveAllNpcs, Remove_All, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public Action Remove_All(Handle Timer_Handle, any Null)
@@ -34,62 +32,18 @@ public Action Remove_All(Handle Timer_Handle, any Null)
 		{
 			if(entity != 0)
 			{
-				RemoveEntity(entity);
-				/*
 				b_DissapearOnDeath[entity] = true;
 				b_DoGibThisNpc[entity] = true;
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
-				*/
 			}
 		}
 	}
+	DeleteAndRemoveAllNpcs = 5.0;
+	mp_bonusroundtime.IntValue = 15;
 	return Plugin_Handled;
-}
-
-void Escape_SetupEnd()
-{
-	if(Waiting)
-	{
-		int amount = CountPlayersOnRed();
-		
-		float multi = amount*0.25;
-		
-		if(multi < 0.25) //Have a minimum for 50% as i cant really balance bob, and escape maps alone are really hard anyways.
-			multi = 0.25;
-		
-		Waiting = false;
-		int entity = -1;
-		char buffer[64];
-		while((entity=FindEntityByClassname(entity, "npc_maker")) != -1)
-		{
-			GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer));
-			if(!StrContains(buffer, "zr_", false))
-			{
-				amount = GetEntProp(entity, Prop_Data, "m_nMaxNumNPCs");
-				if(amount)
-				{
-					amount = RoundToFloor(float(amount) * multi);
-					if(amount < 1)
-						amount = 1;
-					
-					SetVariantInt(amount);
-					AcceptEntityInput(entity, "SetMaxChildren");
-				}
-				
-				float time = GetEntPropFloat(entity, Prop_Data, "m_flSpawnFrequency");
-				if(time)
-				{
-					time *= (1.25 - (multi / 4));
-					
-					SetVariantFloat(time);
-					AcceptEntityInput(entity, "SetSpawnFrequency");
-				}
-			}
-		}
-	}
 }
 
 bool Escape_Interact(int client, int entity)

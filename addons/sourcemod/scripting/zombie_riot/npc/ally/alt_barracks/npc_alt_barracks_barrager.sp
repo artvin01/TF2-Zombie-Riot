@@ -25,16 +25,32 @@ static const char g_RangedReloadSound[][] = {
 
 public void Barrack_Alt_Barrager_MapStart()
 {
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++)			{ PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_IdleSounds));   i++)					{ PrecacheSound(g_IdleSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds));   i++) 			{ PrecacheSound(g_IdleAlertedSounds[i]);	}
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) 			{ PrecacheSound(g_RangedReloadSound[i]);	}
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
 	
 	PrecacheModel("models/player/Soldier.mdl");
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Barracks Barrager");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_alt_barrack_barrager");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Barrack_Alt_Barrager(client, vecPos, vecAng, ally);
 }
 
 static int i_ammo_count[MAXENTITIES];
 static bool b_we_are_reloading[MAXENTITIES];
+static float fl_npc_basespeed;
 
 methodmap Barrack_Alt_Barrager < BarrackBody
 {
@@ -61,16 +77,18 @@ methodmap Barrack_Alt_Barrager < BarrackBody
 		PrintToServer("CClot::PlayRangedSound()");
 		#endif
 	}
-	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Barrack_Alt_Barrager(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Barrack_Alt_Barrager npc = view_as<Barrack_Alt_Barrager>(BarrackBody(client, vecPos, vecAng, "250", "models/player/Soldier.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
-		i_NpcInternalId[npc.index] = ALT_BARRACK_BARRAGER;
 		i_NpcWeight[npc.index] = 1;
 		
-		SDKHook(npc.index, SDKHook_Think, Barrack_Alt_Barrager_ClotThink);
+		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
+		func_NPCDeath[npc.index] = Barrack_Alt_Barrager_NPCDeath;
+		func_NPCThink[npc.index] = Barrack_Alt_Barrager_ClotThink;
 
-		npc.m_flSpeed = 175.0;
+		fl_npc_basespeed = 175.0;
+		npc.m_flSpeed = fl_npc_basespeed;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -138,21 +156,23 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 		{
 			b_we_are_reloading[npc.index]=false;
 		}
+
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			if(b_we_are_reloading[npc.index])
 			{
-				
+				npc.m_flSpeed = fl_npc_basespeed*0.5;
 				int Enemy_I_See;
 				
 				Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					BarrackBody_ThinkMove(npc.index, 175.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 999999.0, _, false);
+					BarrackBody_ThinkMove(npc.index, fl_npc_basespeed*0.5, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 999999.0, _, false);
 				}
 			}
 			else if(flDistanceToTarget < 750000 && !b_we_are_reloading[npc.index])
@@ -172,7 +192,7 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						//Play attack anim
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, 1200.0);
+						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, 1200.0,_,vecTarget);
 						npc.FaceTowards(vecTarget, 20000.0);
 						npc.PlayRangedSound();
 						//npc.FireRocket(vecTarget, 500.0 * npc.BonusDamageBonus, 1200.0, _, _, _, _, GetClientOfUserId(npc.OwnerUserId));
@@ -193,6 +213,17 @@ public void Barrack_Alt_Barrager_ClotThink(int iNPC)
 			BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 700000.0, _, false);
 			npc.PlayIdleSound();
 		}
+		if(!b_we_are_reloading[npc.index])
+		{
+			if(npc.m_flNextMeleeAttack > GameTime)
+			{
+				npc.m_flSpeed = 10.0;
+			}
+			else
+			{
+				npc.m_flSpeed = fl_npc_basespeed;
+			}
+		}
 	}
 }
 
@@ -200,5 +231,4 @@ void Barrack_Alt_Barrager_NPCDeath(int entity)
 {
 	Barrack_Alt_Barrager npc = view_as<Barrack_Alt_Barrager>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	SDKUnhook(npc.index, SDKHook_Think, Barrack_Alt_Barrager_ClotThink);
 }

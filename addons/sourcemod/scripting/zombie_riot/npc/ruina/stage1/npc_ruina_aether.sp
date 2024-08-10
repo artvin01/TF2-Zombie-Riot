@@ -38,15 +38,35 @@ static const char g_RangedReloadSound[][] = {
 
 void Aether_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleSounds));		i++) { PrecacheSound(g_IdleSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
-	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
+	
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Aether");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_aether");
+	data.Category = Type_Ruina;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_bow_multi"); 		//leaderboard_class_(insert the name)
+	data.IconCustom = false;													//download needed?
+	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	NPC_Add(data);
+}
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_IdleSounds);
+	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedReloadSound);
+
 	PrecacheModel("models/player/sniper.mdl");
 }
-
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return Aether(client, vecPos, vecAng, ally);
+}
+static float fl_npc_basespeed;
 methodmap Aether < CClotBody
 {
 	
@@ -68,9 +88,7 @@ methodmap Aether < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -82,18 +100,14 @@ methodmap Aether < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayRangedSound() {
@@ -112,11 +126,10 @@ methodmap Aether < CClotBody
 	}
 	
 	
-	public Aether(int client, float vecPos[3], float vecAng[3], bool ally)
+	public Aether(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		Aether npc = view_as<Aether>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
-		
-		i_NpcInternalId[npc.index] = RUINA_AETHER;
+
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -144,8 +157,11 @@ methodmap Aether < CClotBody
 		
 		
 		
-		SDKHook(npc.index, SDKHook_Think, Aether_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
+		fl_npc_basespeed = 200.0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -190,7 +206,7 @@ methodmap Aether < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
-		Ruina_Set_Heirarchy(npc.index, 2);	//is a ranged npc
+		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
 
 		return npc;
 	}
@@ -200,7 +216,7 @@ methodmap Aether < CClotBody
 
 //TODO 
 //Rewrite
-public void Aether_ClotThink(int iNPC)
+static void ClotThink(int iNPC)
 {
 	Aether npc = view_as<Aether>(iNPC);
 	
@@ -251,14 +267,15 @@ public void Aether_ClotThink(int iNPC)
 		int Anchor_Id=-1;
 		Ruina_Independant_Long_Range_Npc_Logic(npc.index, PrimaryThreatIndex, GameTime, Anchor_Id); //handles movement
 
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 
 		if(!IsValidEntity(Anchor_Id))
 		{
-			if(flDistanceToTarget < (2000.0*2000.0))
+			if(flDistanceToTarget < (500.0*500.0))
 			{
 				int Enemy_I_See;
 				
@@ -266,13 +283,15 @@ public void Aether_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					if(flDistanceToTarget < (750.0*750.0))
+					if(flDistanceToTarget < (300.0*300.0))
 					{
+						npc.m_bAllowBackWalking=true;
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 					}
 					else
 					{
 						NPC_StopPathing(npc.index);
+						npc.m_bAllowBackWalking=false;
 						npc.m_bPathing = false;
 					}
 				}
@@ -280,16 +299,30 @@ public void Aether_ClotThink(int iNPC)
 				{
 					npc.StartPathing();
 					npc.m_bPathing = true;
+					npc.m_bAllowBackWalking=false;
 				}
 			}
 			else
 			{
 				npc.StartPathing();
 				npc.m_bPathing = true;
+				npc.m_bAllowBackWalking=false;
 			}
+		}
+		else
+		{
+			npc.m_bAllowBackWalking=false;
 		}
 		
 		Aether_SelfDefense(npc, GameTime, Anchor_Id);
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 	}
 	else
 	{
@@ -301,14 +334,16 @@ public void Aether_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Aether_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Aether npc = view_as<Aether>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
+	
+	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);	//ruina logic happens first, then npc
 		
-	fl_ruina_battery[npc.index] += damage;	//turn damage taken into energy
+	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -319,15 +354,15 @@ public Action Aether_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	return Plugin_Changed;
 }
 
-public void Aether_NPCDeath(int entity)
+static void NPC_Death(int entity)
 {
 	Aether npc = view_as<Aether>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, Aether_ClotThink);
+
+	Ruina_NPCDeath_Override(entity);
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
@@ -353,10 +388,11 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
-	if(flDistanceToTarget < (2250.0*2250.0))
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget < (1500.0*1500.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
 		{
@@ -367,16 +403,16 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			//This will predict as its relatively easy to dodge
 			float projectile_speed = 1250.0;
 			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+			if(flDistanceToTarget < 750.0*750.0)
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 			{
-				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 			}
 			float DamageDone = 25.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.25;
 		}
 	}
 	else
@@ -390,27 +426,26 @@ static void Aether_SelfDefense(Aether npc, float gameTime, int Anchor_Id)	//ty a
 			{
 				fl_ruina_in_combat_timer[npc.index]=gameTime+5.0;
 				GetClosestEnemyToAttack = target;
-				vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-				flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+				flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+
 				if(gameTime > npc.m_flNextRangedAttack)
 				{
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS", true);
 					npc.PlayRangedSound();
-					//after we fire, we will have a short delay beteween the actual laser, and when it happens
-					//This will predict as its relatively easy to dodge
 					float projectile_speed = 1250.0;
 					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
-						vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+					if(flDistanceToTarget < 750.0*750.0)
+						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 					{
-						vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					}
 					float DamageDone = 25.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
-					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.75;
+					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 6.0;
 					npc.PlayRangedReloadSound();
 				}
 			}

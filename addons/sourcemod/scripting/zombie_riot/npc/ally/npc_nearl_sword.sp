@@ -90,7 +90,22 @@ void NearlSwordAbility_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/weapons/c_models/c_claymore/c_claymore.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nearl Radiant Sword");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nearl_sword");
+	strcopy(data.Icon, sizeof(data.Icon), "");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Ally;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return NearlSwordAbility(client, vecPos, vecAng, ally);
+}
+
 methodmap NearlSwordAbility < CClotBody
 {
 	public void PlayHurtSound() 
@@ -115,11 +130,10 @@ methodmap NearlSwordAbility < CClotBody
 		
 	}
 	
-	public NearlSwordAbility(int client, float vecPos[3], float vecAng[3], bool ally)
+	public NearlSwordAbility(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		NearlSwordAbility npc = view_as<NearlSwordAbility>(CClotBody(vecPos, vecAng, "models/weapons/w_models/w_drg_ball.mdl", "1.0", "100", ally));
 		
-		i_NpcInternalId[npc.index] = NEARL_SWORD;
 		i_NpcWeight[npc.index] = 999;
 		
 //		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -173,7 +187,9 @@ methodmap NearlSwordAbility < CClotBody
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		
-		SDKHook(npc.index, SDKHook_Think, NearlSwordAbility_ClotThink);
+		func_NPCDeath[npc.index] = NearlSwordAbility_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = NearlSwordAbility_OnTakeDamage;
+		func_NPCThink[npc.index] = NearlSwordAbility_ClotThink;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
@@ -291,7 +307,6 @@ public void NearlSwordAbility_NPCDeath(int entity)
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
 	
-	SDKUnhook(npc.index, SDKHook_Think, NearlSwordAbility_ClotThink);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	

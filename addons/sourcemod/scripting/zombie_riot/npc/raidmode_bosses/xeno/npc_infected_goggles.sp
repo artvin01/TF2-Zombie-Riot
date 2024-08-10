@@ -84,6 +84,20 @@ static int i_GogglesHurtTalkMessage[MAXENTITIES];
 
 void RaidbossBlueGoggles_OnMapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Waldch");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_infected_goggles");
+	strcopy(data.Icon, sizeof(data.Icon), "goggles");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
+	data.Category = Type_Raid;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_MeleeHitSounds);
@@ -97,6 +111,10 @@ void RaidbossBlueGoggles_OnMapStart()
 	PrecacheSoundArray(g_HappySounds);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return RaidbossBlueGoggles(client, vecPos, vecAng, ally, data);
+}
 methodmap RaidbossBlueGoggles < CClotBody
 {
 	public void PlayHurtSound()
@@ -186,11 +204,10 @@ methodmap RaidbossBlueGoggles < CClotBody
 		public set(float value) 	{	this.m_flJumpCooldown = value;	}
 	}
 
-	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public RaidbossBlueGoggles(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		RaidbossBlueGoggles npc = view_as<RaidbossBlueGoggles>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.35", "25000", ally, false, true, true,true)); //giant!
 		
-		i_NpcInternalId[npc.index] = XENO_RAIDBOSS_BLUE_GOGGLES;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -200,14 +217,17 @@ methodmap RaidbossBlueGoggles < CClotBody
 
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", 1);
 		
-		SDKHook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
 		b_angered_twice[npc.index] = false;
 		
 
+		func_NPCDeath[npc.index] = RaidbossBlueGoggles_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = RaidbossBlueGoggles_OnTakeDamage;
+		func_NPCThink[npc.index] = RaidbossBlueGoggles_ClotThink;
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
+			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		/*
@@ -290,6 +310,22 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 
 	//Raidmode timer runs out, they lost.
+	if(LastMann && !AlreadySaidLastmann)
+	{
+		if(!npc.m_fbGunout)
+		{
+			AlreadySaidLastmann = true;
+			npc.m_fbGunout = true;
+			if(!XenoExtraLogic())
+			{
+				CPrintToChatAll("{darkblue}Waldch{default}: Here or not, infections are no joke.");
+			}
+			else
+			{
+				CPrintToChatAll("{darkblue}Waldch{default}: Giving up saves your life.");		
+			}
+		}
+	}
 	if(npc.m_flNextThinkTime != FAR_FUTURE && RaidModeTime < GetGameTime())
 	{
 		if(IsEntityAlive(EntRefToEntIndex(i_RaidDuoAllyIndex)))
@@ -301,18 +337,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.PlayRevengeSound();
 		}
 
-		if(RaidBossActive != INVALID_ENT_REFERENCE)
+		if(IsValidEntity(RaidBossActive))
 		{
-			int entity = CreateEntityByName("game_round_win"); 
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
+			ForcePlayerLoss();
+			SharedTimeLossSilvesterDuo(npc.index);
 			RaidBossActive = INVALID_ENT_REFERENCE;
 		}
-
-		//SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
+		
 
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -342,15 +373,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Blue Goggles{default}!!");
+							CPrintToChatAll("{gold}Silvester{default}: Stop seperating yourself from me {darkblue}Waldch{default}!!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get back to me now!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get back to me now!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} get here or ill teleport you here!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} get here or ill teleport you here!");
 						}
 					}
 				}
@@ -365,22 +396,25 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 					{
 						case 1:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Blue Goggles{default}!");
+							CPrintToChatAll("{gold}Silvester{default}: God dammit {darkblue}Waldch{default}!");
 						}
 						case 2:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default}... NOW!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default}... NOW!");
 						}
 						case 3:
 						{
-							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Blue Goggles{default} here, now STAY NEAR ME!");
+							CPrintToChatAll("{gold}Silvester{default}: {darkblue}Waldch{default} here, now STAY NEAR ME!");
 						}
 					}
-					ParticleEffectAt(WorldSpaceCenterOld(npc.index), "teleported_blue", 0.5);
+					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+					float WorldSpaceVec2[3]; WorldSpaceCenter(AllyEntity, WorldSpaceVec2);
+
+					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 					EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
 					float victimPos1[3];
 					GetEntPropVector(AllyEntity, Prop_Data, "m_vecAbsOrigin", victimPos1); 
-					ParticleEffectAt(WorldSpaceCenterOld(AllyEntity), "teleported_blue", 0.5);
+					ParticleEffectAt(WorldSpaceVec2, "teleported_blue", 0.5);
 					TeleportEntity(npc.index, victimPos1, NULL_VECTOR, NULL_VECTOR);
 					npc.m_iTarget = -1;
 					i_GogglesHurtTalkMessage[npc.index] = 0;
@@ -394,7 +428,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		return;
 	
 	if(npc.m_flNextThinkTime == FAR_FUTURE)
+	{
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+	}
 
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
@@ -434,7 +471,8 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
 		{
-			npc.FaceTowards(WorldSpaceCenterOld(closestTarget), 100.0);
+			float WorldSpaceVec[3]; WorldSpaceCenter(closestTarget, WorldSpaceVec);
+			npc.FaceTowards(WorldSpaceVec, 100.0);
 		}
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
@@ -455,6 +493,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			npc.SetVelocity({0.0,0.0,0.0});
 			TeleportEntity(npc.index, flPos, NULL_VECTOR, _);
 		}
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_STAND_LOSERSTATE");
 		npc.StopPathing();
 		int ally = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -488,15 +527,15 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Not here, not with him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Not here, not with him!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You fight like you want to kill him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You fight like you want to kill him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Just you and me!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Just you and me!");
 				}
 			}
 		}
@@ -506,19 +545,19 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You really shouldn't have done that!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You really shouldn't have done that!");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You'll pay for picking on him!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You'll pay for picking on him!");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: Quit this right now!");
+					CPrintToChatAll("{darkblue}Waldch{default}: Quit this right now!");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkblue}Blue Goggles{default}: You little ****!");
+					CPrintToChatAll("{darkblue}Waldch{default}: You little ****!");
 				}
 			}
 		}
@@ -583,13 +622,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 	if(npc.m_iTarget > 0)
 	{
-		float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 		float vecAlly[3];
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 		float distance = GetVectorDistance(vecTarget, vecMe, true);
 		if(distance < npc.GetLeadRadius()) 
 		{
-			vecTarget = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vecTarget);
 			NPC_SetGoalVector(npc.index, vecTarget);
 		}
 		else
@@ -661,7 +700,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 
 		if(!alone && tier > 0 && npc.m_flBuffCooldown < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			vecAlly = WorldSpaceCenterOld(ally);
+			WorldSpaceCenter(ally, vecAlly);
 			if(GetVectorDistance(vecAlly, vecMe, true) < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0) && Can_I_See_Enemy_Only(npc.index, ally))
 			{
 				// Buff Silver
@@ -692,7 +731,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		}
 		else if(!alone && tier > 1 && (npc.m_iGunType == 1 || npc.m_iGunType == 2) && npc.m_flPiggyCooldown < gameTime)
 		{
-			vecAlly = WorldSpaceCenterOld(ally);
+			WorldSpaceCenter(ally, vecAlly);
 			if(GetVectorDistance(vecAlly, vecMe, true) < 20000.0)	// 140 HU
 			{
 				// Enable piggyback
@@ -754,7 +793,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										PlaySound = true;
 										int target = i_EntitiesHitAoeSwing_NpcSwing[counter];
 										float vecHit[3];
-										vecHit = WorldSpaceCenterOld(target);
+										WorldSpaceCenter(target, vecHit);
 
 										KillFeed_SetKillIcon(npc.index, "club");
 
@@ -787,7 +826,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 										}
 										
 										if(!Knocked)
-											Custom_Knockback(npc.index, target, 550.0); 
+											Custom_Knockback(npc.index, target, 450.0, true);  
 
 										npc.m_flSwitchCooldown = 0.0;
 									}
@@ -834,6 +873,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 								npc.m_flAttackHappens = gameTime + 0.25;
 								npc.m_flSwitchCooldown = gameTime + 1.0;
 								npc.m_flNextMeleeAttack = gameTime + 1.0;
+								if(ZR_GetWaveCount()+1 >= 60)
+								{
+									npc.m_flNextMeleeAttack = gameTime + 0.55;
+								}
 							}
 						}
 					}
@@ -850,7 +893,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 
 							if(distance < 1000000.0 && !NpcStats_IsEnemySilenced(npc.index))	// 1000 HU
-								vecTarget = PredictSubjectPositionForProjectilesOld(npc, npc.m_iTarget, 1500.0);
+								PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, 1500.0, _,vecTarget);
 							
 							npc.FaceTowards(vecTarget, 30000.0);
 							
@@ -858,6 +901,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 							npc.FireArrow(vecTarget, (65.0 + (float(tier) * 4.0)) * RaidModeScaling, 1500.0);
 							
 							npc.m_flNextMeleeAttack = gameTime + 1.5;
+							if(ZR_GetWaveCount()+1 >= 60)
+							{
+								npc.m_flNextMeleeAttack = gameTime + 1.0;
+							}
 						}
 						/*else
 						{
@@ -910,6 +957,10 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 						{
 							damage *= 2.5;
 						}
+						if(ZR_GetWaveCount()+1 >= 60)
+						{
+							damage *= 1.15;
+						}
 						FireBullet(npc.index, npc.m_iWearable3, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer01_red");
 					}
 				}
@@ -917,6 +968,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 				{
 					if(npc.m_flNextMeleeAttack && npc.m_flNextMeleeAttack < gameTime)
 					{
+						npc.m_bisWalking = false;
 						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
 						npc.m_flNextMeleeAttack = 0.0;
 					}
@@ -948,6 +1000,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 		{
 			case 0:	// Melee
 			{
+				npc.m_bisWalking = true;
 				npc.SetActivity("ACT_MP_RUN_MELEE");
 				if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 					npc.StartPathing();
@@ -956,23 +1009,27 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
 				else if(alone)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else if(npc.m_flNextMeleeAttack < gameTime)
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_DEPLOYED_PRIMARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_DEPLOYED_IDLE");
 					npc.StopPathing();
 				}
@@ -981,11 +1038,13 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 			{
 				if(npc.m_flPiggyFor)
 				{
+					npc.m_bisWalking = false;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
 					npc.StopPathing();
 				}
 				else
 				{
+					npc.m_bisWalking = true;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					if(npc.m_flNextRangedSpecialAttackHappens < gameTime)
 						npc.StartPathing();
@@ -999,6 +1058,7 @@ public void RaidbossBlueGoggles_ClotThink(int iNPC)
 	}
 	else
 	{
+		npc.m_bisWalking = false;
 		npc.StopPathing();
 		npc.SetActivity("ACT_MP_COMPETITIVE_LOSERSTATE");
 	}
@@ -1028,7 +1088,7 @@ public Action RaidbossBlueGoggles_OnTakeDamage(int victim, int &attacker, int &i
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(28.0);
 			damage = 0.0;
-			CPrintToChatAll("{darkblue}Blue Goggles{default}: You win, I won't stop you no more...");
+			CPrintToChatAll("{darkblue}Waldch{default}: You win, I won't stop you no more...");
 			return Plugin_Handled;
 		}
 
@@ -1072,7 +1132,6 @@ public void RaidbossBlueGoggles_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();
 	}
-	SDKUnhook(npc.index, SDKHook_Think, RaidbossBlueGoggles_ClotThink);
 	
 	
 	RaidModeTime += 2.0; //cant afford to delete it, since duo.

@@ -3,6 +3,7 @@
 	"nothing"
 	{
 		"en" 		"Example Text!"
+		"pt"		"HUEHUEHUE BR!"
 	}
 	"Headcrab Zombie"
 	{
@@ -274,7 +275,7 @@
 	{
 		"en" 		"Combine Deutsch Ritter"
 		"ru" 		"Немецкий комбайн-рыцарь"
-		"pt"		"Deutch Ritter da Combine"
+		"pt"		"Deutsch Ritter da Combine"
 		"nl"		"Combine Duitse Ridder"
 	}
 	"X10 Spy Main"
@@ -567,7 +568,10 @@
 		"pt"		"Xeno Spy Main do X10"
 		"nl"		"Xeno X10 Spion Main"
 	}
-
+	"Xeno Malfunctioning Robot"
+	{
+		"en" 		"Xeno Malfunctioning Robot"
+	}
 	"Nazi Panzer"
 	{
 		"en" 		"Nazi Panzer"
@@ -655,11 +659,13 @@
 	"Golden Bloon"
 	{
 		"en" 		"Golden Bloon"
+		"pt"		"Balão Dourado"
 		"ru" 		"Золотой шар"
 	}
 	"Bloonarius"
 	{
 		"en" 		"Bloonarius"
+		"pt"		"Balãorista"
 		"ru" 		"Шариус"
 	}
 	"Medic Apprentice Mage"
@@ -704,9 +710,71 @@
 		"pt"		"Milícia"
 		"nl"		"Militie"
 	}
+	"Barracks Metro Cop"
+	{
+		"en" 		"Metro Cop"
+	}
+	"Barracks Combine Swordsman"
+	{
+		"en" 		"Combine Swordsman"
+	}
+	"Barracks Metro Raider"
+	{
+		"en" 		"Metro Raider"
+	}
+	"Barracks Combine Shotgunner"
+	{
+		"en" 		"Combine Shotgunner"
+	}
+	"Barracks Combine Soldier"
+	{
+		"en" 		"Combine Soldier"
+	}
+	"Barracks Combine DDT"
+	{
+		"en" 		"Combine DDT"
+	}
+	"Barracks Combine Elite"
+	{
+		"en" 		"Combine Elite"
+	}
+	"Barracks Combine Deflector"
+	{
+		"en" 		"Combine Deflector"
+	}
+	"Barracks Combine Sniper"
+	{
+		"en" 		"Combine Sniper"
+	}
+	"Barracks Combine Super"
+	{
+		"en" 		"Combine Warrior"
+	}
+	"Barracks Combine Commander"
+	{
+		"en" 		"Combine Commander"
+	}
+	"Barracks Combine Giant ddt"
+	{
+		"en" 		"Combine Giant DDT"
+	}
+	"Barracks Combine Collos"
+	{
+		"en"		"Combine Collos"
+	}
+	"Barracks Militia"
+	{
+		"en" 		"Militia"
+		"fr" 		"Milice"
+	}
+	"Barracks Militia Desc"
+	{
+		"en"		"Basic unit of basic melee needs."
+	}
 	"Archer"
 	{
 		"en" 		"Archer"
+		"fr" 		"Archer"
 		"ru" 		"Лучник"
 		"pt"		"Arqueiro"
 		"nl"		"Boogschutter"
@@ -714,6 +782,7 @@
 	"Man-At-Arms"
 	{
 		"en" 		"Man-At-Arms"
+		"fr" 		"Homme-aux-Armes"
 		"ru" 		"Гвардеец"
 		"pt"		"Homem de armas"
 		"nl"		"Krijgsman te paard"
@@ -721,6 +790,7 @@
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
+		"fr"		"Tirailleur"
 		"ru" 		"Разбойник"
 		"pt"		"Escaramuça"
 		"nl"		"Tirailleur"
@@ -728,6 +798,7 @@
 	"Long Swordsman"
 	{
 		"en" 		"Long Swordsman"
+		"fr" 		"Épéiste"
 		"ru" 		"Длинномечник"
 		"pt"		"Espadachim com Espada longa"
 		"nl"		"Lange Zwaardvechter"
@@ -735,6 +806,7 @@
 	"Twohanded Swordsman"
 	{
 		"en" 		"Twohanded Swordsman"
+		"fr" 		"Épéiste Double"
 		"ru" 		"Двуручный мечник"
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
@@ -742,6 +814,7 @@
 	"Crossbow Man"
 	{
 		"en" 		"Crossbow Man"
+		"fr" 		"Arbalétrier"
 		"ru" 		"Арбалетчик"
 		"pt"		"Cara da Besta"
 		"nl"		"Kruisboogman"
@@ -749,6 +822,7 @@
 	"Spearman"
 	{
 		"en" 		"Spearman"
+		"fr" 		"Harponneur"
 		"ru" 		"Копьеносец"
 		"pt"		"Lanceiro"
 		"nl"		"Speerman"
@@ -756,6 +830,7 @@
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
+		"fr" 		"Cannoneur"
 		"ru" 		"Пушечник"
 		"pt"		"Canhoneiro de mão"
 		"nl"		"Hand Kanonnier"
@@ -763,6 +838,7 @@
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
+		"fr"		"Tirailleur Élite"
 		"ru" 		"Элитный разбойник"
 		"pt"		"Escaramuça de Elite"
 		"nl"		"Elite Tirailleur"
@@ -770,9 +846,19 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
+	}
+	"Hyper Blitzkrieg"
+	{
+		"en"		"Hyper Blitzkrieg"
+		"fr"		"Hyper-Blitzkrieg"
+	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"		"TRUE BLITZKRIEG"
 	}
 	"Pikeman"
 	{
@@ -816,12 +902,12 @@
 		"pt"		"O Viciado"
 		"nl"		"De Verslaving"
 	}
-	"The Doctor"
+	"Doctor Purnell"
 	{
-		"en" 		"The Doctor"
-		"ru" 		"Доктор"
-		"pt"		"O Doutor"
-		"nl"		"De Dokter"
+		"en" 		"Doctor Purnell"
+		"ru" 		"Доктор Пурнелл"
+		"pt"		"Doutor Purnell"
+		"nl"		"Dokter Purnell"
 	}
 	"Book Simon"
 	{
@@ -830,6 +916,38 @@
 		"pt"		"Simon do Livro"
 		"nl"		"Boek Simon"
 	}
+	"Crazy Lady"
+	{
+		"en" 		"Crazy Lady"
+	}
+	"Faster"
+	{
+		"en" 		"Faster"
+	}
+	"Psycho"
+	{
+		"en" 		"Psycho"
+	}
+	"Sewmo"
+	{
+		"en" 		"Sewmo"
+	}
+	"Suicider"
+	{
+		"en" 		"Suicider"
+	}
+	"Cured Purnell"
+	{
+		"en" 		"Cured Purnell"
+	}
+	"Corrupted Barney"
+	{
+		"en" 		"Corrupted Barney"
+	}
+	"Voided Vanguard"
+	{
+		"en" 		"Voided Vanguard"
+	}
 	"Kahmlstein"
 	{
 		"en"		"Kahmlstein"
@@ -837,9 +955,14 @@
 		"pt"		"Kahmlstein" 
 		"nl"		"Kahmlstein"
 	}
+	"Chaos Kahmlstein"
+	{
+		"en"		"Chaos Kahmlstein"
+	}
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
+		"fr"		"Tank"
 		"ru"		"Танк"
 		"pt"		"Tanque"
 		"nl"		"Tank"
@@ -861,6 +984,7 @@
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
+		"fr"		"Soldier Barrageur"
 		"ru"		"Солдат-бомбардир"
 		"pt"		"Soldado de Barragem"
 		"nl"		"Soldaten spervuurder"
@@ -882,37 +1006,44 @@
 	"Basic Bones"
 	{
 		"en"		"Basic Bones"
-		"pt"		"Ossos Basicos"
+		"pt"		"Ossos Básicos"
 		"ru"		"Кости"
 		"nl"		"Basis Botten"
 	}
 	"Beefy Bones"
 	{
 		"en"		"Beefy Bones"
+		"pt"		"Ossos Carnudos"
 	}
 	"Brittle Bones"
 	{
 		"en"		"Brittle Bones"
+		"pt"		"Ossos Quebradiços"
 	}
 	"Big Bones"
 	{
 		"en"		"Big Bones"
+		"pt"		"Ossos Grandes"
 	}
 	"Buffed Basic Bones"
 	{
 		"en"		"Buffed Basic Bones"
+		"pt"		"Ossos Básicos Polidos"
 	}
 	"Buffed Beefy Bones"
 	{
 		"en"		"Buffed Beefy Bones"
+		"pt"		"Ossos Carnudos Polidos"		
 	}
 	"Buffed Brittle Bones"
 	{
 		"en"		"Buffed Brittle Bones"
+		"pt"		"Ossos Quebradiços Polidos"
 	}
 	"Buffed Big Bones"
 	{
 		"en"		"Buffed Big Bones"
+		"pt"		"Ossos Grandes Polidos"
 	}
 	"Mecha Engineer"
 	{
@@ -952,240 +1083,286 @@
 	"Donnerkrieg"
 	{
 		"en"		"Donnerkrieg"
+		"pt"		"Donnerkrieg"
 		"ru"		"Доннеркриг"
 		"nl"		"Donnerkrieg"
 	}
 	"Schwertkrieg"
 	{
 		"en"		"Schwertkrieg"
+		"pt"		"Schwertkrieg"
 		"ru"		"Шверткриг"
 		"nl"		"Schwertkrieg"
 	}
 	"Phantom Knight"
 	{
 		"en"		"Lucian, ''Blood Diamond''"
+		"pt"		"Lucian, ''Diamante de Sangue''"
 		"ru"		"Люциан, «Кровавый алмаз»"
 	}
 	"Medic Constructor"
 	{
 		"en"		"Medic Constructor"
+		"pt"		"Medic Construtor"
 		"ru"		"Медик-строитель"
 	}
 	"Gambler"
 	{
 		"en"	"Gambler"
+		"pt"	"Apostador"
 		"de"	"Gambler" //Not Really needed i just added them just in case others want their lang
 		"ru"	"Азартный игрок"
 	}
 	"Pablo Gonzales"
 	{
 		"en"	"Pablo Gonzales"
+		"pt"	"Pablo Gonzales"
 		"de"	"Pablo Gonzales"
 		"ru"	"Пабло Гонсалес"
 	}
 	"Doktor Medick"
 	{
 		"en"	"Doktor Medick"
+		"pt"	"Doktor Medick"
 		"de"	"Doktor Medick"
 		"ru"	"Доктор Мэдик"
 	}
 	"Eternal Kaptain Heavy"
 	{
 		"en"	"Eternal Kaptain Heavy"
+		"pt"	"Eterno Kapitão Heavy"
 		"de"	"Eternal Kaptain Heavy"
 		"ru"	"Вечный капитан Пулемётчик"
 	}
 	"Booty Executioner"
 	{
 		"en"	"Booty Executioner"
+		"pt"	"Executor de Bundas"
 		"de"	"Booty Executioner"
 		"ru"	"Ягодичный Палач"
 	}
 	"Sandvich Slayer"
 	{
 		"en"	"Sandvich Slayer"
+		"pt"	"Caçador de Sanduíches"
 		"de"	"Sandvich Slayer"
 		"ru"	"Палач Бутербродов"
 	}
 	"Payday Cloaker"
 	{
 		"en"	"Payday Cloaker"
+		"pt"	"Payday Cloaker"
 		"de"	"Payday Cloaker"
 		"ru"	"Клокер из Payday"
 	}
 	"Bunker Kahmlstein"
 	{
 		"en"		"Bunker Kahmlstein"
+		"pt"		"Bunker Kahmlstein"
 		"ru"		"Бункерный Кахмльштайн"
 	}
 	"Zerofuse"
 	{
 		"en"		"Zerofuse"
+		"pt"		"Zerofuse"
 		"ru"		"Зерофуз"
 	}
 	"Bunker Bot Soldier"
 	{
 		"en"		"Bunker Bot Soldier"
+		"pt"		"Soldier Bot do Bunker"
 		"ru"		"Бункерный бот-солдат"
 	}
 	"Bunker Bot Sniper"
 	{
 		"en"		"Bunker Bot Sniper"
+		"pt"		"Sniper Bot do Bunker"
 		"ru"		"Бункерный бот-снайпер"
 	}
 	"Bunker Skeleton"
 	{
 		"en"		"Bunker Skeleton"
+		"pt"		"Esqueleto do Bunker"
 		"ru"		"Бункерный скелет"
 	}
 	"Bunker Small Skeleton"
 	{
 		"en"		"Bunker Small Skeleton"
+		"pt"		"Esqueleto Pequeno do Bunker"
 		"ru"		"Бункерный маленький скелет"
 	}
 	"Bunker Skeleton King"
 	{
 		"en"		"Bunker Skeleton King"
+		"pt"		"Esqueleto Rei do Bunker"
 		"ru"		"Бункерный король скелетов"
 	}
 	"Bunker Headless Horseman"
 	{
 		"en"		"Bunker Headless Horseman"
+		"pt"		"Cavaleiro sem cabeça do Bunker"
 		"ru"		"Бункерный Пеший всадник без головы"
 	}
 	"Gold Bloon"
 	{
 		"en"		"Gold Bloon"
+		"pt"		"Balão de Ouro"
 		"ru"		"Золотой шар"
 	}
 	"Medival Scout"
 	{
 		"en"		"Ridden Scout"
+		"pt"		"Scout Montado"
 		"ru"		"Ездовой разведчик"
 	}
 	"Medival Villager"
 	{
 		"en"		"Villager"
+		"pt"		"Aldeão"
 		"ru"		"Житель"
 	}
 	"Building"
 	{
 		"en"		"Building"
+		"pt"		"Edifício"
 		"ru"		"Постройка"
 	}
 	"Medival Construct"
 	{
 		"en"		"Construct"
+		"pt"		"Construção"
 		"ru"		"Строение"
 	}
 	"Champion"
 	{
 		"en"		"Champion"
+		"pt"		"Campeão"
 		"ru"		"Чемпион"
 	}
 	"Light Cavalry"
 	{
 		"en"		"Light Cavalry"
+		"pt"		"Cavalaria Leve"
 		"ru"		"Лёгкий кавалерист"
 	}
 	"Hussar"
 	{
 		"en"		"Hussar"
+		"pt"		"Hussardo"
 		"ru"		"Гусар"
 	}
 	"Knight"
 	{
 		"en"		"Knight"
+		"pt"		"Cavaleiro"
 		"ru"		"Рыцарь"
 	}
 	"Obuch"
 	{
 		"en"		"Obuch"
+		"pt"		"Obuch"
 		"ru"		"Обух"
 	}
 	"Monk"
 	{
 		"en"		"Monk"
+		"pt"		"Monge"
 		"ru"		"Монах"
 	}
 	"Cavalary"
 	{
 		"en"		"Cavalary"
+		"pt"		"Cavalaria"
 		"ru"		"Кавалерист"
 	}
 	"Paladin"
 	{
 		"en"		"Paladin"
+		"pt"		"Paladino"
 		"ru"		"Паладин"
 	}
 	"Crossbow Giant"
 	{
 		"en"		"Crossbow Giant"
+		"pt"		"Besta Gigante"
 		"ru"		"Гигантский арбалетчик"
 	}
 	"Swordsman Giant"
 	{
 		"en"		"Swordsman Giant"
+		"pt"		"Espadachim Gigante"
 		"ru"		"Гигантский мечник"
 	}
 	"Mounted Archer"
 	{
 		"en"		"Mounted Archer"
+		"pt"		"Arqueiro Montado"
 		"ru"		"Конный лучник"
 	}
 	"Eagle Warrior"
 	{
 		"en"		"Eagle Warrior"
+		"pt"		"Guerreiro da Aguia"
 		"ru"		"Орёл-воин"
 	}
 	"Giant Eagle Warrior"
 	{
 		"en"		"Giant Eagle Warrior"
+		"pt"		"Guerreiro da Aguia Gigante"
 		"ru"		"Гигантский орёл-воин"
 	}
 	"Son Of Osiris"
 	{
 		"en"		"Son Of Osiris"
+		"pt"		"Filho de Osiris"
 		"ru"		"Сын Осириса"
 	}
 	"Achilles"
 	{
 		"en"		"Achilles"
+		"pt"		"Aquiles"
 		"ru"		"Ахилл"
 	}
-	"Medival Abalest"
+	"Medival Arbalest"
 	{
 		"en"		"Medieval Arbalest"
+		"pt"		"Arbalest Medieval"
 		"ru"		"Арбалетчик средневековья"
 	}
 	"Medival Brawler"
 	{
 		"en"		"Medieval Brawler"
+		"pt"		"Lutador Medieval"
 		"ru"		"Боец средневековья"
 	}
 	"Medival Longbowmen"
 	{
 		"en"		"Medieval Longbowmen"
+		"pt"		"Arqueiro Medieval"
 		"ru"		"Лучник средневековья"
 	}
 	"Medival Halberdier"
 	{
 		"en"		"Medieval Halberdier"
+		"pt"		"Alabardeiro Medieval"
 		"ru"		"Алебардист средневековья"
 	}
 	"Medival Elite Longbowmen"
 	{
 		"en"		"Medieval Elite Longbowmen"
+		"pt"		"Arqueiro Elite Medieval"
 		"ru"		"Элитный лучник средневековья"
 	}
 	"Trebuchet"
 	{
 		"en"		"Trebuchet"
+		"pt"		"Catapulta"
 		"ru"		"Требушет"
 	}
 	"Ikunagae"
 	{
 		"en"		"Iku Nagae"
+		"pt"		"Iku Nagae"
 		"de"		"Iku Nagae"
 		"ru"		"Ику Нагаэ"
 	}
@@ -1198,181 +1375,210 @@
 	"Nearl Radiant Sword"
 	{
 		"en"		"Nearl Radiant Sword"
+		"pt"		"Espada Quase Radiante"
 		"ru"		"Лучезарный меч Нерл"
 	}
 	"Spawned Combine"
 	{
 		"en"		"Spawned Combine"
+		"pt"		"Combine Gerado"
 		"ru"		"Созданный комбайн"
 	}
 	"Spawned Father Grigori"
 	{
 		"en"		"Spawned Father Grigori"
+		"pt"		"Pai Grigori Gerado"
 		"ru"		"Созданный отец Григорий"
 	}
-	"Spawned Blue Goggles"
+	"Machina Waldch"
 	{
-		"en"		"Spawned Blue Goggles"
-		"ru"		"Созданный Блу Гогглз"
+		"en"		"Machina Waldch"
 	}
 	"Silvester"
 	{
 		"en"		"Silvester"
+		"pt"		"Silvester"
 		"ru"		"Сильвестр"
 	}
-	"Blue Goggles"
+	"Waldch"
 	{
-		"en"		"Blue Goggles"
-		"ru"		"Блу Гогглз"
+		"en"		"Waldch"
+		"pt"		"Waldch"
 	}
 	"Angeled Silvester"
 	{
 		"en"		"Angeled Silvester"
+		"pt"		"Silvester Angelical"
 		"ru"		"Угловатый Сильвестр"
 	}
 	"Nemesis"
 	{
 		"en"		"Nemesis"
+		"pt"		"Nemesis"
 		"ru"		"Немезид"
 	}
 	"Enraged Nemesis"
 	{
 		"en"		"Enraged Nemesis"
+		"pt"		"Nemesis Enfurecido"
 	}
 	"Shell Sea Runner"
 	{
 		"en"		"Shell Sea Runner"
+		"pt"		"Corredor da Concha do Mar"
 		"ru"		"Морской бегун из ракушек"
 		"chi"		"壳海狂奔者"
 	}
 	"Nourished Runner"
 	{
 		"en"		"Nourished Runner"
+		"pt"		"Corredor Nutrido"
 		"ru"		"Сытый бегун"
 		"chi"		"富营养的狂奔者"
 	}
 	"Deep Sea Slider"
 	{
 		"en"		"Deep Sea Slider"
+		"pt"		"Deslizador do Mar Profundo"
 		"ru"		"Глубоководный ползун"
 		"chi"		"底海滑动者"
 	}
 	"Nourished Slider"
 	{
 		"en"		"Nourished Slider"
+		"pt"		"Deslizador Nutrido"
 		"ru"		"Сытый ползун"
 		"chi"		"富营养的滑动者"
 	}
 	"Ridge Sea Spitter"
 	{
 		"en"		"Ridge Sea Spitter"
+		"pt"		"Cuspidor do Mar da Crista"
 		"ru"		"Хребтовый морской плевальщик"
 		"chi"		"脊海喷吐者"
 	}
 	"Nourished Spitter"
 	{
 		"en"		"Nourished Spitter"
+		"pt"		"Cuspidor Nutrido"
 		"ru"		"Сытый плевальщик"
 		"chi"		"富营养的喷吐者"
 	}
 	"Basin Sea Reaper"
 	{
 		"en"		"Basin Sea Reaper"
+		"pt"		"Ceifador da Bacia do Mar"
 		"ru"		"Бассейновый жнец"
 		"chi"		"钵海收割者"
 	}
 	"Nourished Reaper"
 	{
 		"en"		"Nourished Reaper"
+		"pt"		"Ceifador Nutrido"
 		"ru"		"Сытый жнец"
 		"chi"		"富营养的收割者"
 	}
 	"Pocket Sea Crawler"
 	{
 		"en"		"Pocket Sea Crawler"
+		"pt"		"Rastejante do Mar de Bolso"
 		"ru"		"Карманный морской краулер"
 		"chi"		"囊海爬行者"
 	}
 	"Nourished Crawler"
 	{
 		"en"		"Nourished Crawler"
+		"pt"		"Rastejante Nutrido"
 		"ru"		"Сытый краулер"
 		"chi"		"富营养的爬行者"
 	}
 	"Primal Sea Piercer"
 	{
 		"en"		"Primal Sea Piercer"
+		"pt"		"Perfurador Marítimo Primordial"
 		"ru"		"Первобытный морской пронзатель"
 		"chi"		"始海穿刺者"
 	}
 	"Nourished Piercer"
 	{
 		"en"		"Nourished Piercer"
+		"pt"		"Perfurador Nutrido"
 		"ru"		"Сытый пронзатель"
 		"chi"		"富营养的穿刺者"
 	}
 	"The First To Talk"
 	{
 		"en"		"The First To Talk"
+		"pt"		"Primeiro a Falar"
 		"ru"		"Первый говорящий"
 		"chi"		"首言者"
 	}
 	"Sal Viento Bishop Quintus"
 	{
 		"en"		"Sal Viento Bishop Quintus"
+		"pt"		"Sal Viento Quinto Bispo"
 		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
 	}
 	"Armorless Union Knight"
 	{
 		"en"		"Armorless Union Knight"
+		"pt"		"Cavaleiro da União dos Sem Armadura"
 		"ru"		"Рыцарь из «Союза без брони»"
 		"chi"		"无名独立骑士"
 	}
 	"Roar Knightclub Trainee"
 	{
 		"en"		"Roar Knightclub Trainee"
+		"pt"		"Estagiário Roar do Knightclub"
 		"ru"		"Ученик из «Рыцарского клуба \"Рев\"»"
 		"chi"		"呼啸骑士团学徒"
 	}
 	"Bloodboil Knightclub Trainee"
 	{
 		"en"		"Bloodboil Knightclub Trainee"
+		"pt"		"Estagiário Bloodboil do Knightclub"
 		"ru"		"Ученик из «Рыцарского клуба \"Кровавый котёл\"»"
 		"chi"		"沸血骑士团学徒"
 	}
 	"Armorless Union Cleanup Squad"
 	{
 		"en"		"Armorless Union Cleanup Squad"
+		"pt"		"Esquadrão de Limpeza da União dos Sem Armadura"
 		"ru"		"Отряд зачистки из «Союза без брони»"
 		"chi"		"无胄盟清扫小队"
 	}
 	"Consumable Remains"
 	{
 		"en"		"Consumable Remains"
+		"pt"		"Consumível Restante"
 		"ru"		"Потребляемые остатки"
 	}
 	"The Endspeaker, Will of We Many"
 	{
 		"en"		"The Endspeaker, Will of We Many"
+		"pt"		"O Último Falante, A Vontade de Muitos"
 		"ru"		"Говорящий с концом, воля многих из нас"
 		"chi"		"屠谕者，大群意志"
 	}
 	"Nethersea Founder"
 	{
 		"en"		"Nethersea Founder"
+		"pt"		"Fundador do Nethersea"
 		"ru"		"Основатель низинного моря"
 		"chi"		"深溟奠基者"
 	}
 	"Nourished Founder"
 	{
 		"en"		"Nourished Founder"
+		"pt"		"Fundador Nutrido"
 		"ru"		"Сытый основатель"
 		"chi"		"富营养的奠基者"
 	}
 	"Regressed Founder"
 	{
 		"en"		"Regressed Founder"
+		"pt"		"Fundador Regredido"
 		"ru"		"Откатывающийся основатель"
 		"chi"		"退行的奠基者"
 	}
@@ -1478,9 +1684,9 @@
 		"ru"		"Шипы"
 		"chi"		"棘刺"
 	}
-	"God Arkantos"
+	"God Alaxios"
 	{
-		"en"		"God Arkantos"
+		"en"		"God Alaxios"
 		"ru"		"Бог Аркантос"
 	}
 	"Seaborn Scout"
@@ -1733,9 +1939,9 @@
 	{
 		"en"	"Heavy Punuel"
 	}
-	"Seargent Ideal"
+	"Sergeant Ideal"
 	{
-		"en"	"Seargent Ideal"
+		"en"	"Sergeant Ideal"
 	}
 	"VIP Building, The Objective"
 	{
@@ -1841,6 +2047,18 @@
 	{
 		"en"	"Stella"
 	}
+	"Karlas"
+	{
+		"en"	"Karlas"
+	}
+	"Heliara"
+	{
+		"en"	"Heliara"
+	}
+	"Helia"
+	{
+		"en"	"Helia"
+	}
 	"Astria"
 	{
 		"en"	"Astria"
@@ -1861,17 +2079,73 @@
 	{
 		"en"	"Ruriana"
 	}
-	"Venium"
+	"Valiant"
 	{
-		"en"	"Venium"
+		"en"	"Valiant"
 	}
 	"Magia Anchor"
 	{
 		"en"	"Magia Anchor"
 	}
-	"Storm Weaver"
+	"Stellar Weaver"
 	{
-		"en"	"Storm Weaver"
+		"en"	"Stellar Weaver"
+	}
+	"Daedalus"
+	{
+		"en"	"Daedalus"
+	}
+	"Malius"
+	{
+		"en"	"Malius"
+	}
+	"Laz"
+	{
+		"en"	"Laz"
+	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
+	"Magnium"
+	{
+		"en"	"Magnium"
+	}
+	"Stellaria"
+	{
+		"en"	"Stellaria"
+	}
+	"Astriana"
+	{
+		"en"	"Astriana"
+	}
+	"Europis"
+	{
+		"en"	"Europis"
+	}
+	"Draedon"
+	{
+		"en"	"Draedon"
+	}
+	"Aetheria"
+	{
+		"en"	"Aetheria"
+	}
+	"Maliana"
+	{
+		"en"	"Maliana"
+	}
+	"Ruianus"
+	{
+		"en"	"Ruianus"
+	}
+	"Lazius"
+	{
+		"en"	"Lazius"
+	}
+	"Dronian"
+	{
+		"en"	"Dronian"
 	}
 	"Beheaded Kamikaze"
 	{
@@ -1964,5 +2238,657 @@
 	"Irritated Person"
 	{
 		"en"	"Irritated Person"
+	}
+	"Archosauria"
+	{
+		"en"	"Archosauria"
+	}
+	"Aslan"
+	{
+		"en"	"Aslan"
+	}
+	"Perro"
+	{
+		"en"	"Perro"
+	}
+	"Caprinae"
+	{
+		"en"	"Caprinae"
+	}
+	"Liberi"
+	{
+		"en"	"Liberi"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
+	"Ransacker"
+	{
+		"en"	"Ransacker"
+	}
+	"Runover"
+	{
+		"en"	"Runover"
+	}
+	"Hitman"
+	{
+		"en"	"Hitman"
+	}
+	"Mad Doctor"
+	{
+		"en"	"Mad Doctor"
+	}
+	"Abomination"
+	{
+		"en"	"Abomination"
+	}
+	"Anarchist Enforcer"
+	{
+		"en"	"Anarchist Enforcer"
+	}
+	"Braindead"
+	{
+		"en"	"Braindead"
+	}
+	"Behemoth"
+	{
+		"en"	"Behemoth"
+	}
+	"Absolute Incinirator"
+	{
+		"en"	"Absolute Incinirator"
+	}
+	"Aegir"
+	{
+		"en"	"Aegir"
+	}
+	"Ursus"
+	{
+		"en"	"Ursus"
+	}
+	"Cautus"
+	{
+		"en"	"Cautus"
+	}
+	"Vulpo"
+	{
+		"en"	"Vulpo"
+	}
+	"Major Steam"
+	{
+		"en"	"Major Steam"
+	}
+	"The Messenger"
+	{
+		"en"	"The Messenger"
+	}
+	"The Purge"
+	{
+		"en"	"The Purge"
+	}
+	"Rouge Expidonsan Doctor"
+	{
+		"en"	"Rouge Expidonsan Doctor"
+	}
+	"Laniun"
+	{
+		"en"	"Laniun"
+	}
+	"Bob the Second"
+	{
+		"en"	"Bob the Second"
+	}
+	"Wildingen Hitman"
+	{
+		"en"	"Wildingen Hitman"
+	}
+	"Mr.X"
+	{
+		"en"	"Mr.X"
+	}
+	"Xeno Acclaimed Swordsman"
+	{
+		"en"	"Xeno Acclaimed Swordsman"
+	}
+	"Xeno Early Infected"
+	{
+		"en"	"Xeno Early Infected"
+	}
+	"Xeno Patient Few"
+	{
+		"en"	"Xeno Patient Few"
+	}
+	"Ouroboros Ekas"
+	{
+		"en"	"Ouroboros Ekas"
+	}
+	"Wandering Spirit"
+	{
+		"en"	"Wandering Spirit"
+	}
+	"Vengefull Spirit"
+	{
+		"en"	"Vengefull Spirit"
+	}
+	"Fallen Warrior"
+	{
+		"en"	"Guln the Fallen One"
+	}
+	"Lex"
+	{
+		"en"	"Lex"
+	}
+	"Iana"
+	{
+		"en"	"Iana"
+	}
+	"Magianas"
+	{
+		"en"	"Magianas"
+	}
+	"Loonaris"
+	{
+		"en"	"Loonaris"
+	}
+	"Heliaris"
+	{
+		"en"	"Heliaris"
+	}
+	"Astrianis"
+	{
+		"en"	"Astrianis"
+	}
+	"Eurainis"
+	{
+		"en"	"Eurainis"
+	}
+	"Draeonis"
+	{
+		"en"	"Draeonis"
+	}
+	"Aetherium"
+	{
+		"en"	"Aetherium"
+	}
+	"Malianium"
+	{
+		"en"	"Malianium"
+	}
+	"Rulius"
+	{
+		"en"	"Rulius"
+	}
+	"Lazines"
+	{
+		"en"	"Lazines"
+	}
+	"Dronis"
+	{
+		"en"	"Dronis"
+	}
+	"Ruliana"
+	{
+		"en"	"Ruliana"
+	}
+	"Aetherianus"
+	{
+		"en"	"Aetherianus"
+	}
+	"Aetherianus Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition it buffs the damage of other neavy aether class npc's"
+	}
+	"Astrianious"
+	{
+		"en"	"Astrianious"
+	}
+	"Astrianious Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Draconia"
+	{
+		"en"	"Draconia"
+	}
+	"Draconia Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
+	}
+	"Dronianis"
+	{
+		"en"	"Dronianis"
+	}
+	"Dronianis Desc"
+	{
+		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
+	}
+	"Euranionis"
+	{
+		"en"	"Euranionis"
+	}
+	"Euranionis Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Heliarionus"
+	{
+		"en"	"Heliarionus"
+	}
+	"Heliarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
+	}
+	"Lazurus"
+	{
+		"en"	"Lazurus"
+	}
+	"Lazurus Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Loonarionus"
+	{
+		"en"	"Loonarionus"
+	}
+	"Loonarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
+	}
+	"Magianius"
+	{
+		"en"	"Magianius"
+	}
+	"Magianius Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Malianius"
+	{
+		"en"	"Malianius"
+	}
+	"Malianius Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Rulianius"
+	{
+		"en"	"Rulianius"
+	}
+	"Rulianius Desc"
+	{
+		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
+	}
+	"Lancelot"
+	{
+		"en"	"Lancelot"
+	}
+	"Lancelot Desc"
+	{
+		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
+	}
+	"Twirl"
+	{
+		"en"	"Twirl"
+	}
+	"Twirl Desc"
+	{
+		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
+	}
+	"Ealing"
+	{
+		"en"	"Ealing"
+	}
+	"Ealing Desc"
+	{
+		"en"	"Void Spawn.\nBleeds on hit."
+	}
+	"Framing Voider"
+	{
+		"en"	"Framing Voider"
+	}
+	"Framing Voider Desc"
+	{
+		"en"	"Void Spawn.\nBuffs enemies around itself on death."
+	}
+	"Growing Exat"
+	{
+		"en"	"Growing Exat"
+	}
+	"Growing Exat Desc"
+	{
+		"en"	"Void Spawn.\nEach singular hit makes it grow in size, the bigger, the stronger."
+	}
+	"Mutating Blob"
+	{
+		"en"	"Mutating Blob"
+	}
+	"Mutating Blob Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, corpse acts as a spawnpoint for 1 enemy."
+	}
+	"Void Spreader"
+	{
+		"en"	"Void Spreader"
+	}
+	"Void Spreader Desc"
+	{
+		"en"	"Void Spawn.\nDeals immensive void damage."
+	}
+	"Void Infestor"
+	{
+		"en"	"Void Infestor"
+	}
+	"Void Infestor Desc"
+	{
+		"en"	"Void Spawn.\nWhen dead, spreads void onto the floor, This void spreads at all times and cannot be halted. (Can be silenced)"
+	}
+	"Voided Hard Crust"
+	{
+		"en"	"Voided Hard Crust"
+	}
+	"Voided Hard Crust Desc"
+	{
+		"en"	"Void Spawn.\nHas Hard flat resistance, attack with high damage single target weapons."
+	}
+	"Void Carrier"
+	{
+		"en"	"Void Carrier"
+	}
+	"Void Carrier Desc"
+	{
+		"en"	"Void Spawn.\nGoes to 1 ally, picks them up and throws them at a player."
+	}
+	"Void Ixufan"
+	{
+		"en"	"Void Ixufan"
+	}
+	"Void Ixufan Desc"
+	{
+		"en"	"Void Mother Spawn.\nIs extra buffed in void terretory, deals immensive void damage."
+	}
+	"Enframed Voider"
+	{
+		"en"	"Enframed Voider"
+	}
+	"Enframed Voider Desc"
+	{
+		"en"	"Their intelligence grows.\nBuffs enemies on death."
+	}
+	"Blood Pollutor"
+	{
+		"en"	"Blood Pollutor"
+	}
+	"Blood Pollutor Desc"
+	{
+		"en"	"Deals heavy bleed on hit."
+	}
+	"Voided Expidonsan Fortifier"
+	{
+		"en"	"Voided Expidonsan Fortifier"
+	}
+	"Voided Expidonsan Fortifier Desc"
+	{
+		"en"	"An expidonsan fell against the void.\nHas flat resistance, and gains a shield on spawn."
+	}
+	"Void Particle"
+	{
+		"en"	"Void Particle"
+	}
+	"Void Particle Desc"
+	{
+		"en"	"Spreads void on death (can be silenced)"
+	}
+	"Hosting Blob"
+	{
+		"en"	"Hosting Blob"
+	}
+	"Hosting Blob Desc"
+	{
+		"en"	"On death, acts as 2 spawns."
+	}
+	"Blobbing Monster"
+	{
+		"en"	"Blobbing Monster"
+	}
+	"Blobbing Monster Desc"
+	{
+		"en"	"Each hit makes it stronger and have more resistance."
+	}
+	"Void Sprayer"
+	{
+		"en"	"Void Sprayer"
+	}
+	"Void Sprayer Desc"
+	{
+		"en"	"Jumps at you, and deals immensive void damage."
+	}
+	"Void Encasualtor"
+	{
+		"en"	"Void Encasualtor"
+	}
+	"Void Encasualtor Desc"
+	{
+		"en"	"Teleports to a target they try to attack if they are in void terretory.\nif they didnt attack for a while, then their next attack will make them rapdily attack."
+	}
+	"Voided Expidonsan Cleaner"
+	{
+		"en"	"Voided Expidonsan Cleaner"
+	}
+	"Voided Expidonsan Cleaner Desc"
+	{
+		"en"	"Too many expidonsens fell to them.\nJumps at you, and deals immensive void damage."
+	}
+	"Voided Expidonsan Container"
+	{
+		"en"	"Voided Expidonsan Container"
+	}
+	"Voided Expidonsan Container Desc"
+	{
+		"en"	"Deals immensive bleed damage on hit."
+	}
+	"Sacraficer"
+	{
+		"en"	"Sacraficer"
+	}
+	"Sacraficer Desc"
+	{
+		"en"	"On death, buffs allies heavily."
+	}
+	"Voiding Bedrock"
+	{
+		"en"	"Voiding Bedrock"
+	}
+	"Voiding Bedrock Desc"
+	{
+		"en"	"Has heavy flat resistance."
+	}
+	"Heavy Perisher"
+	{
+		"en"	"Heavy Perisher"
+	}
+	"Heavy Perisher Desc"
+	{
+		"en"	"Grows with each hit recieved."
+	}
+	"Void Mini-Gatekeeper"
+	{
+		"en"	"Void Mini-Gatekeeper"
+	}
+	"Void Mini-Gatekeeper Desc"
+	{
+		"en"	"Acts as 2 spawnpoints on death."
+	}
+	"Brooding Petra"
+	{
+		"en"	"Brooding Petra"
+	}
+	"Brooding Petra Desc"
+	{
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
+	}
+	"Kunul"
+	{
+		"en"	"Kunul"
+	}
+	"Kunul Desc"
+	{
+		"en"	"Deals extreme bleed damage on hit."
+	}
+	"Total Growth"
+	{
+		"en"	"Total Growth"
+	}
+	"Total Growth Desc"
+	{
+		"en"	"Grows with each hit it recieves."
+	}
+	"Void's Offspring"
+	{
+		"en"	"Void's Offspring"
+	}
+	"Void's Offspring Desc"
+	{
+		"en"	"Buffs all void entities on death."
+	}
+	"Voided Expidonsan Rejuvinator"
+	{
+		"en"	"Voided Expidonsan Rejuvinator"
+	}
+	"Voided Expidonsan Rejuvinator Desc"
+	{
+		"en"	"One of the finest expidonsan doctors fell to the void.\nheals almost any ally instantly and overheals them, will try to heal every target (silence makes the heal 5x slower)\nHas extreme speeds, will suicide if its alone."
+	}
+	"Voided Expidonsan Explorer"
+	{
+		"en"	"Voided Expidonsan Explorer"
+	}
+	"Voided Expidonsan Explorer Desc"
+	{
+		"en"	"One of the first expidonsans to try to explore the void.\nEach hit it does gives it a shield.\nFires an expidonsan laser if too far away, that also regens it shield.\nHas extreme speeds even with such power."
+	}
+	"Unspeakable"
+	{
+		"en"	"Unspeakable"
+	}
+	"Unspeakable Desc"
+	{
+		"en"	"Hearts of the void...\nAbility1: Sucks all allies in and if too close, damages them heavily.\nCan rapid attack if it didnt attack for a while.\nDuring its existance, void spreading is immensively increaced.\nVoid Pillars are summoned below enemeis.\nIf too low on health, will spread void where it walks."
+	}
+	"Voided Diversionistico"
+	{
+		"en"	"Voided Diversionistico"
+	}
+	"Voided Diversionistico Desc"
+	{
+		"en"	"Elite forces, taken by the void.\nActs equal to normal ones, but they are slower , visible from longer ranges and deal void damage aswell."
+	}
+	"Void Portal"
+	{
+		"en"	"Void Portal"
+	}
+	"Void Portal Desc"
+	{
+		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
+	}
+	"Void Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Void Creep Desc"
+	{
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+	}
+	"Void Elemental Damage"
+	{
+		"en"	"Void Elemental Damage"
+	}
+	"Void Elemental Damage Desc"
+	{
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
+	}
+	"Vhxis"
+	{
+		"en"	"Vhxis"
+	}
+	"Vhxis Desc"
+	{
+		"en"	"The void keeper, killing him is not a good idea..."
+	}
+	"Chaos Mage"
+	{
+		"en"	"Chaos Mage"
+	}
+	"Chaos Mage Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, revives once."
+	}
+	"Chaos Supporter"
+	{
+		"en"	"Chaos Supporter"
+	}
+	"Chaos Supporter Desc"
+	{
+		"en"	"Its mind fell.\nDeals heavy chaos damage, Heals all allies around itself."
+	}
+	"Chaos Insane"
+	{
+		"en"	"Chaos Insane"
+	}
+	"Chaos Insane Desc"
+	{
+		"en"	"Its mind fell.\nCauses Earthquakes underneath enemies."
+	}
+	"Chaos Knight?"
+	{
+		"en"	"Chaos Knight?"
+	}
+	"Chaos Knight? Desc"
+	{
+		"en"	"a very sick knight, who knows what he could do if not for his sickness.\nDeals heavy chaos damage, Very slow but strong attacks.\nCan go into a defensive state and heal up abit.\nAfter some time, recives a coughting fit, attack it during it, or heal up."
+	}
+	"Chaos Injured Cultist"
+	{
+		"en"	"Chaos Injured Cultist"
+	}
+	"Chaos Injured Cultist Desc"
+	{
+		"en"	"Hes on the brink of death.\nSummons extreme slow areas that nerf attackspeed, and deal immensive damage if power reaches 100%, recives power when taking damage.\nKicks very strongly."
+	}
+	"Voided Erasus"
+	{
+		"en"	"Voided Erasus"
+	}
+	"Voided Erasus Desc"
+	{
+		"en"	"Fallen. to the void."
+	}
+	"Sphynx"
+	{
+		"en" 		"Sphynx"
+	}
+	"Sphynx Spawned"
+	{
+		"en" 		"Zombies refuse to stay down..."
+	}
+	"Petrisis' Baron"
+	{
+		"en" 		"Petrisis' Baron"
+	}
+	"Petrisis' Baron Spawned"
+	{
+		"en" 		"Your barricades cry in fear."
+	}
+	"Nightmare"
+	{
+		"en" 		"Nightmare"
+	}
+	"Nightmare Spawned"
+	{
+		"en" 		"Nightmares will haunt you."
+	}
+	"Zombine"
+	{
+		"en" 		"Zombine"
 	}
 }

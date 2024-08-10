@@ -38,8 +38,22 @@ void WinterSniper_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Winter Sniper");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_winter_sniper");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterSniper(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterSniper < CClotBody
 {
@@ -74,11 +88,10 @@ methodmap WinterSniper < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
-	public WinterSniper(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterSniper(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterSniper npc = view_as<WinterSniper>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_SNIPER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -102,7 +115,7 @@ methodmap WinterSniper < CClotBody
 			npc.StartPathing();
 			npc.m_flSpeed = 200.0;
 		}	
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -126,6 +139,25 @@ methodmap WinterSniper < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
+
+		if(ally != TFTeam_Red)
+		{
+			if(LastSpawnDiversio < GetGameTime())
+			{
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				EmitSoundToAll("weapons/sniper_railgun_world_reload.wav", _, _, _, _, 1.0);	
+				for(int client_check=1; client_check<=MaxClients; client_check++)
+				{
+					if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					{
+						SetGlobalTransTarget(client_check);
+						ShowGameText(client_check, "voice_player", 1, "%t", "Snipers Appear");
+					}
+				}
+			}
+			LastSpawnDiversio = GetGameTime() + 20.0;
+			TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0);
+		}
 		
 		return npc;
 	}
@@ -162,9 +194,10 @@ public void WinterSniper_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetWalkTo);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetWalkTo, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int ExtraBehavior = WinterSniperSelfDefense(npc,GetGameTime(npc.index)); 
 
 		switch(ExtraBehavior)
@@ -196,7 +229,7 @@ public void WinterSniper_ClotThink(int iNPC)
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetWalkTo);
+			PredictSubjectPosition(npc, npc.m_iTargetWalkTo,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -272,7 +305,11 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 			return 0;
 		}
 	}
-	npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+	if(RogueTheme == BlueParadox && b_npcspawnprotection[npc.index])
+		return 0;
+		
+	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+	npc.FaceTowards(VecEnemy, 15000.0);
 
 	static float ThrowPos[MAXENTITIES][3];  
 	float origin[3], angles[3];
@@ -281,7 +318,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			ThrowPos[npc.index] = WorldSpaceCenterOld(npc.m_iTarget);
+			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 		}
 	}
 	else
@@ -289,19 +326,20 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 		if(npc.m_flAttackHappens)
 		{
 			float pos_npc[3];
-			pos_npc = WorldSpaceCenterOld(npc.index);
+			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
-				ThrowPos[npc.index] = WorldSpaceCenterOld(Traced_Target);
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
 			else if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
+			delete hTrace;
 		}
 	}
 	if(npc.m_flAttackHappens)
@@ -328,6 +366,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 					damageDealt *= 10.0;
 
 				SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, ThrowPos[npc.index]);
+				Elemental_AddCyroDamage(target, npc.index, 90, 1);
 			} 
 		}
 	}
@@ -336,7 +375,7 @@ int WinterSniperSelfDefense(WinterSniper npc, float gameTime)
 	{
 		
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.9;
+		npc.m_flDoingAnimation = gameTime + 0.65;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

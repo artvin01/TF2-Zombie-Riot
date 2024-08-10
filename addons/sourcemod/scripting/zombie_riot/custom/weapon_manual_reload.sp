@@ -25,10 +25,6 @@ public void SemiAutoWeapon(int client, int buttons)
 							
 							Fire_rate *= Attributes_Get(entity, 6, 1.0);
 		
-							if(LastMann)
-							{
-								Fire_rate *= 0.5;
-							}
 							
 							SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Fire_rate);
 							SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Fire_rate);
@@ -120,10 +116,6 @@ void Reload_Me(int client)
 				{
 					i_SemiAutoWeapon_AmmoCount[entity] = i_SemiAutoStats_MaxAmmo[entity];
 					
-					if(LastMann) //It also gives 2x the ammo.
-					{
-						i_SemiAutoWeapon_AmmoCount[entity] = i_SemiAutoStats_MaxAmmo[entity] * 2;
-					}
 					
 					DoReloadAnimation(client, entity);
 						
@@ -131,10 +123,6 @@ void Reload_Me(int client)
 						
 					Reload_Rate *= Attributes_Get(entity, 97, 1.0);
 	
-					if(LastMann)
-					{
-						Reload_Rate *= 0.25; //4x as fast (i know, stupid)
-					}
 						
 					SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + Reload_Rate);
 					SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + Reload_Rate);

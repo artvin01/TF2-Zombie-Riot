@@ -1,12 +1,62 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum struct MusicEnum
+{
+	char Path[PLATFORM_MAX_PATH];
+	int Time;
+	float Volume;
+	bool Custom;
+	char Name[64];
+	char Artist[64];
+
+	bool SetupKv(const char[] key, KeyValues kv)
+	{
+		if(kv.JumpToKey(key))
+		{
+			kv.GetString("file", this.Path, sizeof(this.Path));
+			kv.GetString("name", this.Name, sizeof(this.Name));
+			kv.GetString("author", this.Artist, sizeof(this.Artist));
+			this.Time = kv.GetNum("time");
+			this.Volume = kv.GetFloat("volume", 2.0);
+			this.Custom = view_as<bool>(kv.GetNum("download"));
+
+			if(this.Custom)
+			{
+				PrecacheSoundCustom(this.Path);
+			}
+			else
+			{
+				PrecacheSound(this.Path);
+			}
+
+			kv.GoBack();
+			return true;
+		}
+		
+		this.Path[0] = 0;
+		return false;
+	}
+
+	void Clear()
+	{
+		this.Path[0] = 0;
+		this.Volume = 2.0;
+		this.Custom = false;
+		this.Name[0] = 0;
+		this.Artist[0] = 0;
+	}
+}
+
 static int Music_Timer[MAXTF2PLAYERS];
 static int Music_Timer_2[MAXTF2PLAYERS];
 static float Give_Cond_Timer[MAXTF2PLAYERS];
 static bool MusicDisabled;
 static bool XenoMapExtra;
-static float RaidMusicVolume;
+static bool AltExtraLogic;
+static int MusicMapRemove[MAXTF2PLAYERS];
+
+static float DelayStopSoundAll[MAXTF2PLAYERS];
 
 #define RANGE_FIRST_MUSIC 6250000
 #define RANGE_SECOND_MUSIC 1000000
@@ -16,7 +66,7 @@ Big thanks to backwards#8236 For pointing me towards GetTime and helping me with
 DO NOT USE GetEngineTime, its not good in this case
 */
 
-void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
+stock void Music_SetRaidMusic(const MusicEnum music)
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -26,10 +76,25 @@ void Music_SetRaidMusic(const char[] MusicPath, int duration, bool isCustom, flo
 			SetMusicTimer(client, GetTime() + 3);
 		}
 	}
-	RaidMusicVolume = volume;
-	strcopy(char_RaidMusicSpecial1, sizeof(char_RaidMusicSpecial1), MusicPath);
-	i_RaidMusicLength1 = duration;
-	b_RaidMusicCustom1 = isCustom;
+
+	RaidMusicSpecial1 = music;
+}
+
+stock void Music_SetRaidMusicSimple(const char[] MusicPath, int duration, bool isCustom, float volume = 2.0)
+{
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsClientInGame(client))
+		{
+			Music_Stop_All(client); //This is actually more expensive then i thought.
+			SetMusicTimer(client, GetTime() + 3);
+		}
+	}
+	RaidMusicSpecial1.Clear();
+	RaidMusicSpecial1.Volume = volume;
+	strcopy(RaidMusicSpecial1.Path, sizeof(RaidMusicSpecial1.Path), MusicPath);
+	RaidMusicSpecial1.Time = duration;
+	RaidMusicSpecial1.Custom = isCustom;
 
 }
 
@@ -42,8 +107,12 @@ static const char g_LastMannAnnouncer[][] =
 };
 
 
+int g_iSoundEnts[MAXENTITIES];
+int g_iNumSounds;
+
 void Music_MapStart()
 {
+	Zero(DelayStopSoundAll);
 	PrecacheSoundArray(g_LastMannAnnouncer);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/1.mp3",_,0);
 	PrecacheSoundCustom("#zombiesurvival/beats/defaulthuman/2.mp3",_,0);
@@ -72,12 +141,63 @@ void Music_MapStart()
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
+	AltExtraLogic = FindInfoTarget("zr_alternative_extras");
 
 	if(XenoMapExtra)
 	{
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/inside_lab.mp3",_,1);
 		PrecacheSoundCustom("#zombie_riot/abandoned_lab/music/outside_wasteland.mp3",_,1);
 	}
+	EventRoundStartMusicFilter();
+}
+
+void EventRoundStartMusicFilter()
+{
+	char sSound[256];
+	int entity;
+	g_iNumSounds = 0;
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		MusicMapRemove[client] = 2000000000;
+	}
+	while ((entity = FindEntityByClassname(entity, "ambient_generic")) != INVALID_ENT_REFERENCE)
+	{
+		GetEntPropString(entity, Prop_Data, "m_iszSound", sSound, sizeof(sSound));
+		
+		if(StrContains(sSound, "#", true) != -1)
+		{
+			Zero(MusicMapRemove);
+			g_iSoundEnts[g_iNumSounds++] = EntIndexToEntRef(entity);
+		}
+	}
+	RequestFrames(StopMapMusicAll, 60);
+}
+void StopMapMusicAll()
+{
+	int entity;
+	char sSound[256];
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client) && (b_IgnoreMapMusic[client] || !Database_IsCached(client)))
+		{
+			for (int i = 0; i < g_iNumSounds; i++)
+			{
+				entity = EntRefToEntIndex(g_iSoundEnts[i]);
+				
+				if (entity != INVALID_ENT_REFERENCE)
+				{
+					GetEntPropString(entity, Prop_Data, "m_iszSound", sSound, sizeof(sSound));
+					Client_StopSound(client, entity, SNDCHAN_STATIC, sSound);
+				}
+			}
+		}
+	}
+}
+
+stock void Client_StopSound(int client, int entity, int channel, char[] name)
+{
+	EmitSoundToClient(client, name, entity, channel, SNDLEVEL_NONE, SND_STOP, 0.0, SNDPITCH_NORMAL, _, _, _, true);
 }
 
 bool Music_Disabled()
@@ -99,6 +219,20 @@ bool XenoExtraLogic(bool NpcBuffing = false)
 	return false;
 }
 
+bool AlternativeExtraLogic(bool NpcBuffing = false)
+{
+	if(!NpcBuffing)
+		return AltExtraLogic;
+	else
+	{
+		if(AltExtraLogic && (!StrContains(WhatDifficultySetting_Internal, "Alternative") || !StrContains(WhatDifficultySetting_Internal, "Blitzkrieg")))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void Music_EndLastmann()
 {
 	if(LastMann)
@@ -108,8 +242,7 @@ void Music_EndLastmann()
 			if(IsClientInGame(client))
 			{
 				SetMusicTimer(client, 0);
-				StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
-				StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
+				StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
 				TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 				TF2_RemoveCondition(client, TFCond_DefenseBuffed);
 				TF2_RemoveCondition(client, TFCond_NoHealingDamageBuff);
@@ -129,12 +262,12 @@ void Music_EndLastmann()
 
 void PlayTeamDeadSound()
 {
-	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer));
+	int RandomInt = GetRandomInt(0,sizeof(g_LastMannAnnouncer)- 1);
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && !IsFakeClient(client))
 		{
-			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt- 1], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+			EmitSoundToClient(client, g_LastMannAnnouncer[RandomInt], _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 		}
 	}	
 }
@@ -155,11 +288,6 @@ void Music_RoundEnd(int victim, bool music = true)
 			TF2_RemoveCondition(client, TFCond_RuneHaste);
 			TF2_RemoveCondition(client, TFCond_CritCanteen);
 			Music_Stop_All(client);
-			char_MusicString1[0] = 0;
-			char_MusicString2[0] = 0;
-		
-			i_MusicLength1 = 1;
-			i_MusicLength2 = 1;
 
 			if(music)
 				EmitCustomToClient(client, "#zombiesurvival/music_lose.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
@@ -197,102 +325,108 @@ public Action SetTimeBack(Handle timer)
 
 void Music_Stop_All(int client)
 {
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/3.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/4.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/5.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/6.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/7.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/8.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/9.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/1.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/2.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/3.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/4.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/5.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/6.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/3.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/4.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/5.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/6.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/7.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/8.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/9.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/1.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/2.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/3.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/4.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/5.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/6.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
-	StopSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
 	
-	if(char_MusicString1[0])
+	if(DelayStopSoundAll[client] < GetGameTime())
 	{
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString1);
+		//dont spam these
+		DelayStopSoundAll[client] = GetGameTime() + 0.1;
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/lasthuman.mp3", 2.0);
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/3.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/4.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/5.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/6.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/7.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/8.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/9.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/1.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/2.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/3.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/4.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/5.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/6.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/1.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/2.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/3.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/4.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/5.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/6.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/7.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/8.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/9.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaultzombiev2/10.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/1.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/2.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/3.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/4.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/5.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/6.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
+	}
+	//dont call so often! causes lag!
+	
+	
+	if(MusicString1.Path[0])
+	{
+		if(MusicString1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, MusicString1.Path, 4.0);
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString1.Path);
+		}
 	}
 		
-	if(char_MusicString2[0])
+	if(MusicString2.Path[0])
 	{
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
-		StopSound(client, SNDCHAN_STATIC, char_MusicString2);
+		if(MusicString1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, MusicString2.Path, 4.0);
+
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+ 			StopSound(client, SNDCHAN_STATIC, MusicString2.Path);
+		}
 	}
 
-	if(char_RaidMusicSpecial1[0])
+	if(RaidMusicSpecial1.Path[0])
 	{
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
-		StopSound(client, SNDCHAN_STATIC, char_RaidMusicSpecial1);
+		if(RaidMusicSpecial1.Custom)
+		{
+			StopCustomSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path, 4.0);
+		}
+		else
+		{
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+ 			StopSound(client, SNDCHAN_STATIC, RaidMusicSpecial1.Path);
+		}
 	}
 
 	if(XenoExtraLogic())
 	{
-		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
-		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
-		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
-		StopSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
-	}
-	
-}
-
-public void ConVarCallback_Plugin_message(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-		f_ClientServerShowMessages[client] = view_as<bool>(StringToInt(cvarValue));
-}
-public void ConVarCallback_g_ragdoll_fadespeed(QueryCookie cookie, int client, ConVarQueryResult result, const char[] cvarName, const char[] cvarValue)
-{
-	if(result == ConVarQuery_Okay)
-	{
-		if(f_BegPlayerToSetRagdollFade[client] < GetGameTime())
-		{
-			f_BegPlayerToSetRagdollFade[client] = GetGameTime() + 30.0;
-			if(StringToInt(cvarValue) == 0)
-			{
-				SetGlobalTransTarget(client);
-				PrintToChat(client,"%t", "Show Ragdoll Hint Message");
-			}
-		}
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/inside_lab.mp3");
+		StopCustomSound(client, SNDCHAN_STATIC, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3");
 	}
 }
-//TODO: This music just breaks and cuts off earlier and plays earlier, i really dont know why. I hate it! Find a fix!
 
 void Music_PostThink(int client)
 {
@@ -306,12 +440,12 @@ void Music_PostThink(int client)
 				{
 					TF2_AddCondition(client, TFCond_DefenseBuffed, 2.0);
 			//		TF2_AddCondition(client, TFCond_NoHealingDamageBuff, 2.0);
-					TF2_AddCondition(client, TFCond_RuneHaste, 2.0);
+			//		TF2_AddCondition(client, TFCond_RuneHaste, 2.0);
 			//		if(Attributes_FindOnPlayerZR(client, 232))
 			//			TF2_AddCondition(client, TFCond_CritCanteen, 2.0);
 					
 					Give_Cond_Timer[client] = GetGameTime() + 1.0;
-					Attributes_Set(client, 442, 0.7674418604651163);
+				//	Attributes_Set(client, 442, 0.7674418604651163);
 				}
 			}
 		}
@@ -322,10 +456,16 @@ void Music_PostThink(int client)
 		}
 		*/
 	}
-	
-	if(MusicDisabled)
-		return;
 
+	if(MusicMapRemove[client] < GetTime())
+	{
+		StopMapMusicAll();
+		MusicMapRemove[client] = GetTime() + 30;
+	}
+	
+	if(MusicDisabled && !b_IgnoreMapMusic[client])
+		return;
+	
 	if(!b_GameOnGoing)
 		return;
 	
@@ -336,13 +476,13 @@ void Music_PostThink(int client)
 	{
 		bool RoundHasCustomMusic = false;
 		
-		if(char_MusicString1[0])
+		if(MusicString1.Path[0])
 			RoundHasCustomMusic = true;
 			
-		if(char_MusicString2[0])
+		if(MusicString2.Path[0])
 			RoundHasCustomMusic = true;
 
-		if(char_RaidMusicSpecial1[0])
+		if(RaidMusicSpecial1.Path[0])
 			RoundHasCustomMusic = true;
 		
 		if(LastMann)
@@ -352,79 +492,99 @@ void Music_PostThink(int client)
 		
 		if(RoundHasCustomMusic)
 		{
-			if(char_RaidMusicSpecial1[0])
+			if(RaidMusicSpecial1.Path[0])
 			{
-				if(b_RaidMusicCustom1)
+				if(RaidMusicSpecial1.Custom)
 				{
-					EmitCustomToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, RaidMusicVolume);
+					EmitCustomToClient(client, RaidMusicSpecial1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, RaidMusicSpecial1.Volume);
 				}
 				else
 				{
-					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-					EmitSoundToClient(client, char_RaidMusicSpecial1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, RaidMusicSpecial1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+					EmitSoundToClient(client, RaidMusicSpecial1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				}
-				SetMusicTimer(client, GetTime() + i_RaidMusicLength1);
+				SetMusicTimer(client, GetTime() + RaidMusicSpecial1.Time);
+
+				if(RaidMusicSpecial1.Name[0] || RaidMusicSpecial1.Artist[0])
+					CPrintToChat(client, "%t", "Now Playing Song", RaidMusicSpecial1.Artist, RaidMusicSpecial1.Name);
+				
 				return;
 			}
 			switch(GetRandomInt(1,2))
 			{
 				case 1:
 				{
-					if(char_MusicString1[0])
+					if(MusicString1.Path[0])
 					{
-						if(b_MusicCustom1)
+						if(MusicString1.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume1);
+							EmitCustomToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString1.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength1);
+
+						if(MusicString1.Name[0] || MusicString1.Artist[0])
+							CPrintToChat(client ,"%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString1.Time);
 					}
-					else if(char_MusicString2[0])
+					else if(MusicString2.Path[0])
 					{
-						if(b_MusicCustom2)
+						if(MusicString2.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, f_MusicVolume2);
+							EmitCustomToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString2.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength2);				
+
+						if(MusicString2.Name[0] || MusicString2.Artist[0])
+							CPrintToChat(client ,"%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString2.Time);				
 					}
 					//Make checks to be sure.
 				}
 				case 2:
 				{
-					if(char_MusicString2[0])
+					if(MusicString2.Path[0])
 					{
-						if(b_MusicCustom2)
+						if(MusicString2.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString2.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString2, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString2.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength2);
+
+						if(MusicString2.Name[0] || MusicString2.Artist[0])
+							CPrintToChat(client ,"%t", "Now Playing Song", MusicString2.Artist, MusicString2.Name);
+
+						SetMusicTimer(client, GetTime() + MusicString2.Time);
 					}
-					else if(char_MusicString1[0])
+					else if(MusicString1.Path[0])
 					{
-						if(b_MusicCustom1)
+						if(MusicString1.Custom)
 						{
-							EmitCustomToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+							EmitCustomToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, MusicString1.Volume);
 						}
 						else
 						{
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
-							EmitSoundToClient(client, char_MusicString1, _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+							EmitSoundToClient(client, MusicString1.Path, client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 						}
-						SetMusicTimer(client, GetTime() + i_MusicLength1);				
+
+						if(MusicString1.Name[0] || MusicString1.Artist[0])
+							CPrintToChat(client ,"%t", "Now Playing Song", MusicString1.Artist, MusicString1.Name);
+						
+						SetMusicTimer(client, GetTime() + MusicString1.Time);				
 					}
 					//Make checks to be sure.
 				}
@@ -436,12 +596,12 @@ void Music_PostThink(int client)
 			//This is special code for a map.
 			if(CurrentRound +1 <= 30)
 			{
-				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/outside_wasteland.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 				SetMusicTimer(client, GetTime() + 138);	
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/inside_lab.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
+				EmitCustomToClient(client, "#zombie_riot/abandoned_lab/music/inside_lab.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.45);
 				SetMusicTimer(client, GetTime() + 151);	
 			}
 			return;
@@ -449,10 +609,10 @@ void Music_PostThink(int client)
 		float f_intencity;
 		float targPos[3];
 		float chargerPos[3];
-		for(int entitycount; entitycount<i_MaxcountNpc; entitycount++)
+		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
-			int entity = EntRefToEntIndex(i_ObjectsNpcs[entitycount]);
-			if(IsValidEntity(entity) && !b_NpcHasDied[entity])
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+			if(IsValidEntity(entity) && !b_NpcHasDied[entity] && GetTeam(entity) != TFTeam_Red)
 			{
 				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", targPos);
 				GetClientAbsOrigin(client, chargerPos);
@@ -498,7 +658,7 @@ void Music_PostThink(int client)
 		
 		if(LastMann)
 		{
-			EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
+			EmitCustomToClient(client, "#zombiesurvival/lasthuman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0);
 			SetMusicTimer(client, GetTime() + 120);		
 		}
 		else if(f_intencity < 1.0)
@@ -507,7 +667,7 @@ void Music_PostThink(int client)
 		}
 		else if(!b_IsAloneOnServer && f_intencity < float(PlayersAliveScaling) * 0.1)
 		{
-			EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+			EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/1.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 			SetMusicTimer(client, GetTime() + 6);
 			
 		}
@@ -515,12 +675,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/2.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 8);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/1.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 7);
 			}
 			
@@ -529,12 +689,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/3.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 8);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/2.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/2.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 7);
 			}
 			
@@ -543,12 +703,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/4.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 8);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/3.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/3.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 7);
 			}
 			
@@ -557,12 +717,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/5.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 8);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/4.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/4.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 7);
 			}
 			
@@ -571,12 +731,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/6.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/5.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/5.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			
@@ -585,12 +745,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/7.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/6.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/6.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 14);
 			}
 			
@@ -599,12 +759,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/8.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/7.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/7.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 14);
 			}
 			
@@ -613,12 +773,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/9.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/8.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/8.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 7);
 			}
 			
@@ -627,12 +787,12 @@ void Music_PostThink(int client)
 		{
 			if(ZombieMusicPlayed)
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.5);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaultzombiev2/10.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.5);
 				SetMusicTimer(client, GetTime() + 6);
 			}
 			else
 			{
-				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/9.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
+				EmitCustomToClient(client, "#zombiesurvival/beats/defaulthuman/9.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
 				SetMusicTimer(client, GetTime() + 14);
 			}
 		}
@@ -654,13 +814,11 @@ void Music_ClearAll()
 	Zero(Music_Timer_2);
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
-	Zero(f_BegPlayerToSetDuckConvar);
-	Zero(f_BegPlayerToSetRagdollFade);
 }
 
 void RemoveAllCustomMusic()
 {
-	char_MusicString1[0] = 0;	
-	char_MusicString2[0] = 0;	
-	char_RaidMusicSpecial1[0] = 0;	
+	MusicString1.Clear();
+	MusicString2.Clear();
+	RaidMusicSpecial1.Clear();
 }

@@ -19,7 +19,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -71,8 +71,21 @@ void MedivalSkirmisher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Skirmisher");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_skirmisher");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return MedivalSkirmisher(client, vecPos, vecAng, ally);
+}
 methodmap MedivalSkirmisher < CClotBody
 {
 	public void PlayIdleSound() {
@@ -93,9 +106,7 @@ methodmap MedivalSkirmisher < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -107,18 +118,14 @@ methodmap MedivalSkirmisher < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
@@ -140,17 +147,14 @@ methodmap MedivalSkirmisher < CClotBody
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CGoreFast::PlayMeleeMissSound()");
-		#endif
+		
 	}
 	
-	public MedivalSkirmisher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public MedivalSkirmisher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		MedivalSkirmisher npc = view_as<MedivalSkirmisher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "400", ally));
 		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");				
-		i_NpcInternalId[npc.index] = MEDIVAL_SKIRMISHER;
+		AcceptEntityInput(npc.index, "SetBodyGroup");		
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -169,8 +173,10 @@ methodmap MedivalSkirmisher < CClotBody
 		SetVariantString("3.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		
-		
-		SDKHook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
+		func_NPCDeath[npc.index] = MedivalSkirmisher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = MedivalSkirmisher_OnTakeDamage;
+		func_NPCThink[npc.index] = MedivalSkirmisher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEvent_MedivalSkirmisher;
 
 
 		npc.m_iWearable2 = npc.EquipItem("weapon_targe", "models/weapons/c_models/c_targe/c_targe.mdl");
@@ -252,9 +258,10 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 				npc.m_flSpeed = 170.0;
 				AcceptEntityInput(npc.m_iWearable1, "Enable");
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			
 			if(flDistanceToTarget < 160000)
@@ -272,7 +279,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 					{
 						float vBackoffPos[3];
 						
-						vBackoffPos = BackoffFromOwnPositionAndAwayFromEnemyOld(npc, PrimaryThreatIndex);
+						BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 						
 						NPC_SetGoalVector(npc.index, vBackoffPos, true);
 					}
@@ -315,7 +322,7 @@ public void MedivalSkirmisher_ClotThink(int iNPC)
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -359,7 +366,7 @@ public void HandleAnimEvent_MedivalSkirmisher(int entity, int event)
 			if(IsValidEntity(npc.m_iWearable1))
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
 			
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
 			npc.FaceTowards(vecTarget, 30000.0);
 						
@@ -398,8 +405,6 @@ public void MedivalSkirmisher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalSkirmisher_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

@@ -56,8 +56,22 @@ void WinterAirbornExplorer_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackBackstabSounds)); i++) { PrecacheSound(g_MeleeAttackBackstabSounds[i]); }
 	PrecacheModel("models/player/medic.mdl");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Airborn Explorer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_airborn_explorer");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_jug_market_1");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	int id = NPC_Add(data);
+	Rogue_Paradox_AddWinterNPC(id);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return WinterAirbornExplorer(client, vecPos, vecAng, ally);
+}
 
 methodmap WinterAirbornExplorer < CClotBody
 {
@@ -109,11 +123,10 @@ methodmap WinterAirbornExplorer < CClotBody
 	}
 	
 	
-	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], bool ally)
+	public WinterAirbornExplorer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
+		WinterAirbornExplorer npc = view_as<WinterAirbornExplorer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2500", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_WINTER_AIRBORN_EXPLORER;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -202,13 +215,14 @@ public void WinterAirbornExplorer_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 	
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
-			vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -307,7 +321,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 				{
 					static float flMyPos_2[3];
 					flMyPos[2] += 250.0;
-					flMyPos_2 = WorldSpaceCenterOld(Enemy_I_See);
+					WorldSpaceCenter(Enemy_I_See, flMyPos_2);
 
 					flMyPos[0] = flMyPos_2[0];
 					flMyPos[1] = flMyPos_2[1];
@@ -331,7 +345,8 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 			npc.m_flAttackHappens = 0.0;
 			
 			Handle swingTrace;
-			npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+			npc.FaceTowards(VecEnemy, 15000.0);
 			static float MaxVec[3];
 			static float MinVec[3];
 			MaxVec = {64.0,64.0,64.0};
@@ -353,7 +368,7 @@ void WinterAirbornExplorerSelfDefense(WinterAirbornExplorer npc, float gameTime,
 				{
 					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 2.0;
 
 					if (!npc.IsOnGround())
 					{

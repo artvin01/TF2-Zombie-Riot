@@ -32,8 +32,22 @@ void DesertYadeam_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Yadeam");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_yadeam");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper_camper_1");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Interitus;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return DesertYadeam(client, vecPos, vecAng, ally);
+}
 
 methodmap DesertYadeam < CClotBody
 {
@@ -69,11 +83,10 @@ methodmap DesertYadeam < CClotBody
 	}
 	
 	
-	public DesertYadeam(int client, float vecPos[3], float vecAng[3], bool ally)
+	public DesertYadeam(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2500", ally));
+		DesertYadeam npc = view_as<DesertYadeam>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
-		i_NpcInternalId[npc.index] = INTERITUS_DESERT_YADEAM;
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -102,6 +115,9 @@ methodmap DesertYadeam < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 280.0;
 		Is_a_Medic[npc.index] = true;
+
+		if(Rogue_Paradox_ExtremeHeat())
+			fl_Extra_Speed[npc.index] *= 1.2;
 		
 		
 		int skin = 1;
@@ -181,15 +197,16 @@ public void DesertYadeam_ClotThink(int iNPC)
 		
 		if(npc.m_iTargetAlly > 0)
 		{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTargetAlly);
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget );
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			if(flDistanceToTarget > (100.0*100.0))
 			{
 				NPC_StartPathing(npc.index);
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
-					float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTargetAlly);
+					float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTargetAlly,_,_,vPredictedPos );
 					NPC_SetGoalVector(npc.index, vPredictedPos);
 				}
 				else 
@@ -207,22 +224,7 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		int TeamNum = GetEntProp(npc.index, Prop_Send, "m_iTeamNum");
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", 4);
-		Explode_Logic_Custom(0.0,
-		npc.index,
-		npc.index,
-		-1,
-		_,
-		150.0,
-		_,
-		_,
-		true,
-		5,
-		false,
-		_,
-		DesertYadeamAllyHeal);
-		SetEntProp(npc.index, Prop_Send, "m_iTeamNum", TeamNum);
+		ExpidonsaGroupHeal(npc.index, 20.0, 99, 150.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
 }
@@ -237,9 +239,10 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 	{
 		return;
 	}
-	float vecTarget[3]; vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+	float vecTarget[3]; WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 
-	float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 30.0))
 	{
 		if(gameTime > npc.m_flNextMeleeAttack)
@@ -252,10 +255,10 @@ void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 800.0;
 				//lets pretend we have a projectile.
-				vecTarget = PredictSubjectPositionForProjectilesOld(npc, GetClosestEnemyToAttack, projectile_speed, 40.0);
+				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
-					vecTarget = WorldSpaceCenterOld(GetClosestEnemyToAttack);
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
 				}
 
 				npc.FaceTowards(vecTarget, 20000.0);
@@ -305,39 +308,4 @@ public void DesertYadeam_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
-}
-
-
-void DesertYadeamAllyHeal(int entity, int victim, float damage, int weapon)
-{
-	if(entity == victim)
-		return;
-
-	if(b_IsAlliedNpc[entity])
-	{
-		if(victim <= MaxClients)
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 5.0);
-		}
-		else if (b_IsAlliedNpc[victim])
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 5.0);
-		}
-	}
-	else
-	{
-		if (!b_IsAlliedNpc[victim] && !i_IsABuilding[victim] && victim > MaxClients && !Is_a_Medic[victim])
-		{
-			DesertYadeamAllyHealInternal(entity, victim, 20.0);
-		}
-	}
-}
-
-void DesertYadeamAllyHealInternal(int entity, int victim, float heal)
-{
-	HealEntityGlobal(entity, victim, heal, 1.0,_,_);
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 }

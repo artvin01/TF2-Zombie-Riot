@@ -43,6 +43,25 @@ static const char g_MeleeAttackSounds[][] =
 };
 
 static float SpeedCache = 1.0;
+static int NPCId;
+
+void SeabornVanguard_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Seaborn Vanguard");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_vanguard");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_vanguard");
+	data.IconCustom = true;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT|MVM_CLASS_FLAG_SUPPORT_LIMITED;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPCId = NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return SeabornVanguard(client, vecPos, vecAng, ally);
+}
 
 methodmap SeabornVanguard < CClotBody
 {
@@ -71,14 +90,13 @@ methodmap SeabornVanguard < CClotBody
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeabornVanguard(int client, float vecPos[3], float vecAng[3], bool ally)
+	public SeabornVanguard(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		SeabornVanguard npc = view_as<SeabornVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "20000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = SEABORN_VANGUARD;
 		i_NpcWeight[npc.index] = 1;
 		npc.SetActivity("ACT_CUSTOM_WALK_SAMURAI");
 		KillFeed_SetKillIcon(npc.index, "demokatana");
@@ -87,7 +105,9 @@ methodmap SeabornVanguard < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		SDKHook(npc.index, SDKHook_Think, SeabornVanguard_ClotThink);
+		func_NPCDeath[npc.index] = SeabornVanguard_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
+		func_NPCThink[npc.index] = SeabornVanguard_ClotThink;
 		
 		npc.m_flSpeed = 285.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -123,16 +143,16 @@ methodmap SeabornVanguard < CClotBody
 
 void SeabornVanguard_SpeedBuff(CClotBody npc, float &speed)
 {
-	if(!b_IsAlliedNpc[npc.index])
+	if(GetTeam(npc.index) != TFTeam_Red)
 	{
 		if(!SpeedCache)
 		{
 			SpeedCache = 1.0;
 
-			for(int i; i < i_MaxcountNpc; i++)
+			for(int i; i < i_MaxcountNpcTotal; i++)
 			{
-				int entity = EntRefToEntIndex(i_ObjectsNpcs[i]);
-				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == SEABORN_VANGUARD && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
+				int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+				if(entity != INVALID_ENT_REFERENCE && i_NpcInternalId[entity] == NPCId && !view_as<CClotBody>(entity).m_bThisEntityIgnored && IsEntityAlive(entity))
 				{
 					SpeedCache *= 1.05;
 				}
@@ -177,12 +197,13 @@ public void SeabornVanguard_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -248,8 +269,6 @@ void SeabornVanguard_NPCDeath(int entity)
 	if(!npc.m_bGib)
 		npc.PlayDeathSound();
 	
-	SDKUnhook(npc.index, SDKHook_Think, SeabornVanguard_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 

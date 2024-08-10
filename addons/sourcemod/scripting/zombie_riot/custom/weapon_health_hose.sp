@@ -7,13 +7,13 @@ static float Hose_UberGain = 0.0025;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
 static float SelfHealMult = 0.33;
-static int Hose_LossPerHit = 2;
-static int Hose_Min = 1;
+static float Hose_LossPerHit = 2.0;
+static float Hose_Min = 1.0;
 
 static bool Hose_AlreadyHealed[MAXENTITIES][MAXENTITIES];
-static int Hose_Healing[MAXENTITIES] = { 0, ... };
-static int Hose_HealLoss[MAXENTITIES] = { 0, ... };
-static int Hose_HealMin[MAXENTITIES] = { 0, ... };
+static float Hose_Healing[MAXENTITIES] = { 0.0, ... };
+static float Hose_HealLoss[MAXENTITIES] = { 0.0, ... };
+static float Hose_HealMin[MAXENTITIES] = { 0.0, ... };
 static int Hose_Owner[MAXENTITIES] = { -1, ... };
 static bool Hose_GiveUber[MAXENTITIES] = { false, ... };
 static bool Hose_ProjectileCharged[MAXENTITIES] = { false, ... };
@@ -134,7 +134,7 @@ public Action Hose_RemoveUber(Handle remove, int id)
 	return Plugin_Stop;
 }
 
-public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, int loss, int minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
+public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float speed, float baseHeal, float loss, float minHeal, int NumParticles, float spread, char ParticleName[255], bool giveUber)
 {
 	float healmult = 1.0;
 	healmult = Attributes_GetOnPlayer(client, 8, true, true);
@@ -151,7 +151,7 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 	speed *= Attributes_Get(weapon, 475, 1.0);
 	
 		
-	int FinalHeal = RoundFloat(baseHeal * healmult);
+	float FinalHeal = baseHeal * healmult;
 		
 	float Angles[3];
 
@@ -192,7 +192,9 @@ public void Weapon_Hose_Shoot(int client, int weapon, bool crit, int slot, float
 		SetEntityCollisionGroup(projectile, 27); //Do not collide.
 		SetEntProp(projectile, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityMoveType(projectile, MOVETYPE_FLYGRAVITY);
-		SetEntityGravity(projectile, 0.5);
+		SetEntityGravity(projectile, 0.2);
+		//allow self hitting,
+		b_NpcIsTeamkiller[projectile] = true;
 	}
 	
 	if (Hose_ShotgunCharge[client])
@@ -223,11 +225,11 @@ public void Hose_Touch(int entity, int other)
 	
 	if (!IsValidClient(owner))
 		return;
-		
+
 	if (other == owner) //Don't accidentally heal the user every time they fire this thing, it would be WAY too good
 		return;
 
-		
+
 	if (Hose_AlreadyHealed[entity][other])
 		return;
 		
@@ -235,7 +237,7 @@ public void Hose_Touch(int entity, int other)
 	{	
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 100.0;
+		ProjLoc[2] += 25.0;
 		TE_Particle(Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
 		Hose_Heal(owner, other, Hose_Healing[entity]);
@@ -274,84 +276,22 @@ public void Hose_Touch(int entity, int other)
 	}
 }
 
-public void Hose_Heal(int owner, int entity, int amt)
+public void Hose_Heal(int owner, int entity, float amt)
 {
-	int flHealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-		
-	int flMaxHealth;
-	if(entity > MaxClients)
-	{
-		flMaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-	}
-	else
-	{
-		flMaxHealth = SDKCall_GetMaxHealth(entity);
-	}
-	
-	if (flHealth >= flMaxHealth)	//Don't apply the new health because then you'd remove their overheal if they have any
-		return;
-	
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
-		amt /= 3;
-		if (amt < 1)
-		{
-			amt = 1;
-		}
+		amt *= 0.35;
 	}
 	
-	int newHP = flHealth + amt;
-	int ActualHealingDone = amt;
-	
-	if (newHP > flMaxHealth)
-	{
-		int diff = newHP - flMaxHealth;
-		ActualHealingDone -= diff;
-		
-		newHP = flMaxHealth;
-	}
-	if(entity < MaxClients)
-	{
-		ApplyHealEvent(entity, amt);
-	}
-	if(owner < MaxClients)
-	{
-		Healing_done_in_total[owner] += amt;
-	}
-	
-	SetEntProp(entity, Prop_Data, "m_iHealth", newHP);	
-	
-	int HealingPerBolt = ActualHealingDone;
 	int new_ammo = GetAmmo(owner, 21);
+	int ammoSubtract;
+	ammoSubtract = HealEntityGlobal(entity, owner, amt, 1.0, 0.0, _, new_ammo);	
 
-	if(f_TimeUntillNormalHeal[entity] > GetGameTime())
-	{
-		if(HealingPerBolt > new_ammo)
-		{
-			HealingPerBolt = new_ammo;
-		}
-	}
 		
-	new_ammo -= HealingPerBolt;
+	new_ammo -= ammoSubtract;
 	SetAmmo(owner, 21, new_ammo);
+	HealEntityGlobal(owner, owner, amt * SelfHealMult, 1.0, 0.0);	
 	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
-	
-	flHealth = GetEntProp(owner, Prop_Data, "m_iHealth");
-	flMaxHealth = SDKCall_GetMaxHealth(owner);
-	
-	int userHeal = RoundFloat(float(ActualHealingDone) * SelfHealMult);
-	
-	if(flHealth >= flMaxHealth)
-	{
-		return;
-	}
-	newHP = flHealth + userHeal;
-	if (newHP > flMaxHealth)
-	{
-		newHP = flMaxHealth;
-	}
-	
-	SetEntProp(owner, Prop_Data, "m_iHealth", newHP);
 }
 
 public void Hose_UpdateText(int owner)
@@ -466,7 +406,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			float GameTime = GetGameTime();
 			if(f_TimeUntillNormalHeal[target] > GameTime)
 			{
-				HealAmmount /= 4.0; //make sure they dont get the full benifit if hurt recently.
+				HealAmmount *= 0.25; //make sure they dont get the full benifit if hurt recently.
 			}
 			
 			if(ammo_amount_left > RoundToCeil(HealAmmount))
@@ -499,7 +439,6 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 
 			HealEntityGlobal(client, target, float(ammo_amount_left), 1.15, 1.0, _);
 			
-			Healing_done_in_total[client] += ammo_amount_left;
 			ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
 			if(target <= MaxClients)
@@ -527,7 +466,8 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 		belowBossEyes[2] = 0.0;
 
 		GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,-10.0,-10.0});
-		Passanger_Lightning_Effect(belowBossEyes, WorldSpaceCenterOld(target), 1, 5.0, {200,50,50});
+		float TargetVecPos[3]; WorldSpaceCenter(target, TargetVecPos);
+		Passanger_Lightning_Effect(belowBossEyes, TargetVecPos, 1, 5.0, {200,50,50});
 	}
 	else
 	{
@@ -661,70 +601,11 @@ public void TouchHealthKit(int entity, int other)
 		}
 		if(IsValidClient(Owner))
 		{
-			Healing_done_in_total[Owner] += healing_done;
 			PrintHintText(Owner, "%t", "You healed for", other, healing_done);
 		}
-		ApplyHealEvent(other, healing_done);
 		ClientCommand(other, "playgamesound items/smallmedkit1.wav");
 		Increaced_Overall_damage_Low[other] = GetGameTime() + 15.0;
 		Resistance_Overall_Low[other] = GetGameTime() + 15.0;
 		RemoveEntity(entity);	
 	}
 }
-
-/*
-public Action Timer_Detect_Player_Nearby_healthkit(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity) && entity>MaxClients)
-	{
-		if(f_HealMaxPickup_Enable[entity] > GetGameTime())
-		{
-			return Plugin_Continue;
-		}
-		float powerup_pos[3];
-		float client_pos[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", powerup_pos);
-		for (int client = 1; client <= MaxClients; client++)
-		{
-			if (IsValidClient(client) && IsPlayerAlive(client) && GetClientTeam(client) == view_as<int>(TFTeam_Red) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
-			{
-				GetClientAbsOrigin(client, client_pos);
-				if (GetVectorDistance(powerup_pos, client_pos, true) <= 4900.0)
-				{
-					float maxhealth = 1.0;
-					float health = float(GetEntProp(client, Prop_Data, "m_iHealth"));
-					maxhealth = float(SDKCall_GetMaxHealth(client));
-					if(RoundToNearest(health) >= (RoundToNearest(maxhealth * 1.15)))
-					{
-						continue;
-					}
-
-					int Owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-					int healing_done = HealEntityGlobal(Owner, client, f_HealMaxPickup[entity], 1.15, _, _);
-					if(healing_done <= 0)
-					{
-						continue;
-					}
-					if(IsValidClient(Owner))
-					{
-						Healing_done_in_total[Owner] += healing_done;
-						PrintHintText(Owner, "%t", "You healed for", client, healing_done);
-					}
-					ApplyHealEvent(client, healing_done);
-					ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-					Increaced_Overall_damage_Low[client] = GetGameTime() + 15.0;
-					Resistance_Overall_Low[client] = GetGameTime() + 15.0;
-					RemoveEntity(entity);
-					return Plugin_Stop;
-				}
-			}
-		}
-	}
-	else
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-}
-*/

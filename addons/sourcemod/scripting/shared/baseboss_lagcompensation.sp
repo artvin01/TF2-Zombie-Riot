@@ -2,7 +2,7 @@
 #pragma newdecls required
 
 /* engine/host.h#L157-L158 */
-#define TIME_TO_TICKS(%1)	RoundToNearest(0.5 + %1 / GetTickInterval())
+#define TIME_TO_TICKS(%1)	RoundToZero(0.5 + %1 / GetTickInterval())
 #define TICKS_TO_TIME(%1)	(GetTickInterval() * float(%1))
 
 /* game/client/c_baseanimatingoverlay.h#L46 */
@@ -69,7 +69,7 @@ void StartLagCompensation_Base_Boss(int client)
 {
 //	if(DoingLagCompensation)
 //		ThrowError("Already in BaseBoss Lag Comp");
-	
+
 	DoingLagCompensation = true;
 	
 	// Get true latency
@@ -119,7 +119,7 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 {
 	// Team members shouldn't be adjusted unless friendly fire is on.
 	/*
-	if(!mp_friendlyfire.BoolValue && GetClientTeam(player) == GetEntProp(entity, Prop_Data, "m_iTeamNum"))
+	if(!mp_friendlyfire.BoolValue && GetClientTeam(player) == GetTeam(entity))
 		return false;
 	*/
 	// If this entity hasn't been transmitted to us and acked, then don't bother lag compensating it.
@@ -127,13 +127,16 @@ static bool WantsLagCompensationOnEntity(int entity, int player, const float vie
 	//	return false;
 
 #if defined RTS
-	bool allied = UnitBody_CanControl(player, entity);
+	bool allied = RTS_CanControl(player, entity);
 #else
-	bool allied = b_IsAlliedNpc[entity];
+	bool allied = GetTeam(entity) == GetTeam(player);
 #endif
-
+	
 	if(b_LagCompNPC_OnlyAllies ^ allied)
-		return false;
+	{
+		if(!b_DoNotIgnoreDuringLagCompAlly[entity])
+			return false;
+	}
 
 	float pos1[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
@@ -239,7 +242,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
 #else
-	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
@@ -250,8 +253,8 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	if(b_LagCompNPC_ExtendBoundingBox)
 	{
 
-#if !defined RTS
-		if(!b_IsAlliedNpc[entity])
+#if defined ZR
+		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		
 		{
@@ -270,7 +273,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
 #else
-	if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 	{
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", record.m_flSimulationTime);
@@ -314,8 +317,8 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
-#if !defined RTS
-		if(!b_IsAlliedNpc[entity])
+#if defined ZR
+		if(GetTeam(entity) != TFTeam_Red)
 #endif
 		{
 			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
@@ -389,15 +392,15 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
 	DoingLagCompensation = false;
-	
+
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
 		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
 
-#if !defined RTS
-			if(!b_IsAlliedNpc[entity])
+#if defined ZR
+			if(GetTeam(entity) != TFTeam_Red)
 #endif
 
 			{
@@ -448,7 +451,7 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 #if defined RTS
 			if(!b_LagCompNPC_No_Layers)
 #else
-			if(!b_LagCompNPC_No_Layers && !b_IsAlliedNpc[entity])
+			if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
 #endif
 
 			{
@@ -541,8 +544,8 @@ void LagCompensationThink_Forward()
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
 
-#if !defined RTS
-				if(!b_IsAlliedNpc[entity]) //If its an allied baseboss, make sure to not get layers.
+#if defined ZR
+				if(GetTeam(entity) != TFTeam_Red) //If its an allied baseboss, make sure to not get layers.
 #endif
 				{
 					record.m_layerRecords = overlay.GetNumAnimOverlays();
@@ -562,7 +565,7 @@ void LagCompensationThink_Forward()
 					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 				}
-#if !defined RTS
+#if defined ZR
 				else
 				{
 					record.m_layerRecords = 0;

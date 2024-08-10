@@ -1,0 +1,39 @@
+"Phrases"
+{
+	"nothing"
+	{
+		"en" 	"Example Text!"
+	}
+	"Militia"
+	{
+		"en" 	"Militia"
+	}
+	"Militia Desc"
+	{
+		"en" 	"Militia Desc :3"
+	}
+	"Villager"
+	{
+		"en"	"Villager"
+	}
+	"Villager Desc"
+	{
+		"en"	"Villager Desc"
+	}
+	"Dead Tree"
+	{
+		"en"	"Dead Tree"
+	}
+	"Dead Tree Desc"
+	{
+		"en"	"Provides some wood"
+	}
+	"Town Center"
+	{
+		"en"	"Town Center"
+	}
+	"Town Center Desc"
+	{
+		"en"	"Town Center Desc"
+	}
+}

@@ -1,475 +1,258 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT 130.0
+// 130 * 130
+#define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 16900.0
+
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT 160.0
+// 160 * 160
+#define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 25600.0
+
+static ArrayList NPCList;
+
+enum struct NPCData
 {
-	NOTHING 						= 0,
-	START_CHICKEN 					= 1,
-	MAD_CHICKEN 					= 2,
-	MAD_ROOST						= 3,
-	HEAVY_BEAR						= 4,
-	HEAVY_BEAR_BOSS					= 5,
-	HEAVY_BEAR_MINION				= 6,
-	MINER_NPC						= 7,
-	HEADCRAB_ZOMBIE					= 8,
-	HEADCRAB_ZOMBIE_ELECTRO			= 9,
-	POISON_ZOMBIE					= 10,
-	EXPLOSIVE_ZOMBIE				= 11,
-	ZOMBIEFIED_COMBINE_SWORDSMAN	= 12,
-	BOB_THE_TARGETDUMMY				= 13,
-	FAST_ZOMBIE						= 14,
-	FATHER_GRIGORI					= 15,
-
-
-	FARM_COW						= 16,
-
-	ARK_SLUG		= 17,
-	ARK_SINGER		= 18,
-	ARK_SLUGACID		= 19,
-	ARK_SLUG_INFUSED	= 20,
-
-	COMBINE_PISTOL,
-	COMBINE_SMG,
-	COMBINE_AR2,
-	COMBINE_ELITE,
-	COMBINE_SHOTGUN		= 25,
-	COMBINE_SWORDSMAN,
-	COMBINE_GIANT,
-	COMBINE_OVERLORD,
-	TOWNGUARD_PISTOL,
-	COMBINE_OVERLORD_CC	= 30,
-	COMBINE_TURTLE,
-	FARM_BEAR
+	char Plugin[64];
+	char Name[64];
+	Function Func;
 }
 
-public const char NPC_Names[][] =
+// FileNetwork_ConfigSetup needs to be ran first
+void NPC_ConfigSetup()
 {
-	"nothing",
-	"Chicken",
-	"Mad Chicken",
-	"Mad Roost",
-	"Heavy Bear",
-	"Heavy Bear Boss",
-	"Heavy Bear Minion",
-	"Ore Miner",
-	"Headcrab Zombie",
-	"Arrow Headcrab Zombie",
-	"Poison Zombie",
-	"Explosive Zombie",
-	"Zombified Combine Swordsman",
-	"Bob The Second - Target Dummy",
-	"Fast Zombie",
-	"Father Grigori ?",
-	"Farming Cow",
-	"Originium Slug",
-	"Scarlet Singer",
-	"Acid Originium Slug",
-	"Infused Originium Slug",
-	"Metro Cop",
-	"Metro Raider",
-	"Combine Rifler",
-	"Combine Elite",
-	"Combine Shotgunner",
-	"Combine Swordsman",
-	"Combine Giant Swordsman",
-	"Combine Overlord",
-	"Rebel Guard",
-	"Overlord The Last",
-	"Hat Turtle",
-	"Heavy Farm Bear"
-};
+	delete NPCList;
+	NPCList = new ArrayList(sizeof(NPCData));
 
-public const char NPC_Plugin_Names_Converted[][] =
-{
-	"",
-	"npc_chicken_2",
-	"npc_chicken_mad",
-	"npc_roost_mad",
-	"npc_heavy_bear",
-	"npc_heavy_bear_boss",
-	"npc_heavy_bear_minion",
-	"npc_miner",
-	"npc_headcrab_zombie",
-	"npc_headcrab_zombie_electro",
-	"npc_poison_zombie",
-	"npc_headcrab_zombie_explosive",
-	"npc_zombiefied_combine_soldier_swordsman",
-	"npc_bob_the_targetdummy",
-	"npc_fastzombie",
-	"npc_enemy_grigori",
-	"npc_heavy_cow",
-	"npc_ark_slug",
-	"npc_ark_singer",
-	"npc_ark_slug_acid",
-	"npc_ark_slug_infused",
-	"npc_combine_pistol",
-	"npc_combine_smg",
-	"npc_combine_ar2",
-	"npc_combine_elite",
-	"npc_combine_shotgun",
-	"npc_combine_swordsman",
-	"npc_combine_giant",
-	"npc_combine_overlord",
-	"npc_townguard_pistol",
-	"npc_combine_overlord_cc",
-	"npc_combine_turtle",
-	"npc_heavy_farm_bear",
-};
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "nothing");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nothing");
+	data.Func = INVALID_FUNCTION;
+	NPCList.PushArray(data);
 
-void NPC_MapStart()
-{
-	MadChicken_OnMapStart_NPC();
+	NPCActor_Setup();
 	StartChicken_OnMapStart_NPC();
+	MadChicken_OnMapStart_NPC();
 	MadRoost_OnMapStart_NPC();
 	HeavyBear_OnMapStart_NPC();
 	HeavyBearBoss_OnMapStart_NPC();
 	HeavyBearMinion_OnMapStart_NPC();
 	Miner_Enemy_OnMapStart_NPC();
+	DeepMiner_OnMapStart_NPC();
+	HeavyExcavator_OnMapStart_NPC();
+	CaveGuardsman_OnMapStart_NPC();
+	NemanBoss_OnMapStart_NPC();
+	ExtremeHeatDigger_OnMapStart_NPC();
+	Driller_OnMapStart_NPC();
+	CaveBowmen_OnMapStart_NPC();
+	AutomaticCaveDefense_OnMapStart_NPC();
+	CaveEnslaver_OnMapStart_NPC();
+	EnslavedMiner_OnMapStart_NPC();
+	ChaosAfflictedMiner_OnMapStart_NPC();
+	SlaveMaster_OnMapStart_NPC();
 	HeadcrabZombie_OnMapStart_NPC();
 	HeadcrabZombieElectro_OnMapStart_NPC();
-	PoisonZombie_OnMapStart_NPC();
 	ExplosiveHeadcrabZombie_OnMapStart_NPC();
+	PoisonZombie_OnMapStart_NPC();
 	ZombiefiedCombineSwordsman_OnMapStart_NPC();
-	BobTheTargetDummy_OnMapStart_NPC();
 	FastZombie_OnMapStart_NPC();
+	GiantHeadcrabZombie_OnMapStart_NPC();
 	EnemyFatherGrigori_OnMapStart_NPC();
+	BobTheTargetDummy_OnMapStart_NPC();
+	WaterZombie_OnMapStart_NPC();
+	DrowedZombieHuman_OnMapStart_NPC();
+	MutatedDrowedZombieHuman_OnMapStart_NPC();
+	FarmBear_OnMapStart_NPC();
 	FarmCow_OnMapStart_NPC();
+	SeaInfectedZombieHuman_OnMapStart_NPC();
+	ScoutHyper_OnMapStart_NPC();
+	PlayerAnimatorNPC_OnMapStart_NPC();
+	OriginalInfected_OnMapStart_NPC();
+	HeavyExtreme_OnMapStart_NPC();
+	SniperAccuracy_OnMapStart_NPC();
+	Huirgrajo_Setup();
+
+	RookieGambler_Setup();
+	BuckshotGambler_Setup();
+
+/*
 	ArkSlug_MapStart();
 	ArkSinger_MapStart();
 	ArkSlugAcid_MapStart();
 	ArkSlugInfused_MapStart();
 	BaseSquad_MapStart();
 	CombineTurtle_MapStart();
-	FarmBear_OnMapStart_NPC();
+*/
 }
-#define NORMAL_ENEMY_MELEE_RANGE_FLOAT 120.0
-// 120 * 120
-#define NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED 14400.0
 
-#define GIANT_ENEMY_MELEE_RANGE_FLOAT 140.0
-// 140 * 140
-#define GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED 16900.0
+int NPC_Add(NPCData data)
+{
+	if(!data.Func || data.Func == INVALID_FUNCTION)
+		ThrowError("Invalid function name");
 
-stock any Npc_Create(int Index_Of_Npc, int client, float vecPos[3], float vecAng[3], bool ally, const char[] data="") //dmg mult only used for summonings
+	return NPCList.PushArray(data);
+}
+
+stock int NPC_GetCount()
+{
+	return NPCList.Length;
+}
+
+stock int NPC_GetNameById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Name);
+}
+
+stock int NPC_GetPluginById(int id, char[] buffer, int length)
+{
+	static NPCData data;
+	NPC_GetById(id, data);
+	return strcopy(buffer, length, data.Plugin);
+}
+
+stock void NPC_GetById(int id, NPCData data)
+{
+	NPCList.GetArray(id, data);
+}
+
+stock int NPC_GetByPlugin(const char[] plugin, NPCData data = {})
+{
+	int length = NPCList.Length;
+	for(int i; i < length; i++)
+	{
+		NPCList.GetArray(i, data);
+		if(StrEqual(plugin, data.Plugin))
+			return i;
+	}
+	return -1;
+}
+
+stock int NPC_CreateByName(const char[] name, int client, const float vecPos[3], const float vecAng[3], int team, const char[] data = "")
+{
+	static NPCData npcdata;
+	int id = NPC_GetByPlugin(name, npcdata);
+	if(id == -1)
+	{
+		PrintToChatAll("\"%s\" is not a valid NPC!", name);
+		return -1;
+	}
+
+	return CreateNPC(npcdata, id, client, vecPos, vecAng, team, data);
+}
+
+stock int NPC_CreateById(int Index_Of_Npc, int client, const float vecPos[3], const float vecAng[3], int team, const char[] data = "")
+{
+	if(Index_Of_Npc < 1 || Index_Of_Npc >= NPCList.Length)
+	{
+		PrintToChatAll("[%d] is not a valid NPC!", Index_Of_Npc);
+		return -1;
+	}
+
+	static NPCData npcdata;
+	NPC_GetById(Index_Of_Npc, npcdata);
+	return CreateNPC(npcdata, Index_Of_Npc, client, vecPos, vecAng, team, data);
+}
+
+static int CreateNPC(NPCData npcdata, int id, int client, const float vecPos[3], const float vecAng[3], int team, const char[] data)
 {
 	any entity = -1;
-	switch(Index_Of_Npc)
-	{
-		case START_CHICKEN:
-		{
-			entity = StartChicken(client, vecPos, vecAng, ally);
-		}
-		case MAD_CHICKEN:
-		{
-			entity = MadChicken(client, vecPos, vecAng, ally);
-		}
-		case MAD_ROOST:
-		{
-			entity = MadRoost(client, vecPos, vecAng, ally);
-		}
-		case HEAVY_BEAR:
-		{
-			entity = HeavyBear(client, vecPos, vecAng, ally);
-		}
-		case HEAVY_BEAR_BOSS:
-		{
-			entity = HeavyBearBoss(client, vecPos, vecAng, ally);
-		}
-		case HEAVY_BEAR_MINION:
-		{
-			entity = HeavyBearMinion(client, vecPos, vecAng, ally);
-		}
-		case MINER_NPC:
-		{
-			entity = Miner_Enemy(client, vecPos, vecAng, ally);
-		}
-		case HEADCRAB_ZOMBIE:
-		{
-			entity = HeadcrabZombie(client, vecPos, vecAng, ally);
-		}
-		case HEADCRAB_ZOMBIE_ELECTRO:
-		{
-			entity = HeadcrabZombieElectro(client, vecPos, vecAng, ally);
-		}
-		case POISON_ZOMBIE:
-		{
-			entity = PoisonZombie(client, vecPos, vecAng, ally);
-		}
-		case EXPLOSIVE_ZOMBIE:
-		{
-			entity = ExplosiveHeadcrabZombie(client, vecPos, vecAng, ally);
-		}
-		case ZOMBIEFIED_COMBINE_SWORDSMAN:
-		{
-			entity = ZombiefiedCombineSwordsman(client, vecPos, vecAng, ally);
-		}
-		case BOB_THE_TARGETDUMMY:
-		{
-			entity = BobTheTargetDummy(client, vecPos, vecAng, ally);
-		}
-		case FAST_ZOMBIE:
-		{
-			entity = FastZombie(client, vecPos, vecAng, ally);
-		}
-		case FATHER_GRIGORI:
-		{
-			entity = EnemyFatherGrigori(client, vecPos, vecAng, ally);
-		}
-		case FARM_COW:
-		{
-			entity = FarmCow(client, vecPos, vecAng, ally);
-		}
-		case ARK_SLUG:
-		{
-			entity = ArkSlug(client, vecPos, vecAng, ally);
-		}
-		case ARK_SINGER:
-		{
-			entity = ArkSinger(client, vecPos, vecAng, ally);
-		}
-		case ARK_SLUGACID:
-		{
-			entity = ArkSlugAcid(client, vecPos, vecAng, ally);
-		}
-		case ARK_SLUG_INFUSED:
-		{
-			entity = ArkSlugInfused(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_PISTOL:
-		{
-			entity = CombinePistol(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_SMG:
-		{
-			entity = CombineSMG(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_AR2:
-		{
-			entity = CombineAR2(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_ELITE:
-		{
-			entity = CombineElite(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_SHOTGUN:
-		{
-			entity = CombineShotgun(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_SWORDSMAN:
-		{
-			entity = CombineSwordsman(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_GIANT:
-		{
-			entity = CombineGiant(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_OVERLORD:
-		{
-			entity = CombineOverlord(client, vecPos, vecAng, ally);
-		}
-		case TOWNGUARD_PISTOL:
-		{
-			entity = TownGuardPistol(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_OVERLORD_CC:
-		{
-			entity = CombineOverlordCC(client, vecPos, vecAng, ally);
-		}
-		case COMBINE_TURTLE:
-		{
-			entity = CombineTurtle(client, vecPos, vecAng, ally);
-		}
-		case FARM_BEAR:
-		{
-			entity = FarmBear(client, vecPos, vecAng, ally);
-		}
-		default:
-		{
-			PrintToChatAll("Please Spawn the NPC via plugin or select which npcs you want! ID:[%i] Is not a valid npc!", Index_Of_Npc);
-		}
-	}
-	
-	return entity;
-}	
 
-public void NPCDeath(int entity)
-{
-	switch(i_NpcInternalId[entity])
-	{
-		case START_CHICKEN:
-		{
-			StartChicken_NPCDeath(entity);
-		}
-		case MAD_CHICKEN:
-		{
-			MadChicken_NPCDeath(entity);
-		}
-		case MAD_ROOST:
-		{
-			MadRoost_NPCDeath(entity);
-		}
-		case HEAVY_BEAR:
-		{
-			HeavyBear_NPCDeath(entity);
-		}
-		case HEAVY_BEAR_BOSS:
-		{
-			HeavyBearBoss_NPCDeath(entity);
-		}
-		case HEAVY_BEAR_MINION:
-		{
-			HeavyBearMinion_NPCDeath(entity);
-		}
-		case MINER_NPC:
-		{
-			Miner_Enemy_NPCDeath(entity);
-		}
-		case HEADCRAB_ZOMBIE:
-		{
-			HeadcrabZombie_NPCDeath(entity);
-		}
-		case HEADCRAB_ZOMBIE_ELECTRO:
-		{
-			HeadcrabZombieElectro_NPCDeath(entity);
-		}
-		case POISON_ZOMBIE:
-		{
-			PoisonZombie_NPCDeath(entity);
-		}
-		case EXPLOSIVE_ZOMBIE:
-		{
-			ExplosiveHeadcrabZombie_NPCDeath(entity);
-		}
-		case ZOMBIEFIED_COMBINE_SWORDSMAN:
-		{
-			ZombiefiedCombineSwordsman_NPCDeath(entity);
-		}
-		case BOB_THE_TARGETDUMMY:
-		{
-			BobTheTargetDummy_NPCDeath(entity);
-		}
-		case FAST_ZOMBIE:
-		{
-			FastZombie_NPCDeath(entity);
-		}
-		case FATHER_GRIGORI:
-		{
-			EnemyFatherGrigori_NPCDeath(entity);
-		}
-		case FARM_COW:
-		{
-			FarmCow_NPCDeath(entity);
-		}
-		case ARK_SLUG:
-		{
-			ArkSlug_NPCDeath(entity);
-		}
-		case ARK_SINGER:
-		{
-			ArkSinger_NPCDeath(entity);
-		}
-		case ARK_SLUGACID:
-		{
-			ArkSlugAcid_NPCDeath(entity);
-		}
-		case ARK_SLUG_INFUSED:
-		{
-			ArkSlugInfused_NPCDeath(entity);
-		}
-		case COMBINE_PISTOL:
-		{
-			CombinePistol_NPCDeath(entity);
-		}
-		case COMBINE_SMG:
-		{
-			CombineSMG_NPCDeath(entity);
-		}
-		case COMBINE_AR2:
-		{
-			CombineAR2_NPCDeath(entity);
-		}
-		case COMBINE_ELITE:
-		{
-			CombineElite_NPCDeath(entity);
-		}
-		case COMBINE_SHOTGUN:
-		{
-			CombineShotgun_NPCDeath(entity);
-		}
-		case COMBINE_SWORDSMAN:
-		{
-			CombineSwordsman_NPCDeath(entity);
-		}
-		case COMBINE_GIANT:
-		{
-			CombineGiant_NPCDeath(entity);
-		}
-		case COMBINE_OVERLORD:
-		{
-			CombineOverlord_NPCDeath(entity);
-		}
-		case TOWNGUARD_PISTOL:
-		{
-			TownGuardPistol_NPCDeath(entity);
-		}
-		case COMBINE_OVERLORD_CC:
-		{
-			CombineOverlordCC_NPCDeath(entity);
-		}
-		case COMBINE_TURTLE:
-		{
-			CombineTurtle_NPCDeath(entity);
-		}
-		case FARM_BEAR:
-		{
-			FarmBear_NPCDeath(entity);
-		}
-		default:
-		{
-			PrintToChatAll("This Npc Did NOT Get a Valid Internal ID! ID that was given but was invalid:[%i]", i_NpcInternalId[entity]);
-		}
-	}
+	Call_StartFunction(null, npcdata.Func);
+	Call_PushCell(client);
+	Call_PushArray(vecPos, sizeof(vecPos));
+	Call_PushArray(vecAng, sizeof(vecAng));
+	Call_PushCell(team);
+	Call_PushString(data);
+	Call_Finish(entity);
 	
-	/*if(view_as<CClotBody>(entity).m_iCreditsOnKill)
+	if(entity != -1)
 	{
-		CurrentCash += view_as<CClotBody>(entity).m_iCreditsOnKill;
-			
-		int extra;
+		if(!c_NpcName[entity][0])
+			strcopy(c_NpcName[entity], sizeof(c_NpcName[]), npcdata.Name);
 		
-		int client_killer = GetClientOfUserId(LastHitId[entity]);
-		if(client_killer && IsClientInGame(client_killer))
-		{
-			extra = RoundToFloor(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * Building_GetCashOnKillMulti(client_killer));
-			extra -= view_as<CClotBody>(entity).m_iCreditsOnKill;
-		}
-		
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsClientInGame(client))
-			{
-				if(extra > 0)
-				{
-					CashSpent[client] -= extra;
-					CashRecievedNonWave[client] += extra;
-				}
-				if(GetClientTeam(client)!=2)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.40);
-					
-				}
-				else if (TeutonType[client] == TEUTON_WAITING)
-				{
-					SetGlobalTransTarget(client);
-					CashSpent[client] += RoundToCeil(float(view_as<CClotBody>(entity).m_iCreditsOnKill) * 0.30);
-				}
-			}
-		}
-	}*/
+		if(!i_NpcInternalId[entity])
+			i_NpcInternalId[entity] = id;
+	}
+
+	return entity;
 }
 
-public void NPC_Despawn(int entity)
+void NPCDeath(int entity)
 {
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	{
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if(IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index])
+		{
+			Function func = func_NPCDeathForward[baseboss_index];
+			if(func && func != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, func);
+				Call_PushCell(baseboss_index);
+				Call_PushCell(entity);
+				Call_Finish();
+			}
+		}
+	}
+
+	Function func = func_NPCDeath[entity];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(entity);
+		Call_Finish();
+	}
+	
+	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int client;
+	while(RpgCore_CountClientsWorthyForKillCredit(entity, client))
+	{
+		RpgCore_OnKillGiveMastery(client, MaxHealth);
+	}
+}
+
+void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+{
+	if(IsValidEntity(attacker))
+	{
+		CClotBody npcBase = view_as<CClotBody>(victim);
+		if(GetTeam(attacker) != GetTeam(victim))
+		{
+			npcBase.m_flGetClosestTargetNoResetTime = GetGameTime(npcBase.index) + 5.0; //make them angry for 5 seconds if they are too far away.
+
+			if(!IsValidEnemy(npcBase.index, npcBase.m_iTarget)) //Only set it if they actaully have no target.
+			{
+				npcBase.m_iTarget = attacker;
+			}
+		}
+	}
+	Function func = func_NPCOnTakeDamage[victim];
+	if(func && func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func);
+		Call_PushCell(victim);
+		Call_PushCellRef(attacker);
+		Call_PushCellRef(inflictor);
+		Call_PushFloatRef(damage);
+		Call_PushCellRef(damagetype);
+		Call_PushCellRef(weapon);
+		Call_PushArray(damageForce, sizeof(damageForce));
+		Call_PushArray(damagePosition, sizeof(damagePosition));
+		Call_PushCell(damagecustom);
+		Call_Finish();
+	}
+}
+
+stock void NPC_Despawn(int entity)
+{
+	/*
+	if(i_NpcInternalId[entity] == NPCActor_ID())
+		LogStackTrace("Actor Despawned");
+	
+	PrintToChatAll("NPC_Despawn::%d", i_NpcInternalId[entity]);
+	*/
 	if(IsValidEntity(entity))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
@@ -498,7 +281,7 @@ public void NPC_Despawn(int entity)
 	}
 }
 
-void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
+stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const char[] StandStill, float walkspeedback, float gameTime, bool walkback_use_sequence = false, bool standstill_use_sequence = false)
 {
 	CClotBody npc = view_as<CClotBody>(entity);
 	
@@ -508,7 +291,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 		{
 			distance = 99999.9;
 		}
-		int entity_found = GetClosestTarget(npc.index, false, distance);
+		int entity_found = GetClosestTarget(npc.index, false, distance, .UseVectorDistance = true);
 		if(npc.m_flGetClosestTargetNoResetTime > gameTime) //We want to make sure that their aggro doesnt get reset instantly!
 		{
 			if(entity_found != -1) //Dont reset it, but if its someone else, allow it.
@@ -555,7 +338,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 				npc.m_iTarget = entity_found;
 			}
 		}
-		npc.m_flGetClosestTargetTime = gameTime + 1.0;
+		npc.m_flGetClosestTargetTime = gameTime + 2.0;
 	}
 
 	if(!IsValidEnemy(npc.index, npc.m_iTarget))
@@ -569,7 +352,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 			float fl_DistanceToOriginalSpawn = GetVectorDistance(vecTarget, f3_SpawnPosition[npc.index], true);
 			if(fl_DistanceToOriginalSpawn > (80.0 * 80.0)) //We are too far away from our home! return!
 			{
-				NPC_SetGoalVector(npc.index, f3_SpawnPosition[npc.index]);
+				npc.SetGoalVector(f3_SpawnPosition[npc.index]);
 				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
@@ -623,14 +406,7 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 						npc.SetActivity(StandStill);
 					}
 				}
-
-				char HealthString[512];
-				Format(HealthString, sizeof(HealthString), "%i / %i", Health, MaxHealth);
-
-				if(IsValidEntity(npc.m_iTextEntity3))
-				{
-					DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
-				}
+				RPGNpc_UpdateHpHud(npc.index);
 			}
 		}
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -675,11 +451,8 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 		{
 			npc.m_flSpeed = 0.0;
 		}
-		if(npc.m_bPathing)
-		{
-			NPC_StopPathing(npc.index);
-			npc.m_bPathing = false;	
-		}
+		
+		npc.StopPathing();
 	}
 	else
 	{
@@ -687,47 +460,58 @@ void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, const 
 		{
 			npc.m_flSpeed = walkspeedback;
 		}
-		if(!npc.m_bPathing)
-			npc.StartPathing();
-	}
-}
-
-stock void NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
-{
-	switch(i_NpcInternalId[victim])
-	{
 		
+		npc.StartPathing();
 	}
 }
 
-bool ShouldNpcJumpAtThisClient(int client)
+void RPGNpc_UpdateHpHud(int entity)
+{
+	if(entity <= MaxClients)
+		return;
+		
+	CClotBody npc = view_as<CClotBody>(entity);
+	if(IsValidEntity(npc.m_iTextEntity3))
+	{
+		int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+		char HealthString[64];
+		IntToString(Health,HealthString, sizeof(HealthString));
+		int offset = Health < 0 ? 1 : 0;
+		ThousandString(HealthString[offset], sizeof(HealthString) - offset);
+		DispatchKeyValue(npc.m_iTextEntity3, "message", HealthString);
+	}
+}
+
+stock bool ShouldNpcJumpAtThisClient(int client)
 {
 	bool AllowJump = true;
-
+	
 	if(AbilityGroundPoundReturnFloat(client) > GetGameTime())
 	{
 		AllowJump = false;
 	}
+	
 	return AllowJump;
 }
 
-bool AllyNpcInteract(int client, int entity, int weapon)
+stock bool AllyNpcInteract(int client, int entity, int weapon)
 {
 	bool result;
-	switch(i_NpcInternalId[entity])
+
+	Function func = func_NPCInteract[entity];
+	if(func && func != INVALID_FUNCTION)
 	{
-		case FARM_COW:
-		{
-			result = HeavyCow_Interact(client, weapon);
-		}
-		case FARM_BEAR:
-		{
-			result = HeavyBear_Interact(client, weapon);
-		}
+		Call_StartFunction(null, func);
+		Call_PushCell(client);
+		Call_PushCell(weapon);
+		Call_PushCell(entity);
+		Call_Finish(result);
 	}
+
 	return result;
 }
 
+#include "rpg_fortress/npc/npc_actor.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_2.sp"
 #include "rpg_fortress/npc/normal/npc_chicken_mad.sp"
 #include "rpg_fortress/npc/normal/npc_roost_mad.sp"
@@ -735,19 +519,47 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/normal/npc_heavy_bear_boss.sp"
 #include "rpg_fortress/npc/normal/npc_heavy_bear_minion.sp"
 #include "rpg_fortress/npc/normal/npc_miner.sp"
+#include "rpg_fortress/npc/normal/npc_deep_miner.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_excavator.sp"
+#include "rpg_fortress/npc/normal/npc_cave_guardsman.sp"
+#include "rpg_fortress/npc/normal/npc_neman.sp"
+#include "rpg_fortress/npc/normal/npc_extreme_heat_digger.sp"
+#include "rpg_fortress/npc/normal/npc_driller.sp"
+#include "rpg_fortress/npc/normal/npc_cave_bowmen.sp"
+#include "rpg_fortress/npc/normal/npc_auto_cave_defense.sp"
+#include "rpg_fortress/npc/normal/npc_cave_enslaver.sp"
+#include "rpg_fortress/npc/normal/npc_enslaved_miner.sp"
+#include "rpg_fortress/npc/normal/npc_slave_master.sp"
+#include "rpg_fortress/npc/normal/npc_chaos_afflicted_miner.sp"
+
+#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_electro.sp"
 #include "rpg_fortress/npc/normal/npc_poison_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_headcrab_zombie_explosive.sp"
 #include "rpg_fortress/npc/normal/npc_zombiefied_combine_soldier_swordsman.sp"
-#include "rpg_fortress/npc/normal/npc_bob_the_targetdummy.sp"
 #include "rpg_fortress/npc/normal/npc_fastzombie.sp"
+#include "rpg_fortress/npc/normal/npc_giant_headcrab_zombie.sp"
 #include "rpg_fortress/npc/normal/npc_enemy_grigori.sp"
-
+#include "rpg_fortress/npc/normal/npc_water_zombie.sp"
+#include "rpg_fortress/npc/normal/npc_drowned_zombiefied_human.sp"
+#include "rpg_fortress/npc/normal/npc_mutated_drowned_zombiefied_human.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_cow.sp"
 #include "rpg_fortress/npc/farm/npc_heavy_bear.sp"
+#include "rpg_fortress/npc/normal/npc_sea_infected_zombiefied_human.sp"
+#include "rpg_fortress/npc/normal/npc_scout_hyper.sp"
+#include "rpg_fortress/npc/normal/npc_original_infected.sp"
+#include "rpg_fortress/npc/ally/npc_player_animator.sp"
+#include "rpg_fortress/npc/normal/npc_heavy_extreme.sp"
+#include "rpg_fortress/npc/normal/npc_sniper_accuracy.sp"
+#include "rpg_fortress/npc/normal/npc_huirgrajo.sp"
 
+#include "rpg_fortress/npc/casino/npc_casinoshared.sp"
+#include "rpg_fortress/npc/casino/npc_rookiegambler.sp"
+#include "rpg_fortress/npc/casino/npc_buckshotgambler.sp"
+
+/*
 #include "rpg_fortress/npc/normal/npc_ark_slug.sp"
 #include "rpg_fortress/npc/normal/npc_ark_singer.sp"
 #include "rpg_fortress/npc/normal/npc_ark_slug_acid.sp"
@@ -765,3 +577,4 @@ bool AllyNpcInteract(int client, int entity, int weapon)
 #include "rpg_fortress/npc/combine/npc_townguard_pistol.sp"
 #include "rpg_fortress/npc/combine/npc_combine_overlord_cc.sp"
 #include "rpg_fortress/npc/combine/npc_combine_turtle.sp"
+*/

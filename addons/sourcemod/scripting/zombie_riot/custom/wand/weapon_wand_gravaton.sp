@@ -7,6 +7,7 @@ static int i_Current_Pap[MAXTF2PLAYERS+1];
 static float fl_hud_timer[MAXTF2PLAYERS+1];
 static bool b_gained_charge[MAXTF2PLAYERS+1];
 static float fl_gravaton_duration[MAXTF2PLAYERS+1];
+static float f3_LastGravitonHitLoc[MAXTF2PLAYERS+1][3];
 
 
 #define GRAVATON_WAND_MAX_CHARGES 9.0
@@ -135,6 +136,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 
 	if(mana_cost <= Current_Mana[client])
 	{
+		bool WeakerCast = false;
 		float Time= 2.5;
 		float Range = 750.0;
 		float Radius = 250.0;
@@ -152,9 +154,11 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 100.0;
+		float damage = 65.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
+
+		damage *= 1.15;
 
 		Handle swingTrace;
 		b_LagCompNPC_No_Layers = true;
@@ -167,7 +171,7 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, vec);
 		}
 		else
 		{
@@ -179,11 +183,25 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		FinishLagCompensation_Base_boss();
 		delete swingTrace;
 
+		float distance = GetVectorDistance(f3_LastGravitonHitLoc[client], vec);
+
+		if(distance < 30.0)
+		{
+			WeakerCast = true;
+			damage *= 0.5;
+		}
+		f3_LastGravitonHitLoc[client] = vec;
+
 		int color[4];
 		color[0] = 240;
 		color[1] = 240;
 		color[2] = 240;
 		color[3] = 120;
+
+		if(WeakerCast)
+		{
+			color[3] = 60;
+		}
 
 		int loop_for = 7;
 		float Seperation = 12.5;
@@ -191,38 +209,37 @@ public void Gravaton_Wand_Primary_Attack(int client, int weapon, bool crit, int 
 		{
 			case 0:
 			{
-				loop_for = 3;
+				loop_for = 2;
 				Seperation = 7.5;
-				Time = 4.5;
+				Time = 0.85;
 			}
 			case 1:
 			{
 				loop_for = 4;
 				Seperation = 8.5;
-				Time = 4.25;
+				Time = 0.8;
 			}
 			case 2:
 			{
 				loop_for = 5;
 				Seperation = 9.0;
-				Time = 4.0;
+				Time = 0.75;
 			}
 			case 3:
 			{
 				loop_for = 6;
 				Seperation = 9.0;
-				Time = 3.5;
+				Time = 0.7;
 			}
 			case 4:
 			{
 				loop_for = 7;
 				Seperation = 11.0;
-				Time = 2.5;
+				Time = 0.65;
 			}
 		}
 
-		if(RaidbossIgnoreBuildingsLogic(1))
-			Time /=2.0;
+	//	Time *= 0.75;
 
 		//effect_hand_l
 
@@ -315,7 +332,7 @@ public Action Smite_Timer_Gravaton_Wand(Handle Smite_Logic, DataPack data)
 				
 	i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE;
 	
-	int EnemiesHitMax = (i_Current_Pap[client] + 1) * 2;
+	int EnemiesHitMax = (i_Current_Pap[client] + 1);
 	
 	b_gained_charge[client]=false;
 	Explode_Logic_Custom(damage, client, client, weapon, startPosition, Ionrange,_,_,_,EnemiesHitMax);
@@ -415,6 +432,8 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 			}
 		}
 
+		Time *= 0.5;
+
 		fl_gravaton_charges[client] -=GRAVATON_WAND_GRAVITATION_COLLAPSE_COST;
 		fl_gravaton_duration[client] =GameTime+Time;
 		fl_gravaton_throttle[client] = 0.0;
@@ -441,7 +460,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		Radius *= Attributes_Get(weapon, 101, 1.0);
 		Radius *= Attributes_Get(weapon, 102, 1.0);
 
-		float damage = 30.0;
+		float damage = 20.0;
 			
 		damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -459,7 +478,7 @@ public void Gravaton_Wand_Secondary_Attack(int client, int weapon, bool crit, in
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))
 		{
-			vec = WorldSpaceCenterOld(target);
+			WorldSpaceCenter(target, vec);
 		}
 		else
 		{

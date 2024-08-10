@@ -193,8 +193,12 @@ void CheckRedBladeBelowHalfHealth(int client, int weapon)
 }
 
 
-void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon)
+void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int weapon, float &damage)
 {
+	if(HALFORNO[attacker] && b_thisNpcIsARaid[victim])
+	{
+		damage *= 0.75;
+	}
 	if(!b_OverlordsFinalWish[attacker])
 		return;
 	
@@ -202,7 +206,7 @@ void WeaponRedBlade_OnTakeDamageNpc(int attacker,int victim, int damagetype,int 
 		NPC_Ignite(victim, attacker, 3.0, weapon);
 }
 
-void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
+void WeaponRedBlade_OnTakeDamage(int attacker, int victim, float &damage)
 {
 	if(f_RedBladeChargeDuration[victim] > GetGameTime())
 	{
@@ -211,6 +215,10 @@ void WeaponRedBlade_OnTakeDamage(int victim, float &damage)
 	if(HALFORNO[victim])
 	{
 		damage *= 0.45;
+		if(b_thisNpcIsARaid[attacker])
+		{
+			damage *= 1.15;
+		}
 	}
 }
 float WeaponRedBlade_OnTakeDamage_Hud(int victim)

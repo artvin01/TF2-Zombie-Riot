@@ -5,9 +5,10 @@
 	https://github.com/geominorai/sm-rts-starter
 */
 
+#define RTS_CAMERA
+
 #define ZERO_VECTOR		{0.0, 0.0, 0.0}
-#define DEFAULT_ANGLES		{45.0, 0.0, 0.0}
-#define HEALTH_BAR_HP_SCALE	0.0001
+#define DEFAULT_ANGLES		{60.0, 45.0, 0.0}
 #define AXIS_OFFSET		0.196350 // FLOAT_PI/16
 #define ZOOM_DECEL_MULTIPLIER	0.9
 #define SCROLL_DECEL_MULTIPLIER	0.9
@@ -22,6 +23,8 @@
 #define COLORR_YELLOW			{255, 255,   0, 255}
 #define COLORR_GREEN				{  0, 255,   0, 255}
 #define COLORR_GRAY				{ 128,  128,  128, 255}
+
+#define FLAG_MODEL	"models/flag/flag.mdl"
 
 enum
 {
@@ -129,30 +132,20 @@ static const char DefaultCmd[Key_MAX][] =
 	"b 16",
 #if defined RTS
 	"+use_action_slot_item",
-	"dropitem",
 #else
 	"<unbound>",
-	"dropitem",
 #endif
+	"dropitem",
 
 	"b 25",
-#if defined RTS
-	"invprev",
-	"invnext",
-#else
-	"+inspect",
-	"+use_action_slot_item",
-#endif
+	"+moveup",
+	"+movedown",
 	"<unbound>",
 	"<unbound>",
 	"<unbound>",
 	"<unbound>",
 
-#if defined RTS
 	"lastinv",
-#else
-	"<unbound>",
-#endif
 	"b 3",
 #if defined RTS
 	"voicemenu",
@@ -222,6 +215,7 @@ static bool RTSEnabled[MAXTF2PLAYERS];
 static ArrayList Selected[MAXTF2PLAYERS];
 static int FocusRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static int CameraRef[MAXTF2PLAYERS] = {INVALID_ENT_REFERENCE, ...};
+static int FlagRef[MAXTF2PLAYERS][6];
 static int LastFOV[MAXTF2PLAYERS];
 static int LastDefaultFOV[MAXTF2PLAYERS];
 static float MinZoom[MAXTF2PLAYERS];
@@ -242,6 +236,7 @@ static bool LastPress[MAXTF2PLAYERS][Key_MAX];	// Input last frame
 static bool HoldPress[MAXTF2PLAYERS][Key_MAX];	// Input being held
 static int NextMoveType[MAXTF2PLAYERS];
 static int BindingKey[MAXTF2PLAYERS] = {-1, ...};
+static int HoveringOver[MAXTF2PLAYERS];
 
 static char KeyBinds[MAXTF2PLAYERS][Key_MAX][32];
 static float AspectRatio[MAXTF2PLAYERS];
@@ -263,10 +258,19 @@ void RTSCamera_PluginStart()
 	RegConsoleCmd("sm_rts", RTSCamera_CommandMenu, "RTS Camera Menu");
 	RegConsoleCmd("sm_rtstoggle", RTSCamera_CommandToggle, "Toggle RTS Camera");
 
+	PrecacheModel(FLAG_MODEL);
+
 	for(int i; i <= MAXENTITIES; i++)
 	{
 		if(i < MAXTF2PLAYERS)
+		{
 			SetDefaultValues(i);
+			
+			for(int a; a < sizeof(FlagRef[]); a++)
+			{
+				FlagRef[i][a] = INVALID_ENT_REFERENCE;
+			}
+		}
 		
 		for(int a; a < sizeof(BeamRef[]); a++)
 		{
@@ -321,7 +325,7 @@ public Action RTSCamera_CommandMenu(int client, int args)
 {
 	if(client)
 	{
-		ShowMenu(client, 0);
+		RTSCamera_ShowMenu(client, 0);
 	}
 	return Plugin_Handled;
 }
@@ -335,7 +339,7 @@ public Action RTSCamera_CommandToggle(int client, int args)
 	return Plugin_Handled;
 }
 
-static void ShowMenu(int client, int page)
+void RTSCamera_ShowMenu(int client, int page)
 {
 	SetGlobalTransTarget(client);
 	Menu menu = new Menu(RTSCamera_ShowMenuH);
@@ -475,11 +479,7 @@ static void ShowMenu(int client, int page)
 				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 2");
 				menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 
-#if defined RTS
 				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 3");
-#else
-				FormatEx(buffer, sizeof(buffer), "%t", "Valid Key Info 3 ZR");
-#endif
 				menu.AddItem("-1", buffer, ITEMDRAW_DISABLED);
 
 				menu.ExitBackButton = true;
@@ -507,7 +507,7 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 		{
 			BindingKey[client] = -1;
 			if(choice == MenuCancel_ExitBack)
-				ShowMenu(client, 0);
+				RTSCamera_ShowMenu(client, 0);
 		}
 		case MenuAction_Select:
 		{
@@ -551,18 +551,31 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) + 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
+
 				}
 				case 32:
 				{
 					AspectRatio[client] = 1.777777;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 33:
 				{
 					AspectRatio[client] = (RoundFloat(AspectRatio[client] * 9.0) - 1) / 9.0;
 					SaveMouseCookie(client);
 					option = 3;
+
+#if defined RTS
+					RTSMenu_FormatUpdate(client);
+#endif
 				}
 				case 41:
 				{
@@ -623,7 +636,7 @@ public int RTSCamera_ShowMenuH(Menu menu, MenuAction action, int client, int cho
 				}
 			}
 
-			ShowMenu(client, option);
+			RTSCamera_ShowMenu(client, option);
 		}
 	}
 
@@ -635,7 +648,7 @@ bool RTSCamera_InCamera(int client)
 	return FocusRef[client] != INVALID_ENT_REFERENCE;
 }
 
-void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon, const int rawMouse[2])
+void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float vel[3], int weapon, const int rawMouse[2])
 {
 	if(!RTSEnabled[client] || !CanBeInCamera(client))
 	{
@@ -643,7 +656,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			DisableCamera(client);
 		
 		if(BindingKey[client] != -1)
-			ProcessInputs(client, buttons, impulse, weapon);
+			ProcessInputs(client, buttons, impulse, vel, weapon);
 		
 		return;
 	}
@@ -655,7 +668,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	SetEntProp(client, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM);
 	
 	bool pressed[Key_MAX], previous[Key_MAX], holding[Key_MAX];
-	if(!ProcessInputs(client, buttons, impulse, weapon, pressed, previous, holding))
+	if(!ProcessInputs(client, buttons, impulse, vel, weapon, pressed, previous, holding))
 		return;
 	
 	float mouse[2];
@@ -867,18 +880,41 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	}
 
 	if(pressed[Key_Escape])
-		delete Selected[client];
-
-	if(Selected[Key_Delete] && Selected[client])
+	{
+#if defined RTS
+		if(NextMoveType[client] || BuildMode[client])
+		{
+			NextMoveType[client] = 0;
+			BuildMode[client] = 0;
+			RTSMenu_Update(client);
+		}
+#else
+		if(NextMoveType[client])
+		{
+			NextMoveType[client] = 0;
+		}
+#endif
+		else
+		{
+			ClearSelected(client);
+		}
+	}
+	else if(pressed[Key_Delete] && Selected[client])
 	{
 		int length = Selected[client].Length;
 		for(int i; i < length; i++)
 		{
 			int entity = EntRefToEntIndex(Selected[client].Get(i));
+
+#if defined RTS
+			if(entity != -1 && RTS_CanControl(client, entity))
+#else
 			if(entity != -1)
+#endif
+
 			{
 				SmiteNpcToDeath(entity);
-				if(!pressed[Key_Ctrl])
+				if(!holding[Key_Ctrl])
 					break;
 			}
 		}
@@ -886,6 +922,15 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	
 	// Highlight all selected units
 	HighlightSelectedUnits(client);
+
+#if defined RTS
+	if((pressed[Key_Delete] && Selected[client]) ||
+	    pressed[Key_Ctrl] ||
+	   (previous[Key_Ctrl] && !holding[Key_Ctrl]))
+	{
+		RTSMenu_Update(client);
+	}
+#endif
 
 	if(holding[Key_ZoomIn] || holding[Key_ZoomOut] || holding[Key_AdjustCamera])
 	{
@@ -895,17 +940,44 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	if(Selected[client])
 	{
 #if defined RTS
-		if(pressed[Key_Attack])
+		for(int a = Key_Skill1; a <= Key_Alt5; a++)
 		{
-			NextMoveType[client] = Command_Attack;
-		}
-		else if(pressed[Key_Stand])
-		{
-			NextMoveType[client] = Command_HoldPos;
-		}
-		else if(pressed[Key_Patrol])
-		{
-			NextMoveType[client] = Command_Patrol;
+			if(pressed[a])
+			{
+				bool triggered;
+				int length = Selected[client].Length;
+				for(int b; b < length; b++)
+				{
+					int entity = EntRefToEntIndex(Selected[client].Get(b));
+					if(entity != -1 && RTS_CanControl(client, entity))
+					{
+						triggered = RTS_TriggerSkill(entity, client, a - Key_Skill1);
+						if(triggered)
+							break;
+					}
+				}
+
+				if(triggered)
+				{
+					RTSMenu_Update(client);
+				}
+				else
+				{
+					switch(a)
+					{
+						case Key_Attack:
+							NextMoveType[client] = Command_Attack;
+						
+						case Key_Stand:
+							NextMoveType[client] = Command_HoldPos;
+						
+						case Key_Patrol:
+							NextMoveType[client] = Command_Patrol;
+					}
+				}
+
+				break;
+			}
 		}
 #elseif defined ZR
 		if(pressed[Key_Attack])
@@ -926,14 +998,11 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	if(pressed[Key_SelectAll])
 	{
 		if(!holding[Key_Ctrl])
-			delete Selected[client];
+			ClearSelected(client);
 		
 		int entity = MaxClients;
-		while(UnitEntityIterator(client, entity))
+		while(UnitEntityIterator(client, entity, false))
 		{
-			if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
-				continue;
-			
 			SelectUnit(client, entity);
 		}
 	}
@@ -941,21 +1010,21 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	if(pressed[Key_IdleWorker])
 	{
 		if(!holding[Key_Ctrl])
-			delete Selected[client];
-		
+			ClearSelected(client);
+	/*	
 #if defined ZR
+		char npc_classname[60];
 		for(int entity = MaxClients + 1; entity < MAXENTITIES; entity++)
 		{
 			BarrackBody npc = view_as<BarrackBody>(entity);
-			if(!b_NpcHasDied[entity] && i_NpcInternalId[entity] == BARRACKS_VILLAGER && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 			{
-				if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
-					continue;
-				
-				SelectUnit(client, entity);
+				NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));
+				if(StrEqual(npc_classname, "npc_barrack_villager"))
+					SelectUnit(client, entity);
 			}
 		}
-#endif
+#endif*/
 	}
 
 	// Cursor point and rectangle selection through a stationary viewport
@@ -970,7 +1039,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 	float cursorPos[3];
 	GetCursorVector(client, CameraVector[client], mouse, cursorPos);
 	GetVectorAngles(cursorPos, cursorPos);
-	int selected = GetUnitSelectTrace(client, cameraAbsPos, cursorPos, cursorPos);
+	HoveringOver[client] = GetUnitSelectTrace(client, cameraAbsPos, cursorPos, cursorPos);
 
 	if(holding[Key_LeftClick])	// Holding/Pressing Left-Click
 	{
@@ -1073,7 +1142,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		if(InSelectDrag[client])
 		{
 			if(!holding[Key_Ctrl])
-				delete Selected[client];
+				ClearSelected(client);
 
 			//if(GetVectorDistance(SelectionVerticies[client][1], SelectionVerticies[client][3], true) > 0.0)
 			if(SelectionVerticies[client][1][0] != SelectionVerticies[client][3][0] ||
@@ -1082,7 +1151,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			{
 				int entity = MaxClients;
 				float pos[3], offset[3], vectors[4][3], vertex[3];
-				while(UnitEntityIterator(client, entity))
+				while(UnitEntityIterator(client, entity, true))
 				{
 					if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
 						continue;
@@ -1113,21 +1182,26 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 					}
 				}
 
-				if(!Selected[client] && selected != INVALID_ENT_REFERENCE)
+				if(!Selected[client] && HoveringOver[client] != INVALID_ENT_REFERENCE)
 				{
-					SelectUnit(client, selected);
+					SelectUnit(client, HoveringOver[client]);
 				}
 			}
-			else if(selected != INVALID_ENT_REFERENCE)
+			else if(HoveringOver[client] != INVALID_ENT_REFERENCE)
 			{
 				if(!holding[Key_Ctrl])
-					delete Selected[client];
+					ClearSelected(client);
 				
-				SelectUnit(client, selected);
+				SelectUnit(client, HoveringOver[client]);
 			}
 
 			RemoveSelectBeams(client);
 			InSelectDrag[client] = false;
+
+#if defined RTS
+			RTSMenu_Update(client);
+#endif
+
 		}
 	}
 
@@ -1178,9 +1252,11 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 		}
 		else if(!holding[Key_LeftClick])	// Not cancel with Left-Click
 		{
-			MoveSelectedUnits(client, cursorPos);
+			MoveSelectedUnits(client, cursorPos, HoveringOver[client]);
 		}
 	}
+
+	RenderWaypoints(client);
 
 	if(!InSelectDrag[client])	// Not holding Left-Click
 	{
@@ -1194,63 +1270,36 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, int weapon,
 			color[0] = 0;
 			color[2] = 0;
 		}
-		else if(selected != INVALID_ENT_REFERENCE)	// Hovering over an unit
+		else if(HoveringOver[client] != INVALID_ENT_REFERENCE)	// Hovering over an unit
 		{
 			cursor = CURSOR_SELECTABLE;
 
-			// TODO: Selectable everything, color depending on unit enemy/ally
-
-			// Green
-			color[0] = 0;
-			color[2] = 0;
+#if defined RTS
+			if(RTS_CanControl(client, HoveringOver[client]))
+#endif
+			{
+				// Green, Your's
+				color[0] = 0;
+				color[2] = 0;
+			}
+#if defined RTS
+			else if((IsObject(HoveringOver[client]) && TeamNumber[HoveringOver[client]] == 0) || RTS_IsEntAlly(client, HoveringOver[client]))
+			{
+				// Yellow, Ally's
+				color[2] = 0;
+			}
+			else
+			{
+				// Red, Enemy's
+				color[1] = 0;
+				color[2] = 0;
+			}
+#endif
 		}
 		else if(Selected[client] && NextMoveType[client])	// Has selected units
 		{
 			cursor = CURSOR_MOVE;
-
-#if defined RTS
-			switch(NextMoveType[client])
-			{
-				case Command_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Command_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Command_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#elseif defined ZR
-			switch(NextMoveType[client])
-			{
-				case Move_Attack:
-				{
-					// Red
-					color[1] = 0;
-					color[2] = 0;
-				}
-				case Move_HoldPos:
-				{
-					// Yellow
-					color[2] = 0;
-				}
-				case Move_Patrol:
-				{
-					// Blue
-					color[0] = 0;
-					color[1] = 0;
-				}
-			}
-#endif
+			GetColor(NextMoveType[client], color);
 		}
 		else
 		{
@@ -1287,6 +1336,56 @@ static bool TraceEntityFilter_Units(int entity, int contentsMask, int client)
 	return IsSelectableUnitEntity(client, entity);
 }
 
+static void GetColor(int type, int color[4])
+{
+	switch(type)
+	{
+#if defined RTS
+		case Command_Move:
+		{
+			// Green
+			color[0] = 0;
+			color[2] = 0;
+		}
+		case Command_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Command_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Command_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#elseif defined ZR
+		case Move_Attack:
+		{
+			// Red
+			color[1] = 0;
+			color[2] = 0;
+		}
+		case Move_HoldPos:
+		{
+			// Yellow
+			color[2] = 0;
+		}
+		case Move_Patrol:
+		{
+			// Blue
+			color[0] = 0;
+			color[1] = 0;
+		}
+#endif
+	}
+}
+
 static void HighlightSelectedUnits(int client)
 {
 	if(Selected[client])
@@ -1301,31 +1400,69 @@ static void HighlightSelectedUnits(int client)
 				i--;
 				length--;
 			}
-			else
-			{
-				DrawUnitHealthBar(client, entity);
-			}
 		}
 
 		if(!length)
-			delete Selected[client];
+			ClearSelected(client);
 	}
 }
 
-static void MoveSelectedUnits(int client, const float vecMovePos[3])
+static stock void MoveSelectedUnits(int client, const float vecMovePos[3], int target)
 {
 	if(Selected[client])
 	{
-		CreateParticle("ping_circle", vecMovePos, NULL_VECTOR);
-
 		int length = Selected[client].Length;
 		if(length)
 		{
+			bool success;
+
 			for(int i; i < length; i++)
 			{
 				int entity = EntRefToEntIndex(Selected[client].Get(i));
-				if(entity != -1)
-					MoveUnit(client, entity, vecMovePos);
+#if defined RTS
+				if(entity == -1 || !RTS_CanControl(client, entity))
+#else
+				if(entity == -1)
+#endif
+				{
+					Selected[client].Erase(i);
+					i--;
+					length--;
+				}
+				else if(!b_NpcHasDied[entity])
+				{
+#if defined RTS
+					int type = NextMoveType[client];
+					if(type < Command_Move)
+						type = Command_Move;
+					
+					UnitBody_AddCommand(entity, HoldPress[client][Key_Ctrl] ? 0 : 1, type, vecMovePos, target);
+
+					if(!success)
+						RTS_PlaySound(entity, client, Sound_Move);
+					
+/*#elseif defined ZR
+
+					f3_SpawnPosition[entity] = vecMovePos;
+
+					switch(NextMoveType[client])
+					{
+						case Move_Normal:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSMove;
+						
+						case Move_Attack:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
+						
+						case Move_HoldPos:
+							view_as<BarrackBody>(entity).CmdOverride = Command_HoldPos;
+						
+						case Move_Patrol:
+							view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
+					}*/
+#endif
+
+					success = true;
+				}
 			}
 			
 #if defined ZR
@@ -1345,242 +1482,24 @@ static void MoveSelectedUnits(int client, const float vecMovePos[3])
 			}
 #endif
 
-		}
-
-		NextMoveType[client] = 0;
-	}
-}
-
-static void DrawUnitHealthBar(int client, int entity)
-{
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	if(health < 1)
-	{
-		RemoveSelectBeams(entity);
-		return;
-	}
-
-	int maxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
-
-	int focus = EntRefToEntIndex(FocusRef[client]);
-	int camera = EntRefToEntIndex(CameraRef[client]);
-
-	float focusPos[3];
-	GetEntPropVector(focus, Prop_Send, "m_vecOrigin", focusPos);
-
-	float cameraPos[3];
-	GetEntPropVector(camera, Prop_Send, "m_vecOrigin", cameraPos); // Relative to parent focus entity
-
-	AddVectors(focusPos, cameraPos, cameraPos); // Now absolute in world coordiates
-
-	float cameraAng[3];
-	GetEntPropVector(camera, Prop_Data, "m_angAbsRotation", cameraAng);
-
-	float vecRight[3], vecUp[3];
-	GetAngleVectors(cameraAng, NULL_VECTOR, vecRight, vecUp);
-
-	//float entityPos[3];
-	//GetEntPropVector(entity, Prop_Send, "m_vecOrigin", entityPos);
-
-	// Calculate the center and the highest point at the top
-	// of the bounding box as projected onto the camera plane
-
-	float bBoxTop[4][3];
-	float heights[4];
-	GetEntityBoundingBoxTop(entity, bBoxTop);
-
-	float centerPos[3];
-	int highest;
-	float maxHeight = -FAR_FUTURE;
-	float shiftUp[3];
-
-	for(int i; i < sizeof(bBoxTop); i++)
-	{
-		SubtractVectors(bBoxTop[i], cameraPos, shiftUp);
-		NormalizeVector(shiftUp, shiftUp);
-
-		// Sum total for average calcuation
-		AddVectors(centerPos, shiftUp, centerPos);
-
-		heights[i] = GetVectorDotProduct(shiftUp, vecUp);
-		if (heights[i] > maxHeight) {
-			maxHeight = heights[i];
-			highest = i;
-		}
-	}
-
-	// Divide by 4 for average
-	ScaleVector(centerPos, 0.25);
-
-	shiftUp = vecUp;
-	ScaleVector(shiftUp, heights[highest] - GetVectorDotProduct(centerPos, vecUp));
-	AddVectors(centerPos, shiftUp, centerPos);
-	NormalizeVector(centerPos, centerPos);
-
-	float hpbarPos[3];
-	hpbarPos = centerPos;
-	ScaleVector(hpbarPos, 50.0);
-	AddVectors(cameraPos, hpbarPos, hpbarPos);
-
-	// Move center to the left to offset for bar extending due to overheal
-	if(health > maxHealth)
-	{
-		float overhealOffset[3];
-		overhealOffset = vecRight;
-		ScaleVector(overhealOffset, HEALTH_BAR_HP_SCALE * (maxHealth - health));
-		AddVectors(hpbarPos, overhealOffset, hpbarPos);
-	}
-
-	float horizontalLeftPos[3];
-	float horizontalRightPos[3];
-
-	float barMin = HEALTH_BAR_HP_SCALE * maxHealth;
-	float barMax = HEALTH_BAR_HP_SCALE * maxHealth;
-	float barSplit = HEALTH_BAR_HP_SCALE * 2.0 * health;
-
-	float vecRightOffset[3], vecLeftOffset[3];
-	vecRightOffset = vecRight;
-	ScaleVector(vecRightOffset, 50.0);
-	vecLeftOffset = vecRightOffset;
-	ScaleVector(vecLeftOffset, -1.0);
-
-	horizontalLeftPos = vecLeftOffset;
-	ScaleVector(horizontalLeftPos, barMin);
-	AddVectors(hpbarPos, horizontalLeftPos, horizontalLeftPos);
-
-	horizontalRightPos = vecRightOffset;
-	ScaleVector(horizontalRightPos, barSplit);
-	AddVectors(horizontalLeftPos, horizontalRightPos, horizontalRightPos);
-
-	int beam1 = EntRefToEntIndex(BeamRef[entity][0]);
-	int beam2 = -1;
-	int target = -1;
-	if(!IsValidEntity(beam1))
-	{
-		RemoveSelectBeams(entity);
-
-		beam1 = CreateEntityByName("env_beam");
-		if(beam1 != -1)
-		{
-			SetEntityModel(beam1, LaserModel);
-			
-			SetEntProp(beam1, Prop_Send, "m_nBeamType", 2);
-			SetEntPropFloat(beam1, Prop_Data, "m_fWidth", 0.3);
-			SetEntPropFloat(beam1, Prop_Data, "m_fEndWidth", 0.3);
-
-			SetEntPropEnt(beam1, Prop_Data, "m_hOwnerEntity", entity);
-
-			DispatchSpawn(beam1);
-
-			BeamRef[entity][0] = EntIndexToEntRef(beam1);
-			SDKHook(beam1, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-			target = CreateEntityByName("info_target");
-			if(target != -1)
+			if(success)
 			{
-				AttachBeam(beam1, target);
-				BeamRef[entity][1] = EntIndexToEntRef(target);
-
-				if(health != maxHealth)
-				{
-					beam2 = CreateEntityByName("env_beam");
-					if(beam2 != -1)
-					{
-						SetEntityModel(beam2, LaserModel);
-						
-						SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-						SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
-						SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
-
-						SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
-
-						DispatchSpawn(beam2);
-
-						BeamRef[entity][2] = EntIndexToEntRef(beam2);
-						SDKHook(beam2, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-						AttachBeam(beam2, target);
-					}
-				}
+				float PingRange[3]; 
+				PingRange = vecMovePos;
+				PingRange[2] += 5.0;
+				CreateParticle("ping_circle", PingRange, NULL_VECTOR, client);
 			}
+
 		}
+
+		if(!HoldPress[client][Key_Ctrl])
+			NextMoveType[client] = 0;
 	}
-	else
-	{
-		target = EntRefToEntIndex(BeamRef[entity][1]);
-		beam2 = EntRefToEntIndex(BeamRef[entity][2]);
-
-		if(health == maxHealth)
-		{
-			if(beam2 != -1)
-			{
-				RemoveEntity(beam2);
-				BeamRef[entity][2] = INVALID_ENT_REFERENCE;
-			}
-		}
-		else if(beam2 == -1)
-		{
-			beam2 = CreateEntityByName("env_beam");
-			if(beam2 != -1)
-			{
-				SetEntityModel(beam2, LaserModel);
-				
-				SetEntProp(beam2, Prop_Send, "m_nBeamType", 2);
-				SetEntPropFloat(beam2, Prop_Data, "m_fWidth", 0.3);
-				SetEntPropFloat(beam2, Prop_Data, "m_fEndWidth", 0.3);
-
-				SetEntPropEnt(beam2, Prop_Data, "m_hOwnerEntity", entity);
-
-				DispatchSpawn(beam2);
-
-				BeamRef[entity][2] = EntIndexToEntRef(beam2);
-				SDKHook(beam2, SDKHook_SetTransmit, SetTransmit_HealthBeam);
-
-				AttachBeam(beam2, target);
-			}
-		}
-	}
-
-	TeleportEntity(beam1, horizontalLeftPos);
-	TeleportEntity(target, horizontalRightPos);
-
-	if(health != maxHealth)
-	{
-		horizontalLeftPos = horizontalRightPos;
-
-		horizontalRightPos = vecRightOffset;
-		ScaleVector(horizontalRightPos, barMax);
-		AddVectors(hpbarPos, horizontalRightPos, horizontalRightPos);
-
-		TeleportEntity(beam2, horizontalRightPos);
-	}
-
-	// Team Color
-	SetEntityRenderColor(beam1, 255, 0, 0, 255);
-}
-
-static Action SetTransmit_HealthBeam(int entity, int client)
-{
-	if(client > 0 && client <= MaxClients && Selected[client])
-	{
-		int owner = GetEntPropEnt(entity, Prop_Data, "m_hOwnerEntity");
-		if(owner == -1)
-		{
-			RemoveEntity(entity);
-		}
-		else if(Selected[client].FindValue(EntIndexToEntRef(owner)) != -1)
-		{
-			DrawUnitHealthBar(client, entity);
-			return Plugin_Continue;
-		}
-	}
-
-	return Plugin_Handled;
 }
 
 static void RemoveSelectBeams(int owner)
 {
-	for(int i; i < 4; i++)
+	for(int i; i < sizeof(BeamRef[]); i++)
 	{
 		if(BeamRef[owner][i] == INVALID_ENT_REFERENCE)
 			continue;
@@ -1593,7 +1512,100 @@ static void RemoveSelectBeams(int owner)
 	}
 }
 
-static void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
+// Call this only after validating Selected[]
+static stock void RenderWaypoints(int client)
+{
+#if defined RTS
+	if(Selected[client])
+	{
+		int entity = EntRefToEntIndex(Selected[client].Get(0));
+
+		if(RTS_CanControl(client, entity))
+		{
+			int type, target;
+			float pos[3];
+			for(int i; i < sizeof(FlagRef[]); i++)
+			{
+				if(IsObject(entity))
+				{
+
+				}
+				else if(UnitBody_GetCommand(entity, i, type, pos, target) && type >= Command_Move)
+				{
+					int color[4] = {255, 255, 255, 255};
+					GetColor(type, color);
+
+					int flag = -1;
+
+					if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+						flag = EntRefToEntIndex(FlagRef[client][i]);
+					
+					if(flag == -1)
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						flag = CreateEntityByName("prop_dynamic");
+						if(flag == -1)
+							continue;
+						
+						DispatchKeyValueVector(flag, "origin", pos);
+						DispatchKeyValueVector(flag, "angles", {0.0, -135.0, 0.0});
+						DispatchKeyValue(flag, "model", FLAG_MODEL);
+						DispatchKeyValue(flag, "modelscale", "1.0");
+						DispatchKeyValue(flag, "skin", "2");
+						DispatchKeyValue(flag, "solid", "0");
+
+						SetEntPropEnt(flag, Prop_Data, "m_hOwnerEntity", client);
+
+						DispatchSpawn(flag);
+
+						SetEntityRenderMode(flag, RENDER_TRANSCOLOR);
+						SDKHook(flag, SDKHook_SetTransmit, SetTransmit_Beam);
+
+						FlagRef[client][i] = EntIndexToEntRef(flag);
+					}
+					else
+					{
+						if(target != -1)
+							GetAbsOrigin(target, pos);
+						
+						TeleportEntity(flag, pos, NULL_VECTOR, NULL_VECTOR);
+					}
+					
+					SetEntityRenderColor(flag, color[0], color[1], color[2], color[3]);
+				}
+				else if(FlagRef[client][i] != INVALID_ENT_REFERENCE)
+				{
+					int flag = EntRefToEntIndex(FlagRef[client][i]);
+					if(flag != -1)
+						RemoveEntity(flag);
+
+					FlagRef[client][i] = INVALID_ENT_REFERENCE;
+				}
+			}
+
+			return;
+		}
+
+	}
+	
+	for(int i; i < sizeof(FlagRef[]); i++)
+	{
+		if(FlagRef[client][i] == INVALID_ENT_REFERENCE)
+			continue;
+		
+		int entity = EntRefToEntIndex(FlagRef[client][i]);
+		if(entity != -1)
+			RemoveEntity(entity);
+
+		FlagRef[client][i] = INVALID_ENT_REFERENCE;
+	}
+#endif
+}
+
+/*
+static stock void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
 {
 	float vecMins[3], vecMaxs[3];
 	GetEntPropVector(entity, Prop_Send, "m_vecMins", vecMins);
@@ -1621,6 +1633,7 @@ static void GetEntityBoundingBoxTop(int entity, float vecPoints[4][3])
 	vecPoints[3][1] = vecMaxs[1];
 	vecPoints[3][2] = vecMaxs[2];
 }
+*/
 
 static Action SetTransmit_Beam(int entity, int client)
 {
@@ -1647,7 +1660,7 @@ static bool CanBeInCamera(int client)
 		!TF2_IsPlayerInCondition(client, TFCond_Taunting));
 }
 
-static void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
+void GetCursorVector(int client, const float vecVector[3], const float mouse[2], float cursorVector[3])
 {
 	float maxX = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5), 1.0);
 	float maxY = ArcTangent2(DegToRad(LastDefaultFOV[client] * 0.5 / AspectRatio[client]), 1.0);
@@ -1715,8 +1728,8 @@ static void EnableCamera(int client)
 #endif
 	
 	//If these below is even needed
-	//SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", 0);
-	//SetEntProp(client, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM);
+	SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", 0);
+	SetEntProp(client, Prop_Send, "m_iObserverMode", OBS_MODE_DEATHCAM);
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);
 	//SetEntProp(client, Prop_Send, "m_iDefaultFOV", LastDefaultFOV[client]);
@@ -1745,7 +1758,9 @@ static void DisableCamera(int client)
 	FocusRef[client] = INVALID_ENT_REFERENCE;
 
 	RemoveSelectBeams(client);
-	delete Selected[client];
+	ClearSelected(client);
+	RenderWaypoints(client);
+	HoveringOver[client] = -1;
 
 	//SetEntProp(client, Prop_Send, "m_iFOV", LastFOV[client]);
 	//SetEntProp(client, Prop_Send, "m_iDefaultFOV", LastDefaultFOV[client]);
@@ -1784,6 +1799,10 @@ static void LoadMouseCookie(int client)
 			MouseSensitivity[client] = StringToFloat(buffers[1]);
 			ScrollSpeed[client] = StringToFloat(buffers[2]);
 			ZoomSpeed[client] = StringToFloat(buffers[3]);
+			
+#if defined RTS
+			RTSMenu_FormatUpdate(client);
+#endif
 		}
 	}
 }
@@ -1798,10 +1817,28 @@ static void SaveMouseCookie(int client)
 	}
 }
 
-stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool pressed[Key_MAX] = {}, bool previous[Key_MAX] = {}, bool holding[Key_MAX] = {})
+stock bool ProcessInputs(int client, int buttons, int impulse, const float vel[3], int weapon, bool pressed[Key_MAX] = {}, bool previous[Key_MAX] = {}, bool holding[Key_MAX] = {})
 {
 	if(BindingKey[client] != -1)
 	{
+		if(weapon)
+		{
+			BindKey(client, "lastinv");
+			return false;
+		}
+
+		if(vel[2] > 0.0)
+		{
+			BindKey(client, "+moveup");
+			return false;
+		}
+
+		if(vel[2] < 0.0)
+		{
+			BindKey(client, "+movedown");
+			return false;
+		}
+
 		for(int i; i < IN_MAX; i++)
 		{
 			if(buttons & (1 << i))
@@ -1851,8 +1888,47 @@ stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool 
 			
 			HoldPress[client][i] = false;
 		}
+		else if(StrEqual(KeyBinds[client][i], "lastinv"))
+		{
+			if(weapon)
+			{
+				NewPress[client][i] = true;
+			}
 
-		//if(HoldPress[client][i])
+			HoldPress[client][i] = false;
+		}
+		else if(StrEqual(KeyBinds[client][i], "+moveup"))
+		{
+			if(vel[2] > 0.0)
+			{
+				if(!HoldPress[client][i])
+				{
+					NewPress[client][i] = true;
+					HoldPress[client][i] = true;
+				}
+			}
+			else
+			{
+				HoldPress[client][i] = false;
+			}
+		}
+		else if(StrEqual(KeyBinds[client][i], "+movedown"))
+		{
+			if(vel[2] < 0.0)
+			{
+				if(!HoldPress[client][i])
+				{
+					NewPress[client][i] = true;
+					HoldPress[client][i] = true;
+				}
+			}
+			else
+			{
+				HoldPress[client][i] = false;
+			}
+		}
+
+		//if(NewPress[client][i])
 		//	PrintToChat(client, "%d - %s", i, DefaultCmd[i]);
 
 		previous[i] = LastPress[client][i];
@@ -1865,7 +1941,7 @@ stock bool ProcessInputs(int client, int buttons, int impulse, int weapon, bool 
 	return true;
 }
 
-bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
+stock bool RTSCamera_ClientCommandKeyValues(int client, const char[] command)
 {
 	bool result;
 	if(BindingKey[client] != -1)
@@ -1928,7 +2004,7 @@ static void BindKey(int client, const char[] input, any ...)
 
 	for(int i; i < Key_MAX; i++)
 	{
-		if(BindingKey[client] != i && KeyBinds[client][i])
+		if(BindingKey[client] != i && StrEqual(KeyBinds[client][i], KeyBinds[client][BindingKey[client]]))
 		{
 			strcopy(KeyBinds[client][i], sizeof(KeyBinds[][]), "<unbound>");
 			break;
@@ -1937,7 +2013,7 @@ static void BindKey(int client, const char[] input, any ...)
 
 	BindingKey[client] = -1;
 	SaveKeybinds(client);
-	ShowMenu(client, 9);
+	RTSCamera_ShowMenu(client, 9);
 }
 
 static void LoadKeybinds(int client)
@@ -1997,109 +2073,129 @@ static int InputToKey(int client, const char[] input, any ...)
 	return -1;
 }
 
-// Stubs start here
-// Fill in with code specific to bot or unit implementation
-
-/**
- * Checks whether the selected entity is a unit controlled by the game mode
- * and can be selected by the commander
- *
- * @param client			Commander selecting the unit
- * @param entity			Entity being checked
- * @return					True if the entity is a unit
- */
-static bool IsSelectableUnitEntity(int client, int entity)
+static void ClearSelected(int client)
 {
-	if(entity > MaxClients && entity < sizeof(b_NpcHasDied) && !b_NpcHasDied[entity])
+	delete Selected[client];
+
+#if defined RTS
+	BuildMode[client] = 0;
+	RTSMenu_Update(client);
+#endif
+}
+
+stock bool RTSCamera_IsUnitSelectedBy(int entity, int client)
+{
+	return HoveringOver[client] == entity || (Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1);
+}
+
+stock bool RTSCamera_HoldingCtrl(int client)
+{
+	return HoldPress[client][Key_Ctrl];
+}
+
+stock ArrayList RTSCamera_GetSelected(int client)
+{
+	return Selected[client];
+}
+
+stock void RTSCamera_SetSelected(int client, ArrayList list)
+{
+	delete Selected[client];
+	Selected[client] = list;
+}
+
+stock int RTSCamera_GetCamera(int client)
+{
+	return EntRefToEntIndex(CameraRef[client]);
+}
+
+stock int RTSCamera_GetFocus(int client)
+{
+	return EntRefToEntIndex(FocusRef[client]);
+}
+
+stock void RTSCamera_GetVector(int client, float vec[3])
+{
+	vec = CameraVector[client];
+}
+
+stock float RTSCamera_GetAspectRatio(int client)
+{
+	return AspectRatio[client];
+}
+
+stock void RTSCamera_GetMousePos(int client, float mouse[2])
+{
+	mouse = LastMousePos[client];
+}
+
+static stock bool IsSelectableUnitEntity(int client, int entity)
+{
+	if(entity > MaxClients && entity < MAXENTITIES)
 	{
 #if defined RTS
-		if(UnitBody_CanControl(client, entity))
+		if(!b_NpcHasDied[entity] || IsObject(entity))
 		{
 			return true;
 		}
-#elseif defined ZR
-		BarrackBody npc = view_as<BarrackBody>(entity);
-		if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+/*#elseif defined ZR
+		if(!b_NpcHasDied[entity])
 		{
-			return true;
-		}
+			BarrackBody npc = view_as<BarrackBody>(entity);
+			if(npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
+			{
+				return true;
+			}
+		}*/
 #endif
 	}
 
 	return false;
 }
 
-/**
- * Called when a unit entity is successfully selected
- * 
- * @param client			Commander who selected the unit
- * @param iSelectedEntity	Entity of selected unit
- */
-static void SelectUnit(int client, int iSelectedEntity)
+static void SelectUnit(int client, int entity)
 {
+	if(Selected[client] && Selected[client].FindValue(EntIndexToEntRef(entity)) != -1)
+		return;
+	
 	if(!Selected[client])
+	{
 		Selected[client] = new ArrayList();
 
-	Selected[client].Push(EntIndexToEntRef(iSelectedEntity));
-}
-
-/**
- * Called to move a selected unit
- * 
- * @param client			Commander who is moving the unit
- * @param entity			Entity of unit being moved
- * @param vecMovePos		Coordinates to move the unit to
- */
-static void MoveUnit(int client, int entity, const float vecMovePos[3])
-{
 #if defined RTS
-	int type = NextMoveType[client];
-	if(type < Command_Move)
-		type = Command_Move;
-	
-	UnitBody_AddCommand(entity, type, _, vecMovePos);
-#elseif defined ZR
-	f3_SpawnPosition[entity] = vecMovePos;
-
-	switch(NextMoveType[client])
-	{
-		case Move_Normal:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSMove;
-		
-		case Move_Attack:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-		
-		case Move_HoldPos:
-			view_as<BarrackBody>(entity).CmdOverride = Command_HoldPos;
-		
-		case Move_Patrol:
-			view_as<BarrackBody>(entity).CmdOverride = Command_RTSAttack;
-	}
+		if(RTS_CanControl(client, entity))
+			RTS_PlaySound(entity, client, Sound_Select);
 #endif
+
+	}
+
+	Selected[client].Push(EntIndexToEntRef(entity));
 }
 
-static bool UnitEntityIterator(int client, int &entity)
+static stock bool UnitEntityIterator(int client, int &entity, bool villagers)
 {
-#if defined RTS
 	entity++;
 	for(; entity < MAXENTITIES; entity++)
 	{
-		if(!b_NpcHasDied[entity] && UnitBody_CanControl(client, entity))
+#if defined RTS
+		if(!b_NpcHasDied[entity] && (RTS_IsSpectating(client) || RTS_CanControl(client, entity)))
 		{
+			if(RTS_HasFlag(entity, Flag_Structure))
+				continue;
+			
+			if(!villagers && RTS_HasFlag(entity, Flag_Worker))
+				continue;
+			
 			return true;
 		}
-	}
-#elseif defined ZR
-	entity++;
-	for(; entity < MAXENTITIES; entity++)
-	{
+/*#elseif defined ZR
 		BarrackBody npc = view_as<BarrackBody>(entity);
 		if(!b_NpcHasDied[entity] && npc.OwnerUserId && GetClientOfUserId(npc.OwnerUserId) == client)
 		{
 			return true;
-		}
-	}
+		}*/
 #endif
+	}
 
 	return false;
 }

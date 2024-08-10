@@ -33,6 +33,21 @@ void KazimierzLongArcher_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds));	i++) { PrecacheSound(g_MeleeAttackSounds[i]);	}
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Armorless Union Cleanup Squad");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_kazimersch_longrange");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_longrange");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return KazimierzLongArcher(client, vecPos, vecAng, ally);
 }
 
 methodmap KazimierzLongArcher < CClotBody
@@ -45,9 +60,7 @@ methodmap KazimierzLongArcher < CClotBody
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayIdleAlertSound()");
-		#endif
+		
 	}
 	
 	public void PlayHurtSound() {
@@ -59,35 +72,28 @@ methodmap KazimierzLongArcher < CClotBody
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayHurtSound()");
-		#endif
+		
 	}
 	
 	public void PlayDeathSound() {
 	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayDeathSound()");
-		#endif
+		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
-		#if defined DEBUG_SOUND
-		PrintToServer("CClot::PlayMeleeHitSound()");
-		#endif
+		
 	}
 
 	
-	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], bool ally)
+	public KazimierzLongArcher(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		KazimierzLongArcher npc = view_as<KazimierzLongArcher>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "17500", ally));
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
-		i_NpcInternalId[npc.index] = SEABORN_KAZIMIERZ_LONGARCHER;
 		i_NpcWeight[npc.index] = 1;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -110,9 +116,10 @@ methodmap KazimierzLongArcher < CClotBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		
-		SDKHook(npc.index, SDKHook_Think, KazimierzLongArcher_ClotThink);
-	
+		func_NPCDeath[npc.index] = KazimierzLongArcher_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = KazimierzLongArcher_OnTakeDamage;
+		func_NPCThink[npc.index] = KazimierzLongArcher_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventKazimierzLongArcher;
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 170.0;
@@ -223,14 +230,15 @@ public void KazimierzLongArcher_ClotThink(int iNPC)
 			{
 				npc.m_flSpeed = 170.0;
 			}
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				/*
 				int color[4];
 				color[0] = 255;
@@ -311,11 +319,11 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			float vecTargetPredict[3];
 				
 			float projectile_speed = 1500.0;
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
 			npc.FaceTowards(vecTarget, 30000.0);
 
-			vecTargetPredict = PredictSubjectPositionForProjectilesOld(npc, PrimaryThreatIndex, projectile_speed);
+			PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,vecTargetPredict);
 
 			float damage = 75.0;
 			npc.PlayMeleeSound();
@@ -337,13 +345,13 @@ public void HandleAnimEventKazimierzLongArcher(int entity, int event)
 			}
 			if(damage > 50.0)
 			{
-				for(int entitycount; entitycount<i_MaxcountNpc_Allied; entitycount++) //RED npcs.
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++) //RED npcs.
 				{
-					int entity_close = EntRefToEntIndex(i_ObjectsNpcs_Allied[entitycount]);
+					int entity_close = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
 					if(IsValidEntity(entity_close))
 					{
 						CClotBody npcenemy = view_as<CClotBody>(entity_close);
-						if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close]) //Check if dead or even targetable
+						if(!npcenemy.m_bThisEntityIgnored && IsEntityAlive(entity_close) && !b_NpcIsInvulnerable[entity_close] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity_close] && GetTeam(entity_close) == TFTeam_Red) //Check if dead or even targetable
 						{
 							GetEntPropVector(entity_close, Prop_Data, "m_vecAbsOrigin", AllyPos);
 							float flDistanceToTarget = GetVectorDistance(SelfPos, AllyPos, true);
@@ -397,9 +405,6 @@ public void KazimierzLongArcher_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, KazimierzLongArcher_ClotThink);
-		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

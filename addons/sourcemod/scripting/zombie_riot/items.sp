@@ -27,7 +27,12 @@ static const char Categories[][] =
 	"Medieval Empire",
 	"Cry of Fear",
 	"Seaborn Infection",
-	"Expidonsa"
+	"Expidonsa",
+	"Interitus Alliances",
+	"Chaos Allience",
+	"Voided Subjects",
+	"Ruina",
+	//"Blue Paradox"
 };
 
 enum struct GiftItem
@@ -45,7 +50,7 @@ enum struct OwnedItem
 
 static ArrayList GiftItems;
 static ArrayList OwnedItems;
-static int LastMenuPage[MAXTF2PLAYERS];
+static int CategoryPage[MAXTF2PLAYERS];
 
 static int g_BeamIndex = -1;
 static int i_RarityType[MAXENTITIES];
@@ -266,11 +271,6 @@ bool Items_HasNamedItem(int client, const char[] name)
 	return false;
 }
 
-stock void Items_GiveNPCKill(int client, int id)
-{
-	//AddFlagOfLevel(client, -id, 1, true);
-}
-
 bool Items_GiveIdItem(int client, int id)
 {
 	return AddFlagOfLevel(client, IdToLevel(id), IdToFlag(id));
@@ -309,34 +309,36 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 
 	if(inPage)
 	{
+		NPCData data;
+		NPC_GetById(page, data);
+
 		char buffer[400];
-		FormatEx(buffer, sizeof(buffer), "%s Desc", NPC_Names[page]);
+		FormatEx(buffer, sizeof(buffer), "%s Desc", data.Name);
 		if(TranslationPhraseExists(buffer))
 		{
 			Format(buffer, sizeof(buffer), "%t", buffer);
 
 			/*if(Database_IsCached(client))
 			{
-				menu.SetTitle("%t\n \n%s\n%t\n ", NPC_Names[page], buffer, LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+				menu.SetTitle("%t\n \n%s\n%t\n ", data.Name, buffer, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 			}
 			else*/
 			{
-				menu.SetTitle("%t\n \n%s\n ", NPC_Names[page], buffer);
+				menu.SetTitle("%t\n \n%s\n ", data.Name, buffer);
 			}
 		}
 		/*else if(Database_IsCached(client))
 		{
-			menu.SetTitle("%t\n \n%t\n ", NPC_Names[page], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
+			menu.SetTitle("%t\n \n%t\n ", data.Name, CategoryPage[client] ? "Zombie Kills" : "Allied Summons", GetFlagsOfLevel(client, -page));
 		}*/
 		else
 		{
-			menu.SetTitle("%t\n ", NPC_Names[page]);
+			menu.SetTitle("%t\n ", data.Name);
 		}
 		
-		char data[16];
-		IntToString(page, data, sizeof(data));
+		IntToString(page, data.Plugin, sizeof(data.Plugin));
 		FormatEx(buffer, sizeof(buffer), "%t", "Back");
-		menu.AddItem(data, buffer);
+		menu.AddItem(data.Plugin, buffer);
 
 		menu.Display(client, MENU_TIME_FOREVER);
 	}
@@ -345,37 +347,35 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		//int kills;
 		int pos;
 
-		char data[16], buffer[64];
-		for(int i; i < sizeof(NPC_Names); i++)
+		NPCData data;
+		int length = NPC_GetCount();
+		for(int i; i < length; i++)
 		{
-			if(NPCCategory[i] == LastMenuPage[client])
+			NPC_GetById(i, data);
+			if(data.Plugin[0] && data.Category == CategoryPage[client])
 			{
-				IntToString(i, data, sizeof(data));
-				FormatEx(buffer, sizeof(buffer), "%t", NPC_Names[i]);
-				
+				IntToString(i, data.Plugin, sizeof(data.Plugin));
+				Format(data.Name, sizeof(data.Name), "%t", data.Name);
+
 				if(i == page)
-				{
-					pos = menu.AddItem(data, buffer);
-				}
-				else
-				{
-					menu.AddItem(data, buffer);
-				}
+					pos = menu.ItemCount;
+				
+				menu.AddItem(data.Plugin, data.Name);
 
 				//kills += GetFlagsOfLevel(client, -i);
 			}
 		}
 
-		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]], LastMenuPage[client] ? "Zombie Kills" : "Allied Summons", kills);
-		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[LastMenuPage[client]]);
+		//menu.SetTitle("%t\n%t\n \n%t\n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]], CategoryPage[client] ? "Zombie Kills" : "Allied Summons", kills);
+		menu.SetTitle("%t\n%t\n \n%t\n ", "TF2: Zombie Riot", "Encyclopedia", Categories[CategoryPage[client]]);
 
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, (pos / 7 * 7), MENU_TIME_FOREVER);
 	}
 	else
 	{
-		if(LastMenuPage[client] < 0)
-			LastMenuPage[client] = 0;
+		if(CategoryPage[client] < 0)
+			CategoryPage[client] = 0;
 		
 		/*int kills;
 		int length = OwnedItems.Length;
@@ -399,8 +399,8 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 		}
 
 		menu.ExitBackButton = true;
-		menu.DisplayAt(client, (LastMenuPage[client] / 7 * 7), MENU_TIME_FOREVER);
-		LastMenuPage[client] = -1;
+		menu.DisplayAt(client, (CategoryPage[client] / 7 * 7), MENU_TIME_FOREVER);
+		CategoryPage[client] = -1;
 	}
 }
 
@@ -416,7 +416,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 		{
 			if(choice == MenuCancel_ExitBack)
 			{
-				if(LastMenuPage[client] == -1)
+				if(CategoryPage[client] == -1)
 				{
 					Store_Menu(client);
 				}
@@ -435,7 +435,7 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			}
 			else
 			{
-				LastMenuPage[client] = -1;
+				CategoryPage[client] = -1;
 			}
 		}
 		case MenuAction_Select:
@@ -444,9 +444,9 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			int id = StringToInt(buffer);
 
-			if(LastMenuPage[client] == -1)	// Main -> Category
+			if(CategoryPage[client] == -1)	// Main -> Category
 			{
-				LastMenuPage[client] = id;
+				CategoryPage[client] = id;
 				Items_EncyclopediaMenu(client, 0, false);
 			}
 			else if(choice || menu.GetItem(1, data, sizeof(data)))	// Category -> Item
@@ -816,4 +816,9 @@ bool Item_ClientHasAllRarity(int client, int rarity)
 		return true;
 	}
 	return false;
+}
+
+public void MapChooser_OnClientItem(int client, const char[] item, int amount, bool &result)
+{
+	result = Items_HasNamedItem(client, item);
 }

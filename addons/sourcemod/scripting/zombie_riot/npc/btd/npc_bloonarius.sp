@@ -18,12 +18,12 @@ static const int BloonLowCount[] =
 	3
 };
 
-static const int BloonHigh[] =
+static const char BloonHigh[][] =
 {
-	BTD_BLOON,
-	BTD_BLOON,
-	BTD_MOAB,
-	BTD_ZOMG
+	"npc_bloon",
+	"npc_bloon",
+	"npc_moab",
+	"npc_zomg"
 };
 
 static const char BloonHighData[][] =
@@ -143,6 +143,20 @@ static int i_PlayMusicSound;
 
 void Bloonarius_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Bloonarius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bloonarius");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusdeath.wav");
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusspawn.wav");
 	PrecacheSoundCustom("zombie_riot/btd/bossbloonariusvomit.wav");
@@ -150,6 +164,10 @@ void Bloonarius_MapStart()
 	PrecacheModel("models/zombie_riot/btd/bloonarius.mdl");
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return Bloonarius(client, vecPos, vecAng, ally, data);
+}
 methodmap Bloonarius < CClotBody
 {
 	public void PlaySpawnSound()
@@ -198,16 +216,11 @@ methodmap Bloonarius < CClotBody
 		if(GetEntProp(this.index, Prop_Data, "m_iHealth") < (GetEntProp(this.index, Prop_Data, "m_iMaxHealth") / 2))
 			SetEntProp(this.index, Prop_Send, "m_nSkin", 1);
 	}
-	public Bloonarius(int clien, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public Bloonarius(int clien, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		if(IsValidEntity(RaidBossActive))	// Bloon raids fail if another can't spawn
 		{
-			int entity = CreateEntityByName("game_round_win"); //You loose.
-			DispatchKeyValue(entity, "force_map_reset", "1");
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "RoundWin");
-			Music_RoundEnd(entity);
+			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
 			return view_as<Bloonarius>(-1);
 		}
@@ -218,7 +231,6 @@ methodmap Bloonarius < CClotBody
 		
 		Bloonarius npc = view_as<Bloonarius>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/bloonarius.mdl", "3.0", "1000000", ally, false, true, true, true));
 		
-		i_NpcInternalId[npc.index] = BTD_BLOONARIUS;
 		i_NpcWeight[npc.index] = 5;
 		KillFeed_SetKillIcon(npc.index, "bread_bite");
 		
@@ -227,8 +239,8 @@ methodmap Bloonarius < CClotBody
 			npc.StartActivity(activity);
 		
 		npc.m_iBleedType = BLEEDTYPE_RUBBER;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bThisNpcIsABoss = true;
 		npc.m_bStaticNPC = elite;
@@ -246,20 +258,12 @@ methodmap Bloonarius < CClotBody
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 		
-		/*for(int i; i < ZR_MAX_SPAWNERS; i++)
-		{
-			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
-			{
-				Spawns_AddToArray(npc.index, true);
-				i_ObjectsSpawners[i] = npc.index;
-				break;
-			}
-		}*/
+		func_NPCDeath[npc.index] = Bloonarius_NPCDeath;
+		func_NPCThink[npc.index] = Bloonarius_ClotThink;
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
-		RaidAllowsBuildings = true;
+		RaidAllowsBuildings = elite;
 		
 		SetBossBloonPower(CountPlayersOnRed(), elite);
 		
@@ -270,14 +274,30 @@ methodmap Bloonarius < CClotBody
 		}
 
 		npc.PlaySpawnSound();
-		Music_SetRaidMusic("#zombie_riot/btd/musicbossbloonarius.mp3", 198, true);
+		MusicEnum music;
+		strcopy(music.Path, sizeof(music.Path), "#zombie_riot/btd/musicbossbloonarius.mp3");
+		music.Time = 198;
+		music.Volume = 2.0;
+		music.Custom = true;
+		strcopy(music.Name, sizeof(music.Name), "Primal One : Bloons Tower Defense 6");
+		strcopy(music.Artist, sizeof(music.Artist), "Tim Haywood");
+		Music_SetRaidMusic(music);
 		
-		RaidModeTime = (elite ? 0.0 : GetGameTime() + 200.0);
-		Raidboss_Clean_Everyone();
+		RaidModeTime = 9999999.9; //cant afford to delete it, since duo.
 
 		i_PlayMusicSound = 0;
 		ToggleMapMusic(false);
 		npc.m_flMeleeArmor = 1.15;
+		
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
+			{
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
+			}
+		}
 		
 		//ExcuteRelay("zr_btdraid", "FireUser1");
 		return npc;
@@ -303,14 +323,9 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(!npc.m_bStaticNPC && RaidModeTime < GetGameTime())
 	{
-		int entity = CreateEntityByName("game_round_win"); //You loose.
-		DispatchKeyValue(entity, "force_map_reset", "1");
-		SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		DispatchSpawn(entity);
-		AcceptEntityInput(entity, "RoundWin");
-		Music_RoundEnd(entity);
+		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
+		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 	
 	if(Music_Disabled())
@@ -361,7 +376,7 @@ public void Bloonarius_ClotThink(int iNPC)
 		int entity = -1;
 		while((entity=FindEntityByClassname(entity, "zr_base_npc")) != -1)
 		{
-			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetEntProp(entity, Prop_Data, "m_iTeamNum") != view_as<int>(TFTeam_Red))
+			if(entity != npc.index && npc.m_bStaticNPC == view_as<CClotBody>(entity).m_bStaticNPC && !view_as<CClotBody>(entity).m_bThisNpcIsABoss && !b_ThisNpcIsImmuneToNuke[entity] && GetTeam(entity) != view_as<int>(TFTeam_Red))
 			{
 				SmiteNpcToDeath(entity);
 				SmiteNpcToDeath(entity);
@@ -407,7 +422,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			int count = SpawnMulti(BloonLowCount[tier], players, npc.m_bStaticNPC);
 			
 			Enemy enemy;
-			enemy.Index = BTD_BLOON;
+			enemy.Index = NPC_GetByPlugin("npc_bloon");
 			enemy.Is_Static = npc.m_bStaticNPC;
 
 			strcopy(enemy.Data, sizeof(enemy.Data), BloonLowData[tier]);
@@ -417,6 +432,7 @@ public void Bloonarius_ClotThink(int iNPC)
 			enemy.ExtraSpeed = 1.0;
 			enemy.ExtraDamage = 1.0;	
 			enemy.ExtraSize = 1.0;	
+			enemy.Team = GetTeam(npc.index);
 			for(int i; i<count; i++)
 			{
 				Waves_AddNextEnemy(enemy);
@@ -440,8 +456,9 @@ public void Bloonarius_ClotThink(int iNPC)
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);			
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );	
+		float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);		
+		float distance = GetVectorDistance(vecTarget, WorldSpaceVec, true);
 
 		NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		npc.StartPathing();
@@ -469,7 +486,7 @@ public void Bloonarius_ClotThink(int iNPC)
 						}
 						else
 						{
-							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 16.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
+							SDKHooks_TakeDamage(npc.m_iTarget, npc.index, npc.index, 160.0 * RaidModeScaling, DMG_CLUB, -1, _, vecHit);
 						}
 					}
 				}
@@ -511,7 +528,7 @@ public Action Bloonarius_SpawnBloonTimer(Handle timer, bool elite)
 		float pos[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(RaidBossActive, Prop_Data, "m_angRotation", ang);
 		
-		int spawn_index = Npc_Create(BloonHigh[tier], -1, pos, ang, false, BloonHighData[tier]);
+		int spawn_index = NPC_CreateByName(BloonHigh[tier], -1, pos, ang, TFTeam_Blue, BloonHighData[tier]);
 		if(spawn_index > MaxClients)
 		{
 			Zombies_Currently_Still_Ongoing++;
@@ -544,7 +561,6 @@ public void Bloonarius_NPCDeath(int entity)
 	ToggleMapMusic(true);
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, Bloonarius_ClotDamagedPost);
-	SDKUnhook(npc.index, SDKHook_Think, Bloonarius_ClotThink);
 
 	if(npc.m_bnew_target)
 	{
@@ -555,7 +571,7 @@ public void Bloonarius_NPCDeath(int entity)
 		AcceptEntityInput(entitygame, "RoundWin");
 	}
 	
-	/*Spawns_RemoveFromArray(entity);
+	Spawns_RemoveFromArray(entity);
 	
 	for(int i; i < ZR_MAX_SPAWNERS; i++)
 	{
@@ -564,7 +580,7 @@ public void Bloonarius_NPCDeath(int entity)
 			i_ObjectsSpawners[i] = 0;
 			break;
 		}
-	}*/
+	}
 	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))

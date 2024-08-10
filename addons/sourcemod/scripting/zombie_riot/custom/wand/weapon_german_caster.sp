@@ -9,6 +9,7 @@ static Handle GermanTimer[MAXTF2PLAYERS];
 static Handle GermanSilence[MAXTF2PLAYERS];
 static int GermanCharges[MAXTF2PLAYERS];
 static int GermanWeapon[MAXTF2PLAYERS];
+static int GermanAltModule[MAXTF2PLAYERS];
 static float f3_GermanFiredFromHere[MAXENTITIES][3];
 
 void Weapon_German_MapStart()
@@ -19,12 +20,26 @@ void Weapon_German_MapStart()
 
 public void Weapon_German_M1_Normal(int client, int weapon, bool &result, int slot)
 {
+	GermanAltModule[client] = 0;
 	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
 }
 
 public void Weapon_German_M1_Module(int client, int weapon, bool &result, int slot)
 {
+	GermanAltModule[client] = 0;
 	Weapon_German_M1(client, weapon, GermanSilence[client] ? 5 : 4);
+}
+
+public void Weapon_German_M1_AltModule(int client, int weapon, bool &result, int slot)
+{
+	GermanAltModule[client] = 1;
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
+}
+
+public void Weapon_German_M1_AltModule2(int client, int weapon, bool &result, int slot)
+{
+	GermanAltModule[client] = 2;
+	Weapon_German_M1(client, weapon, GermanSilence[client] ? 4 : 3);
 }
 
 static void Weapon_German_M1(int client, int weapon, int maxcharge)
@@ -178,7 +193,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 					
 					EmitSoundToAll(SOUND_WAND_SHOT, client, _, 65, _, 0.45);
 					int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_GERMAN, weapon, "unusual_tesla_flash");
-					f3_GermanFiredFromHere[projectile] = WorldSpaceCenterOld(client);
+					WorldSpaceCenter(client, f3_GermanFiredFromHere[projectile]);
 					static float ang_Look[3];
 					GetEntPropVector(projectile, Prop_Send, "m_angRotation", ang_Look);
 					if(target > 0)
@@ -254,7 +269,7 @@ void Weapon_German_WandTouch(int entity, int target)
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
-		Entity_Position = WorldSpaceCenterOld(target);
+		WorldSpaceCenter(target, Entity_Position);
 
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		
@@ -272,8 +287,18 @@ void Weapon_German_WandTouch(int entity, int target)
 
 		DamageWand *= Pow(WeaponDamageFalloff, (distance/1000000.0)); //this is 1000, we use squared for optimisations sake
 
-		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, CalculateDamageForceOld(vecForward, 10000.0), Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
+		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
+		SDKHooks_TakeDamage(target, owner, owner, DamageWand, DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);
 		
+		if(GermanAltModule[owner] > 0)
+			Elemental_AddNecrosisDamage(target, owner, RoundFloat(DamageWand), weapon);
+
+		if(GermanAltModule[owner] > 1)
+		{
+			if(f_ArmorCurrosionImmunity[target] > GetGameTime())
+				StartBleedingTimer(target, owner, DamageWand * 0.075, 4, weapon, DMG_SLASH, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		}
+
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(particle > MaxClients)
 			RemoveEntity(particle);

@@ -14,6 +14,9 @@ enum struct SpawnerData
 	float Cooldown;
 	float Points;
 	bool Enabled;
+	int MaxSpawnsAllowed;
+	int CurrentSpawnsPerformed;
+	int SpawnSetting;
 }
 
 static ArrayList SpawnerList;
@@ -82,7 +85,7 @@ bool Spawns_CanSpawnNext(bool rogue)
 	return false;
 }
 
-bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRING, float cooldownOverride = -1.0)
+bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRING, float cooldownOverride = -1.0, int &spawnerSetting = 0)
 {
 	SpawnerData spawn;
 	float gameTime = GetGameTime();
@@ -129,6 +132,38 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 		}
 	}
 
+	if(bestIndex == -1 && name[0])	// Fallback to case checks for spawn names
+	{
+		for(int i; i < length; i++)
+		{
+			SpawnerList.GetArray(i, spawn);
+			if(StrContains(spawn.Name, name) == -1)	// Invalid name, ignore
+				continue;
+			
+			if(!IsValidEntity(spawn.EntRef))	// Invalid entity, remove
+			{
+				SpawnerList.Erase(i);
+				i--;
+				length--;
+				continue;
+			}
+
+			if(!spawn.BaseBoss)
+			{
+				if(GetEntProp(spawn.EntRef, Prop_Data, "m_bDisabled") && !spawn.AllySpawner)	// Map disabled, ignore, except if its an ally one.
+					continue;
+
+				nonBossSpawners++;
+			}
+			
+			if(bestIndex == -1 || (spawn.Cooldown < gameTime && spawn.Points >= bestPoints))
+			{
+				bestIndex = i;
+				bestPoints = spawn.Points;
+			}
+		}
+	}
+
 	if(bestIndex == -1)
 		return false;
 	
@@ -139,14 +174,14 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 	{
 		if(nonBossSpawners == 1)
 		{
-			spawn.Cooldown = gameTime + (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (BASE_SPAWNER_COOLDOWN / MultiGlobalEnemy));
 		}
 		else if(name[0])
 		{
 			float playerSpeedUp = 1.0 + (MultiGlobalEnemy * 0.5);
 			float baseTime = 2.0 + (nonBossSpawners * 0.15);
 
-			spawn.Cooldown = gameTime + (baseTime / playerSpeedUp);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / playerSpeedUp));
 		}
 		else
 		{
@@ -163,19 +198,28 @@ bool Spawns_GetNextPos(float pos[3], float ang[3], const char[] name = NULL_STRI
 			// 2.9 / 2.5 = 1.16 slowest
 			// 1.16 / 4 = 0.29 fastest
 
-			spawn.Cooldown = gameTime + (baseTime / nearSpeedUp / playerSpeedUp);
+			spawn.Cooldown = gameTime + (ZRModifs_SpawnSpeedModif() * (baseTime / nearSpeedUp / playerSpeedUp));
 		}
 	}
 	else	// Override cooldown time
 	{
 		spawn.Cooldown = gameTime + cooldownOverride;
 	}
+	//This spawns always atleast 1 thing.
+	Rogue_Paradox_SpawnCooldown(spawn.Cooldown);
 	
+	spawn.CurrentSpawnsPerformed++;
 	SpawnerList.SetArray(bestIndex, spawn);
+	if(spawn.CurrentSpawnsPerformed >= spawn.MaxSpawnsAllowed)
+	{
+		Spawns_RemoveFromArray(spawn.EntRef);
+		RemoveEntity(spawn.EntRef);
+	}
+	spawnerSetting = spawn.SpawnSetting;
 	return true;
 }
 
-void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false)
+void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false, int MaxSpawnsAllowed = 2000000000, int i_SpawnSetting = 0)
 {
 	if(!SpawnerList)
 		SpawnerList = new ArrayList(sizeof(SpawnerData));
@@ -187,6 +231,10 @@ void Spawns_AddToArray(int ref, bool base_boss = false, bool allyspawner = false
 		spawn.EntRef = ref;
 		spawn.BaseBoss = base_boss;
 		spawn.AllySpawner = allyspawner;
+		spawn.MaxSpawnsAllowed = MaxSpawnsAllowed;
+		spawn.CurrentSpawnsPerformed = 0;
+		spawn.SpawnSetting = i_SpawnSetting;
+
 		GetEntPropString(ref, Prop_Data, "m_iName", spawn.Name, sizeof(spawn.Name));
 
 		SpawnerList.PushArray(spawn);
@@ -252,7 +300,7 @@ void Spawners_Timer()
 					//max distance is 10,000 anymore and wtf u doin
 					if( distance < 100000000.0)
 					{
-						//For Zr_lila_panic.
+						//For Zr_lila_panic, this might be outdated code, look into it.
 						if(StrEqual(spawn.Name, "underground"))
 						{
 							if(!b_PlayerIsInAnotherPart[client])

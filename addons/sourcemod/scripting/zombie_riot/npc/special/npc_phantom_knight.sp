@@ -17,7 +17,7 @@ static const char g_IdleSounds[][] = {
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_IdleAlertedSounds[][] = {
@@ -71,8 +71,24 @@ void PhantomKnight_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds));   i++) { PrecacheSound(g_RangedAttackSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedReloadSound));   i++) { PrecacheSound(g_RangedReloadSound[i]);   }
 	for (int i = 0; i < (sizeof(g_RangedAttackSoundsSecondary));   i++) { PrecacheSound(g_RangedAttackSoundsSecondary[i]);   }
+
+
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Phantom Knight");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_phantom_knight");
+	strcopy(data.Icon, sizeof(data.Icon), "phantom");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Special;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+{
+	return PhantomKnight(client, vecPos, vecAng, ally);
+}
 static bool b_IsPhantomFake[MAXENTITIES];
 static float f_AttackHappensAoe[MAXENTITIES];
 static float f_StareAtEnemy[MAXENTITIES];
@@ -140,13 +156,12 @@ methodmap PhantomKnight < CClotBody
 	}
 	
 	
-	public PhantomKnight(int client, float vecPos[3], float vecAng[3], bool ally)
+	public PhantomKnight(int client, float vecPos[3], float vecAng[3], int ally)
 	{
 		PhantomKnight npc = view_as<PhantomKnight>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", GetLucianHealth(), ally));
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");			
 		//Normal sized Miniboss!
-		i_NpcInternalId[npc.index] = PHANTOM_KNIGHT;
 		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -188,9 +203,11 @@ methodmap PhantomKnight < CClotBody
 	//Ranged can now be dodged slightly, which is cooler then this lame reduction.
 		
 		
+		func_NPCDeath[npc.index] = PhantomKnight_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = PhantomKnight_OnTakeDamage;
+		func_NPCThink[npc.index] = PhantomKnight_ClotThink;
 		SDKHook(npc.index, SDKHook_TraceAttack, PhantomKnight_TraceAttack);
 		
-		SDKHook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 200, 200, 200, 255);
@@ -286,6 +303,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 0.0;
 		NPC_StopPathing(npc.index);
+		npc.m_bisWalking = false;
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -299,7 +317,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
 				Handle swingTrace;
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
@@ -344,7 +363,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 			}
 			npc.PlayRangedReloadSound();
 			i_ExplosiveProjectileHexArray[npc.index] = EP_DEALS_CLUB_DAMAGE;
-			makeexplosion(npc.index, npc.index, WorldSpaceCenterOld(npc.index), "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
+			float npc_vec[3]; WorldSpaceCenter(npc.index, npc_vec);
+			makeexplosion(npc.index, npc.index, npc_vec, "", RoundToCeil(damage * npc.m_flWaveScale), 110,_,_,_, false, 4.0);
 
 			f_StareAtEnemy[npc.index] = GetGameTime(npc.index) + 2.0;
 			f_AttackHappensAoe[npc.index] = 0.0;
@@ -355,13 +375,14 @@ public void PhantomKnight_ClotThink(int iNPC)
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		NoEnemyFound = 0;
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
@@ -511,7 +532,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 				}
 				
 				//Stare. Dont even attack. Dont do anything. Just look. This should also be impossible to backstab.
-				npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+				float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+				npc.FaceTowards(VecEnemy, 15000.0);
 				npc.m_bisWalking = false;
 			}
 			case 4:
@@ -522,7 +544,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecPos[3];
 				
 				GetVectors(npc.m_iTarget, VecForward, vecRight, vecUp); //Sorry i dont know any other way with this :(
-				vecPos = GetAbsOriginOld(npc.m_iTarget);
+				GetAbsOrigin(npc.m_iTarget, vecPos);
 				vecPos[2] += 5.0;
 				
 				float vecSwingEnd[3];
@@ -543,8 +565,8 @@ public void PhantomKnight_ClotThink(int iNPC)
 				float vecPos_Npc[3];
 				float vecPosMiddle_Npc[3];
 				float vecAng_Npc[3];
-				vecPos_Npc = GetAbsOriginOld(npc.index);
-				vecPosMiddle_Npc = WorldSpaceCenterOld(npc.index);
+				GetAbsOrigin(npc.index, vecPos_Npc);
+				WorldSpaceCenter(npc.index, vecPosMiddle_Npc);
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vecAng_Npc);
 
 				bool Succeed = NPC_Teleport(npc.index, vecSwingEnd);
@@ -558,13 +580,12 @@ public void PhantomKnight_ClotThink(int iNPC)
 						npc.RemoveGesture("ACT_CUSTOM_DODGE_LUCIAN");
 						npc.SetActivity("ACT_CUSTOM_TELEPORT_LUCIAN");
 					}
-					npc.FaceTowards(WorldSpaceCenterOld(npc.m_iTarget), 15000.0);
+					float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
+					npc.FaceTowards(VecEnemy, 15000.0);
 					if(i_PhantomsSpawned[npc.index] <= 5 || (ZR_GetWaveCount() > 60 && i_PhantomsSpawned[npc.index] <= 10)) //We want a limit on how many fakes he can have.
 					{
-						//If its wave 60 or above, he can spawn 10 instead
-
-						//spawn fakes!
-						int fake_spawned = view_as<int>(PhantomKnight(1, vecPos_Npc, vecAng_Npc, b_IsAlliedNpc[npc.index]));
+						//If its wave 60 or above, he can spawn
+						int fake_spawned = NPC_CreateByName("npc_phantom_knight", -1, vecPos_Npc, vecAng_Npc,GetTeam(npc.index), "");
 						if(IsValidEntity(view_as<int>(fake_spawned)))
 						{
 							if(b_thisNpcIsABoss[npc.index]) //If he is a boss, make his clones a boss.
@@ -572,7 +593,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 								b_thisNpcIsABoss[view_as<int>(fake_spawned)] = true;
 								GiveNpcOutLineLastOrBoss(view_as<int>(fake_spawned), true);
 							}
-							Zombies_Currently_Still_Ongoing += 1;
+							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
 							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
@@ -671,8 +692,6 @@ public void PhantomKnight_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	
-	SDKUnhook(npc.index, SDKHook_Think, PhantomKnight_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -808,17 +827,17 @@ static char[] GetLucianHealth()
 	
 	float temp_float_hp = float(health);
 	
-	if(CurrentRound+1 < 30)
+	if(ZR_GetWaveCount()+1 < 30)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.20));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
 	}
-	else if(CurrentRound+1 < 45)
+	else if(ZR_GetWaveCount()+1 < 45)
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.25));
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
 	}
 	else
 	{
-		health = RoundToCeil(Pow(((temp_float_hp + float(CurrentRound+1)) * float(CurrentRound+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
 	}
 	
 	health /= 2;

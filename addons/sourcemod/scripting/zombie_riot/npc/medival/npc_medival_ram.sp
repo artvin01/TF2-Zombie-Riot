@@ -21,8 +21,21 @@ void MedivalRam_OnMapStart()
 {
 	PrecacheModel(NPCModel);
 	PrecacheSound("weapons/stinger_fire1.wav");
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Capped Ram");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_medival_ram");
+	strcopy(data.Icon, sizeof(data.Icon), "ram");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Medieval;
+	data.Func = ClotSummon;
+	NPC_Add(data);
 }
 
+static any ClotSummon(int client, float vecPos[3], float vecAng[3],int ally, const char[] data)
+{
+	return MedivalRam(client, vecPos, vecAng, ally, data);
+}
 static int Garrison[MAXENTITIES];
 
 methodmap MedivalRam < CClotBody
@@ -42,10 +55,9 @@ methodmap MedivalRam < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 	}
 	
-	public MedivalRam(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public MedivalRam(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.8", "30000", ally, false, true));
-		i_NpcInternalId[npc.index] = MEDIVAL_RAM;
+		MedivalRam npc = view_as<MedivalRam>(CClotBody(vecPos, vecAng, NPCModel, "0.65", "30000", ally, false, true));
 		i_NpcWeight[npc.index] = 5;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
@@ -56,7 +68,7 @@ methodmap MedivalRam < CClotBody
 		{
 			Garrison[npc.index] = StringToInt(data);
 			if(!Garrison[npc.index])
-				Garrison[npc.index] = GetIndexByPluginName(data);
+				Garrison[npc.index] = NPC_GetByPlugin(data);
 			
 			if(Garrison[npc.index] && !ally)
 				Zombies_Currently_Still_Ongoing += 6;
@@ -66,7 +78,8 @@ methodmap MedivalRam < CClotBody
 			Garrison[npc.index] = 0;
 		}
 		
-		SDKHook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
+		func_NPCDeath[npc.index] = MedivalRam_NPCDeath;
+		func_NPCThink[npc.index] = MedivalRam_ClotThink;
 		
 		npc.m_iState = 0;
 		npc.m_flSpeed = Garrison[npc.index] ? 170.0 : 150.0;
@@ -132,7 +145,7 @@ public void MedivalRam_ClotThink(int iNPC)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
-		if(npc.m_iTarget == -1)
+		if(npc.m_iTarget < 1)
 		{
 			b_DoNotChangeTargetTouchNpc[npc.index] = 0;
 			npc.m_iTarget = GetClosestTarget(npc.index);
@@ -144,15 +157,16 @@ public void MedivalRam_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-			float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 			
 		
-			float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 			
 			//Predict their pos.
 			if(flDistanceToTarget < npc.GetLeadRadius()) {
 				
-				float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
+				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				
 			/*	int color[4];
 				color[0] = 255;
@@ -171,7 +185,7 @@ public void MedivalRam_ClotThink(int iNPC)
 			}
 	
 			//Target close enough to hit
-			if((flDistanceToTarget < 10000 && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
+			if((flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED && npc.m_flReloadDelay < GetGameTime(npc.index)) || npc.m_flAttackHappenswillhappen)
 			{
 			//	npc.FaceTowards(vecTarget, 1000.0);
 				
@@ -234,7 +248,7 @@ public void MedivalRam_ClotThink(int iNPC)
 		npc.m_bPathing = false;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
-		if(npc.m_iTarget == -1)
+		if(npc.m_iTarget < 1)
 		{
 			npc.m_iTarget = GetClosestTarget(npc.index);
 		}
@@ -250,23 +264,22 @@ void MedivalRam_NPCDeath(int entity)
 //		npc.PlayDeathSound();	
 	}
 	
-	SDKUnhook(npc.index, SDKHook_Think, MedivalRam_ClotThink);
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, entity, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	
 	if(Garrison[entity])
 	{
-		bool friendly = GetEntProp(npc.index, Prop_Send, "m_iTeamNum") == 2;
+		int Team = GetTeam(npc.index);
 		
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		
 		for(int i; i < 6; i++)
 		{
-			Npc_Create(Garrison[entity], -1, pos, ang, friendly);
+			NPC_CreateById(Garrison[entity], -1, pos, ang, Team);
 		}
 	}
 }

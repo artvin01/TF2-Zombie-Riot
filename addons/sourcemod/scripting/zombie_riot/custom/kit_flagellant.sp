@@ -34,6 +34,9 @@ static int MoreMoreCap[MAXTF2PLAYERS];
 static int LastSepsis[MAXTF2PLAYERS];
 static bool LastSepsisRaid[MAXTF2PLAYERS];
 
+static int ParticleRef[MAXTF2PLAYERS] = {-1, ...};
+static Handle EffectTimer[MAXTF2PLAYERS];
+
 void Flagellant_MapStart()
 {
 	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
@@ -46,6 +49,9 @@ void Flagellant_Enable(int client, int weapon)
 		case WEAPON_FLAGELLANT_MELEE:
 		{
 			MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+
+			delete EffectTimer[client];
+			EffectTimer[client] = CreateTimer(0.5, Flagellant_EffectTimer, client, TIMER_REPEAT);
 		}
 		case WEAPON_FLAGELLANT_HEAL:
 		{
@@ -66,15 +72,122 @@ void Flagellant_Enable(int client, int weapon)
 	}
 }
 
-void Flagellant_DoSwingTrace(int client)
+void Flagellant_MiniBossChance(int &chance)
 {
-	TriggerSelfDamage(client, 0.05);
+	if(chance > 0)
+	{
+		int count;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(IsClientInGame(client) && IsPlayerAlive(client) && GetClientTeam(client) == TFTeam_Red)
+			{
+				int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+				if(weapon != -1)
+				{
+					switch(i_CustomWeaponEquipLogic[weapon])
+					{
+						case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL, WEAPON_FLAGELLANT_DAMAGE:
+						{
+							count++;
+						}
+					}
+				}
+			}
+		}
+
+		if(count)
+		{
+			int players = CountPlayersOnRed();
+			if(players < 4)
+				players = 4;
+
+			// Up to 5 extra chance
+			static float remainer;
+			float multi = (count * 5.0 / float(players)) + remainer;
+
+			while(multi > 1.0 && chance > 0)
+			{
+				multi -= 1.0;
+				chance--;
+			}
+
+			remainer = multi;
+		}
+	}
 }
 
-void Flagellant_OnTakeDamage(int victim, float damage)
+public Action Flagellant_EffectTimer(Handle timer, int client)
 {
-	if(damage > 5.0)
+	if(IsClientInGame(client))
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon != -1 && IsPlayerAlive(client))
+		{
+			switch(i_CustomWeaponEquipLogic[weapon])
+			{
+				case WEAPON_FLAGELLANT_MELEE, WEAPON_FLAGELLANT_HEAL, WEAPON_FLAGELLANT_DAMAGE:
+				{
+					if(ParticleRef[client] == -1)
+					{
+						float pos[3]; GetClientAbsOrigin(client, pos);
+						pos[2] += 1.0;
+
+						int entity = ParticleEffectAt(pos, "utaunt_hands_floor2_green", -1.0);
+						if(entity > MaxClients)
+						{
+							SetParent(client, entity);
+							ParticleRef[client] = EntIndexToEntRef(entity);
+						}
+					}
+					
+					return Plugin_Continue;
+				}
+			}
+		}
+		
+		if(ParticleRef[client] != -1)
+		{
+			int entity = EntRefToEntIndex(ParticleRef[client]);
+			if(entity > MaxClients)
+			{
+				TeleportEntity(entity, OFF_THE_MAP);
+				RemoveEntity(entity);
+			}
+
+			ParticleRef[client] = -1;
+		}
+
+		return Plugin_Continue;
+	}
+		
+	if(ParticleRef[client] != -1)
+	{
+		int entity = EntRefToEntIndex(ParticleRef[client]);
+		if(entity > MaxClients)
+		{
+			TeleportEntity(entity, OFF_THE_MAP);
+			RemoveEntity(entity);
+		}
+		
+		ParticleRef[client] = -1;
+	}
+
+	EffectTimer[client] = null;
+	return Plugin_Stop;
+}
+
+void Flagellant_DoSwingTrace(int client)
+{
+	TriggerSelfDamage(client, 0.0001);
+}
+
+void Flagellant_OnTakeDamage(int victim)
+{
+	//dont gain power from bleed or burns, otherwise itll be abit op, inturn we allow damages below 5!
+	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		MoreMoreHits[victim]++;
+
+	//if(damage > 5.0)
 }
 
 public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
@@ -106,7 +219,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !Citizen_ThatIsDowned(target))
+					if(GetTeam(target) == 2 && !Citizen_ThatIsDowned(target))
 					{
 						validAlly = true;
 					}
@@ -116,7 +229,7 @@ public Action Flagellant_HealerTimer(Handle timer, DataPack pack)
 				color[0] = validAlly ? 50 : 200;
 
 				if(validAlly)
-					pos = GetAbsOriginOld(target);
+					GetAbsOrigin(target, pos );
 				
 				pos[2] += 10.0;
 
@@ -157,7 +270,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				}
 				else if(!b_NpcHasDied[target])
 				{
-					if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+					if(GetTeam(target) != 2)
 					{
 						if(!b_NpcIsInvulnerable[target])
 							validEnemy = true;
@@ -168,7 +281,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				color[1] = validEnemy ? 50 : 200;
 
 				if(validEnemy)
-					pos = GetAbsOriginOld(target);
+					GetAbsOrigin(target, pos );
 				
 				pos[2] += 10.0;
 
@@ -208,7 +321,7 @@ public void Weapon_FlagellantMelee_M2(int client, int weapon, bool crit, int slo
 
 	MoreMoreHealing[client] = RoundToFloor(SDKCall_GetMaxHealth(client) * ratio);
 
-	CreateTimer(0.3, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	CreateTimer(0.55, Flagellant_MoreMoreTimer, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 }
 
 public Action Flagellant_MoreMoreTimer(Handle timer, int userid)
@@ -304,7 +417,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -326,9 +439,10 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		
 		if(health < maxhealth)
 		{
-			float multi = Attributes_GetOnWeapon(client, weapon, 8, true);
+			float multi = Attributes_Get(weapon, 2, 1.0);
+			multi *= Attributes_GetOnPlayer(client, 8, true, true);
 			
-			float base = 30.0 + (HealLevel[client] * 7.5);
+			float base = 40.0 + (HealLevel[client] * 7.5);
 			float cost = 1.0 - (HealLevel[client] * 0.1);
 
 			float healing = base * multi;
@@ -385,7 +499,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 				
 				if(target > MaxClients)
 				{
-					PrintHintText(client, "You Healed %t for %.0f HP!, you gain a %.0f healing cooldown.", NPC_Names[i_NpcInternalId[target]], healing, cooldown);
+					PrintHintText(client, "You Healed Ally for %.0f HP!, you gain a %.0f healing cooldown.", healing, cooldown);
 				}
 				else
 				{
@@ -396,7 +510,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		}
 		else if(target > MaxClients)
 		{
-			PrintHintText(client, "%t Is already at full hp.", NPC_Names[i_NpcInternalId[target]]);
+			PrintHintText(client, "Ally Is already at full hp.");
 		}
 		else
 		{
@@ -432,7 +546,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;
@@ -443,10 +557,11 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	{
 		Rogue_OnAbilityUse(weapon);
 
-		TriggerSelfDamage(client, 0.15);
+		TriggerSelfDamage(client, 0.025);
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
+		float multi = Attributes_Get(weapon, 2, 1.0);
+		multi *= Attributes_GetOnPlayer(client, 8, true, true);
 
 		int flags = i_ExplosiveProjectileHexArray[client];
 		i_ExplosiveProjectileHexArray[client] = EP_DEALS_PLASMA_DAMAGE|EP_GIBS_REGARDLESS;
@@ -469,7 +584,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 
 public void Flagellant_AcidHitPost(int attacker, int victim, float damage, int weapon)
 {
-	float multi = Attributes_GetOnWeapon(attacker, weapon, 8, true);
+	float multi = Attributes_Get(weapon, 2, 1.0);
 	StartBleedingTimer(victim, attacker, multi * 4.0, HealLevel[attacker] > 1 ? 15 : 10, weapon, DMG_PLASMA);
 }
 
@@ -514,7 +629,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") == 2 && !b_NpcIsInvulnerable[target])
+		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target])
 		{
 			validAlly = true;
 		}
@@ -552,7 +667,7 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 		HealedAlly[2] += 10.0;
 		ParticleEffectAt(HealedAlly, "powerup_supernova_explode_red_spikes", 0.5);
 
-		SeaSlider_AddNeuralDamage(target, client, 10, _, true);
+		Elemental_AddNervousDamage(target, client, 10, _, true);
 		f_HussarBuff[target] = GetGameTime() + 10.0;
 
 		if(target > MaxClients)
@@ -622,7 +737,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetEntProp(target, Prop_Send, "m_iTeamNum") != 2)
+		if(GetTeam(target) != 2)
 		{
 			if(!b_NpcIsInvulnerable[target])
 				validEnemy = true;
@@ -664,7 +779,8 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 		}
 		
 		int secondary = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
-		float multi = Attributes_GetOnWeapon(client, secondary, 8, true);
+		float multi = Attributes_Get(weapon, 2, 1.0);
+		multi *= Attributes_GetOnPlayer(client, 8, true, true);
 		if(HealLevel[client] > 1)
 			multi *= 1.2;
 		
@@ -702,7 +818,12 @@ static void TriggerSelfDamage(int client, float multi)
 	int armor = Armor_Charge[client];
 	int maxhealth = SDKCall_GetMaxHealth(client);
 	Armor_Charge[client] = 0;
-	SDKHooks_TakeDamage(client, 0, 0, maxhealth * multi, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
+	float damage = float(maxhealth) * multi;
+	if(damage <= 1.0)
+	{
+		damage = 1.0;
+	}
+	SDKHooks_TakeDamage(client, 0, 0, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
 	Armor_Charge[client] = armor;
 }
 
@@ -711,12 +832,16 @@ static void TriggerDeathDoor(int client, int &healing)
 	if(dieingstate[client] > 0)
 	{
 		dieingstate[client] = 0;
+		i_CurrentEquippedPerk[client] = i_CurrentEquippedPerkPreviously[client];
 		ForcePlayerCrouch(client, false);
 		Store_ApplyAttribs(client);
 		TF2_AddCondition(client, TFCond_SpeedBuffAlly, 0.00001);
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
+			if(entity == EntRefToEntIndex(Armor_Wearable[client]) || i_WeaponVMTExtraSetting[entity] != -1)
+				continue;
+
 			SetEntityRenderMode(entity, RENDER_NORMAL);
 			SetEntityRenderColor(entity, 255, 255, 255, 255);
 		}
@@ -724,6 +849,7 @@ static void TriggerDeathDoor(int client, int &healing)
 		SetEntityRenderColor(client, 255, 255, 255, 255);
 		SetEntityCollisionGroup(client, 5);
 		DoOverlay(client, "", 2);
+		SetEntityMoveType(client, MOVETYPE_WALK);
 
 		int health = 50;
 		if(health > healing)
@@ -735,6 +861,7 @@ static void TriggerDeathDoor(int client, int &healing)
 
 		int round = Rogue_GetRoundScale();
 		bool raid = RaidbossIgnoreBuildingsLogic(1);
+		GiveCompleteInvul(client, 1.5);
 		if(LastDeathDoor[client] != round || LastDeathDoorRaid[client] != raid)
 		{
 			DeathDoors[client] = 2;

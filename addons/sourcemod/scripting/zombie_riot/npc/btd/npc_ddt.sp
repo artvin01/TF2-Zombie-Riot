@@ -62,7 +62,38 @@ static int MoabHealth(bool fortified)
 
 void DDT_MapStart()
 {
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Dark Dirigible Titan");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ddt");
+	strcopy(data.Icon, sizeof(data.Icon), "special_blimp");
+	data.IconCustom = false;
+	data.Flags = 0;
+	data.Category = Type_BTD;
+	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
+	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	for(int i; i<sizeof(SoundMoabHit); i++)
+	{
+		PrecacheSoundCustom(SoundMoabHit[i]);
+	}
+	for(int i; i<sizeof(SoundLead); i++)
+	{
+		PrecacheSoundCustom(SoundLead[i]);
+	}
+	for(int i; i<sizeof(SoundMoabPop); i++)
+	{
+		PrecacheSoundCustom(SoundMoabPop[i]);
+	}
 	PrecacheModel("models/zombie_riot/btd/ddt.mdl");
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return DDT(client, vecPos, vecAng, ally, data);
 }
 
 methodmap DDT < CClotBody
@@ -101,7 +132,7 @@ methodmap DDT < CClotBody
 		
 		SetEntProp(this.index, Prop_Send, "m_nSkin", type);
 	}
-	public DDT(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public DDT(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool fortified = StrContains(data, "f") != -1;
 		
@@ -110,7 +141,6 @@ methodmap DDT < CClotBody
 		
 		DDT npc = view_as<DDT>(CClotBody(vecPos, vecAng, "models/zombie_riot/btd/ddt.mdl", "1.0", buffer, ally, false, true));
 		
-		i_NpcInternalId[npc.index] = BTD_DDT;
 		i_NpcWeight[npc.index] = 2;
 		KillFeed_SetKillIcon(npc.index, "vehicle");
 		
@@ -118,8 +148,8 @@ methodmap DDT < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
-		npc.m_iStepNoiseType = NOTHING;	
-		npc.m_iNpcStepVariation = NOTHING;	
+		npc.m_iStepNoiseType = STEPTYPE_NONE;	
+		npc.m_iNpcStepVariation = STEPTYPE_NONE;	
 		npc.m_bDissapearOnDeath = true;
 		npc.m_bisWalking = false;
 		
@@ -136,9 +166,11 @@ methodmap DDT < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_bDoNotGiveWaveDelay = true;
 		
+		func_NPCDeath[npc.index] = DDT_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = DDT_OnTakeDamage;
+		func_NPCThink[npc.index] = DDT_ClotThink;
 		
 		SDKHook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
-		SDKHook(npc.index, SDKHook_Think, DDT_ClotThink);
 		
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 255, 255, 255, 60);
@@ -208,16 +240,18 @@ public void DDT_ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(PrimaryThreatIndex);
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 													
-		float flDistanceToTarget = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
 		//Predict their pos.
 		if(flDistanceToTarget < npc.GetLeadRadius())
 		{
-			//float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, PrimaryThreatIndex);
 			
-			NPC_SetGoalVector(npc.index, PredictSubjectPositionOld(npc, PrimaryThreatIndex));
+			
+			float VecPredictPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, VecPredictPos);
+			NPC_SetGoalVector(npc.index, VecPredictPos);
 		}
 		else
 		{
@@ -229,28 +263,29 @@ public void DDT_ClotThink(int iNPC)
 		{
 			if(npc.m_flNextMeleeAttack < gameTime)
 			{
+				float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 				npc.m_flNextMeleeAttack = gameTime + 0.35;
 				
 				if(npc.m_bFortified)
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 60.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 200.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}
 				else
 				{
 					if(!ShouldNpcDealBonusDamage(PrimaryThreatIndex))
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 					else
 					{
-						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceCenterOld(PrimaryThreatIndex));
+						SDKHooks_TakeDamage(PrimaryThreatIndex, npc.index, npc.index, 165.0 * 2.0, DMG_CLUB, -1, _, WorldSpaceVec);
 					}
 				}					
 			}
@@ -313,8 +348,6 @@ public void DDT_NPCDeath(int entity)
 	
 	SDKUnhook(npc.index, SDKHook_OnTakeDamagePost, DDT_ClotDamagedPost);
 	
-	SDKUnhook(npc.index, SDKHook_Think, DDT_ClotThink);
-	
 	int entity_death = CreateEntityByName("prop_dynamic_override");
 	if(IsValidEntity(entity_death))
 	{
@@ -337,7 +370,7 @@ public void DDT_NPCDeath(int entity)
 		SetEntityCollisionGroup(entity_death, 2);
 		SetVariantString("death");
 		AcceptEntityInput(entity_death, "SetAnimation");
-		SetEntProp(entity_death, Prop_Send, "m_iTeamNum", GetEntProp(npc.index, Prop_Send, "m_iTeamNum"));
+		SetTeam(entity_death, GetTeam(npc.index));
 		
 		pos[2] += 20.0;
 		
@@ -352,11 +385,11 @@ public void DDT_PostDeath(const char[] output, int caller, int activator, float 
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	RemoveEntity(caller);
 	
-	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9rc");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9rc");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }
 
 public void DDT_PostFortifiedDeath(const char[] output, int caller, int activator, float delay)
@@ -366,9 +399,9 @@ public void DDT_PostFortifiedDeath(const char[] output, int caller, int activato
 	GetEntPropVector(caller, Prop_Send, "m_vecOrigin", pos);
 	RemoveEntity(caller);
 	
-	TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
+	TE_Particle("ExplosionCore_MidAir", pos, NULL_VECTOR, NULL_VECTOR, caller, _, _, _, _, _, _, _, _, _, 0.0);
 	
-	int spawn_index = Npc_Create(BTD_BLOON, -1, pos, angles, GetEntProp(caller, Prop_Send, "m_iTeamNum") == 2, "9frc");
+	int spawn_index = NPC_CreateByName("npc_bloon", -1, pos, angles, GetTeam(caller), "9frc");
 	if(spawn_index > MaxClients)
-		Zombies_Currently_Still_Ongoing += 1;
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
 }

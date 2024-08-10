@@ -33,7 +33,25 @@ static const char g_MeleeHitSounds[][] =
 	"npc/fast_zombie/claw_strike3.wav"
 };
 
-methodmap SeaFounder < CClotBody
+void SeaFounder_Precache()
+{
+	NPCData data;
+	strcopy(data.Name, sizeof(data.Name), "Nethersea Founder");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_netherseafounder");
+	strcopy(data.Icon, sizeof(data.Icon), "sea_founder");
+	data.IconCustom = true;
+	data.Flags = 0;
+	data.Category = Type_Seaborn;
+	data.Func = ClotSummon;
+	NPC_Add(data);
+}
+
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+{
+	return SeaFounder(client, vecPos, vecAng, ally, data);
+}
+
+methodmap SeaFounder < CSeaBody
 {
 	public void PlayIdleSound()
 	{
@@ -56,7 +74,7 @@ methodmap SeaFounder < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);	
 	}
 	
-	public SeaFounder(int client, float vecPos[3], float vecAng[3], bool ally, const char[] data)
+	public SeaFounder(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];
@@ -68,7 +86,7 @@ methodmap SeaFounder < CClotBody
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
-		i_NpcInternalId[npc.index] = carrier ? SEAFOUNDER_CARRIER : (elite ? SEAFOUNDER_ALT : SEAFOUNDER);
+		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 2;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_2");
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -77,8 +95,9 @@ methodmap SeaFounder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
 		
-		
-		SDKHook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
+		func_NPCDeath[npc.index] = SeaFounder_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SeaFounder_OnTakeDamage;
+		func_NPCThink[npc.index] = SeaFounder_ClotThink;
 		
 		npc.m_flSpeed = 250.0;	// 1.0 x 250
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -91,7 +110,7 @@ methodmap SeaFounder < CClotBody
 
 		if(carrier)
 		{
-			float vecMe[3]; vecMe = WorldSpaceCenterOld(npc.index);
+			float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
 			vecMe[2] += 100.0;
 
 			npc.m_iWearable1 = ParticleEffectAt(vecMe, "powerup_icon_resist", -1.0);
@@ -147,12 +166,13 @@ public void SeaFounder_ClotThink(int iNPC)
 	
 	if(npc.m_iTarget > 0)
 	{
-		float vecTarget[3]; vecTarget = WorldSpaceCenterOld(npc.m_iTarget);
-		float distance = GetVectorDistance(vecTarget, WorldSpaceCenterOld(npc.index), true);		
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		
 		if(distance < npc.GetLeadRadius())
 		{
-			float vPredictedPos[3]; vPredictedPos = PredictSubjectPositionOld(npc, npc.m_iTarget);
+			float vPredictedPos[3]; PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
 			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
 		else 
@@ -179,7 +199,7 @@ public void SeaFounder_ClotThink(int iNPC)
 
 					if(target > 0) 
 					{
-						float attack = i_NpcInternalId[npc.index] == SEAFOUNDER_ALT ? 90.0 : 67.5;
+						float attack = npc.m_bElite ? 90.0 : 67.5;
 						// 450 x 0.15
 						// 600 x 0.15
 						
@@ -189,7 +209,7 @@ public void SeaFounder_ClotThink(int iNPC)
 						npc.PlayMeleeHitSound();
 						SDKHooks_TakeDamage(target, npc.index, npc.index, attack, DMG_CLUB);
 
-						SeaSlider_AddNeuralDamage(target, npc.index, RoundToCeil(attack * (i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER ? 0.2 : 0.1)));
+						Elemental_AddNervousDamage(target, npc.index, RoundToCeil(attack * (npc.m_bCarrier ? 0.2 : 0.1)));
 						// 450 x 0.1 x 0.15
 						// 600 x 0.1 x 0.15
 						// 450 x 0.2 x 0.15
@@ -249,12 +269,9 @@ void SeaFounder_NPCDeath(int entity)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 		SeaFounder_SpawnNethersea(pos);
 
-	if(i_NpcInternalId[npc.index] == SEAFOUNDER_CARRIER)
+	if(npc.m_bCarrier)
 		Remains_SpawnDrop(pos, Buff_Founder);
 	
-	
-	SDKUnhook(npc.index, SDKHook_Think, SeaFounder_ClotThink);
-
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
@@ -584,7 +601,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 			NervousLastTouch[client] = TheNavMesh.GetNavArea(pos, 70.0);
 			if(NervousLastTouch[client] != NULL_AREA && NavList.FindValue(NervousLastTouch[client]) != -1)
 			{
-				bool resist = Building_NeatherseaReduced(client);
+				bool resist = (SeaMelee_IsSeaborn(client) || Building_NeatherseaReduced(client));
 				float MaxHealth = float(SDKCall_GetMaxHealth(client));
 
 				float damageDeal;
@@ -603,20 +620,9 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				// 120 x 0.25 x 0.2
 
 				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
+					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
 					// 20 x 0.25 x 0.2
  
-/*
-				bool resist = Building_NeatherseaReduced(client);
-
-				SDKHooks_TakeDamage(client, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
-				// 120 x 0.25 x 0.2
-
-				if(!resist)
-					SeaSlider_AddNeuralDamage(client, 0, 1);
-					// 20 x 0.25 x 0.2
-				*/
-
 				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);
 				if(!IsValidEntity(entity))
 				{
@@ -639,51 +645,40 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		}
 	}
 	
-	for(int a; a < i_MaxcountNpc; a++)
+	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs[a]);
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[a]);
 		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
 			// Find entities touching infected tiles
-			CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
-			if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+			if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_SEABORN)
 			{
-				NervousTouching[entity] = NervousTouching[0];
-				NervousLastTouch[entity] = NULL_AREA;
+				CNavArea nav = TheNavMesh.GetNavArea(pos, 5.0);
+				if(nav != NULL_AREA && NavList.FindValue(nav) != -1)
+				{
+					NervousTouching[entity] = NervousTouching[0];
+					NervousLastTouch[entity] = NULL_AREA;
+				}
 			}
-		}
-	}
-	
-	for(int a; a < i_MaxcountNpc_Allied; a++)
-	{
-		int entity = EntRefToEntIndex(i_ObjectsNpcs_Allied[a]);
-		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
-		{
-			GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
-
-			// Find entities touching infected tiles
-			NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
-			if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
+			else
 			{
-				SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
-				// 120 x 0.25 x 0.2
+				NervousLastTouch[entity] = TheNavMesh.GetNavArea(pos, 5.0);
+				if(NervousLastTouch[entity] != NULL_AREA && NavList.FindValue(NervousLastTouch[entity]) != -1)
+				{
+					/*
+					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, _, _, pos);
+					// 120 x 0.25 x 0.2
 
-				SeaSlider_AddNeuralDamage(entity, 0, 1, false);
-				// 20 x 0.25 x 0.2
-	/*	
-				bool resist = Building_NeatherseaReduced(entity);
-
-				SDKHooks_TakeDamage(entity, 0, 0, resist ? 1.2 : 6.0, DMG_BULLET);
-				// 120 x 0.25 x 0.2
-
-				if(!resist)
-					SeaSlider_AddNeuralDamage(entity, 0, 1);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 					*/
+					if(f_LowTeslarDebuff[entity] - 1.0 < GetGameTime())
+						f_LowTeslarDebuff[entity] = GetGameTime() + 1.0;
 
-				NervousTouching[entity] = NervousTouching[0];
+					NervousTouching[entity] = NervousTouching[0];
+				}
 			}
 		}
 	}
@@ -693,8 +688,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 		int entity = EntRefToEntIndex(i_ObjectsBuilding[a]);
 		if(entity != INVALID_ENT_REFERENCE)
 		{
-			CClotBody npc = view_as<CClotBody>(entity);
-			if(!npc.bBuildingIsStacked && npc.bBuildingIsPlaced && !b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+			if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
 			{
 				GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
 
@@ -705,7 +699,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 					SDKHooks_TakeDamage(entity, 0, 0, 6.0, DMG_BULLET, _, _, pos);
 					// 120 x 0.25 x 0.2
 
-					SeaSlider_AddNeuralDamage(entity, 0, 1, false);
+					Elemental_AddNervousDamage(entity, 0, 1, false);
 					// 20 x 0.25 x 0.2
 
 					NervousTouching[entity] = NervousTouching[0];

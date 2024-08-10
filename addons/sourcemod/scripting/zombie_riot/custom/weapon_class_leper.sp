@@ -16,6 +16,7 @@ Handle Timer_Leper_Management[MAXPLAYERS+1] = {null, ...};
 float Leper_HudDelay[MAXPLAYERS+1];
 int Leper_SolemnyUses[MAXPLAYERS+1];
 int Leper_SolemnyCharge[MAXPLAYERS+1];
+float Leper_SolemnyChargeCD[MAXPLAYERS+1];
 float Leper_InAnimation[MAXPLAYERS+1];
 
 void OnMapStartLeper()
@@ -26,6 +27,7 @@ void OnMapStartLeper()
 	Zero(LeperSwingEffect);
 	Zero(LeperSwingType);
 	Zero(Timer_Leper_Management);
+	Zero(Leper_SolemnyChargeCD);
 	Zero(Leper_HudDelay);
 	Zero(Leper_InAnimation);
 }
@@ -268,12 +270,21 @@ public Action Leper_SuperHitInitital_After(Handle timer, DataPack pack)
 	SetEntProp(client, Prop_Send, "m_bClientSideFrameReset", 0);	
 	SetEntProp(client, Prop_Send, "m_bForceLocalPlayerDraw", 0);
 //its too offset, clientside prediction makes this impossible
-	if(!b_IsPlayerNiko[client])
+	if(!b_HideCosmeticsPlayer[client])
 	{
 		int entity, i;
 		while(TF2U_GetWearable(client, entity, i))
 		{
 			SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
+		}
+	}
+	else
+	{
+		int entity, i;
+		while(TF2U_GetWearable(client, entity, i))
+		{
+			if(Viewchanges_NotAWearable(client, entity))
+				SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") &~ EF_NODRAW);
 		}
 	}
 	SetEntityMoveType(client, MOVETYPE_WALK);
@@ -387,7 +398,8 @@ int SetCameraEffectLeperHew(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+	
+	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 0;
@@ -480,7 +492,7 @@ int SetCameraEffectLeperSolemny(int client, int &ModelToDelete)
 	vabsAngles[0] = 0.0;
 	SetVariantInt(0);
 	AcceptEntityInput(client, "SetForcedTauntCam");	
-	int spawn_index = Npc_Create(WEAPON_LEPER_AFTERIMAGE, client, vabsOrigin, vabsAngles, GetEntProp(client, Prop_Send, "m_iTeamNum") == 2);
+	int spawn_index = NPC_CreateByName("npc_allied_leper_visualiser", client, vabsOrigin, vabsAngles, GetTeam(client));
 	if(spawn_index > 0)
 	{
 		i_AttacksTillReload[spawn_index] = 1;
@@ -548,10 +560,14 @@ public void Leper_Hud_Logic(int client, int weapon, bool ignoreCD)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding != weapon) //Only show if the weapon is actually in your hand right now.
 	{
-		Leper_SolemnyCharge[client]--;
-		if(Leper_SolemnyCharge[client] <= 0)
-			Leper_SolemnyCharge[client] = 0;
-			
+		if(Leper_SolemnyChargeCD[client] < GetGameTime())
+		{
+			Leper_SolemnyCharge[client] --;
+			if(Leper_SolemnyCharge[client] <= 0)
+				Leper_SolemnyCharge[client] = 0;
+
+			Leper_SolemnyChargeCD[client] = GetGameTime() + 3.5;
+		}
 		Leper_HudDelay[client] = GetGameTime() + 0.5;
 
 		return;
@@ -593,7 +609,7 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 {
 	if (Leper_InAnimation[victim] > GetGameTime())
 	{
-		return damage * 0.5; //half damage during animations.
+		return damage * 0.75; //half damage during animations.
 	}
 	return damage; //half damage during animations.
 }
@@ -601,7 +617,7 @@ public float WeaponLeper_OnTakeDamagePlayer_Hud(int victim)
 {
 	if (Leper_InAnimation[victim] > GetGameTime())
 	{
-		return 0.5; //half damage during animations.
+		return 0.75; //half damage during animations.
 	}
 	return 1.0; //half damage during animations.
 }
@@ -626,5 +642,6 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 
 void LeperResetUses()
 {
+
 	Zero(Leper_SolemnyUses);
 }

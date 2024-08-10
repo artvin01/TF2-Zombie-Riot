@@ -64,6 +64,9 @@ public void SwagMeter(int victim, int weapon) //so that parrying 2 enemies at on
 {
 	if (Board_Ability_1[victim] == true)
 	{
+		if(dieingstate[victim] > 0)
+			return;
+
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
 		if (MaxHealth > 2000.0)
 		{
@@ -428,12 +431,11 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 			float vecForward[3];
 			GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 			static float Entity_Position[3];
-			Entity_Position = WorldSpaceCenterOld(attacker);
+			WorldSpaceCenter(attacker, Entity_Position );
 
 			f_BoardReflectCooldown[victim][attacker] = GetGameTime() + 0.1;
 			
-			float ReflectPosVec[3];
-			ReflectPosVec = CalculateDamageForceOld(vecForward, 10000.0);
+			float ReflectPosVec[3]; CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
 			DataPack pack = new DataPack();
 			pack.WriteCell(EntIndexToEntRef(attacker));
 			pack.WriteCell(EntIndexToEntRef(victim));
@@ -496,7 +498,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.85;
+		return damage * 0.9;
 	}
 	else if(Board_Level[victim] == 5) //ramp
 	{
@@ -508,7 +510,7 @@ public float Player_OnTakeDamage_Board(int victim, float &damage, int attacker, 
 	{
 		//PrintToChatAll("damage resist");
 		HealPurgatory_timer[victim] = CreateTimer(10.0, HealPurgatory, victim);
-		return damage * 0.8;
+		return damage * 0.85;
 	}
 	else
 	{
@@ -719,6 +721,9 @@ void PlayParrySoundBoard(int client)
 
 public void PassiveBoardHeal(int client)
 {
+	if(dieingstate[client] > 0)
+		return;
+
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
 	if (MaxHealth > 2000.0)
 	{
@@ -732,7 +737,7 @@ public void PassiveBoardHeal(int client)
 		}
 		default:
 		{
-			HealEntityGlobal(client, client, MaxHealth * 0.03, _, 0.3,HEAL_SELFHEAL);
+			HealEntityGlobal(client, client, MaxHealth * 0.02, _, 0.0,HEAL_SELFHEAL);
 		}
 	}
 }
@@ -754,6 +759,6 @@ float CalculateDamageBonus_Board(float damage, int weapon)
 	float damageModif = damage;
 	damageModif *= Attributes_Get(weapon, 1, 1.0);
 	damageModif *= Attributes_Get(weapon, 2, 1.0);
-	damageModif *= Attributes_Get(weapon, 476, 1.0);
+	damageModif *= Attributes_Get(weapon, 1000, 1.0);
 	return damageModif;
 }
