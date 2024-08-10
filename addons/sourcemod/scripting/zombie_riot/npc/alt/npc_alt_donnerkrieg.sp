@@ -201,6 +201,7 @@ methodmap Donnerkrieg < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -368,6 +369,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = 0.0;
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_MP_CROUCH_MELEE");
 		npc.m_bisWalking = false;
 		if(g_b_schwert_died && !IsValidEntity(RaidBossActive))
@@ -485,6 +487,7 @@ static void Internal_ClotThink(int iNPC)
 		
 		f_NpcTurnPenalty[npc.index] = 1.0;	//:)
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -783,6 +786,7 @@ static void Donnerkrieg_Nightmare_Logic(int ref, int PrimaryThreatIndex)
 					npc.FaceTowards(vecTarget, 20000.0);	//TURN DAMMIT
 						
 						
+					npc.m_bisWalking = false;
 					if(g_b_angered)
 					{
 						//npc.AddActivityViaSequence("taunt_the_scaredycat_medic");

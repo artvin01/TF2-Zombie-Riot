@@ -951,7 +951,7 @@ enum
 
 //This model is used to do custom models for npcs, mainly so we can make cool animations without bloating downloads
 #define COMBINE_CUSTOM_MODEL 		"models/zombie_riot/combine_attachment_police_221.mdl"
-#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_30.mdl"
+#define WEAPON_CUSTOM_WEAPONRY_1 	"models/zombie_riot/weapons/custom_weaponry_1_33.mdl"
 /*
 	1 - sensal scythe
 	2 - scythe_throw
@@ -2571,7 +2571,6 @@ public void OnPlayerRunCmdPost(int client, int buttons, int impulse, const float
 #if defined ZR
 	SemiAutoWeapon(client, buttons);
 	Pets_PlayerRunCmdPost(client, buttons, angles);
-	Medikit_healing(client, buttons);
 #endif
 
 #if defined RPG

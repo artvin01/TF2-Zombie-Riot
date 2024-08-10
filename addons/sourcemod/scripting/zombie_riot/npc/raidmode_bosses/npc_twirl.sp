@@ -575,6 +575,7 @@ methodmap Twirl < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 0)
 			{
+				this.m_bisWalking = true;
 				this.SetActivity("ACT_MP_RUN_MELEE");
 				this.m_iChanged_WalkCycle = 1;
 			}
@@ -583,6 +584,7 @@ methodmap Twirl < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 1)
 			{
+				this.m_bisWalking = true;
 				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
 				this.m_iChanged_WalkCycle = 0;
 			}
@@ -623,6 +625,7 @@ methodmap Twirl < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -877,6 +880,7 @@ static void ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
 
+			npc.m_bisWalking = false;
 			npc.m_iChanged_WalkCycle = 99;
 			npc.AddActivityViaSequence("competitive_loserstate_idle");
 		}
@@ -1008,6 +1012,7 @@ static void ClotThink(int iNPC)
 			case 3:
 				EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM3, npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 		}
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1486,6 +1491,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	b_animation_set[npc.index] = false;
 	fl_cosmic_gaze_throttle[npc.index] = 0.0;
 
+	npc.m_bisWalking = false;
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
 	npc.SetCycle(0.01);
@@ -1525,6 +1531,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 
+		npc.m_bisWalking = false;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -2110,6 +2117,7 @@ static float fl_retreat_laser_throttle[MAXENTITIES];
 static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 {
 	float GameTime = GetGameTime();
+	npc.m_bisWalking = false;
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
@@ -2158,6 +2166,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -2394,6 +2403,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		TE_SetupBeamRingPoint(VecSelfNpc, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 2.5, Thickness, 0.1, color, 1, 0);
 		TE_SendToAll();
 
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("primary_death_burning");
 		npc.SetPlaybackRate(1.0);	
 		npc.SetCycle(0.01);
@@ -2559,6 +2569,7 @@ static Action Combo_Laser_Logic(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
+		npc.m_bisWalking = true;
 
 		//int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		//if(iActivity > 0) npc.StartActivity(iActivity);

@@ -299,6 +299,7 @@ methodmap Raidboss_Donnerkrieg < CClotBody
 		
 		b_raidboss_donnerkrieg_alive = true;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -767,6 +768,7 @@ static void Internal_ClotThink(int iNPC)
 
 		npc.SetPlaybackRate(1.0);
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -1504,6 +1506,7 @@ static void Raidboss_Donnerkrieg_Nightmare_Logic(Raidboss_Donnerkrieg npc, int P
 					//}
 
 					npc.FaceTowards(vecTarget, 20000.0);
+					npc.m_bisWalking = false;
 
 					npc.AddActivityViaSequence("taunt_mourning_mercs_medic");
 
