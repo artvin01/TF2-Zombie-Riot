@@ -855,6 +855,7 @@ static void ClotThink(int iNPC)
 				RemoveEntity(npc.m_iWearable1);
 
 			npc.m_iChanged_WalkCycle = 99;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("competitive_loserstate_idle");
 		}
 		if(fl_next_textline[npc.index] < GameTime)
