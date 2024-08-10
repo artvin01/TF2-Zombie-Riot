@@ -377,7 +377,16 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 				}
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-				float cooldown = float(healing) / 10.0;
+				float cooldown;
+				if(Pap != 0.0)
+				{
+					cooldown = float(healing) / 5.0;
+				}
+				else
+				{
+					cooldown = float(healing) / 10.0;
+				}
+				
 				if(cooldown < 1.0)
 					cooldown = 1.0;
 
