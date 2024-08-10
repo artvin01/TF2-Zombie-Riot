@@ -294,12 +294,15 @@ static bool HasWrench(int client)
 static int GetCost(int id, float multi)
 {
 	int buildCost = BuildingCost[id];
-	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
-	if(cost_extra <= 0)
+	if(id <= 1 || id == 12)
 	{
-		cost_extra = 0;
+		int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
+		if(cost_extra <= 0)
+		{
+			cost_extra = 0;
+		}
+		buildCost = buildCost + cost_extra;
 	}
-	buildCost = buildCost + cost_extra;
 
 	if(Rogue_Mode())
 		buildCost /= 3;
