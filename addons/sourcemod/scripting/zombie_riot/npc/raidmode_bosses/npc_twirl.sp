@@ -1057,6 +1057,10 @@ static void ClotThink(int iNPC)
 									
 			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
 		}
+		else
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+		}
 	}
 			
 	if(npc.m_blPlayHurtAnimation)
@@ -1161,7 +1165,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-	float Tower_Health = MaxHealth*0.25;
+	float Tower_Health = MaxHealth*0.2;
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1187,7 +1191,7 @@ static void Final_Invocation(Twirl npc)
 		case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
 		case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
-		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might be hurt.");
+		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
 	}
 	RaidModeTime +=30.0;
 }
@@ -1235,7 +1239,7 @@ static void Luanar_Radiance(Twirl npc)
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = 30.0;
 			dmg *= RaidModeScaling;
-			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.0 : 1.5), Radius, dmg);
+			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
 		}
 	}
 }
@@ -1923,7 +1927,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float dmg = 30.0;
 		dmg *= RaidModeScaling;
 
-		float Time = (npc.Anger ? 1.0 : 1.5);
+		float Time = (npc.Anger ? 1.35 : 1.7);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
 	}
 
@@ -2476,9 +2480,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = 1.75*RaidModeScaling;
+		Laser.Damage = 2.0 * RaidModeScaling;
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = 1.75 * RaidModeScaling*6.0;
+		Laser.Bonus_Damage = 2.0 * RaidModeScaling*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}
