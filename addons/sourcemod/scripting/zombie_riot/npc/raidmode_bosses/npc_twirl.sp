@@ -549,6 +549,7 @@ methodmap Twirl < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 0)
 			{
+				this.m_bisWalking = true;
 				this.SetActivity("ACT_MP_RUN_MELEE");
 				this.m_iChanged_WalkCycle = 1;
 			}
@@ -557,6 +558,7 @@ methodmap Twirl < CClotBody
 		{
 			if(this.m_iChanged_WalkCycle == 1)
 			{
+				this.m_bisWalking = true;
 				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
 				this.m_iChanged_WalkCycle = 0;
 			}
@@ -597,6 +599,7 @@ methodmap Twirl < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		RaidBossActive = EntIndexToEntRef(npc.index);
@@ -989,6 +992,7 @@ static void ClotThink(int iNPC)
 			case 3:
 				EmitSoundToAll(NPC_PARTICLE_LANCE_BOOM3, npc.index, SNDCHAN_STATIC, 120, _, 1.0);
 		}
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -1541,6 +1545,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		npc.StartPathing();
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_bisWalking = true;
 		npc.m_iChanged_WalkCycle = 1;
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
