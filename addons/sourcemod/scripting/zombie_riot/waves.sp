@@ -1507,8 +1507,9 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			Rounds.GetArray(CurrentRound, round);
 			// Below is the new round
 			//add a minimum of 0.5 seconds because of custom spawns.
-			GiveProgressDelay(0.5);
-			f_DelaySpawnsForVariousReasons = GetGameTime() + 0.5;
+			//breaks mininbosses, cant
+		//	GiveProgressDelay(0.5);
+		//	f_DelaySpawnsForVariousReasons = GetGameTime() + 0.5;
 			
 			if(round.MapSetupRelay)
 			{

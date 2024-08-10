@@ -158,6 +158,7 @@ methodmap Theocracy < CClotBody
 	{
 		Theocracy npc = view_as<Theocracy>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "15000", ally));
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -356,6 +357,7 @@ static void ClotThink(int iNPC)
 			npc.SetPlaybackRate(1.0);	
 			npc.SetCycle(0.0);
 					
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_yetipunch");
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
@@ -460,6 +462,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		npc.m_flSpeed = 300.0;
 		npc.m_bPathing = true;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
