@@ -694,7 +694,6 @@ void ZR_MapStart()
 	
 	Waves_MapStart();
 	Music_MapStart();
-	Remove_Healthcooldown();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
 	Pomson_MapStart();
