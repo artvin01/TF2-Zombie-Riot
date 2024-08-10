@@ -90,6 +90,7 @@ methodmap AlliedLeperVisualiserAbility < CClotBody
 				}
 			}
 		}
+		npc.m_bisWalking = false;
 		bool solemny = StrContains(data, "solemny") != -1;
 		bool hew = StrContains(data, "hew") != -1;
 		

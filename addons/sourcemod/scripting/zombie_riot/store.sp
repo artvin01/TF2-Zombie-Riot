@@ -4814,6 +4814,10 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		return; //STOP. BAD!
 	}
+	if(!IsPlayerAlive(client))
+	{
+		return; //STOP. BAD!
+	}
 	Clip_SaveAllWeaponsClipSizes(client);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 
@@ -5098,7 +5102,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1;
 	}
-
+	if(!IsPlayerAlive(client))
+	{
+		return -1; //STOP. BAD!
+	}
 	int slot = -1;
 	int entity = -1;
 	static ItemInfo info;
@@ -5140,6 +5147,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(GiveWeaponIndex > 0)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
+					
+					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);

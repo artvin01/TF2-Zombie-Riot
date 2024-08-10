@@ -109,6 +109,7 @@ methodmap AlliedSensalAbility < CClotBody
 				}
 			}
 		}
+		npc.m_bisWalking = false;
 	
 		npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 		npc.SetPlaybackRate(2.0);	
