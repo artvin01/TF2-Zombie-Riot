@@ -160,6 +160,7 @@ methodmap L4D2_Tank < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -184,6 +185,7 @@ methodmap L4D2_Tank < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		npc.m_bisWalking = false;
 		npc.m_flSpeed = 0.0;
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 3.0;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 3.0;
@@ -250,12 +252,14 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
+		npc.m_bisWalking = false;
 		npc.PlaySpawnSound();
 		npc.AddGesture("ACT_SPAWN");
 		npc.m_bDoSpawnGesture = false;
 	}
 	if(npc.m_bUseDefaultAnim)
 	{
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_bUseDefaultAnim = false;

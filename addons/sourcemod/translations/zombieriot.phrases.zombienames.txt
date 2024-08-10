@@ -2799,11 +2799,11 @@
 	{
 		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
 	}
-	"Void Elemtal Damage"
+	"Void Elemental Damage"
 	{
-		"en"	"Void Elemtal Damage"
+		"en"	"Void Elemental Damage"
 	}
-	"Void Elemtal Damage Desc"
+	"Void Elemental Damage Desc"
 	{
 		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
 	}
