@@ -340,11 +340,16 @@ static void ClotThink(int iNPC)
 			
 		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > Range_Min && flDistanceToTarget < Range_Max)
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
+			float vPredictedPos[3],
+			SubjectAbsVelocity[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+			ScaleVector(SubjectAbsVelocity, -1.0);
+			AddVectors(vecTarget, SubjectAbsVelocity, vPredictedPos);
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 		
-			if (flVel[0] >= 190.0)
+			if (fabs(flVel[0]) >= 190.0)
 			{
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
@@ -369,8 +374,8 @@ static void ClotThink(int iNPC)
 						Laser.Start_Point = Npc_Vec;
 						Laser.End_Point = vPredictedPos;
 						Laser.Radius = 15.0;
-						Laser.Damage = 500.0;
-						Laser.Bonus_Damage = 1200.0;
+						Laser.Damage = 100.0;
+						Laser.Bonus_Damage = 200.0;
 						Laser.damagetype = DMG_PLASMA;
 						Laser.Deal_Damage(On_LaserHit);
 							
@@ -462,8 +467,8 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = (npc.Anger ? 250.0 : 200.0);			//heavy, but slow
-		Melee.bonus_dmg = (npc.Anger ? 750.0 : 500.0);
+		Melee.damage = (npc.Anger ? 200.0 : 150.0);			//heavy, but slow
+		Melee.bonus_dmg = (npc.Anger ? 500.0 : 250.0);
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
 		Melee.swing_speed = (npc.Anger ? 3.0 : 4.0);
 		Melee.swing_delay = 0.37;

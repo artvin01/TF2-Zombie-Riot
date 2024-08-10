@@ -295,7 +295,7 @@ static void ClotThink(int iNPC)
 
 		if(!IsValidEntity(Anchor_Id))
 		{
-			if(flDistanceToTarget < (2000.0*2000.0))
+			if(flDistanceToTarget < (500.0*500.0))
 			{
 				int Enemy_I_See;
 				
@@ -303,7 +303,7 @@ static void ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 				{
-					if(flDistanceToTarget < (750.0*750.0))
+					if(flDistanceToTarget < (300.0*300.0))
 					{
 						npc.m_bAllowBackWalking=true;
 						Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
@@ -490,7 +490,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 		Laser.Deal_Damage(On_LaserHit);
 	}
 
-	if(flDistanceToTarget < (2250.0*2250.0))
+	if(flDistanceToTarget < (1500.0*1500.0))
 	{	
 		if(npc.m_flNextRangedAttack < gameTime)
 		{
@@ -512,7 +512,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 				//This will predict as its relatively easy to dodge
 				float projectile_speed = 2000.0;
 				//lets pretend we have a projectile.
-				if(flDistanceToTarget < 1250.0*1250.0)
+				if(flDistanceToTarget < 750.0*750.0)
 					PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 				if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 				{
@@ -560,7 +560,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 						//This will predict as its relatively easy to dodge
 						float projectile_speed = 2000.0;
 						//lets pretend we have a projectile.
-						if(flDistanceToTarget < 1250.0*1250.0)
+						if(flDistanceToTarget < 750.0*750.0)
 							PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
 						if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
 						{

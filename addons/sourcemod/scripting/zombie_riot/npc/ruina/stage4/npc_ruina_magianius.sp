@@ -462,13 +462,10 @@ static void ClotThink(int iNPC)
 							
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-						float 	projectile_speed = 800.0,
-								target_vec[3];
-
-						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
+						float 	projectile_speed = 800.0;
 
 			
-						int Proj = npc.FireParticleRocket(target_vec, 160.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						int Proj = npc.FireParticleRocket(vecTarget, 100.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 
 						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
 						{
@@ -476,7 +473,7 @@ static void ClotThink(int iNPC)
 									Homing_Lockon = 50.0;
 
 							float Ang[3];
-							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+							MakeVectorFromPoints(Npc_Vec, vecTarget, Ang);
 							GetVectorAngles(Ang, Ang);
 
 							Initiate_HomingProjectile(Proj,

@@ -327,8 +327,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 100.0;
-					Projectile.bonus_dmg = 200.0;
+					Projectile.damage = 50.0;
+					Projectile.bonus_dmg = 100.0;
 					Projectile.Time = Laser_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		

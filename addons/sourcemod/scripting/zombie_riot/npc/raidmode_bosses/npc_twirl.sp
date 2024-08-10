@@ -80,15 +80,15 @@ static const char g_FractalSound[][] = {
 	"weapons/capper_shoot.wav"
 };
 
+static bool b_InKame[MAXENTITIES];
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
 
-static int i_ranged_combo[MAXENTITIES];
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
 static float fl_retreat_timer[MAXENTITIES];
 static int i_ranged_ammo[MAXENTITIES];
-static int i_hand_particles[MAXENTITIES][2];
+static int i_hand_particles[MAXENTITIES];
 static float fl_force_ranged[MAXENTITIES];
 static float fl_comsic_gaze_timer[MAXENTITIES];
 static bool b_tripple_raid[MAXENTITIES];
@@ -110,6 +110,7 @@ static float fl_final_invocation_timer[MAXENTITIES];
 static bool b_allow_final_invocation[MAXENTITIES];
 static float fl_final_invocation_logic[MAXENTITIES];
 
+static float fl_magia_overflow_recharge[MAXENTITIES];
 
 static const char Cosmic_Launch_Sounds[][] ={
 	"weapons/physcannon/superphys_launch1.wav",
@@ -212,6 +213,11 @@ methodmap Twirl < CClotBody
 		EmitSoundToAll(g_FractalSound[GetRandomInt(0, sizeof(g_FractalSound) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
+	property bool m_bInKame
+	{
+		public get()							{ return b_InKame[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_InKame[this.index] = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -327,74 +333,39 @@ methodmap Twirl < CClotBody
 		
 	}
 
-	public bool Add_Combo(int amt, int type)
+	public bool Add_Combo(int amt)
 	{
-		if(type == 0)
+		bool fired = false;
+		if(i_melee_combo[this.index]>amt)
 		{
-			bool fired = false;
-			if(i_ranged_combo[this.index]>amt && fl_ruina_battery_timeout[this.index] < GetGameTime(this.index))
-			{
-				i_ranged_combo[this.index] = 0;
-				fired = true;
-			}
-			else
-			{
-				i_ranged_combo[this.index]++;
-			}
-			if(i_ranged_combo[this.index]>=amt)
-			{
-				if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index][0])))
-				{
-					float flPos[3], flAng[3];
-					this.GetAttachment("effect_hand_l", flPos, flAng);
-					i_hand_particles[this.index][0] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_red_crit", this.index, "effect_hand_l", {0.0,0.0,0.0}));
-				}
-			}
-			else
-			{
-				int ent = EntRefToEntIndex(i_hand_particles[this.index][0]);
-				if(IsValidEntity(ent))
-				{
-					RemoveEntity(ent);
-					i_hand_particles[this.index][0] = INVALID_ENT_REFERENCE;
-				}
-					
-			}
-			return fired;
+			i_melee_combo[this.index] = 0;
+			fired = true;
 		}
 		else
 		{
-			bool fired = false;
-			if(i_melee_combo[this.index]>amt)
-			{
-				i_melee_combo[this.index] = 0;
-				fired = true;
-			}
-			else
-			{
-				i_melee_combo[this.index]++;
-			}
-			if(i_melee_combo[this.index]>=amt)
-			{
-				if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index][1])))
-				{
-					float flPos[3], flAng[3];
-					this.GetAttachment("effect_hand_r", flPos, flAng);
-					i_hand_particles[this.index][1] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", this.index, "effect_hand_r", {0.0,0.0,0.0}));
-				}
-			}
-			else
-			{
-				int ent = EntRefToEntIndex(i_hand_particles[this.index][1]);
-				if(IsValidEntity(ent))
-				{
-					RemoveEntity(ent);
-					i_hand_particles[this.index][1] = INVALID_ENT_REFERENCE;
-				}
-					
-			}
-			return fired;
+			i_melee_combo[this.index]++;
 		}
+		if(i_melee_combo[this.index]>=amt)
+		{
+			if(!IsValidEntity(EntRefToEntIndex(i_hand_particles[this.index])))
+			{
+				float flPos[3], flAng[3];
+				this.GetAttachment("effect_hand_r", flPos, flAng);
+				i_hand_particles[this.index] = EntIndexToEntRef(ParticleEffectAt_Parent(flPos, "raygun_projectile_blue_crit", this.index, "effect_hand_r", {0.0,0.0,0.0}));
+			}
+		}
+		else
+		{
+			int ent = EntRefToEntIndex(i_hand_particles[this.index]);
+			if(IsValidEntity(ent))
+			{
+				RemoveEntity(ent);
+				i_hand_particles[this.index] = INVALID_ENT_REFERENCE;
+			}
+				
+		}
+		return fired;
+
 	}
 
 	public void Handle_Weapon()
@@ -596,7 +567,6 @@ methodmap Twirl < CClotBody
 		
 		npc.m_iChanged_WalkCycle = 1;
 		i_barrage_ammo[npc.index] = 0;
-		i_ranged_combo[npc.index] = 0;
 		i_melee_combo[npc.index] = 0;
 		i_lunar_ammo[npc.index] = 0;
 		b_lastman[npc.index] = false;
@@ -676,6 +646,7 @@ methodmap Twirl < CClotBody
 
 		fl_npc_basespeed = 290.0;
 		npc.m_flSpeed = fl_npc_basespeed;
+		npc.m_bisWalking = true;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 
@@ -823,6 +794,7 @@ methodmap Twirl < CClotBody
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + GetRandomFloat(5.0, 10.0);
 		fl_comsic_gaze_timer[npc.index] = GetGameTime(npc.index)  + GetRandomFloat(5.0, 10.0);
 		fl_lunar_timer[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
+		fl_magia_overflow_recharge[npc.index] = GetGameTime(npc.index) + GetRandomFloat(10.0, 20.0);
 		fl_final_invocation_timer[npc.index] = 0.0;
 		fl_final_invocation_logic[npc.index] = 0.0;
 		b_allow_final_invocation[npc.index] = false;
@@ -834,6 +806,8 @@ methodmap Twirl < CClotBody
 		EmitSoundToAll("mvm/mvm_tele_deliver.wav", _, _, _, _, _, RUINA_NPC_PITCH);
 
 		npc.m_flMeleeArmor = 1.5;
+
+		npc.m_bInKame = false;
 		
 		return npc;
 	}
@@ -988,6 +962,9 @@ static void ClotThink(int iNPC)
 			case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
 			case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
 		}
+		fl_magia_overflow_recharge[npc.index] -= 15.0;
+		npc.m_flNextTeleport -= 10.0;
+		
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
@@ -1014,6 +991,7 @@ static void ClotThink(int iNPC)
 
 		fl_npc_basespeed = 310.0;
 
+		npc.m_bisWalking = true;
 		npc.m_flSpeed = fl_npc_basespeed;
 	}
 
@@ -1038,8 +1016,42 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		if(npc.m_bInKame)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,true);
+			if(npc.m_iTarget < 1)
+			{
+				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+		}
+		else
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+	}
+	if(npc.m_bInKame)
+	{
+		if(IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+			npc.FaceTowards(vecTarget, (npc.Anger ? 22.5 : 17.0));
+			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+
+			int iPitch = npc.LookupPoseParameter("body_pitch");
+			if(iPitch < 0)
+				return;		
+
+			//Body pitch
+			float v[3], ang[3];
+			SubtractVectors(VecSelfNpc, vecTarget, v); 
+			NormalizeVector(v, v);
+			GetVectorAngles(v, ang); 
+									
+			float flPitch = npc.GetPoseParameter(iPitch);
+									
+			npc.SetPoseParameter(iPitch, ApproachAngle(ang[0], flPitch, 10.0));
+		}
 	}
 			
 	if(npc.m_blPlayHurtAnimation)
@@ -1087,6 +1099,7 @@ static void ClotThink(int iNPC)
 			Fractal_Gram(npc, PrimaryThreatIndex);
 			Cosmic_Gaze(npc, PrimaryThreatIndex);
 			Luanar_Radiance(npc);
+			Magia_Overflow(npc);
 		}
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		
@@ -1338,9 +1351,6 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 			Particle = "raygun_projectile_red";
 
 		npc.FireParticleRocket(target_vec, Dmg , projectile_speed , Radius , Particle, _, _, true, flPos);
-
-		if(npc.Add_Combo(15, 0))
-			Initiate_Combo_Laser(npc.index);
 	}
 	else
 	{
@@ -1367,7 +1377,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						if(npc.Add_Combo(10, 1))
+						if(npc.Add_Combo(10))
 						{
 							float Radius = (npc.Anger ? 225.0 : 150.0);
 							float dmg = 75.0;
@@ -1479,6 +1489,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	float anim_ratio = Ratio;
 	Duration = 1.3 * (Windup/Baseline);
 
+	npc.m_bisWalking = false; 
 	npc.m_flDoingAnimation = GameTime + Duration + Windup + 0.2;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration +Windup;
 	fl_cosmic_gaze_windup[npc.index] = GameTime + Windup;
@@ -1833,9 +1844,9 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
 	//(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
-	float Laser_Dmg = 3.5;
-	float Speed = (npc.Anger ? 1750.0 : 1000.0);
-	float Direct_Dmg = 5.5;
+	float Laser_Dmg = 2.5;
+	float Speed = (npc.Anger ? 1400.0 : 1250.0);
+	float Direct_Dmg = 3.5;
 	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
@@ -1966,22 +1977,23 @@ static Action Laser_Projectile_Timer(Handle timer, DataPack data)
 	return Plugin_Continue;
 }
 static int i_targets_inrange;
-static void Retreat(Twirl npc)
+static bool Retreat(Twirl npc, bool custom = false)
 {
 	float GameTime = GetGameTime(npc.index);
 	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
 	
-	if(npc.m_flNextTeleport > GameTime)	//internal teleportation device is still recharging...
-		return;
+	if(npc.m_flNextTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
+		return false;
 
-	npc.m_flNextTeleport = GameTime + 1.0;
+	if(!custom)
+		npc.m_flNextTeleport = GameTime + 1.0;
 
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	i_targets_inrange = 0;
 	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
 
-	if(i_targets_inrange < 4)	//not worth "retreating"
-		return;
+	if(i_targets_inrange < 4 && !custom)	//not worth "retreating"
+		return false;
 
 	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
 
@@ -2020,9 +2032,10 @@ static void Retreat(Twirl npc)
 		Angles[1]+=Ang_Adjust;
 	}
 	if(!success)
-		return;
+		return false;
 	
-	npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
+	if(!custom)
+		npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
 	
 	//YAY IT WORKED!!!!!!!
 
@@ -2056,6 +2069,9 @@ static void Retreat(Twirl npc)
 		start_offset[2] += 12.5;
 		end_offset[2] += 12.5;
 	}
+
+	if(custom)
+		return true;
 
 	fl_force_ranged[npc.index] = GameTime + 5.0;	//now force ranged mode for a bit, wouldn't make sense to just rush straight into the same situation you just escaped from
 
@@ -2105,12 +2121,14 @@ static void Retreat(Twirl npc)
 		case 4: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
 		case 5: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
 	}
+	return true;
 }
+//taunt_the_scaredycat_medic
 static float fl_retreat_laser_throttle[MAXENTITIES];
 static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 {
 	float GameTime = GetGameTime();
-	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+	npc.AddActivityViaSequence("secondrate_sorcery_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
 
@@ -2120,7 +2138,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
 	float Duration = 2.0;
-
+	npc.m_bisWalking = false;
 	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
 	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
 	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
@@ -2151,6 +2169,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 	{
 		SDKUnhook(npc.index, SDKHook_Think, Retreat_Laser_Tick);
 
+		npc.m_bisWalking = true;
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
@@ -2172,6 +2191,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	if(!b_animation_set[npc.index])
 	{
+		npc.SetCycle(0.51948051);	//math bitch!
 		b_animation_set[npc.index] = true;
 		npc.SetPlaybackRate(0.0);	
 		//npc.SetCycle(0.4);
@@ -2317,7 +2337,252 @@ static void CountTargets(int entity, int victim, float damage, int weapon)
 {
 	i_targets_inrange++;
 }
+static void On_LaserHit(int client, int target, int damagetype, float damage)
+{
+	Twirl npc = view_as<Twirl>(client);
+	Ruina_Add_Mana_Sickness(npc.index, target, 0.1, (npc.Anger ? 55 : 45), true);
+}
+static float fl_magia_angle[MAXENTITIES];
+static void Magia_Overflow(Twirl npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_magia_overflow_recharge[npc.index] > GameTime)
+		return;
 
+	if(!Retreat(npc, true))
+		return;
+
+	
+	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
+	npc.SetPlaybackRate(1.0);	
+	npc.SetCycle(0.01);
+
+	SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+
+	EmitCustomToAll(TWIRL_RETREAT_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
+
+	float Duration = 9.0;
+	npc.m_bisWalking = false;
+	fl_ruina_battery_timeout[npc.index] = GameTime + Duration + 0.7;
+	npc.m_flDoingAnimation = GameTime + Duration + 0.75;
+	fl_retreat_laser_throttle[npc.index] = GameTime + 0.7;
+	fl_magia_overflow_recharge[npc.index] = GameTime + Duration + 0.7 + (npc.Anger ? 30.0 : 45.0);
+
+	b_animation_set[npc.index] = false;
+
+	NPC_StopPathing(npc.index);
+	npc.m_bPathing = false;
+	npc.m_flSpeed = 0.0;
+
+	fl_magia_angle[npc.index] = GetRandomFloat(0.0, 360.0);
+
+	npc.m_bInKame = true;
+
+	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+	SDKHook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+}
+static Action Magia_Overflow_Tick(int iNPC)
+{
+	Twirl npc = view_as<Twirl>(iNPC);
+	float GameTime = GetGameTime();
+
+	if(fl_ruina_battery_timeout[npc.index] < GameTime)
+	{
+		SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+
+		npc.m_bisWalking = true;
+		f_NpcTurnPenalty[npc.index] = 1.0;
+		npc.m_flSpeed = fl_npc_basespeed;
+		npc.StartPathing();
+
+		npc.m_bInKame = false;
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+		npc.m_iChanged_WalkCycle = 1;
+		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		return Plugin_Stop;
+	}
+
+	npc.m_flSpeed = 0.0;	//DON'T MOVE
+
+	bool update = false;
+	if(fl_retreat_laser_throttle[npc.index] < GameTime)
+	{
+		update = true;
+		fl_retreat_laser_throttle[npc.index] = GameTime + 0.1;
+	}
+
+	if(!b_animation_set[npc.index] && update)
+	{
+		b_animation_set[npc.index] = true;
+		npc.SetPlaybackRate(0.0);	
+		//npc.SetCycle(0.4);
+	}
+	if(!b_animation_set[npc.index])
+		return Plugin_Continue;
+
+	
+	float Radius = 30.0;
+	float diameter = Radius*2.0;
+	Ruina_Laser_Logic Laser;
+	Laser.client = npc.index;
+	float 	flPos[3], // original
+			flAng[3]; // original
+	float Angles[3];
+
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);	//pitch code stolen from fusion. ty artvin
+
+	int iPitch = npc.LookupPoseParameter("body_pitch");
+	if(iPitch < 0)
+		return Plugin_Continue;
+
+	float flPitch = npc.GetPoseParameter(iPitch);
+	flPitch *= -1.0;
+	Angles[0] = flPitch;
+	GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+	//flPos[2]+=37.0;
+	Get_Fake_Forward_Vec(15.0, Angles, flPos, flPos);
+
+	float tmp[3];
+	float actualBeamOffset[3];
+	float BEAM_BeamOffset[3];
+	BEAM_BeamOffset[0] = 0.0;
+	BEAM_BeamOffset[1] = -0.0;//5
+	BEAM_BeamOffset[2] = 0.0;
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	flPos[0] += actualBeamOffset[0];
+	flPos[1] += actualBeamOffset[1];
+	flPos[2] += actualBeamOffset[2];
+
+	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
+	if(update)
+	{
+		Laser.Damage = 1.75*RaidModeScaling;
+		Laser.Radius = Radius;
+		Laser.Bonus_Damage = 1.75 * RaidModeScaling*6.0;
+		Laser.damagetype = DMG_PLASMA;
+		Laser.Deal_Damage(On_LaserHit);
+	}
+	
+
+	float TE_Duration = TWIRL_TE_DURATION;
+	float EndLoc[3]; EndLoc = Laser.End_Point;
+
+	int color[4]; Ruina_Color(color);
+	if(i_current_wave[npc.index] >=60)
+	{
+		color[0] = 0;
+		color[1] = 250;
+		color[2] = 237;	
+	}
+	color[3] = 255;
+
+	float Offset_Loc[3];
+	Get_Fake_Forward_Vec(100.0, Angles, Offset_Loc, flPos);
+
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[1]);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
+	int colorLayer2[4];
+	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
+
+	float 	Rng_Start = GetRandomFloat(diameter*0.5, diameter*0.7);
+
+	float 	Start_Diameter1 = ClampBeamWidth(Rng_Start*0.7),
+			Start_Diameter2 = ClampBeamWidth(Rng_Start*0.9),
+			Start_Diameter3 = ClampBeamWidth(Rng_Start);
+		
+	float 	End_Diameter1 = ClampBeamWidth(diameter*0.7),
+			End_Diameter2 = ClampBeamWidth(diameter*0.9),
+			End_Diameter3 = ClampBeamWidth(diameter);
+
+	int Beam_Index = g_Ruina_BEAM_Combine_Blue;
+
+	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter1, 0, 10.0, colorLayer2, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index, 	0, 0, 66, TE_Duration, 0.0, Start_Diameter2, 0, 10.0, colorLayer3, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(flPos, Offset_Loc, Beam_Index,	0, 0, 66, TE_Duration, 0.0, Start_Diameter3, 0, 10.0, colorLayer4, 3);
+	TE_SendToAll(0.0);
+
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter1*0.9, End_Diameter1, 0, 0.1, colorLayer2, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter2*0.9, End_Diameter2, 0, 0.1, colorLayer3, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(Offset_Loc, EndLoc, Beam_Index, 	0, 0, 66, TE_Duration, Start_Diameter3*0.9, End_Diameter3, 0, 0.1, colorLayer4, 3);
+	TE_SendToAll(0.0);
+
+	if(fl_magia_angle[npc.index]>360.0)
+		fl_magia_angle[npc.index] -=360.0;
+	
+	fl_magia_angle[npc.index]+=2.5/TickrateModify;
+
+	Twirl_Magia_Rings(npc, Offset_Loc, Angles, 3, true, 50.0, 1.0, TE_Duration, color, EndLoc);
+
+	return Plugin_Continue;
+
+}
+static void Twirl_Magia_Rings(Twirl npc, float Origin[3], float Angles[3], int loop_for, bool Type=true, float distance_stuff, float ang_multi, float TE_Duration, int color[4], float drill_loc[3])
+{
+	float buffer_vec[3][3];
+		
+	for(int i=0 ; i<loop_for ; i++)
+	{	
+		float tempAngles[3], Direction[3], endLoc[3];
+		tempAngles[0] = Angles[0];
+		tempAngles[1] = Angles[1];	//has to the same as the beam
+		tempAngles[2] = (fl_magia_angle[npc.index]+((360.0/loop_for)*float(i)))*ang_multi;	//we use the roll angle vector to make it speeen
+		/*
+			Using this method we can actuall keep proper pitch/yaw angles on the turning, unlike say fantasy blade or mlynar newspaper's special swing thingy.
+		*/
+		
+		if(tempAngles[2]>360.0)
+			tempAngles[2] -= 360.0;
+	
+					
+		GetAngleVectors(tempAngles, Direction, NULL_VECTOR, Direction);
+		ScaleVector(Direction, distance_stuff);
+		AddVectors(Origin, Direction, endLoc);
+		
+		buffer_vec[i] = endLoc;
+		
+		if(Type)
+		{
+			int r=175, g=175, b=175, a=175;
+			float diameter = 15.0;
+			int colorLayer4[4];
+			SetColorRGBA(colorLayer4, r, g, b, a);
+			int colorLayer1[4];
+			SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, a);
+										
+			TE_SetupBeamPoints(endLoc, drill_loc, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, colorLayer1, 3);
+										
+			TE_SendToAll();
+		}
+		
+	}
+	
+	TE_SetupBeamPoints(buffer_vec[0], buffer_vec[loop_for-1], g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, 5.0, 5.0, 0, 0.01, color, 3);	
+	TE_SendToAll(0.0);
+	for(int i=0 ; i<(loop_for-1) ; i++)
+	{
+		TE_SetupBeamPoints(buffer_vec[i], buffer_vec[i+1], g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, 5.0, 5.0, 0, 0.01, color, 3);	
+		TE_SendToAll(0.0);
+	}
+	
+}
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Twirl npc = view_as<Twirl>(victim);
@@ -2373,6 +2638,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();
 
+		npc.m_bisWalking = false;
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
 
@@ -2422,7 +2688,8 @@ static void Kill_Abilities(Twirl npc)
 {
 	SDKUnhook(npc.index, SDKHook_Think, Retreat_Laser_Tick);
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
-	SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
+	SDKUnhook(npc.index, SDKHook_Think, Magia_Overflow_Tick);
+	npc.m_bInKame = false;
 }
 
 static void NPC_Death(int entity)
@@ -2440,15 +2707,14 @@ static void NPC_Death(int entity)
 
 	Ruina_NPCDeath_Override(npc.index);
 
-	for(int i=0 ; i < 2 ; i++)
+
+	int ent = EntRefToEntIndex(i_hand_particles[npc.index]);
+	if(IsValidEntity(ent))
 	{
-		int ent = EntRefToEntIndex(i_hand_particles[npc.index][i]);
-		if(IsValidEntity(ent))
-		{
-			RemoveEntity(ent);
-		}
-		i_hand_particles[npc.index][i] = INVALID_ENT_REFERENCE;
+		RemoveEntity(ent);
 	}
+	i_hand_particles[npc.index] = INVALID_ENT_REFERENCE;
+
 
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
@@ -2516,140 +2782,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable8);
 	
 }
-static float fl_combo_laser_throttle[MAXENTITIES];
-static void Initiate_Combo_Laser(int iNPC)
-{
-	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime();
-	if(npc.m_flDoingAnimation > GameTime)
-		return;
-	
-	if(fl_ruina_battery_timeout[npc.index] > GameTime)
-		return;
-
-	
-	float Duration = (npc.Anger ? 1.0 : 0.7);
-	npc.m_flDoingAnimation = GameTime + Duration+0.1;
-	fl_ruina_battery_timeout[npc.index] = GameTime + Duration;
-	fl_combo_laser_throttle[npc.index] = GameTime + 0.2;	//the windup period
-	
-	SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
-	SDKHook(npc.index, SDKHook_Think, Combo_Laser_Logic);
-	
-	npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE", _, _, _, 0.5);
-	float VecTarget[3]; WorldSpaceCenter(npc.m_iTarget, VecTarget);
-	npc.FaceTowards(VecTarget, 10000.0);
-	npc.PlayLaserComboSound();
-
-	NPC_StopPathing(npc.index);
-	npc.m_bPathing = false;
-
-	npc.m_flSpeed = 0.0;
-
-	f_NpcTurnPenalty[npc.index] = 0.0;
-}
-
-static Action Combo_Laser_Logic(int iNPC)
-{
-	Twirl npc = view_as<Twirl>(iNPC);
-	float GameTime = GetGameTime(npc.index);
-	if(fl_ruina_battery_timeout[npc.index] < GameTime)
-	{
-		SDKUnhook(npc.index, SDKHook_Think, Combo_Laser_Logic);
-		f_NpcTurnPenalty[npc.index] = 1.0;
-		npc.m_flSpeed = fl_npc_basespeed;
-		npc.StartPathing();
-
-		//int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		//if(iActivity > 0) npc.StartActivity(iActivity);
-
-		return Plugin_Stop;
-	}
-	
-	if(fl_combo_laser_throttle[npc.index] > GameTime)
-		return Plugin_Continue;
-	
-	fl_combo_laser_throttle[npc.index] = GameTime + 0.1;
-
-	//f_NpcTurnPenalty[npc.index] = 0.0001;
-
-	float Angles[3], startPoint[3];
-	WorldSpaceCenter(npc.index, startPoint);
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-
-	float Radius = (npc.Anger ? 30.0 : 15.0);
-	Ruina_Laser_Logic Laser;
-	Laser.client = npc.index;
-	Laser.DoForwardTrace_Custom(Angles, startPoint, 900.0);	// no pitch control
-	Laser.Radius = Radius;
-	Laser.Damage = 7.5*RaidModeScaling;
-	Laser.Bonus_Damage = (npc.Anger ? 45.0 : 30.0)*RaidModeScaling;
-	Laser.damagetype = DMG_PLASMA;
-	Laser.Deal_Damage(On_LaserHit_two);
-
-	float Start_Vec[3], End[3];
-	float flPos[3]; // original
-	float flAng[3]; // original
-	GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-	End = Laser.End_Point;
-	Start_Vec = flPos;
-
-	float diameter = ClampBeamWidth(Radius * 2.0);
-	float TE_Duration = TWIRL_TE_DURATION;
-
-	int color[4];
-	Ruina_Color(color);
-
-	//color[3] = 75;
-
-	float vecAngles[3];
-	MakeVectorFromPoints(Start_Vec, End, vecAngles);
-	GetVectorAngles(vecAngles, vecAngles);
-
-	float Offset_Start[3];
-
-	Get_Fake_Forward_Vec(100.0, vecAngles, Offset_Start, Start_Vec);
-
-	int colorLayer4[4];
-	SetColorRGBA(colorLayer4, color[0], color[1], color[2], color[3]);
-	int colorLayer3[4];
-	SetColorRGBA(colorLayer3, colorLayer4[0] * 7 + 255 / 8, colorLayer4[1] * 7 + 255 / 8, colorLayer4[2] * 7 + 255 / 8, color[3]);
-	int colorLayer2[4];
-	SetColorRGBA(colorLayer2, colorLayer4[0] * 6 + 510 / 8, colorLayer4[1] * 6 + 510 / 8, colorLayer4[2] * 6 + 510 / 8, color[3]);
-	int colorLayer1[4];
-	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 7255 / 8, colorLayer4[1] * 5 + 7255 / 8, colorLayer4[2] * 5 + 7255 / 8, color[3]);
-
-
-	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, diameter, diameter, 0, 0.25, colorLayer1, 24);
-	TE_SendToAll();
-	TE_SetupBeamPoints(Start_Vec, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, diameter*0.4, diameter*0.8, 1, 0.25, colorLayer2, 3);
-	TE_SendToAll();
-	colorLayer3[3]+=100;
-	if(colorLayer3[3]>255)
-		colorLayer3[3] = 255;
-	TE_SetupBeamPoints(Offset_Start, End, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, diameter*0.5, diameter*0.5, 1, 2.0, colorLayer3, 3);
-	TE_SendToAll();
-	TE_SetupBeamPoints(Start_Vec, End, g_Ruina_BEAM_Combine_Blue, 0, 0, 66, TE_Duration, diameter*0.2, diameter*0.4, 1, 1.0, colorLayer4, 3);
-	TE_SendToAll();
-
-	diameter *=0.8;
-
-	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_lightning, 0, 0, 0, TE_Duration, 0.0, diameter, 0, 0.1, colorLayer1, 24);
-	TE_SendToAll();
-	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.8, 1, 0.1, colorLayer2, 3);
-	TE_SendToAll();
-	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.6, 1, 1.0, colorLayer3, 3);
-	TE_SendToAll();
-	TE_SetupBeamPoints(Start_Vec, Offset_Start, g_Ruina_BEAM_Laser, 0, 0, 0, TE_Duration, 0.0, diameter*0.4, 1, 5.0, colorLayer4, 3);
-	TE_SendToAll();
-
-	return Plugin_Continue;
-}
-static void On_LaserHit_two(int client, int Target, int damagetype, float damage)
-{
-	Ruina_Add_Mana_Sickness(client, Target, 0.05, 25);
-}
-
 
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {

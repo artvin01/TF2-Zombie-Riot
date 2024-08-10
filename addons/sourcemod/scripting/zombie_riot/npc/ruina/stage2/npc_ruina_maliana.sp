@@ -263,6 +263,7 @@ static void ClotThink(int iNPC)
 
 		npc.AddActivityViaSequence("taunt_drg_melee");
 		npc.SetCycle(0.01);
+		npc.m_bisWalking = false;
 		npc.SetPlaybackRate(0.7);
 
 		i_NpcWeight[npc.index] = 999;
@@ -306,6 +307,7 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_iChanged_WalkCycle = 0;
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
+			npc.m_bisWalking = true;
 			if(iActivity > 0) npc.StartActivity(iActivity);
 
 			i_NpcWeight[npc.index] = 1;
