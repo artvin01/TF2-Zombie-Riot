@@ -619,8 +619,10 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
-#define HEAL_SILENCEABLE				(1 << 3) 
+#define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
+#define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE

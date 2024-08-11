@@ -1886,10 +1886,10 @@
 	
 	"Panic Attack Desc"
 	{
-		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive.\nPassive healing wont work if your holding weapon has this effect, such as ocean song, but still give buffs."
-		"fr"	"-15%% cadence des attaques, cadence des attaques améliore en fonction de santé perdu, jusqu'a +25%%.\nLa regénération passive fonctionnera pas si votre arme a cet effet (ex. Chant de l'Océan)"
-		"ru"	"Вы атакуете на 15%% медл., но чем меньше у вас здор., тем быстрее вы атакуете, до 25%% быстрее, не работает, если вы посл. выживший.\nПассивное лечение не работает, если оружие имеет этот эфф. (напр. песня океана), но всё равно даёт усиления."
-		"chi"   "你的攻击速度会慢15%，但是你的血量越低，你的攻击速度就越快\n最快25%，对最后一个活着的人不起作用。\n如果你的手持武器有这个效果，被动治疗将不起作用，比如海洋之歌，但仍然给予buff。"
+		"en"	"You attack 15%% slower but the lower your health is, the faster you attack, up to 25%% faster, doesn't work with last man alive."
+		"fr"	"-15%% cadence des attaques, cadence des attaques améliore en fonction de santé perdu, jusqu'a +25%%."
+		"ru"	"Вы атакуете на 15%% медл., но чем меньше у вас здор., тем быстрее вы атакуете, до 25%% быстрее, не работает, если вы посл. выживший."
+		"chi"   "你的攻击速度会慢15%，但是你的血量越低，你的攻击速度就越快\n最快25%，对最后一个活着的人不起作用。"
 	}
 	
 	"Barbarians Mind Desc"
@@ -3640,8 +3640,8 @@
 	}
 	"Merchant Pap 2 Desc"
 	{
-		"en"	"Fish Market can replace Silence with Heal-on-Hit\nMartial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
-		"fr"	"La poissonnerie peut remplacer le Silence avec de la Santé par Coups.\nKaratéka vous donne un effet et peut étonner les ennemis, si vous ne les attaquez pas pour 4 secondes.\nAbilité investigateur vole de la cadence des attaques des ennemis que vous bloquez."
+		"en"	"Martial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
+		"fr"	"Karatéka vous donne un effet et peut étonner les ennemis, si vous ne les attaquez pas pour 4 secondes.\nAbilité investigateur vole de la cadence des attaques des ennemis que vous bloquez."
 	}
 	"Merchant Pap 3 Desc"
 	{

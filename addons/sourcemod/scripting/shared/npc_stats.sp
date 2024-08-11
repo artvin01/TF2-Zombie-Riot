@@ -369,6 +369,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
+		/*
+		DispatchKeyValue(npc, "shadowcastdist", "0");
+		DispatchKeyValue(npc, "disablereceiveshadows", "1");
+		DispatchKeyValue(npc, "disableshadows", "1");
+		DispatchKeyValue(npc, "disableshadowdepth", "1");
+		DispatchKeyValue(npc, "disableselfshadowing", "1");  
+		*/
 
 #if defined ZR
 		if(Ally == TFTeam_Red)
@@ -2461,8 +2468,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
-		DispatchKeyValue(item, "disableshadows", "1");	//Disable shadows, helps with performance and really isnt neccecary.
-
+		/*
+		DispatchKeyValue(item, "shadowcastdist", "0");
+		DispatchKeyValue(item, "disablereceiveshadows", "1");
+		DispatchKeyValue(item, "disableshadows", "1");
+		DispatchKeyValue(item, "disableshadowdepth", "1");
+		DispatchKeyValue(item, "disableselfshadowing", "1");  
+		*/
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);

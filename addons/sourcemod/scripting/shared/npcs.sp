@@ -1408,12 +1408,25 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			armor_added = true;
 		}
 #endif
+
+#endif
+		float percentageGlobal = 1.0;
+		float BaseDamage = 1.0;
+		int testvalue1 = 1;
+
+		if(!b_NpcIsInvulnerable[victim])
+		{
+			Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+		}
+
 		float percentage;
-		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
+		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 2, weapon, attacker)) && !b_NpcIsInvulnerable[victim])	
 		{
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1462,11 +1475,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			armor_added = true;
 		}
 		
-		if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
+		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 1)) && !b_NpcIsInvulnerable[victim])	
 		{
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());

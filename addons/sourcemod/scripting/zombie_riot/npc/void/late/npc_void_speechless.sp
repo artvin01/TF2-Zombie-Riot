@@ -139,7 +139,7 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 340.0;
+		npc.m_flSpeed = 350.0;
 		
 		
 		int skin = 1;
@@ -283,10 +283,10 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 230.0;
+					float damageDealt = 250.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 13.0;
+						damageDealt *= 11.0;
 					}
 
 
