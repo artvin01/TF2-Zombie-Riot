@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 static float Hose_Velocity = 1000.0;
-static float Hose_BaseHeal = 4.0;
-static float Hose_UberGain = 0.0025;
+static float Hose_BaseHeal = 3.0;
+static float Hose_UberGain = 0.0075;
 static float Hose_UberTime = 6.0;
 static float Hose_ShotgunChargeMult = 3.0;
 static float SelfHealMult = 0.33;
@@ -235,12 +235,10 @@ public void Hose_Touch(int entity, int other)
 		
 	if (IsValidAlly(other, owner))	
 	{	
-		float ProjLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 25.0;
-		TE_Particle(Hose_ProjectileCharged[entity] ? HEAL_PARTICLE_CHARGED : HEAL_PARTICLE, ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
-		Hose_Heal(owner, other, Hose_Healing[entity]);
+		if(!Hose_Heal(owner, other, Hose_Healing[entity]))
+		{
+			return;
+		}
 		
 		Hose_Healing[entity] -= Hose_HealLoss[entity];
 		if (Hose_Healing[entity] < Hose_HealMin[entity])
@@ -276,7 +274,7 @@ public void Hose_Touch(int entity, int other)
 	}
 }
 
-public void Hose_Heal(int owner, int entity, float amt)
+public bool Hose_Heal(int owner, int entity, float amt)
 {
 	if (f_TimeUntillNormalHeal[entity] > GetGameTime())
 	{
@@ -285,13 +283,19 @@ public void Hose_Heal(int owner, int entity, float amt)
 	
 	int new_ammo = GetAmmo(owner, 21);
 	int ammoSubtract;
-	ammoSubtract = HealEntityGlobal(entity, owner, amt, 1.0, 0.0, _, new_ammo);	
+	ammoSubtract = HealEntityGlobal(owner, entity, amt, 1.0, 0.0, _, new_ammo);	
+	
+	if(ammoSubtract <= 0)
+	{
+		return false;
+	}
 
 		
 	new_ammo -= ammoSubtract;
 	SetAmmo(owner, 21, new_ammo);
 	HealEntityGlobal(owner, owner, amt * SelfHealMult, 1.0, 0.0);	
 	CurrentAmmo[owner][21] = GetAmmo(owner, 21);
+	return true;
 }
 
 public void Hose_UpdateText(int owner)
@@ -417,14 +421,7 @@ public void Weapon_Syringe_Gun_Fire_M1(int client, int weapon, bool crit, int sl
 			float flHealth = float(GetEntProp(target, Prop_Data, "m_iHealth"));
 			float flMaxHealth;
 			
-			if(target <= MaxClients)
-			{
-				flMaxHealth = float(SDKCall_GetMaxHealth(target));
-			}
-			else
-			{
-				flMaxHealth = float(ReturnEntityMaxHealth(target));
-			}
+			flMaxHealth = float(ReturnEntityMaxHealth(target));
 
 			flMaxHealth *= 1.15;
 			
