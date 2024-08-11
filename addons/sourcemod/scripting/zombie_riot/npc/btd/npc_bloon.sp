@@ -551,7 +551,7 @@ public void Bloon_ClotThink(int iNPC)
 	if(regrow)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(health < maxhealth)
 		{
 			health += BloonRegrowRate[npc.m_iOriginalType];

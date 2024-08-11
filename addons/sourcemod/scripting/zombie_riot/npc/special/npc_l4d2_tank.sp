@@ -160,6 +160,7 @@ methodmap L4D2_Tank < CClotBody
 		
 		i_NpcWeight[npc.index] = 4;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		KillFeed_SetKillIcon(npc.index, "fists");
@@ -184,6 +185,7 @@ methodmap L4D2_Tank < CClotBody
 			fl_AlreadyStrippedMusic[client_clear] = 0.0; //reset to 0
 		}
 		
+		npc.m_bisWalking = false;
 		npc.m_flSpeed = 0.0;
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 3.0;
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 3.0;
@@ -250,12 +252,14 @@ public void L4D2_Tank_ClotThink(int iNPC)
 	
 	if(npc.m_bDoSpawnGesture)
 	{
+		npc.m_bisWalking = false;
 		npc.PlaySpawnSound();
 		npc.AddGesture("ACT_SPAWN");
 		npc.m_bDoSpawnGesture = false;
 	}
 	if(npc.m_bUseDefaultAnim)
 	{
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		npc.m_bUseDefaultAnim = false;
@@ -682,7 +686,7 @@ public Action L4D2_Tank_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 public void L4D2_Tank_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
 //		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
@@ -927,7 +931,7 @@ public Action contact_throw_tank_entity(int client)
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
 						{		
-							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+							int damage = ReturnEntityMaxHealth(client) / 3;
 							
 							if(damage > 2000)
 							{

@@ -617,6 +617,7 @@ static void Internal_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
@@ -654,7 +655,7 @@ static void Internal_ClotThink(int iNPC)
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			SilvesterApplyEffects(npc.index, false);
 
 			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -1160,6 +1161,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
@@ -1177,6 +1179,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
@@ -1263,6 +1266,7 @@ static void Internal_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				npc.SetPlaybackRate(0.5);
@@ -1401,7 +1405,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
 	if(ZR_GetWaveCount()+1 > 35)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			SilvesterApplyEffects(npc.index, true);
 			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
@@ -1698,12 +1702,7 @@ public Action contact_throw_Silvester_entity(int client)
 							int damage;
 							if(client <= MaxClients)
 							{
-								damage = SDKCall_GetMaxHealth(client) / 3;
-
-							}
-							else
-							{
-								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+								damage = ReturnEntityMaxHealth(client) / 3;
 							}
 							if(damage > 2000)
 							{

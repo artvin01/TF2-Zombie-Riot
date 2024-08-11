@@ -142,7 +142,7 @@ methodmap XenoMalfuncRobot < CClotBody
 	{
 		XenoMalfuncRobot npc = view_as<XenoMalfuncRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.15", "30000", ally, false));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

@@ -189,7 +189,8 @@ enum
 	WEAPON_ION_BEAM_FEED  = 109,
 	WEAPON_CHAINSAW  = 110,
 	WEAPON_FLAMETAIL = 111,
-	WEAPON_OCEAN_PAP = 112
+	WEAPON_OCEAN_PAP = 112,
+	WEAPON_EXPIDONSAN_REAPIR = 113
 }
 
 enum
@@ -420,7 +421,6 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/zsclassic.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
 #include "zombie_riot/custom/weapon_boom_stick.sp"
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
@@ -635,7 +635,6 @@ void ZR_MapStart()
 	Wand_Cryo_Burst_ClearAll();
 	Arrow_Spell_ClearAll();
 	Survival_Knife_ClearAll();
-	MedKit_ClearAll();
 	Wand_autoaim_ClearAll();
 	Weapon_lantean_Wand_ClearAll();
 	Wand_Elemental_2_ClearAll();
@@ -696,8 +695,6 @@ void ZR_MapStart()
 	
 	Waves_MapStart();
 	Music_MapStart();
-	Remove_Healthcooldown();
-	Medigun_PersonOnMapStart();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
 	Pomson_MapStart();
@@ -1086,9 +1083,8 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
-	CheckAlivePlayers(0, 0, true);
-	SDKCall_ResetPlayerAndTeamReadyState();
 
+	Rogue_Encounter_EmergencyDispatch();
 	char buf[12];
 	GetCmdArg(1, buf, sizeof(buf));
 	
@@ -2187,6 +2183,12 @@ void GiveXP(int client, int xp)
 		return;
 	}
 
+	if(Rogue_Mode())
+	{
+		//in rogue, give much less XP
+		xp = RoundToNearest(float(xp) * 0.15);
+	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
@@ -2256,7 +2258,6 @@ void PlayerApplyDefaults(int client)
 	{
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		

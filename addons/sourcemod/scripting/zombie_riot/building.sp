@@ -33,17 +33,17 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	560,
 	0,
 
-	579,
-	379,
-	979,
-	979,
+	600,
+	400,
+	1000,
+	1000,
 
-	587,
-	587,
-	587,
-	587,
-	1187,
-	1179,
+	600,
+	600,
+	600,
+	600,
+	1200,
+	1200,
 
 	400
 };
@@ -240,12 +240,18 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 
 }
 
+float f_ExpidonsanRepairDelay[MAXTF2PLAYERS];
 void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
 	PrecacheSound(SOUND_TOSS_TF, true);
 	Zero(GrabThrottle);
 	Zero(PlayerWasHoldingProp);
+	PrecacheSound("player/taunt_sorcery_fail.wav");
+	PrecacheSound("physics/metal/metal_box_strain2.wav");
+	PrecacheSound("physics/metal/metal_box_strain4.wav");
+	PrecacheSound("npc/manhack/bat_away.wav");
+	Zero(f_ExpidonsanRepairDelay);
 }
 
 // Called after NPC_ConfigSetup()
@@ -291,12 +297,15 @@ static bool HasWrench(int client)
 static int GetCost(int id, float multi)
 {
 	int buildCost = BuildingCost[id];
-	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
-	if(cost_extra <= 0)
+	if(id <= 1 || id == 12)
 	{
-		cost_extra = 0;
+		int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
+		if(cost_extra <= 0)
+		{
+			cost_extra = 0;
+		}
+		buildCost = buildCost + cost_extra;
 	}
-	buildCost = buildCost + cost_extra;
 
 	if(Rogue_Mode())
 		buildCost /= 3;
@@ -1261,14 +1270,14 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
 	Handle swingTrace;
 	float vecSwingForward[3];
-	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true); //infinite range, and ignore walls!
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, _, true);
 				
 	int target = TR_GetEntityIndex(swingTrace);	
 	float vecHit[3];
 	TR_GetEndPosition(vecHit, swingTrace);	
 	delete swingTrace;
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
-	
+
 	if(target < 0)
 		return;
 	
@@ -1276,7 +1285,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	{
 		return;
 	}
-	int max_health = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	
 	if(flHealth >= max_health)
@@ -1284,13 +1293,133 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
 		return;
 	}
+	Building_RepairObject(client, target, weapon,vecHit, 1, 1.0);
+}		
 
+public void Expidonsan_RemoteRepairAttackM1_Hold(int client, int weapon, bool &result, int slot)
+{
+	SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+	SDKHook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+}
+
+public void Expidonsan_RemoteRepairAttackM1_Prethink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK)
+	{
+		if(f_ExpidonsanRepairDelay[client] > GetGameTime())
+		{
+			return;
+		}
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+			return;
+		}
+		if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_EXPIDONSAN_REAPIR)
+		{
+			SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+			return;
+		}
+		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
+
+		f_ExpidonsanRepairDelay[client] = GetGameTime() + (1.0 * Getspeed);
+		Expidonsan_RemoteRepairAttackM1(client, weapon_active);
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+		return;
+	}
+}
+
+public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
+{
+	EmitSoundToAll("npc/manhack/bat_away.wav", client, SNDCHAN_AUTO, 70,_,0.15, GetRandomInt(130, 145));
+	int pap=0;
+	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
+
+	float MaxRange = 200.0;
+
+	switch(pap)
+	{
+		case 1:
+			MaxRange = 200.0;
+		case 2:
+			MaxRange = 300.0;
+	}
+	//lag comp is unneded here.
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
+	Handle swingTrace;
+	float vecSwingForward[3];
+	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, MaxRange, true);
+				
+	int target = TR_GetEntityIndex(swingTrace);	
+	float vecHit[3];
+	TR_GetEndPosition(vecHit, swingTrace);	
+	delete swingTrace;
+	Allowbuildings_BulletAndMeleeTraceAllyLogic(false);
+		
+	float GunPos[3];
+	GetClientEyePosition(client, GunPos);
+	float angles[3];
+	GetClientEyeAngles(client, angles);
+	GunPos[2] -= 25.0;
+	float tmp[3];
+	float actualBeamOffset[3];
+	tmp[0] = 15.0;
+	tmp[1] = -8.0;
+	tmp[2] = 0.0;
+	VectorRotate(tmp, angles, actualBeamOffset);
+	actualBeamOffset[2] = 0.0;
+	GunPos[0] += actualBeamOffset[0];
+	GunPos[1] += actualBeamOffset[1];
+	GunPos[2] += actualBeamOffset[2];
+
+	int red = 100;
+	int green = 100;
+	int blue = 100;
+	int colorLayer4[4];
+	float diameter = float(5 * 4);
+	SetColorRGBA(colorLayer4, red, green, blue, 100);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, 100);
+	TE_SetupBeamPoints(GunPos, vecHit, Shared_BEAM_Laser, 0, 0, 0, 0.21, ClampBeamWidth(diameter * 0.4), ClampBeamWidth(diameter * 0.5), 0, 2.5, colorLayer1, 3);
+	TE_SendToAll(0.0);
+	
+	TE_SetupBeamPoints(GunPos, vecHit, Shared_BEAM_Laser, 0, 0, 0, 0.21, ClampBeamWidth(diameter * 0.1), ClampBeamWidth(diameter * 0.1), 0, 1.2, {50,125,50, 150}, 3);
+	TE_SendToAll(0.0);
+
+	if(target < 0)
+		return;
+	
+	if(!i_IsABuilding[target])
+	{
+		return;
+	}
+	int max_health = ReturnEntityMaxHealth(target);
+	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
+	
+	if(flHealth >= max_health)
+	{
+		EmitSoundToAll("player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+		return;
+	}
+	Building_RepairObject(client, target, weapon,vecHit, 2, 0.2);
+}		
+
+void Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
+{
 	int new_ammo = GetAmmo(client, 3);
+	int max_health = ReturnEntityMaxHealth(target);
+	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
 	RepairRate *= Attributes_GetOnPlayer(client, 95, true, true);
 
 	RepairRate *= 10.0;
+	RepairRate *= repairspeedModif;
 
 	int i_HealingAmount = RoundToCeil(RepairRate);
 	int newHealth = flHealth + i_HealingAmount;
@@ -1306,7 +1435,16 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	}
 	if(i_HealingAmount <= 0)
 	{
-		EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+		switch(soundDef)
+		{
+			case 1:
+				EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70,_,1.0);
+			case 2:
+			{
+				EmitSoundToAll("player/taunt_sorcery_fail.wav", target, SNDCHAN_AUTO, 70,_,0.5);
+				EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+			}
+		}
 		return;
 	}
 	int Healing_Value = i_HealingAmount;
@@ -1324,7 +1462,17 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 		HealGiven = HealEntityGlobal(client, target, float(Healing_Value), _, _, _, new_ammo / 3);
 		if(HealGiven <= 0)
 		{
-			EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70);
+			switch(soundDef)
+			{
+				case 1:
+					EmitSoundToAll("weapons/wrench_hit_build_fail.wav", client, SNDCHAN_AUTO, 70,_,1.0);
+				case 2:
+				{
+					EmitSoundToAll("player/taunt_sorcery_fail.wav", target, SNDCHAN_AUTO, 70,_,0.5);
+					EmitSoundToClient(client, "player/taunt_sorcery_fail.wav", client, SNDCHAN_AUTO, 70,_,0.5);
+				}
+
+			}
 			return;
 		}
 		SetEntProp(target, Prop_Data, "m_iRepair", GetEntProp(target, Prop_Data, "m_iRepair") - HealGiven);
@@ -1332,23 +1480,57 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 		{
 			SetEntProp(target, Prop_Data, "m_iRepair", 0);
 		}
-		TE_Particle("halloween_boss_axe_hit_sparks", vecHit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-		switch(GetRandomInt(0,1))
+		switch(soundDef)
 		{
-			case 0:
-			{
-				EmitSoundToAll("weapons/wrench_hit_build_success1.wav", client, SNDCHAN_AUTO, 70);
-			}
 			case 1:
 			{
-				EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70);
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						TE_Particle("halloween_boss_axe_hit_sparks", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("weapons/wrench_hit_build_success1.wav", client, SNDCHAN_AUTO, 70,_,1.0);
+					}
+					case 1:
+					{
+						TE_Particle("halloween_boss_axe_hit_sparks", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("weapons/wrench_hit_build_success2.wav", client, SNDCHAN_AUTO, 70,_,1.0);
+					}
+				}
 			}
+			case 2:
+			{
+				switch(GetRandomInt(0,1))
+				{
+					case 0:
+					{
+						//particle can spawn stuff at 0 0 0 in world spawn, oops!
+						TE_Particle("manmelter_impact_sparks01", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToAll("physics/metal/metal_box_strain2.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToClient(client, "physics/metal/metal_box_strain2.wav", client, SNDCHAN_AUTO, 70,_,0.7, 120);
+					}
+					case 1:
+					{
+						TE_Particle("manmelter_impact_sparks01", vectorhit, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToAll("physics/metal/metal_box_strain4.wav", target, SNDCHAN_AUTO, 70,_,0.6, 120);
+						EmitSoundToClient(client, "physics/metal/metal_box_strain4.wav", client, SNDCHAN_AUTO, 70,_,0.7, 120);
+					}
+				}
+			}
+
 		}
+		
 	}
-	new_ammo -= HealGiven / 3;
+	int HealDo;
+	HealDo = HealGiven / 3;
+	if(HealDo <= 1)
+		HealDo = 1;
+	new_ammo -= HealDo;
 	SetAmmo(client, 3, new_ammo);
 	CurrentAmmo[client][3] = GetAmmo(client, 3);
-}			
+}
 
 
 void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = false, bool BarracksUpgrade = false)
@@ -1442,7 +1624,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.8;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.35));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.35));
 		}
 		if(!WildingenBuilder[entity] && WildingenBuilder[client])
 		{
@@ -1451,7 +1633,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.7));
 		}
 		if(!WildingenBuilder2[entity] && WildingenBuilder2[client])
 		{
@@ -1460,7 +1642,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.7));
 		}
 		if(FinalBuilder[entity] && !FinalBuilder[client])
 		{
@@ -1468,14 +1650,14 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.35;			
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.8;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.35));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.35));
 		}
 		if(!GlassBuilder[entity] && GlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
 			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.8));
 		}
 		if(GlassBuilder[entity] && !GlassBuilder[client])
 		{
@@ -1483,7 +1665,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
 
 		//	
@@ -1515,18 +1697,18 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
 
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.15));
 		}
 		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));
 		}
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 		{
 			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.1));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.1));
 		}
 		i_CurrentEquippedPerk[entity] = i_CurrentEquippedPerk[client];
 	}
@@ -1538,13 +1720,13 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 	if(reduce)
 	{
 		SetEntProp(entity, Prop_Data, "m_iHealth", 		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) 		/ Multi));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"))	/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToCeil(float(ReturnEntityMaxHealth(entity))	/ Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepair",		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepair")) 		/ Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepairMax", 	RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) 	/ Multi));
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepairMax", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) * Multi));
 		
 		if(initial)
@@ -1946,7 +2128,7 @@ void DeleteAndRefundBuilding(int client, int entity)
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
 		int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
 		int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
-		int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(entity);
 		
 		int MaxTotal = MaxRepair + MaxHealth;
 		int Total = Repair + Health;

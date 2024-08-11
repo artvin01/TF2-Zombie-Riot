@@ -165,7 +165,6 @@ methodmap SawRunner < CClotBody
 		
 		npc.m_iPlayMusicSound = 0;
 		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_bisGiantWalkCycle = 1.5;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	

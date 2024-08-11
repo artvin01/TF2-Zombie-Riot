@@ -3,6 +3,7 @@
 	"True Fusion Warrior Spawn"
 	{
 		"en" 		"The True Fusion Warrior has arrived."
+		"fr" 		"Le Guerrier Tru Fusion est ici."
 		"ru" 		"Истинный воин фьюжна прибыл."
 		"pt"		"O Verdadeiro Guerreiro da Fusão chegou."
 		"nl"		"De Ware Fuziekrijger is gearriveerd"
@@ -11,10 +12,12 @@
 	"Silvester And Waldch Arrived."
 	{
 		"en" 		"Silvester And Waldch Arrived."
+		"fr" 		"Silvester et Waldch sont ici."
 	}
 	"Nemesis Arrived."
 	{
 		"en" 		"Nemesis, the original Xeno infector arrived."
+		"fr" 		"Nemesis, la source de l'infection Xéno, est ici."
 		"ru" 		"Прибыл Немезид, изначальный ксенозаразитель."
 		"pt"		"Nemesis, o Xeno infector original chegou."
 		"chi" 		"复仇女神已来。"
@@ -22,10 +25,12 @@
 	"Mrx Arrived."
 	{
 		"en" 		"Mrx... Is here."
+		"fr" 		"M.x... est ici."
 	}
 	"Alaxios Arrived"
 	{
 		"en" 		"The Atlantean and great leader Alaxios arrived."
+		"fr" 		"L'Atlantean et grand chef Alaxios est ici."
 		"ru" 		"Прибыл Атлант и великий лидер Аркантос."
 		"pt"		"The Atlantean and great leader Alaxios chegou."
 		"chi" 		"亚特兰蒂斯之王 ,阿尔坎托斯到达。"
@@ -33,34 +38,41 @@
 	"Run while you can."
 	{
 		"en" 		"Run while you can."
+		"fr" 		"Courez, pendant que vous le pouvez."
 	}
 	"Sensal Arrived"
 	{
 		"en" 		"The Expidonsan Sensal reaps."
+		"fr" 		"Le Expidonsan Sensal fauche."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
 	"Vhxis arrived"
 	{
 		"en" 		"Vhxis the void keeper halts you."
+		"fr" 		"Le gardien du Void Vhxis vous arrête."
 	}
 	"The Messanger Arrived"
 	{
 		"en" 		"The Messenger has accumulated chaos."
+		"fr" 		"Le Messager a collectioné le chaos."
 		"chi"		"代言者已积攒混沌。"
 	}
 	"Chaos Kahmlstein Arrived"
 	{
 		"en" 		"Kahmlstein, the rebellious chaos inflicted leader will annihilate you."
+		"fr" 		"Kahmlstein, le leader rebèle chaotique, va vous détruire."
 		"chi"		"混沌之首，卡姆斯坦因前来歼灭你。"
 	}
 	"The Purge Arrived"
 	{
 		"en" 		"The Purge has accumulated chaos."
+		"fr" 		"Le Purge a collectioné le chaos."
 		"chi"		"扫荡者出现了。"
 	}
 	"Blitzkrieg Spawn"
 	{
 		"en" 		"Blitzkrieg has arrived."
+		"fr" 		"Blitzkrieg est ici."
 		"ru" 		"Блицкриг прибыл."
 		"pt"		"Blitzkreig chegou."
 		"nl"		"Blitzkrieg is gearriveerd"
@@ -69,6 +81,7 @@
 	"You have alerted the horde..."
 	{
 		"en" 		"You have alerted the horde..."
+		"fr" 		"La horde est alertée..."
 		"ru" 		"Вы привлекли орду..."
 		"pt"		"Você alertou a horda!..."
 		"nl"		"De horde heeft je gehoord..."
@@ -77,6 +90,7 @@
 	"Destruction echoes through a nearby space..."
 	{
 		"en" 		"Destruction echoes through a nearby space..."
+		"fr" 		"Les échos de la déstruction sondent de proche..."
 		"ru" 		"Эхо разрушений разносится по близлежащему пространству..."
 		"pt"		"Destruição ecoa através de um espaço próximo..."
 		"nl"		"Vernietiging echo's door een diepe ruimte..."
@@ -85,6 +99,7 @@
 	"A massive foe has entered this field..."
 	{
 		"en" 		"A massive foe has entered this field..."
+		"fr" 		"Un obstacle massif s'approche..."
 		"ru" 		"На это поле вышел огромный враг..."
 		"pt"		"Um enorme inimigo se aproxima..."
 		"nl"		"Een gigantische tegenstander heeft zich tot het veld begeven..."
@@ -93,6 +108,7 @@
 	"You can discern faint metalic screams not like the others..."
 	{
 		"en" 		"You can discern faint metalic screams not like the others..."
+		"fr" 		"Vous vous rendez compte de cris métalliques différents des autres..."
 		"ru" 		"Вы различаете слабые металлические крики, не похожие на другие..."
 		"pt"		"Você pode discernir fracos gritos metálicos não como os outros..."
 		"nl"		"Je kunt doffe metalen schreeuwen horen ongelijk de anderen..."
@@ -101,6 +117,7 @@
 	"Distant low rumbles fill the air space..."
 	{
 		"en" 		"Distant low rumbles fill the air space..."
+		"fr" 		"Des seccousses basses traversent l'air..."
 		"ru" 		"Отдалённый низкий гул наполняет воздушное пространство..."
 		"pt"		"Ruídos baixos distantes preenchem o espaço aéreo..."
 		"nl"		"Lage, afstandelijke rommelingen vullen het luchtruimte..."
@@ -109,6 +126,7 @@
 	"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 	{
 		"en" 		"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
+		"fr" 		"Die SS Division hat einer ihrer Infizierten soldaten Gesendet..."
 		"ru" 		"Дивизия СС: Sie schickten einen ihrer Infizierten soldaten..."
 		"pt"		"Divisão de morte SS hat einer ihrer Infizierten soldaten Gesendet..."
 		"nl"		"De SS Divisie heeft besmette soldaten gestuurd..."
@@ -117,6 +135,7 @@
 	"Faint rattling can be heard, and its approaching at a fast pace..."
 	{
 		"en" 		"Faint rattling can be heard, and its approaching at a fast pace..."
+		"fr" 		"Vous entendez des seccousses faibles, et elles approchent rapidement..."
 		"ru" 		"Слышен слабый скрежет, и он приближается с большой скоростью..."
 		"pt"		"Barulho fraco pode ser ouvido, e sua aproximação em um ritmo rápido..."
 		"nl"		"Doffe ratelingen kunnen gehoord worden, en ze komen snel naar je toe..."
@@ -125,6 +144,7 @@
 	"Something rapidly rams through hordes in your direction..."
 	{
 		"en" 		"Something rapidly rams through hordes in your direction..."
+		"fr" 		"Quelque chose se force à travers les hordes dans votre direction..."
 		"ru" 		"Что-то стремительно проносится сквозь орды в вашем направлении..."
 		"pt"		"Algo rapidamente atravessa hordas em sua direção..."
 		"nl"		"Er is iets snel door de hordes aan het rammen in uw richting..."
@@ -133,6 +153,7 @@
 	"Common means might not stop this agile enemy..."
 	{
 		"en" 		"Common means might not stop this agile enemy..."
+		"fr" 		"Les méthodes habituelles pourraient pas arrêter cet ennemi..."
 		"ru" 		"Обычные средства могут не остановить этого проворного врага..."
 		"pt"		"Meios comuns podem não parar esse inimigo ágil..."
 		"nl"		"Gewoon betekend niet dat macht deze lenige vijand gaat stoppen..."
@@ -142,6 +163,7 @@
 	"Calamity of the Crimson Troupe, codename Phantom."
 	{
 		"en" 		"Calamity of the Crimson Troupe, codename Phantom."
+		"fr" 		"Code Phantom, Calamité de la Troupe Crimson."
 		"ru" 		"Надвигается бедствие из Багровой Труппы, кодовое имя «Фантом»."
 		"pt"		"Calamidade da Trupe Carmesim, codinome Fantasma."
 		"chi"       "深红剧团的灾难，代号幽灵"
@@ -149,6 +171,7 @@
 	"A caped Crimson warrior with Ominous Apparitions is appearing..."
 	{
 		"en" 		"An caped Crimson warrior with Ominous Apparitions is apearing..."
+		"fr" 		"Un guerrier Crimson se multiplie..."
 		"ru" 		"Появляется багровый воин в плаще со зловещими духами..."
 		"pt"		"Um guerreiro Carmesim com capa e aparições sinistras está aparecendo..."
 		"chi"       "一个披着斗篷、带着不祥幻影的深红战士出现了……"
@@ -156,6 +179,7 @@
 	"A patch of shadow. It has never once left, nor has it ever truly existed."
 	{
 		"en" 		"A patch of shadow. It has never once left, nor has it ever truly existed."
+		"fr" 		"L'ombre n'a jamais parti, ni eu une éxistance véritable."
 		"ru" 		"Тень. Оно ни разу не покидало нас и никогда по-настоящему не существовало."
 		"pt"		"Um pedaço de sombra. Nunca saiu, nem nunca existiu verdadeiramente."
 		"chi"       "一片阴影。它从未离开过，也从未真正存在过。"
@@ -163,6 +187,7 @@
 	"Medival Speech 1"
 	{
 		"en" 		"A king wants to Conquer this land!"
+		"fr" 		"Un roi veut conquérir ce pays!"
 		"ru" 		"Король хочет покорить эту землю!"
 		"pt"		"Um rei quer conquistar esta terra!"
 		"chi" 		"有位国王进军了！"
@@ -170,6 +195,7 @@
 	"Medival Speech 2"
 	{
 		"en" 		"A stray villager has appeared, stop them!"
+		"fr" 		"Un villageois errant a apparu, arrêtez-le!"
 		"ru" 		"Появился бродячий житель, остановите его!"
 		"pt"		"Um aldeão perdido apareceu, pare-o!"
 		"chi" 		"有村民出现了，快阻止他们！"
@@ -177,6 +203,7 @@
 	"Medival Speech 3"
 	{
 		"en" 		"An invasion of the past is accuring!"
+		"fr" 		"Le passé dirige une invasion!"
 		"pt"		"Uma invasão do passado está ocorrendo!"
 		"ru" 		"Надвигается вторжение прошлого!"
 		"chi" 		"历史正在回潮！"
@@ -184,24 +211,28 @@
 	"Beheaded Kami 1"
 	{
 		"en" 		"Maybe its best to leave it alone..."
+		"fr" 		"Il serait une bonne idée de le laisser seul..."
 		"pt"		"Talvez seja melhor deixar isso em paz..."
 		"chi" 		"我们最好不要管这个东西..."
 	}
 	"Beheaded Kami 2"
 	{
 		"en" 		"Dont take this lightly."
+		"fr" 		"Ne baissez pas les bras."
 		"pt"		"Não leve isso de ânimo leve."
 		"chi" 		"不要掉以轻心。"
 	}
 	"Beheaded Kami 3"
 	{
 		"en" 		"Screaming..."
+		"fr" 		"Des hurlements..."
 		"pt"		"Gritaria..."
 		"chi" 		"尖叫声..."
 	}
 	"The golden bloon is valueable..."
 	{
 		"en"		"The golden bloon is valueable..."
+		"fr"		"Le Bloon doré est valable..."
 		"pt"		"O balão dourado é valioso..."
 		"ru"		"Золотой шар имеет ценность..."
 		"chi"		"黄金气球很值钱哦..."
@@ -209,6 +240,7 @@
 	"The golden bloon is said to be rich..."
 	{
 		"en"		"The golden bloon is said to be rich..."
+		"fr"		"Les rumeurs disent que le Bloon doré est riche..."
 		"pt"		"Dizem que o bloon dourado é rico..."
 		"ru"		"Говорят, что золотой шар ведёт к богатству..."
 		"chi"		"听说，黄金气球格外富有..."
@@ -216,6 +248,7 @@
 	"The golden bloon is what all monkeys wish to pop..."
 	{
 		"en"		"The golden bloon is what all monkeys wish to pop..."
+		"fr"		"Tous les singes veulent éclater le Bloon doré..."
 		"pt"		"O balão dourado é o que todos os macacos desejam estourar..."
 		"ru"		"Золотой шар - это то, о чём мечтают все обезьяны..."
 		"chi"		"黄金气球是所有猴子梦中击破的东西..."
@@ -223,86 +256,117 @@
 	"Donnerkrieg And Schwertkrieg Spawn"
 	{
 		"en"	"Stella And Karlas Have Returned"
+		"fr"	"Stella et Karlas sont de retour."
 		"pt"	"Stella e Karlas retornaram."
 		"chi"	"Stella和Karlas回来了。"
 	}
 	"Diversionistico Spawn"
 	{
 		"en"	"Diversionistico Spawn"
+		"fr"	"Diversionistico Apparaît"
 		"pt"	"Diversionistico Apareceu."
 		"chi"	"Diversionistico Spawn."
 	}
 	"Voided Diversionistico Spawn"
 	{
 		"en"	"Voided Diversionistico Spawn"
+		"fr"	"Diversionistico du Void Apparaît"
 	}
 	"A Void Gate Apeared..."
 	{
 		"en"	"A Void Gate Apeared..."
+		"fr"	"Une Porte vers le Void se manifeste..."
 	}
 	"Snipers Appear"
 	{
 		"en"	"Snipers Appear."
+		"fr"	"Des Snipers Apparaîssent."
 		"chi"	"狙击手出现。"
 	}
 	"The Doctor Speech 1"
 	{
 		"en" 		"Take him out before its too late!"
+		"fr" 		"Éliminez-le avant qu'il soit trop tard!"
 		"chi"		"在为时已晚之前击败他！"
 	}
 	"The Doctor Speech 2"
 	{
 		"en" 		"His therapy session will be the least of your worries."
+		"fr" 		"Sa session de thérapie devrait vous inquièter le moins."
 		"chi"		"他的疗法将是您最不该担心的事情。"
 	}
 	"The Doctor Speech 3"
 	{
 		"en" 		"His motivating speech enables enemies."
+		"fr" 		"Ses paroles motivantes encourage les ennemis."
 		"chi"		"他的发言鼓励着尸群。"
 	}
 	"Spirit Spawns 1"
 	{
 		"en" 		"A spitit appeared... release it before its too late!"
+		"fr" 		"Un esprit apparaît... libérez-le avant qu'il soit trop tard!"
 	}
 	"Spirit Spawns 2"
 	{
 		"en" 		"Dont let it touch you!"
+		"fr" 		"Évitez de le toucher!"
 	}
 	"Spirit Spawns 3"
 	{
 		"en" 		"Dont be alone!"
+		"fr" 		"Soyez pas seul!"
 	}
 	"Fallen Warrior 1"
 	{
 		"en" 		"Once a brave and honorable warrior, but now accumulated by Chaos..."
+		"fr" 		"Un guerrier honorable dans le passé, maintenant enrobé de Chaos..."
 	}
 	"Fallen Warrior 2"
 	{
 		"en" 		"Spread the Chaos, corrupt them all."
+		"fr" 		"Plus grand, le Chaos, la corruption."
 	}
 	"Fallen Warrior 3"
 	{
 		"en" 		"His sword is dull and armor is rusted, but his hollow body slowly head towards you."
+		"fr" 		"Son armure est rouillé et sa lame terne, mais son corps vide se tourne vers vous."
 	}
 	"Machina Waldch 1"
 	{
 		"en" 		"A machine trying to immitate Waldch."
+		"fr" 		"Une imitation méchanique de Waldch."
 	}
 	"Machina Waldch 2"
 	{
 		"en" 		"Its on no ones side."
+		"fr" 		"Personne n'est de son côté."
 	}
 	"Machina Waldch 3"
 	{
 		"en" 		"Long enough, and it might go away on its own."
+		"fr" 		"Il disparaîtrait peut-être tout seul."
 	}
 	"Venium Spawn"
 	{
 		"en"		"A Ruanian Anchor builder has arrived."
+		"fr"		"Un constructeur d'Ancre Ruanian est ici."
 	}
 	"Twirl Spawn"
 	{
 		"en"		"Her majesty, the ruler of magic has descended..."	//idk, temP?
+		"fr"		"Sa majesté, l'Ultime Sorceresse est ici..."
+	}
+	"Omega 1"
+	{
+		"en"		"Armaments locked and loaded."
+	}
+	"Omega 2"
+	{
+		"en"		"A sui generis soldier enters the scene."
+	}
+	"Omega 3"
+	{
+		"en"		"Omega makes an appearance."
 	}
 	"Omega 1"
 	{

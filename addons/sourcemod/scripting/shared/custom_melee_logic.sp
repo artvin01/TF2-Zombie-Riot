@@ -419,6 +419,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundSpecter(client);
 				return ZEROSOUND;
 			}	
+			case WEAPON_ANGELIC_SHOTGUN:
+			{
+				PlayCustomSoundAngelica(client);
+				return ZEROSOUND;
+			}
 		}
 #endif
 		return MELEE_HIT;

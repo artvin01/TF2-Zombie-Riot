@@ -114,7 +114,7 @@ methodmap VoidMutatingBlob < CClotBody
 	{
 		VoidMutatingBlob npc = view_as<VoidMutatingBlob>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "700", ally));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");

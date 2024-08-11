@@ -460,7 +460,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		if(healthmulti)
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * healthmulti));
 		}
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
@@ -834,9 +834,6 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-		}
-#endif
-#if defined ZR
 			else
 			{
 				if(i_ArsenalBombImplanter[weapon] > 0)
@@ -871,7 +868,8 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 				}
 				return Plugin_Changed;
 			}
-#endif	// ZR
+		}
+#endif
 	}
 	return Plugin_Changed;
 }
@@ -1013,10 +1011,10 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #if defined ZR
 		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		{
-			if(SeargentIdeal_Existant())
+			if(SergeantIdeal_Existant())
 			{
 				//LogEntryInvicibleTest(victim, attacker, damage, 17);
-				SeargentIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
+				SergeantIdeal_Protect(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 				if(damage == 0.0)
 				{
 					b_DoNotDisplayHurtHud[victim] = true;
@@ -1057,7 +1055,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if((damage * fl_GibVulnerablity[victim]) > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -1355,7 +1353,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	SetGlobalTransTarget(attacker);
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(victim);
 	int red = 255;
 	int green = 255;
 	int blue = 0;
@@ -1410,12 +1408,25 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			armor_added = true;
 		}
 #endif
+
+#endif
+		float percentageGlobal = 1.0;
+		float BaseDamage = 1.0;
+		int testvalue1 = 1;
+
+		if(!b_NpcIsInvulnerable[victim])
+		{
+			Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
+		}
+
 		float percentage;
-		if(NpcHadArmorType(victim, 2, weapon, attacker) && !b_NpcIsInvulnerable[victim])	
+		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 2, weapon, attacker)) && !b_NpcIsInvulnerable[victim])	
 		{
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1464,11 +1475,12 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			armor_added = true;
 		}
 		
-		if(NpcHadArmorType(victim, 1) && !b_NpcIsInvulnerable[victim])	
+		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 1)) && !b_NpcIsInvulnerable[victim])	
 		{
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
+			percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1877,6 +1889,8 @@ stock void Calculate_And_Display_hp(int attacker, int victim, float damage, bool
 stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 {
 	if(f_HighTeslarDebuff[npc] > GameTime)
+		return true;
+	if(f_VoidAfflictionStrength2[npc] > GameTime)
 		return true;
 	if(f_VoidAfflictionStrength[npc] > GameTime)
 		return true;

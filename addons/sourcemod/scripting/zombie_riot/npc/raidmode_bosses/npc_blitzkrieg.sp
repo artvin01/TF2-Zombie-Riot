@@ -888,26 +888,13 @@ static void ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	} 
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
+
 	if(RaidModeTime < GetGameTime() && !b_lost)	//warp
 	{
 		
 		ZR_NpcTauntWinClear();
 
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 
 		MaxHealth = RoundToFloor(MaxHealth*0.01);
 
@@ -999,6 +986,20 @@ static void ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 	}
 	
+	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+	{
+		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+		{
+			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+			{
+				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+			}	
+		}
+	}
+	else if(EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive)))
+	{	
+		RaidBossActive = EntIndexToEntRef(npc.index);
+	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.10;
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
@@ -1023,7 +1024,7 @@ static void ClotThink(int iNPC)
 	int closest = npc.m_iTarget;
 	int PrimaryThreatIndex = npc.m_iTarget;
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	if(b_Are_we_reloading[npc.index])	//do melee run on reload/blitzlight
 	{
@@ -1393,7 +1394,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	int closest = npc.m_iTarget;	//IOC and text towards the npc's target, who is most likely the one tanking him, ion *should* in theory obliterate them!
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	if(!b_BlitzLight[npc.index])	//Blocks scaling if blitzlight is active
 	{	//Blitz's power scales off of current health. the health scaling is dependant on current stage, 1 stage being 15 waves.
@@ -1491,16 +1492,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKS KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
 				}
 			}
 		}
-		else
-		{
-			
-			CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
-		}
-		if(IsValidClient(closest))//Fancy text for blitz
+		else if(IsValidClient(closest))//Fancy text for blitz
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -1556,9 +1552,30 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("head"), PATTACH_POINT_FOLLOW, true);
 		Blitzkrieg_IOC_Invoke(EntIndexToEntRef(npc.index), closest);
 		
-		CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
 
-		if(IsValidClient(closest))
+		if(b_pureblitz)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+				}
+			}
+		}
+		else if(IsValidClient(closest))
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -1608,9 +1625,30 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		
 		fl_move_speed[npc.index] = 280.0;
 		
-		CPrintToChatAll("{crimson}%s{default}: {yellow}Life: %i!", c_NpcName[npc.index],i_NpcCurrentLives[npc.index]);
 		
-		if(IsValidClient(closest))
+		if(b_pureblitz)
+		{
+			switch(GetRandomInt(1, 4))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}%s{default}: DAS WARS NOCHT NET!", c_NpcName[npc.index]);
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH KILL DICH!", c_NpcName[npc.index]);
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}%s{default}: AAAAAAHHHHHAAAAAAAAAAAAAAAA!", c_NpcName[npc.index], closest);
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}%s{default}: ICH WERD DEIN DRECKST KOPF ZERSTÜCKELN!", c_NpcName[npc.index], closest);
+				}
+			}
+		}
+		else if(IsValidClient(closest))
 		{
 			switch(GetRandomInt(1, 4))
 			{
@@ -1755,7 +1793,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		{
 			CPrintToChatAll("{crimson}%s{default}: The minnion's have joined the battle.", c_NpcName[npc.index]);
 		}
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int heck;
 		int spawn_index;
 		heck= maxhealth;

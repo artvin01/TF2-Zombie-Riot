@@ -276,12 +276,12 @@ void RTS_NPCHealthBar(CClotBody npc)
 
 	static const int HealthBarDivide = 10;
 
-	int maxBars = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / HealthBarDivide;
+	int maxBars = ReturnEntityMaxHealth(npc.index) / HealthBarDivide;
 	int bars = GetEntProp(npc.index, Prop_Data, "m_iHealth") / HealthBarDivide;
 
 	if(maxBars > sizeof(display))
 	{
-		maxBars = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / sizeof(display);
+		maxBars = ReturnEntityMaxHealth(npc.index) / sizeof(display);
 		bars = GetEntProp(npc.index, Prop_Data, "m_iHealth") / sizeof(display);
 	}
 
@@ -343,7 +343,7 @@ bool RTS_HasFlag(int entity, int type)
 void RTS_AddMaxHealth(int entity, int amount)
 {
 	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(entity);
 
 	SetEntProp(entity, Prop_Data, "m_iHealth", health + amount);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth + amount);

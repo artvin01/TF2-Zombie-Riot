@@ -482,7 +482,7 @@ public void BootyExecutioner_ClotThink(int iNPC)
 	}
 	if(!b_Sandvich[npc.index] && fl_Sandvich_Timer[npc.index] <= GetGameTime(npc.index) && i_MaxSandvichUse[npc.index] == 0)
 	{
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		b_Sandvich[npc.index] = true;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 2);
 		//CPrintToChatAll("SANDVICH AMK"); //IGNORE I JUST WANTED TO SEE IF IT WORKS

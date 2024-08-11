@@ -261,7 +261,7 @@ public void Payday_Cloaker_ClotThink(int iNPC)
 	//Self Heal
 	if(i_AmountOfTimesICanHeal[npc.index] <= i_MaxAmountOfTimesICanHeal && CloakerBonusAmount[npc.index] >= 10999.0)
 	{
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 4);
 		//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 75500);
 		i_AmountOfTimesICanHeal[npc.index]++;

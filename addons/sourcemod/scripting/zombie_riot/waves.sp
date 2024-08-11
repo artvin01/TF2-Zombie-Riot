@@ -1506,6 +1506,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			// Above is the round that just ended
 			Rounds.GetArray(CurrentRound, round);
 			// Below is the new round
+			//add a minimum of 0.5 seconds because of custom spawns.
+			//breaks mininbosses, cant
+		//	GiveProgressDelay(0.5);
+		//	f_DelaySpawnsForVariousReasons = GetGameTime() + 0.5;
 			
 			if(round.MapSetupRelay)
 			{
@@ -1586,7 +1590,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			
 			//Loop through all the still alive enemies that are indexed!
 			
-			panzer_chance--;
 			//always increace chance of miniboss.
 			if(!rogue && CurrentRound == 4 && !round.NoBarney)
 			{
@@ -1606,6 +1609,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				
 				panzer_spawn = chance;
 				panzer_sound = chance;
+				panzer_chance--;
 				if(panzer_spawn)
 				{
 					panzer_chance = 10;
@@ -1617,6 +1621,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
+				panzer_chance--;
 				panzer_spawn = false;
 				panzer_sound = false;
 			}

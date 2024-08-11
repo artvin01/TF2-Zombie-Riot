@@ -492,6 +492,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
 	{
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
@@ -505,6 +506,7 @@ static void Internal_ClotThink(int iNPC)
 		mp_bonusroundtime.IntValue = (12 * 2);
 		ZR_NpcTauntWinClear();
 		ForcePlayerLoss();
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
@@ -630,7 +632,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}		
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
-		if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -837,6 +839,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			{
 				RemoveEntity(npc.m_iWearable7);
 			}
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt05");
 			npc.m_flAttackHappens = 0.0;
 			EmitSoundToAll("mvm/mvm_tank_end.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
@@ -903,6 +906,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flDoingAnimation = gameTime + 99.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
@@ -1092,7 +1096,7 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 	Sensal npc = view_as<Sensal>(victim);
 	if(ZR_GetWaveCount()+1 >= 45)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + 3.0;
 			b_NpcIsInvulnerable[npc.index] = true; //Special huds for invul targets
@@ -1453,7 +1457,7 @@ bool SensalTalkPostWin(Sensal npc)
 			RemoveEntity(npc.m_iWearable7);
 		}
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
-		npc.m_bisWalking = true;
+		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 6;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
 		npc.SetCycle(0.01);
@@ -1517,6 +1521,7 @@ bool SensalTransformation(Sensal npc)
 		{
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_profane_puppeteer");
 			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
@@ -1572,7 +1577,7 @@ bool SensalTransformation(Sensal npc)
 			npc.m_flRangedArmor = 0.7;
 			npc.m_flMeleeArmor = 0.875;		
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 
 				
 			SetVariantColor(view_as<int>({255, 35, 35, 200}));

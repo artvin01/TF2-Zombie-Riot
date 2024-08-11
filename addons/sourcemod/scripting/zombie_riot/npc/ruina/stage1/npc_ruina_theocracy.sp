@@ -158,6 +158,7 @@ methodmap Theocracy < CClotBody
 	{
 		Theocracy npc = view_as<Theocracy>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "15000", ally));
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -356,6 +357,7 @@ static void ClotThink(int iNPC)
 			npc.SetPlaybackRate(1.0);	
 			npc.SetCycle(0.0);
 					
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_yetipunch");
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
@@ -460,6 +462,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		npc.m_flSpeed = 300.0;
 		npc.m_bPathing = true;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
@@ -832,7 +835,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		i_string_Theory_battery[npc.index] = 0;
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

@@ -83,6 +83,9 @@ static const char g_MeleeMissSounds[][] = {
 	"ui/hitsound_vortex5.wav"
 };
 
+float SpawnedOneAlready;
+int IdRef;
+
 static char[] GetBuildingHealth()
 {
 	int health = 110;
@@ -342,10 +345,12 @@ methodmap Magia_Anchor < CClotBody
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		npc.m_flAttackHappens = 0.0;
 
 		NPC_StopPathing(npc.index);
 
 		npc.m_flMeleeArmor = 2.5;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
 
 		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
 
@@ -420,6 +425,45 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
+	if(!npc.m_flAttackHappens)
+	{
+		npc.m_flAttackHappens = FAR_FUTURE;
+		
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		VecSelfNpcabs[2] += 100.0;
+		if(SpawnedOneAlready > GetGameTime())
+		{
+			Event event = CreateEvent("show_annotation");
+			if(event)
+			{
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Multiple Magica Anchors!");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
+			}
+		}
+		else
+		{
+			Event event = CreateEvent("show_annotation");
+			if(event)
+			{
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Magica Anchor");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
+			}
+		}
+	}
 	
 
 	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
@@ -444,7 +488,6 @@ static void ClotThink(int iNPC)
 	{
 		Weaver_Logic(npc);
 	}
-	
 	
 }
 static void Raid_Spwaning_Logic(Magia_Anchor npc)
@@ -484,17 +527,17 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_dronianis"
 	};
 	static const int npc_health[] = {
-		20000,	//"npc_ruina_magianius",
-		30000,	//"npc_ruina_loonarionus"
-		40000,	//"npc_ruina_heliarionus"
-		30000,	//"npc_ruina_euranionis",
-		60000,	//"npc_ruina_draconia",
-		30000,	//"npc_ruina_malianius",
-		40000,	//"npc_ruina_lazurus",
-		30000,	//"npc_ruina_aetherianus"
-		60000,	//"npc_ruina_rulianius",
-		30000,	//"npc_ruina_astrianious"
-		60000	//"npc_ruina_dronianis"
+		100000,	//"npc_ruina_magianius",
+		150000,	//"npc_ruina_loonarionus"
+		200000,	//"npc_ruina_heliarionus"
+		150000,	//"npc_ruina_euranionis",
+		300000,	//"npc_ruina_draconia",
+		150000,	//"npc_ruina_malianius",
+		200000,	//"npc_ruina_lazurus",
+		150000,	//"npc_ruina_aetherianus"
+		300000,	//"npc_ruina_rulianius",
+		150000,	//"npc_ruina_astrianious"
+		300000	//"npc_ruina_dronianis"
 	};
 
 	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);

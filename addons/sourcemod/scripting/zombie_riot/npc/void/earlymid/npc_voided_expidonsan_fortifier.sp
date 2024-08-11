@@ -110,7 +110,6 @@ methodmap VoidExpidonsanFortifier < CClotBody
 			npc.m_iOverlordComboAttack = 300;
 		}
 
-		VausMagicaGiveShield(npc.index, 5);
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -119,6 +118,8 @@ methodmap VoidExpidonsanFortifier < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		EnemyShieldCantBreak[npc.index] = true;
+		VausMagicaGiveShield(npc.index, 5);
 
 		func_NPCDeath[npc.index] = view_as<Function>(VoidExpidonsanFortifier_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VoidExpidonsanFortifier_OnTakeDamage);

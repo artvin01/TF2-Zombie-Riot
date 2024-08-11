@@ -6,7 +6,7 @@ static int i_master_id_ref[MAXENTITIES];
 static int i_npc_type[MAXENTITIES];
 
 static float fl_master_change_timer[MAXENTITIES];
-static bool b_master_exists[MAXENTITIES];
+static bool b_is_a_master[MAXENTITIES];
 static int i_master_attracts[MAXENTITIES];
 
 static bool b_npc_low_health[MAXENTITIES];
@@ -73,16 +73,15 @@ float fl_ruina_buff_amt[MAXENTITIES];
 float fl_ruina_buff_time[MAXENTITIES];
 bool b_ruina_buff_override[MAXENTITIES];
 
-//these scales on wavecount
-#define RUINA_NORMAL_NPC_MAX_SHIELD	 	175.0
-#define RUINA_BOSS_NPC_MAX_SHIELD 		250.0
-#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	1000.0
-#define RUINA_SHIELD_NPC_TIMEOUT 		15.0
+#define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
+#define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.1
+#define RUINA_SHIELD_NPC_TIMEOUT 		7.5
 #define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
 
 #define RUINA_POINT_MODEL	"models/props_c17/canister01a.mdl"
-#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.6		//for npc's that walk backwards, how much slower (or faster :3) should be walk
+#define RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY		0.7		//for npc's that walk backwards, how much slower (or faster :3) should be walk
 #define RUINA_FACETOWARDS_BASE_TURNSPEED			475.0	//for npc's that constantly face towards a target, how fast can they turn
 
 static bool b_master_is_rallying[MAXENTITIES];
@@ -111,7 +110,7 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
 #define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
 
-int i_Ruina_Ovelord_Ref;
+int i_Ruina_Overlord_Ref;
 
 int i_laz_entity[MAXENTITIES];
 float fl_multi_attack_delay[MAXENTITIES];
@@ -146,7 +145,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, co
 	return -1;
 }
 
-public void Ruina_Ai_Core_Mapstart()
+void Ruina_Ai_Core_Mapstart()
 {
 
 	NPCData data1;
@@ -172,7 +171,7 @@ public void Ruina_Ai_Core_Mapstart()
 
 	Zero(fl_master_change_timer);
 	Zero(i_master_target_id);
-	Zero(b_master_exists);
+	Zero(b_is_a_master);
 	Zero(i_master_id_ref);
 	Zero(i_npc_type);
 	
@@ -230,7 +229,7 @@ public void Ruina_Ai_Core_Mapstart()
 	
 	PrecacheModel(BEAM_COMBINE_BLACK, true);
 
-	i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+	i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 	
 	//gLaser1 = PrecacheModel("materials/sprites/laserbeam.vmt", true);
 	//gGlow1 = PrecacheModel("sprites/redglow2.vmt", true);
@@ -247,7 +246,7 @@ void Ruina_Set_Heirarchy(int client, int type)
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
-	b_master_exists[client] = false;
+	b_is_a_master[client] = false;
 	b_ruina_npc_healer[client] = false;
 	b_npc_no_retreat[client] = false;
 	fl_npc_healing_duration[client] = 0.0;
@@ -262,26 +261,26 @@ void Ruina_Set_Heirarchy(int client, int type)
 	npc.m_flNextMeleeAttack = GetRandomFloat(0.5, 2.5) + GetGameTime();
 	
 }
-public void Ruina_Set_Battery_Buffer(int client, bool state)
+void Ruina_Set_Battery_Buffer(int client, bool state)
 {
 	b_is_battery_buffed[client]=state;
 }
-public void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
+void Ruina_Set_Sniper_Anchor_Point(int client, bool state)
 {
 	b_npc_sniper_anchor_point[client]=state;
 }
-public void Ruina_Set_Healer(int client)
+void Ruina_Set_Healer(int client)
 {
 	b_ruina_npc_healer[client] = true;
 	b_npc_sniper_anchor_point[client]=true;
 }
-public void Ruina_Set_No_Retreat(int client)
+void Ruina_Set_No_Retreat(int client)
 {
 	b_npc_no_retreat[client] = true;
 }
-public void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int max_slaves, int priority)
+void Ruina_Set_Master_Heirarchy(int client, int type, bool accepting, int max_slaves, int priority)
 {
-	b_master_exists[client] = true;
+	b_is_a_master[client] = true;
 	
 	b_force_reasignment[client]=false;
 	
@@ -301,13 +300,13 @@ void Ruina_Set_Overlord(int client, bool state)
 {
 	if(state)
 	{
-		i_Ruina_Ovelord_Ref = EntIndexToEntRef(client);
+		i_Ruina_Overlord_Ref = EntIndexToEntRef(client);
 	}
 	else
 	{
-		if(EntRefToEntIndex(i_Ruina_Ovelord_Ref)==client)
+		if(EntRefToEntIndex(i_Ruina_Overlord_Ref)==client)
 		{
-			i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+			i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 		}
 	}
 }
@@ -353,7 +352,6 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	fl_ruina_shield_break_timeout[client] = GameTime + 120.0;
 	
 	float Shield_Power = RUINA_NORMAL_NPC_MAX_SHIELD;
-	int wave =(ZR_GetWaveCount()+1);
 	if(b_thisNpcIsABoss[client])
 	{
 		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
@@ -362,9 +360,8 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
 	}
-	Shield_Power *= wave;
 
-	GrantEntityArmor(client, false, 0.0, strenght, 1, Shield_Power);
+	GrantEntityArmor(client, false, Shield_Power, strenght, 1);
 	
 	Ruina_Update_Shield(client);
 }
@@ -446,7 +443,7 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 public void Ruina_NPCDeath_Override(int entity)
 {
 	
-	b_master_exists[entity] = false;
+	b_is_a_master[entity] = false;
 	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[entity]);
 	//check if the master is still valid, but block the master itself
 	if(IsValidEntity(Master_Id_Main) && Master_Id_Main!=entity)	
@@ -470,8 +467,8 @@ public int Ruina_Get_Target(int iNPC, float GameTime)
 static int i_previus_priority[MAXENTITIES];
 static int GetRandomMaster(int client)
 {
-	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
-		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
+	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Overlord_Ref)))
+		return EntRefToEntIndex(i_Ruina_Overlord_Ref);
 
 	i_previus_priority[client] = -1;
 	int valid = -1;
@@ -508,8 +505,8 @@ static int GetClosestHealer(int client)
 }
 static int GetClosestAnchor(int client)
 {
-	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
-		return EntRefToEntIndex(i_Ruina_Ovelord_Ref);
+	if(IsValidAlly(client, EntRefToEntIndex(i_Ruina_Overlord_Ref)))
+		return EntRefToEntIndex(i_Ruina_Overlord_Ref);
 
 	int valid = -1;
 	float Npc_Vec[3]; GetAbsOrigin(client, Npc_Vec);
@@ -534,14 +531,14 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float Max_Health = float(ReturnEntityMaxHealth(npc.index));
 	float Ratio = Health / Max_Health;
 
 	//CPrintToChatAll("Health %f", Health);
 	//CPrintToChatAll("Ratio %f", Ratio);
 		
 	//if the npc has less then 10% hp, is not a healer, and has no retreat set, they will retreat to the closest healer
-	if(Ratio<=0.10 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])	
+	if(Ratio<=0.10 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_is_a_master[npc.index])	
 	{
 		fl_npc_healing_duration[npc.index] = GameTime + 2.5;
 		//CPrintToChatAll("Healing Duration 1 %f", fl_npc_healing_duration[npc.index]);
@@ -579,7 +576,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 
 static bool Check_If_I_Am_The_Right_Slave(int client, int other_client)
 {
-	if(!b_master_exists[other_client])
+	if(!b_is_a_master[other_client])
 		return false;
 		
 	//is the master accepting?
@@ -643,12 +640,12 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 	if(fl_npc_healing_duration[npc.index] > GameTime )	//heal until 50% hp
 	{
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float Max_Health = float(ReturnEntityMaxHealth(npc.index));
 		float Ratio = Health / Max_Health;
 
 		//CPrintToChatAll("Health %f", Health);
 		//CPrintToChatAll("Ratio %f", Ratio);
-		if(Ratio<0.5 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_master_exists[npc.index])
+		if(Ratio<0.5 && !b_ruina_npc_healer[npc.index] && !b_npc_no_retreat[npc.index] && !b_is_a_master[npc.index])
 		{
 			int Healer = GetClosestHealer(npc.index);
 			if(IsValidEntity(Healer))	//check if its valid in the first place, if not, likey healer doesn't exist
@@ -677,7 +674,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 		Simply put slave don't have the ability to find their own nearest target UNLESS they don't have a valid master, in that case they do find it.
 		(Previously slave npc's legit went through all the trouble of finding the nearest target even though it would be instantly overwritten by this core. bruh)
 	*/
-	if(!b_master_exists[npc.index])	//check if the npc is a master or not
+	if(!b_is_a_master[npc.index])	//check if the npc is a master or not
 	{	
 		int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
 		if(fl_master_change_timer[npc.index]<GameTime || !IsValidEntity(Master_Id_Main) || b_force_reasignment[Master_Id_Main])
@@ -914,7 +911,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 }
 void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//this is here if I ever want to make "basic" npc's do anything special
 {
-	if(IsValidAlly(iNPC, EntRefToEntIndex(i_Ruina_Ovelord_Ref)))
+	if(IsValidAlly(iNPC, EntRefToEntIndex(i_Ruina_Overlord_Ref)))
 	{
 		Ruina_Ai_Override_Core(iNPC, PrimaryThreatIndex, GameTime);
 		return;
@@ -1590,7 +1587,7 @@ Action Ruina_Generic_Ion(Handle Timer, DataPack data)
 	if(!IsValidEntity(iNPC))
 		return Plugin_Stop;
 
-	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, _  , Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
+	Explode_Logic_Custom(dmg, iNPC, iNPC, -1, end_point, Radius, _, _, true, _ , _    , 2.0, Generic_ion_OnHit);
 
 	EmitSoundToAll(RUINA_ION_CANNON_SOUND_TOUCHDOWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, end_point);
 
@@ -1633,16 +1630,42 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	if(fl_npc_healing_duration[npc.index] > GetGameTime(npc.index))
 		return;
 
-	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
-	if(IsValidEntity(Master_Id_Main))//do we have a master?
+	if(b_is_a_master[npc.index] || b_thisNpcIsABoss[npc.index] || b_thisNpcIsARaid[npc.index] || b_ruina_npc_healer[npc.index])	//if its a master type or a raid/boss or a healer npc allow it to also walk backwards.
 	{
-		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
+		int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+		if(IsValidEntity(Master_Id_Main))//do we have a master?
+		{
+			if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
+			{
+				npc.StartPathing();
+				float vBackoffPos[3];
+				BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
+				NPC_SetGoalVector(npc.index, vBackoffPos, true);
+			}
+			else
+			{
+				npc.m_bAllowBackWalking=false;
+			}
+		}
+		else
 		{
 			npc.StartPathing();
 			float vBackoffPos[3];
 			BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
 			NPC_SetGoalVector(npc.index, vBackoffPos, true);
-			
+		}
+		
+		return;
+	}
+	//if it isn't then simply make it stop walking.
+	int Master_Id_Main = EntRefToEntIndex(i_master_id_ref[npc.index]);
+	if(IsValidEntity(Master_Id_Main))//do we have a master?
+	{
+		if(!b_master_is_rallying[Master_Id_Main])	//is master rallying targets to be near it?
+		{
+			NPC_StopPathing(npc.index);
+			npc.m_bPathing = false;
+			npc.m_bAllowBackWalking=false;
 		}
 		else
 		{
@@ -1651,14 +1674,12 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 	}
 	else	//no?
 	{
-		npc.StartPathing();
-		float vBackoffPos[3];
-		BackoffFromOwnPositionAndAwayFromEnemy(npc, PrimaryThreatIndex,_,vBackoffPos);
-		NPC_SetGoalVector(npc.index, vBackoffPos, true);
+		NPC_StopPathing(npc.index);
+		npc.m_bPathing = false;
+		npc.m_bAllowBackWalking=false;
 	}
 }
-#define RUINA_BUFF_AMTS 5
-public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
+void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed, int color[4])
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
@@ -1666,7 +1687,7 @@ public void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTi
 	{
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.15, Thickness, 0.5, color, 1, 0);
+		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.33, Thickness, 0.5, color, 1, 0);
 		TE_SendToAll();
 		
 		ExpidonsaGroupHeal(npc.index, Range, 5, float(Healing), 0.1, false, _ , Ruina_HealVisualEffect);
@@ -1733,7 +1754,17 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 	}
 	else
 	{
-		PredictSubjectPosition(npc, PrimaryThreatIndex,_,_,vPredictedPos);	//otherwise just normal buisness xd
+		float SubjectAbsVelocity[3];
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
+		GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+		for(int i=0 ; i < 2 ; i++)	{SubjectAbsVelocity[i]*=-0.5;}
+		AddVectors(vecTarget, SubjectAbsVelocity, vPredictedPos);
+		float flVel[3];
+		GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", flVel);
+		float abs_vel = fabs(flVel[0]) + fabs(flVel[1]) + fabs(flVel[2]);
+	
+		if (abs_vel < 190.0)//don't teleport ontop of enemy gamers
+			return;
 	}
 	
 
@@ -1744,6 +1775,7 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 	float start_offset[3], end_offset[3];
 	WorldSpaceCenter(npc.index, start_offset);
 
+
 	bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
 	if(Succeed)
 	{	
@@ -1753,7 +1785,9 @@ static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 		float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=10.0;
 		float Range = 250.0;
 		float Thickness = 6.0;
-		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, {30, 230, 226, 200}, 1, 0);
+		int colour[4];
+		Ruina_Color(colour);
+		TE_SetupBeamRingPoint(npc_Loc, Range*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, 0.5, Thickness, 0.5, colour, 1, 0);
 		TE_SendToAll();
 		int entity = Ruina_Create_Entity_Specific(Loc, _ , 2.45);
 		if(IsValidEntity(entity))

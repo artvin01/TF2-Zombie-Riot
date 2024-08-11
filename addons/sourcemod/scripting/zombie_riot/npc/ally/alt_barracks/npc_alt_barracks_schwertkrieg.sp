@@ -177,7 +177,7 @@ public void Barrack_Alt_Shwertkrieg_ClotThink(int iNPC)
 		
 		bool Emergency_Teleport = false;
 		float Health =float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float MaxHealth =  float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealth =  float(ReturnEntityMaxHealth(npc.index));
 		float H_Amt = (Health / MaxHealth) * 100.0;
 		if(fl_emergency_tele_CD[npc.index] < GameTime && H_Amt<10.0)	//if npc health is less then 10% AND is in combat the npc will teleport to the barracks or owner
 		{

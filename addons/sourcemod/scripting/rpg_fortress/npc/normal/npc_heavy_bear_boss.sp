@@ -368,7 +368,7 @@ public Action HeavyBearBoss_OnTakeDamage(int victim, int &attacker, int &inflict
 public void HeavyBearBoss_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	HeavyBearBoss npc = view_as<HeavyBearBoss>(victim);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)

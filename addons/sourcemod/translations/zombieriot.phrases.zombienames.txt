@@ -765,6 +765,7 @@
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
+		"fr" 		"Milice"
 	}
 	"Barracks Militia Desc"
 	{
@@ -773,6 +774,7 @@
 	"Archer"
 	{
 		"en" 		"Archer"
+		"fr" 		"Archer"
 		"ru" 		"Лучник"
 		"pt"		"Arqueiro"
 		"nl"		"Boogschutter"
@@ -780,6 +782,7 @@
 	"Man-At-Arms"
 	{
 		"en" 		"Man-At-Arms"
+		"fr" 		"Homme-aux-Armes"
 		"ru" 		"Гвардеец"
 		"pt"		"Homem de armas"
 		"nl"		"Krijgsman te paard"
@@ -787,6 +790,7 @@
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
+		"fr"		"Tirailleur"
 		"ru" 		"Разбойник"
 		"pt"		"Escaramuça"
 		"nl"		"Tirailleur"
@@ -794,6 +798,7 @@
 	"Long Swordsman"
 	{
 		"en" 		"Long Swordsman"
+		"fr" 		"Épéiste"
 		"ru" 		"Длинномечник"
 		"pt"		"Espadachim com Espada longa"
 		"nl"		"Lange Zwaardvechter"
@@ -801,6 +806,7 @@
 	"Twohanded Swordsman"
 	{
 		"en" 		"Twohanded Swordsman"
+		"fr" 		"Épéiste Double"
 		"ru" 		"Двуручный мечник"
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
@@ -808,6 +814,7 @@
 	"Crossbow Man"
 	{
 		"en" 		"Crossbow Man"
+		"fr" 		"Arbalétrier"
 		"ru" 		"Арбалетчик"
 		"pt"		"Cara da Besta"
 		"nl"		"Kruisboogman"
@@ -815,6 +822,7 @@
 	"Spearman"
 	{
 		"en" 		"Spearman"
+		"fr" 		"Harponneur"
 		"ru" 		"Копьеносец"
 		"pt"		"Lanceiro"
 		"nl"		"Speerman"
@@ -822,6 +830,7 @@
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
+		"fr" 		"Cannoneur"
 		"ru" 		"Пушечник"
 		"pt"		"Canhoneiro de mão"
 		"nl"		"Hand Kanonnier"
@@ -829,6 +838,7 @@
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
+		"fr"		"Tirailleur Élite"
 		"ru" 		"Элитный разбойник"
 		"pt"		"Escaramuça de Elite"
 		"nl"		"Elite Tirailleur"
@@ -836,6 +846,7 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
@@ -843,6 +854,7 @@
 	"Hyper Blitzkrieg"
 	{
 		"en"		"Hyper Blitzkrieg"
+		"fr"		"Hyper-Blitzkrieg"
 	}
 	"TRUE BLITZKRIEG"
 	{
@@ -950,6 +962,7 @@
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
+		"fr"		"Tank"
 		"ru"		"Танк"
 		"pt"		"Tanque"
 		"nl"		"Tank"
@@ -971,6 +984,7 @@
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
+		"fr"		"Soldier Barrageur"
 		"ru"		"Солдат-бомбардир"
 		"pt"		"Soldado de Barragem"
 		"nl"		"Soldaten spervuurder"
@@ -1925,9 +1939,9 @@
 	{
 		"en"	"Heavy Punuel"
 	}
-	"Seargent Ideal"
+	"Sergeant Ideal"
 	{
-		"en"	"Seargent Ideal"
+		"en"	"Sergeant Ideal"
 	}
 	"VIP Building, The Objective"
 	{
@@ -2277,9 +2291,9 @@
 	{
 		"en"	"Braindead"
 	}
-	"Behemonth"
+	"Behemoth"
 	{
-		"en"	"Behemonth"
+		"en"	"Behemoth"
 	}
 	"Absolute Incinirator"
 	{
@@ -2711,7 +2725,7 @@
 	}
 	"Brooding Petra Desc"
 	{
-		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime."
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
 	}
 	"Kunul"
 	{
@@ -2783,15 +2797,15 @@
 	}
 	"Void Creep Desc"
 	{
-		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance, regen, damage and speed.\n"
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
 	}
-	"Void Elemntal Damage"
+	"Void Elemental Damage"
 	{
-		"en"	"Void Elemntal Damage"
+		"en"	"Void Elemental Damage"
 	}
-	"Void Elemntal Damage Desc"
+	"Void Elemental Damage Desc"
 	{
-		"en"	"Once full, buffs all void npcs around you and places void creep below you.\nCan be healed with armor."
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
 	}
 	"Vhxis"
 	{

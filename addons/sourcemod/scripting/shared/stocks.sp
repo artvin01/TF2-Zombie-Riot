@@ -689,6 +689,12 @@ stock int TF2_GetClassnameSlot(const char[] classname, bool econ=false)
 
 stock int GetAmmo(int client, int type)
 {
+	/*
+	if(type == Ammo_Metal_Sub)
+	{
+		type = Ammo_Metal;
+	}
+	*/
 	int ammo = GetEntProp(client, Prop_Data, "m_iAmmo", _, type);
 	if(ammo < 0)
 		ammo = 0;
@@ -698,6 +704,10 @@ stock int GetAmmo(int client, int type)
 
 stock void SetAmmo(int client, int type, int ammo)
 {
+	if(type == Ammo_Metal)
+	{
+		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
+	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
 }
 
@@ -1268,8 +1278,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
-#define HEAL_SILENCEABLE				(1 << 3) 
+#define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
+#define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
 */
 //this will return the amount of healing it actually did.
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
@@ -1336,6 +1348,8 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(healer != reciever && healer <= MaxClients)
 			Healing_done_in_total[healer] += HealingDoneInt;
 #endif
+//only apply heal event if its not a passive self heal
+		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
 			ApplyHealEvent(reciever, HealingDoneInt);
 		}
 		return HealingDoneInt;
@@ -1361,9 +1375,10 @@ void DisplayHealParticleAbove(int entity)
 		f_HealDelayParticle[entity] = GetGameTime() + 0.5;
 		float ProjLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-		ProjLoc[2] += 100.0;
+		ProjLoc[2] += 95.0;
 		ProjLoc[2] += f_ExtraOffsetNpcHudAbove[entity];
 		ProjLoc[2] *= GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		ProjLoc[2] -= 10.0;
 		if(GetTeam(entity) != TFTeam_Red)
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 		else
@@ -1541,8 +1556,6 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 #if defined ZR
 		if(data == EntRefToEntIndex(Building_Mounted[entity]))
 			return false;
-#else
-		return false;
 #endif
 	}	
 	if(i_PreviousInteractedEntity[data] == entity && i_PreviousInteractedEntityDo[data])
@@ -2811,9 +2824,12 @@ void CalculateExplosiveDamageForce(const float vec_Explosive[3], const float vec
 	vecForce[1] *= -1.0;
 	vecForce[2] *= -1.0;
 }
-
-int CountPlayersOnRed(int alive = 0)
+int SavedFromLastTimeCount = 0;
+int CountPlayersOnRed(int alive = 0, bool saved = false)
 {
+	if(saved)
+		return SavedFromLastTimeCount;
+
 	int amount;
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -2851,7 +2867,7 @@ int CountPlayersOnRed(int alive = 0)
 #endif
 		}
 	}
-	
+	SavedFromLastTimeCount = amount;
 	return amount;
 	
 }
@@ -4270,7 +4286,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int flMaxHealth;
 	if(entity > MaxClients)
 	{
-		flMaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		flMaxHealth = ReturnEntityMaxHealth(entity);
 	}
 	else
 	{

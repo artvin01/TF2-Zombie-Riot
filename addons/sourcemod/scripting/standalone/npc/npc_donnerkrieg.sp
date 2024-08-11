@@ -528,10 +528,10 @@ static void Calculate_Combined_Health(Raidboss_Donnerkrieg npc)
 		int ally = EntRefToEntIndex(i_ally_index);
 		if(IsValidEntity(ally))
 		{
-			float M_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float M_Health = float(ReturnEntityMaxHealth(npc.index));
 			float C_Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 
-			float M_Health1 = float(GetEntProp(ally, Prop_Data, "m_iMaxHealth"));
+			float M_Health1 = float(ReturnEntityMaxHealth(Ally););
 			float C_Health1 = float(GetEntProp(ally, Prop_Data, "m_iHealth"));
 
 			C_Health = C_Health+ C_Health1;
@@ -1869,7 +1869,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 
 	if(!b_angered_twice[npc.index] && Health/MaxHealth<=0.5)
 	{

@@ -379,51 +379,43 @@ static void NPC_Death(int entity)
 }
 static void Euranionis_Spawn_Minnions(Euranionis npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	
+	int spawn_index;
+
+	char NpcName[50];
+
+	switch(GetRandomInt(0, 5))
 	{
-		npc.g_TimesSummoned++;
-		for(int i; i<1; i++)
-		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index;
+		case 0:
+			NpcName = "npc_ruina_magianas";
+		case 3:
+			NpcName = "npc_ruina_loonaris";
+		case 1:
+			NpcName = "npc_ruina_aetherium";
+		default: 
+			NpcName = "npc_ruina_dronianis";
+	}
+	
+	spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
+	maxhealth = RoundToNearest(maxhealth * 0.45);
 
-			char NpcName[50];
+	if(spawn_index > MaxClients)
+	{
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 
-			switch(GetRandomInt(0, 5))
-			{
-				case 0:
-					NpcName = "npc_ruina_magianas";
-				case 3:
-					NpcName = "npc_ruina_loonaris";
-				case 1:
-					NpcName = "npc_ruina_aetherium";
-				default: 
-					NpcName = "npc_ruina_dronianis";
-			}
-			
-			spawn_index = NPC_CreateByName(NpcName, npc.index, pos, ang, GetTeam(npc.index));
-			maxhealth = RoundToNearest(maxhealth * 0.45);
-
-			if(spawn_index > MaxClients)
-			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-
-				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
-				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-			}
-		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	}
 }
 static void Euranionis_Spawn_Self(Euranionis npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 	if(maxhealth<100)
 		return;
@@ -472,13 +464,8 @@ static void Euranionis_SelfDefense(Euranionis npc, float gameTime, int Anchor_Id
 			//This will predict as its relatively easy to dodge
 			float projectile_speed = 500.0;
 			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-			{
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-			}
-			float DamageDone = 120.0;
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+			float DamageDone = 100.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -509,13 +496,8 @@ static void Euranionis_SelfDefense(Euranionis npc, float gameTime, int Anchor_Id
 					//This will predict as its relatively easy to dodge
 					float projectile_speed = 500.0;
 					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
-						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
-					}
-					float DamageDone = 120.0;
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+					float DamageDone = 100.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);
 					npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;

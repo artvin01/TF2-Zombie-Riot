@@ -510,7 +510,7 @@ public void BunkerKahml_ClotThink(int iNPC)
 	if(fl_AbilityNanoMachinesHealing_Timer[npc.index] <= gameTime && b_AbilityNanoMachines[npc.index])
 	{
 		fl_AbilityNanoMachinesHealing_Timer[npc.index] = gameTime + 0.2;
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 200000);
 	}
 	if(fl_Anhilation_Timer[npc.index] <= gameTime && !b_AnhilationReady[npc.index] && !b_AbilityNanoMachines[npc.index] && !b_AbilityNeckSnap[npc.index] && !b_AbilityDoubleBarrel[npc.index])

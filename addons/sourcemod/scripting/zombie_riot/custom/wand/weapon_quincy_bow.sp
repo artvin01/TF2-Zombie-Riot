@@ -9,7 +9,7 @@ static float fl_Quincy_Charge_Multi[MAXTF2PLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
-#define QUINCY_BOW_MAX_HYPER_BARRAGE 12			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
+#define QUINCY_BOW_MAX_HYPER_BARRAGE 11			//how many maximum individual timers/origin points are shot, kinda like how many of them can be fired a second, this is the max amt
 #define QUINCY_BOW_MULTI_SHOT_MINIMUM	50.0	//yada yada
 
 #define QUINCY_BOW_ARROW_TOUCH_SOUND "friends/friend_online.wav"
@@ -485,8 +485,6 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 
 	speed = RoundToCeil(float(speed) / 2.0) * 2;
 
-	speed = RoundToCeil(float(speed) * 0.7);
-
 	float special_angle = 45.0;
 		
 	float Ratio_Core = (180.0)/(speed);
@@ -496,7 +494,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 		UserLoc[2] += 12.0*(speed-7);
 	}
 
-	for(int i=1 ; i<=speed ; i++)
+	for(int i=1 ; i<speed ; i++)
 	{	
 		if(fl_Quincy_Barrage_Firerate[client][i]<GameTime)
 		{

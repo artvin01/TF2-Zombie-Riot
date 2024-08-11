@@ -626,7 +626,7 @@ public void OnPostThink(int client)
 			{
 				if(dieingstate[client] > 0)
 				{
-					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 				else
 				{
@@ -634,7 +634,7 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000)
 						MaxHealth = 3000.0;
 						
-					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 			}
 		}
@@ -647,7 +647,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 
@@ -655,7 +655,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 		
@@ -665,7 +665,7 @@ public void OnPostThink(int client)
 			Rogue_HandSupport_HealTick(client, healing_Amount);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 			if(b_NemesisHeart[client])
 			{
@@ -673,7 +673,7 @@ public void OnPostThink(int client)
 				if(b_XenoVial[client])
 					HealRate = 1.15;
 
-				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
 
@@ -960,11 +960,54 @@ public void OnPostThink(int client)
 				percentage *= value;
 			
 			/*
-			This ugly code is made so formatting it looks better, isntead of [res][res]
-			itll be [res-res]
-			So tis easier to read.
+				This ugly code is made so formatting it looks better, isntead of [res][res]
+				itll be [res-res]
+				So tis easier to read.
 
 			*/
+
+
+			/*
+				Does the client have any damage buffs? If so, display them.
+
+				CANT
+				Has to be put on the enemy as "resistance"
+				!!!!!
+				float BaseDamage = 100.0;
+				float damageBonus = 100.0;
+				Damage_AnyAttacker(0, client, testvalue, BaseDamage, damageBonus, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
+				if(damageBonus != 100.0)
+				{
+					if(had_An_ability)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+					else
+					{
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+				}
+			*/
+
 			DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
@@ -1265,22 +1308,26 @@ public void OnPostThink(int client)
 		{
 			switch(Armor_DebuffType[armorEnt])
 			{
-				case 1:
-				{
-					green = 0;
-					blue = 255;
-				}
+				//chaos
 				case 2:
 				{
 					red = 0;
 					green = 255;
 					blue = 255;
 				}
+				//void
 				case 3:
 				{
-					red = 200;
-					green = 0;
-					blue = 200;
+					red = 179;
+					green = 8;
+					blue = 209;
+				}
+				//seaborn
+				default:
+				{
+					red = 150;
+					green = 143;
+					blue = 255;
 				}
 			}
 		}
@@ -1301,6 +1348,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+
 		ArmorDisplayClient(client);
 
 		char buffer[64];
@@ -1867,11 +1915,13 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_CurrentEquippedPerk[victim] = 0;
 				}
 
+				/*
 				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
 				{
 					//left for dead actives, no more revives.
 					i_AmountDowned[victim] = 99;
 				}
+				*/
 				i_AmountDowned[victim]++;
 				
 				SetEntityHealth(victim, 200);

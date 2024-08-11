@@ -221,7 +221,7 @@ void WanderingSpiritSelfDefense(WanderingSpirit npc, float gameTime, int target,
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt * npc.m_flWaveScale, DMG_CLUB, -1, _, vecHit);
 
 					int maxhealth;
-					maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+					maxhealth = ReturnEntityMaxHealth(npc.index);
 					SetEntProp(npc.index, Prop_Data, "m_iHealth", maxhealth);
 
 					// Hit sound

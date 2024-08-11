@@ -398,7 +398,7 @@ void NPC_ConfigSetup()
 	Pistoleer_OnMapStart_NPC();
 	Diversionistico_OnMapStart_NPC();	//reused in waves all over
 	HeavyPunuel_OnMapStart_NPC();
-	SeargentIdeal_OnMapStart_NPC();	
+	SergeantIdeal_OnMapStart_NPC();	
 //wave 16-30:
 	RifalManu_OnMapStart_NPC();
 	Siccerino_OnMapStart_NPC();
@@ -1344,7 +1344,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_benera_pistoleer.sp"
 #include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"
 #include "zombie_riot/npc/expidonsa/npc_heavy_punuel.sp"
-#include "zombie_riot/npc/expidonsa/npc_seargent_ideal.sp"
+#include "zombie_riot/npc/expidonsa/npc_sergeant_ideal.sp"
 #include "zombie_riot/npc/expidonsa/npc_rifal_manu.sp"
 #include "zombie_riot/npc/expidonsa/npc_siccerino.sp"
 #include "zombie_riot/npc/expidonsa/npc_soldine_prototype.sp"

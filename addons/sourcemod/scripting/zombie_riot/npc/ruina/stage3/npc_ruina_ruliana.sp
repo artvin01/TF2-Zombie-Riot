@@ -380,7 +380,7 @@ static void ClotThink(int iNPC)
 		RaidModeScaling = battery_Ratio;
 
 		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 		float Ratio = (float(Health)/float(MaxHealth));
 
@@ -769,7 +769,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 
@@ -820,9 +820,9 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 		return;
 
 	int Health 		= GetEntProp(victim, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(victim);
 
-	int ru_MaxHealth 	= GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int ru_MaxHealth 	= ReturnEntityMaxHealth(entity);
 	int ru_Health		= GetEntProp(entity, Prop_Data, "m_iHealth");
 
 	float Ratio = (float(ru_Health)/float(ru_MaxHealth));
@@ -859,9 +859,9 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(EntRefToEntIndex(i_Ruina_Ovelord_Ref)==npc.index)
+	if(EntRefToEntIndex(i_Ruina_Overlord_Ref)==npc.index)
 	{
-		i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+		i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 		//CPrintToChatAll("set invalid");
 	}
 		

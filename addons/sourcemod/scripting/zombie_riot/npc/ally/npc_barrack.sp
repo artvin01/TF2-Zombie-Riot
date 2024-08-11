@@ -349,7 +349,7 @@ int BarrackBody_HealthHud(BarrackBody npc, float ExtraOffset = 0.0)
 {
 	char HealthText[32];
 	int HealthColour[4];
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	for(int i=0; i<10; i++)
 	{
@@ -450,12 +450,12 @@ bool BarrackBody_ThinkStart(int iNPC, float GameTime, float offsetHealth = 0.0)
 			}
 			if(HealingAmount > 0)
 			{
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index))
 				{
 					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealingAmount);
-					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+					if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 					{
-						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+						SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 					}
 				}
 			}
@@ -768,27 +768,23 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 		
 	if(!b_thisNpcIsARaid[attacker])
 	{
-		damage *= 0.5;
+		damage *= 0.65;
 	}
 	else
 	{
-		damage *= 0.75;
 		if(damagetype & (DMG_CLUB))
 		{
 			if(CurrentPlayers == 1)
 			{
-				damage *= 0.75;
+				damage *= 0.65;
 			}
 			else if(CurrentPlayers <= 4)
 			{
-				damage *= 0.7;
-			}
-			else
-			{
-				damage *= 0.8;
+				damage *= 0.75;
 			}
 		}
 	}
+
 	BarrackBody npc = view_as<BarrackBody>(victim);
 	int client = GetClientOfUserId(npc.OwnerUserId);
 	if(client > 0)

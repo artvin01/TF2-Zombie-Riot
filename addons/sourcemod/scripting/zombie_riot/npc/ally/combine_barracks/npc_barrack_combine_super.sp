@@ -247,7 +247,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 		
 	Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(victim);
 	
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
 	{
 		npc.m_bLostHalfHealth = true;
 	}

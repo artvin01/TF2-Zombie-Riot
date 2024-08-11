@@ -119,7 +119,7 @@ methodmap VoidIxufan < CClotBody
 	{
 		VoidIxufan npc = view_as<VoidIxufan>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "15000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
@@ -184,7 +184,7 @@ methodmap VoidIxufan < CClotBody
 public void VoidIxufan_ClotThink(int iNPC)
 {
 	VoidIxufan npc = view_as<VoidIxufan>(iNPC);
-	if(f_VoidAfflictionStrength[iNPC] > GetGameTime())
+	if(f_VoidAfflictionStrength[iNPC] > GetGameTime() || f_VoidAfflictionStrength2[iNPC] > GetGameTime())
 	{
 		npc.m_flSpeed = 320.0;
 		fl_TotalArmor[iNPC] = 0.85;

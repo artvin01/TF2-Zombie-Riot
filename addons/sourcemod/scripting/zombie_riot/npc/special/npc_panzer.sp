@@ -728,7 +728,7 @@ public Action NaziPanzer_OnTakeDamage(int victim, int &attacker, int &inflictor,
 public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	NaziPanzer npc = view_as<NaziPanzer>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
 		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
@@ -750,7 +750,7 @@ public void NaziPanzer_ClotDamagedPost(int victim, int attacker, int inflictor, 
 	if(npc.m_bGrabbedSomeone || npc.m_bDuringHook)
 	{
 		npc.m_flHookDamageTaken += damage;
-		if(npc.m_flHookDamageTaken > GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/10)
+		if(npc.m_flHookDamageTaken > ReturnEntityMaxHealth(npc.index)/10)
 		{
 			npc.m_bUseDefaultAnim = true;
 			npc.m_bGrabbedSomeone = false;
