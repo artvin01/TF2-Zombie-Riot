@@ -199,7 +199,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 		FriendlyDay = false;
 
 		if(enemy.Health)
-			enemy.Health *= 0.1;
+			enemy.Health /= 10;
 
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage *= 10.0;
