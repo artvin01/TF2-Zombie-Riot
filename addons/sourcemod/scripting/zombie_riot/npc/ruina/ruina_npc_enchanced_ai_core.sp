@@ -531,7 +531,7 @@ static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &dama
 	CClotBody npc = view_as<CClotBody>(iNPC);
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float Max_Health = float(ReturnEntityMaxHealth(npc.index));
 	float Ratio = Health / Max_Health;
 
 	//CPrintToChatAll("Health %f", Health);
@@ -640,7 +640,7 @@ public void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float Game
 	if(fl_npc_healing_duration[npc.index] > GameTime )	//heal until 50% hp
 	{
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float Max_Health = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float Max_Health = float(ReturnEntityMaxHealth(npc.index));
 		float Ratio = Health / Max_Health;
 
 		//CPrintToChatAll("Health %f", Health);

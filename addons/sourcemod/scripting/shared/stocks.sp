@@ -4282,7 +4282,7 @@ int HealEntityViaFloat(int entity, float healing_Amount, float MaxHealthOverMult
 	int flMaxHealth;
 	if(entity > MaxClients)
 	{
-		flMaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		flMaxHealth = ReturnEntityMaxHealth(entity);
 	}
 	else
 	{

@@ -10,6 +10,7 @@ enum struct RawHooks
 
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
+Handle g_DhookWantsLagCompensationOnEntity;
 
 #if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
@@ -33,7 +34,6 @@ static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
-static int TeamBeforeChange;											//dont move buildings	
 
 static bool b_LagCompNPC;
 
@@ -178,6 +178,13 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
+
+	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
+			"CTFPlayer::WantsLagCompensationOnEntity");
+
+	if (!g_DhookWantsLagCompensationOnEntity) {
+		SetFailState("Failed to setup detour for CTFPlayer::WantsLagCompensationOnEntity");
+	}
 	
 	delete gamedata_lag_comp;
 	/*
@@ -205,6 +212,16 @@ void DHook_Setup()
 //	int ED_AllocCommentedOut;
 }
 
+public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle hReturn, Handle hParams)
+{
+	if(b_LagCompAlliedPlayers)
+	{
+		DHookSetReturn(hReturn, true);
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
 
 void DHook_EntityDestoryed()
 {
@@ -1085,7 +1102,6 @@ public void StartLagCompResetValues()
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
-//	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
 	
 	bool already_moved = false;
@@ -1096,8 +1112,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
+	//	TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
 		
 		return MRES_Ignored;
 	}
@@ -1172,11 +1187,6 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	//	return MRES_Supercede;
 	}
 #endif
-	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
-	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TeamBeforeChange)); //Hardcode to red as there will be no blue players.
-		return MRES_Ignored;
-	} 
 	return MRES_Ignored;
 }
 
@@ -1272,7 +1282,6 @@ public MRESReturn LagCompensationThink(Address manager)
 }
 public void FinishLagCompMoveBack()
 {
-	b_LagCompAlliedPlayers = false;
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
@@ -1285,6 +1294,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	PrintToChatAll("finish lag comp");
 	//Set this to false to be sure.
 	FinishLagCompMoveBack();
+	b_LagCompAlliedPlayers = false;
 	
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
@@ -1307,6 +1317,7 @@ void DHook_HookClient(int client)
 
 	if(ForceRespawn)
 	{
+		DHookEntity(g_DhookWantsLagCompensationOnEntity, false, client, _, Dhook_WantsLagCompensationOnEntity);
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
 		
 #if defined ZR

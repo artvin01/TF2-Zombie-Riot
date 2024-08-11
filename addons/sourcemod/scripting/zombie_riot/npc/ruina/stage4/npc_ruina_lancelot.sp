@@ -689,7 +689,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 		
 
-	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
+	if(!npc.Anger && (ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

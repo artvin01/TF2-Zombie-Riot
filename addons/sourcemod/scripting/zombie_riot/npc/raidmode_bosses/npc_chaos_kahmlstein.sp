@@ -1554,7 +1554,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 100)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (100 - npc.g_TimesSummoned) / 100;
+		int nextLoss = (ReturnEntityMaxHealth(npc.index) / 10) * (100 - npc.g_TimesSummoned) / 100;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1589,7 +1589,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))

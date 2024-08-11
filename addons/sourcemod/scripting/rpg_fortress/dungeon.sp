@@ -1624,7 +1624,7 @@ public Action Dungeon_Timer(Handle timer)
 									}
 								}
 								
-								Apply_Text_Above_Npc(entity, wave.Rarity, GetEntProp(entity, Prop_Data, "m_iMaxHealth"));
+								Apply_Text_Above_Npc(entity, wave.Rarity, ReturnEntityMaxHealth(entity));
 							}
 
 							dungeon.WaveList.Erase(a);
@@ -1719,7 +1719,7 @@ static stock int RandomStaticSeed(int seed, int rand)
 
 public void Dungeon_Spawn_25HP(int entity)
 {
-	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") * 5 / 4;
+	int health = ReturnEntityMaxHealth(entity) * 5 / 4;
 	
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 	SetEntProp(entity, Prop_Data, "m_iHealth", health);
@@ -1727,7 +1727,7 @@ public void Dungeon_Spawn_25HP(int entity)
 
 public void Dungeon_Spawn_50HP(int entity)
 {
-	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int health = ReturnEntityMaxHealth(entity);
 	
 	health = RoundToNearest(float(health) * 1.5);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1736,7 +1736,7 @@ public void Dungeon_Spawn_50HP(int entity)
 
 public void Dungeon_Spawn_75HP(int entity)
 {
-	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int health = ReturnEntityMaxHealth(entity);
 	
 	health = RoundToNearest(float(health) * 1.75);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1779,7 +1779,7 @@ public void Dungeon_Spawn_FlatResZombie(int entity)
 
 public void Dungeon_Spawn_BuffBosses1(int entity)
 {
-	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int health = ReturnEntityMaxHealth(entity);
 	
 	health = RoundToNearest(float(health) * 1.1);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1790,7 +1790,7 @@ public void Dungeon_Spawn_BuffBosses1(int entity)
 
 public void Dungeon_Spawn_BuffBosses2(int entity)
 {
-	int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int health = ReturnEntityMaxHealth(entity);
 	
 	health = RoundToNearest(float(health) * 1.2);
 	SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1808,7 +1808,7 @@ public void Dungeon_Spawn_MegaEnslaver(int entity)
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
 		npc.m_iOverlordComboAttack = 1;
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(entity);
 		
 		health = RoundToNearest(float(health) * 1.5);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1825,7 +1825,7 @@ public void Dungeon_Spawn_GrigoriCorrupted(int entity)
 	
 	if(StrEqual(npc_classname, "npc_enemy_grigori"))
 	{
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(entity);
 		
 		health = RoundToNearest(float(health) * 1.5);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -1842,7 +1842,7 @@ public void Dungeon_Cave_Super_Ai(int entity)
 	if(StrEqual(npc_classname, "npc_auto_cave_defense"))
 	{
 		//CClotBody npc = view_as<CClotBody>(entity);
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(entity);
 		health = RoundToNearest(float(health) * 1.50);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
@@ -1858,7 +1858,7 @@ public void Dungeon_JunalTheUnstoppable(int entity)
 	if(StrEqual(npc_classname, "npc_original_infected"))
 	{
 		CClotBody npc = view_as<CClotBody>(entity);
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(entity);
 		health = RoundToNearest(float(health) * 3.0);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
@@ -1875,7 +1875,7 @@ public void Dungeon_RepairedCombineGear(int entity)
 	if(StrEqual(npc_classname, "npc_zombiefied_combine_soldier_swordsman"))
 	{
 		//CClotBody npc = view_as<CClotBody>(entity);
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(entity);
 		health = RoundToNearest(float(health) * 1.50);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);

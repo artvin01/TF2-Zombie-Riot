@@ -234,7 +234,7 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 		{
-			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int MaxHealth = ReturnEntityMaxHealth(npc.index);
 			MaxHealth /= 15;
 			VoidBrooding_SpawnFractal(npc, MaxHealth, 10);
 			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;

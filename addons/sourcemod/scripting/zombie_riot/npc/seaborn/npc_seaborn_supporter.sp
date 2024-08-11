@@ -206,7 +206,7 @@ public void SeabornSupporter_ClotThink(int iNPC)
 		{
 			npc.m_flNextRangedAttack = gameTime + 5.0;
 
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
+			int health = ReturnEntityMaxHealth(npc.index) / 4;
 
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);

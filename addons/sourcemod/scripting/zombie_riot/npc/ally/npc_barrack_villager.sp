@@ -319,7 +319,7 @@ public void BarrackVillager_ClotThink(int iNPC)
 					float flDistanceToTarget = GetVectorDistance(VillagerRepairFocusLoc[npc.index], MePos, true);
 					if(flDistanceToTarget < (25.0*25.0))
 					{
-						SummonerRenerateResources(client, 0.4, 1.05, true);
+						SummonerRenerateResources(client, 0.4, 1.05);
 						if(npc.m_iChanged_WalkCycle != 7)
 						{
 							npc.m_iChanged_WalkCycle = 7;

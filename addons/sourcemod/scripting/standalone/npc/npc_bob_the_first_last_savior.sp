@@ -522,7 +522,7 @@ static void Internal_ClotThink(int iNPC)
 						}
 						else
 						{
-							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
+							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(other);
 						}
 						
 						break;
@@ -533,7 +533,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(npc.index);
 	}
 
 	if(!npc.m_bFakeClone)

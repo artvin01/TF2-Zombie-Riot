@@ -470,7 +470,7 @@ void Merchant_NPCTakeDamagePost(int attacker, float damage, int weapon)
 					if(GetVectorDistance(pos1, pos2, true) < 100000.0)	// 300 HU
 					{
 						int hp = GetEntProp(entity, Prop_Data, "m_iHealth");
-						if(hp > 0 && hp < health && hp < GetEntProp(entity, Prop_Data, "m_iMaxHealth"))
+						if(hp > 0 && hp < health && hp < ReturnEntityMaxHealth(entity))
 						{
 							target = entity;
 							health = hp;

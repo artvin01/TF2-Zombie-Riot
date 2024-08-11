@@ -33,17 +33,17 @@ static const int BuildingCost[sizeof(BuildingPlugin)] =
 	560,
 	0,
 
-	579,
-	379,
-	979,
-	979,
+	600,
+	400,
+	1000,
+	1000,
 
-	587,
-	587,
-	587,
-	587,
-	1187,
-	1179,
+	600,
+	600,
+	600,
+	600,
+	1200,
+	1200,
 
 	400
 };
@@ -294,12 +294,15 @@ static bool HasWrench(int client)
 static int GetCost(int id, float multi)
 {
 	int buildCost = BuildingCost[id];
-	int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
-	if(cost_extra <= 0)
+	if(id <= 1 || id == 12)
 	{
-		cost_extra = 0;
+		int cost_extra = RoundFloat(BuildingHealth[id] * multi / 2.4);
+		if(cost_extra <= 0)
+		{
+			cost_extra = 0;
+		}
+		buildCost = buildCost + cost_extra;
 	}
-	buildCost = buildCost + cost_extra;
 
 	if(Rogue_Mode())
 		buildCost /= 3;
@@ -1279,7 +1282,7 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	{
 		return;
 	}
-	int max_health = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	
 	if(flHealth >= max_health)
@@ -1354,7 +1357,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon, bool &result
 	{
 		return;
 	}
-	int max_health = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 	
 	if(flHealth >= max_health)
@@ -1368,7 +1371,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon, bool &result
 void Building_RepairObject(int client, int target, int weapon,float vectorhit[3], int soundDef = 1, float repairspeedModif = 1.0)
 {
 	int new_ammo = GetAmmo(client, 3);
-	int max_health = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+	int max_health = ReturnEntityMaxHealth(target);
 	int flHealth = GetEntProp(target, Prop_Data, "m_iHealth");
 
 	float RepairRate = Attributes_Get(weapon, 95, 1.0);
@@ -1580,7 +1583,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.8;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.35));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.35));
 		}
 		if(!WildingenBuilder[entity] && WildingenBuilder[client])
 		{
@@ -1589,7 +1592,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.7));
 		}
 		if(!WildingenBuilder2[entity] && WildingenBuilder2[client])
 		{
@@ -1598,7 +1601,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.7));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.7));
 		}
 		if(FinalBuilder[entity] && !FinalBuilder[client])
 		{
@@ -1606,14 +1609,14 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.35;			
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.8;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.35));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.35));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.35));
 		}
 		if(!GlassBuilder[entity] && GlassBuilder[client])
 		{
 			GlassBuilder[entity] = true;
 			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.8));
 		}
 		if(GlassBuilder[entity] && !GlassBuilder[client])
 		{
@@ -1621,7 +1624,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 0.8));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
 
 		//	
@@ -1653,18 +1656,18 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.15));
 
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.15));
 		}
 		if(i_CurrentEquippedPerk[entity] == 2 && i_CurrentEquippedPerk[client] != 2)
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.15));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) / 1.15));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.15));
 		}
 		if((i_NormalBarracks_HexBarracksUpgrades[client] & ZR_UNIT_UPGRADES_REFINED_MEDICINE) &&!(i_EntityRecievedUpgrades[entity] & ZR_UNIT_UPGRADES_REFINED_MEDICINE))
 		{
 			i_EntityRecievedUpgrades[entity] |= ZR_UNIT_UPGRADES_REFINED_MEDICINE;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.1));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * 1.1));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.1));
 		}
 		i_CurrentEquippedPerk[entity] = i_CurrentEquippedPerk[client];
 	}
@@ -1676,13 +1679,13 @@ void SetBuildingMaxHealth(int entity, float Multi, bool reduce, bool initial = f
 	if(reduce)
 	{
 		SetEntProp(entity, Prop_Data, "m_iHealth", 		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) 		/ Multi));
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth"))	/ Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", 	RoundToCeil(float(ReturnEntityMaxHealth(entity))	/ Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepair",		RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepair")) 		/ Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepairMax", 	RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) 	/ Multi));
 	}
 	else
 	{
-		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * Multi));
+		SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * Multi));
 		SetEntProp(entity, Prop_Data, "m_iRepairMax", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iRepairMax")) * Multi));
 		
 		if(initial)
@@ -2084,7 +2087,7 @@ void DeleteAndRefundBuilding(int client, int entity)
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
 		int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
 		int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
-		int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(entity);
 		
 		int MaxTotal = MaxRepair + MaxHealth;
 		int Total = Repair + Health;

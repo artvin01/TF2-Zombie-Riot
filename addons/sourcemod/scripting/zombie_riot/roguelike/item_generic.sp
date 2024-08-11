@@ -349,7 +349,7 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +3% max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int health = ReturnEntityMaxHealth(npc.index);
 
 			health = RoundToCeil(float(health) * 1.03);
 
@@ -362,7 +362,7 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
 				// +3% max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int health = ReturnEntityMaxHealth(npc.index);
 
 				health = RoundToCeil(float(health) * 1.03);
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
@@ -614,7 +614,7 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// +15% max health
-			int health = RoundToCeil((float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.15));
+			int health = RoundToCeil((float(ReturnEntityMaxHealth(npc.index)) * 1.15));
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -624,7 +624,7 @@ public void Rogue_Chicken_Nugget_Box_Ally(int entity, StringMap map)
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
 				// +15% max health
-				int health = RoundToCeil((float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.15));
+				int health = RoundToCeil((float(ReturnEntityMaxHealth(npc.index)) * 1.15));
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}

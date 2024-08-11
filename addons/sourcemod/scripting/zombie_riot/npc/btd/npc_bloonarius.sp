@@ -359,11 +359,11 @@ public void Bloonarius_ClotThink(int iNPC)
 	if(npc.m_bStaticNPC)
 	{
 		if(npc.m_iLivesLost < 7)
-			nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (7 - npc.m_iLivesLost) / 8;
+			nextLoss = ReturnEntityMaxHealth(npc.index) * (7 - npc.m_iLivesLost) / 8;
 	}
 	else if(npc.m_iLivesLost < 4)
 	{
-		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (3 - npc.m_iLivesLost) / 4;
+		nextLoss = ReturnEntityMaxHealth(npc.index) * (3 - npc.m_iLivesLost) / 4;
 	}
 	
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
@@ -411,7 +411,7 @@ public void Bloonarius_ClotThink(int iNPC)
 	
 	if(npc.m_iMiniLivesLost < 99 && !NpcStats_IsEnemySilenced(npc.index))
 	{
-		nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.m_iMiniLivesLost) / 100;
+		nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.m_iMiniLivesLost) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.m_iMiniLivesLost++;

@@ -811,7 +811,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			return Plugin_Handled;
 		}
 
-		if(!npc.Anger && health < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4))
+		if(!npc.Anger && health < (ReturnEntityMaxHealth(npc.index) / 4))
 		{
 			npc.Anger = true;
 			npc.PlayAngerSound();
@@ -828,9 +828,9 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 			npc.m_flRangedArmor = 0.25;
 			npc.m_flMeleeArmor = 0.375;
 
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 8.0, _, 3.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_ABSOLUTE);
-			HealEntityGlobal(npc.index, npc.index, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 8.0, _, 3.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 15.0, _, 13.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 15.0, _, 13.0, HEAL_SELFHEAL|HEAL_SILENCEABLE);
 		}
 	}
 	return Plugin_Changed;

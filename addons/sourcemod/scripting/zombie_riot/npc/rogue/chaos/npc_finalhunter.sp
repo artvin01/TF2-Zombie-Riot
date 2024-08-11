@@ -250,7 +250,7 @@ static void ClotThink(int iNPC)
 				{
 					npc.PlayMeleeHitSound();
 
-					int maxhealth = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+					int maxhealth = ReturnEntityMaxHealth(target);
 
 					int health = GetEntProp(target, Prop_Data, "m_iHealth");
 					if(health > maxhealth)

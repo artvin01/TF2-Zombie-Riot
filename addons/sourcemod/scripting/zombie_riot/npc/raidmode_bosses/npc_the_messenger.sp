@@ -1315,7 +1315,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 	TheMessenger npc = view_as<TheMessenger>(victim);
 	if(npc.g_TimesSummoned < 99)
 	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
+		int nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.g_TimesSummoned) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1325,7 +1325,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;

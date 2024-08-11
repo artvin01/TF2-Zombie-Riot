@@ -1164,7 +1164,7 @@ static void Final_Invocation(Twirl npc)
 {
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	float Tower_Health = MaxHealth*0.2;
 	for(int i=0 ; i < 4 ; i++)
 	{
@@ -2605,7 +2605,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		return Plugin_Continue;
 
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 
 	if(b_allow_final[npc.index])
 	{

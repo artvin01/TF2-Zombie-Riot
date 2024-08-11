@@ -429,7 +429,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 		if(target > MaxClients)
 		{
 			health = GetEntProp(target, Prop_Data, "m_iHealth");
-			maxhealth = GetEntProp(target, Prop_Data, "m_iMaxHealth");
+			maxhealth = ReturnEntityMaxHealth(target);
 		}
 		else
 		{

@@ -95,7 +95,7 @@ static int TriggerDamage(int entity, int type)
 		divide *= 4; //Reduce way further so its good against bosses.
 	}
 
-	return GetEntProp(entity, Prop_Data, "m_iMaxHealth") / divide;
+	return ReturnEntityMaxHealth(entity) / divide;
 }
 
 bool Elemental_HurtHud(int entity, char Debuff_Adder[64])
@@ -180,7 +180,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (ReturnEntityMaxHealth(victim) * 3 / 4))
 						return;
 				}
 
@@ -278,7 +278,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (ReturnEntityMaxHealth(victim) * 3 / 4))
 						return;
 				}
 			}
@@ -352,7 +352,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 				if(!ignoreArmor)
 				{
 					// Has "armor" at 75% HP
-					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 3 / 4))
+					if(GetEntProp(victim, Prop_Data, "m_iHealth") > (ReturnEntityMaxHealth(victim) * 3 / 4))
 						return;
 				}
 

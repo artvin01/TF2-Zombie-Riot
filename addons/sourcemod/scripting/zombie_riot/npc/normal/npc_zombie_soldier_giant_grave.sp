@@ -388,7 +388,7 @@ public void SoldierGiant_ClotDamaged_Post(int victim, int attacker, int inflicto
 	SoldierGiant npc = view_as<SoldierGiant>(victim);
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		
 		float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 		if(0.9-(npc.g_TimesSummoned*0.2) > ratio)

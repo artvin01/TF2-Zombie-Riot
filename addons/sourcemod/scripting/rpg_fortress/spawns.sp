@@ -424,7 +424,7 @@ static void UpdateSpawn(int pos, SpawnEnum spawn, bool start)
 				}
 				else
 				{
-					health = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+					health = ReturnEntityMaxHealth(entity);
 				}
 
 				Apply_Text_Above_Npc(entity, b_thisNpcIsABoss[entity] ? strength + 1 : strength, health);
@@ -475,7 +475,7 @@ void RPGSpawns_UpdateHealthNpc(int entity)
 	if(!IsValidEntity(npc.m_iTextEntity3))
 		return;
 		
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(entity);
 	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	char HealthString[64];
 	IntToString(Health,HealthString, sizeof(HealthString));

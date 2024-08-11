@@ -732,7 +732,7 @@ void BaseSquad_BaseWalking(any npcIndex, const float vecMe[3], bool predict = fa
 		}
 		else
 		{
-			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 			if(health < maxhealth)

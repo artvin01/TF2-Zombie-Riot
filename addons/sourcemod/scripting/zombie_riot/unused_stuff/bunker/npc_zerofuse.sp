@@ -676,7 +676,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 		}
 		if(fl_MinionSummon[npc.index] <= gameTime)
 		{
-			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			float startPosition[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 			maxhealth /= 9;//if they are somehow weak do 6 or 7 if they are strong reduce it more
@@ -796,7 +796,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 	if(fl_DefenseHealing_Timer[npc.index] <= gameTime && b_DefenseHealing[npc.index])
 	{
 		fl_DefenseHealing_Timer[npc.index] = gameTime + 0.2;//52 times intotal yeah i am quite retarded... BUT i like the "slow" regen gain :)
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		if(b_HealingIsTooStrong)
 		{
 			//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 500);
@@ -1094,7 +1094,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 							{
 								if(b_AbilityWrathRage[npc.index])
 								{
-									int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+									int MaxHealth = ReturnEntityMaxHealth(npc.index);
 									if(b_HealingIsTooStrongOnMelee)
 									{
 										SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 1400);//obviously not that low
@@ -1159,7 +1159,7 @@ public void TrueZerofuse_ClotThink(int iNPC)
 							{
 								if(b_AbilityWrathRage[npc.index])
 								{
-									int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+									int MaxHealth = ReturnEntityMaxHealth(npc.index);
 									/*
 									if(b_HealingIsTooStrongOnMelee[npc.index])//meh npcs can suffer
 									{
@@ -1247,7 +1247,7 @@ public Action Set_TrueZerofuse_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }
@@ -1256,7 +1256,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 {
 	TrueZerofuse npc = view_as<TrueZerofuse>(iNPC);
 	//zero is about to become even stronger
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( your mother
 		b_FakeUber[npc.index] = true;
@@ -1268,7 +1268,7 @@ public void TrueZerofuse_ClotDamaged_Post(int iNPC, int attacker, int inflictor,
 		npc.m_flMeleeArmor = 0.0;
 		npc.PlayLifelossSound();
 	}
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	//SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 200000);
 	if(!b_ForceWrath[npc.index])//If he somehow gonna disable this instantly if he uses forcewrath
 	{

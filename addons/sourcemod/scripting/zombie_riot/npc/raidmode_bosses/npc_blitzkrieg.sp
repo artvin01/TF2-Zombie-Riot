@@ -894,7 +894,7 @@ static void ClotThink(int iNPC)
 		
 		ZR_NpcTauntWinClear();
 
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 
 		MaxHealth = RoundToFloor(MaxHealth*0.01);
 
@@ -1024,7 +1024,7 @@ static void ClotThink(int iNPC)
 	int closest = npc.m_iTarget;
 	int PrimaryThreatIndex = npc.m_iTarget;
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	if(b_Are_we_reloading[npc.index])	//do melee run on reload/blitzlight
 	{
@@ -1394,7 +1394,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	int closest = npc.m_iTarget;	//IOC and text towards the npc's target, who is most likely the one tanking him, ion *should* in theory obliterate them!
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	if(!b_BlitzLight[npc.index])	//Blocks scaling if blitzlight is active
 	{	//Blitz's power scales off of current health. the health scaling is dependant on current stage, 1 stage being 15 waves.
@@ -1793,7 +1793,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		{
 			CPrintToChatAll("{crimson}%s{default}: The minnion's have joined the battle.", c_NpcName[npc.index]);
 		}
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int heck;
 		int spawn_index;
 		heck= maxhealth;

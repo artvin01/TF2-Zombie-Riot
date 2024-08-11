@@ -460,7 +460,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		if(healthmulti)
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * healthmulti));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iMaxHealth")) * healthmulti));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * healthmulti));
 		}
 		
 		b_NpcForcepowerupspawn[entity] = forcepowerup;
@@ -1055,7 +1055,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if((damage * fl_GibVulnerablity[victim]) > (GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 1.5))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -1353,7 +1353,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	SetGlobalTransTarget(attacker);
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int MaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(victim);
 	int red = 255;
 	int green = 255;
 	int blue = 0;

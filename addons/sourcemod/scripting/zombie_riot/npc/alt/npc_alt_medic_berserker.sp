@@ -297,7 +297,7 @@ static void Internal_ClotThink(int iNPC)
 				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
@@ -333,7 +333,7 @@ static void Internal_ClotThink(int iNPC)
 				else if (npc.m_flAttackHappens_bullshit < GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					float speed = 0.2 * (Health / MaxHealth);
 					npc.m_flAttackHappenswillhappen = false;
 					npc.m_flNextMeleeAttack = GameTime + speed;
@@ -343,7 +343,7 @@ static void Internal_ClotThink(int iNPC)
 		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GameTime)
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 			float crocket = 10.0 * (Health / MaxHealth);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 			npc.m_flAttackHappens_2 = GameTime + crocket;
@@ -368,7 +368,7 @@ static void Internal_ClotThink(int iNPC)
 			if (flVel[0] >= 200.0)
 			{
 				float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-				float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 				float time = 60.0 * (0.40 + (Health / MaxHealth));
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				npc.FaceTowards(vecTarget);

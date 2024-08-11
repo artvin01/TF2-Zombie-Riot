@@ -471,7 +471,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 						}
 						else
 						{
-							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / GetEntProp(other, Prop_Data, "m_iMaxHealth");
+							healthPoints = GetEntProp(other, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(other);
 						}
 						
 						break;
@@ -482,7 +482,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	}
 	else
 	{
-		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		healthPoints = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 20 / ReturnEntityMaxHealth(npc.index);
 	}
 	if(npc.m_bFakeClone)
 	{
@@ -497,7 +497,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 					if(!view_as<RaidbossBobTheFirst>(other).m_bFakeClone && IsEntityAlive(other) && GetTeam(other) == GetTeam(npc.index))
 					{
 						SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(other, Prop_Data, "m_iHealth"));
-						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetEntProp(other, Prop_Data, "m_iMaxHealth"));
+						SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(other));
 						FellowBobFound = true;
 						break;
 					}
@@ -570,7 +570,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 
 			CPrintToChatAll("{white}%s{default}: You think you can fool me!? Ill destroy you!", c_NpcName[npc.index]);
 			
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") -1);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) -1);
 			fl_Extra_Damage[npc.index] = 999.9;
 			fl_Extra_Speed[npc.index] = 5.0;
 			RaidModeTime = FAR_FUTURE;
@@ -765,7 +765,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 	{
 		if(!Waves_IsEmpty())
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) * 17 / 20);
 			return;
 		}
 
@@ -781,7 +781,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 		npc.Anger = false;
 		npc.m_bSecondPhase = true;
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Bob the First");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 17 / 20);
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) * 17 / 20);
 
 		if(XenoExtraLogic())
 		{

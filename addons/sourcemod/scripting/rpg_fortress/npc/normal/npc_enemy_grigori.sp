@@ -755,7 +755,7 @@ public void EnemyFatherGrigori_ClotThink(int iNPC)
 		}
 		npc.m_flNextThinkTime = gameTime + 1.0;
 		//re-enable rage.
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) <= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)) <= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp
 		{
 			if(npc.flXenoInfectedSpecialHurtTime > (gameTime - 3.0))
 			{
@@ -810,7 +810,7 @@ public void EnemyFatherGrigori_OnTakeDamagePost(int victim, int attacker, int in
 {
 	EnemyFatherGrigori npc = view_as<EnemyFatherGrigori>(victim);
 
-	int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 	if(maxHealth/4 >= Health && !npc.Anger) //Anger after half hp/400 hp

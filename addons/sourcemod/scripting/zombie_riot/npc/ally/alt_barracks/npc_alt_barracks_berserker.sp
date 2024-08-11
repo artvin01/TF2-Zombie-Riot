@@ -169,7 +169,7 @@ public void Barrack_Alt_Berserker_ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < GameTime)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					
 					float damage = (1500.0) * (1.0+(1-(Health/MaxHealth))*2);
 					float speed = (0.25*npc.BonusFireRate) * (Health / MaxHealth)+0.1;

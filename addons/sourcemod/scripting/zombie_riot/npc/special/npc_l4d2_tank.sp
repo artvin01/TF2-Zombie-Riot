@@ -686,7 +686,7 @@ public Action L4D2_Tank_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 public void L4D2_Tank_ClotDamagedPost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	L4D2_Tank npc = view_as<L4D2_Tank>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) //Anger after half hp/400 hp
 	{
 //		npc.m_flDoSpawnGesture = GetGameTime(npc.index) + 1.5;
 	//	npc.AddGesture("ACT_PANZER_STAGGER");
@@ -931,7 +931,7 @@ public Action contact_throw_tank_entity(int client)
 					{
 						if (!b_AlreadyHitTankThrow[client][entity] && entity != client && i_TankThrewThis[client] != entity)
 						{		
-							int damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+							int damage = ReturnEntityMaxHealth(client) / 3;
 							
 							if(damage > 2000)
 							{

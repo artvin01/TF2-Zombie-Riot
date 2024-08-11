@@ -319,7 +319,7 @@ void DesertRajulSelfDefense(DesertRajul npc, float gameTime, int target, float d
 void DesertRajulAllyHealInternal(int entity, int victim)
 {
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
-	int flMaxHealth = GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+	int flMaxHealth = ReturnEntityMaxHealth(victim);
 
 	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
 	{

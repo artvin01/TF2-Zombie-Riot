@@ -205,7 +205,7 @@ void NPCDeath(int entity)
 		Call_Finish();
 	}
 	
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(entity);
 	int client;
 	while(RpgCore_CountClientsWorthyForKillCredit(entity, client))
 	{
@@ -372,7 +372,7 @@ stock void Npc_Base_Thinking(int entity, float distance, const char[] WalkBack, 
 			{
 				//We now afk and are back in our spawnpoint heal back up, but not instantly incase they quickly can attack again.
 
-				int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int MaxHealth = ReturnEntityMaxHealth(npc.index);
 				int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 				int HealthToHealPerIncrement = MaxHealth / 100;
