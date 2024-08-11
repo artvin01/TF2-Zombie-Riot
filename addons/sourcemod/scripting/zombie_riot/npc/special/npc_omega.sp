@@ -43,6 +43,7 @@ void Omega_OnMapStart()		//for whatever reason it has to be "OnMapStart" rather 
 	NPC_Add(data);
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 	PrecacheModel("models/combine_super_soldier.mdl");
+	PrecacheSoundCustom("#zombie_riot/omega/calculated.mp3");
 }
 
 static void ClotPrecache()	//lol this shit is messy as fuck but ignore it, aight?
@@ -57,7 +58,6 @@ static void ClotPrecache()	//lol this shit is messy as fuck but ignore it, aight
 	PrecacheSound("weapons/shotgun/shotgun_fire7.wav");
 	PrecacheSound("weapons/rpg/rocketfire1.wav");
 	PrecacheSound("weapons/357/357_fire2.wav");
-	PrecacheSoundCustom("#zombie_riot/omega/calculated.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
