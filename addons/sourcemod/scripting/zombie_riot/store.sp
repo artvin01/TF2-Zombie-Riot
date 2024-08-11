@@ -5148,7 +5148,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
 					
-					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+					HidePlayerWeaponModel(client, entity, true);
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
