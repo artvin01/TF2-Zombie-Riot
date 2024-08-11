@@ -1395,7 +1395,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
 		float GametimeNpc = GetGameTime(this.index);
-		speed_for_return *= fl_Extra_Speed[this.index];
+		speed_for_return = fl_Extra_Speed[this.index];
 		
 #if defined RTS
 		speed_for_return *= RTS_GameSpeed();
