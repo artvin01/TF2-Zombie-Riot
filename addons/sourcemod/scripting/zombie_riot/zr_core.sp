@@ -189,7 +189,8 @@ enum
 	WEAPON_ION_BEAM_FEED  = 109,
 	WEAPON_CHAINSAW  = 110,
 	WEAPON_FLAMETAIL = 111,
-	WEAPON_OCEAN_PAP = 112
+	WEAPON_OCEAN_PAP = 112,
+	WEAPON_KIT_FRACTAL	= 113
 }
 
 enum
@@ -517,6 +518,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_trash_cannon.sp"
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
+#include "zombie_riot/custom/kit_fractal.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"
@@ -768,6 +770,7 @@ void ZR_MapStart()
 	Trash_Cannon_Precache();
 	Rusty_Rifle_Precache();
 	Kit_Blitzkrieg_Precache();
+	Kit_Fractal_MapStart();
 	ResetMapStartRedBladeWeapon();
 	Mapstart_Chainsaw();
 	Gravaton_Wand_MapStart();
