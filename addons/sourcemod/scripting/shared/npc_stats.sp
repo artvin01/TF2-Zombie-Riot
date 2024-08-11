@@ -2461,6 +2461,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
+		DispatchKeyValue(item, "disableshadows", "1");	//Disable shadows, helps with performance and really isnt neccecary.
 
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
