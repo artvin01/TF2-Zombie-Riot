@@ -2877,4 +2877,8 @@
 	{
 		"en" 		"Zombine"
 	}
+	"Omega"
+	{
+		"en"		"Omega"
+	}
 }

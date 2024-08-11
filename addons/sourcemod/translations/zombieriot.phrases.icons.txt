@@ -304,4 +304,16 @@
 	{
 		"en"		"Her majesty, the ruler of magic has descended..."	//idk, temP?
 	}
+	"Omega 1"
+	{
+		"en"		"Armaments locked and loaded."
+	}
+	"Omega 2"
+	{
+		"en"		"A sui generis soldier enters the scene."
+	}
+	"Omega 3"
+	{
+		"en"		"Omega makes an appearance."
+	}
 }
