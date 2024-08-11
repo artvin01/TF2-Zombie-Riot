@@ -844,6 +844,10 @@
 	{
 		"en"		"Hyper Blitzkrieg"
 	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"		"TRUE BLITZKRIEG"
+	}
 	"Pikeman"
 	{
 		"en" 		"Pikeman"

@@ -395,15 +395,24 @@ methodmap ChaosKahmlstein < CClotBody
 			}
 			else
 			{
-				CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
-				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
-				music.Time = 294;
-				music.Volume = 1.5;
-				music.Custom = true;
-				strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
-				strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
-				Music_SetRaidMusic(music);
+				bool TotalShits = StrContains(data, "no_music_blitz") != -1;
+				if(!TotalShits)
+				{
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Let's fight!");
+					MusicEnum music;
+					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/internius/khamlstein.mp3");
+					music.Time = 294;
+					music.Volume = 1.5;
+					music.Custom = true;
+					strcopy(music.Name, sizeof(music.Name), "Contra la Luna");
+					strcopy(music.Artist, sizeof(music.Artist), "P.T. Adamczyk");
+					Music_SetRaidMusic(music);
+				}
+				else
+				{
+					CPrintToChatAll("{darkblue}Kahmlstein{default}: Ahahahahahah!!! LETS GET THIS PARTY STARTED!!!!!");
+					f_MessengerSpeedUp[npc.index] *= 2.0;
+				}
 			}
 
 			RaidBossActive = EntIndexToEntRef(npc.index);

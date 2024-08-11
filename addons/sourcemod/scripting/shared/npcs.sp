@@ -1764,6 +1764,9 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	{
 		return true;
 	}	
+	if(b_npcspawnprotection[victim])
+		return true;
+
 	float DamageTest = 1.0;
 	int testvalue = 1;
 	int DmgType;

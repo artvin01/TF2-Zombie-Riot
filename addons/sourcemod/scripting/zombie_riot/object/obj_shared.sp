@@ -357,8 +357,8 @@ methodmap ObjectGeneric < CClotBody
 			Building_Max_Health[this.index] = value;
 			SetEntProp(this.index, Prop_Data, "m_iHealth", value);
 			SetEntProp(this.index, Prop_Data, "m_iMaxHealth", value);
-			SetEntProp(this.index, Prop_Data, "m_iRepair", RoundToCeil(float(value) * 2.5));
-			SetEntProp(this.index, Prop_Data, "m_iRepairMax", RoundToCeil(float(value) * 2.5));
+			SetEntProp(this.index, Prop_Data, "m_iRepair", RoundToCeil(float(value) * 1.5));
+			SetEntProp(this.index, Prop_Data, "m_iRepairMax", RoundToCeil(float(value) * 1.5));
 		}
 		public get()
 		{

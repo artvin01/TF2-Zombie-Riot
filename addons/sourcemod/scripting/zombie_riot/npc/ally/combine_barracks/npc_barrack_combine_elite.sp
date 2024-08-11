@@ -174,7 +174,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 						if(!npc.m_fbRangedSpecialOn)
 						{
 							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1250.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
+							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 625.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
 							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 							npc.PlayRangedAttackSecondarySound();
 							npc.m_fbRangedSpecialOn = true;
@@ -199,7 +199,7 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 250.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 125.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;		
 						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
