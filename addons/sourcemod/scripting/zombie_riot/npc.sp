@@ -574,6 +574,8 @@ void NPC_ConfigSetup()
 	Barracks_Iberia_Rocketeer_Precache();
 	Barracks_Iberia_Healer_Precache();
 
+	Barracks_Iberia_Healtanker_Precache();
+	
 	Barracks_Iberia_Elite_Gunner_Precache();
 	Barracks_Thorns();
 

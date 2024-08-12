@@ -36,7 +36,7 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/taunts/heavy_taunts19.mp3",
 };
 
-void Barracks_Iberia_Tanker_Precache()
+void Barracks_Iberia_Healtanker_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -45,8 +45,8 @@ void Barracks_Iberia_Tanker_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheModel("models/player/heavy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Tanker");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_tanker");
+	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Healtanker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_healtanker");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
@@ -56,10 +56,10 @@ void Barracks_Iberia_Tanker_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Barrack_Iberia_Tanker(client, vecPos, vecAng, ally);
+	return Barracks_Iberia_Healtanker(client, vecPos, vecAng, ally);
 }
 
-methodmap Barrack_Iberia_Tanker < BarrackBody
+methodmap  Barracks_Iberia_Healtanker < BarrackBody
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -109,42 +109,54 @@ methodmap Barrack_Iberia_Tanker < BarrackBody
 		#endif
 	}
 
-	public Barrack_Iberia_Tanker(int client, float vecPos[3], float vecAng[3], int ally)
+	public Barracks_Iberia_Healtanker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(BarrackBody(client, vecPos, vecAng, "200", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(BarrackBody(client, vecPos, vecAng, "600", "models/player/heavy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
-		func_NPCDeath[npc.index] = Barrack_Iberia_Tanker_NPCDeath;
-		func_NPCThink[npc.index] = Barrack_Iberia_Tanker_ClotThink;
-		npc.m_flSpeed = 200.0;
+		func_NPCDeath[npc.index] = Barracks_Iberia_Healtanker_NPCDeath;
+		func_NPCThink[npc.index] = Barracks_Iberia_Healtanker_ClotThink;
+		npc.m_flSpeed = 220.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_flAttackHappens_bullshit = 0.0;
 
 		KillFeed_SetKillIcon(npc.index, "bat");
+
+		int skin = 1;
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl");		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/sf14_heavy_robo_chest/sf14_heavy_robo_chest.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/fall17_siberian_tigerstripe/fall17_siberian_tigerstripe.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_brother_mann_style2/sum23_brother_mann_style2.mdl");
+		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_fists_of_steel/c_fists_of_steel.mdl", "", 1);
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/heavy/heavy_wolf_chest.mdl", "" , skin);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/heavy/dex_sarifarm/dex_sarifarm.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/jogon/jogon_heavy.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/heavy/sbox2014_war_helmet_s1/sbox2014_war_helmet_s1.mdl");
+        npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/heavy/eotl_sheavyshirt/eotl_sheavyshirt.mdl", "" , skin);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/dec2014_surgeons_shako/dec2014_surgeons_shako.mdl", "" , skin);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 120, 120, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable7, 100, 100, 100, 250);
 
 		return npc;
 	}
 }
 
-public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
+public void Barracks_Iberia_Healtanker_ClotThink(int iNPC)
 {
-	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(iNPC);
+	Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -168,7 +180,7 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 						npc.PlayMeleeSound();
 						npc.m_flAttackHappens = GameTime + 0.3;
 						npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-						npc.m_flNextMeleeAttack = GameTime + (1.5 * npc.BonusFireRate);
+						npc.m_flNextMeleeAttack = GameTime + (1.0 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
 					if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -184,8 +196,9 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 
 							if(target > 0) 
 							{
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),500.0, 0), DMG_CLUB, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2250.0, 0), DMG_CLUB, -1, _, vecHit);
 								npc.PlayMeleeHitSound();
+								ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),15.0, 0), 1.0, true);
 							} 
 						}
 						delete swingTrace;
@@ -202,13 +215,14 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE");
 	}
 }
 
-void Barrack_Iberia_Tanker_NPCDeath(int entity)
+void Barracks_Iberia_Healtanker_NPCDeath(int entity)
 {
-	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(entity);
+	Barracks_Iberia_Healtanker npc = view_as<Barracks_Iberia_Healtanker>(entity);
 	BarrackBody_NPCDeath(npc.index);
+	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),40.0, 0), 1.0, true);
 	npc.PlayNPCDeath();
 }
