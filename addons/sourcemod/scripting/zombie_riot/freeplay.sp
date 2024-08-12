@@ -176,7 +176,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			case 16:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vhxis");
-				enemy.Health = RoundToFloor(15000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor(10000000.0 / 70.0 * float(ZR_GetWaveCount() * 2) * MultiGlobalHighHealthBoss);
 			}
 			default:
 			{
@@ -185,7 +185,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count)
 			}
 		}
 		//raids otherwise have too much damage.
-		enemy.ExtraDamage *= 0.65;
+		enemy.ExtraDamage *= 0.55;
+		enemy.Health = RoundToCeil(float(enemy.Health) * 0.75);
 		//some raids dont scale with DMG, fix it here
 
 		enemy.Credits += 5000.0;
