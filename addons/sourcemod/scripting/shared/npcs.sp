@@ -254,6 +254,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			int SpawnSettingsSee = 0;
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
 			{
+				if(enemy.Is_Boss >= 2)
+				{
+					WaveStart_SubWaveStart(GetGameTime());
+				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
 				{
@@ -1474,7 +1478,49 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			}
 			armor_added = true;
 		}
-		
+		float DamagePercDo = 100.0;
+		BaseDamage = 100.0;
+		if(!b_NpcIsInvulnerable[victim])
+		{
+			Damage_NPCAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			Damage_AnyAttacker(attacker, victim, victim, BaseDamage, DamagePercDo, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
+			if(GetTeam(victim) != TFTeam_Red)
+			{
+				if(f_FreeplayDamageExtra != 1.0 && !b_thisNpcIsARaid[victim])
+				{
+					DamagePercDo *= f_FreeplayDamageExtra;
+				}
+			}
+		}
+
+		if((DamagePercDo != 100.0) && !b_NpcIsInvulnerable[victim])	
+		{
+			if(ResAdded)
+			{
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
+				if(DamagePercDo < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.2f%%", Debuff_Adder, DamagePercDo);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.0f%%", Debuff_Adder, DamagePercDo);
+				}
+			}
+			else
+			{	
+				if(DamagePercDo < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.2f%%", Debuff_Adder, DamagePercDo);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.0f%%", Debuff_Adder, DamagePercDo);
+				}
+			}
+			ResAdded = true;
+		}
+
 		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 1)) && !b_NpcIsInvulnerable[victim])	
 		{
 			percentage = npc.m_flRangedArmor * 100.0;
