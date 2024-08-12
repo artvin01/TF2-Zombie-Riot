@@ -1520,6 +1520,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 			ResAdded = true;
+			armor_added = true;
 		}
 
 		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 1)) && !b_NpcIsInvulnerable[victim])	
