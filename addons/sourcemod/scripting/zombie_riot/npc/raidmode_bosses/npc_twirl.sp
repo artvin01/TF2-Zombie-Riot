@@ -80,6 +80,8 @@ static const char g_FractalSound[][] = {
 static bool b_InKame[MAXENTITIES];
 #define TWIRL_TE_DURATION 0.1
 #define RAIDBOSS_TWIRL_THEME "#zombiesurvival/ruina/raid_theme_2.mp3"
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
 
 static int i_melee_combo[MAXENTITIES];
 static int i_current_wave[MAXENTITIES];
@@ -573,6 +575,9 @@ methodmap Twirl < CClotBody
 		b_lastman[npc.index] = false;
 		b_wonviatimer[npc.index] = false;
 		b_wonviakill[npc.index] = false;
+
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
 		c_NpcName[npc.index] = "Twirl";
 
@@ -2631,6 +2636,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 		
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+
+	Twirl_Ruina_Weapon_Lines(npc, attacker);
 		
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
@@ -2696,6 +2703,67 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 	
 	return Plugin_Changed;
+}
+static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		
+		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 1: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, your trying to copy the Machine?", client); 									case 2: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 2: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
+		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 2: Format(Text_Lines, sizeof(Text_Lines), "I applaud you're efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
+
+		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 1: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 2: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
+		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 2: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
+		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, your using {crimson}Karlas's{snow} Old blade", client); 			case 2: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but your not using it correctly.", client);}	
+
+		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 1: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client); 	case 2: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
+		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 1: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 2: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N", client);}	
+		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 2: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
+
+		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "Oh my, are you {gold}%N{snow}, trying to cosplay as {aqua}Stella{snow}?"); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "That Laser Tickles {gold}%N{crimson} Get a bigger laser{aqua} NOW!", client);}
+		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 2: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
+		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}
+			
+		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 2: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
+		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 1: Format(Text_Lines, sizeof(Text_Lines), ""); case 2: Format(Text_Lines, sizeof(Text_Lines), "");}			
+		
+		/*i don't remember the exact name  */ //case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 1: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 2: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		Twirl_Lines(npc, Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
+
+	
+	
 }
 
 static void Kill_Abilities(Twirl npc)
