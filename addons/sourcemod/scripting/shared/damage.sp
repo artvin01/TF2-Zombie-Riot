@@ -964,7 +964,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
-		case WEAPON_SICCERINO:
+		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
 			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
 		}
@@ -1392,7 +1392,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 						TE_SendToAll();
 					}
 #if defined ZR
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
+					if(b_FaceStabber[attacker])
 					{
 						if(b_thisNpcIsARaid[victim])
 						{
@@ -1402,6 +1402,9 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					else
 #endif
 					{
+						if(IsTargeter) //give more dmg if youre targetted
+							damage *= 2.0;
+
 						if(b_thisNpcIsARaid[victim])
 						{
 							if(IsTargeter) //give more dmg if youre targetted

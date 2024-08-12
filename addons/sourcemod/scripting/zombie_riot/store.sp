@@ -2673,8 +2673,6 @@ static void MenuPage(int client, int section)
 		CurrentMenuPage[client] = LastMenuPage[client];
 		LastMenuPage[client] = 0;
 	}
-
-//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -5015,9 +5013,34 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
+	{
+		b_TwirlHairpins[client] = true;
+	}
+	else
+	{
+		b_TwirlHairpins[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
+	{
+		b_KahmlLastWish[client] = true;
+	}
+	else
+	{
+		b_KahmlLastWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Opened Void Portal"))
+	{
+		b_VoidPortalOpened[client] = true;
+	}
+	else
+	{
+		b_VoidPortalOpened[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
+	BarracksCheckItems(client);
 }
 
 void CheckInvalidSlots(int client)

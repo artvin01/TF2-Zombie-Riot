@@ -190,7 +190,9 @@ enum
 	WEAPON_CHAINSAW  = 110,
 	WEAPON_FLAMETAIL = 111,
 	WEAPON_OCEAN_PAP = 112,
-	WEAPON_EXPIDONSAN_REAPIR = 113
+	WEAPON_EXPIDONSAN_REAPIR = 113,
+	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
+	WEAPON_WALDCH_SWORD_REAL = 115,
 }
 
 enum
@@ -902,8 +904,6 @@ void ZR_ClientDisconnect(int client)
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
 	//reeset to 0
-	i_NormalBarracks_HexBarracksUpgrades[client] = 0;
-	i_NormalBarracks_HexBarracksUpgrades_2[client] = 0;
 }
 
 public void OnMapInit()
