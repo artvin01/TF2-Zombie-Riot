@@ -1278,8 +1278,10 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
-#define HEAL_SILENCEABLE				(1 << 3) 
+#define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
+#define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
 */
 //this will return the amount of healing it actually did.
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
@@ -1346,6 +1348,8 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		if(healer != reciever && healer <= MaxClients)
 			Healing_done_in_total[healer] += HealingDoneInt;
 #endif
+//only apply heal event if its not a passive self heal
+		if(!(flag_extrarules & (HEAL_PASSIVE_NO_NOTIF)))
 			ApplyHealEvent(reciever, HealingDoneInt);
 		}
 		return HealingDoneInt;

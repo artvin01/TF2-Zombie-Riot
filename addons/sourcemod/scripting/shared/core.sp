@@ -619,8 +619,10 @@ int i_HexCustomDamageTypes[MAXENTITIES]; //We use this to avoid using tf2's dama
 //Most healing debuffs shouldnt work with this.
 #define HEAL_ABSOLUTE				(1 << 2) 
 //Any and all healing changes or buffs or debuffs dont work that dont affect the weapon directly.
-#define HEAL_SILENCEABLE				(1 << 3) 
+#define HEAL_SILENCEABLE			(1 << 3) 
 //Silence Entirely nukes this heal
+#define HEAL_PASSIVE_NO_NOTIF		(1 << 4) 
+//Heals but doesnt notify anyone
 
 //ATTRIBUTE ARRAY SUBTITIUTE
 //ATTRIBUTE ARRAY SUBTITIUTE
@@ -693,6 +695,9 @@ float f_ClientArmorRegen[MAXENTITIES];
 bool b_NemesisHeart[MAXTF2PLAYERS];
 bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
+bool b_TwirlHairpins[MAXTF2PLAYERS];
+bool b_KahmlLastWish[MAXTF2PLAYERS];
+bool b_VoidPortalOpened[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
@@ -4060,6 +4065,15 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 		f_ClientBeingReviveDelay[target] = 0.0;
+		if(b_KahmlLastWish[target])
+		{
+			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
+			GiveArmorViaPercentage(target, 0.1, 1.0, false);
+			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
+			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		}
 	}
 }
 

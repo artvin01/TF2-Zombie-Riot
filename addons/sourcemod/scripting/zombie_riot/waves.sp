@@ -1609,6 +1609,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				
 				panzer_spawn = chance;
 				panzer_sound = chance;
+				panzer_chance--;
 				if(panzer_spawn)
 				{
 					panzer_chance = 10;
@@ -1620,6 +1621,7 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			}
 			else
 			{
+				panzer_chance--;
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
@@ -1629,7 +1631,6 @@ void Waves_Progress(bool donotAdvanceRound = false)
 				panzer_spawn = false;
 				panzer_sound = false;
 			}
-			panzer_chance--;
 			
 			bool wasLastMann = (LastMann && EntRefToEntIndex(RaidBossActive) == -1);
 		//	if( 1 == 1)//	if(!LastMann || round.Setup > 0.0)

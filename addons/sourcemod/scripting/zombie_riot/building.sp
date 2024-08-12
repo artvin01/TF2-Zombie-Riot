@@ -240,6 +240,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 
 }
 
+float f_ExpidonsanRepairDelay[MAXTF2PLAYERS];
 void Building_MapStart()
 {
 	PrecacheSound(SOUND_GRAB_TF, true);
@@ -249,6 +250,8 @@ void Building_MapStart()
 	PrecacheSound("player/taunt_sorcery_fail.wav");
 	PrecacheSound("physics/metal/metal_box_strain2.wav");
 	PrecacheSound("physics/metal/metal_box_strain4.wav");
+	PrecacheSound("npc/manhack/bat_away.wav");
+	Zero(f_ExpidonsanRepairDelay);
 }
 
 // Called after NPC_ConfigSetup()
@@ -1293,9 +1296,46 @@ public void Wrench_Hit_Repair_ReplacementInternal(DataPack pack)
 	Building_RepairObject(client, target, weapon,vecHit, 1, 1.0);
 }		
 
-
-public void Expidonsan_RemoteRepairAttackM1(int client, int weapon, bool &result, int slot)
+public void Expidonsan_RemoteRepairAttackM1_Hold(int client, int weapon, bool &result, int slot)
 {
+	SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+	SDKHook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+}
+
+public void Expidonsan_RemoteRepairAttackM1_Prethink(int client)
+{
+	if(GetClientButtons(client) & IN_ATTACK)
+	{
+		if(f_ExpidonsanRepairDelay[client] > GetGameTime())
+		{
+			return;
+		}
+		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if(weapon_active < 0)
+		{
+			SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+			return;
+		}
+		if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_EXPIDONSAN_REAPIR)
+		{
+			SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+			return;
+		}
+		float Getspeed = Attributes_Get(weapon_active, 6, 1.0);
+
+		f_ExpidonsanRepairDelay[client] = GetGameTime() + (1.0 * Getspeed);
+		Expidonsan_RemoteRepairAttackM1(client, weapon_active);
+	}
+	else
+	{
+		SDKUnhook(client, SDKHook_PostThink, Expidonsan_RemoteRepairAttackM1_Prethink);
+		return;
+	}
+}
+
+public void Expidonsan_RemoteRepairAttackM1(int client, int weapon)
+{
+	EmitSoundToAll("npc/manhack/bat_away.wav", client, SNDCHAN_AUTO, 70,_,0.15, GetRandomInt(130, 145));
 	int pap=0;
 	pap = RoundFloat(Attributes_Get(weapon, 122, 0.0));
 
@@ -1308,6 +1348,7 @@ public void Expidonsan_RemoteRepairAttackM1(int client, int weapon, bool &result
 		case 2:
 			MaxRange = 300.0;
 	}
+	//lag comp is unneded here.
 	Allowbuildings_BulletAndMeleeTraceAllyLogic(true);
 	Handle swingTrace;
 	float vecSwingForward[3];

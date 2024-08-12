@@ -139,7 +139,7 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 350.0;
 		
 		
 		int skin = 1;
@@ -283,10 +283,10 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 210.0;
+					float damageDealt = 250.0;
 					if(ShouldNpcDealBonusDamage(target))
 					{
-						damageDealt *= 14.0;
+						damageDealt *= 11.0;
 					}
 
 
@@ -329,7 +329,7 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 	}
 	if(gameTime > npc.m_flAttackHappens_2)
 	{
-		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 		{
 			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
@@ -515,8 +515,8 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, VoidSpeechless_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 250.0;
-	float FarDamage = 200.0;
+	float CloseDamage = 300.0;
+	float FarDamage = 250.0;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
 	bool HitEnemy = false;

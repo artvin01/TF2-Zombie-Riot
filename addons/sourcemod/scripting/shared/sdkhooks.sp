@@ -562,6 +562,11 @@ public void OnPostThink(int client)
 
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
+		if(b_TwirlHairpins[client])
+		{
+			mana_regen[client] *= 1.05;
+			max_mana[client] *= 1.05;
+		}
 
 		if(b_AggreviatedSilence[client])	
 		{
@@ -626,7 +631,7 @@ public void OnPostThink(int client)
 			{
 				if(dieingstate[client] > 0)
 				{
-					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 				else
 				{
@@ -634,7 +639,7 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000)
 						MaxHealth = 3000.0;
 						
-					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 			}
 		}
@@ -647,7 +652,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 
@@ -655,7 +660,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 		
@@ -665,7 +670,7 @@ public void OnPostThink(int client)
 			Rogue_HandSupport_HealTick(client, healing_Amount);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 			if(b_NemesisHeart[client])
 			{
@@ -673,7 +678,7 @@ public void OnPostThink(int client)
 				if(b_XenoVial[client])
 					HealRate = 1.15;
 
-				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
 
@@ -960,11 +965,54 @@ public void OnPostThink(int client)
 				percentage *= value;
 			
 			/*
-			This ugly code is made so formatting it looks better, isntead of [res][res]
-			itll be [res-res]
-			So tis easier to read.
+				This ugly code is made so formatting it looks better, isntead of [res][res]
+				itll be [res-res]
+				So tis easier to read.
 
 			*/
+
+
+			/*
+				Does the client have any damage buffs? If so, display them.
+
+				CANT
+				Has to be put on the enemy as "resistance"
+				!!!!!
+				float BaseDamage = 100.0;
+				float damageBonus = 100.0;
+				Damage_AnyAttacker(0, client, testvalue, BaseDamage, damageBonus, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
+				if(damageBonus != 100.0)
+				{
+					if(had_An_ability)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+					else
+					{
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+				}
+			*/
+
 			DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)

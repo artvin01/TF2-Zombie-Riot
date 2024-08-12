@@ -2673,8 +2673,6 @@ static void MenuPage(int client, int section)
 		CurrentMenuPage[client] = LastMenuPage[client];
 		LastMenuPage[client] = 0;
 	}
-
-//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -5015,9 +5013,34 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
+	{
+		b_TwirlHairpins[client] = true;
+	}
+	else
+	{
+		b_TwirlHairpins[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
+	{
+		b_KahmlLastWish[client] = true;
+	}
+	else
+	{
+		b_KahmlLastWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Opened Void Portal"))
+	{
+		b_VoidPortalOpened[client] = true;
+	}
+	else
+	{
+		b_VoidPortalOpened[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
+	BarracksCheckItems(client);
 }
 
 void CheckInvalidSlots(int client)
@@ -5148,7 +5171,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
 					
-					SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
+					HidePlayerWeaponModel(client, entity, true);
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);

@@ -1738,4 +1738,8 @@
 	{
 		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
 	}
+	"Omega Desc"
+	{
+		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
+	}
 }
