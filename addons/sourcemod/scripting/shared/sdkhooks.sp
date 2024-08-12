@@ -549,22 +549,24 @@ public void OnPostThink(int client)
 
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
-			
-		if(LastMann)
-		{
-			if(!b_AggreviatedSilence[client])	
-				mana_regen[client] *= 20.0; // 20x the regen to help last man mage cus they really suck otherwise alone.
-			else
-				mana_regen[client] *= 10.0; // only 10x the regen as they always regen.
-		}
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
 			mana_regen[client] *= 1.35;
 		}
 
+		if(Classic_Mode())
+		{
+			mana_regen[client] *= 0.7;
+		}
+
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
+		if(b_TwirlHairpins[client])
+		{
+			mana_regen[client] *= 1.05;
+			max_mana[client] *= 1.05;
+		}
 
 		if(b_AggreviatedSilence[client])	
 		{
@@ -629,7 +631,7 @@ public void OnPostThink(int client)
 			{
 				if(dieingstate[client] > 0)
 				{
-					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, 3.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 				else
 				{
@@ -637,7 +639,7 @@ public void OnPostThink(int client)
 					if(MaxHealth > 3000)
 						MaxHealth = 3000.0;
 						
-					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL);	
+					healing_Amount = HealEntityGlobal(client, client, MaxHealth / 100.0, 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 				}
 			}
 		}
@@ -650,7 +652,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, attrib, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 
@@ -658,7 +660,7 @@ public void OnPostThink(int client)
 		{
 			if(dieingstate[client] == 0)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL);	
+				healing_Amount += HealEntityGlobal(client, client, 10.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 			}
 		}
 		
@@ -668,7 +670,7 @@ public void OnPostThink(int client)
 			Rogue_HandSupport_HealTick(client, healing_Amount);
 			if(i_BadHealthRegen[client] == 1)
 			{
-				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, 1.0, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 			if(b_NemesisHeart[client])
 			{
@@ -676,12 +678,9 @@ public void OnPostThink(int client)
 				if(b_XenoVial[client])
 					HealRate = 1.15;
 
-				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL);
+				healing_Amount += HealEntityGlobal(client, client, HealRate, 1.0, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 			}
 		}
-
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
 
 		Armor_regen_delay[client] = GameTime + 1.0;
 	}
@@ -966,11 +965,54 @@ public void OnPostThink(int client)
 				percentage *= value;
 			
 			/*
-			This ugly code is made so formatting it looks better, isntead of [res][res]
-			itll be [res-res]
-			So tis easier to read.
+				This ugly code is made so formatting it looks better, isntead of [res][res]
+				itll be [res-res]
+				So tis easier to read.
 
 			*/
+
+
+			/*
+				Does the client have any damage buffs? If so, display them.
+
+				CANT
+				Has to be put on the enemy as "resistance"
+				!!!!!
+				float BaseDamage = 100.0;
+				float damageBonus = 100.0;
+				Damage_AnyAttacker(0, client, testvalue, BaseDamage, damageBonus, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
+				if(damageBonus != 100.0)
+				{
+					if(had_An_ability)
+					{
+						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%sD%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+					else
+					{
+						if(damageBonus < 10.0)
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.2f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+						else
+						{
+							FormatEx(buffer, sizeof(buffer), "%s [D%.0f%%", buffer, damageBonus);
+							had_An_ability = true;
+						}
+					}
+				}
+			*/
+
 			DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
 			if(percentage != 100.0 && percentage > 0.0)
@@ -1271,22 +1313,26 @@ public void OnPostThink(int client)
 		{
 			switch(Armor_DebuffType[armorEnt])
 			{
-				case 1:
-				{
-					green = 0;
-					blue = 255;
-				}
+				//chaos
 				case 2:
 				{
 					red = 0;
 					green = 255;
 					blue = 255;
 				}
+				//void
 				case 3:
 				{
-					red = 200;
-					green = 0;
-					blue = 200;
+					red = 179;
+					green = 8;
+					blue = 209;
+				}
+				//seaborn
+				default:
+				{
+					red = 150;
+					green = 143;
+					blue = 255;
 				}
 			}
 		}
@@ -1307,6 +1353,7 @@ public void OnPostThink(int client)
 		{
 			blue = 255;
 		}
+
 		ArmorDisplayClient(client);
 
 		char buffer[64];
@@ -1405,17 +1452,32 @@ public void OnPostThink(int client)
 		if(!TeutonType[client])
 		{
 			int downsleft;
+			downsleft = 2;
 
+			/*
 			if(b_LeftForDead[client])
 			{
-				downsleft = 1;
+				//only give 1 revive at all costs.
+				if(i_AmountDowned[client] < 1)
+				{
+					i_AmountDowned[client] = 1;
+				}
 			}
-			else
-			{
-				downsleft = 2;
-			}
-
+			*/
 			downsleft -= i_AmountDowned[client];
+			if(downsleft < 0)
+			{
+				downsleft = 0;
+			}
+			/*
+			if(b_LeftForDead[client])
+			{
+				if(downsleft > 1)
+				{
+					downsleft = 1;
+				}
+			}
+			*/
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
 			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
@@ -1844,11 +1906,10 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			}
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
-			i_AmountDowned[victim] += 1;
-			Rogue_PlayerDowned(victim);
+			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 3 && !b_LeftForDead[victim]) || (i_AmountDowned[victim] < 2 && b_LeftForDead[victim]))
+			if(SpecterCheckIfAutoRevive(victim) || (i_AmountDowned[victim] < 2))
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 12");
 				//https://github.com/lua9520/source-engine-2018-hl2_src/blob/3bf9df6b2785fa6d951086978a3e66f49427166a/game/shared/mp_shareddefs.cpp
@@ -1858,6 +1919,16 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				{
 					i_CurrentEquippedPerk[victim] = 0;
 				}
+
+				/*
+				if(!SpecterCheckIfAutoRevive(victim) && b_LeftForDead[victim])
+				{
+					//left for dead actives, no more revives.
+					i_AmountDowned[victim] = 99;
+				}
+				*/
+				i_AmountDowned[victim]++;
+				
 				SetEntityHealth(victim, 200);
 				if(!b_LeftForDead[victim])
 				{
@@ -1942,9 +2013,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			{
 				//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 13");
 				damage = 99999.9;
-				i_AmountDowned[victim] = 0;
-				if(CurrentModifOn() == 2)
-					i_AmountDowned[victim] = 1;
 				return Plugin_Changed;
 			}
 		}
@@ -2026,6 +2094,33 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 
 public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char sample[PLATFORM_MAX_PATH], int &entity, int &channel, float &volume, int &level, int &pitch, int &flags, char soundEntry[PLATFORM_MAX_PATH], int &seed)
 {
+	/*
+	if(b_IsAmbientGeneric[entity])
+	{
+		if(StrContains(sample, "#", true) != -1)
+		{
+			//loop through all clients it tries to play to
+			//but also make sure it doesnt play to clients who didnt get info from the database.
+			for(int loop1=0; loop1<numClients; loop1++)
+			{
+				int listener = clients[loop1];
+				if(b_IgnoreMapMusic[listener] || !Database_IsCached(listener))
+				{
+					//replace client with client one up so the array doesnt mess up!
+					for(int loop2 = loop1; loop2 < numClients-1; loop2++)
+					{
+						clients[loop2] = clients[loop2+1];
+					}
+					//we move the array one down!
+					loop1--;
+					numClients--;
+				}
+			}
+			return Plugin_Changed;
+		}
+	}
+	*/
+
 	if(StrContains(sample, "#mvm/mvm_player_died.wav", true) != -1)
 	{
 		return Plugin_Handled;
@@ -2050,12 +2145,6 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		return Plugin_Changed;
 	}
 	*/
-	if(StrContains(sample, "misc/halloween/spell_") != -1)
-	{
-		volume *= 0.75;
-		level = 85;
-		return Plugin_Changed;
-	}
 	if(StrContains(sample, "vo/", true) != -1)
 	{
 		if(entity > 0 && entity <= MaxClients)
@@ -2100,6 +2189,11 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 						pitch -= 20;
 						return Plugin_Changed;
 					}
+					case KLEINER:
+					{
+						Changed = KleinerSoundOverride(numClients, sample, 
+						entity, channel, volume, level, pitch, flags,seed);
+					}
 				}
 				if(Changed)
 				{
@@ -2132,7 +2226,13 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 			if(ChangedSound)
 				return Plugin_Changed;
 		}
-	}			
+	}
+	if(StrContains(sample, "misc/halloween/spell_") != -1)
+	{
+		volume *= 0.75;
+		level = 85;
+		return Plugin_Changed;
+	}		
 	if(StrContains(sample, ")weapons/capper_shoot.wav", true) != -1)
 	{
 		volume *= 0.45;
@@ -2212,7 +2312,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			return Gladiia_OnTakeDamageAlly_Hud(victim);
 		}
@@ -2367,6 +2467,11 @@ void UpdatePlayerFakeModel(int client)
 	if(PlayerModel > 0)
 	{	
 #if defined ZR || defined RPG
+		if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+		{
+			SetEntProp(PlayerModel, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+			return;
+		}
 		SDKCall_RecalculatePlayerBodygroups(client);
 		i_nm_body_client[client] = GetEntProp(client, Prop_Data, "m_nBody");
 		SetEntProp(PlayerModel, Prop_Send, "m_nBody", i_nm_body_client[client]);
@@ -2596,9 +2701,6 @@ void RPGRegenerateResource(int client, bool ignoreRequirements = false, bool Dra
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 80.0, 1.0, 0.0, HEAL_SELFHEAL);	
 		else
 			healing_Amount = HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) / 40.0, 1.0, 0.0, HEAL_SELFHEAL);	
-
-		if(healing_Amount)
-			ApplyHealEvent(client, healing_Amount);
 	}
 	if((f_TransformationDelay[client] < GetGameTime() && i_TransformationLevel[client] == 0 && f_InBattleDelay[client] < GetGameTime() && f_TimeUntillNormalHeal[client] < GetGameTime())  || ignoreRequirements)
 	{

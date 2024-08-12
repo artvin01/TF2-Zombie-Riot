@@ -8,9 +8,17 @@
 			{
 				"library"	"server"
 				"linux"		"16"
-				"windows"		"15
+				"windows"		"15"
 				"linux64"		"16"
-				"windows64"		"15
+				"windows64"		"15"
+			}
+			"CTFPlayer::WantsLagCompensationOnEntity"
+			{
+				"library"	"server"
+				"linux"		"335"
+				"windows"		"334"
+				"linux64"		"335"
+				"windows64"		"334"
 			}
 		}
 		"Signatures"
@@ -61,6 +69,29 @@
 						"type"	"cbaseentity"
 					}
 					"cmd"
+					{
+						"type"	"objectptr"
+					}
+				}
+			}
+			"CTFPlayer::WantsLagCompensationOnEntity"
+			{
+				"offset"		"CTFPlayer::WantsLagCompensationOnEntity"
+				"hooktype"		"entity"
+				"return"		"bool"
+				"this"			"entity"
+				
+				"arguments"
+				{
+					"player"
+					{
+						"type"	"cbaseentity"
+					}
+					"usercmd"
+					{
+						"type"	"objectptr"
+					}
+					"transmitdata"
 					{
 						"type"	"objectptr"
 					}

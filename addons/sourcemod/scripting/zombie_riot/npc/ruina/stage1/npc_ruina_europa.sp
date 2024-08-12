@@ -41,11 +41,12 @@ void Europa_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "pyro"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -150,6 +151,7 @@ methodmap Europa < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
+		fl_npc_basespeed = 200.0;
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -306,6 +308,14 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+			
 		Europa_SelfDefense(npc, GameTime, Anchor_Id);
 	}
 	else
@@ -359,39 +369,30 @@ static void NPC_Death(int entity)
 }
 static void Europa_Spawn_Minnions(Europa npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	
-	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
-	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)
+	int spawn_index;
+	
+	spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
+	maxhealth = RoundToNearest(maxhealth * 0.45);
+
+	if(spawn_index > MaxClients)
 	{
-		npc.g_TimesSummoned++;
-		for(int i; i<1; i++)
-		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index;
-			
-			spawn_index = NPC_CreateByName("npc_ruina_drone", npc.index, pos, ang, GetTeam(npc.index));
-			maxhealth = RoundToNearest(maxhealth * 0.45);
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
 
-			if(spawn_index > MaxClients)
-			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
-
-				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
-				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
-			}
-
-			
-		}
+		float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	}
+
 }
 static void Europa_Spawn_Self(Europa npc)
 {
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 	if(maxhealth<100)
 		return;
@@ -438,13 +439,8 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 			//This will predict as its relatively easy to dodge
 			float projectile_speed = 500.0;
 			//lets pretend we have a projectile.
-			if(flDistanceToTarget < 1250.0*1250.0)
-				PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-			if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-			{
-				WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-			}
-			float DamageDone = 50.0;
+			WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
+			float DamageDone = 25.0;
 			npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 			npc.FaceTowards(vecTarget, 20000.0);
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
@@ -475,12 +471,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 					//This will predict as its relatively easy to dodge
 					float projectile_speed = 500.0;
 					//lets pretend we have a projectile.
-					if(flDistanceToTarget < 1250.0*1250.0)
-						PredictSubjectPositionForProjectiles(npc, GetClosestEnemyToAttack, projectile_speed, 40.0, vecTarget);
-					if(!Can_I_See_Enemy_Only(npc.index, GetClosestEnemyToAttack)) //cant see enemy in the predicted position, we will instead just attack normally
-					{
-						WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget );
-					}
+					WorldSpaceCenter(GetClosestEnemyToAttack, vecTarget);
 					float DamageDone = 25.0;
 					npc.FireParticleRocket(vecTarget, DamageDone, projectile_speed, 0.0, "spell_fireball_small_blue", false, true, false,_,_,_,10.0);
 					npc.FaceTowards(vecTarget, 20000.0);

@@ -444,15 +444,23 @@ methodmap RaidbossSilvester < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-		music.Time = 117;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
-		Music_SetRaidMusic(music);
+		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
+		
+		if(!ingoremusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+			music.Time = 117;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 450.0;
+		}
 		
 		npc.Anger = false;
 		//IDLE
@@ -609,6 +617,7 @@ static void Internal_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
@@ -646,7 +655,7 @@ static void Internal_ClotThink(int iNPC)
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			SilvesterApplyEffects(npc.index, false);
 
 			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -1152,6 +1161,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
@@ -1169,6 +1179,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
@@ -1255,6 +1266,7 @@ static void Internal_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				npc.SetPlaybackRate(0.5);
@@ -1393,7 +1405,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
 	if(ZR_GetWaveCount()+1 > 35)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			SilvesterApplyEffects(npc.index, true);
 			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
@@ -1690,12 +1702,7 @@ public Action contact_throw_Silvester_entity(int client)
 							int damage;
 							if(client <= MaxClients)
 							{
-								damage = SDKCall_GetMaxHealth(client) / 3;
-
-							}
-							else
-							{
-								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+								damage = ReturnEntityMaxHealth(client) / 3;
 							}
 							if(damage > 2000)
 							{
@@ -1835,6 +1842,7 @@ float extra_pillar_size = 1.0)
 		Range *= extra_pillar_size;
 
 		Range += (float(Repeats) * 10.0);
+		Range += 10.0;
 		Silvester_TE_Used += 1;
 		if(Silvester_TE_Used > 31)
 		{
@@ -1853,19 +1861,6 @@ float extra_pillar_size = 1.0)
 		{
 			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
 	}
 }
 
@@ -2000,7 +1995,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float SizeScale = 0.9;
 			SizeScale *= PillarSizeEdit; 
 
-			SizeScale += (count * 0.1);
+			SizeScale += (float(count -1) * 0.1);
 
 			char FloatString[8];
 			FloatToString(SizeScale, FloatString, sizeof(FloatString));
@@ -2021,7 +2016,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float Range = 100.0;
 			Range *= PillarSizeEdit;
 
-			Range += (float(count) * 10.0);
+			Range += (float(count -1) * 10.0);
+			Range += 10.0;
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);

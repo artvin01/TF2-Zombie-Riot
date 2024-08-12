@@ -205,7 +205,7 @@ methodmap RaidbossNemesis < CClotBody
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -382,7 +382,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 			ProjLoc[2] += GetRandomFloat(-15.0, 15.0);
 			TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 
-			int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3250;
+			int HealByThis = ReturnEntityMaxHealth(npc.index) / 3250;
 			HealByThis = RoundToCeil(float(HealByThis) / TickrateModify);
 			if(XenoExtraLogic())
 			{
@@ -393,9 +393,9 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + (HealByThis));
 			}
 			
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 			{
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 			}
 		}
 
@@ -1062,7 +1062,7 @@ public Action RaidbossNemesis_OnTakeDamage(int victim, int &attacker, int &infli
 public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype)
 {
 	RaidbossNemesis npc = view_as<RaidbossNemesis>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		if(IsValidEntity(npc.m_iWearable1))
 		{

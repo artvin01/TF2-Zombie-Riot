@@ -109,8 +109,10 @@ methodmap AlliedSensalAbility < CClotBody
 				}
 			}
 		}
+		npc.m_bisWalking = false;
 	
 		npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
+		npc.SetPlaybackRate(2.0);	
 		npc.PlayChargeSound();
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -128,8 +130,8 @@ methodmap AlliedSensalAbility < CClotBody
 
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
-		npc.m_flAttackHappens_2 = GetGameTime() + 1.5;
-		npc.m_flRangedSpecialDelay = GetGameTime() + 3.0;
+		npc.m_flAttackHappens_2 = GetGameTime() + 0.75;
+		npc.m_flRangedSpecialDelay = GetGameTime() + 1.5;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -304,7 +306,7 @@ void Allied_Sensal_InitiateLaserAttack(int owner, int entity, float VectorTarget
 
 				SensalCauseKnockback(npc.index, SensalAllied_BEAM_BuildingHit[building]);
 				float EnemyVecPos[3]; WorldSpaceCenter(SensalAllied_BEAM_BuildingHit[building], EnemyVecPos);
-				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage / DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, EnemyVecPos, _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
+				SDKHooks_TakeDamage(SensalAllied_BEAM_BuildingHit[building], owner, owner, damage * DamageFallOff, DMG_CLUB, Weapon, NULL_VECTOR, EnemyVecPos, _ , ZR_DAMAGE_REFLECT_LOGIC);	// 2048 is DMG_NOGIB?
 				DamageFallOff *= LASER_AOE_DAMAGE_FALLOFF;	
 				EnemiesHit += 1;
 				if(EnemiesHit >= 5)

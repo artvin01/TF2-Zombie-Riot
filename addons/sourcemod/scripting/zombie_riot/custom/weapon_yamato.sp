@@ -79,7 +79,8 @@ enum struct Yamato_Blades
 				TeleportEntity(ModelApply, NULL_VECTOR, angles, NULL_VECTOR);
 				SetVariantInt(RUINA_ZANGETSU);
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
-				SDKHook(ModelApply, SDKHook_SetTransmit, SetTransmitBlades);
+				if(!LastMann)
+					SDKHook(ModelApply, SDKHook_SetTransmit, SetTransmitBlades);
 			}
 			
 			DispatchKeyValue(prop, "solid", "0"); 

@@ -8,60 +8,76 @@
 	"Allies"
 	{
 		"en" 		"Allies"
+		"fr" 		"Alliés"
 		"pt"		"Aliados"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
+		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
+		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
+		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
+		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
+		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
+		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
+		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
+		"fr" 		"Bloons"
 		"pt"		"Balões"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
+		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
+		"fr" 		"Disciples du Void"
+	}
+	"Ruina"
+	{
+		"en" 		"Ruina"
 	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
+		"fr" 		"Alliance du Chaos"
 	}
 	"Expidonsa"
 	{
@@ -71,10 +87,12 @@
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
+		"fr"		"Alliés de Interitus"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
+		"fr" 		"Le zombie le plus commun. Rien de spécial."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
@@ -230,7 +248,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
 	}
 		
 	//XENO
@@ -395,10 +413,6 @@
 	{
 		"en" 		"Is this the first infected Merc of the xeno virus? This would explain why the spy's are unaffected.\nHeals on deadringer, takes no damage while deadringered (resistance can be silenced)"
 	}
-	"Xeno Malfunctioning Robot Desc"
-	{
-		"en"		"A Xeno Robot that overheats after hitting enough targets. Figment of Simon's Mind"
-	}
 	"Nazi Panzer Desc"
 	{
 		"en" 		"Nazi Panzer Soldat from Origins, seems to have teleported here via the 115 teleporter experiments, they are unaffected by the xeno infection."
@@ -418,6 +432,10 @@
 	"Cured Father Grigori Desc"
 	{
 		"en" 		"You Managed to heal grigori of the virus. He will assist you in Battle.\nDuring Setup times he will sell random weapons for 20%% off."
+	}
+	"Cured Purnell Desc"
+	{
+		"en"		"He was always on your side."
 	}
 	"Combine Mage Desc"
 	{
@@ -473,7 +491,7 @@
 	}
 	"Medic Berserker Desc"
 	{
-		"en" 		"They seem to feed off of blood. \nThe lower heatlh he has, the deadlier he becomes."
+		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
 	}
 	"Militia Desc"
 	{
@@ -577,7 +595,11 @@
 	}
 	"Corrupted Barney Desc"
 	{
-		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ ̴̧͔̫̻̏̊̈́f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶̘̒̏ ̵̪̱͎̤̋͊͝͝M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚"
+		"en" 		"I̶̡̡͕̟̍͋͑̒ț̵̜̈̉̉'̶̹̃͜s̸̟̗̺̀͐͠ ̵͐̃͜m̴̹̩̓̏̑̕è̷̖͍ ̵̡̮̟̑̾͝G̷͚͍̈́͆͜ő̶̡̧̀̃͒r̵̛̘̙̳̐͝d̵̹̼̭̃̌̀͘ö̶̙͖̬́̄n̷̫̾̈,̸̨̻̲̩̿͛̒͠ ̴̢̼̝̗͛͊͋͠B̸̩̜̲̔a̵̙̜͈͔̐r̵̜͂ṇ̵̥̯̥͊́̏̎e̵̦̙͘y̸̪̏͌ f̷̭̋͆̌ŕ̵͇̦͈͎͗͝ó̶̞̐̇m̵̡̭͔̦̃̚̚ ̶̠̞̝̓̈̎̀B̵͚̼̯̕ľ̴̝̙͕̭́a̷̬̔c̸̟̅́k̶ M̴̬̐͘͝e̶̺̹͋̌͆s̷̻͔̙̅͗͜a̵̢͔̍͛̚
+	}
+	"Xeno Malfunctioning Robot Desc"
+	{
+		"en"		"A Xeno Robot that overheats after hitting enough targets. Overheat releases a shockwave that deals massive AoE damage. Figment of Simon's Mind."
 	}
 	"Kahmlstein Desc"
 	{
@@ -1216,9 +1238,9 @@
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
 	}
-	"Seargent Ideal Desc"
+	"Sergeant Ideal Desc"
 	{
-		"en"	"A seargent who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
 	}
 	"VIP Building, The Objective Desc"
 	{
@@ -1294,7 +1316,7 @@
 	}
 	"Giant Tankus Desc"
 	{
-		"en"	"A aboslute giant of a tank."
+		"en"	"A absolute giant of a tank."
 	}
 	"Anfuhrer Eisenhard Desc"
 	{
@@ -1342,9 +1364,9 @@
 	}	
 	"Magia Anchor Desc"
 	{
-		"en"		"A magia anchor, spawns drones, and controls an ION beam\nOnce 4 of them are fully active something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
+		"en"		"A magia anchor, spawns drones\nOnce a tower has been active for long enough something dangerous spawns...\n\nThese anchors serve as a miniturized version of Teleportation Anchors, and due to that they are one way"
 	}
-	"Storm Weaver Desc"
+	"Stellar Weaver Desc"
 	{
 		"en"		"A powerfull tool of Ruina\nCreated to guard teleportation anchors that lead to the main city's Teleportation Hub"
 	}
@@ -1490,7 +1512,7 @@
 	}
 	"Snowey Gunner Desc" 
 	{
-		"en"	"Tries to kite you, and has great heatlh and ranged damage."
+		"en"	"Tries to kite you, and has great health and ranged damage."
 	}
 	"Freezing Cleaner Desc" 
 	{
@@ -1544,7 +1566,7 @@
 	{
 		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time."
 	}
-	"Behemonth Desc"
+	"Behemoth Desc"
 	{
 		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
 	}
@@ -1654,7 +1676,23 @@
 	}
 	"Ruliana Desc"
 	{
-		"en"	"Blitzkrieg was based off of her, so be careful~"
+		"en"	"Once Power hits 100% and there are more then 4 targets infront-in line of sight, she fires several ICBM's\nThse ICBM's hurt like a truck\nOnce she goes bellow 25% hp, she will start to suck up nearby ally hp to heal herself\nOnce she reaches 10% hp, all npc's within line of sight gain a large speed boost"
+	}
+	"Mana Overload"
+	{
+		"en"	"Mana Overload"
+	}
+	"Master System"
+	{
+		"en"	"Master System"
+	}
+	"Mana Overload Desc"
+	{
+		"en"	"Certain npc's can add mana to you. once you have over 2x you max mana, you are slowed and then an ion cannon is fired onto your location\nThe damage of this ion cannon scales on how much max mana you have. it also deals true damage\nit has a timeout period of where it can't be reapplied.\nNon mages overmana decays far faster then players who are mages"
+	}
+	"Master System Desc"
+	{
+		"en"	"Certain npc's are ''Masters'', these npc's can command lower level npc's to attak the same targets as them\nThey can also buff them in various ways\nMake them rally to the master"
 	}
 	"Chaos Intrusion"
 	{
@@ -1679,5 +1717,29 @@
 	"Old Times Desc"
 	{
 		"en"	"Experience ZR on how it feels to be a newbie.\n35%% more enemies, spawn 25%% faster, 15%% more are alive at once.\nThey deal +15%% dmg, +25%% dmg to cades, have 50%% + HP, +4%% faster.\n1 less down, enemies heal 50%% more."
+	}
+	"BUSTING"
+	{
+		"en"	"BUSTING"
+	}
+	"BUSTING Desc"
+	{
+		"en"	"Bustin' makes me feel good"
+	}
+	"Sphynx Desc"
+	{
+		"en"		Rumors say this beast was created in the Abandoned Lab. It emits noxious gasses and heals zombies.
+	}
+	"Petrisis' Baron Desc"
+	{
+		"en"		It's neverending hunger works very well against barricades. The ability to regenerate health per barricade hit makes it very dangerous. Not very effective against humans.
+	}
+	"Nightmare Desc"
+	{
+		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
+	}
+	"Omega Desc"
+	{
+		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
 	}
 }

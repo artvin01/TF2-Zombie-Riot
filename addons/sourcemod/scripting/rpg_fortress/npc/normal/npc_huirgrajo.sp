@@ -144,7 +144,7 @@ static void ClotThink(int iNPC)
 
 	if(!npc.Anger)
 	{
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 3))
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) / 3))
 		{
 			npc.Anger = true;
 	

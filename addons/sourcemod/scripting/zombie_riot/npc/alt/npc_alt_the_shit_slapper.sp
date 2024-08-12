@@ -228,7 +228,7 @@ static void Internal_ClotThink(int iNPC)
 			i_slap[npc.index]=0;
 		}
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 		float scale = 1.0+(1-(Health/MaxHealth))*1.5;
 		npc.m_flSpeed = 150.0*(1.0+(1-(Health/MaxHealth))*1.3);
 		if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < 30000)

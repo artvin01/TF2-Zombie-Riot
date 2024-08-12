@@ -86,6 +86,7 @@ methodmap TheHunter < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Is_a_Medic[npc.index] = true;
 		
 		//IDLE
 		npc.m_iState = 0;

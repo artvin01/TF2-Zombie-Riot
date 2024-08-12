@@ -182,7 +182,7 @@ public void Addicition_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = Armor_Stats;
 		npc.m_flRangedArmor = Armor_Stats;
 	}
-	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2)
+	else if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index)/2)
 	{
 		npc.SetHalfLifeStats();
 	}

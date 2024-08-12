@@ -734,7 +734,7 @@ public void OriginalInfected_OnTakeDamagePost(int victim, int attacker, int infl
 {
 	OriginalInfected npc = view_as<OriginalInfected>(victim);
 
-	int maxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 	if(maxHealth/2 >= Health && !npc.Anger) //Anger after half hp/400 hp

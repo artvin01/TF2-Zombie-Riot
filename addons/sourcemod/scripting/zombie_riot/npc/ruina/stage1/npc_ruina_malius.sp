@@ -56,6 +56,7 @@ void Malius_OnMapStart_NPC()
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -171,6 +172,7 @@ methodmap Malius < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		npc.m_flSpeed = 250.0;
+		fl_npc_basespeed =250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -324,6 +326,14 @@ static void ClotThink(int iNPC)
 		{
 			npc.m_bAllowBackWalking=false;
 		}
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+			
 		Malius_SelfDefense(npc, GameTime, Anchor_Id);
 		npc.FaceTowards(vecTarget);
 	}

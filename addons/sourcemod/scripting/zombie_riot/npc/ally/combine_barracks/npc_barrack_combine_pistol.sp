@@ -53,6 +53,7 @@ void Barracks_Combine_Pistol_Precache()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -110,10 +111,12 @@ methodmap Barrack_Combine_Pistol < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Pistol_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Pistol_ClotThink;
-		npc.m_flSpeed = 220.0;
+		fl_npc_basespeed = 190.0;
+		npc.m_flSpeed = 190.0;
 
 		npc.m_iAttacksTillReload = 18;
 		npc.m_flNextRangedAttack = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
 		
@@ -141,7 +144,7 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 300000.0)
+			if(flDistanceToTarget < 250000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -150,17 +153,17 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD_PISTOL");
-						npc.m_flNextRangedAttack = GameTime + 1.35;
+						npc.AddGesture("ACT_RELOAD",_,_,_,0.5);
+						npc.m_flNextMeleeAttack = GameTime + 2.7;
 						npc.m_iAttacksTillReload = 18;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime)
+					if(npc.m_flNextRangedAttack < GameTime && npc.m_flNextMeleeAttack < GameTime)
 					{
 						npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_PISTOL", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 300000.0);
+						npc.FaceTowards(vecTarget, 250000.0);
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -175,13 +178,13 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.2 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload--;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 35.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 40.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
 					else
 					{
-						npc.m_flSpeed = 210.0;
+						npc.m_flSpeed = 190.0;
 					}
 				}
 			}
@@ -190,8 +193,20 @@ public void Barrack_Combine_Pistol_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
+		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 225000.0,_, true);
 
-		BarrackBody_ThinkMove(npc.index, 210.0, "ACT_IDLE_ANGRY_PISTOL", "ACT_RUN_PISTOL", 275000.0,_, true);
+		if(npc.m_flNextRangedAttack > GameTime)
+		{
+			npc.m_flSpeed = 0.0;
+		}
+		else if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 95.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

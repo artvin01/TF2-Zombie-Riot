@@ -239,7 +239,7 @@ methodmap RaidbossMrX < CClotBody
 
 		//wave 75 xeno raidboss,should be extreamly hard, but still fair, that will be hard to do.
 		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Nemesis_Win);
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		

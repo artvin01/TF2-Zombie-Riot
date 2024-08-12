@@ -583,6 +583,7 @@ bool Messanger_Elemental_Attack_Projectiles(TheMessenger npc)
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_roar_owar");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -685,6 +686,7 @@ bool Messanger_Elemental_Attack_TempPowerup(TheMessenger npc)
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_cheers_demo");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1313,7 +1315,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 	TheMessenger npc = view_as<TheMessenger>(victim);
 	if(npc.g_TimesSummoned < 99)
 	{
-		int nextLoss = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * (99 - npc.g_TimesSummoned) / 100;
+		int nextLoss = ReturnEntityMaxHealth(npc.index) * (99 - npc.g_TimesSummoned) / 100;
 		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1323,7 +1325,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		npc.m_flAttackHappens_bullshit = GetGameTime(npc.index) + 0.0;

@@ -871,7 +871,7 @@ public Action Set_Pablo_Gonzales_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }
@@ -880,7 +880,7 @@ public void Pablo_Gonzales_ClotDamaged_Post(int iNPC, int attacker, int inflicto
 {
 	Pablo_Gonzales npc = view_as<Pablo_Gonzales>(iNPC);
 	//pablo is about to become even stronger and with one more additional ability
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( your mother
 		EmitSoundToAll("freak_fortress_2/pablonew/lostlife.mp3", _, _, _, _, 1.0);

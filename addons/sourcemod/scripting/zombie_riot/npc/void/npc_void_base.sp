@@ -382,6 +382,15 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 
 		return Plugin_Stop;
 	}
+	//remove during setups.
+	if(Waves_InSetup())
+	{
+		if(IsValidEntity(ParticleRef))
+			RemoveEntity(ParticleRef);
+
+		RemoveEntity(SpawnRef);
+		return Plugin_Stop;
+	}
 	int RandomSeed = pack.ReadCell();
 	int WaveDuration = pack.ReadCell();
 	if(RandomSeed != GetRandomSeedFallenWarrior())

@@ -59,7 +59,7 @@ void Heliara_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -401,6 +401,9 @@ static int i_laser[MAXENTITIES][9];
 
 static void Heliara_Create_Crest(int client)
 {
+	if(AtEdictLimit(EDICT_NPC))	
+		return;
+		
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(client, "", flPos, flAng);

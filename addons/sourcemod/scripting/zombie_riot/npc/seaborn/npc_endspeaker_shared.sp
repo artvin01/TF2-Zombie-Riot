@@ -476,7 +476,7 @@ public Action EndSpeaker_OnTakeDamage(int victim, int &attacker, int &inflictor,
 	
 	if(!npc.m_bIgnoreBuildings && (npc.m_hBuffs & BUFF_BRANDGUIDER) && !NpcStats_IsEnemySilenced(npc.index))
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 		if(health < (maxhealth * 2 / 5))

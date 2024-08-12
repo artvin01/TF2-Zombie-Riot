@@ -3,6 +3,12 @@
 
 StringMap WeaponAttributes[MAXENTITIES + 1];
 
+//4007 4008 4009 40010 Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
+// 4011: Explosive enemeis hit MAX
+// 4012: redued healing from gibs
+// 4013: Override Explosion FAloff
+// 4014: Ammo consume extra in reserve
+// 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
 bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
@@ -15,9 +21,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011, 4012: //Melee, Ranged, all damage taken while active | Apply Stats only while active (rpg)
-		// 4011: Explosive enemeis hit MAX
-		// 4012: redued healing from gibs
+		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015: 
 		{
 			return true;
 		}

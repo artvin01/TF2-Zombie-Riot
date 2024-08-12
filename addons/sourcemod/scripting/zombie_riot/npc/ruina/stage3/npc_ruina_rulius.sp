@@ -53,7 +53,7 @@ void Rulius_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -517,7 +517,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
 		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
 

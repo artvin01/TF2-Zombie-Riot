@@ -36,6 +36,10 @@ int Building_BuildingBeingCarried[MAXENTITIES];
 float f_DamageTakenFloatObj[MAXENTITIES];
 int OwnerOfText[MAXENTITIES];
 
+int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
+
+#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
+
 #define EFL_FORCE_CHECK_TRANSMIT (1 << 7)
 #define EFL_IN_SKYBOX (1 << 17)
 
@@ -353,8 +357,8 @@ methodmap ObjectGeneric < CClotBody
 			Building_Max_Health[this.index] = value;
 			SetEntProp(this.index, Prop_Data, "m_iHealth", value);
 			SetEntProp(this.index, Prop_Data, "m_iMaxHealth", value);
-			SetEntProp(this.index, Prop_Data, "m_iRepair", RoundToCeil(float(value) * 2.5));
-			SetEntProp(this.index, Prop_Data, "m_iRepairMax", RoundToCeil(float(value) * 2.5));
+			SetEntProp(this.index, Prop_Data, "m_iRepair", RoundToCeil(float(value) * 1.5));
+			SetEntProp(this.index, Prop_Data, "m_iRepairMax", RoundToCeil(float(value) * 1.5));
 		}
 		public get()
 		{
@@ -767,13 +771,9 @@ int Object_SupportBuildings(int owner)
 					continue;
 				if(StrContains(plugin, "obj_decorative", false) != -1)
 					continue;
-				if(StrContains(plugin, "obj_healingstation", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_sentrygun", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_tinker_anvil", false) != -1)
-					continue;
-				if(StrContains(plugin, "obj_mortar", false) != -1)
+
+				ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+				if(objstats.SentryBuilding)
 					continue;
 
 				count++;
@@ -826,11 +826,11 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 			maxAllowed = 1;
 	}
 
-//	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
-//	{
-//		if(!ingore_glass)
-//			maxAllowed = 1;
-//	}
+	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
+	{
+		if(!ingore_glass)
+			maxAllowed = 1;
+	}
 	return maxAllowed;
 }
 
@@ -880,6 +880,12 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, damage);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	health -= dmg;
+
+	int Owner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
+	if(Owner > 0 && Owner <= MaxClients)
+	{
+		i_BarricadeHasBeenDamaged[Owner] += dmg;
+	}
 
 	ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 	if(health < 0)

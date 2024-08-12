@@ -110,21 +110,6 @@ methodmap HeavyPunuel < CClotBody
 		EmitSoundToAll(g_HurtArmorSounds[GetRandomInt(0, sizeof(g_HurtArmorSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 
 	}
-	property float m_flArmorCountMax
-	{
-		public get()							{ return fl_NextRangedAttack[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttack[this.index] = TempValueForProperty; }
-	}
-	property float m_flArmorCount
-	{
-		public get()							{ return fl_NextRangedAttackHappening[this.index]; }
-		public set(float TempValueForProperty) 	{ fl_NextRangedAttackHappening[this.index] = TempValueForProperty; }
-	}
-	property bool m_bArmorGiven
-	{
-		public get()							{ return b_Gunout[this.index]; }
-		public set(bool TempValueForProperty) 	{ b_Gunout[this.index] = TempValueForProperty; }
-	}
 	
 	
 	public HeavyPunuel(int client, float vecPos[3], float vecAng[3], int ally)
@@ -137,7 +122,7 @@ methodmap HeavyPunuel < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		/*
@@ -151,7 +136,6 @@ methodmap HeavyPunuel < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		npc.m_bArmorGiven = false;
 		
 		func_NPCDeath[npc.index] = HeavyPunuel_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = HeavyPunuel_OnTakeDamage;
@@ -198,13 +182,7 @@ public void HeavyPunuel_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(!npc.m_bArmorGiven)
-	{
-		npc.m_bArmorGiven = true;
-		int flMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-		npc.m_flArmorCount = float(flMaxHealth) * 2.0;
-		npc.m_flArmorCountMax = float(flMaxHealth) * 2.0;
-	}
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(npc.m_flArmorCount > 0.0)
 	{
@@ -269,16 +247,6 @@ public Action HeavyPunuel_OnTakeDamage(int victim, int &attacker, int &inflictor
 		
 	if(npc.m_flArmorCount > 0.0)
 	{
-		if(damagetype & DMG_CLUB)
-		{
-			npc.m_flArmorCount -= (damage * 0.9) * 2.0;
-		}
-		else
-		{
-			npc.m_flArmorCount -= damage * 0.9;
-		}
-		damage *= 0.1; //negate damage heavy.
-		npc.PlayHurtArmorSound();
 		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 
 		if(percentageArmorLeft <= 0.0)
@@ -305,6 +273,12 @@ public Action HeavyPunuel_OnTakeDamage(int victim, int &attacker, int &inflictor
 	}
 	else
 	{
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(IsValidEntity(npc.m_iWearable4))
+			RemoveEntity(npc.m_iWearable4);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

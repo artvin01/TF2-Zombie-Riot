@@ -180,6 +180,7 @@ void NPC_ConfigSetup()
 	NecroCalcium_OnMapStart_NPC();
 	CuredFatherGrigori_OnMapStart_NPC();
 	FallenWarrior_OnMapStart();
+	Omega_OnMapStart();
 	
 	SawRunner_OnMapStart_NPC();
 	AltMedicCharger_OnMapStart_NPC();
@@ -365,8 +366,22 @@ void NPC_ConfigSetup()
 	Lazines_OnMapStart_NPC();
 	Dronis_OnMapStart_NPC();
 	Ruliana_OnMapStart_NPC();
+	//Stage 4.
+	Aetherianus_OnMapStart_NPC();
+	Astrianious_OnMapStart_NPC();
+	Draconia_OnMapStart_NPC();
+	Dronianis_OnMapStart_NPC();
+	Euranionis_OnMapStart_NPC();
+	Heliarionus_OnMapStart_NPC();
+	Lazurus_OnMapStart_NPC();
+	Loonarionus_OnMapStart_NPC();
+	Magianius_OnMapStart_NPC();
+	Malianius_OnMapStart_NPC();
+	Rulianius_OnMapStart_NPC();
+	Lancelot_OnMapStart_NPC();
 
 	//Special.
+	Twirl_OnMapStart_NPC();
 	Magia_Anchor_OnMapStart_NPC();
 	Ruina_Storm_Weaver_MapStart();
 	Ruina_Storm_Weaver_Mid_MapStart();
@@ -383,7 +398,7 @@ void NPC_ConfigSetup()
 	Pistoleer_OnMapStart_NPC();
 	Diversionistico_OnMapStart_NPC();	//reused in waves all over
 	HeavyPunuel_OnMapStart_NPC();
-	SeargentIdeal_OnMapStart_NPC();	
+	SergeantIdeal_OnMapStart_NPC();	
 //wave 16-30:
 	RifalManu_OnMapStart_NPC();
 	Siccerino_OnMapStart_NPC();
@@ -446,6 +461,7 @@ void NPC_ConfigSetup()
 	UrsusOnMapStart();
 	VulpoOnMapStart();
 
+	VoidPortal_OnMapStart_NPC();
 //VoidCreatures and affected
 //1-15
 	VoidEaling_OnMapStart_NPC();
@@ -496,7 +512,6 @@ void NPC_ConfigSetup()
 
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
-	VoidPortal_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -612,6 +627,12 @@ void NPC_ConfigSetup()
 	ChaosInsane_OnMapStart_NPC();
 	ChaosSickKnight_OnMapStart_NPC();
 	ChaosInjuredCultist_OnMapStart_NPC();
+
+	// Survival
+	Nightmare_OnMapStart_NPC();
+	PetrisBaron_OnMapStart_NPC();
+	Sphynx_OnMapStart_NPC();
+	ZombineSurvival_OnMapStart_NPC();
 }
 
 int NPC_Add(NPCData data)
@@ -1004,6 +1025,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/special/npc_wandering_spirit.sp"
 #include "zombie_riot/npc/special/npc_vengefull_spirit.sp"
 #include "zombie_riot/npc/special/npc_fallen_warrior.sp"
+#include "zombie_riot/npc/special/npc_omega.sp"
 
 #include "zombie_riot/npc/btd/npc_bloon.sp"
 #include "zombie_riot/npc/btd/npc_moab.sp"
@@ -1075,12 +1097,28 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_dronis.sp"
 #include "zombie_riot/npc/ruina/stage3/npc_ruina_ruliana.sp"
 
+//stage 4
+
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_aetherianus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_astrianious.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_draconia.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_dronianis.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_euranionis.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_heliarionus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_lazurus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_loonarionus.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_magianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_malianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_rulianius.sp"
+#include "zombie_riot/npc/ruina/stage4/npc_ruina_lancelot.sp"
+
 
 //Special Ruina
 #include "zombie_riot/npc/ruina/special/npc_ruina_valiant.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_magia_anchor.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver.sp"
 #include "zombie_riot/npc/ruina/special/npc_ruina_storm_weaver_mid.sp"
+#include "zombie_riot/npc/raidmode_bosses/npc_twirl.sp"
 
 #endif
 
@@ -1306,7 +1344,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/expidonsa/npc_benera_pistoleer.sp"
 #include "zombie_riot/npc/expidonsa/npc_diversionistico.sp"
 #include "zombie_riot/npc/expidonsa/npc_heavy_punuel.sp"
-#include "zombie_riot/npc/expidonsa/npc_seargent_ideal.sp"
+#include "zombie_riot/npc/expidonsa/npc_sergeant_ideal.sp"
 #include "zombie_riot/npc/expidonsa/npc_rifal_manu.sp"
 #include "zombie_riot/npc/expidonsa/npc_siccerino.sp"
 #include "zombie_riot/npc/expidonsa/npc_soldine_prototype.sp"
@@ -1430,6 +1468,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_sick_knight.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_chaos_injured_cultist.sp"
 #include "zombie_riot/npc/rogue/chaos/npc_vhxis.sp"
+
+#include "zombie_riot/npc/survival/npc_nightmare.sp"
+#include "zombie_riot/npc/survival/npc_petrisisbaron.sp"
+#include "zombie_riot/npc/survival/npc_sphynx.sp"
+#include "zombie_riot/npc/survival/npc_zombine.sp"
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
 {

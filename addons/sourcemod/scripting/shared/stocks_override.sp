@@ -272,6 +272,7 @@ stock void RemoveSlotWeapons(int client, int slot)
 
 stock void RemoveAllWeapons(int client)
 {
+	PreMedigunCheckAntiCrash(client);
 	int entity;
 	bool found;
 	do
@@ -378,6 +379,7 @@ stock void Custom_SetAbsVelocity(int client, const float viewAngles[3])
 void Edited_TF2_RegeneratePlayer(int client)
 {
 #if defined ZR
+	PreMedigunCheckAntiCrash(client);
 	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif
@@ -399,6 +401,7 @@ void Edited_TF2_RegeneratePlayer(int client)
 stock void Edited_TF2_RespawnPlayer(int client)
 {
 #if defined ZR
+	PreMedigunCheckAntiCrash(client);
 	TransferDispenserBackToOtherEntity(client, true);
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], false, false);
 #endif

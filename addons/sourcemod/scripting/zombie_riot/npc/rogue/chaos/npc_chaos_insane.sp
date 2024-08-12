@@ -99,6 +99,7 @@ methodmap ChaosInsane < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 175.0;
+		fl_TotalArmor[npc.index] = 0.25;
 		
 		
 		int skin = 1;
@@ -288,7 +289,7 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				ResetTEStatusSilvester();
 				SetSilvesterPillarColour({125, 125, 125, 200});
 				Silvester_Damaging_Pillars_Ability(npc.index,
-				150.0,				 	//damage
+				450.0,				 	//damage
 				0, 	//how many
 				1.1,									//Delay untill hit
 				1.0,									//Extra delay between each

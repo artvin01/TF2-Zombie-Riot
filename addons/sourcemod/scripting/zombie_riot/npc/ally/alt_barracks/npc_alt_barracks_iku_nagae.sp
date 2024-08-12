@@ -78,6 +78,8 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 	return Barrack_Alt_Ikunagae(client, vecPos, vecAng, ally);
 }
 
+static float fl_npc_basespeed;
+
 methodmap Barrack_Alt_Ikunagae < BarrackBody
 {
 	property int m_iAmountProjectiles
@@ -125,6 +127,7 @@ methodmap Barrack_Alt_Ikunagae < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Ikunagae_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Ikunagae_ClotThink;
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -198,6 +201,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 	{
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
+
 		if(PrimaryThreatIndex > 0)
 		{
 			npc.PlayIdleAlertSound();
@@ -296,7 +300,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 			}
 			int Enemy_I_See;		
 			Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(flDistanceToTarget < 562500 && IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 				{	
@@ -321,6 +325,15 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 		{
 			BarrackBody_ThinkMove(npc.index, 250.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 290000.0, _, false);
 			npc.PlayIdleSound();
+		}
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
 		}
 	}
 }

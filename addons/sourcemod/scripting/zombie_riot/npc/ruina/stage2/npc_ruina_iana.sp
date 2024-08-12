@@ -67,8 +67,8 @@ void Iana_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "iana"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -327,6 +327,10 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);	//5% dmg bonus
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
+
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
@@ -336,11 +340,16 @@ static void ClotThink(int iNPC)
 			
 		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > Range_Min && flDistanceToTarget < Range_Max)
 		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
+			float vPredictedPos[3],
+			SubjectAbsVelocity[3];
+			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+
+			ScaleVector(SubjectAbsVelocity, -1.0);
+			AddVectors(vecTarget, SubjectAbsVelocity, vPredictedPos);
 			static float flVel[3];
 			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 		
-			if (flVel[0] >= 190.0)
+			if (fabs(flVel[0]) >= 190.0)
 			{
 				npc.FaceTowards(vPredictedPos);
 				npc.FaceTowards(vPredictedPos);
@@ -365,8 +374,8 @@ static void ClotThink(int iNPC)
 						Laser.Start_Point = Npc_Vec;
 						Laser.End_Point = vPredictedPos;
 						Laser.Radius = 15.0;
-						Laser.Damage = 500.0;
-						Laser.Bonus_Damage = 1200.0;
+						Laser.Damage = 100.0;
+						Laser.Bonus_Damage = 200.0;
 						Laser.damagetype = DMG_PLASMA;
 						Laser.Deal_Damage(On_LaserHit);
 							
@@ -413,7 +422,7 @@ static void ClotThink(int iNPC)
 					ScaleVector(SubjectAbsVelocity, Time);
 					AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
-					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+					//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
 					float Radius = (npc.Anger ? 125.0 : 100.0);
 					float dmg = (npc.Anger ? 450.0 : 300.0);
@@ -458,8 +467,8 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = (npc.Anger ? 250.0 : 200.0);			//heavy, but slow
-		Melee.bonus_dmg = (npc.Anger ? 750.0 : 500.0);
+		Melee.damage = (npc.Anger ? 200.0 : 150.0);			//heavy, but slow
+		Melee.bonus_dmg = (npc.Anger ? 500.0 : 250.0);
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
 		Melee.swing_speed = (npc.Anger ? 3.0 : 4.0);
 		Melee.swing_delay = 0.37;
@@ -508,7 +517,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 

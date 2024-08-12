@@ -27,9 +27,10 @@ static int CivType[MAXTF2PLAYERS];
 static bool b_InUpgradeMenu[MAXTF2PLAYERS];
 
 int i_NormalBarracks_HexBarracksUpgrades[MAXENTITIES];
-int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
+
+//defined inside obj_shared
+//int i_NormalBarracks_HexBarracksUpgrades_2[MAXENTITIES];
 int i_EntityRecievedUpgrades[MAXENTITIES];
-//int i_EntityRecievedUpgrades_2[MAXENTITIES];
 bool i_BuildingRecievedHordings[MAXENTITIES];
 float f_NextHealTime[MAXENTITIES];
 
@@ -237,7 +238,8 @@ enum
 #define ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING		(1 << 2) //Done :)
 //allow to get 3 deployment slots again.
 
-#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
+//defined higher up, see obj_shared
+//#define ZR_BARRACKS_TROOP_CLASSES			(1 << 3) //Allows training of units, although will limit support buildings to 1.
 
 
 //in the end, this should be stronger then a sentry with full upgrades by 2x
@@ -340,7 +342,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	OpenSummonerMenu(Owner, client);
 	return true;
 }
-
 void BarracksCheckItems(int client)
 {
 	i_NormalBarracks_HexBarracksUpgrades[client] = Store_HasNamedItem(client, "Barracks Hex Upgrade 1");
@@ -424,24 +425,24 @@ static const char SummonerBaseNPC[][] =
 static int SummonerBase[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
-	{ 0, 5, 30, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
-	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
-	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 40, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 10, 35, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 
-	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 70, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 20, 60, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
 
-	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 190, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 50, 150, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
-	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 380, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 210, 50, 50, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 100, 400, 35, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 210, 50, 20, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 100, 400, 15, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 100, 750, 	15, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 100, 500, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
 
@@ -837,7 +838,7 @@ void Barracks_BuildingThink(int entity)
 		{
 			subtractVillager = 1;
 		}
-		if(ActiveCurrentNpcsBarracksTotal() < 6 && ((/*(!AtMaxSupply(client) &&*/ GetSupplyLeft(client) + subtractVillager) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost)))
+		if((ActiveCurrentNpcsBarracksTotal() < (9 + (Rogue_Barracks_BonusSupply() * 2))) && (subtractVillager || ((GetSupplyLeft(client)) >= GetSData(CivType[client], TrainingIndex[client], SupplyCost))))
 		{
 			float gameTime = GetGameTime();
 			if(TrainingIn[client] < gameTime)
@@ -891,10 +892,6 @@ void Barracks_BuildingThink(int entity)
 						{
 							trainingTime = 0.0;
 						}
-						if(RaidbossIgnoreBuildingsLogic(0))
-						{
-							trainingTime *= 0.85;
-						}
 						TrainingIn[client] = TrainingStartedIn[client] + trainingTime;
 						TrainingQueue[client] = -1;
 					}
@@ -941,6 +938,7 @@ void Barracks_BuildingThink(int entity)
 				i_NormalBarracks_HexBarracksUpgrades_2[client] |= Get_GiveClient;
 				Store_SetNamedItem(client, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[client]);
 			}
+			Building_Check_ValidSupportcount(client);
 			Barracks_UpdateAllEntityUpgrades(client);
 		}
 	}
@@ -1208,6 +1206,10 @@ void CheckSummonerUpgrades(int client)
 	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components"))	// lol
 		SupplyRate[client] += 10;
 
+	if(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"))	// lol
+		SupplyRate[client] += 10;
+
+
 	FinalBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
 	MedievalUnlock[client] = Items_HasNamedItem(client, "Medieval Crown");
 
@@ -1216,6 +1218,7 @@ void CheckSummonerUpgrades(int client)
 
 	GlassBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Glass Cannon Blueprints"));
 	WildingenBuilder[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components"));
+	WildingenBuilder2[client] = view_as<bool>(Store_HasNamedItem(client, "Wildingen's Elite Building Components FREEPLAY"));
 }
 
 void SummonerRenerateResources(int client, float multi, float GoldGenMulti = 1.0, bool ignoresetup = false)
@@ -1283,10 +1286,6 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		if(Rogue_Mode())
 		{
 			SupplyRateCalc *= 1.35;
-		}
-		if(RaidbossIgnoreBuildingsLogic(0))
-		{
-			SupplyRateCalc *= 1.25;
 		}
 	}
 	else
@@ -1573,12 +1572,12 @@ static void SummonerMenu(int client, int viewer)
 			{
 				subtractVillager = 1;
 			}
-			if(ActiveCurrentNpcsBarracksTotal() >= 6)
+			if(ActiveCurrentNpcsBarracksTotal() >= (9 + (Rogue_Barracks_BonusSupply() * 2)))
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Server Limit)\n ", buffer2);
 			}
-			else if(/*(AtMaxSupply(client) - subtractVillager) || */(GetSupplyLeft(client) + subtractVillager) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
+			else if(!subtractVillager && GetSupplyLeft(client) < GetSData(CivType[client], TrainingIndex[client], SupplyCost))
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
 				FormatEx(buffer1, sizeof(buffer1), "Training %t... (At Maximum Supply)\n ", buffer2);
@@ -1588,7 +1587,7 @@ static void SummonerMenu(int client, int viewer)
 			else if(TrainingStartedIn[client] < 0.0)
 			{
 				NPC_GetNameById(GetSData(CivType[client], TrainingIndex[client], NPCIndex), buffer2, sizeof(buffer2));
-				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied)\n ", buffer2);
+				FormatEx(buffer1, sizeof(buffer1), "Training %t... (Spaced Occupied, somethings blocking spawns, move barracks.)\n ", buffer2);
 			}
 			else
 			{

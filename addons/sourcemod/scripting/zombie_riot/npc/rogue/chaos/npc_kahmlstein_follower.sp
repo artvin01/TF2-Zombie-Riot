@@ -248,6 +248,20 @@ methodmap KahmlsteinFollower < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable7, "SetModelScale");
 
+		if(npc.m_bScalesWithWaves)
+		{
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 125);
+			SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 125);
+		}
+
 		
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
@@ -513,6 +527,16 @@ void KahmlDeath_DeathAnimationKahml(KahmlsteinFollower npc, float gameTime)
 				npc.SetCycle(0.2);
 				npc.SetPlaybackRate(0.50);
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: Not so fast!");
+				SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+				SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable4, 255, 255, 255, 255);
+				SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable5, 255, 255, 255, 255);
+				SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 255);
+				SetEntityRenderMode(npc.m_iWearable7, RENDER_TRANSCOLOR);
+				SetEntityRenderColor(npc.m_iWearable7, 255, 255, 255, 255);
 				npc.PlayBobMeleePostHit();
 				npc.m_flDeathAnimationCD = gameTime + 2.0;
 				CPrintToChatAll("{purple}!?!?!?!?!?!?!?");

@@ -33,7 +33,7 @@
 		"en"	"Nightmares Evolve"
 		"pt"	"Pesadelos Evolvem"
 	}
-	"Losted Ingots"
+	"Lost Ingots"
 	{
 		"#format"	"{1:t}"
 		"en"		"{red}Lost {1} Australium Ingots!"
@@ -438,7 +438,7 @@
 	}
 	"Eye for an Eye Desc 2"
 	{
-		"en"	"{green}Gain 1500 credits {red}but lose 20 ammo supplies"
+		"en"	"{green}Gain 1500 cash {red}but lose 20 ammo supplies"
 		"ru"	"{green}Получить 1 500 кредитов{red}, но потерять 20 боеприпасов"
 	}
 	"Eye for an Eye Lore 2"
@@ -1146,7 +1146,7 @@
 	}
 	"Support Squad Desc"
 	{
-		"en"	"{green}Start with +20 Australium Ignots and +250 Credits.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
+		"en"	"{green}Start with +20 Australium Ignots and +250 Cash.\n{green}When a non-boss battle is lost, continue the adventure {yellow}(one time only)"
 		"ru"	"{green}Начните с +20 слитками австралия и +250 кредитов.\n{green}Когда проигран бой без босса, продолжите приключение {yellow}(только один раз)"
 	}
 	"Spearhead Squad"
@@ -1332,7 +1332,7 @@
 	}
 	"Hand Written Letter Desc"
 	{
-		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Credits, 2%% more damage."
+		"en"	"Dropped letter, the language seems to be in french, it wasn't meant for you.\n- +750 Cash, 2%% more damage."
 		"ru"	"Упавшее письмо, кажется, на французском языке, оно предназначалось не вам.\n- +750 кредитов, на 2%% больше урона."
 	}
 	"Crude Flute"
@@ -1342,7 +1342,7 @@
 	}
 	"Crude Flute Desc"
 	{
-		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Credits, +3%% MaxHealth."
+		"en"	"Music instrument, good for relaxing, needed in situations like these.\n- +500 Cash, +3%% MaxHealth."
 		"ru"	"Музыкальный инструмент, хорошо расслабляет, необходим в подобных ситуациях.\n- +500 кредитов, +3%% макс. запас здоровья."
 	}
 	"Scrapped Wallet"
@@ -1352,7 +1352,7 @@
 	}
 	"Scrapped Wallet Desc"
 	{
-		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Credits and 1%% more damage."
+		"en"	"Old russian wallet, has some pictures inside and some leftover cash.\n- +500 Cash and 1%% more damage."
 		"ru"	"Старый русский бумажник, внутри несколько фотографий и немного оставшихся денег.\n- +500 кредитов и на 1%% больше урона."
 	}
 	"Golden Coin"
@@ -1362,7 +1362,7 @@
 	}
 	"Golden Coin Desc"
 	{
-		"en"	"A Valueable golden coin from old greek.\n- +2000 Credits and +10 Australium ingots."
+		"en"	"A Valueable golden coin from old greek.\n- +2000 Cash and +10 Australium ingots."
 		"ru"	"Ценная золотая монета из старой Греции.\n- +2000 кредитов и +10 слитков австралия."
 	}
 	"Nickel Injected Pack"
@@ -1391,8 +1391,16 @@
 	}
 	"Supply Depot Desc"
 	{
-		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +1 maximum allies."
-		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +1 к максимуму союзников."
+		"en"	"''Additional supply depots required.''\n{green}+1 supply for Barracks, +2 maximum allies."
+		"ru"	"''Требуются дополнительные хранилища.''\n{green}+1 к припасам для казарм, +2 к максимуму союзников."
+	}
+	"Al-Hallam's Fortress Blueprints"
+	{
+		"en"	"Al-Hallam's Fortress Blueprints"
+	}
+	"Al-Hallam's Fortress Blueprints Desc"
+	{
+		"en"	"''Seems almost mythological...''\n{green}+2 supply for Barracks, +4 maximum allies."
 	}
 	"Gambesons"
 	{

@@ -127,6 +127,7 @@ methodmap ChaosMage < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
+		fl_TotalArmor[npc.index] = 0.25;
 		
 		
 		int skin = 1;
@@ -278,7 +279,7 @@ void ChaosMageSelfDefense(ChaosMage npc, float gameTime, int target, float dista
 	{
 		float projectile_speed = 350.0;
 		float vecTarget[3];
-		float DamageProject = 35.0;
+		float DamageProject = 125.0;
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed,_,vecTarget);
 		npc.FaceTowards(vecTarget, 15000.0);

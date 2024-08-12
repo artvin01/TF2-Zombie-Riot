@@ -6,7 +6,6 @@ static bool ExtremeHeat;
 static bool RedMoon;
 static bool StartEasyMode;
 static bool StartLastman;
-static bool StartCamping;
 static bool ForceNextHunter;
 static Handle FrostTimer;
 static ArrayList WinterTheme;
@@ -57,7 +56,7 @@ bool Rogue_Paradox_Lastman()
 
 void Rogue_Paradox_OnNewFloor(int floor)
 {
-	if(StartCamping && floor < 4)
+	if(/*StartCamping && */floor < 3)
 		Rogue_AddExtraStage(1);
 }
 
@@ -155,16 +154,6 @@ public void Rogue_Lastman_Remove()
 	StartLastman = false;
 }
 
-public void Rogue_Camping_Collect()
-{
-	StartCamping = true;
-}
-
-public void Rogue_Camping_Remove()
-{
-	StartCamping = false;
-}
-
 public void Rogue_Trading_Collect()
 {
 	Rogue_AddIngots(20, true);
@@ -210,8 +199,8 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 		float value;
 
 		// -20% move speed
-		map.GetValue("107", value);
-		map.SetValue("107", value * (seaborn ? 1.1 : 0.8));
+		map.GetValue("442", value);
+		map.SetValue("442", value * (seaborn ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -292,7 +281,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 			int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 			if(health > 1)
 			{
-				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 1600;
+				int damage = ReturnEntityMaxHealth(entity) / 1600;
 				if(damage > 50)
 					damage = 50;
 				

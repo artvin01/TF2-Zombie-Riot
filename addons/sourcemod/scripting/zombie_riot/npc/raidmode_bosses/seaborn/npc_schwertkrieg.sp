@@ -307,6 +307,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -515,6 +516,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
 		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
 		npc.m_flSpeed =fl_schwert_speed;
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -543,7 +545,7 @@ static void Internal_ClotThink(int iNPC)
 		
 	}	
 
-	if(!IsValidEntity(RaidBossActive))
+	if(!IsValidEntity(RaidBossActive) && !b_raidboss_donnerkrieg_alive)
 	{
 		RaidBossActive=EntIndexToEntRef(npc.index);
 	}
@@ -582,6 +584,8 @@ static void Internal_ClotThink(int iNPC)
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
 
 		npc.m_flSpeed=fl_schwert_speed;
 
@@ -680,11 +684,11 @@ static void Internal_ClotThink(int iNPC)
 		Ally = EntRefToEntIndex(i_ally_index);
 		if(IsValidAlly(npc.index, Ally))
 		{
-		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			
-			int AllyMaxHealth = GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
+			int AllyMaxHealth = ReturnEntityMaxHealth(Ally);
 			int AllyHealth = GetEntProp(Ally, Prop_Data, "m_iHealth");
-			int SchwertMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int SchwertMaxHealth = ReturnEntityMaxHealth(npc.index);
 			int SchwertHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 			if(SchwertHealth > (SchwertMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 4))
@@ -1033,6 +1037,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			npc.SetPlaybackRate(0.75);	
 			npc.SetCycle(0.1);
 
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
 			Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
@@ -1085,6 +1090,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 		npc.m_flSpeed =fl_schwert_speed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
 
 		Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 		Schwert_Impact_Lance_Create(npc.index);
@@ -1260,6 +1267,7 @@ static void Schwertkrieg_Teleport_Boom(Raidboss_Schwertkrieg npc, float Location
 		color[0] = 255;
 		color[1] = 50;
 		color[2] = 50;
+		radius *= 1.5;
 	}
 
 	TE_SetupBeamRingPoint(Location, radius*2.0, 0.0, LaserIndex, LaserIndex, 0, 1, Boom_Time, 15.0, 1.0, color, 1, 0);
@@ -1585,7 +1593,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 		
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 
 	if(npc.m_flNextChargeSpecialAttack > GetGameTime())
 	{
@@ -1602,6 +1610,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		donner_sea_created=true;
 
 		npc.m_flNextChargeSpecialAttack = GetGameTime()+8.0;
+
+		npc.m_bisWalking = false;
 
 		npc.AddActivityViaSequence("taunt_the_fist_bump");
 		npc.SetPlaybackRate(0.2);	

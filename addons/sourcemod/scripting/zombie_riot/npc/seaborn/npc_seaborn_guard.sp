@@ -249,7 +249,7 @@ public void SeabornGuard_ClotThink(int iNPC)
 			if(IsValidEnemy(npc.index, target))
 			{
 				npc.m_iTarget = target;
-				npc.m_flNextMeleeAttack = gameTime + 1.05;
+				npc.m_flNextMeleeAttack = gameTime + 0.6;
 
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_CUSTOM_ATTACK_SWORD");

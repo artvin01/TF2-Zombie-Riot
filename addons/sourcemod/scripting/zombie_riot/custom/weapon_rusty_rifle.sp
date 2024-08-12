@@ -16,7 +16,6 @@ static float BigShot_BrainBlastRadius[2] = { 0.0, 400.0 };			//The blast radius 
 static float BigShot_BrainBlastFalloff_Radius[2] = { 0.0, 0.5 };	//Maximum damage faloff of Brain Blast, based on radius.
 static float BigShot_BrainBlastFalloff_MultiHit[2] = { 0.0, 0.8 };	//Amount to multiply damage dealt by Brain Blast for each zombie it hits.
 static float BigShot_Cooldown[2] = { 15.0, 15.0 };					//Big Shot's cooldown.
-static float BigShot_SmallRaidMult[2] = { 1.33, 1.33 };				//Amount to multiply damage dealt by Big Shot to raids that are not giant.
 
 static bool BigShot_BrainBlast[2] = { false, true };				//Is Brain Blast active on this pap tier?
 
@@ -137,6 +136,9 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	if (!BigShot_Active[client])
 		return;
 
+	b_LagCompNPC_No_Layers = true;
+	StartLagCompensation_Base_Boss(client);
+
 	float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];
 	GetClientEyePosition(client, pos);
 	GetClientEyeAngles(client, ang);
@@ -228,8 +230,6 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 1.25;
 					}
-					if (b_thisNpcIsARaid[victim])
-						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
 
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 					baseDMG *= BigShot_PerHeadshotMult[BigShot_Tier[client]];
@@ -243,8 +243,6 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 					{
 						dmg *= 0.75;
 					}
-					if (b_thisNpcIsARaid[victim])
-						dmg *= BigShot_SmallRaidMult[BigShot_Tier[client]];
             
 					SDKHooks_TakeDamage(victim, client, client, dmg, DMG_BULLET, weapon, NULL_VECTOR, vicLoc);
 				}
@@ -291,6 +289,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[1]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
+	FinishLagCompensation_Base_boss();
 }
 
 public void BigShot_SpawnTracer(int client, int weapon, float endPos[3])
@@ -344,6 +343,7 @@ public void BigShot_RevertAttribs(int ref)
 
 	Attributes_Set(weapon, 305, 0.0);
 	Attributes_Set(weapon, 45, 0.1);
+	Attributes_SetMulti(weapon, 4014, 0.25);
 }
 
 public void BigShot_RemoveForcedReload(int id)
@@ -381,6 +381,7 @@ public void BigShot_AttemptUse(int client, int weapon, bool crit, int tier)
 		{
 			Attributes_Set(weapon, 305, 1.0);
 			Attributes_Set(weapon, 45, 0.0);
+			Attributes_SetMulti(weapon, 4014, 4.0);
 
 			SetEntProp(weapon, Prop_Data, "m_iClip1", 0);
 			SetForceButtonState(client, true, IN_RELOAD);

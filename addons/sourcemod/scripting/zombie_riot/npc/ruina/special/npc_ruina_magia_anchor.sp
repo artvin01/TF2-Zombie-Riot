@@ -76,47 +76,76 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeMissSounds[][] = {
-	"weapons/draw_sword.wav",
+	"ui/hitsound_vortex1.wav",
+	"ui/hitsound_vortex2.wav",
+	"ui/hitsound_vortex3.wav",
+	"ui/hitsound_vortex4.wav",
+	"ui/hitsound_vortex5.wav"
 };
 
-bool b_is_magia_tower[MAXENTITIES];
+float SpawnedOneAlready;
+int IdRef;
+
+static char[] GetBuildingHealth()
+{
+	int health = 110;
+	
+	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+	
+	float temp_float_hp = float(health);
+	
+	if(ZR_GetWaveCount()+1 < 30)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.20));
+	}
+	else if(ZR_GetWaveCount()+1 < 45)
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.25));
+	}
+	else
+	{
+		health = RoundToCeil(Pow(((temp_float_hp + float(ZR_GetWaveCount()+1)) * float(ZR_GetWaveCount()+1)),1.35)); //Yes its way higher but i reduced overall hp of him
+	}
+	
+	health /= 2;
+	
+	
+	health = RoundToCeil(float(health) * 1.4);
+	
+	char buffer[16];
+	IntToString(health, buffer, sizeof(buffer));
+	return buffer;
+}
+
+static bool b_is_magia_tower[MAXENTITIES];
+static bool b_allow_weaver[MAXENTITIES];
+static float fl_weaver_charge[MAXENTITIES];
+static int i_weaver_index[MAXENTITIES];
+static int i_wave[MAXENTITIES];
+static bool b_allow_spawns[MAXENTITIES];
+
+static int i_current_cycle[MAXENTITIES];
+static int i_strikes[MAXTF2PLAYERS];
 
 #define RUINA_TOWER_CORE_MODEL "models/props_urban/urban_skybuilding005a.mdl"
 #define RUINA_TOWER_CORE_MODEL_SIZE "0.75"
-#define RUINA_ANCHOR_MODEL	"models/props_combine/combine_citadel001.mdl"
-#define RUINA_ANCHOR_MODEL_SIZE "0.075"
-
-bool b_stellar_weaver_summoned;
-static int i_currentwave[MAXENTITIES];
-//static float f_PlayerScalingBuilding;
-static int Heavens_Beam;
-
-#define MAGIA_ANCHOR_MAX_IONS 4
-
-static float fl_Heavens_Loc[MAXENTITIES][MAGIA_ANCHOR_MAX_IONS+1][3];
-static float fl_Heavens_Target_Loc[MAXENTITIES][MAGIA_ANCHOR_MAX_IONS+1][3];
-static bool b_targeted_by_heavens[MAXTF2PLAYERS+1];
-static float fl_was_targeted[MAXTF2PLAYERS+1];
-static float fl_heavens_rng_loc_timer[MAXENTITIES][MAGIA_ANCHOR_MAX_IONS+1];
-static int i_heavens_target_id[MAGIA_ANCHOR_MAX_IONS+1];
 
 void Magia_Anchor_OnMapStart_NPC()
 {
-	Zero(b_is_magia_tower);
-
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Magia Anchor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_magia_anchor");
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "tower"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = true;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "teleporter"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = false;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
 {
+	Zero(b_is_magia_tower);
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_HurtSounds);
 	PrecacheSoundArray(g_IdleSounds);
@@ -124,13 +153,11 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_MeleeMissSounds);
-	PrecacheModel(RUINA_ANCHOR_MODEL);
 	PrecacheModel(RUINA_TOWER_CORE_MODEL);
-	Heavens_Beam = PrecacheModel(BLITZLIGHT_SPRITE);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Magia_Anchor(client, vecPos, vecAng, ally);
+	return Magia_Anchor(client, vecPos, vecAng, ally, data);
 }
 methodmap Magia_Anchor < CClotBody
 {
@@ -189,9 +216,9 @@ methodmap Magia_Anchor < CClotBody
 		
 	}
 	
-	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally)
+	public Magia_Anchor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, "10000", ally, false,true,_,_,{30.0,30.0,350.0}));
+		Magia_Anchor npc = view_as<Magia_Anchor>(CClotBody(vecPos, vecAng, RUINA_TOWER_CORE_MODEL, RUINA_TOWER_CORE_MODEL_SIZE, GetBuildingHealth(), ally, false,true,_,_,{30.0,30.0,350.0}));
 		
 		i_NpcWeight[npc.index] = 999;
 		
@@ -199,20 +226,93 @@ methodmap Magia_Anchor < CClotBody
 
 		b_is_magia_tower[npc.index]=true;
 
-		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_ANCHOR_MODEL, _, _, _, 225.0);
-		SetVariantString(RUINA_ANCHOR_MODEL_SIZE);
+		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", RUINA_CUSTOM_MODELS_3);
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
-		/*npc.m_iWearable2 = npc.EquipItemSeperate("partyhat", "models/props_borealis/bluebarrel001.mdl");
-		SetVariantString("2.0");
-		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");*/
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
+		int wave = ZR_GetWaveCount()+1;
+
+		if(StrContains(data, "force15") != -1)
+			wave = 15;
+		if(StrContains(data, "force30") != -1)
+			wave = 30;
+		if(StrContains(data, "force45") != -1)
+			wave = 45;
+		if(StrContains(data, "force60") != -1)
+			wave = 60;
+
+		i_wave[npc.index] = wave;
+
+		fl_weaver_charge[npc.index] = 0.0;
+		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
+
+		if(StrContains(data, "noweaver") != -1)
+			b_allow_weaver[npc.index] = false;
+		else
+			b_allow_weaver[npc.index] = true;
+
+		if(StrContains(data, "nospawns") != -1)
+			b_allow_spawns[npc.index] = false;
+		else
+			b_allow_spawns[npc.index] = true;
+		
+		
+		if(StrContains(data, "raid") != -1)
+			i_RaidGrantExtra[npc.index] = RAIDITEM_INDEX_WIN_COND;
+
+		i_current_cycle[npc.index] = 0;
+		
+		//whats a "switch" statement??
+		if(wave<=15)	
+		{
+			SetVariantInt(RUINA_MAGIA_TOWER_1);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+		else if(wave <=30)	
+		{
+			SetVariantInt(RUINA_MAGIA_TOWER_2);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+		else if(wave <= 45)	
+		{
+			SetVariantInt(RUINA_MAGIA_TOWER_3);
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+		else
+		{
+			SetVariantInt(RUINA_MAGIA_TOWER_4);						//tier 4 gregification beacon
+			AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
+		}
+
+		if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
+		{
+			RaidModeTime = FAR_FUTURE;
+
+			RaidBossActive = EntIndexToEntRef(npc.index);
+			RaidAllowsBuildings = true;
+
+			RaidModeScaling = 0.0;
+		
+		}
+
+		fl_ruina_battery[npc.index] = 0.0;
+
+		bool full = StrContains(data, "full") != -1;
+
+		if(full)
+		{
+			fl_ruina_battery[npc.index] = 255.0;
+		}
+
+		Zero(i_strikes);
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
 
 		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
-
-		i_magia_anchors_active++;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	
@@ -222,25 +322,18 @@ methodmap Magia_Anchor < CClotBody
 			b_thisNpcIsABoss[npc.index] = true;
 		}
 		i_NpcIsABuilding[npc.index] = true;
-
-		float wave = float(ZR_GetWaveCount()+1);
-		
-		wave *= 0.1;
 	
-		npc.m_flWaveScale = wave;
+		//npc.m_flWaveScale = wave;
 
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 
 		//f_PlayerScalingBuilding = float(CountPlayersOnRed());
-
-		i_currentwave[npc.index] = (ZR_GetWaveCount()+1);
 
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
-		
 
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc. in this case its to allow buffing logic to work on it, thats it
 
@@ -250,12 +343,60 @@ methodmap Magia_Anchor < CClotBody
 		npc.m_iState = 0;
 		npc.m_flSpeed = 0.0;
 		
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
+		npc.m_flAttackHappens = 0.0;
 
 		NPC_StopPathing(npc.index);
 
+		npc.m_flMeleeArmor = 2.5;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 115.0;
+
+		SDKHook(npc.index, SDKHook_StartTouch, TowerDetectRiding);
+
+		/*int test;
+		test = GetEntProp(npc.index, Prop_Data, "m_usSolidFlags");
+		CPrintToChatAll("m_usSolidFlags %i", test);
+		test = GetEntProp(npc.index, Prop_Data, "m_nSolidType");
+		CPrintToChatAll("m_nSolidType %i", test);
+		*/
 		return npc;
+	}
+}
+
+static void TowerDetectRiding(int entity, int client)
+{
+	if(!IsValidClient(client))
+		return;
+
+	float Vec[3], vec2[3];
+	WorldSpaceCenter(entity, Vec);
+	Vec[2]+=20.0;
+	WorldSpaceCenter(client, vec2);
+	if(vec2[2] > Vec[2])	
+	{
+		//anihilate them immediately
+		i_strikes[client]++;
+		if(i_strikes[client]>0)
+		{
+			SDKHooks_TakeDamage(client, 0, 0, 199999999.0, DMG_BLAST, -1, _, _, _, ZR_SLAY_DAMAGE);
+		}
+		else
+			CPrintToChat(client, "{red}GET OFF THE TOWER, STRIKE %i/2", i_strikes[client]);
+
+
+		float newVel[3];
+		
+		newVel[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		newVel[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		newVel[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+
+		newVel[2] = 500.0;
+
+		newVel[0] +=GetRandomFloat(-505.0, 505.0);
+		newVel[1] +=GetRandomFloat(-505.0, 505.0);
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, newVel);
 	}
 }
 
@@ -284,117 +425,260 @@ static void ClotThink(int iNPC)
 	{
 		return;
 	}
-
-	npc.m_flNextThinkTime = GameTime + 0.1;
-	
-	if(fl_ruina_battery[npc.index]<=255)	//charging phase
+	if(!npc.m_flAttackHappens)
 	{
-	
-		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
-		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
-		if(alpha > 255)
-		{
-			alpha = 255;
-		}
-		//PrintToChatAll("Alpha: %i", alpha);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
-
-	//	SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-	//	SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, alpha);
+		npc.m_flAttackHappens = FAR_FUTURE;
 		
-	}
-	else	//active phase. unlike villager's building, they won't commit sudoku if the builder dies
-	{
-		for(int player=0 ; player <=MAXTF2PLAYERS ; player++)
+		float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
+		VecSelfNpcabs[2] += 100.0;
+		if(SpawnedOneAlready > GetGameTime())
 		{
-			if(fl_was_targeted[player]< GameTime)	//make it so heavens light doesn't just target 1 singular player making 1 beam of fucking death and destruction thats really bright
+			Event event = CreateEvent("show_annotation");
+			if(event)
 			{
-				b_targeted_by_heavens[player]=false;
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Multiple Magica Anchors!");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
 			}
-		}
-
-		int wave = ZR_GetWaveCount()+1;
-
-		int amt = 1;
-		if(wave<=15)
-		{
-			amt = 1;
-		}
-		else if(wave <=30)
-		{
-			amt = 2;
-		}
-		else if(wave <=45)
-		{
-			amt = 3;
 		}
 		else
 		{
-			amt = MAGIA_ANCHOR_MAX_IONS;
-		}
-
-		Heavens_Full_Charge(npc, amt, 250.0, 100.0, 12.5);
-
-		if(npc.m_flNextMeleeAttack < GameTime)
-		{
-			int Target;
-			Target = GetClosestTarget(npc.index);
-			if(IsValidEnemy(npc.index, Target))
+			Event event = CreateEvent("show_annotation");
+			if(event)
 			{
-				npc.m_flNextMeleeAttack = GameTime + 5.0;
-			}
-		}
-
-		if(i_magia_anchors_active>=4)
-		{
-			if(!b_stellar_weaver_summoned)
-			{
-				Summon_Stellar_Weaver(npc);
+				event.SetFloat("worldPosX", VecSelfNpcabs[0]);
+				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
+				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
+				event.SetFloat("lifetime", 7.0);
+				event.SetString("text", "Magica Anchor");
+				event.SetString("play_sound", "vo/null.mp3");
+				IdRef++;
+				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
+				event.Fire();
 			}
 		}
 	}
-	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
-	{
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-	//	SetEntityRenderColor(npc.m_iWearable2, 255, 255, 255, 255);
-	//	SetEntityRenderMode(npc.m_iWearable2, RENDER_NORMAL);
-		fl_ruina_battery[npc.index]=333.0;
-
-		float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
-
-		for(int i=0 ; i <MAGIA_ANCHOR_MAX_IONS ; i++)
-		{
-
-			fl_Heavens_Loc[npc.index][i] = Npc_Loc;
-		}
-	}
-
-}
-
-static void Summon_Stellar_Weaver(Magia_Anchor npc)
-{
-	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-	int maxhealth;
-
-	maxhealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	
-	maxhealth = RoundToFloor(maxhealth*1.5);
-	float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
-	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
-	if(spawn_index > MaxClients)
+
+	if(!IsValidEntity(RaidBossActive) && b_allow_weaver[npc.index])
 	{
-		if(GetTeam(npc.index) != TFTeam_Red)
+		RaidBossActive=EntIndexToEntRef(npc.index);
+	}
+
+	if(!Charging(npc))
+		return;
+
+	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)	//we are summoned by a raidboss, do custom stuff.
+	{
+		Raid_Spwaning_Logic(npc);
+	}
+	if(b_allow_spawns[npc.index] && i_RaidGrantExtra[npc.index] != RAIDITEM_INDEX_WIN_COND)
+		Spawning_Logic(npc);
+
+
+	if(b_allow_weaver[npc.index])
+	{
+		Weaver_Logic(npc);
+	}
+	
+}
+static void Raid_Spwaning_Logic(Magia_Anchor npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
+	int npc_current_count;
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
 		{
-			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			npc_current_count += 1;
 		}
-		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
-		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+	}
+
+	if(npc_current_count > RoundToFloor(LimitNpcs*0.4))
+		return;
+
+	float Time = 4.0;
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+
+
+	static const char npc_names[][] = {
+		"npc_ruina_magianius",
+		"npc_ruina_loonarionus",
+		"npc_ruina_heliarionus",
+		"npc_ruina_euranionis",
+		"npc_ruina_draconia",
+		"npc_ruina_malianius",
+		"npc_ruina_lazurus",
+		"npc_ruina_aetherianus",
+		"npc_ruina_rulianius",
+		"npc_ruina_astrianious",
+		"npc_ruina_dronianis"
+	};
+	static const int npc_health[] = {
+		100000,	//"npc_ruina_magianius",
+		150000,	//"npc_ruina_loonarionus"
+		200000,	//"npc_ruina_heliarionus"
+		150000,	//"npc_ruina_euranionis",
+		300000,	//"npc_ruina_draconia",
+		150000,	//"npc_ruina_malianius",
+		200000,	//"npc_ruina_lazurus",
+		150000,	//"npc_ruina_aetherianus"
+		300000,	//"npc_ruina_rulianius",
+		150000,	//"npc_ruina_astrianious"
+		300000	//"npc_ruina_dronianis"
+	};
+
+	Spawn_Anchor_NPC(npc.index, npc_names[i_current_cycle[npc.index]], npc_health[i_current_cycle[npc.index]], 1, true);
+
+	i_current_cycle[npc.index] = GetRandomInt(0, sizeof(npc_names)-1);
+
+	
+}
+static void Spawning_Logic(Magia_Anchor npc)
+{
+	float GameTime = GetGameTime();
+	if(fl_ruina_battery_timer[npc.index] > GameTime)
+		return;
+
+	int npc_current_count;
+	for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++) //Check for npcs
+	{
+		int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again_2]);
+		if(IsValidEntity(entity) && GetTeam(npc.index) == GetTeam(entity))
+		{
+			npc_current_count += 1;
+		}
+	}
+
+	if(npc_current_count > LimitNpcs)
+		return;
+
+	int wave = i_wave[npc.index];
+	float Ratio =(1.0-(wave/60.0));
+	if(Ratio < -0.5)
+		Ratio=-0.5;
+	float Time = 1.0 + Ratio;
+	fl_ruina_battery_timer[npc.index] = GameTime + Time;
+	//whats a "switch" statement??
+	if(wave<=15)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_drone", 750, 1, true);
+	}
+	else if(wave <=30)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronian", 4000, 2, true);
+	}
+	else if(wave <= 45)	
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronis", 7500, 2, true);
+	}
+	else if(wave <=60)
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 15000, 3, true);
+	}
+	else	//freeplay
+	{
+		Spawn_Anchor_NPC(npc.index, "npc_ruina_dronianis", 35000, 3, true);
 	}
 }
+static void Spawn_Anchor_NPC(int iNPC, char[] plugin_name, int health = 0, int count, bool self = false)
+{
+	Magia_Anchor npc = view_as<Magia_Anchor>(iNPC);
 
+	if(self)
+	{
+		float AproxRandomSpaceToWalkTo[3];
+		WorldSpaceCenter(iNPC, AproxRandomSpaceToWalkTo);
+		for(int i=0 ; i < count ; i ++)
+		{
+			int spawn_index = NPC_CreateByName(plugin_name, -1, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, GetTeam(iNPC));
+			if(spawn_index > MaxClients)
+			{
+				npc.PlayMeleeMissSound();
+				npc.PlayMeleeMissSound();
+				if(!health)
+				{
+					health = GetEntProp(spawn_index, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(spawn_index, Prop_Data, "m_iHealth", health);
+				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", health);
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+
+				float WorldSpaceVec[3]; WorldSpaceCenter(spawn_index, WorldSpaceVec);
+				ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+			}	
+		}
+		return;
+	}
+	if(GetTeam(iNPC) == TFTeam_Red)
+	{
+		count /= 2;
+		if(count < 1)
+		{
+			count = 1;
+		}
+		for(int Spawns; Spawns <= count; Spawns++)
+		{
+			float pos[3]; GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(iNPC, Prop_Data, "m_angRotation", ang);
+			
+			
+			int summon = NPC_CreateByName(plugin_name, -1, pos, ang, GetTeam(iNPC));
+			if(summon > MaxClients)
+			{
+				fl_Extra_Damage[summon] = 10.0;
+				if(!health)
+				{
+					health = GetEntProp(summon, Prop_Data, "m_iMaxHealth");
+				}
+				SetEntProp(summon, Prop_Data, "m_iHealth", health / 4);
+				SetEntProp(summon, Prop_Data, "m_iMaxHealth", health / 4);
+			}
+		}
+		return;
+	}
+		
+	Enemy enemy;
+	enemy.Index = NPC_GetByPlugin(plugin_name);
+	if(health != 0)
+	{
+		enemy.Health = health;
+	}
+	enemy.Is_Outlined = false;
+	enemy.Is_Immune_To_Nuke = false;
+	//do not bother outlining.
+	enemy.ExtraMeleeRes = 1.0;
+	enemy.ExtraRangedRes = 1.0;
+	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
+	{
+		enemy.ExtraSpeed = 1.7;
+		enemy.ExtraDamage = 1.2;
+	}
+	else
+	{
+		enemy.ExtraSpeed = 1.0;
+		enemy.ExtraDamage = 1.0;
+	}
+	enemy.ExtraSize = 1.0;		
+	enemy.Team = GetTeam(iNPC);
+	for(int i; i<count; i++)
+	{
+		Waves_AddNextEnemy(enemy);
+	}
+	Zombies_Currently_Still_Ongoing += count;	// FIXME
+}
 static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
@@ -406,7 +690,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	if(fl_ruina_battery[npc.index] <=200.0)
-		Ruina_Add_Battery(npc.index, 0.5);	//anchor gets charge every hit. :)
+		Ruina_Add_Battery(npc.index, 1.0);	//anchor gets charge every hit. :)
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -425,7 +709,18 @@ static void NPC_Death(int entity)
 	makeexplosion(-1, -1, pos, "", 0, 0);
 
 	b_is_magia_tower[npc.index]=false;
-	i_magia_anchors_active--;
+
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+
+	for(int i; i < ZR_MAX_SPAWNERS; i++)
+	{
+		if(i_ObjectsSpawners[i] == entity)
+		{
+			i_ObjectsSpawners[i] = 0;
+			break;
+		}
+	}
 
 	Ruina_NPCDeath_Override(entity);
 		
@@ -433,194 +728,135 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
 }
 
-static void Heavens_Full_Charge(Magia_Anchor npc, int amt, float Radius, float aDamage, float Speed)	//rewerite this: to use a env_beam rather then TE, and also to make it prefer attacking other people then singular targets
+static int i_find_weaver(Magia_Anchor npc)
 {
-	float GameTime = GetGameTime();
-	for(int i=0 ; i< amt ; i++)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		float loc[3]; loc = fl_Heavens_Loc[npc.index][i];
-		float Target_Loc[3]; Target_Loc = loc;
-
-		int Target = HeavenLight_GetTarget(i, loc);	//get a target if we can
-		
-
-		if(IsValidClient(Target))	//we got a target, get his ass's loc so we can roast him
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
-			GetEntPropVector(Target, Prop_Data, "m_vecAbsOrigin", Target_Loc);
-			fl_Heavens_Target_Loc[npc.index][i] = Target_Loc;
-		}
-		else	//we didn't get a loc, find a random loc to wander to
-		{
-			if(fl_heavens_rng_loc_timer[npc.index][i] < GameTime)
+			char npc_classname[60];
+			NPC_GetPluginById(i_NpcInternalId[baseboss_index], npc_classname, sizeof(npc_classname));
+			if(StrEqual(npc_classname, "npc_ruina_stellar_weaver"))
 			{
-				fl_heavens_rng_loc_timer[npc.index][i] = GameTime+GetRandomFloat(1.0, 5.0);	//make it so we don't constantly check nav mesh 10 billion times a second
-				GetRandomLoc(npc, Target_Loc, i);
-				fl_Heavens_Target_Loc[npc.index][i] = Target_Loc;
+				Storm_Weaver worm = view_as<Storm_Weaver>(baseboss_index);
+				if(EntRefToEntIndex(worm.m_iState) == npc.index)
+					return baseboss_index;
 			}
-			else
-			{
-				Target_Loc = fl_Heavens_Target_Loc[npc.index][i];
-			}
-			
 		}
-		
-		float Direction[3], vecAngles[3];
-		MakeVectorFromPoints(loc, Target_Loc, vecAngles);
-		GetVectorAngles(vecAngles, vecAngles);
-						
-		GetAngleVectors(vecAngles, Direction, NULL_VECTOR, NULL_VECTOR);
-		ScaleVector(Direction, Speed);
-		AddVectors(loc, Direction, loc);
-		
-		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, loc);
+	}
+	return -1;
+}
 
-		int wave = ZR_GetWaveCount()+1;
+static void Weaver_Logic(Magia_Anchor npc)
+{
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+	{
+		RaidModeScaling = fl_weaver_charge[npc.index];
+	}
 
-		int color[4];
-		color[3] = 75;
-		
+	int test = i_find_weaver(npc);
+	if(test!=-1 && !IsValidEntity(EntRefToEntIndex(i_weaver_index[npc.index])))
+		i_weaver_index[npc.index] = test;
 
-		if(wave<=15)
+	fl_weaver_charge[npc.index]+=0.002;
+
+	if(!IsValidEntity(i_weaver_index[npc.index]) && i_weaver_index[npc.index] != INVALID_ENT_REFERENCE)
+		i_weaver_index[npc.index] = INVALID_ENT_REFERENCE;
+
+	if(fl_weaver_charge[npc.index]>=1.0)
+	{
+		if(i_weaver_index[npc.index] == INVALID_ENT_REFERENCE)
 		{
-			color[0] = 255;
-			color[1] = 50;
-			color[2] = 50;
-		}
-		else if(wave <=30)
-		{
-			color[0] = 147;
-			color[1] = 188;
-			color[2] = 199;
-		}
-		else if(wave <=45)
-		{
-			color[0] = 51;
-			color[1] = 9;
-			color[2] = 235;
+			i_weaver_index[npc.index] = EntIndexToEntRef(i_summon_weaver(npc));
 		}
 		else
 		{
-			color[0] = 0;
-			color[1] = 250;
-			color[2] = 237;
+			fl_weaver_charge[npc.index] = 0.0;
 		}
-
-		
-		
-		fl_Heavens_Loc[npc.index][i] = loc;
-
-		Heavens_SpawnBeam(loc, color, 7.5, true, Radius);
-
-		Ruina_AOE_Add_Mana_Sickness(loc, npc.index, Radius, 0.01, 2);
-
-		Explode_Logic_Custom(aDamage, npc.index, npc.index, -1, loc, Radius , _ , _ , true, _, _, 2.5);
 	}
 }
-static void Heavens_SpawnBeam(float beamLoc[3], int color[4], float size, bool rings, float radius)
+int i_GetMagiaAnchor(CClotBody npc)
 {
-	float skyLoc[3], groundLoc[3];
-	skyLoc[0] = beamLoc[0];
-	skyLoc[1] = beamLoc[1];
-	skyLoc[2] = 9999.0;
-	groundLoc = beamLoc;
-	groundLoc[2] -= 200.0;
-
-
-	TE_SetupBeamPoints(skyLoc, groundLoc, Heavens_Beam, Heavens_Beam, 0, 1, 0.1, size, size, 1, 0.5, color, 1);
-	TE_SendToAll();
-
-	if(rings)
-		spawnRing_Vector(beamLoc, radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", color[0], color[1], color[2], color[3], 1, 0.1, 1.0, 0.1, 1);
-}
-static void GetRandomLoc(Magia_Anchor npc, float Loc[3], int Num)	//directly stolen and modified from villagers building spawn code :3
-{
-
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
-
-	Loc[0] = GetRandomFloat((Loc[0] - 200.0*Num),(Loc[0] + 200.0*Num));
-	Loc[1] = GetRandomFloat((Loc[1] - 200.0*Num),(Loc[1] + 200.0*Num));
-
-	Handle ToGroundTrace = TR_TraceRayFilterEx(Loc, view_as<float>( { 90.0, 0.0, 0.0 } ), GetSolidMask(npc.index), RayType_Infinite, BulletAndMeleeTrace, npc.index);
-		
-	TR_GetEndPosition(Loc, ToGroundTrace);
-	delete ToGroundTrace;
-
-	CNavArea area = TheNavMesh.GetNearestNavArea(Loc, true);
-	if(area == NULL_AREA)
+	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
-		Loc[0] +=GetRandomFloat((-200.0*Num),(200.0*Num));
-		Loc[1]  +=GetRandomFloat((-200.0*Num),(200.0*Num));
-		return;
-	}
-		
-
-	int NavAttribs = area.GetAttributes();
-	if(NavAttribs & NAV_MESH_AVOID)
-	{
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
-		Loc[0] +=GetRandomFloat((-200.0*Num),(200.0*Num));
-		Loc[1]  +=GetRandomFloat((-200.0*Num),(200.0*Num));
-		return;
-	}
-			
-
-	area.GetCenter(Loc);
-}
-static int HeavenLight_GetTarget(int ID, float loc[3])	//get the closest valid target for the heavens light.
-{
-	float Dist = -1.0;
-	int client_id=-1;
-	for(int client=0 ; client <=MAXTF2PLAYERS ; client++)
-	{
-		if(IsValidClient(client) && IsClientInGame(client) && GetClientTeam(client) != 3 && IsEntityAlive(client) && TeutonType[client] == TEUTON_NONE && dieingstate[client] == 0)
+		int baseboss_index = EntRefToEntIndex(i_ObjectsNpcsTotal[targ]);
+		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(npc.index) == GetTeam(baseboss_index))
 		{
-			if(!b_targeted_by_heavens[client] || client==i_heavens_target_id[ID])	//if the player is already targeted, ignore him. UNLESS, we are the ones who are targeting him, then add him to the distance calcs
+			if(b_is_magia_tower[baseboss_index])
+				return baseboss_index;
+		}
+	}
+	return -1;
+}
+static int i_summon_weaver(Magia_Anchor npc)
+{
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	int maxhealth;
+
+	maxhealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+
+	if(EntRefToEntIndex(RaidBossActive)==npc.index)
+		RaidBossActive = INVALID_ENT_REFERENCE;
+	
+	maxhealth = RoundToFloor(maxhealth*1.5);
+	float Npc_Loc[3]; GetAbsOrigin(npc.index, Npc_Loc);
+	int spawn_index = NPC_CreateByName("npc_ruina_stellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index), "anchor");
+	if(spawn_index > MaxClients)
+	{
+		if(GetTeam(npc.index) != TFTeam_Red)
+		{
+			NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		}
+		Storm_Weaver worm = view_as<Storm_Weaver>(spawn_index);
+		worm.m_iState = EntIndexToEntRef(npc.index);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
+	}
+	return spawn_index;
+}
+
+static bool Charging(Magia_Anchor npc)
+{
+	if(fl_ruina_battery[npc.index]<=255)	//charging phase
+	{
+	
+		Ruina_Add_Battery(npc.index, 0.5);	//the anchor has the ability to build itself, but it stacks with the builders
+		int alpha = RoundToFloor(fl_ruina_battery[npc.index]);
+		if(alpha > 255)
+		{
+			alpha = 255;
+		}
+		//PrintToChatAll("Alpha: %i", alpha);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, alpha);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
+
+		return false;
+		
+	}
+	if(fl_ruina_battery[npc.index]<300 && fl_ruina_battery[npc.index]>=254) 
+	{
+		for(int i; i < ZR_MAX_SPAWNERS; i++)
+		{
+			if(!i_ObjectsSpawners[i] || !IsValidEntity(i_ObjectsSpawners[i]))
 			{
-				float client_loc[3]; GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", client_loc);
-				float distance = GetVectorDistance(client_loc, loc, true);
-				{
-					if(distance<Dist || Dist==-1.0)
-					{
-						Dist = distance;	//closest target is best target - idk.
-						client_id = client;
-					}
-				}
+				Spawns_AddToArray(npc.index, true);
+				i_ObjectsSpawners[i] = npc.index;
+				break;
 			}
 		}
+		
+		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
+		fl_ruina_battery[npc.index]=333.0;
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 1);
 	}
-	if(IsValidClient(client_id))	// if the target is valid, we add a lock onto him
-	{
-		fl_was_targeted[client_id] = GetGameTime()+0.25;
-		b_targeted_by_heavens[client_id]=true;
-		i_heavens_target_id[ID]=client_id;
-	}
-	return client_id;	//and then we return the client id. This can often return -1, but thats intended and is dealt with
-}
 
-static void spawnRing_Vector(float center[3], float range, float modif_X, float modif_Y, float modif_Z, char sprite[255], int r, int g, int b, int alpha, int fps, float life, float width, float amp, int speed, float endRange = -69.0) //Spawns a TE beam ring at a client's/entity's location
-{
-	center[0] += modif_X;
-	center[1] += modif_Y;
-	center[2] += modif_Z;
-	
-	int ICE_INT = PrecacheModel(sprite);
-	
-	int color[4];
-	color[0] = r;
-	color[1] = g;
-	color[2] = b;
-	color[3] = alpha;
-	
-	if (endRange == -69.0)
-	{
-		endRange = range + 0.5;
-	}
-	
-	TE_SetupBeamRingPoint(center, range, endRange, ICE_INT, ICE_INT, 0, fps, life, width, amp, color, speed, 0);
-	TE_SendToAll();
+	return true;
 }

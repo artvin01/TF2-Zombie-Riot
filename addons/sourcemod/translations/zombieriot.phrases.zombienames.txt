@@ -572,7 +572,6 @@
 	{
 		"en" 		"Xeno Malfunctioning Robot"
 	}
-
 	"Nazi Panzer"
 	{
 		"en" 		"Nazi Panzer"
@@ -766,6 +765,7 @@
 	"Barracks Militia"
 	{
 		"en" 		"Militia"
+		"fr" 		"Milice"
 	}
 	"Barracks Militia Desc"
 	{
@@ -774,6 +774,7 @@
 	"Archer"
 	{
 		"en" 		"Archer"
+		"fr" 		"Archer"
 		"ru" 		"Лучник"
 		"pt"		"Arqueiro"
 		"nl"		"Boogschutter"
@@ -781,6 +782,7 @@
 	"Man-At-Arms"
 	{
 		"en" 		"Man-At-Arms"
+		"fr" 		"Homme-aux-Armes"
 		"ru" 		"Гвардеец"
 		"pt"		"Homem de armas"
 		"nl"		"Krijgsman te paard"
@@ -788,6 +790,7 @@
 	"Skirmisher"
 	{
 		"en" 		"Skirmisher"
+		"fr"		"Tirailleur"
 		"ru" 		"Разбойник"
 		"pt"		"Escaramuça"
 		"nl"		"Tirailleur"
@@ -795,6 +798,7 @@
 	"Long Swordsman"
 	{
 		"en" 		"Long Swordsman"
+		"fr" 		"Épéiste"
 		"ru" 		"Длинномечник"
 		"pt"		"Espadachim com Espada longa"
 		"nl"		"Lange Zwaardvechter"
@@ -802,6 +806,7 @@
 	"Twohanded Swordsman"
 	{
 		"en" 		"Twohanded Swordsman"
+		"fr" 		"Épéiste Double"
 		"ru" 		"Двуручный мечник"
 		"pt"		"Espadachim de 2 espadas"
 		"nl"		"Twee Handige Zwaardvechter"
@@ -809,6 +814,7 @@
 	"Crossbow Man"
 	{
 		"en" 		"Crossbow Man"
+		"fr" 		"Arbalétrier"
 		"ru" 		"Арбалетчик"
 		"pt"		"Cara da Besta"
 		"nl"		"Kruisboogman"
@@ -816,6 +822,7 @@
 	"Spearman"
 	{
 		"en" 		"Spearman"
+		"fr" 		"Harponneur"
 		"ru" 		"Копьеносец"
 		"pt"		"Lanceiro"
 		"nl"		"Speerman"
@@ -823,6 +830,7 @@
 	"Hand Cannoneer"
 	{
 		"en" 		"Hand Cannoneer"
+		"fr" 		"Cannoneur"
 		"ru" 		"Пушечник"
 		"pt"		"Canhoneiro de mão"
 		"nl"		"Hand Kanonnier"
@@ -830,6 +838,7 @@
 	"Elite Skirmisher"
 	{
 		"en" 		"Elite Skirmisher"
+		"fr"		"Tirailleur Élite"
 		"ru" 		"Элитный разбойник"
 		"pt"		"Escaramuça de Elite"
 		"nl"		"Elite Tirailleur"
@@ -837,6 +846,7 @@
 	"Blitzkrieg"
 	{
 		"en" 		"Blitzkrieg"
+		"fr" 		"Blitzkrieg"
 		"ru" 		"Блицкриг"
 		"pt"		"Blitzkrieg"
 		"nl"		"Blitzkrieg"
@@ -844,6 +854,11 @@
 	"Hyper Blitzkrieg"
 	{
 		"en"		"Hyper Blitzkrieg"
+		"fr"		"Hyper-Blitzkrieg"
+	}
+	"TRUE BLITZKRIEG"
+	{
+		"en"		"TRUE BLITZKRIEG"
 	}
 	"Pikeman"
 	{
@@ -947,6 +962,7 @@
 	"L4D2 Tank"
 	{
 		"en"		"Tank"
+		"fr"		"Tank"
 		"ru"		"Танк"
 		"pt"		"Tanque"
 		"nl"		"Tank"
@@ -968,6 +984,7 @@
 	"Soldier Barrager"
 	{
 		"en"		"Soldier Barrager"
+		"fr"		"Soldier Barrageur"
 		"ru"		"Солдат-бомбардир"
 		"pt"		"Soldado de Barragem"
 		"nl"		"Soldaten spervuurder"
@@ -1922,9 +1939,9 @@
 	{
 		"en"	"Heavy Punuel"
 	}
-	"Seargent Ideal"
+	"Sergeant Ideal"
 	{
-		"en"	"Seargent Ideal"
+		"en"	"Sergeant Ideal"
 	}
 	"VIP Building, The Objective"
 	{
@@ -2250,10 +2267,6 @@
 	{
 		"en"	"Ransacker"
 	}
-	"Stellar Weaver"
-	{
-		"en"	"Stellar Weaver"
-	}
 	"Runover"
 	{
 		"en"	"Runover"
@@ -2278,9 +2291,9 @@
 	{
 		"en"	"Braindead"
 	}
-	"Behemonth"
+	"Behemoth"
 	{
-		"en"	"Behemonth"
+		"en"	"Behemoth"
 	}
 	"Absolute Incinirator"
 	{
@@ -2417,6 +2430,110 @@
 	"Ruliana"
 	{
 		"en"	"Ruliana"
+	}
+	"Aetherianus"
+	{
+		"en"	"Aetherianus"
+	}
+	"Aetherianus Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition it buffs the damage of other neavy aether class npc's"
+	}
+	"Astrianious"
+	{
+		"en"	"Astrianious"
+	}
+	"Astrianious Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Draconia"
+	{
+		"en"	"Draconia"
+	}
+	"Draconia Desc"
+	{
+		"en"	"Is a stronger variant\nIn addition, it can refresh ANY shields, regardless of cooldowns\nEliminate as soon as possible"
+	}
+	"Dronianis"
+	{
+		"en"	"Dronianis"
+	}
+	"Dronianis Desc"
+	{
+		"en"	"Is a stronger variant\nAlso gives a 25% dmg bonus to everyone around it. self not included"
+	}
+	"Euranionis"
+	{
+		"en"	"Euranionis"
+	}
+	"Euranionis Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Heliarionus"
+	{
+		"en"	"Heliarionus"
+	}
+	"Heliarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally gives a 50% dmg bonus to nearby npc's, self not included"
+	}
+	"Lazurus"
+	{
+		"en"	"Lazurus"
+	}
+	"Lazurus Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Loonarionus"
+	{
+		"en"	"Loonarionus"
+	}
+	"Loonarionus Desc"
+	{
+		"en"	"Is a stronger variant\nAdditionally, can heal other nearby lanius type npc's whenever it teleports or activates its battery."
+	}
+	"Magianius"
+	{
+		"en"	"Magianius"
+	}
+	"Magianius Desc"
+	{
+		"en"	"Is a stronger variant"
+	}
+	"Malianius"
+	{
+		"en"	"Malianius"
+	}
+	"Malianius Desc"
+	{
+		"en"	"A stronger Variant"
+	}
+	"Rulianius"
+	{
+		"en"	"Rulianius"
+	}
+	"Rulianius Desc"
+	{
+		"en"	"A stronger variant\nAdditionally, poses a short range laser pulse"
+	}
+	"Lancelot"
+	{
+		"en"	"Lancelot"
+	}
+	"Lancelot Desc"
+	{
+		"en"	"Highly dangerous upclose\nOnly has short range attacks\nAlso poses a powerfull particle accelerator, you can tell when its ready due to the particle effect on his hand"
+	}
+	"Twirl"
+	{
+		"en"	"Twirl"
+	}
+	"Twirl Desc"
+	{
+		"en"	"The ruler of Ruina\nShe isn't fighting you at her actual power...\nShe's only using the power of the creast\nIf you see particles on her hands, it means one of her combo's is ready to fire"
 	}
 	"Ealing"
 	{
@@ -2608,7 +2725,7 @@
 	}
 	"Brooding Petra Desc"
 	{
-		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime."
+		"en"	"Spreads void whereever it walks.\nIs very slow and spawns minions overtime.\nIts suprisingly Extreamly light."
 	}
 	"Kunul"
 	{
@@ -2674,6 +2791,22 @@
 	{
 		"en"	"Summons near enemies, stays for 2 waves and spreads void where it stands.\nIt also acts as a spawnpoint for enemies aswell."
 	}
+	"Void Creep"
+	{
+		"en"	"Void Creep"
+	}
+	"Void Creep Desc"
+	{
+		"en"	"Spreads very slowly, cannot be stopped.\nDuring raids spreads faster.\nBuffs all void npcs while on it, resistance(15%%), regen, damage(20%%) and speed(5%%)."
+	}
+	"Void Elemental Damage"
+	{
+		"en"	"Void Elemental Damage"
+	}
+	"Void Elemental Damage Desc"
+	{
+		"en"	"Once full, buffs all void npcs around you (with a stronger version) and places void creep below you.\nCan be healed with armor.\nAffected enemies with the buff can be weakened with silence."
+	}
 	"Vhxis"
 	{
 		"en"	"Vhxis"
@@ -2729,5 +2862,37 @@
 	"Voided Erasus Desc"
 	{
 		"en"	"Fallen. to the void."
+	}
+	"Sphynx"
+	{
+		"en" 		"Sphynx"
+	}
+	"Sphynx Spawned"
+	{
+		"en" 		"Zombies refuse to stay down..."
+	}
+	"Petrisis' Baron"
+	{
+		"en" 		"Petrisis' Baron"
+	}
+	"Petrisis' Baron Spawned"
+	{
+		"en" 		"Your barricades cry in fear."
+	}
+	"Nightmare"
+	{
+		"en" 		"Nightmare"
+	}
+	"Nightmare Spawned"
+	{
+		"en" 		"Nightmares will haunt you."
+	}
+	"Zombine"
+	{
+		"en" 		"Zombine"
+	}
+	"Omega"
+	{
+		"en"		"Omega"
 	}
 }

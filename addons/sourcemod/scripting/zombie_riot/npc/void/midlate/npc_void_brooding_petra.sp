@@ -206,10 +206,14 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	//always leaves creep onto the floor
-	float ProjectileLoc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	ProjectileLoc[2] += 5.0;
-	VoidArea_SpawnNethersea(ProjectileLoc);
+	if(GetGameTime(npc.index) > npc.m_flAttackHappens_2)
+	{	
+		npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 0.35;
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 5.0;
+		VoidArea_SpawnNethersea(ProjectileLoc);
+	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -230,10 +234,10 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 		{
-			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
-			MaxHealth /= 20;
-			VoidBrooding_SpawnFractal(npc, MaxHealth, 5);
-			npc.m_flJumpCooldown = GetGameTime(npc.index) + 15.0;
+			int MaxHealth = ReturnEntityMaxHealth(npc.index);
+			MaxHealth /= 15;
+			VoidBrooding_SpawnFractal(npc, MaxHealth, 10);
+			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;
 		}
 		VoidBroodingPetraSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
@@ -306,9 +310,9 @@ void VoidBroodingPetraSelfDefense(VoidBroodingPetra npc, float gameTime, int tar
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 125.0;
+					float damageDealt = 250.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 5.0;
+						damageDealt *= 10.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

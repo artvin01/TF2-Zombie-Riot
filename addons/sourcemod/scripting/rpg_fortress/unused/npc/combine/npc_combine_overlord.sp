@@ -266,7 +266,7 @@ public void CombineOverlord_TakeDamagePost(int victim, int attacker, int inflict
 {
 	CombineOverlord npc = view_as<CombineOverlord>(victim);
 
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 	int precent = health * 100 / maxhealth;

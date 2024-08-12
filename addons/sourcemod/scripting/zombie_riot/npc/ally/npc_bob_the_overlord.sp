@@ -102,7 +102,7 @@ public void BobTheGod_OnMapStart_NPC()
 	}
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bob the Second");
-	strcopy(data.Plugin, sizeof(data.Plugin), "noc_bob_the_overlord");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bob_the_overlord");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -230,6 +230,7 @@ methodmap BobTheGod < CClotBody
 		func_NPCDeath[npc.index] = BobTheGod_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = BobTheGod_OnTakeDamage;
 		func_NPCThink[npc.index] = BobTheGod_ClotThink;
+		func_NPCActorEmoted[npc.index] = BobTheGod_PluginBot_OnActorEmoted;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", 50000001);
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 50000001);
 					

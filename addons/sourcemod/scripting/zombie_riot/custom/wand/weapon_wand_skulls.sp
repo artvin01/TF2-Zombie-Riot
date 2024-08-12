@@ -47,11 +47,11 @@ float Skulls_OrbitAngle[MAXPLAYERS + 1] = { 0.0, ... };
 
 //Stats based on pap level. Uses arrays for simpler code.
 //Example: Skulls_ShootDMG[3] = { 100.0, 250.0, 500.0 }; default damage is 100, pap1 is 250, pap2 is 500.
-float Skulls_ShootDMG[3] = { 350.0, 700.0, 1200.0 };	//Damage dealt by projectiles fired by skulls
-float Skulls_ShootVelocity[3] = { 800.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
-float Skulls_ShootRange[3] = { 500.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
-float Skulls_ShootFrequency[3] = { 1.5, 1.2, 1.1 };	//Time it takes for skulls to auto-fire
-float Skulls_LaunchVel[3] = { 800.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
+float Skulls_ShootDMG[3] = { 350.0, 750.0, 1300.0 };	//Damage dealt by projectiles fired by skulls
+float Skulls_ShootVelocity[3] = { 950.0, 1100.0, 1300.0 };	//Velocity of projectiles fired by skulls
+float Skulls_ShootRange[3] = { 600.0, 600.0, 700.0 };	//Max range in which skulls will auto-fire at zombies
+float Skulls_ShootFrequency[3] = { 1.35, 1.2, 1.1 };	//Time it takes for skulls to auto-fire
+float Skulls_LaunchVel[3] = { 1000.0, 1200.0, 1600.0 };	//Velocity of skulls which get launched
 float Skulls_LaunchDMG[3] = { 600.0, 2250.0, 3000.0 };	//Damage of skulls which get launched
 float Skulls_Lifespan[3] = { 20.0, 30.0, 40.0 };	//Time until skulls automatically launch themselves
 float Skulls_ShootPenaltyPerSkull[3] = { 0.0, 0.1, 0.08 };
@@ -678,11 +678,7 @@ void Skull_SetNextShootTime(int ent)
 	{
 		BuffAmt = Attributes_Get(weapon, 6, 1.0);
 	}
-	
-	if (LastMann)
-	{
-		BuffAmt = BuffAmt / 2.0;
-	}
+
 	
 	Skull_NextShootTime[ent] = (Skull_ShootFrequency[ent] * BuffAmt) + GetGameTime();
 }
@@ -931,8 +927,8 @@ stock void Skull_AttachParticle(int entity, char type[255], float duration = 0.0
 			DispatchKeyValue(part1, "effect_name", type);
 			SetVariantString("!activator");
 			AcceptEntityInput(part1, "SetParent", entity, part1);
-			SetVariantString(point);
-			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+		//	SetVariantString(point);
+		//	AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
 			DispatchKeyValue(part1, "targetname", "present");
 			DispatchSpawn(part1);
 			ActivateEntity(part1);

@@ -188,12 +188,15 @@ enum
 	WEAPON_ION_BEAM_NIGHT = 108,
 	WEAPON_ION_BEAM_FEED  = 109,
 	WEAPON_CHAINSAW  = 110,
-	WEAPON_FLAMETAIL = 111
+	WEAPON_FLAMETAIL = 111,
+	WEAPON_OCEAN_PAP = 112,
+	WEAPON_EXPIDONSAN_REAPIR = 113,
+	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
+	WEAPON_WALDCH_SWORD_REAL = 115,
 }
 
 enum
 {
-	Type_Ruina = -1,
 	Type_Hidden = -1,
 	Type_Ally = 0,
 	Type_Special,
@@ -209,6 +212,7 @@ enum
 	Type_Interitus,
 	Type_BlueParadox,
 	Type_Void,
+	Type_Ruina,
 }
 
 //int Bob_To_Player[MAXENTITIES];
@@ -409,15 +413,16 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/store.sp"
 #include "zombie_riot/teuton_sound_override.sp"
 #include "zombie_riot/barney_sound_override.sp"
+#include "zombie_riot/kleiner_sound_override.sp"
 #include "zombie_riot/tutorial.sp"
 #include "zombie_riot/waves.sp"
 #include "zombie_riot/zombie_drops.sp"
 #include "zombie_riot/rogue.sp"
 #include "zombie_riot/mvm_hud.sp"
 #include "zombie_riot/steamworks.sp"
+#include "zombie_riot/zsclassic.sp"
 #include "zombie_riot/sm_skyboxprops.sp"
 #include "zombie_riot/custom/homing_projectile_logic.sp"
-#include "zombie_riot/custom/healing_medkit.sp"
 #include "zombie_riot/custom/weapon_slug_rifle.sp"
 #include "zombie_riot/custom/weapon_boom_stick.sp"
 #include "zombie_riot/custom/weapon_heavy_eagle.sp"
@@ -591,6 +596,11 @@ void ZR_PluginStart()
 	{
 		OnEntityCreated(ent, "info_player_teamspawn");	
 	}
+
+	for (int ent = -1; (ent = FindEntityByClassname(ent, "ambient_generic")) != -1;) 
+	{
+		OnEntityCreated(ent, "ambient_generic");	
+	}
 	
 	BobTheGod_OnPluginStart();
 }
@@ -599,9 +609,13 @@ void ZR_MapStart()
 {
 	TeutonSoundOverrideMapStart();
 	BarneySoundOverrideMapStart();
+	KleinerSoundOverrideMapStart();
 	Dhooks_BannerMapstart();
 	SkyboxProps_OnMapStart();
 	Rogue_MapStart();
+	Classic_MapStart();
+	Zero(i_NormalBarracks_HexBarracksUpgrades);
+	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
@@ -623,7 +637,6 @@ void ZR_MapStart()
 	Wand_Cryo_Burst_ClearAll();
 	Arrow_Spell_ClearAll();
 	Survival_Knife_ClearAll();
-	MedKit_ClearAll();
 	Wand_autoaim_ClearAll();
 	Weapon_lantean_Wand_ClearAll();
 	Wand_Elemental_2_ClearAll();
@@ -684,8 +697,6 @@ void ZR_MapStart()
 	
 	Waves_MapStart();
 	Music_MapStart();
-	Remove_Healthcooldown();
-	Medigun_PersonOnMapStart();
 	Star_Shooter_MapStart();
 	Bison_MapStart();
 	Pomson_MapStart();
@@ -834,6 +845,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(CurrentModifOn() == 2)
 		i_AmountDowned[client] = 1;
+		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
 	Damage_dealt_in_total[client] = 0.0;
@@ -891,6 +903,7 @@ void ZR_ClientDisconnect(int client)
 	i_PlayerModelOverrideIndexWearable[client] = -1;
 	b_HideCosmeticsPlayer[client] = false;
 	UnequipDispenser(client, true);
+	//reeset to 0
 }
 
 public void OnMapInit()
@@ -1070,8 +1083,8 @@ public Action CommandDebugHudTest(int client, int args)
         ReplyToCommand(client, "[SM] Usage: wat <cash>");
         return Plugin_Handled;
     }
-	SDKCall_ResetPlayerAndTeamReadyState();
 
+	Rogue_Encounter_EmergencyDispatch();
 	char buf[12];
 	GetCmdArg(1, buf, sizeof(buf));
 	
@@ -1504,7 +1517,7 @@ public void Spawn_Bob_Combine(int client)
 	GetClientAbsOrigin(client, flPos);
 	GetClientAbsAngles(client, flAng);
 	flAng[2] = 0.0;
-	int bob = NPC_CreateByName("noc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
+	int bob = NPC_CreateByName("npc_bob_the_overlord", client, flPos, flAng, TFTeam_Red);
 	Bob_Exists = true;
 	Bob_Exists_Index = EntIndexToEntRef(bob);
 }
@@ -1638,6 +1651,16 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				CauseFadeInAndFadeOut(0,1.0,1.0,1.0);
 				PlayTeamDeadSound();
 				Zero(delay_hud); //Allow the hud to immedietly update
+				for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
+				{
+					int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount]);
+					if(IsValidEntity(entity) && GetTeam(entity) != TFTeam_Red)
+					{
+						FreezeNpcInTime(entity, 3.0, true);
+						IncreaceEntityDamageTakenBy(entity, 0.000001, 3.0);
+					}
+				}
+				RaidModeTime += 3.0;
 			}
 
 			ExcuteRelay("zr_lasthuman");
@@ -1811,7 +1834,7 @@ stock void UpdatePlayerPoints(int client)
 	
 	Points += Resupplies_Supplied[client] * 2;
 	
-	Points += i_BarricadeHasBeenDamaged[client] / 65;
+	Points += i_BarricadeHasBeenDamaged[client] / 6;
 
 	Points += i_PlayerDamaged[client] / 5;
 	
@@ -2154,6 +2177,18 @@ int LevelToXp(int lv)
 
 void GiveXP(int client, int xp)
 {
+	if(Waves_InFreeplay())
+	{
+		//no xp in freeplay.
+		return;
+	}
+
+	if(Rogue_Mode())
+	{
+		//in rogue, give much less XP
+		xp = RoundToNearest(float(xp) * 0.15);
+	}
+
 	XP[client] += RoundToNearest(float(xp) * CvarXpMultiplier.FloatValue);
 	int nextLevel = XpToLevel(XP[client]);
 	if(nextLevel > Level[client])
@@ -2223,13 +2258,12 @@ void PlayerApplyDefaults(int client)
 	{
 
 		QueryClientConVar(client, "snd_musicvolume", ConVarCallback); //cl_showpluginmessages
-		QueryClientConVar(client, "snd_ducktovolume", ConVarCallbackDuckToVolume); //cl_showpluginmessages
 		QueryClientConVar(client, "cl_first_person_uses_world_model", ConVarCallback_FirstPersonViewModel);
 		int point_difference = PlayerPoints[client] - i_PreviousPointAmount[client];
 		
 		if(point_difference > 0)
 		{
-			if(Waves_GetRound() +1 > 60)
+			if(Classic_Mode() || Waves_GetRound() > 59)
 			{
 				GiveXP(client, point_difference / 10); //Any round above 60 will give way less xp due to just being xp grind fests. This includes the bloons rounds as the points there get ridicilous at later rounds.
 			}
