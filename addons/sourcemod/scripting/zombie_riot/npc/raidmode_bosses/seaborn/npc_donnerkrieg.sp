@@ -2640,14 +2640,14 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 	{
 		speed=250.0;
 		hover=true;
-		crystal_turn_speed = 4.5/TickrateModify;
+		crystal_turn_speed = 3.75/TickrateModify;
 	}	
 
 	if(wave>=60)
 	{
-		speed=250.0;
+		speed=400.0;
 		hover=true;
-		crystal_turn_speed = 4.5/TickrateModify;
+		crystal_turn_speed = 4.0/TickrateModify;
 	}
 
 	fl_spinning_angle[npc.index]+=2.0/TickrateModify;
@@ -2693,7 +2693,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 
 			npc.PlayNightmareSound();
 
-			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 75.0*RaidModeScaling, infection, 0.1);	//this technically finds the LOC of the crystal.
+			Donnerkrieg_Laser_Trace(npc, Start_Loc, endPoint, radius*0.75, 75.0*RaidModeScaling, infection, 2.0);	//this technically finds the LOC of the crystal.
 
 			
 
@@ -2726,7 +2726,7 @@ public Action Donnerkrieg_Main_Nightmare_Tick(int iNPC)
 							TE_SetupBeamPoints(endPoint, current_loc, DonnerKriegCannon_BEAM_Laser, 0, 0, 0, DONNERKRIEG_TE_DURATION, ClampBeamWidth(diameter * 0.3), ClampBeamWidth(diameter * 0.3), 0, 0.5, {150, 150, 150, 150}, 3);
 							TE_SendToAll(0.0);
 
-							Donnerkrieg_Laser_Trace(npc, endPoint, current_loc, diameter*0.5, 25.0*RaidModeScaling, infection);	//this technically finds the LOC of the crystal.
+							Donnerkrieg_Laser_Trace(npc, endPoint, current_loc, diameter*0.5, 5.0*RaidModeScaling, infection);	//this technically finds the LOC of the crystal.
 						}
 					}
 				}
@@ -2834,8 +2834,8 @@ static void Crystal_Laser_Move_And_Dmg_Logic(Raidboss_Donnerkrieg npc, int clien
 		}
 		else if(wave >= 60)
 		{
-			Laser.Damage = 2.5*RaidModeScaling;
-			Laser.Bonus_Damage = (2.5*RaidModeScaling)*5.0;
+			Laser.Damage = 0.5*RaidModeScaling;
+			Laser.Bonus_Damage = (0.5*RaidModeScaling)*5.0;
 		}
 
 		Laser.client = npc.index;
@@ -3041,7 +3041,7 @@ static void Donnerkrieg_Laser_Trace(Raidboss_Donnerkrieg npc, float Start_Point[
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
 					SDKHooks_TakeDamage(victim, npc.index, npc.index, (Dmg/6), DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);
 
-					Ruina_Add_Mana_Sickness(npc.index, victim, 0.0, RoundToNearest((Dmg*0.08)/TickrateModify*multi), true);
+					Ruina_Add_Mana_Sickness(npc.index, victim, 0.0, RoundToNearest((9.0)/TickrateModify*multi), true);
 				}
 				
 			}
@@ -3489,14 +3489,14 @@ static void Doonerkrieg_Do_AOE_Damage(Raidboss_Donnerkrieg npc, float loc[3], fl
 static void ManaSicknessTweak(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidClient(victim))
-	Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToNearest(damage*0.1), true);
+	Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToCeil(damage*0.05), true);
 }
 static void ManaSicknessTweak_Shake(int entity, int victim, float damage, int weapon)
 {
 	if(IsValidClient(victim))
 	{
 		Client_Shake(victim);
-		Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToNearest(damage*0.1), true);
+		Ruina_Add_Mana_Sickness(entity, victim, 0.0, RoundToCeil(damage*0.05), true);
 	}	
 	
 }
