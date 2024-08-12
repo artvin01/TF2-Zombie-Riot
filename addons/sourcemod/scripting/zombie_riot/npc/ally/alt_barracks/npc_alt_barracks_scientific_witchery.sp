@@ -400,7 +400,7 @@ static Action Scientific_Witchery_TBB_Ability_Two(int client)
 		H_i_Slicer_Throttle[client] = 0;
 		for(int i=1 ; i<=H_SLICER_AMOUNT_WITCH ; i++)
 		{
-			Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 10000.0);
+			Scientific_Witchery_Ability(client, H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], 2.0, 7500.0);
 			
 			TE_SetupBeamPoints(H_fl_current_vec[client][i], H_fl_current_vec[client][i+1], gLaser2, 0, 0, 0, 0.051, 5.0, 5.0, 0, 0.1, colour, 1);
 			TE_SendToAll(0.0);
@@ -499,7 +499,7 @@ static Action Scientific_Witchery_TBB_Ability(int client)
 	if(i_Slicer_Throttle[client]>2)
 	{
 		i_Slicer_Throttle[client] = 0;
-		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 15000.0);
+		Scientific_Witchery_Ability(client, Cur_Vec, skyloc, 2.0, 11250.0);
 		skyloc = Cur_Vec;
 		skyloc[2] += 150.0;
 		Cur_Vec[2] -= 150.0;
