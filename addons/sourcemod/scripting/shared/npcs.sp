@@ -254,6 +254,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			int SpawnSettingsSee = 0;
 			if(Spawns_GetNextPos(pos, ang, enemy.Spawn,_,SpawnSettingsSee))
 			{
+				if(enemy.Is_Boss >= 2)
+				{
+					WaveStart_SubWaveStart(GetGameTime() + 500.0);
+				}
 				int entity_Spawner = NPC_CreateById(enemy.Index, -1, pos, ang, enemy.Team, enemy.Data, true);
 				if(entity_Spawner != -1)
 				{
