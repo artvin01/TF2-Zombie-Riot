@@ -522,6 +522,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_rusty_rifle.sp"
 #include "zombie_riot/custom/kit_blitzkrieg.sp"
 #include "zombie_riot/custom/kit_fractal.sp"
+#include "zombie_riot/custom/weapon_laz_laser_cannon.sp"
 #include "zombie_riot/custom/weapon_angelic_shotgonnus.sp"
 #include "zombie_riot/custom/red_blade.sp"
 #include "zombie_riot/custom/weapon_rapier.sp"

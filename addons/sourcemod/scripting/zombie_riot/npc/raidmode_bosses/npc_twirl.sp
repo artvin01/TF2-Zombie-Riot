@@ -2750,7 +2750,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
-		//case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
+		case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
 
 		default:
 		{
