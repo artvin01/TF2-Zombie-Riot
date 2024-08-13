@@ -2543,9 +2543,9 @@ static Action Schwert_Spiral_Core_Projectile_Homing_Hook(int iNPC)
 
 
 	if(npc.Anger)
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling, true);
 	else
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling, true);
 
 	float dist = GetVectorDistance(Npc_Vec, Proj_Vec);
 
