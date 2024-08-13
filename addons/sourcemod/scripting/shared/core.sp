@@ -50,10 +50,13 @@
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
+
 #else
+
 #define ZR_MAX_NPCS		256
 #define ZR_MAX_LAG_COMP		256 
 #define ZR_MAX_BUILDINGS	256
+
 #endif
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.

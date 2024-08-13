@@ -405,19 +405,17 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
 		int entity;
-
+		
+		entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		//if its a selected entity:
 		if(ForceOptionalEntity != -1)
 		{
-			entity = ForceOptionalEntity;
-		}
-		else
-		{
-			entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+			if(entity != ForceOptionalEntity)
+				continue;
 		}
 
-		if(IsValidEntity(entity) && WasBackTracked[entity])
+		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
-
 #if defined ZR
 			if(GetTeam(entity) != TFTeam_Red)
 #endif
@@ -501,12 +499,13 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 
 			WasBackTracked[index] = false;
 			//we only wanted to lag comp this entity, were done.
-			if(ForceOptionalEntity == index)
-				break;
+			if(ForceOptionalEntity == entity)
+				return;
 		}
 	}
 
-	StartLagCompResetValues();
+	if(ForceOptionalEntity == -1)
+		StartLagCompResetValues();
 }
 
 /* game/server/player_lagcompensation.cpp#L233 */
@@ -638,10 +637,10 @@ void AddEntityToLagCompList(int entity)
 		{
 			EntityTrackCount[i] = -1;
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+			WasBackTracked[i] = false;
 			break;
 		}
-	}	
-	WasBackTracked[entity] = false;
+	}
 }
 
 void RemoveEntityToLagCompList(int entity)
@@ -651,8 +650,8 @@ void RemoveEntityToLagCompList(int entity)
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)
 		{
 			i_Objects_Apply_Lagcompensation[i] = -1;
+			WasBackTracked[i] = false;
 			break;
 		}
 	}	
-	WasBackTracked[entity] = false;
 }
