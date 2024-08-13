@@ -1250,7 +1250,7 @@ static void Luanar_Radiance(Twirl npc)
 	}
 	i_lunar_ammo[npc.index]++;
 
-	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.4);
+	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.2);
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
 
