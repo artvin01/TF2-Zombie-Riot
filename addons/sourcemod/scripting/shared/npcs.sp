@@ -409,25 +409,29 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
-#if defined ZR
-		if(RogueTheme == BlueParadox)
-#endif	// ZR
-		{
-			if(f_DomeInsideTest[index] > GetGameTime())
-			{
-				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
-				return Plugin_Stop;
-			}
-		}
-		
-		CClotBody npc = view_as<CClotBody>(index);
-			
-		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
-			RemoveEntity(npc.m_iSpawnProtectionEntity);
-		
-		b_npcspawnprotection[index] = false;
+		RemoveSpawnProtectionLogic(index, false);
 	}
 	return Plugin_Stop;
+}
+void RemoveSpawnProtectionLogic(int entity, bool force)
+{
+#if defined ZR
+	if(RogueTheme == BlueParadox && !force)
+#endif	// ZR
+	{
+		if(f_DomeInsideTest[entity] > GetGameTime())
+		{
+			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			return;
+		}
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+		
+	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+		RemoveEntity(npc.m_iSpawnProtectionEntity);
+	
+	b_npcspawnprotection[entity] = false;
 }
 
 #if defined ZR
