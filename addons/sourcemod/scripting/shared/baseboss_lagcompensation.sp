@@ -68,7 +68,10 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 void StartLagCompensation_Base_Boss(int client)
 {
 //	if(DoingLagCompensation)
-//		ThrowError("Already in BaseBoss Lag Comp");
+//	{
+	//	LogError("Tried to lag compensate twice, sorry! no can do.");
+//		return;
+//	}
 
 	DoingLagCompensation = true;
 	
@@ -172,6 +175,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 {
 	if(EntityTrackCount[index] < 1)
 	{
+		return;
+	}
+	if(WasBackTracked[index])
+	{
+		//they were already compensated, do not.
 		return;
 	}
 	
@@ -385,17 +393,27 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(/*DHookParam param*/)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
-	DoingLagCompensation = false;
+	if(ForceOptionalEntity == -1)
+		DoingLagCompensation = false;
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity;
+
+		if(ForceOptionalEntity != -1)
+		{
+			entity = ForceOptionalEntity;
+		}
+		else
+		{
+			entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		}
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
 
@@ -481,6 +499,9 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			}
 
 			WasBackTracked[index] = false;
+			//we only wanted to lag comp this entity, were done.
+			if(ForceOptionalEntity == index)
+				break;
 		}
 	}
 
@@ -619,6 +640,7 @@ void AddEntityToLagCompList(int entity)
 			break;
 		}
 	}	
+	WasBackTracked[entity] = false;
 }
 
 void RemoveEntityToLagCompList(int entity)
@@ -631,4 +653,5 @@ void RemoveEntityToLagCompList(int entity)
 			break;
 		}
 	}	
+	WasBackTracked[entity] = false;
 }
