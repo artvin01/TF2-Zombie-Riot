@@ -330,7 +330,7 @@ public void Barrack_Alt_Donnerkrieg_ClotThink(int iNPC)
 					float flAng[3]; // original
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 								
-					npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1250.0, 1) , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 937.5, 1) , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 					if (npc.m_iAmountProjectiles >= 10)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -388,8 +388,8 @@ static void Primary_Attack_BEAM_Iku_Ability(int client, float GameTime)
 	
 	Barrack_Alt_Donnerkrieg npc = view_as<Barrack_Alt_Donnerkrieg>(client);
 
-	Ikunagae_BEAM_CloseDPT[client] = 7500.0*npc.BonusDamageBonus;
-	Ikunagae_BEAM_FarDPT[client] = 2500.0*npc.BonusDamageBonus;
+	Ikunagae_BEAM_CloseDPT[client] = 5625.0*npc.BonusDamageBonus;
+	Ikunagae_BEAM_FarDPT[client] = 1875.0*npc.BonusDamageBonus;
 	Ikunagae_BEAM_MaxDistance[client] = 500;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
@@ -411,8 +411,8 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	
 	Ikunagae_BEAM_IsUsing[client] = false;
 
-	Ikunagae_BEAM_CloseDPT[client] = 7500.0* npc.BonusDamageBonus;	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = 5000.0* npc.BonusDamageBonus;
+	Ikunagae_BEAM_CloseDPT[client] = 5625.0* npc.BonusDamageBonus;	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = 3750.0* npc.BonusDamageBonus;
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 5;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("c22b2b");

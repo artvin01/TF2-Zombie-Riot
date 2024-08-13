@@ -500,7 +500,8 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
@@ -553,6 +554,11 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
 		damage += basedamage * ((DMG_MEDIGUN_LOW - 1.0) * DamageBuffExtraScaling);
+
+	#if defined RUINA_BASE
+		if(f_Ruina_Attack_Buff[attacker] > GameTime)
+			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
+	#endif
 	
 	return false;
 }
@@ -613,11 +619,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	{
 		damage *= 0.93;
 	}
-	#if defined RUINA_BASE
-		if(f_Ruina_Attack_Buff[attacker] > GameTime)
-			damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus			
-	#endif
-
 #endif	//zr
 	return false;
 }
@@ -1690,7 +1691,8 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif

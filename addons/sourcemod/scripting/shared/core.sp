@@ -1812,6 +1812,7 @@ public void OnMapStart()
 	CurrentGibCount = 0;
 	Zero(f_EmpowerStateSelf);
 	Zero(f_EmpowerStateOther);
+	Zero(b_NetworkedCrouch);
 	
 #if defined VIEW_CHANGES
 	ViewChange_MapStart();
