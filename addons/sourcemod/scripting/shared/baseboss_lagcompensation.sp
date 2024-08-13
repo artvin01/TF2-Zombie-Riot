@@ -414,7 +414,8 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 		{
 			entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
 		}
-		if(IsValidEntity(entity) && WasBackTracked[index])
+
+		if(IsValidEntity(entity) && WasBackTracked[entity])
 		{
 
 #if defined ZR
