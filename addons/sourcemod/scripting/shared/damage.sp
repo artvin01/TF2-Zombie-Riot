@@ -500,7 +500,8 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
@@ -1690,7 +1691,8 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif

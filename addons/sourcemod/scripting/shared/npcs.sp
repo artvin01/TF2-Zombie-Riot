@@ -1420,6 +1420,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 
 		if(!b_NpcIsInvulnerable[victim])
 		{
+			//we want to get the resistances
 			Damage_AnyAttacker(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue1);
 			OnTakeDamageDamageBuffs(victim, attacker, attacker, BaseDamage, percentageGlobal, testvalue1, testvalue1, GetGameTime());	
 		}
@@ -1519,6 +1520,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 				}
 			}
 			ResAdded = true;
+			armor_added = true;
 		}
 
 		if((percentageGlobal != 1.0 || NpcHadArmorType(victim, 1)) && !b_NpcIsInvulnerable[victim])	

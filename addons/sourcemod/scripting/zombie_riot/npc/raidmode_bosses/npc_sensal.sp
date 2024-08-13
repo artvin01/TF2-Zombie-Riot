@@ -395,9 +395,6 @@ methodmap Sensal < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/hw2013_the_caws_of_death/hw2013_the_caws_of_death_soldier.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/spr18_veterans_attire/spr18_veterans_attire.mdl");
 		SetVariantString("1.0");
@@ -406,7 +403,6 @@ methodmap Sensal < CClotBody
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 		SensalEffects(npc.index, view_as<int>(npc.Anger));
 		
@@ -1995,11 +1991,11 @@ void SensalGiveShield(int sensal, int shieldcount)
 	Sensal npc = view_as<Sensal>(sensal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.55);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
 	}
 	else if(ZR_GetWaveCount()+1 >= 45)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.45);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.3);
 	}
 	else if(ZR_GetWaveCount()+1 >= 30)
 	{
@@ -2009,13 +2005,11 @@ void SensalGiveShield(int sensal, int shieldcount)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 0.75);
 	}
+
 	if(npc.Anger)
 	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.15);
+		shieldcount = RoundToNearest(float(shieldcount) * 1.1);
 	}
-
-	if(LastMann)
-		shieldcount *= 2;
 
 	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
 }

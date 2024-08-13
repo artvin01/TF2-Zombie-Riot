@@ -97,7 +97,7 @@ int SetEntityTransmitState(int entity, int newFlags)
 	int flags = GetEdictFlags(entity);
 	flags &= ~(FL_EDICT_ALWAYS | FL_EDICT_PVSCHECK | FL_EDICT_DONTSEND);
 	flags |= newFlags;
-	SetEdictFlags(entity, flags);
+//	SetEdictFlags(entity, flags);
 
 	return flags;
 }
