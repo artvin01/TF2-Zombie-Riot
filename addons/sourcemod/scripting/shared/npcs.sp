@@ -409,25 +409,29 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
-#if defined ZR
-		if(RogueTheme == BlueParadox)
-#endif	// ZR
-		{
-			if(f_DomeInsideTest[index] > GetGameTime())
-			{
-				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
-				return Plugin_Stop;
-			}
-		}
-		
-		CClotBody npc = view_as<CClotBody>(index);
-			
-		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
-			RemoveEntity(npc.m_iSpawnProtectionEntity);
-		
-		b_npcspawnprotection[index] = false;
+		RemoveSpawnProtectionLogic(index, false);
 	}
 	return Plugin_Stop;
+}
+void RemoveSpawnProtectionLogic(int entity, bool force)
+{
+#if defined ZR
+	if(RogueTheme == BlueParadox && !force)
+#endif	// ZR
+	{
+		if(f_DomeInsideTest[entity] > GetGameTime())
+		{
+			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			return;
+		}
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+		
+	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+		RemoveEntity(npc.m_iSpawnProtectionEntity);
+	
+	b_npcspawnprotection[entity] = false;
 }
 
 #if defined ZR
@@ -1431,7 +1435,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1528,7 +1533,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());

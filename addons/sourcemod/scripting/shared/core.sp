@@ -50,10 +50,13 @@
 #define ZR_MAX_BUILDINGS	128 //cant ever have more then 64 realisticly speaking
 #define ZR_MAX_TRAPS		64
 #define ZR_MAX_SPAWNERS		256
+
 #else
+
 #define ZR_MAX_NPCS		256
 #define ZR_MAX_LAG_COMP		256 
 #define ZR_MAX_BUILDINGS	256
+
 #endif
 
 #define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
@@ -4071,6 +4074,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
 			GiveArmorViaPercentage(target, 0.1, 1.0, false);
 			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
+			CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
 			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
 			SetGlobalTransTarget(target);
 			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
@@ -4078,6 +4082,17 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	}
 }
 
+public Action ReviveDisplayMessageDelay(Handle timer, int ref)
+{
+	int target = EntRefToEntIndex(ref);
+	if(IsValidClient(target))
+	{
+		SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+		SetGlobalTransTarget(target);
+		ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+	}
+	return Plugin_Continue;
+}
 void ClientRevivalTickLogic(int client)
 {
 	if(!f_ClientBeingReviveDelay[client])

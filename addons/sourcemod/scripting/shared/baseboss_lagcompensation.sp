@@ -68,7 +68,10 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 void StartLagCompensation_Base_Boss(int client)
 {
 //	if(DoingLagCompensation)
-//		ThrowError("Already in BaseBoss Lag Comp");
+//	{
+	//	LogError("Tried to lag compensate twice, sorry! no can do.");
+//		return;
+//	}
 
 	DoingLagCompensation = true;
 	
@@ -172,6 +175,11 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 {
 	if(EntityTrackCount[index] < 1)
 	{
+		return;
+	}
+	if(WasBackTracked[index])
+	{
+		//they were already compensated, do not.
 		return;
 	}
 	
@@ -385,20 +393,29 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(/*DHookParam param*/)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -1)
 //public MRESReturn FinishLagCompensation(Address manager, DHookParam param)
 {
 //	if(!DoingLagCompensation)
 //		ThrowError("Not in BaseBoss Lag Comp");
 	
-	DoingLagCompensation = false;
+	if(ForceOptionalEntity == -1)
+		DoingLagCompensation = false;
 
 	for(int index; index < ZR_MAX_LAG_COMP; index++)
 	{
-		int entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		int entity;
+		
+		entity = EntRefToEntIndex(i_Objects_Apply_Lagcompensation[index]);
+		//if its a selected entity:
+		if(ForceOptionalEntity != -1)
+		{
+			if(entity != ForceOptionalEntity)
+				continue;
+		}
+
 		if(IsValidEntity(entity) && WasBackTracked[index])
 		{
-
 #if defined ZR
 			if(GetTeam(entity) != TFTeam_Red)
 #endif
@@ -481,10 +498,14 @@ void FinishLagCompensation_Base_boss(/*DHookParam param*/)
 			}
 
 			WasBackTracked[index] = false;
+			//we only wanted to lag comp this entity, were done.
+			if(ForceOptionalEntity == entity)
+				return;
 		}
 	}
 
-	StartLagCompResetValues();
+	if(ForceOptionalEntity == -1)
+		StartLagCompResetValues();
 }
 
 /* game/server/player_lagcompensation.cpp#L233 */
@@ -616,9 +637,10 @@ void AddEntityToLagCompList(int entity)
 		{
 			EntityTrackCount[i] = -1;
 			i_Objects_Apply_Lagcompensation[i] = EntIndexToEntRef(entity);
+			WasBackTracked[i] = false;
 			break;
 		}
-	}	
+	}
 }
 
 void RemoveEntityToLagCompList(int entity)
@@ -628,6 +650,7 @@ void RemoveEntityToLagCompList(int entity)
 		if (EntRefToEntIndex(i_Objects_Apply_Lagcompensation[i]) == entity)
 		{
 			i_Objects_Apply_Lagcompensation[i] = -1;
+			WasBackTracked[i] = false;
 			break;
 		}
 	}	

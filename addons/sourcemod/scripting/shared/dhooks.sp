@@ -1113,7 +1113,6 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
 	//	TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
-		
 		return MRES_Ignored;
 	}
 	
@@ -2030,6 +2029,8 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
 	IsInsideManageRegularWeapons = true;
+	//select their class here again.
+	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 	if(!CurrentClass[client])
 	{
 		CurrentClass[client] = TFClass_Scout;
