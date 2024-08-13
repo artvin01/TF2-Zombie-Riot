@@ -772,7 +772,7 @@ methodmap Twirl < CClotBody
 			}
 		}
 		else if(wave <=60)
-		{
+		{	
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -1171,6 +1171,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	float Tower_Health = MaxHealth*0.2;
+
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1199,6 +1200,22 @@ static void Final_Invocation(Twirl npc)
 		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
 	}
 	RaidModeTime +=30.0;
+
+	GiveOneRevive(false);
+	switch(GetRandomInt(0, 1))
+	{
+		case 0: Twirl_Lines(npc, "Oh look, you can be revived one more time, and you got healed, im such a generous person.");
+		case 1: Twirl_Lines(npc, "Look at your revive counter, there should be an extra one, oh also obama care.");
+	}
+
+	for(int i=0 ; i < MaxClients ; i++)
+	{
+		if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE && dieingstate[i] == 0)
+		{
+			HealEntityGlobal(i, i, float(SDKCall_GetMaxHealth(i)) * 0.5, 1.0, 1.0, HEAL_ABSOLUTE);
+			CPrintToChat(i, "{green}Adrenalive rushes through your body, healing you and giving you an extra revive.");
+		}
+	}
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1221,7 +1238,7 @@ static void Luanar_Radiance(Twirl npc)
 
 	int amt = (npc.Anger ? 10 : 5);
 	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 6 : 3);
+		amt = (npc.Anger ? 8 : 4);
 
 	if(i_lunar_ammo[npc.index] > amt)
 	{
@@ -1233,7 +1250,7 @@ static void Luanar_Radiance(Twirl npc)
 	}
 	i_lunar_ammo[npc.index]++;
 
-	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.5 : 1.0);
+	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.4);
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
 
@@ -1247,6 +1264,8 @@ static void Luanar_Radiance(Twirl npc)
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = 20.0;
 			dmg *= RaidModeScaling;
+			if(i_current_wave[npc.index]>=60)
+				dmg *=0.7;
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
 		}
 	}
@@ -1938,6 +1957,9 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float radius = (npc.Anger ? 300.0 : 250.0);
 		float dmg = 20.0;
 		dmg *= RaidModeScaling;
+
+		if(i_current_wave[npc.index]>=60)
+			dmg *=0.7;
 
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
