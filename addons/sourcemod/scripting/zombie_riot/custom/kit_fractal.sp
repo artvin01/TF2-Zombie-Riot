@@ -20,7 +20,8 @@ static float fl_fractal_dmg_throttle[MAXTF2PLAYERS];
 #define FRACTAL_KIT_CRYSTAL_REFLECTION 4	//how many targets the crysal can attack at the same time
 #define FRACTAL_KIT_FANTASIA_COST 5
 #define FRACTAL_KIT_FANTASIA_GAIN 1
-#define FRACTAL_KIT_ION_COST	  75
+#define FRACTAL_KIT_STARFALL_COST 75
+#define KRACTAL_KIT_STARFALL_JUMP_AMT	10	//how many times the ion can multi strike.
 static int i_max_crystal_amt[MAXTF2PLAYERS];
 static int i_current_crystal_amt[MAXTF2PLAYERS];
 static bool b_is_crystal[MAXENTITIES];
@@ -682,6 +683,150 @@ static void Projectile_Touch(int entity, int target)
 		RemoveEntity(entity);
 	}
 	
+}
+static int i_targeted_ID[MAXTF2PLAYERS][KRACTAL_KIT_STARFALL_JUMP_AMT];
+public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
+{
+	if(b_cannon_animation_active[client])
+	{
+		return;
+	}
+	if(i_current_crystal_amt[client] < FRACTAL_KIT_STARFALL_COST)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "Your Weapon is not charged enough.");
+		return;
+	}
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	if(mana_cost > Current_Mana[client] && !b_cannon_animation_active[client])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
+	for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+	{
+		i_targeted_ID[client][i] = INVALID_ENT_REFERENCE;
+	}
+	i_current_crystal_amt[client] -=FRACTAL_KIT_STARFALL_COST;
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	float Range = 1500.0;
+	float Radius = 250.0;
+	Laser.DoForwardTrace_Basic(Range);
+	float dps = 100.0;
+	dps *=Attributes_Get(weapon, 410, 1.0);
+	Check_StarfallAOE(client, Laser.End_Point, Radius, KRACTAL_KIT_STARFALL_JUMP_AMT-1, dps, true);
+
+}
+static int i_entity_targeted[KRACTAL_KIT_STARFALL_JUMP_AMT];
+static void AoeExplosionCheckCast(int entity, int victim, float damage, int weapon)
+{
+	if(IsValidEnemy(entity, victim))
+	{
+		for(int i=0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+		{
+			if(!i_entity_targeted[i])
+			{
+				i_entity_targeted[i] = victim;
+				break;
+			}
+		}
+	}
+}
+static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle, float damage, bool first = false)
+{
+	if(cycle < 0)
+		return;
+
+	Zero(i_entity_targeted);
+	Explode_Logic_Custom(0.0, client, client, -1, Loc, Radius, _, _, _, _, _, _, AoeExplosionCheckCast);
+
+//	bool Hit = false;
+	for (int entitys = 0; entitys < KRACTAL_KIT_STARFALL_JUMP_AMT; entitys++)
+	{
+		if(i_entity_targeted[entitys] > 0)
+		{
+			bool the_same = false;
+			for(int i= 0 ; i < KRACTAL_KIT_STARFALL_JUMP_AMT ; i++)
+			{
+				if(i_entity_targeted[entitys] == EntRefToEntIndex(i_targeted_ID[client][i]))
+					the_same =true;
+			}
+			if(the_same)
+				continue;
+			
+			//CPrintToChatAll("cycle %i", cycle);
+			float speed = 0.75;
+			i_targeted_ID[client][cycle] = EntIndexToEntRef(i_entity_targeted[entitys]);
+			float pos1[3];
+			WorldSpaceCenter(i_entity_targeted[entitys], pos1);
+			DataPack pack;
+			CreateDataTimer(speed, Timer_StarfallIon, pack, TIMER_FLAG_NO_MAPCHANGE);
+			pack.WriteCell(EntIndexToEntRef(client));
+			pack.WriteFloat(damage);
+			pack.WriteFloat(Radius);
+			pack.WriteCell(cycle);
+			int color[4] = {255, 255, 255, 255};
+			if(!first)
+			{
+				pack.WriteFloatArray(pos1, 3);
+				pos1[2]+=10.0;
+				TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+				TE_SendToAll();
+				pos1[2]-=10.0;
+			}
+			else
+			{	
+				pack.WriteFloatArray(Loc, 3);
+				Loc[2]+=10.0;
+				TE_SetupBeamRingPoint(Loc, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+				TE_SendToAll();
+				Loc[2]-=10.0;
+			}
+				
+				
+			break;
+
+		}
+		else
+		{
+			break;
+		}
+	}
+}
+static Action Timer_StarfallIon(Handle Timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client))
+	{
+		return Plugin_Stop;
+	}
+	float damage = pack.ReadFloat();
+	float radius = pack.ReadFloat();
+	int cycle = pack.ReadCell();
+	float Loc[3]; pack.ReadFloatArray(Loc, 3);
+
+	Explode_Logic_Custom(damage , client ,client , -1 , Loc , radius);
+	float sky[3]; sky = Loc; sky[2] +=3000.0;
+	int color[4] = {255, 255, 255, 255};
+	float speed = 0.45;
+	TE_SetupBeamPoints(Loc, sky, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, speed, 15.0, 15.0, 0, 0.1, color, 3);
+	TE_SendToAll();
+	Loc[2]+=10.0;
+	TE_SetupBeamRingPoint(Loc, 0.0, radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+	TE_SendToAll();
+	Loc[2]-=10.0;
+	Check_StarfallAOE(client, Loc, radius, cycle-1, damage);
+
+	return Plugin_Stop;
 }
 
 public void Kit_Fractal_Primary_Cannon(int client, int weapon, bool &result, int slot)
