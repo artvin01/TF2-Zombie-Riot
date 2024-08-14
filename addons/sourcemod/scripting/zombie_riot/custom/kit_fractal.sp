@@ -350,26 +350,12 @@ static void Fire_Beam(int client, int weapon, bool update)
 
 	npc.PlayLaserLoopSound();
 }
-static void Format_Fancy_Hud(char Text[255])
+void Format_Fancy_Hud(char Text[255])
 {
 	ReplaceString(Text, 128, "Ą", "「");
 	ReplaceString(Text, 128, "Č", "」");
 	ReplaceString(Text, 128, "Ę", "【");
 	ReplaceString(Text, 128, "Ė", "】");
-}
-static void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
-{
-	float tmp[3];
-	float actualBeamOffset[3];
-
-	tmp[0] = BEAM_BeamOffset[0];
-	tmp[1] = BEAM_BeamOffset[1];
-	tmp[2] = 0.0;
-	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
-	actualBeamOffset[2] = BEAM_BeamOffset[2];
-	Result_Vec[0] += actualBeamOffset[0];
-	Result_Vec[1] += actualBeamOffset[1];
-	Result_Vec[2] += actualBeamOffset[2];
 }
 static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
 {
@@ -414,17 +400,17 @@ static void Fractal_Magia_Rings(int client, float Origin[3], float Angles[3], in
 										
 			TE_SetupBeamPoints(endLoc, drill_loc, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 0.25, colorLayer1, 3);
 										
-			TE_SendToClient(client);
+			Send_Te_Client_ZR(client);
 		}
 		
 	}
 	
 	TE_SetupBeamPoints(buffer_vec[0], buffer_vec[loop_for-1], g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, 5.0, 5.0, 0, 0.01, color, 3);	
-	TE_SendToAll(0.0);
+	Send_Te_Client_ZR(client);
 	for(int i=0 ; i<(loop_for-1) ; i++)
 	{
 		TE_SetupBeamPoints(buffer_vec[i], buffer_vec[i+1], g_Ruina_BEAM_Combine_Blue, 0, 0, 0, TE_Duration, 5.0, 5.0, 0, 0.01, color, 3);	
-		TE_SendToAll(0.0);
+		Send_Te_Client_ZR(client);
 	}
 	
 }
@@ -864,10 +850,10 @@ void Fractal_Kit_Modify_Mana(int client, int weapon_holding)
 		}
 		case 6:
 		{
-			mana_regen[client] *= 2.0;
+			//mana_regen[client] *= 2.0;
 			max_mana[client] *= 17.0;
 
-			//mana_regen[client] *= 99.0;
+			mana_regen[client] *= 99.0;
 		}
 	}
 	if(b_TwirlHairpins[client])
@@ -973,6 +959,28 @@ static void Hud(int client, int weapon)
 }
 
 //stuff that im probably gonna use a lot in other future weapons.
+
+void Offset_Vector(float BEAM_BeamOffset[3], float Angles[3], float Result_Vec[3])
+{
+	float tmp[3];
+	float actualBeamOffset[3];
+
+	tmp[0] = BEAM_BeamOffset[0];
+	tmp[1] = BEAM_BeamOffset[1];
+	tmp[2] = 0.0;
+	VectorRotate(BEAM_BeamOffset, Angles, actualBeamOffset);
+	actualBeamOffset[2] = BEAM_BeamOffset[2];
+	Result_Vec[0] += actualBeamOffset[0];
+	Result_Vec[1] += actualBeamOffset[1];
+	Result_Vec[2] += actualBeamOffset[2];
+}
+void Send_Te_Client_ZR(int client)
+{
+	if(LastMann)
+		TE_SendToAll();
+	else
+		TE_SendToClient(client);
+}
 
 static int Player_Laser_BEAM_HitDetected[MAXENTITIES];
 static int i_targets_hit;
