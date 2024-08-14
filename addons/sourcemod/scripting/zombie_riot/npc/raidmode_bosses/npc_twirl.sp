@@ -1204,8 +1204,8 @@ static void Final_Invocation(Twirl npc)
 	GiveOneRevive(false);
 	switch(GetRandomInt(0, 1))
 	{
-		case 0: Twirl_Lines(npc, "Oh look, you can be revived one more time, and you got healed, im such a generous person.");
-		case 1: Twirl_Lines(npc, "Look at your revive counter, there should be an extra one, oh also obama care.");
+		case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
+		case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
 	}
 
 	for(int i=0 ; i < MaxClients ; i++)
@@ -2770,6 +2770,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
 		//case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
@@ -2786,9 +2787,6 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
-
-	
-	
 }
 
 static void Kill_Abilities(Twirl npc)
