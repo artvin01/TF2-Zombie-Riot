@@ -10378,7 +10378,7 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
-	if(i_npcspawnprotection[entity])
+	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
 
 	if(b_NpcIsInvulnerable[entity])

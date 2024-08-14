@@ -772,7 +772,7 @@ methodmap Twirl < CClotBody
 			}
 		}
 		else if(wave <=60)
-		{
+		{	
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -938,7 +938,7 @@ static void ClotThink(int iNPC)
 				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
 				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I don't even have any form of real {aqua}shielding{snow}, yet you still took this long");
+				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 			}
@@ -1171,6 +1171,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	float Tower_Health = MaxHealth*0.2;
+
 	for(int i=0 ; i < 4 ; i++)
 	{
 		float AproxRandomSpaceToWalkTo[3];
@@ -1198,7 +1199,23 @@ static void Final_Invocation(Twirl npc)
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
 		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
 	}
-	RaidModeTime +=30.0;
+	RaidModeTime += 60.0;
+
+	GiveOneRevive(false);
+	switch(GetRandomInt(0, 1))
+	{
+		case 0: Twirl_Lines(npc, "Hm? Whats this? You seem eager?");
+		case 1: Twirl_Lines(npc, "Oh my, looks like this wont be as easy as i thought...");
+	}
+
+	for(int i=0 ; i < MaxClients ; i++)
+	{
+		if(IsValidClient(i) && IsClientInGame(i) && IsPlayerAlive(i) && TeutonType[i] == TEUTON_NONE && dieingstate[i] == 0)
+		{
+			HealEntityGlobal(i, i, float(SDKCall_GetMaxHealth(i)) * 0.5, 1.0, 1.0, HEAL_ABSOLUTE);
+			CPrintToChat(i, "{green}Adrenalive rushes through your body, healing you and giving you an extra revive.");
+		}
+	}
 }
 static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 {
@@ -1221,7 +1238,7 @@ static void Luanar_Radiance(Twirl npc)
 
 	int amt = (npc.Anger ? 10 : 5);
 	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 6 : 3);
+		amt = (npc.Anger ? 8 : 4);
 
 	if(i_lunar_ammo[npc.index] > amt)
 	{
@@ -1233,7 +1250,7 @@ static void Luanar_Radiance(Twirl npc)
 	}
 	i_lunar_ammo[npc.index]++;
 
-	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.5 : 1.0);
+	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.2);
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
 
@@ -1247,6 +1264,8 @@ static void Luanar_Radiance(Twirl npc)
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = 20.0;
 			dmg *= RaidModeScaling;
+			if(i_current_wave[npc.index]>=60)
+				dmg *=0.7;
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
 		}
 	}
@@ -1938,6 +1957,9 @@ static void Func_On_Proj_Touch(int entity, int other)
 		float radius = (npc.Anger ? 300.0 : 250.0);
 		float dmg = 20.0;
 		dmg *= RaidModeScaling;
+
+		if(i_current_wave[npc.index]>=60)
+			dmg *=0.7;
 
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
@@ -2748,6 +2770,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
 		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
 		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 
 		/*can't think of any lines */ //case WEAPON_HEAVY_PARTICLE_RIFLE: switch(GetRandomInt(0,1)) {case 0: Format(Text_Lines, sizeof(Text_Lines), ""); case 1: Format(Text_Lines, sizeof(Text_Lines), "");}		
 		
 		case WEAPON_KIT_FRACTAL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ahhh, so your trying to use my own power's aggainst me {gold}%N{snow}?", client); 				case 1: Format(Text_Lines, sizeof(Text_Lines), "Tell me {gold}%N{snow} Have you mastered {gold}Nuclear Fusion{snow} that the Fractal Holds?", client);}
@@ -2764,9 +2787,6 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
-
-	
-	
 }
 
 static void Kill_Abilities(Twirl npc)

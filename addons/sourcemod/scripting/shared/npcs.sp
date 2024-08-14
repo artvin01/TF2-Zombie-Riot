@@ -265,9 +265,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 					{
 						NpcAddedToZombiesLeftCurrently(entity_Spawner, false);
 					}
-					if(enemy.Is_Outlined)
+					if(enemy.Is_Outlined == 1)
 					{
 						b_thisNpcHasAnOutline[entity_Spawner] = true;
+					}
+					else if(enemy.Is_Outlined == 2)
+					{
+						b_NoHealthbar[entity_Spawner] = true;
 					}
 					
 					if(enemy.Is_Immune_To_Nuke)
