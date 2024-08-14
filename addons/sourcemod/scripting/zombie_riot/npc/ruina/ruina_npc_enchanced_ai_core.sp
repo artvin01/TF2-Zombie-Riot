@@ -75,7 +75,7 @@ bool b_ruina_buff_override[MAXENTITIES];
 
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
 #define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
-#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.05
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.075
 #define RUINA_SHIELD_NPC_TIMEOUT 		7.5
 #define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
@@ -243,6 +243,7 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	Ruina_Remove_Shield(entity);
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
@@ -356,7 +357,7 @@ void Ruina_Npc_Give_Shield(int client, float strenght)
 	{
 		Shield_Power = RUINA_BOSS_NPC_MAX_SHIELD;
 	}
-	else if(b_thisNpcIsARaid[client])
+	if(b_thisNpcIsARaid[client])
 	{
 		Shield_Power = RUINA_RAIDBOSS_NPC_MAX_SHIELD;
 	}
