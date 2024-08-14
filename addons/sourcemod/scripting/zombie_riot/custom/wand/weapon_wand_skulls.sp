@@ -613,6 +613,10 @@ void Skull_AutoFire(int ent, int target, int client)
 		velocity *= Attributes_Get(weapon, 475, 1.0);
 	}
 
+	int weapon1 = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(!IsValidEntity(weapon1) ||i_CustomWeaponEquipLogic[weapon1] != WEAPON_SKULL_SERVANT)
+		damage *= 0.35;
+
 	if(dist < (Skull_ShootRange[ent] * 0.5)) //If at half range, try to predict.
 	{
 		CClotBody npc = view_as<CClotBody>(ent);

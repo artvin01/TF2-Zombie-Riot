@@ -938,7 +938,7 @@ static void ClotThink(int iNPC)
 				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
 				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
 				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "I don't even have any form of real {aqua}shielding{snow}, yet you still took this long");
+				case 7: Twirl_Lines(npc, "I dont even have {gold}Expidonsan{default} shielding, cmon.");
 				case 8: Twirl_Lines(npc, "Tell me why your this slow?");
 				case 9: Twirl_Lines(npc, "I’m bored. {crimson}Ei, jus viršui, atekit čia ir užbaikit juos");
 			}
@@ -1199,7 +1199,7 @@ static void Final_Invocation(Twirl npc)
 		case 6: Twirl_Lines(npc, "The Final Invocation!");
 		case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
 	}
-	RaidModeTime +=30.0;
+	RaidModeTime += 60.0;
 
 	GiveOneRevive(false);
 	switch(GetRandomInt(0, 1))
