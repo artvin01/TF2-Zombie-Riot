@@ -1849,14 +1849,14 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 			
 	for (int victim = 0; victim < MAXENTITIES; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && IsValidEnemy(npc.index, victim))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 
 			float Dmg = dps;
 
-			if(boomerange)
+			if(boomerange && IsValidClient(victim))
 			{
 				int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
 				if(IsValidEntity(weapon))
