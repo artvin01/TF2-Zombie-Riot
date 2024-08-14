@@ -345,10 +345,10 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1)
+					if(zr_spawnprotectiontime.FloatValue > 0.0 && SpawnSettingsSee != 1 && i_npcspawnprotection[entity_Spawner] == 0)
 					{
 				
-						b_npcspawnprotection[entity_Spawner] = true;
+						i_npcspawnprotection[entity_Spawner] = 1;
 						
 						/*
 						CClotBody npc = view_as<CClotBody>(entity_Spawner);
@@ -409,25 +409,29 @@ public Action Remove_Spawn_Protection(Handle timer, int ref)
 	int index = EntRefToEntIndex(ref);
 	if(IsValidEntity(index) && index>MaxClients)
 	{
-#if defined ZR
-		if(RogueTheme == BlueParadox)
-#endif	// ZR
-		{
-			if(f_DomeInsideTest[index] > GetGameTime())
-			{
-				CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(index), TIMER_FLAG_NO_MAPCHANGE);
-				return Plugin_Stop;
-			}
-		}
-		
-		CClotBody npc = view_as<CClotBody>(index);
-			
-		if(IsValidEntity(npc.m_iSpawnProtectionEntity))
-			RemoveEntity(npc.m_iSpawnProtectionEntity);
-		
-		b_npcspawnprotection[index] = false;
+		RemoveSpawnProtectionLogic(index, false);
 	}
 	return Plugin_Stop;
+}
+void RemoveSpawnProtectionLogic(int entity, bool force)
+{
+#if defined ZR
+	if(RogueTheme == BlueParadox && !force)
+#endif	// ZR
+	{
+		if(f_DomeInsideTest[entity] > GetGameTime())
+		{
+			CreateTimer(0.1, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			return;
+		}
+	}
+	
+	CClotBody npc = view_as<CClotBody>(entity);
+		
+	if(IsValidEntity(npc.m_iSpawnProtectionEntity))
+		RemoveEntity(npc.m_iSpawnProtectionEntity);
+	//-1 means none, and dont apply anymore.
+	i_npcspawnprotection[entity] = -1;
 }
 
 #if defined ZR
@@ -1371,9 +1375,9 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 	else
 	{
 #if defined RPG
-		if(!b_npcspawnprotection[victim] || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
+		if(i_npcspawnprotection[victim] != 1 || !OnTakeDamageRpgPartyLogic(victim, attacker, GetGameTime()))
 #else
-		if(!b_npcspawnprotection[victim])
+		if(i_npcspawnprotection[victim] != 1)
 #endif
 		{
 			DisplayRGBHealthValue(Health, MaxHealth, red, green,blue);
@@ -1431,7 +1435,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flMeleeArmor * 100.0;
 			percentage *= fl_Extra_MeleeArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_CLUB;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1528,7 +1533,8 @@ stock bool Calculate_And_Display_HP_Hud(int attacker)
 			percentage = npc.m_flRangedArmor * 100.0;
 			percentage *= fl_Extra_RangedArmor[victim];
 			percentage *= fl_TotalArmor[victim];
-			percentage *= percentageGlobal;
+			if(GetTeam(attacker) != GetTeam(victim))
+				percentage *= percentageGlobal;
 			int testvalue = 1;
 			int DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(victim, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1824,7 +1830,7 @@ stock bool NpcHadArmorType(int victim, int type, int weapon = 0, int attacker = 
 	{
 		return true;
 	}	
-	if(b_npcspawnprotection[victim])
+	if(i_npcspawnprotection[victim] == 1)
 		return true;
 
 	float DamageTest = 1.0;

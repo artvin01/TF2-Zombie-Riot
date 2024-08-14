@@ -429,7 +429,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					for(int i; i < count; i++)
 					{
-						int defense = b_npcspawnprotection[entity] ? 8 : 0;
+						int defense = i_npcspawnprotection[entity] ? 8 : 0;
 						
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);

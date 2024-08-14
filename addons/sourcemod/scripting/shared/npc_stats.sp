@@ -1627,7 +1627,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
-		if(b_npcspawnprotection[this.index])
+		if(i_npcspawnprotection[this.index] == 1)
 		{
 #if defined ZR
 			if(!Rogue_Mode())
@@ -3468,6 +3468,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	if(!b_NpcHasDied[pThis])
 	{
 
+		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
+		FinishLagCompensation_Base_boss(pThis);
 		int client;
 #if defined ZR
 		if(Saga_EnemyDoomed(pThis))
@@ -6194,7 +6196,7 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-			b_npcspawnprotection[iNPC] = true;
+			i_npcspawnprotection[iNPC] = 1;
 			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
@@ -8263,7 +8265,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
-	b_npcspawnprotection[entity] = false;
+	i_npcspawnprotection[entity] = 0;
 	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
@@ -10003,7 +10005,7 @@ public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
-		b_npcspawnprotection[entity] = true;
+		i_npcspawnprotection[entity] = 1;
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
@@ -10376,7 +10378,7 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
-	if(b_npcspawnprotection[entity])
+	if(i_npcspawnprotection[entity])
 		NpcInvulShieldDisplay = true;
 
 	if(b_NpcIsInvulnerable[entity])
@@ -10399,7 +10401,7 @@ void IsEntityInvincible_Shield(int entity)
 				i_InvincibleParticlePrev[Shield] = 0;
 			}
 		}
-		else if(b_npcspawnprotection[entity])
+		else if(i_npcspawnprotection[entity] == 1)
 		{
 			if(i_InvincibleParticlePrev[Shield] != 1)
 			{
@@ -10428,7 +10430,7 @@ void IsEntityInvincible_Shield(int entity)
 			i_InvincibleParticlePrev[Shield] = 0;
 		}
 	}
-	else if(b_npcspawnprotection[entity])
+	else if(i_npcspawnprotection[entity] == 1)
 	{
 		if(i_InvincibleParticlePrev[Shield] != 1)
 		{

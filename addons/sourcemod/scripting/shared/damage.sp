@@ -552,8 +552,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	if(f_BuffBannerNpcBuff[attacker] > GameTime)
 		damage += basedamage * (0.25 * DamageBuffExtraScaling);
 	
+	//dont do reduce per player, its only 1 o 1 !!!
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
-		damage += basedamage * ((DMG_MEDIGUN_LOW - 1.0) * DamageBuffExtraScaling);
+		damage += basedamage * (DMG_MEDIGUN_LOW - 1.0);
 
 	#if defined RUINA_BASE
 		if(f_Ruina_Attack_Buff[attacker] > GameTime)
@@ -1535,14 +1536,14 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
 	//these are absolutes
 #if !defined RPG
-	if(victim > MaxClients && b_npcspawnprotection[victim])
+	if(victim > MaxClients && i_npcspawnprotection[victim] == 1)
 	{
 		//dont give spawnprotection if both are
 		if(attacker <= MaxClients)
 		{
 			DamageRes *= 0.05;
 		}
-		else if(!b_npcspawnprotection[attacker])
+		else if(i_npcspawnprotection[attacker] != 1)
 		{
 			DamageRes *= 0.05;
 		}
@@ -1648,7 +1649,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 0.9;
 		
 #if !defined RPG
-	if(attacker > MaxClients && b_npcspawnprotection[attacker])
+	if(attacker > MaxClients && i_npcspawnprotection[attacker] == 1)
 	{
 		damage *= 1.5;
 	}

@@ -842,7 +842,7 @@ bool RPGCore_ClientAllowedToTargetNpc(int victim, int attacker)
 		}
 	}
 	//if someone attacked them while in a party, then allow.
-	if(!EnemyWasAttackedBefore && b_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
+	if(!EnemyWasAttackedBefore && i_npcspawnprotection[victim] && i_NpcIsUnderSpawnProtectionInfluence[victim] > 0)
 	{
 		if(!RPGSpawns_GivePrioLevel(Level[victim], Level[attacker]))
 		{
