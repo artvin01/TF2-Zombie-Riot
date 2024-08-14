@@ -243,6 +243,7 @@ void Ruina_Ai_Core_Mapstart()
 }
 void Ruina_Set_Heirarchy(int client, int type)
 {
+	Ruina_Remove_Shield(entity);
 	fl_ruina_shield_break_timeout[client] = 0.0;
 	i_npc_type[client] = type;
 	i_master_attracts[client] = type;
