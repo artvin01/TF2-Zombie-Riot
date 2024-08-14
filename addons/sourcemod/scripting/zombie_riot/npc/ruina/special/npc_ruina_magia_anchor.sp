@@ -440,7 +440,7 @@ static void ClotThink(int iNPC)
 				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
 				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
 				event.SetFloat("lifetime", 7.0);
-				event.SetString("text", "Multiple Magica Anchors!");
+				event.SetString("text", "Multiple Magia Anchors!");
 				event.SetString("play_sound", "vo/null.mp3");
 				IdRef++;
 				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
@@ -456,7 +456,7 @@ static void ClotThink(int iNPC)
 				event.SetFloat("worldPosY", VecSelfNpcabs[1]);
 				event.SetFloat("worldPosZ", VecSelfNpcabs[2]);
 				event.SetFloat("lifetime", 7.0);
-				event.SetString("text", "Magica Anchor");
+				event.SetString("text", "Magia Anchor");
 				event.SetString("play_sound", "vo/null.mp3");
 				IdRef++;
 				event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!

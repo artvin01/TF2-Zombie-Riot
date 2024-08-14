@@ -283,7 +283,15 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 	   		Attributes_Set(weapon_index, 263, 0.0);
 	   		Attributes_Set(weapon_index, 6, 1.2);
 	   		Attributes_Set(weapon_index, 412, 0.0);
-	   		Attributes_Set(weapon_index, 442, 1.1);
+			if(b_VoidPortalOpened[client])
+			{
+	   			Attributes_Set(weapon_index, 443, 1.25);
+	   			Attributes_Set(weapon_index, 442, 1.25);
+			}
+			else
+			{
+	   			Attributes_Set(weapon_index, 442, 1.1);
+			}
 	   		TFClassType ClassForStats = WeaponClass[client];
 	   		
 	   		Attributes_Set(weapon_index, 107, RemoveExtraSpeed(ClassForStats, 330.0));

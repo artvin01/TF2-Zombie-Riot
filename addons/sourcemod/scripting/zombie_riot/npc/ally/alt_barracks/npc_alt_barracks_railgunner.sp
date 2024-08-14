@@ -155,7 +155,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayMeleeSound();
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2600.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1950.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (3.5 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							npc.ALT_Play_Railgunner_Shoot();
@@ -163,7 +163,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						else
 						{
 							
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1300.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),975.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (1.75 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							i_overcharge[npc.index]++;

@@ -695,6 +695,9 @@ float f_ClientArmorRegen[MAXENTITIES];
 bool b_NemesisHeart[MAXTF2PLAYERS];
 bool b_OverlordsFinalWish[MAXTF2PLAYERS];
 bool b_BobsTrueFear[MAXTF2PLAYERS];
+bool b_TwirlHairpins[MAXTF2PLAYERS];
+bool b_KahmlLastWish[MAXTF2PLAYERS];
+bool b_VoidPortalOpened[MAXTF2PLAYERS];
 float f_ArmorCurrosionImmunity[MAXENTITIES];
 float f_CooldownForHurtHud_Ally[MAXPLAYERS];	
 float mana_regen[MAXTF2PLAYERS];
@@ -1809,6 +1812,7 @@ public void OnMapStart()
 	CurrentGibCount = 0;
 	Zero(f_EmpowerStateSelf);
 	Zero(f_EmpowerStateOther);
+	Zero(b_NetworkedCrouch);
 	
 #if defined VIEW_CHANGES
 	ViewChange_MapStart();
@@ -4062,6 +4066,15 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
 		MakePlayerGiveResponseVoice(target, 3); //Revived response!
 		f_ClientBeingReviveDelay[target] = 0.0;
+		if(b_KahmlLastWish[target])
+		{
+			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
+			GiveArmorViaPercentage(target, 0.1, 1.0, false);
+			IncreaceEntityDamageTakenBy(target, 0.85, 5.0);
+			SetDefaultHudPosition(target, 0, 0, 255, 1.5);
+			SetGlobalTransTarget(target);
+			ShowSyncHudText(target,  SyncHud_Notifaction, "%t", "Kahmlstein Courage");	
+		}
 	}
 }
 

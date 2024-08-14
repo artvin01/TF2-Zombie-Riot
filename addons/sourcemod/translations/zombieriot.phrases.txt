@@ -2330,6 +2330,10 @@
 		"ru"		"Сильвестр делится с вами своей силой..."
 		"chi"		"希尔维斯特和你分享他的力量…"
 	}
+	"Kahmlstein Courage"
+	{
+		"en"		"You feel Kahmlsteins Courage..."
+	}
 	"Opened store via command"
 	{
 		"en"		"In the future, use the TAB/Scoreboard button, it will open the shop without any commands!"

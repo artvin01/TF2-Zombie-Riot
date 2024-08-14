@@ -500,7 +500,8 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
@@ -553,6 +554,11 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 	
 	if(Increaced_Overall_damage_Low[attacker] > GameTime)	//this doesnt get applied in groups.
 		damage += basedamage * ((DMG_MEDIGUN_LOW - 1.0) * DamageBuffExtraScaling);
+
+	#if defined RUINA_BASE
+		if(f_Ruina_Attack_Buff[attacker] > GameTime)
+			damage += basedamage * (f_Ruina_Attack_Buff_Amt[attacker] * DamageBuffExtraScaling);	//x% dmg bonus			
+	#endif
 	
 	return false;
 }
@@ -613,11 +619,6 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 	{
 		damage *= 0.93;
 	}
-	#if defined RUINA_BASE
-		if(f_Ruina_Attack_Buff[attacker] > GameTime)
-			damage += basedamage * f_Ruina_Attack_Buff_Amt[attacker];	//x% dmg bonus			
-	#endif
-
 #endif	//zr
 	return false;
 }
@@ -964,7 +965,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		{
 			WeaponRedBlade_OnTakeDamageNpc(attacker,victim, damagetype,weapon, damage);
 		}
-		case WEAPON_SICCERINO:
+		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL, WEAPON_WALDCH_SWORD_REAL:
 		{
 			return Npc_OnTakeDamage_Siccerino(attacker, victim, damage, weapon);
 		}
@@ -1392,7 +1393,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 						TE_SendToAll();
 					}
 #if defined ZR
-					if((b_FaceStabber[attacker] && !b_FaceStabber[victim]))
+					if(b_FaceStabber[attacker])
 					{
 						if(b_thisNpcIsARaid[victim])
 						{
@@ -1402,6 +1403,9 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					else
 #endif
 					{
+						if(IsTargeter) //give more dmg if youre targetted
+							damage *= 2.0;
+
 						if(b_thisNpcIsARaid[victim])
 						{
 							if(IsTargeter) //give more dmg if youre targetted
@@ -1687,7 +1691,8 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 #if defined ZR
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
-		if(GetTeam(victim) != 2)
+		//only scale if its a player, and if the attacking npc is red too
+		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif

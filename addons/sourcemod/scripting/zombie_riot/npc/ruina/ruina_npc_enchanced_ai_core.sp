@@ -75,7 +75,7 @@ bool b_ruina_buff_override[MAXENTITIES];
 
 #define RUINA_NORMAL_NPC_MAX_SHIELD	 	0.25
 #define RUINA_BOSS_NPC_MAX_SHIELD 		0.15
-#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.1
+#define RUINA_RAIDBOSS_NPC_MAX_SHIELD 	0.05
 #define RUINA_SHIELD_NPC_TIMEOUT 		7.5
 #define RUINA_SHIELD_ONTAKE_SOUND 		"weapons/flame_thrower_end.wav"			//does this work???
 
@@ -376,7 +376,7 @@ static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[
 
 		if(fl_ontake_sound_timer[victim]<=GameTime)
 		{
-			fl_ontake_sound_timer[victim] = GameTime + 0.25;
+			fl_ontake_sound_timer[victim] = GameTime + 0.1;
 			EmitSoundToAll(RUINA_SHIELD_ONTAKE_SOUND, victim, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		}
 		//also remove kb dependant on strength

@@ -629,7 +629,7 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	Attributes_Set(wearable, 2053, Attributes_Get(weapon, 2053, 0.0));
 }
 
-void HidePlayerWeaponModel(int client, int entity)
+void HidePlayerWeaponModel(int client, int entity, bool OnlyHide = false)
 {
 	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
@@ -638,6 +638,8 @@ void HidePlayerWeaponModel(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
+	if(OnlyHide)
+		return;
 	int EntityWeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(IsValidEntity(EntityWeaponModel))
 	{
