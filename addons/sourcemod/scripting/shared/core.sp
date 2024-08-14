@@ -485,7 +485,7 @@ bool b_IsAMedigun[MAXENTITIES];
 int PrevOwnerMedigun[MAXENTITIES];
 float flNpcCreationTime[MAXENTITIES];
 float f_TargetWasBlitzedByRiotShield[MAXENTITIES][MAXENTITIES];
-bool b_npcspawnprotection[MAXENTITIES];
+int i_npcspawnprotection[MAXENTITIES];
 float f_DomeInsideTest[MAXENTITIES];
 float f_LudoDebuff[MAXENTITIES];
 float f_SpadeLudoDebuff[MAXENTITIES];

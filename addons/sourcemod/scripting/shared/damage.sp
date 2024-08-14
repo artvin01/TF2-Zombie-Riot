@@ -1536,14 +1536,14 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	//Resistance buffs will not count towards this flat decreace, they will be universal!hussar!
 	//these are absolutes
 #if !defined RPG
-	if(victim > MaxClients && b_npcspawnprotection[victim])
+	if(victim > MaxClients && i_npcspawnprotection[victim] == 1)
 	{
 		//dont give spawnprotection if both are
 		if(attacker <= MaxClients)
 		{
 			DamageRes *= 0.05;
 		}
-		else if(!b_npcspawnprotection[attacker])
+		else if(i_npcspawnprotection[attacker] != 1)
 		{
 			DamageRes *= 0.05;
 		}
@@ -1649,7 +1649,7 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 		damage *= 0.9;
 		
 #if !defined RPG
-	if(attacker > MaxClients && b_npcspawnprotection[attacker])
+	if(attacker > MaxClients && i_npcspawnprotection[attacker] == 1)
 	{
 		damage *= 1.5;
 	}
