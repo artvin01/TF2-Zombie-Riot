@@ -620,6 +620,7 @@ void NPC_ConfigSetup()
 	BuccaneerBones_OnMapStart_NPC();
 	ArchmageBones_OnMapStart_NPC();
 	PirateBones_OnMapStart_NPC();
+	DeckhandBones_OnMapStart_NPC();
 }
 
 void NPC_MapEnd()
@@ -1451,6 +1452,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/bonezone/npc_necromancer.sp"
 #include "zombie_riot/npc/bonezone/npc_skeletalsaint.sp"
 #include "zombie_riot/npc/bonezone/npc_ssb.sp"
+#include "zombie_riot/npc/bonezone/npc_undeaddeckhand.sp"
 
 /*
 void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
