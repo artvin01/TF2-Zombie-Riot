@@ -2614,6 +2614,10 @@
 		"ru"	"Увеличение отдачи способности на +100%%."
 		"chi"	"技能击退+100%%。"
 	}
+	"Mlynar ExtraDesc"
+	{
+		"en"	"Reflect deals 2x dmg against raids, you take 15% more damage from raids."
+	}
 	"Mlynar Sword Desc"
 	{
 		"en"	"Gain 30%% damage & 50%% less knockback, 10%% slower\nCant Attack, reflect damage onto enemies depending on your damage(deals true damage)\nYou charge damage by standing around, standing near enemies and being hurt.\nWeapon has no damage falloff with more enemies hit."

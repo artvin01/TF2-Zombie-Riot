@@ -487,6 +487,10 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		damageModif *= f_MlynarDmgMultiPassive[victim];
 		damageModif *= f_MlynarDmgMultiAgressiveClose[victim];
 		damageModif *= f_MlynarDmgMultiHurt[victim];
+		if(b_thisNpcIsARaid[attacker])
+		{
+			damageModif *= 2.0;
+		}
 
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
