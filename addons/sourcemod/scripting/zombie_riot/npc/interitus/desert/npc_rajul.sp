@@ -241,7 +241,6 @@ void DesertRajulHealRandomAlly(int victim, float damage, int settingdo = 1)
 
 		ExpidonsaGroupHeal(victim, 150.0, 3, RajulHealAlly[victim] * 0.5, 2.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;		
-		float ProjectileLoc[3];
 		DesertYadeamDoHealEffect(victim, 150.0);
 	}
 }
