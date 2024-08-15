@@ -334,6 +334,10 @@
 	{
 		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses."
 	}
+	"Flamethrower Pap 1 1"
+	{
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
+	}
 	"Flamethrower Pap 2"
 	{
 		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
