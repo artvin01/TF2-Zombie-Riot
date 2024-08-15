@@ -332,11 +332,11 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 2x damage against raidbosses."
+		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses."
 	}
 	"Flamethrower Pap 2"
 	{
-		"en"		"Increased damage and resistances.\nDeals 2x damage against raidbosses."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -2188,7 +2188,7 @@
 
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 2x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
+		"en"	"Deals 1.15x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
 	}
 
 	"Alchemist Potion Desc"
