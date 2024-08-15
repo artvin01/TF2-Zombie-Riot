@@ -82,6 +82,7 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	hullMax = {20.0,20.0,20.0};
 	trace = TR_TraceHullFilterEx(belowBossEyes, VectorTarget_2, hullMin, hullMax, 1073741824, Flamer_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
+	FinishLagCompensation_Base_boss();
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
@@ -118,7 +119,6 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 				BEAM_BuildingHit[building] = false;
 		}
 	}
-	FinishLagCompensation_Base_boss();
  	return;
 }
 
@@ -129,7 +129,7 @@ static bool Flamer_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_FLAME -1 ); i++)
+			for(int i=0; i < MAX_TARGETS_FLAME; i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{
@@ -239,7 +239,7 @@ public void Weapon_PHLOG_Judgement(int client, int weapon, bool crit, int slot)
 		i_PHLOGHitsDone[client] = 0;
 		f_PHLOGabilitydelay[client] = GetGameTime() + 10.0; //Have a cooldown so they cannot spam it.
 		EmitSoundToAll(PHLOG_ABILITY, client, _, 75, _, 0.60);
-		TF2_AddCondition(client, TFCond_Ubercharged, 2.0); //ohboy
+		TF2_AddCondition(client, TFCond_Ubercharged, 1.0); //ohboy
 		TF2_AddCondition(client, TFCond_DefenseBuffNoCritBlock, 10.0);
 		TF2_AddCondition(client, TFCond_CritCanteen, 10.0);
 		ApplyTempAttrib(weapon, 2, 1.35, 10.0); //way higher damage.
