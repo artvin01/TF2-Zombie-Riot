@@ -236,7 +236,7 @@ void ChaosInsaneSelfDefense(ChaosInsane npc, float gameTime, int target, float d
 				//This lasts 73 frames
 				//at frame 61 it explodes.
 				//divide by 24 to get the accurate time!
-				npc.m_bisWalking = true;
+				npc.m_bisWalking = false;
 				npc.m_iChanged_WalkCycle = 1;
 				npc.SetActivity("ACT_ROGUE2_CHAOS_INSANE_WALK");
 				NPC_StopPathing(npc.index);

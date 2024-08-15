@@ -9,6 +9,8 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4013: Override Explosion FAloff
 // 4014: Ammo consume extra in reserve
 // 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
+// 4016: bonus damage to raidbosses
+// 4017: attackspeed directly converts into damage
 bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
@@ -21,7 +23,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015: 
+		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015,4016,4017: 
 		{
 			return true;
 		}
@@ -223,7 +225,6 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		{
 			return;
 		}
-
 		if(!(damagetype & DMG_SLASH)) //Exclude itself so it doesnt do inf repeats! no weapon uses slash so we will use slash for any debuffs onto zombies that stacks
 		{
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
@@ -335,6 +336,24 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 		value = Attributes_Get(weapon, 309, 0.0);	// Gib on crit, in this case, guranted gibs
 		if(value)
 			view_as<CClotBody>(victim).m_bGib = true;
+		
+		value = Attributes_Get(weapon, 4016, 1.0);	// bonus damage to raids
+		if(value != 1.0)
+		{
+			if(b_thisNpcIsARaid[victim])
+			{
+				damage *= value;
+			}
+		}
+		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		if(value)
+		{
+			value = Attributes_Get(weapon, 6, 0.0);
+			if(value)
+			{
+				damage /= value;
+			}
+		}
 		
 		value = Attributes_Get(weapon, 225, 0.0);	// if Above Half Health
 		if(value)

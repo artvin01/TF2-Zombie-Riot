@@ -74,6 +74,10 @@
 	{
 		"en" 		"Ruina"
 	}
+	"Iberia Expidonsa Alliance"
+	{
+		"en" 		"Iberia Expidonsa Alliance"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
