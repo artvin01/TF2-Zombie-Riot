@@ -508,6 +508,10 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		{
 			damageModif = 20.0;
 		}
+		else if(pap == 2)
+		{
+			damageModif = 25.0;
+		}
 		damageModif *= Attributes_Get(weapon, 1, 1.0);
 		damageModif *= Attributes_Get(weapon, 2, 1.0);
 		damageModif *= Attributes_Get(weapon, 1000, 1.0);
@@ -554,6 +558,7 @@ public void Mlynar_Think(int client)
 	{
 		Store_RemoveSpecificItem(client, "Mlynar's Greatsword");
 		Store_RemoveSpecificItem(client, "Mlynar's Greatsword Pap");
+		Store_RemoveSpecificItem(client, "Mlynar's Greatsword Pap 2");
 		//We are Done, kill think.
 		int TemomaryGun = EntRefToEntIndex(i_RefWeaponDelete[client]);
 		if(IsValidEntity(TemomaryGun))

@@ -658,6 +658,10 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 1);
 		}
+		case WEAPON_MLYNAR_PAP_2: // weapon_ark
+		{
+			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
+		}
 		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
 		{
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
