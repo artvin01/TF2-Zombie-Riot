@@ -224,9 +224,9 @@ public Action AnarchyMadDoctor_OnTakeDamage(int victim, int &attacker, int &infl
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		WinterArcticMageHealRandomAlly(victim, 2000.0, 2);
 	}
 	//each HIT gives more. 
-	WinterArcticMageHealRandomAlly(victim, 2000.0);
 	
 	return Plugin_Changed;
 }

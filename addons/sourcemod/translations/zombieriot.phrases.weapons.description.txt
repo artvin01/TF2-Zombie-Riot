@@ -2630,6 +2630,10 @@
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
 	}
+	"Mlynar Sword Desc pap 2"
+	{
+		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+	}
 	"Barracks Railgunner Desc"
 	{
 		"en"	"A long ranged Sniper unit, fragile!"

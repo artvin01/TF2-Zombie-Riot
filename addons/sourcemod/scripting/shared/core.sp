@@ -2857,7 +2857,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		RequestFrame(SDKHook_TeamSpawn_SpawnPost, entity);
 	}
 #endif
-	
+//	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= 2048 && IsValidEntity(entity))
 	{
 		b_AllowCollideWithSelfTeam[entity] = false;
@@ -3083,6 +3083,10 @@ public void OnEntityCreated(int entity, const char[] classname)
 		else if(!StrContains(classname, "tf_ammo_pack"))
 		{
 			SDKHook(entity, SDKHook_SpawnPost, Delete_instantly);
+		}
+		else if(!StrContains(classname, "tf_flame_manager"))
+		{
+			SDKHook(entity, SDKHook_SpawnPost, MakeFlamesUseless);
 		}
 		else if(!StrContains(classname, "entity_revive_marker"))
 		{
@@ -3457,7 +3461,11 @@ public void Delete_instantly(int entity)
 {
 	RemoveEntity(entity);
 }
-
+public void MakeFlamesUseless(int entity)
+{
+	//This makes the flamethrower itself do nothing. we do our own logic.
+	SetEntProp(entity, Prop_Send, "m_nSolidType", 0);
+}
 public void Delete_FrameLater(int ref) //arck, they are client side...
 {
 	int entity = EntRefToEntIndex(ref);

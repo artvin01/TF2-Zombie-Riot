@@ -227,6 +227,7 @@ public void Protecta_NPCDeath(int entity)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		ExpidonsaGroupHeal(npc.index, 150.0, 99, 200.0, 1.0, true);
+		DesertYadeamDoHealEffect(npc.index, 150.0);
 	}
 	ExpidonsaRemoveEffects(entity);
 		
@@ -287,6 +288,7 @@ void ProtectaSelfDefense(Protecta npc, float gameTime, int target, float distanc
 					{
 						ExpidonsaGroupHeal(npc.index, 150.0, 5, 150.0, 1.0, true);
 					}
+					DesertYadeamDoHealEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;

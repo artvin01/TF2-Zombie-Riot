@@ -177,17 +177,26 @@ public void IberiaCambino_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		if(flDistanceToTarget < npc.GetLeadRadius()) 
+		int Action = IberiaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		switch(Action)
 		{
-			float vPredictedPos[3];
-			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-			NPC_SetGoalVector(npc.index, vPredictedPos);
+			case 0:
+			{
+				//We run at them.
+				if(flDistanceToTarget < npc.GetLeadRadius()) 
+				{
+					float vPredictedPos[3];
+					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+					NPC_SetGoalVector(npc.index, vPredictedPos);
+				}
+				else 
+				{
+					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+				}
+			}
 		}
-		else 
-		{
-			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-		}
-		IberiaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+
+		
 	}
 	else
 	{
@@ -237,7 +246,7 @@ public void IberiaCambino_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-void IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, float distance)
+int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, float distance)
 {
 	if(npc.m_iAttacksTillReload >= 1)
 	{
@@ -251,10 +260,58 @@ void IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, flo
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.StartPathing();
+
 		}	
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.75))
+		{
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+					
+			if(IsValidEnemy(npc.index, Enemy_I_See))
+			{
+				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+				npc.m_iTarget = Enemy_I_See;
+				npc.PlayMeleeSound();
+				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+				npc.FaceTowards(vecTarget, 20000.0);
+				Handle swingTrace;
+				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				{
+					target = TR_GetEntityIndex(swingTrace);	
+						
+					float vecHit[3];
+					TR_GetEndPosition(vecHit, swingTrace);
+					float origin[3], angles[3];
+					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
+					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+					npc.m_flNextMeleeAttack = gameTime + 0.75;
+					npc.m_iAttacksTillReload --;
+
+					if(IsValidEnemy(npc.index, target))
+					{
+						float damageDealt = 20.5;
+						if(ShouldNpcDealBonusDamage(target))
+							damageDealt *= 5.0;
+
+
+						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+					}
+				}
+				delete swingTrace;
+			}
+			else
+			{
+				//cant see.
+				return 0;
+			}
+		}
+		else
+		{
+			//too far away.
+			return 0;
+		}
 		//they have more then 1 bullet, use gunmode.
 		//Do backoff code, but only on wave 16+
-		return;
+		return 1;
 	}
 	//we use our melee.
 	if(npc.m_iChanged_WalkCycle != 2)
@@ -330,4 +387,5 @@ void IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, flo
 			}
 		}
 	}
+	return 0;
 }

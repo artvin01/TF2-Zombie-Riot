@@ -2245,6 +2245,10 @@ void OnKillUniqueWeapon(int attacker, int weapon, int victim)
 		{
 			MlynarReduceDamageOnKill(attacker, 1);
 		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			MlynarReduceDamageOnKill(attacker, 2);
+		}
 		case WEAPON_CASINO:
 		{
 			CasinoSalaryPerKill(attacker, weapon);
@@ -2277,6 +2281,11 @@ stock void OnPostAttackUniqueWeapon(int attacker, int victim, int weapon, int da
 		{
 			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
 				MlynarTakeDamagePostRaid(attacker, 1);
+		}
+		case WEAPON_MLYNAR_PAP_2:
+		{
+			if(b_thisNpcIsARaid[victim] && (!(damage_custom_zr & ZR_DAMAGE_REFLECT_LOGIC))) //do not reduce damage if the damage type was a reflect.
+				MlynarTakeDamagePostRaid(attacker, 2);
 		}
 	}
 #endif

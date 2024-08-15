@@ -24,6 +24,9 @@ static const char g_MeleeAttackSounds[][] = {
 	"vo/sniper_jaratetoss02.mp3",
 	"vo/sniper_jaratetoss03.mp3",
 };
+static const char g_HealSound[][] = {
+	"items/medshot4.wav",
+};
 
 
 void DesertYadeam_OnMapStart_NPC()
@@ -32,6 +35,7 @@ void DesertYadeam_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_HealSound)); i++) { PrecacheSound(g_HealSound[i]); }
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Yadeam");
@@ -80,6 +84,11 @@ methodmap DesertYadeam < CClotBody
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayHealSound() 
+	{
+		EmitSoundToAll(g_HealSound[GetRandomInt(0, sizeof(g_HealSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2, 110);
+
 	}
 	
 	
@@ -134,11 +143,6 @@ methodmap DesertYadeam < CClotBody
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask_s1/short2014_all_mercs_mask_s1_sniper.mdl");
 	
-		float flPos[3]; // original
-		float flAng[3]; // original
-		npc.GetAttachment("head", flPos, flAng);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "speech_mediccall", npc.index, "head", {0.0,0.0,0.0});
-		npc.m_flNextRangedAttackHappening = GetGameTime() + 5.0;
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -154,16 +158,13 @@ public void DesertYadeam_ClotThink(int iNPC)
 	DesertYadeam npc = view_as<DesertYadeam>(iNPC);
 	if(npc.m_flNextRangedAttackHappening < GetGameTime())
 	{
-		npc.m_flNextRangedAttackHappening = GetGameTime() + 5.0;
-		if(IsValidEntity(npc.m_iWearable6))
-		{
-			RemoveEntity(npc.m_iWearable6);
-		}
-		float flPos[3]; // original
-		float flAng[3]; // original
-		npc.GetAttachment("head", flPos, flAng);
-		npc.m_iWearable6 = ParticleEffectAt_Parent(flPos, "speech_mediccall", npc.index, "head", {0.0,0.0,0.0});
+		npc.m_flNextRangedAttackHappening = GetGameTime() + 2.5;
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, 150.0 * 2.0);	
+		npc.PlayHealSound();
 	}
+
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -224,9 +225,18 @@ public void DesertYadeam_ClotThink(int iNPC)
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
-		ExpidonsaGroupHeal(npc.index, 20.0, 99, 150.0, 1.0, false,Expidonsa_DontHealSameIndex);
+		ExpidonsaGroupHeal(npc.index, 150.0, 99, 20.0, 1.0, false,Expidonsa_DontHealSameIndex);
 	}
 	DesertYadeamSelfDefense(npc,GetGameTime(npc.index)); 
+}
+
+void DesertYadeamDoHealEffect(int entity, float range)
+{
+	float ProjectileLoc[3];
+	DesertYadeam npc1 = view_as<DesertYadeam>(entity);
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	spawnRing_Vectors(ProjectileLoc, 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 0, 125, 0, 200, 1, 0.3, 5.0, 8.0, 3, range * 2.0);	
+	npc1.PlayHealSound();
 }
 
 void DesertYadeamSelfDefense(DesertYadeam npc, float gameTime)
