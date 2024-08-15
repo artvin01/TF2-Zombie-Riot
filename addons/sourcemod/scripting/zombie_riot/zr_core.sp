@@ -213,6 +213,7 @@ enum
 	Type_BlueParadox,
 	Type_Void,
 	Type_Ruina,
+	Type_IberiaExpiAlliance,
 }
 
 //int Bob_To_Player[MAXENTITIES];

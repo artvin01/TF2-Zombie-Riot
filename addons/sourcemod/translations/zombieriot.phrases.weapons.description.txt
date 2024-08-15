@@ -332,10 +332,11 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage. M2 ability gives minicrits and uber for a short time."
-		"fr"		"Dégats améliorés. Abilité M2 donne des Mini-Crits et du Über pour une courte période."
-		"ru"		"Увеличенный урон. Способность на М2 даёт мини-криты и убер на короткое время."
-		"chi"       "增加伤害。鼠标右键技能在短时间内给予迷你暴击和无敌。"
+		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 2x damage against raidbosses."
+	}
+	"Flamethrower Pap 2"
+	{
+		"en"		"Increased damage and resistances.\nDeals 2x damage against raidbosses."
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -2185,6 +2186,11 @@
 		"fr"	"Améliorations de cadence de tir améliore la vitesse du rayon laser.\nAméliorations de vitesse du rechargement ralentit le rechauffement de l'arme."
 	}
 
+	"Flamethrower Extra Desc"
+	{
+		"en"	"Deals 2x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
+	}
+
 	"Alchemist Potion Desc"
 	{
 		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
@@ -2607,6 +2613,10 @@
 		"fr"	"+100%% recul pour abilité."
 		"ru"	"Увеличение отдачи способности на +100%%."
 		"chi"	"技能击退+100%%。"
+	}
+	"Mlynar ExtraDesc"
+	{
+		"en"	"Reflect deals 2x dmg against raids, you take 15% more damage from raids."
 	}
 	"Mlynar Sword Desc"
 	{
