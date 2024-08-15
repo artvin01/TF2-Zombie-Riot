@@ -8,16 +8,17 @@ static float fl_heat[MAXTF2PLAYERS];
 static float fl_overheat_timer[MAXTF2PLAYERS];
 static float fl_hud_timer[MAXTF2PLAYERS];
 static float fl_laser_last_fired[MAXTF2PLAYERS];
+//static float fl_deviation_cycle[MAXTF2PLAYERS];
 
 #define LAZ_LASER_CANNON_HEATGAIN 1.0	//heat gained every time it deals damage
 #define LAZ_LASER_CANNON_OVERHEAT 75.0	//how much heat to have for it to overheat.
 #define LAZ_LASER_CANNON_OVERHEAT_TIMER	7.5	//how long must the player forcefully not shoot for the laser cannon to recharge without having to heatdump.
 #define LAZ_LASER_CANNON_REPLACE_COST 500	//how much laser battery to consume upon replacing the core
 
-/*void Laz_Laser_Cannon_MapStart()
+void Laz_Laser_Cannon_MapStart()
 {
 	
-}*/
+}
 
 public void Laz_Cannon_Mouse1(int client, int weapon, bool &result, int slot)
 {
@@ -46,6 +47,7 @@ public void Laz_Cannon_Mouse1(int client, int weapon, bool &result, int slot)
 	fl_heat[client]-= LAZ_LASER_CANNON_OVERHEAT*Time_Ratio;
 	if(fl_heat[client]<0.0)
 		fl_heat[client] = 0.0;
+
 
 	fl_laser_last_fired[client] = GetGameTime();
 	fl_hud_timer[client] = 0.0;
@@ -109,7 +111,21 @@ static bool Handle_Heat(int client, char HUDText[255])
 		return true;
 	return false;
 }
+/*
+static void Laser_Deviation(int client, float Angles[3], float Deviation)
+{
+	if(fl_deviation_cycle[client] < GetGameTime())
+		fl_deviation_cycle[client] = GetGameTime() + 1.0;
 
+	float timer = fl_deviation_cycle[client] - GetGameTime();
+
+	float Cycle = Sine(fabs(timer)*2.0*FLOAT_PI);
+	float Cycle2 = Sine(fabs(timer)*-4.0*FLOAT_PI);
+
+	Angles[0]+=Deviation*Cycle2;
+	Angles[1]+=Deviation*Cycle;
+}
+*/
 static void Laz_Laser_Tick(int client)
 {
 	bool Mouse1 = (GetClientButtons(client) & IN_ATTACK) != 0;
@@ -117,7 +133,6 @@ static void Laz_Laser_Tick(int client)
 	int weapon = EntRefToEntIndex(i_weapon_onuse[client]);
 	if(!Mouse1 || weapon_holding != weapon || !IsValidEntity(weapon))
 	{
-		
 		SDKUnhook(client, SDKHook_PreThink, Laz_Laser_Tick);
 		return;
 	}
@@ -168,8 +183,11 @@ static void Laz_Laser_Tick(int client)
 	}
 
 	
-	float Radius = 15.0;
+	float Radius = 7.5;
 	float diameter = 60.0;
+
+	//float Deviation = 1.5;
+	//Deviation *=Attributes_Get(weapon, 106, 1.0);
 
 	float Start[3], End[3], Angles[3];
 	if(update)
@@ -189,7 +207,10 @@ static void Laz_Laser_Tick(int client)
 		Laser.Damage = damage;
 		Laser.Radius = Radius;
 		Laser.damagetype = DMG_PLASMA;
-		Laser.DoForwardTrace_Basic(Range);
+		GetClientEyeAngles(client, Angles);
+		//Laser_Deviation(client,Angles, Deviation);
+		GetClientEyePosition(client, Start);
+		Laser.DoForwardTrace_Custom(Angles, Start, Range);
 		Laser.Deal_Damage();
 		fl_laz_distance[client] = GetVectorDistance(Laser.Start_Point, Laser.End_Point);
 		Offset_Vector({0.0, -12.0, -2.0}, Laser.Angles, Laser.Start_Point);
@@ -200,6 +221,7 @@ static void Laz_Laser_Tick(int client)
 	{
 		GetClientEyePosition(client, Start);
 		GetClientEyeAngles(client, Angles);
+		//Laser_Deviation(client,Angles, Deviation);
 		Get_Fake_Forward_Vec(fl_laz_distance[client], Angles, End, Start);
 		Offset_Vector({0.0, -12.0, -2.0}, Angles, Start);
 	}
@@ -219,7 +241,7 @@ static void Laz_Laser_Tick(int client)
 	if(update)
 	{
 		color[3] = 25;
-		TE_SetupBeamPoints(Start, End, Beam_Index, 0, 0, 66, 0.1, Start_Diameter3*0.9, Start_Diameter3*0.9, 0, 0.1, color, 3);
+		TE_SetupBeamPoints(Start, End, Beam_Index, 0, 0, 66, 0.1, Start_Diameter3*1.2, Start_Diameter3*1.2, 0, 0.1, color, 3);
 		TE_SendToAll();
 	}	
 }

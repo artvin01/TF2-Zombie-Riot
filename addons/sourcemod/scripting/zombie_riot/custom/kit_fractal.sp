@@ -719,6 +719,13 @@ public void Kit_Fractal_Starfall(int client, int weapon, bool &result, int slot)
 	Laser.client = client;
 	float Range = 1500.0;
 	float Radius = 250.0;
+	Range *= Attributes_Get(weapon, 103, 1.0);
+	Range *= Attributes_Get(weapon, 104, 1.0);
+	Range *= Attributes_Get(weapon, 475, 1.0);
+	Range *= Attributes_Get(weapon, 101, 1.0);
+	Range *= Attributes_Get(weapon, 102, 1.0);
+	Radius *=Attributes_Get(weapon, 99, 1.0);
+	Radius *=Attributes_Get(weapon, 100, 1.0);
 	Laser.DoForwardTrace_Basic(Range);
 	float dps = 100.0;
 	dps *=Attributes_Get(weapon, 410, 1.0);
@@ -763,7 +770,7 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 				continue;
 			
 			//CPrintToChatAll("cycle %i", cycle);
-			float speed = 0.75;
+			float speed = 0.69;
 			i_targeted_ID[client][cycle] = EntIndexToEntRef(i_entity_targeted[entitys]);
 			float pos1[3];
 			WorldSpaceCenter(i_entity_targeted[entitys], pos1);
@@ -778,16 +785,16 @@ static void Check_StarfallAOE(int client, float Loc[3], float Radius, int cycle,
 			{
 				pack.WriteFloatArray(pos1, 3);
 				pos1[2]+=10.0;
-				TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
-				TE_SendToAll();
+				TE_SetupBeamRingPoint(pos1, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+				Send_Te_Client_ZR(client);
 				pos1[2]-=10.0;
 			}
 			else
 			{	
 				pack.WriteFloatArray(Loc, 3);
 				Loc[2]+=10.0;
-				TE_SetupBeamRingPoint(Loc, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
-				TE_SendToAll();
+				TE_SetupBeamRingPoint(Loc, Radius*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+				Send_Te_Client_ZR(client);
 				Loc[2]-=10.0;
 			}
 				
@@ -821,8 +828,8 @@ static Action Timer_StarfallIon(Handle Timer, DataPack pack)
 	TE_SetupBeamPoints(Loc, sky, g_Ruina_BEAM_Combine_Blue, 0, 0, 0, speed, 15.0, 15.0, 0, 0.1, color, 3);
 	TE_SendToAll();
 	Loc[2]+=10.0;
-	TE_SetupBeamRingPoint(Loc, 0.0, radius*2.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
-	TE_SendToAll();
+	TE_SetupBeamRingPoint(Loc, 0.0, radius*2.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, speed, 15.0, 0.75, color, 1, 0);
+	Send_Te_Client_ZR(client);
 	Loc[2]-=10.0;
 	Check_StarfallAOE(client, Loc, radius, cycle-1, damage);
 
