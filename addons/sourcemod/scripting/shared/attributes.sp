@@ -10,6 +10,7 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4014: Ammo consume extra in reserve
 // 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
 // 4016: bonus damage to raidbosses
+// 4017: attackspeed directly converts into damage
 bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
@@ -22,7 +23,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015,4016: 
+		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015,4016,4017: 
 		{
 			return true;
 		}
@@ -342,6 +343,15 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 			if(b_thisNpcIsARaid[victim])
 			{
 				damage *= value;
+			}
+		}
+		value = Attributes_Get(weapon, 4017, 0.0);	// Attackspeed converts into damage
+		if(value)
+		{
+			value = Attributes_Get(weapon, 6, 0.0);
+			if(value)
+			{
+				damage /= value;
 			}
 		}
 		
