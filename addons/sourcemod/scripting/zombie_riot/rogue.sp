@@ -2358,8 +2358,12 @@ static Action Rogue_ChaosChaos(Handle timer)
 	}
 
 	ResetReplications();
+	
+	float mod = 1.0 + (CurrentChaos * 0.003);
+	if(mod > 3.0)
+		mod = 3.0;
 
-	cvarTimeScale.SetFloat(GetRandomFloat(0.7, 1.3));
+	cvarTimeScale.SetFloat(GetRandomFloat(1.0 / mod, mod));
 	return Plugin_Continue;
 }
 
