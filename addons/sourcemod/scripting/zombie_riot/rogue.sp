@@ -2072,7 +2072,7 @@ void Rogue_PlayerDowned(int client)
 	if(Rogue_GetChaosLevel() > 3)
 		i_AmountDowned[client]++;
 	
-	if(RogueTheme == BlueParadox)
+	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
 		BattleChaos += 10.0 / float(CurrentPlayers);
