@@ -737,7 +737,6 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	Nemal_Weapon_Lines(npc, attacker);
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
@@ -755,12 +754,13 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{ligghtblue}Nemal{default}: Ouch ouch! Time out, time out!");
+			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
 		}
 	}
+	Nemal_Weapon_Lines(npc, attacker);
 
 	
 	return Plugin_Changed;
@@ -815,19 +815,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{ligghtblue}Nemal{default}: Okay... ouch.. ow...");
+			CPrintToChatAll("{lightblue}Nemal{default}: Okay... ouch.. ow...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{ligghtblue}Nemal{default}: Okay Okay you won! For now!");
+			CPrintToChatAll("{lightblue}Nemal{default}: Okay Okay you won! For now!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{ligghtblue}Nemal{default}: See you next time.... this hurts!");
+			CPrintToChatAll("{lightblue}Nemal{default}: See you next time.... this hurts!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{ligghtblue}Nemal{default}: I was going to insult you, but i asked for this...");
+			CPrintToChatAll("{lightblue}Nemal{default}: I was going to insult you, but i asked for this...");
 		}
 	}
 
@@ -1758,34 +1758,6 @@ public bool Nemal_TraceWallsOnly(int entity, int contentsMask)
 }
 
 
-void NemalGiveShield(int Nemal, int shieldcount)
-{
-	Nemal npc = view_as<Nemal>(Nemal);
-	if(ZR_GetWaveCount()+1 >= 60)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
-	}
-	else if(ZR_GetWaveCount()+1 >= 45)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.3);
-	}
-	else if(ZR_GetWaveCount()+1 >= 30)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.25);
-	}
-	else
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 0.75);
-	}
-
-	if(npc.Anger)
-	{
-		shieldcount = RoundToNearest(float(shieldcount) * 1.1);
-	}
-
-	VausMagicaGiveShield(Nemal, shieldcount); //Give self a shield
-}
-
 static void Nemal_Weapon_Lines(Nemal npc, int client)
 {
 	if(client > MaxClients)
@@ -1812,20 +1784,208 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		
-		case WEAPON_Nemal_SCYTHE,WEAPON_Nemal_SCYTHE_PAP_1,WEAPON_Nemal_SCYTHE_PAP_2,WEAPON_Nemal_SCYTHE_PAP_3:
-		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
-		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
-		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
-		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
-		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such expidonsan weaponry{gold}%N{default}?",client);
-		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
-		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
-		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
-		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
-		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
-		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
-		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "Howd you get {lightblue}Nemal's{default} Weapon{gold}%N{default}?",client);
-		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "The lance... the only weapon that was forged from both ruina and {gold}expidonsa{default}...");
+		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Cool Scythe! Can it be yellow though {gold}%N{default}?",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "I'll let you in on a secret, {blue}Sensal{default} weapon isnt even from him... its from {gold}Silvester{default}! .... i think, i may be wrong.");
+			}
+		}
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} cant stop himself from showing his weapons cant he?",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} Wasnt hidding when he said {gold}Silvester{default} loves showing off.");
+			}
+		}
+		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Nice pair of Siccors {gold}%N{default}!",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Ever tried Snipping slower?",client);
+			}
+		} 
+		case WEAPON_WALDCH_SWORD_REAL:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Aha! {darkblue}Waldch{default} DID accept my blade!.");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Waldch{default} You said you HATED IT!!!!!!!!!!!!");
+			}
+		}  
+		case WEAPON_NEARL:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} went there too?!.");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}... invite me next time to Kazimierz...");
+			}
+		} 
+		case WEAPON_KAHMLFIST:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "{darkblue}Kahmlstein{default} was a rude asshole, But atleast he reedemed himself.");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Trying to keep his memory going{gold}%N{default}? I guess {darkblue}Kahmlstein{default} deserves it after what he did at the end.",client);
+			}
+		}  
+		case WEAPON_KIT_BLITZKRIEG_CORE:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Always hated the concept of the machine {crimson}Blitkzrieg{default}...");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Why are you trying to be like it{gold}%N{default}? I guess {crimson}Blitkzrieg{default} was cool...",client);
+			}
+		}
+		case WEAPON_RED_BLADE:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "I miss {crimson}Guln{default}.");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "The world was too cruel to {crimson}Guln{default}...");
+			}
+		}
+		case WEAPON_SPIKELAYER:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "OW! WHY LEGOS??.");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Just cause i can WALK doesnt mean i gotta step on LEGO.");
+			}
+		}
+		case WEAPON_BOARD:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Big shield {gold}%N{default}, compensating?",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Parry me right... and youll be set for {purple}it{default}.");
+			}
+		}
+		case WEAPON_IRENE:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+			}
+		}
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "Were here to train.... why......");
+		case WEAPON_ANGELIC_SHOTGUN:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon {gold}%N{default}!",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+			}
+		}
+		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "You're just a little guy {gold}%N{default}! wait ow OW that hurts!!!",client);
+		case WEAPON_MLYNAR_PAP_2,WEAPON_MLYNAR_PAP,WEAPON_MLYNAR:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Care {gold}%N{default}, dammit!",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "You arent even fighting me are you {gold}%N{default}?! Get off your paper!",client);
+			}
+		}
+		case WEAPON_TRASH_CANNON:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Your Trash doesnt scare me{gold}%N{default}.",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Why is there a bomb in your trash{gold}%N{default}?",client);
+			}
+		}
+		case WEAPON_STAR_SHOOTER:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Hey youre using my Star Shooter {gold}%N{default}!",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Oh how i wanna use that weapon again... can i borrow your Star Shooter{gold}%N{default}?",client);
+			}
+		}
+		case WEAPON_MESSENGER_LAUNCHER:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Messenger's Mind was long gone, i pity him, really...");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "If you see Messenger around, tell him i said hi {gold}%N{default}, okay?",client);
+			}
+		}
+		case WEAPON_FLAMETAIL:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Dont Dodge me!");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Cant dodge forever, {crimson}%N{default}.",client);
+			}
+		}
+		case WEAPON_LEPER_MELEE, WEAPON_LEPER_MELEE_PAP:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "That sword is cool {gold}%N{default}! lets fight like... uh... people.",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "That amazing pose wont scare me off {gold}%N{default}!",client);
+			}
+		}
+		case WEAPON_NECRO_WANDS, WEAPON_SKULL_SERVANT:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Dont mess with the dead {gold}%N{default}, dont want {green}him{default} bugging us....",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "if {green}he{default} comes back im blaming {gold}%N{default}.",client);
+			}
+		}
+		case WEAPON_SEABORN_MISC:
+		{
+			switch(GetRandomInt(0,1))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Sea creature! Shoo shoo!");
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "Why are you a Sea Creature {gold}%N{default}? Shoo shoo!",client);
+			}
+		}
 
 		default:
 		{
@@ -1835,7 +1995,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{blue}Nemal{default}: %s", Text_Lines);
+		CPrintToChatAll("{ligthblue}Nemal{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
