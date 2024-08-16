@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 
-#define SENSAL_BASE_RANGED_SCYTHE_DAMGAE 13.0
-#define SENSAL_LASER_THICKNESS 25
+#define Nemal_BASE_RANGED_SCYTHE_DAMGAE 13.0
+#define Nemal_LASER_THICKNESS 25
 
 static bool BlockLoseSay;
 
@@ -102,15 +102,15 @@ static int Silvester_TE_Used;
 static bool b_RageAnimated[MAXENTITIES];
 static bool b_RageProjectile[MAXENTITIES];
 
-void Sensal_OnMapStart_NPC()
+void Nemal_OnMapStart_NPC()
 {
 	if(!IsFileInDownloads(WEAPON_CUSTOM_WEAPONRY_1))
 		return;
 	
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sensal");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sensal");
-	strcopy(data.Icon, sizeof(data.Icon), "sensal_raid");
+	strcopy(data.Name, sizeof(data.Name), "Nemal");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_Nemal");
+	strcopy(data.Icon, sizeof(data.Icon), "Nemal_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -135,37 +135,37 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_LaserGlobalAttackSound));   i++) { PrecacheSound(g_LaserGlobalAttackSound[i]);   }
 	for (int i = 0; i < (sizeof(g_MissAbilitySound));   i++) { PrecacheSound(g_MissAbilitySound[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+	PrecacheSoundCustom("#zombiesurvival/expidonsa_waves/raid_Nemal_2.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Sensal(client, vecPos, vecAng, ally, data);
+	return Nemal(client, vecPos, vecAng, ally, data);
 }
 
-methodmap Sensal < CClotBody
+methodmap Nemal < CClotBody
 {
 	property int i_GunMode
 	{
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalMeleeCooldown
+	property float f_NemalMeleeCooldown
 	{
 		public get()							{ return fl_NextChargeSpecialAttack[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextChargeSpecialAttack[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD
+	property float f_NemalRocketJumpCD
 	{
 		public get()							{ return fl_NextRangedBarrage_Singular[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_NextRangedBarrage_Singular[this.index] = TempValueForProperty; }
 	}
-	property float f_SensalRocketJumpCD_Wearoff
+	property float f_NemalRocketJumpCD_Wearoff
 	{
 		public get()							{ return fl_AttackHappensMaximum[this.index]; }
 		public set(float TempValueForProperty) 	{ fl_AttackHappensMaximum[this.index] = TempValueForProperty; }
 	}
-	property bool b_SensalRocketJump
+	property bool b_NemalRocketJump
 	{
 		public get()							{ return b_NextRangedBarrage_OnGoing[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_NextRangedBarrage_OnGoing[this.index] = TempValueForProperty; }
@@ -251,9 +251,9 @@ methodmap Sensal < CClotBody
 	}
 	
 	
-	public Sensal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Nemal(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Sensal npc = view_as<Sensal>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
+		Nemal npc = view_as<Nemal>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.35", "40000", ally, false, true, true,true)); //giant!
 		i_NpcWeight[npc.index] = 4;
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -276,7 +276,7 @@ methodmap Sensal < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Internal_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Internal_ClotThink);
 
-		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossSensal_OnTakeDamagePost);
+		SDKHook(npc.index, SDKHook_OnTakeDamagePost, RaidbossNemal_OnTakeDamagePost);
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -300,12 +300,123 @@ methodmap Sensal < CClotBody
 		}
 		
 
+		if(StrContains(data, "wave_15"))
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Were supposed to train our abilities, remember? Well here i am! Lets start off easy!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default}? Where are you?... \nLate again... \nThis dude... \nHe'll come later, let's start off relaxed!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: {gold}Silvester{default} is late isnt he? Probably off to some random beach with {blue}Nemal{default} as usual.. without me!!!\nWe said vacation is after this! oh well, lets begin!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Iberians are with us {gold}Expidonsans{default}!... But im kinda both...\nProbably not that important, anyways lets go!");
+				}
+			}
+		}
+		if(StrContains(data, "wave_30"))
+		{
+			i_RaidGrantExtra[npc.index] = 2;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Got a call, {gold}Silvester{default} will be joining soon, he had some buisness apperantly, get ready for... when he comes!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: What i would do for {blue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isnt his home!!!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Nemal's{default} kinda scary, i mean you fought him, you'd know!");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: There sadly aint many Iberians left after what happend to their home country, damn traitorous {blue}seaborn{default}... we took in the rest and helped them!");
+				}
+			}
+		}
+		if(StrContains(data, "wave_45"))
+		{
+			i_RaidGrantExtra[npc.index] = 3;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Enough chatter, i'll start to not restrain myself.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Nemal{default} wasnt lying when he said you guys got some tricks.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Iberian's have some really widening history, eventually it'll be rebuilt with {gold}Expidonsa's{default} help.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: {blue}Seaborns{default} and us had some treaty yknow... before they attacked everyone... Thats how we have the idea of what {green}Defenda's{default} are using.");
+				}
+			}
+		}
+		if(StrContains(data, "wave_60"))
+		{
+			i_RaidGrantExtra[npc.index] = 4;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+				}
+			}
+		}
 		bool final = StrContains(data, "final_item") != -1;
 		
 		if(final)
 		{
-			i_RaidGrantExtra[npc.index] = 1;
+			i_RaidGrantExtra[npc.index] = 5;
 			b_NpcUnableToDie[npc.index] = true;
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Look's like i have to give it all.");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: I wont hold back anymore.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: Ready yourself.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{lightblue}Nemal{default}: I would worry about you, but i don't think thats neccecary.");
+				}
+			}
 		}
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
@@ -314,7 +425,7 @@ methodmap Sensal < CClotBody
 			{
 				LookAtTarget(client_check, npc.index);
 				SetGlobalTransTarget(client_check);
-				ShowGameText(client_check, "item_armor", 1, "%t", "Sensal Arrived");
+				ShowGameText(client_check, "item_armor", 1, "%t", "Nemal Arrived");
 			}
 		}
 
@@ -354,9 +465,12 @@ methodmap Sensal < CClotBody
 			RaidModeTime = GetGameTime(npc.index) + 220.0;
 			RaidModeScaling *= 0.65;
 		}
-		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
+
+
+
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_sensal_2.mp3");
+		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/expidonsa_waves/raid_Nemal_2.mp3");
 		music.Time = 218;
 		music.Volume = 2.0;
 		music.Custom = true;
@@ -405,7 +519,7 @@ methodmap Sensal < CClotBody
 
 static void Internal_ClotThink(int iNPC)
 {
-	Sensal npc = view_as<Sensal>(iNPC);
+	Nemal npc = view_as<Nemal>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -443,7 +557,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 		return;
 	}
-	if(SensalTalkPostWin(npc))
+	if(NemalTalkPostWin(npc))
 		return;
 
 	if(LastMann)
@@ -455,15 +569,15 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: You are the last one.");
+					CPrintToChatAll("{lightblue}Nemal{default}: You dont beat me, then youll never be able to face the full force of the {purple}void{default}.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Not beating me means no beating the {purple}void{default}.");
 				}
-				case 3:
+				case 2:
 				{
-					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
+					CPrintToChatAll("{lightblue}Nemal{default}: Use that adrenaline against me, come on!");
 				}
 			}
 		}
@@ -475,13 +589,27 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{blue}Sensal{default}: Refusing to collaborate or even reason with {gold}Expidonsa{default} will result in termination.");
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: Well... Theres next time.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: Too tired today? I get it.");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: I'm sorry but this is needed, this is training not a daycare.");
+			}
+		}
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
 	{
-		DeleteAndRemoveAllNpcs = 10.0;
-		mp_bonusroundtime.IntValue = (12 * 2);
+	//	DeleteAndRemoveAllNpcs = 10.0;
+	//	mp_bonusroundtime.IntValue = (6 * 2);
 		ZR_NpcTauntWinClear();
 		ForcePlayerLoss();
 		npc.m_bisWalking = false;
@@ -489,37 +617,38 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{blue}Sensal{default}: You are under arrest. The Expidonsan elite forces will take you now.");
-		for(int i; i<32; i++)
+		switch(GetRandomInt(0,2))
 		{
-			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			
-			int spawn_index = NPC_CreateByName("npc_diversionistico", -1, pos, ang, GetTeam(npc.index));
-			if(spawn_index > MaxClients)
+			case 0:
 			{
-				NpcAddedToZombiesLeftCurrently(spawn_index, true);
-				SetEntProp(spawn_index, Prop_Data, "m_iHealth", 10000000);
-				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 10000000);
+				CPrintToChatAll("{lightblue}Nemal{default}: You won't defeat {purple}it{default} with that speed.");
+			}
+			case 1:
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: ... Don't dissapoint {darkblue}Kahmlstein{default} like this...");
+			}
+			case 2:
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: As much of an ass{darkblue}Kahmlstein{default} was... he did have something in him.");
 			}
 		}
 		BlockLoseSay = true;
 	}
 
-	if(SensalTransformation(npc))
+	if(NemalTransformation(npc))
 		return;
 
-	if(SensalMassLaserAttack(npc))
+	if(NemalMassLaserAttack(npc))
 		return;
 
-	if(SensalSummonPortal(npc))
+	if(NemalSummonPortal(npc))
 		return;
 
 	if (npc.IsOnGround())
 	{
-		if(GetGameTime(npc.index) > npc.f_SensalRocketJumpCD_Wearoff)
+		if(GetGameTime(npc.index) > npc.f_NemalRocketJumpCD_Wearoff)
 		{
-			npc.b_SensalRocketJump = false;
+			npc.b_NemalRocketJump = false;
 		}
 	}
 	
@@ -555,7 +684,7 @@ static void Internal_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = SensalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = NemalSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		switch(SetGoalVectorIndex)
 		{
@@ -591,14 +720,14 @@ static void Internal_ClotThink(int iNPC)
 
 	if(npc.m_flDoingAnimation < GetGameTime(npc.index))
 	{
-		SensalAnimationChange(npc);
+		NemalAnimationChange(npc);
 	}
 	npc.PlayIdleAlertSound();
 }
 
 static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Sensal npc = view_as<Sensal>(victim);
+	Nemal npc = view_as<Nemal>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -608,8 +737,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	Sensal_Weapon_Lines(npc, attacker);
-	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
+	Nemal_Weapon_Lines(npc, attacker);
+	if(i_RaidGrantExtra[npc.index] == 5)
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 		{
@@ -620,13 +749,13 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
-			RaidModeTime += 60.0;
+			RaidModeTime = FAR_FUTURE;
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			
-			CPrintToChatAll("{blue}Sensal{default}: You keep talking about Silvester and Waldch, what is the meaning of this?");
+			CPrintToChatAll("{ligghtblue}Nemal{default}: Ouch ouch! Time out, time out!");
 
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
 			return Plugin_Handled;
@@ -636,17 +765,16 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	
 	return Plugin_Changed;
 }
-public void Raidmode_Expidonsa_Sensal_Win(int entity)
+public void Raidmode_Expidonsa_Nemal_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 }
 
 static void Internal_NPCDeath(int entity)
 {
-	Sensal npc = view_as<Sensal>(entity);
+	Nemal npc = view_as<Nemal>(entity);
 	/*
 		Explode on death code here please
-
 	*/
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	
@@ -680,15 +808,6 @@ static void Internal_NPCDeath(int entity)
 			RemoveEntity(i_LaserEntityIndex[EnemyLoop]);
 		}					
 	}
-	if(i_RaidGrantExtra[npc.index] == 50)
-	{
-		if(XenoExtraLogic())
-			CPrintToChatAll("{blue}Sensal{default}: This area is restricted for all of you.");
-		else
-			CPrintToChatAll("{blue}Sensal{default}: You all are comming with me.");
-
-		return;
-	}
 	if(BlockLoseSay)
 		return;
 
@@ -696,19 +815,19 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your actions against a fellow {gold}Expidonsan{default} will not be forgiven, I will be back with reinforcements.");
+			CPrintToChatAll("{ligghtblue}Nemal{default}: Okay... ouch.. ow...");
 		}
 		case 1:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: Your time will come when you pay for going against the law of {gold}Expidonsa{default}.");
+			CPrintToChatAll("{ligghtblue}Nemal{default}: Okay Okay you won! For now!");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: {gold}Expidonsa{default} is far out of your level of understanding.");
+			CPrintToChatAll("{ligghtblue}Nemal{default}: See you next time.... this hurts!");
 		}
 		case 3:
 		{
-			CPrintToChatAll("{blue}Sensal{default}: You do not know what you are getting yourself into.");
+			CPrintToChatAll("{ligghtblue}Nemal{default}: I was going to insult you, but i asked for this...");
 		}
 	}
 
@@ -717,13 +836,12 @@ static void Internal_NPCDeath(int entity)
 
 
 */
-void SensalAnimationChange(Sensal npc)
+void NemalAnimationChange(Nemal npc)
 {
-	
 	if(npc.m_iChanged_WalkCycle == 0)
 	{
 		npc.m_iChanged_WalkCycle = -1;
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
+		NemalEffects(npc.index, view_as<int>(npc.Anger));
 	}
 	switch(npc.i_GunMode)
 	{
@@ -733,7 +851,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 1)
 				{
-				// ResetSensalWeapon(npc, 1);
+				// ResetNemalWeapon(npc, 1);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_PRIMARY");
@@ -744,7 +862,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-				//	ResetSensalWeapon(npc, 1);
+				//	ResetNemalWeapon(npc, 1);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_PRIMARY");
@@ -758,7 +876,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 3)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetNemalWeapon(npc, 0);
 					npc.m_bisWalking = true;
 					npc.m_iChanged_WalkCycle = 3;
 					npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -769,7 +887,7 @@ void SensalAnimationChange(Sensal npc)
 			{
 				if(npc.m_iChanged_WalkCycle != 4)
 				{
-				//	ResetSensalWeapon(npc, 0);
+				//	ResetNemalWeapon(npc, 0);
 					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
@@ -781,7 +899,7 @@ void SensalAnimationChange(Sensal npc)
 
 }
 
-int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
+int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 {
 	npc.i_GunMode = 0;
 	if(ZR_GetWaveCount()+1 >= 45 && npc.m_flAngerDelay < GetGameTime(npc.index))
@@ -826,9 +944,9 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.m_flReloadIn = gameTime + 3.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
-			SensalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
+			NemalGiveShield(npc.index, CountPlayersOnRed(1) * 3); //Give self a shield
 
-			SensalThrowScythes(npc);
+			NemalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flAngerDelay = gameTime + 60.0;
 
@@ -856,10 +974,10 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 		{
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 			npc.PlaySytheInitSound();
-			SensalThrowScythes(npc);
+			NemalThrowScythes(npc);
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + 7.5;
-			SensalGiveShield(npc.index, CountPlayersOnRed(1));
+			NemalGiveShield(npc.index, CountPlayersOnRed(1));
 
 			if(ZR_GetWaveCount()+1 >= 15)
 				npc.m_flNextRangedSpecialAttackHappens = gameTime + 4.0;
@@ -876,7 +994,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 						
 		if(IsValidEntity(Enemy_I_See) && IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			SensalThrowScythes(npc);
+			NemalThrowScythes(npc);
 			if(IsValidEntity(npc.m_iWearable7))
 			{
 				RemoveEntity(npc.m_iWearable7);
@@ -889,7 +1007,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			npc.AddActivityViaSequence("taunt_the_fist_bump_fistbump");
 			npc.m_flAttackHappens = 0.0;
 			npc.m_flAttackHappens_2 = gameTime + 1.4;
-			SensalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
+			NemalGiveShield(npc.index,CountPlayersOnRed(1) * 2);
 			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8);
 			npc.SetCycle(0.01);
 			if(ZR_GetWaveCount()+1 >= 60)
@@ -1019,7 +1137,7 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 }
 
 
-void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
+void NemalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r")
 {
 	if(attachment[0])
 	{
@@ -1070,9 +1188,9 @@ void SensalEffects(int iNpc, int colour = 0, char[] attachment = "effect_hand_r"
 }
 
 
-public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
+public void RaidbossNemal_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
-	Sensal npc = view_as<Sensal>(victim);
+	Nemal npc = view_as<Nemal>(victim);
 	if(ZR_GetWaveCount()+1 >= 45)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
@@ -1095,336 +1213,7 @@ public void RaidbossSensal_OnTakeDamagePost(int victim, int attacker, int inflic
 	}
 }
 
-
-void SensalThrowScythes(Sensal npc)
-{
-	Silvester_TE_Used = 0;
-	int MaxCount = 1;
-	float DelayPillars = 0.5;
-	float DelaybewteenPillars = 0.5;
-	float ang_Look[3];
-	float pos[3];
-	WorldSpaceCenter(npc.index, pos);
-	
-	if(ZR_GetWaveCount()+1 >= 60)
-		MaxCount = 2;
-
-	for(int Repeat; Repeat <= 7; Repeat++)
-	{
-		Sensal_Scythe_Throw_Ability(npc.index,
-		SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling,				 	//damage
-		MaxCount, 	//how many
-		DelayPillars,									//Delay untill hit
-		DelaybewteenPillars,									//Extra delay between each
-		ang_Look 								/*2 dimensional plane*/,
-		pos,
-		0.25);									//volume
-		ang_Look[1] += 45.0;
-	}
-}
-
-void Sensal_Scythe_Throw_Ability(int entity,
-float damage,
-int count,
-float delay,
-float delay_PerPillar,
-float direction[3] /*2 dimensional plane*/,
-float origin[3],
-float volume = 0.7)
-{
-	float timerdelay = GetGameTime() + delay;
-	DataPack pack;
-	CreateDataTimer(delay_PerPillar, Sensal_SpawnSycthes, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(entity)); 	//who this attack belongs to
-	pack.WriteCell(damage);
-	pack.WriteCell(0);						//how many pillars, this counts down with each pillar made
-	pack.WriteCell(count);						//how many pillars, this counts down with each pillar made
-	pack.WriteCell(timerdelay);					//Delay for each initial pillar
-	pack.WriteCell(direction[0]);
-	pack.WriteCell(direction[1]);
-	pack.WriteCell(direction[2]);
-	pack.WriteCell(origin[0]);
-	pack.WriteCell(origin[1]);
-	pack.WriteCell(origin[2]);
-	pack.WriteCell(volume);
-
-	float origin_altered[3];
-	origin_altered = origin;
-
-	for(int Repeats; Repeats < count; Repeats++)
-	{
-		float Range = 50.0;
-		float VecForward[3];
-		float vecRight[3];
-		float vecUp[3];
-				
-		GetAngleVectors(direction, VecForward, vecRight, vecUp);
-
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin_altered[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin_altered[1] + VecForward[1] * (PILLAR_SPACING);
-		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-
-		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
-		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
-		
-		Handle trace = TR_TraceHullFilterEx(origin_altered, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
-
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(origin_altered, trace);
-		}
-		else
-		{
-			origin_altered = vecSwingEnd;
-		}
-		delete trace;
-
-		Range += (float(Repeats) * 10.0);
-		Silvester_TE_Used += 1;
-		if(Silvester_TE_Used > 31)
-		{
-			int DelayFrames = (Silvester_TE_Used / 32);
-			DelayFrames *= 2;
-			DataPack pack_TE = new DataPack();
-			pack_TE.WriteCell(origin_altered[0]);
-			pack_TE.WriteCell(origin_altered[1]);
-			pack_TE.WriteCell(origin_altered[2]);
-			pack_TE.WriteCell(Range);
-			pack_TE.WriteCell(delay + (delay_PerPillar * float(Repeats)));
-			RequestFrames(Sensal_DelayTE, DelayFrames, pack_TE);
-			//Game cannot send more then 31 te's in the same frame, a fix is too just delay it.
-		}
-		else
-		{
-			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
-		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
-	}
-}
-
-public void Sensal_DelayTE(DataPack pack)
-{
-	pack.Reset();
-	float Origin[3];
-	Origin[0] = pack.ReadCell();
-	Origin[1] = pack.ReadCell();
-	Origin[2] = pack.ReadCell();
-	float Range = pack.ReadCell();
-	float Delay = pack.ReadCell();
-	spawnRing_Vectors(Origin, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, Delay, 5.0, 0.0, 1);	
-		
-	delete pack;
-}
-
-
-
-public Action Sensal_SpawnSycthes(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	float damage = pack.ReadCell();
-	DataPackPos countPos = pack.Position;
-	int count = pack.ReadCell();
-	int countMax = pack.ReadCell();
-	float delayUntillImpact = pack.ReadCell();
-	float direction[3];
-	direction[0] = pack.ReadCell();
-	direction[1] = pack.ReadCell();
-	direction[2] = pack.ReadCell();
-	float origin[3];
-	DataPackPos originPos = pack.Position;
-	origin[0] = pack.ReadCell();
-	origin[1] = pack.ReadCell();
-	origin[2] = pack.ReadCell();
-	float volume = pack.ReadCell();
-
-	//Timers have a 0.1 impresicison logic, accont for it.
-	if(delayUntillImpact - 0.1 > GetGameTime())
-	{
-		return Plugin_Continue;
-	}
-
-	count += 1;
-	pack.Position = countPos;
-	pack.WriteCell(count, false);
-	if(IsValidEntity(entity))
-	{
-		float VecForward[3];
-		float vecRight[3];
-		float vecUp[3];
-				
-		GetAngleVectors(direction, VecForward, vecRight, vecUp);
-		
-		float vecSwingEnd[3];
-		vecSwingEnd[0] = origin[0] + VecForward[0] * (PILLAR_SPACING);
-		vecSwingEnd[1] = origin[1] + VecForward[1] * (PILLAR_SPACING);
-		vecSwingEnd[2] = origin[2];/*+ VecForward[2] * (100);*/
-		float origin_altered[3];
-		static float hullcheckmaxs[3];
-		static float hullcheckmins[3];
-
-		hullcheckmaxs = view_as<float>( { 5.0, 5.0, 5.0 } );
-		hullcheckmins = view_as<float>( { -5.0, -5.0, -5.0 } );
-		
-		Handle trace = TR_TraceHullFilterEx(origin, vecSwingEnd, hullcheckmins, hullcheckmaxs, MASK_PLAYERSOLID, Sensal_TraceWallsOnly);
-
-		if (TR_DidHit(trace))
-		{
-			TR_GetEndPosition(origin_altered, trace);
-		}
-		else
-		{
-			origin_altered = vecSwingEnd;
-		}
-		delete trace;
-
-		Sensal npc = view_as<Sensal>(entity);
-		float FloatVector[3];
-		
-		
-		if(IsValidEntity(npc.m_iTarget))
-		{
-			WorldSpaceCenter(npc.m_iTarget, FloatVector);
-		}
-		else
-		{
-			WorldSpaceCenter(entity, FloatVector);
-		}
-
-		int Projectile = npc.FireParticleRocket(FloatVector, damage , 400.0 , 100.0 , "",_,_,true,origin_altered,_,_,_,false);
-		SensalEffects(Projectile,view_as<int>(npc.Anger),"");
-		b_RageProjectile[Projectile] = npc.Anger;
-		//dont exist !
-		SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-		SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
-		CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
-		static float ang_Look[3];
-		GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
-		Initiate_HomingProjectile(Projectile,
-		 npc.index,
-		 	70.0,			// float lockonAngleMax,
-		   	9.0,				//float homingaSec,
-			true,				// bool LockOnlyOnce,
-			true,				// bool changeAngles,
-			  ang_Look);// float AnglesInitiate[3]);
-
-		if(volume == 0.25)
-		{
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);		
-		}
-		else
-		{
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);
-			EmitSoundToAll("weapons/mortar/mortar_explode3.wav", 0, SNDCHAN_AUTO, 100, SND_NOFLAGS, volume, SNDPITCH_NORMAL, -1, origin_altered);
-		}
-
-		pack.Position = originPos;
-		pack.WriteCell(origin_altered[0], false);
-		pack.WriteCell(origin_altered[1], false);
-		pack.WriteCell(origin_altered[2], false);
-		//override origin, we have a new origin.
-	}
-	else
-	{
-		return Plugin_Stop; //cancel.
-	}
-
-	if(count >= countMax)
-	{
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-
-}
-
-public Action Timer_RemoveEntitySensal(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
-	{
-		RemoveEntity(entity);
-	}
-	return Plugin_Stop;
-}
-
-
-public void Sensal_Particle_StartTouch(int entity, int target)
-{
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsValidEntity(owner))
-		{
-			owner = 0;
-		}
-		
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
-
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-
-
-		if(b_should_explode[entity])	//should we "explode" or do "kinetic" damage
-		{
-			i_ExplosiveProjectileHexArray[owner] = i_ExplosiveProjectileHexArray[entity];
-			Explode_Logic_Custom(fl_rocket_particle_dmg[entity] , inflictor , owner , -1 , ProjectileLoc , fl_rocket_particle_radius[entity] , _ , _ , b_rocket_particle_from_blue_npc[entity]);	//acts like a rocket
-		}
-		else
-		{
-			SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket
-		}
-		float VulnerabilityToGive = 0.065;
-		IncreaceEntityDamageTakenBy(target, VulnerabilityToGive, 5.0, true);
-		EmitSoundToAll(g_SyctheHitSound[GetRandomInt(0, sizeof(g_SyctheHitSound) - 1)], entity, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	else
-	{
-		int particle = EntRefToEntIndex(i_rocket_particle[entity]);
-		//we uhh, missed?
-		float ProjectileLoc[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-		TE_Particle(b_RageProjectile[entity] ? "spell_batball_impact_red" : "spell_batball_impact_blue", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
-
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-	}
-	RemoveEntity(entity);
-}
-
-
-bool SensalTalkPostWin(Sensal npc)
+bool NemalTalkPostWin(Nemal npc)
 {
 	if(!b_angered_twice[npc.index])
 		return false;
@@ -1435,7 +1224,7 @@ bool SensalTalkPostWin(Sensal npc)
 		{
 			RemoveEntity(npc.m_iWearable7);
 		}
-		SensalEffects(npc.index, view_as<int>(npc.Anger));
+		NemalEffects(npc.index, view_as<int>(npc.Anger));
 		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 6;
 		npc.AddActivityViaSequence("selectionMenu_Idle");
@@ -1456,7 +1245,7 @@ bool SensalTalkPostWin(Sensal npc)
 	}
 	if(GetGameTime() > f_TimeSinceHasBeenHurt[npc.index])
 	{
-		CPrintToChatAll("{blue}Sensal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
+		CPrintToChatAll("{blue}Nemal{default}: We apologize for the sudden attack, we didn't know, take this as an apology.");
 		
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		BlockLoseSay = true;
@@ -1465,34 +1254,34 @@ bool SensalTalkPostWin(Sensal npc)
 			if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING)
 			{
 				Items_GiveNamedItem(client, "Expidonsan Battery Device");
-				CPrintToChat(client,"{default}Sensal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
+				CPrintToChat(client,"{default}Nemal gave you a high tech battery: {darkblue}''Expidonsan Battery Device''{default}!");
 			}
 		}
 	}
 	else if(GetGameTime() + 5.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 4)
 	{
 		i_SaidLineAlready[npc.index] = 4;
-		CPrintToChatAll("{blue}Sensal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
+		CPrintToChatAll("{blue}Nemal{default}: But I see that this was to protect you guys, yet you were able to destroy Nemesis.");
 	}
 	else if(GetGameTime() + 10.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 3)
 	{
 		i_SaidLineAlready[npc.index] = 3;
-		CPrintToChatAll("{blue}Sensal{default}: We got sent to rescue him and we saw you attacking him.");
+		CPrintToChatAll("{blue}Nemal{default}: We got sent to rescue him and we saw you attacking him.");
 	}
 	else if(GetGameTime() + 13.0 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 2)
 	{
 		i_SaidLineAlready[npc.index] = 2;
-		CPrintToChatAll("{blue}Sensal{default}: We are close friends though we lost contact since he came out of the city.");
+		CPrintToChatAll("{blue}Nemal{default}: We are close friends though we lost contact since he came out of the city.");
 	}
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{blue}Sensal{default}: I see, they are friend of your's now aswell.");
+		CPrintToChatAll("{blue}Nemal{default}: I see, they are friend of your's now aswell.");
 	}
 	return true; //He is trying to help.
 }
 
-bool SensalTransformation(Sensal npc)
+bool NemalTransformation(Nemal npc)
 {
 	if(npc.Anger)
 	{
@@ -1552,7 +1341,7 @@ bool SensalTransformation(Sensal npc)
 			SetEntityRenderColor(npc.m_iWearable3, 255, 35, 35, 255);
 		//	i_NpcInternalId[npc.index] = XENO_RAIDBOSS_SUPERSILVESTER;
 			i_NpcWeight[npc.index] = 4;
-			SensalEffects(npc.index, view_as<int>(npc.Anger));
+			NemalEffects(npc.index, view_as<int>(npc.Anger));
 			npc.m_flRangedArmor = 0.7;
 			npc.m_flMeleeArmor = 0.875;		
 
@@ -1573,7 +1362,7 @@ bool SensalTransformation(Sensal npc)
 	}
 	return false;
 }
-bool SensalMassLaserAttack(Sensal npc)
+bool NemalMassLaserAttack(Nemal npc)
 {
 	if(npc.m_flAttackHappens_2)
 	{
@@ -1652,7 +1441,7 @@ bool SensalMassLaserAttack(Sensal npc)
 				{
 					foundEnemy = true;
 					float WorldSpaceVec[3]; WorldSpaceCenter(enemy[i], WorldSpaceVec);
-					SensalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
+					NemalInitiateLaserAttack(npc.index, WorldSpaceVec, flPos);
 				}
 			}
 			if(foundEnemy)
@@ -1675,7 +1464,7 @@ bool SensalMassLaserAttack(Sensal npc)
 	return false;
 }
 
-bool SensalSummonPortal(Sensal npc)
+bool NemalSummonPortal(Nemal npc)
 {
 	if(npc.m_flReloadIn)
 	{
@@ -1703,10 +1492,10 @@ bool SensalSummonPortal(Sensal npc)
 			{
 				PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_tp_vortex", 0.0);
 			}
-			Sensal particle = view_as<Sensal>(PortalParticle);
+			Nemal particle = view_as<Nemal>(PortalParticle);
 			particle.Anger = npc.Anger;
 			DataPack pack;
-			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(8.5, Nemal_TimerRepeatPortalGate, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack.WriteCell(EntIndexToEntRef(npc.index));
 			pack.WriteCell(EntIndexToEntRef(PortalParticle));
 
@@ -1725,7 +1514,7 @@ bool SensalSummonPortal(Sensal npc)
 	}
 	return false;
 }
-public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
+public Action Nemal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int Originator = EntRefToEntIndex(pack.ReadCell());
@@ -1741,7 +1530,7 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 			return Plugin_Stop;
 		}
 
-		Sensal npc = view_as<Sensal>(Originator);
+		Nemal npc = view_as<Nemal>(Originator);
 		static float flMyPos[3];
 		GetEntPropVector(Particle, Prop_Data, "m_vecOrigin", flMyPos);
 		UnderTides npcGetInfo = view_as<UnderTides>(Originator);
@@ -1755,15 +1544,15 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 			{
 				Foundenemies = true;
 				float WorldSpaceVec[3]; WorldSpaceCenter(enemy[i], WorldSpaceVec);
-				int Projectile = npc.FireParticleRocket(WorldSpaceVec, SENSAL_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
-				SensalEffects(Projectile,view_as<int>(npc.Anger),"");
+				int Projectile = npc.FireParticleRocket(WorldSpaceVec, Nemal_BASE_RANGED_SCYTHE_DAMGAE * RaidModeScaling , 400.0 , 100.0 , "",_,_,true, flMyPos,_,_,_,false);
+				NemalEffects(Projectile,view_as<int>(npc.Anger),"");
 				b_RageProjectile[Projectile] = npc.Anger;
 
 				//dont exist !
 				SDKUnhook(Projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
-				SDKHook(Projectile, SDKHook_StartTouch, Sensal_Particle_StartTouch);
+				SDKHook(Projectile, SDKHook_StartTouch, Nemal_Particle_StartTouch);
 				
-				CreateTimer(15.0, Timer_RemoveEntitySensal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(15.0, Timer_RemoveEntityNemal, EntIndexToEntRef(Projectile), TIMER_FLAG_NO_MAPCHANGE);
 				static float ang_Look[3];
 				GetEntPropVector(Projectile, Prop_Send, "m_angRotation", ang_Look);
 				Initiate_HomingProjectile(Projectile,
@@ -1780,14 +1569,14 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 		if(Foundenemies)
 			EmitSoundToAll("misc/halloween/spell_teleport.wav", npc.index, SNDCHAN_STATIC, 90, _, 0.8);
 			
-		Sensal particle = view_as<Sensal>(Particle);
+		Nemal particle = view_as<Nemal>(Particle);
 		if(npc.Anger && !particle.Anger)
 		{
 			//update particle
 			int PortalParticle = ParticleEffectAt(flMyPos, "eyeboss_death_vortex", 0.0);
 			DataPack pack2;
 			particle.Anger = npc.Anger;
-			CreateDataTimer(8.5, Sensal_TimerRepeatPortalGate, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
+			CreateDataTimer(8.5, Nemal_TimerRepeatPortalGate, pack2, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 			pack2.WriteCell(EntIndexToEntRef(Originator));
 			pack2.WriteCell(EntIndexToEntRef(PortalParticle));
 			if(IsValidEntity(Particle))
@@ -1811,9 +1600,9 @@ public Action Sensal_TimerRepeatPortalGate(Handle timer, DataPack pack)
 
 
 
-int SensalHitDetected[MAXENTITIES];
+int NemalHitDetected[MAXENTITIES];
 
-void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
+void NemalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorStart[3])
 {
 
 	float vecForward[3], vecRight[3], Angles[3];
@@ -1822,7 +1611,7 @@ void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorSt
 	GetVectorAngles(vecForward, Angles);
 	GetAngleVectors(vecForward, vecForward, vecRight, VectorTarget);
 
-	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Sensal_TraceWallsOnly);
+	Handle trace = TR_TraceRayFilterEx(VectorStart, Angles, 11, RayType_Infinite, Nemal_TraceWallsOnly);
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(VectorTarget, trace);
@@ -1836,7 +1625,7 @@ void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorSt
 	}
 	delete trace;
 
-	Sensal npc = view_as<Sensal>(entity);
+	Nemal npc = view_as<Nemal>(entity);
 	int red = 255;
 	int green = 255;
 	int blue = 255;
@@ -1850,7 +1639,7 @@ void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorSt
 	}
 
 	int colorLayer4[4];
-	float diameter = float(SENSAL_LASER_THICKNESS * 4);
+	float diameter = float(Nemal_LASER_THICKNESS * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
@@ -1868,14 +1657,14 @@ void SensalInitiateLaserAttack(int entity, float VectorTarget[3], float VectorSt
 	pack.WriteFloat(VectorStart[0]);
 	pack.WriteFloat(VectorStart[1]);
 	pack.WriteFloat(VectorStart[2]);
-	RequestFrames(SensalInitiateLaserAttack_DamagePart, 50, pack);
+	RequestFrames(NemalInitiateLaserAttack_DamagePart, 50, pack);
 }
 
-void SensalInitiateLaserAttack_DamagePart(DataPack pack)
+void NemalInitiateLaserAttack_DamagePart(DataPack pack)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		SensalHitDetected[i] = false;
+		NemalHitDetected[i] = false;
 	}
 	pack.Reset();
 	int entity = EntRefToEntIndex(pack.ReadCell());
@@ -1891,7 +1680,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	VectorStart[1] = pack.ReadFloat();
 	VectorStart[2] = pack.ReadFloat();
 
-	Sensal npc = view_as<Sensal>(entity);
+	Nemal npc = view_as<Nemal>(entity);
 	int red = 50;
 	int green = 50;
 	int blue = 255;
@@ -1903,7 +1692,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 		blue = 50;
 	}
 	int colorLayer4[4];
-	float diameter = float(SENSAL_LASER_THICKNESS * 4);
+	float diameter = float(Nemal_LASER_THICKNESS * 4);
 	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
 	//we set colours of the differnet laser effects to give it more of an effect
 	int colorLayer1[4];
@@ -1917,7 +1706,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 
 	float hullMin[3];
 	float hullMax[3];
-	hullMin[0] = -float(SENSAL_LASER_THICKNESS);
+	hullMin[0] = -float(Nemal_LASER_THICKNESS);
 	hullMin[1] = hullMin[0];
 	hullMin[2] = hullMin[0];
 	hullMax[0] = -hullMin[0];
@@ -1925,7 +1714,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	hullMax[2] = -hullMin[2];
 
 	Handle trace;
-	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Sensal_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
+	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Nemal_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
 	float CloseDamage = 70.0 * RaidModeScaling;
@@ -1934,7 +1723,7 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
-		if (SensalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
+		if (NemalHitDetected[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 			float distance = GetVectorDistance(VectorStart, playerPos, false);
@@ -1954,24 +1743,24 @@ void SensalInitiateLaserAttack_DamagePart(DataPack pack)
 }
 
 
-public bool Sensal_BEAM_TraceUsers(int entity, int contentsMask, int client)
+public bool Nemal_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
 	if (IsEntityAlive(entity))
 	{
-		SensalHitDetected[entity] = true;
+		NemalHitDetected[entity] = true;
 	}
 	return false;
 }
 
-public bool Sensal_TraceWallsOnly(int entity, int contentsMask)
+public bool Nemal_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
 
 
-void SensalGiveShield(int sensal, int shieldcount)
+void NemalGiveShield(int Nemal, int shieldcount)
 {
-	Sensal npc = view_as<Sensal>(sensal);
+	Nemal npc = view_as<Nemal>(Nemal);
 	if(ZR_GetWaveCount()+1 >= 60)
 	{
 		shieldcount = RoundToNearest(float(shieldcount) * 1.4);
@@ -1994,10 +1783,10 @@ void SensalGiveShield(int sensal, int shieldcount)
 		shieldcount = RoundToNearest(float(shieldcount) * 1.1);
 	}
 
-	VausMagicaGiveShield(sensal, shieldcount); //Give self a shield
+	VausMagicaGiveShield(Nemal, shieldcount); //Give self a shield
 }
 
-static void Sensal_Weapon_Lines(Sensal npc, int client)
+static void Nemal_Weapon_Lines(Nemal npc, int client)
 {
 	if(client > MaxClients)
 		return;
@@ -2023,7 +1812,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
 		
-		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		case WEAPON_Nemal_SCYTHE,WEAPON_Nemal_SCYTHE_PAP_1,WEAPON_Nemal_SCYTHE_PAP_2,WEAPON_Nemal_SCYTHE_PAP_3:
 		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You are trying to wield my weapon, {gold}%N{default}? You do not have the expertiese in it.", client);
 		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "You think you can use it to its fullest potentnial {gold}%N{default}? You dont even own the {gold}Manifestation glove.", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvesters{default} blade? Why is he so nice to everyone...");
@@ -2046,7 +1835,7 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{blue}Sensal{default}: %s", Text_Lines);
+		CPrintToChatAll("{blue}Nemal{default}: %s", Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

@@ -483,7 +483,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
 				}
-				case 3:
+				case 2:
 				{
 					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
 				}
