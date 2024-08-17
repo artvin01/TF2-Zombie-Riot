@@ -505,7 +505,7 @@ static const char SummonerThornsNPC[][] =
 	"npc_barrack_rocketeer",
 	"npc_barrack_healer",
 	
-	"npc_barrack_debuffer",
+	"npc_barrack_boomstick",
 	"npc_barrack_healtanker",
 	
 	"npc_barrack_elite_gunner",
