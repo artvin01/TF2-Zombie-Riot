@@ -119,7 +119,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Iberia_Headhunter_ClotThink;
 		npc.m_flSpeed = 300.0;
 		
-		SetVariantInt(1);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;

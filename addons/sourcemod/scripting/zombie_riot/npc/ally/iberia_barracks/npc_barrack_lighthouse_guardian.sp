@@ -58,6 +58,7 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedAttackSRocket);
 	PrecacheModel("models/player/demo.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Lighthouse Guardian");
@@ -308,7 +309,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 								npc.PlayRangedAttackRocket();
 								npc.m_fbRangedSpecialOn = true;
-								npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 10.0;
+								npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 990.0;
 							}
 							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2", false);
 							npc.m_iTarget = Enemy_I_See;
