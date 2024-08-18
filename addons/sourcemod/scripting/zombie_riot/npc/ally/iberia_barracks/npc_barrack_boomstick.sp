@@ -35,7 +35,7 @@ static const char g_IdleAlert[][] =
 	"vo/engineer_battlecry05.mp3",
 };
 
-void Barracks_Combine_Sniper_Precache()
+void Barracks_Iberia_Boomstick_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
 	PrecacheSoundArray(g_IdleSounds);

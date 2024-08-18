@@ -41,7 +41,7 @@ void Barracks_Iberia_Elite_Gunner_Precache()
 	PrecacheSoundArray(g_IdleSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_IdleAlert);
-    PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_RangedReloadSound);
 	PrecacheModel("models/player/spy.mdl");
 	
 	NPCData data;
@@ -93,7 +93,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
-    public void PlayPistolReload()
+	public void PlayPistolReload()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -117,8 +117,8 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
-        npc.m_iAttacksTillReload = 18;
-        npc.Anger = false;
+		npc.m_iAttacksTillReload = 18;
+		npc.Anger = false;
 
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
@@ -131,7 +131,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2022_turncoat/hwn2022_turncoat.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/player/items/engineer/engineer_cowboy_hat.mdl");
-        SetVariantString("1.2");
+		SetVariantString("1.2");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		return npc;
@@ -161,12 +161,12 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 				//Target close enough to hit
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-                    if(npc.m_iAttacksTillReload < 1)
+					if(npc.m_iAttacksTillReload < 1)
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.5);
 						npc.m_flNextRangedAttack = GameTime + 3.00;
 						npc.m_iAttacksTillReload = 6;
-                        npc.Anger = false;
+						npc.Anger = false;
 						npc.PlayPistolReload();
 					}
 					if((npc.m_flNextRangedAttack < GameTime && !npc.Anger))
@@ -188,12 +188,12 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 							
 							npc.m_flNextRangedAttack = GameTime + (1.00 * npc.BonusFireRate);
 							
-                            npc.m_iAttacksTillReload --;
+							npc.m_iAttacksTillReload --;
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2100.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
-                    if((npc.m_flNextRangedAttack < GameTime && npc.Anger))
+					if((npc.m_flNextRangedAttack < GameTime && npc.Anger))
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
 						npc.m_iTarget = Enemy_I_See;
@@ -212,9 +212,9 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 							
 							npc.m_flNextRangedAttack = GameTime + (0.05 * npc.BonusFireRate);
 							
-                            npc.m_flSpeed = 0.0;
+							npc.m_flSpeed = 0.0;
 
-                            npc.m_iAttacksTillReload --;
+							npc.m_iAttacksTillReload --;
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
@@ -225,7 +225,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 					}
 				}
 			}
-            npc.m_flSpeed = 150.0;
+			npc.m_flSpeed = 150.0;
 		}
 		else
 		{

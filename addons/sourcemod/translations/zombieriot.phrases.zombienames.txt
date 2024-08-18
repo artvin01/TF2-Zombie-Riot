@@ -768,15 +768,43 @@
 	}
 	"Barracks Iberian Gunner"
 	{
-		"en"		"Iberian Runner"
+		"en"		"Iberian Gunner"
 	}
 	"Barracks Iberian Tanker"
 	{
-		"en"		"Iberian Runner"
+		"en"		"Iberian Tanker"
 	}	
 	"Barracks Iberian Rocketeer"
 	{
-		"en"		"Iberian Runner"
+		"en"		"Iberian Rocketeer"
+	}	
+	"Barracks Iberian Healer"
+	{
+		"en"		"Iberian Healer"
+	}
+	"Barracks Iberian Healtanker"
+	{
+		"en"		"Iberian Healtanker"
+	}	
+	"Barracks Iberia Boomstick"
+	{
+		"en"		"Iberian Boomsticker"
+	}
+	"Barracks Iberian Guards"
+	{
+		"en"		"Iberian Guards"
+	}
+	"Barracks Iberian Elite Gunner"
+	{
+		"en"		"Iberian Elite Gunner"
+	}	
+	"Barracks Iberia Headhunter"
+	{
+		"en"		"Iberian Headhunter"
+	}	
+	"Barracks Iberian Lighthouse Guardian"
+	{
+		"en"		"Guardian of the Lighthouse"
 	}	
 	"Barracks Militia"
 	{

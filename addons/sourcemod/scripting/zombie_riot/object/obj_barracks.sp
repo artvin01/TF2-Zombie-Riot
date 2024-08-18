@@ -509,12 +509,12 @@ static const char SummonerThornsNPC[][] =
 	"npc_barrack_healtanker",
 	
 	"npc_barrack_elite_gunner",
-	"npc_barrack_champion",
+	"npc_barrack_guards",
 	
 	"npc_barrack_thorns",	
-	"npc_barrack_teutonic_knight",
+	"npc_barrack_headhunter",
 	
-	"npc_barrack_teutonic_knight",
+	"npc_barrack_lighthouse_guardian",
 	"npc_barrack_villager"
 };
 
