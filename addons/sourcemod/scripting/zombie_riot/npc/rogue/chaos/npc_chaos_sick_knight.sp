@@ -289,7 +289,7 @@ public void ChaosSickKnight_ClotThink(int iNPC)
 	if(npc.m_flHeavyResPhase)
 	{
 		fl_TotalArmor[npc.index] = 0.15;
-		float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 		maxhealth *= 0.005;
 		HealEntityGlobal(npc.index, npc.index, maxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 		float ProjLoc[3];

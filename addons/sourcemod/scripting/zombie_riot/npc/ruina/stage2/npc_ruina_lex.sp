@@ -866,7 +866,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 		
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 

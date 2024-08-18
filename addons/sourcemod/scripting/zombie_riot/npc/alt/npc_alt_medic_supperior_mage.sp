@@ -390,7 +390,7 @@ static void Internal_ClotThink(int iNPC)
 				if (npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 				{
 					float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-					float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 					Handle swingTrace;
 					npc.FaceTowards(vecTarget, 20000.0);
 					if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex,_,_,_,1))
@@ -432,7 +432,7 @@ static void Internal_ClotThink(int iNPC)
 		else if(flDistanceToTarget > 22500 && npc.m_flAttackHappens_2 < GameTime)
 		{
 			float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-			float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 			float crocket = 25.0 / (1.0+(1-(Health/MaxHealth))*2);
 			float dmg = 20.0*(1.0+(1-(Health/MaxHealth))*2);
 			npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
@@ -479,7 +479,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
+	if(((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) && ZR_GetWaveCount()>40 ) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:( <- He is  very angy, but who wouldn't be, they literally lost half of there blood, id say if they weren't angry it would be a real surprise.
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");

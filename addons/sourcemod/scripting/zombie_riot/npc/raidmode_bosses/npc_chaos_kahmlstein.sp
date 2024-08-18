@@ -960,6 +960,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 			npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_fist_bump");
 			npc.m_flAttackHappens = 0.0;
 			npc.SetCycle(0.01);
@@ -1029,6 +1030,7 @@ bool ChaosKahmlstein_Attack_Melee_Uppercut(ChaosKahmlstein npc, int Target)
 		npc.m_flNextChargeSpecialAttack = GetGameTime(npc.index) + (25.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown_outro");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1076,6 +1078,7 @@ bool ChaosKahmlstein_Attack_Melee_BodySlam_thing(ChaosKahmlstein npc, int Target
 		npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + (15.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_yetipunch");
 		npc.m_flAttackHappens = 0.0;
 		if(i_RaidGrantExtra[npc.index] < 2)
@@ -1551,7 +1554,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 	ChaosKahmlstein npc = view_as<ChaosKahmlstein>(victim);
 	if(npc.g_TimesSummoned < 100)
 	{
-		int nextLoss = (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 10) * (100 - npc.g_TimesSummoned) / 100;
+		int nextLoss = (ReturnEntityMaxHealth(npc.index) / 10) * (100 - npc.g_TimesSummoned) / 100;
 		if((GetEntProp(npc.index, Prop_Data, "m_iHealth") / 10) < nextLoss)
 		{
 			npc.g_TimesSummoned++;
@@ -1586,7 +1589,7 @@ public void ChaosKahmlstein_OnTakeDamagePost(int victim, int attacker, int infli
 		}
 	}
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		f_MessengerSpeedUp[npc.index] *= 1.15;
 		switch(GetRandomInt(0,3))
@@ -1871,6 +1874,7 @@ bool Kahmlstein_Attack_TempPowerup(ChaosKahmlstein npc)
 		npc.m_flJumpCooldown = GetGameTime(npc.index) + (35.0 * (1.0 / f_MessengerSpeedUp[npc.index]));
 		NPC_StopPathing(npc.index);
 		npc.m_bPathing = false;
+		npc.m_bisWalking = false;
 		npc.AddActivityViaSequence("taunt_bare_knuckle_beatdown");
 		npc.m_flAttackHappens = 0.0;
 		npc.SetCycle(0.01);
@@ -1958,6 +1962,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 		{
 			case 0:
 			{
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_heavy_workout_end");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.25);
@@ -1973,6 +1978,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			}
 			case 2:
 			{
+				npc.m_bisWalking = false;
 				npc.SetActivity("ACT_MP_STAND_MELEE");
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: The chaos, it has left me completely it seems.");
 				i_TalkDelayCheck += 1;
@@ -2039,6 +2045,7 @@ int ChaosKahmlsteinTalk(int iNPC)
 			{
 				CPrintToChatAll("{darkblue}Kahmlstein{default}: I have something to attend to now, {crimson}some unfinished business.{default}");
 				i_TalkDelayCheck += 1;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_cyoa_PDA_intro");
 				npc.SetCycle(0.05);
 				f_TalkDelayCheck = GetGameTime() + 1.5;

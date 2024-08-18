@@ -283,7 +283,8 @@ void DefandaSelfDefense(Defanda npc, float gameTime, int target, float distance)
 					else
 					{
 						ExpidonsaGroupHeal(npc.index, 150.0, 5, 75.0, 1.0, true);
-					}
+					}		
+					DesertYadeamDoHealEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;

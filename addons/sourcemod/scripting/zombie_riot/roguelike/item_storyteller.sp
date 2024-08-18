@@ -67,7 +67,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 			npc.m_fGunRangeBonus *= 1.15;
 
 			// +15% max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 23 / 20;
+			int health = ReturnEntityMaxHealth(npc.index) * 23 / 20;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -80,7 +80,7 @@ public void Rogue_Blademace_Ally(int entity, StringMap map)
 				npc.BonusDamageBonus *= 1.15;
 
 				// +15% max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 23 / 20;
+				int health = ReturnEntityMaxHealth(npc.index) * 23 / 20;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}
@@ -127,7 +127,7 @@ public void Rogue_Brokenblade_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// -25% max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 3 / 4;
+			int health = ReturnEntityMaxHealth(npc.index) * 3 / 4;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -201,7 +201,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 		{
 			Citizen npc = view_as<Citizen>(entity);
 
-			int last = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int last = ReturnEntityMaxHealth(npc.index);
 
 			int health = RoundFloat(LastFlowerHealth);
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
@@ -214,7 +214,7 @@ public void Rogue_Whiteflower_Ally(int entity, StringMap map)
 			BarrackBody npc = view_as<BarrackBody>(entity);
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
-				int last = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+				int last = ReturnEntityMaxHealth(npc.index);
 
 				int health = RoundFloat(LastFlowerHealth);
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
@@ -301,7 +301,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 			Citizen npc = view_as<Citizen>(entity);
 
 			// -5% max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 19 / 20;
+			int health = ReturnEntityMaxHealth(npc.index) * 19 / 20;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -311,7 +311,7 @@ public void Rogue_CombineCrown_Ally(int entity, StringMap map)
 			if(npc.OwnerUserId)	// Barracks Unit
 			{
 				// -5% max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 19 / 20;
+				int health = ReturnEntityMaxHealth(npc.index) * 19 / 20;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}

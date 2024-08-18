@@ -10,11 +10,11 @@ enum struct RawHooks
 
 static DynamicHook ForceRespawn;
 static int ForceRespawnHook[MAXTF2PLAYERS];
+Handle g_DhookWantsLagCompensationOnEntity;
 
 #if !defined RENDER_TRANSCOLOR
 static int GetChargeEffectBeingProvided;
 //static bool Disconnecting;
-static DynamicHook g_WrenchSmack;
 //DynamicHook g_ObjStartUpgrading;
 static DynamicHook g_DHookScoutSecondaryFire; 
 #endif
@@ -34,7 +34,6 @@ static Handle g_detour_CTFGrenadePipebombProjectile_PipebombTouch;
 
 static bool Dont_Move_Building;											//dont move buildings
 static bool Dont_Move_Allied_Npc;											//dont move buildings	
-static int TeamBeforeChange;											//dont move buildings	
 
 static bool b_LagCompNPC;
 
@@ -102,12 +101,11 @@ void DHook_Setup()
 
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-//	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
 #if defined ZR
 	DHook_CreateDetour(gamedata, "CTFProjectile_HealingBolt::ImpactTeamPlayer()", OnHealingBoltImpactTeamPlayer, _);
-//	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 //	DHook_CreateDetour(gamedata, "CTFBuffItem::RaiseFlag", Dhook_RaiseFlag_Pre); 
 //	64BIT UPDATE BROKE THIS ENTIRELY. IT IS UNSUABLE AND CAUSES A NULL POINTER CRASH!
 
@@ -124,8 +122,7 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
-#if !defined RTS
-	g_WrenchSmack = DHook_CreateVirtual(gamedata, "CTFWrench::Smack()");
+#if !defined RTS;
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
@@ -181,6 +178,13 @@ void DHook_Setup()
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::StartLagCompensation", StartLagCompensationPre, StartLagCompensationPost);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FinishLagCompensation", FinishLagCompensation, _);
 	DHook_CreateDetour(gamedata_lag_comp, "CLagCompensationManager::FrameUpdatePostEntityThink_SIGNATURE", _, LagCompensationThink);
+
+	g_DhookWantsLagCompensationOnEntity = DHookCreateFromConf(gamedata_lag_comp,
+			"CTFPlayer::WantsLagCompensationOnEntity");
+
+	if (!g_DhookWantsLagCompensationOnEntity) {
+		SetFailState("Failed to setup detour for CTFPlayer::WantsLagCompensationOnEntity");
+	}
 	
 	delete gamedata_lag_comp;
 	/*
@@ -208,6 +212,16 @@ void DHook_Setup()
 //	int ED_AllocCommentedOut;
 }
 
+public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle hReturn, Handle hParams)
+{
+	if(b_LagCompAlliedPlayers)
+	{
+		DHookSetReturn(hReturn, true);
+		return MRES_Supercede;
+	}
+	
+	return MRES_Ignored;
+}
 
 void DHook_EntityDestoryed()
 {
@@ -301,63 +315,6 @@ public MRESReturn DHook_PreClientUpdatePost()
 	
 	return MRES_Ignored;
 }
-
-#if !defined RTS
-void OnWrenchCreated(int entity) 
-{
-	g_WrenchSmack.HookEntity(Hook_Pre, entity, Wrench_SmackPre);
-	g_WrenchSmack.HookEntity(Hook_Post, entity, Wrench_SmackPost);
-}
-static float f_TeleportedPosWrenchSmack[MAXENTITIES][3];
-int WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre;
-
-public MRESReturn Wrench_SmackPre(int entity, DHookReturn ret, DHookParam param)
-{	
-	WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre = GameRules_GetProp("m_bPlayingMannVsMachine");
-	GameRules_SetProp("m_bPlayingMannVsMachine", false);
-	StartLagCompResetValues();
-	Dont_Move_Building = true;
-	Dont_Move_Allied_Npc = false;
-	int Compensator = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	LagCompEntitiesThatAreIntheWay(Compensator);
-
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
-		{
-			GetEntPropVector(baseboss_index_allied, Prop_Data, "m_vecAbsOrigin", f_TeleportedPosWrenchSmack[baseboss_index_allied]);
-			SDKCall_SetLocalOrigin(baseboss_index_allied, OFF_THE_MAP_NONCONST);
-		}
-	}
-	return MRES_Ignored;
-}
-
-public MRESReturn Wrench_SmackPost(int entity, DHookReturn ret, DHookParam param)
-{	
-	FinishLagCompMoveBack();
-	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
-	{
-		int baseboss_index_allied = EntRefToEntIndex(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied))
-		{
-			SDKCall_SetLocalOrigin(baseboss_index_allied, f_TeleportedPosWrenchSmack[baseboss_index_allied]);
-		}
-	}
-	GameRules_SetProp("m_bPlayingMannVsMachine", WhatWasMVMBefore_DHook_CheckUpgradeOnHitPre);
-	return MRES_Ignored;
-}
-#endif
-
-//NEVER upgrade buildings, EVER.
-/*
-public MRESReturn ObjStartUpgrading_SmackPre(int entity, DHookReturn ret, DHookParam param)
-{	
-	SetEntProp(entity, Prop_Send, "m_iUpgradeMetal", 199); //just incase.
-	return MRES_Supercede;
-}
-*/
-
 
 
 //Thanks to rafradek#0936 on the allied modders discord for pointing this function out!
@@ -1145,7 +1102,6 @@ public void StartLagCompResetValues()
 public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 {
 	int Compensator = param.Get(1);
-//	PrintToChatAll("called %i",Compensator);
 	StartLagCompResetValues();
 	
 	bool already_moved = false;
@@ -1156,9 +1112,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TFTeam_Spectator)); //Hardcode to red as there will be no blue players.
-		
+	//	TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
 		return MRES_Ignored;
 	}
 	
@@ -1232,11 +1186,6 @@ public MRESReturn StartLagCompensationPost(Address manager, DHookParam param)
 	//	return MRES_Supercede;
 	}
 #endif
-	if(b_LagCompAlliedPlayers) //This will ONLY compensate allies, so it wont do anything else! Very handy for optimisation.
-	{
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum", view_as<int>(TeamBeforeChange)); //Hardcode to red as there will be no blue players.
-		return MRES_Ignored;
-	} 
 	return MRES_Ignored;
 }
 
@@ -1332,7 +1281,6 @@ public MRESReturn LagCompensationThink(Address manager)
 }
 public void FinishLagCompMoveBack()
 {
-	b_LagCompAlliedPlayers = false;
 	for (int entity = 0; entity < MAXENTITIES; entity++)
 	{
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
@@ -1345,6 +1293,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	PrintToChatAll("finish lag comp");
 	//Set this to false to be sure.
 	FinishLagCompMoveBack();
+	b_LagCompAlliedPlayers = false;
 	
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
@@ -1367,6 +1316,7 @@ void DHook_HookClient(int client)
 
 	if(ForceRespawn)
 	{
+		DHookEntity(g_DhookWantsLagCompensationOnEntity, false, client, _, Dhook_WantsLagCompensationOnEntity);
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
 		
 #if defined ZR
@@ -2079,6 +2029,8 @@ public MRESReturn DHook_ManageRegularWeaponsPre(int client, DHookParam param)
 {
 	// Gives our desired class's wearables
 	IsInsideManageRegularWeapons = true;
+	//select their class here again.
+	CurrentClass[client] = view_as<TFClassType>(GetEntProp(client, Prop_Send, "m_iDesiredPlayerClass"));
 	if(!CurrentClass[client])
 	{
 		CurrentClass[client] = TFClass_Scout;

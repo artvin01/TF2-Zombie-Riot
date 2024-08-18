@@ -56,9 +56,9 @@ void VoidBroodingPetra_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return VoidBroodingPetra(client, vecPos, vecAng, ally);
+	return VoidBroodingPetra(client, vecPos, vecAng, ally, data);
 }
 methodmap VoidBroodingPetra < CClotBody
 {
@@ -102,7 +102,7 @@ methodmap VoidBroodingPetra < CClotBody
 	}
 	
 	
-	public VoidBroodingPetra(int client, float vecPos[3], float vecAng[3], int ally)
+	public VoidBroodingPetra(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		VoidBroodingPetra npc = view_as<VoidBroodingPetra>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "450000", ally, false, true));
 		
@@ -125,6 +125,12 @@ methodmap VoidBroodingPetra < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VoidBroodingPetra_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(VoidBroodingPetra_ClotThink);
 		
+		bool final = StrContains(data, "no_spread") != -1;
+		
+		if(final)
+		{
+			i_RaidGrantExtra[npc.index] = 1;
+		}
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -206,10 +212,14 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	//always leaves creep onto the floor
-	float ProjectileLoc[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
-	ProjectileLoc[2] += 5.0;
-	VoidArea_SpawnNethersea(ProjectileLoc);
+	if(i_RaidGrantExtra[npc.index] != 1 && GetGameTime(npc.index) > npc.m_flAttackHappens_2)
+	{	
+		npc.m_flAttackHappens_2 = GetGameTime(npc.index) + 0.35;
+		float ProjectileLoc[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+		ProjectileLoc[2] += 5.0;
+		VoidArea_SpawnNethersea(ProjectileLoc);
+	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -230,7 +240,7 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		
 		if(npc.m_flJumpCooldown < GetGameTime(npc.index))
 		{
-			int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int MaxHealth = ReturnEntityMaxHealth(npc.index);
 			MaxHealth /= 15;
 			VoidBrooding_SpawnFractal(npc, MaxHealth, 10);
 			npc.m_flJumpCooldown = GetGameTime(npc.index) + 5.0;

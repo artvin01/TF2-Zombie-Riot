@@ -55,7 +55,7 @@ public void EndSpeaker1_ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	npc.m_iBaseHealth = RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) / 0.4);
+	npc.m_iBaseHealth = RoundToCeil(float(ReturnEntityMaxHealth(npc.index)) / 0.4);
 
 	if(npc.m_iTarget && !IsValidEnemy(npc.index, npc.m_iTarget, true))
 		npc.m_iTarget = 0;

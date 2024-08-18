@@ -72,8 +72,14 @@ public Action VoidArea_RenderTimer(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	int SpreadTicksMax = 24;
+
+	if(CurrentRound == 59)
+		SpreadTicksMax = 24 * 3;
+
 	if(RaidbossIgnoreBuildingsLogic(0))
 		SpreadTicksMax = 6;
+
+	//wave 60 nerf
 
 	if(++SpreadTicks > SpreadTicksMax)
 	{
@@ -380,6 +386,15 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 		if(IsValidEntity(ParticleRef))
 			RemoveEntity(ParticleRef);
 
+		return Plugin_Stop;
+	}
+	//remove during setups.
+	if(Waves_InSetup())
+	{
+		if(IsValidEntity(ParticleRef))
+			RemoveEntity(ParticleRef);
+
+		RemoveEntity(SpawnRef);
 		return Plugin_Stop;
 	}
 	int RandomSeed = pack.ReadCell();

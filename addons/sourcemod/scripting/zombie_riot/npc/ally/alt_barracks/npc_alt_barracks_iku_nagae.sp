@@ -312,7 +312,7 @@ public void Barrack_Alt_Ikunagae_ClotThink(int iNPC)
 					float flAng[3]; // original
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 								
-					npc.FireParticleRocket(vecTarget, 1250.0 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					npc.FireParticleRocket(vecTarget, 937.5 * npc.BonusDamageBonus , 850.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 					if (npc.m_iAmountProjectiles >= 10)
 					{
 						npc.m_iAmountProjectiles = 0;
@@ -357,8 +357,8 @@ static void Normal_Attack_BEAM_Iku_Ability(int client)
 	Ikunagae_BEAM_TicksActive[client] = 0;
 
 	Ikunagae_BEAM_CanUse[client] = true;
-	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),12500.0, 1);	//what the fuck
-	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2500.0, 1);
+	Ikunagae_BEAM_CloseDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),9375.0, 1);	//what the fuck
+	Ikunagae_BEAM_FarDPT[client] = Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1875.0, 1);
 	Ikunagae_BEAM_MaxDistance[client] = 750;
 	Ikunagae_BEAM_BeamRadius[client] = 2;
 	Ikunagae_BEAM_ColorHex[client] = ParseColor("abdaf7");
@@ -507,7 +507,7 @@ static Action Ikunagae_TBB_Tick(int client)
 						inflictor=client;
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
-					SDKHooks_TakeDamage(victim, client, inflictor, (Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1)/6)*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
+					SDKHooks_TakeDamage(victim, client, inflictor, (damage/6)*BEAM_Targets_Hit[client], DMG_PLASMA, -1, NULL_VECTOR, WorldSpaceVec);	// 2048 is DMG_NOGIB?
 					BEAM_Targets_Hit[client] *= LASER_AOE_DAMAGE_FALLOFF;
 				}
 			}

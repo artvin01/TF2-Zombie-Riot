@@ -281,7 +281,7 @@ static Action Timer_ParadoxFrost(Handle timer)
 			int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 			if(health > 1)
 			{
-				int damage = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 1600;
+				int damage = ReturnEntityMaxHealth(entity) / 1600;
 				if(damage > 50)
 					damage = 50;
 				

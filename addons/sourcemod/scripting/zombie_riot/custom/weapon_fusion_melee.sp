@@ -62,7 +62,9 @@ bool IsFusionWeapon(int Index)
 	 || Index == WEAPON_FUSION_PAP1
 	 || Index == WEAPON_FUSION_PAP2
 	 || Index == WEAPON_NEARL 
-	 || Index == WEAPON_SICCERINO)
+	 || Index == WEAPON_SICCERINO
+	 || Index == WEAPON_WALDCH_SWORD_NOVISUAL
+	 || Index == WEAPON_WALDCH_SWORD_REAL)
 		return true;
 
 	return false;
@@ -604,9 +606,13 @@ bool FusionWeaponCheckEffects_IfNotAvaiable(int iNpc, int weapon)
 		{
 			thingsToLoop = 24;
 		}
-		case WEAPON_SICCERINO:
+		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
 			thingsToLoop = 12;
+		}
+		case WEAPON_WALDCH_SWORD_REAL:
+		{
+			thingsToLoop = 15;
 		}
 	}
 	for(int loop = 0; loop <=thingsToLoop; loop++)
@@ -665,9 +671,13 @@ void FusionWeaponEffects(int owner, int client, int Wearable, char[] attachment 
 		{
 			FusionWeaponEffectPap3(owner, client, Wearable, attachment);
 		}
-		case WEAPON_SICCERINO:
+		case WEAPON_SICCERINO, WEAPON_WALDCH_SWORD_NOVISUAL:
 		{
 			FusionWeaponEffectPap_Siccerino(owner, client, Wearable, attachment);
+		}
+		case WEAPON_WALDCH_SWORD_REAL:
+		{
+			FusionWeaponEffectPap_Siccerino_Waldch(owner, client, Wearable, attachment);
 		}
 	}
 }
@@ -1020,7 +1030,6 @@ void FusionWeaponEffectPap_Siccerino(int owner, int client, int Wearable, char[]
 	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4, 35, 255, 35, 2.0, 2.0, 1.0, LASERBEAM, owner);
 	int Laser_3_i = ConnectWithBeamClient(particle_4, particle_5_i, 35, 255, 35, 2.0, 1.0, 1.0, LASERBEAM, owner);
 	
-
 	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
 	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
 	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
@@ -1037,7 +1046,67 @@ void FusionWeaponEffectPap_Siccerino(int owner, int client, int Wearable, char[]
 
 }
 
+static void FusionWeaponEffectPap_Siccerino_Waldch(int owner, int client, int Wearable, char[] attachment = "effect_hand_r")
+{
+	float flPos[3];
+	float flAng[3];
 
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	
+	int particle_2 = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3 = InfoTargetParentAt({-15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4 = InfoTargetParentAt({5.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5 = InfoTargetParentAt({5.0,50.0,0.0}, "", 0.0); //First offset we go by
+
+	
+	int particle_2_i = InfoTargetParentAt({0.0,-15.0,0.0}, "", 0.0); //First offset we go by
+	int particle_3_i = InfoTargetParentAt({15.0,0.0,0.0}, "", 0.0); //First offset we go by
+	int particle_4_i = InfoTargetParentAt({-5.0,10.0,0.0}, "", 0.0); //First offset we go by
+	int particle_5_i = InfoTargetParentAt({-5.0,50.0,0.0}, "", 0.0); //First offset we go by
+	
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+	SetParent(particle_1, particle_4, "",_, true);
+	SetParent(particle_1, particle_5, "",_, true);
+	
+	SetParent(particle_1, particle_2_i, "",_, true);
+	SetParent(particle_1, particle_3_i, "",_, true);
+	SetParent(particle_1, particle_4_i, "",_, true);
+	SetParent(particle_1, particle_5_i, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(Wearable, particle_1, attachment,_); 
+
+
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2 = ConnectWithBeamClient(particle_3, particle_4, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3 = ConnectWithBeamClient(particle_4, particle_5, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
+	
+	int Laser_1_i = ConnectWithBeamClient(particle_2_i, particle_3_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_2_i = ConnectWithBeamClient(particle_3_i, particle_4_i, 35, 35, 255, 2.0, 2.0, 1.0, LASERBEAM, owner);
+	int Laser_3_i = ConnectWithBeamClient(particle_4_i, particle_5_i, 35, 35, 255, 2.0, 1.0, 1.0, LASERBEAM, owner);
+	int Laser_4_i = ConnectWithBeamClient(particle_5, particle_5_i, 15, 15, 125, 0.5, 0.5, 50.0, LASERBEAM, owner);
+	
+
+	i_FusionEnergyEffect[client][0] = EntIndexToEntRef(particle_1);
+	i_FusionEnergyEffect[client][1] = EntIndexToEntRef(particle_2);
+	i_FusionEnergyEffect[client][2] = EntIndexToEntRef(particle_3);
+	i_FusionEnergyEffect[client][3] = EntIndexToEntRef(particle_4);
+	i_FusionEnergyEffect[client][4] = EntIndexToEntRef(particle_5);
+	i_FusionEnergyEffect[client][5] = EntIndexToEntRef(particle_2_i);
+	i_FusionEnergyEffect[client][6] = EntIndexToEntRef(particle_3_i);
+	i_FusionEnergyEffect[client][7] = EntIndexToEntRef(particle_4_i);
+	i_FusionEnergyEffect[client][8] = EntIndexToEntRef(particle_5_i);
+	i_FusionEnergyEffect[client][9] = EntIndexToEntRef(Laser_1);
+	i_FusionEnergyEffect[client][10] = EntIndexToEntRef(Laser_2);
+	i_FusionEnergyEffect[client][11] = EntIndexToEntRef(Laser_3);
+	i_FusionEnergyEffect[client][12] = EntIndexToEntRef(Laser_1_i);
+	i_FusionEnergyEffect[client][13] = EntIndexToEntRef(Laser_2_i);
+	i_FusionEnergyEffect[client][14] = EntIndexToEntRef(Laser_3_i);
+	i_FusionEnergyEffect[client][15] = EntIndexToEntRef(Laser_4_i);
+}
 
 public void Enable_FusionWeapon(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
@@ -1046,6 +1115,23 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 		//This timer already exists.
 		if(IsFusionWeapon(i_CustomWeaponEquipLogic[weapon]))
 		{
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
+			{
+				if(Items_HasNamedItem(client, "Waldch's Expidonsan Sword"))
+				{
+					bool DisableEffects = view_as<bool>(Store_HasNamedItem(client, "Waldch's Expidonsan Sword"));
+					if(DisableEffects)
+					{
+						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_NOVISUAL;
+					}
+					else
+					{
+						i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
+						i_WeaponSoundIndexOverride[weapon] = 30667;
+						strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+					}
+				}
+			}
 		//	ApplyExtraFusionWeaponEffects(client,_ ,weapon);
 			//Is the weapon it again?
 			//Yes?
@@ -1061,6 +1147,23 @@ public void Enable_FusionWeapon(int client, int weapon) // Enable management, ha
 		
 	if(IsFusionWeapon(i_CustomWeaponEquipLogic[weapon]))
 	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
+		{
+			if(Items_HasNamedItem(client, "Waldch's Expidonsan Sword"))
+			{
+				bool DisableEffects = view_as<bool>(Store_HasNamedItem(client, "Waldch's Expidonsan Sword"));
+				if(DisableEffects)
+				{
+					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_NOVISUAL;
+				}
+				else
+				{
+					i_CustomWeaponEquipLogic[weapon] = WEAPON_WALDCH_SWORD_REAL;
+					i_WeaponSoundIndexOverride[weapon] = 30667;
+					strcopy(c_WeaponSoundOverrideString[weapon],sizeof(c_WeaponSoundOverrideString[]),"");	
+				}
+			}
+		}
 	//	ApplyExtraFusionWeaponEffects(client,_ ,weapon);
 		DataPack pack;
 		h_TimerFusionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_FusionWeapon, pack, TIMER_REPEAT);
@@ -1143,6 +1246,10 @@ static Action Siccerino_revert_toNormal(Handle ringTracker, int ref)
 #define SICCERINO_BONUS_DAMAGE_MAX 2.0
 #define SICCERINO_BONUS_DAMAGE_MAX_RAID 1.5
 
+#define SICCERINO_BONUS_DAMAGE_WALDCH 0.03
+#define SICCERINO_BONUS_DAMAGE_MAX_WALDCH 2.2
+#define SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH 1.65
+
 float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
@@ -1159,19 +1266,40 @@ float Siccerino_Melee_DmgBonus(int victim, int attacker, int weapon)
 			return SICCERINO_BONUS_DAMAGE_MAX;
 		}
 		return f_SiccerinoExtraDamage[attacker][victim];
+	}			
+	else if(i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_NOVISUAL || i_CustomWeaponEquipLogic[weapon] == WEAPON_WALDCH_SWORD_REAL)
+	{
+		if(b_thisNpcIsARaid[victim])
+		{
+			if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH)
+			{
+				return SICCERINO_BONUS_DAMAGE_MAX_RAID_WALDCH;
+			}
+		}
+		else if(f_SiccerinoExtraDamage[attacker][victim] >= SICCERINO_BONUS_DAMAGE_MAX_WALDCH)
+		{
+			return SICCERINO_BONUS_DAMAGE_MAX_WALDCH;
+		}
+		return f_SiccerinoExtraDamage[attacker][victim];
 	}	
 	return 1.0;
 }
 public float Npc_OnTakeDamage_Siccerino(int attacker, int victim, float damage, int weapon)
 {
+	float ExtraDamageDo;
 	damage *= f_SiccerinoExtraDamage[attacker][victim];
-	
-	f_SiccerinoExtraDamage[attacker][victim] += SICCERINO_BONUS_DAMAGE;
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SICCERINO)
+		ExtraDamageDo = SICCERINO_BONUS_DAMAGE;
+	else
+		ExtraDamageDo = SICCERINO_BONUS_DAMAGE_WALDCH;
+
+	f_SiccerinoExtraDamage[attacker][victim] += ExtraDamageDo;
+
 	DataPack pack;
 	CreateDataTimer(SICCERINO_DEBUFF_FADE, Siccerino_revert_damageBonus, pack, TIMER_FLAG_NO_MAPCHANGE);
 	pack.WriteCell(EntIndexToEntRef(attacker));
 	pack.WriteCell(EntIndexToEntRef(victim));		
-	pack.WriteFloat(SICCERINO_BONUS_DAMAGE);		
+	pack.WriteFloat(ExtraDamageDo);		
 
 	return damage;
 }
@@ -1242,7 +1370,8 @@ static void Siccerino_SuperSlice(int client)
 		return;
 	}
 	int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_SICCERINO)
+	
+	if(i_CustomWeaponEquipLogic[weapon_active] != WEAPON_SICCERINO && i_CustomWeaponEquipLogic[weapon_active] != WEAPON_WALDCH_SWORD_NOVISUAL && i_CustomWeaponEquipLogic[weapon_active] != WEAPON_WALDCH_SWORD_REAL)
 	{
 		SDKUnhook(client, SDKHook_PreThink, Siccerino_SuperSlice);
 		return;
@@ -1262,24 +1391,24 @@ static void Siccerino_SuperSlice(int client)
 
 	if(TimeUntillSnap <= 0.0)
 	{
-		DrawBigSiccerinoSiccors(Angles, client, belowBossEyes, 0.0);
+		DrawBigSiccerinoSiccors(weapon_active,Angles, client, belowBossEyes, 0.0);
 		//do damage
 		SDKUnhook(client, SDKHook_PreThink, Siccerino_SuperSlice);
 	}
 	else if(TimeUntillSnap < 0.25)
 	{
 		//start closing in
-		DrawBigSiccerinoSiccors(Angles, client, belowBossEyes, TimeUntillSnap * 4.0);
+		DrawBigSiccerinoSiccors(weapon_active,Angles, client, belowBossEyes, TimeUntillSnap * 4.0);
 	}
 	else
 	{
 		//2 beams
-		DrawBigSiccerinoSiccors(Angles, client, belowBossEyes);
+		DrawBigSiccerinoSiccors(weapon_active,Angles, client, belowBossEyes);
 		//Just angle.
 	}
 }
 
-void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3], float AngleDeviation = 1.0)
+void DrawBigSiccerinoSiccors(int weapon_active, float Angles[3], int client, float belowBossEyes[3], float AngleDeviation = 1.0)
 {
 	Angles[1] -= (30.0 * AngleDeviation);
 	float vecForward[3];
@@ -1290,7 +1419,12 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 	{
 		LaserFatness = 25.0;
 	}
-
+	int Colour[3];
+	Colour = {50,200,50};
+	if(i_CustomWeaponEquipLogic[weapon_active] == WEAPON_WALDCH_SWORD_REAL)
+	{
+		Colour = {35,35,255};
+	}
 	float VectorTarget_2[3];
 	float VectorForward = 350.0; //a really high number.
 	
@@ -1298,7 +1432,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
 	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
 	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
-	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 1, LaserFatness, {50,200,50});
+	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 1, LaserFatness, Colour);
 
 	Angles[1] += (60.0 * AngleDeviation);
 	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
@@ -1307,7 +1441,7 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
 	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
 	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
-	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 1, LaserFatness, {50,200,50});
+	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 1, LaserFatness, Colour);
 
 	if(AngleDeviation == 0.0)
 	{
@@ -1328,7 +1462,6 @@ void DrawBigSiccerinoSiccors(float Angles[3], int client, float belowBossEyes[3]
 		trace = TR_TraceHullFilterEx(belowBossEyes, VectorTarget_2, hullMin, hullMax, 1073741824, Siccerino_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
 		BEAM_Targets_Hit[client] = 1.0;
-		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		float damage = 350.0;
 		damage *= Attributes_Get(weapon_active, 2, 1.0);
 		float playerPos[3];
@@ -1381,7 +1514,7 @@ static bool Siccerino_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{

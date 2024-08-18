@@ -265,7 +265,7 @@ void PetrisBaronSelfDefense(PetrisBaron npc, float gameTime, int target, float d
 						damageDealt *= 50.0;
 					if(i_IsABuilding[target])
 					{
-						float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+						float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 						maxhealth *= 1.0;
 						HealEntityGlobal(npc.index, npc.index, maxhealth, 25000.0, 0.0, HEAL_SELFHEAL);
 						float ProjLoc[3];

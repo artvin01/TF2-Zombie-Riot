@@ -359,8 +359,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 300.0;
-					Projectile.bonus_dmg = 450.0;
+					Projectile.damage = 125.0;
+					Projectile.bonus_dmg = 250.0;
 					Projectile.Time = Projectile_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -411,6 +411,7 @@ static void ClotThink(int iNPC)
 						
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable6, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
 						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}
@@ -457,7 +458,7 @@ static void ClotThink(int iNPC)
 			//TE_SetupBeamPoints(flPos, Proj_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, time, size[0], size[1], 0, amp, color, 0);
 			//TE_SendToAll();
 
-			float dmg = 20.0;
+			float dmg = 12.5;
 			float radius = 15.0;
 
 			Laser.Radius = radius;

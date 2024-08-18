@@ -329,7 +329,7 @@ public Action ChaosInjuredCultist_OnTakeDamage(int victim, int &attacker, int &i
 
 	if(npc.g_TimesSummoned < 3)
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
 		float Scaling = float(health) * 3.0 / float(maxhealth);
@@ -451,7 +451,7 @@ void ChaosInjuredCultistSelfDefense(ChaosInjuredCultist npc, float gameTime, int
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 				if(npc.m_iChanged_WalkCycle != 2)
 				{
-					npc.m_bisWalking = true;
+					npc.m_bisWalking = false;
 					npc.m_iChanged_WalkCycle = 2;
 					npc.SetActivity("ACT_ROGUE2_CHAOS_INJURED_CULTIST_WALK");
 					NPC_StopPathing(npc.index);

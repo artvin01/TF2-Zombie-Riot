@@ -140,7 +140,7 @@ methodmap AnfuhrerEisenhard < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(1);
+		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCDeath[npc.index] = AnfuhrerEisenhard_NPCDeath;
@@ -335,7 +335,7 @@ public Action AnfuhrerEisenhard_OnTakeDamage(int victim, int &attacker, int &inf
 		npc.m_blPlayHurtAnimation = true;
 	}		
 
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

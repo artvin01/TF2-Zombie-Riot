@@ -786,7 +786,7 @@ public Action FatherGrigori_OnTakeDamage(int victim, int &attacker, int &inflict
 public void FatherGrigori_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	FatherGrigori npc = view_as<FatherGrigori>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

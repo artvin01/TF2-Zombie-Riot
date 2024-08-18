@@ -164,7 +164,7 @@ void RTSMenu_PlayerRunCmd(int client)
 					{
 						// Name, Health, Team
 						IntToString(TeamNumber[entity], buffer, sizeof(buffer));
-						FormatEx(display, sizeof(display), "%t\n \n \n \n \n%d / %d\n%t", c_NpcName[entity], GetEntProp(entity, Prop_Data, "m_iHealth"), GetEntProp(entity, Prop_Data, "m_iMaxHealth"), "Team Of", buffer);
+						FormatEx(display, sizeof(display), "%t\n \n \n \n \n%d / %d\n%t", c_NpcName[entity], GetEntProp(entity, Prop_Data, "m_iHealth"), ReturnEntityMaxHealth(entity), "Team Of", buffer);
 
 						pos[0] = 0.42 + shiftRight;
 						pos[1] = 0.77 + shiftDown;
@@ -299,7 +299,7 @@ void RTSMenu_PlayerRunCmd(int client)
 						{
 							team[TeamNumber[entity]] = true;
 							health += GetEntProp(entity, Prop_Data, "m_iHealth");
-							maxhealth += GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+							maxhealth += ReturnEntityMaxHealth(entity);
 
 							int count;
 							map.GetValue(c_NpcName[entity], count);

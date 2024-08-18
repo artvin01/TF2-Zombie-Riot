@@ -380,7 +380,7 @@ public void SandvichSlayer_ClotThink(int iNPC)
 	}
 	if(!b_Sandvich[npc.index] && fl_Sandvich_Timer[npc.index] <= GetGameTime(npc.index) && i_MaxSandvichUse[npc.index] == 0)
 	{
-		int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int MaxHealth = ReturnEntityMaxHealth(npc.index);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + MaxHealth / 2);
 		b_Sandvich[npc.index] = true;
 		i_MaxSandvichUse[npc.index]++;

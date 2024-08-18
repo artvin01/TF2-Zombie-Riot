@@ -8,64 +8,80 @@
 	"Allies"
 	{
 		"en" 		"Allies"
+		"fr" 		"Alliés"
 		"pt"		"Aliados"
 	}
 	"Raid Bosses"
 	{
 		"en" 		"Raid Bosses"
+		"fr" 		"Boss de Raid"
 		"pt"		"Chefes de Invasão"
 	}
 	"Special Enemies"
 	{
 		"en" 		"Special Enemies"
+		"fr" 		"Ennemis Spéciaux"
 		"pt"		"Inimigos Especiais"
 	}
 	"Common Infection"
 	{
 		"en" 		"Common Infection"
+		"fr" 		"Infectés Communs"
 		"pt"		"Infectados Comuns"
 	}
 	"Blitz Controlled"
 	{
 		"en" 		"Blitz Controlled"
+		"fr" 		"Controllés par Blitz"
 		"pt"		"Controlados por Blitz"
 	}
 	"Xeno Infection"
 	{
 		"en" 		"Xeno Infection"
+		"fr" 		"Infectés par Xéno"
 		"pt"		"Xeno Infecção"
 	}
 	"Medieval Empire"
 	{
 		"en" 		"Medieval Empire"
+		"fr" 		"Empire du Moyen-Âge"
 		"pt"		"Império Medieval"
 	}
 	"Seaborn Infection"
 	{
 		"en" 		"Seaborn Infection"
+		"fr" 		"Infectés par Seaborn"
 		"pt"		"Infecção do Mar"
 	}
 	"Bloons"
 	{
 		"en" 		"Bloons"
+		"fr" 		"Bloons"
 		"pt"		"Balões"
 	}
 	"Cry of Fear"
 	{
 		"en" 		"Cry of Fear"
+		"fr" 		"Cry of Fear"
 		"pt"		"Cry of Fear"
 	}
 	"Voided Subjects"
 	{
 		"en" 		"Voided Subjects"
+		"fr" 		"Disciples du Void"
 	}
 	"Ruina"
 	{
 		"en" 		"Ruina"
 	}
+	"Iberia Expidonsa Alliance"
+	{
+		"en" 		"Iberia Expidonsa Alliance"
+	}
 	"Chaos Allience"
 	{
 		"en" 		"Chaos Allience"
+		"fr" 		"Alliance du Chaos"
 	}
 	"Expidonsa"
 	{
@@ -75,10 +91,12 @@
 	"Interitus Alliances"
 	{
 		"en"		"interitus Alliances"
+		"fr"		"Alliés de Interitus"
 	}
 	"Headcrab Zombie Desc"
 	{
 		"en" 		"Normal Zombie with nothing special about it. But this one is the most common seen around."
+		"fr" 		"Le zombie le plus commun. Rien de spécial."
 	}
 	"Fortified Headcrab Zombie Desc"
 	{
@@ -234,7 +252,7 @@
 	}
 	"X10 Spy Main Desc"
 	{
-		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half heatlh those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
+		"en" 		"Spymains from an alternative timeline.\nHe has the deadringer but attacks through it.\nShoots at you and once below half health those bullets turn into rockets.\nEvery 3rd melee hit deals bonus damage and knocks you away.\nOnce below half health he only takes 65%% of the damage.\nDeadringer gives 90%% resistance (resistsance can be silenced)."
 	}
 		
 	//XENO
@@ -477,7 +495,7 @@
 	}
 	"Medic Berserker Desc"
 	{
-		"en" 		"They seem to feed off of blood. \nThe lower heatlh he has, the deadlier he becomes."
+		"en" 		"They seem to feed off of blood. \nThe lower health he has, the deadlier he becomes."
 	}
 	"Militia Desc"
 	{
@@ -1224,9 +1242,9 @@
 	{
 		"en"	"A heavily armored enemy, once armor breaks, he will gain high speeds.\nMelee deals 2x as much damage to the armor."
 	}
-	"Seargent Ideal Desc"
+	"Sergeant Ideal Desc"
 	{
-		"en"	"A seargent who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
+		"en"	"A sergeant who will protect his comerades at the cost of his own life.\nHis shield will guard any ally around himself and take the damage instead."
 	}
 	"VIP Building, The Objective Desc"
 	{
@@ -1498,7 +1516,7 @@
 	}
 	"Snowey Gunner Desc" 
 	{
-		"en"	"Tries to kite you, and has great heatlh and ranged damage."
+		"en"	"Tries to kite you, and has great health and ranged damage."
 	}
 	"Freezing Cleaner Desc" 
 	{
@@ -1552,7 +1570,7 @@
 	{
 		"en"	"Shoots 10 shots very fast with high damage, and then reloads for a long time."
 	}
-	"Behemonth Desc"
+	"Behemoth Desc"
 	{
 		"en"	"Has very high health and chaos damage.\nIs entirely immune to headshots."
 	}
@@ -1723,5 +1741,9 @@
 	"Nightmare Desc"
 	{
 		"en"		Stronger than the every day zombie in almost every way, the Nightmare is a force to be reckoned with. One swipe of its claws is enough to put down almost any person.
+	}
+	"Omega Desc"
+	{
+		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
 	}
 }

@@ -185,15 +185,16 @@ methodmap MedivalBuilding < CClotBody
 		
 //		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 //		if(iActivity > 0) npc.StartActivity(iActivity);
-		if(data[0])
-		{
-			i_AttacksTillMegahit[npc.index] = StringToInt(data);
-
-		}
 		
 		npc.m_iWearable1 = npc.EquipItemSeperate("partyhat", "models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		if(data[0])
+		{
+			i_AttacksTillMegahit[npc.index] = StringToInt(data);
+			SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.index, 0, 0, 0, 0);
+		}
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
@@ -230,6 +231,7 @@ methodmap MedivalBuilding < CClotBody
 		
 		npc.m_flMeleeArmor = 2.5;
 		npc.m_flRangedArmor = 1.0;
+		f_ExtraOffsetNpcHudAbove[npc.index] = 180.0;
 
 		NPC_StopPathing(npc.index);
 

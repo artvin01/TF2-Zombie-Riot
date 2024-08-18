@@ -282,8 +282,8 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = 200.0;
-		Melee.bonus_dmg = 600.0;
+		Melee.damage = 75.0;
+		Melee.bonus_dmg = 150.0;
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE";
 		Melee.swing_speed = 0.25;
 		Melee.swing_delay = 0.1;

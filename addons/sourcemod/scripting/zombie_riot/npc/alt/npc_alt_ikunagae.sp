@@ -1111,7 +1111,7 @@ static void Severity_Core(int client) //Depending on current hp we determin  the
 	Ikunagae npc = view_as<Ikunagae>(client);
 	
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 	
 	float Health_Current = Health * 100 / MaxHealth;
 	
@@ -1407,7 +1407,7 @@ static Action Ikunagae_TBB_Tick(int client)
 static void Ikunagae_Spawn_Minnions(int client, int hp_multi)
 {
 	Ikunagae npc = view_as<Ikunagae>(client);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)

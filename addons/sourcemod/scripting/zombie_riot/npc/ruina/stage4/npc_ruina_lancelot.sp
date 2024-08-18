@@ -632,7 +632,7 @@ static bool Particle_Accelerator_Check(Lancelot npc, float range, float EndLoc[3
 
 	EndLoc = Laser.End_Point;
 	//CPrintToChatAll("Targets: %i", i_targets_inrange);
-	if(i_targets_inrange > 4 || LastMann)
+	if(i_targets_inrange > 2 || LastMann)
 	{
 		return true;
 	}
@@ -689,7 +689,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	}
 		
 
-	if(!npc.Anger && (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
+	if(!npc.Anger && (ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

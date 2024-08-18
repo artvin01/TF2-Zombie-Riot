@@ -116,7 +116,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 {
 	PathshaperFractal npc = view_as<PathshaperFractal>(iNPC);
 
-	SDKHooks_TakeDamage(npc.index, 0, 0, GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2970.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+	SDKHooks_TakeDamage(npc.index, 0, 0, ReturnEntityMaxHealth(npc.index) / 2970.0, DMG_SLASH, _, _, _, _, ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
 
 	float gameTime = GetGameTime(npc.index);
 	if(npc.m_flNextDelayTime > gameTime)
@@ -193,7 +193,7 @@ public void PathshaperFractal_ClotThink(int iNPC)
 
 				if(++npc.m_iAttacksTillMegahit > 5)
 				{
-					int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+					int health = ReturnEntityMaxHealth(npc.index);
 					Pathshaper_SpawnFractal(npc, health, 12);
 					npc.m_iAttacksTillMegahit = 0;
 				}

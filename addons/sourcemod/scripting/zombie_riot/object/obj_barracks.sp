@@ -476,21 +476,21 @@ static int SummonerCombine[][] =
 	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
 
 	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
-	{ 0, 10, 50, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 10, 25, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 
 	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ 0, 20, 90, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 10, 45, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
 
-	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 50, 210, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 150, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 25, 110, 0, 7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
 	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 100, 400, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 100, 200, 0, 8, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
 	{ 0, 500, 150, 3, 12, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 100, 500, 3, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 120, 250, 3, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 150, 750, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 150, 350, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 750, 150, 	10, 10, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert
 };
@@ -892,10 +892,6 @@ void Barracks_BuildingThink(int entity)
 						{
 							trainingTime = 0.0;
 						}
-						if(RaidbossIgnoreBuildingsLogic(0))
-						{
-							trainingTime *= 0.85;
-						}
 						TrainingIn[client] = TrainingStartedIn[client] + trainingTime;
 						TrainingQueue[client] = -1;
 					}
@@ -942,6 +938,7 @@ void Barracks_BuildingThink(int entity)
 				i_NormalBarracks_HexBarracksUpgrades_2[client] |= Get_GiveClient;
 				Store_SetNamedItem(client, "Barracks Hex Upgrade 2", i_NormalBarracks_HexBarracksUpgrades_2[client]);
 			}
+			Building_Check_ValidSupportcount(client);
 			Barracks_UpdateAllEntityUpgrades(client);
 		}
 	}
@@ -1289,10 +1286,6 @@ float ResourceGenMulti(int client, bool gold = false, bool allowgoldgen = false,
 		if(Rogue_Mode())
 		{
 			SupplyRateCalc *= 1.35;
-		}
-		if(RaidbossIgnoreBuildingsLogic(0))
-		{
-			SupplyRateCalc *= 1.25;
 		}
 	}
 	else

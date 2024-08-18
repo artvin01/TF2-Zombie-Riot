@@ -313,7 +313,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
 					bool Hitlimit = true;
-					for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+					for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 					{
 						if(!i_IreneTargetsAirborn[client][i])
 						{
@@ -403,7 +403,7 @@ public void Npc_Irene_Launch_client(int client)
 		//Gather all allive airborn-ed entities.
 		int count;
 		int targets[MAX_TARGETS_HIT];
-		for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
 			if(i_IreneTargetsAirborn[client][i] && IsValidEntity(i_IreneTargetsAirborn[client][i]) && !b_NpcHasDied[i_IreneTargetsAirborn[client][i]])

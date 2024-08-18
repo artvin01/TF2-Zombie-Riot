@@ -50,6 +50,7 @@ methodmap MajorSteam < CClotBody
 		i_NpcWeight[npc.index] = 999;
 		npc.SetActivity("ACT_MP_RUN_PRIMARY");
 		KillFeed_SetKillIcon(npc.index, "tf_projectile_rocket");
+		b_NpcUnableToDie[npc.index] = true;
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;
@@ -104,6 +105,7 @@ static void ClotThink(int iNPC)
 	{
 		b_NpcIsInvulnerable[npc.index] = false;
 		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
+		SmiteNpcToDeath(npc.index);
 		return;
 	}
 
@@ -277,7 +279,7 @@ static void ClotDeath(int entity)
 	Explode_Logic_Custom(999999.9, npc.index, npc.index, -1, vecMe, 450.0 * zr_smallmapbalancemulti.FloatValue, 1.0, _, true, 40, _, _, _, MajorSteamExplodePre);
 	b_NpcIsTeamkiller[npc.index] = false;
 
-	int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4;
+	int health = ReturnEntityMaxHealth(npc.index) / 4;
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 	

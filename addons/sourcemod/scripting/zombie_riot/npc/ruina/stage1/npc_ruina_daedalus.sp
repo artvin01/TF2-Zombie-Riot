@@ -267,7 +267,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -353,12 +353,10 @@ static void ClotThink(int iNPC)
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
 					float projectile_speed = 750.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 30.0;
+					float dmg = 20.0;
 					float radius = 150.0;
-					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
+					npc.FireParticleRocket(vecTarget, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else

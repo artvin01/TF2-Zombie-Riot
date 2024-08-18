@@ -241,7 +241,7 @@ public Action ChaosMage_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
 		npc.Anger = true;
-		npc.m_flChaosRevive = GetGameTime(npc.index) + 2.1;
+		npc.m_flChaosRevive = GetGameTime(npc.index) + 1.7;
 		npc.PlayDeathSound();
 		b_NpcIsInvulnerable[npc.index] = true;
 	}

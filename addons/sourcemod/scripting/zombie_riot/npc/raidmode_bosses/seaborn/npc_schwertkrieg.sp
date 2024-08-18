@@ -307,6 +307,7 @@ methodmap Raidboss_Schwertkrieg < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -515,6 +516,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.m_flMeleeArmor = fl_schwert_armour[npc.index][1];
 		npc.m_flRangedArmor = fl_schwert_armour[npc.index][0];
 		npc.m_flSpeed =fl_schwert_speed;
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
@@ -582,6 +584,8 @@ static void Internal_ClotThink(int iNPC)
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
 
 		npc.m_flSpeed=fl_schwert_speed;
 
@@ -680,11 +684,11 @@ static void Internal_ClotThink(int iNPC)
 		Ally = EntRefToEntIndex(i_ally_index);
 		if(IsValidAlly(npc.index, Ally))
 		{
-		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+		//	SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			
-			int AllyMaxHealth = GetEntProp(Ally, Prop_Data, "m_iMaxHealth");
+			int AllyMaxHealth = ReturnEntityMaxHealth(Ally);
 			int AllyHealth = GetEntProp(Ally, Prop_Data, "m_iHealth");
-			int SchwertMaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int SchwertMaxHealth = ReturnEntityMaxHealth(npc.index);
 			int SchwertHealth = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 
 			if(SchwertHealth > (SchwertMaxHealth / 2) && AllyHealth < (AllyMaxHealth / 4))
@@ -1033,6 +1037,7 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 			npc.SetPlaybackRate(0.75);	
 			npc.SetCycle(0.1);
 
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_neck_snap_medic");
 
 			Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
@@ -1085,6 +1090,8 @@ static void Schwertkrieg_Teleport_Strike(Raidboss_Schwertkrieg npc, float flDist
 		npc.m_flSpeed =fl_schwert_speed;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
+
+		npc.m_bisWalking = true;
 
 		Schwert_Impact_Lance_CosmeticRemoveEffects(npc.index);
 		Schwert_Impact_Lance_Create(npc.index);
@@ -1586,7 +1593,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		return Plugin_Continue;
 		
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-	float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 
 	if(npc.m_flNextChargeSpecialAttack > GetGameTime())
 	{
@@ -1603,6 +1610,8 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		donner_sea_created=true;
 
 		npc.m_flNextChargeSpecialAttack = GetGameTime()+8.0;
+
+		npc.m_bisWalking = false;
 
 		npc.AddActivityViaSequence("taunt_the_fist_bump");
 		npc.SetPlaybackRate(0.2);	
@@ -1721,7 +1730,7 @@ static void Schwert_SwordWings_Logic(Raidboss_Schwertkrieg npc, float npc_Vec[3]
 		}
 	}
 }
-static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg)
+static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float Loc[3], float Look_Vec[3], float GameTime, float spin_speed, bool damage=true, float dmg, bool boomerang = false)
 {
 	fl_spinning_angle[npc.index] +=spin_speed;
 
@@ -1778,7 +1787,7 @@ static void Schwert_Manipulate_Sword_Location(Raidboss_Schwertkrieg npc, float L
 			if(fl_dance_of_light_sword_throttle[npc.index][i] < GameTime && damage)
 			{
 				fl_dance_of_light_sword_throttle[npc.index][i] = GameTime+0.1;
-				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg);
+				Schwertkrieg_Laser_Trace(npc, Sword_Loc, Loc2, 10.0, dmg, boomerang);
 			}
 
 			/*
@@ -1824,12 +1833,9 @@ static void Schwertkrieg_Move_Entity(int entity, float loc[3], float Ang[3])
 	//TeleportEntity(entity, loc, NULL_VECTOR, NULL_VECTOR);
 	
 }
-static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps)
+static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Point[3], float End_Point[3], float Radius, float dps, bool boomerange)
 {
-	for (int i = 0; i < MAXENTITIES; i++)
-	{
-		Schwertkrieg_BEAM_HitDetected[i] = false;
-	}
+	Zero(Schwertkrieg_BEAM_HitDetected);
 
 	float hullMin[3], hullMax[3];
 	hullMin[0] = -Radius;
@@ -1841,14 +1847,33 @@ static void Schwertkrieg_Laser_Trace(Raidboss_Schwertkrieg npc, float Start_Poin
 	Handle trace = TR_TraceHullFilterEx(Start_Point, End_Point, hullMin, hullMax, 1073741824, Schwertkrieg_BEAM_TraceUsers);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	for (int victim = 0; victim < MAXTF2PLAYERS; victim++)
+	for (int victim = 0; victim < MAXENTITIES; victim++)
 	{
-		if (Schwertkrieg_BEAM_HitDetected[victim] && GetTeam(npc.index) != GetTeam(victim))
+		if (Schwertkrieg_BEAM_HitDetected[victim] && IsValidEnemy(npc.index, victim))
 		{
 			float playerPos[3];
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
 
 			float Dmg = dps;
+
+			if(boomerange && IsValidClient(victim))
+			{
+				int weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon))
+				{
+					float Bonus_damage = 1.0;
+					char classname[32];
+					GetEntityClassname(weapon, classname, 32);
+				
+					int weapon_slot = TF2_GetClassnameSlot(classname);
+				
+					if(weapon_slot == 2 && !i_IsWandWeapon[weapon])
+					{
+						Bonus_damage = 0.5;
+					}
+					Dmg *= Bonus_damage;
+				}
+			}
 
 			SDKHooks_TakeDamage(victim, npc.index, npc.index, Dmg, DMG_PLASMA, -1, NULL_VECTOR, Start_Point);
 				
@@ -2518,9 +2543,9 @@ static Action Schwert_Spiral_Core_Projectile_Homing_Hook(int iNPC)
 
 
 	if(npc.Anger)
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 6.75, true, 30.0*RaidModeScaling, true);
 	else
-		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling);
+		Schwert_Manipulate_Sword_Location(npc, Proj_Vec, Proj_Vec, GameTime, 4.5, true, 20.0*RaidModeScaling, true);
 
 	float dist = GetVectorDistance(Npc_Vec, Proj_Vec);
 

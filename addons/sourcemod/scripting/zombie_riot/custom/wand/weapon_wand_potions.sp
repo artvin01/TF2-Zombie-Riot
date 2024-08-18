@@ -13,6 +13,7 @@
 static Handle BuffTimer[MAXENTITIES];
 static float TonicBuff[MAXTF2PLAYERS];
 static float TonicBuff_CD[MAXTF2PLAYERS];
+static Handle ShrinkTimer[MAXENTITIES];
 
 bool Wands_Potions_HasBuff(int client)
 {
@@ -31,6 +32,7 @@ bool Wands_Potions_HasTonicBuff(int client)
 void Wands_Potions_EntityCreated(int entity)
 {
 	delete BuffTimer[entity];
+	delete ShrinkTimer[entity];
 }
 
 void Wand_Potions_Precache()
@@ -733,9 +735,6 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 			GetEntPropVector(i, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS * 2))
 			{
-				float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
-				SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
-
 				if(b_thisNpcIsABoss[i] || b_StaticNPC[i] || b_thisNpcIsARaid[i])
 				{
 					if(!count)
@@ -748,12 +747,30 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 						if(f_PotionShrinkEffect[i] < (GetGameTime() + time))
 							f_PotionShrinkEffect[i] =  (GetGameTime() + time);
 						
-						CreateTimer(time, Weapon_Wand_PotionEndShrink, EntIndexToEntRef(i), TIMER_FLAG_NO_MAPCHANGE);
+						if(ShrinkTimer[i] != null)
+							delete ShrinkTimer[i];
+						else
+						{
+							//no timer beforehand.
+							float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
+							SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
+						}
+
+						DataPack pack_repack;
+						ShrinkTimer[i] = CreateDataTimer(time, Weapon_Wand_PotionEndShrink, pack_repack, TIMER_FLAG_NO_MAPCHANGE);
+						pack_repack.WriteCell(i);
+						pack_repack.WriteCell(EntIndexToEntRef(i));
 						break;
 					}
 				}
 				else
 				{
+					if(f_PotionShrinkEffect[i] < GetGameTime())
+					{
+						float scale = GetEntPropFloat(i, Prop_Send, "m_flModelScale");
+						SetEntPropFloat(i, Prop_Send, "m_flModelScale", scale * 0.5);
+					}
+					
 					f_PotionShrinkEffect[i] = FAR_FUTURE;
 				}
 				
@@ -765,15 +782,16 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 
 	RemoveEntity(entity);
 }
-
-
-public Action Weapon_Wand_PotionEndShrink(Handle timer, int ref)
+public Action Weapon_Wand_PotionEndShrink(Handle timer, DataPack pack)
 {
-	int entity = EntRefToEntIndex(ref);
-	if(entity != -1)
+	pack.Reset();
+	int IndexDefualt = pack.ReadCell();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(entity))
 	{
 		float scale = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		SetEntPropFloat(entity, Prop_Send, "m_flModelScale", scale / 0.5);
 	}
+	ShrinkTimer[IndexDefualt] = null;
 	return Plugin_Continue;
 }

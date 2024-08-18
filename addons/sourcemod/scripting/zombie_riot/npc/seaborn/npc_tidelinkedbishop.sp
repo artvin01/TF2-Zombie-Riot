@@ -122,7 +122,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 	{
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 5;
+		int maxhealth = ReturnEntityMaxHealth(npc.index) / 5;
 		
 		int entity = NPC_CreateByName("npc_tidelinkedarchon", -1, pos, ang, GetTeam(npc.index));
 		if(entity > MaxClients)
@@ -157,7 +157,7 @@ public void TidelinkedBishop_ClotThink(int iNPC)
 		}
 
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 		health += maxhealth / 200;	// 20 seconds
 		if(health >= (maxhealth / 2))

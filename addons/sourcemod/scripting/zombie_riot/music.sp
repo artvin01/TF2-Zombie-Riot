@@ -814,7 +814,6 @@ void Music_ClearAll()
 	Zero(Music_Timer_2);
 	Zero(Give_Cond_Timer);
 	Zero(f_ClientMusicVolume);
-	Zero(f_BegPlayerToSetDuckConvar);
 }
 
 void RemoveAllCustomMusic()

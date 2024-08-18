@@ -345,7 +345,7 @@ public void XenoHeavyGiant_NPCDeath(int entity)
 	}
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		float startPosition[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 		maxhealth /= 3;

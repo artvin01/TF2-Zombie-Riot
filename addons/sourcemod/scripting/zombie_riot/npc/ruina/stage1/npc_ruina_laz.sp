@@ -327,8 +327,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 100.0;
-					Projectile.bonus_dmg = 200.0;
+					Projectile.damage = 50.0;
+					Projectile.bonus_dmg = 100.0;
 					Projectile.Time = Laser_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -360,6 +360,7 @@ static void ClotThink(int iNPC)
 							b = 200;
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
 						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}

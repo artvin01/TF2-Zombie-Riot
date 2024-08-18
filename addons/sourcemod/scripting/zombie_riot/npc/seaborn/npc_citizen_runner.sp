@@ -150,7 +150,7 @@ void CitizenRunner_NPCDeath(int entit)
 		{
 			Zombies_Currently_Still_Ongoing++;
 			
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 30;
+			int health = ReturnEntityMaxHealth(npc.index) * 30;
 			SetEntProp(entity, Prop_Data, "m_iHealth", health);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 			

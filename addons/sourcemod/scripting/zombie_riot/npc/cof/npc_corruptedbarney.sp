@@ -63,7 +63,7 @@ void CorruptedBarney_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "corruptedbarney");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Special;
+	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPC_Add(data);
@@ -331,7 +331,7 @@ public Action CorruptedBarney_OnTakeDamage(int victim, int &attacker, int &infli
 {
 	CorruptedBarney npc = view_as<CorruptedBarney>(victim);
 	
-	if(((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+	if(((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 	}

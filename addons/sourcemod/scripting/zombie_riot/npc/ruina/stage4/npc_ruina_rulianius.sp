@@ -315,7 +315,7 @@ static void ClotThink(int iNPC)
 					f_NpcTurnPenalty[npc.index] = 0.001;
 
 					npc.FaceTowards(vecTarget, 99999.0);
-
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("tauntcan_it");
 					npc.SetCycle(0.01);
 					npc.SetPlaybackRate(0.7);
@@ -397,6 +397,7 @@ static void ClotThink(int iNPC)
 			int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 			if(iActivity > 0) npc.StartActivity(iActivity);
 
+			npc.m_bisWalking = true; 
 			npc.m_iChanged_WalkCycle = 1;
 		}
 
@@ -634,7 +635,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
 		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
 

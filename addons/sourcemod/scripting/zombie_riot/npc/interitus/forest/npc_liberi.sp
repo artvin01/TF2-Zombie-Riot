@@ -121,6 +121,17 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	if(npc.m_flNextRangedAttackHappening < GetGameTime())
+	{
+		npc.m_flNextRangedAttackHappening = GetGameTime() + 2.5;
+		DesertYadeamDoHealEffect(npc.index, 200.0);
+	}
+	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
+	{
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 0.25;
+		ExpidonsaGroupHeal(npc.index, 200.0, 99, 2000.0, 1.0, false,Expidonsa_DontHealSameIndex);
+	}
 
 	int target = npc.m_iTargetAlly;
 	if(!IsValidAlly(npc.index, target))

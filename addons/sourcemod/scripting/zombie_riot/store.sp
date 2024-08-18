@@ -54,6 +54,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool IsSupport;
 	bool IsAlone;
 	bool InternalMeleeTrace;
 	
@@ -248,6 +249,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%sis_a_support", prefix);
+		this.IsSupport	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%signore_upgrades", prefix);
 		this.IsAlone	= view_as<bool>(kv.GetNum(buffer));
@@ -2669,8 +2673,6 @@ static void MenuPage(int client, int section)
 		CurrentMenuPage[client] = LastMenuPage[client];
 		LastMenuPage[client] = 0;
 	}
-
-//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -4805,7 +4807,12 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
+	{
+		return; //STOP. BAD!
+	}
+	if(!IsPlayerAlive(client))
 	{
 		return; //STOP. BAD!
 	}
@@ -5006,9 +5013,34 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
+	{
+		b_TwirlHairpins[client] = true;
+	}
+	else
+	{
+		b_TwirlHairpins[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
+	{
+		b_KahmlLastWish[client] = true;
+	}
+	else
+	{
+		b_KahmlLastWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Opened Void Portal"))
+	{
+		b_VoidPortalOpened[client] = true;
+	}
+	else
+	{
+		b_VoidPortalOpened[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
+	BarracksCheckItems(client);
 }
 
 void CheckInvalidSlots(int client)
@@ -5093,7 +5125,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1;
 	}
-
+	if(!IsPlayerAlive(client))
+	{
+		return -1; //STOP. BAD!
+	}
 	int slot = -1;
 	int entity = -1;
 	static ItemInfo info;
@@ -5135,6 +5170,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(GiveWeaponIndex > 0)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
+					
+					HidePlayerWeaponModel(client, entity, true);
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
@@ -5170,6 +5207,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				i_IsSupportWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
 				i_WeaponAmmoAdjustable[entity] = 0;
 				
@@ -5258,6 +5296,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(info.IsSupport)
+					{
+						i_IsSupportWeapon[entity] = true;
 					}
 					if(!info.InternalMeleeTrace)
 					{
@@ -5624,6 +5666,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3002, 0.0));
 		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3000, 0.0));
+
+		if(Attributes_Get(entity, 4015, 0.0) >= 1.0)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+		}
 		
 		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
@@ -6334,6 +6381,14 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		case 10:
 		{
 			return true;
+		}
+		case 11:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+
+			if(i_IsSupportWeapon[entity])
+				return true;
 		}
 	}
 

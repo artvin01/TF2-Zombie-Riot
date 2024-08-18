@@ -55,6 +55,8 @@ float f_LayerSpeedFrozeRestore[MAXENTITIES];
 bool b_AvoidObstacleType[MAXENTITIES];
 float b_AvoidObstacleType_Time[MAXENTITIES];
 int i_FailedTriesUnstuck[MAXENTITIES][2];
+//int i_MasterSequenceNpc[MAXENTITIES];
+//float f_MasterSequenceNpcPlayBackRate[MAXENTITIES];
 bool b_should_explode[MAXENTITIES];
 bool b_rocket_particle_from_blue_npc[MAXENTITIES];
 static int g_rocket_particle;
@@ -367,6 +369,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		view_as<CBaseCombatCharacter>(npc).SetModel(model);
 		DispatchKeyValue(npc,	   "modelscale", modelscale);
 		DispatchKeyValue(npc,	   "health",	 health);
+		/*
+		DispatchKeyValue(npc, "shadowcastdist", "0");
+		DispatchKeyValue(npc, "disablereceiveshadows", "1");
+		DispatchKeyValue(npc, "disableshadows", "1");
+		DispatchKeyValue(npc, "disableshadowdepth", "1");
+		DispatchKeyValue(npc, "disableselfshadowing", "1");  
+		*/
 
 #if defined ZR
 		if(Ally == TFTeam_Red)
@@ -1393,7 +1402,7 @@ methodmap CClotBody < CBaseCombatCharacter
 		float speed_for_return = 1.0;
 		float Gametime = GetGameTime();
 		float GametimeNpc = GetGameTime(this.index);
-		speed_for_return *= fl_Extra_Speed[this.index];
+		speed_for_return = fl_Extra_Speed[this.index];
 		
 #if defined RTS
 		speed_for_return *= RTS_GameSpeed();
@@ -1440,9 +1449,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.20;
 		}
-		if(f_VoidAfflictionStrength[this.index] > Gametime)
+		if(f_VoidAfflictionStrength2[this.index] > Gametime)
 		{
 			speed_for_return *= 1.15;
+		}
+		else if(f_VoidAfflictionStrength[this.index] > Gametime)
+		{
+			speed_for_return *= 1.05;
 		}
 		if(f_GodAlaxiosBuff[this.index] > Gametime)
 		{
@@ -1614,7 +1627,7 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public float GetRunSpeed()//For the future incase we want to alter it easier
 	{
-		if(b_npcspawnprotection[this.index])
+		if(i_npcspawnprotection[this.index] == 1)
 		{
 #if defined ZR
 			if(!Rogue_Mode())
@@ -1649,12 +1662,13 @@ methodmap CClotBody < CBaseCombatCharacter
 				baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 			}
 		}
-#endif
+
 		if(!VIPBuilding_Active())
 		{
 			baseNPC.flAcceleration = (6000.0 * GetPercentageAdjust);
 			baseNPC.flFrictionSideways = (5.0 * GetPercentageAdjust);
 		}
+#endif
 
 		return (this.m_flSpeed * GetPercentageAdjust);
 	}
@@ -1739,12 +1753,6 @@ methodmap CClotBody < CBaseCombatCharacter
 		public get()							{ return b_DoNotGiveWaveDelay[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_DoNotGiveWaveDelay[this.index] = TempValueForProperty; }
 	}
-	property float m_bisGiantWalkCycle
-	{
-		public get()							{ return b_isGiantWalkCycle[this.index]; }
-		public set(float TempValueForProperty) 	{ b_isGiantWalkCycle[this.index] = TempValueForProperty; }
-	}
-	
 	property int m_iSpawnProtectionEntity
 	{
 		public get()		 
@@ -2372,6 +2380,56 @@ methodmap CClotBody < CBaseCombatCharacter
 	public float GetPlaybackRate() { return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); }
 	public void SetPlaybackRate(float flRate) { SetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate", flRate); }
 	public void SetCycle(float flCycle)	   { SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); }
+	/*
+	public void SetSequence(int iSequence)
+	{
+		if(iSequence == -1)
+			return;
+
+		
+		int layer = this.AddLayeredSequence(iSequence, 1);
+		if (!this.IsValidLayer(layer))
+		{
+			i_MasterSequenceNpc[this.index] = -1;
+			return;
+		}
+
+		this.SetLayerCycle(layer, 0.0);
+		this.SetLayerPlaybackRate(layer, 1.0);
+		f_MasterSequenceNpcPlayBackRate[this.index] = 1.0;
+
+		i_MasterSequenceNpc[this.index] = layer;
+		// SetEntProp(this.index, Prop_Send, "m_nSequence", iSequence); 
+	}
+	public float GetPlaybackRate() 
+	{
+		//return GetEntPropFloat(this.index, Prop_Send, "m_flPlaybackRate"); 
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return -1.0;
+		}
+		return f_MasterSequenceNpcPlayBackRate[this.index];
+	}
+	public void SetPlaybackRate(float flRate) 
+	{
+		//we cant just 
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return;
+		}
+		f_MasterSequenceNpcPlayBackRate[this.index] = flRate;
+		this.SetLayerPlaybackRate(i_MasterSequenceNpc[this.index], flRate);
+	}
+	public void SetCycle(float flCycle)
+	{
+		if(i_MasterSequenceNpc[this.index] == -1)
+		{
+			return;
+		}
+		this.SetLayerCycle(i_MasterSequenceNpc[this.index], flCycle);
+	//	 SetEntPropFloat(this.index, Prop_Send, "m_flCycle", flCycle); 
+	}
+	*/
 	
 	public void GetVectors(float pForward[3], float pRight[3], float pUp[3]) { view_as<CBaseEntity>(this).GetVectors(pForward, pRight, pUp); }
 	
@@ -2410,7 +2468,13 @@ methodmap CClotBody < CBaseCombatCharacter
 		//	DispatchKeyValueFloat(item, "modelscale", GetEntPropFloat(this.index, Prop_Send, "m_flModelScale"));
 			DispatchKeyValueFloat(item, "modelscale", model_size);
 		}
-
+		/*
+		DispatchKeyValue(item, "shadowcastdist", "0");
+		DispatchKeyValue(item, "disablereceiveshadows", "1");
+		DispatchKeyValue(item, "disableshadows", "1");
+		DispatchKeyValue(item, "disableshadowdepth", "1");
+		DispatchKeyValue(item, "disableselfshadowing", "1");  
+		*/
 		DispatchSpawn(item);
 		SetEntProp(item, Prop_Send, "m_fEffects", EF_BONEMERGE|EF_PARENT_ANIMATES);
 		SetEntityMoveType(item, MOVETYPE_NONE);
@@ -3015,18 +3079,24 @@ methodmap CClotBody < CBaseCombatCharacter
 
 			f_TimeFrozenStill[this.index] = 0.0;
 		}
-
+		
 		if(this.m_bisWalking) //This exists to make sure that if there is any idle animation played, it wont alter the playback rate and keep it at a flat 1, or anything altered that the user desires.
 		{
 			float m_flGroundSpeed = GetEntPropFloat(this.index, Prop_Data, "m_flGroundSpeed");
 			if(m_flGroundSpeed != 0.0)
 			{
 				float PlaybackSpeed = clamp((flNextBotGroundSpeed / m_flGroundSpeed), -4.0, 12.0);
-				PlaybackSpeed *= this.m_bisGiantWalkCycle;
 				if(PlaybackSpeed > 2.0)
 					PlaybackSpeed = 2.0;
+				if(PlaybackSpeed <= 0.01)
+					PlaybackSpeed = 0.01;
 					
 				this.SetPlaybackRate(PlaybackSpeed);
+			}
+			else
+			{
+				//if its lower then this value, then itll mess up and particles wont animate.
+				this.SetPlaybackRate(0.01);
 			}
 		}
 		
@@ -3152,11 +3222,13 @@ methodmap CClotBody < CBaseCombatCharacter
 			}
 		}
 #endif
+
 		if(this.m_bPathing)
 			this.GetPathFollower().Update(this.GetBot());	
 
 		this.GetBaseNPC().SetBodyMaxs(f3_AvoidOverrideMaxNorm[this.index]);
 		this.GetBaseNPC().SetBodyMins(f3_AvoidOverrideMinNorm[this.index]);	
+		
 	}
 
 	 	
@@ -3257,9 +3329,9 @@ public void NPC_Base_InitGamedata()
 	EntityFactory.BeginDataMapDesc()
 		.DefineIntField("zr_pPath")
 	
-		//Seargent Ideal Shield Netprops
-		.DefineIntField("zr_iRefSeargentProtect")
-		.DefineFloatField("zr_fSeargentProtectTime")
+		//Sergeant Ideal Shield Netprops
+		.DefineIntField("zr_iRefSergeantProtect")
+		.DefineFloatField("zr_fSergeantProtectTime")
 	.EndDataMapDesc();
 	EntityFactory.Install();
 
@@ -3396,6 +3468,8 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	if(!b_NpcHasDied[pThis])
 	{
 
+		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
+		FinishLagCompensation_Base_boss(pThis);
 		int client;
 #if defined ZR
 		if(Saga_EnemyDoomed(pThis))
@@ -3502,8 +3576,9 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 #endif
 
 #if defined EXPIDONSA_BASE
-		VausMagicaRemoveShield(pThis);
+		VausMagicaRemoveShield(pThis, true);
 #endif
+
 
 #if !defined RTS
 		NPC_DeadEffects(pThis); //Do kill attribute stuff
@@ -3571,6 +3646,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0)
 
 	static int Main_Gib;
 	int GibAny;
+	
 	switch(npc.m_iBleedType)
 	{
 		case BLEEDTYPE_NORMAL:
@@ -5744,11 +5820,11 @@ public void NpcBaseThink(int iNPC)
 	}
 
 #if defined ZR
-	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
+	if((i_CurrentEquippedPerk[iNPC] == 1 || f_VoidAfflictionStrength[iNPC] > GetGameTime() || f_VoidAfflictionStrength2[iNPC] > GetGameTime()) && f_QuickReviveHealing[iNPC] < GetGameTime())
 	{
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.1;
 
-		float HealingAmount = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 0.002;
+		float HealingAmount = float(ReturnEntityMaxHealth(npc.index)) * 0.002;
 	
 		if(b_thisNpcIsARaid[iNPC])
 		{
@@ -5758,6 +5834,8 @@ public void NpcBaseThink(int iNPC)
 		{
 			HealingAmount *= 0.125;
 		}
+		if(f_VoidAfflictionStrength2[iNPC] > GetGameTime())
+			HealingAmount *= 1.25;
 
 		f_QuickReviveHealing[iNPC] = GetGameTime() + 0.25;
 		
@@ -6118,7 +6196,7 @@ void UnstuckStuckNpc(CClotBody npc, int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 			TeleportEntity(iNPC, pos, ang, NULL_VECTOR);
-			b_npcspawnprotection[iNPC] = true;
+			i_npcspawnprotection[iNPC] = 1;
 			CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(iNPC), TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
@@ -6225,7 +6303,7 @@ stock void Custom_Knockback(int attacker,
 		else
 		{
 			CClotBody npc = view_as<CClotBody>(enemy);
-			if (!npc.IsOnGround())
+			if (TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
 			{
 				knockback *= 0.85; //Dont do as much knockback if they are in the air
 				if(attacker > MaxClients) //npcs have no angles up, help em.
@@ -8028,6 +8106,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	RPGCore_ResetHurtList(entity);
 	TrueStrength_Reset(_,entity);
 #endif
+//	i_MasterSequenceNpc[entity] = -1;
 	ResetAllArmorStatues(entity);
 	f_DoNotUnstuckDuration[entity] = 0.0;
 	f_UnstuckTimerCheck[entity][0] = 0.0;
@@ -8175,7 +8254,6 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	b_IsCamoNPC[entity] = false;
 	b_NoKillFeed[entity] = false;
 	b_ThisWasAnNpc[entity] = false;
-	b_isGiantWalkCycle[entity] = 1.0;
 	i_Activity[entity] = -1;
 	i_PoseMoveX[entity] = -1;
 	i_PoseMoveY[entity] = -1;
@@ -8187,7 +8265,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_NpcImmuneToBleed[entity] = 0.0;
 	f_CreditsOnKill[entity] = 0.0;
 	i_PluginBot_ApproachDelay[entity] = 0;
-	b_npcspawnprotection[entity] = false;
+	i_npcspawnprotection[entity] = 0;
 	f_DomeInsideTest[entity] = 0.0;
 	f_CooldownForHurtParticle[entity] = 0.0;
 	f_DelayComputingOfPath[entity] = GetGameTime() + 0.2;
@@ -8202,8 +8280,10 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
+	f_IberiaMarked[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
+	f_VoidAfflictionStrength2[entity] = 0.0;
 	f_WidowsWineDebuff[entity] = 0.0;
 	f_SpecterDyingDebuff[entity] = 0.0;
 	f_VeryLowIceDebuff[entity] = 0.0;
@@ -8861,6 +8941,26 @@ stock void NpcStats_SilenceEnemy(int enemy, float duration)
 	}
 }
 
+stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
+{
+	float GameTime = GetGameTime();
+	if(f_IberiaMarked[enemy] < (GameTime + duration))
+	{
+		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
+	}
+}
+stock bool NpcStats_IberiaIsEnemyMarked(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_IberiaMarked[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
 stock bool NpcStats_IsEnemySilenced(int enemy)
 {
 	if(!IsValidEntity(enemy))
@@ -9196,7 +9296,7 @@ public void Npc_BossHealthBar(CClotBody npc)
 
 	char HealthText[32];
 	int HealthColour[4];
-	int MaxHealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(npc.index);
 	int Health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	for(int i=0; i<(NpcTypeDefine ? 20 : 10); i++)
 	{
@@ -9245,6 +9345,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 		}		
 		return;
 	}
+	VausMagicaRemoveShield(npc.index);
 	char HealthText[32];
 	int HealthColour[4];
 
@@ -9256,6 +9357,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IsEnemySilenced(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "X");
+	}
+	if(NpcStats_IberiaIsEnemyMarked(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "M");
 	}
 
 #if defined ZR
@@ -9275,9 +9380,13 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "%sS(%i)",HealthText,VausMagicaShieldLeft(npc.index));
 	}
-	if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
+	if(f_VoidAfflictionStrength2[npc.index] > GetGameTime())
 	{
-		Format(HealthText, sizeof(HealthText), "%sV",HealthText);
+		Format(HealthText, sizeof(HealthText), "%svV",HealthText);
+	}
+	else if(f_VoidAfflictionStrength[npc.index] > GetGameTime())
+	{
+		Format(HealthText, sizeof(HealthText), "%sv",HealthText);
 	}
 	/*
 	if(IgniteFor[npc.index] > 0)
@@ -9303,10 +9412,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 
 	if(IsValidEntity(npc.m_iTextEntity4))
 	{
-	//	char sColor[32];
-	//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
-	//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
-	// Colour will never be Edited probably.
+		//	char sColor[32];
+		//	Format(sColor, sizeof(sColor), " %d %d %d %d ", HealthColour[0], HealthColour[1], HealthColour[2], HealthColour[3]);
+		//	DispatchKeyValue(npc.m_iTextEntity1,     "color", sColor);
+		// Colour will never be Edited probably.
 		DispatchKeyValue(npc.m_iTextEntity4, "message", HealthText);
 	}
 	else
@@ -9322,8 +9431,7 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 #endif
 		Offset[2] += 15.0;
 		int TextEntity = SpawnFormattedWorldText(HealthText,Offset, 16, HealthColour, npc.index);
-	//	SDKHook(TextEntity, SDKHook_SetTransmit, BarrackBody_Transmit);
-	//	DispatchKeyValue(TextEntity, "font", "1");
+		DispatchKeyValue(TextEntity, "font", "4");
 		npc.m_iTextEntity4 = TextEntity;	
 	}
 }
@@ -9922,7 +10030,7 @@ public void TeleportBackToLastSavePosition(int entity)
 {
 	if(f3_VecTeleportBackSave_OutOfBounds[entity][0] != 0.0)
 	{
-		b_npcspawnprotection[entity] = true;
+		i_npcspawnprotection[entity] = 1;
 		CreateTimer(3.0, Remove_Spawn_Protection, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 		f_GameTimeTeleportBackSave_OutOfBounds[entity] = GetGameTime() + 2.0; //was stuck, lets just chill.
 		TeleportEntity(entity, f3_VecTeleportBackSave_OutOfBounds[entity], NULL_VECTOR ,{0.0,0.0,0.0});
@@ -10295,12 +10403,13 @@ void ExtinguishTarget(int target)
 void IsEntityInvincible_Shield(int entity)
 {
 	bool NpcInvulShieldDisplay;
-	if(b_npcspawnprotection[entity])
+	if(i_npcspawnprotection[entity] == 1)
 		NpcInvulShieldDisplay = true;
 
 	if(b_NpcIsInvulnerable[entity])
 		NpcInvulShieldDisplay = true;
 	
+	CClotBody npc = view_as<CClotBody>(entity);
 	if(!NpcInvulShieldDisplay || b_ThisEntityIgnored[entity])
 	{
 		IsEntityInvincible_ShieldRemove(entity);
@@ -10311,32 +10420,48 @@ void IsEntityInvincible_Shield(int entity)
 		int Shield = EntRefToEntIndex(i_InvincibleParticle[entity]);
 		if(b_NpcIsInvulnerable[entity])
 		{
-			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+			if(i_InvincibleParticlePrev[Shield] != 0)
+			{
+				SetEntityRenderColor(Shield, 0, 255, 0, 255);
+				i_InvincibleParticlePrev[Shield] = 0;
+			}
 		}
-		else if(b_npcspawnprotection[entity])
+		else if(i_npcspawnprotection[entity] == 1)
 		{
-			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+			if(i_InvincibleParticlePrev[Shield] != 1)
+			{
+				SetEntityRenderColor(Shield, 0, 50, 50, 35);
+				i_InvincibleParticlePrev[Shield] = 1;
+			}
 		}
 		return;
 	}
 
-	CClotBody npc = view_as<CClotBody>(entity);
 	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[entity])
 		SetVariantString("1.38");
 	else
 		SetVariantString("1.05");
+	i_InvincibleParticlePrev[Shield] = -1;
 
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
 	if(b_NpcIsInvulnerable[entity])
 	{
-		SetEntityRenderColor(Shield, 0, 255, 0, 255);
+		if(i_InvincibleParticlePrev[Shield] != 0)
+		{
+			SetEntityRenderColor(Shield, 0, 255, 0, 255);
+			i_InvincibleParticlePrev[Shield] = 0;
+		}
 	}
-	else if(b_npcspawnprotection[entity])
+	else if(i_npcspawnprotection[entity] == 1)
 	{
-		SetEntityRenderColor(Shield, 0, 50, 50, 35);
+		if(i_InvincibleParticlePrev[Shield] != 1)
+		{
+			SetEntityRenderColor(Shield, 0, 50, 50, 35);
+			i_InvincibleParticlePrev[Shield] = 1;
+		}
 	}
 	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
 
@@ -10492,7 +10617,7 @@ float custom_maxarmour = 0.0)
 	npc.m_flArmorProtect = ArmorProtect;
 	if(custom_maxarmour == 0.0)
 	{
-		float flMaxHealth = ScaleMaxHealth * float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));
 		npc.m_flArmorCount = flMaxHealth;
 		npc.m_flArmorCountMax = flMaxHealth;
 	}
@@ -10503,4 +10628,13 @@ float custom_maxarmour = 0.0)
 	}
 	
 	//any extra logic please add here. deivid.
+}
+
+int ReturnEntityMaxHealth(int entity)
+{
+	if(entity <= MaxClients)
+	{
+		return SDKCall_GetMaxHealth(entity);
+	}
+	return GetEntProp(entity, Prop_Data, "m_iMaxHealth");
 }

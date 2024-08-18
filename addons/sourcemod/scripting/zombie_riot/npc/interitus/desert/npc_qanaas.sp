@@ -300,7 +300,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 			return 0;
 		}
 	}
-	if(RogueTheme == BlueParadox && b_npcspawnprotection[npc.index])
+	if(RogueTheme == BlueParadox && i_npcspawnprotection[npc.index] == 1)
 		return 0;
 	float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 	npc.FaceTowards(VecEnemy, 15000.0);
@@ -312,7 +312,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 		}
 	}
 	else
