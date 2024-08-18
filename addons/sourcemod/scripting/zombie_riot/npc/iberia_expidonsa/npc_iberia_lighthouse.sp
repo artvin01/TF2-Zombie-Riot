@@ -22,6 +22,11 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeAttackShortSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
+int LighthouseID;
+int LighthouseGlobaID()
+{
+	return LighthouseID;
+}
 void Iberia_Lighthouse_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -35,7 +40,7 @@ void Iberia_Lighthouse_OnMapStart_NPC()
 	data.Flags = -1;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	LighthouseID = NPC_Add(data);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_1);
 	PrecacheModel(IBERIA_LIGHTHOUSE_MODEL_2);
 }
@@ -120,7 +125,8 @@ methodmap IberiaLighthouse < CClotBody
 		Is_a_Medic[npc.index] = true;
 		f_ExtraOffsetNpcHudAbove[npc.index] = 500.0;
 		i_NpcIsABuilding[npc.index] = true;
-		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
+		fl_GetClosestTargetTimeTouch[npc.index] = FAR_FUTURE;
+		b_thisNpcIsABoss[npc.index] = true;
 
 
 		SetMoraleDoIberia(npc.index, 1.0);
@@ -188,9 +194,11 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.05;
+	//global range.
+	npc.m_flNextRangedSpecialAttack = 0.0;
+	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9999.0);
 	IberiaLighthouseCloseDefense(npc, GetGameTime(npc.index));
 	IberiaLighthouseDefense(npc, GetGameTime(npc.index));
-
 }
 
 public Action IberiaLighthouse_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -287,7 +295,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 	float origin[3], angles[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", origin);
 	origin[2] += 200.0;
-	if(npc.m_flDoingAnimation > gameTime)
+	if(npc.m_flNextRangedBarrage_Spam > gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
@@ -303,12 +311,14 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			/*
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
 				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
-			else if(TR_DidHit(hTrace))
+			*/
+			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
@@ -345,7 +355,7 @@ int IberiaLighthouseDefense(IberiaLighthouse npc, float gameTime)
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.65;
+		npc.m_flNextRangedBarrage_Spam = gameTime + 0.65;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;
@@ -401,11 +411,14 @@ int IberiaLighthouseCloseDefense(IberiaLighthouse npc, float gameTime)
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
 			int Traced_Target = TR_GetEntityIndex(hTrace);
+			/*
+			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
 				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
-			else if(TR_DidHit(hTrace))
+			*/
+			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}

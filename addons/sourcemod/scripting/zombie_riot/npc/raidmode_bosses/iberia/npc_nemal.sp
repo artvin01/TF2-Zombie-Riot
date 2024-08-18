@@ -1862,12 +1862,15 @@ bool NemalSnipingShots(Nemal npc)
 					float AngleAim[3];
 					GetVectorAnglesTwoPoints(pos_npc, SnipeTargets[Loop], AngleAim);
 					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+					/*
 					int Traced_Target = TR_GetEntityIndex(hTrace);
 					if(Traced_Target > 0)
 					{
 						WorldSpaceCenter(Traced_Target, SnipeTargets[Loop]);
 					}
-					else if(TR_DidHit(hTrace))
+					else 
+					*/
+					if(TR_DidHit(hTrace))
 					{
 						TR_GetEndPosition(SnipeTargets[Loop], hTrace);
 					}
