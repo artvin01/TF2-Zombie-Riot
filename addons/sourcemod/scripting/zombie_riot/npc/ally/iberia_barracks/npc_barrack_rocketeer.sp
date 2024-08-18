@@ -132,7 +132,7 @@ public void Barrack_Iberia_Rocketeer_ClotThink(int iNPC)
 	float GameTime = GetGameTime(iNPC);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
-		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
+		//int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 

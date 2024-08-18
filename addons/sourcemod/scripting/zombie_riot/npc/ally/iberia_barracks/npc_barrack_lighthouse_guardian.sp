@@ -173,32 +173,32 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		npc.m_iWearable9 = npc.EquipItem("head", "models/player/medic.mdl", "", skin);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/medic.mdl", "", skin);
 		
-		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bat.mdl");
 		SetVariantString("1.3");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
-		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl", "" , skin);
-		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/cardiologists_camo/cardiologists_camo.mdl", "" , skin);
-		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
+		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl", "" , skin);
+		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/medic/cardiologists_camo/cardiologists_camo.mdl", "" , skin);
+		npc.m_iWearable9 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable1, 75, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable2, 100, 100, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 75, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);
-		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable8, 100, 100, 100, 255);
+		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
+		SetEntityRenderMode(npc.m_iWearable5, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable5, 100, 100, 100, 255);
 		return npc;
 	}
 }
@@ -344,17 +344,17 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 		return Plugin_Continue;
 		
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(victim);
-	
+
 	float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 	if(percentageArmorLeft <= 0.0)
 		{
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
 
 			npc.Anger = true;
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
+			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
