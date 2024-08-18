@@ -127,7 +127,8 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		KillFeed_SetKillIcon(npc.index, "sword");
 		
 		int skin = 1;
-
+		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");

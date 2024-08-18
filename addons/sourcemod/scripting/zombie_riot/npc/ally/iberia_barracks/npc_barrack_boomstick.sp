@@ -46,7 +46,7 @@ void Barracks_Iberia_Boomstick_Precache()
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberia Boomstick");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_iberia_boomstick");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_boomstick");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Ally;
