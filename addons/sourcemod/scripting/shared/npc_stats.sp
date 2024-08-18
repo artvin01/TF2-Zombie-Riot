@@ -6303,7 +6303,7 @@ stock void Custom_Knockback(int attacker,
 		else
 		{
 			CClotBody npc = view_as<CClotBody>(enemy);
-			if (!npc.IsOnGround())
+			if (TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
 			{
 				knockback *= 0.85; //Dont do as much knockback if they are in the air
 				if(attacker > MaxClients) //npcs have no angles up, help em.
@@ -8280,6 +8280,7 @@ public void SetDefaultValuesToZeroNPC(int entity)
 	f_LudoDebuff[entity] = 0.0;
 	f_SpadeLudoDebuff[entity] = 0.0;
 	f_Silenced[entity] = 0.0;
+	f_IberiaMarked[entity] = 0.0;
 	f_HighTeslarDebuff[entity] = 0.0;
 	f_VoidAfflictionStrength[entity] = 0.0;
 	f_VoidAfflictionStrength2[entity] = 0.0;
@@ -8940,6 +8941,26 @@ stock void NpcStats_SilenceEnemy(int enemy, float duration)
 	}
 }
 
+stock void NpcStats_IberiaMarkEnemy(int enemy, float duration)
+{
+	float GameTime = GetGameTime();
+	if(f_IberiaMarked[enemy] < (GameTime + duration))
+	{
+		f_IberiaMarked[enemy] = GameTime + duration; //make sure longer silence buff is prioritised.
+	}
+}
+stock bool NpcStats_IberiaIsEnemyMarked(int enemy)
+{
+	if(!IsValidEntity(enemy))
+		return true; //they dont exist, pretend as if they are silenced.
+
+	if(f_IberiaMarked[enemy] < GetGameTime())
+	{
+		return false;
+	}
+	return true;
+}
+
 stock bool NpcStats_IsEnemySilenced(int enemy)
 {
 	if(!IsValidEntity(enemy))
@@ -9336,6 +9357,10 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	if(NpcStats_IsEnemySilenced(npc.index))
 	{
 		Format(HealthText, sizeof(HealthText), "X");
+	}
+	if(NpcStats_IberiaIsEnemyMarked(npc.index))
+	{
+		Format(HealthText, sizeof(HealthText), "M");
 	}
 
 #if defined ZR

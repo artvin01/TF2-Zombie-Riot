@@ -928,10 +928,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 			else
 				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_red", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 
-			/*
-				Fire a shitretlrrsgtrsglsoads of lasers
-			*/
-
 		}
 	}	
 	else if(npc.m_flAttackHappens)

@@ -938,7 +938,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 	return false;
 }
 
-int LastEnemyTargeted[MAXENTITIES];
+static int LastEnemyTargeted[MAXENTITIES];
 //This summons the creep, and several enemies on his side!
 bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 {

@@ -312,7 +312,7 @@ int DesertQanaasSelfDefense(DesertQanaas npc, float gameTime)
 	{
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
-			 WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
 		}
 	}
 	else

@@ -1694,7 +1694,7 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	float DamageBuffExtraScaling = 1.0;
 
 #if defined ZR
-	if(attacker <= MaxClients || inflictor <= MaxClients)
+	if(attacker != 0 && (attacker <= MaxClients || inflictor <= MaxClients))
 	{
 		//only scale if its a player, and if the attacking npc is red too
 		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
@@ -1909,6 +1909,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(NpcStats_IsEnemySilenced(victim))
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%sX", Debuff_Adder_left);
+	}
+	if(NpcStats_IberiaIsEnemyMarked(victim))
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%sM", Debuff_Adder_left);
 	}
 
 
