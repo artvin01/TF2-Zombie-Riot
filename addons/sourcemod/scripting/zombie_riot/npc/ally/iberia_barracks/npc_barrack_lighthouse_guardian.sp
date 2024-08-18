@@ -175,7 +175,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/medic.mdl", "", skin);
 		
-		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bat.mdl");
+		npc.m_iWearable2 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
@@ -185,8 +185,12 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl", "" , skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 0);
@@ -268,8 +272,21 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				{
 					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
 					DesertYadeamDoHealEffect(victim, 100.0);
-					VausMagicaGiveShield(npc.index, 3);
-					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
+					b_NpcIsTeamkiller[npc.index] = true;
+					Explode_Logic_Custom(0.0,
+					npc.index,
+					npc.index,
+					-1,
+					_,
+					300.0,
+					_,
+					_,
+					true,
+					99,
+					false,
+					_,
+					LighthouseShield);
+					b_NpcIsTeamkiller[npc.index] = false;
 					npc.PlayRangedAttackSecondarySound();
 				}
 			}
@@ -305,8 +322,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								float vecHit[3];
 								TR_GetEndPosition(vecHit, swingTrace);
 								float origin[3], angles[3];
-								view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-								ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
+								view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
+								ShootLaser(npc.m_iWearable2, "bullet_tracer02_red", origin, vecHit, false );
 								
 								npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 								
@@ -385,4 +402,22 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
+}
+
+void LighthouseShield(int entity, int victim, float damage, int weapon)
+{
+	if(entity == victim)
+		return;
+
+	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
+	{
+		LighthouseShieldInternal(entity,victim);
+	}
+}
+
+void LighthouseShieldInternal(int shielder, int victim)
+{
+	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(shielder);
+	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 10.0;
+	VausMagicaGiveShield(victim, 5);
 }

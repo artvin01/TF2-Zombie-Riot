@@ -103,7 +103,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 
 	public Barrack_Iberia_Boomstick(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "600", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Iberia_Boomstick npc = view_as<Barrack_Iberia_Boomstick>(BarrackBody(client, vecPos, vecAng, "275", "models/player/engineer.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		

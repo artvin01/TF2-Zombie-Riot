@@ -109,7 +109,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 
 	public Barrack_Iberia_Healer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(BarrackBody(client, vecPos, vecAng, "420", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(BarrackBody(client, vecPos, vecAng, "350", "models/player/medic.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -133,6 +133,7 @@ methodmap Barrack_Iberia_Healer < BarrackBody
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/bak_hood_of_sorrows/bak_hood_of_sorrows.mdl");
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl");
 
 		SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable1, 200, 200, 255, 180);
@@ -146,7 +147,7 @@ public void Barrack_Iberia_Healer_ClotThink(int iNPC)
 	Barrack_Iberia_Healer npc = view_as<Barrack_Iberia_Healer>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{

@@ -145,7 +145,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 250000.0)
+			if(flDistanceToTarget < 150000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -186,7 +186,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 225000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 125000.0,_, true);
 	}
 }
 

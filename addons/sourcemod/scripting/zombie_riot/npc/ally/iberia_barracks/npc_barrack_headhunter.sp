@@ -200,9 +200,9 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 									damage *= 1.5;
 								}
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
-								if((f_LowIceDebuff[target] - 0.6) < GetGameTime())
+								if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
 								{
-									f_LowIceDebuff[target] = GetGameTime() + 0.7;
+									f_LowIceDebuff[target] = GetGameTime() + 1.1;
 								}
 								npc.PlaySwordHitSound();
 							} 

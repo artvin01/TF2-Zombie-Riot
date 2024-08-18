@@ -144,7 +144,7 @@ public void Barrack_Iberia_Tanker_ClotThink(int iNPC)
 	Barrack_Iberia_Tanker npc = view_as<Barrack_Iberia_Tanker>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{

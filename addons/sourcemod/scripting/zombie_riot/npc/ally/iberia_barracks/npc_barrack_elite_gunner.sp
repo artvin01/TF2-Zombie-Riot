@@ -169,6 +169,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.5);
 						npc.m_flNextRangedAttack = GameTime + 3.00;
 						npc.m_iAttacksTillReload = 6;
+						npc.m_flRangedSpecialDelay = GameTime + 60.0;
 						npc.Anger = false;
 						npc.PlayPistolReload();
 					}
@@ -218,7 +219,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 							npc.m_flSpeed = 0.0;
 
 							npc.m_iAttacksTillReload --;
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 150.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 200.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
@@ -229,6 +230,11 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 				}
 			}
 			npc.m_flSpeed = 150.0;
+		}
+		if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+		{
+			npc.Anger = true;
+			npc.m_iAttacksTillReload = 20;
 		}
 		else
 		{
