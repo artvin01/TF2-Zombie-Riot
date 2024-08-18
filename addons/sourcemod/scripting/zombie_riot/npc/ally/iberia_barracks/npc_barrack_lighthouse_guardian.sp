@@ -381,5 +381,7 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(entity);
 	BarrackBody_NPCDeath(npc.index);
 	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),50.0, 0), 1.0, true);
+	if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
 }
