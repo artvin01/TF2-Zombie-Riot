@@ -157,7 +157,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barracks_Iberia_Lighthouse_Guardian_NPCDeath;
 		func_NPCThink[npc.index] = Barracks_Iberia_Lighthouse_Guardian_ClotThink;
-		func_NPCOnTakeDamage[npc.index] = Barrack_Iberia_Guards_OnTakeDamage;
+		func_NPCOnTakeDamage[npc.index] = Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage;
 		npc.m_flSpeed = 180.0;
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -336,7 +336,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	}
 }
 
-public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	//Valid attackers only.
 	if(attacker <= 0)
@@ -350,7 +350,8 @@ public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int 
 				RemoveEntity(npc.m_iWearable2);
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
-				npc.Anger = true;
+				
+			npc.Anger = true;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
