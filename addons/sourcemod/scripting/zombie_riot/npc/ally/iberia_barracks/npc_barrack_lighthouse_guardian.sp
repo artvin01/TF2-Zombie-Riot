@@ -267,7 +267,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
-					VausMagicaGiveShield(npc.index, 5);
+					DesertYadeamDoHealEffect(victim, 100.0);
+					VausMagicaGiveShield(npc.index, 3);
 					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
 					npc.PlayRangedAttackSecondarySound();
 				}

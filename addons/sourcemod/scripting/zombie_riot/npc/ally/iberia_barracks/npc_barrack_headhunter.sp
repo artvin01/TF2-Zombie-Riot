@@ -119,6 +119,9 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Iberia_Headhunter_ClotThink;
 		npc.m_flSpeed = 300.0;
 		
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
+		
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -128,7 +131,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		
+
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_scout_sword/c_scout_sword.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
