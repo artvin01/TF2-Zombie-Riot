@@ -230,18 +230,21 @@ public Action WinterArcticMage_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-void WinterArcticMageHealRandomAlly(int victim, float damage)
+void WinterArcticMageHealRandomAlly(int victim, float damage, int settingdo = 1)
 {
 	RajulHealAlly[victim] += (damage * 0.15);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
 	{
 		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
-		ExpidonsaGroupHeal(victim, RajulHealAlly[victim] * 0.5, 3, 150.0, 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
-		RajulHealAlly[victim] = 0.0;
+		if(settingdo == 2)
+			RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.2;
+
+		ExpidonsaGroupHeal(victim, 150.0, 3, RajulHealAlly[victim] * 0.5, 2.0, false,Expidonsa_DontHealSameIndex, WinterArcticMageAllyHealInternal);
+		RajulHealAlly[victim] = 0.0;		
+		DesertYadeamDoHealEffect(victim, 150.0);
 	}
 }
-
 public void WinterArcticMage_NPCDeath(int entity)
 {
 	WinterArcticMage npc = view_as<WinterArcticMage>(entity);

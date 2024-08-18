@@ -332,11 +332,15 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 2x damage against raidbosses."
+		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses."
+	}
+	"Flamethrower Pap 1 1"
+	{
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
 	}
 	"Flamethrower Pap 2"
 	{
-		"en"		"Increased damage and resistances.\nDeals 2x damage against raidbosses."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -2188,7 +2192,7 @@
 
 	"Flamethrower Extra Desc"
 	{
-		"en"	"Deals 2x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
+		"en"	"Deals 1.15x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
 	}
 
 	"Alchemist Potion Desc"
@@ -2629,6 +2633,10 @@
 		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies."
 		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids."
 		"chi"	"增加抗性，伤害，反甲伤害，更低的杀敌惩罚。"
+	}
+	"Mlynar Sword Desc pap 2"
+	{
+		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
 	}
 	"Barracks Railgunner Desc"
 	{

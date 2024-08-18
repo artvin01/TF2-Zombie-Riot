@@ -483,7 +483,7 @@ static void Internal_ClotThink(int iNPC)
 				{
 					CPrintToChatAll("{blue}Sensal{default}: None of you criminals are of any importants infront of {gold}Expidonsa{default}.");
 				}
-				case 3:
+				case 2:
 				{
 					CPrintToChatAll("{blue}Sensal{default}: All your friends are gone. Submit to {gold}Expidonsa{default}.");
 				}
@@ -927,10 +927,6 @@ int SensalSelfDefense(Sensal npc, float gameTime, int target, float distance)
 				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_blue", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 			else
 				npc.m_iWearable1 = ParticleEffectAt_Parent(flPos, "flaregun_trail_red", npc.index, "effect_hand_r", {0.0,0.0,0.0});
-
-			/*
-				Fire a shitretlrrsgtrsglsoads of lasers
-			*/
 
 		}
 	}	

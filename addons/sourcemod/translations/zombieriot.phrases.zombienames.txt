@@ -2895,4 +2895,8 @@
 	{
 		"en"		"Omega"
 	}
+	"Nemal"
+	{
+		"en"		"Nemal"
+	}
 }

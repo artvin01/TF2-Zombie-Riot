@@ -859,6 +859,9 @@ public void OnPostThink(int client)
 #if defined ZR
 			percentage_Global *= ArmorPlayerReduction(client);
 			percentage_Global *= Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(client, weapon);
+			float BaseDamage = 1.0;
+			int testvalue1 = 0;
+			OnTakeDamageDamageBuffs(client, testvalue1, testvalue1, BaseDamage, percentage_Global, testvalue1, testvalue1, GetGameTime());	
 #endif
 			
 			if(IsInvuln(client, true) || f_ClientInvul[client] > GetGameTime())

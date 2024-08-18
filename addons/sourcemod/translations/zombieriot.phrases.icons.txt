@@ -46,6 +46,10 @@
 		"fr" 		"Le Expidonsan Sensal fauche."
 		"pt"		"O Expidonsan Sensal colhe."
 	}
+	"Nemal Arrived"
+	{
+		"en" 		"The Iberia/Expidonsan Nemal is here."
+	}
 	"Vhxis arrived"
 	{
 		"en" 		"Vhxis the void keeper halts you."
