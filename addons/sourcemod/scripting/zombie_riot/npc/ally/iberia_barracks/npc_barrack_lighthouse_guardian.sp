@@ -268,7 +268,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
-					VausMagicaGiveShield(victim, 5);
+					VausMagicaGiveShield(npc.index, 5);
 					npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
 					npc.PlayRangedAttackSecondarySound();
 				}
@@ -277,6 +277,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 			{
 				if(flDistanceToTarget < 250000.0)
 				{
+					int PrimaryThreatIndex = npc.m_iTarget;
 					int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 					//Target close enough to hit
 					if(IsValidEnemy(npc.index, Enemy_I_See))
@@ -344,13 +345,14 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 		
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(victim);
 	
+	float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 	if(percentageArmorLeft <= 0.0)
 		{
 			if(IsValidEntity(npc.m_iWearable2))
 				RemoveEntity(npc.m_iWearable2);
 			if(IsValidEntity(npc.m_iWearable1))
 				RemoveEntity(npc.m_iWearable1);
-				
+
 			npc.Anger = true;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
 			SetVariantString("1.5");

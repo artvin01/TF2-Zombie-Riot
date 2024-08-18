@@ -1291,6 +1291,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_rocketeer.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_healer.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_boomstick.sp"
+#include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_healtanker.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_guards.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_elite_gunner.sp"
 #include "zombie_riot/npc/ally/iberia_barracks/npc_barrack_headhunter.sp"
