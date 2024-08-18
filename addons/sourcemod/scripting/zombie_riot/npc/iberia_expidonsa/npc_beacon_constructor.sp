@@ -2,51 +2,58 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"vo/engineer_paincrticialdeath01.mp3",
+	"vo/engineer_paincrticialdeath02.mp3",
+	"vo/engineer_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/spy_painsharp01.mp3",
-	"vo/spy_painsharp02.mp3",
-	"vo/spy_painsharp03.mp3",
-	"vo/spy_painsharp04.mp3",
+	"vo/engineer_painsharp01.mp3",
+	"vo/engineer_painsharp02.mp3",
+	"vo/engineer_painsharp03.mp3",
+	"vo/engineer_painsharp04.mp3",
+	"vo/engineer_painsharp05.mp3",
+	"vo/engineer_painsharp06.mp3",
+	"vo/engineer_painsharp07.mp3",
+	"vo/engineer_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/spy_battlecry01.mp3",
-	"vo/spy_battlecry02.mp3",
-	"vo/spy_battlecry03.mp3",
-	"vo/spy_battlecry04.mp3",
-};
-
-static const char g_RangedAttackSounds[][] = {
-	"weapons/ambassador_shoot.wav",
+	"vo/engineer_battlecry01.mp3",
+	"vo/engineer_battlecry03.mp3",
+	"vo/engineer_battlecry04.mp3",
+	"vo/engineer_battlecry05.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_hit1.wav",
-	"weapons/blade_hit2.wav",
-	"weapons/blade_hit3.wav",
-	"weapons/blade_hit4.wav",
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
-void Iberia_Kinat_OnMapStart_NPC()
+static const char g_BuildSound[][] = {
+	"ui/item_metal_weapon_drop.wav",
+};
+
+void IberiaBeaconConstructor_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
+	for (int i = 0; i < (sizeof(g_BuildSound)); i++) { PrecacheSound(g_BuildSound[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Kinat");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kinat");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Name, sizeof(data.Name), "Beacon Constructor");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_beacon_constructor");
+	strcopy(data.Icon, sizeof(data.Icon), "engineer");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -55,12 +62,17 @@ void Iberia_Kinat_OnMapStart_NPC()
 }
 
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return IberiaKinat(client, vecPos, vecAng, ally);
+	return IberiaBeaconConstructor(client, vecPos, vecAng, ally, data);
 }
-methodmap IberiaKinat < CClotBody
+methodmap IberiaBeaconConstructor < CClotBody
 {
+	property float m_flArmorToGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -91,26 +103,27 @@ methodmap IberiaKinat < CClotBody
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayRangedSound() {
-		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+	}
+	public void PlayBuildSound() 
+	{
+		EmitSoundToAll(g_BuildSound[GetRandomInt(0, sizeof(g_BuildSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_BuildSound[GetRandomInt(0, sizeof(g_BuildSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
 	
-	public IberiaKinat(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaBeaconConstructor(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		IberiaKinat npc = view_as<IberiaKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
+		IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "600", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		npc.SetActivity("ACT_MP_RUN_MELEE");
-		npc.m_iChanged_WalkCycle = 2;
+		npc.SetActivity("ACT_MP_RUN_BUILDING_DEPLOYED");
+		SetVariantInt(1);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -118,26 +131,29 @@ methodmap IberiaKinat < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaKinat_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaKinat_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaKinat_ClotThink);
+		npc.m_flArmorToGive = StringToFloat(data);
+
+		func_NPCDeath[npc.index] = view_as<Function>(IberiaBeaconConstructor_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaBeaconConstructor_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(IberiaBeaconConstructor_ClotThink);
 		
 		
 		//IDLE
 		npc.m_iState = 0;
+		npc.m_iChanged_WalkCycle = 1;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 270.0;
-		npc.m_iAttacksTillReload = 0;
+		npc.m_flSpeed = 200.0;
+		fl_TotalArmor[npc.index] = 0.5;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/spy/pn2_mask.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_toolbox/c_toolbox.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/spy/pn2_samhat_spy.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2022_more_gun_marshal/hwn2022_more_gun_marshal.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit/dec23_sleuth_suit.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -147,9 +163,9 @@ methodmap IberiaKinat < CClotBody
 	}
 }
 
-public void IberiaKinat_ClotThink(int iNPC)
+public void IberiaBeaconConstructor_ClotThink(int iNPC)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(iNPC);
+	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -182,34 +198,24 @@ public void IberiaKinat_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaKinatSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(ActionDo)
+		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
-			case 0:
-			{
-				npc.StartPathing();
-				//We run at them.
-				if(flDistanceToTarget < npc.GetLeadRadius()) 
-				{
-					float vPredictedPos[3];
-					PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
-					NPC_SetGoalVector(npc.index, vPredictedPos);
-				}
-				else 
-				{
-					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
-				}
-				npc.m_flSpeed = 270.0;
-			}
-			case 1:
-			{
-				NPC_StopPathing(npc.index);
-				npc.m_flSpeed = 0.0;
-				//Stand still.
-			}
+			float vPredictedPos[3];
+			PredictSubjectPosition(npc, npc.m_iTarget,_,_, vPredictedPos);
+			NPC_SetGoalVector(npc.index, vPredictedPos);
 		}
-
-		
+		else 
+		{
+			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
+		}
+		if(npc.m_iChanged_WalkCycle == 1)
+		{
+			IberiaBeaconConstructorBuildObject(npc, flDistanceToTarget); 
+		}
+		else
+		{
+			IberiaBeaconConstructorSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		}
 	}
 	else
 	{
@@ -219,9 +225,9 @@ public void IberiaKinat_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaKinat_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action IberiaBeaconConstructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(victim);
+	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -235,9 +241,9 @@ public Action IberiaKinat_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void IberiaKinat_NPCDeath(int entity)
+public void IberiaBeaconConstructor_NPCDeath(int entity)
 {
-	IberiaKinat npc = view_as<IberiaKinat>(entity);
+	IberiaBeaconConstructor npc = view_as<IberiaBeaconConstructor>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -259,88 +265,36 @@ public void IberiaKinat_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float distance)
+void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float distance)
 {
-	if(npc.m_iAttacksTillReload >= 1)
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 	{
-		if(npc.m_iChanged_WalkCycle != 1)
-		{
-			if(IsValidEntity(npc.m_iWearable3))
-				RemoveEntity(npc.m_iWearable3);
-
-			npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador.mdl");
-			npc.m_bisWalking = true;
-			npc.m_iChanged_WalkCycle = 1;
-			npc.SetActivity("ACT_MP_RUN_SECONDARY");
-			npc.StartPathing();
-		}	
-
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.75))
-		{
-			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
-			{
-				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				
-				if(IsValidEnemy(npc.index, Enemy_I_See))
-				{
-					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-					npc.m_iTarget = Enemy_I_See;
-					npc.PlayRangedSound();
-					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-					npc.FaceTowards(vecTarget, 20000.0);
-					Handle swingTrace;
-					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
-					{
-						target = TR_GetEntityIndex(swingTrace);	
-							
-						float vecHit[3];
-						TR_GetEndPosition(vecHit, swingTrace);
-						float origin[3], angles[3];
-						view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
-						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
-						npc.m_flNextMeleeAttack = gameTime + 0.75;
-						npc.m_iAttacksTillReload --;
-
-						if(IsValidEnemy(npc.index, target))
-						{
-							float damageDealt = 20.5;
-							if(ShouldNpcDealBonusDamage(target))
-								damageDealt *= 5.0;
-
-
-							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
-						}
-					}
-					delete swingTrace;
-				}
-				else
-				{
-					//cant see.
-					return 0;
-				}
-			}
-		}
-		else
+		if(IsValidEnemy(npc.index, Enemy_I_See))
 		{
-			//too far away.
-			return 0;
-		}
-		//they have more then 1 bullet, use gunmode.
-		//Do backoff code, but only on wave 16+
-		return 1;
-	}
-	//we use our melee.
-	if(npc.m_iChanged_WalkCycle != 2)
-	{
-		if(IsValidEntity(npc.m_iWearable3))
-			RemoveEntity(npc.m_iWearable3);
+			npc.m_iChanged_WalkCycle = 2;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
-		npc.m_bisWalking = true;
-		npc.m_iChanged_WalkCycle = 2;
-		npc.SetActivity("ACT_MP_RUN_MELEE");
-		npc.StartPathing();
-	}	
+			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
+			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
+			if(spawn_index > MaxClients)
+			{
+				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
+				NpcAddedToZombiesLeftCurrently(spawn_index, true);
+			}
+			npc.PlayBuildSound();
+			npc.m_flSpeed = 300.0;
+			fl_TotalArmor[npc.index] = 1.0;
+		}
+	}
+}
+void IberiaBeaconConstructorSelfDefense(IberiaBeaconConstructor npc, float gameTime, int target, float distance)
+{
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
@@ -360,21 +314,17 @@ int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float di
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 35.0;
+					float damageDealt = 50.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.15;
+						damageDealt *= 1.5;
 
 					int DamageType = DMG_CLUB;
-					if(!NpcStats_IsEnemySilenced(npc.index))
-						DamageType |= DMG_PREVENT_PHYSICS_FORCE;
 
 					//prevents knockback!
 					//gimic of new wavetype, but silenceable.
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-					npc.m_iAttacksTillReload += 3;
-					npc.m_flNextMeleeAttack = gameTime + 0.5;
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -396,13 +346,12 @@ int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float di
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.0);
 						
-				npc.m_flAttackHappens = gameTime + 0.2;
-				npc.m_flDoingAnimation = gameTime + 0.2;
+				npc.m_flAttackHappens = gameTime + 0.25;
+				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
 	}
-	return 0;
 }

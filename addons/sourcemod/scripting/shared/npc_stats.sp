@@ -1461,6 +1461,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		{
 			speed_for_return *= 1.50;
 		}
+		if(MoraleBoostLevelAt(this.index) > 0)
+		{
+			speed_for_return *= EntityMoraleBoostReturn(this.index, 1);
+		}
 #if defined RUINA_BASE	
 		if(f_Ruina_Speed_Buff[this.index] > Gametime)
 		{
@@ -9358,9 +9362,14 @@ public void Npc_DebuffWorldTextUpdate(CClotBody npc)
 	{
 		Format(HealthText, sizeof(HealthText), "X");
 	}
+	if(MoraleBoostLevelAt(npc.index) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(npc.index, HealthText, sizeof(HealthText));
+	}
 	if(NpcStats_IberiaIsEnemyMarked(npc.index))
 	{
-		Format(HealthText, sizeof(HealthText), "M");
+		Format(HealthText, sizeof(HealthText), "%sM",HealthText);
 	}
 
 #if defined ZR
@@ -10623,8 +10632,10 @@ float custom_maxarmour = 0.0)
 	}
 	else
 	{
-		npc.m_flArmorCount = 	custom_maxarmour;
-		npc.m_flArmorCountMax = custom_maxarmour;
+		npc.m_flArmorCount 		+= 	custom_maxarmour;
+		npc.m_flArmorCountMax += custom_maxarmour;
+		if(npc.m_flArmorCountMax >= npc.m_flArmorCount)
+			npc.m_flArmorCountMax = npc.m_flArmorCount;
 	}
 	
 	//any extra logic please add here. deivid.

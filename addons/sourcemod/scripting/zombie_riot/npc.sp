@@ -510,12 +510,21 @@ void NPC_ConfigSetup()
 //Raids
 	VoidUnspeakable_OnMapStart_NPC();
 
+	//void events
+	VoidedDiversionistico_OnMapStart_NPC();
+
 //Iberia Expidonsa
+	//Overall usage
+	Iberia_Beacon_OnMapStart_NPC();
+	IberiaBeaconConstructor_OnMapStart_NPC();
+	Iberia_Lighthouse_OnMapStart_NPC();
 // wave 1-15
 	Iberia_Cambino_OnMapStart_NPC();
 	Iberia_Irani_OnMapStart_NPC();
-	//void events
-	VoidedDiversionistico_OnMapStart_NPC();
+	Iberia_Kinat_OnMapStart_NPC();
+	Iberia_Ginus_OnMapStart_NPC();
+	Iberia_SpeedusInitus_OnMapStart_NPC();
+	Iberia_Anania_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1482,8 +1491,17 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 
-#include "zombie_riot/npc/iberia_expidonsa/npc_irani.sp"
-#include "zombie_riot/npc/iberia_expidonsa/npc_cambino.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_base.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_beacon.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_lighthouse.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_beacon_constructor.sp"
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_irani.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_cambino.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_kinat.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ginus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_anania.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 /*

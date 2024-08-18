@@ -437,7 +437,7 @@ methodmap Nemal < CClotBody
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Senals's{default} kinda scary, i mean you fought him, you'd know!");
+					CPrintToChatAll("{lightblue}Nemal{default}: I'll be honest, {blue}Sensal's{default} kinda scary, i mean you fought him, you'd know!");
 				}
 				case 3:
 				{
@@ -832,7 +832,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(npc.m_flNemalSummonSilvesterCD != FAR_FUTURE)
 			npc.m_flNemalSummonSilvesterCD = 0.0;
 	}
-	if(i_RaidGrantExtra[npc.index] >= 2)
+	if(i_RaidGrantExtra[npc.index] >= 3)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/10) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth") - damage) && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -1259,11 +1259,20 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_flDoingAnimation = gameTime + 99.9;
 			npc.m_flNemalPlaceAirMines = gameTime + 2.0;
 			npc.m_flNemalPlaceAirMinesCD = gameTime + 30.0;
+			if(i_RaidGrantExtra[npc.index] >= 4)
+				npc.m_flNemalPlaceAirMinesCD = gameTime + 20.0;
+
 			npc.m_flAttackHappens = 0.0;
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_cheers_medic");
+			if(i_RaidGrantExtra[npc.index] >= 4)
+			{
+				npc.SetPlaybackRate(1.5);	
+				npc.m_flNemalPlaceAirMines = gameTime + 1.33;
+			}
+			
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
 			EmitSoundToAll("weapons/physcannon/energy_sing_explosion2.wav", npc.index, SNDCHAN_STATIC, 120, _, 0.8, 110);
@@ -1276,7 +1285,7 @@ int NemalSelfDefense(Nemal npc, float gameTime, int target, float distance)
 			npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "eb_beam_angry_core03", npc.index, "effect_hand_r", {0.0,0.0,0.0});
 		}		
 	}
-	else if(npc.m_flNemalSniperShotsHappeningCD < GetGameTime(npc.index))
+	else if(npc.m_flNemalSniperShotsHappeningCD < GetGameTime(npc.index) && i_RaidGrantExtra[npc.index] >= 2)
 	{				
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, target);
 						
@@ -1910,6 +1919,9 @@ bool NemalSnipingShots(Nemal npc)
 			{
 				//we change animations
 				npc.m_flNemalSniperShotsHappening = GetGameTime(npc.index) + 3.1;
+				if(i_RaidGrantExtra[npc.index] >= 4)
+					npc.m_flNemalSniperShotsHappening = GetGameTime(npc.index) + 4.1;
+
 				npc.m_flAttackHappens = GetGameTime(npc.index) + 1.0;
 				npc.m_iChanged_WalkCycle = 100;
 				npc.AddActivityViaSequence("taunt_headbutt_start");
@@ -1948,13 +1960,13 @@ bool NemalSummonSilvester(Nemal npc)
 				{
 					npc.SetPlaybackRate(0.35);	
 					npc.m_iChanged_WalkCycle = 1;
-					npc.m_flNemalSummonSilvesterHappening = GetGameTime() + 1.0;
+					npc.m_flNemalSummonSilvesterHappening = GetGameTime(npc.index) + 1.0;
 				}
 				case 1:
 				{
 					npc.SetPlaybackRate(0.02);	
 					npc.m_iChanged_WalkCycle = 2;
-					npc.m_flNemalSummonSilvesterHappening = GetGameTime() + 2.0;
+					npc.m_flNemalSummonSilvesterHappening = GetGameTime(npc.index) + 2.0;
 					Nemal_SpawnAllyDuoRaid(EntIndexToEntRef(npc.index));
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
@@ -1982,7 +1994,7 @@ bool NemalSummonSilvester(Nemal npc)
 						}
 					}
 					npc.m_iChanged_WalkCycle = 3;
-					npc.m_flNemalSummonSilvesterHappening = GetGameTime() + 1.0;
+					npc.m_flNemalSummonSilvesterHappening = GetGameTime(npc.index) + 1.0;
 				}
 				case 3:
 				{
@@ -2005,7 +2017,7 @@ bool NemalSummonSilvester(Nemal npc)
 		npc.SetCycle(0.03);
 		RaidModeTime += 20.0;
 		npc.m_bisWalking = false;
-		npc.m_flNemalSummonSilvesterHappening = GetGameTime() + 2.0;
+		npc.m_flNemalSummonSilvesterHappening = GetGameTime(npc.index) + 2.0;
 		npc.m_flNemalSummonSilvesterCD = FAR_FUTURE;
 		npc.m_flNemalSniperShotsHappening = 0.0;
 		npc.m_flNemalSlicerHappening = 0.0;
