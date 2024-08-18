@@ -191,7 +191,7 @@ methodmap Silvester < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
-	property float m_flSilvesterPlaceAirMinesCD
+	property float m_flSilvesterHudCD
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
@@ -237,7 +237,7 @@ methodmap Silvester < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 	
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -252,7 +252,7 @@ methodmap Silvester < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 105);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
@@ -328,7 +328,6 @@ methodmap Silvester < CClotBody
 		npc.i_GunMode = 0;
 		npc.m_flSilvesterSlicerCD = GetGameTime() + 6.0;
 		npc.m_flNextRangedSpecialAttackHappens = GetGameTime() + 5.0;
-		npc.m_flSilvesterPlaceAirMinesCD = GetGameTime() + 10.0;
 		npc.m_flAngerDelay = GetGameTime() + 15.0;
 		BlockLoseSay = false;
 		Zero(b_said_player_weaponline);
@@ -389,7 +388,7 @@ methodmap Silvester < CClotBody
 				}
 				case 3:
 				{
-					CPrintToChatAll("{gold}Silvester{default}: Wish {blue}Waldch{default} would come with train with us, but ever since the {crismon}hitman{default} is gone, he can finally do work.");
+					CPrintToChatAll("{gold}Silvester{default}: Wish {darkblue}Waldch{default} would come with train with us, but ever since the {crimson}hitman{default} is gone, he can finally do work.");
 				}
 			}
 		}
@@ -518,8 +517,33 @@ static void Internal_ClotThink(int iNPC)
 	{
 		return;
 	}
+	
+
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+
+
+	if(npc.m_flSilvesterHudCD < GetGameTime())
+	{
+		npc.m_flSilvesterHudCD = GetGameTime() + 0.2;
+		//Set raid to this one incase the previous one has died or somehow vanished
+		if(!IsPartnerGivingUpNemalSilv(npc.index) && IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
+		{
+			for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
+			{
+				if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
+				{
+					Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
+				}	
+			}
+		}
+		else if((EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive))) || (IsPartnerGivingUpNemalSilv(npc.index) && EntRefToEntIndex(RaidBossActive) != npc.index))
+		{	
+			RaidBossActive = EntIndexToEntRef(npc.index);
+		}
+		
+	}
+
 	if(b_angered_twice[npc.index])
 	{
 		if(npc.m_iChanged_WalkCycle != 15)
@@ -527,7 +551,6 @@ static void Internal_ClotThink(int iNPC)
 			npc.m_bisWalking = false;
 			NPC_StopPathing(npc.index);
 			npc.m_iChanged_WalkCycle = 15;
-			NPC_StopPathing(npc.index);
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("selectionMenu_Idle");
 			npc.SetCycle(0.01);
@@ -649,22 +672,6 @@ static void Internal_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 
-	//Set raid to this one incase the previous one has died or somehow vanished
-	if(IsEntityAlive(EntRefToEntIndex(RaidBossActive)) && RaidBossActive != EntIndexToEntRef(npc.index))
-	{
-		for(int EnemyLoop; EnemyLoop <= MaxClients; EnemyLoop ++)
-		{
-			if(IsValidClient(EnemyLoop)) //Add to hud as a duo raid.
-			{
-				Calculate_And_Display_hp(EnemyLoop, npc.index, 0.0, false);	
-			}	
-		}
-	}
-	else if((EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive))) || (IsPartnerGivingUpNemalSilv(npc.index) && EntRefToEntIndex(RaidBossActive) != npc.index))
-	{	
-		RaidBossActive = EntIndexToEntRef(npc.index);
-	}
-	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -679,7 +686,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 
 	bool ForceRedo = false;
-	if(IsValidEntity(npc.m_iTargetAlly))
+	if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 	{
 		CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
 		if(allynpc.m_iTarget == npc.m_iTarget)
@@ -797,7 +804,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(IsValidEntity(npc.m_iTargetAlly))
+		if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 		{
 			CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
 			if(allynpc.m_iTarget == npc.m_iTarget)
@@ -879,6 +886,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
+			MakeObjectIntangeable(npc.index);
 			
 			CPrintToChatAll("{gold}Silvester{default}: Not in the face! ah... fine.");
 
@@ -1726,7 +1734,7 @@ bool SilvesterSwordSlicer(Silvester npc)
 					float DamageCalc = 50.0 * RaidModeScaling;
 					float VecEnemy[3]; WorldSpaceCenter(TargetEnemy, VecEnemy);
 					npc.FaceTowards(VecEnemy, 15000.0);
-					NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1000.0, "rockettrail_fire");
+					NemalAirSlice(npc.index, TargetEnemy, DamageCalc, 215, 150, 0, 200.0, 6, 1750.0, "rockettrail_fire");
 					npc.PlayRangedSound();
 				}
 			}

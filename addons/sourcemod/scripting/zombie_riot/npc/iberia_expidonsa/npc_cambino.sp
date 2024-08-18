@@ -2,39 +2,39 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
+};
+
+static const char g_RangedAttackSounds[][] = {
+	"weapons/ambassador_shoot.wav",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/pickaxe_swing1.wav",
-	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"weapons/knife_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/cleaver_hit_02.wav",
-	"weapons/cleaver_hit_03.wav",
-	"weapons/cleaver_hit_05.wav",
-	"weapons/cleaver_hit_06.wav",
-	"weapons/cleaver_hit_07.wav",
+	"weapons/blade_hit1.wav",
+	"weapons/blade_hit2.wav",
+	"weapons/blade_hit3.wav",
+	"weapons/blade_hit4.wav",
 };
-
 void Iberia_Cambino_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -42,6 +42,7 @@ void Iberia_Cambino_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Cambino");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cambino");
@@ -89,6 +90,10 @@ methodmap IberiaCambino < CClotBody
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+	}
+	public void PlayRangedSound() {
+		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -177,11 +182,12 @@ public void IberiaCambino_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int Action = IberiaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
-		switch(Action)
+		int ActionDo = IberiaCambinoSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		switch(ActionDo)
 		{
 			case 0:
 			{
+				npc.StartPathing();
 				//We run at them.
 				if(flDistanceToTarget < npc.GetLeadRadius()) 
 				{
@@ -193,6 +199,13 @@ public void IberiaCambino_ClotThink(int iNPC)
 				{
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
+				npc.m_flSpeed = 270.0;
+			}
+			case 1:
+			{
+				NPC_StopPathing(npc.index);
+				npc.m_flSpeed = 0.0;
+				//Stand still.
 			}
 		}
 
@@ -260,48 +273,51 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
 			npc.StartPathing();
-
 		}	
+
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 1.75))
 		{
-			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
-			if(IsValidEnemy(npc.index, Enemy_I_See))
+			if(npc.m_flNextMeleeAttack < GetGameTime(npc.index))
 			{
-				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-				npc.m_iTarget = Enemy_I_See;
-				npc.PlayMeleeSound();
-				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
-				npc.FaceTowards(vecTarget, 20000.0);
-				Handle swingTrace;
-				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
+				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
+				
+				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
-					target = TR_GetEntityIndex(swingTrace);	
-						
-					float vecHit[3];
-					TR_GetEndPosition(vecHit, swingTrace);
-					float origin[3], angles[3];
-					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
-					npc.m_flNextMeleeAttack = gameTime + 0.75;
-					npc.m_iAttacksTillReload --;
-
-					if(IsValidEnemy(npc.index, target))
+					npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
+					npc.m_iTarget = Enemy_I_See;
+					npc.PlayRangedSound();
+					float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+					npc.FaceTowards(vecTarget, 20000.0);
+					Handle swingTrace;
+					if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 					{
-						float damageDealt = 20.5;
-						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 5.0;
+						target = TR_GetEntityIndex(swingTrace);	
+							
+						float vecHit[3];
+						TR_GetEndPosition(vecHit, swingTrace);
+						float origin[3], angles[3];
+						view_as<CClotBody>(npc.m_iWearable3).GetAttachment("muzzle", origin, angles);
+						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
+						npc.m_flNextMeleeAttack = gameTime + 0.75;
+						npc.m_iAttacksTillReload --;
+
+						if(IsValidEnemy(npc.index, target))
+						{
+							float damageDealt = 20.5;
+							if(ShouldNpcDealBonusDamage(target))
+								damageDealt *= 5.0;
 
 
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+						}
 					}
+					delete swingTrace;
 				}
-				delete swingTrace;
-			}
-			else
-			{
-				//cant see.
-				return 0;
+				else
+				{
+					//cant see.
+					return 0;
+				}
 			}
 		}
 		else
@@ -349,7 +365,7 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.15;
 
-					float DamageType = DMG_CLUB;
+					int DamageType = DMG_CLUB;
 					if(!NpcStats_IsEnemySilenced(npc.index))
 						DamageType |= DMG_PREVENT_PHYSICS_FORCE;
 
@@ -358,6 +374,7 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
 					npc.m_iAttacksTillReload += 3;
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -379,10 +396,10 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.0);
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
 						
-				npc.m_flAttackHappens = gameTime + 0.25;
-				npc.m_flDoingAnimation = gameTime + 0.25;
+				npc.m_flAttackHappens = gameTime + 0.2;
+				npc.m_flDoingAnimation = gameTime + 0.2;
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}

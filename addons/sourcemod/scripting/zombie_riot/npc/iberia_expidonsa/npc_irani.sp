@@ -105,6 +105,8 @@ methodmap IberiaIrani < CClotBody
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");
+		SetVariantInt(2);
+		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -261,7 +263,7 @@ void IberiaIraniSelfDefense(IberiaIrani npc, float gameTime, int target, float d
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.15;
 
-					float DamageType = DMG_CLUB;
+					int DamageType = DMG_CLUB;
 					if(!NpcStats_IsEnemySilenced(npc.index))
 						DamageType |= DMG_PREVENT_PHYSICS_FORCE;
 

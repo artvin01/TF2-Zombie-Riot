@@ -109,7 +109,7 @@ methodmap VoidTotalGrowth < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		SetVariantInt(4);
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		npc.m_flNextMeleeAttack = 0.0;

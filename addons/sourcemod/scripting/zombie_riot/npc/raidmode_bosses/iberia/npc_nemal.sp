@@ -433,7 +433,7 @@ methodmap Nemal < CClotBody
 				}
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}Nemal{default}: What i would do for {blue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isnt his home!!!");
+					CPrintToChatAll("{lightblue}Nemal{default}: What i would do for {darkblue}Waldch{default} to stop being so mangetic to {gold}Silvester{default} with his Wildingen antics, that isnt his home!!!");
 				}
 				case 2:
 				{
@@ -874,6 +874,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
+			MakeObjectIntangeable(npc.index);
 			
 			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
 			npc.m_iTarget = 0;
@@ -1654,7 +1655,7 @@ bool NemalTalkPostWin(Nemal npc)
 	if(!b_angered_twice[npc.index])
 		return false;
 	
-	if(npc.m_iChanged_WalkCycle != 6 && npc.m_iChanged_WalkCycle != 8)
+	if(npc.m_iChanged_WalkCycle != 6 && npc.m_iChanged_WalkCycle != 88)
 	{
 		npc.m_bisWalking = false;
 		npc.m_iChanged_WalkCycle = 6;
@@ -1666,10 +1667,10 @@ bool NemalTalkPostWin(Nemal npc)
 	if(!IsPartnerGivingUpNemalSilv(npc.index))
 		return true;
 		
-	if(npc.m_iChanged_WalkCycle != 8)
+	if(npc.m_iChanged_WalkCycle != 88)
 	{
 		i_SaidLineAlready[npc.index] = 0; 
-		npc.m_iChanged_WalkCycle = 8;
+		npc.m_iChanged_WalkCycle = 88;
 		f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
 	}
 

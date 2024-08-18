@@ -510,6 +510,10 @@ void NPC_ConfigSetup()
 //Raids
 	VoidUnspeakable_OnMapStart_NPC();
 
+//Iberia Expidonsa
+// wave 1-15
+	Iberia_Cambino_OnMapStart_NPC();
+	Iberia_Irani_OnMapStart_NPC();
 	//void events
 	VoidedDiversionistico_OnMapStart_NPC();
 
@@ -1478,6 +1482,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 
+#include "zombie_riot/npc/iberia_expidonsa/npc_irani.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_cambino.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 /*
