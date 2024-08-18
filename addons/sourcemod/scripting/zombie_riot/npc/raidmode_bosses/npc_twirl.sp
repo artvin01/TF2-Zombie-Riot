@@ -1229,7 +1229,7 @@ static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 
 static int i_Lunar_RadianceAmt(Twirl npc)
 {
-	int amt = (npc.Anger ? 10 : 5);
+	int amt = (npc.Anger ? 14 : 7);
 
 	return amt;
 }
@@ -1432,10 +1432,7 @@ static void lunar_Radiance_Tick(int iNPC)
 		if(enemy_2[i])
 		{
 			float Radius = (npc.Anger ? 225.0 : 150.0);
-			float dmg = 20.0;
-			dmg = Modify_Damage(-1, dmg);
-			if(i_current_wave[npc.index]>=60)
-				dmg *=0.7;
+			float dmg = Modify_Damage(-1, 12.0);
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
 		}
 	}
@@ -1576,7 +1573,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 				Handle swingTrace;
 				float VecEnemy[3]; WorldSpaceCenter(PrimaryThreatIndex, VecEnemy);
 				npc.FaceTowards(VecEnemy, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, {125.0, 100.0, 150.0}, {-125.0, -125.0, -150.0}))
+				if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex))
 				{	
 					int target = TR_GetEntityIndex(swingTrace);	
 					
@@ -2017,8 +2014,6 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 static int i_Fractal_Gram_Amt(Twirl npc)
 {
 	int amt = (npc.Anger ? 20 : 10);
-	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 15 : 10);
 
 	return amt;
 }
@@ -2140,11 +2135,7 @@ static void Func_On_Proj_Touch(int entity, int other)
 	{
 		Twirl npc = view_as<Twirl>(owner);
 		float radius = (npc.Anger ? 300.0 : 250.0);
-		float dmg = 20.0;
-		dmg *= RaidModeScaling;
-
-		if(i_current_wave[npc.index]>=60)
-			dmg *=0.7;
+		float dmg = Modify_Damage(-1, 12.0);
 
 		float Time = (npc.Anger ? 1.45 : 1.9);
 		npc.Ion_On_Loc(ProjectileLoc, radius, dmg, Time);
