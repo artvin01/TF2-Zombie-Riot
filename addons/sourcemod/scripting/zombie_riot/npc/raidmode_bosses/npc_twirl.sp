@@ -781,9 +781,11 @@ methodmap Twirl < CClotBody
 				case 2: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
 				case 3: Twirl_Lines(npc, "I hope your ready for this final {purple}battle{snow}.");
 			}
+			RaidModeScaling *=0.85;
 		}
 		else	//freeplay
 		{
+			RaidModeScaling *=0.85;
 			i_ranged_ammo[npc.index] = 12;
 			switch(GetRandomInt(0, 3))
 			{
@@ -1170,7 +1172,7 @@ static void Final_Invocation(Twirl npc)
 	Ruina_Set_Overlord(npc.index, true);
 	Ruina_Master_Rally(npc.index, true);
 	int MaxHealth = ReturnEntityMaxHealth(npc.index);
-	float Tower_Health = MaxHealth*0.2;
+	float Tower_Health = MaxHealth*0.175;
 
 	for(int i=0 ; i < 4 ; i++)
 	{
@@ -1225,6 +1227,20 @@ static void LifelossExplosion(int entity, int victim, float damage, int weapon)
 	Custom_Knockback(entity, victim, 1000.0, true);
 }
 
+static int i_Lunar_RadianceAmt(Twirl npc)
+{
+	int amt = (npc.Anger ? 10 : 5);
+	if(i_current_wave[npc.index]>=60)
+		amt = (npc.Anger ? 8 : 4);
+
+	return amt;
+}
+static float fl_Lunar_RadianceTimer(Twirl npc)
+{
+	float time = (npc.Anger ? 0.7 : 1.2);
+	return time;
+}
+
 static void Luanar_Radiance(Twirl npc)
 {
 	if(i_current_wave[npc.index] <=45)
@@ -1236,9 +1252,7 @@ static void Luanar_Radiance(Twirl npc)
 	if(fl_lunar_timer[npc.index] > GameTime)
 		return;
 
-	int amt = (npc.Anger ? 10 : 5);
-	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 8 : 4);
+	int amt = i_Lunar_RadianceAmt(npc);
 
 	if(i_lunar_ammo[npc.index] > amt)
 	{
@@ -1250,7 +1264,7 @@ static void Luanar_Radiance(Twirl npc)
 	}
 	i_lunar_ammo[npc.index]++;
 
-	fl_lunar_timer[npc.index] = GameTime + (npc.Anger ? 0.7 : 1.2);
+	fl_lunar_timer[npc.index] = GameTime + fl_Lunar_RadianceTimer(npc);
 
 	fl_ruina_battery_timeout[npc.index] = GameTime + 1.0;
 
@@ -1263,7 +1277,7 @@ static void Luanar_Radiance(Twirl npc)
 		{
 			float Radius = (npc.Anger ? 225.0 : 150.0);
 			float dmg = 20.0;
-			dmg *= RaidModeScaling;
+			dmg = Modify_Damage(-1, dmg);
 			if(i_current_wave[npc.index]>=60)
 				dmg *=0.7;
 			npc.Predictive_Ion(enemy_2[i], (npc.Anger ? 1.4 : 1.8), Radius, dmg);
@@ -1311,7 +1325,11 @@ static bool KeepDistance(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 
 	return backing_up;
 }
-
+static float fl_self_defense_multiattack_speed(Twirl npc)
+{
+	float speed = (npc.Anger ? 0.2 : 0.4);
+	return speed;
+}
 static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatIndex, float vecTarget[3])
 {
 	float GameTime = GetGameTime(npc.index);
@@ -1345,7 +1363,7 @@ static void Self_Defense(Twirl npc, float flDistanceToTarget, int PrimaryThreatI
 		if(fl_multi_attack_delay[npc.index] > GameTime)
 			return;
 
-		float	Multi_Delay = (npc.Anger ? 0.2 : 0.4),
+		float	Multi_Delay = fl_self_defense_multiattack_speed(npc),
 				Reload_Delay = (npc.Anger ? 2.0 : 4.0);
 		
 		if(npc.m_iState >= i_ranged_ammo[npc.index])	//"ammo"
@@ -1487,7 +1505,7 @@ static float fl_cosmic_gaze_throttle[MAXENTITIES];
 static float fl_cosmic_gaze_windup[MAXENTITIES];
 static float fl_cosmic_gaze_duration_offset[MAXENTITIES];
 static float fl_gaze_Dist[MAXENTITIES];
-static float fl_cosmic_gaze_range = 2000.0;
+static float fl_cosmic_gaze_range = 1000.0;
 static void Cosmic_Gaze(Twirl npc, int Target)
 {
 	if(i_current_wave[npc.index]<=30)
@@ -1532,12 +1550,10 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	b_animation_set[npc.index] = false;
 	fl_cosmic_gaze_throttle[npc.index] = 0.0;
-
 	
 	npc.AddActivityViaSequence("taunt08");
 	npc.SetPlaybackRate(1.36*anim_ratio);	
 	npc.SetCycle(0.01);
-
 
 	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
 	npc.FaceTowards(VecTarget, 10000.0);
@@ -1555,6 +1571,12 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	Start = Laser.Start_Point;
 
 	fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);
+	float Thickness = 15.0;
+	int color[4]; Ruina_Color(color);
+	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_range*2.0, 0.0, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup), Thickness, 1.5, color, 1, 0);
+	TE_SendToAll();
+	TE_SetupBeamRingPoint(EndLoc, fl_cosmic_gaze_range*2.0, fl_cosmic_gaze_range*2.0+0.1, g_Ruina_BEAM_Combine_Black, g_Ruina_HALO_Laser, 0, 1, (Duration + Windup), Thickness, 1.5, color, 1, 0);
+	TE_SendToAll();
 
 	SDKUnhook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
 	SDKHook(npc.index, SDKHook_Think, Cosmic_Gaze_Tick);
@@ -1642,8 +1664,7 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 
 				Laser.Radius = Radius;
 				Laser.damagetype = DMG_PLASMA;
-				Laser.Damage = 70.0 *RaidModeScaling;
-
+				Laser.Damage = Modify_Damage(-1, 70.0) * RaidModeScaling;
 				Laser.Deal_Damage();
 
 				fl_gaze_Dist[npc.index] = GetVectorDistance(EndLoc, Start);	
@@ -1729,8 +1750,6 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			Do_Cosmic_Gaze_Explosion(npc.index, EndLoc);
 		}
 	}
-
-
 	return Plugin_Continue;
 }
 static int i_explosion_core[MAXENTITIES];
@@ -1745,7 +1764,7 @@ static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 		i_explosion_core[client] = EntIndexToEntRef(create_center);
 	}
 
-	Explode_Logic_Custom(200.0*RaidModeScaling, client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
+	Explode_Logic_Custom(Modify_Damage(-1, 100.0), client, client, -1, Loc, Radius, _, _, true, _, false, _, Cosmic_Gaze_Boom_OnHit);
 
 	int color[4]; Ruina_Color(color);
 
@@ -1838,6 +1857,19 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 		TE_SendToAll(0.0);
 	}
 }
+static int i_Fractal_Gram_Amt(Twirl npc)
+{
+	int amt = (npc.Anger ? 20 : 10);
+	if(i_current_wave[npc.index]>=60)
+		amt = (npc.Anger ? 15 : 10);
+
+	return amt;
+}
+static float fl_Fractal_Gram_SpamTimer(Twirl npc)
+{
+	float timer = (npc.Anger ? 0.2 : 0.4);
+	return timer;
+}
 static void Fractal_Gram(Twirl npc, int Target)
 {
 	if(i_current_wave[npc.index]<=15)
@@ -1850,11 +1882,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	if(npc.m_flNextRangedBarrage_Singular > GameTime)
 		return;
 
-	int amt = (npc.Anger ? 20 : 10);
-	if(i_current_wave[npc.index]>=60)
-		amt = (npc.Anger ? 15 : 10);
-
-	
+	int amt = i_Fractal_Gram_Amt(npc);
 
 	if(i_barrage_ammo[npc.index] > amt)
 	{
@@ -1881,7 +1909,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	i_barrage_ammo[npc.index]++;
 
-	npc.m_flNextRangedBarrage_Singular = GameTime + (npc.Anger ? 0.2 : 0.4);
+	npc.m_flNextRangedBarrage_Singular = GameTime + fl_Fractal_Gram_SpamTimer(npc);
 
 	float vecTarget[3];
 	WorldSpaceCenter(Target, vecTarget);
@@ -1889,7 +1917,7 @@ static void Fractal_Gram(Twirl npc, int Target)
 	float Laser_Dmg = 2.5;
 	float Speed = (npc.Anger ? 1400.0 : 1250.0);
 	float Direct_Dmg = 3.5;
-	Fractal_Attack(npc.index, vecTarget, Laser_Dmg*RaidModeScaling, Speed, 15.0, Direct_Dmg*RaidModeScaling, 0.0, 5.0);
+	Fractal_Attack(npc.index, vecTarget, Modify_Damage(-1, Laser_Dmg), Speed, 15.0, Modify_Damage(-1, Direct_Dmg), 0.0, 5.0);
 }
 static int i_laser_entity[MAXENTITIES];
 static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed, float radius, float direct_damage, float direct_radius, float time)
@@ -2272,9 +2300,9 @@ static Action Retreat_Laser_Tick(int iNPC)
 
 	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
-	Laser.Damage = 15.0 *RaidModeScaling;
+	Laser.Damage = Modify_Damage(-1, 15.0) *RaidModeScaling;
 	Laser.Radius = Radius;
-	Laser.Bonus_Damage = 15.0 *RaidModeScaling*6.0;
+	Laser.Bonus_Damage = Modify_Damage(-1, 15.0) *RaidModeScaling*6.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Deal_Damage();
 
@@ -2514,9 +2542,9 @@ static Action Magia_Overflow_Tick(int iNPC)
 	Laser.DoForwardTrace_Custom(Angles, flPos, -1.0);
 	if(update)
 	{
-		Laser.Damage = 2.0 * RaidModeScaling;
+		Laser.Damage = Modify_Damage(-1, 2.0) * RaidModeScaling;
 		Laser.Radius = Radius;
-		Laser.Bonus_Damage = 2.0 * RaidModeScaling*6.0;
+		Laser.Bonus_Damage = Modify_Damage(-1, 2.0) * RaidModeScaling*6.0;
 		Laser.damagetype = DMG_PLASMA;
 		Laser.Deal_Damage(On_LaserHit);
 	}

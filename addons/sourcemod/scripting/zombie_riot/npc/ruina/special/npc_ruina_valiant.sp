@@ -55,10 +55,11 @@ static int i_failsafe[MAXENTITIES];
 #define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
 #define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
+static float fl_last_summon;
 
 void Venium_OnMapStart_NPC()
 {
-
+	fl_last_summon = 0.1;
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Valiant");
@@ -66,9 +67,9 @@ void Venium_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
@@ -84,9 +85,23 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Valiant(client, vecPos, vecAng, ally);
+	bool random = StrContains(data, "rng") != -1;
+
+	if(random)
+	{
+		float roll = GetRandomFloat(0.0, 1.0);
+	//	CPrintToChatAll("Chance: %f", fl_last_summon);
+	//	CPrintToChatAll("Rolled: %f", roll);
+		if(roll > fl_last_summon)
+		{
+			fl_last_summon += 0.1;
+			return -1;
+		}
+	}
+	fl_last_summon = 0.1;
+	return Valiant(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Valiant < CClotBody
@@ -158,7 +173,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Valiant(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
