@@ -271,7 +271,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
-					DesertYadeamDoHealEffect(victim, 100.0);
+					DesertYadeamDoHealEffect(npc.index, 100.0);
 					b_NpcIsTeamkiller[npc.index] = true;
 					Explode_Logic_Custom(0.0,
 					npc.index,
