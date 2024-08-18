@@ -150,7 +150,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.75",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.6",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -185,6 +185,8 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/soldier/xms2013_soldier_marshal_hat/xms2013_soldier_marshal_hat.mdl", "", skin);
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sbxo2014_medic_wintergarb_coat/sbxo2014_medic_wintergarb_coat.mdl", "" , skin);
 		npc.m_iWearable8 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_medic.mdl", "" , skin);
 

@@ -111,7 +111,7 @@ methodmap  Barracks_Iberia_Guards < BarrackBody
 
 	public Barracks_Iberia_Guards(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(BarrackBody(client, vecPos, vecAng, "900", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.65",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(BarrackBody(client, vecPos, vecAng, "900", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.55",_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		

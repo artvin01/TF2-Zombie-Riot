@@ -41,6 +41,7 @@ void Barracks_Iberia_Headhunter_Precache()
 	PrecacheSoundArray(g_MeleeHitSounds);
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
+	PrecacheModel("models/player/spy.mdl");
 	
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberia Headhunter");
@@ -109,7 +110,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 
 	public Barrack_Iberia_Headhunter(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "1900", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
+		Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(BarrackBody(client, vecPos, vecAng, "1900", "models/player/spy.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_strength_arm.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
