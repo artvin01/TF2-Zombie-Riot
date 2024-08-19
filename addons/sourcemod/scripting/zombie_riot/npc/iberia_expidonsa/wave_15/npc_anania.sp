@@ -121,7 +121,7 @@ methodmap Iberia_Anania < CClotBody
 	}
 	public void PlayHornSound() 
 	{
-		EmitSoundToAll(g_MoraleBoostBuff[GetRandomInt(0, sizeof(g_MoraleBoostBuff) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(80,110));
+		EmitSoundToAll(g_MoraleBoostBuff[GetRandomInt(0, sizeof(g_MoraleBoostBuff) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, 0.5, GetRandomInt(80,110));
 	}
 	
 	
@@ -348,7 +348,7 @@ void IberiaMoraleGivingDo(int iNpc, float gameTime, bool DoSounds = true, float 
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
 			spawnRing_Vectors(flPos, /*RANGE start*/ 1.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 125, 200, 3, /*DURATION*/ 0.5, 7.0, 5.0, 3,  /*RANGE END*/range * 2.0);
 			npc.PlayHornSound();
-			npc.PlayMoraleScream();
+		//	npc.PlayMoraleScream();
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
 		}
 	}

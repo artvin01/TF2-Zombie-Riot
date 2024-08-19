@@ -2,29 +2,31 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	")vo/medic_painsharp01.mp3",
+	")vo/medic_painsharp02.mp3",
+	")vo/medic_painsharp03.mp3",
+	")vo/medic_painsharp04.mp3",
+	")vo/medic_painsharp05.mp3",
+	")vo/medic_painsharp06.mp3",
+	")vo/medic_painsharp07.mp3",
+	")vo/medic_painsharp08.mp3",
 };
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_battlecry01.mp3",
-	"vo/sniper_battlecry02.mp3",
-	"vo/sniper_battlecry03.mp3",
-	"vo/sniper_battlecry04.mp3",
+	")vo/medic_battlecry01.mp3",
+	")vo/medic_battlecry02.mp3",
+	")vo/medic_battlecry03.mp3",
+	")vo/medic_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/pickaxe_swing1.wav",
-	"weapons/pickaxe_swing2.wav",
-	"weapons/pickaxe_swing3.wav",
+	"mvm/giant_demoman/giant_demoman_grenade_shoot.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
@@ -35,7 +37,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
-void Iberia_Irani_OnMapStart_NPC()
+void Iberia_Victorian_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -43,8 +45,8 @@ void Iberia_Irani_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Irani");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_irani");
+	strcopy(data.Name, sizeof(data.Name), "Victorian");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_victorian");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -88,12 +90,17 @@ methodmap IberiaVictorian < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME - 0.2);
 	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
+	}
+	property float m_flWeaponSwitchCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
 	
@@ -131,7 +138,7 @@ methodmap IberiaVictorian < CClotBody
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_bet_rocketlauncher/c_bet_rocketlauncher.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.md");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/dec15_medic_winter_jacket2_emblem/dec15_medic_winter_jacket2_emblem.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum22_detective/sum22_detective.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
@@ -171,6 +178,46 @@ public void IberiaVictorian_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
+	//Swtich modes depending on area.
+	if(npc.m_flWeaponSwitchCooldown < GetGameTime(npc.index))
+	{
+		npc.m_flWeaponSwitchCooldown = GetGameTime(npc.index) + 5.0;
+		static float flMyPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flMyPos);
+		static float hullcheckmaxs[3];
+		static float hullcheckmins[3];
+
+		//Defaults:
+		//hullcheckmaxs = view_as<float>( { 24.0, 24.0, 72.0 } );
+		//hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );
+
+		hullcheckmaxs = view_as<float>( { 35.0, 35.0, 500.0 } ); //check if above is free
+		hullcheckmins = view_as<float>( { -35.0, -35.0, 17.0 } );
+
+		if(!IsSpaceOccupiedWorldOnly(flMyPos, hullcheckmins, hullcheckmaxs, npc.index))
+		{
+			if(npc.m_iChanged_WalkCycle != 1)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 1;
+				npc.SetActivity("ACT_MP_RUN_MELEE");
+				npc.StartPathing();
+				npc.m_flSpeed = 200.0;
+			}
+		}
+		else
+		{
+			if(npc.m_iChanged_WalkCycle != 2)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 2;
+				npc.SetActivity("ACT_MP_RUN_PRIMARY");
+				npc.StartPathing();
+				npc.m_flSpeed = 200.0;
+			}
+		}
+		
+	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -254,21 +301,47 @@ public void IberiaVictorian_NPCDeath(int entity)
 
 int IberiaVictorianSelfDefense(IberiaVictorian npc, float gameTime, int target, float distance)
 {
+	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
 		{
-			int Enemy_I_See;
-								
-			Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
+			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+			npc.FaceTowards(VecAim, 20000.0);
+			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
+				float RocketDamage = 125.0;
+				float RocketSpeed = 500.0;
+				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
+				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+				if(npc.m_iChanged_WalkCycle == 1)
+				{
+					float SpeedReturn[3];
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
+
+					int RocketGet = npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
+					//Reducing gravity, reduces speed, lol.
+					SetEntityGravity(RocketGet, 1.0); 	
+					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
+					ArcToLocationViaSpeedProjectile(RocketGet, VecStart, vecTarget, SpeedReturn, RocketSpeed, 1.75, 1.0);
+					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+
+					//This will return vecTarget as the speed we need.
+				}
+				else
+				{
+					npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
+					//They do a direct attack, slow down the rocket and make it deal less damage.
+					RocketDamage *= 0.5;
+					RocketSpeed *= 0.5;
+				//	npc.PlayRangedSound();
+					npc.FireRocket(vecTarget, RocketDamage, RocketSpeed);
+				}
 						
-				npc.m_flDoingAnimation = gameTime + 0.35;
 				npc.m_flNextMeleeAttack = gameTime + 2.35;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
@@ -276,5 +349,23 @@ int IberiaVictorianSelfDefense(IberiaVictorian npc, float gameTime, int target, 
 				//it should be a mortar.
 			}
 		}
+	}
+	//No can shooty.
+	//Enemy is close enough.
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 9.0))
+	{
+		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
+		{
+			float VecAim[3]; WorldSpaceCenter(npc.m_iTarget, VecAim );
+			npc.FaceTowards(VecAim, 20000.0);
+			//stand
+			return 1;
+		}
+		//cant see enemy somewhy.
+		return 0;
+	}
+	else //enemy is too far away.
+	{
+		return 0;
 	}
 }

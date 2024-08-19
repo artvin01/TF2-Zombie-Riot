@@ -525,6 +525,16 @@ void NPC_ConfigSetup()
 	Iberia_Ginus_OnMapStart_NPC();
 	Iberia_SpeedusInitus_OnMapStart_NPC();
 	Iberia_Anania_OnMapStart_NPC();
+	Iberia_Victorian_OnMapStart_NPC();
+	Iberia_inqusitor_iidutas_OnMapStart_NPC();
+
+//wave 16 -30
+	IberiaVivintu_OnMapStart_NPC();
+	IberiaCenula_OnMapStart_NPC();
+	IberiaKumbai_OnMapStart_NPC();
+	IberiaSpeedusInstantus_OnMapStart_NPC();
+	IberiaCombastia_OnMapStart_NPC();
+	IberiaMorato_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1502,68 +1512,17 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ginus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_anania.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_victorian.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_inqusitor_iidutas.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_vivintu.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_cenula.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_kumbai.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_speedus_instantus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_combastia.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_iberia_morato.sp"
+
+
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
-/*
-void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
-{
-	return;
-	//currently not needed!
-
-	if(!Citizen_IsIt(victim))
-		return;
-
-	//Reset all
-	char buffer[36];
-	char buffer2[36];
-	GetEntityClassname(victim, buffer, sizeof(buffer));
-	GetEntityClassname(attacker, buffer2, sizeof(buffer2));
-	if(HurtID < SaveCurrentHurtAt)
-	{
-		if(SaveCurrentHurtAt != -1)
-		{
-			if(SaveCurrentHpAtFirst == SaveCurrentHpAt)
-			{
-				LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "PREVIOUS NPC WAS INVULNERABLE? HurtIttirationAt %i",HurtIttirationAt);
-				if(AntiChatSpamDebug < GetGameTime())
-				{
-					AntiChatSpamDebug = GetGameTime() + 15.0;
-					PrintToChatAll("[Debug] PLEASE contact an admin!!!! This might spam! It looks like a friendly NPC cant die! Please give them this number too! %i",HurtIttirationAt);
-				}
-			//	HurtIttirationAt = 9999999;
-			//	RemoveEntity(victim);
-			}
-		}
-		SaveCurrentHpAt = 0;
-		SaveCurrentHurtAt = 0;
-		SaveCurrentHpAtFirst = 0;
-		HurtIttirationAt++;
-		LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "------------------------------");
-	}
-	SaveCurrentHurtAt = HurtID;
-
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(HurtID == 1)
-	{
-		SaveCurrentHpAtFirst = health;
-	}
-	SaveCurrentHpAt = health;
-	if(Citizen_ThatIsDowned(victim))
-		SaveCurrentHpAt = 0;
-		
-	LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "HurtIttirationAt %i Victim Id: %i Victimclassname %s VictimTeam %i\n	Attacker Id: %i Attackerclassname %s attackerTeam %i Damage %.1f HurtID %i victimAliveState %i\n AttackerAliveState %i AtBeginningHealth %i Current health %i ",
-	HurtIttirationAt,
-	victim,
-	buffer,
-	GetTeam(victim),
-	attacker,
-	buffer2,
-	GetTeam(attacker),
-	damage,
-	HurtID,
-	GetEntProp(victim, Prop_Data, "m_lifeState"),
-	GetEntProp(attacker, Prop_Data, "m_lifeState"),
-	SaveCurrentHpAtFirst,
-	SaveCurrentHpAt);
-}
-*/
