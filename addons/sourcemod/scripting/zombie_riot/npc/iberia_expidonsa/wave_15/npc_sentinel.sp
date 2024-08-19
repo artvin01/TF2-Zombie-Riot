@@ -190,6 +190,25 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.PlayHurtSound();	
 	}
 	
+	if(npc.Anger)
+	{
+		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
+		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+
+		float flPos[3];
+		float flAng[3];
+		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
+		int ParticleEffect;
+		
+		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
+		flAng[0] = 90.0;
+		ParticleEffect = ParticleEffectAt(flPos, "powerup_supernova_explode_blue", 1.0); //Taken from sensal haha
+		TeleportEntity(ParticleEffect, NULL_VECTOR, flAng, NULL_VECTOR);
+
+		npc.m_iWearable8 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl"); //Flag up!
+		SetVariantString("1.5");
+		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -251,32 +270,13 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	if(ZR_GetWaveCount()+1 >= 55)
 		hittimes = 10;
 	*/
-	PrintHintText(client,"HIT!");
 	if(npc.m_iAttacksTillReload < 10 && !npc.Anger)
 	{
 		npc.m_iAttacksTillReload += 1;
-		PrintHintText(client,"COUNT UP!!");
 	}
 	else if(npc.m_iAttacksTillReload >= 10 && !npc.Anger)
 	{
-		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.Anger = true;
-		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-		PrintHintText(client,"HELP!!");
-
-		float flPos[3];
-		float flAng[3];
-		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
-		int ParticleEffect;
-		
-		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
-		flAng[0] = 90.0;
-		ParticleEffect = ParticleEffectAt(flPos, "powerup_supernova_explode_blue", 1.0); //Taken from sensal haha
-		TeleportEntity(ParticleEffect, NULL_VECTOR, flAng, NULL_VECTOR);
-
-		npc.m_iWearable8 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl"); //Flag up!
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
 	}
 	
 	return Plugin_Changed;
