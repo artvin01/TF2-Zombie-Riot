@@ -251,16 +251,18 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	if(ZR_GetWaveCount()+1 >= 55)
 		hittimes = 10;
 	*/
-
+	PrintHintText(client,"HIT!");
 	if(npc.m_iAttacksTillReload < 10 && !npc.Anger)
 	{
 		npc.m_iAttacksTillReload += 1;
+		PrintHintText(client,"COUNT UP!!");
 	}
 	else if(npc.m_iAttacksTillReload >= 10 && !npc.Anger)
 	{
 		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.Anger = true;
 		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
+		PrintHintText(client,"HELP!!");
 
 		float flPos[3];
 		float flAng[3];
