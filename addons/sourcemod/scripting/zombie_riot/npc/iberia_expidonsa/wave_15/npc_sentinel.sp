@@ -133,6 +133,7 @@ methodmap IberianSentinal < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		npc.Anger = false;
+		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
 
 		func_NPCDeath[npc.index] = view_as<Function>(IberianSentinel_NPCDeath);
@@ -190,7 +191,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.PlayHurtSound();	
 	}
 	
-	if(npc.Anger)
+	if(npc.Anger && !npc.m_fbRangedSpecialOn)
 	{
 		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
@@ -208,6 +209,11 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.m_iWearable8 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl"); //Flag up!
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+
+		npc.m_fbRangedSpecialOn = true;
+
+		SentinelAOEBuff(npc,GetGameTime(npc.index));
+		npc.PlayBuffReaction();
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
