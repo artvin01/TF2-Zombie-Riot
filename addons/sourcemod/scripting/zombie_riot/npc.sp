@@ -525,6 +525,7 @@ void NPC_ConfigSetup()
 	Iberia_Ginus_OnMapStart_NPC();
 	Iberia_SpeedusInitus_OnMapStart_NPC();
 	Iberia_Anania_OnMapStart_NPC();
+	IberianSentinel_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1502,6 +1503,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ginus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_anania.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_sentinel.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 /*

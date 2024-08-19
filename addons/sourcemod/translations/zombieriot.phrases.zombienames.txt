@@ -2899,4 +2899,8 @@
 	{
 		"en"		"Nemal"
 	}
+	"Sentinel"
+	{
+		"en"		"Sentinel"
+	}
 }
