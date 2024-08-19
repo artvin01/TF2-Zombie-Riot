@@ -1862,14 +1862,6 @@ bool NemalSnipingShots(Nemal npc)
 					float AngleAim[3];
 					GetVectorAnglesTwoPoints(pos_npc, SnipeTargets[Loop], AngleAim);
 					Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-					/*
-					int Traced_Target = TR_GetEntityIndex(hTrace);
-					if(Traced_Target > 0)
-					{
-						WorldSpaceCenter(Traced_Target, SnipeTargets[Loop]);
-					}
-					else 
-					*/
 					if(TR_DidHit(hTrace))
 					{
 						TR_GetEndPosition(SnipeTargets[Loop], hTrace);
@@ -1891,6 +1883,19 @@ bool NemalSnipingShots(Nemal npc)
 					{
 						TE_SetupBeamPoints(pos_npc, SnipeTargets[Loop], Shared_BEAM_Laser, 0, 0, 0, 0.25, 5.0, 5.0, 5, 0.0, {255,255,255,255}, 3);
 						TE_SendToAll(0.0);
+						float AngleAim[3];
+						GetVectorAnglesTwoPoints(pos_npc, SnipeTargets[Loop], AngleAim);
+						Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+						int Traced_Target = TR_GetEntityIndex(hTrace);
+						if(Traced_Target > 0)
+						{
+							WorldSpaceCenter(Traced_Target, SnipeTargets[Loop]);
+						}
+						else if(TR_DidHit(hTrace))
+						{
+							TR_GetEndPosition(SnipeTargets[Loop], hTrace);
+						}
+						delete hTrace;
 						int target = Can_I_See_Enemy(npc.index, Loop,_ ,SnipeTargets[Loop]);
 						if(IsValidEnemy(npc.index, target))
 						{

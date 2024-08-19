@@ -2,6 +2,16 @@ float f_MoraleBoostCurrent[MAXENTITIES];
 float f_TimeSinceMoraleBoost[MAXENTITIES];
 bool b_EntityHasthink[MAXENTITIES];
 
+//precached with alaxios
+static char g_RandomGroupScream[][] = {
+	"zombiesurvival/medieval_raid/battlecry1.mp3",
+	"zombiesurvival/medieval_raid/battlecry2.mp3",
+	"zombiesurvival/medieval_raid/battlecry3.mp3",
+	"zombiesurvival/medieval_raid/battlecry4.mp3",
+};
+
+float GlobalCooldownWarCry;
+
 void IberiaEntityCreated(int entity)
 {
 	b_EntityHasthink[entity] = false;
@@ -26,7 +36,14 @@ int MoraleBoostLevelAt(int entity)
 		
 	//Big Morale boosting
 	if(f_MoraleBoostCurrent[entity] >= 650.0)
+	{
+		if(GlobalCooldownWarCry < GetGameTime())
+		{
+			GlobalCooldownWarCry = GetGameTime() + 15.0;
+			EmitCustomToAll(g_RandomGroupScream[GetRandomInt(0, sizeof(g_RandomGroupScream) - 1)], entity, SNDCHAN_STATIC, 120, _, 4.0);
+		}
 		ReturnSet = 4;
+	}
 	//MAX Morale boosting, any higher will do this.
 
 	return ReturnSet;

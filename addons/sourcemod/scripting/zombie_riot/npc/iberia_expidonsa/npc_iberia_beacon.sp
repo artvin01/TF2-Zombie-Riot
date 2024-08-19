@@ -35,6 +35,7 @@ void Iberia_Beacon_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	CurrentBeaconsExistant = NPC_Add(data);
 	PrecacheModel(IBERIA_BEACON);
+	GlobalCooldownWarCry = 0.0;
 }
 
 
@@ -103,6 +104,9 @@ methodmap IberiaBeacon < CClotBody
 		npc.m_flSpeed = 0.0;
 		NPC_StopPathing(npc.index);
 
+		//counts as a static npc, means it wont count towards NPC limit.
+		AddNpcToAliveList(npc.index, 1);
+
 		return npc;
 	}
 }
@@ -121,18 +125,18 @@ public void IberiaBeacon_ClotThink(int iNPC)
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
 	}
-	
-	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
-	{
-		return;
-	}
-	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
+	//Need to check this often sadly.
 	if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 	{
 		//there is no more valid ally, suicide.
 		SmiteNpcToDeath(npc.index);
 		return;
 	}
+	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
+	{
+		return;
+	}
+	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
 
 	
 	ExpidonsaGroupHeal(npc.index, 400.0, 10, 0.0, 1.0, false,IberiaBeaconGiveArmor);

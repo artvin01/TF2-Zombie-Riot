@@ -333,6 +333,16 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTargetWalkTo))
 		{
 			WorldSpaceCenter(npc.m_iTargetWalkTo, ThrowPos[npc.index]);
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;
 		}
 	}
 	else
@@ -344,13 +354,6 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-			/*
-			int Traced_Target = TR_GetEntityIndex(hTrace);
-			if(Traced_Target > 0)
-			{
-				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
-			}
-			*/
 			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
@@ -369,10 +372,24 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
-			npc.m_flAttackHappens = 0.0;
-			
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTargetWalkTo,_ ,ThrowPos[npc.index]);
+			npc.m_flAttackHappens = 0.0;		
 			ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			int Traced_Target = TR_GetEntityIndex(hTrace);
+			if(Traced_Target > 0)
+			{
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+			}
+			else if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;	
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTargetWalkTo,_ ,ThrowPos[npc.index]);
 			npc.PlayRangedSound();
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
