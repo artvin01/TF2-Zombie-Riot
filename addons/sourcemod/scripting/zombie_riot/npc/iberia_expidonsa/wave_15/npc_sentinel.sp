@@ -118,7 +118,7 @@ methodmap IberianSentinal < CClotBody
 		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
-		
+
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -252,11 +252,11 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 		hittimes = 10;
 	*/
 
-	if(npc.m_iAttacksTillReload <= 10 && !npc.Anger)
+	if(npc.m_iAttacksTillReload < 10 && !npc.Anger)
 	{
 		npc.m_iAttacksTillReload += 1;
 	}
-	else if(npc.m_iAttacksTillReload <= 10 && !npc.Anger)
+	else if(npc.m_iAttacksTillReload >= 10 && !npc.Anger)
 	{
 		IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 9900.0);
 		npc.Anger = true;
