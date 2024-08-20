@@ -526,6 +526,7 @@ void NPC_ConfigSetup()
 	Iberia_SpeedusInitus_OnMapStart_NPC();
 	Iberia_Anania_OnMapStart_NPC();
 	IberianSentinel_OnMapStart_NPC();
+	IberianIronborus_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();

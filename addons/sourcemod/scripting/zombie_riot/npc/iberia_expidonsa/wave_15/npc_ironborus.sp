@@ -2,72 +2,71 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/sniper_paincrticialdeath01.mp3",
-	"vo/sniper_paincrticialdeath02.mp3",
-	"vo/sniper_paincrticialdeath03.mp3",
+	"vo/scout_paincrticialdeath01.mp3",
+	"vo/scout_paincrticialdeath02.mp3",
+	"vo/scout_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/sniper_painsharp01.mp3",
-	"vo/sniper_painsharp02.mp3",
-	"vo/sniper_painsharp03.mp3",
-	"vo/sniper_painsharp04.mp3",
+	"vo/scout_painsharp01.mp3",
+	"vo/scout_painsharp02.mp3",
+	"vo/scout_painsharp03.mp3",
+	"vo/scout_painsharp04.mp3",
+	"vo/scout_painsharp05.mp3",
+	"vo/scout_painsharp06.mp3",
+	"vo/scout_painsharp07.mp3",
+	"vo/scout_painsharp08.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/sniper_mvm_mannhattan_gate_atk01.mp3",
-	"vo/sniper_mvm_mannhattan_gate_atk02.mp3",
-};
-
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/knife_swing.wav",
+	"vo/scout_battlecry01.mp3",
+	"vo/scout_battlecry02.mp3",
+	"vo/scout_battlecry03.mp3",
+	"vo/scout_battlecry04.mp3",
+	"vo/scout_battlecry05.mp3",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/blade_hit1.wav",
-	"weapons/blade_hit2.wav",
-	"weapons/blade_hit3.wav",
-	"weapons/blade_hit4.wav",
+	"weapons/batsaber_hit_flesh1.wav",
+	"weapons/batsaber_hit_flesh2.wav",
 };
-
-static const char g_BuffUpReactions[][] = {
-	"vo/sniper_helpmedefend01.mp3",
-	"vo/sniper_helpmedefend02.mp3",
-	"vo/sniper_helpmedefend03.mp3",
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/batsaber_swing1.wav",
+	"weapons/batsaber_swing2.wav",
+	"weapons/batsaber_swing3.wav",
 };
-
-static const char g_WarCry[][] = {
-	"items/powerup_pickup_supernova_activate.wav",
+static const char g_suitup[][] = {
+	"mvm/mvm_tank_start.wav",
 };
 
 
-void IberianSentinel_OnMapStart_NPC()
+
+void IberianIronborus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_BuffUpReactions)); i++) { PrecacheSound(g_BuffUpReactions[i]); }
-	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
-	PrecacheModel("models/player/sniper.mdl");
+	for (int i = 0; i < (sizeof(g_suitup)); i++) { PrecacheSound(g_suitup[i]); }
+	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sentinel");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sentinel");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
-	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_SUPPORT;
+	strcopy(data.Name, sizeof(data.Name), "Ironborus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironborus");
+	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
+	data.IconCustom = true;
+	data.Flags =0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return IberianSentinal(client, vecPos, vecAng, ally);
+	return IberianIronBorus(client, vecPos, vecAng, ally);
 }
 
-methodmap IberianSentinal < CClotBody
+methodmap IberianIronBorus < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -104,20 +103,16 @@ methodmap IberianSentinal < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	public void PlayBuffReaction() 
+	public void PlaySuitUpSound() 
 	{
-		EmitSoundToAll(g_BuffUpReactions[GetRandomInt(0, sizeof(g_BuffUpReactions) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	public void PlayMeleeWarCry() 
-	{
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
-	}
 	
 	
-	public IberianSentinal(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberianIronBorus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "8000", ally, false, true));
+		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.15", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 
@@ -146,7 +141,7 @@ methodmap IberianSentinal < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 250.0;
 		
 		
 		int skin = 1;
@@ -177,7 +172,7 @@ methodmap IberianSentinal < CClotBody
 
 public void IberianSentinel_ClotThink(int iNPC)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(iNPC);
+	IberianIronBorus npc = view_as<IberianIronBorus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -192,8 +187,8 @@ public void IberianSentinel_ClotThink(int iNPC)
 
 	if(TimeMultiplier > 3.0)
 	{
-		npc.Anger = true;
 		TimeMultiplier = 3.0;
+		IronborusQuantum(npc.index)
 	}
 	if(TimeMultiplier < 1.0)
 	{
@@ -247,7 +242,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 
 public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(victim);
+	IberianIronBorus npc = view_as<IberianIronBorus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -263,7 +258,7 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 
 public void IberianSentinel_NPCDeath(int entity)
 {
-	IberianSentinal npc = view_as<IberianSentinal>(entity);
+	IberianIronBorus npc = view_as<IberianIronBorus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -288,7 +283,7 @@ public void IberianSentinel_NPCDeath(int entity)
 
 }
 
-void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target, float distance)
+void IberianSentinelSelfDefense(IberianIronBorus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -313,7 +308,7 @@ void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target,
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 					if(npc.Anger)
-						damageDealt *= 3.0;
+						damageDealt *= 2.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -348,17 +343,24 @@ void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target,
 	}
 }
 
-void IronborusQuantum(IberianSentinal npc, float gameTime)
+void IronborusQuantum(IberianIronBorus npc)
 {
-	GrantEntityArmor(iNPC, true, 5.00, 0.00, 0);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
-	npc.m_iWearable3 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
-	SetVariantString("1.0");
-	AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-	npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
-	SetVariantString("1.0");
-	AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	if(!npc.m_fbRangedSpecialOn)
+	{
+		npc.PlaySuitUpSound();
+		npc.Anger = true;
+		npc.m_fbRangedSpecialOn = true;
+		GrantEntityArmor(iNPC, true, 5.00, 0.00, 0);
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		npc.m_flSpeed = 300.0;
+	}
 }
