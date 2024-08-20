@@ -47,7 +47,7 @@ void IberianDestructius_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_SapperHitSounds)); i++) { PrecacheSound(g_SapperHitSounds[i]); }
-	PrecacheModel("models/player/spymdl");
+	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Destructius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_destructius");
@@ -109,7 +109,7 @@ methodmap IberianDestructius < CClotBody
 	
 	public IberianDestructius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "8000", ally, false, true));
+		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 

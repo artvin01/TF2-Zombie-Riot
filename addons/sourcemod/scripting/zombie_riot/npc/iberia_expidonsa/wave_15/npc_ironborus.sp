@@ -112,7 +112,7 @@ methodmap IberianIronBorus < CClotBody
 	
 	public IberianIronBorus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.15", "8000", ally, false, true));
+		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 
@@ -186,9 +186,9 @@ public void IberianIronborus_ClotThink(int iNPC)
 
 	TimeMultiplier *= 0.40;
 
-	if(TimeMultiplier > 3.0)
+	if(TimeMultiplier > 4.0)
 	{
-		TimeMultiplier = 3.0;
+		TimeMultiplier = 4.0;
 		IronborusQuantum(npc.index);
 	}
 	if(TimeMultiplier < 1.0)
