@@ -382,7 +382,7 @@ static void ClotThink(int iNPC)
 						
 						float vecDir[3];
 
-						float damageDealt = 3.0;
+						float damageDealt = 5.0;
 						damageDealt *= npc.m_flWaveScale;		//Damage scales with waves, scary !!
 
 						for(int i; i < 10; i++)
@@ -432,7 +432,7 @@ static void ClotThink(int iNPC)
 						
 						float vecDir[3];
 
-						float damageDealt = 2.5;
+						float damageDealt = 3.5;
 						damageDealt *= npc.m_flWaveScale;
 
 						for(int i; i < 2; i++)
@@ -482,7 +482,7 @@ static void ClotThink(int iNPC)
 						
 						float vecDir[3];
 
-						float damageDealt = 3.0;
+						float damageDealt = 4.0;
 						damageDealt *= npc.m_flWaveScale;
 
 						for(int i; i < 2; i++)
@@ -510,7 +510,7 @@ static void ClotThink(int iNPC)
 				if(npc.m_flNextMeleeAttack < gameTime)
 				{
 					npc.PlayRPGSound();
-					float damageDealt = 100.0;
+					float damageDealt = 60.0;
 					damageDealt *= npc.m_flWaveScale;
 					
 					int enemy[4];

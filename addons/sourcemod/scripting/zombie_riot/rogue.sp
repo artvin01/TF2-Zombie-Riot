@@ -2072,7 +2072,7 @@ void Rogue_PlayerDowned(int client)
 	if(Rogue_GetChaosLevel() > 3)
 		i_AmountDowned[client]++;
 	
-	if(RogueTheme == BlueParadox)
+	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
 		BattleChaos += 10.0 / float(CurrentPlayers);
@@ -2358,8 +2358,12 @@ static Action Rogue_ChaosChaos(Handle timer)
 	}
 
 	ResetReplications();
+	
+	float mod = 1.0 + (CurrentChaos * 0.003);
+	if(mod > 3.0)
+		mod = 3.0;
 
-	cvarTimeScale.SetFloat(GetRandomFloat(0.7, 1.1));
+	cvarTimeScale.SetFloat(GetRandomFloat(1.0 / mod, mod));
 	return Plugin_Continue;
 }
 
