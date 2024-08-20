@@ -2315,7 +2315,7 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic_Hud(int victim,int &weapo
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
 		{
 			return Gladiia_OnTakeDamageAlly_Hud(victim);
 		}
