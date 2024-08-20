@@ -300,6 +300,10 @@ int IberiaCambinoSelfDefense(IberiaCambino npc, float gameTime, int target, floa
 						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
 						npc.m_iAttacksTillReload --;
+						if(NpcStats_IberiaIsEnemyMarked(target))
+						{
+							npc.m_flNextMeleeAttack = gameTime + 0.5;
+						}
 
 						if(IsValidEnemy(npc.index, target))
 						{

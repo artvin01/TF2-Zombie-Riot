@@ -311,8 +311,6 @@ methodmap Magia_Anchor < CClotBody
 
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_bDissapearOnDeath = true;
-
-		Ruina_Set_Sniper_Anchor_Point(npc.index, true);
 		
 		npc.m_iBleedType = BLEEDTYPE_METAL;
 		npc.m_iStepNoiseType = 0;	

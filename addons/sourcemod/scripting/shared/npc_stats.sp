@@ -4655,6 +4655,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
 		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
 	}
+	
 	CClotBody npc = view_as<CClotBody>(bot_entidx);
 	npc.Jump();
 	npc.SetVelocity(vecJumpVel);
@@ -4670,6 +4671,107 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 	return true;
 }
 
+
+void ArcToLocationViaSpeedProjectile(int rocketfloat , float VecStart[3], float VecEnd[3], float SpeedReturn[3], float ProjectileSpeed, float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+{
+	float vecJumpVel[3];
+	
+	float gravity;
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+
+	gravity *= GravityChange;
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = VecEnd[2] - VecStart[2];
+	float height = flActualHeight;
+	if(height < 0.0)
+	{
+		//tickrate gravity downwards is bad.
+		gravity *= TickrateModify;
+		if(height >= -20.0)
+		{
+			height = -20.0;
+
+		}
+	}
+	else
+	{
+		//invert for gravity the otherway
+		gravity *= (((TickrateModify - 1.0) * -1.0) + 1.0);
+		if(height <= 20.0)
+		{
+			height = 20.0;
+		}
+	}
+
+	float speed = SquareRoot( 2.0 * gravity * fabs(height) );
+	float time = speed / gravity;
+
+	time += SquareRoot( (2.0 * fabs(height)) / gravity );
+
+	time *= TimeUntillReachDest;
+	speed *= TimeUntillReachDest;
+	
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( VecEnd, VecStart, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+
+	SpeedReturn = vecJumpVel;
+
+	/*
+	float vecNPC[3], vecJumpVel[3];
+	GetEntPropVector(bot_entidx, Prop_Data, "m_vecAbsOrigin", vecNPC);
+	
+	float gravity = GetEntPropFloat(bot_entidx, Prop_Data, "m_flGravity");
+	if(gravity <= 0.0)
+		gravity = FindConVar("sv_gravity").FloatValue;
+	
+	// How fast does the headcrab need to travel to reach the position given gravity?
+	float flActualHeight = vecPos[2] - vecNPC[2];
+	float height = flActualHeight;
+	if ( height < 72 )
+	{
+		height = 72.0;
+	}
+	float additionalHeight = 0.0;
+	
+	if ( height < 35 )
+	{
+		additionalHeight = 25.0;
+	}
+	
+	height += additionalHeight;
+	
+	float speed = SquareRoot( 2 * gravity * height );
+	float time = speed / gravity;
+
+	time += SquareRoot( (2 * additionalHeight) / gravity );
+	
+	// Scale the sideways velocity to get there at the right time
+	SubtractVectors( vecPos, vecNPC, vecJumpVel );
+	vecJumpVel[0] /= time;
+	vecJumpVel[1] /= time;
+	vecJumpVel[2] /= time;
+
+	// Speed to offset gravity at the desired height.
+	vecJumpVel[2] = speed;
+	
+	// Don't jump too far/fast.
+	float flJumpSpeed = GetVectorLength(vecJumpVel);
+	float flMaxSpeed = 1250.0;
+	if ( flJumpSpeed > flMaxSpeed )
+	{
+		vecJumpVel[0] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[1] *= flMaxSpeed / flJumpSpeed;
+		vecJumpVel[2] *= flMaxSpeed / flJumpSpeed;
+	}
+	*/
+}
 stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 {
 	if(WasValidAlready || IsValidEntity(index))

@@ -293,6 +293,11 @@ static void ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
+		float chargerPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		chargerPos[2] += 82.0;
+		TE_ParticleInt(g_particleMissText, chargerPos);
+		TE_SendToAll();
 	}
 	
 	if(npc.m_flNextThinkTime > GameTime)
@@ -301,6 +306,9 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
 
 	npc.AdjustWalkCycle();
 
@@ -336,70 +344,10 @@ static void ClotThink(int iNPC)
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
 		float Range_Min = (npc.Anger ? (100.0*100.0) : (125.0*125.0));
-		float Range_Max = (npc.Anger ? (1500.0*1500.0) : (1000.0*100.0));
-			
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > Range_Min && flDistanceToTarget < Range_Max)
-		{
-			float vPredictedPos[3],
-			SubjectAbsVelocity[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+		float Range_Max = (npc.Anger ? (2000.0*2000.0) : (1500.0*1500.0));
 
-			ScaleVector(SubjectAbsVelocity, -1.0);
-			AddVectors(vecTarget, SubjectAbsVelocity, vPredictedPos);
-			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-		
-			if (fabs(flVel[0]) >= 190.0)
-			{
-				npc.FaceTowards(vPredictedPos);
-				npc.FaceTowards(vPredictedPos);
-				
-				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos, true);
-					
-				float start_offset[3], end_offset[3];
-				start_offset = Npc_Vec;
-					
-				if(Tele_Check > (100.0*100.0))
-				{
-					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-					if(Succeed)
-					{
-
-						npc.m_flNextMeleeAttack = GameTime + 1.0;
-						npc.PlayTeleportSound();
-
-						Ruina_Laser_Logic Laser;
-
-						Laser.client = npc.index;
-						Laser.Start_Point = Npc_Vec;
-						Laser.End_Point = vPredictedPos;
-						Laser.Radius = 15.0;
-						Laser.Damage = 100.0;
-						Laser.Bonus_Damage = 200.0;
-						Laser.damagetype = DMG_PLASMA;
-						Laser.Deal_Damage(On_LaserHit);
-							
-						float effect_duration = 0.25;
-	
-						end_offset = vPredictedPos;
-
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 20.0 : 30.0);
-										
-						for(int help=1 ; help<=8 ; help++)
-						{	
-							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-											
-							start_offset[2] += 12.5;
-							end_offset[2] += 12.5;
-						}
-					}
-					else
-					{
-						npc.m_flNextTeleport = GameTime + 1.0;
-					}
-				}
-			}
-		}	
+		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 20.0 : 30.0), 100.0, 15.0, On_LaserHit))
+			npc.PlayTeleportSound();
 
 		if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 		{

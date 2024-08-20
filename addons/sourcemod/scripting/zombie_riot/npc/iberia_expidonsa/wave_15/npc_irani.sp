@@ -271,6 +271,7 @@ void IberiaIraniSelfDefense(IberiaIrani npc, float gameTime, int target, float d
 					//gimic of new wavetype, but silenceable.
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
+					NpcStats_IberiaMarkEnemy(target, 5.0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
