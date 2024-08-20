@@ -395,10 +395,10 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						f_BattilonsNpcBuff[entitycount] = GetGameTime() + 30.0;
 						f_BuffBannerNpcBuff[npc.index] = GetGameTime() + 30.0;//Buff other entity.
 						f_BattilonsNpcBuff[npc.index] = GetGameTime() + 30.0;
-						npc.PlayMeleeWarCry();
 					}
 				}
 			}
 		}
 	}
+	npc.PlayMeleeWarCry();
 }

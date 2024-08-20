@@ -10743,6 +10743,17 @@ float custom_maxarmour = 0.0)
 	}
 	else
 	{
+		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));
+		if(npc.m_flArmorCount > flMaxHealth)
+		{
+			return;
+		}
+		if(flMaxHealth > npc.m_flArmorCount + custom_maxarmour)
+		{
+			npc.m_flArmorCount 		= 	flMaxHealth;
+			npc.m_flArmorCountMax = flMaxHealth;
+			return;
+		}
 		npc.m_flArmorCount 		+= 	custom_maxarmour;
 		npc.m_flArmorCountMax += custom_maxarmour;
 		if(npc.m_flArmorCountMax >= npc.m_flArmorCount)

@@ -167,7 +167,7 @@ void IberiaBeaconGiveArmor(int entity, int victim)
 		return;
 
 	IberiaBeacon npc1 = view_as<IberiaBeacon>(entity);
-	GrantEntityArmor(victim, false, 1.0, 0.33, 0,
+	GrantEntityArmor(victim, false, 2.0, 0.33, 0,
 	npc1.m_flArmorToGive * 0.5);
 }
 
