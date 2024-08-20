@@ -2,71 +2,68 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/scout_paincrticialdeath01.mp3",
-	"vo/scout_paincrticialdeath02.mp3",
-	"vo/scout_paincrticialdeath03.mp3",
+	"vo/spy_paincrticialdeath01.mp3",
+	"vo/spy_paincrticialdeath02.mp3",
+	"vo/spy_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/scout_painsharp01.mp3",
-	"vo/scout_painsharp02.mp3",
-	"vo/scout_painsharp03.mp3",
-	"vo/scout_painsharp04.mp3",
-	"vo/scout_painsharp05.mp3",
-	"vo/scout_painsharp06.mp3",
-	"vo/scout_painsharp07.mp3",
-	"vo/scout_painsharp08.mp3",
+	"vo/spy_painsharp01.mp3",
+	"vo/spy_painsharp02.mp3",
+	"vo/spy_painsharp03.mp3",
+	"vo/spy_painsharp04.mp3",
 };
 
 
 static const char g_IdleAlertedSounds[][] = {
-	"vo/scout_battlecry01.mp3",
-	"vo/scout_battlecry02.mp3",
-	"vo/scout_battlecry03.mp3",
-	"vo/scout_battlecry04.mp3",
-	"vo/scout_battlecry05.mp3",
+	"vo/spy_battlecry01.mp3",
+	"vo/spy_battlecry02.mp3",
+	"vo/spy_battlecry03.mp3",
+	"vo/spy_battlecry04.mp3",
+};
+
+static const char g_MeleeAttackSounds[][] = {
+	"weapons/knife_swing.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/batsaber_hit_flesh1.wav",
-	"weapons/batsaber_hit_flesh2.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo01.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo02.wav",
+	"mvm/melee_impacts/cbar_hitbod_robo03.wav",
 };
-static const char g_MeleeAttackSounds[][] = {
-	"weapons/batsaber_swing1.wav",
-	"weapons/batsaber_swing2.wav",
-	"weapons/batsaber_swing3.wav",
-};
-static const char g_suitup[][] = {
-	"mvm/mvm_tank_start.wav",
+
+static const char g_SapperHitSounds[][] = {
+	"weapons/rescue_ranger_charge_01.wav",
+	"weapons/rescue_ranger_charge_02.wav",
 };
 
 
 
-void IberianIronborus_OnMapStart_NPC()
+void IberianDestructius_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_suitup)); i++) { PrecacheSound(g_suitup[i]); }
-	PrecacheModel("models/player/scout.mdl");
+	for (int i = 0; i < (sizeof(g_SapperHitSounds)); i++) { PrecacheSound(g_SapperHitSounds[i]); }
+	PrecacheModel("models/player/spy.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ironborus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironborus");
-	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
-	data.IconCustom = true;
-	data.Flags =0;
+	strcopy(data.Name, sizeof(data.Name), "Destructius");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_destructius");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
+	data.IconCustom = false;
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	int id = NPC_Add(data);
+	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return IberianIronBorus(client, vecPos, vecAng, ally);
+	return IberianDestructius(client, vecPos, vecAng, ally);
 }
 
-methodmap IberianIronBorus < CClotBody
+methodmap IberianDestructius < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -103,24 +100,22 @@ methodmap IberianIronBorus < CClotBody
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 
 	}
-	public void PlaySuitUpSound() 
+	public void PlaySapperHitSound() 
 	{
-		EmitSoundToAll(g_suitup[GetRandomInt(0, sizeof(g_suitup) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_SapperHitSounds[GetRandomInt(0, sizeof(g_SapperHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		
 	}
 	
 	
-	public IberianIronBorus(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberianDestructius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
+		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_BUILDING");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -129,51 +124,52 @@ methodmap IberianIronBorus < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		npc.Anger = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_iAttacksTillReload = 0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberianIronborus_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianIronborus_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberianIronborus_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(IberianDestructius_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianDestructius_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(IberianDestructius_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 250.0;
+		npc.m_flSpeed = 350.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
-		SetVariantString("1.2");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/all_class/dex_belltower_spy.mdl");
+		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/soldier/grfs_soldier.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/medic_gasmask/medic_gasmask.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/hw2013_jupiter_jumpers/hw2013_jupiter_jumpers.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/sf14_the_battle_bird/sf14_the_battle_bird.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_transparent_trousers/fall17_transparent_trousers.mdl");
-		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/scout/sum23_prohibition_opposition/sum23_prohibition_opposition.mdl");
-		npc.m_flNextRangedAttack = GetGameTime();
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/hw2013_galactic_gauntlets/hw2013_galactic_gauntlets.mdl");
+		SetVariantString("0.9");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
+		
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/spy/majors_mark/majors_mark.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", skin);
+
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/spy/sum22_night_vision_gawkers/sum22_night_vision_gawkers.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_p2rec/c_p2rec.mdl");
+		SetVariantString("1.25");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		
 
 		return npc;
 	}
 }
 
-public void IberianIronborus_ClotThink(int iNPC)
+public void IberianDestructius_ClotThink(int iNPC)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(iNPC);
+	IberianDestructius npc = view_as<IberianDestructius>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -181,28 +177,13 @@ public void IberianIronborus_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-	float TimeMultiplier = 1.0;
-	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
-
-	TimeMultiplier *= 0.40;
-
-	if(TimeMultiplier > 4.0)
-	{
-		TimeMultiplier = 4.0;
-		IronborusQuantum(npc.index);
-	}
-	if(TimeMultiplier < 1.0)
-	{
-		TimeMultiplier = 1.0;
-	}
 
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();	
+		npc.PlayHurtSound();
 	}
-	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
 	{
 		return;
@@ -211,7 +192,11 @@ public void IberianIronborus_ClotThink(int iNPC)
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
-		npc.m_iTarget = GetClosestTarget(npc.index);
+		npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+		if(npc.m_iTarget < 1)
+		{
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
@@ -231,7 +216,7 @@ public void IberianIronborus_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		IberianIronborusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		IberianDestructiusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -241,9 +226,9 @@ public void IberianIronborus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action IberianDestructius_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(victim);
+	IberianDestructius npc = view_as<IberianDestructius>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -257,9 +242,9 @@ public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void IberianIronborus_NPCDeath(int entity)
+public void IberianDestructius_NPCDeath(int entity)
 {
-	IberianIronBorus npc = view_as<IberianIronBorus>(entity);
+	IberianDestructius npc = view_as<IberianDestructius>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -284,7 +269,7 @@ public void IberianIronborus_NPCDeath(int entity)
 
 }
 
-void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int target, float distance)
+void IberianDestructiusSelfDefense(IberianDestructius npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -305,21 +290,21 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 100.0;
+					float damageDealt = 50.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
-					if(npc.Anger)
-						damageDealt *= 2.5;
+						damageDealt *= 8.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
 					// Hit sound
-					npc.PlayMeleeHitSound();
+					if(ShouldNpcDealBonusDamage(target))
+						npc.PlaySapperHitSound();
+					else
+						npc.PlayMeleeHitSound();
 				} 
 			}
 			delete swingTrace;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index);
 		}
 	}
 
@@ -335,36 +320,12 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_GRENADE_BUILDING");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
 			}
 		}
-	}
-}
-
-void IronborusQuantum(IberianIronBorus npc)
-{
-	if(!npc.m_fbRangedSpecialOn)
-	{
-		npc.PlaySuitUpSound();
-		npc.Anger = true;
-		npc.m_fbRangedSpecialOn = true;
-		GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
-		if(IsValidEntity(npc.m_iWearable6))
-			RemoveEntity(npc.m_iWearable6);
-		if(IsValidEntity(npc.m_iWearable1))
-			RemoveEntity(npc.m_iWearable1);
-		npc.m_iWearable6 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		npc.m_flSpeed = 300.0;
 	}
 }

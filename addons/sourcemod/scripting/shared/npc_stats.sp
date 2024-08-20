@@ -4672,7 +4672,7 @@ public bool PluginBot_Jump(int bot_entidx, float vecPos[3])
 }
 
 
-void ArcToLocationViaSpeedProjectile(int rocketfloat , float VecStart[3], float VecEnd[3], float SpeedReturn[3], float ProjectileSpeed, float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
 {
 	float vecJumpVel[3];
 	

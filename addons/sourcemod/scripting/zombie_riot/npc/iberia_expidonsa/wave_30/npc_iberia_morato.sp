@@ -326,7 +326,7 @@ int IberiaMoratoSelfDefense(IberiaMorato npc, float gameTime, float distance)
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(RocketGet, VecStart, vecTarget, SpeedReturn, RocketSpeed, 1.75, 1.0);
+					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 

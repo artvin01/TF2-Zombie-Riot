@@ -314,7 +314,6 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				float RocketDamage = 125.0;
-				float RocketSpeed = 500.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
@@ -325,7 +324,7 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-				ArcToLocationViaSpeedProjectile(RocketGet, VecStart, vecTarget, SpeedReturn, RocketSpeed, 1.75, 1.0);
+				ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
 				TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
 				//This will return vecTarget as the speed we need.

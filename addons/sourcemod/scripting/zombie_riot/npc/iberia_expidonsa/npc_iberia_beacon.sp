@@ -20,7 +20,6 @@ static const char g_GiveArmor[][] = {
 	"physics/metal/metal_box_strain1.wav",
 };
 
-int CurrentBeaconsExistant;
 void Iberia_Beacon_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -33,7 +32,7 @@ void Iberia_Beacon_OnMapStart_NPC()
 	data.Flags = -1;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	CurrentBeaconsExistant = NPC_Add(data);
+	NPC_Add(data);
 	PrecacheModel(IBERIA_BEACON);
 	GlobalCooldownWarCry = 0.0;
 }

@@ -22,7 +22,9 @@ static const char g_IdleAlertedSounds[][] = {
 };
 
 static const char g_RangedAttackSounds[][] = {
-	"weapons/ambassador_shoot.wav",
+	"weapons/diamond_back_01.wav",
+	"weapons/diamond_back_02.wav",
+	"weapons/diamond_back_03.wav"
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -35,7 +37,7 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/blade_hit3.wav",
 	"weapons/blade_hit4.wav",
 };
-void Iberia_inqusitor_iidutas_OnMapStart_NPC()
+void Iberia_inqusitor_irene_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -44,8 +46,8 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
 	for (int i = 0; i < (sizeof(g_RangedAttackSounds)); i++) { PrecacheSound(g_RangedAttackSounds[i]); }
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Inquisitor IIdutas");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_iidutas");
+	strcopy(data.Name, sizeof(data.Name), "Inquisitor Irene");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_irene");
 	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -57,16 +59,16 @@ void Iberia_inqusitor_iidutas_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return Iberiainqusitor_iidutas(client, vecPos, vecAng, ally);
+	return Iberiainqusitor_irene(client, vecPos, vecAng, ally);
 }
-methodmap Iberiainqusitor_iidutas < CClotBody
+methodmap Iberiainqusitor_irene < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -78,13 +80,13 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, 110);
 	}
 	
 	public void PlayMeleeSound()
@@ -98,13 +100,22 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-
+	}
+	property int i_GunMode
+	{
+		public get()							{ return i_TimesSummoned[this.index]; }
+		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
+	}
+	property float m_flWeaponSwitchCooldown
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
 	
-	public Iberiainqusitor_iidutas(int client, float vecPos[3], float vecAng[3], int ally)
+	public Iberiainqusitor_irene(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
+		Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -118,31 +129,30 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_iidutas_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(Iberiainqusitor_irene_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_irene_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_irene_ClotThink);
+		npc.i_GunMode = 0;
 		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 320.0;
+		npc.m_flSpeed = 345.0;
 		npc.m_iAttacksTillReload = 0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/spy/spy_charmers_chapeau.mdl");
-		SetEntityRenderColor(npc.m_iWearable1, 125, 125, 125, 255);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/angsty_hood/angsty_hood_spy.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/dex_glasses/dex_glasses_spy.mdl");
-		SetEntityRenderColor(npc.m_iWearable2, 0, 0, 0, 255);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/spy/dec23_strasbourg_scholar/dec23_strasbourg_scholar.mdl");
-		SetEntityRenderColor(npc.m_iWearable4, 125, 125, 125, 255);
-		SetEntityRenderColor(npc.index, 125, 125, 125, 255);
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/spy/hwn2022_turncoat/hwn2022_turncoat.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+		SetVariantString("2.0");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/short2014_all_mercs_mask_s1/short2014_all_mercs_mask_s1_spy.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -153,9 +163,9 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 	}
 }
 
-public void Iberiainqusitor_iidutas_ClotThink(int iNPC)
+public void Iberiainqusitor_irene_ClotThink(int iNPC)
 {
-	Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(iNPC);
+	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -188,7 +198,7 @@ public void Iberiainqusitor_iidutas_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = Iberiainqusitor_iidutasSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = Iberiainqusitor_ireneSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -205,7 +215,7 @@ public void Iberiainqusitor_iidutas_ClotThink(int iNPC)
 				{
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
-				npc.m_flSpeed = 320.0;
+				npc.m_flSpeed = 345.0;
 				npc.m_bAllowBackWalking = false;
 			}
 			case 1:
@@ -214,7 +224,7 @@ public void Iberiainqusitor_iidutas_ClotThink(int iNPC)
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
-				npc.m_flSpeed = 250.0;
+				npc.m_flSpeed = 300.0;
 			}
 		}
 
@@ -228,9 +238,9 @@ public void Iberiainqusitor_iidutas_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Iberiainqusitor_iidutas_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(victim);
+	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -244,9 +254,9 @@ public Action Iberiainqusitor_iidutas_OnTakeDamage(int victim, int &attacker, in
 	return Plugin_Changed;
 }
 
-public void Iberiainqusitor_iidutas_NPCDeath(int entity)
+public void Iberiainqusitor_irene_NPCDeath(int entity)
 {
-	Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(entity);
+	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -268,16 +278,16 @@ public void Iberiainqusitor_iidutas_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTime, int target, float distance)
+int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, int target, float distance)
 {
-	if(npc.m_iAttacksTillReload >= 1)
+	if(npc.i_GunMode == 0 && npc.m_iAttacksTillReload >= 1)
 	{
 		if(npc.m_iChanged_WalkCycle != 1)
 		{
 			if(IsValidEntity(npc.m_iWearable3))
 				RemoveEntity(npc.m_iWearable3);
 
-			npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_ambassador/c_ambassador.mdl");
+			npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl");
 			npc.m_bisWalking = true;
 			npc.m_iChanged_WalkCycle = 1;
 			npc.SetActivity("ACT_MP_RUN_SECONDARY");
@@ -317,7 +327,7 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 35.5;
+							float damageDealt = 65.5;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 6.5;
 
@@ -349,7 +359,7 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
 		npc.m_bisWalking = true;
 		npc.m_iChanged_WalkCycle = 2;
 		npc.SetActivity("ACT_MP_RUN_MELEE");
@@ -395,13 +405,17 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 				float vecHit[3];
 				TR_GetEndPosition(vecHit, swingTrace);
 				npc.m_flNextMeleeAttack = gameTime + 0.5;
+				if(npc.i_GunMode == 1)
+					npc.m_flNextMeleeAttack = gameTime;
+				else if(npc.i_GunMode == 2)
+					npc.i_GunMode = 0;
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 65.0;
+					float damageDealt = 300.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 10.0;
 
 					int DamageType = DMG_CLUB;
 					if(!NpcStats_IsEnemySilenced(npc.index))
@@ -411,11 +425,10 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 					//gimic of new wavetype, but silenceable.
 					
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
-					npc.m_iAttacksTillReload += 6;
-					npc.m_flNextMeleeAttack = gameTime + 0.2;
+					npc.m_iAttacksTillReload += 3;
 
 					bool DoEffect = false;
-					if(npc.m_flDoingAnimation < gameTime)
+					if(npc.i_GunMode == 0 && npc.m_flDoingAnimation < gameTime)
 					{
 						if(target <= MaxClients)
 						{
@@ -447,7 +460,7 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-							NpcStats_IberiaMarkEnemy(target, 7.0);
+							NpcStats_IberiaMarkEnemy(target, 10.0);
 						}
 						
 					}
@@ -471,9 +484,18 @@ int Iberiainqusitor_iidutasSelfDefense(Iberiainqusitor_iidutas npc, float gameTi
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);
-						
-				npc.m_flAttackHappens = gameTime + 0.2;
+				if(npc.i_GunMode == 0)
+				{
+					npc.i_GunMode = 1;
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,2.5);
+					npc.m_flAttackHappens = gameTime;
+				}
+				else
+				{
+					npc.i_GunMode = 2;
+					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,0.75);	
+					npc.m_flAttackHappens = gameTime + 0.2;
+				}
 				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
