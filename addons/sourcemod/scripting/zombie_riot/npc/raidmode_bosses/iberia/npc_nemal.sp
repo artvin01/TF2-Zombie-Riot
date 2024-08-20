@@ -1732,7 +1732,7 @@ bool NemalTalkPostWin(Nemal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped ether!");
+		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped eachother, teamwork!.. probably.");
 		ReviveAll(true);
 	}
 	return true; //He is trying to help.
@@ -2055,7 +2055,7 @@ bool NemalSummonSilvester(Nemal npc)
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Whos this? Its who! He who is comming!");
+				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
 		}
 		npc.m_iChanged_WalkCycle = 0;

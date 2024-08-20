@@ -2911,4 +2911,124 @@
 	{
 		"en"		"Destructius"
 	}
+	"Iberia Beacon"
+	{
+		"en"		"Iberia Beacon"
+	}
+	"Beacon Constructor"
+	{
+		"en"		"Beacon Constructor"
+	}
+	"Iberia Lighthouse"
+	{
+		"en"		"Iberia Lighthouse"
+	}
+	"Huirgrajo"
+	{
+		"en"		"Huirgrajo"
+	}
+	"Cambino"
+	{
+		"en"		"Cambino"
+	}
+	"Irani"
+	{
+		"en"		"Irani"
+	}
+	"Kinat"
+	{
+		"en"		"Kinat"
+	}
+	"Ginus"
+	{
+		"en"		"Ginus"
+	}
+	"Speedus Initus"
+	{
+		"en"		"Speedus Initus"
+	}
+	"Anania"
+	{
+		"en"		"Anania"
+	}
+	"Victorian"
+	{
+		"en"		"Victorian"
+	}
+	"Inquisitor IIdutas"
+	{
+		"en"		"Inquisitor IIdutas"
+	}
+	"Vivintu"
+	{
+		"en"		"Vivintu"
+	}
+	"Cenula"
+	{
+		"en"		"Cenula"
+	}
+	"Kumbai"
+	{
+		"en"		"Kumbai"
+	}
+	"Speedus Instantus"
+	{
+		"en"		"Speedus Instantus"
+	}
+	"Sea-Xploder"
+	{
+		"en"		"Sea-Xploder"
+	}
+	"Anti Sea Robot"
+	{
+		"en"		"Anti Sea Robot"
+	}
+	"Ranka S"
+	{
+		"en"		"Ranka S"
+	}
+	"Murdarato"
+	{
+		"en"		"Murdarato"
+	}
+	"Ibira Kinat"
+	{
+		"en"		"Ibira Kinat"
+	}
+	"Iberia-Expidonsan Seaborn Eradicator"
+	{
+		"en"		"Iberia-Expidonsan Seaborn Eradicator"
+	}
+	"Combastia"
+	{
+		"en"		"Combastia"
+	}
+	"Morato"
+	{
+		"en"		"Morato"
+	}
+	"Speedus Itus"
+	{
+		"en"		"Speedus Itus"
+	}
+	"Speedus Elitus"
+	{
+		"en"		"Speedus Elitus"
+	}
+	"Sea Dryer"
+	{
+		"en"		"Sea Dryer"
+	}
+	"Runaka"
+	{
+		"en"		"Runaka"
+	}
+	"Inquisitor Irene"
+	{
+		"en"		"Inquisitor Irene"
+	}
+	"Death Marker"
+	{
+		"en"	"Death Marker"
+	}
 }

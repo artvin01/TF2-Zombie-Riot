@@ -320,7 +320,7 @@ int IberiaSeaDryerSelfDefense(IberiaSeaDryer npc, float gameTime, float distance
 				float SpeedReturn[3];
 
 				int RocketGet = npc.FireGrenade(vecTarget);
-				IberiaSeaDryer_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
+				IberiaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.

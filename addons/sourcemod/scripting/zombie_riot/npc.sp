@@ -554,7 +554,7 @@ void NPC_ConfigSetup()
 
 //wave 45-60
 
-	IberiaSpeedusItus_OnMapStart_NPC();
+	IberiaSpeedusElitus_OnMapStart_NPC();
 	IberiaSeaDryer_OnMapStart_NPC();
 	IberiaRunaka_OnMapStart_NPC();
 	IberiaDeathMarker_OnMapStart_NPC();
@@ -1561,6 +1561,10 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_ironborus.sp"
 
 
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_death_marker.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_runaka.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_speedus_elitus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_sea_dryer.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_inqusitor_irene.sp"
 
 

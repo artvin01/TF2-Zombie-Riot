@@ -10731,7 +10731,7 @@ float custom_maxarmour = 0.0)
 	}
 	else
 	{
-		if(npc.m_flArmorProtect != 0.0)
+		if(npc.m_flArmorProtect == 0.0)
 			npc.m_flArmorProtect = ArmorProtect;
 	}
 	

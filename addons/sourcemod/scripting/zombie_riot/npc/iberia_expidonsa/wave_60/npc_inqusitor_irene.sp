@@ -52,8 +52,8 @@ void Iberia_inqusitor_irene_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Inquisitor Irene");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_inqusitor_irene");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "judgement");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
@@ -131,7 +131,7 @@ methodmap Iberiainqusitor_irene < CClotBody
 	{
 		Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000000", ally));
 		
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		npc.SetActivity("ACT_MP_RUN_MELEE");

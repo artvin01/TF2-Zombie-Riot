@@ -410,7 +410,6 @@ public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
 	}
 	
 	float C4_TimeUntillBoom = pack.ReadFloat();
-	pack.Position--;
 	float DurationOfBlink = C4_TimeUntillBoom - GetGameTime();
 
 	DurationOfBlink *= 0.3;
@@ -427,7 +426,9 @@ public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
 	pos[2] += 5.0;
 	C4_TrottleTime = GetGameTime() + DurationOfBlink;
 	pack.Position--;
+	pack.Position--;
 	pack.WriteFloat(C4_TrottleTime);
+	pack.Position++;
 	float C4_Damage = pack.ReadFloat();
 	float C4_Radius = pack.ReadFloat();
 	spawnRing_Vectors(pos, C4_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, 1.0);

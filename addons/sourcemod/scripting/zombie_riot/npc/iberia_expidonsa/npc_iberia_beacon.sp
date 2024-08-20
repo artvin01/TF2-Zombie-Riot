@@ -190,9 +190,10 @@ public void IberiaBeacon_NPCDeath(int entity)
 
 static char[] GetBuildingHealth()
 {
-	int health = 20;
+	int health = 50;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+//	Dont scale with players, dumb idea.
+//	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

@@ -94,7 +94,7 @@ methodmap SaintCarmen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		b_NpcIsTeamkiller[npc.index] = true;
+		b_NpcIsTeamkiller[npc.index] = ally != TFTeam_Red;
 		
 		func_NPCDeath[npc.index] = SaintCarmen_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -153,7 +153,7 @@ public void SaintCarmen_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index, _, 500.0, true);
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 
-		if(npc.m_iTarget < 1)
+		if(npc.m_iTarget < 1 && GetTeam(npc.index) != TFTeam_Red)
 		{
 			// No nearby targets, kill the ocean
 			npc.m_iTarget = GetClosestAlly(npc.index, 10000.0);

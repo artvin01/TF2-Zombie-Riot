@@ -55,7 +55,7 @@ void IberianIronborus_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Ironborus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironborus");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
-	data.IconCustom = true;
+	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
