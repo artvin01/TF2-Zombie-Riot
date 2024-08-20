@@ -3786,4 +3786,12 @@
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"
 	}
+	"Vows of the Sea Desc"
+	{
+		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+	}
+	"Vows of the Sea Pap"
+	{
+		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
+	}
 }

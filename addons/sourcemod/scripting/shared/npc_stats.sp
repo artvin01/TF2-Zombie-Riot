@@ -10725,7 +10725,16 @@ float custom_maxarmour = 0.0)
 	}
 	npc.m_iArmorGiven = true;
 	npc.m_iArmorType = ArmorType;
-	npc.m_flArmorProtect = ArmorProtect;
+	if(custom_maxarmour == 0.0)
+	{
+		npc.m_flArmorProtect = ArmorProtect;
+	}
+	else
+	{
+		if(npc.m_flArmorProtect != 0.0)
+			npc.m_flArmorProtect = ArmorProtect;
+	}
+	
 	if(custom_maxarmour == 0.0)
 	{
 		float flMaxHealth = ScaleMaxHealth * float(ReturnEntityMaxHealth(npc.index));

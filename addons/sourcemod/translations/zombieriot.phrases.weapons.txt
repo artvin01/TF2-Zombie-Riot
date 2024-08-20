@@ -2727,4 +2727,8 @@
 		"en"	"Taurus Judge"
 		"fr"	"Juge Taurus"
 	}
+	"Vows of the Sea"
+	{
+		"en"	"Vows of the Sea"
+	}
 }

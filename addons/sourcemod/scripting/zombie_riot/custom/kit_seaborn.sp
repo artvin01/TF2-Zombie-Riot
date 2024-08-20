@@ -61,7 +61,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 
 void SeaMelee_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
@@ -86,7 +86,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_ULPIANUS:
 					{
 						b_IsCannibal[client] = true;
 

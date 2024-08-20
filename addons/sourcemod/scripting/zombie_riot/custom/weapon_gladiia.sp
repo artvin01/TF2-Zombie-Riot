@@ -21,7 +21,7 @@ void Gladiia_Enable(int client, int weapon)
 {
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
 		{
 			if (HealingTimer[client] != null)
 			{
@@ -109,7 +109,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA:
+					case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS:
 					{
 						float amount = 0.0;
 						int elite = EliteLevel[GetHighestGladiiaClient()];

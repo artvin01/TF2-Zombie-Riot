@@ -27,9 +27,8 @@ static const char g_MeleeAttackSounds[][] = {
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/axe_hit_flesh2.wav",
-	"weapons/axe_hit_flesh3.wav",
+	"weapons/airboat/airboat_gun_energy1.wav",
+	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
 static const char g_MoraleBoostBuff[][] = {
@@ -106,6 +105,11 @@ methodmap IberiaRanka_S < CClotBody
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
+	property float m_flArmorToGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public IberiaRanka_S(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -129,32 +133,26 @@ methodmap IberiaRanka_S < CClotBody
 		func_NPCDeath[npc.index] = view_as<Function>(IberiaRanka_S_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaRanka_S_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(IberiaRanka_S_ClotThink);
-		f_NpcImmuneToBleed[npc.index] = FAR_FUTURE;
+		Ranka_S_ArmorStick_Effect(npc.index);
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 265.0;
-		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 20.0);
 		
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_torchers_trench_coat/dec23_torchers_trench_coat.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro_xmas.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum24_fire_marshal/sum24_fire_marshal.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_buffpack/c_buffpack.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl");
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_knight_helmet/sbox2014_knight_helmet_soldier.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_soldier.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec23_trench_warefarer/dec23_trench_warefarer.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
@@ -189,7 +187,6 @@ public void IberiaRanka_S_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index));
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -240,6 +237,7 @@ public void IberiaRanka_S_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
+	ExpidonsaRemoveEffects(entity);
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -279,7 +277,7 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 115.0;
+					float damageDealt = 125.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 4.0;
 
@@ -287,6 +285,23 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
+					if(target <= MaxClients)
+					{
+						if (IsInvuln(target))
+						{
+							npc.m_flArmorToGive = 1000.0;
+						}
+						else
+						{
+							npc.m_flArmorToGive = 1500.0;
+						}
+					}
+					else
+					{
+						npc.m_flArmorToGive = 1000.0;
+					}
+					ExpidonsaGroupHeal(npc.index, 250.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
+					IberiaArmorEffect(npc.index, 250.0);
 				} 
 			}
 			delete swingTrace;
@@ -313,4 +328,38 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 			}
 		}
 	}
+}
+
+
+
+void Ranka_S_ArmorStick_Effect(int iNpc)
+{
+	if(AtEdictLimit(EDICT_NPC))
+		return;
+	
+	float flPos[3];
+	float flAng[3];
+	GetAttachment(iNpc, "effect_hand_r", flPos, flAng);
+
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
+
+	
+	int particle_2 = InfoTargetParentAt({0.0,0.0,30.0}, "", 0.0); //First offset we go by
+	int particle_3 = ParticleEffectAt({0.0,0.0,-80.0}, "rockettrail_fire", 0.0); //First offset we go by
+	
+	SetParent(particle_1, particle_2, "",_, true);
+	SetParent(particle_1, particle_3, "",_, true);
+
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(iNpc, particle_1, "effect_hand_r",_);
+
+
+	int Laser_1 = ConnectWithBeamClient(particle_2, particle_3, 215, 150, 0, 6.0, 3.0, 1.0, LASERBEAM);
+	
+
+	i_ExpidonsaEnergyEffect[iNpc][0] = EntIndexToEntRef(particle_1);
+	i_ExpidonsaEnergyEffect[iNpc][1] = EntIndexToEntRef(particle_2);
+	i_ExpidonsaEnergyEffect[iNpc][2] = EntIndexToEntRef(particle_3);
+	i_ExpidonsaEnergyEffect[iNpc][3] = EntIndexToEntRef(Laser_1);
 }
