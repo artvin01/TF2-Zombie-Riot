@@ -255,27 +255,22 @@ public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	if(npc.m_flArmorCount > 0.0)
+	if(npc.m_flArmorCount <= 0.0)
 	{
-		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
-
-		if(percentageArmorLeft <= 0.0)
-		{
-			npc.Anger = false;
-			if(IsValidEntity(npc.m_iWearable6))
-				RemoveEntity(npc.m_iWearable6);
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
-			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
-			SetVariantString("1.2");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			npc.m_flSpeed = 250.0;
-		}
-		if(percentageArmorLeft > 0.0)
-		{
-			npc.Anger = true;
-			npc.m_fbRangedSpecialOn = false;
-		}
+		npc.Anger = false;
+		if(IsValidEntity(npc.m_iWearable6))
+			RemoveEntity(npc.m_iWearable6);
+		if(IsValidEntity(npc.m_iWearable1))
+			RemoveEntity(npc.m_iWearable1);
+		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
+		SetVariantString("1.2");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		npc.m_flSpeed = 250.0;
+	}
+	else if(npc.m_flArmorCount > 0.0)
+	{
+		npc.Anger = true;
+		npc.m_fbRangedSpecialOn = false;
 	}
 	
 	return Plugin_Changed;
