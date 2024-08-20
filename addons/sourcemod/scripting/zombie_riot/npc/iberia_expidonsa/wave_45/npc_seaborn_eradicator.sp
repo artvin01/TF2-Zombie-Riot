@@ -2,7 +2,9 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"npc/scanner/scanner_explode_crash2.wav",
+	"vo/halloween_boss/knight_pain01.mp3",
+	"vo/halloween_boss/knight_pain02.mp3",
+	"vo/halloween_boss/knight_pain03.mp3"
 };
 
 
@@ -19,13 +21,20 @@ static const char g_MeleeAttackSounds[][] = {
 static const char g_MeleeHitSounds[][] = {
 	"weapons/halloween_boss/knight_axe_hit.wav",
 };
-
+static const char g_AngerSound[][] =
+{
+	"vo/halloween_boss/knight_laugh01.mp3",
+	"vo/halloween_boss/knight_laugh02.mp3",
+	"vo/halloween_boss/knight_laugh03.mp3",
+	"vo/halloween_boss/knight_laugh04.mp3"
+};
 void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
+	for (int i = 0; i < (sizeof(g_AngerSound)); i++) { PrecacheSound(g_AngerSound[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia-Expidonsan Seaborn Eradicator");
@@ -54,7 +63,10 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(2.0, 4.0);
 		
 	}
-	
+	public void PlayAngerSound() 
+	{
+		EmitSoundToAll(g_AngerSound[GetRandomInt(0, sizeof(g_AngerSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+	}
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -73,6 +85,11 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
+	property float m_flEnrageHappening
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][1]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
+	}
 	
 	
 	public Iberia_SeabornAnnihilator(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -84,7 +101,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_ITEM1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
-		SetVariantInt(3);
+		SetVariantInt(6);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
@@ -168,6 +185,45 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
 	
+	if(npc.m_flEnrageHappening)
+	{
+		npc.Anger = true;
+		float pos[3];
+		GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
+		pos[0] += GetRandomFloat(-30.0,30.0);
+		pos[1] += GetRandomFloat(-30.0,30.0);
+		pos[2] += GetRandomFloat(15.0,64.0);
+		DataPack pack_boom = new DataPack();
+		pack_boom.WriteFloat(pos[0]);
+		pack_boom.WriteFloat(pos[1]);
+		pack_boom.WriteFloat(pos[2]);
+		pack_boom.WriteCell(0);
+		RequestFrame(MakeExplosionFrameLater, pack_boom);
+		if(IsValidEntity(npc.m_iWearable1))
+		{
+			RemoveEntity(npc.m_iWearable1);
+		}
+		IberiaLighthouse npc2 = view_as<IberiaLighthouse>(iNPC);
+		npc2.PlayDeathSound();
+		if(npc.m_flEnrageHappening < GetGameTime())
+		{
+			npc.m_flEnrageHappening = 0.0;
+			if(npc.m_iChanged_WalkCycle != 5)
+			{
+				npc.m_bisWalking = true;
+				npc.m_iChanged_WalkCycle = 5;
+				npc.SetActivity("ACT_MP_RUN_ITEM1");
+				npc.StartPathing();
+				npc.m_flSpeed = 335.0;
+				npc.m_flMeleeArmor = 1.0;
+				npc.m_flRangedArmor = 1.0;
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 100);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index) / 100);
+				npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");
+			}
+		}
+		return;
+	}
 	if(!npc.Anger)
 	{
 		if(npc.m_flRecheckIfAlliesDead < GetGameTime())
@@ -175,8 +231,29 @@ public void Iberia_SeabornAnnihilator_ClotThink(int iNPC)
 			if(!IsValidAlly(npc.index, GetClosestAlly(npc.index)))
 			{
 				
+				if(npc.m_iChanged_WalkCycle == 1)
+				{
+					npc.m_flEnrageHappening = GetGameTime() + 2.0;
+					if(npc.m_iChanged_WalkCycle != 6)
+					{
+						npc.m_bisWalking = false;
+						npc.m_iChanged_WalkCycle = 6;
+						npc.AddActivityViaSequence("dieviolent");
+						npc.StartPathing();
+						NPC_StopPathing(npc.index);
+						npc.m_flSpeed = 0.0;
+						npc.PlayAngerSound();
+					}
+					return;
+				}
+				npc.m_flRecheckIfAlliesDead = GetGameTime() + 2.0;
+				npc.m_iChanged_WalkCycle = 1;
 				return;
 			}	
+			else
+			{
+				npc.m_iChanged_WalkCycle = 2;
+			}
 			
 		}	
 	}
@@ -280,8 +357,10 @@ void Iberia_SeabornAnnihilatorSelfDefense(Iberia_SeabornAnnihilator npc, float g
 				{
 					//if you try to tank, you die.
 					float damageDealt = 10000.0;
+					if(npc.Anger)
+						damageDealt = 500.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 100.5;
+						damageDealt *= 10.5;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 

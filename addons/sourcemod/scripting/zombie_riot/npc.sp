@@ -541,6 +541,8 @@ void NPC_ConfigSetup()
 
 // 31-45
 
+	IberiaMurdarato_OnMapStart_NPC();
+	IberiaEliteKinat_OnMapStart_NPC();
 	Iberia_SeabornAnnihilator_OnMapStart_NPC();
 
 	//Alt Barracks
@@ -1534,6 +1536,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_anti_sea_robot.sp"
 
 
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_murdarato.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_elite_kinat.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_seaborn_eradicator.sp"
 
 

@@ -137,7 +137,7 @@ public Action Waves_ProgressTimer(Handle timer)
 				if(GetTeam(entity) == TFTeam_Blue)
 				{
 					CClotBody npcstats = view_as<CClotBody>(entity);
-					if(npcstats.m_bThisNpcIsABoss)
+					if(npcstats.m_bThisNpcIsABoss && !npcstats.m_bStaticNPC)
 					{
 						WaveTimer = CreateTimer(0.5, Waves_ProgressTimer);
 						return Plugin_Continue;
