@@ -1504,6 +1504,8 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_anania.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_sentinel.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_destructius.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ironborus.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
 /*
