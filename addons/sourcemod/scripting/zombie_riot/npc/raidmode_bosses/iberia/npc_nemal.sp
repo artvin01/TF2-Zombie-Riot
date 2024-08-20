@@ -2067,6 +2067,11 @@ bool NemalSwordSlicer(Nemal npc)
 {
 	if(npc.m_flNemalSlicerHappening)
 	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);

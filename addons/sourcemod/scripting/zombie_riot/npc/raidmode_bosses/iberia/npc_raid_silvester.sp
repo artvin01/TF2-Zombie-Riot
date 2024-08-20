@@ -1723,6 +1723,32 @@ bool SilvesterSwordSlicer(Silvester npc)
 {
 	if(npc.m_flSilvesterSlicerHappening)
 	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			bool ForceRedo = false;
+			npc.m_flGetClosestTargetTime = 0.0;
+			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			{
+				CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
+				if(allynpc.m_iTarget == npc.m_iTarget)
+				{
+					ForceRedo = true;
+				}
+				if(ForceRedo || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+				{
+					npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget);
+					npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+				}
+			}
+			else
+			{
+				if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+				{
+					npc.m_iTarget = GetClosestTarget(npc.index);
+					npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+				}
+			}
+		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
