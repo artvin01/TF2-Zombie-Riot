@@ -40,7 +40,7 @@ static const char g_suitup[][] = {
 	"mvm/mvm_tank_start.wav",
 };
 
-
+static bool buffed;
 
 void IberianIronborus_OnMapStart_NPC()
 {
@@ -120,7 +120,7 @@ methodmap IberianIronBorus < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -132,6 +132,7 @@ methodmap IberianIronBorus < CClotBody
 		npc.Anger = false;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
+		buffed = false;
 
 		func_NPCDeath[npc.index] = view_as<Function>(IberianIronborus_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianIronborus_OnTakeDamage);
@@ -253,6 +254,24 @@ public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &infl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	if(npc.m_flArmorCount > 0.0)
+	{
+		float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
+
+		if(percentageArmorLeft <= 0.0)
+		{
+			npc.Anger = false;
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_bat.mdl");
+			SetVariantString("1.2");
+			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+			npc.m_flSpeed = 250.0;
+		}
+	}
 	
 	return Plugin_Changed;
 }
@@ -265,8 +284,6 @@ public void IberianIronborus_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 	
-	if(IsValidEntity(npc.m_iWearable8))
-		RemoveEntity(npc.m_iWearable8);
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
@@ -309,7 +326,7 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
 					if(npc.Anger)
-						damageDealt *= 2.5;
+						damageDealt *= 3.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
@@ -335,7 +352,7 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
@@ -350,7 +367,11 @@ void IronborusQuantum(IberianIronBorus npc)
 	if(!npc.m_fbRangedSpecialOn)
 	{
 		npc.PlaySuitUpSound();
-		npc.Anger = true;
+		if(!buffed)
+		{
+			npc.Anger = true;
+			buffed = true;
+		}
 		npc.m_fbRangedSpecialOn = true;
 		GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
 		if(IsValidEntity(npc.m_iWearable6))
