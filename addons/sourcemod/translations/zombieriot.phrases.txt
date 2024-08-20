@@ -3672,4 +3672,13 @@
 		"en"	"Kleiner"
 		"fr"	"Kleiner"
 	}
+	"Iberia & Nemal"
+	{
+		"en" "Iberia & Nemal"
+	}
+	"Iberia Nemal Desc"
+	{
+		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+	}
+	
 }
