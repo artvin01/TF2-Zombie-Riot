@@ -126,6 +126,27 @@ static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
+	if(Classic_Mode())
+	{
+		// Delay progress if a boss is alive
+		for(int i; i < i_MaxcountNpcTotal; i++)
+		{
+			int entity = EntRefToEntIndex(i_ObjectsNpcsTotal[i]);
+			if(IsValidEntity(entity))
+			{
+				if(GetTeam(entity) == TFTeam_Blue)
+				{
+					CClotBody npcstats = view_as<CClotBody>(entity);
+					if(npcstats.m_bThisNpcIsABoss)
+					{
+						WaveTimer = CreateTimer(0.5, Waves_ProgressTimer);
+						return Plugin_Continue;
+					}
+				}
+			}
+		}
+	}
+
 	ProgressTimerEndAt = 0.0;
 	WaveTimer = null;
 	Waves_Progress();
