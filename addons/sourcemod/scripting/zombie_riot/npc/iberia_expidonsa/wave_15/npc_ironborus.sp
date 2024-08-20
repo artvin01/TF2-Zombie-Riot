@@ -350,6 +350,7 @@ void IronborusQuantum(IberianIronBorus npc)
 	if(!npc.m_fbRangedSpecialOn)
 	{
 		npc.PlaySuitUpSound();
+		npc.PlaySuitUpSound();
 		npc.Anger = true;
 		npc.m_fbRangedSpecialOn = true;
 		GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
