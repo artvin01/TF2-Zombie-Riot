@@ -157,6 +157,7 @@ methodmap IberianIronBorus < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/sf14_the_battle_bird/sf14_the_battle_bird.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_transparent_trousers/fall17_transparent_trousers.mdl");
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/scout/sum23_prohibition_opposition/sum23_prohibition_opposition.mdl");
+		npc.m_flNextRangedAttack = GetGameTime();
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -318,6 +319,7 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 				} 
 			}
 			delete swingTrace;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index);
 		}
 	}
 
@@ -350,17 +352,19 @@ void IronborusQuantum(IberianIronBorus npc)
 		npc.PlaySuitUpSound();
 		npc.Anger = true;
 		npc.m_fbRangedSpecialOn = true;
-		GrantEntityArmor(npc.index, true, 5.00, 0.00, 0);
+		GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
 		if(IsValidEntity(npc.m_iWearable6))
 			RemoveEntity(npc.m_iWearable6);
 		if(IsValidEntity(npc.m_iWearable1))
 			RemoveEntity(npc.m_iWearable1);
-		npc.m_iWearable3 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
+		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		npc.m_flSpeed = 300.0;
 	}
 }

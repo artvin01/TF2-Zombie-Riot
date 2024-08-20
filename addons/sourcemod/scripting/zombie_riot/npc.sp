@@ -547,6 +547,7 @@ void NPC_ConfigSetup()
 	Iberia_SeabornAnnihilator_OnMapStart_NPC();
 	IberianSentinel_OnMapStart_NPC();
 	IberianIronborus_OnMapStart_NPC();
+	IberianDestructius_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
