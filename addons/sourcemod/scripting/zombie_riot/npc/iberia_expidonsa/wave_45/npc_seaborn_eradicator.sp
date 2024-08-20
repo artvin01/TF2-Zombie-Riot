@@ -39,10 +39,10 @@ void Iberia_SeabornAnnihilator_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Iberia-Expidonsan Seaborn Eradicator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_seaborn_eradicator");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "seaborn_annihilator");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -94,7 +94,7 @@ methodmap Iberia_SeabornAnnihilator < CClotBody
 	
 	public Iberia_SeabornAnnihilator(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "500000", ally, false, true));
+		Iberia_SeabornAnnihilator npc = view_as<Iberia_SeabornAnnihilator>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "50000000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 5;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

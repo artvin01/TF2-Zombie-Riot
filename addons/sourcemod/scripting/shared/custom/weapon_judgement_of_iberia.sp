@@ -37,6 +37,11 @@ static bool b_SeabornDetected;
 
 static int LaserSprite;
 
+int IreneReturnLaserSprite()
+{
+	return LaserSprite;	
+}
+
 void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.

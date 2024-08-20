@@ -51,7 +51,7 @@ void IberiaCenula_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Cenula");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_cenula");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -109,7 +109,7 @@ methodmap IberiaCenula < CClotBody
 	
 	public IberiaCenula(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaCenula npc = view_as<IberiaCenula>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "600", ally));
+		IberiaCenula npc = view_as<IberiaCenula>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

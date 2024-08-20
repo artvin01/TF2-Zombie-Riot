@@ -34,10 +34,10 @@ void Iberia_AntiSeaRobot_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Anti Sea Robot");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_anti_sea_robot");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
+	strcopy(data.Icon, sizeof(data.Icon), "tank");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -319,6 +319,8 @@ void Iberia_AntiSeaRobotSelfDefense(Iberia_AntiSeaRobot npc, float gameTime, int
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
 				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				if(NpcStats_IberiaIsEnemyMarked(npc.m_iTarget))
+					npc.m_flNextMeleeAttack = gameTime + 0.5;
 			}
 		}
 	}

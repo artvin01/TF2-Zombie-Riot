@@ -49,7 +49,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav",
 };
 
-void Iberia_SpeedusInitus_OnMapStart_NPC()
+void IberiaSpeedusItus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -60,8 +60,8 @@ void Iberia_SpeedusInitus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Speedus Initus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_initus");
+	strcopy(data.Name, sizeof(data.Name), "Speedus Instantus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_instantus");
 	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -72,9 +72,9 @@ void Iberia_SpeedusInitus_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SpeedusInitus(client, vecPos, vecAng, ally);
+	return SpeedusItus(client, vecPos, vecAng, ally);
 }
-methodmap SpeedusInitus < CClotBody
+methodmap SpeedusItus < CClotBody
 {
 	
 	property float f_CaptinoAgentusTeleport
@@ -146,9 +146,9 @@ methodmap SpeedusInitus < CClotBody
 	}
 	
 	
-	public SpeedusInitus(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpeedusItus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SpeedusInitus npc = view_as<SpeedusInitus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "500", ally));
+		SpeedusItus npc = view_as<SpeedusItus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "9000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -163,12 +163,12 @@ methodmap SpeedusInitus < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		PentalEffects(npc.index);
+		ErasusEffects(npc.index);
 		
 		
-		func_NPCDeath[npc.index] = SpeedusInitus_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SpeedusInitus_OnTakeDamage;
-		func_NPCThink[npc.index] = SpeedusInitus_ClotThink;
+		func_NPCDeath[npc.index] = SpeedusItus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SpeedusItus_OnTakeDamage;
+		func_NPCThink[npc.index] = SpeedusItus_ClotThink;
 		
 		
 		npc.m_flSpeed = 360.0;
@@ -184,7 +184,7 @@ methodmap SpeedusInitus < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/fall17_jungle_jersey/fall17_jungle_jersey.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/scout/short2014_minja_vest/short2014_minja_vest.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
@@ -199,9 +199,9 @@ methodmap SpeedusInitus < CClotBody
 
 //TODO 
 //Rewrite
-public void SpeedusInitus_ClotThink(int iNPC)
+public void SpeedusItus_ClotThink(int iNPC)
 {
-	SpeedusInitus npc = view_as<SpeedusInitus>(iNPC);
+	SpeedusItus npc = view_as<SpeedusItus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -244,7 +244,7 @@ public void SpeedusInitus_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		SpeedusInitusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SpeedusItusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -254,7 +254,7 @@ public void SpeedusInitus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-void SpeedusInitusSelfDefense(SpeedusInitus npc, float gameTime, int target, float distance)
+void SpeedusItusSelfDefense(SpeedusItus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -275,10 +275,10 @@ void SpeedusInitusSelfDefense(SpeedusInitus npc, float gameTime, int target, flo
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 30.0;
+					float damageDealt = 80.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.15;
+						damageDealt *= 3.5;
 
 					int DamageType = DMG_CLUB;
 
@@ -313,10 +313,10 @@ void SpeedusInitusSelfDefense(SpeedusInitus npc, float gameTime, int target, flo
 							TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							npc.FaceTowards(VecEnemy, 15000.0);
-							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 3.5;
+							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 1.5;
 							if(NpcStats_IberiaIsEnemyMarked(target))
-								npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 2.5;
-
+								npc.f_CaptinoAgentusTeleport = 0.0;
+								
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
 					}
@@ -345,15 +345,15 @@ void SpeedusInitusSelfDefense(SpeedusInitus npc, float gameTime, int target, flo
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.85;
 			}
 		}
 	}
 }
 
-public Action SpeedusInitus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SpeedusItus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	SpeedusInitus npc = view_as<SpeedusInitus>(victim);
+	SpeedusItus npc = view_as<SpeedusItus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -367,9 +367,9 @@ public Action SpeedusInitus_OnTakeDamage(int victim, int &attacker, int &inflict
 	return Plugin_Changed;
 }
 
-public void SpeedusInitus_NPCDeath(int entity)
+public void SpeedusItus_NPCDeath(int entity)
 {
-	SpeedusInitus npc = view_as<SpeedusInitus>(entity);
+	SpeedusItus npc = view_as<SpeedusItus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

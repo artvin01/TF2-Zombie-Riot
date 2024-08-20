@@ -30,7 +30,7 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/stickybomblauncher_shoot.wav",
 };
 
-void IberiaSeaXploder_OnMapStart_NPC()
+void IberiaSeaDryer_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -38,8 +38,8 @@ void IberiaSeaXploder_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	PrecacheModel("models/props_lakeside_event/bomb_temp.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Sea-Xploder");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_xploder");
+	strcopy(data.Name, sizeof(data.Name), "Sea Dryer");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_sea_dryer");
 	strcopy(data.Icon, sizeof(data.Icon), "demo");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -51,9 +51,9 @@ void IberiaSeaXploder_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return IberiaSeaXploder(client, vecPos, vecAng, ally);
+	return IberiaSeaDryer(client, vecPos, vecAng, ally);
 }
-methodmap IberiaSeaXploder < CClotBody
+methodmap IberiaSeaDryer < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -141,9 +141,9 @@ methodmap IberiaSeaXploder < CClotBody
 		return -1;
 	}
 
-	public IberiaSeaXploder(int client, float vecPos[3], float vecAng[3], int ally)
+	public IberiaSeaDryer(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaSeaXploder npc = view_as<IberiaSeaXploder>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "3500", ally));
+		IberiaSeaDryer npc = view_as<IberiaSeaDryer>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "12000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -156,9 +156,9 @@ methodmap IberiaSeaXploder < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaSeaXploder_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaSeaXploder_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaSeaXploder_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(IberiaSeaDryer_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaSeaDryer_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(IberiaSeaDryer_ClotThink);
 		
 		
 		//IDLE
@@ -173,9 +173,9 @@ methodmap IberiaSeaXploder < CClotBody
 	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_stickybomb_launcher/c_stickybomb_launcher.mdl");
 
-		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/demo/dec22_plaid_lad_style3/dec22_plaid_lad_style3.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/sbox2014_armor_shoes/sbox2014_armor_shoes_demo.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2022_alcoholic_automaton_style2/hwn2022_alcoholic_automaton_style2.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/hwn2023_mad_lad/hwn2023_mad_lad.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_demo_samurai_armour/sbox2014_demo_samurai_armour.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -186,9 +186,9 @@ methodmap IberiaSeaXploder < CClotBody
 	}
 }
 
-public void IberiaSeaXploder_ClotThink(int iNPC)
+public void IberiaSeaDryer_ClotThink(int iNPC)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(iNPC);
+	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -221,7 +221,7 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaSeaXploderSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
+		int ActionDo = IberiaSeaDryerSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -238,7 +238,7 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 				{
 					NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 				}
-				npc.m_flSpeed = 280.0;
+				npc.m_flSpeed = 330.0;
 				npc.m_bAllowBackWalking = false;
 			}
 			case 1:
@@ -247,7 +247,7 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 				float vBackoffPos[3];
 				BackoffFromOwnPositionAndAwayFromEnemy(npc, npc.m_iTarget,_,vBackoffPos);
 				NPC_SetGoalVector(npc.index, vBackoffPos, true); //update more often, we need it
-				npc.m_flSpeed = 220.0;
+				npc.m_flSpeed = 250.0;
 			}
 		}
 	}
@@ -259,9 +259,9 @@ public void IberiaSeaXploder_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaSeaXploder_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action IberiaSeaDryer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(victim);
+	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -275,9 +275,9 @@ public Action IberiaSeaXploder_OnTakeDamage(int victim, int &attacker, int &infl
 	return Plugin_Changed;
 }
 
-public void IberiaSeaXploder_NPCDeath(int entity)
+public void IberiaSeaDryer_NPCDeath(int entity)
 {
-	IberiaSeaXploder npc = view_as<IberiaSeaXploder>(entity);
+	IberiaSeaDryer npc = view_as<IberiaSeaDryer>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -299,7 +299,7 @@ public void IberiaSeaXploder_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float distance)
+int IberiaSeaDryerSelfDefense(IberiaSeaDryer npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)
@@ -313,14 +313,14 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 125.0;
+				float RocketDamage = 200.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
 				float SpeedReturn[3];
 
 				int RocketGet = npc.FireGrenade(vecTarget);
-				IberiaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
+				IberiaSeaDryer_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
@@ -329,7 +329,7 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 
 				//This will return vecTarget as the speed we need.
 						
-				npc.m_flNextMeleeAttack = gameTime + 2.35;
+				npc.m_flNextMeleeAttack = gameTime + 2.0;
 				//Launch something to target, unsure if rocket or something else.
 				//idea:launch fake rocket with noclip or whatever that passes through all
 				//then whereever the orginal goal was, land there.
@@ -355,98 +355,4 @@ int IberiaSeaXploderSelfDefense(IberiaSeaXploder npc, float gameTime, float dist
 	{
 		return 0;
 	}
-}
-
-
-void IberiaSeaXploder_ShootRollingMineToEnemy(int iNpc, int Projectile, float damage, float radius, float MaxDurationC4)
-{
-	DataPack pack;
-	CreateDataTimer(0.1, Timer_SeaXploderC4, pack, TIMER_REPEAT);
-	pack.WriteCell(EntIndexToEntRef(iNpc));
-	pack.WriteCell(EntIndexToEntRef(Projectile));
-	pack.WriteFloat(0.0); //Throttle
-	pack.WriteFloat(MaxDurationC4 + GetGameTime());
-	pack.WriteFloat(damage);
-	pack.WriteFloat(radius);
-}
-
-
-public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int OwnerNpc = EntRefToEntIndex(pack.ReadCell());
-	int Projectile = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidEntity(OwnerNpc))
-	{
-		if(IsValidEntity(Projectile))
-		{
-			//Cancel.
-			RemoveEntity(Projectile);
-		}
-		return Plugin_Stop;
-	}
-	else
-	{
-		if(!IsEntityAlive(OwnerNpc))
-		{
-			if(IsValidEntity(Projectile))
-			{
-				//Cancel.
-				RemoveEntity(Projectile);
-			}
-			return Plugin_Stop;
-		}
-	}
-
-	if(!IsValidEntity(Projectile))
-	{
-		//The projectile stopped existing.
-		return Plugin_Stop;
-	}
-	float C4_TrottleTime = pack.ReadFloat();
-	if(C4_TrottleTime > GetGameTime())
-	{
-		return Plugin_Continue;
-	}
-	
-	float C4_TimeUntillBoom = pack.ReadFloat();
-	pack.Position--;
-	float DurationOfBlink = C4_TimeUntillBoom - GetGameTime();
-
-	DurationOfBlink *= 0.3;
-	if(DurationOfBlink > 0.5)
-	{
-		DurationOfBlink = 0.5;
-	}
-	else if(DurationOfBlink < 0.1)
-	{
-		DurationOfBlink = 0.1;
-	}
-
-	float pos[3]; GetEntPropVector(Projectile, Prop_Data, "m_vecAbsOrigin", pos);
-	pos[2] += 5.0;
-	C4_TrottleTime = GetGameTime() + DurationOfBlink;
-	pack.Position--;
-	pack.WriteFloat(C4_TrottleTime);
-	float C4_Damage = pack.ReadFloat();
-	float C4_Radius = pack.ReadFloat();
-	spawnRing_Vectors(pos, C4_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, 1.0);
-
-
-	if(C4_TimeUntillBoom < GetGameTime())
-	{
-		//Cancel.
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(pos[0]);
-		pack_boom.WriteFloat(pos[1]);
-		pack_boom.WriteFloat(pos[2]);
-		pack_boom.WriteCell(0);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		EmitAmbientSound("ambient/explosions/explode_3.wav", pos, _, 80, _,0.6, GetRandomInt(75, 110));
-		Explode_Logic_Custom(C4_Damage , OwnerNpc , OwnerNpc , -1 , pos , C4_Radius);	//acts like a rocket
-		RemoveEntity(Projectile);
-		return Plugin_Stop;
-	}
-	return Plugin_Continue;
-
 }

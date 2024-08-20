@@ -54,9 +54,9 @@ void IberianIronborus_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ironborus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ironborus");
-	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_chief");
 	data.IconCustom = true;
-	data.Flags =0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
@@ -114,7 +114,7 @@ methodmap IberianIronBorus < CClotBody
 	{
 		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 2;
+		i_NpcWeight[npc.index] = 3;
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -308,8 +308,12 @@ void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int targe
 					float damageDealt = 100.0;
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.5;
+						
 					if(npc.Anger)
 						damageDealt *= 2.5;
+						
+					if(NpcStats_IberiaIsEnemyMarked(target))
+						damageDealt *= 1.5;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

@@ -51,8 +51,8 @@ void IberianDestructius_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Destructius");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_destructius");
-	strcopy(data.Icon, sizeof(data.Icon), "soldier_backup");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "diversionistico");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
@@ -109,7 +109,7 @@ methodmap IberianDestructius < CClotBody
 	
 	public IberianDestructius(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "8000", ally, false, true));
+		IberianDestructius npc = view_as<IberianDestructius>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "0.9", "6000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 
@@ -290,9 +290,9 @@ void IberianDestructiusSelfDefense(IberianDestructius npc, float gameTime, int t
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 50.0;
+					float damageDealt = 40.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 8.0;
+						damageDealt *= 10.0;
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);

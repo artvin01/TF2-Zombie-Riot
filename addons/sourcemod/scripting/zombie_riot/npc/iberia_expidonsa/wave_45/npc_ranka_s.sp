@@ -45,10 +45,10 @@ void IberiaRanka_S_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ranka S");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ranka_s");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_steelfist");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "seargent_ideal");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
-	data.Category = Type_Interitus;
+	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -102,7 +102,7 @@ methodmap IberiaRanka_S < CClotBody
 	
 	public IberiaRanka_S(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaRanka_S npc = view_as<IberiaRanka_S>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "3500", ally, false, true));
+		IberiaRanka_S npc = view_as<IberiaRanka_S>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -289,6 +289,9 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 					{
 						npc.m_flArmorToGive = 1000.0;
 					}
+					if(NpcStats_IberiaIsEnemyMarked(target))
+						npc.m_flArmorToGive *= 1.25;
+						
 					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
 					IberiaArmorEffect(npc.index, 150.0);
 				} 

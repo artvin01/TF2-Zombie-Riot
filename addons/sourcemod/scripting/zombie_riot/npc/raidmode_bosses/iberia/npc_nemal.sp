@@ -115,8 +115,8 @@ void Nemal_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Nemal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nemal");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "nemal");
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;

@@ -45,7 +45,7 @@ void IberiaVivintu_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vivintu");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vivintu");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -99,7 +99,7 @@ methodmap IberiaVivintu < CClotBody
 	
 	public IberiaVivintu(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaVivintu npc = view_as<IberiaVivintu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "600", ally));
+		IberiaVivintu npc = view_as<IberiaVivintu>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "2000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

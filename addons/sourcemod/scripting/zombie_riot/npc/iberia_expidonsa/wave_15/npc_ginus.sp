@@ -51,7 +51,7 @@ void Iberia_Ginus_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ginus");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ginus");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "sniper");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -109,7 +109,7 @@ methodmap IberiaGinus < CClotBody
 	
 	public IberiaGinus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaGinus npc = view_as<IberiaGinus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "600", ally));
+		IberiaGinus npc = view_as<IberiaGinus>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -408,6 +408,8 @@ int IberiaGinusSelfDefense_Gun(IberiaGinus npc, float gameTime)
 	{
 		npc.m_flAttackHappens = gameTime + 0.9;
 		npc.m_flDoingAnimation = gameTime + 0.55;
+		if(NpcStats_IberiaIsEnemyMarked(npc.m_iTargetWalkTo))
+			npc.m_flDoingAnimation = gameTime + 0.7;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 3;

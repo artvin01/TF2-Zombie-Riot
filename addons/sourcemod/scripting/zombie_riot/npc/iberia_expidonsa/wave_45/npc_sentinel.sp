@@ -117,9 +117,9 @@ methodmap IberianSentinal < CClotBody
 	
 	public IberianSentinal(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "8000", ally, false, true));
+		IberianSentinal npc = view_as<IberianSentinal>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.15", "15000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 2;
+		i_NpcWeight[npc.index] = 3;
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -266,6 +266,14 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		if(npc.m_iAttacksTillReload < 6 && !npc.Anger)
+		{
+			npc.m_iAttacksTillReload += 1;
+		}
+		else if(npc.m_iAttacksTillReload >= 6 && !npc.Anger)
+		{
+			npc.Anger = true;
+		}
 	}
 	/*
 	float hittimes = 0;
@@ -278,14 +286,6 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	if(ZR_GetWaveCount()+1 >= 55)
 		hittimes = 10;
 	*/
-	if(npc.m_iAttacksTillReload < 10 && !npc.Anger)
-	{
-		npc.m_iAttacksTillReload += 1;
-	}
-	else if(npc.m_iAttacksTillReload >= 10 && !npc.Anger)
-	{
-		npc.Anger = true;
-	}
 	
 	return Plugin_Changed;
 }

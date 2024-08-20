@@ -60,8 +60,8 @@ void IberiaSpeedusItus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Speedus Instantus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_instantus");
+	strcopy(data.Name, sizeof(data.Name), "Speedus Itus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_itus");
 	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -148,7 +148,7 @@ methodmap SpeedusItus < CClotBody
 	
 	public SpeedusItus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SpeedusItus npc = view_as<SpeedusItus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "6500", ally));
+		SpeedusItus npc = view_as<SpeedusItus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "4000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -318,7 +318,10 @@ void SpeedusItusSelfDefense(SpeedusItus npc, float gameTime, int target, float d
 							TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							npc.FaceTowards(VecEnemy, 15000.0);
-							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 3.5;
+							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 3.0;
+							if(NpcStats_IberiaIsEnemyMarked(target))
+								npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 1.5;
+								
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
 					}

@@ -46,7 +46,7 @@ void IberiaKumbai_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Kumbai");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kumbai");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "spy");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -104,7 +104,7 @@ methodmap IberiaKumbai < CClotBody
 	
 	public IberiaKumbai(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaKumbai npc = view_as<IberiaKumbai>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
+		IberiaKumbai npc = view_as<IberiaKumbai>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "2500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

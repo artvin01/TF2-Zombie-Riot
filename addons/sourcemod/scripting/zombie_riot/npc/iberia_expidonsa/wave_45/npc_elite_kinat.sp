@@ -107,7 +107,7 @@ methodmap IberiaEliteKinat < CClotBody
 	
 	public IberiaEliteKinat(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaEliteKinat npc = view_as<IberiaEliteKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "8000", ally));
+		IberiaEliteKinat npc = view_as<IberiaEliteKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "6500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -391,6 +391,8 @@ int IberiaEliteKinatSelfDefense(IberiaEliteKinat npc, float gameTime, int target
 						damageDealt *= 2.25;
 
 					int DamageType = DMG_CLUB;
+					if(NpcStats_IberiaIsEnemyMarked(target))
+						npc.m_iAttacksTillReload++;
 
 					//prevents knockback!
 					//gimic of new wavetype, but silenceable.

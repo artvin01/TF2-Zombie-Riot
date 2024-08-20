@@ -148,7 +148,7 @@ methodmap SpeedusInstantus < CClotBody
 	
 	public SpeedusInstantus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SpeedusInstantus npc = view_as<SpeedusInstantus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "500", ally));
+		SpeedusInstantus npc = view_as<SpeedusInstantus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1500", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -319,6 +319,9 @@ void SpeedusInstantusSelfDefense(SpeedusInstantus npc, float gameTime, int targe
 							TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 							npc.FaceTowards(VecEnemy, 15000.0);
 							npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 3.5;
+							if(NpcStats_IberiaIsEnemyMarked(target))
+								npc.f_CaptinoAgentusTeleport = GetGameTime(npc.index) + 2.0;
+
 							npc.m_flNextMeleeAttack = GetGameTime(npc.index) + 0.7; //so they cant instastab you!
 						}
 					}

@@ -2,71 +2,63 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	"vo/sniper_paincrticialdeath01.mp3",
+	"vo/sniper_paincrticialdeath02.mp3",
+	"vo/sniper_paincrticialdeath03.mp3",
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/pyro_painsharp01.mp3",
-	"vo/pyro_painsharp02.mp3",
-	"vo/pyro_painsharp03.mp3",
-	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/sniper_painsharp01.mp3",
+	"vo/sniper_painsharp02.mp3",
+	"vo/sniper_painsharp03.mp3",
+	"vo/sniper_painsharp04.mp3",
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/pyro_taunts01.mp3",
-	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/sniper_battlecry01.mp3",
+	"vo/sniper_battlecry02.mp3",
+	"vo/sniper_battlecry03.mp3",
+	"vo/sniper_battlecry04.mp3",
 };
 
 static const char g_MeleeAttackSounds[][] = {
-	"weapons/machete_swing.wav",
+	"weapons/pickaxe_swing1.wav",
+	"weapons/pickaxe_swing2.wav",
+	"weapons/pickaxe_swing3.wav",
 };
 
 static const char g_MeleeHitSounds[][] = {
-	"weapons/axe_hit_flesh1.wav",
-	"weapons/axe_hit_flesh2.wav",
-	"weapons/axe_hit_flesh3.wav",
+	"weapons/cleaver_hit_02.wav",
+	"weapons/cleaver_hit_03.wav",
+	"weapons/cleaver_hit_05.wav",
+	"weapons/cleaver_hit_06.wav",
+	"weapons/cleaver_hit_07.wav",
 };
 
-static const char g_MoraleBoostBuff[][] = {
-	"items/samurai/tf_conch.wav",
-};
-static const char g_MoraleScream[][] = {
-	"vo/heavy_battlecry03.mp3",
-	"vo/heavy_battlecry05.mp3",
-};
-
-void IberiaCombastia_OnMapStart_NPC()
+void IberiaDeathMarker_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MoraleBoostBuff)); i++) { PrecacheSound(g_MoraleBoostBuff[i]); }
-	for (int i = 0; i < (sizeof(g_MoraleScream)); i++) { PrecacheSound(g_MoraleScream[i]); }
-	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Combastia");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_combastia");
-	strcopy(data.Icon, sizeof(data.Icon), "heavy_urgent");
+	strcopy(data.Name, sizeof(data.Name), "Death Marker");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_death_marker");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
 	data.IconCustom = false;
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
 
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return IberiaCombastia(client, vecPos, vecAng, ally);
+	return IberiaDeathMarker(client, vecPos, vecAng, ally);
 }
-
-methodmap IberiaCombastia < CClotBody
+methodmap IberiaDeathMarker < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -93,89 +85,80 @@ methodmap IberiaCombastia < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	public void PlayMoraleScream() 
-	{
-		EmitSoundToAll(g_MoraleScream[GetRandomInt(0, sizeof(g_MoraleScream) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-
+	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+
 	}
 	
-	public IberiaCombastia(int client, float vecPos[3], float vecAng[3], int ally)
+	
+	public IberiaDeathMarker(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaCombastia npc = view_as<IberiaCombastia>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.35", "9000", ally, false, true));
+		IberiaDeathMarker npc = view_as<IberiaDeathMarker>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "10000", ally));
 		
-		i_NpcWeight[npc.index] = 3;
+		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
-		if(iActivity > 0) npc.StartActivity(iActivity);
-		SetVariantInt(4);
+		npc.SetActivity("ACT_MP_RUN_MELEE");
+		SetVariantInt(2);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
-		npc.m_iStepNoiseType = STEPSOUND_GIANT;	
+		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberiaCombastia_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaCombastia_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberiaCombastia_ClotThink);
-		f_NpcImmuneToBleed[npc.index] = FAR_FUTURE;
+		func_NPCDeath[npc.index] = view_as<Function>(IberiaDeathMarker_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberiaDeathMarker_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(IberiaDeathMarker_ClotThink);
+		
 		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 265.0;
-		npc.m_flNextRangedSpecialAttack = GetGameTime() + GetRandomFloat(5.0, 15.0);
+		npc.m_flSpeed = 310.0;
 		
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetMoraleDoIberia(npc.index, 20.0);
-		
+	
+		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/sniper/jul13_bushmans_blazer/jul13_bushmans_blazer.mdl");
 
-		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_torchers_trench_coat/dec23_torchers_trench_coat.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_fireaxe_pyro/c_fireaxe_pyro_xmas.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum24_fire_marshal/sum24_fire_marshal.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/weapons/c_models/c_buffpack/c_buffpack.mdl");
-		npc.m_iWearable6 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl");
-		
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/short2014_chronoscarf/short2014_chronoscarf.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_wood_machete/c_wood_machete.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/xms2013_jacket/xms2013_jacket_sniper.mdl");
+
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 
 		return npc;
 	}
 }
 
-public void IberiaCombastia_ClotThink(int iNPC)
+public void IberiaDeathMarker_ClotThink(int iNPC)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(iNPC);
+	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
-	
 
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
-		npc.PlayHurtSound();	
+		npc.PlayHurtSound();
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -189,7 +172,7 @@ public void IberiaCombastia_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
-	IberiaMoraleGivingDo(iNPC, GetGameTime(npc.index));
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
@@ -206,7 +189,7 @@ public void IberiaCombastia_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		IberiaCombastiaSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		IberiaDeathMarkerSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -216,9 +199,9 @@ public void IberiaCombastia_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberiaCombastia_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action IberiaDeathMarker_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(victim);
+	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -232,10 +215,9 @@ public Action IberiaCombastia_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-
-public void IberiaCombastia_NPCDeath(int entity)
+public void IberiaDeathMarker_NPCDeath(int entity)
 {
-	IberiaCombastia npc = view_as<IberiaCombastia>(entity);
+	IberiaDeathMarker npc = view_as<IberiaDeathMarker>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -255,10 +237,9 @@ public void IberiaCombastia_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-
 }
 
-void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target, float distance)
+void IberiaDeathMarkerSelfDefense(IberiaDeathMarker npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -269,7 +250,7 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 			Handle swingTrace;
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
 			npc.FaceTowards(VecEnemy, 15000.0);
-			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, _, _, _, 1)) //Big range, but dont ignore buildings if somehow this doesnt count as a raid to be sure.
+			if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
 			{
 							
 				target = TR_GetEntityIndex(swingTrace);	
@@ -279,11 +260,20 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 115.0;
+					float damageDealt = 75.0;
+					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 4.0;
+						damageDealt *= 2.5;
 
-					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
+					int DamageType = DMG_CLUB;
+					if(!NpcStats_IsEnemySilenced(npc.index))
+						DamageType |= DMG_PREVENT_PHYSICS_FORCE;
+
+					//prevents knockback!
+					//gimic of new wavetype, but silenceable.
+					
+					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DamageType, -1, _, vecHit);
+					NpcStats_IberiaMarkEnemy(target, 6.0);
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -295,7 +285,7 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
-		if(distance < (GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED))
 		{
 			int Enemy_I_See;
 								
@@ -305,11 +295,11 @@ void IberiaCombastiaSelfDefense(IberiaCombastia npc, float gameTime, int target,
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
+				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE",_,_,_,1.0);
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.0;
+				npc.m_flNextMeleeAttack = gameTime + 1.2;
 			}
 		}
 	}

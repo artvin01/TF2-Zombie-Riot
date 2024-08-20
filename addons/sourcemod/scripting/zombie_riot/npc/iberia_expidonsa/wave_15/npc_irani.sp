@@ -45,7 +45,7 @@ void Iberia_Irani_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Irani");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_irani");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;

@@ -49,7 +49,7 @@ void Iberia_Kinat_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Kinat");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_kinat");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "heavy_deflector");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -107,7 +107,7 @@ methodmap IberiaKinat < CClotBody
 	
 	public IberiaKinat(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaKinat npc = view_as<IberiaKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
+		IberiaKinat npc = view_as<IberiaKinat>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -385,12 +385,14 @@ int IberiaKinatSelfDefense(IberiaKinat npc, float gameTime, int target, float di
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 35.0;
+					float damageDealt = 40.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
 						damageDealt *= 1.15;
 
 					int DamageType = DMG_CLUB;
+					if(NpcStats_IberiaIsEnemyMarked(target))
+						npc.m_iAttacksTillReload++;
 
 					//prevents knockback!
 					//gimic of new wavetype, but silenceable.

@@ -47,7 +47,7 @@ void IberiaMorato_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Morato");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_morato");
-	strcopy(data.Icon, sizeof(data.Icon), "scout");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_crit");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
@@ -106,7 +106,7 @@ methodmap IberiaMorato < CClotBody
 	
 	public IberiaMorato(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberiaMorato npc = view_as<IberiaMorato>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "600", ally));
+		IberiaMorato npc = view_as<IberiaMorato>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "3000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");

@@ -104,7 +104,7 @@ methodmap Iberiainqusitor_iidutas < CClotBody
 	
 	public Iberiainqusitor_iidutas(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "600", ally));
+		Iberiainqusitor_iidutas npc = view_as<Iberiainqusitor_iidutas>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "15000", ally));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
