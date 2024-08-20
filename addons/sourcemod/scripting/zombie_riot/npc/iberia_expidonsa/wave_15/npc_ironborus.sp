@@ -112,7 +112,7 @@ methodmap IberianIronBorus < CClotBody
 	
 	public IberianIronBorus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "8000", ally, false, true));
+		IberianIronBorus npc = view_as<IberianIronBorus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.35", "8000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 2;
 
