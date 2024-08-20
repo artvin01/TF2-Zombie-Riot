@@ -113,8 +113,6 @@ methodmap IberianDestructius < CClotBody
 		
 		i_NpcWeight[npc.index] = 2;
 
-		SetVariantInt(3);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_BUILDING");
