@@ -48,29 +48,21 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap Huirgrajo < CClotBody
 {
-	public void PlayIdleSound()
-	{
-		if(this.m_flNextIdleSound > GetGameTime(this.index))
-			return;
-		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-	}
 	public void PlayHurtSound()
 	{
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetURandomInt() % sizeof(g_HurtSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetURandomInt() % sizeof(g_DeathSounds)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeSound()
+	public void PlayPistolFire()
  	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);
+		EmitSoundToAll(g_RangedAttackSounds[GetURandomInt() % sizeof(g_RangedAttackSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
-	public void PlayMeleeHitSound()
-	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _);	
+	public void PlayPistolReload()
+ 	{
+		EmitSoundToAll(g_RangedReloadSounds[GetURandomInt() % sizeof(g_RangedReloadSounds)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public Huirgrajo(int client, float vecPos[3], float vecAng[3], int ally)
@@ -89,6 +81,7 @@ methodmap Huirgrajo < CClotBody
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flCharge_delay = gameTime + 3.0;
 		npc.Anger = false;
+		npc.m_iTargetAlly = client;
 
 		func_NPCDeath[npc.index] = ClotDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -96,8 +89,12 @@ methodmap Huirgrajo < CClotBody
 		
 		npc.m_flSpeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
-		npc.m_flNextMeleeAttack = 0.0;
-		npc.m_flAttackHappens = 0.0;
+		npc.m_flWaveScale = (ZR_GetWaveCount() + 1) * 0.1;
+		npc.m_flExtraDamage *= npc.m_flWaveScale;
+		
+		b_CannotBeStunned[npc.index] = true;
+		b_CannotBeKnockedUp[npc.index] = true;
+		b_CannotBeSlowed[npc.index] = true;
 		
 		static const int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -139,10 +136,12 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flReloadDelay > gameTime)
 	{
+		// Reloading
 		npc.m_flSpeed = 0.0;
 	}
 	else
 	{
+		// Moving
 		npc.m_flSpeed = npc.Anger ? 160.0 : 260.0;
 	}
 
@@ -152,7 +151,9 @@ static void ClotThink(int iNPC)
 	
 	if(i_Target[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 	{
-		target = GetClosestTarget(npc.index, .EntityLocation = );
+		// Find closest target near ourself
+		float vecTarget[3]; WorldSpaceCenter(npc.index, vecTarget);
+		target = GetClosestTarget(npc.index);
 		npc.m_iTarget = target;
 		npc.m_flGetClosestTargetTime = gameTime + 1.0;
 	}
@@ -167,24 +168,64 @@ static void ClotThink(int iNPC)
 	{
 		if(i_TargetToWalkTo[npc.index] == -1 || npc.m_flGetClosestTargetTime < gameTime)
 		{
-			walk = GetClosestTarget(npc.index, .EntityLocation = ally);
+			// Find closest target near ally
+			float vecTarget[3]; WorldSpaceCenter(ally, vecTarget);
+			walk = GetClosestTarget(npc.index, .EntityLocation = vecTarget);
 			npc.m_iTarget = walk;
 			npc.m_flGetClosestTargetTime = gameTime + 1.0;
 		}
 	}
 	else
 	{
-		walk = target
+		if(i_TargetAlly[npc.index] != -1)
+		{
+			// Ally died, buff up stats
+			i_TargetAlly[npc.index] = -1;
+			npc.m_flExtraDamage *= 1.5;
+			npc.m_flWaveScale *= 1.5;
+		}
+
+		// No ally, target is our walkto
+		ally = -1;
+		walk = target;
 		i_TargetToWalkTo[npc.index] = i_Target[npc.index];
 	}
 
+	// Walk backwards if our target isn't who walking to
 	npc.m_bAllowBackWalking = target != walk;
+
+	if(!npc.Anger)
+	{
+		// Allies died or at 1/3 HP
+		if(ally == -1 || (GetEntProp(npc.index, Prop_Data, "m_iHealth") < (ReturnEntityMaxHealth(npc.index) / 3)))
+		{
+			npc.Anger = true;
+	
+			if(IsValidEntity(npc.m_iWearable3))
+				RemoveEntity(npc.m_iWearable3);
+			
+			if(IsValidEntity(npc.m_iWearable6))
+				RemoveEntity(npc.m_iWearable6);
+			
+			float pos[3];
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+
+			int particle = ParticleEffectAt(pos, "unusual_sapper_teamcolor_blue", 0.0);
+			SetParent(npc.index, particle, "head", {0.0, 0.0, -1.0});
+			npc.m_iWearable3 = particle;
+
+			pos[2] += 70.0;
+			particle = ParticleEffectAt(pos, "scout_dodge_blue", 0.0);
+			SetParent(npc.index, particle);
+			npc.m_iWearable6 = particle;
+		}
+	}
 
 	if(walk > 0)
 	{
 		float vecTarget[3]; WorldSpaceCenter(walk, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
-		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+		float distance = GetVectorDistance(vecTarget, vecMe, true);	
 		
 		if(npc.m_flReloadDelay > gameTime)
 		{
@@ -210,62 +251,117 @@ static void ClotThink(int iNPC)
 
 		npc.StartPathing();
 	}
-
-	if(target > 0)
-	{
-		if(npc.m_flAttackHappens)
-		{
-			if(npc.m_flAttackHappens < gameTime)
-			{
-				npc.m_flAttackHappens = 0.0;
-				
-				Handle swingTrace;
-				npc.FaceTowards(vecTarget, 15000.0);
-				if(npc.DoSwingTrace(swingTrace, target, _, _, _, _))
-				{
-					target = TR_GetEntityIndex(swingTrace);
-					if(target > 0)
-					{
-						float damage = 100.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 5.0;
-						
-						if(target <= MaxClients && (Armor_Charge[target] < 0 || TF2_IsPlayerInCondition(target, TFCond_Milked) || TF2_IsPlayerInCondition(target, TFCond_Jarated)))
-						{
-							damage *= Rogue_Paradox_RedMoon() ? 60.0 : 6.0;
-						}
-
-						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB|DMG_PREVENT_PHYSICS_FORCE);
-					}
-				}
-
-				delete swingTrace;
-			}
-		}
-
-		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && npc.m_flNextMeleeAttack < gameTime)
-		{
-			target = Can_I_See_Enemy(npc.index, target);
-			if(IsValidEnemy(npc.index, target))
-			{
-				npc.m_iTarget = target;
-				npc.m_flGetClosestTargetTime = gameTime + 1.0;
-
-				npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE");
-				npc.PlayMeleeSound();
-				
-				npc.m_flAttackHappens = gameTime + 0.35;
-				npc.m_flNextMeleeAttack = gameTime + 0.55;
-			}
-		}
-	}
 	else
 	{
 		npc.StopPathing();
 	}
 
-	npc.PlayIdleSound();
+	if(target > 0)
+	{
+		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
+		float vecMe[3]; WorldSpaceCenter(npc.index, vecMe);
+
+		// Laser conditions:
+		// 
+		// 1a. Allied died
+		// 1b. Our target is marked
+		// 
+		// 2a. Past Wave 31
+		// 2b. Past Wave 21 and ally died
+		if(npc.m_flNextMeleeAttack < gameTime && npc.m_flWaveScale > 3.1 && (ally == -1 || NpcStats_IberiaIsEnemyMarked(target)))
+		{
+			npc.m_flNextMeleeAttack = gameTime + ((GetURandomInt() % (npc.Anger ? 3 : 2)) ? 1.0 : 8.0);
+			FatherGrigori_IOC_Invoke(EntIndexToEntRef(npc.index), target);
+			
+			if(npc.m_bAllowBackWalking)
+				npc.FaceTowards(vecTarget, 1500.0);
+		}
+		else if(npc.m_flNextRangedAttack < gameTime)
+		{
+			if(npc.m_iAttacksTillReload < 1)
+			{
+				npc.AddGesture("ACT_MP_RELOAD_CROUCH_SECONDARY");
+				npc.m_flNextRangedAttack = gameTime + 1.35;
+				npc.m_flReloadDelay = gameTime + 1.35;
+				npc.m_iAttacksTillReload = 6;
+				npc.PlayPistolReload();
+			}
+			else
+			{
+				target = Can_I_See_Enemy(npc.index, target);
+				if(IsValidEnemy(npc.index, target))
+				{
+					// Can dodge bullets by moving
+					PredictSubjectPositionForProjectiles(npc, target, -400.0, _, vecTarget);
+					
+					npc.m_bAllowBackWalking = true;
+					npc.FaceTowards(vecTarget, 1500.0);
+					
+					float eyePitch[3], vecDirShooting[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_angRotation", eyePitch);
+					
+					vecTarget[2] += 15.0;
+					MakeVectorFromPoints(vecMe, vecTarget, vecDirShooting);
+					GetVectorAngles(vecDirShooting, vecDirShooting);
+
+					float sub = fabs(fixAngle(eyePitch[1])) - fabs(fixAngle(vecDirShooting[1]));
+					if(sub > -12.5 && sub < 12.5)
+					{
+						vecDirShooting[1] = eyePitch[1];
+
+						npc.m_flNextRangedAttack = gameTime + 0.85;
+						npc.m_iAttacksTillReload--;
+						
+						float x = GetRandomFloat( -0.03, 0.03 );
+						float y = GetRandomFloat( -0.03, 0.03 );
+						
+						float vecRight[3], vecUp[3];
+						GetAngleVectors(vecDirShooting, vecDirShooting, vecRight, vecUp);
+						
+						float vecDir[3];
+						for(int i; i < 3; i++)
+						{
+							vecDir[i] = vecDirShooting[i] + x * vecRight[i] + y * vecUp[i]; 
+						}
+
+						NormalizeVector(vecDir, vecDir);
+						
+						KillFeed_SetKillIcon(npc.index, "enforcer");
+						FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, 50.0, 9000.0, DMG_BULLET, "bullet_tracer01_red");
+
+						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
+						npc.PlayPistolFire();
+					}
+				}
+			}
+		}
+		else if(npc.m_flCharge_delay < gameTime && npc.m_flWaveScale > 1.6)
+		{
+			target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				PredictSubjectPositionForProjectiles(npc, target, GetRandomFloat(-1000.0, 1000.0), _, vecTarget);
+
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 15000.0);
+
+				npc.m_flCharge_delay = gameTime + (npc.Anger ? 3.0 : 6.0);
+				PluginBot_Jump(npc.index, vecTarget);
+			}
+		}
+		else
+		{
+			target = Can_I_See_Enemy(npc.index, target);
+			if(IsValidEnemy(npc.index, target))
+			{
+				// Can dodge bullets by moving
+				PredictSubjectPositionForProjectiles(npc, target, -400.0, _, vecTarget);
+				
+				npc.m_bAllowBackWalking = true;
+				npc.FaceTowards(vecTarget, 1500.0);
+			}
+		}
+	}
 }
 
 static void ClotDeath(int entity)
@@ -288,4 +384,7 @@ static void ClotDeath(int entity)
 	
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

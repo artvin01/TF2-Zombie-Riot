@@ -216,7 +216,6 @@ public void IberiaVictorian_ClotThink(int iNPC)
 				npc.m_flSpeed = 200.0;
 			}
 		}
-		
 	}
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -224,7 +223,7 @@ public void IberiaVictorian_ClotThink(int iNPC)
 	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		int ActionDo = IberiaVictorianSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		int ActionDo = IberiaVictorianSelfDefense(npc,GetGameTime(npc.index), flDistanceToTarget); 
 		switch(ActionDo)
 		{
 			case 0:
@@ -299,7 +298,7 @@ public void IberiaVictorian_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-int IberiaVictorianSelfDefense(IberiaVictorian npc, float gameTime, int target, float distance)
+int IberiaVictorianSelfDefense(IberiaVictorian npc, float gameTime, float distance)
 {
 	//Direct mode
 	if(gameTime > npc.m_flNextMeleeAttack)

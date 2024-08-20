@@ -518,6 +518,7 @@ void NPC_ConfigSetup()
 	Iberia_Beacon_OnMapStart_NPC();
 	IberiaBeaconConstructor_OnMapStart_NPC();
 	Iberia_Lighthouse_OnMapStart_NPC();
+	Huirgrajo_Precache();
 // wave 1-15
 	Iberia_Cambino_OnMapStart_NPC();
 	Iberia_Irani_OnMapStart_NPC();
@@ -535,6 +536,12 @@ void NPC_ConfigSetup()
 	IberiaSpeedusInstantus_OnMapStart_NPC();
 	IberiaCombastia_OnMapStart_NPC();
 	IberiaMorato_OnMapStart_NPC();
+	IberiaSeaXploder_OnMapStart_NPC();
+	Iberia_AntiSeaRobot_OnMapStart_NPC();
+
+// 31-45
+
+	Iberia_SeabornAnnihilator_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1505,6 +1512,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/npc_iberia_beacon.sp"
 #include "zombie_riot/npc/iberia_expidonsa/npc_iberia_lighthouse.sp"
 #include "zombie_riot/npc/iberia_expidonsa/npc_beacon_constructor.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_huirgrajo.sp"
 
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_irani.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_cambino.sp"
@@ -1522,6 +1530,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_speedus_instantus.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_combastia.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_iberia_morato.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_sea_xploder.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_anti_sea_robot.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_seaborn_eradicator.sp"
 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
