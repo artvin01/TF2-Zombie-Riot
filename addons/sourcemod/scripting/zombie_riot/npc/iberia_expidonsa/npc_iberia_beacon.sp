@@ -156,7 +156,7 @@ void IberiaArmorEffect(int entity, float range)
 
 void IberiaBeaconGiveArmor(int entity, int victim)
 {
-	if(i_NpcInternalId[entity] == i_NpcInternalId[victim])
+	if(i_NpcIsABuilding[victim])
 		return;
 
 	IberiaBeacon npc1 = view_as<IberiaBeacon>(entity);
