@@ -192,7 +192,6 @@ public void IberianSentinel_ClotThink(int iNPC)
 
 	if(TimeMultiplier > 3.0)
 	{
-		GrantEntityArmor(iNPC, true, 5.00, 0.00, 0);
 		npc.Anger = true;
 		TimeMultiplier = 3.0;
 	}
@@ -347,4 +346,19 @@ void IberianSentinelSelfDefense(IberianSentinal npc, float gameTime, int target,
 			}
 		}
 	}
+}
+
+void IronborusQuantum(IberianSentinal npc, float gameTime)
+{
+	GrantEntityArmor(iNPC, true, 5.00, 0.00, 0);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
+	npc.m_iWearable3 = npc.EquipItem("head", "models/bots/soldier_boss/bot_soldier_boss.mdl");
+	SetVariantString("1.0");
+	AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_invasion_bat/c_invasion_bat.mdl");
+	SetVariantString("1.0");
+	AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 }
