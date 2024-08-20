@@ -133,9 +133,9 @@ methodmap IberianIronBorus < CClotBody
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_iAttacksTillReload = 0;
 
-		func_NPCDeath[npc.index] = view_as<Function>(IberianSentinel_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianSentinel_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(IberianSentinel_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(IberianIronborus_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(IberianIronborus_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(IberianIronborus_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -170,7 +170,7 @@ methodmap IberianIronBorus < CClotBody
 	}
 }
 
-public void IberianSentinel_ClotThink(int iNPC)
+public void IberianIronborus_ClotThink(int iNPC)
 {
 	IberianIronBorus npc = view_as<IberianIronBorus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -230,7 +230,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		IberianSentinelSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		IberianIronborusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -240,7 +240,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	IberianIronBorus npc = view_as<IberianIronBorus>(victim);
 		
@@ -256,7 +256,7 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	return Plugin_Changed;
 }
 
-public void IberianSentinel_NPCDeath(int entity)
+public void IberianIronborus_NPCDeath(int entity)
 {
 	IberianIronBorus npc = view_as<IberianIronBorus>(entity);
 	if(!npc.m_bGib)
@@ -283,7 +283,7 @@ public void IberianSentinel_NPCDeath(int entity)
 
 }
 
-void IberianSentinelSelfDefense(IberianIronBorus npc, float gameTime, int target, float distance)
+void IberianIronborusSelfDefense(IberianIronBorus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
