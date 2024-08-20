@@ -550,6 +550,10 @@ void NPC_ConfigSetup()
 	IberianIronborus_OnMapStart_NPC();
 	IberianDestructius_OnMapStart_NPC();
 
+//wave 45-60
+
+	Iberia_inqusitor_irene_OnMapStart_NPC();
+
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
 	Barrack_Alt_Shwertkrieg_MapStart();
@@ -1545,9 +1549,12 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_murdarato.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_elite_kinat.sp"
 #include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_seaborn_eradicator.sp"
-#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_sentinel.sp"
-#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_destructius.sp"
-#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ironborus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_sentinel.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_destructius.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_ironborus.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_inqusitor_irene.sp"
 
 
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"

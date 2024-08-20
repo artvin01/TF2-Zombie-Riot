@@ -60,7 +60,7 @@ void IberianSentinel_OnMapStart_NPC()
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
-	int id = NPC_Add(data);
+	NPC_Add(data);
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {

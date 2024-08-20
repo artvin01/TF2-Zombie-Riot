@@ -2,24 +2,27 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"vo/pyro_paincrticialdeath01.mp3",
-	"vo/pyro_paincrticialdeath02.mp3",
-	"vo/pyro_paincrticialdeath03.mp3",
+	"vo/soldier_paincrticialdeath01.mp3",
+	"vo/soldier_paincrticialdeath02.mp3",
+	"vo/soldier_paincrticialdeath03.mp3"
 };
 
 static const char g_HurtSounds[][] = {
-	"vo/pyro_painsharp01.mp3",
-	"vo/pyro_painsharp02.mp3",
-	"vo/pyro_painsharp03.mp3",
-	"vo/pyro_painsharp04.mp3",
-	"vo/pyro_painsharp05.mp3",
+	"vo/soldier_painsharp01.mp3",
+	"vo/soldier_painsharp02.mp3",
+	"vo/soldier_painsharp03.mp3",
+	"vo/soldier_painsharp04.mp3",
+	"vo/soldier_painsharp05.mp3",
+	"vo/soldier_painsharp06.mp3",
+	"vo/soldier_painsharp07.mp3",
+	"vo/soldier_painsharp08.mp3"
 };
 
-
 static const char g_IdleAlertedSounds[][] = {
-	"vo/taunts/pyro_taunts01.mp3",
-	"vo/taunts/pyro_taunts02.mp3",
-	"vo/taunts/pyro_taunts03.mp3",
+	"vo/taunts/soldier_taunts19.mp3",
+	"vo/taunts/soldier_taunts20.mp3",
+	"vo/taunts/soldier_taunts21.mp3",
+	"vo/taunts/soldier_taunts18.mp3"
 };
 
 static const char g_MeleeAttackSounds[][] = {
@@ -31,14 +34,6 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/airboat/airboat_gun_energy2.wav",
 };
 
-static const char g_MoraleBoostBuff[][] = {
-	"items/samurai/tf_conch.wav",
-};
-static const char g_MoraleScream[][] = {
-	"vo/heavy_battlecry03.mp3",
-	"vo/heavy_battlecry05.mp3",
-};
-
 void IberiaRanka_S_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -46,8 +41,6 @@ void IberiaRanka_S_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeAttackSounds)); i++) { PrecacheSound(g_MeleeAttackSounds[i]); }
 	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	for (int i = 0; i < (sizeof(g_MoraleBoostBuff)); i++) { PrecacheSound(g_MoraleBoostBuff[i]); }
-	for (int i = 0; i < (sizeof(g_MoraleScream)); i++) { PrecacheSound(g_MoraleScream[i]); }
 	PrecacheModel("models/player/medic.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Ranka S");
@@ -72,7 +65,7 @@ methodmap IberiaRanka_S < CClotBody
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -84,22 +77,18 @@ methodmap IberiaRanka_S < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-	}
-	public void PlayMoraleScream() 
-	{
-		EmitSoundToAll(g_MoraleScream[GetRandomInt(0, sizeof(g_MoraleScream) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 	}
 
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -300,8 +289,8 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 					{
 						npc.m_flArmorToGive = 1000.0;
 					}
-					ExpidonsaGroupHeal(npc.index, 250.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
-					IberiaArmorEffect(npc.index, 250.0);
+					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
+					IberiaArmorEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;
