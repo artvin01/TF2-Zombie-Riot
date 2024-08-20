@@ -126,7 +126,7 @@ static int WaveGiftItem;
 
 public Action Waves_ProgressTimer(Handle timer)
 {
-	if(Classic_Mode())
+	if(Classic_Mode() && ProgressTimerType)
 	{
 		// Delay progress if a boss is alive
 		for(int i; i < i_MaxcountNpcTotal; i++)
