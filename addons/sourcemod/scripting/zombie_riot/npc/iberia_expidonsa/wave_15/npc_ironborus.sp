@@ -271,6 +271,11 @@ public Action IberianIronborus_OnTakeDamage(int victim, int &attacker, int &infl
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			npc.m_flSpeed = 250.0;
 		}
+		if(percentageArmorLeft > 0.0)
+		{
+			npc.Anger = true;
+			npc.m_fbRangedSpecialOn = false;
+		}
 	}
 	
 	return Plugin_Changed;
@@ -371,9 +376,9 @@ void IronborusQuantum(IberianIronBorus npc)
 		{
 			npc.Anger = true;
 			buffed = true;
+			GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
 		}
 		npc.m_fbRangedSpecialOn = true;
-		GrantEntityArmor(npc.index, true, 5.00, 0.01, 0);
 		if(IsValidEntity(npc.m_iWearable6))
 			RemoveEntity(npc.m_iWearable6);
 		if(IsValidEntity(npc.m_iWearable1))
