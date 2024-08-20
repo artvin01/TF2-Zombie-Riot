@@ -180,7 +180,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 	
-    float TimeMultiplier = 1.0;
+	float TimeMultiplier = 1.0;
 	TimeMultiplier = GetGameTime(npc.index) - npc.m_flNextRangedAttack;
 
 	TimeMultiplier *= 0.40;
@@ -188,7 +188,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 	if(TimeMultiplier > 3.0)
 	{
 		TimeMultiplier = 3.0;
-		IronborusQuantum(npc.index)
+		IronborusQuantum(npc.index);
 	}
 	if(TimeMultiplier < 1.0)
 	{
