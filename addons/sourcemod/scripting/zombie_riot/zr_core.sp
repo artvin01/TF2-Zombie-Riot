@@ -194,6 +194,7 @@ enum
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
+	WEAPON_ULPIANUS = 117
 }
 
 enum
@@ -540,6 +541,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_mg42.sp"
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
+#include "zombie_riot/custom/weapon_ulpianus.sp"
 
 void ZR_PluginLoad()
 {
@@ -785,6 +787,7 @@ void ZR_MapStart()
 	Object_MapStart();
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
+	Ulpianus_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)

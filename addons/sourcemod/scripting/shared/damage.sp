@@ -665,8 +665,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
 		}
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
 		{
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
+				Ulpianus_OnTakeDamageSelf(victim);
+			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
 		case WEAPON_GLADIIA:
