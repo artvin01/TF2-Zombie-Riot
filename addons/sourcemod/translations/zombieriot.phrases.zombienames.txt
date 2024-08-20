@@ -2899,4 +2899,16 @@
 	{
 		"en"		"Nemal"
 	}
+	"Sentinel"
+	{
+		"en"		"Sentinel"
+	}
+	"Ironborus"
+	{
+		"en"		"Ironborus"
+	}
+	"Destructius"
+	{
+		"en"		"Destructius"
+	}
 }
