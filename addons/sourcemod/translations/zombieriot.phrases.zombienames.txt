@@ -2903,4 +2903,12 @@
 	{
 		"en"		"Sentinel"
 	}
+	"Ironborus"
+	{
+		"en"		"Ironborus"
+	}
+	"Destructius"
+	{
+		"en"		"Destructius"
+	}
 }
