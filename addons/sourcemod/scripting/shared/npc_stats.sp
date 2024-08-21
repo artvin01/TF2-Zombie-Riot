@@ -10748,10 +10748,10 @@ float custom_maxarmour = 0.0)
 		{
 			return;
 		}
-		if(flMaxHealth > npc.m_flArmorCount + custom_maxarmour)
+		if(flMaxHealth <= (npc.m_flArmorCount + custom_maxarmour))
 		{
 			npc.m_flArmorCount 		= 	flMaxHealth;
-			npc.m_flArmorCountMax = flMaxHealth;
+			npc.m_flArmorCountMax 	= flMaxHealth;
 			return;
 		}
 		npc.m_flArmorCount 		+= 	custom_maxarmour;
