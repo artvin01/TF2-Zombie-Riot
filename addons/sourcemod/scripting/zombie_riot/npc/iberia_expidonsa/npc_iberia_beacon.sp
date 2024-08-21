@@ -105,6 +105,8 @@ methodmap IberiaBeacon < CClotBody
 
 		//counts as a static npc, means it wont count towards NPC limit.
 		AddNpcToAliveList(npc.index, 1);
+		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 150);
 
 		return npc;
 	}
@@ -135,13 +137,19 @@ public void IberiaBeacon_ClotThink(int iNPC)
 	{
 		return;
 	}
+	if(npc.m_iState == 0)
+	{
+		npc.m_iState = 1;
+		SetEntityRenderMode(npc.index, RENDER_NORMAL);
+		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 2.0;
 
 	
-	ExpidonsaGroupHeal(npc.index, 400.0, 10, 0.0, 1.0, false,IberiaBeaconGiveArmor);
-	IberiaArmorEffect(npc.index, 400.0);
+	ExpidonsaGroupHeal(npc.index, 200.0, 10, 0.0, 1.0, false,IberiaBeaconGiveArmor);
+	IberiaArmorEffect(npc.index, 200.0);
 	npc.m_flNextRangedSpecialAttack = 0.0;
-	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 400.0);
+	IberiaMoraleGivingDo(npc.index, GetGameTime(npc.index), false, 200.0);
 }
 
 void IberiaArmorEffect(int entity, float range)
@@ -159,8 +167,8 @@ void IberiaBeaconGiveArmor(int entity, int victim)
 		return;
 
 	IberiaBeacon npc1 = view_as<IberiaBeacon>(entity);
-	GrantEntityArmor(victim, false, 1.0, 0.25, 0,
-	npc1.m_flArmorToGive);
+	GrantEntityArmor(victim, false, 2.0, 0.33, 0,
+	npc1.m_flArmorToGive * 0.5);
 }
 
 public Action IberiaBeacon_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
@@ -190,9 +198,10 @@ public void IberiaBeacon_NPCDeath(int entity)
 
 static char[] GetBuildingHealth()
 {
-	int health = 20;
+	int health = 25;
 	
-	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
+//	Dont scale with players, dumb idea.
+//	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	
 	float temp_float_hp = float(health);
 	

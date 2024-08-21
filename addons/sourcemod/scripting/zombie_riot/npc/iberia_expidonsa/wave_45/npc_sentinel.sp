@@ -43,7 +43,7 @@ static const char g_WarCry[][] = {
 
 
 void IberianSentinel_OnMapStart_NPC()
-{
+{ 	
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
 	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
@@ -410,4 +410,5 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 			}
 		}
 	}
+	npc.PlayMeleeWarCry();
 }

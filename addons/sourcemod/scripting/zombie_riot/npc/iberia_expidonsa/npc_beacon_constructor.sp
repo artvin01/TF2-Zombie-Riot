@@ -267,7 +267,7 @@ public void IberiaBeaconConstructor_NPCDeath(int entity)
 
 void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float distance)
 {
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.5))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 				
@@ -284,6 +284,8 @@ void IberiaBeaconConstructorBuildObject(IberiaBeaconConstructor npc, float dista
 			int spawn_index = NPC_CreateByName("npc_iberia_beacon", -1, pos, ang, GetTeam(npc.index));
 			if(spawn_index > MaxClients)
 			{
+				CClotBody npc1 = view_as<CClotBody>(spawn_index);
+				npc1.m_flNextThinkTime = GetGameTime() + 4.0;
 				fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
 				NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			}

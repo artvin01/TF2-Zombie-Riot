@@ -526,7 +526,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		AproxRandomSpaceToWalkTo[2] += 20.0;
 		static float hullcheckmaxs_Player_Again[3];
 		static float hullcheckmins_Player_Again[3];
-		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); //Fat
+		hullcheckmaxs_Player_Again = view_as<float>( { 30.0, 30.0, 82.0 } ); 	//Fat
 		hullcheckmins_Player_Again = view_as<float>( { -30.0, -30.0, 0.0 } );	
 		if(IsSpaceOccupiedIgnorePlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index) || IsSpaceOccupiedOnlyPlayers(AproxRandomSpaceToWalkTo, hullcheckmins_Player_Again, hullcheckmaxs_Player_Again, npc.index))
 			continue;

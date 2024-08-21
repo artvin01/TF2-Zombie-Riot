@@ -773,7 +773,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(npc.Anger)
 				{			
-					npc.m_flSpeed = 350.0;
+					npc.m_flSpeed = 400.0;
 				}
 				npc.m_bAllowBackWalking = false;
 				//Get the normal prediction code.
@@ -792,7 +792,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				if(npc.Anger)
 				{			
-					npc.m_flSpeed = 300.0;
+					npc.m_flSpeed = 350.0;
 				}
 				npc.m_bAllowBackWalking = true;
 				float vBackoffPos[3];
@@ -851,7 +851,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			{
 				RemoveEntity(npc.m_iWearable8);
 			}
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/10);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/9);
 			CPrintToChatAll("{lightblue}Nemal{default}: Hey man, you're really hurting me here...");
 			npc.i_GunMode = 0;
 			damage = 0.0; //So he doesnt get oneshot somehow, atleast once.
@@ -869,7 +869,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
-			RaidModeTime = FAR_FUTURE;
+			RaidModeTime += 25.0;
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
@@ -1123,7 +1123,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							}
 							WorldSpaceCenter(targetTrace, vecHit);
 
-							float damage = 23.0;
+							float damage = 35.0;
 							
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1131,7 +1131,7 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							
 							//Do Hit Effect
 							float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-							flMaxhealth *= 0.001;
+							flMaxhealth *= 0.0025;
 							HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 							
 							SetColorRGBA(colorLayer4, r, g, b, 60);
@@ -1732,7 +1732,7 @@ bool NemalTalkPostWin(Nemal npc)
 	else if(GetGameTime() + 16.5 > f_TimeSinceHasBeenHurt[npc.index] && i_SaidLineAlready[npc.index] < 1)
 	{
 		i_SaidLineAlready[npc.index] = 1;
-		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped ether!");
+		CPrintToChatAll("{lightblue}Nemal{default}: Well thats it! You passed the test and ontop of that, helped eachother, teamwork!.. probably.");
 		ReviveAll(true);
 	}
 	return true; //He is trying to help.
@@ -1796,7 +1796,7 @@ bool NemalTransformation(Nemal npc)
 			npc.m_flNemalSuperRes = GetGameTime() + 5.0;
 			npc.m_flDoingAnimation = 0.0;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 10));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 9));
 			CPrintToChatAll("{lightblue}Nemal{default}: Here's my finest creation at work!");
 				
 			SetVariantColor(view_as<int>({255, 255, 255, 200}));
@@ -2055,7 +2055,7 @@ bool NemalSummonSilvester(Nemal npc)
 			}
 			case 3:
 			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Whos this? Its who! He who is comming!");
+				CPrintToChatAll("{lightblue}Nemal{default}: New phone who this? Oh, you finally came!");
 			}
 		}
 		npc.m_iChanged_WalkCycle = 0;
@@ -2067,6 +2067,11 @@ bool NemalSwordSlicer(Nemal npc)
 {
 	if(npc.m_flNemalSlicerHappening)
 	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			npc.m_flGetClosestTargetTime = 0.0;
+			npc.m_iTarget = GetClosestTarget(npc.index);
+		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
@@ -2238,9 +2243,9 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 			switch(GetRandomInt(0,1))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good friends weapon {gold}%N{default}! She's a very nice Iberian.",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Hey hey thats my good {snow}friends{default} weapon {gold}%N{default}! She's a very nice Iberian.",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Oh {snow}Irene{default}, looks like you have a student, their name is {gold}%N{default}!",client);
 			}
 		}
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "Were here to train.... why......");
@@ -2251,7 +2256,7 @@ static void Nemal_Weapon_Lines(Nemal npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "You a cheeky one {gold}%N{default}...",client);
+					Format(Text_Lines, sizeof(Text_Lines), "An one on one battle{gold}%N{default}?",client);
 			}
 		}
 		case WEAPON_HHH_AXE:  Format(Text_Lines, sizeof(Text_Lines), "You're just a little guy {gold}%N{default}! wait ow OW that hurts!!!",client);

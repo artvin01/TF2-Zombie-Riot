@@ -49,7 +49,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav",
 };
 
-void IberiaSpeedusItus_OnMapStart_NPC()
+void IberiaSpeedusElitus_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -60,8 +60,8 @@ void IberiaSpeedusItus_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_MeleeMissSounds));   i++) { PrecacheSound(g_MeleeMissSounds[i]);   }
 	PrecacheModel("models/player/scout.mdl");
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Speedus Instantus");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_instantus");
+	strcopy(data.Name, sizeof(data.Name), "Speedus Elitus");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_speedus_elitus");
 	strcopy(data.Icon, sizeof(data.Icon), "speedy_adivus");
 	data.IconCustom = true;
 	data.Flags = 0;
@@ -72,9 +72,9 @@ void IberiaSpeedusItus_OnMapStart_NPC()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return SpeedusItus(client, vecPos, vecAng, ally);
+	return SpeedusElitus(client, vecPos, vecAng, ally);
 }
-methodmap SpeedusItus < CClotBody
+methodmap SpeedusElitus < CClotBody
 {
 	
 	property float f_CaptinoAgentusTeleport
@@ -146,9 +146,9 @@ methodmap SpeedusItus < CClotBody
 	}
 	
 	
-	public SpeedusItus(int client, float vecPos[3], float vecAng[3], int ally)
+	public SpeedusElitus(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		SpeedusItus npc = view_as<SpeedusItus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "9000", ally));
+		SpeedusElitus npc = view_as<SpeedusElitus>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "13000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -166,12 +166,12 @@ methodmap SpeedusItus < CClotBody
 		ErasusEffects(npc.index);
 		
 		
-		func_NPCDeath[npc.index] = SpeedusItus_NPCDeath;
-		func_NPCOnTakeDamage[npc.index] = SpeedusItus_OnTakeDamage;
-		func_NPCThink[npc.index] = SpeedusItus_ClotThink;
+		func_NPCDeath[npc.index] = SpeedusElitus_NPCDeath;
+		func_NPCOnTakeDamage[npc.index] = SpeedusElitus_OnTakeDamage;
+		func_NPCThink[npc.index] = SpeedusElitus_ClotThink;
 		
 		
-		npc.m_flSpeed = 360.0;
+		npc.m_flSpeed = 400.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -199,9 +199,9 @@ methodmap SpeedusItus < CClotBody
 
 //TODO 
 //Rewrite
-public void SpeedusItus_ClotThink(int iNPC)
+public void SpeedusElitus_ClotThink(int iNPC)
 {
-	SpeedusItus npc = view_as<SpeedusItus>(iNPC);
+	SpeedusElitus npc = view_as<SpeedusElitus>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -244,7 +244,7 @@ public void SpeedusItus_ClotThink(int iNPC)
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
 		}
-		SpeedusItusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SpeedusElitusSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 	}
 	else
 	{
@@ -254,7 +254,7 @@ public void SpeedusItus_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-void SpeedusItusSelfDefense(SpeedusItus npc, float gameTime, int target, float distance)
+void SpeedusElitusSelfDefense(SpeedusElitus npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)
 	{
@@ -275,10 +275,10 @@ void SpeedusItusSelfDefense(SpeedusItus npc, float gameTime, int target, float d
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 80.0;
+					float damageDealt = 95.0;
 					
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 3.5;
+						damageDealt *= 4.0;
 
 					int DamageType = DMG_CLUB;
 
@@ -351,9 +351,9 @@ void SpeedusItusSelfDefense(SpeedusItus npc, float gameTime, int target, float d
 	}
 }
 
-public Action SpeedusItus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public Action SpeedusElitus_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	SpeedusItus npc = view_as<SpeedusItus>(victim);
+	SpeedusElitus npc = view_as<SpeedusElitus>(victim);
 		
 	if(attacker <= 0)
 		return Plugin_Continue;
@@ -367,9 +367,9 @@ public Action SpeedusItus_OnTakeDamage(int victim, int &attacker, int &inflictor
 	return Plugin_Changed;
 }
 
-public void SpeedusItus_NPCDeath(int entity)
+public void SpeedusElitus_NPCDeath(int entity)
 {
-	SpeedusItus npc = view_as<SpeedusItus>(entity);
+	SpeedusElitus npc = view_as<SpeedusElitus>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	

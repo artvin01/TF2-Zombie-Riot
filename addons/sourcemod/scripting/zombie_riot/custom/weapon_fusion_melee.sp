@@ -16,6 +16,8 @@ static const char g_Siccerino_snapSound[][] = {
 	"physics/metal/sawblade_stick3.wav",
 };
 
+
+
 static float f_AniSoundSpam[MAXTF2PLAYERS];
 static float Duration[MAXTF2PLAYERS];
 static int Weapon_Id[MAXTF2PLAYERS];

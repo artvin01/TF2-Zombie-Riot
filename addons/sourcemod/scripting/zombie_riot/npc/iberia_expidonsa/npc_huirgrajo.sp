@@ -33,8 +33,8 @@ void Huirgrajo_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Huirgrajo");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_huirgrajo");
-	strcopy(data.Icon, sizeof(data.Icon), "teleporter");
-	data.IconCustom = false;
+	strcopy(data.Icon, sizeof(data.Icon), "guardian");
+	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_IberiaExpiAlliance;
 	data.Func = ClotSummon;
