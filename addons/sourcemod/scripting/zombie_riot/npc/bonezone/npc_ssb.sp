@@ -4030,14 +4030,14 @@ methodmap SupremeSpookmasterBones < CClotBody
 		SSB_LastSpell[npc.index] = -1;
 		ParticleEffectAt(vecPos, PARTICLE_SSB_SPAWN, 3.0);
 
-		/*int wave = ZR_GetWaveCount() + 1;
+		int wave = ZR_GetWaveCount() + 1;
 		if (wave <= 15)
 			SSB_WavePhase = 0;
 		else if (wave <= 30)
 			SSB_WavePhase = 1;
 		else if (wave <= 45)
 			SSB_WavePhase = 2;
-		else*/
+		else
 			SSB_WavePhase = 3;
 
 		npc.m_flSpeed = BONES_SUPREME_SPEED[SSB_WavePhase];

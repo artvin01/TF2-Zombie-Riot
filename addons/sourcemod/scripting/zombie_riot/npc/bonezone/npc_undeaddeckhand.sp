@@ -5,10 +5,14 @@
 #define BONES_DECKHAND_SKIN		"2"
 #define BONES_DECKHAND_SCALE		 "1.0"
 
+#define SND_TRANSFORM		")vo/halloween_boss/knight_alert.mp3"
+#define PARTICLE_TRANSFORM	"ghost_appearation"
+
 static float BONES_DECKHAND_SPEED = 220.0;
 static float DECKHAND_NATURAL_BUFF_CHANCE = 0.1;	//Percentage chance for non-buffed skeletons of this type to be naturally buffed instead.
 static float DECKHAND_NATURAL_BUFF_LEVEL_MODIFIER = 0.1;	//Max percentage increase for natural buff chance based on the average level of all players in the lobby, relative to natural_buff_level.
 static float DECKHAND_NATURAL_BUFF_LEVEL = 100.0;	//The average level at which level_modifier reaches its max.
+static float DECKHAND_TRANSFORM_BUFFCHANCE = 0.5;	//Chance to make the skeleton transform into a random buffed variant instead of just a normal skeleton.
 
 static float BONES_DECKHAND_PLAYERDAMAGE = 60.0;
 static float BONES_DECKHAND_BUILDINGDAMAGE = 100.0;
@@ -71,10 +75,11 @@ public void DeckhandBones_OnMapStart_NPC()
 
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/zombie/classic.mdl");
+	PrecacheSound(SND_TRANSFORM);
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Undead Deckhand");
-	strcopy(data.Plugin, sizeof(data.Plugin), "npc_basicbones");
+	strcopy(data.Plugin, sizeof(data.Plugin), "npc_undeaddeckhand");
 	strcopy(data.Icon, sizeof(data.Icon), "pyro");
 	data.IconCustom = false;
 	data.Flags = 0;
@@ -211,7 +216,7 @@ methodmap DeckhandBones < CClotBody
 		{
 			FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-			npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/demo/fall2013_pirate_bandana/fall2013_pirate_bandana.mdl");
+			npc.m_iWearable1 = npc.EquipItem("hat", "models/workshop/player/items/sniper/jul13_sniper_souwester/jul13_sniper_souwester.mdl");
 			SetVariantString("1.125");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
@@ -241,7 +246,6 @@ methodmap DeckhandBones < CClotBody
 
 public void Deckhand_SetBuffed(int index, bool buffed)
 {
-	CClotBody npc = view_as<CClotBody>(index);
 	if (buffed)
 	{
 		RequestFrame(Deckhand_Transform, EntIndexToEntRef(index));
@@ -255,6 +259,36 @@ public void Deckhand_Transform(int ref)
 		return;
 
 	DeckhandBones npc = view_as<DeckhandBones>(ent);
+
+	float pos[3], ang[3], vel[3];
+	npc.GetAbsOrigin(pos);
+	npc.GetAbsVelocity(vel);
+	npc.GetAbsAngles(ang);
+
+	int spawned;
+
+	//TODO: Add more pirates later, maybe?
+	switch(GetRandomInt(1, 2))
+	{
+		case 1:
+		{
+			spawned = BuccaneerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE);
+		}
+		default:
+		{
+			spawned = PirateBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE);
+		}
+	}
+
+	if (IsValidEntity(spawned))
+	{
+		RemoveEntity(ent);
+
+		pos[2] += 40.0;
+		ParticleEffectAt(pos, PARTICLE_TRANSFORM);
+		EmitSoundToAll(SND_TRANSFORM, spawned, _, 120);
+		view_as<CClotBody>(spawned).SetVelocity(vel);
+	}
 }
 
 //TODO 
