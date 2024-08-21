@@ -2899,136 +2899,272 @@
 	{
 		"en"		"Nemal"
 	}
+	"Nemal Desc"
+	{
+		"en"		"Each 4th hit gives you a teslar debuff.\nEach 10 seconds she marks you if hit with melee.\nLaser attack predicts, anti predict it.\nWave ability predicts if youre marked.\nSimular abilities on Silvester.\nHer melee makes you glide (Silencable)"
+	}
 	"Sentinel"
 	{
 		"en"		"Sentinel"
+	}
+	"Sentinel Desc"
+	{
+		"en"		"If hit too often with a cooldown, Buffs every enemy the map."
 	}
 	"Ironborus"
 	{
 		"en"		"Ironborus"
 	}
+	"Ironborus Desc"
+	{
+		"en"		"Gives itself Quantum suit after some time."
+	}
 	"Destructius"
 	{
 		"en"		"Destructius"
+	}
+	"Destructius Desc"
+	{
+		"en"		"Foccuses buildings and deals massive damage to them."
 	}
 	"Iberia Beacon"
 	{
 		"en"		"Iberia Beacon"
 	}
+	"Iberia Beacon Desc"
+	{
+		"en"		"after 4 seconds, each 2 seconds it gives armor and morale to nearby enemies.\nMorale:\nW buff, Each number means its stronger upto 4.\nIt buffs movementspeed, damage and resistance Exponentially the higher the morale.\nAt morale 4, they scream."
+	}
 	"Beacon Constructor"
 	{
 		"en"		"Beacon Constructor"
+	}
+	"Beacon Constructor Desc"
+	{
+		"en"		"Places Beacons if close enough, has 50%% resistance and reduced speed while it carries one."
 	}
 	"Iberia Lighthouse"
 	{
 		"en"		"Iberia Lighthouse"
 	}
+	"Iberia Lighthouse Desc"
+	{
+		"en"		"Gives morale to any NPC in its line of sight, snipes enemies from afar, has a secondary shortrange gun.\nIf low enough or enough time passes, Huirgrajo appears."
+	}
 	"Huirgrajo"
 	{
 		"en"		"Huirgrajo"
+	}
+	"Huirgrajo Desc"
+	{
+		"en"		"Protects the lighthouse, If the lighthouse dies, gets stronger, eliminate him before the lighthouse.\nHas bad predictive aiming and summons holy lights like grigori."
 	}
 	"Cambino"
 	{
 		"en"		"Cambino"
 	}
+	"Cambino Desc"
+	{
+		"en"		"If its with melee, attacks with a gun 3 times. Deals no melee knockback (silenceable)"
+	}
 	"Irani"
 	{
 		"en"		"Irani"
+	}
+	"Irani Desc"
+	{
+		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
 	"Kinat"
 	{
 		"en"		"Kinat"
 	}
+	"Kinat Desc"
+	{
+		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead.\nIf enemy is marked, gains bullet on melee hit."
+	}
 	"Ginus"
 	{
 		"en"		"Ginus"
+	}
+	"Ginus Desc"
+	{
+		"en"		"Shoots with 1 bullet, then melees.\nIf enemy is marked, has better aim."
 	}
 	"Speedus Initus"
 	{
 		"en"		"Speedus Initus"
 	}
+	"Speedus Initus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
 	"Anania"
 	{
 		"en"		"Anania"
+	}
+	"Anania Desc"
+	{
+		"en"		"Gives morale to nearby enemies when it screams its horn."
 	}
 	"Victorian"
 	{
 		"en"		"Victorian"
 	}
+	"Victorian Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
+	}
 	"Inquisitor IIdutas"
 	{
 		"en"		"Inquisitor IIdutas"
+	}
+	"Inquisitor IIdutas Desc"
+	{
+		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster."
 	}
 	"Vivintu"
 	{
 		"en"		"Vivintu"
 	}
+	"Vivintu Desc"
+	{
+		"en"		"Marks an enemy on hit. Deals no melee knockback (silenceable)"
+	}
 	"Cenula"
 	{
 		"en"		"Cenula"
+	}
+	"Cenula Desc"
+	{
+		"en"		"Shoots with 2 bullets, then melees.\nIf enemy is marked, has better aim."
 	}
 	"Kumbai"
 	{
 		"en"		"Kumbai"
 	}
+	"Kumbai Desc"
+	{
+		"en"		"If its with melee, attacks with a gun 3 times, backs off if enemy is too close while shooting. Deals no melee knockback (silenceable)"
+	}
 	"Speedus Instantus"
 	{
 		"en"		"Speedus Instantus"
+	}
+	"Speedus Instantus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
 	}
 	"Sea-Xploder"
 	{
 		"en"		"Sea-Xploder"
 	}
+	"Sea-Xploder Desc"
+	{
+		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
+	}
 	"Anti Sea Robot"
 	{
 		"en"		"Anti Sea Robot"
+	}
+	"Anti Sea Robot Desc"
+	{
+		"en"		"Deals immensive damage and takes 2x Melee dmg\nTakes 0 dmg outside of its red radius."
 	}
 	"Ranka S"
 	{
 		"en"		"Ranka S"
 	}
+	"Ranka S Desc"
+	{
+		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
+	}
 	"Murdarato"
 	{
 		"en"		"Murdarato"
+	}
+	"Murdarato Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
 	}
 	"Ibira Kinat"
 	{
 		"en"		"Ibira Kinat"
 	}
+	"Ibira Kinat Desc"
+	{
+		"en"		"Deletes 1 projectile from the air with its bullet, if a player is too close, shoots them instead, Has 2 bullets instead.\nIf enemy is marked, gains bullet on melee hit."
+	}
 	"Iberia-Expidonsan Seaborn Eradicator"
 	{
 		"en"		"Iberia-Expidonsan Seaborn Eradicator"
+	}
+	"Iberia-Expidonsan Seaborn Eradicator Desc"
+	{
+		"en"		"Acts as a spawnpoint, unkillable and oneshots anything.\nOnce most allies died, it enrages, loses all its resistance and 99% hp and gets very fast, loses alot of damage too."
 	}
 	"Combastia"
 	{
 		"en"		"Combastia"
 	}
+	"Combastia Desc"
+	{
+		"en"		"Buffs allies once it screams\nImmune to most bleeds and fire."
+	}
 	"Morato"
 	{
 		"en"		"Morato"
+	}
+	"Morato Desc"
+	{
+		"en"		"If the ceiling is high enough, shoots a high damage arcing mortar shot.\nIf ceiling is low, then shoots a lower damage slow rocket."
 	}
 	"Speedus Itus"
 	{
 		"en"		"Speedus Itus"
 	}
+	"Speedus Itus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
+	}
 	"Speedus Elitus"
 	{
 		"en"		"Speedus Elitus"
+	}
+	"Speedus Elitus Desc"
+	{
+		"en"		"Very fast, if it hits a melee attack, teleports behind target with a CD.\nIf enemy is marked, CD is reduced."
 	}
 	"Sea Dryer"
 	{
 		"en"		"Sea Dryer"
 	}
+	"Sea Dryer Desc"
+	{
+		"en"		"Shoots a delayed C4, If enemy is killed, C4 despawns."
+	}
 	"Runaka"
 	{
 		"en"		"Runaka"
+	}
+	"Runaka Desc"
+	{
+		"en"		"Gives armor to all allies near it if it hits something, reduced if its an ubered enemy or a building."
 	}
 	"Inquisitor Irene"
 	{
 		"en"		"Inquisitor Irene"
 	}
+	"Inquisitor Irene Desc"
+	{
+		"en"		"If its knife is burning, next melee hit launches you up and marks you.\nIf enemy is marked, gains more ammo aswell.\nIf enemy is marked, shoots 3x faster.\nCan activate judgement of iberia if close to enemies with a cooldown."
+	}
 	"Death Marker"
 	{
 		"en"	"Death Marker"
+	}
+	"Death Marker Desc"
+	{
+		"en"	"Marks an enemy on hit. Deals no melee knockback (silenceable)"
 	}
 }
