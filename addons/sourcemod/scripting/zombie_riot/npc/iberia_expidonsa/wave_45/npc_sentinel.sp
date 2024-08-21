@@ -207,6 +207,7 @@ public void IberianSentinel_ClotThink(int iNPC)
 		float flAng[3];
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 		int ParticleEffect;
+		int ParticleEffect1;
 		
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
 		flAng[0] = 90.0;
