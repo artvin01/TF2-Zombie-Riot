@@ -245,8 +245,7 @@ public void IberiaLighthouse_ClotThink(int iNPC)
 		{
 			CClotBody npc1 = view_as<CClotBody>(spawn_index);
 			npc1.m_iTargetAlly = npc.index;
-			fl_AbilityOrAttack[spawn_index] = fl_AbilityOrAttack[npc.index];
-			b_thisNpcIsABoss[npc.index] = true;
+			b_thisNpcIsABoss[spawn_index] = true;
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -347,7 +346,7 @@ public void IberiaLighthouse_NPCDeath(int entity)
 
 static char[] GetBuildingHealth()
 {
-	int health = 220;
+	int health = 155;
 	
 	health *= CountPlayersOnRed(); //yep its high! will need tos cale with waves expoentially.
 	

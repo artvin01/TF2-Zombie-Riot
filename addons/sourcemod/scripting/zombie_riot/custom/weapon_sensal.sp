@@ -47,6 +47,11 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 			{
 				i_CosmeticScytheThing[client] = 2;
 			}
+			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 3"));
+			if(DoCosmetic)
+			{
+				i_CosmeticScytheThing[client] = 4;
+			}
 			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Expidonsan Battery Device"));
 			if(DoCosmetic)
 			{
@@ -77,6 +82,11 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 		if(DoCosmetic)
 		{
 			i_CosmeticScytheThing[client] = 2;
+		}
+		DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 3"));
+		if(DoCosmetic)
+		{
+			i_CosmeticScytheThing[client] = 4;
 		}
 		DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Expidonsan Battery Device"));
 		if(DoCosmetic)
@@ -432,15 +442,21 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	{
 		case 1:
 		{
-			red = 215;
-			green = 170;
-			blue = 0;
+			red = 255;
+			green = 255;
+			blue = 255;
 		}
 		case 2:
 		{
 			red = 215;
 			green = 170;
 			blue = 0;
+		}
+		case 4:
+		{
+			red = 125;
+			green = 0;
+			blue = 125;
 		}
 		case 3:
 		{
@@ -472,6 +488,10 @@ void SummonScytheSensalProjectile(int client, int weapon)
 				else if(i_CosmeticScytheThing[client] == 2)
 				{
 					SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+				}
+				else if(i_CosmeticScytheThing[client] == 4)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
 				}
 				else
 				{
@@ -528,6 +548,10 @@ void SummonScytheSensalProjectile(int client, int weapon)
 				else if(i_CosmeticScytheThing[client] == 2)
 				{
 					SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+				}
+				else if(i_CosmeticScytheThing[client] == 4)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 4);
 				}
 				else
 				{
@@ -630,6 +654,10 @@ void SensalApplyRecolour(int client, int entity)
 		else if(i_CosmeticScytheThing[client] == 2)
 		{
 			SetEntityRenderColor(entity, 255, 255, 255, 3);
+		}
+		else if(i_CosmeticScytheThing[client] == 4)
+		{
+			SetEntityRenderColor(entity, 255, 255, 255, 4);
 		}
 		else
 		{
