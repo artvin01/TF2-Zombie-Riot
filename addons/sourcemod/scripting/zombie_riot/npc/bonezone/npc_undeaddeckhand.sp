@@ -197,7 +197,7 @@ methodmap DeckhandBones < CClotBody
 		b_BonesBuffed[npc.index] = buffed;
 		b_IsSkeleton[npc.index] = true;
 		npc.m_bBoneZoneNaturallyBuffed = buffed;
-		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(DeckhandBones_SetBuffed);
+		g_BoneZoneBuffFunction[npc.index] = view_as<Function>(Deckhand_SetBuffed);
 
 		func_NPCDeath[npc.index] = view_as<Function>(DeckhandBones_NPCDeath);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(DeckhandBones_OnTakeDamage);
@@ -254,7 +254,7 @@ public void Deckhand_Transform(int ref)
 	if (!IsValidEntity(ent))
 		return;
 
-	DeckhandBones npc = view_as<DeckhandBones>(index);
+	DeckhandBones npc = view_as<DeckhandBones>(ent);
 }
 
 //TODO 
