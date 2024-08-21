@@ -9,6 +9,7 @@ int i_ExpidonsaShieldCapacity[MAXENTITIES];
 int i_ExpidonsaShieldCapacity_Mini[MAXENTITIES];
 int i_Expidonsa_ShieldEffect[MAXENTITIES];
 float f_Expidonsa_ShieldBroke[MAXENTITIES];
+bool EnemyShieldCantBreak[MAXENTITIES];
 
 stock void ExpidonsaRemoveEffects(int iNpc)
 {
@@ -29,8 +30,30 @@ void Expidonsa_SetToZero(int iNpc)
 	i_ExpidonsaShieldCapacity[iNpc] = 0;
 	i_ExpidonsaShieldCapacity_Mini[iNpc] = 0;
 	VausMagicaRemoveShield(iNpc);
+	EnemyShieldCantBreak[iNpc] = false;
 }
 
+bool ExpidonsaDepletedShieldShow(int victim)
+{
+	//false means delete shield.
+	if(b_thisNpcIsARaid[victim])
+		return false;
+	
+	if(ExpidonsanShieldBroke(victim) > GetGameTime())
+	{
+		if(IsValidEntity(i_Expidonsa_ShieldEffect[victim]))
+		{
+			int Shield = EntRefToEntIndex(i_Expidonsa_ShieldEffect[victim]);
+			SetEntityRenderColor(Shield, 50, 50, 50, 50);	
+			SetEntityRenderFx(Shield, RENDERFX_FLICKER_FAST);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 stock bool VausMagicaShieldLogicEnabled(int victim)
 {
 	if(i_ExpidonsaShieldCapacity[victim] > 0)
@@ -69,7 +92,9 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 
 		if(i_ExpidonsaShieldCapacity[victim] <= 0)
 		{
-			f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
+			if(!EnemyShieldCantBreak[victim])
+				f_Expidonsa_ShieldBroke[victim] = GetGameTime() + 5.0;
+
 			VausMagicaRemoveShield(victim);
 		}
 		else
@@ -81,15 +106,19 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 
 void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 {
-	int MaxShieldCapacity = 5;
+	float CapacityMaxMulti = float(CountPlayersOnRed(_, true)) / 7.0;
+	int MaxShieldCapacity = RoundToNearest(5.0 * CapacityMaxMulti);
 	if(b_thisNpcIsABoss[entity])
 	{
-		MaxShieldCapacity = 10;
+		MaxShieldCapacity = RoundToNearest(10.0 * CapacityMaxMulti);
 	}
 	if(b_thisNpcIsARaid[entity])
 	{
 		MaxShieldCapacity = 250;
 	}
+	if(MaxShieldCapacity < 1)
+		MaxShieldCapacity = 1;
+
 	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < 250)
 	{
 		return; //do not give shield.
@@ -105,16 +134,23 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	{
 		alpha = 255;
 	}
+	CClotBody npc = view_as<CClotBody>(entity);
 	if(IsValidEntity(i_Expidonsa_ShieldEffect[entity]))
 	{
 		int Shield = EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]);
-		SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(Shield, 255, 255, 255, alpha);
+		SetEntityRenderFx(Shield, RENDERFX_NONE);
+		if(npc.m_iBleedType == BLEEDTYPE_VOID)
+		{
+			SetEntityRenderColor(Shield, 255, 0, 255, alpha);	
+		}
+		else
+		{
+			SetEntityRenderColor(Shield, 255, 255, 255, alpha);	
+		}
 		return;
 	}
-
-	CClotBody npc = view_as<CClotBody>(entity);
 	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
+
 	if(b_IsGiant[entity])
 		SetVariantString("1.35");
 	else
@@ -123,19 +159,34 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	AcceptEntityInput(Shield, "SetModelScale");
 	SetEntityRenderMode(Shield, RENDER_TRANSCOLOR);
 	
-	SetEntityRenderColor(Shield, 255, 255, 255, alpha);
-	SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+	SetEntityRenderFx(Shield, RENDERFX_NONE);
+	if(npc.m_iBleedType == BLEEDTYPE_VOID)
+	{
+		SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderColor(Shield, 255, 0, 255, alpha);	
+	}
+	else
+	{
+		SetEntProp(Shield, Prop_Send, "m_nSkin", 1);
+		SetEntityRenderColor(Shield, 255, 255, 255, alpha);	
+	}
 
 	i_Expidonsa_ShieldEffect[entity] = EntIndexToEntRef(Shield);
 }
 
-void VausMagicaRemoveShield(int entity)
+void VausMagicaRemoveShield(int entity, bool force = false)
 {
 	if(!IsValidEntity(i_Expidonsa_ShieldEffect[entity]))
 		return;
+		
+	if(!force && VausMagicaShieldLeft(entity) >= 1)
+		return;
 
-	RemoveEntity(EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]));
-	i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
+	if(force || !ExpidonsaDepletedShieldShow(entity))
+	{
+		RemoveEntity(EntRefToEntIndex(i_Expidonsa_ShieldEffect[entity]));
+		i_Expidonsa_ShieldEffect[entity] = INVALID_ENT_REFERENCE;
+	}
 }
 
 
@@ -234,10 +285,6 @@ static void Expidonsa_AllyHealInternal(int HealerNpc, int victim, float heal)
 		return;
 	
 	i_Expidonsa_HealingCount[HealerNpc] -= 1;
-	float ProjLoc[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjLoc);
-	ProjLoc[2] += 100.0;
-	TE_Particle("healthgained_blu", ProjLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 	Function func2 = func_Expidonsa_Heal_After[HealerNpc];
 	if(func2 && func2 != INVALID_FUNCTION)
 	{
@@ -253,4 +300,9 @@ stock bool Expidonsa_DontHealSameIndex(int entity, int victim)
 		return true;
 
 	return false;
+}
+
+float ExpidonsanShieldBroke(int entity)
+{
+	return(f_Expidonsa_ShieldBroke[entity]);
 }

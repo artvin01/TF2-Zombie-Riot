@@ -103,6 +103,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		BeheadedKamiKaze npc = view_as<BeheadedKamiKaze>(CClotBody(vecPos, vecAng, "models/zombie_riot/serious/kamikaze_4.mdl", "1.10", GetBeheadedKamiKazeHealth(), ally));
 		
 		i_NpcWeight[npc.index] = 2;
+		npc.m_bisWalking = false;
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
@@ -139,6 +140,7 @@ methodmap BeheadedKamiKaze < CClotBody
 		wave *= 0.1;
 
 		npc.m_flWaveScale = wave;
+		npc.m_bDissapearOnDeath = true;
 
 		if(ally == TFTeam_Blue)
 		{
@@ -160,8 +162,7 @@ methodmap BeheadedKamiKaze < CClotBody
 			}
 
 			fl_KamikazeInitiate = GetGameTime() + 15.0;
-
-			npc.m_bDissapearOnDeath = true;
+			
 			if(!TeleportDiversioToRandLocation(npc.index,_,1750.0, 1250.0))
 			{
 				//incase their random spawn code fails, they'll spawn here.

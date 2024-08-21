@@ -18,6 +18,7 @@ static int how_many_supercharge_left[MAXTF2PLAYERS];
 static int how_many_shots_reserved[MAXTF2PLAYERS];
 static bool During_Ability[MAXPLAYERS];
 static bool Super_Hot[MAXPLAYERS];
+static bool HasRocketSteam[MAXPLAYERS];
 //static bool Toggle_Burst[MAXPLAYERS];
 static bool Mega_Burst[MAXPLAYERS];
 static bool Overheat[MAXPLAYERS];
@@ -56,6 +57,9 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		//This timer already exists.
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 		{
+			HasRocketSteam[client] = false;
+			if(Items_HasNamedItem(client, "Major Steam's Rocket"))
+				HasRocketSteam[client] = true;
 			//Is the weapon it again?
 			//Yes?
 			delete h_TimerVictorianLauncherManagement[client];
@@ -70,6 +74,9 @@ public void Enable_Victorian_Launcher(int client, int weapon) // Enable manageme
 		
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_VICTORIAN_LAUNCHER)
 	{
+		HasRocketSteam[client] = false;
+		if(Items_HasNamedItem(client, "Major Steam's Rocket"))
+			HasRocketSteam[client] = true;
 		DataPack pack;
 		h_TimerVictorianLauncherManagement[client] = CreateDataTimer(0.25, Timer_Management_Victoria, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -324,6 +331,14 @@ public void Shell_VictorianTouch(int entity, int target)
 			}
 			BaseDMG *= Ratio;
 		}
+		else
+		{
+			if(IsValidClient(owner))
+			{
+				if(HasRocketSteam[owner])
+					BaseDMG *= 1.1;
+			}
+		}
 
 
 		float Radius = EXPLOSION_RADIUS;
@@ -498,17 +513,17 @@ public Action Victorian_DrainHealth(Handle timer, int userid)
 	{
 		if(IsPlayerAlive(client) && TF2_IsPlayerInCondition(client, TFCond_HalloweenCritCandy))
 		{
-			int health = GetClientHealth(client) * 98 / 100;
-			if(health < 100)
-				health = 100;
+			if(GetClientHealth(client) > 100)
+			{
+				int health = GetClientHealth(client) * 98 / 100;
+				if(health < 100)
+					health = 100;
+				
+				SetEntityHealth(client, health);
+			}
 			
-			SetEntityHealth(client, health);
 			return Plugin_Continue;
 		}
-	}
-	else
-	{
-		TF2_RemoveCondition(client, TFCond_HalloweenCritCandy);
 	}
 	return Plugin_Stop;
 }

@@ -60,8 +60,8 @@ void Magianas_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "magia"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -137,7 +137,7 @@ methodmap Magianas < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -455,13 +455,9 @@ static void ClotThink(int iNPC)
 							
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-						float 	projectile_speed = 800.0,
-								target_vec[3];
-
-						PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
-
+						float 	projectile_speed = 800.0;
 			
-						int Proj = npc.FireParticleRocket(target_vec, 80.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+						int Proj = npc.FireParticleRocket(vecTarget, 70.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 
 						if(fl_ruina_battery_timer[npc.index] > GameTime && IsValidEntity(Proj))
 						{
@@ -469,7 +465,7 @@ static void ClotThink(int iNPC)
 									Homing_Lockon = 50.0;
 
 							float Ang[3];
-							MakeVectorFromPoints(Npc_Vec, target_vec, Ang);
+							MakeVectorFromPoints(Npc_Vec, vecTarget, Ang);
 							GetVectorAngles(Ang, Ang);
 
 							Initiate_HomingProjectile(Proj,

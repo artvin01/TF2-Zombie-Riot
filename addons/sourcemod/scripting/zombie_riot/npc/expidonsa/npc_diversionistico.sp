@@ -170,6 +170,7 @@ methodmap Diversionistico < CClotBody
 		
 		if(final)
 		{
+			b_FaceStabber[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 
@@ -547,6 +548,7 @@ int TeleportDiversioToRandLocation(int iNPC, bool RespectOutOfBounds = false, fl
 		AproxRandomSpaceToWalkTo[2] += 18.0;
 		//everything is valid, now we check if we are too close to the enemy, or too far away.
 		TeleportEntity(npc.index, AproxRandomSpaceToWalkTo);
+		RemoveSpawnProtectionLogic(npc.index, true);
 		return 1;
 	}
 	return 2;

@@ -257,7 +257,7 @@ void BeneraSelfDefense(Benera npc, float gameTime, int target, float distance)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 7.5;
+						float damageDealt = 14.5;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

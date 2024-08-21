@@ -517,7 +517,6 @@ int SoldineSelfDefense(Soldine npc, float gameTime, int target, float distance)
 	//isnt melee anymore
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0) || npc.b_SoldineRocketJump)
 	{
-
 		if(gameTime > npc.f_SoldineRocketJumpCD && !NpcStats_IsEnemySilenced(npc.index))
 		{
 			if(Can_I_See_Enemy_Only(npc.index, target))

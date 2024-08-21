@@ -106,7 +106,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -114,7 +114,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	}
 
 	public void PlayMeleeHitSound() {
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -122,7 +122,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	}
 
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CGoreFast::PlayMeleeMissSound()");
@@ -140,7 +140,7 @@ methodmap Barrack_Combine_Super < BarrackBody
 	{
 		Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(BarrackBody(client, vecPos, vecAng, "2250", COMBINE_CUSTOM_MODEL, STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_knockout.mdl"));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 2;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Super_NPCDeath;
@@ -200,7 +200,7 @@ public void Barrack_Combine_Super_ClotThink(int iNPC)
 						}
 						npc.PlaySwordSound();
 						npc.m_flAttackHappens = GameTime + 0.05;
-						npc.m_flAttackHappens_bullshit = GameTime + 0.34;
+						npc.m_flAttackHappens_bullshit = GameTime + 0.24;
 						npc.m_flNextMeleeAttack = GameTime + (0.1 * npc.BonusFireRate);
 						npc.m_flAttackHappenswillhappen = true;
 					}
@@ -247,7 +247,7 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 		
 	Barrack_Combine_Super npc = view_as<Barrack_Combine_Super>(victim);
 	
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.m_bLostHalfHealth) 
 	{
 		npc.m_bLostHalfHealth = true;
 	}
@@ -256,16 +256,16 @@ public Action Barrack_Combine_Super_OnTakeDamage(int victim, int &attacker, int 
 
 	if(npc.m_bLostHalfHealth)
 	{
-		TrueArmor *= 0.9;
-		switch(GetRandomInt(1, 2))
+		TrueArmor *= 0.85;
+		switch(GetRandomInt(1, 4))
 		{
-			case 1:
+			case 1,2,3:
 			{
 
 			}
-			case 2:
+			case 4:
 			{
-				damage *= 0.6;
+				damage *= 0.1;
 				npc.PlayDeflectSound();
 				NpcSpeechBubble(npc.index, "Nice Try!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 			}

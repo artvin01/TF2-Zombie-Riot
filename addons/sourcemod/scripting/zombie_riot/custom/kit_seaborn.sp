@@ -61,7 +61,7 @@ public void Weapon_SeaMelee_M2(int client, int weapon, bool crit, int slot)
 
 void SeaMelee_Enable(int client, int weapon)
 {
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE)
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SEABORNMELEE || i_CustomWeaponEquipLogic[weapon] == WEAPON_ULPIANUS)
 	{
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
@@ -86,7 +86,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 			{
 				switch(i_CustomWeaponEquipLogic[weapon])
 				{
-					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC:
+					case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_ULPIANUS:
 					{
 						b_IsCannibal[client] = true;
 
@@ -112,7 +112,7 @@ public Action SeaMelee_TimerEffect(Handle timer, int client)
 							float pos[3]; GetClientAbsOrigin(client, pos);
 							pos[2] += 1.0;
 
-							int entity = ParticleEffectAt(pos, special ? "utaunt_fish_parent" : "utaunt_fish_base3", -1.0);
+							int entity = ParticleEffectAt(pos, special ? "utaunt_hands_floor2_blue" : "utaunt_hands_floor2_blue", -1.0);
 							if(entity > MaxClients)
 							{
 								SetParent(client, entity);
@@ -212,6 +212,8 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 	{
 		fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 		CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+		i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+		b_ShowNpcHealthbar[entity] = true;
 	}
 }
 
@@ -242,6 +244,8 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
 		}
 	}
 }
@@ -281,6 +285,8 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
 			CreateTimer(95.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
+			b_ShowNpcHealthbar[entity] = true;
 		}
 	}
 	/*
@@ -309,119 +315,6 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 	}*/
 }
 
-public void Weapon_SeaHealing_M1(int client, int weapon, bool crit, int slot)
-{
-	if(dieingstate[client] != 0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
-	if(Ability_Check_Cooldown(client, slot) > 0.0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
-		return;
-	}
-
-	int ammo = GetAmmo(client, 21);
-	if(ammo > 4)
-	{
-		StartPlayerOnlyLagComp(client, true);
-		int target = GetClientPointVisibleOnlyClient(client, 150.0);
-		EndPlayerOnlyLagComp(client);
-
-		if(target > 0 && target <= MaxClients && dieingstate[target] == 0)
-		{
-			int health = GetEntProp(target, Prop_Send, "m_iHealth");
-			int maxHealth = SDKCall_GetMaxHealth(target);
-			if(health < maxHealth)
-			{
-				int healing = maxHealth - health;
-				if(healing > 100)
-					healing = 100;
-				
-				if(healing > ammo)
-					healing = ammo;
-				
-				healing = healing / 5 * 5;
-
-				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
-				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-
-				float cooldown = float(healing) / 5.0;
-				if(cooldown < 1.0)
-					cooldown = 1.0;
-					
-				if(cooldown > 15.0)
-					cooldown = 15.0;
-				
-				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
-
-				Ability_Apply_Cooldown(client, slot, cooldown);
-
-				CurrentAmmo[client][21] = ammo - healing;
-				SetAmmo(client, 21, CurrentAmmo[client][21]);
-				return;
-			}
-			
-			PrintHintText(client, "%N Is already at full hp.", target);
-		}
-	}
-
-	ClientCommand(client, "playgamesound items/medshotno1.wav");
-}
-
-public void Weapon_SeaHealing_M2(int client, int weapon, bool crit, int slot)
-{
-	if(dieingstate[client] != 0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		return;
-	}
-	if(Ability_Check_Cooldown(client, slot) > 0.0)
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
-		return;
-	}
-
-	int ammo = GetAmmo(client, 21);
-	if(ammo > 0)
-	{
-		int health = GetEntProp(client, Prop_Send, "m_iHealth");
-		int maxHealth = SDKCall_GetMaxHealth(client);
-		
-		int healing = maxHealth - health;
-		if(healing > 30)
-			healing = 30;
-		
-		if(healing < 0)
-			healing = 0;
-		
-		if(healing > ammo)
-			healing = ammo;
-		
-		healing = HealEntityGlobal(client, client, float(healing), 1.0, 0.0, _);
-		
-		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
-
-		PrintHintText(client, "You Healed yourself for %d HP!, you gain a 15 healing cooldown.", healing);
-
-		Ability_Apply_Cooldown(client, slot, 15.0);
-
-		CurrentAmmo[client][21] = ammo - healing;
-		SetAmmo(client, 21, CurrentAmmo[client][21]);
-		return;
-	}
-
-	ClientCommand(client, "playgamesound items/medshotno1.wav");
-}
 
 public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 {
@@ -448,26 +341,62 @@ public void Weapon_SeaHealingPap_M1(int client, int weapon, bool crit, int slot)
 			if(health < maxHealth)
 			{
 				int healing = maxHealth - health;
-				if(healing > 200)
-					healing = 200;
+				if(healing > 75)
+					healing = 75;
+
+				healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
+				healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
+
+				int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+				if(Pap != 0.0)
+				{
+					if(Pap == 1)
+					{
+						healing = 60;
+					}
+					else
+					{
+						healing = 80;
+					}
+				}
+
+				if((health + healing) > maxHealth)
+				{
+					healing = maxHealth - health;
+				}
 				
 				if(healing > ammo)
 					healing = ammo;
-				
-				healing = healing / 5 * 5;
 
-				healing = HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+				HealEntityGlobal(client, target, float(healing), 1.0, 0.5, _);
+
+				if(healing <= 0)
+				{
+					ClientCommand(client, "playgamesound items/medshotno1.wav");
+					return;
+				}
 				ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 				ClientCommand(target, "playgamesound items/smallmedkit1.wav");
-
-
-				float cooldown = float(health) / 10.0;
+				float cooldown;
+				if(Pap != 0.0)
+				{
+					cooldown = float(healing) / 5.0;
+				}
+				else
+				{
+					cooldown = float(healing) / 10.0;
+				}
+				
 				if(cooldown < 1.0)
 					cooldown = 1.0;
+
+				if(cooldown > 15.0)
+					cooldown = 15.0;
 				
 				PrintHintText(client, "You Healed %N for %d HP!, you gain a %.0f healing cooldown.", target, healing, cooldown);
 
-				Ability_Apply_Cooldown(client, slot, cooldown);
+				Ability_Apply_Cooldown(client, 1, cooldown);
+				Ability_Apply_Cooldown(client, 2, cooldown);
 
 				CurrentAmmo[client][21] = ammo - healing;
 				SetAmmo(client, 21, CurrentAmmo[client][21]);
@@ -499,22 +428,46 @@ public void Weapon_SeaHealingPap_M2(int client, int weapon, bool crit, int slot)
 		int maxHealth = SDKCall_GetMaxHealth(client);
 		
 		int healing = maxHealth - health;
-		if(healing > 50)
-			healing = 50;
+		if(healing > 30)
+			healing = 30;
+
+		healing = RoundToNearest(float(healing) * Attributes_Get(weapon, 8, 1.0));
+		healing = RoundToNearest(float(healing) * Attributes_GetOnPlayer(client, 8, true, true));
+
+		int Pap = RoundToNearest(Attributes_Get(weapon, 122, 0.0));
+		if(Pap != 0.0)
+		{
+			if(Pap == 1)
+			{
+				healing = 20;
+			}
+			else
+			{
+				healing = 30;
+			}
+		}
+
+		if((health + healing) > maxHealth)
+		{
+			healing = maxHealth - health;
+		}
 		
-		if(healing < 0)
-			healing = 0;
+		if(healing <= 0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
 		
 		if(healing > ammo)
 			healing = ammo;
 		
-		SetEntityHealth(client, health + healing);
-		
+		HealEntityGlobal(client, client, float(healing), 1.0, 0.5, _);
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 
 		PrintHintText(client,"You Healed yourself for %d HP!, you gain a 25 healing cooldown.", healing);
 
-		Ability_Apply_Cooldown(client, slot, 25.0);
+		Ability_Apply_Cooldown(client, 1, 25.0);
+		Ability_Apply_Cooldown(client, 2, 25.0);
 
 		CurrentAmmo[client][21] = ammo - healing;
 		SetAmmo(client, 21, CurrentAmmo[client][21]);

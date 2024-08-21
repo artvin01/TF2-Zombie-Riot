@@ -59,11 +59,12 @@ void Helia_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "medic_uber"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -134,7 +135,7 @@ methodmap Helia < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -176,6 +177,7 @@ methodmap Helia < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
+		fl_npc_basespeed = 225.0;
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -281,7 +283,7 @@ static void ClotThink(int iNPC)
 	}
 	if(fl_ruina_battery_timer[npc.index]>GameTime)	//apply buffs
 	{	
-		Helia_Healing_Logic(npc.index, 500, 300.0, GameTime, 1.0, {255, 255, 255, 255});
+		Helia_Healing_Logic(npc.index, 500, 300.0, GameTime, 1.0);
 
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -306,13 +308,13 @@ static void ClotThink(int iNPC)
 				if(flDistanceToTarget < (500.0*500.0))
 				{
 					Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
-					Helia_Healing_Logic(npc.index, 75, 150.0, GameTime, 3.5, {20, 150, 255, 150});
+					Helia_Healing_Logic(npc.index, 75, 150.0, GameTime, 3.5);
 					
 				}
 				else	
 				{
 					fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-					Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5, {20, 150, 255, 150});
+					Helia_Healing_Logic(npc.index, 150, 150.0, GameTime, 3.5);
 
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
@@ -325,7 +327,7 @@ static void ClotThink(int iNPC)
 				Ruina_Runaway_Logic(npc.index, PrimaryThreatIndex);
 
 				fl_multi_attack_delay[npc.index] = GameTime + 0.5;
-				Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5, {20, 150, 255, 150});	
+				Helia_Healing_Logic(npc.index, 75, 175.0, GameTime, 3.5);
 			}	
 		}
 		else
@@ -333,6 +335,14 @@ static void ClotThink(int iNPC)
 			npc.StartPathing();
 			npc.m_bPathing = true;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 
 		Ruina_Self_Defense Melee;
 
@@ -380,6 +390,9 @@ static int i_laser[MAXENTITIES][9];
 
 static void Helia_Create_Crest(int client)
 {
+
+	if(AtEdictLimit(EDICT_NPC))	
+		return;
 	float flPos[3];
 	float flAng[3];
 	GetAttachment(client, "", flPos, flAng);

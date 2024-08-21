@@ -172,7 +172,7 @@ public void ArkSlug_ClotThink(int iNPC)
 		npc.m_bisWalking = false; 
 		npc.SetActivity("ACT_HEADCRAB_BURROW_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_IN");
-		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 
 		if(IsValidEntity(npc.m_iTextEntity1))
 			RemoveEntity(npc.m_iTextEntity1);
@@ -200,7 +200,7 @@ public void ArkSlug_ClotThink(int iNPC)
 		npc.SetActivity("ACT_IDLE");
 		npc.AddGesture("ACT_HEADCRAB_BURROW_OUT");
 
-		int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int health = ReturnEntityMaxHealth(npc.index);
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 		
 		npc.m_flNextThinkTime = gameTime + 1.4;

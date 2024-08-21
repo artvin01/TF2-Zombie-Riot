@@ -36,6 +36,8 @@ public void Barrack_Alt_Crossbowmedic_MapStart()
 	NPC_Add(data);
 }
 
+
+static float fl_npc_basespeed;
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barrack_Alt_Crossbowmedic(client, vecPos, vecAng, ally);
@@ -69,6 +71,7 @@ methodmap Barrack_Alt_Crossbowmedic < BarrackBody
 		func_NPCDeath[npc.index] = Barrack_Alt_Crossbowmedic_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Crossbowmedic_ClotThink;
 
+		fl_npc_basespeed = 125.0;
 		npc.m_flSpeed = 125.0;
 		
 		
@@ -147,14 +150,14 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayRangedSound();
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 750.0, 1)*2.0 , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 562.5, 1)*2.0 , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (4.25 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 						}
 						else
 						{
 							
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 750.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 562.5, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (2.75 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							i_overcharge[npc.index]++;
@@ -171,6 +174,15 @@ public void Barrack_Alt_Crossbowmedic_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

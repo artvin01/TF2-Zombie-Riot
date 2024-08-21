@@ -279,7 +279,7 @@ public void LastKnight_ClotThink(int iNPC)
 
 		// Won't attack runners, find players
 		if(npc.m_iTarget < 1)
-			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2, _, false, true);
+			npc.m_iTarget = GetClosestTarget(npc.index, npc.m_iPhase == 2);
 	}
 
 	if(aggressive)
@@ -423,7 +423,7 @@ void LastKnight_OnTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		npc.m_blPlayHurtAnimation = true;
 	}
 
-	int ratio = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 5 / GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int ratio = GetEntProp(npc.index, Prop_Data, "m_iHealth") * 5 / ReturnEntityMaxHealth(npc.index);
 	switch(npc.m_iPhase)
 	{
 		case 0:

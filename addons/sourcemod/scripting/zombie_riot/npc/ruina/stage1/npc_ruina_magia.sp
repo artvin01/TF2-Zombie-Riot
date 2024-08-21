@@ -51,6 +51,7 @@ static char g_TeleportSounds[][] = {
 	"misc/halloween/spell_stealth.wav",
 };
 
+static float fl_npc_basespeed;
 void Magia_OnMapStart_NPC()
 {
 	NPCData data;
@@ -59,8 +60,8 @@ void Magia_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "magia"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -134,7 +135,7 @@ methodmap Magia < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -182,6 +183,7 @@ methodmap Magia < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 		
 		npc.m_flSpeed = 300.0;
+		fl_npc_basespeed = 300.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
@@ -319,6 +321,13 @@ static void ClotThink(int iNPC)
 			npc.m_bPathing = true;
 			npc.m_bAllowBackWalking=false;
 		}
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 			
 		//Target close enough to hit
 		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
@@ -343,10 +352,8 @@ static void ClotThink(int iNPC)
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
 					float projectile_speed = 1000.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _,target_vec);
 		
-					npc.FireParticleRocket(target_vec, 50.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
+					npc.FireParticleRocket(vecTarget, 30.0 , projectile_speed , 100.0 , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else

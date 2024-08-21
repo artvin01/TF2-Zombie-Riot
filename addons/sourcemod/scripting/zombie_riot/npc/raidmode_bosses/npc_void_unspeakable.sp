@@ -227,8 +227,12 @@ methodmap VoidUnspeakable < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = 0;
 		}
+		if(StrContains(data, "bossrush") != -1)
+		{
+			i_RaidGrantExtra[npc.index] = -5;
+		}
 		npc.m_flDeathAnimation = 0.0;
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		npc.g_TimesSummoned = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -293,6 +297,7 @@ methodmap VoidUnspeakable < CClotBody
 		RaidBossActive = EntIndexToEntRef(npc.index);
 		RaidAllowsBuildings = false;
 		b_thisNpcIsARaid[npc.index] = true;
+		npc.m_flMeleeArmor = 1.25;	
 		
 		RaidModeScaling = float(ZR_GetWaveCount()+1);
 		if(RaidModeScaling < 55)
@@ -326,39 +331,42 @@ methodmap VoidUnspeakable < CClotBody
 			RaidModeScaling *= 0.85;
 		}
 
-		if(FogEntity != INVALID_ENT_REFERENCE)
+		if(i_RaidGrantExtra[npc.index] != -5)
 		{
-			int entity = EntRefToEntIndex(FogEntity);
-			if(entity > MaxClients)
-				RemoveEntity(entity);
-			
-			FogEntity = INVALID_ENT_REFERENCE;
-		}
-		
-		int entity = CreateEntityByName("env_fog_controller");
-		if(entity != -1)
-		{
-			DispatchKeyValue(entity, "fogblend", "2");
-			DispatchKeyValue(entity, "fogcolor", "25 0 25 50");
-			DispatchKeyValue(entity, "fogcolor2", "25 0 25 50");
-			DispatchKeyValueFloat(entity, "fogstart", 400.0);
-			DispatchKeyValueFloat(entity, "fogend", 1000.0);
-			DispatchKeyValueFloat(entity, "fogmaxdensity", 0.85);
-
-			DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
-			DispatchKeyValue(entity, "fogenable", "1");
-			DispatchKeyValue(entity, "spawnflags", "1");
-			DispatchSpawn(entity);
-			AcceptEntityInput(entity, "TurnOn");
-
-			FogEntity = EntIndexToEntRef(entity);
-
-			for(int client1 = 1; client1 <= MaxClients; client1++)
+			if(FogEntity != INVALID_ENT_REFERENCE)
 			{
-				if(IsClientInGame(client1))
+				int entity = EntRefToEntIndex(FogEntity);
+				if(entity > MaxClients)
+					RemoveEntity(entity);
+				
+				FogEntity = INVALID_ENT_REFERENCE;
+			}
+			
+			int entity = CreateEntityByName("env_fog_controller");
+			if(entity != -1)
+			{
+				DispatchKeyValue(entity, "fogblend", "2");
+				DispatchKeyValue(entity, "fogcolor", "25 0 25 50");
+				DispatchKeyValue(entity, "fogcolor2", "25 0 25 50");
+				DispatchKeyValueFloat(entity, "fogstart", 400.0);
+				DispatchKeyValueFloat(entity, "fogend", 1000.0);
+				DispatchKeyValueFloat(entity, "fogmaxdensity", 0.85);
+
+				DispatchKeyValue(entity, "targetname", "rpg_fortress_envfog");
+				DispatchKeyValue(entity, "fogenable", "1");
+				DispatchKeyValue(entity, "spawnflags", "1");
+				DispatchSpawn(entity);
+				AcceptEntityInput(entity, "TurnOn");
+
+				FogEntity = EntIndexToEntRef(entity);
+
+				for(int client1 = 1; client1 <= MaxClients; client1++)
 				{
-					SetVariantString("rpg_fortress_envfog");
-					AcceptEntityInput(client1, "SetFogController");
+					if(IsClientInGame(client1))
+					{
+						SetVariantString("rpg_fortress_envfog");
+						AcceptEntityInput(client1, "SetFogController");
+					}
 				}
 			}
 		}
@@ -646,7 +654,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)  //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		SensalGiveShield(npc.index, CountPlayersOnRed(1) * 12);
@@ -655,7 +663,7 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 	}
 	if(npc.g_TimesSummoned < 3)
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		int nextLoss = (maxhealth/ 10) * (3 - npc.g_TimesSummoned) / 3;
 
@@ -787,7 +795,7 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			return true;
 		}
 		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 0.1;
-		float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 		flMaxhealth *= 0.0001;
 		HealEntityGlobal(npc.index, npc.index, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
 		float ProjLoc[3];
@@ -909,17 +917,17 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
-			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
-			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", _, _, _, _, 1.0, 70);	
 			if(IsValidEntity(npc.m_iWearable4))
 			{
 				AcceptEntityInput(npc.m_iWearable4, "Disable");
 			}
 		}
 
-		npc.m_flVoidMatterAbosorb = gameTime + 3.8;
-		npc.m_flDoingAnimation = gameTime + 4.3;
-		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 1.3;
+		npc.m_flVoidMatterAbosorb = gameTime + 4.8;
+		npc.m_flDoingAnimation = gameTime + 5.3;
+		npc.m_flVoidMatterAbosorbInternalCD = gameTime + 2.3;
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(ZR_GetWaveCount()+1 > 55)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
@@ -938,13 +946,16 @@ public void VoidUnspeakable_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(FogEntity != INVALID_ENT_REFERENCE)
+	if(i_RaidGrantExtra[npc.index] != -5)
 	{
-		int entity1 = EntRefToEntIndex(FogEntity);
-		if(entity1 > MaxClients)
-			RemoveEntity(entity1);
-		
-		FogEntity = INVALID_ENT_REFERENCE;
+		if(FogEntity != INVALID_ENT_REFERENCE)
+		{
+			int entity1 = EntRefToEntIndex(FogEntity);
+			if(entity1 > MaxClients)
+				RemoveEntity(entity1);
+			
+			FogEntity = INVALID_ENT_REFERENCE;
+		}
 	}
 	for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 	{
@@ -1088,7 +1099,7 @@ void VoidUnspeakableSelfDefense(VoidUnspeakable npc, float gameTime, int target,
 			GetHighDefTargets(npcGetInfo, enemy, sizeof(enemy), true, false, npc.index, (700.0 * 700.0));
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({125, 0, 125, 200});
-			float damageDealt = 50.0 * RaidModeScaling;
+			float damageDealt = 35.0 * RaidModeScaling;
 			float ang_Look[3];
 			float PosLoc[3];
 			GetEntPropVector(Enemy_I_See, Prop_Send, "m_angRotation", ang_Look);
@@ -1160,7 +1171,7 @@ public void VoidUnspeakableWin(int entity)
 
 void VoidUnspeakable_DeathAnimationKahml(VoidUnspeakable npc, float gameTime)
 {
-	float flMaxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
 	flMaxhealth *= 0.01;
 	HealEntityGlobal(npc.index, npc.index, flMaxhealth, 35.9, 0.0, HEAL_SELFHEAL);
 	//rapid self heal to indicate power!

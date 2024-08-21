@@ -118,7 +118,7 @@ methodmap The_Shit_Slapper < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		
 	}
@@ -228,7 +228,7 @@ static void Internal_ClotThink(int iNPC)
 			i_slap[npc.index]=0;
 		}
 		float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
-		float MaxHealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+		float MaxHealth = float(ReturnEntityMaxHealth(npc.index));
 		float scale = 1.0+(1-(Health/MaxHealth))*1.5;
 		npc.m_flSpeed = 150.0*(1.0+(1-(Health/MaxHealth))*1.3);
 		if(npc.m_flNextMeleeAttack < GameTime && flDistanceToTarget < 30000)

@@ -57,7 +57,7 @@ public void Adiantum_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "spy"); 		//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -105,7 +105,7 @@ methodmap Adiantum < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -422,7 +422,7 @@ static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 		
-		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0);
+		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0+1.0);
 	}
 }
 

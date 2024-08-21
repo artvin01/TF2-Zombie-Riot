@@ -117,7 +117,7 @@ public void SeaCrawler_ClotThink(int iNPC)
 		npc.PlayHurtSound();
 		npc.m_blPlayHurtAnimation = false;
 		
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 		
 		if(health < (maxhealth * npc.m_iAttacksTillReload / 7))

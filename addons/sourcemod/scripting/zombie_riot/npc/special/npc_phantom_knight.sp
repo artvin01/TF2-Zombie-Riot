@@ -303,6 +303,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 0.0;
 		NPC_StopPathing(npc.index);
+		npc.m_bisWalking = false;
 		npc.m_bPathing = false;	
 	}
 	//No else, We will set the speed and pathing ourselves down below.
@@ -595,7 +596,7 @@ public void PhantomKnight_ClotThink(int iNPC)
 							NpcAddedToZombiesLeftCurrently(fake_spawned, true);
 							b_IsPhantomFake[view_as<int>(fake_spawned)] = true;
 
-							int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+							int maxhealth = ReturnEntityMaxHealth(npc.index);
 
 							maxhealth /= 6;
 

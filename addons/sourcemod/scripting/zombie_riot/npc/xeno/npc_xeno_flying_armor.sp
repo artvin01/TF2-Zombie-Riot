@@ -410,7 +410,7 @@ public void XenoFlyingArmor_NPCDeath(int entity)
 	XenoFlyingArmor npc = view_as<XenoFlyingArmor>(entity);
 	if(!NpcStats_IsEnemySilenced(entity))
 	{
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		float startPosition[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
 		maxhealth /= 2;

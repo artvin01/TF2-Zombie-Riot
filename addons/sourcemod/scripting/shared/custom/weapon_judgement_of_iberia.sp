@@ -37,6 +37,11 @@ static bool b_SeabornDetected;
 
 static int LaserSprite;
 
+int IreneReturnLaserSprite()
+{
+	return LaserSprite;	
+}
+
 void Npc_OnTakeDamage_Iberia(int attacker, int damagetype)
 {
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.
@@ -138,7 +143,7 @@ public void Weapon_Irene_DoubleStrike(int client, int weapon, bool crit, int slo
 				{
 					switch(i_CustomWeaponEquipLogic[Active_weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_SPECTER, WEAPON_GLADIIA:
+						case WEAPON_SEABORNMELEE, WEAPON_SEABORN_MISC, WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS:
 						{
 							ThereWasSeaborn = true;
 							break;
@@ -313,7 +318,7 @@ public void Weapon_Irene_Judgement(int client, int weapon, bool crit, int slot)
 				if (GetVectorDistance(UserLoc, VicLoc,true) <= IRENE_JUDGEMENT_MAXRANGE_SQUARED)
 				{
 					bool Hitlimit = true;
-					for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+					for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 					{
 						if(!i_IreneTargetsAirborn[client][i])
 						{
@@ -403,7 +408,7 @@ public void Npc_Irene_Launch_client(int client)
 		//Gather all allive airborn-ed entities.
 		int count;
 		int targets[MAX_TARGETS_HIT];
-		for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
 			if(i_IreneTargetsAirborn[client][i] && IsValidEntity(i_IreneTargetsAirborn[client][i]) && !b_NpcHasDied[i_IreneTargetsAirborn[client][i]])

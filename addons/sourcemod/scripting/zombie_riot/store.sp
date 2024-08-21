@@ -54,6 +54,7 @@ enum struct ItemInfo
 
 	int IsWand;
 	bool IsWrench;
+	bool IsSupport;
 	bool IsAlone;
 	bool InternalMeleeTrace;
 	
@@ -248,6 +249,9 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%sis_a_wrench", prefix);
 		this.IsWrench	= view_as<bool>(kv.GetNum(buffer));
+
+		Format(buffer, sizeof(buffer), "%sis_a_support", prefix);
+		this.IsSupport	= view_as<bool>(kv.GetNum(buffer));
 
 		Format(buffer, sizeof(buffer), "%signore_upgrades", prefix);
 		this.IsAlone	= view_as<bool>(kv.GetNum(buffer));
@@ -1305,7 +1309,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						Store_GiveAll(client, GetClientHealth(client));
 						owner = GetClientOfUserId(values[3]);
 						if(IsValidClient(owner))
-							Building_GiveRewardsUse(client, owner, 250, false, 5.0, true);
+							Building_GiveRewardsUse(client, owner, 250, true, 5.0, true);
 					}
 				}
 				
@@ -1805,6 +1809,17 @@ public void ReShowSettingsHud(int client)
 	}
 	menu2.AddItem("-42", buffer);
 
+	FormatEx(buffer, sizeof(buffer), "%t", "Disable Map Music");
+	if(b_IgnoreMapMusic[client])
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[X]");
+	}
+	else
+	{
+		FormatEx(buffer, sizeof(buffer), "%s %s", buffer, "[ ]");
+	}
+	menu2.AddItem("-80", buffer);
+
 	FormatEx(buffer, sizeof(buffer), "%t", "Taunt Speed Increace");
 	if(b_TauntSpeedIncreace[client])
 	{
@@ -2185,6 +2200,18 @@ public int Settings_MenuPage(Menu menu, MenuAction action, int client, int choic
 					}
 					ReShowSettingsHud(client);
 				}
+				case -80:
+				{
+					if(b_IgnoreMapMusic[client])
+					{
+						b_IgnoreMapMusic[client] = false;
+					}
+					else
+					{
+						b_IgnoreMapMusic[client] = true;
+					}
+					ReShowSettingsHud(client);
+				}
 				case -64: //Lower Volume
 				{
 					f_ZombieVolumeSetting[client] -= 0.05;
@@ -2283,8 +2310,14 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	static Item item;
 	static ItemInfo info;
 	int GrigoriCashLogic = CurrentCash;
-	if(GrigoriCashLogic > 60000)
-		GrigoriCashLogic = 600000;
+	if(GrigoriCashLogic > 70000)
+		GrigoriCashLogic = 70000;
+		
+	if(unlock)
+	{
+		if(GrigoriCashLogic < 8500)
+			GrigoriCashLogic = 8500;
+	}
 
 	for(int i; i < length; i++)
 	{
@@ -2346,13 +2379,14 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 				}
 				
 				item.GetItemInfo(0, info);
-				if(info.Cost > 0 && info.Cost_Unlock > (GrigoriCashLogic / 3 - 1000) && info.Cost_Unlock < GrigoriCashLogic)
+				if(info.Cost > 0 && info.Cost_Unlock > ((GrigoriCashLogic / 3)- 1000) && info.Cost_Unlock < GrigoriCashLogic)
 					indexes[amount++] = i;
 				
 				StoreItems.SetArray(i, item);
 			}
 		}
 	}
+
 	if(subtract_wave || ResetStore)
 		return;
 	
@@ -2406,20 +2440,24 @@ void Store_RandomizeNPCStore(int ResetStore, int addItem = 0, bool subtract_wave
 	{
 		SortIntegers(indexes, amount, Sort_Random);
 		int SellsMax = addItem;
-		if(SellsMax <= 0)
-			SellsMax = 7;
-		
 		if(SellsMax > 0 && amount > 0)
-			CPrintToChatAll("{green}Recovered Items:");
-		
-		for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
 		{
-			StoreItems.GetArray(indexes[i], item);
+			char buffer[256];
+			strcopy(buffer, sizeof(buffer), "{green}Recovered Items:{palegreen}");
 
-			CPrintToChatAll("{palegreen}%s",item.Name);
+			for(int i; i<SellsMax && i<amount; i++) //amount of items to sell
+			{
+				StoreItems.GetArray(indexes[i], item);
 
-			item.NPCSeller = true;
-			StoreItems.SetArray(indexes[i], item);
+				// Blah: Item
+				// Blash, Item
+				Format(buffer, sizeof(buffer), "%s%s %s", buffer, i ? "," : "", item.Name);
+
+				item.NPCSeller = true;
+				StoreItems.SetArray(indexes[i], item);
+			}
+
+			CPrintToChatAll(buffer);
 		}
 	}
 }
@@ -2635,8 +2673,6 @@ static void MenuPage(int client, int section)
 		CurrentMenuPage[client] = LastMenuPage[client];
 		LastMenuPage[client] = 0;
 	}
-
-//	BarracksCheckItems(client);
 	
 	if(ClientTutorialStep(client) == 2)
 	{
@@ -3687,6 +3723,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						FormatEx(buffer, sizeof(buffer), "%t", "Skeleboy");
 						menu2.AddItem("-49", buffer);
 
+						FormatEx(buffer, sizeof(buffer), "%t", "Kleiner");
+						menu2.AddItem("-50", buffer);
+
 						FormatEx(buffer, sizeof(buffer), "%t", "Back");
 						menu2.AddItem("-1", buffer);
 						
@@ -3713,6 +3752,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -49:
 					{
 						OverridePlayerModel(client, SKELEBOY, false);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -50:
+					{
+						OverridePlayerModel(client, KLEINER, true);
 						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
@@ -4524,8 +4569,12 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("107", RemoveExtraSpeed(ClassForStats, MovementSpeed));		// Move Speed
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	/*
 	if(LastMann)
 		map.SetValue("442", 0.7674418604651163);		// Move Speed
+	else
+	*/
+	map.SetValue("442", 1.0);	// Move Speed
 
 	map.SetValue("740", 0.0);	// No Healing from mediguns, allow healing from pickups
 	map.SetValue("314", -2.0);	//Medigun uber duration, it has to be a body attribute
@@ -4758,7 +4807,12 @@ void Store_ApplyAttribs(int client)
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
 {
+	PreMedigunCheckAntiCrash(client);
 	if(!StoreItems)
+	{
+		return; //STOP. BAD!
+	}
+	if(!IsPlayerAlive(client))
 	{
 		return; //STOP. BAD!
 	}
@@ -4959,9 +5013,34 @@ void Store_GiveAll(int client, int health, bool removeWeapons = false)
 	{
 		b_BobsTrueFear[client] = false;
 	}
+	if(Items_HasNamedItem(client, "Twirl's Hairpins"))
+	{
+		b_TwirlHairpins[client] = true;
+	}
+	else
+	{
+		b_TwirlHairpins[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Kahmlsteins Last Will"))
+	{
+		b_KahmlLastWish[client] = true;
+	}
+	else
+	{
+		b_KahmlLastWish[client] = false;
+	}
+	if(Items_HasNamedItem(client, "Opened Void Portal"))
+	{
+		b_VoidPortalOpened[client] = true;
+	}
+	else
+	{
+		b_VoidPortalOpened[client] = false;
+	}
 	CheckSummonerUpgrades(client);
 	Barracks_UpdateAllEntityUpgrades(client);
 	Manual_Impulse_101(client, health);
+	BarracksCheckItems(client);
 }
 
 void CheckInvalidSlots(int client)
@@ -5046,7 +5125,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	{
 		return -1;
 	}
-
+	if(!IsPlayerAlive(client))
+	{
+		return -1; //STOP. BAD!
+	}
 	int slot = -1;
 	int entity = -1;
 	static ItemInfo info;
@@ -5088,6 +5170,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				if(GiveWeaponIndex > 0)
 				{
 					entity = SpawnWeapon(client, info.Classname, GiveWeaponIndex, 5, 6, info.Attrib, info.Value, info.Attribs, info.WeaponForceClass);	
+					
+					HidePlayerWeaponModel(client, entity, true);
 					/*
 					LogMessage("Weapon Spawned!");
 					LogMessage("Name of client %N and index %i",client,client);
@@ -5123,6 +5207,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 				i_IsAloneWeapon[entity] = false;
 				i_IsWandWeapon[entity] = false;
 				i_IsWrench[entity] = false;
+				i_IsSupportWeapon[entity] = false;
 				i_InternalMeleeTrace[entity] = true;
 				i_WeaponAmmoAdjustable[entity] = 0;
 				
@@ -5211,6 +5296,10 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.IsWrench)
 					{
 						i_IsWrench[entity] = true;
+					}
+					if(info.IsSupport)
+					{
+						i_IsSupportWeapon[entity] = true;
 					}
 					if(!info.InternalMeleeTrace)
 					{
@@ -5401,6 +5490,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					if(info.SpecialAdditionViaNonAttribute == 5) //Left For Dead
 					{
 						b_LeftForDead[client] = true;
+						//only give 1 revive at all costs.
+						if(i_AmountDowned[client] < 1)
+						{
+							i_AmountDowned[client] = 1;
+						}
 					}
 					if(info.SpecialAdditionViaNonAttribute == 6) //Sticky Support Grenades
 					{
@@ -5551,7 +5645,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
-		for(int i; i<1; i++)
+		for(int i; i < sizeof(b_WeaponSpecificClassBuff[]); i++)
 		{
 			b_WeaponSpecificClassBuff[entity][i] = false;
 		}
@@ -5572,6 +5666,11 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		
 		i_LowTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3002, 0.0));
 		i_HighTeslarStaff[entity] = RoundToNearest(Attributes_Get(entity, 3000, 0.0));
+
+		if(Attributes_Get(entity, 4015, 0.0) >= 1.0)
+		{
+			SetEntPropFloat(entity, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
+		}
 		
 		Enable_Management_Knife(client, entity);
 		Enable_Arsenal(client, entity);
@@ -5636,6 +5735,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
+		Ulpianus_Enable(client, entity);
 	}
 
 	return entity;
@@ -6282,6 +6382,14 @@ static bool CheckEntitySlotIndex(int index, int slot, int entity)
 		case 10:
 		{
 			return true;
+		}
+		case 11:
+		{
+			if(i_IsAloneWeapon[entity])
+				return false;
+
+			if(i_IsSupportWeapon[entity])
+				return true;
 		}
 	}
 

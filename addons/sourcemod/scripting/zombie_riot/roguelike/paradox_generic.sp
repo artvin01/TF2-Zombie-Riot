@@ -228,7 +228,7 @@ static void GiveLife(int entity, StringMap map, int amount)
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
 		// +X max health
-		int health = GetEntProp(entity, Prop_Data, "m_iMaxHealth") + amount;
+		int health = ReturnEntityMaxHealth(entity) + amount;
 
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -238,7 +238,7 @@ static void GiveLife(int entity, StringMap map, int amount)
 static void MultiHealth(int entity, float amount)
 {
 	SetEntProp(entity, Prop_Data, "m_iHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iHealth") * amount));
-	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * amount));
+	SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundFloat(ReturnEntityMaxHealth(entity) * amount));
 }
 
 static void GiveMaxHealth(int entity, StringMap map, float amount)
@@ -254,7 +254,7 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
 		// +X% max health
-		int health = RoundFloat(GetEntProp(entity, Prop_Data, "m_iMaxHealth") * amount);
+		int health = RoundFloat(ReturnEntityMaxHealth(entity) * amount);
 
 		SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
@@ -263,17 +263,17 @@ static void GiveMaxHealth(int entity, StringMap map, float amount)
 
 public void Rogue_Store1_Collect()
 {
-	Store_RandomizeNPCStore(2, 1);
+	Store_RandomizeNPCStore(0, 1);
 }
 
 public void Rogue_Store2_Collect()
 {
-	Store_RandomizeNPCStore(2, 2);
+	Store_RandomizeNPCStore(0, 2);
 }
 
 public void Rogue_Store3_Collect()
 {
-	Store_RandomizeNPCStore(2, 3);
+	Store_RandomizeNPCStore(0, 3);
 }
 
 public void Rogue_Shield1_Collect()
@@ -651,7 +651,7 @@ public void Rogue_QueenFellowship_Collect()
 				int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 				if(health > 0)
 				{
-					int maxhealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+					int maxhealth = ReturnEntityMaxHealth(entity);
 					if(health > maxhealth)
 					{
 						health -= maxhealth;

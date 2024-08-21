@@ -86,6 +86,7 @@ methodmap TheHunter < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		Is_a_Medic[npc.index] = true;
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -292,12 +293,14 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			/*
 			int Traced_Target = TR_GetEntityIndex(hTrace);
 			if(Traced_Target > 0)
 			{
 				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
 			}
-			else if(TR_DidHit(hTrace))
+			*/
+			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}

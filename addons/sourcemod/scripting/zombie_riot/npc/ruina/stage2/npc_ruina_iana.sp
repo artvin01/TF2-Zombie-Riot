@@ -67,8 +67,8 @@ void Iana_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "iana"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -150,7 +150,7 @@ methodmap Iana < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -293,6 +293,11 @@ static void ClotThink(int iNPC)
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
 		npc.m_blPlayHurtAnimation = false;
 		npc.PlayHurtSound();
+		float chargerPos[3];
+		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", chargerPos);
+		chargerPos[2] += 82.0;
+		TE_ParticleInt(g_particleMissText, chargerPos);
+		TE_SendToAll();
 	}
 	
 	if(npc.m_flNextThinkTime > GameTime)
@@ -301,6 +306,9 @@ static void ClotThink(int iNPC)
 	}
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
+
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
 
 	npc.AdjustWalkCycle();
 
@@ -327,70 +335,19 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
+		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
+		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.05);	//5% dmg bonus
+		Master_Apply_Shield_Buff(npc.index, 250.0, 0.7);	//30% block shield
+
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
 
 		float Range_Min = (npc.Anger ? (100.0*100.0) : (125.0*125.0));
-		float Range_Max = (npc.Anger ? (1500.0*1500.0) : (1000.0*100.0));
-			
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > Range_Min && flDistanceToTarget < Range_Max)
-		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_, vPredictedPos);
-			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
-		
-			if (flVel[0] >= 190.0)
-			{
-				npc.FaceTowards(vPredictedPos);
-				npc.FaceTowards(vPredictedPos);
-				
-				float Tele_Check = GetVectorDistance(Npc_Vec, vPredictedPos, true);
-					
-				float start_offset[3], end_offset[3];
-				start_offset = Npc_Vec;
-					
-				if(Tele_Check > (100.0*100.0))
-				{
-					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-					if(Succeed)
-					{
+		float Range_Max = (npc.Anger ? (2000.0*2000.0) : (1500.0*1500.0));
 
-						npc.m_flNextMeleeAttack = GameTime + 1.0;
-						npc.PlayTeleportSound();
-
-						Ruina_Laser_Logic Laser;
-
-						Laser.client = npc.index;
-						Laser.Start_Point = Npc_Vec;
-						Laser.End_Point = vPredictedPos;
-						Laser.Radius = 15.0;
-						Laser.Damage = 500.0;
-						Laser.Bonus_Damage = 1200.0;
-						Laser.damagetype = DMG_PLASMA;
-						Laser.Deal_Damage(On_LaserHit);
-							
-						float effect_duration = 0.25;
-	
-						end_offset = vPredictedPos;
-
-						npc.m_flNextTeleport = GameTime + (npc.Anger ? 20.0 : 30.0);
-										
-						for(int help=1 ; help<=8 ; help++)
-						{	
-							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-											
-							start_offset[2] += 12.5;
-							end_offset[2] += 12.5;
-						}
-					}
-					else
-					{
-						npc.m_flNextTeleport = GameTime + 1.0;
-					}
-				}
-			}
-		}	
+		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, Range_Min, Range_Max, (npc.Anger ? 20.0 : 30.0), 100.0, 15.0, On_LaserHit))
+			npc.PlayTeleportSound();
 
 		if(npc.m_flNextRangedBarrage_Spam < GameTime && npc.m_flNextRangedBarrage_Singular < GameTime)
 		{
@@ -413,7 +370,7 @@ static void ClotThink(int iNPC)
 					ScaleVector(SubjectAbsVelocity, Time);
 					AddVectors(vecTarget, SubjectAbsVelocity, Predicted_Pos);
 
-					Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
+					//Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Predicted_Pos);
 
 					float Radius = (npc.Anger ? 125.0 : 100.0);
 					float dmg = (npc.Anger ? 450.0 : 300.0);
@@ -458,8 +415,8 @@ static void ClotThink(int iNPC)
 		Melee.target = PrimaryThreatIndex;
 		Melee.fl_distance_to_target = flDistanceToTarget;
 		Melee.range = NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED;
-		Melee.damage = (npc.Anger ? 250.0 : 200.0);			//heavy, but slow
-		Melee.bonus_dmg = (npc.Anger ? 750.0 : 500.0);
+		Melee.damage = (npc.Anger ? 200.0 : 150.0);			//heavy, but slow
+		Melee.bonus_dmg = (npc.Anger ? 500.0 : 250.0);
 		Melee.attack_anim = "ACT_MP_ATTACK_STAND_MELEE_ALLCLASS";
 		Melee.swing_speed = (npc.Anger ? 3.0 : 4.0);
 		Melee.swing_delay = 0.37;
@@ -508,7 +465,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	Ruina_NPC_OnTakeDamage_Override(npc.index, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
 
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 

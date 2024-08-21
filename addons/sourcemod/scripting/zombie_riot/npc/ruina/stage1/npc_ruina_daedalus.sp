@@ -61,11 +61,12 @@ void Daedalus_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 		//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_buff"); 		//leaderboard_class_(insert the name)
 	data.IconCustom = false;													//download needed?
-	data.Flags = 0;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = MVM_CLASS_FLAG_SUPPORT;																//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 static void ClotPrecache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -136,7 +137,7 @@ methodmap Daedalus < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -188,6 +189,7 @@ methodmap Daedalus < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -265,7 +267,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
-	Ruina_Add_Battery(npc.index, 0.75);
+	Ruina_Add_Battery(npc.index, 1.0);
 
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
@@ -319,6 +321,14 @@ static void ClotThink(int iNPC)
 			npc.m_bPathing = true;
 			npc.m_bAllowBackWalking=false;
 		}
+
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
 			
 		//Target close enough to hit
 		if(flDistanceToTarget < 1000000 || npc.m_flAttackHappenswillhappen)
@@ -343,12 +353,10 @@ static void ClotThink(int iNPC)
 					GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 						
 					float projectile_speed = 750.0;
-					float target_vec[3];
-					PredictSubjectPositionForProjectiles(npc, PrimaryThreatIndex, projectile_speed, _, target_vec);
 		
-					float dmg = 30.0;
+					float dmg = 20.0;
 					float radius = 150.0;
-					npc.FireParticleRocket(target_vec, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
+					npc.FireParticleRocket(vecTarget, dmg , projectile_speed , radius , "raygun_projectile_blue", _, _, true, flPos);
 						
 				}
 				else

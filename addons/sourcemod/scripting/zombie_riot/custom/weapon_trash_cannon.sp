@@ -1310,7 +1310,9 @@ stock void Trash_AttachParticle(int entity, char type[255], float duration = 0.0
 			SetVariantString("!activator");
 			AcceptEntityInput(part1, "SetParent", entity, part1);
 			SetVariantString(point);
+			/*
 			AcceptEntityInput(part1, "SetParentAttachmentMaintainOffset", part1, part1);
+			*/	
 			DispatchKeyValue(part1, "targetname", "present");
 			DispatchSpawn(part1);
 			ActivateEntity(part1);

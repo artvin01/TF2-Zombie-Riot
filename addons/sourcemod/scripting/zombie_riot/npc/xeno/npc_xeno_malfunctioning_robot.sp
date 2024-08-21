@@ -56,7 +56,7 @@ public void XenoMalfuncRobot_OnMapStart_NPC()
 	strcopy(data.Icon, sizeof(data.Icon), "heavy");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
-	data.Category = Type_Hidden;
+	data.Category = Type_COF;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
@@ -117,7 +117,7 @@ methodmap XenoMalfuncRobot < CClotBody
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
 	}
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 90);
@@ -142,7 +142,7 @@ methodmap XenoMalfuncRobot < CClotBody
 	{
 		XenoMalfuncRobot npc = view_as<XenoMalfuncRobot>(CClotBody(vecPos, vecAng, "models/bots/heavy/bot_heavy.mdl", "1.15", "30000", ally, false));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -248,11 +248,14 @@ public void XenoMalfuncRobot_ClotThink(int iNPC)
 			if(npc.f_Overheat_Timer <= gameTime)
 			{
 				npc.f_Overheat_Timer = gameTime + 0.3;
-				float radius = 160.0, damage = 200.0;
+				float radius = 160.0, damage = 350.0;
 				float Loc[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", Loc);
 				Explode_Logic_Custom(damage, npc.index, npc.index, -1, _, radius, _, _, true);
-				spawnRing_Vectors(Loc, radius*2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, 150.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 1.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 45.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
+				spawnRing_Vectors(Loc, 0.1, 0.0, 0.0, 65.0, "materials/sprites/laserbeam.vmt", 255, 0, 20, 255, 1, 0.1, 8.0, 1.5, 1, radius*2.0);
 				npc.PlayOverHeatSound();
 			}
 		}
@@ -325,7 +328,7 @@ static void XenoMalfuncRobot_SelfDefense(XenoMalfuncRobot npc, float gameTime, i
 				{
 					float damage = 100.0;
 					if(npc.m_fbGunout)//nightmare
-					damage *= 1.4;
+						damage *= 1.4;
 
 					if(target > 0) 
 					{

@@ -260,7 +260,7 @@ public void ExplosiveHeadcrabZombie_ClotThink(int iNPC)
 			float vecTarget2[3];
 			WorldSpaceCenter(npc.index, vecTarget2);
 			makeexplosion(npc.index, npc.index, vecTarget2, "", 35000, 200);
-			int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+			int maxhealth = ReturnEntityMaxHealth(npc.index);
 			maxhealth /= 5;
 			HealEntityGlobal(npc.index, npc.index, -float(maxhealth), 1.0, 0.0, _);
 			RPGNpc_UpdateHpHud(npc.index);
@@ -375,7 +375,7 @@ public Action ExplosiveHeadcrabZombie_OnTakeDamage(int victim, int &attacker, in
 public void ExplosiveHeadcrabZombie_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	ExplosiveHeadcrabZombie npc = view_as<ExplosiveHeadcrabZombie>(victim);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.65) > ratio)

@@ -92,7 +92,7 @@ stock void Specter_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		int health = GetClientHealth(attacker);
 		int maxhealth = SDKCall_GetMaxHealth(attacker);
 		float attackerHealthRatio = float(health) / float(maxhealth);
-		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(GetEntProp(victim, Prop_Data, "m_iMaxHealth"));
+		float victimHealthRatio = float(GetEntProp(victim, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(victim));
 		
 		if(victimHealthRatio < attackerHealthRatio)
 		{
@@ -356,8 +356,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 			{
 				f_SpecterDyingTime[client] = 0.0;
 				int maxhealth = SDKCall_GetMaxHealth(client);
-				ApplyHealEvent(client, maxhealth / 2);
-				SetEntityHealth(client, maxhealth / 2); //Heal the client to half of their max health after being revived, otherwise this revive makes no sense.
+				HealEntityGlobal(client, client, float(maxhealth / 2), _,_,HEAL_SELFHEAL);
 			}
 		}
 		int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

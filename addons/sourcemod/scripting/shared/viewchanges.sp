@@ -49,18 +49,29 @@ static const char RobotModels[][] =
 static const char PlayerModelsCustom[][] =
 {
 	"models/bots/headless_hatman.mdl",
-	"models/zombie_riot/player_model_add/model_player_1_1.mdl",
+	"models/zombie_riot/player_model_add/model_player_1_3.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
+	"models/zombie_riot/player_model_add/model_player_2_1.mdl",
 };
 
 
 static const char PlayerCustomHands[][] =
 {
 	"",
-	"models/zombie_riot/player_model_add/model_player_hands_1_1.mdl",
+	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
 	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
-	"models/bots/skeleton_sniper/skeleton_sniper.mdl"
+	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
+	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
+};
+
+int PlayerCustomModelBodyGroup[] =
+{
+	0,
+	1,
+	0,
+	0,
+	2,
 };
 
 enum
@@ -69,6 +80,7 @@ enum
 	BARNEY = 1,
 	NIKO_2 = 2,
 	SKELEBOY = 3,
+	KLEINER = 4,
 }
 
 static int HandIndex[10];
@@ -76,6 +88,8 @@ static int PlayerIndex[10];
 static int RobotIndex[10];
 static int CustomIndex[sizeof(PlayerModelsCustom)];
 static int CustomHandIndex[sizeof(PlayerCustomHands)];
+
+static bool b_AntiSameFrameUpdate[MAXTF2PLAYERS][32];
 
 #if defined ZR
 static int TeutonModelIndex;
@@ -107,17 +121,43 @@ void ViewChange_MapStart()
 	{
 		CustomHandIndex[i] = PlayerCustomHands[i][0] ? PrecacheModel(PlayerCustomHands[i], true) : 0;
 	}
+	Zero2(b_AntiSameFrameUpdate);
 
 #if defined ZR
 	TeutonModelIndex = PrecacheModel(COMBINE_CUSTOM_MODEL, true);
 #endif
 
-	// TODO: Move this to PluginEnd
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "tf_wearable_vm")) != -1)
 	{
 		RemoveEntity(entity);
 	}
+}
+
+void ViewChange_ClientDisconnect(int client)
+{
+	int entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Viewmodel_PlayerModel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(WeaponRef_viewmodel[client]);
+	if(entity != -1)
+	{
+		RemoveEntity(entity);
+		WeaponRef_viewmodel[client] = -1;
+	}
+	
+	entity = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
+	if(entity != -1)
+	{
+		TF2_RemoveWearable(client, entity);
+		i_Worldmodel_WeaponModel[client] = -1;
+	}
+
+	ViewChange_DeleteHands(client);
 }
 
 void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = false)
@@ -183,6 +223,8 @@ void ViewChange_PlayerModel(int client)
 					AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 					
 					i_CustomModelOverrideIndex[client] = i_PlayerModelOverrideIndexWearable[client];
+					SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+					SetEntProp(client, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
 				}
 				else
 				{
@@ -225,7 +267,9 @@ void ViewChange_PlayerModel(int client)
 		ActivateEntity(entity);
 
 		SDKCall_EquipWearable(client, entity);
+		
 		SetEntProp(client, Prop_Send, "m_nRenderFX", 6);
+
 		i_Viewmodel_PlayerModel[client] = EntIndexToEntRef(entity);
 		//get its attachemt once, it probably has to authorise it once to work correctly for later.
 		//otherwise, trying to get its attachment breaks, i dont know why, it has to be here.
@@ -243,11 +287,23 @@ void ViewChange_PlayerModel(int client)
 	}
 }
 
+#if defined ZR || defined RPG
+public void AntiSameFrameUpdateRemove0(int client)
+{
+	b_AntiSameFrameUpdate[client][0] = false;
+}
+
 void ViewChange_Update(int client, bool full = true)
 {
 	if(full)
 		ViewChange_DeleteHands(client);
 	
+	if(b_AntiSameFrameUpdate[client][0])
+		return;
+		
+	RequestFrame(AntiSameFrameUpdateRemove0, client);
+
+	b_AntiSameFrameUpdate[client][0] = true;
 	char classname[36];
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon != -1)
@@ -436,6 +492,11 @@ void MedicAdjustModel(int client)
 	int ViewmodelPlayerModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
 	if(!IsValidEntity(ViewmodelPlayerModel))
 		return;
+		
+	if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+	{
+		return;
+	}
 
 	if(CurrentClass[client] != view_as<TFClassType>(5))
 		return;
@@ -490,6 +551,9 @@ int ViewChange_UpdateHands(int client, TFClassType class)
 		}
 		
 		entity = CreateViewmodel(client, model, model, weapon);
+		if(i_PlayerModelOverrideIndexWearable[client] >= 0)
+			SetEntProp(entity, Prop_Send, "m_nBody", PlayerCustomModelBodyGroup[i_PlayerModelOverrideIndexWearable[client]]);
+			
 		if(entity != -1)
 			HandRef[client] = EntIndexToEntRef(entity);
 	}
@@ -565,7 +629,7 @@ static void ImportSkinAttribs(int wearable, int weapon)
 	Attributes_Set(wearable, 2053, Attributes_Get(weapon, 2053, 0.0));
 }
 
-void HidePlayerWeaponModel(int client, int entity)
+void HidePlayerWeaponModel(int client, int entity, bool OnlyHide = false)
 {
 	SetEntityRenderMode(entity, RENDER_TRANSALPHA);
 	SetEntityRenderColor(entity, 0, 0, 0, 0);
@@ -574,6 +638,8 @@ void HidePlayerWeaponModel(int client, int entity)
 	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | EF_NODRAW);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", 0.0);
 	SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", 0.00001);
+	if(OnlyHide)
+		return;
 	int EntityWeaponModel = EntRefToEntIndex(i_Worldmodel_WeaponModel[client]);
 	if(IsValidEntity(EntityWeaponModel))
 	{

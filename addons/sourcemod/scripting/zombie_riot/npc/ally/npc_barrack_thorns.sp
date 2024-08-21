@@ -81,8 +81,8 @@ methodmap BarrackThorns < BarrackBody
 	}
 	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
-		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
+		bool elite = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Master")) : true;
+		bool MaxPot = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Killer")) : true;
 		
 		char healthSize[10];
 
@@ -172,7 +172,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				{
 					ThornsLevelAt[npc.index] = 1;
 					npc.BonusDamageBonus *= 2.0;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 2);
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",ReturnEntityMaxHealth(npc.index) * 2);
 				}
 			}
 			if(!ThornsHasMaxPot[npc.index])
@@ -181,7 +181,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 				if(ThornsHasMaxPot[npc.index])
 				{
 					ThornsLevelAt[npc.index] = 2;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")) * 1.5));
+					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5));
 				}
 			}
 			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index] && ThornsLevelAt[npc.index] == 2)
@@ -217,16 +217,16 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 		if(ThornsAttackedSince[npc.index] < GetGameTime(npc.index))
 		{
-			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+			if(GetEntProp(npc.index, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(npc.index))
 			{
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + 10);
-				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+				if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 				{
-					SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+					SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 				}
 			}
 		}
-		float RangeLimit = 1200.0;
+		float RangeLimit = 700.0;
 
 		if(retreating)
 			RangeLimit = 100.0;
@@ -295,18 +295,18 @@ public void BarrackThorns_ClotThink(int iNPC)
 
 			if(ThornsAbilityActive[npc.index] > GetGameTime(npc.index) || ThornsDecidedOnAttack[npc.index] == 3)
 			{
-				if(flDistanceToTarget < (1200.0 * 1200.0) || ThornsDecidedOnAttack[npc.index] == 3)
+				if(flDistanceToTarget < (650.0 * 650.0) || ThornsDecidedOnAttack[npc.index] == 3)
 				{
 					ThornsBasicAttackM2Ability(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
 			}
 			else
 			{
-				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
+				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (100.0 * 100.0) || ThornsDecidedOnAttack[npc.index] == 1)
 				{
 					ThornsBasicAttackM1Ranged(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}
-				if(flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
+				if(flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget < (100.0 * 100.0) ||ThornsDecidedOnAttack[npc.index] == 2)
 				{
 					ThornsBasicAttackM1Melee(npc,GetGameTime(npc.index),EnemyToAttack, flDistanceToTarget); 
 				}				
@@ -479,24 +479,24 @@ void ThornsBasicAttackM1Ranged(BarrackThorns npc, float gameTime, int EnemyToAtt
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
-				//	float vecTarget[3];
+					float vecTarget[3];
 					float speed = 2000.0;
-				//	PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_, vecTarget);
 					npc.m_flSpeed = 0.0;
-				//	int rocket;
-					npc.FireParticleRocket(SelfVecPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					int rocket;
+					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_trail", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				//	npc.DispatchParticleEffect(npc.index, "utaunt_firework_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
 
-				//	DataPack pack;
-				//	CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				//	pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-				//	pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
+					DataPack pack;
+					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
+					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
 				}
 			}
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (800.0 * 800.0) && flDistanceToTarget > (100.0 * 100.0))
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (500.0 * 500.0) && flDistanceToTarget > (100.0 * 100.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{
@@ -574,24 +574,24 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					float flPos[3]; // original
 					float flAng[3]; // original
 					GetAttachment(npc.index, "weapon_bone", flPos, flAng);
-				//	float vecTarget[3];
+					float vecTarget[3];
 					float speed = 2000.0;
-				//	PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
+					PredictSubjectPositionForProjectiles(npc, EnemyToAttack, speed,_,vecTarget);
 					npc.m_flSpeed = 0.0;
-				//	int rocket;
-					npc.FireParticleRocket(SelfVecPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+					int rocket;
+					rocket = npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 1) , speed, 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 				
-				//	DataPack pack;
-				//	CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
-				//	pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
-				//	pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
+					DataPack pack;
+					CreateDataTimer(0.1, PerfectHomingShot, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+					pack.WriteCell(EntIndexToEntRef(rocket)); //projectile
+					pack.WriteCell(EntIndexToEntRef(EnemyToAttack));		//victim to annihilate :)
 				
 				}
 			}
 		}
 	}
 
-	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (1200.0 * 1200.0))
+	if(GetGameTime(npc.index) > npc.m_flNextMeleeAttack && flDistanceToTarget < (650.0 * 650.0))
 	{
 		if(IsValidEnemy(npc.index, EnemyToAttack)) 
 		{

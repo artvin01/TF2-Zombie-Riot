@@ -233,7 +233,7 @@ methodmap Clot < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 75, _, 1.0);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 75, _, 1.0);
 		
 		
 	}
@@ -408,9 +408,9 @@ public void ClotThink(int iNPC)
 						npc.m_bnew_target = true;
 					}
 					SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") + 25);
-					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"))
+					if(GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(PrimaryThreatIndex))
 					{
-						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth"));
+						SetEntProp(PrimaryThreatIndex, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(PrimaryThreatIndex));
 					}
 					float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
 					npc.FaceTowards(WorldSpaceVec, 2000.0);
@@ -787,7 +787,7 @@ stock bool IsValidAllyNotFullHealth(int index, int ally)
 		GetEntityClassname(ally, strClassname, sizeof(strClassname));
 		if(StrEqual(strClassname, "zr_base_npc"))
 		{
-			if(GetTeam(index) == GetTeam(ally) && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < GetEntProp(ally, Prop_Data, "m_iMaxHealth")) 
+			if(GetTeam(index) == GetTeam(ally) && GetEntProp(ally, Prop_Data, "m_iHealth") > 0 && GetEntProp(ally, Prop_Data, "m_iHealth") < ReturnEntityMaxHealth(Ally);) 
 			{
 				return true;
 			}

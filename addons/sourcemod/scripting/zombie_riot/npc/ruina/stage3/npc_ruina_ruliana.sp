@@ -68,6 +68,7 @@ static char g_AngerSounds2[][] = {
 	"hl1/fvox/health_dropping2.wav",
 	"hl1/fvox/innsuficient_medical.wav",
 };
+static bool b_angered_once[MAXENTITIES];
 
 void Ruliana_OnMapStart_NPC()
 {
@@ -77,8 +78,8 @@ void Ruliana_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "ruliana"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -193,6 +194,46 @@ methodmap Ruliana < CClotBody
 		PrintToServer("CClot::Playnpc.AngerSound()");
 		#endif
 	}
+
+	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
+	{
+		int color[4]; 
+		Ruina_Color(color);
+
+		float Thickness = 6.0;
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+		TE_SendToAll();
+		TE_SetupBeamRingPoint(Predicted_Pos, Radius*2.0, Radius*2.0+0.5, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.1, color, 1, 0);
+		TE_SendToAll();
+
+		EmitSoundToAll(RUINA_ION_CANNON_SOUND_SPAWN, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Predicted_Pos);
+		DataPack pack;
+		CreateDataTimer(Time, Ruina_Generic_Ion, pack, TIMER_FLAG_NO_MAPCHANGE);
+		pack.WriteCell(EntIndexToEntRef(this.index));
+		pack.WriteFloatArray(Predicted_Pos, sizeof(Predicted_Pos));
+		pack.WriteCellArray(color, sizeof(color));
+		pack.WriteFloat(Radius);
+		pack.WriteFloat(dmg);
+		pack.WriteFloat(0.25);			//Sickness %
+		pack.WriteCell(100);			//Sickness flat
+		pack.WriteCell(this.Anger);		//Override sickness timeout
+
+		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+
+		int laser;
+		laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
+
+		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		int loop_for = 5;
+		float Add_Height = 500.0/loop_for;
+		for(int i=0 ; i < loop_for ; i++)
+		{
+			Predicted_Pos[2]+=Add_Height;
+			TE_SetupBeamRingPoint(Predicted_Pos, (Radius*2.0)/(i+1), 0.0, g_Ruina_BEAM_Laser, g_Ruina_HALO_Laser, 0, 1, Time, Thickness, 0.75, color, 1, 0);
+			TE_SendToAll();
+		}
+		
+	}
 	
 	//npc.AdjustWalkCycle();
 	public void AdjustWalkCycle()
@@ -258,6 +299,8 @@ methodmap Ruliana < CClotBody
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
 		SetVariantInt(RUINA_WINGS_1);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
+
+		b_angered_once[npc.index] = true;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -281,6 +324,8 @@ methodmap Ruliana < CClotBody
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		fl_ruina_battery_timeout[npc.index] = 0.0;
+
+		npc.m_flMeleeArmor = 1.25;
 
 		bool lord = StrContains(data, "overlord") != -1;
 		
@@ -308,7 +353,7 @@ methodmap Ruliana < CClotBody
 		fl_multi_attack_delay[npc.index] = 0.0;
 
 		npc.Anger = false;
-
+		npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 15.0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 2.5;	// GetGameTime(npc.index) + GetRandomFloat(7.5, 15.0);
 		
 		return npc;
@@ -365,29 +410,50 @@ static void ClotThink(int iNPC)
 
 	float Battery_Cost = 3500.0;
 	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
+
+	if(fl_ruina_battery[npc.index] > Battery_Cost)
+		fl_ruina_battery[npc.index] = Battery_Cost;
+		
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
-		if(fl_ruina_battery[npc.index] > Battery_Cost)
-			fl_ruina_battery[npc.index] = Battery_Cost;
+		
 		RaidModeScaling = battery_Ratio;
 
 		int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 		float Ratio = (float(Health)/float(MaxHealth));
 
-		if(Ratio < 0.25)
+		if(Ratio < 0.4)
 		{
-			SactificeAllies(npc);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+			Ruina_Master_Rally(npc.index, true);
+
+			if(npc.m_flNextTeleport < GameTime)	//so allies can actually keep up
+			{
+				npc.m_flNextTeleport = GameTime + 1.0;
+				if(Ratio < 0.1)
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 2.5);
+				else
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
+			}
 		}
+		else
+			Ruina_Master_Rally(npc.index, false);
+			
+		if(Ratio < 0.25)
+			SacrificeAllies(npc.index);	//if low enough hp, she will absorb the hp of nearby allies to heal herself
+
 	}
 
+	if(npc.IsOnGround())
+		Retreat(npc);
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
 		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 		float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, Npc_Vec, true);
+
 
 		if(flDistanceToTarget < 120000)
 		{
@@ -439,6 +505,10 @@ static void ClotThink(int iNPC)
 			npc.m_flNextRangedBarrage_Spam = GameTime + 10.0;	//retry in 10 seconds if we failed
 			Ruliana_Barrage_Invoke(npc, Battery_Cost);
 		}
+		else
+		{
+			npc.m_flNextRangedBarrage_Singular = GameTime+5.0; 
+		}
 
 		//Target close enough to hit
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*17)
@@ -456,7 +526,7 @@ static void ClotThink(int iNPC)
 						if(npc.m_iState >= Amt)
 						{
 							npc.m_iState = 0;
-							npc.m_flNextMeleeAttack = GameTime + (npc.Anger ? 5.0 : 7.5);
+							npc.m_flNextMeleeAttack = GameTime + (npc.Anger ? 2.5 : 5.0);
 						}
 						else
 						{
@@ -519,6 +589,166 @@ static void ClotThink(int iNPC)
 	}
 	npc.PlayIdleAlertSound();
 }
+static int i_targets_inrange;
+static bool Retreat(Ruliana npc, bool custom = false)
+{
+	float GameTime = GetGameTime(npc.index);
+	float Radius = 320.0;	//if too many people are next to her, she just teleports in a direction to escape.
+	
+	if(npc.m_flNextTeleport > GameTime && !custom)	//internal teleportation device is still recharging...
+		return false;
+
+	if(!custom)
+		npc.m_flNextTeleport = GameTime + 1.0;
+
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	i_targets_inrange = 0;
+	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, VecSelfNpc, Radius, _, _, true, 15, false, _, CountTargets);
+
+	if(i_targets_inrange < 4 && !custom)	//not worth "retreating"
+		return false;
+
+	//OH SHIT OH FUCK, WERE BEING OVERRUN, TIME TO GET THE FUCK OUTTA HERE
+
+	float Angles[3];
+	int loop_for = 8;
+	float Ang_Adjust = 360.0/loop_for;
+	
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
+	Angles[0] =0.0;
+	Angles[1]+=180.0;	//she prefers teleporting backwards first
+	Angles[2] =0.0;
+
+	bool success = false;
+
+	
+	switch(GetRandomInt(0, 1))
+	{
+		case 1:
+			Ang_Adjust*=-1.0;
+	}
+	//float Final_Vec[3];
+	for(int i=0 ; i < loop_for ; i++)
+	{
+		float Test_Vec[3];
+		if(Directional_Trace(npc, VecSelfNpc, Angles, Test_Vec))
+		{
+			if(NPC_Teleport(npc.index, Test_Vec))
+			{
+				//TE_SetupBeamPoints(VecSelfNpc, Test_Vec, g_Ruina_BEAM_Laser, 0, 0, 0, 5.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+				//TE_SendToAll();
+				//Final_Vec = Test_Vec;
+				success = true;
+				break;
+			}
+		}
+		Angles[1]+=Ang_Adjust;
+	}
+	if(!success)
+		return false;
+	
+	if(!custom)
+		npc.m_flNextTeleport = GameTime + (npc.Anger ? 15.0 : 30.0);
+	
+	//YAY IT WORKED!!!!!!!
+
+	npc.PlayTeleportSound();
+
+	if(IsValidEnemy(npc.index, npc.m_iTarget))
+	{
+			
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+		npc.FaceTowards(vecTarget, 30000.0);
+	}
+	else
+	{
+		npc.FaceTowards(VecSelfNpc, 30000.0);
+	}
+
+	float start_offset[3], end_offset[3];
+	start_offset = VecSelfNpc;
+
+	float effect_duration = 0.25;
+	
+	WorldSpaceCenter(npc.index, end_offset);
+					
+	for(int help=1 ; help<=8 ; help++)
+	{	
+		Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
+						
+		start_offset[2] += 12.5;
+		end_offset[2] += 12.5;
+	}
+
+	if(custom)
+		return true;
+
+	float radius = (npc.Anger ? 325.0 : 250.0);
+	float dmg = (npc.Anger ? 600.0 : 250.0);
+	float Time = (npc.Anger ? 1.25 : 1.5);
+	npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
+
+
+	return true;
+}
+static bool Similar_Vec(float Vec1[3], float Vec2[3])
+{
+	bool similar = true;
+	for(int i=0 ; i < 3 ; i ++)
+	{
+		similar = Similar(Vec1[i], Vec2[i]);
+	}
+	return similar;
+}
+static bool Similar(float val1, float val2)
+{
+	return fabs(val1 - val2) < 2.0;
+}
+static bool Directional_Trace(Ruliana npc, float Origin[3], float Angle[3], float Result[3])
+{
+	Ruina_Laser_Logic Laser;
+
+	float Distance = 750.0;
+	Laser.client = npc.index;
+	Laser.DoForwardTrace_Custom(Angle, Origin, Distance);
+	float Dist = GetVectorDistance(Origin, Laser.End_Point);
+
+	//TE_SetupBeamPoints(Origin, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {255, 255, 255,255}, 3);
+	//TE_SendToAll();
+
+	//the distance it too short, try a new angle
+	if(Dist < 500.0)
+		return false;
+
+	Result = Laser.End_Point;
+	ConformLineDistance(Result, Origin, Result, Dist - 100.0);	//need to add a bit of extra room to make sure its a valid teleport location. otherwise she might materialize into a wall
+	Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, Result);	//now get the vector but on the floor.
+	float Ang[3];
+	MakeVectorFromPoints(Origin, Result, Ang);
+	GetVectorAngles(Ang, Ang);
+
+	//TE_SetupBeamPoints(Origin, Result, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {255, 0, 0, 255}, 3);
+	//TE_SendToAll();
+
+	float Sub_Dist = GetVectorDistance(Origin, Result);
+
+	Laser.DoForwardTrace_Custom(Ang, Origin, Sub_Dist);	//check if we can see that vector
+	//TE_SetupBeamPoints(Origin, Laser.End_Point, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {0, 0, 255, 255}, 3);
+	//TE_SendToAll();
+	if(Similar_Vec(Result, Laser.End_Point))			//then check if its similar to the one that was traced via a ground clip
+	{
+		float sky[3]; sky = Result; sky[2]+=500.0;
+		//TE_SetupBeamPoints(sky, Result, g_Ruina_BEAM_Laser, 0, 0, 0, 1.0, 15.0, 15.0, 0, 0.1, {0, 255, 0, 255}, 3);
+		//TE_SendToAll();
+		Result = Laser.End_Point;
+		return true;
+	}
+	return false;
+}
+static void CountTargets(int entity, int victim, float damage, int weapon)
+{
+	i_targets_inrange++;
+}
 #define RULIANA_MAX_BARRAGE_SIZE 15
 static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 {
@@ -526,6 +756,16 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	int targets_aquired = 0;
 
 	int minimum_targets = 4;
+
+	float GameTime = GetGameTime(npc.index);
+
+	bool FIREEVERYTHING = false;
+	if(npc.m_flNextRangedBarrage_Singular < (GameTime-10.0))
+	{
+		minimum_targets = 1;
+		FIREEVERYTHING = true;	//OBLITERATE THEM
+	}
+		
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
@@ -587,6 +827,21 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	if(targets_aquired < minimum_targets)	//we didn't get enough targets, abort abort abort
 		return;
 
+	if(FIREEVERYTHING)
+	{
+		int previous_target = valid_targets[0];
+		for(int i=1 ; i < RULIANA_MAX_BARRAGE_SIZE ; i++)
+		{
+			int Target = valid_targets[i];
+			if(!IsValidEnemy(npc.index, Target))
+				valid_targets[i] = previous_target;
+			else
+				previous_target = Target;
+		}
+	}
+
+	targets_aquired = RULIANA_MAX_BARRAGE_SIZE;
+
 	float Base_Recharge = Cost;
 	float Modify_Charge = Base_Recharge*(float(targets_aquired)/float(RULIANA_MAX_BARRAGE_SIZE));
 
@@ -597,6 +852,8 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 
 	float Npc_Vec[3];
 	WorldSpaceCenter(npc.index, Npc_Vec);
+
+	
 
 	for(int i=0 ; i < targets_aquired ; i++)
 	{
@@ -620,7 +877,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		GetVectorAngles(Ang, Ang);
 		Projectile.Angles = Ang;
 		Projectile.speed = (npc.Anger ? 750.0 : 600.0);
-		Projectile.radius = 300.0;
+		Projectile.radius = 100.0;
 		Projectile.damage = (npc.Anger ? 600.0 : 450.0);
 		Projectile.bonus_dmg = 2.5;
 		Projectile.Time = 10.0;
@@ -641,9 +898,12 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 				SetVariantInt(RUINA_ICBM);
 				AcceptEntityInput(ModelApply, "SetBodyGroup");
 			}
+			
+			if(FIREEVERYTHING)
+				continue;
 
-			float 	Homing_Power = 15.0,
-					Homing_Lockon = 90.0;
+			float 	Homing_Power = 5.0,
+					Homing_Lockon = 45.0;
 
 			Initiate_HomingProjectile(Proj,
 			npc.index,
@@ -712,22 +972,32 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	//Ruina_Add_Battery(npc.index, damage);	//turn damage taken into energy
 
 	int Health 		= GetEntProp(npc.index, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(npc.index);
 	
 	float Ratio = (float(Health)/float(MaxHealth));
 
-	if(!npc.Anger && Ratio < 0.5) 
+	if(Ratio < 0.5)
 	{
-		npc.Anger = true; //	>:(
-		npc.PlayAngerSound();
-
-		fl_npc_basespeed = 330.0;
-		
-		if(npc.m_bThisNpcIsABoss)
+		if(!npc.Anger) 
 		{
-			npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+			npc.Anger = true; //	>:(
+			if(!b_angered_once[npc.index])
+			{
+				b_angered_once[npc.index] = true;
+				npc.PlayAngerSound();
+
+				fl_npc_basespeed = 330.0;
+				
+				if(npc.m_bThisNpcIsABoss)
+				{
+					npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("eyes"), PATTACH_POINT_FOLLOW, true);
+				}
+			}
 		}
+		else
+			npc.Anger = false;
 	}
+	
 	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
@@ -737,11 +1007,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	return Plugin_Changed;
 }
-static void SactificeAllies(Ruliana npc)
+void SacrificeAllies(int npc)
 {
-	b_NpcIsTeamkiller[npc.index] = true;
-	Explode_Logic_Custom(0.0, npc.index, npc.index, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
-	b_NpcIsTeamkiller[npc.index] = false;
+	b_NpcIsTeamkiller[npc] = true;
+	Explode_Logic_Custom(0.0, npc, npc, -1, _, 500.0, _, _, true, 99, false, _, FindAllies_Logic);
+	b_NpcIsTeamkiller[npc] = false;
 }
 
 static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
@@ -752,13 +1022,15 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 	if(GetTeam(entity) != GetTeam(victim))
 		return;
 
-	if(b_ruina_npc_healer[victim])	//don't harm the healers, they heal, *they goooood*
-		return;
-	
 	int Health 		= GetEntProp(victim, Prop_Data, "m_iHealth"),
-		MaxHealth 	= GetEntProp(victim, Prop_Data, "m_iMaxHealth");
+		MaxHealth 	= ReturnEntityMaxHealth(victim);
 
-	int ru_MaxHealth 	= GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int ru_MaxHealth 	= ReturnEntityMaxHealth(entity);
+	int ru_Health		= GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	float Ratio = (float(ru_Health)/float(ru_MaxHealth));
+	if(Ratio > 0.5)
+		return;
 
 
 	float Healing_Amt = float(ru_MaxHealth)*0.1;
@@ -771,14 +1043,14 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 
 	if(Health > TrueHealing)
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", GetEntProp(entity, Prop_Data, "m_iHealth") + RoundToFloor(TrueHealing));
-		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
+		SetEntProp(entity, Prop_Data, "m_iHealth", ru_Health + RoundToFloor(TrueHealing));
+		SDKHooks_TakeDamage(victim, 0, 0, TrueHealing, 0, 0, _, _, false, (ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS|ZR_DAMAGE_NPC_REFLECT));
 
 		int color[4];
 		Ruina_Color(color);
 		int laser;
 		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, BEAM_COMBINE_BLUE);
-		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
 }
@@ -790,9 +1062,9 @@ static void NPC_Death(int entity)
 		npc.PlayDeathSound();	
 	}
 
-	if(EntRefToEntIndex(i_Ruina_Ovelord_Ref)==npc.index)
+	if(EntRefToEntIndex(i_Ruina_Overlord_Ref)==npc.index)
 	{
-		i_Ruina_Ovelord_Ref = INVALID_ENT_REFERENCE;
+		i_Ruina_Overlord_Ref = INVALID_ENT_REFERENCE;
 		//CPrintToChatAll("set invalid");
 	}
 		

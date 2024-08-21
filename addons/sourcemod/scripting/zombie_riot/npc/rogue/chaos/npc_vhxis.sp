@@ -86,11 +86,17 @@ void Vhxis_OnMapStart_NPC()
 	strcopy(data.Name, sizeof(data.Name), "Vhxis");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vhxis");
 	strcopy(data.Icon, sizeof(data.Icon), "void_vhxis");
-	data.IconCustom = false;
+	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
+	data.Precache = ClotPrecache;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundCustom("#zombiesurvival/forest_rogue/vhxis_battle.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -128,7 +134,7 @@ methodmap Vhxis < CClotBody
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, RAIDBOSSBOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
@@ -231,7 +237,7 @@ methodmap Vhxis < CClotBody
 	{
 		Vhxis npc = view_as<Vhxis>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "2.0", "30000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 5;
+		i_NpcWeight[npc.index] = 4;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_ROGUE2_VOID_WALK");
@@ -526,7 +532,7 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 		npc.m_flDeathAnimation = GetGameTime(npc.index) + 4.1;
 		npc.PlayDeathSound();
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
 		CPrintToChatAll("{purple}Vhxis: {default}Die already! Im giving it all already!!");
@@ -674,10 +680,10 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		if(npc.m_flEffectThrottle < gameTime)
 		{
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
-			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 2.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
+			spawnRing_Vectors(ProjectileLoc, VOID_GROUNDQUAKE_RANGE * 10.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.3, 5.0, 8.0, 3, VOID_GROUNDQUAKE_RANGE * 2.0);	
 			npc.m_flEffectThrottle = gameTime + 0.25;
 		}
 		if(npc.m_flVoidGroundShakeHappening < gameTime)
@@ -692,7 +698,7 @@ bool VoidVhxis_GroundQuake(Vhxis npc, float gameTime)
 			//This will only detect people, not damage them.
 			Zero(VoidGroundShake);
 			ProjectileLoc[2] += 60.0;
-			Explode_Logic_Custom(1.0, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, true, 99,_,_,_,VoidVhxis_GroundQuakeCheck);
+			Explode_Logic_Custom(1.0, 0, npc.index, -1, ProjectileLoc, VOID_GROUNDQUAKE_RANGE, 1.0, _, false, 99,_,_,_,VoidVhxis_GroundQuakeCheck);
 			
 			static float victimPos[3];
 			static float partnerPos[3];
@@ -868,7 +874,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			TE_Particle("asplode_hoodoo", ProjectileLoc, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
 			CreateEarthquake(ProjectileLoc, 1.0, 1000.0, 12.0, 100.0);
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 			maxhealth *= 0.0015;
 			for (int DoSpawns = 0; DoSpawns < CountPlayersOnRed(1); DoSpawns++)
 			{
@@ -932,7 +938,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 	return false;
 }
 
-int LastEnemyTargeted[MAXENTITIES];
+static int LastEnemyTargeted[MAXENTITIES];
 //This summons the creep, and several enemies on his side!
 bool VoidVhxis_LaserPulseAttack(Vhxis npc, float gameTime)
 {
@@ -1188,7 +1194,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 
 
 			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-			float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 			maxhealth *= 0.02;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{

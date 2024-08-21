@@ -43,6 +43,7 @@ public void Barrack_Railgunner_MapStart()
 	NPC_Add(data);
 }
 
+static float fl_npc_basespeed;
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
 	return Barrack_Alt_Raigunner(client, vecPos, vecAng, ally);
@@ -80,7 +81,7 @@ methodmap Barrack_Alt_Raigunner < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Alt_Raigunner_ClotThink;
 
 		npc.m_flSpeed = 150.0;
-		
+		fl_npc_basespeed = 150.0;
 		
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_dex_sniperrifle/c_dex_sniperrifle.mdl");
@@ -154,7 +155,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						{
 							i_overcharge[npc.index]=0;
 							npc.PlayMeleeSound();
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2600.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1950.0, 1) , speed+100.0 , 100.0 , "spell_fireball_small_red", true, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (3.5 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							npc.ALT_Play_Railgunner_Shoot();
@@ -162,7 +163,7 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 						else
 						{
 							
-							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1300.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+							npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),975.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_red_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 							npc.m_flNextMeleeAttack = GameTime + (1.75 * npc.BonusFireRate);
 							npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 							i_overcharge[npc.index]++;
@@ -178,6 +179,15 @@ public void Barrack_Alt_Raigunner_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 1562500.0, _,false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

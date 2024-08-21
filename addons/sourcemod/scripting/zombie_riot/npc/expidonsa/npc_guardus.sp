@@ -237,6 +237,7 @@ public void Guardus_NPCDeath(int entity)
 	if(!NpcStats_IsEnemySilenced(npc.index))
 	{
 		ExpidonsaGroupHeal(npc.index, 200.0, 99, 1250.0, 1.0, true);
+		DesertYadeamDoHealEffect(npc.index, 200.0);
 	}
 	ExpidonsaRemoveEffects(entity);
 		
@@ -285,7 +286,7 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 					{
 						if (IsInvuln(target))
 						{
-							ExpidonsaGroupHeal(npc.index, 150.0, 5, 750.0, 1.0, true);
+							ExpidonsaGroupHeal(npc.index, 150.0, 5, 1000.0, 1.0, true);
 						}
 						else
 						{
@@ -294,8 +295,9 @@ void GuardusSelfDefense(Guardus npc, float gameTime, int target, float distance)
 					}
 					else
 					{
-						ExpidonsaGroupHeal(npc.index, 150.0, 5, 750.0, 1.0, true);
+						ExpidonsaGroupHeal(npc.index, 150.0, 5, 1000.0, 1.0, true);
 					}
+					DesertYadeamDoHealEffect(npc.index, 150.0);
 				} 
 			}
 			delete swingTrace;

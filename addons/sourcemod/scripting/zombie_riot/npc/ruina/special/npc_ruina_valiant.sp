@@ -54,9 +54,12 @@ static int i_failsafe[MAXENTITIES];
 
 #define RUINA_ANCHOR_FAILSAFE_AMMOUNT 33
 
+#define VENIUM_SPAWN_SOUND	"hl1/ambience/particle_suck2.wav"
+static float fl_last_summon;
+
 void Venium_OnMapStart_NPC()
 {
-
+	fl_last_summon = 0.1;
 
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Valiant");
@@ -64,9 +67,9 @@ void Venium_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "engineer"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), ""); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
-	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
+	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
 static void ClotPrecache()
@@ -80,10 +83,25 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeMissSounds);
 	PrecacheSoundArray(g_TeleportSounds);
 	PrecacheModel("models/player/engineer.mdl");
+	PrecacheSound(VENIUM_SPAWN_SOUND);
 }
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 {
-	return Valiant(client, vecPos, vecAng, ally);
+	bool random = StrContains(data, "rng") != -1;
+
+	if(random)
+	{
+		float roll = GetRandomFloat(0.0, 1.0);
+	//	CPrintToChatAll("Chance: %f", fl_last_summon);
+	//	CPrintToChatAll("Rolled: %f", roll);
+		if(roll > fl_last_summon)
+		{
+			fl_last_summon += 0.1;
+			return -1;
+		}
+	}
+	fl_last_summon = 0.1;
+	return Valiant(client, vecPos, vecAng, ally, data);
 }
 
 methodmap Valiant < CClotBody
@@ -138,7 +156,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -155,7 +173,7 @@ methodmap Valiant < CClotBody
 	}
 	
 	
-	public Valiant(int client, float vecPos[3], float vecAng[3], int ally)
+	public Valiant(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		Valiant npc = view_as<Valiant>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "1250", ally));
 		
@@ -247,6 +265,22 @@ methodmap Valiant < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_MELEE_NPC);	//is a melee npc
 		Ruina_Set_No_Retreat(npc.index);	//no running away to heal!
+
+		if(ally != TFTeam_Red)
+		{
+			
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			EmitSoundToAll(VENIUM_SPAWN_SOUND, _, _, _, _, 1.0);	
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+				{
+					SetGlobalTransTarget(client_check);
+					ShowGameText(client_check, "voice_player", 1, "%t", "Venium Spawn");	
+				}
+			}
+			TeleportDiversioToRandLocation(npc.index);
+		}
 		
 		return npc;
 	}
@@ -312,7 +346,7 @@ static void ClotThink(int iNPC)
 			{
 				if(dist <= (145.0*145.0))
 				{
-					Ruina_Add_Battery(Anchor, 1.0);
+					Ruina_Add_Battery(Anchor, 0.2);
 					NPC_StopPathing(npc.index);
 					npc.m_bPathing = false;
 					npc.FaceTowards(Anchor_Loc, 15000.0);
@@ -361,7 +395,7 @@ static void ClotThink(int iNPC)
 		}
 		
 	}
-	else if(fl_ruina_battery_timer[npc.index] < GameTime && i_magia_anchors_active < 5)
+	else if(fl_ruina_battery_timer[npc.index] < GameTime)
 	{
 		Venium_Build_Anchor(npc);	//build anchor.
 	}
@@ -539,9 +573,6 @@ static void Venium_Build_Anchor(Valiant npc)
 		fl_ruina_battery[spawn_index]=10.0;
 		SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(spawn_index, 255, 255, 255, 1);
-
-		SetEntProp(spawn_index, Prop_Data, "m_iHealth", 50000);
-		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 50000);
 	}
 }
 static void Venium_Post_Bult_Logic(Valiant npc, int PrimaryThreatIndex, float GameTime)

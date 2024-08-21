@@ -11,7 +11,7 @@ public void Rogue_HandMulti_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandGrenade_Weapon(int entity)
+public void Rogue_HandExplosive_Weapon(int entity)
 {
 	char classname[36];
 	GetEntityClassname(entity, classname, sizeof(classname));

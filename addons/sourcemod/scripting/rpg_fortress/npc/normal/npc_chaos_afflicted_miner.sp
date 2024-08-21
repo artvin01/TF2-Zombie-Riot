@@ -444,7 +444,7 @@ public void ChaosAfflictedMiner_OnTakeDamagePost(int victim, int attacker, int i
 		return;
 		
 	ChaosAfflictedMiner npc = view_as<ChaosAfflictedMiner>(victim);
-	int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	
 	float ratio = float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(maxhealth);
 	if(0.9-(npc.g_TimesSummoned*0.2) > ratio)

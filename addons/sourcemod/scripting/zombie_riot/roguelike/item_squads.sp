@@ -57,7 +57,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 			npc.m_fGunRangeBonus *= 1.15;
 
 			// +50 max health
-			int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
+			int health = ReturnEntityMaxHealth(npc.index) + 50;
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 		}
@@ -70,7 +70,7 @@ public void Rogue_Spearhead_Ally(int entity, StringMap map)
 				npc.BonusDamageBonus *= 1.15;
 
 				// +50 max health
-				int health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") + 50;
+				int health = ReturnEntityMaxHealth(npc.index) + 50;
 				SetEntProp(npc.index, Prop_Data, "m_iHealth", health);
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", health);
 			}

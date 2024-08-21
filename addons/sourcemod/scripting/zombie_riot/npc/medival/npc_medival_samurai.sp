@@ -144,7 +144,7 @@ methodmap MedivalSamurai < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -428,7 +428,7 @@ public void MedivalSamurai_ClotDamaged_Post(int victim, int attacker, int inflic
 	if(!(damagetype & (DMG_CLUB|DMG_SLASH)))
 	{
 		f_RangedPainTolerance[npc.index] += damage;
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index) / 2 ) < f_RangedPainTolerance[npc.index]) //npc.Anger after half hp/400 hp
 		{
 			npc.Anger = true; //	>:(
 			npc.m_flSpeed = 330.0;

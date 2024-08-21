@@ -172,6 +172,7 @@ methodmap MedivalEliteLongbowmen < CClotBody
 		func_NPCDeath[npc.index] = MedivalEliteLongbowmen_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = MedivalEliteLongbowmen_OnTakeDamage;
 		func_NPCThink[npc.index] = MedivalEliteLongbowmen_ClotThink;
+		func_NPCAnimEvent[npc.index] = HandleAnimEventMedivalEliteLongbowmen;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/c_models/c_bow/c_bow.mdl");
 		SetVariantString("1.3");

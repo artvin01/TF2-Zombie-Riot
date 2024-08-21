@@ -150,12 +150,20 @@ public void UnderTides_ClotThink(int iNPC)
 		
 		npc.m_flNextThinkTime = gameTime + 0.1;
 
-		int Decicion = TeleportDiversioToRandLocation(npc.index, true);
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1250.0, 500.0);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				return; //Retry, This can infinitly loop, yes, however, we have to.
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 500.0, 350.0);
+				if(Decicion == 2)
+				{
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 350.0, 150.0);
+					if(Decicion == 2)
+					{
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 150.0, 0.0);
+					}
+				}
 			}
 			case 3:
 			{
@@ -421,7 +429,7 @@ void GetHighDefTargets(UnderTides npc, int[] enemy, int count, bool respectTrace
 
 					for(int i; i < count; i++)
 					{
-						int defense = b_npcspawnprotection[entity] ? 8 : 0;
+						int defense = i_npcspawnprotection[entity] ? 8 : 0;
 						
 						if(fl_RangedArmor[entity] < 1.0)
 							defense += 10 - RoundToFloor(fl_RangedArmor[entity] * 10.0);

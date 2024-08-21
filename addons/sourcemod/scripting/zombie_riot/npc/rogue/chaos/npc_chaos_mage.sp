@@ -127,6 +127,7 @@ methodmap ChaosMage < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 270.0;
+		fl_TotalArmor[npc.index] = 0.25;
 		
 		
 		int skin = 1;
@@ -240,7 +241,7 @@ public Action ChaosMage_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(damage >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger)
 	{
 		npc.Anger = true;
-		npc.m_flChaosRevive = GetGameTime(npc.index) + 2.1;
+		npc.m_flChaosRevive = GetGameTime(npc.index) + 1.7;
 		npc.PlayDeathSound();
 		b_NpcIsInvulnerable[npc.index] = true;
 	}
@@ -278,7 +279,7 @@ void ChaosMageSelfDefense(ChaosMage npc, float gameTime, int target, float dista
 	{
 		float projectile_speed = 350.0;
 		float vecTarget[3];
-		float DamageProject = 35.0;
+		float DamageProject = 125.0;
 
 		PredictSubjectPositionForProjectiles(npc, target, projectile_speed,_,vecTarget);
 		npc.FaceTowards(vecTarget, 15000.0);

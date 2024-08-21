@@ -121,7 +121,6 @@ methodmap VoidSpeechless < CClotBody
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		
-		VausMagicaGiveShield(npc.index, 5);
 		func_NPCDeath[npc.index] = VoidSpeechless_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = VoidSpeechless_OnTakeDamage;
 		func_NPCThink[npc.index] = VoidSpeechless_ClotThink;
@@ -131,6 +130,7 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
+		VausMagicaGiveShield(npc.index, 5);
 
 		VoidSpeechlessEffects(npc.index);
 		
@@ -139,7 +139,7 @@ methodmap VoidSpeechless < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 350.0;
 		
 		
 		int skin = 1;
@@ -283,14 +283,21 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 				
 				if(IsValidEnemy(npc.index, target))
 				{
-					float damageDealt = 210.0;
+					float damageDealt = 250.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 14.0;
+					{
+						damageDealt *= 11.0;
+					}
 
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 					Elemental_AddVoidDamage(target, npc.index, 200, true, true);
-					VausMagicaGiveShield(npc.index, 3, true);
+					VausMagicaGiveShield(npc.index, 1, false);
+
+					if(ShouldNpcDealBonusDamage(target))
+					{
+						VausMagicaGiveShield(npc.index, 4, true);
+					}
 
 					// Hit sound
 					npc.PlayMeleeHitSound();
@@ -316,13 +323,13 @@ void VoidSpeechlessSelfDefense(VoidSpeechless npc, float gameTime, int target, f
 						
 				npc.m_flAttackHappens = gameTime + 0.25;
 				npc.m_flDoingAnimation = gameTime + 0.25;
-				npc.m_flNextMeleeAttack = gameTime + 1.2;
+				npc.m_flNextMeleeAttack = gameTime + 0.6;
 			}
 		}
 	}
 	if(gameTime > npc.m_flAttackHappens_2)
 	{
-		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0))
+		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED) && distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
 		{
 			float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
@@ -508,8 +515,8 @@ void VoidSpeechlessInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, VoidSpeechless_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 			
-	float CloseDamage = 250.0;
-	float FarDamage = 200.0;
+	float CloseDamage = 300.0;
+	float FarDamage = 250.0;
 	float MaxDistance = 2000.0;
 	float playerPos[3];
 	bool HitEnemy = false;

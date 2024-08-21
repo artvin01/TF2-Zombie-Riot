@@ -37,6 +37,7 @@ public void Barrack_Alt_Basic_Mage_MapStart()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -77,6 +78,7 @@ methodmap Barrack_Alt_Basic_Mage < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Alt_Basic_Mage_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Alt_Basic_Mage_ClotThink;
+		fl_npc_basespeed = 190.0;
 		npc.m_flSpeed = 190.0;
 		
 		
@@ -146,7 +148,7 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 						float flAng[3]; // original
 						GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 							
-						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 300.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
+						npc.FireParticleRocket(vecTarget, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 225.0, 1) , speed+100.0 , 100.0 , "raygun_projectile_blue_crit", _, false, true, flPos, _ , GetClientOfUserId(npc.OwnerUserId));
 						npc.m_flNextMeleeAttack = GameTime + (3.5 * npc.BonusFireRate);
 						npc.m_flReloadDelay = GameTime + (0.6 * npc.BonusFireRate);
 					}
@@ -159,6 +161,15 @@ public void Barrack_Alt_Basic_Mage_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 190.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS", 200000.0, _, false);
+
+		if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 10.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

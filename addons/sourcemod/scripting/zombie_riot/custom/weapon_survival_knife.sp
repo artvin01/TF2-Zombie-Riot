@@ -193,7 +193,7 @@ public Action Timer_Management_Survival(Handle timer, DataPack pack)
 				
 			Knife_Count[client]++;
 
-			CD_Knife[client] = GetGameTime() + CD_KnifeSet[client];
+			CD_Knife[client] = GetGameTime() + (CD_KnifeSet[client] * Attributes_Get(weapon, 6, 1.0)); // prevent spamming, idk if you already have something for that but hee
 		}
 	}
 	if(f_KnifeHudDelay[client] < GetGameTime())
@@ -352,7 +352,8 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		int flMaxHealth = SDKCall_GetMaxHealth(client);
 		int flHealth = GetClientHealth(client);
 		
-		int health = flMaxHealth / 5;
+		int health = flMaxHealth / 4;
+		f_TimeUntillNormalHeal[client] = GetGameTime() + 4.0;
 
 		flHealth -= health;
 		if((flHealth) < 1)
@@ -367,7 +368,7 @@ public void Survival_Knife_Tier3_Reload(int client, int weapon, bool crit, int s
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 
-		Ability_Apply_Cooldown(client, slot, 15.0);
+		Ability_Apply_Cooldown(client, slot, 25.0);
 	}
 	else
 	{
@@ -394,7 +395,7 @@ public Action Timer_Madness_Duration(Handle timer, DataPack pack)
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Madness ends");
 			
-			CreateTimer(10.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
+			CreateTimer(20.0, Timer_Reable_Madness, client, TIMER_FLAG_NO_MAPCHANGE); // Next Madness
 		}
 	}
 	InMadness[client] = false;
@@ -467,7 +468,7 @@ public Action Timer_Throw_Extra_Knife(Handle timer, DataPack pack)
 public void Throw_Knife(int client, int weapon, float speed, int iModel)
 {
 	f_KnifeHudDelay[client] = 0.0;
-	float damage = 75.0;
+	float damage = 65.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 	
 	float fAng[3], fPos[3];
@@ -606,7 +607,7 @@ public Action Event_Knife_Touch(int entity, int other)
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		int weapon = EntRefToEntIndex(Projectile_To_Weapon[entity]);
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_CLUB, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
 		{

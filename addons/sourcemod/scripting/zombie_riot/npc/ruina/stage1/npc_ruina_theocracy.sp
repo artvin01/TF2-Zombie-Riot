@@ -76,11 +76,11 @@ public void Theocracy_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Theocracy");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ruina_theocracy");
-	data.Category = -1;
+	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "eisenhard"); 						//leaderboard_class_(insert the name)
+	data.IconCustom = true;												//download needed?
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;			//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -158,6 +158,7 @@ methodmap Theocracy < CClotBody
 	{
 		Theocracy npc = view_as<Theocracy>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "15000", ally));
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
@@ -272,7 +273,7 @@ static void ClotThink(int iNPC)
 		npc.PlayHurtSound();
 	}
 	
-	if(npc.m_flNextThinkTime > GameTime || npc.m_flDoingAnimation > GameTime)
+	if(npc.m_flNextThinkTime > GameTime || npc.m_flDoingAnimation > GetGameTime())
 	{
 		return;
 	}
@@ -318,14 +319,13 @@ static void ClotThink(int iNPC)
 	
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))
 	{
-		if(npc.m_flDoingAnimation<=GameTime)
+		if(npc.m_flDoingAnimation<=GetGameTime())
 			Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement
 		
 		Master_Apply_Defense_Buff(npc.index, 250.0, 5.0, 0.1);	//10% resistances
-		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.25);	//25% speed bonus, going bellow 1.0 will make npc's slower
+		Master_Apply_Speed_Buff(npc.index, 250.0, 5.0, 1.20);	//25% speed bonus, going bellow 1.0 will make npc's slower
 		Master_Apply_Attack_Buff(npc.index, 250.0, 5.0, 0.1);	//10% dmg bonus
 		Master_Apply_Shield_Buff(npc.index, 250.0, 0.5);	//50% block shield
-		
 		
 		if(fl_rally_timer[npc.index]<=GameTime && !b_rally_active[npc.index])
 		{
@@ -357,10 +357,11 @@ static void ClotThink(int iNPC)
 			npc.SetPlaybackRate(1.0);	
 			npc.SetCycle(0.0);
 					
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_yetipunch");
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
-			npc.m_flDoingAnimation = GameTime + 6.25;
+			npc.m_flDoingAnimation = GetGameTime() + 6.25;
 			CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			
 			CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
@@ -461,6 +462,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 		npc.m_flSpeed = 300.0;
 		npc.m_bPathing = true;
 		
+		npc.m_bisWalking = true;
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE_ALLCLASS");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 	}
@@ -833,7 +835,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		i_string_Theory_battery[npc.index] = 0;
 		Theocracy_String_Theory(EntIndexToEntRef(npc.index));
 	}
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(
 		npc.PlayAngerSound();

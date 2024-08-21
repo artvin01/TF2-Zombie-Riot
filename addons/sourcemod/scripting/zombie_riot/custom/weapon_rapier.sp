@@ -176,7 +176,7 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 	int pap = i_Current_Pap_Rapier[attacker];
 	if(i_HasBeenHeadShotted[victim] == true)
 	{	
-		damage *= 1.1;
+		damage *= 1.25;
 		//PrintToChatAll("speedbuff from headshot :D");
 		if(pap != 0)
 			StartBleedingTimer(victim, attacker, damage * 0.06, 4, weapon, DMG_SLASH);
@@ -185,15 +185,11 @@ public void NPC_OnTakeDamage_Rapier(int attacker, int victim, float &damage, int
 	{
 		case 0, 1:
 		{
-			//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.35);
-			ApplyTempAttrib(weapon, 107 , 1.3272, 0.4);
-			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.4);
 		}
 		default:
 		{
-			//TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.7);
-			ApplyTempAttrib(weapon, 107 , 1.3272, 0.8);
-			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.0001);
+			TF2_AddCondition(attacker, TFCond_SpeedBuffAlly, 0.8);
 		}
 	}
 	

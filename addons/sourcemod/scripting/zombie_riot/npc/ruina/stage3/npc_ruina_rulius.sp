@@ -53,7 +53,7 @@ void Rulius_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "medic"); 						//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "demoknight_samurai"); 						//leaderboard_class_(insert the name)
 	data.IconCustom = false;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
@@ -107,7 +107,7 @@ methodmap Rulius < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -517,7 +517,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	
 	if(fl_ruina_battery_timer[npc.index]<GameTime)
 	{
-		int Max_Health = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
 		int healing = RoundToFloor(i_damage_taken[npc.index]*0.5);
 
@@ -526,7 +526,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		//CPrintToChatAll("Healing: %i",healing);
 			
-		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 150, 150, 175});
+		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5);
 
 		i_damage_taken[npc.index]=0;
 	}

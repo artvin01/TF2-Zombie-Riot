@@ -34,6 +34,7 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/dragons_fury_pressure_build.wav",
 };
 
+static float fl_npc_basespeed;
 void Laz_OnMapStart_NPC()
 {
 	NPCData data;
@@ -93,7 +94,7 @@ methodmap Laz < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -137,6 +138,7 @@ methodmap Laz < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
 
+		fl_npc_basespeed = 250.0;
 		npc.m_flSpeed = 250.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
@@ -289,6 +291,17 @@ static void ClotThink(int iNPC)
 			npc.m_bAllowBackWalking=false;
 		}
 
+		if(npc.m_bAllowBackWalking)
+		{
+			npc.m_flSpeed = fl_npc_basespeed*RUINA_BACKWARDS_MOVEMENT_SPEED_PENATLY;	
+			if(npc.m_flAttackHappens > GameTime - 1.0)
+				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED*1.5);
+			else
+				npc.FaceTowards(vecTarget, RUINA_FACETOWARDS_BASE_TURNSPEED);
+		}
+		else
+			npc.m_flSpeed = fl_npc_basespeed;
+
 		if(npc.m_flNextRangedAttack < GameTime)	//Initialize the attack.
 		{
 			if(flDistanceToTarget<(750.0*750.0))
@@ -314,8 +327,8 @@ static void ClotThink(int iNPC)
 					Projectile.Angles = Ang;
 					Projectile.speed = projectile_speed;
 					Projectile.radius = 0.0;
-					Projectile.damage = 100.0;
-					Projectile.bonus_dmg = 200.0;
+					Projectile.damage = 50.0;
+					Projectile.bonus_dmg = 100.0;
 					Projectile.Time = Laser_Time;
 					Projectile.visible = false;
 					int Proj = Projectile.Launch_Projectile(Func_On_Proj_Touch);		
@@ -347,6 +360,7 @@ static void ClotThink(int iNPC)
 							b = 200;
 
 						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
 						i_ruina_Projectile_Particle[Proj] = EntIndexToEntRef(beam);
 					}
 				}

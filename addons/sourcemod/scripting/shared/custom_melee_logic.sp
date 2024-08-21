@@ -228,6 +228,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				Victorian_Melee_Swing(CustomMeleeRange, CustomMeleeWide);
 			}
+			case WEAPON_ULPIANUS:
+			{
+				enemies_hit_aoe = Ulpianus_EnemyHitCount();
+			}
 		}	
 	}
 #endif
@@ -419,6 +423,11 @@ stock int PlayCustomWeaponSoundFromPlayerCorrectly(int client, int target, int w
 				PlayCustomSoundSpecter(client);
 				return ZEROSOUND;
 			}	
+			case WEAPON_ANGELIC_SHOTGUN:
+			{
+				PlayCustomSoundAngelica(client);
+				return ZEROSOUND;
+			}
 		}
 #endif
 		return MELEE_HIT;

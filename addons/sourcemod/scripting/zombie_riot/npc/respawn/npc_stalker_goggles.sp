@@ -15,6 +15,7 @@ static char g_RangedAttackSounds[][] = {
 	"weapons/sniper_railgun_charged_shot_02.wav"
 };
 
+bool AppearedBefore_Suicide;
 void StalkerGoggles_OnMapStart()
 {
 	PrecacheModel("models/bots/sniper/bot_sniper.mdl");
@@ -33,6 +34,10 @@ void StalkerGoggles_OnMapStart()
 	NPC_Add(data);
 }
 
+void ResetWaldchLogic()
+{
+	AppearedBefore_Suicide = false;
+}
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("#music/bluemelee.mp3");
@@ -277,10 +282,17 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		return;
 	}
 	//2 waves passed or its a raid.
-	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann)
+	if(npc.i_GunMode <= (Waves_GetRound() - 2) || RaidbossIgnoreBuildingsLogic(1) || LastMann || AppearedBefore_Suicide)
 	{
 		if(npc.m_iSurrender == 0)
 		{
+			if(AppearedBefore_Suicide)
+			{
+				CPrintToChatAll("{darkblue}The machine wanders off, it isnt interrested in this place anymore, someone else takes its place instead...");
+				NPC_SpawnNext(true, true); //This will force spawn a panzer.
+				b_NpcForcepowerupspawn[npc.index] = 0;
+			}
+			AppearedBefore_Suicide = true;
 			i_RaidGrantExtra[npc.index] = 0;
 			b_DissapearOnDeath[npc.index] = true;
 			b_DoGibThisNpc[npc.index] = true;
@@ -507,24 +519,6 @@ public void StalkerGoggles_ClotThink(int iNPC)
 		}
 	}
 
-	float engineTime = GetEngineTime();
-
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-		{
-			GetClientAbsOrigin(client, vecAng);
-			if(GetVectorDistance(vecMe, vecAng, true) < (sniper ? 2000000.0 : 1500000.0) && (Can_I_See_Enemy(npc.index, client) == client))
-			{
-				if(fl_AlreadyStrippedMusic[client] < engineTime)
-					Music_Stop_All(client);
-				
-				SetMusicTimer(client, GetTime() + 5);
-				fl_AlreadyStrippedMusic[client] = engineTime + 5.0;
-			}
-		}
-	}
-
 	if(sniper)
 	{
 		if(!npc.m_bPlayingSniper)
@@ -700,6 +694,15 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 		if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 		{
 			WorldSpaceCenter(npc.m_iTarget, ThrowPos[npc.index]);
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
 		}
 	}
 	else
@@ -711,12 +714,7 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 			float AngleAim[3];
 			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
 			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
-			int Traced_Target = TR_GetEntityIndex(hTrace);
-			if(Traced_Target > 0)
-			{
-				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
-			}
-			else if(TR_DidHit(hTrace))
+			if(TR_DidHit(hTrace))
 			{
 				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
 			}
@@ -736,8 +734,23 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
 			
-			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			float pos_npc[3];
+			WorldSpaceCenter(npc.index, pos_npc);
+			float AngleAim[3];
+			GetVectorAnglesTwoPoints(pos_npc, ThrowPos[npc.index], AngleAim);
+			Handle hTrace = TR_TraceRayFilterEx(pos_npc, AngleAim, MASK_SOLID, RayType_Infinite, BulletAndMeleeTrace, npc.index);
+			int Traced_Target = TR_GetEntityIndex(hTrace);
+			if(Traced_Target > 0)
+			{
+				WorldSpaceCenter(Traced_Target, ThrowPos[npc.index]);
+			}
+			else if(TR_DidHit(hTrace))
+			{
+				TR_GetEndPosition(ThrowPos[npc.index], hTrace);
+			}
+			delete hTrace;	
+			int target = Can_I_See_Enemy(npc.index, npc.m_iTarget,_ ,ThrowPos[npc.index]);
 			npc.PlayRangedSound();
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
@@ -755,7 +768,7 @@ int BlueGogglesSelfDefense(StalkerGoggles npc, float gameTime)
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		npc.m_flAttackHappens = gameTime + 1.25;
-		npc.m_flDoingAnimation = gameTime + 0.65;
+		npc.m_flDoingAnimation = gameTime + 0.95;
 		npc.m_flNextMeleeAttack = gameTime + 2.5;
 	}
 	return 1;

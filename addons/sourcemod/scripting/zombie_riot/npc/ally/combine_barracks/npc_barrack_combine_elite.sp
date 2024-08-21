@@ -14,7 +14,7 @@ static const char g_IdleSounds[][] =
 	"npc/combine_soldier/vo/alert1.wav",
 	"npc/combine_soldier/vo/bouncerbouncer.wav",
 	"npc/combine_soldier/vo/boomer.wav",
-	"npc/combine_soldier/vo/contactconfirm.wav",
+	"npc/combine_soldier/vo/contactconfim.wav",
 };
 
 static const char g_RangedAttackSounds[][] =
@@ -56,6 +56,7 @@ void Barracks_Combine_Elite_Precache()
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
+static float fl_npc_basespeed;
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
@@ -114,19 +115,21 @@ methodmap Barrack_Combine_Elite < BarrackBody
 
 	public Barrack_Combine_Elite(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "375", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Combine_Elite npc = view_as<Barrack_Combine_Elite>(BarrackBody(client, vecPos, vecAng, "425", "models/combine_super_soldier.mdl", STEPTYPE_COMBINE,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Elite_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Elite_ClotThink;
-		npc.m_flSpeed = 220.0;
+		fl_npc_basespeed = 240.0;
+		npc.m_flSpeed = 240.0;
 
 		npc.m_iAttacksTillReload = 30;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_fbRangedSpecialOn = false;
 		npc.m_flRangedSpecialDelay = 0.0;
+		npc.m_flNextMeleeAttack = 0.0;
 		
 		KillFeed_SetKillIcon(npc.index, "smg");
 		
@@ -164,17 +167,17 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 					//Can we attack right now?
 					if(npc.m_iAttacksTillReload < 1)
 					{
-						npc.AddGesture("ACT_RELOAD");
-						npc.m_flNextRangedAttack = GameTime + 2.2;
+						npc.AddGesture("ACT_RELOAD",_,_,_,0.5);
+						npc.m_flNextMeleeAttack = GameTime + 3.7;
 						npc.m_iAttacksTillReload = 30;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime)
+					if(npc.m_flNextRangedAttack < GameTime && npc.m_flNextMeleeAttack < GameTime)
 					{
 						if(!npc.m_fbRangedSpecialOn)
 						{
 							float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
-							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1000.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
+							npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 625.0, 1), 400.0, "models/effects/combineball.mdl",0.5);
 							npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 							npc.PlayRangedAttackSecondarySound();
 							npc.m_fbRangedSpecialOn = true;
@@ -198,17 +201,17 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 250.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 175.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;		
 						if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
 						{
 							npc.m_fbRangedSpecialOn = false;
-						}		
+						}	
 					}
 					else
 					{
-						npc.m_flSpeed = 220.0;
+						npc.m_flSpeed = 240.0;
 					}
 				}
 			}
@@ -219,6 +222,19 @@ public void Barrack_Combine_Elite_ClotThink(int iNPC)
 		}
 
 		BarrackBody_ThinkMove(npc.index, 220.0, "ACT_IDLE", "ACT_RUN_AIM_RIFLE", 275000.0,_, true);
+
+		if(npc.m_flNextRangedAttack > GameTime)
+		{
+			npc.m_flSpeed = 0.0;
+		}
+		else if(npc.m_flNextMeleeAttack > GameTime)
+		{
+			npc.m_flSpeed = 120.0;
+		}
+		else
+		{
+			npc.m_flSpeed = fl_npc_basespeed;
+		}
 	}
 }
 

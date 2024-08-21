@@ -180,7 +180,8 @@ void Flametail_NPCTakeDamage(int attacker, float &damage, int weapon, float dama
 		
 		if(WeaponLevel[attacker] > 2)
 		{
-			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 150.0, 1.0, 1.0, false, DodgeFor[attacker] > GetGameTime() ? 5 : 3);
+			i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_CLUB_DAMAGE;
+			Explode_Logic_Custom(damage, attacker, attacker, weapon, damagePosition, 150.0, EXPLOSION_AOE_DAMAGE_FALLOFF + 0.1, 1.0, false, DodgeFor[attacker] > GetGameTime() ? 5 : 3);
 		}
 		else
 		{

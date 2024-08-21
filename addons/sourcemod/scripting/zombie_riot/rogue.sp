@@ -862,11 +862,11 @@ void Rogue_BattleVictory()
 			{
 				if(BattleIngots > 4)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 4 : 5);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 4 : 5);
 				}
 				else if(BattleIngots > 1)
 				{
-					Store_RandomizeNPCStore(2, CurrentFloor > 1 ? 3 : 4);
+					Store_RandomizeNPCStore(0, CurrentFloor > 1 ? 3 : 4);
 				}
 
 				if(!(GetURandomInt() % (Rogue_GetChaosLevel() > 1 ? 3 : 4)))
@@ -1195,8 +1195,8 @@ void Rogue_NextProgress()
 							}
 						}
 					}
-
-					Rogue_Paradox_OnNewFloor(CurrentFloor);
+					if(RogueTheme == BlueParadox)
+						Rogue_Paradox_OnNewFloor(CurrentFloor);
 
 					SetHudTextParamsEx(-1.0, -1.0, 8.0, {255, 255, 255, 255}, {255, 200, 155, 255}, 2, 0.1, 0.1);
 					for(int client = 1; client <= MaxClients; client++)
@@ -2072,7 +2072,7 @@ void Rogue_PlayerDowned(int client)
 	if(Rogue_GetChaosLevel() > 3)
 		i_AmountDowned[client]++;
 	
-	if(RogueTheme == BlueParadox)
+	if(!Waves_InSetup() && RogueTheme == BlueParadox)
 	{
 		// Gain 10.0 for the total of all players downing
 		BattleChaos += 10.0 / float(CurrentPlayers);
@@ -2230,13 +2230,13 @@ stock void Rogue_RemoveNamedArtifact(const char[] name)
 			Artifacts.GetArray(CurrentCollection.Get(i), artifact);
 			if(StrEqual(artifact.Name, name, false))
 			{
-				if(artifact.FuncRemove != INVALID_FUNCTION)	// Items can only be "removed" when have a func_remove
+				if(artifact.FuncRemove != INVALID_FUNCTION)
 				{
+					//call remove function.
 					Call_StartFunction(null, artifact.FuncRemove);
 					Call_Finish();
-
-					CurrentCollection.Erase(i);
 				}
+				CurrentCollection.Erase(i);
 				return;
 			}
 		}
@@ -2269,7 +2269,7 @@ void Rogue_AddIngots(int amount, bool silent = false)
 	{
 		if(amount < 0)
 		{
-			CPrintToChatAll("%t", "Losted Ingots", -amount);
+			CPrintToChatAll("%t", "Lost Ingots", -amount);
 		}
 		else
 		{
@@ -2358,8 +2358,12 @@ static Action Rogue_ChaosChaos(Handle timer)
 	}
 
 	ResetReplications();
+	
+	float mod = 1.0 + (CurrentChaos * 0.003);
+	if(mod > 3.0)
+		mod = 3.0;
 
-	cvarTimeScale.SetFloat(GetRandomFloat(0.7, 1.1));
+	cvarTimeScale.SetFloat(GetRandomFloat(1.0 / mod, mod));
 	return Plugin_Continue;
 }
 
@@ -2375,7 +2379,7 @@ stock void Rogue_RemoveChaos(int amount)
 	}
 
 	Waves_UpdateMvMStats();
-	CPrintToChatAll("%t", "Losted Chaos", change);
+	CPrintToChatAll("%t", "Lost Chaos", change);
 }
 
 stock bool Rogue_CurseActive()
@@ -2546,15 +2550,15 @@ bool Rogue_UpdateMvMStats(int mvm, int m_currentWaveStats, int m_runningTotalWav
 						{
 							case 1, 2:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							case 3, 4:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT, true);
 							}
 							default:
 							{
-								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos", MVM_CLASS_FLAG_NORMAL, true);
+								Waves_SetWaveClass(objective, i, CurrentChaos, "rogue_chaos_1", MVM_CLASS_FLAG_NORMAL, true);
 							}
 						}
 

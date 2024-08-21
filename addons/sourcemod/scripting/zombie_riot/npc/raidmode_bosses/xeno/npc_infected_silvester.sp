@@ -134,6 +134,8 @@ public void RaidbossSilvester_OnMapStart()
 	PrecacheSound("weapons/physcannon/energy_sing_loop4.wav", true);
 	PrecacheSound("weapons/physcannon/physcannon_drop.wav", true);
 }
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
 
 void Silvester_TBB_Precahce()
 {
@@ -338,6 +340,8 @@ methodmap RaidbossSilvester < CClotBody
 		}
 		bool final = StrContains(data, "final_item") != -1;
 		
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		if(final)
 		{
 			b_NpcUnableToDie[npc.index] = true;
@@ -366,7 +370,6 @@ methodmap RaidbossSilvester < CClotBody
 		{
 			RaidModeScaling *= 0.38;
 		}
-		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		
 		float amount_of_people = float(CountPlayersOnRed());
 		if(amount_of_people > 12.0)
@@ -380,6 +383,7 @@ methodmap RaidbossSilvester < CClotBody
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
 
+		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		
 	
@@ -444,15 +448,23 @@ methodmap RaidbossSilvester < CClotBody
 
 		SetVariantColor(view_as<int>({255, 255, 255, 200}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-
-		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
-		music.Time = 117;
-		music.Volume = 2.0;
-		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
-		Music_SetRaidMusic(music);
+		bool ingoremusic = StrContains(data, "triple_enemies") != -1;
+		
+		if(!ingoremusic)
+		{
+			MusicEnum music;
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/silvester_raid/silvester.mp3");
+			music.Time = 117;
+			music.Volume = 2.0;
+			music.Custom = true;
+			strcopy(music.Name, sizeof(music.Name), "Arknights - Deepness Battle Theme");
+			strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+			Music_SetRaidMusic(music);
+		}
+		else
+		{
+			RaidModeTime = GetGameTime(npc.index) + 450.0;
+		}
 		
 		npc.Anger = false;
 		//IDLE
@@ -609,6 +621,7 @@ static void Internal_ClotThink(int iNPC)
 			NPC_StopPathing(npc.index);
 			npc.m_bPathing = false;
 			npc.m_flSpeed = 0.0;
+			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 			npc.SetCycle(0.01);
 			b_RageAnimated[npc.index] = true;
@@ -646,7 +659,7 @@ static void Internal_ClotThink(int iNPC)
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Angeled Silvester");
 			i_NpcWeight[npc.index] = 4;
 
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			SilvesterApplyEffects(npc.index, false);
 
 			int AllyEntity = EntRefToEntIndex(i_RaidDuoAllyIndex);
@@ -1152,6 +1165,7 @@ static void Internal_ClotThink(int iNPC)
 						npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 						Silvester_TBB_Ability(npc.index);
 						npc.m_iInKame = 2;
+						npc.m_bisWalking = false;
 						npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//	npc.AddGesture("ACT_MP_RUN_MELEE");
 						npc.SetPlaybackRate(0.5);	
@@ -1169,6 +1183,7 @@ static void Internal_ClotThink(int iNPC)
 					npc.m_flDoingSpecial = GetGameTime(npc.index) + 2.5;
 					Silvester_TBB_Ability(npc.index);
 					npc.m_iInKame = 2;
+					npc.m_bisWalking = false;
 					npc.AddActivityViaSequence("taunt_doctors_defibrillators");
 					//npc.AddGesture("ACT_MP_RUN_MELEE");
 					npc.SetPlaybackRate(0.5);	
@@ -1255,6 +1270,7 @@ static void Internal_ClotThink(int iNPC)
 
 				float DelayPillars = 3.0;
 				float DelaybewteenPillars = 0.2;
+				npc.m_bisWalking = false;
 				npc.AddActivityViaSequence("taunt_the_fist_bump");
 				npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_MELEE");
 				npc.SetPlaybackRate(0.5);
@@ -1361,6 +1377,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+	Internal_Weapon_Lines(npc, attacker);
 
 	if(ZR_GetWaveCount()+1 > 55 && !b_angered_twice[npc.index] && i_RaidGrantExtra[npc.index] == 1)
 	{
@@ -1393,7 +1410,7 @@ public void RaidbossSilvester_OnTakeDamagePost(int victim, int attacker, int inf
 	RaidbossSilvester npc = view_as<RaidbossSilvester>(victim);
 	if(ZR_GetWaveCount()+1 > 35)
 	{
-		if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth")/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+		if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
 			SilvesterApplyEffects(npc.index, true);
 			if(IsValidEntity(i_LaserEntityIndex[npc.index]))
@@ -1690,12 +1707,7 @@ public Action contact_throw_Silvester_entity(int client)
 							int damage;
 							if(client <= MaxClients)
 							{
-								damage = SDKCall_GetMaxHealth(client) / 3;
-
-							}
-							else
-							{
-								damage = GetEntProp(client, Prop_Data, "m_iMaxHealth") / 3;
+								damage = ReturnEntityMaxHealth(client) / 3;
 							}
 							if(damage > 2000)
 							{
@@ -1835,6 +1847,7 @@ float extra_pillar_size = 1.0)
 		Range *= extra_pillar_size;
 
 		Range += (float(Repeats) * 10.0);
+		Range += 10.0;
 		Silvester_TE_Used += 1;
 		if(Silvester_TE_Used > 31)
 		{
@@ -1853,19 +1866,6 @@ float extra_pillar_size = 1.0)
 		{
 			spawnRing_Vectors(origin_altered, Range * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", i_ColoursTEPillars[0], i_ColoursTEPillars[1], i_ColoursTEPillars[2], i_ColoursTEPillars[3], 1, delay + (delay_PerPillar * float(Repeats)), 5.0, 0.0, 1);	
 		}
-		/*
-		int laser;
-		RaidbossSilvester npc = view_as<RaidbossSilvester>(entity);
-
-		int red = 212;
-		int green = 155;
-		int blue = 0;
-
-		laser = ConnectWithBeam(npc.m_iWearable6, -1, red, green, blue, 5.0, 5.0, 0.0, LINKBEAM,_, origin_altered);
-
-		CreateTimer(delay, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
-		*/
-
 	}
 }
 
@@ -2000,7 +2000,7 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float SizeScale = 0.9;
 			SizeScale *= PillarSizeEdit; 
 
-			SizeScale += (count * 0.1);
+			SizeScale += (float(count -1) * 0.1);
 
 			char FloatString[8];
 			FloatToString(SizeScale, FloatString, sizeof(FloatString));
@@ -2021,7 +2021,8 @@ public Action Silvester_DamagingPillar(Handle timer, DataPack pack)
 			float Range = 100.0;
 			Range *= PillarSizeEdit;
 
-			Range += (float(count) * 10.0);
+			Range += (float(count -1) * 10.0);
+			Range += 10.0;
 			
 			makeexplosion(entity, entity, SpawnParticlePos, "", RoundToCeil(damage), RoundToCeil(Range),_,_,_,false);
 	//		InfoTargetParentAt(SpawnParticlePos, "medic_resist_fire", 1.0);
@@ -2866,3 +2867,51 @@ void SharedTimeLossSilvesterDuo(int entity)
 	}
 }
 
+static void Internal_Weapon_Lines(RaidbossSilvester npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		
+		case WEAPON_SENSAL_SCYTHE,WEAPON_SENSAL_SCYTHE_PAP_1,WEAPON_SENSAL_SCYTHE_PAP_2,WEAPON_SENSAL_SCYTHE_PAP_3:
+		 switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "You have his weapon yet none of his strength.");
+		  							case 1: Format(Text_Lines, sizeof(Text_Lines), "{blue}Sensal{default} gave you this {gold}%N{default}? cant be.", client);}	//IT ACTUALLY WORKS, LMFAO
+		case WEAPON_FUSION,WEAPON_FUSION_PAP1,WEAPON_FUSION_PAP2, WEAPON_NEARL: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You little stealers arent you?");
+		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "Hey thats my weapon!");}
+		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "Oh you beat him up? Thats good.");
+		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "that gun aint got ANYTHING ON ME!!!");
+		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "{lightblue}Her{default} gun...? uh...");
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{gold}Silvester{default}: %s", Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
+}

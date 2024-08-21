@@ -69,6 +69,7 @@ public void GodAlaxios_OnMapStart()
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
 	NPCId = NPC_Add(data);
+	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
 }
 
 static void ClotPrecache()
@@ -85,7 +86,6 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
 	for (int i = 0; i < (sizeof(g_LastStand));   i++) { PrecacheSoundCustom(g_LastStand[i]);   }
-	for (int i = 0; i < (sizeof(g_RandomGroupScream));   i++) { PrecacheSoundCustom(g_RandomGroupScream[i]);   }
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -306,7 +306,7 @@ methodmap GodAlaxios < CClotBody
 		music.Volume = 2.0;
 		music.Custom = true;
 		strcopy(music.Name, sizeof(music.Name), "Arknights - Putrid");
-		strcopy(music.Artist, sizeof(music.Artist), "HyperGryph");
+		strcopy(music.Artist, sizeof(music.Artist), "Arknights");
 		Music_SetRaidMusic(music);
 
 		float flPos[3]; // original
@@ -411,6 +411,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	if(b_angered_twice[npc.index])
 	{
+		npc.m_bDissapearOnDeath = true;
 		BlockLoseSay = true;
 		int closestTarget = GetClosestAllyPlayer(npc.index);
 		if(IsValidEntity(closestTarget))
@@ -520,11 +521,11 @@ public void GodAlaxios_ClotThink(int iNPC)
 	}
 	if(b_ThisEntityIgnored[npc.index])
 	{
-		int HealByThis = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4000;
+		int HealByThis = ReturnEntityMaxHealth(npc.index) / 4000;
 		SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iHealth") + HealByThis);
-		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"))
+		if(GetEntProp(npc.index, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(npc.index))
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index));
 		}
 		bool allyAlive = false;
 		for(int targ; targ<i_MaxcountNpc; targ++)
@@ -571,7 +572,7 @@ public void GodAlaxios_ClotThink(int iNPC)
 				AlaxiosSayWordsAngry();
 				npc.Anger = true;
 				b_NpcIsInvulnerable[npc.index] = false;
-				SetEntProp(npc.index, Prop_Data, "m_iHealth", (GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") * 6) / 7);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) * 6) / 7);
 			}
 		}
 	}
@@ -811,7 +812,7 @@ public Action GodAlaxios_OnTakeDamage(int victim, int &attacker, int &inflictor,
 public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	GodAlaxios npc = view_as<GodAlaxios>(victim);
-	float maxhealth = float(GetEntProp(npc.index, Prop_Data, "m_iMaxHealth"));
+	float maxhealth = float(ReturnEntityMaxHealth(npc.index));
 	float health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Ratio = health / maxhealth;
 	if(ZR_GetWaveCount()+1 <= 15)
@@ -848,7 +849,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
 			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
@@ -906,7 +907,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
 			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
@@ -965,7 +966,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
 			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
@@ -1024,7 +1025,7 @@ public void GodAlaxios_OnTakeDamagePost(int victim, int attacker, int inflictor,
 		}
 		else if(Ratio <= 0.20 && npc.g_TimesSummoned < 4)
 		{
-			SetEntProp(npc.index, Prop_Data, "m_iHealth", GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 4);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index) / 4);
 			AlaxiosSayWords();
 			npc.g_TimesSummoned = 4;
 			RaidModeTime += 5.0;
@@ -1874,8 +1875,11 @@ bool AlaxiosForceTalk()
 }
 public void Raidmode_Alaxios_Win(int entity)
 {
+	GodAlaxios npc = view_as<GodAlaxios>(entity);
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	func_NPCThink[entity] = INVALID_FUNCTION;
+	npc.m_bDissapearOnDeath = true;
+	BlockLoseSay = true;
 	switch(GetRandomInt(0,3))
 	{
 		case 0:

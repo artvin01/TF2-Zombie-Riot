@@ -129,7 +129,7 @@ methodmap Barrack_Combine_Commander < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Combine_Commander_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Combine_Commander_ClotThink;
-		npc.m_flSpeed = 200.0;
+		npc.m_flSpeed = 150.0;
 
 		npc.m_iAttacksTillReload = 6;
 		npc.m_flNextRangedAttack = 0.0;
@@ -244,13 +244,13 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 							npc.m_flNextRangedAttack = GameTime + (2.00 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload -= 1.0;
 							
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 8000.0, 1), DMG_BULLET, -1, _, vecHit);
+							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 6400.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
 					else
 					{
-						npc.m_flSpeed = 200.0;
+						npc.m_flSpeed = 150.0;
 					}
 				}
 			}
@@ -261,7 +261,7 @@ public void Barrack_Combine_Commander_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_IDLE_BOBPRIME", "ACT_DARIO_WALK", 400000.0,_, true);
 	}
 }
 
@@ -292,6 +292,9 @@ void CommanderAOEBuff(Barrack_Combine_Commander npc, float gameTime)
 							float flPos[3]; // original
 							Barrack_Combine_Commander npc1 = view_as<Barrack_Combine_Commander>(entitycount);
 							GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", flPos);
+							if(IsValidEntity(npc1.m_iWearable8))
+								RemoveEntity(npc1.m_iWearable8);
+								
 							npc1.m_iWearable8 = ParticleEffectAt_Parent(flPos, "coin_blue", npc1.index, "", {0.0,0.0,0.0});
 							CreateTimer(10.0, Timer_RemoveEntity, EntIndexToEntRef(npc1.m_iWearable8), TIMER_FLAG_NO_MAPCHANGE);
 						}

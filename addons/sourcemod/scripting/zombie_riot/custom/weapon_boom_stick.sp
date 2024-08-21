@@ -360,7 +360,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i][RepeatOnBoomstickLaser])
 				{
@@ -517,8 +517,8 @@ static void TBB_Tick(int client)
 						if (damage < 0)
 							damage *= -1.0;
 
-						Damage_dealt[building] += (damage / BEAM_Targets_Hit[client]);
-						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF + 0.35); //Nerf the pierce by alot
+						Damage_dealt[building] += (damage * BEAM_Targets_Hit[client]);
+						BEAM_Targets_Hit[client] *= (LASER_AOE_DAMAGE_FALLOFF - 0.1); //Nerf the pierce by alot
 					}
 					else
 						BEAM_BuildingHit[building][repeats] = false;

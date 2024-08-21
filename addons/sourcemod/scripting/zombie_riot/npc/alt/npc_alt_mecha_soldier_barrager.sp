@@ -129,7 +129,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		
 	}
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, 80, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, 80, _, NORMAL_ZOMBIE_VOLUME, GetRandomInt(NORMAL_ZOMBIE_SOUNDLEVEL, 100));
 		
 		
 	}
@@ -179,7 +179,7 @@ methodmap MechaSoldier_Barrager < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		i_ammo_count[npc.index]=0;
+		i_ammo_count[npc.index]=10;
 		b_target_close[npc.index]=false;
 		b_we_are_reloading[npc.index]=false;
 		fl_idle_timer[npc.index] = 2.0 + GetGameTime(npc.index);

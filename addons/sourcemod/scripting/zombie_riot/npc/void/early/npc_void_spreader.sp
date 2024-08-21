@@ -257,7 +257,7 @@ int VoidSpreaderSelfDefense(VoidSpreader npc, float gameTime, int target, float 
 				float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
 				npc.m_flNextMeleeAttack = gameTime + 1.5;
-				float DamageProject = 7.0;
+				float DamageProject = 21.0;
 
 				int entity = npc.FireArrow(vecTarget, DamageProject, 700.0, ENERGY_BALL_MODEL);
 					

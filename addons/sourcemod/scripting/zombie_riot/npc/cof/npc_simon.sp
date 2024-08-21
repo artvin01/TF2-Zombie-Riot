@@ -94,6 +94,7 @@ methodmap Simon < CClotBody
 		if(body > MaxClients)
 			RemoveEntity(body);
 		
+		npc.m_bisWalking = false;
 		npc.m_iState = -1;
 		npc.SetActivity("ACT_SPAWN");
 		npc.PlayIntroSound();
@@ -207,7 +208,7 @@ public void Simon_ClotThink(int iNPC)
 	if(npc.m_flGetClosestTargetTime < gameTime)
 	{
 		int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-		int maxhealth = GetEntProp(npc.index, Prop_Data, "m_iMaxHealth");
+		int maxhealth = ReturnEntityMaxHealth(npc.index);
 		if(!npc.m_bRetreating && npc.m_bHasKilled && health < (maxhealth / 2))
 		{
 			if(Waves_GetRound() != (npc.m_bLostHalfHealth ? 59 : 54))
@@ -298,6 +299,7 @@ public void Simon_ClotThink(int iNPC)
 						{
 							behavior = 0;
 							npc.SetActivity("ACT_IDLE");
+							npc.m_bisWalking = false;
 							
 							npc.FaceTowards(vecTarget, 15000.0);
 							
@@ -326,6 +328,7 @@ public void Simon_ClotThink(int iNPC)
 				{
 					behavior = 0;
 					npc.SetActivity("ACT_IDLE");
+					npc.m_bisWalking = false;
 				}
 			}
 			else if(npc.m_iAttacksTillReload < 0)	// Take the time to reload
@@ -374,6 +377,7 @@ public void Simon_ClotThink(int iNPC)
 		}
 		case 1:	// Move After the Player
 		{
+			npc.m_bisWalking = true;
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUN");
 			npc.m_flSpeed = npc.m_bInjured ? 200.0 : 220.0;
 			npc.m_flRangedSpecialDelay = 0.0;
@@ -384,6 +388,7 @@ public void Simon_ClotThink(int iNPC)
 		}
 		case 2:	// Sprint After the Player
 		{
+			npc.m_bisWalking = true;
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHURT" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 220.0 : 240.0;
 			npc.m_flRangedSpecialDelay = 0.0;
@@ -394,6 +399,7 @@ public void Simon_ClotThink(int iNPC)
 		}
 		case 3:	// Retreat
 		{
+			npc.m_bisWalking = true;
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 400.0 : 450.0;
 			
@@ -424,6 +430,7 @@ public void Simon_ClotThink(int iNPC)
 		}
 		case 5:	// Escape
 		{
+			npc.m_bisWalking = true;
 			npc.SetActivity(npc.m_bInjured ? "ACT_RUNHIDE" : "ACT_RUNFASTER");
 			npc.m_flSpeed = npc.m_bInjured ? 275.0 : 375.0;
 			

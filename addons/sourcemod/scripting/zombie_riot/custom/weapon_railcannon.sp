@@ -429,7 +429,7 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 		entity = Target_Hit_Wand_Detection(client, entity);
 		if(0 < entity)
 		{
-			for(int i=1; i <= (MAX_TARGETS_HIT -1 ); i++)
+			for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 			{
 				if(!BEAM_BuildingHit[i])
 				{
@@ -569,7 +569,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 							float minDamageMultiplier = 0.05;
 							damage *= (1.0 - (fClamp(((distance - minFalloffDistance) / maxFalloffDistance), 0.0, (1 - minDamageMultiplier))));
 						}
-						damage /= BEAM_Targets_Hit[client];
+						damage *= BEAM_Targets_Hit[client];
 
 						float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 

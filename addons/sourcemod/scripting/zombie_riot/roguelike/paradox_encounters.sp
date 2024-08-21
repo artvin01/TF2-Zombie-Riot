@@ -427,7 +427,7 @@ public void Rogue_Vote_Prophecy2(const Vote vote, int index)
 			{
 				PrintToChatAll("%t", "Prophecy Lore 2b");
 				Rogue_AddChaos(20);
-				Store_RandomizeNPCStore(2, 10);
+				Store_RandomizeNPCStore(0, 10);
 			}
 			case 2:
 			{
@@ -469,7 +469,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 			case 0:
 			{
 				PrintToChatAll("%t", "Lost Villager Lore 1a");
-				Store_RandomizeNPCStore(2, 4);
+				Store_RandomizeNPCStore(0, 4);
 			}
 			case 1:
 			{
@@ -520,7 +520,7 @@ public void Rogue_Vote_LostVillager(const Vote vote, int index)
 				Rogue_AddChaos(15);
 				GiveCash(2000);
 				Rogue_AddIngots(15);
-				Store_RandomizeNPCStore(2, 4);
+				Store_RandomizeNPCStore(0, 4);
 			}
 		}
 	}
@@ -587,7 +587,7 @@ public void Rogue_Vote_DowntimeRecreation(const Vote vote, int index)
 				case 4, 5, 6:
 				{
 					Rogue_AddIngots(-4);
-					Store_RandomizeNPCStore(2, 1);
+					Store_RandomizeNPCStore(0, 1);
 					title = 'e';
 				}
 				case 7, 8:
@@ -694,6 +694,9 @@ static int SentUser1 = -1;
 static int SentUser2 = -1;
 public float Rogue_Encounter_EmergencyDispatch()
 {
+	SentUser1 = -1;
+	SentUser2 = -1;
+	HasSent = false;
 	ArrayList list = Rogue_CreateGenericVote(Rogue_Vote_EmergencyDispatch, "Emergency Dispatch Lore");
 	Vote vote;
 
@@ -790,7 +793,7 @@ public void Rogue_Vote_EmergencyDispatch(const Vote vote, int index)
 	else
 	{
 		PrintToChatAll("%t", "Emergency Dispatch Lore 2");
-		GiveCash((Rogue_GetFloor() + 1) * 1000);
+		GiveCash(((Rogue_GetFloor() + 1) * 2000) + 1000);
 	}
 }
 public bool Rogue_BlueParadox_CanTeutonUpdate(int client)
@@ -820,7 +823,7 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 			client2 = 0;
 		}
 
-		GiveCash(1000 * floor);
+		GiveCash((2000 * floor) + 1000);
 
 		HasSent = false;
 
@@ -829,23 +832,23 @@ public void Rogue_BlueParadox_NewFloor(int floor)
 			CPrintToChatAll("%t", "Emergency Dispatch Return 2", client1, client2);
 
 			TF2_RespawnPlayer(client1);
-			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", 2000 * floor);
-			CashRecievedNonWave[client1] += 2000 * floor;
-			CashSpent[client1] -= 2000 * floor;
+			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
+			CashRecievedNonWave[client1] += (2000 * floor) + 2000;
+			CashSpent[client1] -= (2000 * floor) + 2000;
 
 			TF2_RespawnPlayer(client2);
-			CPrintToChat(client2, "{green}%t", "Credits_Menu_New", 2000 * floor);
-			CashRecievedNonWave[client2] += 2000 * floor;
-			CashSpent[client2] -= 2000 * floor;
+			CPrintToChat(client2, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
+			CashRecievedNonWave[client2] += ((2000 * floor) + 2000);
+			CashSpent[client2] -= ((2000 * floor) + 2000);
 		}
 		else if(client1)
 		{
 			CPrintToChatAll("%t", "Emergency Dispatch Return 1", client1);
 
 			TF2_RespawnPlayer(client1);
-			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", 2000 * floor);
-			CashRecievedNonWave[client1] += 2000 * floor;
-			CashSpent[client1] -= 2000 * floor;
+			CPrintToChat(client1, "{green}%t", "Credits_Menu_New", ((2000 * floor) + 2000));
+			CashRecievedNonWave[client1] += ((2000 * floor) + 2000);
+			CashSpent[client1] -= ((2000 * floor) + 2000);
 		}
 		else
 		{

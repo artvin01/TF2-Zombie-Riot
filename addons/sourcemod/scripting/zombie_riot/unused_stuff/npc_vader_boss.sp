@@ -534,7 +534,7 @@ public Action Set_Vader_HP(Handle timer, int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(entity>MaxClients && IsValidEntity(entity))
 	{
-		SetEntProp(entity, Prop_Data, "m_iHealth", (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 2));
+		SetEntProp(entity, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(entity) / 2));
 	}
 	return Plugin_Stop;
 }
@@ -542,7 +542,7 @@ public Action Set_Vader_HP(Handle timer, int ref)
 public void Vader_ClotDamaged_Post(int victim, int attacker, int inflictor, float damage, int damagetype) 
 {
 	Vader npc = view_as<Vader>(victim);
-	if((GetEntProp(npc.index, Prop_Data, "m_iMaxHealth") / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
+	if((ReturnEntityMaxHealth(npc.index) / 2 )>= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true; //	>:(;
 		CreateTimer(10.0, RageModeEnd_Timer, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);

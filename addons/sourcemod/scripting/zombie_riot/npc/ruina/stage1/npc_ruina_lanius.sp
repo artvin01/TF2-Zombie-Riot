@@ -59,8 +59,8 @@ void Lanius_OnMapStart_NPC()
 	data.Category = Type_Ruina;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	strcopy(data.Icon, sizeof(data.Icon), "scout"); 						//leaderboard_class_(insert the name)
-	data.IconCustom = false;												//download needed?
+	strcopy(data.Icon, sizeof(data.Icon), "swordsman");
+	data.IconCustom = true;												//download needed?
 	data.Flags = 0;						//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	NPC_Add(data);
 }
@@ -133,7 +133,7 @@ methodmap Lanius < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -151,6 +151,26 @@ methodmap Lanius < CClotBody
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
+	}
+
+	public void AdjustWalkCycle()
+	{
+		if(this.IsOnGround())
+		{
+			if(this.m_iChanged_WalkCycle == 0)
+			{
+				this.SetActivity("ACT_MP_RUN_MELEE_ALLCLASS");
+				this.m_iChanged_WalkCycle = 1;
+			}
+		}
+		else
+		{
+			if(this.m_iChanged_WalkCycle == 1)
+			{
+				this.SetActivity("ACT_MP_JUMP_FLOAT_MELEE");
+				this.m_iChanged_WalkCycle = 0;
+			}
+		}
 	}
 	
 	
@@ -266,6 +286,11 @@ static void ClotThink(int iNPC)
 
 	Ruina_Add_Battery(npc.index, 0.75);
 
+	if(npc.m_flDoingAnimation > GameTime)
+		return;
+
+	npc.AdjustWalkCycle();
+
 	
 	int PrimaryThreatIndex = npc.m_iTarget;	//when the npc first spawns this will obv be invalid, the core handles this.
 
@@ -283,54 +308,12 @@ static void ClotThink(int iNPC)
 	}
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex))	//a final final failsafe
 	{
-		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-		
+		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);	
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-		//note: the old vec here is already replaced in a seperate branch that also adds other stuff
-		if(npc.m_flNextTeleport < GameTime && flDistanceToTarget > (125.0* 125.0) && flDistanceToTarget < (500.0 * 500.0))
-		{
-			float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex, _,_ ,vPredictedPos);
-			static float flVel[3];
-			GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecVelocity", flVel);
 		
-			if (flVel[0] >= 190.0)
-			{
-				npc.FaceTowards(vPredictedPos);
-				npc.FaceTowards(vPredictedPos);
-				npc.m_flNextTeleport = GameTime + 45.0;
-				float Tele_Check = GetVectorDistance(VecSelfNpc, vPredictedPos);
-					
-					
-				float start_offset[3], end_offset[3];
-				start_offset = VecSelfNpc;
-					
-				if(Tele_Check > 200.0)
-				{
-					bool Succeed = NPC_Teleport(npc.index, vPredictedPos);
-					if(Succeed)
-					{
-						npc.PlayTeleportSound();
-							
-						float effect_duration = 0.25;
-	
-						end_offset = vPredictedPos;
-										
-						for(int help=1 ; help<=8 ; help++)
-						{	
-							Lanius_Teleport_Effect(RUINA_BALL_PARTICLE_BLUE, effect_duration, start_offset, end_offset);
-											
-							start_offset[2] += 12.5;
-							end_offset[2] += 12.5;
-						}
-					}
-					else
-					{
-						npc.m_flNextTeleport = GameTime + 1.0;
-					}
-				}
-			}
-		}		
+		if(Lanius_Teleport_Logic(npc.index, PrimaryThreatIndex, 150.0*150.0, 750.0*750.0, 45.0))
+			npc.PlayTeleportSound();
 
 		Ruina_Self_Defense Melee;
 

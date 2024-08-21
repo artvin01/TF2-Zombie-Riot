@@ -1,8 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define LASERBEAM "sprites/laserbeam.vmt"
-
 static const char g_DeathSounds[][] = {
 	"vo/medic_paincrticialdeath01.mp3",
 	"vo/medic_paincrticialdeath02.mp3",
@@ -94,7 +92,7 @@ methodmap VoidRejuvinator < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 100);
 		
 		
 	}
@@ -131,7 +129,8 @@ methodmap VoidRejuvinator < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;
-		VausMagicaGiveShield(npc.index, 5);
+		EnemyShieldCantBreak[npc.index] = true;
+		VausMagicaGiveShield(npc.index, 20);
 		
 
 		
@@ -288,6 +287,8 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 			}
 			if(!npc.m_bnew_target)
 			{
+				if(IsValidEntity(npc.m_iWearable4))
+					RemoveEntity(npc.m_iWearable4);
 				npc.StartHealing(PrimaryThreatIndex);
 				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 125, 0, 125, 3.0, 3.0, 1.35, LASERBEAM);
 				npc.Healing = true;
@@ -301,8 +302,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
 				}
-				int MaxHealth = GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth");
-				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 10), 1.5);
+				HealEntityGlobal(npc.index, PrimaryThreatIndex, 999999.9, 1.5);
 			}
 			else
 			{
@@ -311,7 +311,7 @@ public void VoidRejuvinator_ClotThink(int iNPC)
 					SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(npc.m_iWearable4, 200, 50, 200, 255);
 				}
-				int MaxHealth = GetEntProp(PrimaryThreatIndex, Prop_Data, "m_iMaxHealth");
+				int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
 				HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth / 50), 1.5);
 			}
 			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
@@ -391,7 +391,7 @@ public void VoidRejuvinator_NPCDeath(int entity)
 
 public bool VoidRejuvinator_HealCheck(int provider, int entity)
 {
-	int MaxHealth = GetEntProp(entity, Prop_Data, "m_iMaxHealth");
+	int MaxHealth = ReturnEntityMaxHealth(entity);
 	MaxHealth = RoundToNearest(float(MaxHealth) * 1.49);
 	int Health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	if(MaxHealth <= Health)

@@ -5,6 +5,10 @@ static int i_Particle_3[MAXPLAYERS+1];
 static int i_Particle_4[MAXPLAYERS+1];
 static int i_Laser_1[MAXPLAYERS+1];
 static float f_OceanBuffAbility[MAXPLAYERS+1];
+static float f_OceanIndicator[MAXPLAYERS+1];
+static float f_OceanIndicatorHud[MAXPLAYERS+1];
+
+static int ColourOcean[MAXPLAYERS+1][4];
 
 #define OCEAN_HEAL_BASE 0.15
 #define OCEAN_SOUND "ambient_mp3/lair/cap_1_tone_metal_movement2.mp3"
@@ -12,17 +16,28 @@ static float f_OceanBuffAbility[MAXPLAYERS+1];
 //code that starts up a repeat timer upon weapon equip
 public void Enable_OceanSong(int client, int weapon) // Enable management, handle weapons change but also delete the timer if the client have the max weapon
 {
-	if(i_CustomWeaponEquipLogic[weapon] == 11) //11 is for this weapon
-	{
-		SetEntPropFloat(weapon, Prop_Send, "m_flModelScale", 0.001);
-	}
 
 	if (h_TimerOceanSongManagement[client] != null)
 	{
 
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == 11) //11 is for this weapon
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN || i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN_PAP) //11 is for this weapon
 		{
+			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN)
+			{
+				ColourOcean[client][0] = 255;
+				ColourOcean[client][1] = 125;
+				ColourOcean[client][2] = 125;
+				ColourOcean[client][3] = 200;
+			}
+			else
+			{
+				ColourOcean[client][0] = 25;
+				ColourOcean[client][1] = 25;
+				ColourOcean[client][2] = 240;
+				ColourOcean[client][3] = 200;
+			}
+			ApplyExtraOceanEffects(client, true);
 			ApplyExtraOceanEffects(client);
 			//Is the weapon it again?
 			//Yes?
@@ -36,8 +51,23 @@ public void Enable_OceanSong(int client, int weapon) // Enable management, handl
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == 11) //11 is for this weapon
+	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN || i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN_PAP) //11 is for this weapon
 	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN)
+		{
+			ColourOcean[client][0] = 255;
+			ColourOcean[client][1] = 125;
+			ColourOcean[client][2] = 125;
+			ColourOcean[client][3] = 200;
+		}
+		else
+		{
+			ColourOcean[client][0] = 25;
+			ColourOcean[client][1] = 25;
+			ColourOcean[client][2] = 240;
+			ColourOcean[client][3] = 200;
+		}
+		ApplyExtraOceanEffects(client, true);
 		ApplyExtraOceanEffects(client);
 		DataPack pack;
 		h_TimerOceanSongManagement[client] = CreateDataTimer(0.1, Timer_Management_OceanSong, pack, TIMER_REPEAT);
@@ -58,6 +88,8 @@ void ResetMapStartOcean()
 	PrecacheSound(OCEAN_SOUND);
 	PrecacheSound(OCEAN_SOUND_MELEE);
 	Zero(f_OceanBuffAbility);
+	Zero(f_OceanIndicator);
+	Zero(f_OceanIndicatorHud);
 }
 
 void ConnectTwoEntitiesWithMedibeam(int owner, int target)
@@ -71,8 +103,15 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	float vecTarget[3];
 	
 	WorldSpaceCenter(target, vecTarget);
-
-	int particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
+	int particle;
+	if(ColourOcean[owner][0] != 25)
+	{
+		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , _, false);
+	}
+	else
+	{
+		particle = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , _, false);
+	}
 	
 	SetParent(target, particle, "", _, true);
 
@@ -82,7 +121,15 @@ void ConnectTwoEntitiesWithMedibeam(int owner, int target)
 	
 	WorldSpaceCenter(OldParticle2, vecTarget);
 
-	int particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
+	int particle2;
+	if(ColourOcean[owner][0] != 25)
+	{
+		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_red", 0.0 , particle, false);
+	}
+	else
+	{
+		particle2 = ParticleEffectAtOcean(vecTarget, "medicgun_beam_blue", 0.0 , particle, false);
+	}
 	SetParent(OldParticle2, particle2, "", _, true);
 
 	i_Particle_4[owner] = EntIndexToEntRef(particle2);
@@ -189,38 +236,29 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 		return;
 
 	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-	flAng[0] += 80.0;
 
-	float vecSwingForward[3];
-			
-	GetAngleVectors(flAng, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+	int particle_1 = InfoTargetParentAt({0.0,0.0,0.0}, "", 0.0); //This is the root bone basically
 
-	float vecSwingEnd[3];
-	vecSwingEnd[0] = flPos[0] + (vecSwingForward[0] * OCEAN_SING_OFFSET_DOWN);
-	vecSwingEnd[1] = flPos[1] + (vecSwingForward[1] * OCEAN_SING_OFFSET_DOWN);
-	vecSwingEnd[2] = flPos[2] + (vecSwingForward[2] * OCEAN_SING_OFFSET_DOWN);
+	int particle;
+	int particle2;
+	if(ColourOcean[client][0] != 25)
+	{
+		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_dripsred", 0.0 , _, false);
+		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_red", 0.0 , particle, false);
 
-	
-	int particle = ParticleEffectAtOcean(vecSwingEnd, "player_dripsred", 0.0 , _, false);
+	}
+	else
+	{
+		particle = ParticleEffectAtOcean({0.0,0.0,20.0}, "player_drips_blue", 0.0 , _, false);
+		particle2 = ParticleEffectAtOcean({0.0,0.0,-40.0}, "medicgun_beam_blue", 0.0 , particle, false);
+	}
+	SetParent(particle_1, particle, "",_, true);
+	SetParent(particle_1, particle2, "",_, true);
+	Custom_SDKCall_SetLocalOrigin(particle_1, flPos);
+	SetEntPropVector(particle_1, Prop_Data, "m_angRotation", flAng); 
+	SetParent(viewmodelModel, particle_1, "effect_hand_r",_);
 
 
-	SetParent(viewmodelModel, particle, "effect_hand_r", _, true);
-	i_Particle_1[client] = EntIndexToEntRef(particle);
-
-
-	//Setup first invis particle here.
-	
-	GetAttachment(viewmodelModel, "effect_hand_r", flPos, flAng);
-	flAng[0] += 70.0;
-
-	GetAngleVectors(flAng, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
-
-	vecSwingEnd[0] = flPos[0] + (vecSwingForward[0] * OCEAN_SING_OFFSET_UP);
-	vecSwingEnd[1] = flPos[1] + (vecSwingForward[1] * OCEAN_SING_OFFSET_UP);
-	vecSwingEnd[2] = flPos[2] + (vecSwingForward[2] * OCEAN_SING_OFFSET_UP);
-
-	int particle2 = ParticleEffectAtOcean(vecSwingEnd, "medicgun_beam_red", 0.0 , particle, false);
-	SetParent(viewmodelModel, particle2, "effect_hand_r", _, true);
 
 	char szCtrlParti[128];
 	Format(szCtrlParti, sizeof(szCtrlParti), "tf2ctrlpart%i", EntIndexToEntRef(particle2));
@@ -231,12 +269,13 @@ void ApplyExtraOceanEffects(int client, bool remove = false)
 	ActivateEntity(particle);
 	AcceptEntityInput(particle2, "start");
 	AcceptEntityInput(particle, "start");
-//	AttachParticleOceanCustom(particle,"medicgun_beam_blue",particle2, client); 
 
+	i_Particle_1[client] = EntIndexToEntRef(particle);
+	i_Particle_3[client] = EntIndexToEntRef(particle_1);
 	i_Particle_2[client] = EntIndexToEntRef(particle2);
 
 
-	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, 200, 65, 65, 4.0, 2.0, 1.0, LASERBEAM, client));
+	i_Laser_1[client] = EntIndexToEntRef(ConnectWithBeamClient(particle, particle2, ColourOcean[client][0], ColourOcean[client][01], ColourOcean[client][2], 4.0, 2.0, 1.0, LASERBEAM, client));
 }
 //main code responsible for checking if the player is alive etc. and actualy giving the buffs
 public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
@@ -253,8 +292,52 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{
+		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_OCEAN)
+		{
+			ColourOcean[client][0] = 255;
+			ColourOcean[client][1] = 125;
+			ColourOcean[client][2] = 125;
+			ColourOcean[client][3] = 200;
+		}
+		else
+		{
+			ColourOcean[client][0] = 25;
+			ColourOcean[client][1] = 25;
+			ColourOcean[client][2] = 240;
+			ColourOcean[client][3] = 200;
+		}
+
+		int new_ammo = GetAmmo(client, 21);
+		if(new_ammo <= 0)
+		{
+			if(f_OceanIndicatorHud[client] < GetGameTime())
+			{
+				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
+			}
+			return Plugin_Continue;
+		}
+
+		
 		ApplyExtraOceanEffects(client, false);
-		DoHealingOcean(client, client);
+		DoHealingOcean(client, client,_,_,_, weapon);
+		if(f_OceanIndicator[client] < GetGameTime())
+		{
+			PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
+			StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+			f_OceanIndicator[client] = GetGameTime() + 0.25;
+			float UserLoc[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
+			spawnRing_Vectors(UserLoc, 400 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 0.29, 5.0, 1.1, 5, 399.9 * 2.0, client);	
+		
+			if(f_OceanIndicatorHud[client] < GetGameTime())
+			{
+				PrintHintText(client,"Medicine Fluid: %iml", new_ammo);
+				StopSound(client, SNDCHAN_STATIC, "UI/hint.wav");
+				f_OceanIndicatorHud[client] = GetGameTime() + 0.75;
+			}
+		}
 	}
 	else
 	{
@@ -264,18 +347,27 @@ public Action Timer_Management_OceanSong(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-void DoHealingOcean(int client, int target, float range = 160000.0, float extra_heal = 1.0, bool HordingsBuff = false)
+void DoHealingOcean(int client, int target, float range = 160000.0, float extra_heal = 1.0, bool HordingsBuff = false, int weapon = 0)
 {
 	float BannerPos[3];
 	GetEntPropVector(target, Prop_Data, "m_vecOrigin", BannerPos);
 	float flHealMulti = 1.0;
 	float flHealMutli_Calc;
+	int new_ammo;
 	if(!HordingsBuff)
 	{
+		new_ammo = GetAmmo(client, 21);
+		if(new_ammo <= 0)
+		{
+			return;
+		}
 		flHealMulti = Attributes_GetOnPlayer(client, 8, true, true);
+		if(weapon > 0)
+			flHealMulti *= Attributes_FindOnWeapon(client, weapon, 8, true, 1.0);
 	}
 	else
 	{
+		new_ammo = 999999;
 		flHealMulti = 1.0;
 	}
 	
@@ -289,14 +381,10 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			{
 				float healingMulti = 1.0;
 
-				int weapon = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
-				if(IsValidEntity(weapon))
+				int weapon2 = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
+				if(IsValidEntity(weapon2))
 				{
-					if(Panic_Attack[weapon])
-					{
-						healingMulti = 0.0;
-					}
-					else if(i_WeaponArchetype[weapon] == 22)	// Abyssal Hunter
+					if(i_WeaponArchetype[weapon2] == 22)	// Abyssal Hunter
 					{
 						healingMulti = 1.0825;
 					}
@@ -304,7 +392,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 
 				if(healingMulti > 0.0)
 				{	
-					if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+					if(!HordingsBuff && f_TimeUntillNormalHeal[ally] > GetGameTime())
 					{
 						flHealMutli_Calc = flHealMulti * 0.5;
 					}
@@ -313,10 +401,18 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 						flHealMutli_Calc = flHealMulti;
 					} 
 					flHealMutli_Calc *= extra_heal * healingMulti;
-					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
+					int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0, .MaxHealPermitted = new_ammo);
 					if(healingdone > 0)
 					{
-						ApplyHealEvent(ally, healingdone);
+						if(!HordingsBuff)
+						{
+							new_ammo -= healingdone;
+							if(new_ammo <= 0)
+							{
+								new_ammo = 0;
+								break;
+							}
+						}
 					}
 				}
 				if(!HordingsBuff)
@@ -341,7 +437,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 			GetEntPropVector(ally, Prop_Data, "m_vecAbsOrigin", targPos);
 			if (GetVectorDistance(BannerPos, targPos, true) <= range)
 			{
-				if(f_TimeUntillNormalHeal[ally] > GetGameTime())
+				if(!HordingsBuff && f_TimeUntillNormalHeal[ally] > GetGameTime())
 				{
 					flHealMutli_Calc = flHealMulti * 0.5;
 				}
@@ -350,7 +446,16 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 					flHealMutli_Calc = flHealMulti;
 				} 
 				flHealMutli_Calc *= extra_heal;
-				HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0,_,_);
+				int healingdone = HealEntityGlobal(client, ally, OCEAN_HEAL_BASE * flHealMutli_Calc, 1.0, .MaxHealPermitted = new_ammo);
+				if(!HordingsBuff)
+				{
+					new_ammo -= healingdone;
+					if(new_ammo <= 0)
+					{
+						new_ammo = 0;
+						break;
+					}
+				}
 				if(!HordingsBuff)
 				{
 					if(f_OceanBuffAbility[client] > GetGameTime())
@@ -364,6 +469,12 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				}
 			}
 		}
+	}
+	
+	if(!HordingsBuff)
+	{
+		SetAmmo(client, 21, new_ammo);
+		CurrentAmmo[client][21] = GetAmmo(client, 21);
 	}
 }
 
@@ -393,65 +504,6 @@ stock int ParticleEffectAtOcean(float position[3], const char[] effectName, floa
 	}
 	return particle;
 }
-/*
-void AttachParticleOceanCustom(int ent, char[] particleType,int controlpoint, int client)
-{
-	int particle  = CreateEntityByName("info_particle_system");
-	int particle2 = CreateEntityByName("info_particle_system");
-	if (IsValidEdict(particle))
-	{ 
-		char tName[128];
-		Format(tName, sizeof(tName), "target%i", ent);
-		DispatchKeyValue(ent, "targetname", tName);
-		
-		char cpName[128];
-		Format(cpName, sizeof(cpName), "target%i", controlpoint);
-		DispatchKeyValue(controlpoint, "targetname", cpName);
-		
-		//--------------------------------------
-		char cp2Name[128];
-		Format(cp2Name, sizeof(cp2Name), "tf2particle%i", controlpoint);
-		
-		DispatchKeyValue(particle2, "targetname", cp2Name);
-		DispatchKeyValue(particle2, "parentname", cpName);
-		
-		float VecOrigin[3];
-		GetEntPropVector(ent, Prop_Data, "m_vecAbsOrigin", VecOrigin);
-		TeleportEntity(particle2, VecOrigin, NULL_VECTOR, NULL_VECTOR);
-
-		
-		SetVariantString(cpName);
-		AcceptEntityInput(particle2, "SetParent");
-		
-	//	SetVariantString("");
-	//	AcceptEntityInput(particle2, "SetParentAttachment");
-		//-----------------------------------------------
-		
-		
-		DispatchKeyValue(particle, "targetname", "tf2particle");
-		DispatchKeyValue(particle, "parentname", tName);
-		DispatchKeyValue(particle, "effect_name", particleType);
-		DispatchKeyValue(particle, "cpoint1", cp2Name);
-		
-		DispatchSpawn(particle);
-
-		GetEntPropVector(controlpoint, Prop_Data, "m_vecAbsOrigin", VecOrigin);
-		TeleportEntity(particle, VecOrigin, NULL_VECTOR, NULL_VECTOR);
-
-		SetVariantString(tName);
-		AcceptEntityInput(particle, "SetParent");
-		
-	//	SetVariantString("");
-	//	AcceptEntityInput(particle, "SetParentAttachment");
-		
-		//The particle is finally ready
-		ActivateEntity(particle);
-		AcceptEntityInput(particle, "start");
-	}
-	i_Particle_3[client] = EntIndexToEntRef(particle);
-	i_Particle_4[client] = EntIndexToEntRef(particle2);
-} 
-*/
 public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 {
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
@@ -461,11 +513,11 @@ public void Ocean_song_ability(int client, int weapon, bool crit, int slot)
 		f_OceanBuffAbility[client] = GetGameTime() + 15.0;
 		float UserLoc[3];
 		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", UserLoc);
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 2.5, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 2.0, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 1.5, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 1.0, 12.0, 2.1, 5, 650 * 2.0);	
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 0.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt",  ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 2.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 2.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 1.5, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 1.0, 12.0, 2.1, 5, 650 * 2.0);	
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 25.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 0.5, 12.0, 2.1, 5, 650 * 2.0);	
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
 		EmitSoundToAll(OCEAN_SOUND, client, _, 75, _, 1.0);
@@ -509,8 +561,8 @@ public void Weapon_Ocean_Attack(int client, int weapon, bool crit, int slot)
 		EmitSoundToAll(OCEAN_SOUND_MELEE, target, _, 75, _, 1.0, pitch);
 		float UserLoc[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", UserLoc);
-		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 125, 125, 200, 1, 0.5, 6.0, 2.1, 5, 150 * 2.0);	
-		DoHealingOcean(client, target, 22500.0, 8.0);
+		spawnRing_Vectors(UserLoc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", ColourOcean[client][0], ColourOcean[client][1], ColourOcean[client][2], ColourOcean[client][3], 1, 0.5, 6.0, 2.1, 5, 150 * 2.0);	
+		DoHealingOcean(client, target, 22500.0, 16.0,_, weapon);
 		ConnectTwoEntitiesWithMedibeam(client, target);
 	}
 	EndPlayerOnlyLagComp(client);
