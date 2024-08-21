@@ -165,13 +165,13 @@ methodmap IberiaLighthouse < CClotBody
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1000.0, 750.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
 				if(Decicion == 2)
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 750.0, 500.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 500.0, 0.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
 					}
 				}
 			}

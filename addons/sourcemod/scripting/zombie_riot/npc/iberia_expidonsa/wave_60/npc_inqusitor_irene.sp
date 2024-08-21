@@ -5,10 +5,12 @@
 #define IRENE_EXPLOSIVES 150.0
 bool Irene_CurrentEnemyVictimised[MAXENTITIES];
 bool Irene_TargetsFound;
+static bool b_said_player_weaponline[MAXTF2PLAYERS];
+static float fl_said_player_weaponline_time[MAXENTITIES];
+
 static const char g_DeathSounds[][] = {
-	"vo/spy_paincrticialdeath01.mp3",
-	"vo/spy_paincrticialdeath02.mp3",
-	"vo/spy_paincrticialdeath03.mp3",
+	"weapons/rescue_ranger_teleport_receive_01.wav",
+	"weapons/rescue_ranger_teleport_receive_02.wav",
 };
 
 static const char g_HurtSounds[][] = {
@@ -147,6 +149,8 @@ methodmap Iberiainqusitor_irene < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Iberiainqusitor_irene_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Iberiainqusitor_irene_ClotThink);
 		npc.i_GunMode = 0;
+		Zero(b_said_player_weaponline);
+		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 		
 		
 		//IDLE
@@ -269,6 +273,7 @@ public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int 
 	if(attacker <= 0)
 		return Plugin_Continue;
 		
+	Irene_Weapon_Lines(npc, attacker);
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
@@ -281,10 +286,11 @@ public Action Iberiainqusitor_irene_OnTakeDamage(int victim, int &attacker, int 
 public void Iberiainqusitor_irene_NPCDeath(int entity)
 {
 	Iberiainqusitor_irene npc = view_as<Iberiainqusitor_irene>(entity);
-	if(!npc.m_bGib)
-	{
-		npc.PlayDeathSound();	
-	}
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
+	npc.PlayDeathSound();	
+	npc.m_bDissapearOnDeath = true;
+	CPrintToChatAll("{snow}Irene{default}: You really think you're killing us? We are mearly simulating a death, no worries.");
 		
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
@@ -306,30 +312,33 @@ int Iberiainqusitor_ireneSelfDefense(Iberiainqusitor_irene npc, float gameTime, 
 {
 	if(npc.m_flAirTimeAbilityCD < gameTime)
 	{
-		if(npc.m_iChanged_WalkCycle != 9)
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 		{
-			if(IsValidEntity(npc.m_iWearable3))
-				RemoveEntity(npc.m_iWearable3);
+			if(npc.m_iChanged_WalkCycle != 9)
+			{
+				if(IsValidEntity(npc.m_iWearable3))
+					RemoveEntity(npc.m_iWearable3);
 
-			npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
-			npc.m_bisWalking = false;
-			npc.m_iChanged_WalkCycle = 9;
-			npc.SetActivity("ACT_MP_CROUCH_MELEE");
-			NPC_StopPathing(npc.index);
-			npc.m_flSpeed = 0.0;
-		}	
-		EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, _, 90, _, 0.85);
-		npc.m_flAirTimeAbilityCD = gameTime + 20.0;
-		float DurationOfBlink = 1.5;
-		npc.m_flAirTimeAbilityHappening = gameTime + DurationOfBlink;
-		Irene_TargetsFound = false;
-		float NewPos[3]; 
-		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", NewPos);
-		NewPos[2] += 10.0;
-		spawnRing_Vectors(NewPos, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, IRENE_BOSS_RANGE * 2.0);
-		spawnRing_Vectors(NewPos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2);
-
-		return 2;
+				npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_xms_cold_shoulder/c_xms_cold_shoulder.mdl");
+				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 9;
+				npc.SetActivity("ACT_MP_CROUCH_MELEE");
+				NPC_StopPathing(npc.index);
+				npc.m_flSpeed = 0.0;
+			}	
+			EmitSoundToAll("mvm/mvm_cpoint_klaxon.wav", npc.index, _, 90, _, 0.85);
+			npc.m_flAirTimeAbilityCD = gameTime + 20.0;
+			float DurationOfBlink = 1.5;
+			npc.m_flAirTimeAbilityHappening = gameTime + DurationOfBlink;
+			Irene_TargetsFound = false;
+			float NewPos[3]; 
+			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", NewPos);
+			NewPos[2] += 10.0;
+			spawnRing_Vectors(NewPos, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, IRENE_BOSS_RANGE * 2.0);
+			spawnRing_Vectors(NewPos, IRENE_BOSS_RANGE * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2);
+			
+			return 2;
+		}
 	}
 	if(npc.i_GunMode == 0 && npc.m_iAttacksTillReload >= 1)
 	{
@@ -622,9 +631,29 @@ bool Irene_AbilityAir(Iberiainqusitor_irene npc)
 			if(!Irene_TargetsFound)
 			{
 				npc.m_flAirTimeAbilityHappening = 0.0;
+				CPrintToChatAll("{snow}Irene{default}: ...");
 			}
 			else
 			{
+				switch(GetRandomInt(0,3))
+				{
+					case 0:
+					{
+						CPrintToChatAll("{snow}Irene{default}: My blade will cleave the tides!");
+					}
+					case 1:
+					{
+						CPrintToChatAll("{snow}Irene{default}: My light will purge the vice!");
+					}
+					case 2:
+					{
+						CPrintToChatAll("{snow}Irene{default}: My eyes will find the truth!");
+					}
+					case 3:
+					{
+						CPrintToChatAll("{snow}Irene{default}: My heart will be the judge!");
+					}
+				}
 				npc.m_flAirTimeAbilityHappening = GetGameTime(npc.index) + 2.0;
 				npc.m_flAirTimeAbilityHappeningDelay = GetGameTime(npc.index) + 0.5;
 				if(npc.m_iChanged_WalkCycle != 11)
@@ -663,4 +692,60 @@ float Irene_AirExploder(int entity, int victim, float damage, int weapon)
 	NpcStats_IberiaMarkEnemy(victim, 15.0);
 	Irene_CurrentEnemyVictimised[victim] = true;
 	return damage;
+}
+
+
+
+static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
+{
+	if(client > MaxClients)
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(!IsValidEntity(weapon))	//invalid weapon, go back and get a valid one you <...>
+		return;
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(i_CustomWeaponEquipLogic[weapon])
+	{
+		case WEAPON_IRENE:
+		{
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+					Format(Text_Lines, sizeof(Text_Lines), "Let's see who wields the wrath of Ibera better {gold}%N{default}!",client);
+				case 1:
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran{default} teached you too {gold}%N{default}?",client);
+				case 2:
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran's{default} legacy will move on with us {gold}%N{default}!",client);
+				case 3:
+					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the {gold}%N{default}!",client);
+			}
+		}
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		CPrintToChatAll("{snow}Irene{default}: %s", Text_Lines);
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }
