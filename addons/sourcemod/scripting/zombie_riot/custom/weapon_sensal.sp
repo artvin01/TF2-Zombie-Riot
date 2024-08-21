@@ -8,6 +8,7 @@ static float f_SensalAbilityCharge_2[MAXENTITIES];
 static float f_Sensalhuddelay[MAXPLAYERS+1]={0.0, ...};
 static bool b_ClientPossesBattery[MAXPLAYERS+1]={false, ...};
 static float f_Sensal_MaxCharge_1[MAXENTITIES];
+static int i_CosmeticScytheThing[MAXPLAYERS+1]={false, ...};
 
 static char g_SyctheHitSound[][] = {
 	"ambient/machines/slicer1.wav",
@@ -35,6 +36,22 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 		if(IsSensalWeapon(i_CustomWeaponEquipLogic[weapon]))
 		{
 			b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
+			i_CosmeticScytheThing[client] = 0;
+			bool DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 1"));
+			if(DoCosmetic)
+			{
+				i_CosmeticScytheThing[client] = 1;
+			}
+			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 2"));
+			if(DoCosmetic)
+			{
+				i_CosmeticScytheThing[client] = 2;
+			}
+			DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Expidonsan Battery Device"));
+			if(DoCosmetic)
+			{
+				i_CosmeticScytheThing[client] = 3;
+			}
 			//Is the weapon it again?
 			//Yes?
 			delete h_TimerSensalWeaponManagement[client];
@@ -50,6 +67,22 @@ public void Enable_SensalWeapon(int client, int weapon) // Enable management, ha
 	if(IsSensalWeapon(i_CustomWeaponEquipLogic[weapon]))
 	{
 		b_ClientPossesBattery[client] = Items_HasNamedItem(client, "Expidonsan Battery Device");
+		i_CosmeticScytheThing[client] = 0;
+		bool DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 1"));
+		if(DoCosmetic)
+		{
+			i_CosmeticScytheThing[client] = 1;
+		}
+		DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Scythe Color Option 2"));
+		if(DoCosmetic)
+		{
+			i_CosmeticScytheThing[client] = 2;
+		}
+		DoCosmetic = view_as<bool>(Store_HasNamedItem(client, "Expidonsan Battery Device"));
+		if(DoCosmetic)
+		{
+			i_CosmeticScytheThing[client] = 3;
+		}
 		DataPack pack;
 		h_TimerSensalWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_SensalWeapon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
@@ -395,6 +428,27 @@ void SummonScytheSensalProjectile(int client, int weapon)
 		green = 125;
 		blue = 125;
 	}
+	switch(i_CosmeticScytheThing[client])
+	{
+		case 1:
+		{
+			red = 215;
+			green = 170;
+			blue = 0;
+		}
+		case 2:
+		{
+			red = 215;
+			green = 170;
+			blue = 0;
+		}
+		case 3:
+		{
+			red = 125;
+			green = 125;
+			blue = 255;
+		}
+	}
 	spawnRing_Vectors(RingSpawnVec, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", red, green, blue, 200, 1, 0.25, 6.0, 2.1, 1, 65.0 * 2.0);	
 	EmitSoundToAll("weapons/mortar/mortar_explode3.wav", client, SNDCHAN_AUTO, 80, SND_NOFLAGS, 1.0, SNDPITCH_NORMAL, -1, Pos_player);	
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_2 || i_CustomWeaponEquipLogic[weapon] == WEAPON_SENSAL_SCYTHE_PAP_3)
@@ -405,13 +459,24 @@ void SummonScytheSensalProjectile(int client, int weapon)
 
 			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
 
-			if(b_ClientPossesBattery[client])
+			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
 			{
 				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
 			else
 			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+				if(i_CosmeticScytheThing[client] == 1)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
+				}
+				else if(i_CosmeticScytheThing[client] == 2)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+				}
+				else
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+				}
 			}
 			SetVariantInt(2);
 			AcceptEntityInput(ModelApply, "SetBodyGroup");
@@ -450,13 +515,24 @@ void SummonScytheSensalProjectile(int client, int weapon)
 
 			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
 
-			if(b_ClientPossesBattery[client])
+			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
 			{
 				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
 			else
 			{
-				SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+				if(i_CosmeticScytheThing[client] == 1)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 2);
+				}
+				else if(i_CosmeticScytheThing[client] == 2)
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 3);
+				}
+				else
+				{
+					SetEntityRenderColor(ModelApply, 255, 255, 255, 0);
+				}
 			}
 			SetVariantInt(2);
 			AcceptEntityInput(ModelApply, "SetBodyGroup");
@@ -541,12 +617,23 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 
 void SensalApplyRecolour(int client, int entity)
 {
-	if(b_ClientPossesBattery[client])
+	if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
 	{
 		SetEntityRenderColor(entity, 255, 255, 255, 1);
 	}
 	else
 	{
-		SetEntityRenderColor(entity, 255, 255, 255, 0);
+		if(i_CosmeticScytheThing[client] == 1)
+		{
+			SetEntityRenderColor(entity, 255, 255, 255, 2);
+		}
+		else if(i_CosmeticScytheThing[client] == 2)
+		{
+			SetEntityRenderColor(entity, 255, 255, 255, 3);
+		}
+		else
+		{
+			SetEntityRenderColor(entity, 255, 255, 255, 0);
+		}
 	}
 }
