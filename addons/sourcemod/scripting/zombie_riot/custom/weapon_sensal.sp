@@ -459,7 +459,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 
 			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
 
-			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
+			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
 			{
 				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
@@ -515,7 +515,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 
 			int ModelApply = ApplyCustomModelToWandProjectile(projectile, WEAPON_CUSTOM_WEAPONRY_1, 1.35, "scythe_spin");
 
-			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
+			if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
 			{
 				SetEntityRenderColor(ModelApply, 255, 255, 255, 1);
 			}
@@ -617,7 +617,7 @@ public void Weapon_Sensal_WandTouch(int entity, int target)
 
 void SensalApplyRecolour(int client, int entity)
 {
-	if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] != 3)
+	if(b_ClientPossesBattery[client] && i_CosmeticScytheThing[client] == 0)
 	{
 		SetEntityRenderColor(entity, 255, 255, 255, 1);
 	}
