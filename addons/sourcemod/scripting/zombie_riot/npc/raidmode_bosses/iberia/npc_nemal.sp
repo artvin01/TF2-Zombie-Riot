@@ -860,7 +860,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
-		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -875,6 +875,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			MakeObjectIntangeable(npc.index);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
 			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
 			npc.m_iTarget = 0;
