@@ -240,7 +240,9 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Post(int pThis)
 {
 	if(ClientThatWasChanged > 0 && ClientThatWasChanged <= MaxClients)
 	{
-		TF2_SetPlayerClass_ZR(ClientThatWasChanged, WeaponClass[ClientThatWasChanged], false, false);
+		if(view_as<int>(WeaponClass[ClientThatWasChanged]) > 0)
+			TF2_SetPlayerClass_ZR(ClientThatWasChanged, WeaponClass[ClientThatWasChanged], false, false);
+
 		ClientThatWasChanged = -1;
 	}
 	return MRES_Ignored;
