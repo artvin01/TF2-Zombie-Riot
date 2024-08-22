@@ -620,7 +620,7 @@ public Action SeaFounder_DamageTimer(Handle timer, DataPack pack)
 				// 120 x 0.25 x 0.2
 
 				if(!resist)
-					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 4.0), false);
+					Elemental_AddNervousDamage(client, 0, RoundToCeil(damageDeal / 6.0), false);
 					// 20 x 0.25 x 0.2
  
 				int entity = EntRefToEntIndex(i_DyingParticleIndication[client][0]);

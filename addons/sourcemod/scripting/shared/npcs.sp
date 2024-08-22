@@ -155,7 +155,7 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			}
 		}
 		//emercency stop. 
-		if(EnemyNpcAlive >= MaxEnemiesAllowedSpawnNext())
+		if((EnemyNpcAlive - EnemyNpcAliveStatic) >= MaxEnemiesAllowedSpawnNext())
 		{
 			return;
 		}
@@ -394,6 +394,13 @@ public void NPC_SpawnNext(bool panzer, bool panzer_warning)
 			if(f_DelayNextWaveStartAdvancingDeathNpc > GetGameTime())
 			{
 				donotprogress = true;
+				if(EnemyNpcAliveStatic >= 1)
+				{
+					donotprogress = false;
+				}
+			}
+			else
+			{
 				if(EnemyNpcAliveStatic >= 1)
 				{
 					donotprogress = false;

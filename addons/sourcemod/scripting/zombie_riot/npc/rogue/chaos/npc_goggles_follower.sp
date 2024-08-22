@@ -707,7 +707,7 @@ static void ClotThink(int iNPC)
 				RaidModeScaling = 1.0;
 				RaidAllowsBuildings = true;
 
-				ExpidonsaSword(npc.index);
+				ExpidonsaSword_Waldch(npc.index);
 				if(IsValidEntity(npc.m_iWearable3))
 					RemoveEntity(npc.m_iWearable3);
 				
@@ -1047,7 +1047,7 @@ static void ClotDeath(int entity)
 		RemoveEntity(npc.m_iWearable6);
 }
 
-static void ExpidonsaSword(int iNpc)
+void ExpidonsaSword_Waldch(int iNpc)
 {
 	float flPos[3];
 	float flAng[3];

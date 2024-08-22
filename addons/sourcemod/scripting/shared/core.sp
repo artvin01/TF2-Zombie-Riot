@@ -902,7 +902,7 @@ Handle g_hSDKWorldSpaceCenter;
 Handle g_hStudio_FindAttachment;
 Handle g_hResetSequenceInfo;
 #if defined ZR || defined RPG
-DynamicHook g_DHookMedigunPrimary; 
+//g_DynamicHook g_DHookMedigunPrimary; 
 float f_ModifThirdPersonAttackspeed[MAXENTITIES]={1.0, ...};
 #endif
 //Death
@@ -2894,6 +2894,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
+		IberiaEntityCreated(entity);
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;

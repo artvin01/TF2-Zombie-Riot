@@ -510,12 +510,55 @@ void NPC_ConfigSetup()
 //Raids
 	VoidUnspeakable_OnMapStart_NPC();
 
+	//void events
+	VoidedDiversionistico_OnMapStart_NPC();
+
 //Iberia Expidonsa
+	//Overall usage
+	Iberia_Beacon_OnMapStart_NPC();
+	IberiaBeaconConstructor_OnMapStart_NPC();
+	Iberia_Lighthouse_OnMapStart_NPC();
+	Huirgrajo_Precache();
+	
 // wave 1-15
 	Iberia_Cambino_OnMapStart_NPC();
 	Iberia_Irani_OnMapStart_NPC();
-	//void events
-	VoidedDiversionistico_OnMapStart_NPC();
+	Iberia_Kinat_OnMapStart_NPC();
+	Iberia_Ginus_OnMapStart_NPC();
+	Iberia_SpeedusInitus_OnMapStart_NPC();
+	Iberia_Anania_OnMapStart_NPC();
+	Iberia_Victorian_OnMapStart_NPC();
+	Iberia_inqusitor_iidutas_OnMapStart_NPC();
+  
+
+//wave 16 -30
+	IberiaVivintu_OnMapStart_NPC();
+	IberiaCenula_OnMapStart_NPC();
+	IberiaKumbai_OnMapStart_NPC();
+	IberiaSpeedusInstantus_OnMapStart_NPC();
+	IberiaCombastia_OnMapStart_NPC();
+	IberiaMorato_OnMapStart_NPC();
+	IberiaSeaXploder_OnMapStart_NPC();
+	Iberia_AntiSeaRobot_OnMapStart_NPC();
+
+// 31-45
+
+	IberiaRanka_S_OnMapStart_NPC();
+	IberiaMurdarato_OnMapStart_NPC();
+	IberiaEliteKinat_OnMapStart_NPC();
+	Iberia_SeabornAnnihilator_OnMapStart_NPC();
+	IberianSentinel_OnMapStart_NPC();
+	IberianIronborus_OnMapStart_NPC();
+	IberianDestructius_OnMapStart_NPC();
+	IberiaSpeedusItus_OnMapStart_NPC();
+
+//wave 45-60
+
+	IberiaSpeedusElitus_OnMapStart_NPC();
+	IberiaSeaDryer_OnMapStart_NPC();
+	IberiaRunaka_OnMapStart_NPC();
+	IberiaDeathMarker_OnMapStart_NPC();
+	Iberia_inqusitor_irene_OnMapStart_NPC();
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1482,70 +1525,48 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 
 
 
-#include "zombie_riot/npc/iberia_expidonsa/npc_irani.sp"
-#include "zombie_riot/npc/iberia_expidonsa/npc_cambino.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_base.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_beacon.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_iberia_lighthouse.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_beacon_constructor.sp"
+#include "zombie_riot/npc/iberia_expidonsa/npc_huirgrajo.sp"
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_irani.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_cambino.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_kinat.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_ginus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_speedus_initus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_anania.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_victorian.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_15/npc_inqusitor_iidutas.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_vivintu.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_cenula.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_kumbai.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_speedus_instantus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_combastia.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_iberia_morato.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_sea_xploder.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_30/npc_anti_sea_robot.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_ranka_s.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_murdarato.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_elite_kinat.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_seaborn_eradicator.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_speedus_itus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_sentinel.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_destructius.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_45/npc_ironborus.sp"
+
+
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_death_marker.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_runaka.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_speedus_elitus.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_sea_dryer.sp"
+#include "zombie_riot/npc/iberia_expidonsa/wave_60/npc_inqusitor_irene.sp"
+
+
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_nemal.sp"
 #include "zombie_riot/npc/raidmode_bosses/iberia/npc_raid_silvester.sp"
-/*
-void LogEntryInvicibleTest(int victim, int attacker, float damage, int HurtID)
-{
-	return;
-	//currently not needed!
-
-	if(!Citizen_IsIt(victim))
-		return;
-
-	//Reset all
-	char buffer[36];
-	char buffer2[36];
-	GetEntityClassname(victim, buffer, sizeof(buffer));
-	GetEntityClassname(attacker, buffer2, sizeof(buffer2));
-	if(HurtID < SaveCurrentHurtAt)
-	{
-		if(SaveCurrentHurtAt != -1)
-		{
-			if(SaveCurrentHpAtFirst == SaveCurrentHpAt)
-			{
-				LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "PREVIOUS NPC WAS INVULNERABLE? HurtIttirationAt %i",HurtIttirationAt);
-				if(AntiChatSpamDebug < GetGameTime())
-				{
-					AntiChatSpamDebug = GetGameTime() + 15.0;
-					PrintToChatAll("[Debug] PLEASE contact an admin!!!! This might spam! It looks like a friendly NPC cant die! Please give them this number too! %i",HurtIttirationAt);
-				}
-			//	HurtIttirationAt = 9999999;
-			//	RemoveEntity(victim);
-			}
-		}
-		SaveCurrentHpAt = 0;
-		SaveCurrentHurtAt = 0;
-		SaveCurrentHpAtFirst = 0;
-		HurtIttirationAt++;
-		LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "------------------------------");
-	}
-	SaveCurrentHurtAt = HurtID;
-
-	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(HurtID == 1)
-	{
-		SaveCurrentHpAtFirst = health;
-	}
-	SaveCurrentHpAt = health;
-	if(Citizen_ThatIsDowned(victim))
-		SaveCurrentHpAt = 0;
-		
-	LogToFile("addons/sourcemod/logs/zr_citizen_debugfile.txt", "HurtIttirationAt %i Victim Id: %i Victimclassname %s VictimTeam %i\n	Attacker Id: %i Attackerclassname %s attackerTeam %i Damage %.1f HurtID %i victimAliveState %i\n AttackerAliveState %i AtBeginningHealth %i Current health %i ",
-	HurtIttirationAt,
-	victim,
-	buffer,
-	GetTeam(victim),
-	attacker,
-	buffer2,
-	GetTeam(attacker),
-	damage,
-	HurtID,
-	GetEntProp(victim, Prop_Data, "m_lifeState"),
-	GetEntProp(attacker, Prop_Data, "m_lifeState"),
-	SaveCurrentHpAtFirst,
-	SaveCurrentHpAt);
-}
-*/

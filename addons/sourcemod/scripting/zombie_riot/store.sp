@@ -5645,7 +5645,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		{
 			Attributes_Set(entity, 49, 1.0);
 		}
-		for(int i; i<1; i++)
+		for(int i; i < sizeof(b_WeaponSpecificClassBuff[]); i++)
 		{
 			b_WeaponSpecificClassBuff[entity][i] = false;
 		}
@@ -5735,6 +5735,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);
 		Flametail_Enable(client, entity);
+		Ulpianus_Enable(client, entity);
 	}
 
 	return entity;

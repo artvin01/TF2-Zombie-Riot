@@ -81,8 +81,8 @@ methodmap BarrackThorns < BarrackBody
 	}
 	public BarrackThorns(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		bool elite = view_as<bool>(Store_HasNamedItem(client, "Construction Master"));
-		bool MaxPot = view_as<bool>(Store_HasNamedItem(client, "Construction Killer"));
+		bool elite = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Master")) : true;
+		bool MaxPot = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Killer")) : true;
 		
 		char healthSize[10];
 

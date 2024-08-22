@@ -804,6 +804,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
+		npc.m_flGetClosestTargetTime = 0.0;
 		if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 		{
 			CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
@@ -846,7 +847,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}		
-	if(i_RaidGrantExtra[npc.index] >= 2)
+	if(i_RaidGrantExtra[npc.index] >= 3)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/2) >= (GetEntProp(npc.index, Prop_Data, "m_iHealth") - damage) && !npc.Anger) //npc.Anger after half hp/400 hp
 		{
@@ -881,7 +882,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			b_angered_twice[npc.index] = true; 
 			i_SaidLineAlready[npc.index] = 0; 
 			f_TimeSinceHasBeenHurt[npc.index] = GetGameTime() + 20.0;
-			RaidModeTime = FAR_FUTURE;
+			RaidModeTime += 25.0;
 			f_NpcImmuneToBleed[npc.index] = GetGameTime() + 1.0;
 			b_NpcIsInvulnerable[npc.index] = true;
 			RemoveNpcFromEnemyList(npc.index);
@@ -950,7 +951,7 @@ static void Internal_NPCDeath(int entity)
 	{
 		case 0:
 		{
-			CPrintToChatAll("{gold}Silvester{default}: Welp i gotta help {blue}Senal{default} again, cya!");
+			CPrintToChatAll("{gold}Silvester{default}: Welp i gotta help {blue}Sensal{default} again, cya!");
 		}
 		case 1:
 		{
@@ -1057,6 +1058,9 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				PluginBot_Jump(npc.index, flPos);
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
 				npc.m_flSilvesterSlicerCD = GetGameTime(npc.index) + 30.0;
+				if(i_RaidGrantExtra[npc.index] >= 4)
+					npc.m_flSilvesterSlicerCD = GetGameTime(npc.index) + 20.0;
+
 				npc.m_flAttackHappens = GetGameTime(npc.index) + 3.25;
 				npc.m_iChanged_WalkCycle = 0;
 			}
@@ -1081,7 +1085,10 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				MaxCount = 1;
 			}
 			float DelaybewteenPillars = 0.1;
-			float DelayPillars = 1.5;
+			float DelayPillars = 1.0;
+			if(i_RaidGrantExtra[npc.index] >= 4)
+				DelayPillars = 0.7;
+
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({212, 150, 0, 200});
 			Silvester_Damaging_Pillars_Ability(npc.index,
@@ -1125,7 +1132,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 
 							if(npc.Anger)
 							{
-								damage *= 0.65;
+								damage *= 0.75;
 							}
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
@@ -1252,6 +1259,8 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 							
 					npc.f_SilvesterMeleeSliceHappening = gameTime + 0.25;
 					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + 4.5;
+					if(i_RaidGrantExtra[npc.index] >= 4)
+						npc.f_SilvesterMeleeSliceHappeningCD = gameTime + 3.0;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
@@ -1714,6 +1723,32 @@ bool SilvesterSwordSlicer(Silvester npc)
 {
 	if(npc.m_flSilvesterSlicerHappening)
 	{
+		if(!IsValidEnemy(npc.index, npc.m_iTarget))
+		{
+			bool ForceRedo = false;
+			npc.m_flGetClosestTargetTime = 0.0;
+			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			{
+				CClotBody allynpc = view_as<CClotBody>(npc.m_iTargetAlly);
+				if(allynpc.m_iTarget == npc.m_iTarget)
+				{
+					ForceRedo = true;
+				}
+				if(ForceRedo || npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+				{
+					npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget);
+					npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+				}
+			}
+			else
+			{
+				if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
+				{
+					npc.m_iTarget = GetClosestTarget(npc.index);
+					npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+				}
+			}
+		}
 		if(IsValidEnemy(npc.index, npc.m_iTarget))
 		{
 			NPC_SetGoalEntity(npc.index, npc.m_iTarget);
