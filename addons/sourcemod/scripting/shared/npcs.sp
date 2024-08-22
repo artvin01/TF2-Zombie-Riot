@@ -2165,7 +2165,7 @@ void NPC_DeadEffects(int entity)
 			Spawns_NPCDeath(entity, client, WeaponLastHit);
 #endif
 
-			Attributes_OnKill(client, WeaponLastHit);
+			Attributes_OnKill(entity, client, WeaponLastHit);
 		}
 	}
 }
