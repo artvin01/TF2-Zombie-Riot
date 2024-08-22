@@ -268,7 +268,7 @@ public void Weapon_MlynarAttackM2_pap(int client, int weapon, bool &result, int 
 		Rogue_OnAbilityUse(weapon);
 		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 		{
-			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME - 10.0);
+			Ability_Apply_Cooldown(client, slot, MYLNAR_MAX_CHARGE_TIME - 5.0);
 		}
 		else
 		{
@@ -376,7 +376,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			f_MlynarDmgMultiPassive[client] += 0.0015;
 			if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 			{
-				f_MlynarDmgMultiPassive[client] += 0.0005;
+				f_MlynarDmgMultiPassive[client] += 0.00025;
 			}
 			if(f_MlynarDmgMultiPassive[client] > 2.0)
 			{
@@ -428,7 +428,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
 				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 				{
-					f_MlynarDmgMultiAgressiveClose[client] += (0.0005 * float(GatherPower));
+					f_MlynarDmgMultiAgressiveClose[client] += (0.00025 * float(GatherPower));
 				}
 				if(f_MlynarDmgMultiAgressiveClose[client] > 3.0)
 				{
@@ -445,7 +445,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				}
 				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
 				{
-					f_MlynarDmgMultiHurt[client] += 0.01;
+					f_MlynarDmgMultiHurt[client] += 0.0025;
 				}
 				if(f_MlynarDmgMultiHurt[client] > 3.0)
 				{
@@ -591,9 +591,9 @@ void MlynarTakeDamagePostRaid(int client, int pap = 0)
 		}
 		else if(pap == 2)
 		{
-			f_MlynarDmgMultiPassive[client] -= 0.01;
-			f_MlynarDmgMultiAgressiveClose[client] -= 0.01;
-			f_MlynarDmgMultiHurt[client] -= 0.01;
+			f_MlynarDmgMultiPassive[client] -= 0.0125;
+			f_MlynarDmgMultiAgressiveClose[client] -= 0.0125;
+			f_MlynarDmgMultiHurt[client] -= 0.0125;
 		}
 
 		if(f_MlynarDmgMultiPassive[client] < 1.0)
@@ -629,9 +629,9 @@ void MlynarReduceDamageOnKill(int client, int pap = 0)
 		}
 		else if(pap == 2)
 		{
-			f_MlynarDmgMultiPassive[client] -= 0.02;
-			f_MlynarDmgMultiAgressiveClose[client] -= 0.02;
-			f_MlynarDmgMultiHurt[client] -= 0.02;
+			f_MlynarDmgMultiPassive[client] -= 0.025;
+			f_MlynarDmgMultiAgressiveClose[client] -= 0.025;
+			f_MlynarDmgMultiHurt[client] -= 0.025;
 		}
 
 		if(f_MlynarDmgMultiPassive[client] < 1.0)
