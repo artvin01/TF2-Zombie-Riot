@@ -12,6 +12,7 @@ static float fl_AlreadyStrippedMusic[MAXTF2PLAYERS];
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
 static bool b_said_player_weaponline[MAXTF2PLAYERS];
 static float fl_said_player_weaponline_time[MAXENTITIES];
+static bool b_SilvLine[MAXENTITIES];
 
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
@@ -324,6 +325,7 @@ methodmap Silvester < CClotBody
 		npc.m_iState = 0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
+		b_SilvLine[npc.index] = false;
 		npc.m_flSpeed = 320.0;
 		npc.i_GunMode = 0;
 		npc.m_flSilvesterSlicerCD = GetGameTime() + 6.0;
@@ -539,6 +541,7 @@ static void Internal_ClotThink(int iNPC)
 		}
 		else if((EntRefToEntIndex(RaidBossActive) != npc.index && !IsEntityAlive(EntRefToEntIndex(RaidBossActive))) || (IsPartnerGivingUpNemalSilv(npc.index) && EntRefToEntIndex(RaidBossActive) != npc.index))
 		{	
+			
 			RaidBossActive = EntIndexToEntRef(npc.index);
 		}
 		
@@ -737,6 +740,11 @@ static void Internal_ClotThink(int iNPC)
 	}
 	else
 	{
+		if(!b_SilvLine[npc.index])
+		{
+			CPrintToChatAll("{gold}Silvester{default}: Fighting me alone now? Guess ill give it extra.");
+			b_SilvLine[npc.index] = true;
+		}
 		if(b_NpcIsInvulnerable[npc.index])
 		{
 			b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
@@ -917,6 +925,7 @@ static void Internal_NPCDeath(int entity)
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
+	RaidModeTime += 20.0;
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
@@ -1058,9 +1067,17 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 				npc.SetVelocity({0.0,0.0,0.0});
 				PluginBot_Jump(npc.index, flPos);
 				npc.m_flSilvesterSlicerHappening = GetGameTime(npc.index) + 1.0;
-				npc.m_flSilvesterSlicerCD = GetGameTime(npc.index) + 30.0;
+				float cooldownDo  = 30.0;
+				if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+					cooldownDo = 30.0;
+				else
+				{
+					cooldownDo *= 0.75;
+				}
 				if(i_RaidGrantExtra[npc.index] >= 4)
-					npc.m_flSilvesterSlicerCD = GetGameTime(npc.index) + 20.0;
+					cooldownDo *= 0.75;
+
+				npc.m_flSilvesterSlicerCD = GetGameTime(npc.index) + cooldownDo;
 
 				npc.m_flAttackHappens = GetGameTime(npc.index) + 3.25;
 				npc.m_iChanged_WalkCycle = 0;
@@ -1075,7 +1092,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			npc.AddGesture("ACT_MP_THROW");
 			npc.PlayRangedSound();
 			float VecEnemy[3]; WorldSpaceCenter(npc.m_iTarget, VecEnemy);
-			int MaxCount = RoundToNearest(1.0 * RaidModeScaling);
+			int MaxCount = RoundToNearest(2.0 * RaidModeScaling);
 			npc.FaceTowards(VecEnemy, 99999.9);
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1085,10 +1102,12 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			{
 				MaxCount = 1;
 			}
+			if(MaxCount > 25)
+				MaxCount = 25;
 			float DelaybewteenPillars = 0.1;
-			float DelayPillars = 1.0;
+			float DelayPillars = 0.7;
 			if(i_RaidGrantExtra[npc.index] >= 4)
-				DelayPillars = 0.7;
+				DelayPillars = 0.55;
 
 			ResetTEStatusSilvester();
 			SetSilvesterPillarColour({212, 150, 0, 200});
@@ -1101,7 +1120,15 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			pos,
 			1.0,
 			0.5);	
-			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + 7.0;
+			
+			float cooldownDo  = 7.0;
+			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+				cooldownDo = 7.0;
+			else
+			{
+				cooldownDo *= 0.75;
+			}
+			npc.m_flSilvesterAirbornAttack = GetGameTime(npc.index) + cooldownDo;
 		}
 	}
 	if(npc.m_flAttackHappens)
@@ -1135,6 +1162,13 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 							{
 								damage *= 0.75;
 							}
+							
+							if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+							{
+
+							}
+							else
+								damage *= 1.25;
 
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							// Hit particle
@@ -1259,9 +1293,18 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 					npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 							
 					npc.f_SilvesterMeleeSliceHappening = gameTime + 0.25;
-					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + 4.5;
+					
+					float cooldownDo  = 4.5;
+					if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+						cooldownDo = 7.0;
+					else
+					{
+						cooldownDo *= 0.75;
+					}
 					if(i_RaidGrantExtra[npc.index] >= 4)
-						npc.f_SilvesterMeleeSliceHappeningCD = gameTime + 3.0;
+						cooldownDo *= 0.75;
+
+					npc.f_SilvesterMeleeSliceHappeningCD = gameTime + cooldownDo;
 					npc.m_flDoingAnimation = gameTime + 0.25;
 				}
 			}
@@ -1321,6 +1364,14 @@ bool SilvesterTransformation(Silvester npc)
 
 			SetEntProp(npc.index, Prop_Data, "m_iHealth", (ReturnEntityMaxHealth(npc.index) / 2));
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
+			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
+			{
+
+			}
+			else
+			{
+				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell. Try to.");
+			}
 			Nemal_SilvesterApplyEffects(npc.index, false);
 
 			if(IsValidEntity(npc.m_iWearable8))

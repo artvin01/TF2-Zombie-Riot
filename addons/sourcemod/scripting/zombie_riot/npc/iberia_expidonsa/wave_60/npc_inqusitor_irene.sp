@@ -728,7 +728,7 @@ static void Irene_Weapon_Lines(Iberiainqusitor_irene npc, int client)
 				case 0:
 					Format(Text_Lines, sizeof(Text_Lines), "Let's see who wields the wrath of Ibera better {gold}%N{default}!",client);
 				case 1:
-					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran{default} teached you too {gold}%N{default}?",client);
+					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran{default} tought you too {gold}%N{default}?",client);
 				case 2:
 					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran's{default} legacy will move on with us {gold}%N{default}!",client);
 				case 3:

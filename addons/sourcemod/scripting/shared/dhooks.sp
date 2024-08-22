@@ -101,7 +101,7 @@ void DHook_Setup()
 
 #if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::RemoveAllOwnedEntitiesFromWorld", DHook_RemoveAllOwnedEntitiesFromWorldPre, DHook_RemoveAllOwnedEntitiesFromWorldPost);
-//	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
+	g_DHookMedigunPrimary = DHook_CreateVirtual(gamedata, "CWeaponMedigun::PrimaryAttack()");
 #endif
 
 #if defined ZR
@@ -171,6 +171,9 @@ void DHook_Setup()
 	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
+	//Fixes mediguns giving extra speed where it was not intended.
+	//gamedata first try!!
+	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -211,11 +214,46 @@ void DHook_Setup()
 	*/
 //	int ED_AllocCommentedOut;
 }
+int ClientThatWasChanged = 0;
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
+{
+	if(pThis == -1)     
+		return MRES_Ignored;
 
+	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
+	if(active != -1)
+	{
+		if(b_IsAMedigun[active])
+		{
+			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
+			if(healTarget > 0 && healTarget <= MaxClients)
+			{
+				ClientThatWasChanged = healTarget;
+				TF2_SetPlayerClass_ZR(healTarget, TFClass_Medic, false, false);
+			}
+		}
+	}
+	return MRES_Ignored;
+}
+
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Post(int pThis)
+{
+	if(ClientThatWasChanged > 0 && ClientThatWasChanged <= MaxClients)
+	{
+		TF2_SetPlayerClass_ZR(ClientThatWasChanged, WeaponClass[ClientThatWasChanged], false, false);
+		ClientThatWasChanged = -1;
+	}
+	return MRES_Ignored;
+}
 public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle hReturn, Handle hParams)
 {
 	if(b_LagCompAlliedPlayers)
 	{
+		int target = DHookGetParam(hParams, 1);
+		if(target == InitatedClient)
+		{
+			return MRES_Ignored;
+		}
 		DHookSetReturn(hReturn, true);
 		return MRES_Supercede;
 	}

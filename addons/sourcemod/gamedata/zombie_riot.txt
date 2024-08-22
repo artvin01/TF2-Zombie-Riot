@@ -45,6 +45,11 @@
 				"windows"	"\x55\x8B\xEC\x83\xEC\x18\x53\x8B\x5D\x08\x57\x8B\xF9\xF3\x0F\x10\x03"
 				"linux"		"@_ZN11CBaseEntity14SetAbsVelocityERK6Vector"
 			}
+			"CTFPlayer::TeamFortress_SetSpeed()"
+			{
+				"linux"		"@_ZN9CTFPlayer21TeamFortress_SetSpeedEv"
+				"windows"	"\x55\x8B\xEC\x83\xEC\x28\xA1\x2A\x2A\x2A\x2A\x56"
+			}
 			"CBaseObject::ShouldQuickBuild"
 			{
 				//string "upgrade_rate_mod" directly it.
@@ -388,6 +393,13 @@
 		}
 		"Functions"
 		{
+			"CTFPlayer::TeamFortress_SetSpeed()"
+			{
+				"signature"	"CTFPlayer::TeamFortress_SetSpeed()"
+				"callconv"	"thiscall"
+				"return"	"void"
+				"this"		"entity"
+			}
 			"CBaseObject::ShouldQuickBuild"
 			{
 				"signature"	"CBaseObject::ShouldQuickBuild"

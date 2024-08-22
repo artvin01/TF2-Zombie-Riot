@@ -905,6 +905,7 @@ static void Internal_NPCDeath(int entity)
 	
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 	npc.PlayDeathSound();	
+	RaidModeTime += 20.0;
 
 	RaidBossActive = INVALID_ENT_REFERENCE;
 		
