@@ -511,7 +511,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 	fl_ruina_battery_timer[npc.index] = GameTime + Time;
 
 
-	static const char npc_names[][] = {
+	static char npc_names[][] = {
 		"npc_ruina_magianius",
 		"npc_ruina_loonarionus",
 		"npc_ruina_heliarionus",
@@ -524,7 +524,7 @@ static void Raid_Spwaning_Logic(Magia_Anchor npc)
 		"npc_ruina_astrianious",
 		"npc_ruina_dronianis"
 	};
-	static const int npc_health[] = {
+	static int npc_health[] = {
 		100000,	//"npc_ruina_magianius",
 		150000,	//"npc_ruina_loonarionus"
 		200000,	//"npc_ruina_heliarionus"
