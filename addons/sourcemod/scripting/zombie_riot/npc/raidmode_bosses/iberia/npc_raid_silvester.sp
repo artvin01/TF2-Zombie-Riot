@@ -1366,11 +1366,7 @@ bool SilvesterTransformation(Silvester npc)
 			CPrintToChatAll("{gold}Silvester{default}: Here's my scythe!");
 			if(IsValidEntity(npc.m_iTargetAlly) && !IsPartnerGivingUpNemalSilv(npc.index))
 			{
-
-			}
-			else
-			{
-				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell. Try to.");
+				CPrintToChatAll("{lightblue}Nemal{default}: Guess ill try harder aswell, or try to.");
 			}
 			Nemal_SilvesterApplyEffects(npc.index, false);
 
