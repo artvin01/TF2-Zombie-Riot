@@ -215,6 +215,7 @@ void DHook_Setup()
 //	int ED_AllocCommentedOut;
 }
 int ClientThatWasChanged = 0;
+int SavedClassForClient = 0;
 public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 {
 	if(pThis == -1)     
@@ -229,6 +230,7 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
 			if(healTarget > 0 && healTarget <= MaxClients)
 			{
 				ClientThatWasChanged = healTarget;
+				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
 				TF2_SetPlayerClass_ZR(healTarget, TFClass_Medic, false, false);
 			}
 		}
@@ -240,9 +242,10 @@ public MRESReturn DHookCallback_TeamFortress_SetSpeed_Post(int pThis)
 {
 	if(ClientThatWasChanged > 0 && ClientThatWasChanged <= MaxClients)
 	{
-		if(view_as<int>(WeaponClass[ClientThatWasChanged]) > 0)
-			TF2_SetPlayerClass_ZR(ClientThatWasChanged, WeaponClass[ClientThatWasChanged], false, false);
+		if(view_as<TFClassType>(SavedClassForClient) > TFClass_Unknown)
+			TF2_SetPlayerClass_ZR(ClientThatWasChanged, view_as<TFClassType>(SavedClassForClient), false, false);
 
+		SavedClassForClient = -1;
 		ClientThatWasChanged = -1;
 	}
 	return MRES_Ignored;
