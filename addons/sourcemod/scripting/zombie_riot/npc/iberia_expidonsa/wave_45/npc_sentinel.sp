@@ -225,7 +225,8 @@ public void IberianSentinel_ClotThink(int iNPC)
 		SentinelAOEBuff(npc,GetGameTime(npc.index));
 
 		npc.m_flArmorToGive = 5000.0;
-		ExpidonsaGroupHeal(npc.index, 9900.0, 50, 2000000.0, 1.0, true);
+		ExpidonsaGroupHeal(npc.index, 9900.0, 50, 2000000.0, 1.0, true, Expidonsa_DontHealBosses);
+		ExpidonsaGroupHeal(npc.index, 9900.0, 50, 1.0, 1.0, true, IberiaSentinelGiveArmor);
 		
 		npc.PlayBuffReaction();
 	}
@@ -412,4 +413,11 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 		}
 	}
 	npc.PlayMeleeWarCry();
+}
+
+void IberiaSentinelGiveArmor(int entity, int victim)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+	GrantEntityArmor(victim, true, 2.0, 0.33, 0);
 }
