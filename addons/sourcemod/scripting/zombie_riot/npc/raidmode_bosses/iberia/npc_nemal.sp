@@ -860,7 +860,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	if(i_RaidGrantExtra[npc.index] == 5)
 	{
-		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth"))) //npc.Anger after half hp/400 hp
+		if(RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //npc.Anger after half hp/400 hp
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
@@ -875,6 +875,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			RemoveNpcFromEnemyList(npc.index);
 			GiveProgressDelay(20.0);
 			MakeObjectIntangeable(npc.index);
+			SetEntProp(npc.index, Prop_Data, "m_iHealth", 1);
 			
 			CPrintToChatAll("{lightblue}Nemal{default}: Ouch ouch! Time out, time out!");
 			npc.m_iTarget = 0;
@@ -1129,10 +1130,6 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							// Hit particle
 							
-							//Do Hit Effect
-							float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-							flMaxhealth *= 0.0025;
-							HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 							
 							SetColorRGBA(colorLayer4, r, g, b, 60);
 							TE_SetupBeamPoints(origin, vecHit, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
@@ -1163,6 +1160,10 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 				}
 				if(PlaySound)
 				{
+					//Do Hit Effect
+					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+					flMaxhealth *= 0.0025;
+					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
 						npc.m_iNemalComboAttack++;
