@@ -1129,10 +1129,6 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 							SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage * RaidModeScaling, DMG_CLUB, -1, _, vecHit);								
 							// Hit particle
 							
-							//Do Hit Effect
-							float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
-							flMaxhealth *= 0.0025;
-							HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 							
 							SetColorRGBA(colorLayer4, r, g, b, 60);
 							TE_SetupBeamPoints(origin, vecHit, Shared_BEAM_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 0.3 * 1.28), ClampBeamWidth(diameter * 0.3 * 1.28), 0, 1.0, colorLayer4, 3);
@@ -1163,6 +1159,10 @@ int NemalSelfDefenseRage(Nemal npc, float gameTime, int target, float distance)
 				}
 				if(PlaySound)
 				{
+					//Do Hit Effect
+					float flMaxhealth = float(ReturnEntityMaxHealth(npc.index));
+					flMaxhealth *= 0.0025;
+					HealEntityGlobal(npc.index, npc.index, flMaxhealth, 0.15, 0.0, HEAL_SELFHEAL);
 					if(!DontGiveStack)
 					{
 						npc.m_iNemalComboAttack++;
