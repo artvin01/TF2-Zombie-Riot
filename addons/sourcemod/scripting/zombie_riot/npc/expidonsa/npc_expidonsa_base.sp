@@ -307,12 +307,11 @@ float ExpidonsanShieldBroke(int entity)
 	return(f_Expidonsa_ShieldBroke[entity]);
 }
 
-stock bool Expidonsa_DontHealBosses(int entity, int victim)
+stock bool Expidonsa_DontHealBosses(int victim)
 {
-	if(i_NpcInternalId[victim] = 		
-		b_thisNpcIsABoss[victim] &&
-		b_thisNpcIsARaid[victim] &&
-		b_StaticNPC[victim] &&)
+	if(b_thisNpcIsABoss[victim] ||
+		b_thisNpcIsARaid[victim] ||
+		b_StaticNPC[victim])
 		return true;
 
 	return false;
