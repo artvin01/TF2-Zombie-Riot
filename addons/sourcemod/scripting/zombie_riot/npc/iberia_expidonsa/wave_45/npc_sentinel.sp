@@ -401,7 +401,7 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
 					{
-						float DurationGive = 60.0;
+						float DurationGive = 20.0;
 						
 						if(b_thisNpcIsABoss[entitycount] ||
 							b_thisNpcIsARaid[entitycount] ||
@@ -409,15 +409,13 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 							DurationGive = 5.0;
 						else
 						{
-							HealEntityGlobal(npc.index, entitycount, 999999.9, 2.0, 0.0, HEAL_ABSOLUTE);
-							GrantEntityArmor(entitycount, true, 2.0, 0.33, 0);
+							HealEntityGlobal(npc.index, entitycount, 999999.9, 1.25, 0.0, HEAL_ABSOLUTE);
+							GrantEntityArmor(entitycount, true, 1.2, 0.33, 0);
 						}
 
 						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
 						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + DurationGive;
-						f_Ocean_Buff_Stronk_Buff[entitycount] = GetGameTime() + DurationGive;
 						f_BattilonsNpcBuff[entitycount] = GetGameTime() + DurationGive;
-						f_HussarBuff[entitycount] = GetGameTime() + DurationGive;
 						f_PernellBuff[entitycount] = GetGameTime() + DurationGive;
 						Adaptive_MedigunBuff[entitycount][0] = GetGameTime() + DurationGive;
 						Adaptive_MedigunBuff[entitycount][1] = GetGameTime() + DurationGive;
