@@ -214,6 +214,12 @@ public Action Items_GiveAllCmd(int client, int args)
 						}
 					}
 				}
+
+				for(int id = length2; id < 255; id++)
+				{
+					if(!Items_HasIdItem(targets[i], id))
+						Items_GiveIdItem(targets[i], id);
+				}
 				
 				ReplyToCommand(client, "Gave %d items to %N", count, targets[i]);
 			}
