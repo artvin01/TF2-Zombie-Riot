@@ -53,7 +53,7 @@ static const char g_MeleeMissSounds[][] = {
 	"weapons/bat_draw_swoosh2.wav",
 };
 static char g_TeleportSounds[][] = {
-	"misc/halloween/spell_stealth.wav",
+	"weapons/bison_main_shot.wav"
 };
 static char g_AngerSounds[][] = {	
 	"vo/medic_mvm_get_upgrade01.mp3",
@@ -352,6 +352,9 @@ methodmap Ruliana < CClotBody
 
 		fl_multi_attack_delay[npc.index] = 0.0;
 
+		npc.m_flDoingAnimation = 0.0;
+		npc.m_flNextTeleport = GetGameTime() + 1.0;
+
 		npc.Anger = false;
 		npc.m_flNextRangedBarrage_Singular = GetGameTime(npc.index) + 15.0;
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 2.5;	// GetGameTime(npc.index) + GetRandomFloat(7.5, 15.0);
@@ -395,8 +398,20 @@ static void ClotThink(int iNPC)
 	npc.m_flNextThinkTime = GameTime + 0.1;
 
 	float Gain = (npc.Anger ? 15.0 : 10.0);
+	float Battery_Cost = 3500.0;
+	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
+
 	if(fl_ruina_battery_timeout[npc.index] < GameTime)
-		Ruina_Add_Battery(npc.index, Gain);
+	{
+		if(fl_ruina_battery[npc.index] < Battery_Cost)	//allow overbattery gain, but only if its from outside sources!
+		{
+			Ruina_Add_Battery(npc.index, Gain);
+			if(fl_ruina_battery[npc.index] >= Battery_Cost)	//I like round numbers.
+				fl_ruina_battery[npc.index] = Battery_Cost;
+		}
+			
+	}
+		
 
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
@@ -408,11 +423,7 @@ static void ClotThink(int iNPC)
 
 	Ruina_Ai_Override_Core(npc.index, PrimaryThreatIndex, GameTime);	//handles movement, also handles targeting
 
-	float Battery_Cost = 3500.0;
-	float battery_Ratio = (fl_ruina_battery[npc.index]/Battery_Cost);
-
-	if(fl_ruina_battery[npc.index] > Battery_Cost)
-		fl_ruina_battery[npc.index] = Battery_Cost;
+	
 		
 	if(npc.index==EntRefToEntIndex(RaidBossActive))
 	{
@@ -428,11 +439,11 @@ static void ClotThink(int iNPC)
 		{
 			Ruina_Master_Rally(npc.index, true);
 
-			if(npc.m_flNextTeleport < GameTime)	//so allies can actually keep up
+			if(npc.m_flDoingAnimation < GameTime)	//so allies can actually keep up
 			{
-				npc.m_flNextTeleport = GameTime + 1.0;
+				npc.m_flDoingAnimation = GameTime + 1.0;
 				if(Ratio < 0.1)
-					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 2.5);
+					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 3.0);
 				else
 					Master_Apply_Speed_Buff(npc.index, 25000.0, 1.0, 1.75);
 			}
@@ -499,15 +510,12 @@ static void ClotThink(int iNPC)
 		
 		if(fl_ruina_battery[npc.index]>=Battery_Cost && fl_ruina_battery_timeout[npc.index] < GameTime)
 		{
-
 			fl_ruina_battery_timeout[npc.index] = GameTime + 5.0;
-
-			npc.m_flNextRangedBarrage_Spam = GameTime + 10.0;	//retry in 10 seconds if we failed
 			Ruliana_Barrage_Invoke(npc, Battery_Cost);
 		}
 		else
 		{
-			npc.m_flNextRangedBarrage_Singular = GameTime+5.0; 
+			npc.m_flNextRangedBarrage_Singular = GameTime + 10.0; 
 		}
 
 		//Target close enough to hit
@@ -684,7 +692,7 @@ static bool Retreat(Ruliana npc, bool custom = false)
 		return true;
 
 	float radius = (npc.Anger ? 325.0 : 250.0);
-	float dmg = (npc.Anger ? 600.0 : 250.0);
+	float dmg = (npc.Anger ? 600.0 : 300.0);
 	float Time = (npc.Anger ? 1.25 : 1.5);
 	npc.Ion_On_Loc(VecSelfNpc, radius, dmg, Time);
 
@@ -760,7 +768,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 	float GameTime = GetGameTime(npc.index);
 
 	bool FIREEVERYTHING = false;
-	if(npc.m_flNextRangedBarrage_Singular < (GameTime-10.0))
+	if(npc.m_flNextRangedBarrage_Singular < GameTime)
 	{
 		minimum_targets = 1;
 		FIREEVERYTHING = true;	//OBLITERATE THEM
@@ -852,8 +860,6 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 
 	float Npc_Vec[3];
 	WorldSpaceCenter(npc.index, Npc_Vec);
-
-	
 
 	for(int i=0 ; i < targets_aquired ; i++)
 	{
@@ -1003,6 +1009,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+		npc.m_flNextTeleport -=0.2;
 	}
 	
 	return Plugin_Changed;
