@@ -178,6 +178,7 @@ methodmap MedivalPaladin < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE_METRO;
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		
 		
 		func_NPCDeath[npc.index] = MedivalPaladin_NPCDeath;
@@ -341,7 +342,6 @@ public void MedivalPaladin_ClotThink(int iNPC)
 				if(!npc.m_bPathing)
 					npc.StartPathing();
 					
-				npc.m_bisWalking = true;
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
@@ -368,7 +368,6 @@ public void MedivalPaladin_ClotThink(int iNPC)
 
 					npc.m_flDoingAnimation = gameTime + 0.35;
 					npc.m_flNextMeleeAttack = gameTime + 1.5;
-					npc.m_bisWalking = true;
 				}
 			}
 		}
