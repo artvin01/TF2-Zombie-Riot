@@ -32,8 +32,7 @@ static const char Categories[][] =
 	"Chaos Allience",
 	"Voided Subjects",
 	"Ruina",
-	"Iberia Expidonsa Alliance",
-	//"Blue Paradox"
+	"Iberia Expidonsa Alliance"
 };
 
 enum struct GiftItem
@@ -62,6 +61,8 @@ void Items_PluginStart()
 {
 	OwnedItems = new ArrayList(sizeof(OwnedItem));
 	RegAdminCmd("zr_give_item", Items_GiveCmd, ADMFLAG_RCON);
+	RegAdminCmd("zr_give_allitems", Items_GiveAllCmd, ADMFLAG_RCON);
+	RegAdminCmd("zr_remove_allitems", Items_RemoveAllCmd, ADMFLAG_RCON);
 }
 
 void Items_SetupConfig()
@@ -177,7 +178,86 @@ public Action Items_GiveCmd(int client, int args)
 	}
 	else
 	{
-		ReplyToCommand(client, "[SM] Usage: zr_giveitem <client> <item name>");
+		ReplyToCommand(client, "[SM] Usage: zr_give_item <client> <item name>");
+	}
+	return Plugin_Handled;
+}
+
+public Action Items_GiveAllCmd(int client, int args)
+{
+	if(args == 1)
+	{
+		char targetName[MAX_TARGET_LENGTH];
+
+		char pattern[PLATFORM_MAX_PATH];
+		GetCmdArg(1, pattern, sizeof(pattern));
+
+		int length;
+		int targets[MAXPLAYERS];
+		bool targetNounIsMultiLanguage;
+		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
+		{
+			for(int i; i < length; i++)
+			{
+				int count;
+				int length2 = GiftItems.Length;
+				for(int  id; id < length2; id++)
+				{
+					static GiftItem item;
+					GiftItems.GetArray(id, item);
+					if(StrContains(item.Name, "???") == -1)
+					{
+						if(!Items_HasIdItem(targets[i], id))
+						{
+							Items_GiveIdItem(targets[i], id);
+							count++;
+						}
+					}
+				}
+				
+				ReplyToCommand(client, "Gave %d items to %N", count, targets[i]);
+			}
+		}
+		else
+		{
+			ReplyToTargetError(client, length);
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: zr_give_allitems <client>");
+	}
+	return Plugin_Handled;
+}
+
+public Action Items_RemoveAllCmd(int client, int args)
+{
+	if(args == 1)
+	{
+		char targetName[MAX_TARGET_LENGTH];
+
+		char pattern[PLATFORM_MAX_PATH];
+		GetCmdArg(1, pattern, sizeof(pattern));
+
+		int length;
+		int targets[MAXPLAYERS];
+		bool targetNounIsMultiLanguage;
+		if((length=ProcessTargetString(pattern, client, targets, sizeof(targets), COMMAND_FILTER_NO_IMMUNITY|COMMAND_FILTER_NO_BOTS, targetName, sizeof(targetName), targetNounIsMultiLanguage)) > 0)
+		{
+			for(int i; i < length; i++)
+			{
+				Items_ClearArray(targets[i]);
+				ReplyToCommand(client, "Remove %N items", targets[i]);
+			}
+		}
+		else
+		{
+			ReplyToTargetError(client, length);
+		}
+	}
+	else
+	{
+		ReplyToCommand(client, "[SM] Usage: zr_give_allitems <client>");
 	}
 	return Plugin_Handled;
 }
