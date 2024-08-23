@@ -410,7 +410,7 @@ void Attributes_OnHit(int client, int victim, int weapon, float &damage, int& da
 	}
 }
 
-void Attributes_OnKill(int client, int weapon)
+void Attributes_OnKill(int victim, int client, int weapon)
 {
 
 	SetEntProp(client, Prop_Send, "m_iKills", GetEntProp(client, Prop_Send, "m_iKills") + 1);
@@ -433,6 +433,14 @@ void Attributes_OnKill(int client, int weapon)
 
 		if(value)
 		{
+			if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+			{
+				value *= 4.0;
+			}
+			else if(b_IsGiant[victim])
+			{
+				value *= 2.0;
+			}
 			HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
 		}
 		

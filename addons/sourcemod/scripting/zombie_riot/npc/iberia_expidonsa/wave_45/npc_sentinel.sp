@@ -69,12 +69,17 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 
 methodmap IberianSentinal < CClotBody
 {
+	property float m_flArmorToGive
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
-		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 		
 	}
@@ -86,32 +91,31 @@ methodmap IberianSentinal < CClotBody
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
 		
-		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		
 	}
 	
 	public void PlayDeathSound() 
 	{
-		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	public void PlayMeleeSound()
 	{
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeHitSound() 
 	{
-		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
+		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 
 	}
 	public void PlayBuffReaction() 
 	{
-		EmitSoundToAll(g_BuffUpReactions[GetRandomInt(0, sizeof(g_BuffUpReactions) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-
+		EmitSoundToAll(g_BuffUpReactions[GetRandomInt(0, sizeof(g_BuffUpReactions) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 	}
 	public void PlayMeleeWarCry() 
 	{
-		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 85, _, 0.8, 100);
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_STATIC, 110, _, BOSS_ZOMBIE_VOLUME);
 	}
 	
 	
@@ -202,11 +206,14 @@ public void IberianSentinel_ClotThink(int iNPC)
 		float flAng[3];
 		GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 		int ParticleEffect;
+		int ParticleEffect1;
 		
 		GetEntPropVector(npc.index, Prop_Data, "m_angRotation", flAng);
 		flAng[0] = 90.0;
 		ParticleEffect = ParticleEffectAt(flPos, "powerup_supernova_explode_blue", 1.0); //Taken from sensal haha
+		ParticleEffect1 = ParticleEffectAt(flPos, "powerup_supernova_explode_red", 1.0); //Taken from sensal haha
 		TeleportEntity(ParticleEffect, NULL_VECTOR, flAng, NULL_VECTOR);
+		TeleportEntity(ParticleEffect1, NULL_VECTOR, flAng, NULL_VECTOR);
 
 		npc.m_iWearable8 = npc.EquipItem("head", "models/weapons/c_models/c_buffbanner/c_buffbanner.mdl"); //Flag up!
 		SetVariantString("1.5");
@@ -215,6 +222,9 @@ public void IberianSentinel_ClotThink(int iNPC)
 		npc.m_fbRangedSpecialOn = true;
 
 		SentinelAOEBuff(npc,GetGameTime(npc.index));
+
+		npc.m_flArmorToGive = 5000.0;
+		
 		npc.PlayBuffReaction();
 	}
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -266,11 +276,11 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		if(npc.m_iAttacksTillReload < 6 && !npc.Anger)
+		if(npc.m_iAttacksTillReload < 12 && !npc.Anger)
 		{
 			npc.m_iAttacksTillReload += 1;
 		}
-		else if(npc.m_iAttacksTillReload >= 6 && !npc.Anger)
+		else if(npc.m_iAttacksTillReload >= 12 && !npc.Anger)
 		{
 			npc.Anger = true;
 		}
@@ -385,16 +395,37 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
-				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
 					{
-						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + 30.0;//Buff this entity.
-						f_BattilonsNpcBuff[entitycount] = GetGameTime() + 30.0;
-						f_BuffBannerNpcBuff[npc.index] = GetGameTime() + 30.0;//Buff other entity.
-						f_BattilonsNpcBuff[npc.index] = GetGameTime() + 30.0;
+						float DurationGive = 60.0;
+						
+						if(b_thisNpcIsABoss[entitycount] ||
+							b_thisNpcIsARaid[entitycount] ||
+							b_StaticNPC[entitycount])
+							DurationGive = 5.0;
+						else
+						{
+							HealEntityGlobal(npc.index, entitycount, 999999.9, 2.0, 0.0, HEAL_ABSOLUTE);
+							GrantEntityArmor(entitycount, true, 2.0, 0.33, 0);
+						}
+
+						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
+						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + DurationGive;
+						f_Ocean_Buff_Stronk_Buff[entitycount] = GetGameTime() + DurationGive;
+						f_BattilonsNpcBuff[entitycount] = GetGameTime() + DurationGive;
+						f_HussarBuff[entitycount] = GetGameTime() + DurationGive;
+						f_PernellBuff[entitycount] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][0] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][1] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][2] = GetGameTime() + DurationGive;
+						Increaced_Overall_damage_Low[entitycount] = GetGameTime() + DurationGive;
+						Resistance_Overall_Low[entitycount] = GetGameTime() + DurationGive;
+						f_EmpowerStateSelf[entitycount] = GetGameTime() + DurationGive;
+						f_EmpowerStateOther[entitycount] = GetGameTime() + DurationGive;
 					}
 				}
 			}

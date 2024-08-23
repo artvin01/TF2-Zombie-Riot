@@ -6030,13 +6030,13 @@ static void ItemCost(int client, Item item, int &cost)
 				CheckAlivePlayers();
 			
 			case 1:
-				cost = RoundToNearest(float(cost) * 0.7);
+				cost = RoundToNearest(float(cost) * 0.9);
 			
 			case 2:
-				cost = RoundToNearest(float(cost) * 0.8);
+				cost = RoundToNearest(float(cost) * 0.92);
 			
 			case 3:
-				cost = RoundToNearest(float(cost) * 0.9);
+				cost = RoundToNearest(float(cost) * 0.95);
 		}
 	}
 	

@@ -115,9 +115,9 @@ public void DropPowerupChance(int entity)
 	{
 		return;
 	}
-	i_KilledThisMany_Grigori += 1;
 	if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
 	{
+		i_KilledThisMany_Grigori += 1;
 		if(i_KilledThisMany_Grigori > i_KillTheseManyMorePowerup_Grigori || b_ForceSpawnNextTimeGrigori)
 		{
 			if((GetRandomFloat(0.0, 1.0) * f_PowerupSpawnMulti) || b_ForceSpawnNextTimeGrigori)

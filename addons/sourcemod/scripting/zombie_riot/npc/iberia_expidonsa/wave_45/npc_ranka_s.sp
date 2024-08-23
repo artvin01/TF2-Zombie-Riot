@@ -292,7 +292,7 @@ void IberiaRanka_SSelfDefense(IberiaRanka_S npc, float gameTime, int target, flo
 					if(NpcStats_IberiaIsEnemyMarked(target))
 						npc.m_flArmorToGive *= 1.25;
 						
-					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, false,IberiaBeaconGiveArmor);
+					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,IberiaBeaconGiveArmor);
 					IberiaArmorEffect(npc.index, 150.0);
 				} 
 			}
