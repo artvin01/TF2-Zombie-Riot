@@ -105,7 +105,7 @@ methodmap Adiantum < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
@@ -422,7 +422,7 @@ static void Adiantum_Summon_Ion_Barrage(int client, float vecTarget[3])
 		
 		Ruina_Proper_To_Groud_Clip({24.0,24.0,24.0}, 300.0, endLoc);
 		
-		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0);
+		Adiantum_Ion_Invoke(client, endLoc, float(ion)/5.0+1.0);
 	}
 }
 

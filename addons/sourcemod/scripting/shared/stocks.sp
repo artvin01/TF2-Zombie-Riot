@@ -469,6 +469,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		float VecAbsEntity[3];
 		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
 		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		flDistance *= 2.0;
 		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
 			iReturn = iHit;
 	}
@@ -1309,7 +1310,7 @@ stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxh
 		{
 			HealTotal *= 0.5;
 		}
-		if(CurrentModifOn() == 2 && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
+		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(reciever) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}

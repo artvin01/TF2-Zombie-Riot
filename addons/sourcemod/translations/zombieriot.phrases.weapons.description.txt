@@ -1554,18 +1554,15 @@
 	
 	"Cannibalism Desc"
 	{
-		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute."
-		"fr"	"+7 soins lorsque vous tuez avec un coup corps-à-corps. Mangez les morceaux de vos ennemis pour vous soigner.\nSoins reçus s'améliorent avec votre attribut Santé par victime."
-		"ru"	"+7 ед. здоровья при убийстве в ближнем бою, теперь вы можете есть металлические и мясные останки от врагов для восст. здоровья.\nВосст. здоровья зависит от вашего атрибута здоровья при убийстве."
-		"chi"   "近战击杀+7 HP，你现在可以吃金属和肉来恢复生命。恢复的生命值取决于击杀目标上的生命值"
+		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute.\nKilling bosses or raids grants 4x heal on kill.\nKilling giants grants 2x heal on kill."
 	}
 	
 	"Copium Desc"
 	{
-		"en"	"15%% melee resistance with melee equipped"
-		"fr"	"+15%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"15%% сопр. ближнему бою при использ. оружия ближнего боя."
-		"chi"   "使用近战武器时+15%%的近战抵抗"
+		"en"	"25%% melee resistance with melee equipped"
+		"fr"	"+25%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"25%% сопр. ближнему бою при использ. оружия ближнего боя."
+		"chi"   "使用近战武器时+25%%的近战抵抗"
 	}
 	
 	"Cocain Desc"
@@ -1578,42 +1575,42 @@
 	
 	"Steroids Desc"
 	{
-		"en"	"30%% more melee damage, +4 HP on kill and +50 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +50 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +50 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升50点，使用近战武器时+5%%的近战抗性"
+		"en"	"30%% more melee damage, +4 HP on kill and +100 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +100 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +100 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"LSD Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +100 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +100 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +5 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +1050 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Crystal Meth Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +200 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +200 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升200点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +8 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +150 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"God's Might Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +7%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +300 santé,\n+7%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +300 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升300点，使用近战武器时+7%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +12 HP on kill and +250 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +250 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升250点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Bob's Enhancer Desc"
 	{
-		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +7%% melee resistance with melee equipped"
-		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+7%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +7%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+7%%的近战抗性"
+		"en"	"1.65x increased Melee Damage, +22 HP on kill and +600 HP, +6%% melee resistance with melee equipped"
+		"fr"	"+1.65x dégats corps-à-corps, +22 santé par victime, +600 santé,\n+6%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,65x увеличение урона в ближнем бою, +22 ед. здоровья при убийстве и +600 ед. здоровья, +6%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.65倍的近战伤害，杀敌后+22点生命，生命值提升600点，使用近战武器时+6%%的近战抗性"
 	}
 	
 	"Repair Handling book for dummies Desc"
@@ -1793,26 +1790,17 @@
 	
 	"Body armor Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +50 HP"
-		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +50 santé"
-		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +50 ед. здоровья"
-		"chi"   "提高护甲值,+50生命值"
+		"en"	"Increased How much armour you get per use and max cap. +50 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
 	}
 	
 	"Kevlar Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +100 HP"
-		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +100 santé"
-		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +100 ед. здоровья"
-		"chi"   "提高护甲值,+100生命值"
+		"en"	"Increased How much armour you get per use and max cap. +100 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
 	}
 	
 	"Heavy Vest Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP"
-		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +150 santé"
-		"ru"	"Увеличение количества получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
-		"chi"   "提高护甲值,+150生命值"
+		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
 	}
 	
 	"Jesus's Blessing Desc"
@@ -1825,10 +1813,7 @@
 	
 	"Full Riot Gear Desc"
 	{
-		"en"	"Increased How much armour you get per use and max cap. +150 HP"
-		"fr"	"Augmunte la durabilité de votre armure, et augmunte l'armure obtenu. +150 santé"
-		"ru"	"Увелич. кол-ва получаемой брони за одно использование и максимальный предел. +150 ед. здоровья"
-		"chi"   "提高护甲值,+150生命值"
+		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
 	}
 	
 	"Healthy Apple from Bob Desc"
@@ -3785,5 +3770,13 @@
 	{
 		"en"	"A ranged super unit which will buff allies around it regularly."
 		"fr"	"Améliore les alliés qui l'entoure"
+	}
+	"Vows of the Sea Desc"
+	{
+		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+	}
+	"Vows of the Sea Pap"
+	{
+		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
 	}
 }

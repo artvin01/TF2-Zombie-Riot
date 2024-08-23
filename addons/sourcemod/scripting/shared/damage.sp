@@ -543,6 +543,9 @@ stock bool Damage_AnyAttacker(int victim, int &attacker, int &inflictor, float b
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	}
 
+	if(MoraleBoostLevelAt(attacker) > 0)
+		damage += basedamage * (EntityMoraleBoostReturn(attacker, 2) * DamageBuffExtraScaling);
+
 	if(f_EmpowerStateOther[attacker] > GameTime)
 		damage += basedamage * (0.1 * DamageBuffExtraScaling);
 	
@@ -662,8 +665,11 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 		{
 			Player_OnTakeDamage_Mlynar(victim, damage, attacker, equipped_weapon, 2);
 		}
-		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER:
+		case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_ULPIANUS:
 		{
+			if(i_CustomWeaponEquipLogic[equipped_weapon] == WEAPON_ULPIANUS)
+				Ulpianus_OnTakeDamageSelf(victim);
+			
 			return Gladiia_OnTakeDamageAlly(victim, attacker, damage);
 		}
 		case WEAPON_GLADIIA:
@@ -1567,6 +1573,9 @@ stock void OnTakeDamageResistanceBuffs(int victim, int &attacker, int &inflictor
 	if(f_EmpowerStateOther[victim] > GameTime) //Allow stacking.
 		DamageRes *= 0.93;
 
+	if(MoraleBoostLevelAt(victim) > 0)
+		DamageRes *= EntityMoraleBoostReturn(victim, 3);
+
 	if(Resistance_Overall_Low[victim] > GameTime)
 		DamageRes *= RES_MEDIGUN_LOW;
 
@@ -1959,6 +1968,11 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 		Format(Debuff_Adder_right, SizeOfChar, "S(%i)%s",VausMagicaShieldLeft(victim),Debuff_Adder_right);
 	}
 #endif
+	if(MoraleBoostLevelAt(victim) > 0) //hussar!
+	{
+		//Display morale!
+		MoraleIconShowHud(victim, Debuff_Adder_right, SizeOfChar);
+	}
 	if(f_HussarBuff[victim] > GameTime) //hussar!
 	{
 		Format(Debuff_Adder_right, SizeOfChar, "ᐩ%s", Debuff_Adder_right);

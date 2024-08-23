@@ -2894,6 +2894,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
+		IberiaEntityCreated(entity);
 #endif
 		i_WeaponSoundIndexOverride[entity] = 0;
 		f_WeaponSizeOverride[entity] = 1.0;
@@ -3546,6 +3547,7 @@ void MedigunCheckAntiCrash(int entity)
 	if(b_IsAMedigun[entity])
 	{
 		GetEntProp(entity, Prop_Send, "m_bHealing", 0);
+		f_MedigunDelayAttackThink[entity] = 0.0;
 		//owner netprop doesnt work sadly.
 		int MedigunOwner = PrevOwnerMedigun[entity];
 		if(IsValidClient(MedigunOwner))

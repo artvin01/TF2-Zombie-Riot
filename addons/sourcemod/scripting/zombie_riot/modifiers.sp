@@ -5,7 +5,8 @@ static bool MaxMiniBoss;
 static int CurrentModifActive = 0;
 
 #define CHAOS_INTRUSION 1
-#define OLD_TIMES 2
+#define SECONDARY_MERCS 2
+#define OLD_TIMES 3
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -33,6 +34,16 @@ public void Modifier_Remove_ChaosIntrusion()
 	CurrentModifActive = 0;
 }
 
+public void Modifier_Collect_SecondaryMercs()
+{
+	CurrentModifActive = SECONDARY_MERCS;
+}
+
+public void Modifier_Remove_SecondaryMercs()
+{
+	CurrentModifActive = 0;
+}
+
 public void Modifier_Collect_OldTimes()
 {
 	CurrentModifActive = OLD_TIMES;
@@ -54,8 +65,7 @@ public void ZRModifs_ChaosIntrusionNPC(int iNpc)
 	fl_Extra_Speed[iNpc] *= 1.03;
 }
 
-
-public void ZRModifs_OldTimesNPC(int iNpc)
+public void ZRModifs_SecondaryMercsNPC(int iNpc)
 {
 	fl_Extra_Damage[iNpc] *= 1.15;
 	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
@@ -63,6 +73,16 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.50));
 	fl_GibVulnerablity[iNpc] *= 1.50;
 	fl_Extra_Speed[iNpc] *= 1.04;
+}
+
+public void ZRModifs_OldTimesNPC(int iNpc)
+{
+	fl_Extra_Damage[iNpc] *= 1.25;
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 2.0));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 2.0));
+	fl_GibVulnerablity[iNpc] *= 2.0;
+	fl_Extra_Speed[iNpc] *= 1.06;
 }
 
 float ZRModifs_MaxSpawnsAlive()
@@ -73,7 +93,7 @@ float ZRModifs_MaxSpawnsAlive()
 		{
 			return 1.10;
 		}
-		case OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES:
 		{
 			return 1.20;
 		}
@@ -91,7 +111,7 @@ float ZRModifs_SpawnSpeedModif()
 		{
 			value *= 0.85;
 		}
-		case OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES:
 		{
 			value *= 0.75;
 		}
@@ -108,7 +128,7 @@ float ZRModifs_MaxSpawnWaveModif()
 		{
 			return 1.25;
 		}
-		case OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES:
 		{
 			return 1.35;
 		}
@@ -123,6 +143,10 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		case CHAOS_INTRUSION:
 		{
 			FormatEx(data, 6, "C");
+		}
+		case SECONDARY_MERCS:
+		{
+			FormatEx(data, 6, "S");
 		}
 		case OLD_TIMES:
 		{

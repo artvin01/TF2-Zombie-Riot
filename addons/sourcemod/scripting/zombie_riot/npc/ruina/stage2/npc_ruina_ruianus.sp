@@ -107,7 +107,7 @@ methodmap Ruianus < CClotBody
 	}
 	
 	public void PlayMeleeSound() {
-		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
+		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 		
 	}
@@ -352,7 +352,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 
 		//CPrintToChatAll("Healing: %i",healing);
 			
-		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5 , {255, 150, 150, 175});
+		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5);
 
 		i_damage_taken[npc.index]=0;
 	}

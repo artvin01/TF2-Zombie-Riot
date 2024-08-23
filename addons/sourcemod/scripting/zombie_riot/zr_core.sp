@@ -194,6 +194,7 @@ enum
 	WEAPON_WALDCH_SWORD_NOVISUAL = 114,
 	WEAPON_WALDCH_SWORD_REAL = 115,
 	WEAPON_MLYNAR_PAP_2 = 116,
+	WEAPON_ULPIANUS = 117
 }
 
 enum
@@ -540,6 +541,7 @@ int i_WaveHasFreeplay = 0;
 #include "zombie_riot/custom/weapon_mg42.sp"
 #include "zombie_riot/custom/weapon_chainsaw.sp"
 #include "zombie_riot/custom/weapon_flametail.sp"
+#include "zombie_riot/custom/weapon_ulpianus.sp"
 
 void ZR_PluginLoad()
 {
@@ -785,6 +787,7 @@ void ZR_MapStart()
 	Object_MapStart();
 	ResetMapStartVictoria();
 	Obuch_Mapstart();
+	Ulpianus_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -845,7 +848,7 @@ void ZR_ClientPutInServer(int client)
 {
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 2)
+	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
 		
 	dieingstate[client] = 0;
@@ -2021,10 +2024,12 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false)
+
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
-	ZombieMusicPlayed = false;
+	if(!setmusicfalse)
+		ZombieMusicPlayed = setmusicfalse;
 
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -2061,7 +2066,7 @@ void ReviveAll(bool raidspawned = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 2)
+			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);

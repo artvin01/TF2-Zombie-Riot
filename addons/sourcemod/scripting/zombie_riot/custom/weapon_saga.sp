@@ -347,7 +347,7 @@ void Saga_OnTakeDamage(int victim, int &attacker, float &damage, int &weapon, in
 		b_DoNotUnStuck[victim] = true;
 		CClotBody npc = view_as<CClotBody>(victim);
 		Npc_DebuffWorldTextUpdate(npc);
-		Attributes_OnKill(attacker, weapon);
+		Attributes_OnKill(victim, attacker, weapon);
 		//so using this sword against a raid doesnt result in an auto lose.
 		if(EntRefToEntIndex(RaidBossActive) == victim)
 		{

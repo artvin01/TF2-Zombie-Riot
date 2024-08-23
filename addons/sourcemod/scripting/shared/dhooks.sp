@@ -122,7 +122,7 @@ void DHook_Setup()
 	g_DHookGrenadeExplode = DHook_CreateVirtual(gamedata, "CBaseGrenade::Explode");
 	g_DHookGrenade_Detonate = DHook_CreateVirtual(gamedata, "CBaseGrenade::Detonate");
 	
-#if !defined RTS;
+#if !defined RTS
 	DHook_CreateDetour(gamedata, "CTFPlayer::SpeakConceptIfAllowed()", SpeakConceptIfAllowed_Pre, SpeakConceptIfAllowed_Post);
 
 	g_DHookScoutSecondaryFire = DHook_CreateVirtual(gamedata, "CTFPistol_ScoutPrimary::SecondaryAttack()");
@@ -171,6 +171,9 @@ void DHook_Setup()
 	m_Item = FindSendPropInfo("CEconEntity", "m_Item");
 	FindSendPropInfo("CEconEntity", "m_bOnlyIterateItemViewAttributes", _, _, m_bOnlyIterateItemViewAttributes);
 	
+	//Fixes mediguns giving extra speed where it was not intended.
+	//gamedata first try!!
+	DHook_CreateDetour(gamedata, "CTFPlayer::TeamFortress_SetSpeed()", DHookCallback_TeamFortress_SetSpeed_Pre, DHookCallback_TeamFortress_SetSpeed_Post);
 	delete gamedata;
 	
 	GameData gamedata_lag_comp = LoadGameConfigFile("lagcompensation");
@@ -211,11 +214,51 @@ void DHook_Setup()
 	*/
 //	int ED_AllocCommentedOut;
 }
+int ClientThatWasChanged = 0;
+int SavedClassForClient = 0;
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Pre(int pThis)
+{
+	if(pThis == -1)     
+		return MRES_Ignored;
 
+	int active = GetEntPropEnt(pThis, Prop_Send, "m_hActiveWeapon");
+	if(active != -1)
+	{
+		if(b_IsAMedigun[active])
+		{
+			int healTarget = GetEntPropEnt(active, Prop_Send, "m_hHealingTarget");
+			if(healTarget > 0 && healTarget <= MaxClients)
+			{
+				ClientThatWasChanged = healTarget;
+				SavedClassForClient = GetEntProp(healTarget, Prop_Send, "m_iClass");
+				TF2_SetPlayerClass_ZR(healTarget, TFClass_Medic, false, false);
+			}
+		}
+	}
+	return MRES_Ignored;
+}
+
+public MRESReturn DHookCallback_TeamFortress_SetSpeed_Post(int pThis)
+{
+	if(ClientThatWasChanged > 0 && ClientThatWasChanged <= MaxClients)
+	{
+		if(view_as<TFClassType>(SavedClassForClient) > TFClass_Unknown)
+			TF2_SetPlayerClass_ZR(ClientThatWasChanged, view_as<TFClassType>(SavedClassForClient), false, false);
+
+		SavedClassForClient = -1;
+		ClientThatWasChanged = -1;
+	}
+	return MRES_Ignored;
+}
 public MRESReturn Dhook_WantsLagCompensationOnEntity(int InitatedClient, Handle hReturn, Handle hParams)
 {
 	if(b_LagCompAlliedPlayers)
 	{
+		int target = DHookGetParam(hParams, 1);
+		if(target == InitatedClient)
+		{
+			return MRES_Ignored;
+		}
 		DHookSetReturn(hReturn, true);
 		return MRES_Supercede;
 	}
