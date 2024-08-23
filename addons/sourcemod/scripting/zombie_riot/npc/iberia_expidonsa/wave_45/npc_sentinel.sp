@@ -405,7 +405,6 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 					{
 						f_CombineCommanderBuff[entitycount] = GetGameTime() + 60.0;
 						f_CombineCommanderBuff[npc.index] = GetGameTime() + 60.0;
-						npc.PlayMeleeWarCry();
 					}
 				}
 			}

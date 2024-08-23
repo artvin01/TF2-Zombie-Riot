@@ -1591,18 +1591,18 @@
 	
 	"Crystal Meth Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +8 HP on kill and +200 HP, +3%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +200 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +200 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升200点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +8 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +8 santé par victime, +150 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +8 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+8点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"God's Might Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +12 HP on kill and +300 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +300 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +300 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升300点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +12 HP on kill and +250 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +12 santé par victime, +250 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +12 ед. здоровья при убийстве и +250 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+12点生命，生命值提升250点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Bob's Enhancer Desc"
