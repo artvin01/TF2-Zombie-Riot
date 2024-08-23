@@ -410,7 +410,7 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						else
 						{
 							HealEntityGlobal(npc.index, entitycount, 999999.9, 2.0, 0.0, HEAL_ABSOLUTE);
-							GrantEntityArmor(victim, true, 2.0, 0.33, 0);
+							GrantEntityArmor(entitycount, true, 2.0, 0.33, 0);
 						}
 
 						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
