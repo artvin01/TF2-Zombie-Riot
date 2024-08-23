@@ -406,7 +406,7 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 						if(b_thisNpcIsABoss[entitycount] ||
 							b_thisNpcIsARaid[entitycount] ||
 							b_StaticNPC[entitycount])
-							DurationGive = 15.0;
+							DurationGive = 5.0;
 						else
 						{
 							HealEntityGlobal(npc.index, entitycount, 999999.9, 2.0, 0.0, HEAL_ABSOLUTE);
