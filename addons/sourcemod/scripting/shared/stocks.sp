@@ -469,6 +469,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		float VecAbsEntity[3];
 		GetEntPropVector(iClient, Prop_Data, "m_vecAbsOrigin", VecAbsClient);
 		GetEntPropVector(iHit, Prop_Data, "m_vecAbsOrigin", VecAbsEntity);
+		flDistance *= 2.0;
 		if(GetVectorDistance(VecAbsClient, VecAbsEntity, true) < ((flDistance) * (flDistance)))
 			iReturn = iHit;
 	}

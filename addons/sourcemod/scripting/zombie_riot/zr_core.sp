@@ -2024,10 +2024,12 @@ stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 		}
 	}
 }
-void ReviveAll(bool raidspawned = false)
+
+void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 {
 	//only set false here
-	ZombieMusicPlayed = false;
+	if(!setmusicfalse)
+		ZombieMusicPlayed = setmusicfalse;
 
 //	CreateTimer(1.0, DeleteEntitiesInHazards, _, TIMER_FLAG_NO_MAPCHANGE);
 

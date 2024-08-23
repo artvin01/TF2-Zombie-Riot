@@ -1575,18 +1575,18 @@
 	
 	"Steroids Desc"
 	{
-		"en"	"30%% more melee damage, +4 HP on kill and +150 HP, +5%% melee resistance with melee equipped"
-		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +150 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +150 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
+		"en"	"30%% more melee damage, +4 HP on kill and +100 HP, +5%% melee resistance with melee equipped"
+		"fr"	"+30%% dégats corps-à-corps, +4 santé par victime, +100 santé,\n+5%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"На 30%% больше урона в ближнем бою, +4 ед. здоровья при убийстве и +100 ед. здоровья, +5%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加30%%的近战伤害，杀敌后+4点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"LSD Desc"
 	{
-		"en"	"1.5x increased Melee Damage, +5 HP on kill and +100 HP, +3%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +100 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
-		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +100 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
-		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升100点，使用近战武器时+5%%的近战抗性"
+		"en"	"1.5x increased Melee Damage, +5 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
+		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +1050 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
+		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
 	}
 	
 	"Crystal Meth Desc"

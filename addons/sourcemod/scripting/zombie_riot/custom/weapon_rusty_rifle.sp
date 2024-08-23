@@ -136,7 +136,8 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	if (!BigShot_Active[client])
 		return;
 
-	b_LagCompNPC_No_Layers = true;
+	
+	b_LagCompNPC_ExtendBoundingBox = true;
 	StartLagCompensation_Base_Boss(client);
 
 	float pos[3], ang[3], endPos[3], hullMin[3], hullMax[3], direction[3];
