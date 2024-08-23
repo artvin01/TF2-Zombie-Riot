@@ -848,7 +848,7 @@ void ZR_ClientPutInServer(int client)
 {
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 2)
+	if(CurrentModifOn() == 3)
 		i_AmountDowned[client] = 1;
 		
 	dieingstate[client] = 0;
@@ -2066,7 +2066,7 @@ void ReviveAll(bool raidspawned = false, bool setmusicfalse = false)
 			SetEntityRenderColor(client, 255, 255, 255, 255);
 
 			i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 2)
+			if(CurrentModifOn() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);

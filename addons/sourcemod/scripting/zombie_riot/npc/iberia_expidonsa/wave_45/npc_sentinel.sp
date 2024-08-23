@@ -224,8 +224,6 @@ public void IberianSentinel_ClotThink(int iNPC)
 		SentinelAOEBuff(npc,GetGameTime(npc.index));
 
 		npc.m_flArmorToGive = 5000.0;
-		ExpidonsaGroupHeal(npc.index, 9900.0, 50, 2000000.0, 1.0, true, Expidonsa_DontHealBosses);
-		ExpidonsaGroupHeal(npc.index, 9900.0, 50, 1.0, 1.0, true, IberiaSentinelGiveArmor);
 		
 		npc.PlayBuffReaction();
 	}
@@ -278,11 +276,11 @@ public Action IberianSentinel_OnTakeDamage(int victim, int &attacker, int &infli
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-		if(npc.m_iAttacksTillReload < 6 && !npc.Anger)
+		if(npc.m_iAttacksTillReload < 12 && !npc.Anger)
 		{
 			npc.m_iAttacksTillReload += 1;
 		}
-		else if(npc.m_iAttacksTillReload >= 6 && !npc.Anger)
+		else if(npc.m_iAttacksTillReload >= 12 && !npc.Anger)
 		{
 			npc.Anger = true;
 		}
@@ -397,25 +395,41 @@ void SentinelAOEBuff(IberianSentinal npc, float gameTime)
 		{
 			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
-				if(GetEntProp(entitycount, Prop_Data, "m_iTeamNum") == GetEntProp(npc.index, Prop_Data, "m_iTeamNum") && IsEntityAlive(entitycount))
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 				{
 					static float pos2[3];
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
 					{
-						f_CombineCommanderBuff[entitycount] = GetGameTime() + 60.0;
-						f_CombineCommanderBuff[npc.index] = GetGameTime() + 60.0;
+						float DurationGive = 60.0;
+						
+						if(b_thisNpcIsABoss[entitycount] ||
+							b_thisNpcIsARaid[entitycount] ||
+							b_StaticNPC[entitycount])
+							DurationGive = 15.0;
+						else
+						{
+							HealEntityGlobal(npc.index, entitycount, 999999.9, 2.0, 0.0, HEAL_ABSOLUTE);
+							GrantEntityArmor(victim, true, 2.0, 0.33, 0);
+						}
+
+						f_CombineCommanderBuff[entitycount] = GetGameTime() + DurationGive;
+						f_BuffBannerNpcBuff[entitycount] = GetGameTime() + DurationGive;
+						f_Ocean_Buff_Stronk_Buff[entitycount] = GetGameTime() + DurationGive;
+						f_BattilonsNpcBuff[entitycount] = GetGameTime() + DurationGive;
+						f_HussarBuff[entitycount] = GetGameTime() + DurationGive;
+						f_PernellBuff[entitycount] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][0] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][1] = GetGameTime() + DurationGive;
+						Adaptive_MedigunBuff[entitycount][2] = GetGameTime() + DurationGive;
+						Increaced_Overall_damage_Low[entitycount] = GetGameTime() + DurationGive;
+						Resistance_Overall_Low[entitycount] = GetGameTime() + DurationGive;
+						f_EmpowerStateSelf[entitycount] = GetGameTime() + DurationGive;
+						f_EmpowerStateOther[entitycount] = GetGameTime() + DurationGive;
 					}
 				}
 			}
 		}
 	}
 	npc.PlayMeleeWarCry();
-}
-
-void IberiaSentinelGiveArmor(int entity, int victim)
-{
-	if(i_NpcIsABuilding[victim])
-		return;
-	GrantEntityArmor(victim, true, 2.0, 0.33, 0);
 }
