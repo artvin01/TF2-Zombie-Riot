@@ -474,7 +474,7 @@ public void OnPostThink(int client)
 	{
 		RollAngle_Regen_Delay[client] = GameTime + 0.5;
 		
-		if(CvarSvRollagle && zr_viewshakeonlowhealth.BoolValue && b_HudLowHealthShake[client])
+		if(CvarSvRollagle && b_HudLowHealthShake[client])
 		{
 			int flHealth = GetEntProp(client, Prop_Send, "m_iHealth");
 			int flMaxHealth = SDKCall_GetMaxHealth(client);

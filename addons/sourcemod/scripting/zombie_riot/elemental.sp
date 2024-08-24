@@ -391,11 +391,11 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 		return;
 
 	if (GetTeam(victim) != GetTeam(entity))
-		SakratanGroupDebuffInternal(victim, entity);
+		SakratanGroupDebuffInternal(victim);
 		
 }
 
-static void SakratanGroupDebuffInternal(int victim, int attacker)
+static void SakratanGroupDebuffInternal(int victim)
 {
 	if(victim <= MaxClients && !b_BobsTrueFear[victim])
 	{

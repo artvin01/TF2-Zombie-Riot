@@ -51,14 +51,8 @@ Main Server:
 "zr_nospecial" = "0" ( def. "0" )
  - No Panzer will spawn or anything alike, good incase you hate this stuff
  
-"zr_privateplugins" = "0" ( def. "0" )
- - Enable private plugins, set this to zero.
- 
 "zr_maxbotsforkillfeed" = "6" ( def. "6" )
  - The maximum amount of blue bots allowed for the killfeed
- 
-"zr_viewshakeonlowhealth" = "1" ( def. "1" )
- - Should the view shake when low on health?
 
 "sv_visiblemaxplayers" = "24" ( def. "24" )
  - This is a default cvar from tf2, but i recomend setting it to 24 on a 32 player server.
