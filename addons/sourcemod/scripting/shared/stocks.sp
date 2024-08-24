@@ -1285,13 +1285,61 @@ public Action Timer_Bleeding(Handle timer, DataPack pack)
 //Heals but doesnt notify anyone
 */
 //this will return the amount of healing it actually did.
+
+void DealTruedamageToEnemy(int attacker, int victim, float truedamagedeal)
+{
+//	HealEntityGlobal(attacker, victim, -(truedamagedeal - 1.0), 99.0, 0.0, HEAL_ABSOLUTE | HEAL_SELFHEAL);
+	b_ThisNpcIsSawrunner[attacker] = true;
+	if(victim <= MaxClients)
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_DROWN, -1);
+	}
+	else
+	{
+		SDKHooks_TakeDamage(victim, attacker, attacker, truedamagedeal, DMG_SLASH, -1);
+	}
+	b_ThisNpcIsSawrunner[attacker] = false;
+	/*
+	float AnyValueTest1 = 1.0;
+	int AnyValueTest2 = 1;
+	if(victim <= MaxClients)
+	{
+		Player_OnTakeDamageAlive_DeathCheck(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	else
+	{
+		NPC_OnTakeDamage_Post(victim, 
+		attacker, 
+		AnyValueTest2, 
+		AnyValueTest1, 
+		AnyValueTest2, 
+		AnyValueTest2, 
+		{0.0,0.0,0.0}, 
+		{0.0,0.0,0.0}, 
+		0);
+	}
+	*/
+}
 stock int HealEntityGlobal(int healer, int reciever, float HealTotal, float Maxhealth = 1.0, float HealOverThisDuration = 0.0, int flag_extrarules = HEAL_NO_RULES, int MaxHealPermitted = 99999999)
 {
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
 	*/
-
+	if(HealTotal < 0)
+	{
+		if(healer > 0)
+			HealTotal *= fl_Extra_Damage[healer];
+		//the heal total is negative, this means this is trated as true damage.
+	}
 #if defined ZR
 	if(reciever <= MaxClients)
 		if(isPlayerMad(reciever) && !(flag_extrarules & (HEAL_SELFHEAL)))

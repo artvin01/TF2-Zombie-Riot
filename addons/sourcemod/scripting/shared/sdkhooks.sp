@@ -1689,6 +1689,7 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			}
 		}
 	}
+	
 	if(damagetype & DMG_CRIT)
 	{
 		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
@@ -1823,11 +1824,6 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 {
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 1");
 	//in on take damage, the client shouldnt be reciving this down phase, kill em.
-	if(ClientPassAliveCheck[victim])
-	{	
-		ClientPassAliveCheck[victim] = false;
-		return Plugin_Continue;
-	}
 	if(ClientPassAliveCheck[victim])
 	{	
 		ClientPassAliveCheck[victim] = false;
