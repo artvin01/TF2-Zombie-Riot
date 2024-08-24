@@ -683,7 +683,7 @@ bool Object_Interact(int client, int weapon, int obj)
 		if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == -1)
 		{
 			// Claim a unclaimed building
-			if(weapon != -1 && i_IsWrench[weapon])
+			if(weapon != -1 && (i_IsWrench[weapon] || Attributes_Get(weapon, 4018, 0.0) >= 1.0))
 			{
 				if(FuncCanBuild[entity] && FuncCanBuild[entity] != INVALID_FUNCTION)
 				{
