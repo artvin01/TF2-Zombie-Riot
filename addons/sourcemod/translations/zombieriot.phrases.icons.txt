@@ -49,6 +49,7 @@
 	"Nemal Arrived"
 	{
 		"en" 		"The Iberia/Expidonsan Nemal is here."
+		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
 	}
 	"Vhxis arrived"
 	{
@@ -284,6 +285,7 @@
 	"Iberian Lighthouse Teleported in!"
 	{
 		"en"	"Iberian Lighthouse Teleported in!"
+		"fr"	"Une phare Iberiain s'est téléporté ici!"
 	}
 	"Snipers Appear"
 	{
@@ -367,25 +369,31 @@
 	"Omega 1"
 	{
 		"en"		"Armaments locked and loaded."
+		"fr"		"Armements préts et chargés."
 	}
 	"Omega 2"
 	{
 		"en"		"A sui generis soldier enters the scene."
+		"fr"		"Un soldat sui generis entre la scène."
 	}
 	"Omega 3"
 	{
 		"en"		"Omega makes an appearance."
+		"fr"		"Omega apparaît."
 	}
 	"Omega 1"
 	{
 		"en"		"Armaments locked and loaded."
+		"fr"		"Armements préts et chargés."
 	}
 	"Omega 2"
 	{
 		"en"		"A sui generis soldier enters the scene."
+		"fr"		"Un soldat sui generis entre la scène."
 	}
 	"Omega 3"
 	{
 		"en"		"Omega makes an appearance."
+		"fr"		"Omega apparaît."
 	}
 }
