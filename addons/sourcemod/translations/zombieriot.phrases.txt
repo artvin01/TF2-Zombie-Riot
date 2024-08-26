@@ -2333,6 +2333,7 @@
 	"Kahmlstein Courage"
 	{
 		"en"		"You feel Kahmlsteins Courage..."
+		"fr"		"Vous sentez le courage de Kahmlstein..."
 	}
 	"Opened store via command"
 	{
@@ -3675,10 +3676,12 @@
 	"Iberia & Nemal"
 	{
 		"en" "Iberia & Nemal"
+		"fr" "Iberia & Nemal"
 	}
 	"Iberia Nemal Desc"
 	{
 		"en" "Iberia and expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremaly seriously."
+		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
 	}
 	
 }
