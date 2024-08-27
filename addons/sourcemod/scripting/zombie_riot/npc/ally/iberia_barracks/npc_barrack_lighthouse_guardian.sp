@@ -51,7 +51,7 @@ static const char g_IdleAlertedSounds[][] =
 };
 
 static const char g_WarCry[][] = {
-	"weapons/medi_shield_deploy.wav",,
+	"weapons/medi_shield_deploy.wav",
 };
 
 void Barracks_Iberia_Lighthouse_Guardian_Precache()
