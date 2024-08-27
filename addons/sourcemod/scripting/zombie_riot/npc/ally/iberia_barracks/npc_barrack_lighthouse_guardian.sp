@@ -385,7 +385,7 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 			RemoveEntity(npc.m_iWearable2);
 		if(IsValidEntity(npc.m_iWearable3))
 			RemoveEntity(npc.m_iWearable3);
-		if(npc.Anger = false)
+		if(!npc.Anger)
 		{
 			switch(GetRandomInt(0,3))
 			{
@@ -406,10 +406,8 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 					NpcSpeechBubble(npc.index, "Take This", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 				}
 			}
+			npc.Anger = true;
 		}
-		
-		
-		npc.Anger = true;
 		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
 		SetVariantString("1.75");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
