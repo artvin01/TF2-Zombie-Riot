@@ -119,7 +119,7 @@ methodmap Barrack_Iberia_Headhunter < BarrackBody
 		func_NPCThink[npc.index] = Barrack_Iberia_Headhunter_ClotThink;
 		npc.m_flSpeed = 300.0;
 		
-		SetVariantInt(3);
+		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 		
 		npc.m_flNextRangedSpecialAttack = 0.0;
@@ -148,7 +148,7 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 {
 	Barrack_Iberia_Headhunter npc = view_as<Barrack_Iberia_Headhunter>(iNPC);
 	float GameTime = GetGameTime(iNPC);
-	GrantEntityArmor(iNPC, true, 1.5, 0.5, 0);
+	GrantEntityArmor(iNPC, true, 1.0, 0.5, 0);
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
@@ -198,12 +198,12 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 								b_IsGiant[target])
 								{
 									damage *= 1.5;
+									if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
+									{
+										f_LowIceDebuff[target] = GetGameTime() + 1.1;
+									}
 								}
 								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),damage, 0), DMG_CLUB, -1, _, vecHit);
-								if((f_LowIceDebuff[target] - 1.0) < GetGameTime())
-								{
-									f_LowIceDebuff[target] = GetGameTime() + 1.1;
-								}
 								npc.PlaySwordHitSound();
 							} 
 						}

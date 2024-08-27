@@ -129,7 +129,6 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_engineer.mdl");
-		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/engineer/dec23_sleuth_suit_style4/dec23_sleuth_suit_style4.mdl");
 
@@ -155,7 +154,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 			float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 			float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 
-			if(flDistanceToTarget < 1200000.0)
+			if(flDistanceToTarget < 400000.0)
 			{
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, PrimaryThreatIndex);
 				//Target close enough to hit
@@ -165,7 +164,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 					if(npc.m_iAttacksTillReload < 4)//reloading?
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-						npc.m_flNextRangedAttack = GameTime + 0.75;
+						npc.m_flNextRangedAttack = GameTime + 1.00;
 						npc.m_iAttacksTillReload += 1;
 						npc.PlayPistolReload();
 					}
@@ -186,7 +185,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload = 0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0, 1), DMG_BULLET, -1, _, vecHit);

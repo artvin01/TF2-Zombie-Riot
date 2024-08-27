@@ -17,7 +17,7 @@ static const char g_IdleSounds[][] =
 
 static const char g_RangedAttackSounds[][] =
 {
-	"weapons/pistol/pistol_fire2.wav"
+	"weapons/shotgun_shoot.wav",
 };
 
 static const char g_IdleAlert[][] =
@@ -100,7 +100,7 @@ methodmap Barrack_Iberia_Gunner < BarrackBody
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barrack_Iberia_Gunner_NPCDeath;
 		func_NPCThink[npc.index] = Barrack_Iberia_Gunner_ClotThink;
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = 125.0;
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
@@ -176,7 +176,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 					}
 					else
 					{
-						npc.m_flSpeed = 150.0;
+						npc.m_flSpeed = 125.0;
 					}
 				}
 			}
@@ -186,7 +186,7 @@ public void Barrack_Iberia_Gunner_ClotThink(int iNPC)
 			npc.PlayIdleSound();
 		}
 
-		BarrackBody_ThinkMove(npc.index, 150.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 125000.0,_, true);
+		BarrackBody_ThinkMove(npc.index, 125.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 125000.0,_, true);
 	}
 }
 

@@ -218,7 +218,7 @@ public void Barrack_Iberia_Runner_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE");
+		BarrackBody_ThinkMove(npc.index, 300.0, "ACT_MP_RUN_MELEE", "ACT_MP_RUN_MELEE");
 	}
 }
 

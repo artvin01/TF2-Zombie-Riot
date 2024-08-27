@@ -157,7 +157,7 @@ public void Barracks_Iberia_Guards_ClotThink(int iNPC)
 	Barracks_Iberia_Guards npc = view_as<Barracks_Iberia_Guards>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 2.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 1.5, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -217,7 +217,7 @@ public void Barracks_Iberia_Guards_ClotThink(int iNPC)
 		{
 			npc.PlayIdleSound();
 		}
-		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_ITEM1");
+		BarrackBody_ThinkMove(npc.index, 200.0, "ACT_MP_RUN_ITEM1", "ACT_MP_RUN_ITEM1");
 	}
 }
 
@@ -231,7 +231,7 @@ public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int 
 	
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
-		GrantEntityArmor(victim, true, 0.2, 0.25, 0);
+		GrantEntityArmor(npc.index, true, 0.2, 0.25, 0);
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 	}
 

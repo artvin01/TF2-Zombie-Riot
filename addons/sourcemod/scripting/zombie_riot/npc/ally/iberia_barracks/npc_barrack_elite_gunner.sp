@@ -123,7 +123,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		SetVariantInt(3);
+		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -133,9 +133,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flRangedSpecialDelay = 0.0;
-		npc.m_iAttacksTillReload = 18;
-		npc.Anger = false;
-		npc.m_fbRangedSpecialOn = false;
+		npc.m_iAttacksTillReload = 6;
 
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
@@ -183,9 +181,6 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_RELOAD_STAND_SECONDARY",_,_,_,0.5);
 						npc.m_flNextRangedAttack = GameTime + 3.00;
 						npc.m_iAttacksTillReload = 6;
-						npc.m_flRangedSpecialDelay = GameTime + 60.0;
-						npc.Anger = false;
-						npc.m_fbRangedSpecialOn = false;
 						npc.PlayPistolReload();
 					}
 					if((npc.m_flNextRangedAttack < GameTime && !npc.Anger))
@@ -205,54 +200,16 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (1.00 * npc.BonusFireRate);
+							npc.m_flNextRangedAttack = GameTime + (0.2 * npc.BonusFireRate);
 							
 							npc.m_iAttacksTillReload --;
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 2100.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
 						delete swingTrace;				
 					}
-					if((npc.m_flNextRangedAttack < GameTime && npc.Anger))
-					{
-						npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY", false);
-						npc.m_iTarget = Enemy_I_See;
-						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 250000.0);
-						npc.m_fbRangedSpecialOn = false;
-						Handle swingTrace;
-						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
-						{
-							int target = TR_GetEntityIndex(swingTrace);	
-								
-							float vecHit[3];
-							TR_GetEndPosition(vecHit, swingTrace);
-							float origin[3], angles[3];
-							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
-							
-							npc.m_flNextRangedAttack = GameTime + (0.05 * npc.BonusFireRate);
-							
-							npc.m_flSpeed = 0.0;
-
-							npc.m_iAttacksTillReload --;
-							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 200.0, 1), DMG_BULLET, -1, _, vecHit);
-						} 		
-						delete swingTrace;				
-					}
-					else
-					{
-						npc.m_flSpeed = 150.0;
-					}
 				}
 			}
 			npc.m_flSpeed = 150.0;
-		}
-		if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
-		{
-			npc.Anger = true;
-			npc.m_fbRangedSpecialOn = true;
-			npc.m_iAttacksTillReload = 20;
-			npc.PlayRangedAttackSecondarySound() ;
 		}
 		else
 		{

@@ -165,7 +165,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.6",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -226,7 +226,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 2.5, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -286,7 +286,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				}
 				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
-					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
+					npc.m_flNextRangedSpecialAttack = GameTime + 5.0;
+					ExpidonsaGroupHeal(npc.index, 100.0, 5, 5000.0, 0.0, false,Expidonsa_DontHealSameIndex);
 					DesertYadeamDoHealEffect(npc.index, 100.0);
 					GuardianAOEBuff(npc,GetGameTime(npc.index));
 
@@ -311,7 +312,6 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;
 								npc.PlayRangedAttackRocket();
 								npc.m_fbRangedSpecialOn = true;
-								npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 990.0;
 							}
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 							npc.m_iTarget = Enemy_I_See;
@@ -336,7 +336,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 						}
 					}
 				}
-				if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+				if(npc.m_flNextRangedSpecialAttack < GetGameTime(npc.index))
 				{
 					npc.m_fbRangedSpecialOn = false;
 				}
@@ -348,11 +348,11 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 		}
 		if(!npc.Anger)
 		{
-			BarrackBody_ThinkMove(npc.index, 180.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE_ALLCLASS");
+			BarrackBody_ThinkMove(npc.index, 180.0, "ACT_MP_RUN_MELEE_ALLCLASS", "ACT_MP_RUN_MELEE_ALLCLASS");
 		}
 		if(npc.Anger)
 		{
-			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 10000.0,_, true);
+			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 10000.0,_, true);
 		}
 	}
 }
