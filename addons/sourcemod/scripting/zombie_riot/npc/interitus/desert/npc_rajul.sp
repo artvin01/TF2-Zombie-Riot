@@ -230,7 +230,7 @@ public Action DesertRajul_OnTakeDamage(int victim, int &attacker, int &inflictor
 
 void DesertRajulHealRandomAlly(int victim, float damage, int settingdo = 1)
 {
-	RajulHealAlly[victim] += (damage * 0.15);
+	RajulHealAlly[victim] += (damage * 0.2);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
 	{
 		RajulHealAllyDone[victim] = 0;
@@ -239,9 +239,9 @@ void DesertRajulHealRandomAlly(int victim, float damage, int settingdo = 1)
 		if(settingdo == 2)
 			RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.2;
 
-		ExpidonsaGroupHeal(victim, 150.0, 3, RajulHealAlly[victim] * 0.5, 2.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
+		ExpidonsaGroupHeal(victim, 200.0, 3, RajulHealAlly[victim], 2.0, false,Expidonsa_DontHealSameIndex, DesertRajulAllyHealInternal);
 		RajulHealAlly[victim] = 0.0;		
-		DesertYadeamDoHealEffect(victim, 150.0);
+		DesertYadeamDoHealEffect(victim, 200.0);
 	}
 }
 
