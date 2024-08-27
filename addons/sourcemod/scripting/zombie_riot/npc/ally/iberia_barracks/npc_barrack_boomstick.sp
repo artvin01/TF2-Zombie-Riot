@@ -116,6 +116,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 4;
+		npc.m_fbRangedSpecialOn = true;
 		
 		KillFeed_SetKillIcon(npc.index, "sniperrifle");
 
