@@ -14,7 +14,6 @@ static const char g_IdleSounds[][] =
 	"vo/engineer_standonthepoint02.mp3",
 	"vo/engineer_standonthepoint03.mp3",
 	"vo/engineer_standonthepoint04.mp3",
-	"vo/engineer_standonthepoint05.mp3",
 };
 
 static const char g_RangedAttackSounds[][] =
@@ -167,10 +166,9 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 						npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload += 1;
-						npc.Anger = true;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime & npc.Anger)
+					if(npc.m_flNextRangedAttack < GameTime)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.m_iTarget = Enemy_I_See;
@@ -190,7 +188,6 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 							npc.m_iAttacksTillReload = 0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0, 1), DMG_BULLET, -1, _, vecHit);
-							npc.Anger = false;
 						} 		
 						delete swingTrace;			
 					}

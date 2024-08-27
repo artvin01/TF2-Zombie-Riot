@@ -123,7 +123,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		SetVariantInt(1);
+		SetVariantInt(0);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
