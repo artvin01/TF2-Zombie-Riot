@@ -19,7 +19,9 @@ static const char g_IdleSounds[][] =
 
 static const char g_RangedAttackSounds[][] =
 {
-	"weapons/shotgun_shoot.wav",
+	"weapons/widow_maker_shot_01.wav",
+	"weapons/widow_maker_shot_02.wav",
+	"weapons/widow_maker_shot_03.wav",
 };
 
 static const char g_RangedReloadSound[][] =
@@ -173,7 +175,6 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 195000.0);
-						npc.m_flSpeed = 0.0;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -185,13 +186,12 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (2.0 * npc.BonusFireRate);
-							npc.m_iAttacksTillReload -= 4;
+							npc.m_flNextRangedAttack = GameTime + (3.0 * npc.BonusFireRate);
+							npc.m_iAttacksTillReload = 0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0, 1), DMG_BULLET, -1, _, vecHit);
 						} 		
-						delete swingTrace;		
-						npc.m_flSpeed = 100.0;		
+						delete swingTrace;			
 					}
 					else
 					{

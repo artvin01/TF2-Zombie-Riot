@@ -59,7 +59,7 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedAttackSRocket);
-	PrecacheModel("models/player/demo.mdl");
+	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Lighthouse Guardian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_barrack_lighthouse_guardian");
@@ -151,7 +151,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/demo.mdl", STEPTYPE_COMBINE,"0.6",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.6",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -180,7 +180,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		SetVariantString("1.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_persian_shield/c_persian_shield.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
@@ -235,7 +235,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 					{
 						if(!npc.m_flAttackHappenswillhappen)
 						{
-							npc.AddGesture("ACT_MP_ATTACK_STAND_ITEM1");
+							npc.AddGesture("ACT_MP_ATTACK_STAND_MELEE_ALLCLASS");
 							npc.PlayMeleeSound();
 							npc.m_flAttackHappens = GameTime + 0.3;
 							npc.m_flAttackHappens_bullshit = GameTime + 0.44;
@@ -258,6 +258,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8500.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
 									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),20.0, 0), 1.0, true);
+									DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
 							delete swingTrace;
@@ -273,21 +274,8 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 				{
 					ExpidonsaGroupHeal(npc.index, 100.0, 5, 50.0, 0.0, false,Expidonsa_DontHealSameIndex);
 					DesertYadeamDoHealEffect(npc.index, 100.0);
-					b_NpcIsTeamkiller[npc.index] = true;
-					Explode_Logic_Custom(0.0,
-					npc.index,
-					npc.index,
-					-1,
-					_,
-					300.0,
-					_,
-					_,
-					true,
-					99,
-					false,
-					_,
-					LighthouseShield);
-					b_NpcIsTeamkiller[npc.index] = false;
+					GuardianAOEBuff(npc,GetGameTime(npc.index));
+
 					npc.PlayRangedAttackSecondarySound();
 				}
 			}
@@ -311,7 +299,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								npc.m_fbRangedSpecialOn = true;
 								npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 990.0;
 							}
-							npc.AddGesture("ACT_GESTURE_RANGE_ATTACK_AR2", false);
+							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 							npc.m_iTarget = Enemy_I_See;
 							npc.PlayRangedSound();
 							npc.FaceTowards(vecTarget, 300000.0);
@@ -346,11 +334,11 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 		}
 		if(!npc.Anger)
 		{
-			BarrackBody_ThinkMove(npc.index, 180.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_ITEM1");
+			BarrackBody_ThinkMove(npc.index, 180.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_MELEE_ALLCLASS");
 		}
 		if(npc.Anger)
 		{
-			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_SECONDARY", 10000.0,_, true);
+			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_COMPETITIVE_WINNERSTATE", "ACT_MP_RUN_PRIMARY", 10000.0,_, true);
 		}
 	}
 }
@@ -405,20 +393,27 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 	npc.PlayNPCDeath();
 }
 
-void LighthouseShield(int entity, int victim, float damage, int weapon)
+void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 {
-	if(entity == victim)
-		return;
-
-	if (GetTeam(victim) == GetTeam(entity) && !i_IsABuilding[victim] && !b_NpcHasDied[victim])
+	float pos1[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+	if(npc.m_flRangedSpecialDelay < gameTime)
 	{
-		LighthouseShieldInternal(entity,victim);
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+		{
+			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+			{
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+				{
+					static float pos2[3];
+					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
+					{
+						GrantEntityArmor(entitycount, true, 0.1, 0.5, 0);
+					}
+				}
+			}
+		}
 	}
-}
-
-void LighthouseShieldInternal(int shielder, int victim)
-{
-	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(shielder);
-	npc.m_flNextRangedSpecialAttack = GetGameTime(shielder) + 10.0;
-	VausMagicaGiveShield(victim, 5);
+	npc.PlayMeleeWarCry();
 }

@@ -35,6 +35,10 @@ static const char g_RangedReloadSound[][] = {
 	"weapons/revolver_worldreload.wav",
 };
 
+static const char g_RangedAttackSoundsSecondary[][] = {
+	"ambient/medieval_falcon.wav",
+};
+
 void Barracks_Iberia_Elite_Gunner_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -42,6 +46,7 @@ void Barracks_Iberia_Elite_Gunner_Precache()
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_IdleAlert);
 	PrecacheSoundArray(g_RangedReloadSound);
+	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheModel("models/player/spy.mdl");
 	
 	NPCData data;
@@ -101,6 +106,14 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
 	}
+	public void PlayRangedAttackSecondarySound() 
+	{
+		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayRangedSound()");
+		#endif
+	}
 
 	public Barrack_Iberia_Elite_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
@@ -110,7 +123,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 
-		SetVariantInt(2);
+		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
@@ -122,6 +135,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 		npc.m_flRangedSpecialDelay = 0.0;
 		npc.m_iAttacksTillReload = 18;
 		npc.Anger = false;
+		npc.m_fbRangedSpecialOn = false;
 
 		
 		KillFeed_SetKillIcon(npc.index, "pistol");
@@ -171,6 +185,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 						npc.m_iAttacksTillReload = 6;
 						npc.m_flRangedSpecialDelay = GameTime + 60.0;
 						npc.Anger = false;
+						npc.m_fbRangedSpecialOn = false;
 						npc.PlayPistolReload();
 					}
 					if((npc.m_flNextRangedAttack < GameTime && !npc.Anger))
@@ -203,6 +218,7 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
 						npc.FaceTowards(vecTarget, 250000.0);
+						npc.m_fbRangedSpecialOn = false;
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -231,10 +247,12 @@ public void Barrack_Iberia_Elite_Gunner_ClotThink(int iNPC)
 			}
 			npc.m_flSpeed = 150.0;
 		}
-		if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index))
+		if(npc.m_flRangedSpecialDelay < GetGameTime(npc.index) && !npc.m_fbRangedSpecialOn)
 		{
 			npc.Anger = true;
+			npc.m_fbRangedSpecialOn = true;
 			npc.m_iAttacksTillReload = 20;
+			npc.PlayRangedAttackSecondarySound() ;
 		}
 		else
 		{

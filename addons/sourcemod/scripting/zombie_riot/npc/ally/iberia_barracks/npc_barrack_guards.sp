@@ -231,8 +231,8 @@ public Action Barrack_Iberia_Guards_OnTakeDamage(int victim, int &attacker, int 
 	
 	if(npc.m_flNextRangedAttack < GetGameTime(npc.index))
 	{
-		VausMagicaGiveShield(victim, 3);
-		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
+		GrantEntityArmor(entitycount, true, 0.2, 0.25, 0);
+		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 5.0;
 	}
 
 	
