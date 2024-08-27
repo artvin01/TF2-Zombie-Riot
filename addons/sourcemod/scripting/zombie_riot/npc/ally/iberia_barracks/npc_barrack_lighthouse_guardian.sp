@@ -32,7 +32,9 @@ static const char g_RangedAttackSounds[][] =
 };
 static const char g_RangedAttackSounds2[][] =
 {
-	"ambient/explosions/explode_7.wav"
+	"weapons/widow_maker_shot_01.wav",
+	"weapons/widow_maker_shot_02.wav",
+	"weapons/widow_maker_shot_03.wav",
 };
 
 static const char g_RangedAttackSoundsSecondary[][] = {
@@ -175,7 +177,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 	public Barracks_Iberia_Lighthouse_Guardian(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "1200", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
+		Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(BarrackBody(client, vecPos, vecAng, "2000", "models/player/engineer.mdl", STEPTYPE_COMBINE,"0.7",_,"models/pickups/pickup_powerup_resistance.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 		
@@ -197,7 +199,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
-		SetVariantInt(1);
+		SetVariantInt(0);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/medic.mdl", "", skin);
@@ -283,7 +285,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								{
 									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8500.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1000.0, 0), 1.0, true);
+									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),750.0, 0), 1.0, true);
 									DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
