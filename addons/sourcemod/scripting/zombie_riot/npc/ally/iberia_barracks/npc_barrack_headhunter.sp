@@ -190,11 +190,11 @@ public void Barrack_Iberia_Headhunter_ClotThink(int iNPC)
 							
 							if(target > 0) 
 							{
-								if(b_thisNpcIsABoss[target] &&
-								b_thisNpcIsARaid[target] &&
-								b_StaticNPC[target] &&
-								b_thisNpcHasAnOutline[target] &&
-								b_ThisNpcIsImmuneToNuke[target] &&
+								if(b_thisNpcIsABoss[target] ||
+								b_thisNpcIsARaid[target] ||
+								b_StaticNPC[target] ||
+								b_thisNpcHasAnOutline[target] ||
+								b_ThisNpcIsImmuneToNuke[target] ||
 								b_IsGiant[target])
 								{
 									damage *= 1.5;

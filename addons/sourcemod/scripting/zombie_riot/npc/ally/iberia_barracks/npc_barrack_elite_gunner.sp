@@ -117,7 +117,7 @@ methodmap Barrack_Iberia_Elite_Gunner < BarrackBody
 
 	public Barrack_Iberia_Elite_Gunner(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		Barrack_Iberia_Elite_Gunner npc = view_as<Barrack_Iberia_Elite_Gunner>(BarrackBody(client, vecPos, vecAng, "120", "models/player/spy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
+		Barrack_Iberia_Elite_Gunner npc = view_as<Barrack_Iberia_Elite_Gunner>(BarrackBody(client, vecPos, vecAng, "460", "models/player/spy.mdl", STEPTYPE_NORMAL,_,_,"models/pickups/pickup_powerup_precision.mdl"));
 		
 		i_NpcWeight[npc.index] = 1;
 
