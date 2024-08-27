@@ -3,11 +3,9 @@
 
 static const char g_DeathSounds[][] =
 {
-	"vo/demoman_paincrticialdeath01.mp3",
-	"vo/demoman_paincrticialdeath02.mp3",
-	"vo/demoman_paincrticialdeath03.mp3",
-	"vo/demoman_paincrticialdeath04.mp3",
-	"vo/demoman_paincrticialdeath05.mp3",
+	"vo/medic_paincrticialdeath01.mp3",
+	"vo/medic_paincrticialdeath02.mp3",
+	"vo/medic_paincrticialdeath03.mp3",
 };
 
 static const char g_IdleSounds[][] =
@@ -212,7 +210,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable2, 75, 255, 255, 255);
 		SetEntityRenderMode(npc.m_iWearable3, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 0, 200, 200, 255);
 		SetEntityRenderMode(npc.m_iWearable4, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.m_iWearable4, 100, 100, 100, 255);
 		SetEntityRenderMode(npc.m_iWearable8, RENDER_TRANSCOLOR);
@@ -328,9 +326,9 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
 								ShootLaser(npc.m_iWearable2, "bullet_tracer02_red", origin, vecHit, false );
 								
-								npc.m_flNextRangedAttack = GameTime + (0.1 * npc.BonusFireRate);
+								npc.m_flNextRangedAttack = GameTime + (0.4 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 400.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1500.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}
