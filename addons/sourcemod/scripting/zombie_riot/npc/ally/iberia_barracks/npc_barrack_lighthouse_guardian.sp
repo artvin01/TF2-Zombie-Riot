@@ -30,6 +30,10 @@ static const char g_RangedAttackSounds[][] =
 {
 	"weapons/doom_scout_shotgun.wav"
 };
+static const char g_RangedAttackSounds2[][] =
+{
+	"ambient/explosions/explode_7.wav"
+};
 
 static const char g_RangedAttackSoundsSecondary[][] = {
 	"items/powerup_pickup_resistance.wav",
@@ -60,6 +64,7 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
+	PrecacheSoundArray(g_RangedAttackSounds2);
 	PrecacheSoundArray(g_RangedAttackSRocket);
 	PrecacheSoundArray(g_WarCry);
 	PrecacheModel("models/player/engineer.mdl");
@@ -119,6 +124,13 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		PrintToServer("CClot::PlayMeleeHitSound()");
 		#endif
 	}
+	public void PlayRangedSound2() {
+		EmitSoundToAll(g_RangedAttackSounds2[GetRandomInt(0, sizeof(g_RangedAttackSounds2) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
 
 	public void PlayRangedAttackSecondarySound() {
 		EmitSoundToAll(g_RangedAttackSoundsSecondary[GetRandomInt(0, sizeof(g_RangedAttackSoundsSecondary) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
@@ -167,7 +179,6 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		
 		i_NpcWeight[npc.index] = 1;
 		
-		func_NPCOnTakeDamage[npc.index] = BarrackBody_OnTakeDamage;
 		func_NPCDeath[npc.index] = Barracks_Iberia_Lighthouse_Guardian_NPCDeath;
 		func_NPCThink[npc.index] = Barracks_Iberia_Lighthouse_Guardian_ClotThink;
 		func_NPCOnTakeDamage[npc.index] = Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage;
@@ -185,6 +196,9 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+
+		SetVariantInt(1);
+		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/medic.mdl", "", skin);
 		
@@ -314,6 +328,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 							npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 							npc.m_iTarget = Enemy_I_See;
 							npc.PlayRangedSound();
+							npc.PlayRangedSound2();
 							npc.FaceTowards(vecTarget, 300000.0);
 							Handle swingTrace;
 							if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
@@ -326,9 +341,9 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								view_as<CClotBody>(npc.m_iWearable2).GetAttachment("muzzle", origin, angles);
 								ShootLaser(npc.m_iWearable2, "bullet_tracer02_red", origin, vecHit, false );
 								
-								npc.m_flNextRangedAttack = GameTime + (0.4 * npc.BonusFireRate);
+								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 1500.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3100.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}
@@ -350,7 +365,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 		}
 		if(npc.Anger)
 		{
-			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 10000.0,_, true);
+			BarrackBody_ThinkMove(npc.index, 220.0, "ACT_MP_RUN_PRIMARY", "ACT_MP_RUN_PRIMARY", 15000.0,_, true);
 		}
 	}
 }
@@ -365,19 +380,42 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 
 	float percentageArmorLeft = npc.m_flArmorCount / npc.m_flArmorCountMax;
 	if(percentageArmorLeft <= 0.0)
+	{
+		if(IsValidEntity(npc.m_iWearable2))
+			RemoveEntity(npc.m_iWearable2);
+		if(IsValidEntity(npc.m_iWearable3))
+			RemoveEntity(npc.m_iWearable3);
+		if(npc.Anger = false)
 		{
-			if(IsValidEntity(npc.m_iWearable2))
-				RemoveEntity(npc.m_iWearable2);
-			if(IsValidEntity(npc.m_iWearable3))
-				RemoveEntity(npc.m_iWearable3);
-
-			npc.Anger = true;
-			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
-			SetVariantString("1.75");
-			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable2, 0, 200, 200, 255);
+			switch(GetRandomInt(0,3))
+			{
+				case 0:
+				{
+					NpcSpeechBubble(npc.index, "For IBERIA!", 5, {75, 255, 255, 255}, {0.0,0.0,60.0}, "");
+				}
+				case 1:
+				{
+					NpcSpeechBubble(npc.index, "That's it!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+				}
+				case 2:
+				{
+					NpcSpeechBubble(npc.index, "Get behind me!!", 5, {200,0,0,255}, {0.0,0.0,60.0}, "");
+				}
+				case 3:
+				{
+					NpcSpeechBubble(npc.index, "Take This", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+				}
+			}
 		}
+		
+		
+		npc.Anger = true;
+		npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
+		SetVariantString("1.75");
+		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+		SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(npc.m_iWearable2, 0, 200, 200, 255);
+	}
 
 	
 	/*
@@ -421,7 +459,7 @@ void GuardianAOEBuff(Barracks_Iberia_Lighthouse_Guardian npc, float gameTime)
 					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
 					if(GetVectorDistance(pos1, pos2, true) < (3000 * 3000))
 					{
-						GrantEntityArmor(entitycount, true, 0.1, 0.5, 0);
+						GrantEntityArmor(entitycount, false, 0.1, 0.5, 0);
 					}
 				}
 			}
