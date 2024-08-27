@@ -126,7 +126,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/invasion_corona_australis/invasion_corona_australis.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_teufort_knight/bak_teufort_knight_engineer.mdl");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
@@ -161,19 +161,20 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 				if(IsValidEnemy(npc.index, Enemy_I_See))
 				{
 					//Can we attack right now?
-					if(npc.m_iAttacksTillReload < 4)//reloading?
+					if(npc.m_iAttacksTillReload < 1)//reloading?
 					{
 						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
-						npc.m_flNextRangedAttack = GameTime + 1.00;
+						npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload += 1;
+						npc.m_fbRangedSpecialOn = true;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime && npc.m_iAttacksTillReload >= 4)
+					if(npc.m_flNextRangedAttack < GameTime & npc.m_fbRangedSpecialOn)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.m_iTarget = Enemy_I_See;
 						npc.PlayRangedSound();
-						npc.FaceTowards(vecTarget, 195000.0);
+						npc.FaceTowards(vecTarget, 400000.0);
 						Handle swingTrace;
 						if(npc.DoSwingTrace(swingTrace, PrimaryThreatIndex, { 9999.0, 9999.0, 9999.0 }))
 						{
@@ -185,10 +186,10 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 							view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
 							ShootLaser(npc.m_iWearable1, "bullet_tracer02_red", origin, vecHit, false );
 							
-							npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
 							npc.m_iAttacksTillReload = 0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0, 1), DMG_BULLET, -1, _, vecHit);
+							npc.m_fbRangedSpecialOn = false;
 						} 		
 						delete swingTrace;			
 					}

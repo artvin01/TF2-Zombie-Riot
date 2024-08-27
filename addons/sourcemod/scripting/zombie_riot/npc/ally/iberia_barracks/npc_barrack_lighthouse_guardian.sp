@@ -195,7 +195,7 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/bak_batarm/bak_batarm_medic.mdl");
-		SetVariantString("1.5");
+		SetVariantString("2.5");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/jul13_heavy_defender/jul13_heavy_defender.mdl", "", skin);
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/sniper/fall2013_kyoto_rider/fall2013_kyoto_rider.mdl", "", skin);
@@ -271,7 +271,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								{
 									SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),8500.0, 0), DMG_CLUB, -1, _, vecHit);
 									npc.PlayMeleeHitSound();
-									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),20.0, 0), 1.0, true);
+									ExpidonsaGroupHeal(npc.index, 150.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),1000.0, 0), 1.0, true);
 									DesertYadeamDoHealEffect(npc.index, 150.0);
 								} 
 							}
@@ -375,10 +375,10 @@ public Action Barrack_Iberia_Lighthouse_Guardian_OnTakeDamage(int victim, int &a
 
 			npc.Anger = true;
 			npc.m_iWearable2 = npc.EquipItem("head", "models/weapons/c_models/c_dex_shotgun/c_dex_shotgun.mdl");
-			SetVariantString("1.5");
-			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(npc.m_iWearable1, 0, 200, 200, 255);
+			SetVariantString("1.75");
+			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+			SetEntityRenderMode(npc.m_iWearable2, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable2, 0, 200, 200, 255);
 		}
 
 	
@@ -401,7 +401,7 @@ void Barracks_Iberia_Lighthouse_Guardian_NPCDeath(int entity)
 {
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(entity);
 	BarrackBody_NPCDeath(npc.index);
-	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),50.0, 0), 1.0, true);
+	ExpidonsaGroupHeal(npc.index, 300.0, 4, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId),2000.0, 0), 1.0, true);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	npc.PlayNPCDeath();
