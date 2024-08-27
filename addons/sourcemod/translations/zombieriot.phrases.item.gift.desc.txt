@@ -1754,4 +1754,48 @@
 	{
 		"en"		"Possesses an arsenal of weapons, self-taught runaway soldier who works alone...for now."
 	}
+	"Barracks Iberian Runner"
+	{
+		"en"	"Fast basic unit which has very light armor"	
+	}
+	"Barracks Iberian Gunner"
+	{
+		"en"		"Basic Ranged unit which can shoot while moving. Has very slow speed"
+	}
+	"Barracks Iberian Tanker"
+	{
+		"en"		"A stronger unit with basic armor"
+	}	
+	"Barracks Iberian Rocketeer"
+	{
+		"en"		"Ranged unit which fires strong Rocket. It cannot predict"
+	}	
+	"Barracks Iberian Healer"
+	{
+		"en"		"A melee unit that has basic armor and can heal allies on attack and death"
+	}
+	"Barracks Iberian Healtanker"
+	{
+		"en"		"Stong melee unit that has heavy armor and can heal allies on attack and death"
+	}	
+	"Barracks Iberia Boomstick"
+	{
+		"en"		"Slow but strong hitting ranged unit"
+	}
+	"Barracks Iberian Guards"
+	{
+		"en"		"Tanky melee units that could gain armor on hit"
+	}
+	"Barracks Iberian Elite Gunner"
+	{
+		"en"		"A ranged unit that fires 6 shots very rapidly and reloads"
+	}	
+	"Barracks Iberia Headhunter"
+	{
+		"en"		"Melee unit that does more damage to elite, bosses, and raidbosses and applies debuff to them"
+	}	
+	"Barracks Iberian Lighthouse Guardian"
+	{
+		"en"		"Super unit that takes 2 slot. It does melee damage when it has armor. Then, it pulls out a shotgun to deal ranged damage. It will often buff near allies"
+	}
 }
