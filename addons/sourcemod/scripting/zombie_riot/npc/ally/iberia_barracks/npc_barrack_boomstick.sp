@@ -116,7 +116,7 @@ methodmap Barrack_Iberia_Boomstick < BarrackBody
 
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_iAttacksTillReload = 4;
-		npc.m_fbRangedSpecialOn = true;
+		npc.Anger = true;
 		
 		KillFeed_SetKillIcon(npc.index, "sniperrifle");
 
@@ -167,10 +167,10 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 						npc.AddGesture("ACT_MP_RELOAD_STAND_PRIMARY");
 						npc.m_flNextRangedAttack = GameTime + (4.0 * npc.BonusFireRate);
 						npc.m_iAttacksTillReload += 1;
-						npc.m_fbRangedSpecialOn = true;
+						npc.Anger = true;
 						npc.PlayPistolReload();
 					}
-					if(npc.m_flNextRangedAttack < GameTime & npc.m_fbRangedSpecialOn)
+					if(npc.m_flNextRangedAttack < GameTime & npc.Anger)
 					{
 						npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY", false);
 						npc.m_iTarget = Enemy_I_See;
@@ -190,7 +190,7 @@ public void Barrack_Iberia_Boomstick_ClotThink(int iNPC)
 							npc.m_iAttacksTillReload = 0;
 							
 							SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3000.0, 1), DMG_BULLET, -1, _, vecHit);
-							npc.m_fbRangedSpecialOn = false;
+							npc.Anger = false;
 						} 		
 						delete swingTrace;			
 					}
