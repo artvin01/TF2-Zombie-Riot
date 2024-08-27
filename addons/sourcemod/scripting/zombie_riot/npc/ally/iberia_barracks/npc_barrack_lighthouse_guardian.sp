@@ -50,6 +50,10 @@ static const char g_IdleAlertedSounds[][] =
 	"vo/medic_item_secop_kill_assist01.mp3",
 };
 
+static const char g_WarCry[][] = {
+	"weapons/medi_shield_deploy.wav",,
+};
+
 void Barracks_Iberia_Lighthouse_Guardian_Precache()
 {
 	PrecacheSoundArray(g_DeathSounds);
@@ -59,6 +63,7 @@ void Barracks_Iberia_Lighthouse_Guardian_Precache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_RangedAttackSRocket);
+	PrecacheSoundArray(g_WarCry);
 	PrecacheModel("models/player/engineer.mdl");
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Barracks Iberian Lighthouse Guardian");
@@ -143,6 +148,15 @@ methodmap  Barracks_Iberia_Lighthouse_Guardian < BarrackBody
 	
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
+		
+		#if defined DEBUG_SOUND
+		PrintToServer("CClot::PlayMeleeHitSound()");
+		#endif
+	}
+
+	public void PlayMeleeWarCry()
+	{
+		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 80);
 		
 		#if defined DEBUG_SOUND
 		PrintToServer("CClot::PlayMeleeHitSound()");
