@@ -240,7 +240,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 	Barracks_Iberia_Lighthouse_Guardian npc = view_as<Barracks_Iberia_Lighthouse_Guardian>(iNPC);
 	float GameTime = GetGameTime(iNPC);
 
-	GrantEntityArmor(iNPC, true, 2.0, 0.1, 0);
+	GrantEntityArmor(iNPC, true, 1.0, 0.1, 0);
 
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
@@ -345,7 +345,7 @@ public void Barracks_Iberia_Lighthouse_Guardian_ClotThink(int iNPC)
 								
 								npc.m_flNextRangedAttack = GameTime + (1.0 * npc.BonusFireRate);
 								
-								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3100.0, 1), DMG_BULLET, -1, _, vecHit);
+								SDKHooks_TakeDamage(target, npc.index, client, Barracks_UnitExtraDamageCalc(npc.index, GetClientOfUserId(npc.OwnerUserId), 3200.0, 1), DMG_BULLET, -1, _, vecHit);
 							} 		
 							delete swingTrace;			
 						}
