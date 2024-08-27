@@ -193,6 +193,7 @@ methodmap MedivalHussar < CClotBody
 		
 		
 		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_bisWalking = false; //Animation it uses has no groundspeed, this is needed.
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
@@ -321,7 +322,6 @@ public void MedivalHussar_ClotThink(int iNPC)
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
-					npc.m_bisWalking = true;
 					npc.m_flSpeed = 350.0;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
@@ -361,7 +361,6 @@ public void MedivalHussar_ClotThink(int iNPC)
 				}
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
-					npc.m_bisWalking = true;
 					npc.m_flSpeed = 350.0;
 					npc.m_iChanged_WalkCycle = 4;
 					npc.SetActivity("ACT_RIDER_RUN");
@@ -377,7 +376,6 @@ public void MedivalHussar_ClotThink(int iNPC)
 				{
 					if(npc.m_iChanged_WalkCycle != 5)
 					{
-						npc.m_bisWalking = false;
 						npc.m_flSpeed = 0.0;
 						npc.m_iChanged_WalkCycle = 5;
 						npc.SetActivity("ACT_RIDER_IDLE");
@@ -392,7 +390,6 @@ public void MedivalHussar_ClotThink(int iNPC)
 					NPC_StartPathing(iNPC);
 					if(npc.m_iChanged_WalkCycle != 4) 	
 					{
-						npc.m_bisWalking = true;
 						npc.m_flSpeed = 350.0;
 						npc.m_iChanged_WalkCycle = 4;
 						npc.SetActivity("ACT_RIDER_RUN");

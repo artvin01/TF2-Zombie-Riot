@@ -76,7 +76,6 @@ void ConVar_PluginStart()
 	zr_ignoremapconfig = CreateConVar("zr_ignoremapconfig", "0", "If to ignore map-specific configs");
 	zr_smallmapbalancemulti = CreateConVar("zr_smallmapmulti", "1.0", "For small maps, so harder difficulities with alot of aoe can still be played.");
 	zr_spawnprotectiontime = CreateConVar("zr_spawnprotectiontime", "2.0", "How long zombie spawn protection lasts for.");
-	zr_viewshakeonlowhealth = CreateConVar("zr_viewshakeonlowhealth", "1.0", "Enable/Disable viewshake on low health.");
 	zr_disablerandomvillagerspawn = CreateConVar("zr_norandomvillager", "0.0", "Enable/Disable if medival villagers spawn randomly on the map or only on spawnpoints.");
 	zr_waitingtime = CreateConVar("zr_waitingtime", "120.0", "Waiting for players time.");
 	zr_allowfreeplay = CreateConVar("zr_allowfreeplay", "1", "Can players vote to continue into freeplay (endless waves).");

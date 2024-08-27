@@ -158,11 +158,8 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 					f_ArmorCurrosionImmunity[victim] = GetGameTime() + 5.0;
 
 					TF2_StunPlayer(victim, b_BobsTrueFear[victim] ? 3.0 : 5.0, 0.9, TF_STUNFLAG_SLOWDOWN);
-					
-					bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-					b_ThisNpcIsSawrunner[attacker] = true;
-					SDKHooks_TakeDamage(victim, attacker, attacker, b_BobsTrueFear[victim] ? 400.0 : 500.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-					b_ThisNpcIsSawrunner[attacker] = sawrunner;
+
+					DealTruedamageToEnemy(0, victim, b_BobsTrueFear[victim] ? 400.0 : 500.0);
 				}
 			}
 			
@@ -214,7 +211,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		int health = Object_GetRepairHealth(victim);
 		if(health < 1 || ignoreArmor)
 		{
-			SDKHooks_TakeDamage(victim, attacker, attacker, damage * 100.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+			DealTruedamageToEnemy(0, victim, damage * 100.0);
 		}
 	}
 }
@@ -394,21 +391,20 @@ static void SakratanGroupDebuff(int entity, int victim, float damage, int weapon
 		return;
 
 	if (GetTeam(victim) != GetTeam(entity))
-		SakratanGroupDebuffInternal(victim, entity);
+		SakratanGroupDebuffInternal(victim);
 		
 }
 
-static void SakratanGroupDebuffInternal(int victim, int attacker)
+static void SakratanGroupDebuffInternal(int victim)
 {
-	bool sawrunner = b_ThisNpcIsSawrunner[attacker];
-	b_ThisNpcIsSawrunner[attacker] = true;
-	
 	if(victim <= MaxClients && !b_BobsTrueFear[victim])
-		SDKHooks_TakeDamage(victim, attacker, attacker, 250.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
+	{
+		DealTruedamageToEnemy(0, victim, 250.0);
+	}
 	else
-		SDKHooks_TakeDamage(victim, attacker, attacker, 200.0, DMG_DROWN|DMG_PREVENT_PHYSICS_FORCE);
-
-	b_ThisNpcIsSawrunner[attacker] = sawrunner;
+	{
+		DealTruedamageToEnemy(0, victim, 200.0);
+	}
 	IncreaceEntityDamageTakenBy(victim, 1.30, 10.0);
 }
 
