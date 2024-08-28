@@ -42,7 +42,6 @@ static const char g_MeleeHitSounds[][] = {
 
 static float RajulHealAlly[MAXENTITIES];
 static float RajulHealAllyCooldownAntiSpam[MAXENTITIES];
-static int RajulHealAllyDone[MAXENTITIES];
 
 void DesertRajul_OnMapStart_NPC()
 {
@@ -233,7 +232,6 @@ void DesertRajulHealRandomAlly(int victim, float damage, int settingdo = 1)
 	RajulHealAlly[victim] += (damage * 0.2);
 	if(RajulHealAllyCooldownAntiSpam[victim] < GetGameTime())
 	{
-		RajulHealAllyDone[victim] = 0;
 		RajulHealAllyCooldownAntiSpam[victim] = GetGameTime() + 0.5;
 
 		if(settingdo == 2)
