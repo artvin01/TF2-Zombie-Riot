@@ -2956,7 +2956,7 @@ bool ignite = false,
 float dmg_against_entity_multiplier = 3.0,
 Function FunctionToCallOnHit = INVALID_FUNCTION,
 Function FunctionToCallBeforeHit = INVALID_FUNCTION,
-int inflictor = 0)
+int inflictor = -1)
 {
 
 	float damage_reduction = 1.0;
@@ -3067,10 +3067,12 @@ int inflictor = 0)
 	{
 		entityToEvaluateFrom = entity;
 	}
-	if(inflictor == 0)
+
+	if(inflictor == -1)
 	{
 		inflictor = entityToEvaluateFrom;
 	}
+
 	if(entityToEvaluateFrom < 1)
 	{
 		//something went wrong, evacuate.

@@ -733,7 +733,6 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 	{
 		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
 	}
-	PrintToChatAll("test");
 	float time = GetGameTime() + 1.5;
 	if(f_GoldTouchDebuff[enemy] < time)
 		f_GoldTouchDebuff[enemy] = time;

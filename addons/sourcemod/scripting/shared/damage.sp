@@ -613,15 +613,15 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 	if(f_LeeSuperEffect[attacker] > GameTime)
 	{
-		damage *= 0.72;
+		damage *= 0.85;
 	}
 	else if(f_LeeMajorEffect[attacker] > GameTime)
 	{
-		damage *= 0.86;
+		damage *= 0.9;
 	}
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
-		damage *= 0.93;
+		damage *= 0.95;
 	}
 #endif	//zr
 	return false;
