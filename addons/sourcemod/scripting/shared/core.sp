@@ -3750,7 +3750,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
 
-
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;
 

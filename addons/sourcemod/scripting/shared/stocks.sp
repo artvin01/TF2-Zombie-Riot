@@ -3059,7 +3059,7 @@ int inflictor = 0)
 		EntityToForward = client;
 	}
 
-	if(IsValidEntity(entity))
+	if(IsValidEntity(client))
 	{
 		entityToEvaluateFrom = client;
 	}
