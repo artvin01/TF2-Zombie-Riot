@@ -631,7 +631,7 @@ stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, fl
 {
 	if(b_thisNpcIsABoss[attacker])
 	{
-		damage *= 1.5;
+		damage *= 1.25;
 	}
 	return false;
 }
