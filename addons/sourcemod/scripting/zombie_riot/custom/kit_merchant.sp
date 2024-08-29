@@ -359,10 +359,8 @@ void Merchant_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 							{
 								if(i_NpcWeight[entity] < 3 && !b_NoKnockbackFromSources[entity])
 								{
-									FreezeNpcInTime(entity, 0.1);
-
 									if(i_NpcWeight[entity] != 2)
-										Custom_Knockback(attacker, entity, 400.0, true, true, true);
+										Custom_Knockback(attacker, entity, 250.0, true, true, true);
 								}
 							}
 							else
