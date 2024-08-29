@@ -2941,9 +2941,11 @@ int CountPlayersOnServer()
 int HitEntitiesSphereExplosionTrace[MAXENTITIES][MAXENTITIES];
 
 stock void Explode_Logic_Custom(float damage,
-int client,
-int entity,
-int weapon,
+int client, //To get attributes from and to see what is my enemy!
+int entity,	//Entity that gets forwarded or traced from/Distance checked.
+int weapon,	//What to get attributes from aswell, if its from an npc, always -1
+//Idealy: entity is projectile if its a projectile weapon
+//If its happening from an NPC or player itself, set both client and entity to the same thing.
 float spawnLoc[3] = {0.0,0.0,0.0},
 float explosionRadius = EXPLOSION_RADIUS,
 float ExplosionDmgMultihitFalloff = EXPLOSION_AOE_DAMAGE_FALLOFF,
@@ -3046,8 +3048,18 @@ int inflictor = 0)
 		damage_flags |= DMG_PREVENT_PHYSICS_FORCE;
 	}
 	int entityToEvaluateFrom = 0;
+	int EntityToForward = 0;
 
-	if(IsValidEntity(client))
+	if(IsValidEntity(entity))
+	{
+		EntityToForward = entity;
+	}
+	else
+	{
+		EntityToForward = client;
+	}
+
+	if(IsValidEntity(entity))
 	{
 		entityToEvaluateFrom = client;
 	}
@@ -3188,7 +3200,7 @@ int inflictor = 0)
 			if(FunctionToCallBeforeHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallBeforeHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				Call_PushFloat(damage_1);
 				Call_PushCell(weapon);
@@ -3230,7 +3242,7 @@ int inflictor = 0)
 			if(FunctionToCallOnHit != INVALID_FUNCTION)
 			{
 				Call_StartFunction(null, FunctionToCallOnHit);
-				Call_PushCell(entityToEvaluateFrom);
+				Call_PushCell(EntityToForward);
 				Call_PushCell(ClosestTarget);
 				//do not allow division by 0
 				damage_1 *= damage_reduction;

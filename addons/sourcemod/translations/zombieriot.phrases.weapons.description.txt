@@ -332,18 +332,15 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses."
-		"fr"		"Dégats améliorés. Abilité M2 donne des Mini-Crits et du Über pour une courte période.\n1.15x dégats contre les Raids."
+		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	"Flamethrower Pap 1 1"
 	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
-		"fr"		"Dégats et résistance améliorés.\n1.15x dégats contre les Raids."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	"Flamethrower Pap 2"
 	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
-		"fr"		"Dégats et résistance améliorés.\n1.15x dégats contre les Raids."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -2190,10 +2187,7 @@
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
-		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
-		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
-		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
+		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and bleed ignores deals true damage.\nM2 throws a secondary potion with it's own attack delay."
 	}
 	"Alchemist Potion Pap 1"
 	{
@@ -3436,15 +3430,11 @@
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
-		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité étonne pour plus longtemps et se recharge plus rapidement."
-		"chi"	"10%%近战抗性。每次发射3发子弹。更为主武器。\n技能眩晕更久，冷却更低。"
+		"en"	"+10%% melee resistance. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown.\nR ability -> M2\nM2 Pushes enemies."
 	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
-		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité devient un fusil à pompe.\nLes coups sur votre bouclier réduit le temps de recharge de tous vos abilités, et celles d'un allié, par 0.5 secondes."
-		"chi"	"+10%%远程抗性，变为主武器。\n技能变为地射速穿透性霰弹枪。\n护盾受到伤害时候降自己和附近队友冷却。（0.5秒)"
+		"en"	"+10%% ranged resistance. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nHurt with shield on reduces CD by 0.5 Sec of you and ally.\nR ability -> M2\nM2 Pushes enemies."
 	}
 	"Armor Visualiser Desc"
 	{

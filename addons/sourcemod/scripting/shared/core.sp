@@ -532,6 +532,7 @@ float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_CrippleDebuff[MAXENTITIES];
+float f_GoldTouchDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];

@@ -69,6 +69,8 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 	float VectorTarget_2[3];
 	float VectorForward = 300.0; //a really high number.
+
+	VectorForward *= Attributes_Get(weapon, 4001, 1.0);
 	GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,0.0,0.0}, Angles);
 	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
 	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;

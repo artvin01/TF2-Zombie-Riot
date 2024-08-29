@@ -6358,6 +6358,7 @@ stock void Custom_Knockback(int attacker,
 			if(PullDuration == 0.0)
 			{
 				GetClientEyeAngles(attacker, vAngles);
+				/*
 				if(vAngles[0] < -40.0) //if they look up too much, we set it.
 				{
 					vAngles[0] = -40.0;
@@ -6366,6 +6367,9 @@ stock void Custom_Knockback(int attacker,
 				{
 					vAngles[0] = -5.0;
 				}
+				*/
+				//Always launch up so people dont have to look up like a hawk.
+				vAngles[0] = -40.0;
 			}
 			else
 			{

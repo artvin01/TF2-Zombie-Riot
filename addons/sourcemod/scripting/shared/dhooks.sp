@@ -1841,7 +1841,27 @@ void ScatterGun_Prevent_M2_OnEntityCreated(int entity)
 
 public MRESReturn DHook_ScoutSecondaryFire(int entity) //BLOCK!!
 {
-	return MRES_Supercede;	//NEVER APPLY. Causes you to not fire if accidentally pressing m2
+	RequestFrames(DHook_ScoutSecondaryFireAbilityDelay, 10, EntIndexToEntRef(entity));
+	//Allow short pushing of enemies.
+	return MRES_Ignored;
+}
+void DHook_ScoutSecondaryFireAbilityDelay(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(IsValidEntity(entity))
+	{
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(IsValidClient(client))
+		{
+			int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+			if(Active != entity)
+				return;
+			
+			Enforcer_AbilityM2(client, entity, 1, 3, 1.25, true);
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
+			Ability_Apply_Cooldown(client, 2, 4.0);
+		}
+	}
 }
 
 public MRESReturn Detour_MaintainBotQuota(int pThis)
