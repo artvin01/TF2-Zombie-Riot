@@ -225,6 +225,7 @@ void Building_GiveRewardsUse(int client, int owner, int Cash, bool CashLimit = t
 	if(ConvertedAmmoSupplyGive <= 0)
 		return;
 		
+	Resupplies_Supplied[owner] += ConvertedAmmoSupplyGive * 2;
 	if(SupplyLimit)
 	{
 		if(i_GiveAmmoSupplyLimit[owner] < MAX_SUPPLIES_EACH_WAVE)

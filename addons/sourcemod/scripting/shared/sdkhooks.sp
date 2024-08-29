@@ -7,6 +7,7 @@ static float i_WasInDefenseBuff[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 static float f_EntityOutOfNav[MAXTF2PLAYERS];
+static float f_LatestDamageRes[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -130,7 +131,7 @@ public void SDKHook_ScoreThink(int entity)
 			SetEntProp(client, Prop_Send, "m_iHeadshots", i_Headshots[client]);
 
 #if defined ZR
-			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.001));
+			SetEntProp(client, Prop_Send, "m_iDefenses", RoundToCeil(float(i_BarricadeHasBeenDamaged[client]) * 0.01));
 #endif
 
 		}
@@ -966,55 +967,6 @@ public void OnPostThink(int client)
 			value = Attributes_Get(weapon, 4008, 0.0);	// RANGED damage resistance
 			if(value)
 				percentage *= value;
-			
-			/*
-				This ugly code is made so formatting it looks better, isntead of [res][res]
-				itll be [res-res]
-				So tis easier to read.
-
-			*/
-
-
-			/*
-				Does the client have any damage buffs? If so, display them.
-
-				CANT
-				Has to be put on the enemy as "resistance"
-				!!!!!
-				float BaseDamage = 100.0;
-				float damageBonus = 100.0;
-				Damage_AnyAttacker(0, client, testvalue, BaseDamage, damageBonus, testvalue, testvalue, {0.0,0.0,0.0}, {0.0,0.0,0.0}, testvalue);
-				if(damageBonus != 100.0)
-				{
-					if(had_An_ability)
-					{
-						FormatEx(buffer, sizeof(buffer), "%s|", buffer);
-						if(damageBonus < 10.0)
-						{
-							FormatEx(buffer, sizeof(buffer), "%sD%.2f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%sD%.0f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-					}
-					else
-					{
-						if(damageBonus < 10.0)
-						{
-							FormatEx(buffer, sizeof(buffer), "%s [D%.2f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-						else
-						{
-							FormatEx(buffer, sizeof(buffer), "%s [D%.0f%%", buffer, damageBonus);
-							had_An_ability = true;
-						}
-					}
-				}
-			*/
 
 			DmgType = DMG_BULLET;
 			OnTakeDamageResistanceBuffs(client, testvalue, testvalue, percentage, DmgType, testvalue, GetGameTime());
@@ -1483,7 +1435,7 @@ public void OnPostThink(int client)
 			*/
 
 			Format(HudBuffer, sizeof(HudBuffer), "%s\n%t\n%t\n%t", HudBuffer,
-			"Credits_Menu_New", GlobalExtraCash + (Resupplies_Supplied[client] * 10) + CashRecievedNonWave[client],	
+			"Credits_Menu_New", GlobalExtraCash + CashRecievedNonWave[client],	
 			"Ammo Crate Supplies", (Ammo_Count_Ready - Ammo_Count_Used[client]),
 			PerkNames[i_CurrentEquippedPerk[client]]
 			);
@@ -1562,7 +1514,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
 	if(!(damagetype & (DMG_DROWN|DMG_FALL)))
 	{
-		int i_damage = RoundToCeil(damage);
+		int i_damage = RoundToCeil(damage / f_LatestDamageRes[victim]);
 		//dont credit for more then 4k damage at once.
 		if(i_damage >= 4000)
 			i_damage = 4000;
@@ -1793,6 +1745,9 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	f_InBattleDelay[victim] = GetGameTime() + 3.0;
 #endif
 
+	float GetCurrentDamage = damage;
+	f_LatestDamageRes[victim] = 1.0;
+
 #if defined ZR || defined RPG
 	Replicate_Damage_Medications(victim, damage, damagetype);
 #endif
@@ -1801,6 +1756,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	{
 		return Plugin_Handled;
 	}
+
+	f_LatestDamageRes[victim] = damage / GetCurrentDamage;
 
 #if !defined RTS
 	int ClientAttacker;
