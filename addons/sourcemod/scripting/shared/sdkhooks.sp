@@ -1771,16 +1771,20 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 				NpcStuckZoneWarning(victim, damage);
 			}
 		}
-		else
 #endif
-		{
-			damage *= 2.0;
-		}
 	}
+	
 	f_TimeUntillNormalHeal[victim] = GameTime + 4.0;
 
 	//dmg bonus before flat res!
 	damage *= fl_Extra_Damage[attacker];
+#if defined ZR
+	if((damagetype & DMG_DROWN) && b_ThisNpcIsSawrunner[attacker])
+	{
+		//NOTHING blocks it.
+		return Plugin_Changed;
+	}
+#endif
 #if defined RPG
 	if(Ability_TrueStrength_Shield_OnTakeDamage(victim))
 	{

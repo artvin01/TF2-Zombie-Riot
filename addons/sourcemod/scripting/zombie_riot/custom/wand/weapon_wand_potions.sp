@@ -240,7 +240,7 @@ public void WandPotion_DoTrueDamageBleed(int entity, int enemy, float damage, in
 	if (!IsValidEntity(owner))
 		return;
 
-	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
+	StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
 }
 
 
@@ -488,7 +488,7 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 
 	char npc_classname[60];
 	float damage = f_WandDamage[entity];
-	StartBleedingTimer(enemy, owner, damage / 8.0, 8, weapon, DMG_SLASH);
+	StartBleedingTimer(enemy, owner, damage / 16.0, 8, weapon, DMG_SLASH);
 	NPC_GetPluginById(i_NpcInternalId[enemy], npc_classname, sizeof(npc_classname));
 	if(StrEqual(npc_classname, "npc_bloon"))
 	{
@@ -496,10 +496,6 @@ public void WandPotion_UnstableTouchDo(int entity, int enemy, float damage_Dontu
 		{
 			view_as<Bloon>(enemy).m_bFortified = false;
 			SetEntProp(enemy, Prop_Data, "m_iMaxHealth", Bloon_Health(false, view_as<Bloon>(enemy).m_iOriginalType));
-
-			damage = float(GetEntProp(enemy, Prop_Data, "m_iHealth") - Bloon_Health(false, view_as<Bloon>(enemy).m_iType));
-			if(f_WandDamage[entity] > damage)
-				damage = f_WandDamage[entity];
 		}
 	}
 	else
@@ -665,11 +661,11 @@ public void WandPotion_PotionLead(int entity, int enemy, float damage_Dontuse, i
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_SLASH);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
 	}
 }
 
@@ -727,11 +723,11 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 
 	if(view_as<CClotBody>(enemy).m_iBleedType == BLEEDTYPE_METAL)
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 2.0, 10, weapon, DMG_SLASH);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 10, weapon, DMG_SLASH);
 	}
 	else
 	{
-		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 8.0, 8, weapon, DMG_SLASH);
+		StartBleedingTimer(enemy, owner, f_WandDamage[entity] / 16.0, 8, weapon, DMG_SLASH);
 	}
 	float time = GetGameTime() + 1.5;
 	if(f_GoldTouchDebuff[enemy] < time)
@@ -741,14 +737,6 @@ public void WandPotion_PotionGoldDo(int entity, int enemy, float damage_Dontuse,
 bool ShrinkOnlyOneTarget = false;
 public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 {
-	if(target)
-	{
-		if(target <= MaxClients)
-			return;
-		
-		if(GetTeam(target) == 2)
-			return;
-	}
 
 	SDKUnhook(entity, SDKHook_StartTouchPost, Weapon_Wand_PotionShrinkTouch);
 
@@ -788,6 +776,15 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 
 	if (!IsValidEntity(owner))
 		return;
+
+	if(enemy)
+	{
+		if(enemy <= MaxClients)
+			return;
+		
+		if(GetTeam(enemy) == TFTeam_Red)
+			return;
+	}
 
 	if(b_thisNpcIsABoss[enemy] || b_StaticNPC[enemy] || b_thisNpcIsARaid[enemy])
 	{
