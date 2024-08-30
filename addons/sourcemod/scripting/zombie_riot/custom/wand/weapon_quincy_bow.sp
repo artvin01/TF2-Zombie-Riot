@@ -215,7 +215,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 			return;
 		}
 		Current_Mana[client] -=Mana_Cost;
-		Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 		Mana_Hud_Delay[client] = 0.0;
 		
 		fl_hyper_arrow_charge[client] = 0.0;
@@ -379,7 +379,7 @@ static void Quincy_Bow_Loop_Logic(int client, int weapon)
 				b_lockout[client] = true;	//if the client preses m2 while charging the charge will go bye bye.
 			}
 			
-			Mana_Regen_Delay[client] = GameTime + 1.0;
+			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client] = 0.0;
 			
 			float charge_percent_sound = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;

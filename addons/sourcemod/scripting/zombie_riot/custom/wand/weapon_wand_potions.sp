@@ -527,7 +527,7 @@ public void Weapon_Wand_PotionTransM2(int client, int weapon, bool &crit, int sl
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 
@@ -561,7 +561,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	}
 	
 	TonicBuff_CD[client] = GetGameTime() + 10.0;
-	Mana_Regen_Delay[client] = GetGameTime() + 10.0;
+	SDKhooks_SetManaRegenDelayTime(client, 10.0);
 	Mana_Hud_Delay[client] = 0.0;
 	delay_hud[client] = 0.0;
 	

@@ -1424,11 +1424,10 @@ void Waves_Progress(bool donotAdvanceRound = false)
 			{
 				float delay = wave.Delay * (1.0 + (MultiGlobalEnemy * 0.4));
 				WaveTimer = CreateTimer(delay, Waves_ProgressTimer);
+				ProgressTimerType = CurrentWave == (round.Waves.Length - 1);
+				
 				if(delay > 9.0)
-				{
 					ProgressTimerEndAt = GetGameTime() + delay;
-					ProgressTimerType = CurrentWave == (round.Waves.Length - 1);
-				}
 			}
 		}
 		else if(donotAdvanceRound)

@@ -8,6 +8,7 @@ static float i_WasInJarate[MAXTF2PLAYERS] = {0.0,0.0,0.0};
 static float f_EntityHazardCheckDelay[MAXTF2PLAYERS];
 static float f_EntityOutOfNav[MAXTF2PLAYERS];
 static float f_LatestDamageRes[MAXTF2PLAYERS];
+static float f_TimeSinceLastRegenStop[MAXTF2PLAYERS];
 
 bool Client_Had_ArmorDebuff[MAXTF2PLAYERS];
 
@@ -538,18 +539,23 @@ public void OnPostThink(int client)
 		
 		Mana_Regen_Tick = true;
 
+		float ManaRegenExtra = 1.0;
+		float ManaMaxExtra = 1.0;
 		int i, entity;
 		while(TF2_GetItem(client, entity, i))
 		{
 			if(i_IsWandWeapon[entity])
 			{
 				has_mage_weapon[client] = true;
-				break;
+				ManaMaxExtra *= Attributes_Get(entity, 4019, 1.0);
+				ManaRegenExtra *= Attributes_Get(entity, 4020, 1.0);
 			}
 		}
 
 		max_mana[client] = 400.0;
 		mana_regen[client] = 10.0;
+		max_mana[client] *= ManaMaxExtra;
+		mana_regen[client] *= ManaRegenExtra;
 				
 		if(i_CurrentEquippedPerk[client] == 4)
 		{
@@ -560,6 +566,7 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] *= 0.7;
 		}
+		
 
 		mana_regen[client] *= Mana_Regen_Level[client];
 		max_mana[client] *= Mana_Regen_Level[client];
@@ -573,13 +580,32 @@ public void OnPostThink(int client)
 		{
 			mana_regen[client] *= 0.30;
 		}
+		else
+		{
+			float MultiplyRegen =  GetGameTime() - f_TimeSinceLastRegenStop[client];
+			MultiplyRegen *= 0.5;
+			if(MultiplyRegen < 1.0)
+				MultiplyRegen = 1.0;
+
+			if(MultiplyRegen >= 3.0)
+				MultiplyRegen = 3.0;
+
+			mana_regen[client] *= MultiplyRegen;
+		}
 	
 		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
 		{
 			Current_Mana[client] += RoundToCeil(mana_regen[client]);
 				
 			if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+			{
 				Current_Mana[client] = RoundToCeil(max_mana[client]);
+				mana_regen[client] = 0.0;
+			}
+		}
+		else
+		{
+			mana_regen[client] = 0.0;
 		}
 					
 		Mana_Hud_Delay[client] = 0.0;
@@ -2764,4 +2790,14 @@ void RPG_Sdkhooks_StaminaBar(int client)
 	SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.925 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 	ShowSyncHudText(client, SyncHud_ArmorCounter, "%s", buffer);
 }
+
 #endif
+void SDKhooks_SetManaRegenDelayTime(int client, float time)
+{
+	Mana_Regen_Delay[client] = GetGameTime() + time;
+	Mana_Hud_Delay[client] = 0.0;
+	f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
+	//Set to 0 so hud is good
+	if(!b_AggreviatedSilence[client])
+		mana_regen[client] = 0.0;
+}
