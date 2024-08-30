@@ -272,11 +272,11 @@ public void Deckhand_Transform(int ref)
 	{
 		case 1:
 		{
-			spawned = BuccaneerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE);
+			spawned = BuccaneerBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
 		}
 		default:
 		{
-			spawned = PirateBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE);
+			spawned = PirateBones(npc.index, pos, ang, GetTeam(npc.index), GetRandomFloat(0.0, 1.0) <= DECKHAND_TRANSFORM_BUFFCHANCE).index;
 		}
 	}
 

@@ -2935,6 +2935,14 @@
 	{
 		"en"	"Calcium Corsair"
 	}
+	"Undead Deckhand"
+	{
+		"en"	"Undead Deckhand"
+	}
+	"The Reaper"
+	{
+		"en"	"The Reaper"
+	}
 	"Supreme Spookmaster Bones"
 	{
 		"en"	"Supreme Spookmaster Bones"

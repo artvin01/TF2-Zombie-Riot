@@ -380,16 +380,16 @@
 	{
 		"en"		"Omega makes an appearance."
 	}
-	"Omega 1"
+	"Reaper Spawn 1"
 	{
-		"en"		"Armaments locked and loaded."
+		"en"		"''Don't fear the reaper'', they say... They're wrong."
 	}
-	"Omega 2"
+	"Reaper Spawn 2"
 	{
-		"en"		"A sui generis soldier enters the scene."
+		"en"		"Your walls will not save you."
 	}
-	"Omega 3"
+	"Reaper Spawn 3"
 	{
-		"en"		"Omega makes an appearance."
+		"en"		"An agent of Necropolis has arrived."
 	}
 }
