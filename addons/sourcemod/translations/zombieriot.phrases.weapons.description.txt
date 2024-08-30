@@ -3582,126 +3582,151 @@
 	{
 		"en"	"A weapon from Wild West. \nSlower fire rate, but more damage.\nYou gain damage resistance but the weapon's dmg falloff is increased\nNew abiity: M2 for rapid fire."
 		"fr"	"Cadence de tir lente, dégats hauts.\nRésistance améliorée en échange de plus de perte de dégats avec la distance.\nAppuyez M2 pour accélérer la cadence de tir.\nUne arme du Wild West."
+		"chi"	"一把来自狂野西部的武器。\n射速低，伤害高。\n获得更高的抗性，但同时增加距离衰减。\n新技能：[M2]快速开火"
 	}
 	"West Pap 2 Desc"
 	{
 		"en"	"Increased damage,\nM2 ability will make you jump backwards on usage\nNew abiity: M3 Your aim will be fixed to nearby enemy and damage and firerate will increase dramatically."
 		"fr"	"Dégats améliorés.\nAbilité vous fera reculer avec un saut.\nAppuyez sur M3 pour viser automatiquement un ennemi. Votre cadence de tir s'améliorera considérablement."
+		chi"	"增加伤害。\nM2技能发动时会你将会后撤一步。\n新技能：[M3]锁定附近一位敌人，大幅度增加开火速度以及伤害。"
 	}
 	"West Pap 3 Desc"
 	{
 		"en"	"Increased damage, reload speed, and firerate"
 		"fr"	"Dégats, vitesse de rechargement et cadence des attaques améliorés"
+		chi"	"增加伤害，装弹速度，开火速度。"
 	}
 	"Railgun"
 	{
 		"en"	"Railgun"
 		"fr"	"Canon à Rail"
+		chi"	"轨道炮"
 	}
 	"Railgun Desc"
 	{
 		"en"	"Fires a strong laser, weakened when mounted."
 		"fr"	"Tire un rayon laser puissant. Plus faible quand monté."
+		chi"	"发射威力强大的激光，扛起时伤害降低。"
 	}
 	"Barracks"
 	{
 		"en"	"Barracks"
 		"fr"	"Caserne"
+		chi"	"兵营"
 	}
 	"Barracks Desc"
 	{
 		"en"	"Train your own army and upgrade them."
 		"fr"	"Forme et améliore votre propre armée."
+		chi"	"训练并升级属于你自己的军队！"
 	}
 	"Victorian 1 Desc"
 	{
 		"en"	"The pride of Victoria. A mortar that deals more damage the longer it travels, upto 1 second. \nSlow attack speed and grants heavy ranged resistance.\nYou will be vulnerable to melee damage."
 		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
+		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
 	}
 	"Victorian 2 Desc"
 	{
 		"en"	"Increased damage, ranged res, and firing speed. \nNew abiity - Charged Shot: Press M2 to load up 10 powerful shells. \nWhen reaching 5, you will be able to fire all remaining shells.\n Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
+		chi"	"增加伤害，远程抗性，以及射速。\n新技能：[M2]蓄力炮：长按M2填装炮弹，上限10发\n填入5发后可发射所有炮弹。\n[警告]发射后武器将会过热，会扣除自身血量，并且武器一段时间内将无法使用。"
 	}
 	"Victorian 3 Desc"
 	{
 		"en"	"The Glorious Spear of Victoria. \nIncreased damage and ranged resistance. \n New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too. \n Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
+		chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
 	}
 	"The Merchant Desc"
 	{
 		"en"	"Provides a builder's wrench but doesn't allow barricades or sentries.\nAble to supercharge by using a secondary weapon, but consumes metal over time."
 		"fr"	"Une clé qui ne peut pas construire de barricades ou de mitrailleuses.\nPeut supercharger une arme secondaire en échange de métal."
+		chi"	"自带一把扳手，但无法建造路障或者步哨。\n使用副武器时可以通过消耗金属开启超载模式。"
 	}
 	"Merchant Pap 1 Desc"
 	{
 		"en"	"Base stats improved\nMartial Artist is unlocked, retreats when below 20% HP, giving health and speed"
 		"fr"	"Améliorations générales.\nAbilité karatéka donne des soins et un bonus vitesse quand vous êtes sous 20%% santé."
+		chi"	"基础属性提升。\n解锁[武士]，生命值低于20%时撤退，增加移速以及血量。"
 	}
 	"Merchant Pap 2 Desc"
 	{
 		"en"	"Martial Artist provides a random effect and can stun enemies when you don't attack for 4 seconds\nThe Investigator is unlocked, steal attack speed when blocking an enemy"
 		"fr"	"Karatéka vous donne un effet et peut étonner les ennemis, si vous ne les attaquez pas pour 4 secondes.\nAbilité investigateur vole de la cadence des attaques des ennemis que vous bloquez."
+		chi"	"[武士]将会提供一个随机效果，并且4秒不攻击后可眩晕敌人。\n解锁[侦探]，阻挡敌人后可复制攻速。"
 	}
 	"Merchant Pap 3 Desc"
 	{
 		"en"	"Fish Market drains less metal\nThe Investigator pushes other enemies back when attacking and can repel stuns back to the attacker\nWine Merchant is unlocked, provides 3 ranged weapons with ammo over time, self-revives at the cost of metal"
 		"fr"	"Poissonnerie utilise moins de métal.\nInvestigateur pousse les ennemis quand vous les attaquez, et peut réfléchir l'étonnement aux ennemis.\nAbilité vinier donne 3 armes des munitions et peut vous revivre du KO en échange de métal."
+		chi"	"减少海鲜市场所消耗的金属。\n[侦探]攻击时会推走其他敌人并且弹反敌人的眩晕。\n解锁[酒商]:提供三把可恢复弹药的远程武器。可消耗金属复活自己。"
 	}
 	"Merchant Pap 4 Desc"
 	{
 		"en"	"Base stats improved\nMartial Artist drains less metal"
 		"fr"	"Améliorations générales.\Karatéka utilise moins de métal."
+		chi"	"基础属性提升。\n[武士]消耗金属降低。"
 	}
 	"Merchant Pap 5 Desc"
 	{
 		"en"	"Martial Artist stun requires 3 instead of 4 seconds.\nThe Investigator drains less metal\nWine Merchant deals more knockback"
 		"fr"	"Karatéka étonne les ennemis après 3 secondes au lieu de 4.\nInvestigateur utilise moins de métal.\nVinier pousse les ennemis plus loin."
+		chi"	"[武士]眩晕要求从4秒降低至3秒。\n降低[侦探]金属消耗。\n增加[酒商]击退。"
 	}
 	"Chainsaw Pap 0"
 	{
 		"en"	"Deals extreme melee damage, but costs alot of ammo.\nAlways gibs, but you heal only 25% from eating gibs."
 		"fr"	"Arme corps-à-corps puissante qui coûte beaucoup de munitions.\nRéduira toujours les ennemis en morceaux, mais vous reçevez seulement 25%% des soins quand vous les mangez."
+		chi"	"造成极高近战伤害，但消耗大量弹药。\n杀死的敌人必定会掉肉块，但你吃肉块只会受到25%的治疗量。"
 	}
 	"Chainsaw Pap 1"
 	{
 		"en"	"Deals more damage, attacks faster, bleed enemeis very briefly."
 		"fr"	"Dégats et cadence des attaques améliorés. Fais saigner les ennemis brièvement."
+		chi"	"更多伤害，攻速加快，攻击会造成短暂的流血。"
 	}
 	"Chainsaw Pap 2"
 	{
 		"en"	"More damage, attacks faster, extend bleed duration."
 		"fr"	"Dégats, cadence des attaques et durée du saignement améliorés"
+		chi"	"更多伤害，攻速加快，增加流血时长。"
 	}
 	"Pinus Knight Desc"
 	{
 		"en"	"Fast attacking melee with increased sell back value."
 		"fr"	"Arme rapide qui se revend à bon prix."
+		"chi"	"高攻速近战，更高的退款价值。"
 	}
 	"Pinus Knight Pap 1"
 	{
 		"en"	"Adds an ability, when used allows you to dodge one melee hit (does not stack)."
 		"fr"	"Abilité vous permet d'éviter une attaque corps-à-corps."
+		"chi"	"新技能：阻挡一次近战伤害。不可叠加。"
 	}
 	"Pinus Knight Pap 2"
 	{
 		"en"	"Ability now also grants 4 seconds of a 40%% (x0.5 vs Raids) chance to dodge melee attacks.\nDodging an attack makes the next melee hit deal double damage."
 		"fr"	"Abilité vous donne une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps.\nSi vous évitez une attaque, le prochain coup inflige double de dégats."
+		"chi"	"技能改为4秒的40%%近战闪避几率。（boss闪避几率*0.5）。\n闪避后的下一次攻击造成2*伤害。"
 	}
 	"Pinus Knight Pap 3"
 	{
 		"en"	"Allied Kazimierz weapons gain a 11%% (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while your alive.\nAbility instead grants 60%% (x0.5 vs Raids) chance to dodge any attack.\nDodging an attack makes the next melee hit deal AOE damage."
-		"fr"	"Alliés avec une arme Kazimierz ont une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps quand vous êtes vivant.\nAbilité vous donne une chance de 60%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps.\nSi vous évitez une attaque, le prochain coup frappera plusieurs ennemis."
+		"fr"	"Alliés avec une arme Kazimierz ont une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps quand vous êtes vivant.\nAbilité vous donne une chance de 60%% (x0.5 contre les Raids) d'éviter les attaquecorps-à-corps.\nSi vous évitez une attaque, le prochain coup frappera plusieurs ennemis."s 
+		"chi"	"当你存活时，在场所有持有卡齐米日武器的队友获得11%%闪避概率。（boss闪避几率*0.5）（自身闪避几率*2.0）。\n技能赐予60%%闪避概率。(boss闪避几率*0.5)。闪避后第一次攻击将会带有AOE效果。"
 	}
 	"Pinus Knight Pap 4"
 	{
 		"en"	"Ability instead grants 80%% (x0.5 vs Raids) chance to dodge any attack."
 		"fr"	"Abilité vous donne une chance de 40%% (x0.5 contre les Raids) d'éviter les attaques corps-à-corps."
+		"chi"	"技能赐予80%%闪避概率。（boss闪避几率*0.5）。闪避不再限于近战攻击。"
 	}
 	"Pinus Knight Pap 5"
 	{
 		"en"	"Decreased ability cooldown and increased ability damage bonus."
 		"fr"	"Dégats et temps de recharge de votre abilité améliorés."
+		"chi"	"降低技能冷却并且增加技能伤害。"
 	}
 	"Barracks Metro Cop Desc"
 	{
