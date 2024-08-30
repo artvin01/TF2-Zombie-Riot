@@ -197,7 +197,7 @@ methodmap Silvester < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
-	property float m_flSilvesterSuperRes
+	property float m_flSilvesterChangeTargets
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][7]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
@@ -339,6 +339,7 @@ methodmap Silvester < CClotBody
 		npc.AddActivityViaSequence("taunt_time_out_therapy_outro");
 		npc.SetCycle(0.5);
 		npc.SetPlaybackRate(0.45);	
+		npc.m_flSilvesterChangeTargets = 0.0;
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 		npc.m_flSilvesterTransformRegardless = GetGameTime() + 40.0;
 		
@@ -650,10 +651,6 @@ static void Internal_ClotThink(int iNPC)
 		}
 	}
 	float TotalArmor = 1.0;
-	if(npc.m_flSilvesterSuperRes > GetGameTime())
-	{
-		TotalArmor *= 0.25;
-	}
 
 	if(npc.Anger)
 		TotalArmor *= 0.85;
@@ -726,7 +723,17 @@ static void Internal_ClotThink(int iNPC)
 		{
 			//Get the next closest target!
 			static float flPos[3]; 
-			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+			//only get nemals target every so often.
+			if(npc.m_flSilvesterChangeTargets >= 4.0)
+			{
+				GetEntPropVector(allynpc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				npc.m_flSilvesterChangeTargets = 0.0;
+			}
+			else
+			{
+				GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", flPos);
+				npc.m_flSilvesterChangeTargets += 1.0;
+			}
 			npc.m_iTargetWalkTo = GetClosestTarget(npc.index,_,_,_,_,allynpc.m_iTarget, flPos);
 			npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + (GetRandomRetargetTime() * 2.0);
 		}
@@ -1158,7 +1165,7 @@ int SilvesterSelfDefense(Silvester npc, float gameTime, int target, float distan
 			DelaybewteenPillars,									//Extra delay between each
 			ang_Look 								/*2 dimensional plane*/,
 			pos,
-			1.0,
+			0.7,
 			0.5);	
 			
 			float cooldownDo  = 7.0;
