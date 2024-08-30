@@ -211,10 +211,11 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 				EmitSoundToAll("weapons/push_impact.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 
 			if(!IngoreAmmo)
+			{
 				Client_Shake(client, 0, 35.0, 20.0, 0.8);
-
-			GetAttachment(client, "effect_hand_l", fPos, fAng);
-			TE_Particle("mvm_soldier_shockwave", fPos, NULL_VECTOR, fAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+				GetAttachment(client, "effect_hand_l", fPos, fAng);
+				TE_Particle("mvm_soldier_shockwave", fPos, NULL_VECTOR, fAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			}
 
 			if(!IngoreAmmo)
 			{

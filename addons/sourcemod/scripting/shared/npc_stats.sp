@@ -6347,7 +6347,8 @@ stock void Custom_Knockback(int attacker,
 	 bool work_on_entity = false,
 	 float PullDuration = 0.0,
 	 bool RecieveInfo = false,
-	 float RecievePullInfo[3] = {0.0,0.0,0.0})
+	 float RecievePullInfo[3] = {0.0,0.0,0.0},
+	 float OverrideLookAng[3] ={0.0,0.0,0.0})
 {
 	if(enemy > 0 && !b_NoKnockbackFromSources[enemy] && !IsEntityTowerDefense(enemy))
 	{
@@ -6370,6 +6371,8 @@ stock void Custom_Knockback(int attacker,
 				*/
 				//Always launch up so people dont have to look up like a hawk.
 				vAngles[0] = -40.0;
+				if(OverrideLookAng[0] != 0.0)
+					vAngles[0] = OverrideLookAng[0];
 			}
 			else
 			{
