@@ -425,7 +425,7 @@ public Action Beam_Wand_pap_Tick(int client)
 														
 								fl_beam_overdrive_damage[client] = damage;
 								
-								Mana_Regen_Delay[client] = gametime + 1.0;
+								SDKhooks_SetManaRegenDelayTime(client, 1.0);
 								Mana_Hud_Delay[client] = 0.0;
 								
 								Current_Mana[client] -= manacost;

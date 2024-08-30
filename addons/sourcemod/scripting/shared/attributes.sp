@@ -11,6 +11,10 @@ StringMap WeaponAttributes[MAXENTITIES + 1];
 // 4015: If set to 1, sets the weapons next attack to FAR_FUTURE, as doing 821 ; 1 ; 128 ; 1 breaks animations.
 // 4016: bonus damage to raidbosses
 // 4017: attackspeed directly converts into damage
+// 4018: allow Claiming of cades regardless
+// 4019: Mana Max Add
+// 4020: Mana Regen 
+// 4021: Override Weapon Skin To This
 bool Attribute_ServerSide(int attribute)
 {
 	switch(attribute)
@@ -23,7 +27,7 @@ bool Attribute_ServerSide(int attribute)
 		{
 			return true;
 		}
-		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015,4016,4017: 
+		case 4007, 4008, 4009, 4010, 4011, 4012,4013,4014,4015,4016,4017, 4018, 4019 , 4020, 4021: 
 		{
 			return true;
 		}

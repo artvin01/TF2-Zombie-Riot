@@ -1,14 +1,14 @@
+If you wish to donate to support this project then concider subscribing to the patron, cus i like money.
+
+[Patreon](https://www.patreon.com/user?u=95717000)
+
 # WARNING! READ!
 
 USE 32 BIT SERVER AS OF NOW!
 this gamemode is ready for 64bit, but it is not possible yet as dhooks and address saving doesnt work for 64bit yet.
 there are some things missing as its still a WIP fix:
 
--Killfeed bots (you can use sourceTV and that will work)
-
 -EDAlloc remover, i.e. edicts being reserved.
-
-some more...
 
 # TF2 Zombie Riot
 
@@ -51,14 +51,8 @@ Main Server:
 "zr_nospecial" = "0" ( def. "0" )
  - No Panzer will spawn or anything alike, good incase you hate this stuff
  
-"zr_privateplugins" = "0" ( def. "0" )
- - Enable private plugins, set this to zero.
- 
 "zr_maxbotsforkillfeed" = "6" ( def. "6" )
  - The maximum amount of blue bots allowed for the killfeed
- 
-"zr_viewshakeonlowhealth" = "1" ( def. "1" )
- - Should the view shake when low on health?
 
 "sv_visiblemaxplayers" = "24" ( def. "24" )
  - This is a default cvar from tf2, but i recomend setting it to 24 on a 32 player server.
@@ -139,22 +133,3 @@ Alot of code is borrowed/just takes from other plugins i or friends made, often 
 rarely without cus i couldnt contact the person or it was just open sourcecode, credited anyways when i did that.
 
 IF YOU HAVE ANY QUESTIONS, CONTACT ME. My things are in my Bio.
-
-
-Note:
-Compile both listen.so and envnav.sp so you can edit the navmesh live on the server.
-
-Credits go to - [Arthurdead](https://github.com/arthurdead) for the original plugin nav plugin
-I just got windows gamedata.
-To edit the nav live, do sm_nav_edit_mode 
-
-BEWARE, THIS SETS sv_cheats TO 1, Do it again to disable, you must also run sm_rcon for any nav command
-(Zr will hide that sv_cheats got set and other stuff, and will also hide it from players, i will in the future code an anti cheat in zr to prevent this)
-The server WILL crashwhen editing, beware, no idea how to fix it, too lazy.
-
-Just dont announce that youll do it.
-
-
-If you wish to donate to support this project then concider subscribing to the patron
-
-[Patreon](https://www.patreon.com/user?u=95717000)

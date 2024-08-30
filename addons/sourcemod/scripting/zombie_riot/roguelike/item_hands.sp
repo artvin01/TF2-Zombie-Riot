@@ -106,11 +106,13 @@ public void Rogue_HandTrap_Weapon(int entity)
 
 public void Rogue_HandleBrawler_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5)	// Or Single Pellet
+	if(i_WeaponArchetype[entity] == 11 || i_WeaponArchetype[entity] == 5 || i_WeaponArchetype[entity] == 6)	// Or Single Pellet
 	{
 		// +25% fire rate
 		Attributes_SetMulti(entity, 6, 0.75);
 		Attributes_SetMulti(entity, 97, 0.75);
+		if(i_WeaponArchetype[entity] == 6)
+			Attributes_SetMulti(entity, 4, 1.5);
 	}
 }
 
@@ -135,7 +137,7 @@ public void Rogue_HandInfinite_Weapon(int entity)
 
 public void Rogue_HandDuelist_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == 15 || i_WeaponArchetype[entity] == 14)	// Duelist and abberition
+	if(i_WeaponArchetype[entity] == 15 || i_WeaponArchetype[entity] == 14 || i_WeaponArchetype[entity] == 17)	// Duelist and abberition
 	{
 		// +150% damage bonus when half health
 		Attributes_SetMulti(entity, 224, 2.5);

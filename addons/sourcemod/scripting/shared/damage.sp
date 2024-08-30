@@ -613,15 +613,15 @@ stock bool Damage_NPCAttacker(int victim, int &attacker, int &inflictor, float b
 
 	if(f_LeeSuperEffect[attacker] > GameTime)
 	{
-		damage *= 0.72;
+		damage *= 0.85;
 	}
 	else if(f_LeeMajorEffect[attacker] > GameTime)
 	{
-		damage *= 0.86;
+		damage *= 0.9;
 	}
 	else if(f_LeeMinorEffect[attacker] > GameTime)
 	{
-		damage *= 0.93;
+		damage *= 0.95;
 	}
 #endif	//zr
 	return false;
@@ -631,7 +631,7 @@ stock bool Damage_BuildingAttacker(int victim, int &attacker, int &inflictor, fl
 {
 	if(b_thisNpcIsABoss[attacker])
 	{
-		damage *= 1.5;
+		damage *= 1.25;
 	}
 	return false;
 }
@@ -1767,6 +1767,10 @@ stock void OnTakeDamageDamageBuffs(int victim, int &attacker, int &inflictor, fl
 	{
 		damage += basedamage * (0.3 * DamageBuffExtraScaling);
 	}
+	if(f_GoldTouchDebuff[victim] > GameTime)
+	{
+		damage += basedamage * (0.2 * DamageBuffExtraScaling);
+	}
 
 	if(f_CudgelDebuff[victim] > GameTime)
 	{
@@ -1898,6 +1902,10 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	if(f_CrippleDebuff[victim] > GameTime)
 	{
 		Format(Debuff_Adder_left, SizeOfChar, "%s⯯", Debuff_Adder_left);
+	}
+	if(f_GoldTouchDebuff[victim] > GameTime)
+	{
+		Format(Debuff_Adder_left, SizeOfChar, "%s⯏", Debuff_Adder_left);
 	}
 	if(f_CudgelDebuff[victim] > GameTime)
 	{

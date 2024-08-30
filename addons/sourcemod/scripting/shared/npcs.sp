@@ -1984,6 +1984,8 @@ stock bool DoesNpcHaveHudDebuffOrBuff(int client, int npc, float GameTime)
 		return true;
 	else if(f_CrippleDebuff[npc] > GameTime)
 		return true;
+	else if(f_GoldTouchDebuff[npc] > GameTime)
+		return true;
 	else if(f_CudgelDebuff[npc] > GameTime)
 		return true;
 	else if(f_DuelStatus[npc] > GameTime)

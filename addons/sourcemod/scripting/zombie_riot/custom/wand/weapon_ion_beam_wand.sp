@@ -502,7 +502,7 @@ static bool Neuvellete_Loop_Logic(int client, int weapon)
 								Current_Mana[client] -=mana_cost;
 							}
 						}
-						Mana_Regen_Delay[client] = GameTime + 1.0;
+						SDKhooks_SetManaRegenDelayTime(client, 1.0);
 					}
 					else if(fl_ion_charge_ammount[client]>250.0 && fl_Ion_timer[client] < GameTime)
 					{
@@ -1071,7 +1071,7 @@ public Action Neuvellete_tick(int client)
 		int Effects = i_Effect_Hex[client];	
 
 		Current_Mana[client] -=mana_cost;
-		Mana_Regen_Delay[client] = GameTime + 1.0;
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
 
 		if(IsValidEntity(weapon_active) && i_CustomWeaponEquipLogic[weapon_active] == WEAPON_ION_BEAM_PULSE)
 		{

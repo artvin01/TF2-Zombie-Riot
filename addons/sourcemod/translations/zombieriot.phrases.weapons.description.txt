@@ -332,15 +332,15 @@
 	
 	"Flamethrower Pap 1"
 	{
-		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses."
+		"en"		"Increased damage and resistances. M2 ability gives minicrits and uber for a short time.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	"Flamethrower Pap 1 1"
 	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	"Flamethrower Pap 2"
 	{
-		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses."
+		"en"		"Increased damage and resistances.\nDeals 1.15x damage against raidbosses.\nGain additinonal 10%% Extra Range"
 	}
 	
 	"Leone 12 Gauge Super Desc"
@@ -1555,6 +1555,7 @@
 	"Cannibalism Desc"
 	{
 		"en"	"+7 HP on melee kill, You can now eat metal and flesh gibs to regain health.\nHealth Regained depends on your health on kill attribute.\nKilling bosses or raids grants 4x heal on kill.\nKilling giants grants 2x heal on kill."
+		"fr"	"+7 soins lorsque vous tuez avec une arme corps-à-corps. Mangez les morceaux de vos ennemis pour vous soigner.\nSoins reçus s'améliorent avec votre attribut Santé par victime.\n4x soins quand vous tuez un Boss ou un Raid.\n2x soins quand vous tuez un géant."
 	}
 	
 	"Copium Desc"
@@ -1584,7 +1585,7 @@
 	"LSD Desc"
 	{
 		"en"	"1.5x increased Melee Damage, +5 HP on kill and +150 HP, +3%% melee resistance with melee equipped"
-		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +1050 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
+		"fr"	"+1.5x dégats corps-à-corps, +5 santé par victime, +150 santé,\n+3%% résistance contre les dégats corps-à-corps pendant que vous portez une arme corps-à-corps"
 		"ru"	"1,5-кратное увеличение урона в ближнем бою, +5 ед. здоровья при убийстве и +150 ед. здоровья, +3%% сопр. ближнему бою при использ. оружия ближнего боя"
 		"chi"   "增加1.5倍的近战伤害，杀敌后+5点生命，生命值提升150点，使用近战武器时+5%%的近战抗性"
 	}
@@ -1791,16 +1792,19 @@
 	"Body armor Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +50 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"fr"	"Armure reçu et armure maximalle améliorées. +50 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Kevlar Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +100 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"fr"	"Armure reçu et armure maximalle améliorées. +100 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Heavy Vest Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Jesus's Blessing Desc"
@@ -1814,6 +1818,7 @@
 	"Full Riot Gear Desc"
 	{
 		"en"	"Increased How much armour you get per use and max cap. +150 HP\nProvides passive resistance if armor is broken and increaces with more armor upgrades."
+		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 	}
 	
 	"Healthy Apple from Bob Desc"
@@ -1822,7 +1827,6 @@
 		"fr"	"+1500 santé"
 		"ru"	"+1500 ед. здоровья."
 		"chi"   "+1500生命值"
-
 	}
 	
 	"Doctor Certificate Desc"
@@ -2178,14 +2182,12 @@
 	"Flamethrower Extra Desc"
 	{
 		"en"	"Deals 1.15x the damage against raidbosses.\nHas infinite pierce but deals low damage.\nYou have extra resistances while equipped.\nBurn (any burn not only this weapon) debuff deals true damage."
+		"fr"	"1.15x dégats contre les Raids.\nPeu de dégats, mais peut percer les ennemis.\nDonne une résistance passive quand vous portez cette arme.\nLes dégats par brulûre ne sont pas affectés par les résistances."
 	}
 
 	"Alchemist Potion Desc"
 	{
-		"en"	"Throws potions that deal half the damage and deals the rest over bleed.\nAble to hit 5 targets in it's splash and ignores most damage resistances.\nM2 throws a secondary potion with it's own attack delay."
-		"fr"	"Lancez des potions qui font la plupart des dégats par le saignement.\nPeut frapper jusqu'a 5 cibles, et ignore la plupart des résistances.\nAppuyez sur M2 pour lancer une potion secondaire, avec rechargement."
-		"ru"	"Бросает зелья, которые наносят половину урона, а остальной урон наносит кровотечение.\nСпособно поразить 5 целей по области и игнорирует большинство сопротивлений урону.\nM2 бросает доп. зелье с задержкой атаки."
-		"chi"   "投掷药水，造成一半的伤害，其余的造成流血伤害。\n能够在溅射中击中5个目标，并且忽略大多数伤害抗性。\nM2投掷二次药水与它自己的攻击延迟"
+		"en"	"Throws potions that deal 3/4th the damage and deals the rest over bleed, deals 25%% more dmg against raids.\nAble to hit 5 targets in it's splash and bleed deals true damage.\nM2 throws a secondary potion with it's own attack delay."
 	}
 	"Alchemist Potion Pap 1"
 	{
@@ -2203,9 +2205,9 @@
 	}
 	"Alchemist Potion Pap 3"
 	{
-		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x5 the damage from bleeding."
-		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 5x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
-		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х5 урона от кровотечения."
+		"en"	"Increases fire rate, splash effect lingers for a bit, and metallic enemies suffer x2 the damage from bleeding."
+		"fr"	"Cadence des attaques améloré. Ennemis métalliques souffrent 2x plus de dégats par le saignement. Effet de la potion dure pour plus longtemps."
+		"ru"	"Увеличивает скорострельность, эффект по области сохраняется некоторое время, а металлические враги получают х2 урона от кровотечения."
 		"chi"   "增加射速，溅射效果持续一段时间，金属敌人因流血造成的伤害增加5倍。"
 	}
 	"Alchemist Potion Pap 4"
@@ -2622,6 +2624,7 @@
 	"Mlynar Sword Desc pap 2"
 	{
 		"en"	"Gain increaced Resistance, damage, parry damage, and less penalty after hurting a raid or killing enemies.\nYou charge faster and have less cooldown."
+		"fr"	"Dégats et résistance améliorés. Moins de pénalité de dégats contre les Raids.\nVotre charge est plus rapide, et prend moins de temps pour se recharger."
 	}
 	"Barracks Railgunner Desc"
 	{
@@ -2951,7 +2954,6 @@
 		"chi"	"R. 造成穿透性伤害，上限5名敌人。C. 冰冻敌人，T.B.O. 根据弹夹弹量造成超高伤害，血腥子弹在击杀后获得子弹。\n「连胜」：免费赌博！"
 	}
 
-	// todo: translate prismatic wand properly
 	"Neuv pap0"
 	{
 		"en"	"''Prismatic Beam Singularity Generator'', such is the full name of this spell\nCreated long ago before contact with the Ruanians...\nThe Witch who created the spell is unknown..."
@@ -3428,15 +3430,11 @@
 	}
 	"Riot Gun Pap 1"
 	{
-		"en"	"Provides 10%% melee resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown."
-		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité étonne pour plus longtemps et se recharge plus rapidement."
-		"chi"	"10%%近战抗性。每次发射3发子弹。更为主武器。\n技能眩晕更久，冷却更低。"
+		"en"	"+10%% melee resistance. Becomes a Primary Weapon.\nAbility now stuns longer and has a decreased cooldown.\nR ability -> M2\nM2 Pushes enemies."
 	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"Provides 10%% ranged resistance. Weapon fires 3 bullets at once. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nGetting hit with your shield reduces ability cooldowns of yourself and a nearby ally by 0.5 seconds."
-		"fr"	"Devient une arme principale. +10%% résistance contre les dégats corps-à-corps. Tire 3 balles à la fois.\nAbilité devient un fusil à pompe.\nLes coups sur votre bouclier réduit le temps de recharge de tous vos abilités, et celles d'un allié, par 0.5 secondes."
-		"chi"	"+10%%远程抗性，变为主武器。\n技能变为地射速穿透性霰弹枪。\n护盾受到伤害时候降自己和附近队友冷却。（0.5秒)"
+		"en"	"+10%% ranged resistance. Becomes a Primary Weapon.\nAbility now becomes slower multi-hit shotgun.\nHurt with shield on reduces CD by 0.5 Sec of you and ally.\nR ability -> M2\nM2 Pushes enemies."
 	}
 	"Armor Visualiser Desc"
 	{
@@ -3774,9 +3772,11 @@
 	"Vows of the Sea Desc"
 	{
 		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+		"fr"	"Santé améliorée. Vous soigne quand vous prenez des dégats. Frappe deux ennemis à la fois."
 	}
 	"Vows of the Sea Pap"
 	{
 		"en"	"Hits three targets at once, increases healing and health.\nAll Abyssal Hunter weapons gain massive health and damage increase."
+		"fr"	"Santé et soins améliorée. Frappe trois ennemis à la fois.\nTout arme «Chasseur des Abîmes» reçoivent des dégats et santé améliorés."
 	}
 }

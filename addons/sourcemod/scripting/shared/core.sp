@@ -532,6 +532,7 @@ float f_PassangerDebuff[MAXENTITIES];
 //0 means bad, 1 means good
 float f_BubbleProcStatus[MAXENTITIES][2];
 float f_CrippleDebuff[MAXENTITIES];
+float f_GoldTouchDebuff[MAXENTITIES];
 float f_CudgelDebuff[MAXENTITIES];
 float f_DuelStatus[MAXENTITIES];
 float f_PotionShrinkEffect[MAXENTITIES];
@@ -3748,7 +3749,6 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				//shouldnt invalidate clicking, makes battle hard.
 				if(!PlayerIsInNpcBattle(client) && Store_Girogi_Interact(client, entity, buffer, Is_Reload_Button))
 					return false;
-
 
 				if (TeutonType[client] == TEUTON_WAITING)
 					return false;

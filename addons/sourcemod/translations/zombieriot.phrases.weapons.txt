@@ -885,11 +885,6 @@
 		"en"		"Mortar"
 		"fr"		"Mortier"
 	}
-	"Railgun"
-	{
-		"en"		"Railgun"
-		"fr"		"Canon à Rail"
-	}
 	"Food Fridge"
 	{
 		"en"		"Food Fridge"
@@ -2730,5 +2725,6 @@
 	"Vows of the Sea"
 	{
 		"en"	"Vows of the Sea"
+		"fr"	"Voeu Océanique"
 	}
 }

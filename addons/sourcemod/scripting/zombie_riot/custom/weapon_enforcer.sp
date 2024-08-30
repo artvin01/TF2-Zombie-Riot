@@ -21,74 +21,82 @@ static int EnemiesHit[ENFORCER_MAX_TARGETS];
 
 public void Weapon_Enforcer_M2_Weight2(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 2, 1.5);
+	Enforcer_AbilityM2(client, weapon, slot, 2, 1.5);
 }
 
 public void Weapon_Enforcer_M2_Weight3(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 3, 1.75);
+	Enforcer_AbilityM2(client, weapon, slot, 3, 1.75);
 }
 
 public void Weapon_Enforcer_M2_Weight5(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 5, 1.85);
+	Enforcer_AbilityM2(client, weapon, slot, 5, 1.85);
 }
 
 public void Weapon_Enforcer_M2_Weight8(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 8, 2.0);
+	Enforcer_AbilityM2(client, weapon, slot, 8, 2.0);
 }
 
 public void Weapon_Enforcer_M2_Weight12(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 12, 2.1);
+	Enforcer_AbilityM2(client, weapon, slot, 12, 2.1);
 }
 
 public void Weapon_Enforcer_M2_Weight17(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 17, 2.15);
+	Enforcer_AbilityM2(client, weapon, slot, 17, 2.15);
 }
 
 public void Weapon_Enforcer_M2_Weight23(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 23, 2.5);
+	Enforcer_AbilityM2(client, weapon, slot, 23, 2.5);
 }
 
 public void Weapon_Enforcer_M2_Weight30(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 30, 2.6);
+	Enforcer_AbilityM2(client, weapon, slot, 30, 2.6);
 }
 
 // Beyond this is freeplay level
 public void Weapon_Enforcer_M2_Weight38(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 38, 2.8);
+	Enforcer_AbilityM2(client, weapon, slot, 38, 2.8);
 }
 
 public void Weapon_Enforcer_M2_Weight47(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 47, 3.5);
+	Enforcer_AbilityM2(client, weapon, slot, 47, 3.5);
 }
 
 public void Weapon_Enforcer_M2_Weight57(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 57, 4.0);
+	Enforcer_AbilityM2(client, weapon, slot, 57, 4.0);
 }
 
 public void Weapon_Enforcer_M2_Weight68(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 68, 4.3);
+	Enforcer_AbilityM2(client, weapon, slot, 68, 4.3);
 }
 
 public void Weapon_Enforcer_M2_Weight80(int client, int weapon, bool crit, int slot)
 {
-	AbilityM2(client, weapon, slot, 80, 5.2);
+	Enforcer_AbilityM2(client, weapon, slot, 80, 5.2);
 }
 
-static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti)
+public void WepaonRiotgunFillerM2(int client, int weapon, bool crit, int slot)
 {
+	//This is so it show up on hud for the m2 ability.
+	return;
+}
+void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti, bool IngoreAmmo = false)
+{
+//	if(IngoreAmmo)
+//		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 3.0);
+
 	float cooldown = Ability_Check_Cooldown(client, slot);
-	if(cooldown > 0.0 && !CvarInfiniteCash.BoolValue)
+	if(!IngoreAmmo && cooldown > 0.0 && !CvarInfiniteCash.BoolValue)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -103,6 +111,9 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 		
 		if(ammo >= sizeof(EnemiesHit))
 			ammo = sizeof(EnemiesHit) - 1;
+		
+		if(IngoreAmmo)
+			ammo = pushLevel;
 
 		static const float hullMin[3] = {-ENFORCER_MAX_BOUNDS, -ENFORCER_MAX_BOUNDS, -ENFORCER_MAX_BOUNDS};
 		static const float hullMax[3] = {ENFORCER_MAX_BOUNDS, ENFORCER_MAX_BOUNDS, ENFORCER_MAX_BOUNDS};
@@ -166,6 +177,13 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 					knockback *= 0.25;
 				}
 			}
+			if(IngoreAmmo)
+			{
+				if(weight <= 1)
+				{
+					knockback *= 0.75;
+				}
+			}
 
 			knockback *= pushforcemulti; //here we do math depending on how much extra pushforce they got.
 
@@ -179,27 +197,44 @@ static void AbilityM2(int client, int weapon, int slot, int pushLevel, float pus
 				knockback = (ENFORCER_KNOCKBACK * pushforcemulti * 0.25);
 			}
 			
-			FreezeNpcInTime(EnemiesHit[i], knockback * ENFORCER_STUN_RATIO);
+			if(!IngoreAmmo)
+				FreezeNpcInTime(EnemiesHit[i], knockback * ENFORCER_STUN_RATIO);
+				
 			Custom_Knockback(client, EnemiesHit[i], knockback, true, true, true);
 		}
 		
 		if(ammo)
 		{
-			EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
-			Client_Shake(client, 0, 35.0, 20.0, 0.8);
+			if(!IngoreAmmo)
+				EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+			else
+				EmitSoundToAll("weapons/push_impact.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 
-			GetAttachment(client, "effect_hand_l", fPos, fAng);
-			TE_Particle("mvm_soldier_shockwave", fPos, NULL_VECTOR, fAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			if(!IngoreAmmo)
+			{
+				Client_Shake(client, 0, 35.0, 20.0, 0.8);
+				GetAttachment(client, "effect_hand_l", fPos, fAng);
+				TE_Particle("mvm_soldier_shockwave", fPos, NULL_VECTOR, fAng, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			}
 
-			Ability_Apply_Cooldown(client, slot, 20.0);
-			i_SemiAutoWeapon_AmmoCount[weapon] -= ammo;
+			if(!IngoreAmmo)
+			{
+				Ability_Apply_Cooldown(client, slot, 20.0);
+				i_SemiAutoWeapon_AmmoCount[weapon] -= ammo;
+			}
+			else
+			{
+				Ability_Apply_Cooldown(client, slot, 3.0);	
+			}
 
 			Rogue_OnAbilityUse(weapon);
 			ShowClientManualAmmoCount(client, weapon);
 		}
 		else
 		{
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			if(!IngoreAmmo)
+				ClientCommand(client, "playgamesound items/medshotno1.wav");
+
 			Ability_Apply_Cooldown(client, slot, 0.5);
 		}
 	}

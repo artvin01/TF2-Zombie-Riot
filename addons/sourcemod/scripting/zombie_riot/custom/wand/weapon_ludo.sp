@@ -398,7 +398,7 @@ public void Weapon_Ludo_M1(int client, int weapon, bool crit)
 				}
 			} 
 		}
-		Mana_Regen_Delay[client] = GetGameTime() + 3.0;
+		SDKhooks_SetManaRegenDelayTime(client, 3.0);
 		Mana_Hud_Delay[client] = 0.0;
 		switch(Fifth[client])
 		{
@@ -1435,7 +1435,7 @@ public void Weapon_Ludo_M2(int client, int weapon, bool crit, int slot)
 		mana_need = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 		if(mana_need <= Current_Mana[client] && BlackJack[client] < 21)
 		{	
-			Mana_Regen_Delay[client] = GetGameTime() + 1.0;
+			SDKhooks_SetManaRegenDelayTime(client, 1.0);
 			Mana_Hud_Delay[client] = 0.0;
 			Current_Mana[client] -= mana_need;
 			
